@@ -110,7 +110,6 @@ class Budget extends CommonDropdown{
     *     - target for the Form
     *     - withtemplate : template or basic item
     *
-    * @return Nothing (display)
     **/
    function showForm($ID, $options = []) {
 
@@ -299,7 +298,6 @@ class Budget extends CommonDropdown{
    /**
     * Print the HTML array of Items on a budget
     *
-    * @return Nothing (display)
    **/
    function showItems() {
       global $DB;
@@ -533,7 +531,6 @@ class Budget extends CommonDropdown{
    /**
     * Print the HTML array of value consumed for a budget
     *
-    * @return Nothing (display)
    **/
    function showValuesByEntity() {
       global $DB;

@@ -1311,7 +1311,9 @@ class Stat extends CommonGLPI {
 
    /**
     * @since version 0.85
-   **/
+    * @param string $interface
+    * @return mixed
+    */
    function getRights($interface = 'central') {
 
       $values[READ] = __('Read');

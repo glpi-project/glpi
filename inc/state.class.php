@@ -91,8 +91,8 @@ class State extends CommonTreeDropdown {
     *
     * @param $name            select name
     * @param $lib    string   to add for -1 value (default '')
-    * @param $value           default value (default 0)
-   **/
+    * @param default|int $value default value (default 0)
+    */
    static function dropdownBehaviour($name, $lib = "", $value = 0) {
       global $DB;
 

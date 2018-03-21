@@ -188,7 +188,6 @@ class HTMLTableMain extends HTMLTableBase {
     *    'display_super_for_each_group'           display the super header befor each group
     *    'display_title_for_each_group'           display the title of each group
     *
-    * @return nothing (display only)
    **/
    function display(array $params) {
 

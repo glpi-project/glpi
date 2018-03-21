@@ -159,8 +159,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @since version 0.84
     *
-    * @param $full path or relative one (true by default)
-    *
+    * @param bool|path $full path or relative one (true by default)
     * @return string
     */
    static function getSearchURL($full = true) {
@@ -396,14 +395,13 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
    /**
-   * Return visibility joins to add to SQL
-   *
-   * @since version 0.83
-   *
-   * @param $forceall force all joins (false by default)
-   *
-   * @return string joins to add
-   **/
+    * Return visibility joins to add to SQL
+    *
+    * @since version 0.83
+    *
+    * @param bool|force $forceall force all joins (false by default)
+    * @return string joins to add
+    */
    static function addVisibilityJoins($forceall = false) {
 
       $join = '';
@@ -634,7 +632,9 @@ class KnowbaseItem extends CommonDBVisible {
 
    /**
     * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    * @param array $input
+    * @return array
+    */
    function prepareInputForUpdate($input) {
 
       // add documents (and replace inline pictures)
@@ -656,7 +656,6 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $options array
     *     - target for the Form
     *
-    * @return nothing (display the form)
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -870,7 +869,6 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options      array of options
     *
-    * @return nothing (display item : question and answer)
    **/
    function showFull($options = []) {
       global $DB, $CFG_GLPI;
@@ -976,7 +974,6 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options   $_GET
     *
-    * @return nothing (display the form)
    **/
    function searchForm($options) {
       global $CFG_GLPI;
@@ -1023,7 +1020,6 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options   $_GET
     *
-    * @return nothing (display the form)
    **/
    function showBrowseForm($options) {
       global $CFG_GLPI;
@@ -1072,7 +1068,6 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $options   $_GET
     *
-    * @return nothing (display the form)
    **/
    function showManageForm($options) {
       global $CFG_GLPI;
@@ -1116,7 +1111,7 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $params array  (contains, knowbaseitemcategories_id, faq)
     * @param $type   string search type : browse / search (default search)
     *
-    * @return String : SQL request
+    * @return string : SQL request
    **/
    static function getListRequest(array $params, $type = 'search') {
       global $DB;
@@ -1543,7 +1538,6 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $type      type : recent / popular / not published
     *
-    * @return nothing (display table)
    **/
    static function showRecentPopular($type) {
       global $DB, $CFG_GLPI;
@@ -1765,7 +1759,9 @@ class KnowbaseItem extends CommonDBVisible {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-   **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       if ($interface == 'central') {

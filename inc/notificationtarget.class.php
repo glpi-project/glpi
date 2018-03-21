@@ -265,11 +265,10 @@ class NotificationTarget extends CommonDBChild {
     * Get a notificationtarget class by giving the object which raises the event
     *
     * @param $item            the object which raises the event
-    * @param $event           the event which will be used (default '')
+    * @param string|the $event the event which will be used (default '')
     * @param $options   array of options
-    *
     * @return a notificationtarget class or false
-   **/
+    */
    static function getInstance($item, $event = '', $options = []) {
 
       if ($plug = isPluginItemType($item->getType())) {
@@ -300,11 +299,10 @@ class NotificationTarget extends CommonDBChild {
     * Get a notificationtarget class by giving an itemtype
     *
     * @param $itemtype           the itemtype of the object which raises the event
-    * @param $event              the event which will be used (default '')
+    * @param string|the $event the event which will be used (default '')
     * @param $options   array    of options
-    *
     * @return a notificationtarget class or false
-   **/
+    */
    static function getInstanceByType($itemtype, $event = '', $options = []) {
 
       if (($itemtype)

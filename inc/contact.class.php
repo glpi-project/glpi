@@ -148,7 +148,6 @@ class Contact extends CommonDBTM{
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
 
@@ -242,7 +241,9 @@ class Contact extends CommonDBTM{
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-    **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();

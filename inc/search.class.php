@@ -1862,7 +1862,6 @@ class Search {
     * @param $itemtype        type to display the form
     * @param $params    array of parameters may include sort, is_deleted, criteria, metacriteria
     *
-    * @return nothing (displays)
    **/
    static function showGenericSearch($itemtype, array $params) {
       global $CFG_GLPI;
@@ -2103,11 +2102,10 @@ class Search {
     * @param $itemtype  ID of the device type
     * @param $ID        field to add
     * @param $order     order define
-    * @param $key       item number (default 0)
-    *
+    * @param int|item $key item number (default 0)
     * @return select string
     *
-   **/
+    */
    static function addOrderBy($itemtype, $ID, $order, $key = 0) {
       global $CFG_GLPI;
 
@@ -2299,11 +2297,10 @@ class Search {
     * @param $itemtype     item type
     * @param $ID           ID of the item to add
     * @param $num          item num in the reque (default 0)
-    * @param $meta         boolean is a meta
-    * @param $meta_type    meta type table ID (default 0)
-    *
+    * @param bool|int $meta boolean is a meta
+    * @param int|meta $meta_type meta type table ID (default 0)
     * @return select string
-   **/
+    */
    static function addSelect($itemtype, $ID, $num, $meta = 0, $meta_type = 0) {
       global $CFG_GLPI;
 
@@ -2865,10 +2862,9 @@ class Search {
     * @param $ID           ID of the item to search
     * @param $searchtype   searchtype used (equals or contains)
     * @param $val          item num in the request
-    * @param $meta         is a meta search (meta=2 in search.class.php) (default 0)
-    *
+    * @param int|is $meta is a meta search (meta=2 in search.class.php) (default 0)
     * @return select string
-   **/
+    */
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
 
       $searchopt = &self::getOptions($itemtype);
@@ -3613,13 +3609,12 @@ class Search {
     * @param $already_link_tables  array  of tables already joined
     * @param $new_table                   new table to join
     * @param $linkfield                   linkfield for LeftJoin
-    * @param $meta                        is it a meta item ? (default 0)
-    * @param $meta_type                   meta type table (default 0)
+    * @param int|is $meta is it a meta item ? (default 0)
+    * @param int|meta $meta_type meta type table (default 0)
     * @param $joinparams           array  join parameters (condition / joinbefore...)
     * @param $field                string field to display (needed for translation join) (default '')
-    *
     * @return Left join string
-   **/
+    */
    static function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
                                $linkfield, $meta = 0, $meta_type = 0, $joinparams = [], $field = '') {
 
@@ -3883,8 +3878,9 @@ class Search {
     * @param $nullornott                  Used LEFT JOIN (null generation)
     *                                     or INNER JOIN for strict join
     *
+    * @param array $joinparams
     * @return Meta Left join string
-   **/
+    */
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
                                    $nullornott, $joinparams = []) {
 
@@ -4097,10 +4093,9 @@ class Search {
     * @param $itemtype           item type
     * @param $ID                 ID of the SEARCH_OPTION item
     * @param $data         array retrieved data array
-    * @param $num                number of the displayed item (default 0)
-    *
+    * @param int|number $num number of the displayed item (default 0)
     * @return string to print
-   **/
+    */
    static function displayConfigItem($itemtype, $ID, $data = [], $num = 0) {
 
       $searchopt  = &self::getOptions($itemtype);
@@ -4157,11 +4152,10 @@ class Search {
     * @param $ID                    ID of the SEARCH_OPTION item
     * @param $data            array containing data results
     * @param $num                   item num in the request
-    * @param $meta                  is a meta item ? (default 0)
+    * @param int|is $meta is a meta item ? (default 0)
     * @param $addobjectparams array added parameters for union search
-    *
     * @return string to print
-   **/
+    */
    static function giveItem($itemtype, $ID, array $data, $num, $meta = 0,
                             array $addobjectparams = []) {
       global $CFG_GLPI, $DB;
@@ -5126,12 +5120,11 @@ class Search {
     *
     * @param $itemtype                 item type to manage
     * @param $params          array    params to parse
-    * @param $usesession               Use datas save in session (true by default)
-    * @param $forcebookmark            force trying to load parameters from default bookmark:
+    * @param bool|Use $usesession Use datas save in session (true by default)
+    * @param bool|force $forcebookmark force trying to load parameters from default bookmark:
     *                                  used for global search (false by default)
-    *
     * @return parsed params array
-   **/
+    */
    static function manageParams($itemtype, $params = [], $usesession = true,
                                 $forcebookmark = false) {
       global $CFG_GLPI, $DB;
@@ -5287,12 +5280,11 @@ class Search {
     * Clean search options depending of user active profile
     *
     * @param $itemtype              item type to manage
-    * @param $action                action which is used to manupulate searchoption
+    * @param action|int $action action which is used to manupulate searchoption
     *                               (default READ)
     * @param $withplugins  boolean  get plugins options (true by default)
-    *
     * @return clean $SEARCH_OPTION array
-   **/
+    */
    static function getCleanedOptions($itemtype, $action = READ, $withplugins = true) {
       global $CFG_GLPI;
 
@@ -5768,13 +5760,12 @@ class Search {
     * @param $type            display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
     * @param $value           value to display
     * @param &$num            column number
-    * @param $linkto          link display element (HTML specific) (default '')
-    * @param $issort          is the sort column ? (default 0)
-    * @param $order           order type ASC or DESC (defaut '')
+    * @param link|string $linkto link display element (HTML specific) (default '')
+    * @param int|is $issort is the sort column ? (default 0)
+    * @param order|string $order order type ASC or DESC (defaut '')
     * @param $options  string options to add (default '')
-    *
     * @return string to display
-   **/
+    */
    static function showHeaderItem($type, $value, &$num, $linkto = "", $issort = 0, $order = "",
                                   $options = "") {
       global $CFG_GLPI;
@@ -5827,10 +5818,9 @@ class Search {
     * @param $value        value to display
     * @param &$num         column number
     * @param $row          row number
-    * @param $extraparam   extra parameters for display (default '')
-    *
-    *@return string to display
-   **/
+    * @param extra|string $extraparam extra parameters for display (default '')
+    * @return string to display
+    */
    static function showItem($type, $value, &$num, $row, $extraparam = '') {
 
       $out = "";
@@ -5901,10 +5891,9 @@ class Search {
     * Print generic error
     *
     * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-    * @param $message message to display, if empty "no item found" will be displayed
-    *
+    * @param message|string $message message to display, if empty "no item found" will be displayed
     * @return string to display
-   **/
+    */
    static function showError($type, $message = "") {
       if (strlen($message) == 0) {
          $message = __('No item found');
@@ -6020,10 +6009,9 @@ class Search {
     * @param $type   display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
     * @param $rows   number of rows
     * @param $cols   number of columns
-    * @param $fixed  used tab_cadre_fixe table for HTML export ? (default 0)
-    *
+    * @param int|used $fixed used tab_cadre_fixe table for HTML export ? (default 0)
     * @return string to display
-   **/
+    */
    static function showHeader($type, $rows, $cols, $fixed = 0) {
 
       $out = "";
@@ -6151,11 +6139,10 @@ class Search {
     * Print generic new line
     *
     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-    * @param $odd          is it a new odd line ? (false by default)
-    * @param $is_deleted   is it a deleted search ? (false by default)
-    *
+    * @param bool|is $odd is it a new odd line ? (false by default)
+    * @param bool|is $is_deleted is it a deleted search ? (false by default)
     * @return string to display
-   **/
+    */
    static function showNewLine($type, $odd = false, $is_deleted = false) {
 
       $out = "";
@@ -6299,10 +6286,9 @@ class Search {
     * @param $field           name (should be ` protected)
     * @param $val    string   value to search
     * @param $not    boolean  is a negative search ? (false by default)
-    * @param $link            with previous criteria (default 'AND')
-    *
-    * @return search SQL string
-   **/
+    * @param string|with $link with previous criteria (default 'AND')
+    * @return Search SQL string
+    */
    static function makeTextCriteria ($field, $val, $not = false, $link = 'AND') {
 
       $sql = $field . self::makeTextSearch($val, $not);

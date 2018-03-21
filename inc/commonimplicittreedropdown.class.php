@@ -59,7 +59,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * Method that must be overloaded. This method provides the ancestor of the current item
     * according to $this->input
     *
-    * @return the id of the current object ancestor
+    * @return integer id of the current object ancestor
    **/
    function getNewAncestor() {
       return 0; // By default, we rattach to the root element
@@ -80,9 +80,9 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
    /**
     * Used to set the ForeignKeyField
     *
-    * @param $input datas used to add the item
+    * @param array $input data used to add the item
     *
-    * @return the modified $input array
+    * @return array the modified $input
    **/
    function prepareInputForAdd($input) {
 
@@ -95,9 +95,9 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
    /**
     * Used to update the ForeignKeyField
     *
-    * @param $input datas used to add the item
+    * @param array $input data used to add the item
     *
-    * @return the modified $input array
+    * @return array modified $input array
    **/
    function prepareInputForUpdate($input) {
 
@@ -109,8 +109,6 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
    /**
     * Used to update tree by redefining other items ForeignKeyField
-    *
-    * @return nothing
    **/
    function post_addItem() {
 
@@ -123,8 +121,6 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * Used to update tree by redefining other items ForeignKeyField
     *
     * @param $history   (default 1)
-    *
-    * @return nothing
    **/
    function post_updateItem($history = 1) {
 
@@ -135,8 +131,6 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
    /**
     * Used to update tree by redefining other items ForeignKeyField
-    *
-    * @return nothing
    **/
    function pre_deleteItem() {
 

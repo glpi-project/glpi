@@ -499,10 +499,10 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @param $ticket       Tichet object
+    * @param Tichet|Ticket $ticket Tichet object
     * @param $rand
     * @param $showprivate
-   **/
+    */
    function showInTicketSumnary(Ticket $ticket, $rand, $showprivate) {
       global $DB, $CFG_GLPI;
 
@@ -566,7 +566,9 @@ class TicketFollowup  extends CommonDBTM {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -583,7 +585,10 @@ class TicketFollowup  extends CommonDBTM {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -767,7 +772,8 @@ class TicketFollowup  extends CommonDBTM {
     * @since version 0.90
     *
     * @see CommonDBTM::showFormButtons()
-   **/
+    * @param array $options
+    */
    function showFormButtons($options = []) {
       global $CFG_GLPI;
 
@@ -1216,7 +1222,9 @@ class TicketFollowup  extends CommonDBTM {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

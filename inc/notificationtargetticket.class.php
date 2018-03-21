@@ -76,7 +76,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    /**
     * @see NotificationTarget::validateSendTo()
-   **/
+    * @param string $event
+    * @param array $infos
+    * @param bool $notify_me
+    * @return bool
+    */
    function validateSendTo($event, array $infos, $notify_me = false) {
 
       // Always send notification for satisfaction : if send on ticket closure

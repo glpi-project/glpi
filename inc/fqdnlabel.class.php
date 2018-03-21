@@ -186,10 +186,9 @@ abstract class FQDNLabel extends CommonDBChild {
     *
     * @param $fqdn                     name to search (for instance : forge.indepnet.net)
     * @param $wildcard_search boolean  true if we search with wildcard (false by default)
-    *
-    * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
+    * @return array (array) each value of the array (corresponding to one NetworkPort) is an array of the
     *                 items from the master item to the NetworkPort
-    **/
+    */
    static function getItemsByFQDN($fqdn, $wildcard_search = false) {
 
       $FQNDs_with_Items = [];

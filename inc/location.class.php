@@ -215,7 +215,11 @@ class Location extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-   **/
+    * @param CommonGLPI $item
+    * @param int $tabnum
+    * @param int $withtemplate
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
@@ -237,7 +241,6 @@ class Location extends CommonTreeDropdown {
     *
     * @since version 0.85
     *
-    * @return Nothing (display)
    **/
    function showItems() {
       global $DB, $CFG_GLPI;

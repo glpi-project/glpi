@@ -517,8 +517,6 @@ class Certificate extends CommonDBTM {
     * @since version 0.85
     *
     * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return an
     */
    function getSpecificMassiveActions($checkitem = null) {
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -575,7 +573,6 @@ class Certificate extends CommonDBTM {
     * @param MassiveAction $ma
     * @param CommonDBTM $item
     * @param array $ids
-    * @return nothing|void
     */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma,
                                                        CommonDBTM $item,
@@ -676,9 +673,8 @@ class Certificate extends CommonDBTM {
     * Cron action on certificates : alert on expired certificates
     *
     * @param $task to log, if NULL display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return int 0 : nothing to do 1 : done with success
+    */
    static function cronCertificate($task = null) {
       global $DB, $CFG_GLPI;
 

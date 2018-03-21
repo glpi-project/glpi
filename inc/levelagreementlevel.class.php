@@ -328,10 +328,10 @@ abstract class LevelAgreementLevel extends RuleTicket {
    /**
     * Get already used execution time for a OLA
     *
-    * @param $olas_id   integer  id of the OLA
+    * @param int $las_id of the OLA
     *
-    * @return array of already used execution times
-   **/
+    * @return array
+    */
    static function getAlreadyUsedExecutionTime($las_id) {
       global $DB;
 

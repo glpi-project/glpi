@@ -113,19 +113,14 @@ abstract class HTMLTableBase  {
     *
     * Depending of "$this" type, this head will be an HTMLTableSuperHeader of a HTMLTableSubHeader
     *
-    * @param $name      string            The name that can be refered by getHeaderByName()
-    * @param $content   string or array   The content (see HTMLTableEntity#content) of the header
-    * @param $super                       HTMLTableSuperHeader object:
-    *                                     the header that contains this new header only used
-    *                                     for HTMLTableSubHeader (default NULL)
-    *                                     (ie: $this instanceof HTMLTableGroup)
-    * @param $father                      HTMLTableHeader object: the father of the current header
-    *                                     (default NULL)
-    * @return the HTMLTableHeader        that have been created
-    * @throws Exception
-    * @exception Exception                If there is no super header while creating a sub
-    *                                     header or a super header while creating a super one
+    * @param string $name that can be refered by getHeaderByName()
+    * @param string|array $content of the header (see HTMLTableEntity#content)
+    * @param HTMLTableSuperHeader $super object  that contains this new header only used for
+    *                      HTMLTableSubHeader (default NULL) (ie: $this instanceof HTMLTableGroup)
+    * @param HTMLTableHeader $father object of the current header (default NULL)
     *
+    * @return HTMLTableHeader
+    * @throws Exception
     */
    function addHeader($name, $content, HTMLTableSuperHeader $super = null,
                       HTMLTableHeader $father = null) {

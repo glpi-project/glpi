@@ -394,12 +394,11 @@ class Calendar extends CommonDropdown {
     *
     * @param $start              datetime    begin
     * @param $delay              timestamp   delay to add
-    * @param $additional_delay   timestamp   delay to add (default 0)
+    * @param int|timestamp $additional_delay timestamp   delay to add (default 0)
     * @param $work_in_days       boolean     force working in days (false by default)
     * @param $end_of_working_day boolean     end of working day (false by default)
-    *
     * @return end date
-   **/
+    */
    function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false) {
 
       if (!isset($this->fields['id'])) {

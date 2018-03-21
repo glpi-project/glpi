@@ -123,9 +123,9 @@ class Computer_Item extends CommonDBRelation{
     * Overloaded to check is Disconnect needed (during OCS sync)
     * and to manage autoupdate feature
     *
-    * @param $input array of datas used to add the item
+    * @param array $input of data used to add the item
     *
-    * @return the modified $input array
+    * @return array modified $input
     *
    **/
    function prepareInputForAdd($input) {
@@ -274,7 +274,11 @@ class Computer_Item extends CommonDBRelation{
     * @since version 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    * @param array $actions
+    * @param string $itemtype
+    * @param int $is_deleted
+    * @param CommonDBTM|null $checkitem
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -350,10 +354,8 @@ class Computer_Item extends CommonDBRelation{
     * Print the form for computers or templates connections to printers, screens or peripherals
     *
     * @param $comp                     Computer object
-    * @param $withtemplate    boolean  Template or basic item (default 0)
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -505,7 +507,6 @@ class Computer_Item extends CommonDBRelation{
     * @param $item                     CommonDBTM object: the Monitor/Phone/Peripheral/Printer
     * @param $withtemplate    integer  withtemplate param (default 0)
     *
-    * @return nothing (print out a table)
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       // Prints a direct connection to a computer
@@ -680,18 +681,16 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-   * Make a select box for connections
-   *
-   * @since version 0.84
-   *
-   * @param $fromtype               from where the connection is
-   * @param $myname                 select name
-   * @param $entity_restrict        Restrict to a defined entity (default = -1)
-   * @param $onlyglobal             display only global devices (used for templates) (default 0)
-   * @param $used             array Already used items ID: not to display in dropdown
-   *
-   * @return nothing (print out an HTML select box)
-   */
+    * Make a select box for connections
+    *
+    * @since version 0.84
+    *
+    * @param $fromtype               from where the connection is
+    * @param $myname                 select name
+    * @param int|Restrict $entity_restrict Restrict to a defined entity (default = -1)
+    * @param display|int $onlyglobal display only global devices (used for templates) (default 0)
+    * @param $used             array Already used items ID: not to display in dropdown
+    */
    static function dropdownAllConnect($fromtype, $myname, $entity_restrict = -1,
                                       $onlyglobal = 0, $used = []) {
       global $CFG_GLPI;
@@ -726,17 +725,15 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-   * Make a select box for connections
-   *
-   * @param $itemtype               type to connect
-   * @param $fromtype               from where the connection is
-   * @param $myname                 select name
-   * @param $entity_restrict        Restrict to a defined entity (default = -1)
-   * @param $onlyglobal             display only global devices (used for templates) (default 0)
-   * @param $used             array Already used items ID: not to display in dropdown
-   *
-   * @return nothing (print out an HTML select box)
-   */
+    * Make a select box for connections
+    *
+    * @param $itemtype               type to connect
+    * @param $fromtype               from where the connection is
+    * @param $myname                 select name
+    * @param int|Restrict $entity_restrict Restrict to a defined entity (default = -1)
+    * @param display|int $onlyglobal display only global devices (used for templates) (default 0)
+    * @param $used             array Already used items ID: not to display in dropdown
+    */
    static function dropdownConnect($itemtype, $fromtype, $myname, $entity_restrict = -1,
                                    $onlyglobal = 0, $used = []) {
       global $CFG_GLPI;
@@ -760,7 +757,10 @@ class Computer_Item extends CommonDBRelation{
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for Template
@@ -879,8 +879,9 @@ class Computer_Item extends CommonDBRelation{
     * @param  $item        item linked to the computer to check
     * $param  $entities
     *
-    * @return boolean
-   **/
+    * @param $entities
+    * @return bool
+    */
    static function canUnrecursSpecif($item, $entities) {
       global $DB;
 

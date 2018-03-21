@@ -130,7 +130,7 @@ class CommonGLPI {
     * @param array $options Options
     *     - withtemplate is a template view ?
     *
-    * @return array array containing the tabs
+    * @return array containing the tabs
    **/
    function defineTabs($options = []) {
 
@@ -393,11 +393,10 @@ class CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param CommonGLPI $item         Item on which the tab need to be displayed
-    * @param boolean    $withtemplate is a template object ? (default 0)
-    *
-    *  @return string tab name
-   **/
+    * @param CommonGLPI $item Item on which the tab need to be displayed
+    * @param bool|int $withtemplate is a template object ? (default 0)
+    * @return string tab name
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       return '';
    }
@@ -408,12 +407,11 @@ class CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param CommonGLPI $item         Item on which the tab need to be displayed
-    * @param integer    $tabnum       tab number (default 1)
-    * @param boolean    $withtemplate is a template object ? (default 0)
-    *
-    * @return boolean
-   **/
+    * @param CommonGLPI $item Item on which the tab need to be displayed
+    * @param integer $tabnum tab number (default 1)
+    * @param bool|int $withtemplate is a template object ? (default 0)
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       return false;
    }
@@ -422,13 +420,12 @@ class CommonGLPI {
    /**
     * display standard tab contents
     *
-    * @param CommonGLPI $item         Item on which the tab need to be displayed
-    * @param string     $tab          tab name
-    * @param boolean    $withtemplate is a template object ? (default 0)
-    * @param array      $options      additional options to pass
-    *
-    * @return boolean true
-   **/
+    * @param CommonGLPI $item Item on which the tab need to be displayed
+    * @param string $tab tab name
+    * @param bool|int $withtemplate is a template object ? (default 0)
+    * @param array $options additional options to pass
+    * @return bool true
+    */
    static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = []) {
 
       switch ($tab) {
@@ -1234,11 +1231,10 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @param integer $error  error type see define.php for ERROR_*
-    * @param istring $object string to use instead of item link (default '')
-    *
+    * @param integer $error error type see define.php for ERROR_*
+    * @param istring|string $object string to use instead of item link (default '')
     * @return string
-   **/
+    */
    function getErrorMessage($error, $object = '') {
 
       if (empty($object)) {

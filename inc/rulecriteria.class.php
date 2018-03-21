@@ -337,13 +337,13 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Try to match a defined rule
     *
-    * @param &$criterion         RuleCriteria object
-    * @param $field              the field to match
-    * @param &$criterias_results
-    * @param &$regex_result
+    * @param RuleCriteria $criterion object
+    * @param string $field to match
+    * @param array $criterias_results
+    * @param array $regex_result
     *
-    * @return true if the field match the rule, false if it doesn't match
-   **/
+    * @return bool
+    */
    static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result) {
 
       $condition = $criterion->fields['condition'];
@@ -491,12 +491,11 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Return the condition label by giving his ID
     *
-    * @param $ID        condition's ID
+    * @param $ID condition's ID
     * @param $itemtype  itemtype
-    * @param $criterion (default '')
-    *
-    * @return condition's label
-   **/
+    * @param string $criterion (default '')
+    * @return mixed|string condition's label
+    */
    static function getConditionByID($ID, $itemtype, $criterion = '') {
 
       $conditions = self::getConditions($itemtype, $criterion);

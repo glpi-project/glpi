@@ -60,7 +60,10 @@ class RuleImportEntity extends Rule {
 
    /**
     * @see Rule::executeActions()
-   **/
+    * @param the $output
+    * @param parameters $params
+    * @return the
+    */
    function executeActions($output, $params) {
 
       if (count($this->actions)) {
@@ -120,7 +123,13 @@ class RuleImportEntity extends Rule {
     * @since version 0.84
     *
     * @see Rule::displayAdditionalRuleCondition()
-   **/
+    * @param $condition
+    * @param $criteria
+    * @param $name
+    * @param $value
+    * @param bool $test
+    * @return bool
+    */
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
       global $PLUGIN_HOOKS;
 
@@ -140,7 +149,11 @@ class RuleImportEntity extends Rule {
     * @since version 0.84
     *
     * @see Rule::getAdditionalCriteriaDisplayPattern()
-   **/
+    * @param the $ID
+    * @param condition $condition
+    * @param the $pattern
+    * @return a|bool|String
+    */
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 
       $crit = $this->getCriteria($ID);

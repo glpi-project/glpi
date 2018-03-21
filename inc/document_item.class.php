@@ -322,8 +322,8 @@ class Document_Item extends CommonDBRelation{
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
     * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
+    * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
@@ -350,7 +350,6 @@ class Document_Item extends CommonDBRelation{
     *
     * @param $doc Document object
     *
-    * @return nothing (HTML display)
    **/
    static function showForDocument(Document $doc) {
       global $DB, $CFG_GLPI;
@@ -994,7 +993,9 @@ class Document_Item extends CommonDBRelation{
     * @since version 0.85
     *
     * @see CommonDBRelation::getRelationMassiveActionsPeerForSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return int|number
+    */
    static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {

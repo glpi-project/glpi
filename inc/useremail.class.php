@@ -62,8 +62,8 @@ class UserEmail  extends CommonDBChild {
     *
     * @param $users_id user ID
     *
-    * @return default email, empty if no email set
-   **/
+    * @return string
+    */
    static function getDefaultForUser($users_id) {
       global $DB;
 
@@ -145,7 +145,6 @@ class UserEmail  extends CommonDBChild {
     * @param $canedit
     * @param $field_name
     * @param $id
-    * @return nothing|void
     */
    function showChildForItemForm($canedit, $field_name, $id) {
 

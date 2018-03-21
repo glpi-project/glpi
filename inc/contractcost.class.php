@@ -72,7 +72,9 @@ class ContractCost extends CommonDBChild {
 
    /**
     * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    * @param array $input
+    * @return array|bool
+    */
    function prepareInputForUpdate($input) {
 
       if (!empty($input['begin_date'])
@@ -89,7 +91,10 @@ class ContractCost extends CommonDBChild {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
@@ -334,10 +339,8 @@ class ContractCost extends CommonDBChild {
     * Print the contract costs
     *
     * @param $contract               Contract object
-    * @param $withtemplate  boolean  Template or basic item (default 0)
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    */
    static function showForContract(Contract $contract, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 

@@ -181,10 +181,9 @@ class Planning extends CommonGLPI {
     * Dropdown of planning state
     *
     * @param $name   select name
-    * @param $value  default value (default '')
-    * @param $display  display of send string ? (true by default)
-    * @param $options  options
-    *
+    * @param default|string $value default value (default '')
+    * @param bool|display $display display of send string ? (true by default)
+    * @param array|options $options options
     * @return int|string
     */
    static function dropdownState($name, $value = '', $display = true, $options = []) {
@@ -266,7 +265,6 @@ class Planning extends CommonGLPI {
     *    optional :
     *          - limitto : limit display to a specific user
     *
-    * @return Nothing (display function)
    **/
    static function checkAvailability($params = []) {
       global $CFG_GLPI, $DB;
@@ -528,8 +526,8 @@ class Planning extends CommonGLPI {
     * Function name change since version 0.84 show() => showPlanning
     * Function prototype changes in 9.1 (no more parameters)
     *
-    * @return Nothing (display function)
-   **/
+    * @param bool $fullview
+    */
    static function showPlanning($fullview = true) {
       global $CFG_GLPI, $DB;
 
@@ -999,7 +997,6 @@ class Planning extends CommonGLPI {
     *
     * Also manage color index in $_SESSION['glpi_plannings_color_index']
     *
-    * @return Nothing (display function)
     */
    static function initSessionForCurrentUser() {
       global $CFG_GLPI;
@@ -1046,7 +1043,6 @@ class Planning extends CommonGLPI {
     * and color choosing.
     * Call self::showSingleLinePlanningFilter for each filters and plannings
     *
-    * @return Nothing (display function)
     */
    static function showPlanningFilter() {
       global $CFG_GLPI;
@@ -1228,7 +1224,6 @@ class Planning extends CommonGLPI {
     *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
     * @param $options
     *
-    * @return Nothing (display function)
     */
    static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = []) {
       global $CFG_GLPI;
@@ -1352,7 +1347,6 @@ class Planning extends CommonGLPI {
    /**
     * Display ajax form to add actor on planning
     *
-    * @return Nothing (display function)
     */
    static function showAddPlanningForm() {
       global $CFG_GLPI;
@@ -1390,7 +1384,6 @@ class Planning extends CommonGLPI {
     * Display 'User' part of self::showAddPlanningForm spcified by planning type dropdown.
     * Actually called by ajax/planning.php
     *
-    * @return Nothing (display function)
     */
    static function showAddUserForm() {
       global $CFG_GLPI;
@@ -1446,7 +1439,6 @@ class Planning extends CommonGLPI {
     * Display 'All users of a group' part of self::showAddPlanningForm spcified by planning type dropdown.
     * Actually called by ajax/planning.php
     *
-    * @return Nothing (display function)
     */
    static function showAddGroupUsersForm() {
       echo __("Group")." : <br>";
@@ -1533,7 +1525,7 @@ class Planning extends CommonGLPI {
     *
     * @since 9.1
     *
-    * @return Nothing (display function)
+    * @param array $params
     */
    static function showAddGroupForm($params = []) {
 
@@ -1617,7 +1609,6 @@ class Planning extends CommonGLPI {
     *  - end : end of selection range.
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
     *
-    * @return Nothing (display function)
     */
    static function showAddEventSubForm($params = []) {
 
@@ -1985,7 +1976,7 @@ class Planning extends CommonGLPI {
     *
     * @since 9.1
     *
-    * @param array $options: must contains this keys :
+    * @param array $params must contains this keys :
     *  - items_id : integer to identify items
     *  - itemtype : string to identify items
     *  - begin : planning start .
@@ -2024,18 +2015,15 @@ class Planning extends CommonGLPI {
    }
 
 
-
    /**
     * Display a Planning Item
     *
     * @param $val       Array of the item to display
     * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
+    * @param position|string $type position of the item in the time block (in, through, begin or end)
     *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return Nothing (display function)
-   **/
+    * @param complete|int $complete complete display (more details) (default 0)
+    */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
@@ -2089,7 +2077,6 @@ class Planning extends CommonGLPI {
     *
     * @param $who ID of the user
     *
-    * @return Nothing (display function)
    **/
    static function showCentral($who) {
       global $CFG_GLPI;
@@ -2122,10 +2109,9 @@ class Planning extends CommonGLPI {
     *
     * @param $who             user ID
     * @param $who_group       group ID
-    * @param $limititemtype   itemtype only display this itemtype (default '')
-    *
+    * @param itemtype|string $limititemtype itemtype only display this itemtype (default '')
     * @return icalendar string
-   **/
+    */
    static function generateIcal($who, $who_group, $limititemtype = '') {
       global $CFG_GLPI;
 
@@ -2228,7 +2214,9 @@ class Planning extends CommonGLPI {
 
    /**
     * @since version 0.85
-   **/
+    * @param string $interface
+    * @return mixed
+    */
    function getRights($interface = 'central') {
 
       $values[self::READMY]    = __('See personnal planning');

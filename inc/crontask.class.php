@@ -125,11 +125,11 @@ class CronTask extends CommonDBTM{
     *
     * Used by plugins to load its crontasks
     *
-    * @param $itemtype  itemtype of the crontask
-    * @param $name      name of the task
+    * @param string $itemtype of the crontask
+    * @param string $name of the task
     *
-    * @return true if succeed else false
-   **/
+    * @return boolean true if succeed else false
+    */
    function getFromDBbyName($itemtype, $name) {
 
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`name` = '$name'
@@ -187,6 +187,7 @@ class CronTask extends CommonDBTM{
     * Signal handler callback
     *
     * @since 9.1
+    * @param $signo
     */
    function signal($signo) {
       if ($signo == SIGTERM) {
@@ -346,13 +347,12 @@ class CronTask extends CommonDBTM{
    /**
     * read the first task which need to be run by cron
     *
-    * @param $mode   >0 retrieve task configured for this mode
+    * @param int $mode >0 retrieve task configured for this mode
     *                <0 retrieve task allowed for this mode (force, no time check)
     *                (default 0)
-    * @param $name   one specify action (default '')
-    *
+    * @param one|string $name one specify action (default '')
     * @return false if no task to run
-   **/
+    */
    function getNeedToRun($mode = 0, $name = '') {
       global $DB;
 
@@ -434,7 +434,6 @@ class CronTask extends CommonDBTM{
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -708,9 +707,8 @@ class CronTask extends CommonDBTM{
     * Dropdown of state
     *
     * @param $name     select name
-    * @param $value    default value (default 0)
-    * @param $display  display or get string (true by default)
-    *
+    * @param default|int $value default value (default 0)
+    * @param bool|display $display display or get string (true by default)
     * @return int|string
     */
    static function dropdownState($name, $value = 0, $display = true) {
@@ -780,12 +778,11 @@ class CronTask extends CommonDBTM{
    /**
     * Launch the need cron tasks
     *
-    * @param $mode   (internal/external, <0 to force)
-    * @param $max    number of task to launch (default 1)
-    * @param $name   of task to run (default '')
-    *
+    * @param $mode (internal/external, <0 to force)
+    * @param int|number $max number of task to launch (default 1)
+    * @param of|string $name of task to run (default '')
     * @return the name of last task launched
-   **/
+    */
    static public function launch($mode, $max = 1, $name = '') {
       global $CFG_GLPI;
 
@@ -1753,8 +1750,8 @@ class CronTask extends CommonDBTM{
     * Dropdown for frequency (interval between 2 actions)
     *
     * @param $name   select name
-    * @param $value  default value (default 0)
-   **/
+    * @param default|int $value default value (default 0)
+    */
    function dropdownFrequency($name, $value = 0) {
 
       $tab = [];

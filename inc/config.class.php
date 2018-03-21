@@ -269,7 +269,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for display
     *
-    * @return Nothing (display)
    **/
    function showFormDisplay() {
       global $CFG_GLPI;
@@ -461,7 +460,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
    **/
    function showFormInventory() {
       global $DB, $CFG_GLPI;
@@ -609,7 +607,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
    **/
    function showFormAuthentication() {
       global $DB, $CFG_GLPI;
@@ -653,7 +650,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for slave DB
     *
-    * @return Nothing (display)
    **/
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
@@ -723,7 +719,6 @@ class Config extends CommonDBTM {
     * Print the config form for External API
     *
     * @since 9.1
-    * @return Nothing (display)
    **/
    function showFormAPI() {
       global $CFG_GLPI;
@@ -805,7 +800,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for connections
     *
-    * @return Nothing (display)
    **/
    function showFormHelpdesk() {
       global $DB, $CFG_GLPI;
@@ -976,7 +970,6 @@ class Config extends CommonDBTM {
     * @param $data array containing datas
     * (CFG_GLPI for global config / glpi_users fields for user prefs)
     *
-    * @return Nothing (display)
    **/
    function showFormUserPrefs($data = []) {
       global $DB, $CFG_GLPI;
@@ -2431,9 +2424,8 @@ class Config extends CommonDBTM {
     * Check Write Access to needed directories
     *
     * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
-    *
-    * @return 2 : creation error 1 : delete error 0: OK
-   **/
+    * @return int 2 : creation error 1 : delete error 0: OK
+    */
    static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
 
@@ -2709,7 +2701,9 @@ class Config extends CommonDBTM {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-   **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

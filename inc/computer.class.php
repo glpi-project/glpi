@@ -92,7 +92,9 @@ class Computer extends CommonDBTM {
 
    /**
     * @see CommonGLPI::defineTabs()
-   **/
+    * @param array $options
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -140,7 +142,8 @@ class Computer extends CommonDBTM {
 
    /**
     * @see CommonDBTM::post_updateItem()
-   **/
+    * @param int $history
+    */
    function post_updateItem($history = 1) {
       global $DB, $CFG_GLPI;
 
@@ -567,7 +570,9 @@ class Computer extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-    **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();

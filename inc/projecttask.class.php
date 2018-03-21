@@ -175,7 +175,9 @@ class ProjectTask extends CommonDBChild {
 
    /**
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -1543,12 +1545,10 @@ class ProjectTask extends CommonDBChild {
     *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
+    * @param position|string $type position of the item in the time block (in, through, begin or end)
     *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return Nothing (display function)
-    **/
+    * @param complete|int $complete complete display (more details) (default 0)
+    */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 

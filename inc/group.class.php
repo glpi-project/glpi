@@ -344,7 +344,9 @@ class Group extends CommonTreeDropdown {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -369,7 +371,9 @@ class Group extends CommonTreeDropdown {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       $input = $ma->getInput();
@@ -401,7 +405,10 @@ class Group extends CommonTreeDropdown {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

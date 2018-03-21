@@ -135,7 +135,6 @@ class ConsumableItem extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
     *
     **/
    function showForm($ID, $options = []) {
@@ -213,7 +212,9 @@ class ConsumableItem extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -387,9 +388,8 @@ class ConsumableItem extends CommonDBTM {
     * Cron action on consumables : alert if a stock is behind the threshold
     *
     * @param $task   to log, if NULL display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return int 0 : nothing to do 1 : done with success
+    */
    static function cronConsumable($task = null) {
       global $DB, $CFG_GLPI;
 

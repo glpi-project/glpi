@@ -534,7 +534,6 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $tt TicketTemplate object
     *
-    * @return Nothing (call to classes members)
    **/
    static function showCentralPreview(TicketTemplate $tt) {
 
@@ -553,7 +552,6 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $tt TicketTemplate object
     *
-    * @return Nothing (call to classes members)
    **/
    static function showHelpdeskPreview(TicketTemplate $tt) {
 
@@ -571,7 +569,9 @@ class TicketTemplate extends CommonDropdown {
     * @since version 0.90
     *
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -591,7 +591,9 @@ class TicketTemplate extends CommonDropdown {
     * @since version 0.90
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -609,7 +611,10 @@ class TicketTemplate extends CommonDropdown {
     * @since version 0.90
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

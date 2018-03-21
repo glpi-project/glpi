@@ -57,7 +57,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::cleanTestOutputCriterias()
-   **/
+    * @param array $output
+    * @return array
+    */
    function cleanTestOutputCriterias(array $output) {
 
       //If output array contains keys begining with _ : drop it
@@ -72,7 +74,12 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
-   **/
+    * @param int $offset
+    * @param int $maxtime
+    * @param array $items
+    * @param array $params
+    * @return int|void
+    */
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
 

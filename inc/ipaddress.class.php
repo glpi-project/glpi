@@ -188,7 +188,8 @@ class IPAddress extends CommonDBChild {
 
    /**
     * @see CommonDBTM::post_updateItem()
-   **/
+    * @param int $history
+    */
    function post_updateItem($history = 1) {
 
       if ((isset($this->oldvalues['name']))
@@ -532,7 +533,6 @@ class IPAddress extends CommonDBChild {
    /**
     * Replace textual representation by its canonical form.
     *
-    * @return nothing (internal class update)
    **/
    function canonicalizeTextual() {
       $this->setAddressFromBinary($this->getBinary());
@@ -547,11 +547,10 @@ class IPAddress extends CommonDBChild {
     * \warning The resulting binary form is created inside the current object
     *
     * @param $address   string   textual (ie. human readable) address
-    * @param $itemtype           type of the item this address has to be attached (default '')
-    * @param $items_id           id of the item this address has to be attached (default -1)
-    *
+    * @param string|type $itemtype type of the item this address has to be attached (default '')
+    * @param id|int $items_id id of the item this address has to be attached (default -1)
     * @return true if the address is valid.
-   **/
+    */
    function setAddressFromString($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
@@ -717,12 +716,11 @@ class IPAddress extends CommonDBChild {
     * one (ie : 2001:db8:0:85a3\::ac1f:8001 rather than 2001:0db8:0000:85a3:0000:0000:ac1f:8001)
     * \warning The resulting binary form is created inside the current object
     *
-    * @param $address   (bytes[4]) binary (ie. SQL requests) address
-    * @param $itemtype  type of the item this address has to be attached (default '')
-    * @param $items_id  id of the item this address has to be attached (default -1)
-    *
+    * @param $address (bytes[4]) binary (ie. SQL requests) address
+    * @param string|type $itemtype type of the item this address has to be attached (default '')
+    * @param id|int $items_id id of the item this address has to be attached (default -1)
     * @return true if the address is valid.
-   **/
+    */
    function setAddressFromBinary($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
@@ -880,10 +878,9 @@ class IPAddress extends CommonDBChild {
     * Search IP Addresses
     *
     * @param $IPaddress the address to search
-    *
-    * @return (array) each value of the array (corresponding to one IPAddress) is an array of the
+    * @return array (array) each value of the array (corresponding to one IPAddress) is an array of the
     *                 items from the master item to the IPAddress
-   **/
+    */
    static function getItemsByIPAddress($IPaddress) {
       global $DB;
 

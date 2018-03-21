@@ -49,7 +49,8 @@ class NotificationTargetUser extends NotificationTarget {
 
    /**
     * @see NotificationTarget::addNotificationTargets()
-   **/
+    * @param int $entity
+    */
    function addNotificationTargets($entity) {
       $this->addTarget(Notification::USER, __('User'));
    }
@@ -57,7 +58,9 @@ class NotificationTargetUser extends NotificationTarget {
 
    /**
     * @see NotificationTarget::addSpecificTargets()
-   **/
+    * @param array $data
+    * @param array $options
+    */
    function addSpecificTargets($data, $options) {
 
       //Look for all targets whose type is Notification::ITEM_USER

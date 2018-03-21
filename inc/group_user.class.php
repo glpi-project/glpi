@@ -331,10 +331,9 @@ class Group_User extends CommonDBRelation{
     * @param $members   Array    filled on output of member (filtered)
     * @param $ids       Array    of ids (not filtered)
     * @param $crit      String   filter (is_manager, is_userdelegate) (default '')
-    * @param $tree      Boolean  true to include member of sub-group (default 0)
-    *
-    * @return String tab of entity for restriction
-   **/
+    * @param bool|int $tree Boolean  true to include member of sub-group (default 0)
+    * @return string tab of entity for restriction
+    */
    static function getDataForGroup(Group $group, &$members, &$ids, $crit = '', $tree = 0) {
       global $DB;
 

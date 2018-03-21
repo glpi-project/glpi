@@ -295,7 +295,10 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -352,8 +355,8 @@ class Contract_Item extends CommonDBRelation{
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
     * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
+    * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
@@ -379,10 +382,8 @@ class Contract_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $item            CommonDBTM object wanted
-    * @param $withtemplate    not used (to be deleted) (default 0)
-    *
-    * @return Nothing (display)
-   **/
+    * @param int|not $withtemplate not used (to be deleted) (default 0)
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -540,11 +541,10 @@ class Contract_Item extends CommonDBRelation{
     *
     * @since version 0.84
     *
-    * @param Contract $contract     Contract object
-    * @param boolean  $withtemplate (default 0)
-    *
+    * @param Contract $contract Contract object
+    * @param bool|int $withtemplate (default 0)
     * @return void (display)
-   **/
+    */
    static function showForContract(Contract $contract, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 

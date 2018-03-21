@@ -112,7 +112,9 @@ class Project extends CommonDBTM {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -760,8 +762,8 @@ class Project extends CommonDBTM {
 
 
    /**
-    * @param $output_type     (default 'Search::HTML_OUTPUT')
-    * @param $mass_id         id of the form to check all (default '')
+    * @param int $output_type (default 'Search::HTML_OUTPUT')
+    * @param id|string $mass_id id of the form to check all (default '')
     */
    static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
 
@@ -997,7 +999,6 @@ class Project extends CommonDBTM {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    * @return Nothing (display)
     **/
    function showChildren() {
       global $DB, $CFG_GLPI;
@@ -1053,13 +1054,13 @@ class Project extends CommonDBTM {
    /**
     * Print the computer form
     *
-    * @param $ID        integer ID of the item
-    * @param $options   array
+    * @param integer $ID of the item
+    * @param array $options
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
-   **/
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
@@ -1258,7 +1259,9 @@ class Project extends CommonDBTM {
 
    /**
     * Show team for a project
-   **/
+    * @param Project $project
+    * @return bool
+    */
    function showTeam(Project $project) {
       global $DB, $CFG_GLPI;
 

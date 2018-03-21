@@ -128,7 +128,9 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     * @since version 0.85
     * @see CommonDropdown::displaySpecificTypeField()
-   **/
+    * @param $ID
+    * @param array $field
+    */
    function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
@@ -290,17 +292,14 @@ abstract class CommonDevice extends CommonDropdown {
     * get the HTMLTable Header for the current device according to the type of the item that
     * is requesting
     *
-    * @param $itemtype  string   the type of the item
-    * @param $base               HTMLTableBase object:the element on which adding the header
-    *                            (ie.: HTMLTableMain or HTMLTableGroup)
-    * @param $super              HTMLTableSuperHeader object: the super header
-    *                            (in case of adding to HTMLTableGroup) (default NULL)
-    * @param $father             HTMLTableHeader object: the father of the current headers
-    *                            (default NULL)
-    * @param $options   array    parameter such as restriction
+    * @param string $itemtype
+    * @param HTMLTableBase $base the element on which adding the header (ie.: HTMLTableMain or HTMLTableGroup)
+    * @param HTMLTableSuperHeader $super header (in case of adding to HTMLTableGroup) (default NULL)
+    * @param HTMLTableHeader $father object of the current headers (default NULL)
+    * @param array $options parameter such as restriction
     *
-    * @return nothing (elements added to $base)
-   **/
+    * @return HTMLTableHeader
+    */
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
                                       HTMLTableHeader $father = null, array $options = []) {
@@ -336,10 +335,10 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @warning note the difference between getHTMLTableCellForItem and getHTMLTableCellsForItem
     *
-    * @param $row                HTMLTableRow object
-    * @param $item               CommonDBTM object (default NULL)
-    * @param $father             HTMLTableCell object (default NULL)
-    * @param $options   array
+    * @param HTMLTableRow $row object
+    * @param CommonDBTM $item object (default NULL)
+    * @param HTMLTableCell $father object (default NULL)
+    * @param array $options
     *
     * @return HTMLTableCell
     */
@@ -390,11 +389,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * Import a device is not exists
-    *
-    * @param $input array of datas
-    *
-    * @return interger ID of existing or new Device
+    * @see CommonDropdown::import()
    **/
    function import(array $input) {
       global $DB;
@@ -516,7 +511,8 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
-   **/
+    * @param int $history
+    */
    function post_updateItem($history = 1) {
 
       $this->post_workOnItem();

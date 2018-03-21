@@ -59,6 +59,8 @@ class ObjectLock extends CommonDBTM {
 
    /**
     * @see CommonGLPI::getTypeName()
+    * @param int $nb
+    * @return string
     */
    static function getTypeName($nb = 0) {
       return _n('Object Lock', 'Object Locks', $nb);
@@ -81,8 +83,8 @@ class ObjectLock extends CommonDBTM {
 
    /**
     * Summary of getEntityID
-    * @return 0
-   **/
+    * @return int 0
+    */
    function getEntityID() {
       return 0;
    }
@@ -509,7 +511,10 @@ class ObjectLock extends CommonDBTM {
 
    /**
     * @see CommonDBTM::processMassiveActionsForOneItemtype
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       foreach ($ids as $items_id) {

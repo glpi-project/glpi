@@ -607,9 +607,8 @@ class ReservationItem extends CommonDBChild {
     * Cron action on reservation : alert on end of reservations
     *
     * @param $task to log, if NULL use display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return int 0 : nothing to do 1 : done with success
+    */
    static function cronReservation($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -724,7 +723,9 @@ class ReservationItem extends CommonDBChild {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-   **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       if ($interface == 'central') {
@@ -740,7 +741,9 @@ class ReservationItem extends CommonDBChild {
     * @see CommonGLPI::defineTabs()
     *
     * @since version 0.85
-   **/
+    * @param array $options
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -754,7 +757,10 @@ class ReservationItem extends CommonDBChild {
     * @see CommonGLPI::getTabNameForItem()
     *
     * @since version 0.85
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {

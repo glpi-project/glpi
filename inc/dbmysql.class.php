@@ -75,7 +75,6 @@ class DBmysql {
     *
     * @param integer $choice host number (default NULL)
     *
-    * @return void
     */
    function __construct($choice = null) {
       $this->connect($choice);
@@ -253,8 +252,8 @@ class DBmysql {
     * Give result from a sql result
     *
     * @param mysqli_result $result MySQL result handler
-    * @param int           $i      Row offset to give
-    * @param type          $field  Field to give
+    * @param int $i row offset to give
+    * @param string $field name to give
     *
     * @return mixed Value of the Row $i and the Field $field of the Mysql $result
     */

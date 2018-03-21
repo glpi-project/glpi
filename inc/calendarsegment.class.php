@@ -184,13 +184,13 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Add a delay of a starting hour in a specific day
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
-    * @param $begin_time      begin time
-    * @param $delay           timestamp delay to add
+    * @param integer $calendars_id
+    * @param integer $day number
+    * @param mixed $begin_time begin time
+    * @param mixed $delay timestamp delay to add
     *
-    * @return timestamp value
-   **/
+    * @return bool|string timestamp value
+    */
    static function addDelayInDay($calendars_id, $day, $begin_time, $delay) {
       global $DB;
 
@@ -410,6 +410,11 @@ class CalendarSegment extends CommonDBChild {
    }
 
 
+   /**
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {

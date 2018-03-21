@@ -74,7 +74,10 @@ class QueuedNotification extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @param bool $is_deleted
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null, $is_deleted = false) {
 
       $isadmin = static::canUpdate();
@@ -90,7 +93,10 @@ class QueuedNotification extends CommonDBTM {
 
    /**
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       switch ($ma->getAction()) {

@@ -63,11 +63,11 @@ class Alert extends CommonDBTM {
    /**
     * Clear all alerts of an alert type for an item
     *
-    *@param string  $itemtype   ID of the type to clear
-    *@param string  $ID         ID of the item to clear
-    *@param integer $alert_type ID of the alert type to clear
+    * @param string $itemtype ID of the type to clear
+    * @param string $ID ID of the item to clear
+    * @param integer $alert_type ID of the alert type to clear
     *
-    *@return void
+    * @return bool
     */
    function clear($itemtype, $ID, $alert_type) {
 
@@ -122,7 +122,7 @@ class Alert extends CommonDBTM {
     *
     * @param array $options Display options
     *
-    * @return void|string (see $options['display'])
+    * @return int|string (see $options['display'])
     */
    static function dropdownYesNo($options = []) {
 
@@ -155,7 +155,7 @@ class Alert extends CommonDBTM {
     * @param string $value   Dropdown selected value
     * @param array  $options Display options
     *
-    * @return void|string (see $options['display'])
+    * @return int|string (see $options['display'])
     */
    static function dropdownIntegerNever($name, $value, $options = []) {
 
@@ -191,11 +191,10 @@ class Alert extends CommonDBTM {
    /**
     * Does alert exists
     *
-    * @param string  $itemtype (default '')
-    * @param integer $items_id (default '')
-    * @param integer $type     (default '')
-    *
-    * @return integer|boolean
+    * @param string $itemtype (default '')
+    * @param int|string $items_id (default '')
+    * @param int|string $type (default '')
+    * @return bool|int
     */
    static function alertExists($itemtype = '', $items_id = '', $type = '') {
       global $DB;
@@ -213,11 +212,10 @@ class Alert extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param string  $itemtype (default '')
-    * @param integer $items_id (default '')
-    * @param integer $type     (default '')
-    *
-    * @return mixed|boolean
+    * @param string $itemtype (default '')
+    * @param int|string $items_id (default '')
+    * @param int|string $type (default '')
+    * @return bool|mixed
     */
    static function getAlertDate($itemtype = '', $items_id = '', $type = '') {
       global $DB;

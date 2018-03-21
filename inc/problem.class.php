@@ -268,7 +268,10 @@ class Problem extends CommonITILObject {
       parent::cleanDBonPurge();
    }
 
-
+   /**
+    * @param array $input
+    * @return array
+    */
    function prepareInputForUpdate($input) {
 
       // Get problem : need for comparison
@@ -286,7 +289,8 @@ class Problem extends CommonITILObject {
 
    /**
     * @see CommonDBTM::post_updateItem()
-   **/
+    * @param int $history
+    */
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
@@ -384,7 +388,8 @@ class Problem extends CommonITILObject {
 
    /**
     * Get default values to search engine to override
-   **/
+    * @return array
+    */
    static function getDefaultSearchRequest() {
 
       $search = ['criteria' => [0 => ['field'      => 12,
@@ -399,7 +404,9 @@ class Problem extends CommonITILObject {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param mixed $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -421,6 +428,9 @@ class Problem extends CommonITILObject {
    }
 
 
+   /**
+    * @return array
+    */
    function getSearchOptionsNew() {
       $tab = [];
 
@@ -543,9 +553,9 @@ class Problem extends CommonITILObject {
    /**
     * get the problem status list
     *
-    * @param $withmetaforsearch  boolean  (false by default)
+    * @param boolean $withmetaforsearch (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -575,7 +585,7 @@ class Problem extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
 
@@ -591,7 +601,7 @@ class Problem extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
 
@@ -606,7 +616,7 @@ class Problem extends CommonITILObject {
     *
     * @since version 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING, self::ACCEPTED];
@@ -617,7 +627,7 @@ class Problem extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
 
@@ -631,9 +641,9 @@ class Problem extends CommonITILObject {
    /**
     * @since version 0.84
     *
-    * @param $start
-    * @param $status (default 'proces)
-    * @param $showgroupproblems (true by default)
+    * @param integer $start
+    * @param string $status (default 'proces)
+    * @param boolean $showgroupproblems (true by default)
     *
     * @return bool
     */
@@ -1349,7 +1359,6 @@ class Problem extends CommonITILObject {
     *
     * @param $item CommonDBTM object
     *
-    * @return nothing (display a table)
    **/
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
@@ -1556,7 +1565,9 @@ class Problem extends CommonITILObject {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-   **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

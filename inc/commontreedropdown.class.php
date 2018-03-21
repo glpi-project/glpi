@@ -477,7 +477,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    * @return Nothing (display)
     **/
    function showChildren() {
       global $DB, $CFG_GLPI;
@@ -589,7 +588,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -608,7 +609,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -631,7 +634,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -824,10 +830,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * check if a tree dropdown already exists (before import)
     *
-    * @param &$input array of value to import (name, ...)
-    *
-    * @return the ID of the new (or -1 if not found)
-   **/
+    * @param array $input of value to import (name, ...)
+    * @return int|mixed ID of the new (or -1 if not found)
+    */
    function findID(array &$input) {
       global $DB;
 
@@ -880,7 +885,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @param $input array of value to import (name or completename, ...)
     *
-    * @return the ID of the new or existing dropdown (0 on failure)
+    * @return integer ID of the new or existing dropdown (0 on failure)
    **/
    function import(array $input) {
 

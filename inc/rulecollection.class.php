@@ -93,11 +93,10 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get Collection Size : retrieve the number of rules
     *
-    * @param $recursive (true by default)
-    * @param $condition (0 by default)
-    *
-    * @return : number of rules
-   **/
+    * @param bool $recursive (true by default)
+    * @param int $condition (0 by default)
+    * @return int : number of rules
+    */
    function getCollectionSize($recursive = true, $condition = 0) {
 
       $restrict = "`sub_type` = '".$this->getRuleClassName()."'".
@@ -215,10 +214,10 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get Collection Datas : retrieve descriptions and rules
     *
-    * @param $retrieve_criteria  Retrieve the criterias of the rules ? (default 0)
-    * @param $retrieve_action    Retrieve the action of the rules ? (default 0)
-    * @param $condition          Retrieve with a specific condition
-   **/
+    * @param int|Retrieve $retrieve_criteria Retrieve the criterias of the rules ? (default 0)
+    * @param int|Retrieve $retrieve_action Retrieve the action of the rules ? (default 0)
+    * @param int|Retrieve $condition Retrieve with a specific condition
+    */
    function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0) {
       global $DB;
 
@@ -292,13 +291,12 @@ class RuleCollection extends CommonDBTM {
    /**
     * Replay Collection on DB
     *
-    * @param $offset             first row to work on (default 0)
-    * @param $maxtime   float    max system time to stop working (default 0)
+    * @param first|int $offset first row to work on (default 0)
+    * @param float|int $maxtime float    max system time to stop working (default 0)
     * @param $items     array    containg items to replay. If empty -> all
     * @param $params    array    additional parameters if needed
     *
-    * @return -1 if all rows done, else offset for next run
-   **/
+    */
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
    }
 
@@ -585,8 +583,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $ID     the rule ID whose ranking must be modified
     * @param $action up or down
-    * @param $condition action on a specific condition
-    *
+    * @param action|int $condition action on a specific condition
     * @return bool|mysqli_result
     */
    function changeRuleOrder($ID, $action, $condition = 0) {
@@ -709,10 +706,9 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $ID        of the rule to move
     * @param $ref_ID    of the rule position  (0 means all, so before all or after all)
-    * @param $type      of move : after or before ( default 'after')
-    *
+    * @param of|string $type of move : after or before ( default 'after')
     * @return true if all ok
-   **/
+    */
    function moveRule($ID, $ref_ID, $type = 'after') {
       global $DB;
 
@@ -799,7 +795,6 @@ class RuleCollection extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @return nothing (display)
    **/
    static function titleBackup() {
       global $CFG_GLPI;
@@ -881,12 +876,11 @@ class RuleCollection extends CommonDBTM {
    /**
     * Export rules in a xml format
     *
-    * @param items array the input data to transform to xml
-    *
+    * @param array $items data to transform to xml
     * @since version 0.85
     *
-    * @return nothing, send attachment to browser
-   **/
+    * @return bool
+    */
    static function exportRulesToXML($items = []) {
 
       if (!count($items)) {
@@ -986,8 +980,6 @@ class RuleCollection extends CommonDBTM {
     * Print a form to select a xml file for import rules
     *
     * @since version 0.85
-    *
-    * @return nothing (display)
    **/
    static function displayImportRulesForm() {
 
@@ -1013,12 +1005,12 @@ class RuleCollection extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $available_criteria    available criterai for this rule
-    * @param $condition             the rulecriteria condition
-    * @param $criterion             the criterion
+    * @param array $available_criteria for this rule
+    * @param string $condition of the rulecriteria
+    * @param string $criterion
     *
-    * @return true if a criterion is a dropdown, false otherwise
-   **/
+    * @return bool
+    */
    static function isCriteraADropdown($available_criteria, $condition, $criterion) {
 
       if (isset($available_criteria[$criterion]['type'])) {
@@ -1429,15 +1421,15 @@ class RuleCollection extends CommonDBTM {
    /**
     * Process all the rules collection
     *
-    * @param input            array the input data used to check criterias (need to be clean slashes)
-    * @param output           array the initial ouput array used to be manipulate by actions (need to be clean slashes)
-    * @param params           array parameters for all internal functions (need to be clean slashes)
-    * @param options          array options :
+    * @param array $input data used to check criteria (need to be clean slashes)
+    * @param array $output the initial output array used to be manipulate by actions (need to be clean slashes)
+    * @param array $params for all internal functions (need to be clean slashes)
+    * @param array $options possible:
     *                            - condition : specific condition to limit rule list
     *                            - only_criteria : only react on specific criteria
     *
-    * @return the output array updated by actions (addslashes datas)
-   **/
+    * @return array|null|resource|string
+    */
    function processAllRules($input = [], $output = [], $params = [], $options = []) {
 
       $p['condition']     = 0;
@@ -1487,8 +1479,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $target          where to go
     * @param $values    array of data
-    * @param $condition       condition to limit rules (default 0)
-    *
+    * @param condition|int $condition condition to limit rules (default 0)
     * @return array
     */
    function showRulesEnginePreviewCriteriasForm($target, array $values, $condition = 0) {
@@ -1543,12 +1534,12 @@ class RuleCollection extends CommonDBTM {
    /**
     * Test all the rules collection
     *
-    * @param input      array the input data used to check criterias
-    * @param output     array the initial ouput array used to be manipulate by actions
-    * @param params     array parameters for all internal functions
-    * @param $condition       condition to limit rules (DEFAULT 0)
+    * @param array $input data used to check criterias
+    * @param array $output the initial output array used to be manipulate by actions
+    * @param array $params for all internal functions
+    * @param int $condition to limit rules (DEFAULT 0)
     *
-    * @return array the output array updated by actions
+    * @return array
     */
    function testAllRules($input = [], $output = [], $params = [], $condition = 0) {
 
@@ -1643,8 +1634,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Prepare input datas for the rules collection
     *
-    * @param $condition condition to limit rules (DEFAULT 0)
-    *
+    * @param condition|int $condition condition to limit rules (DEFAULT 0)
     * @return array the updated input data
     */
    function prepareInputDataForTestProcess($condition = 0) {
@@ -1674,8 +1664,8 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $target          where to go
     * @param $input     array of data
-    * @param $condition       condition to limit rules (DEFAULT 0)
-   **/
+    * @param condition|int $condition condition to limit rules (DEFAULT 0)
+    */
    function showRulesEnginePreviewResultsForm($target, array $input, $condition = 0) {
 
       $output = [];
@@ -1812,7 +1802,6 @@ class RuleCollection extends CommonDBTM {
    /**
     * Print a title if needed which will be displayed above list of rules
     *
-    * @return nothing (display)
    **/
    function title() {
    }
@@ -1822,9 +1811,8 @@ class RuleCollection extends CommonDBTM {
     * Get rulecollection classname by giving his itemtype
     *
     * @param $itemtype                 itemtype
-    * @param $check_dictionnary_type   check if the itemtype is a dictionnary or not
+    * @param bool|check $check_dictionnary_type check if the itemtype is a dictionnary or not
     *                                  (false by default)
-    *
     * @return the rulecollection class or null
     */
    static function getClassByType($itemtype, $check_dictionnary_type = false) {
@@ -1895,7 +1883,9 @@ class RuleCollection extends CommonDBTM {
 
    /**
     * @see CommonGLPI::defineTabs()
-   **/
+    * @param array $options
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong               = [];
@@ -1907,7 +1897,10 @@ class RuleCollection extends CommonDBTM {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item instanceof RuleCollection) {

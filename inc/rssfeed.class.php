@@ -197,10 +197,9 @@ class RSSFeed extends CommonDBVisible {
    /**
     * Return visibility joins to add to SQL
     *
-    * @param $forceall force all joins (false by default)
-    *
+    * @param bool|force $forceall force all joins (false by default)
     * @return string joins to add
-   **/
+    */
    static function addVisibilityJoins($forceall = false) {
 
       if (!self::canView()) {
@@ -795,10 +794,9 @@ class RSSFeed extends CommonDBVisible {
     * Get a specific RSS feed
     *
     * @param $url             string/array   URL of the feed or array of URL
-    * @param $cache_duration  timestamp      cache duration (default DAY_TIMESTAMP)
-    *
+    * @param int|timestamp $cache_duration timestamp      cache duration (default DAY_TIMESTAMP)
     * @return feed object
-   **/
+    */
    static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP) {
       global $CFG_GLPI;
 
@@ -843,7 +841,6 @@ class RSSFeed extends CommonDBVisible {
     *
     * @param $personal boolean   display rssfeeds created by me ? (true by default)
     *
-    * @return Nothing (display function)
     **/
    static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI;

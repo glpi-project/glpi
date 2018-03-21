@@ -153,7 +153,6 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
    **/
    function showUserNotificationForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -235,7 +234,6 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
    **/
    function showSupplierNotificationForm($ID, $options = []) {
       global $CFG_GLPI;

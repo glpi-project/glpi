@@ -53,12 +53,11 @@ class DBmysqlIterator implements Iterator, Countable {
    /**
     * Constructor
     *
-    * @param DBmysql      $dbconnexion Database Connnexion (must be a CommonDBTM object)
-    * @param string|array $table       Table name (optional when $crit have FROM entry)
-    * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
-    * @param boolean      $debug       To log the request (default false)
+    * @param DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
+    * @param string|array $table Table name (optional when $crit have FROM entry)
+    * @param string|array $crit Fields/values, ex array("id"=>1), if empty => all rows (default '')
+    * @param boolean $debug To log the request (default false)
     *
-    * @return void
     */
    function __construct ($dbconnexion, $table, $crit = "", $debug = false) {
 

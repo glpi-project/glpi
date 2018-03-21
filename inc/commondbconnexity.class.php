@@ -591,12 +591,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * something.
     *
     * @param $action          the name of the action
-    * @param $item            the item on which apply the massive action
+    * @param CommonDBTM|the $item the item on which apply the massive action
     * @param $ids      array  of the ids of the item on which apply the action
     * @param $input    array  of the input provided by the form ($_POST, $_GET ...)
-    *
     * @return array containing the elements
-   **/
+    */
    static function getConnexityInputForProcessingOfMassiveActions($action, CommonDBTM $item,
                                                                   array $ids, array $input) {
       return [];

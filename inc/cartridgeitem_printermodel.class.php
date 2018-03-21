@@ -51,7 +51,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
 
-
+   /**
+    * @return array
+    */
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -60,6 +62,12 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    }
 
 
+   /**
+    * @param CommonGLPI $item
+    * @param int $tabnum
+    * @param int $withtemplate
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -72,6 +80,11 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    }
 
 
+   /**
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && Printer::canView()) {
@@ -89,7 +102,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
 
    /**
-    * @param $item   CartridgeItem object
+    * @param CartridgeItem $item
     *
     * @return int
     */
@@ -104,10 +117,10 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    /**
     * Show the printer types that are compatible with a cartridge type
     *
-    * @param $item   CartridgeItem object
+    * @param CartridgeItem $item
     *
-    * @return nothing (display)
-   **/
+    * @return bool
+    */
    static function showForCartridgeItem(CartridgeItem $item) {
       global $DB, $CFG_GLPI;
 

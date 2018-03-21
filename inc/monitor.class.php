@@ -54,8 +54,7 @@ class Monitor extends CommonDBTM {
    /**
     * Name of the type
     *
-    * @param $nb  string   number of item in the type
-    *
+    * @param int|string $nb string   number of item in the type
     * @return string
     */
    static function getTypeName($nb = 0) {
@@ -75,7 +74,9 @@ class Monitor extends CommonDBTM {
 
    /**
     * @see CommonGLPI::defineTabs()
-   **/
+    * @param array $options
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -362,7 +363,9 @@ class Monitor extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);

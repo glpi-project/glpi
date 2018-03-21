@@ -374,8 +374,8 @@ class KnowbaseItem_Item extends CommonDBRelation {
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
     * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
+    * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 

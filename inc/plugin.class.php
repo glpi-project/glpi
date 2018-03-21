@@ -159,11 +159,10 @@ class Plugin extends CommonDBTM {
     * Load lang file for a plugin
     *
     * @param $name            Name of hook to use
-    * @param $forcelang       force a specific lang (default '')
-    * @param $coretrytoload lang trying to be load from core (default '')
-    *
+    * @param force|string $forcelang force a specific lang (default '')
+    * @param lang|string $coretrytoload lang trying to be load from core (default '')
     * @return nothing
-   **/
+    */
    static function loadLang($name, $forcelang = '', $coretrytoload = '') {
       // $LANG needed : used when include lang file
       global $CFG_GLPI, $LANG, $TRANSLATE;
@@ -1237,11 +1236,10 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook.
     *
-    * @param $name   Name of hook to fire
-    * @param $param  Parameters if needed : if object limit to the itemtype (default NULL)
-    *
-    * @return mixed $data
-   **/
+    * @param string $name of hook to fire
+    * @param null|mixed $param if needed : if object limit to the itemtype (default NULL)
+    * @return array|null
+    */
    static function doHook ($name, $param = null) {
       global $PLUGIN_HOOKS;
 
@@ -1316,9 +1314,9 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook for 1 plugin.
     *
-    * @param $plugname        Name of the plugin
-    * @param $hook            function to be called (may be an array for call a class method)
-    * @param $options   array of params passed to the function
+    * @param string $plugname name of the plugin
+    * @param string $hook function to be called (may be an array for call a class method)
+    * @param array $options of params passed to the function
     *
     * @return mixed $data
    **/
@@ -1340,7 +1338,7 @@ class Plugin extends CommonDBTM {
    /**
     * Get dropdowns for plugins
     *
-    * @return Array containing plugin dropdowns
+    * @return array containing plugin dropdowns
    **/
    static function getDropdowns() {
 
@@ -1358,15 +1356,15 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * get information from a plugin
+    * get information from a plugin (array when $info is NULL)
     *
     * @param $plugin String name of the plugin
     * @param $info   String wanted info (name, version, ...), NULL for all
     *
     * @since version 0.84
     *
-    * @return String or Array (when $info is NULL)
-   **/
+    * @return array|mixed|string
+    */
    static function getInfo($plugin, $info = null) {
 
       $fct = 'plugin_version_'.strtolower($plugin);
@@ -1389,7 +1387,7 @@ class Plugin extends CommonDBTM {
    /**
     * Get database relations for plugins
     *
-    * @return Array containing plugin database relations
+    * @return array containing plugin database relations
    **/
    static function getDatabaseRelations() {
 
@@ -1414,7 +1412,7 @@ class Plugin extends CommonDBTM {
     *
     * @param $itemtype
     *
-    * @return Array containing plugin search options for given type
+    * @return array containing plugin search options for given type
    **/
    static function getAddSearchOptions($itemtype) {
 
@@ -1594,9 +1592,9 @@ class Plugin extends CommonDBTM {
     *
     * @since 9.2
     *
-    * @param integer $plugid Plugin id
+    * @param $name
+    * @return bool
     *
-    * @return boolean
     */
    public function checkVersions($name) {
       $infos = self::getInfo($name);

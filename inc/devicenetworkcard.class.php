@@ -150,7 +150,13 @@ class DeviceNetworkCard extends CommonDevice {
     * @since version 0.84
     *
     * @see CommonDevice::getHTMLTableHeader()
-   **/
+    * @param string $itemtype
+    * @param HTMLTableBase $base
+    * @param HTMLTableSuperHeader|null $super
+    * @param HTMLTableHeader|null $father
+    * @param array $options
+    * @return HTMLTableHeader|nothing|void
+    */
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
                                       HTMLTableHeader $father = null, array $options = []) {
@@ -178,7 +184,11 @@ class DeviceNetworkCard extends CommonDevice {
     * @since version 0.84
     *
     * @see CommonDevice::getHTMLTableCellForItem()
-   **/
+    * @param HTMLTableRow|null $row
+    * @param CommonDBTM|null $item
+    * @param HTMLTableCell|null $father
+    * @param array $options
+    */
    static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                             HTMLTableCell $father = null, array $options = []) {
 

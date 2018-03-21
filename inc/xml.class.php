@@ -123,7 +123,9 @@ class XML {
 
    /**
     * Do XML export
-   **/
+    *
+    * @return int
+    */
    function DoXML() {
       global $DB;
 

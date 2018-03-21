@@ -79,7 +79,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    /**
     * @since version 0.84
-   **/
+    * @param array $input
+    * @return array|bool
+    */
    function prepareInputForUpdate($input) {
 
       if (!isset($input['is_template_computer'])
@@ -102,7 +104,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -136,7 +140,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;
@@ -221,11 +228,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * Get number of installed licenses of a version
     *
     * @param $softwareversions_id   version ID
-    * @param $entity                to search for computer in (default '' = all active entities)
+    * @param string|to $entity to search for computer in (default '' = all active entities)
     *                               (default '')
-    *
     * @return number of installations
-   **/
+    */
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
@@ -654,10 +660,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * Show software installed on a computer
     *
     * @param $comp            Computer object
-    * @param $withtemplate    template case of the view process (default 0)
-    *
+    * @param int|template $withtemplate template case of the view process (default 0)
     * @return nothing
-   **/
+    */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -1093,10 +1098,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $instID                ID of the install software lienk
     * @param $softwareversions_id   ID of the new version
-    * @param $dohistory             Do history ? (default 1)
-    *
+    * @param Do|int $dohistory Do history ? (default 1)
     * @return nothing
-   **/
+    */
    function upgrade($instID, $softwareversions_id, $dohistory = 1) {
 
       if ($this->getFromDB($instID)) {
@@ -1134,7 +1138,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nb = 0;

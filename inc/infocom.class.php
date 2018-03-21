@@ -127,7 +127,10 @@ class Infocom extends CommonDBChild {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // Can exists on template
@@ -239,11 +242,11 @@ class Infocom extends CommonDBChild {
    /**
     * Retrieve an item from the database for a device
     *
-    * @param $itemtype  type of the device to retrieve infocom
-    * @param $ID        ID of the device to retrieve infocom
+    * @param string $itemtype device to retrieve infocom
+    * @param integer $ID of the device to retrieve infocom
     *
-    * @return true if succeed else false
-   **/
+    * @return bool
+    */
    function getFromDBforDevice ($itemtype, $ID) {
 
       if ($this->getFromDBByQuery("WHERE `".$this->getTable()."`.`items_id` = '$ID'
@@ -275,11 +278,10 @@ class Infocom extends CommonDBChild {
    /**
     * Fill, if necessary, automatically some dates when status changes
     *
-    * @param item          CommonDBTM object: the item whose status have changed
-    * @param action_add    true if object is added, false if updated (true by default)
+    * @param CommonDBTM $item object whose status have changed
+    * @param bool $action_add object is added, false if updated (true by default)
     *
-    * @return nothing
-   **/
+    */
    static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true) {
       global $CFG_GLPI;
 
@@ -322,13 +324,12 @@ class Infocom extends CommonDBChild {
    /**
     * Automatically manage copying one date to another is necessary
     *
-    * @param infocoms   array of item's infocom to modify
-    * @param field            the date to modify (default '')
-    * @param action           the action to peform (copy from another date) (default 0)
-    * @param params     array of additional parameters needed to perform the task
+    * @param array $infocoms of item's infocom to modify
+    * @param string $field date to modify (default '')
+    * @param int $action action to peform (copy from another date) (default 0)
+    * @param array $params of additional parameters needed to perform the task
     *
-    * @return nothing
-   **/
+    */
    static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = []) {
 
       if (isset($infocoms[$field])) {
@@ -368,7 +369,7 @@ class Infocom extends CommonDBChild {
    /**
     * Return all infocom dates that could be automaticall filled
     *
-    * @return an array with all dates (configuration field & real field)
+    * @return array with all dates (configuration field & real field)
    **/
    static function getAutoManagemendDatesFields() {
 
@@ -458,9 +459,8 @@ class Infocom extends CommonDBChild {
     * Cron action on infocom : alert on expired warranty
     *
     * @param $task to log, if NULL use display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return int 0 : nothing to do 1 : done with success
+    */
    static function cronInfocom($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -619,9 +619,8 @@ class Infocom extends CommonDBChild {
     * Dropdown of amortissement type for infocoms
     *
     * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $display   display or get string (true by default)
-    *
+    * @param default|int $value default value (default 0)
+    * @param bool|display $display display or get string (true by default)
     * @return int|string
     */
    static function dropdownAmortType($name, $value = 0, $display = true) {
@@ -745,10 +744,9 @@ class Infocom extends CommonDBChild {
     * @param $value      Purchase value
     * @param $duration   Amortise duration
     * @param $fiscaldate Begin of fiscal excercise
-    * @param $buydate    Buy date
-    * @param $usedate    Date of use
-    *
-    * @return array|boolean
+    * @param Buy|string $buydate Buy date
+    * @param Date|string $usedate Date of use
+    * @return array|bool
     */
    static public function linearAmortise($value, $duration, $fiscaldate, $buydate = '', $usedate = '') {
       //Set timezone to UTC; see https://stackoverflow.com/a/40358744
@@ -1900,8 +1898,8 @@ class Infocom extends CommonDBChild {
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
     * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
+    * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
@@ -1965,7 +1963,11 @@ class Infocom extends CommonDBChild {
     * @since version 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    * @param array $actions
+    * @param string $itemtype
+    * @param int $is_deleted
+    * @param CommonDBTM|null $checkitem
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -1982,7 +1984,10 @@ class Infocom extends CommonDBChild {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

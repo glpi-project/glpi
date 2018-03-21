@@ -644,7 +644,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    /**
     * @since version 0.85
-   **/
+    * @param null $itemtype
+    * @return array
+    */
    static function getSearchOptionsToAddNew($itemtype = null) {
       $task = new static();
       $tab = [];
@@ -1111,12 +1113,10 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $itemtype  itemtype
     * @param $val       Array of the item to display
     * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
+    * @param position|string $type position of the item in the time block (in, through, begin or end)
     *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return Nothing (display function)
-   **/
+    * @param complete|int $complete complete display (more details) (default 0)
+    */
    static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
@@ -1788,6 +1788,10 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @since 9.2
     *
+    * @param $status
+    * @param $showgrouptickets
+    * @param null $start
+    * @param null $limit
     * @return DBmysqlIterator
     */
    public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null) {

@@ -57,14 +57,12 @@ class DBConnection extends CommonDBTM {
     *
     * @since 9.1
     *
-    * @param $dbhost
-    * @param $user
-    * @param $password
-    * @param $DBname
-    *
+    * @param string $host
+    * @param string $user
+    * @param string $password
+    * @param string $DBname
     * @return boolean
-    *
-   **/
+    */
    static function createMainConfig($host, $user, $password, $DBname) {
 
       $DB_str = "<?php\nclass DB extends DBmysql {\n" .
@@ -81,13 +79,13 @@ class DBConnection extends CommonDBTM {
    /**
     * Create slave DB configuration file
     *
-    * @param host       the slave DB host(s)
-    * @param user       the slave DB user
-    * @param password   the slave DB password
-    * @param DBname     the name of the slave DB
+    * @param string $host slave DB host(s)
+    * @param string $user slave DB user
+    * @param string $password slave DB password
+    * @param string $DBname name of the slave DB
+    * @return bool for success
     *
-    * @return boolean for success
-   **/
+    */
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
 
       $DB_str = "<?php \n class DBSlave extends DBmysql { \n public \$slave = true; \n public \$dbhost = ";
@@ -260,11 +258,10 @@ class DBConnection extends CommonDBTM {
    /**
     *  Establish a connection to a mysql server (main or replicate)
     *
-    * @param $use_slave    try to connect to slave server first not to main server
-    * @param $required     connection to the specified server is required
+    * @param bool $use_slave try to connect to slave server first not to main server
+    * @param bool $required connection to the specified server is required
     *                      (if connection failed, do not try to connect to the other server)
-    * @param $display      display error message (true by default)
-    *
+    * @param bool $display display error message (true by default)
     * @return bool
     */
    static function establishDBConnection($use_slave, $required, $display = true) {
@@ -490,8 +487,8 @@ class DBConnection extends CommonDBTM {
    /**
     * Enable or disable db replication check cron task
     *
-    * @param enable of disable cron task (true by default)
-   **/
+    * @param bool $enable (true by default)
+    */
    static function changeCronTaskStatus($enable = true) {
 
       $cron           = new CronTask();

@@ -139,7 +139,9 @@ class RuleDictionnarySoftware extends Rule {
 
    /**
     * @see Rule::addSpecificParamsForPreview()
-   **/
+    * @param parameters $params
+    * @return parameters
+    */
    function addSpecificParamsForPreview($params) {
 
       if (isset($_POST["version"])) {
@@ -151,7 +153,8 @@ class RuleDictionnarySoftware extends Rule {
 
    /**
     * @see Rule::showSpecificCriteriasForPreview()
-   **/
+    * @param fields $fields
+    */
    function showSpecificCriteriasForPreview($fields) {
 
       if (isset($this->fields['id'])) {

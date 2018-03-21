@@ -271,7 +271,9 @@ class Entity extends CommonTreeDropdown {
 
    /**
     * @since version 0.84 (before in entitydata.class)
-   **/
+    * @param array $input
+    * @return array
+    */
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);
@@ -323,7 +325,10 @@ class Entity extends CommonTreeDropdown {
 
    /**
     * @since version 0.84 (before in entitydata.class)
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
@@ -351,7 +356,11 @@ class Entity extends CommonTreeDropdown {
 
    /**
     * @since version 0.84 (before in entitydata.class)
-   **/
+    * @param CommonGLPI $item
+    * @param int $tabnum
+    * @param int $withtemplate
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()==__CLASS__) {
@@ -2359,10 +2368,9 @@ class Entity extends CommonTreeDropdown {
     * @param $fieldref        string   name of the referent field to know if we look at parent entity
     * @param $entities_id
     * @param $fieldval        string   name of the field that we want value (default '')
-    * @param $default_value            value to return (default -2)
-    *
+    * @param int|value $default_value value to return (default -2)
     * @return int
-   **/
+    */
    static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2) {
 
       // for calendar

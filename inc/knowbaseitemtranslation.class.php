@@ -81,7 +81,10 @@ class KnowbaseItemTranslation extends CommonDBChild {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
@@ -142,7 +145,6 @@ class KnowbaseItemTranslation extends CommonDBChild {
     *
     * @param $options      array of options
     *
-    * @return nothing (display item : question and answer)
    **/
    function showFull($options = []) {
       global $DB, $CFG_GLPI;
@@ -180,10 +182,9 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * Display all translated field for an KnowbaseItem
     *
-    * @param $item a KnowbaseItem item
-    *
-    * @return true;
-   **/
+    * @param a|KnowbaseItem $item a KnowbaseItem item
+    * @return true ;
+    */
    static function showTranslations(KnowbaseItem $item) {
       global $DB, $CFG_GLPI;
 
@@ -269,7 +270,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * Display translation form
     *
-    * @param $ID              field (default -1)
+    * @param field|int $ID field (default -1)
     * @param $options   array
     * @return bool
     */
@@ -326,11 +327,10 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * Get a translation for a value
     *
-    * @param $item       item to translate
-    * @param $field      field to return (default 'name')
-    *
+    * @param item|KnowbaseItem $item item to translate
+    * @param field|string $field field to return (default 'name')
     * @return the field translated if a translation is available, or the original field if not
-   **/
+    */
    static function getTranslatedValue(KnowbaseItem $item, $field = "name") {
       global $DB;
 
@@ -364,10 +364,10 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * It be translated if translation if globally on and item is an instance of CommonDropdown
     * or CommonTreeDropdown and if translation is enabled for this class
     *
-    * @param item the item to check
+    * @param CommonGLPI $item to check
     *
-    * @return true if item can be translated, false otherwise
-   **/
+    * @return bool
+    */
    static function canBeTranslated(CommonGLPI $item) {
 
       return (self::isKbTranslationActive()

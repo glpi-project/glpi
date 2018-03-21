@@ -407,7 +407,6 @@ class MassiveAction {
    /**
     * Add hidden fields containing all the checked items to the current form
     *
-    * @return nothing (display)
    **/
    function addHiddenFields() {
 
@@ -492,11 +491,10 @@ class MassiveAction {
     * Get the standard massive actions
     *
     * @param $item                   the item for which we want the massive actions
-    * @param $is_deleted             massive action for deleted items ?   (default 0)
-    * @param $checkitem              link item to check right              (default NULL)
-    *
+    * @param int|massive $is_deleted massive action for deleted items ?   (default 0)
+    * @param CommonDBTM|link $checkitem link item to check right              (default NULL)
     * @return an array of massive actions or false if $item is not valid
-   **/
+    */
    static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null) {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -612,7 +610,6 @@ class MassiveAction {
    /**
     * Main entry of the modal window for massive actions
     *
-    * @return nothing: display
    **/
    function showSubForm() {
       global $CFG_GLPI;
@@ -630,7 +627,6 @@ class MassiveAction {
     /**
     * Class-specific method used to show the fields to specify the massive action
     *
-    * @return nothing (display only)
    **/
    function showDefaultSubForm() {
       echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
@@ -910,7 +906,6 @@ class MassiveAction {
     *
     * Display and update the progress bar. If the delay is more than 1 second, then activate it
     *
-    * @return nothing (display only)
    **/
    function updateProgressBars() {
 

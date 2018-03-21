@@ -116,7 +116,11 @@ class DocumentType  extends CommonDropdown {
 
    /**
     * @since version 0.84
-   **/
+    * @param string $field
+    * @param array|string $values
+    * @param array $options
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
       global $CFG_GLPI;
 

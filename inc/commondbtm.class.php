@@ -547,11 +547,10 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Mark deleted or purge an item in the database
     *
-    * @param boolean $force force the purge of the item (not used if the table do not have a deleted field)
+    * @param bool|int $force force the purge of the item (not used if the table do not have a deleted field)
     *               (default 0)
-    *
-    * @return boolean true if succeed else false
-   **/
+    * @return bool true if succeed else false
+    */
    function deleteFromDB($force = 0) {
       global $DB, $CFG_GLPI;
 
@@ -1098,7 +1097,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Prepare input datas for adding the item
     *
-    * @param array $input datas used to add the item
+    * @param array $input data used to add the item
     *
     * @return array the modified $input array
    **/
@@ -1119,12 +1118,11 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Update some elements of an item in the database.
     *
-    * @param array   $input   the _POST vars returned by the item form when press update
-    * @param boolean $history do history log ? (default 1)
-    * @param array   $options with the insert options
-    *
-    * @return boolean true on success
-   **/
+    * @param array $input the _POST vars returned by the item form when press update
+    * @param bool|int $history do history log ? (default 1)
+    * @param array $options with the insert options
+    * @return bool true on success
+    */
    function update(array $input, $history = 1, $options = []) {
       global $DB, $CFG_GLPI;
 
@@ -1372,10 +1370,9 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Actions done after the UPDATE of the item in the database
     *
-    * @param boolean $history store changes history ? (default 1)
-    *
+    * @param bool|int $history store changes history ? (default 1)
     * @return void
-   **/
+    */
    function post_updateItem($history = 1) {
    }
 
@@ -1392,12 +1389,11 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Delete an item in the database.
     *
-    * @param array   $input   the _POST vars returned by the item form when press delete
-    * @param boolean $force   force deletion (default 0)
-    * @param boolean $history do history log ? (default 1)
-    *
-    * @return boolean true on success
-   **/
+    * @param array $input the _POST vars returned by the item form when press delete
+    * @param bool|int $force force deletion (default 0)
+    * @param bool|int $history do history log ? (default 1)
+    * @return bool true on success
+    */
    function delete(array $input, $force = 0, $history = 1) {
       global $DB;
 
@@ -1596,11 +1592,10 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Restore an item put in the dustbin in the database.
     *
-    * @param array   $input   the _POST vars returned by the item form when press restore
-    * @param boolean $history do history log ? (default 1)
-    *
-    * @return boolean true on success
-   **/
+    * @param array $input the _POST vars returned by the item form when press restore
+    * @param bool|int $history do history log ? (default 1)
+    * @return bool true on success
+    */
    function restore(array $input, $history = 1) {
 
       if (!$this->getFromDB($input[static::getIndexName()])) {
@@ -3479,13 +3474,12 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since version 0.85
     *
-    * @param array      $actions    array of the actions to update
-    * @param string     $itemtype   the type of the item for which we want the actions
-    * @param boolean    $is_deleted (default 0)
-    * @param CommonDBTM $checkitem  (default NULL)
-    *
+    * @param array $actions array of the actions to update
+    * @param string $itemtype the type of the item for which we want the actions
+    * @param bool|int $is_deleted (default 0)
+    * @param CommonDBTM $checkitem (default NULL)
     * @return void (update is set inside $actions)
-   **/
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
    }
@@ -3528,7 +3522,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * This should be overloaded in Class
     *
-    * @return array an array of massive actions
+    * @return array of massive actions
    **/
    function getForbiddenStandardMassiveAction() {
       return [];
@@ -3544,7 +3538,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param object $checkitem link item to check right (default NULL)
     *
-    * @return array an array of massive actions
+    * @return array of massive actions
    **/
    function getSpecificMassiveActions($checkitem = null) {
 
@@ -4032,12 +4026,11 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Clean all infos which match some criteria
     *
-    * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-    * @param boolean $force   force purge not on put in dustbin (default 0)
-    * @param boolean $history do history log ? (true by default)
-    *
-    * @return boolean
-   **/
+    * @param array $crit array of criteria (ex array('is_active'=>'1'))
+    * @param bool|int $force force purge not on put in dustbin (default 0)
+    * @param bool|int $history do history log ? (true by default)
+    * @return bool
+    */
    function deleteByCriteria($crit = [], $force = 0, $history = 1) {
       global $DB;
 
@@ -4547,10 +4540,9 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * @param string  $itemtype Item type
-    * @param string  $target   Target
-    * @param boolean $add      (default 0)
-    *
+    * @param string $itemtype Item type
+    * @param string $target Target
+    * @param bool|int $add (default 0)
     * @return false|void
     */
    static function listTemplates($itemtype, $target, $add = 0) {

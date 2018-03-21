@@ -171,8 +171,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * Display title above search engine
-    *
-    * @return nothing (HTML display if needed)
    **/
    function title() {
 
@@ -643,10 +641,9 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * check if a dropdown already exists (before import)
     *
-    * @param &$input  array of value to import (name)
-    *
-    * @return the ID of the new (or -1 if not found)
-   **/
+    * @param array $input of value to import (name)
+    * @return int|mixed ID of the new (or -1 if not found)
+    */
    function findID(array &$input) {
       global $DB;
 
@@ -677,7 +674,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $input  array of value to import (name, ...)
     *
-    * @return the ID of the new or existing dropdown (-1 on failure)
+    * @return integer ID of the new or existing dropdown (-1 on failure)
    **/
    function import(array $input) {
 
@@ -710,12 +707,11 @@ abstract class CommonDropdown extends CommonDBTM {
     * @param $value           string   Value of the new dropdown (need to be addslashes)
     * @param $entities_id     int      entity in case of specific dropdown (default -1)
     * @param $external_params array    (manufacturer) (need to be addslashes)
-    * @param $comment                  (default '') (need to be addslashes)
-    * @param $add                      if true, add it if not found. if false,
+    * @param string $comment (default '') (need to be addslashes)
+    * @param bool|if $add if true, add it if not found. if false,
     *                                  just check if exists (true by default)
-    *
-    * @return integer : dropdown id.
-   **/
+    * @return int : dropdown id.
+    */
    function importExternal($value, $entities_id = -1, $external_params = [], $comment = "",
                            $add = true) {
 

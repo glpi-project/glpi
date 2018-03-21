@@ -105,7 +105,6 @@ class Item_Problem extends CommonDBRelation{
     *
     * @param $problem Problem object
     *
-    * @return Nothing (display)
    **/
    static function showForProblem(Problem $problem) {
       global $DB, $CFG_GLPI;

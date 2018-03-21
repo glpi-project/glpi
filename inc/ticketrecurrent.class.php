@@ -298,7 +298,6 @@ class TicketRecurrent extends CommonDropdown {
    /**
     * Show next creation date
     *
-    * @return nothing only display
    **/
    function showInfos() {
 

@@ -273,14 +273,13 @@ class Dropdown {
     *
     * Returns the value of the dropdown from $table with ID $id.
     *
-    * @param $table        the dropdown table from witch we want values on the select
-    * @param $id           id of the element to get
-    * @param $withcomment  give array with name and comment (default 0)
-    * @param $translate    (true by default)
-    * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
-    *
+    * @param string $table the dropdown table from witch we want values on the select
+    * @param int $id id of the element to get
+    * @param bool|int $withcomment give array with name and comment (default 0)
+    * @param bool $translate (true by default)
+    * @param boolean $tooltip (true by default) returns a tooltip, else returns only 'comment'
     * @return string the value of the dropdown or &nbsp; if not exists
-   **/
+    */
    static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true) {
       global $DB, $CFG_GLPI;
 
@@ -496,7 +495,7 @@ class Dropdown {
     *
     * @param $name            name of the select box
     * @param $types     array of types to display
-    * @param $options   Parameters which could be used in options array :
+    * @param array|Parameters $options Parameters which could be used in options array :
     *    - value               : integer / preselected value (default '')
     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
@@ -504,9 +503,7 @@ class Dropdown {
     *    - width               : specific width needed (default not set)
     *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
     *    - display_emptychoice : display empty choice (default false)
-    *
-    * @return nothing (print out an HTML select box)
-   **/
+    */
    static function showItemTypes($name, $types = [], $options = []) {
       global $CFG_GLPI;
 
@@ -546,7 +543,6 @@ class Dropdown {
     * @param $options       array    of possible options:
     *        - may be value (default value) / field (used field to search itemtype)
     *
-    * @return nothing (print out an HTML select box)
    **/
    static function dropdownUsedItemTypes($name, $itemtype_ref, $options = []) {
       global $DB;
@@ -627,8 +623,8 @@ class Dropdown {
     * Dropdown for GMT selection
     *
     * @param $name   select name
-    * @param $value  default value (default '')
-   **/
+    * @param default|string $value default value (default '')
+    */
    static function showGMT($name, $value = '') {
 
       $elements = [-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
@@ -655,12 +651,11 @@ class Dropdown {
     * 'use_checkbox' = true to the $params array to display a checkbox instead a select box
     *
     * @param $name               select name
-    * @param $value              preselected value. (default 0)
-    * @param $restrict_to        allows to display only yes or no in the dropdown (default -1)
+    * @param int|preselected $value preselected value. (default 0)
+    * @param allows|int $restrict_to allows to display only yes or no in the dropdown (default -1)
     * @param $params       Array of optional options (passed to showFromArray)
-    *
     * @return rand value
-   **/
+    */
    static function showYesNo($name, $value = 0, $restrict_to = -1, $params = []) {
 
       if (!array_key_exists ('use_checkbox', $params)) {
@@ -1280,16 +1275,15 @@ class Dropdown {
     *
     * @since version 0.83
     *
-    * @param $types           Types used (default "state_types") (default '')
+    * @param string|Types $types Types used (default "state_types") (default '')
     * @param $options   Array of optional options
     *        name, value, rand, emptylabel, display_emptychoice, on_change, plural, checkright
     *       - toupdate            : array / Update a specific item on select change on dropdown
     *                                    (need value_fieldname, to_update,
     *                                     url (see Ajax::updateItemOnSelectEvent for information)
     *                                     and may have moreparams)
-    *
-    * @return integer rand for select id
-   **/
+    * @return int rand for select id
+    */
    static function showItemType($types = '', $options = []) {
       global $CFG_GLPI;
 
@@ -1444,7 +1438,7 @@ class Dropdown {
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
     *
-    * @return int|String
+    * @return int|string
     */
    static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
@@ -1777,9 +1771,9 @@ class Dropdown {
    /**
     * Dropdown of values in an array
     *
-    * @param $name            select name
-    * @param $elements  array of elements to display
-    * @param $options   array of possible options:
+    * @param string $name select
+    * @param array $elements to display
+    * @param array $options possible:
     *    - value               : integer / preselected value (default 0)
     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
     *    - readonly            : boolean / used as a readonly item (default false)
@@ -2019,15 +2013,13 @@ class Dropdown {
    /**
     * Dropdown for global item management
     *
-    * @param $ID           item ID
-    * @param attrs   array which contains the extra paramters
-    *
-    * Parameters can be :
-    * - target target for actions
-    * - withtemplate template or basic computer
-    * - value value of global state
-    * - management_restrict global management restrict mode
-   **/
+    * @param integer $ID item
+    * @param array $attrs which contains the extra parameters:
+    *       - target target for actions
+    *       - withtemplate template or basic computer
+    *       - value value of global state
+    *       - management_restrict global management restrict mode
+    */
    static function showGlobalSwitch($ID, $attrs = []) {
       global $CFG_GLPI;
 
@@ -2105,12 +2097,10 @@ class Dropdown {
     * @param $value           string   Value of the new dropdown. (need to be addslashes)
     * @param $entities_id     integer  entity in case of specific dropdown (default -1)
     * @param $external_params array    (need to be addslashes)
-    * @param $comment                  (default '') (need to be addslashes)
-    * @param $add                      if true, add it if not found. if false, just check if exists
-    *                                  (true by default)
-    *
-    * @return integer : dropdown id.
-   **/
+    * @param string $comment (default '') (need to be addslashes)
+    * @param bool $add if true (default) add it if not found. if false, just check if exists
+    * @return int : dropdown id.
+    */
    static function importExternal($itemtype, $value, $entities_id = -1, $external_params = [],
                                   $comment = '', $add = true) {
 
@@ -2123,10 +2113,10 @@ class Dropdown {
    /**
     * Get the label associated with a management type
     *
-    * @param value the type of management (default 0)
+    * @param int $value type of management (default 0)
     *
-    * @return the label corresponding to it, or ""
-   **/
+    * @return string
+    */
    static function getGlobalSwitch($value = 0) {
 
       switch ($value) {
@@ -2173,6 +2163,7 @@ class Dropdown {
     *
     * @param $onchange  String   optional, for ajax (default '')
     *
+    * @param bool $display
     * @return int|string
     */
    static function showListLimit($onchange = '', $display = true) {

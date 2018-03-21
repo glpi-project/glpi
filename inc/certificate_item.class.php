@@ -206,10 +206,10 @@ class Certificate_Item extends CommonDBRelation {
     *
     * @since version 9.2
     *
-    * @param $certificate Certificate object
+    * @param Certificate $certificate object
     *
-    * @return nothing (HTML display)
-    **/
+    * @return bool
+    */
    public static function showForCertificate(Certificate $certificate) {
       global $DB;
 

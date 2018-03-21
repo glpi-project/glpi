@@ -385,7 +385,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    /**
     * @see CommonDBConnexity::getHistoryChangeWhenUpdateField
-   **/
+    * @param the $field
+    * @return array|bool
+    */
    function getHistoryChangeWhenUpdateField($field) {
 
       if ($field == 'status') {
@@ -680,7 +682,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -697,7 +701,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -1308,7 +1315,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    /**
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -1332,7 +1341,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *  - users_id_validate       : ID of user validator
     *  - applyto
     *
-    * @return nothing (display)
    **/
    static function dropdownValidator(array $options = []) {
       global $CFG_GLPI;

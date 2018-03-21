@@ -58,7 +58,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::cleanTestOutputCriterias()
-   **/
+    * @param array $output
+    * @return array
+    */
    function cleanTestOutputCriterias(array $output) {
 
       //If output array contains keys begining with _ : drop it
@@ -73,7 +75,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::warningBeforeReplayRulesOnExistingDB()
-   **/
+    * @param filename $target
+    * @return bool|true
+    */
    function warningBeforeReplayRulesOnExistingDB($target) {
       global $CFG_GLPI;
 
@@ -109,7 +113,12 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
-   **/
+    * @param int $offset
+    * @param int $maxtime
+    * @param array $items
+    * @param array $params
+    * @return bool|int|void
+    */
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
 

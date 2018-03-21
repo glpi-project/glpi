@@ -121,7 +121,13 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-   **/
+    * @param HTMLTableGroup $group
+    * @param HTMLTableSuperHeader $super
+    * @param HTMLTableSuperHeader|null $internet_super
+    * @param HTMLTableHeader|null $father
+    * @param array $options
+    * @return the
+    */
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,
                                              HTMLTableHeader $father = null,
@@ -147,7 +153,12 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getPeerInstantiationHTMLTable()
-    **/
+    * @param NetworkPort $netport
+    * @param HTMLTableRow $row
+    * @param HTMLTableCell|null $father
+    * @param array $options
+    * @return the|void
+    */
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                                     HTMLTableCell $father = null,
                                                     array $options = []) {
@@ -170,7 +181,12 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-    **/
+    * @param NetworkPort $netport
+    * @param HTMLTableRow $row
+    * @param HTMLTableCell|null $father
+    * @param array $options
+    * @return the
+    */
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
 

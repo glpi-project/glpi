@@ -96,7 +96,9 @@ class ComputerDisk extends CommonDBChild {
     * @see CommonGLPI::defineTabs()
     *
     * @since version 0.85
-   **/
+    * @param array $options
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -221,10 +223,8 @@ class ComputerDisk extends CommonDBChild {
     * Print the computers disks
     *
     * @param $comp                  Computer object
-    * @param $withtemplate boolean  Template or basic item (default 0)
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB;
 

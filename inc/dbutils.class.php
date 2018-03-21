@@ -901,7 +901,7 @@ final class DbUtils {
     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
     * @param boolean $translate   (true by default)
     *
-    * @return string name of the element
+    * @return array|mixed|string
     *
     * @see DbUtils::getTreeValueCompleteName
     */
@@ -1340,11 +1340,10 @@ final class DbUtils {
    /**
     * Get the ID of the previous Item
     *
-    * @param string  $table         table to search next item
-    * @param integer $ID            current ID
-    * @param string  $condition     condition to add to the search (default ='')
-    * @param stgring $nextprev_item field used to sort (default ='name')
-    *
+    * @param string $table table to search next item
+    * @param integer $ID current ID
+    * @param string $condition condition to add to the search (default ='')
+    * @param stgring|string $nextprev_item field used to sort (default ='name')
     * @return the previous ID, -1 if not exist
     */
    public function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {

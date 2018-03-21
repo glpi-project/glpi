@@ -62,8 +62,7 @@ class Contract_Supplier extends CommonDBRelation {
 
 
    /**
-    * @param $item   string   Supplier object
-    *
+    * @param string|Supplier $item string   Supplier object
     * @return int
     */
    static function countForSupplier(Supplier $item) {
@@ -78,8 +77,7 @@ class Contract_Supplier extends CommonDBRelation {
 
 
    /**
-    * @param $item   string   Contract object
-    *
+    * @param Contract|string $item string   Contract object
     * @return int
     */
    static function countForContract(Contract $item) {
@@ -144,7 +142,6 @@ class Contract_Supplier extends CommonDBRelation {
     *
     * @param $supplier   Supplier object
     *
-    * @return Nothing (display)
    **/
    static function showForSupplier(Supplier $supplier) {
       global $DB, $CFG_GLPI;
@@ -283,7 +280,6 @@ class Contract_Supplier extends CommonDBRelation {
     *
     * @param $contract Contract object
     *
-    * @return Nothing (HTML display)
     **/
    static function showForContract(Contract $contract) {
       global $DB, $CFG_GLPI;

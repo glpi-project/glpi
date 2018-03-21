@@ -2535,7 +2535,6 @@ class Profile extends CommonDBTM {
     *       - display : display or get string (default true)
     *       - rand    : specific rand (default is generated one)
     *
-    * @return nothing (print out an HTML select box)
    **/
    static function dropdownRight($name, $options = []) {
 

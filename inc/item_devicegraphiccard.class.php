@@ -50,7 +50,9 @@ class Item_DeviceGraphicCard extends Item_Devices {
 
    /**
     * @since version 0.85
-   **/
+    * @param string $specif
+    * @return array
+    */
    static function getSpecificities($specif = '') {
 
       return ['memory' => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Memory'),

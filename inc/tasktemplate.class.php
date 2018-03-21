@@ -111,7 +111,9 @@ class TaskTemplate extends CommonDropdown {
 
    /**
     * @see CommonDropdown::displaySpecificTypeField()
-   **/
+    * @param $ID
+    * @param array $field
+    */
    function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {

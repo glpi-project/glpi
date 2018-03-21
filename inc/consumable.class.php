@@ -115,7 +115,10 @@ class Consumable extends CommonDBChild {
 
    /**
     * send back to stock
-   **/
+    * @param array $input
+    * @param int $history
+    * @return bool
+    */
    function backToStock(array $input, $history = 1) {
       global $DB;
 
@@ -151,11 +154,10 @@ class Consumable extends CommonDBChild {
     * UnLink the consumable identified by $ID
     *
     * @param $ID           consumable identifier
-    * @param $itemtype     itemtype of who we give the consumable (default '')
-    * @param $items_id     ID of the item giving the consumable (default 0)
-    *
-    * @return boolean
-   **/
+    * @param itemtype|string $itemtype itemtype of who we give the consumable (default '')
+    * @param ID|int $items_id ID of the item giving the consumable (default 0)
+    * @return bool
+    */
    function out($ID, $itemtype = '', $items_id = 0) {
       global $DB;
 
@@ -180,7 +182,9 @@ class Consumable extends CommonDBChild {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -209,7 +213,10 @@ class Consumable extends CommonDBChild {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -420,7 +427,6 @@ class Consumable extends CommonDBChild {
     *
     * @param $consitem  ConsumableItem object
     *
-    * @return Nothing (displays)
    **/
    static function showAddForm(ConsumableItem $consitem) {
       global $CFG_GLPI;
@@ -454,10 +460,8 @@ class Consumable extends CommonDBChild {
     * Print out the consumables of a defined type
     *
     * @param $consitem           ConsumableItem object
-    * @param $show_old  boolean  show old consumables or not. (default 0)
-    *
-    * @return Nothing (displays)
-   **/
+    * @param bool|int $show_old boolean  show old consumables or not. (default 0)
+    */
    static function showForConsumableItem(ConsumableItem $consitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
 
@@ -741,8 +745,7 @@ class Consumable extends CommonDBChild {
 
 
    /**
-    * @param $item   string  ConsumableItem object
-    *
+    * @param ConsumableItem|string $item string  ConsumableItem object
     * @return int
     */
    static function countForConsumableItem(ConsumableItem $item) {

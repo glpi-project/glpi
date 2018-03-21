@@ -113,7 +113,8 @@ class PlanningRecall extends CommonDBChild {
 
    /**
     * @see CommonDBTM::post_updateItem()
-   **/
+    * @param int $history
+    */
    function post_updateItem($history = 1) {
 
       $alert = new Alert();
@@ -226,7 +227,6 @@ class PlanningRecall extends CommonDBChild {
     *    - value    : integer preselected value for before_time
     *    - field    : string  field used as time mark (default begin)
     *
-    * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
    static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
@@ -299,7 +299,6 @@ class PlanningRecall extends CommonDBChild {
     *    - value    : integer preselected value for before_time
     *    - field    : string  field used as time mark (default begin)
     *
-    * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
    static function specificForm($options = []) {
       global $CFG_GLPI;

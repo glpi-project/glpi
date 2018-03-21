@@ -379,13 +379,13 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * Check if a field & value are blacklisted or not
     *
-    * @param itemtype      itemtype of the blacklisted field
-    * @param entities_id   the entity in which the field must be saved
-    * @param field         the field to check
-    * @param value         the field's value
+    * @param string itemtype of the blacklisted field
+    * @param integer $entities_id which the field must be saved
+    * @param string $field to check
+    * @param string $value
     *
-    * @return true is value if blacklisted, false otherwise
-   **/
+    * @return bool
+    */
    static function isFieldBlacklisted($itemtype, $entities_id, $field, $value) {
       global $DB;
 

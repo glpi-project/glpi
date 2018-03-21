@@ -674,9 +674,8 @@ class NetworkName extends FQDNLabel {
     * NetworkName, remove, ...) or if readden from item of the item (for instance from the computer
     * form through NetworkPort::ShowForItem).
     *
-    * @param $item                     CommonGLPI object
+    * @param CommonDBTM|CommonGLPI $item CommonGLPI object
     * @param $withtemplate   integer   withtemplate param (default 0)
-    *
     * @return bool
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {

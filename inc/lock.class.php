@@ -464,7 +464,11 @@ class Lock {
     * @since version 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    * @param array $actions
+    * @param $itemtype
+    * @param int $is_deleted
+    * @param CommonDBTM|null $checkitem
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -482,7 +486,9 @@ class Lock {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return bool
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -517,7 +523,10 @@ class Lock {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $baseitem
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $baseitem,
                                                        array $ids) {
       global $DB;

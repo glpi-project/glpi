@@ -578,7 +578,9 @@ class Contract extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-    **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -1020,7 +1022,6 @@ class Contract extends CommonDBTM {
     * Show central contract resume
     * HTML array
     *
-    * @return Nothing (display)
     **/
    static function showCentral() {
       global $DB,$CFG_GLPI;
@@ -1418,7 +1419,6 @@ class Contract extends CommonDBTM {
     *    - display       : boolean / display or return string (default true)
     *    - expired       : boolean / display expired contract (default false)
     *
-    * @return Nothing (display)
    **/
    static function dropdown($options = []) {
       global $DB;
@@ -1661,12 +1661,15 @@ class Contract extends CommonDBTM {
    }
 
 
-
    /**
     * @since version 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    * @param array $actions
+    * @param string $itemtype
+    * @param int $is_deleted
+    * @param CommonDBTM|null $checkitem
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
       global $CFG_GLPI;

@@ -306,10 +306,8 @@ class ComputerAntivirus extends CommonDBChild {
     * Print the computers antiviruses
     *
     * @param $comp                  Computer object
-    * @param $withtemplate boolean  Template or basic item (default 0)
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB;
 

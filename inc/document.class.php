@@ -318,7 +318,9 @@ class Document extends CommonDBTM {
 
    /**
     * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    * @param array $input
+    * @return array
+    */
    function prepareInputForUpdate($input) {
 
       // security (don't accept filename from $_POST)
@@ -348,7 +350,6 @@ class Document extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -475,9 +476,8 @@ class Document extends CommonDBTM {
    /**
     * Get download link for a document
     *
-    * @param $params    additonal parameters to be added to the link (default '')
-    * @param $len       maximum length of displayed string (default 20)
-    *
+    * @param additonal|string $params additonal parameters to be added to the link (default '')
+    * @param int|maximum $len maximum length of displayed string (default 20)
     * @return string
     */
    function getDownloadLink($params = '', $len = 20) {
@@ -771,7 +771,9 @@ class Document extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -1339,7 +1341,6 @@ class Document extends CommonDBTM {
     *
     * @param $options array of possible options
     *
-    * @return nothing (print out an HTML select box)
    **/
    static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
@@ -1409,7 +1410,11 @@ class Document extends CommonDBTM {
     * @since version 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    * @param array $actions
+    * @param string $itemtype
+    * @param int $is_deleted
+    * @param CommonDBTM|null $checkitem
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
       global $CFG_GLPI;

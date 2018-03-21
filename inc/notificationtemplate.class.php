@@ -184,8 +184,8 @@ class NotificationTemplate extends CommonDBTM {
     *
     * @param $name      the dropdown name
     * @param $itemtype  display templates for this itemtype only
-    * @param $value     the dropdown's default value (0 by default)
-   **/
+    * @param int|the $value the dropdown's default value (0 by default)
+    */
    static function dropdownTemplates($name, $itemtype, $value = 0) {
       global $DB;
 

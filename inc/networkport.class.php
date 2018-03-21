@@ -187,6 +187,8 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @see CommonDBTM::prepareInputForUpdate
+    * @param array $input
+    * @return array|bool
     */
    function prepareInputForUpdate($input) {
       if (!isset($input["_no_history"])) {
@@ -202,6 +204,7 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @see CommonDBTM::post_updateItem
+    * @param int $history
     */
    function post_updateItem($history = 1) {
       global $DB;
@@ -989,7 +992,9 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = $checkitem->canUpdate();

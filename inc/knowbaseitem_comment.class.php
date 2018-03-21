@@ -343,10 +343,10 @@ class KnowbaseItem_Comment extends CommonDBTM {
    /**
     * Get comment form
     *
-    * @param integer       $kbitem_id Knowbase item ID
-    * @param string        $lang      Related item language
-    * @param false|integer $edit      Comment id to edit, or false
-    * @param false|integer $answer    Comment id to answer to, or false
+    * @param integer $kbitem_id Knowbase item ID
+    * @param string $lang Related item language
+    * @param bool|false|int $edit Comment id to edit, or false
+    * @param bool|false|int $answer Comment id to answer to, or false
     * @return string
     */
    static public function getCommentForm($kbitem_id, $lang = null, $edit = false, $answer = false) {

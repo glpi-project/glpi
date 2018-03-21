@@ -151,10 +151,10 @@ class CartridgeItem extends CommonDBTM {
     * Add a compatible printer type for a cartridge type
     *
     * @param $cartridgeitems_id  integer: cartridge type identifier
-    * @param printermodels_id    integer: printer type identifier
+    * @param int $printermodels_id printer type identifier
+    * @return bool : true for success
     *
-    * @return boolean : true for success
-   **/
+    */
    function addCompatibleType($cartridgeitems_id, $printermodels_id) {
       global $DB;
 
@@ -181,7 +181,6 @@ class CartridgeItem extends CommonDBTM {
     *     - target for the Form
     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
     *
-    * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
 
@@ -256,7 +255,9 @@ class CartridgeItem extends CommonDBTM {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -465,8 +466,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @param $task for log, display information if NULL? (default NULL)
     *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    */
    static function cronCartridge($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -555,10 +555,10 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Print a select with compatible cartridge
     *
-    * @param $printer Printer object
+    * @param Printer $printer object
     *
-    * @return nothing (display)
-   **/
+    * @return bool|int|string
+    */
    static function dropdownForPrinter(Printer $printer) {
       global $DB;
 

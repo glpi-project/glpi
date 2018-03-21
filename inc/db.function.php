@@ -293,18 +293,18 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
 /**
  * Get completename of a Dropdown Tree table
  *
- * @param $table        string   Dropdown Tree table
- * @param $ID           integer  ID of the element
- * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
- * @param $translate    boolean  (true by default)
- * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
+ * @param string $table       Dropdown Tree table
+ * @param integer $ID         ID of the element
+ * @param bool $withcomment   1 if you want to give the array with the comments (false by default)
+ * @param bool $translate     (true by default)
+ * @param bool $tooltip       (true by default) returns a tooltip, else returns only 'comment'
  *
- * @return string : completename of the element
+ * @return string completename of the element
  *
  * @see getTreeLeafValueName
  *
  * @deprecated 9.2 see DbUtils::getTreeValueCompleteName()
-**/
+ */
 function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
    $dbu = new DbUtils();
    return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip);
@@ -465,13 +465,12 @@ function regenerateTreeCompleteName($table) {
  *
  * @param $table           table to search next item
  * @param $ID              current ID
- * @param $condition       condition to add to the search (default ='')
- * @param $nextprev_item   field used to sort (default ='name')
- *
+ * @param condition|string $condition condition to add to the search (default ='')
+ * @param field|string $nextprev_item field used to sort (default ='name')
  * @return the next ID, -1 if not exist
  *
  * @deprecated 9.2 see DbUtils::getNextItem()
-**/
+ */
 function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
    $dbu = new DbUtils();
    return $dbu->getNextItem($table, $ID, $condition, $nextprev_item);
@@ -483,13 +482,12 @@ function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
  *
  * @param $table           table to search next item
  * @param $ID              current ID
- * @param $condition       condition to add to the search (default ='')
- * @param $nextprev_item   field used to sort (default ='name')
- *
+ * @param condition|string $condition condition to add to the search (default ='')
+ * @param field|string $nextprev_item field used to sort (default ='name')
  * @return the previous ID, -1 if not exist
  *
  * @deprecated 9.2 see DbUtils::getPreviousItem()
-**/
+ */
 function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
    $dbu = new DbUtils();
    return $dbu->getPreviousItem($table, $ID, $condition, $nextprev_item);
@@ -593,12 +591,11 @@ function isIndex($table, $field) {
  * @param $field           field to autoname
  * @param $isTemplate      true if create an object from a template
  * @param $itemtype        item type
- * @param $entities_id     limit generation to an entity (default -1)
- *
+ * @param int|limit $entities_id limit generation to an entity (default -1)
  * @return new auto string
  *
  * @deprecated 9.2 Use DbUtils::autoName()
-**/
+ */
 function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
    $dbu = new DbUtils();
    return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
@@ -698,7 +695,7 @@ function get_hour_from_sql($time) {
 /**
  * Get the $RELATION array. It's defined all relations between tables in the DB.
  *
- * @return the $RELATION array
+ * @return array $RELATION
  *
  * @deprecated 9.2 Use DbUtils::getDbRelations()
 **/
@@ -711,22 +708,21 @@ function getDbRelations() {
 /**
  * Get SQL request to restrict to current entities of the user
  *
- * @param $separator          separator in the begin of the request (default AND)
- * @param $table              table where apply the limit (if needed, multiple tables queries)
+ * @param string $separator in the begin of the request (default AND)
+ * @param string $table where apply the limit (if needed, multiple tables queries)
  *                            (default '')
- * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
+ * @param string $field field where apply the limit (id != entities_id) (default '')
+ * @param entity|string $value entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
  *                            single item or array (default '')
- * @param $is_recursive       need to use recursive process to find item
+ * @param bool $is_recursive need to use recursive process to find item
  *                            (field need to be named recursive) (false by default)
- * @param $complete_request   need to use a complete request and not a simple one
+ * @param bool $complete_request need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
- *
- * @return String : the WHERE clause to restrict
+ * @return string : the WHERE clause to restrict
  *
  * @deprecated 9.2 see DbUtils::getEntitiesRestrictRequest()
-**/
+ */
 function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
                                     $is_recursive = false, $complete_request = false) {
    $dbu = new DbUtils();
@@ -745,21 +741,20 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  *
  * @since 9.2
  *
- * @param $table              table where apply the limit (if needed, multiple tables queries)
+ * @param string $table where apply the limit (if needed, multiple tables queries)
  *                            (default '')
- * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ * @param string $field where apply the limit (id != entities_id) (default '')
+ * @param entity|string $value entity to restrict (if not set use $_SESSION['glpiactiveentities']).
  *                            single item or array (default '')
- * @param $is_recursive       need to use recursive process to find item
+ * @param bool $is_recursive need to use recursive process to find item
  *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
- * @param $complete_request   need to use a complete request and not a simple one
+ * @param bool $complete_request need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
  *
- * @return array of criteria
- *
  * @deprecated 9.2 see DbUtils::getEntitiesRestrictCriteria()
- **/
+ * @return array
+ */
 function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
                                      $is_recursive = false, $complete_request = false) {
    $dbu = new DbUtils();

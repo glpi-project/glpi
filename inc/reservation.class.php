@@ -328,7 +328,10 @@ class Reservation extends CommonDBChild {
    /**
     * Overload canChildItem to make specific checks
     * @since version 0.84
-   **/
+    * @param $methodItem
+    * @param $methodNotItem
+    * @return bool
+    */
    function canChildItem($methodItem, $methodNotItem) {
 
       // Original user always have right
@@ -373,8 +376,7 @@ class Reservation extends CommonDBChild {
    /**
     * Show reservation calendar
     *
-    * @param $ID   ID of the reservation item (if empty display all) (default '')
-    *
+    * @param ID|string $ID ID of the reservation item (if empty display all) (default '')
     * @return bool
     */
    static function showCalendar($ID = "") {
@@ -1057,8 +1059,7 @@ class Reservation extends CommonDBChild {
     * Display reservations for an item
     *
     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
-    * @param $withtemplate    withtemplate param (default 0)
-    *
+    * @param int|withtemplate $withtemplate withtemplate param (default 0)
     * @return bool
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {

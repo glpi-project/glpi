@@ -117,7 +117,9 @@ class Holiday extends CommonDropdown {
 
    /**
     * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    * @param array $input
+    * @return array
+    */
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);

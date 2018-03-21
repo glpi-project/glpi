@@ -819,8 +819,7 @@ class Printer  extends CommonDBTM {
     * @param $name          the printer's name (need to be addslashes)
     * @param $manufacturer  the software's manufacturer (need to be addslashes)
     * @param $entity        the entity in which the software must be added
-    * @param $comment       comment (default '')
-    *
+    * @param comment|string $comment comment (default '')
     * @return int|the
     */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '') {

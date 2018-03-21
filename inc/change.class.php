@@ -173,7 +173,9 @@ class Change extends CommonITILObject {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -914,7 +916,9 @@ class Change extends CommonITILObject {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -982,8 +986,8 @@ class Change extends CommonITILObject {
     *
     * @param $item CommonDBTM object
     *
-    * @return nothing (display a table)
-   **/
+    * @return bool
+    */
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 

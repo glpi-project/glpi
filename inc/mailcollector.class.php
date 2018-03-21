@@ -507,10 +507,9 @@ class MailCollector  extends CommonDBTM {
     * Constructor
     *
     * @param $mailgateID   ID of the mailgate
-    * @param $display      display messages in MessageAfterRedirect or just return error (default 0=)
-    *
+    * @param display|int $display display messages in MessageAfterRedirect or just return error (default 0=)
     * @return if $display = false return messages result string
-   **/
+    */
    function collect($mailgateID, $display = 0) {
       global $CFG_GLPI;
 
@@ -974,10 +973,9 @@ class MailCollector  extends CommonDBTM {
     * @since version 0.85
     *
     * @param $string text to clean
-    * @param $striptags remove html tags
-    *
+    * @param bool|remove $striptags remove html tags
     * @return cleaned text
-   **/
+    */
    function cleanMailContent($string, $striptags = true) {
       global $DB;
 
@@ -1049,13 +1047,12 @@ class MailCollector  extends CommonDBTM {
     * isn't supported by "mb", the "fallbackCharset" will be  used to try to decode it.
     *
     * @param $mimeStr         mime     header string
-    * @param $inputCharset    input    charset (default 'utf-8')
-    * @param $targetCharset   target   charset (default 'utf-8')
-    * @param $fallbackCharset charset  used if input charset not supported by mb
+    * @param input|string $inputCharset input    charset (default 'utf-8')
+    * @param string|target $targetCharset target   charset (default 'utf-8')
+    * @param charset|string $fallbackCharset charset  used if input charset not supported by mb
     *                                  (default 'iso-8859-1')
-    *
     * @return decoded string
-   **/
+    */
    function decodeMimeString($mimeStr, $inputCharset = 'utf-8', $targetCharset = 'utf-8',
                              $fallbackCharset = 'iso-8859-1') {
 
@@ -1136,8 +1133,8 @@ class MailCollector  extends CommonDBTM {
    /**
     * get the message structure if not already retrieved
     *
-    * @param $mid : Message ID.
-   **/
+    * @param string $uid message
+    */
    function getStructure ($uid) {
 
       if (($uid != $this->uid)
@@ -1288,11 +1285,10 @@ class MailCollector  extends CommonDBTM {
     * @param $stream       An IMAP stream returned by imap_open
     * @param $uid          The message UID
     * @param $mime_type    mime type of the mail
-    * @param $structure    structure of the mail (false by default)
-    * @param $part_number  The part number (false by default)
-    *
+    * @param bool|structure $structure structure of the mail (false by default)
+    * @param bool|The $part_number The part number (false by default)
     * @return data of false if error
-   **/
+    */
    function get_part($stream, $uid, $mime_type, $structure = false, $part_number = false) {
 
       if ($structure) {
@@ -1406,10 +1402,10 @@ class MailCollector  extends CommonDBTM {
     * @param $path         temporary path
     * @param $maxsize      of document to be retrieved
     * @param $structure    of the message or part
-    * @param $part         part for recursive
+    * @param part|string $part part for recursive
     *
     * Result is stored in $this->files
-   **/
+    */
    function getRecursiveAttached($uid, $path, $maxsize, $structure, $part = "") {
 
       if ($structure->type == TYPEMULTIPART) {
@@ -1643,9 +1639,8 @@ class MailCollector  extends CommonDBTM {
     * Cron action on mailgate : retrieve mail and create tickets
     *
     * @param $task
-    *
-    * @return -1 : done but not finish 1 : done with success
-   **/
+    * @return int -1 : done but not finish 1 : done with success
+    */
    static function cronMailgate($task) {
       global $DB;
 

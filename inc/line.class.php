@@ -63,7 +63,9 @@ class Line extends CommonDropdown {
 
    /**
     * @see CommonGLPI::defineTabs()
-    **/
+    * @param array $options
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -85,7 +87,6 @@ class Line extends CommonDropdown {
     *     - target for the Form
     *     - withtemplate : template or basic item
     *
-    * @return Nothing (display)
     **/
    function showForm($ID, $options = []) {
 

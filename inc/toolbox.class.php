@@ -307,9 +307,9 @@ class Toolbox {
 
 
    /**
-    *  Invert fonction from clean_cross_side_scripting_deep
+    *  Invert function from clean_cross_side_scripting_deep
     *
-    * @param $value  array or string   item to unclean from clean_cross_side_scripting_deep
+    * @param mixed $value item to unclean from clean_cross_side_scripting_deep
     *
     * @see clean_cross_side_scripting_deep
     *
@@ -331,7 +331,7 @@ class Toolbox {
 
 
    /**
-    *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
+    *  Invert function from clean_cross_side_scripting_deep to display HTML striping XSS code
     *
     * @since version 0.83.3
     *
@@ -747,8 +747,8 @@ class Toolbox {
     *
     * @param $value array or string: value to add slashes (array or string)
     *
-    * @return addslashes value
-   **/
+    * @return array|null|resource|string
+    */
    static function addslashes_deep($value) {
       global $DB;
 
@@ -767,8 +767,8 @@ class Toolbox {
     *
     * @param $value     array or string: item to stripslashes (array or string)
     *
-    * @return stripslashes item
-   **/
+    * @return array|null|resource|string
+    */
    static function stripslashes_deep($value) {
 
       $value = ((array) $value === $value)
@@ -781,16 +781,16 @@ class Toolbox {
    }
 
 
-   /** Converts an array of parameters into a query string to be appended to a URL.
+   /**
+    * Converts an array of parameters into a query string to be appended to a URL.
     *
     * @param $array     array parameters to append to the query string.
-    * @param $separator        separator may be defined as &amp; to display purpose
+    * @param string $separator separator may be defined as &amp; to display purpose
     *                         (default '&')
-    * @param $parent          This should be left blank (it is used internally by the function).
+    * @param string $parent This should be left blank (it is used internally by the function).
     *                         (default '')
-    *
-    * @return string  : Query string to append to a URL.
-   **/
+    * @return string : Query string to append to a URL.
+    */
    static function append_params($array, $separator = '&', $parent = '') {
 
       $params = [];
@@ -811,10 +811,10 @@ class Toolbox {
    /**
     * Compute PHP memory_limit
     *
-    * @param $ininame String name of the ini ooption to retrieve (since 9.1)
+    * @param string $ininame name of the ini ooption to retrieve (since 9.1)
     *
-    * @return memory limit
-   **/
+    * @return int|string
+    */
    static function getMemoryLimit($ininame = 'memory_limit') {
 
       $mem = ini_get($ininame);
@@ -849,12 +849,11 @@ class Toolbox {
     * Check is current memory_limit is enough for GLPI
     *
     * @since version 0.83
-    *
-    * @return 0 if PHP not compiled with memory_limit support
+    * @return int 0 if PHP not compiled with memory_limit support
     *         1 no memory limit (memory_limit = -1)
     *         2 insufficient memory for GLPI
     *         3 enough memory for GLPI
-   **/
+    */
    static function checkMemoryLimit() {
 
       $mem = self::getMemoryLimit();
@@ -873,9 +872,8 @@ class Toolbox {
 
    /**
     * Common Checks needed to use GLPI
-    *
-    * @return 2 : creation error 1 : delete error 0: OK
-   **/
+    * @return int 2 : creation error 1 : delete error 0: OK
+    */
    static function commonCheckForUseGLPI() {
       global $CFG_GLPI;
 
@@ -1189,16 +1187,15 @@ class Toolbox {
     *
     * @param $source_path   string   path of the picture to be resized
     * @param $dest_path     string   path of the new resized picture
-    * @param $new_width     string   new width after resized (default 71)
-    * @param $new_height    string   new height after resized (default 71)
-    * @param $img_y         string   y axis of picture (default 0)
-    * @param $img_x         string   x axis of picture (default 0)
-    * @param $img_width     string   width of picture (default 0)
-    * @param $img_height    string   height of picture (default 0)
+    * @param int|string $new_width string   new width after resized (default 71)
+    * @param int|string $new_height string   new height after resized (default 71)
+    * @param int|string $img_y string   y axis of picture (default 0)
+    * @param int|string $img_x string   x axis of picture (default 0)
+    * @param int|string $img_width string   width of picture (default 0)
+    * @param int|string $img_height string   height of picture (default 0)
     * @param $max_size      integer  max size of the picture (default 500, is set to 0 no resize)
-    *
     * @return bool : true or false
-   **/
+    */
    static function resizePicture($source_path, $dest_path, $new_width = 71, $new_height = 71,
                                  $img_y = 0, $img_x = 0, $img_width = 0, $img_height = 0, $max_size = 500) {
 
@@ -1386,9 +1383,8 @@ class Toolbox {
     * Check Write Access to a directory
     *
     * @param $dir string: directory to check
-    *
-    * @return 2 : creation error 1 : delete error 0: OK
-   **/
+    * @return int 2 : creation error 1 : delete error 0: OK
+    */
    static function testWriteAccessToDirectory($dir) {
 
       $rand = rand();
@@ -1428,10 +1424,9 @@ class Toolbox {
     * Get form URL for itemtype
     *
     * @param $itemtype  string   item type
-    * @param $full               path or relative one (true by default)
+    * @param bool|path $full path or relative one (true by default)
     *
     * return string itemtype Form URL
-    *
     * @return string
     */
    static function getItemTypeFormURL($itemtype, $full = true) {
@@ -1459,10 +1454,9 @@ class Toolbox {
     * Get search URL for itemtype
     *
     * @param $itemtype  string   item type
-    * @param $full               path or relative one (true by default)
+    * @param bool|path $full path or relative one (true by default)
     *
     * return string itemtype search URL
-    *
     * @return string
     */
    static function getItemTypeSearchURL($itemtype, $full = true) {
@@ -1495,10 +1489,9 @@ class Toolbox {
     * Get ajax tabs url for itemtype
     *
     * @param $itemtype  string   item type
-    * @param $full               path or relative one (true by default)
+    * @param bool|path $full path or relative one (true by default)
     *
     * return string itemtype tabs URL
-    *
     * @return string
     */
    static function getItemTypeTabsURL($itemtype, $full = true) {
@@ -1864,9 +1857,8 @@ class Toolbox {
     * Convert a value in byte, kbyte, megabyte etc...
     *
     * @param $val string: config value (like 10k, 5M)
-    *
-    * @return $val
-   **/
+    * @return int|string $val
+    */
    static function return_bytes_from_ini_vars($val) {
 
       $val  = trim($val);
@@ -1984,7 +1976,7 @@ class Toolbox {
     * @param $value String host connect string ex
     *                      {localhost:993/imap/ssl}INBOX
     *
-    * @return String type of the server (imap/pop)
+    * @return string type of the server (imap/pop)
    **/
    static function showMailServerConfig($value) {
 
@@ -2358,7 +2350,6 @@ class Toolbox {
     *
     * @since version 0.84.2
     *
-    * @return nothing : display error if not permit
    **/
    static function checkValidReferer() {
       global $CFG_GLPI;
@@ -2442,11 +2433,10 @@ class Toolbox {
     * @since version 0.85.5
     *
     * @param $file   string      path of the file
-    * @param $type   string      check if $file is the correct type (false by default)
-    *
+    * @param bool|string $type string      check if $file is the correct type (false by default)
     * @return string (if $type not given) else boolean
     *
-   **/
+    */
    static function getMime($file, $type = false) {
 
       static $finfo = null;
@@ -2659,10 +2649,9 @@ class Toolbox {
     * @since version 9.2
     *
     * @param $content_html   html content of input
-    * @param $force_update   force update of content in item (false by default)
-    *
+    * @param bool|force $force_update force update of content in item (false by default)
     * @return html content
-   **/
+    */
    static function convertImageToTag($content_html, $force_update = false) {
 
       if (!empty($content_html)) {

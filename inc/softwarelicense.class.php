@@ -101,7 +101,9 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * @since version 0.85
     * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    * @param array $input
+    * @return array
+    */
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);
@@ -119,12 +121,11 @@ class SoftwareLicense extends CommonTreeDropdown {
     * Compute licence validity indicator.
     *
     * @param $ID        ID of the licence
-    * @param $number    licence count to check (default -1)
-    *
+    * @param int|licence $number licence count to check (default -1)
+    * @return validity indicator
     * @since version 0.85
     *
-    * @return validity indicator
-   **/
+    */
    static function computeValidityIndicator($ID, $number = -1) {
 
       if (($number >= 0)
@@ -188,7 +189,8 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
-   **/
+    * @param int $history
+    */
    function post_updateItem($history = 1) {
 
       if (in_array("is_valid", $this->updates)) {
@@ -475,7 +477,9 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    * @param null $checkitem
+    * @return array
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -826,9 +830,8 @@ class SoftwareLicense extends CommonTreeDropdown {
     * Cron action on softwares : alert on expired licences
     *
     * @param $task to log, if NULL display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return int 0 : nothing to do 1 : done with success
+    */
    static function cronSoftware($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -919,11 +922,10 @@ class SoftwareLicense extends CommonTreeDropdown {
     * Get number of bought licenses of a version
     *
     * @param $softwareversions_id   version ID
-    * @param $entity                to search for licenses in (default = all active entities)
+    * @param string|to $entity to search for licenses in (default = all active entities)
     *                               (default '')
-    *
     * @return number of installations
-   */
+    */
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
