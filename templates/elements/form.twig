@@ -30,7 +30,7 @@
  #}
 <form class="pure-form{% if glpi_form.pure_form is defined %} pure-form-{{ glpi_form.pure_form}}{% endif %}{{ ' ' ~ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
-   {% if glpi_form.header is defined and glpi_form.header == true %}
+   {% if glpi_form.header is not defined or glpi_form.header == true %}
    <header class="pure-form pure-form-aligned">
       {% if glpi_form.header_title is defined %}
          {{ glpi_form.header_title }}
