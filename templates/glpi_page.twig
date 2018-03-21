@@ -450,7 +450,12 @@
                   return text;
                }
             }, _select2_common)
-         );
+         ).on("change", function (e) {
+             var _this = $(this);
+             if (_this.data('change_func')) {
+                 return window[_this.data('change_func')](_this, e);
+             }
+         });
          $('.forSelect2[data-ajax_url]').select2(
             Object.assign({
                ajax: {
@@ -498,12 +503,13 @@
                   }
                }
             }, _select2_common)
-         );
-         {#
-         if (!empty($on_change)) {
-            $js .= " $('#$field_id').on('change', function(e) {".
-                     stripslashes($on_change)."});";
-         }#}
+         ).on("change", function (e) {
+             var _this = $(this);
+             if (_this.data('change_func')) {
+                 return window[_this.data('change_func')](_this, e);
+             }
+         });
+
          $('label').on(
             'click', function(){
                var _this = $(this);

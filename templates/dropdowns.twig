@@ -65,3 +65,17 @@
    </div>
    {% endblock %}
 {% endblock %}
+
+{% block javascripts %}
+   <script type="text/javascript">
+      var onDdListChange = function (elt, event) {
+         var _value = elt.val();
+         if (_value != 0) {
+            window.location.href = '{{ path_for('dropdowns', {'dropdown': 'PLACEBO'}) }}'.replace(/PLACEBO/, _value);
+         } else {
+            window.location.href = '{{ path_for('dropdowns') }}';
+         }
+      };
+   </script>
+   {{ parent() }}
+{% endblock %}

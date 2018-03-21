@@ -472,7 +472,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                'addicon'      => false,
                'label'        => _n('Dropdown', 'Dropdowns', 2),
                'noajax'       => true,
-               'value'        => isset($args['dropdown']) ? $args['dropdown'] : null
+               'value'        => isset($args['dropdown']) ? $args['dropdown'] : null,
+               'change_func'  => 'onDdListChange',
+               'empty_value'  => true
             ]
          ]
       ];
