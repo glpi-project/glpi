@@ -2207,4 +2207,608 @@ class Dropdown {
                                        'display'   => $display]);
    }
 
+   /**
+    * Get dropdown value
+    *
+    * @param array   $post Posted values
+    * @param boolean $json Encode to JSON, default to true
+    *
+    * @return string|array
+    */
+   public static function getDropdownValue($post, $json = true) {
+      global $DB, $CFG_GLPI;
+
+      if (isset($post["entity_restrict"])
+         && !is_array($post["entity_restrict"])
+         && (substr($post["entity_restrict"], 0, 1) === '[')
+         && (substr($post["entity_restrict"], -1) === ']')) {
+         $decoded = Toolbox::jsonDecode($post['entity_restrict']);
+         $entities = [];
+         if (is_array($decoded)) {
+            foreach ($decoded as $value) {
+               $entities[] = (int)$value;
+            }
+         }
+         $post["entity_restrict"] = $entities;
+      }
+      if (isset($post['entity_restrict']) && 'default' === $post['entity_restrict']) {
+         $post['entity_restrict'] = $_SESSION['glpiactiveentities'];
+      }
+
+      // Security
+      if (!($item = getItemForItemtype($post['itemtype']))) {
+         return;
+      }
+      $table = $item->getTable();
+      $datas = [];
+
+      $displaywith = false;
+      if (isset($post['displaywith'])) {
+         if (is_array($post['displaywith']) && count($post['displaywith'])) {
+            $table = getTableForItemType($post['itemtype']);
+            foreach ($post['displaywith'] as $key => $value) {
+               if (!$DB->FieldExists($table, $value)) {
+                  unset($post['displaywith'][$key]);
+               }
+            }
+            if (count($post['displaywith'])) {
+               $displaywith = true;
+            }
+         }
+      }
+
+      if (!isset($post['permit_select_parent'])) {
+         $post['permit_select_parent'] = false;
+      }
+
+      if (isset($post['condition']) && !empty($post['condition'])) {
+         if (isset($_SESSION['glpicondition'][$post['condition']])) {
+            $post['condition'] = $_SESSION['glpicondition'][$post['condition']];
+         } else {
+            $post['condition'] = '';
+         }
+      }
+
+      if (!isset($post['emptylabel']) || ($post['emptylabel'] == '')) {
+         $post['emptylabel'] = Dropdown::EMPTY_VALUE;
+      }
+
+      $where = "WHERE 1 ";
+
+      if ($item->maybeDeleted()) {
+         $where .= " AND `$table`.`is_deleted` = '0' ";
+      }
+      if ($item->maybeTemplate()) {
+         $where .= " AND `$table`.`is_template` = '0' ";
+      }
+
+      if (!isset($post['page'])) {
+         $post['page']       = 1;
+         $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+      }
+
+      $start = intval(($post['page']-1)*$post['page_limit']);
+      $limit = intval($post['page_limit']);
+      $LIMIT = "LIMIT $start,$limit";
+
+      if (isset($post['used'])) {
+         $used = $post['used'];
+
+         if (count($used)) {
+            $where .=" AND `$table`.`id` NOT IN ('".implode("','", $used)."' ) ";
+         }
+      }
+
+      if (isset($post['toadd'])) {
+         $toadd = $post['toadd'];
+      } else {
+         $toadd = [];
+      }
+
+      // $where .= ") ";
+
+      if (isset($post['condition']) && ($post['condition'] != '')) {
+         $where .= " AND ".$post['condition']." ";
+      }
+
+      // Count real items returned
+      $count = 0;
+
+      if ($item instanceof CommonTreeDropdown) {
+
+         if (!empty($post['searchText'])) {
+            $search = Search::makeTextSearch($post['searchText']);
+            if (Session::haveTranslations($post['itemtype'], 'completename')) {
+               $where .= " AND (`$table`.`completename` $search ".
+                                 "OR `namet`.`value` $search ";
+            } else {
+               $where .= " AND (`$table`.`completename` $search ";
+            }
+            // Also search by id
+            if ($displaywith && in_array('id', $post['displaywith'])) {
+               $where .= " OR `$table`.`id` ".$search;
+            }
+
+            $where .= ")";
+         }
+
+         $multi = false;
+
+         // Manage multiple Entities dropdowns
+         $add_order = "";
+
+         // No multi if get one item
+         if ($item->isEntityAssign()) {
+            $recur = $item->maybeRecursive();
+
+            // Entities are not really recursive : do not display parents
+            if ($post['itemtype'] == 'Entity') {
+               $recur = false;
+            }
+
+            if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
+               $where .= getEntitiesRestrictRequest(" AND ", $table, '', $post["entity_restrict"],
+                                                   $recur);
+
+               if (is_array($post["entity_restrict"]) && (count($post["entity_restrict"]) > 1)) {
+                  $multi = true;
+               }
+
+            } else {
+               // If private item do not use entity
+               if (!$item->maybePrivate()) {
+                  $where .= getEntitiesRestrictRequest(" AND ", $table, '', '', $recur);
+
+                  if (count($_SESSION['glpiactiveentities']) > 1) {
+                     $multi = true;
+                  }
+               } else {
+                  $multi = false;
+               }
+            }
+
+            // Force recursive items to multi entity view
+            if ($recur) {
+               $multi = true;
+            }
+
+            // no multi view for entitites
+            if ($post['itemtype'] == "Entity") {
+               $multi = false;
+            }
+
+            if ($multi) {
+               $add_order = "`$table`.`entities_id`, ";
+            }
+         }
+
+         $addselect = '';
+         $addjoin = '';
+         if (Session::haveTranslations($post['itemtype'], 'completename')) {
+            $addselect = ", `namet`.`value` AS transcompletename";
+            $addjoin   = " LEFT JOIN `glpi_dropdowntranslations` AS namet
+                              ON (`namet`.`itemtype` = '".$post['itemtype']."'
+                                 AND `namet`.`items_id` = `$table`.`id`
+                                 AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                                 AND `namet`.`field` = 'completename')";
+         }
+         if (Session::haveTranslations($post['itemtype'], 'name')) {
+            $addselect .= ", `namet2`.`value` AS transname";
+            $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
+                              ON (`namet2`.`itemtype` = '".$post['itemtype']."'
+                                 AND `namet2`.`items_id` = `$table`.`id`
+                                 AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
+                                 AND `namet2`.`field` = 'name')";
+         }
+         if (Session::haveTranslations($post['itemtype'], 'comment')) {
+            $addselect .= ", `commentt`.`value` AS transcomment";
+            $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS commentt
+                              ON (`commentt`.`itemtype` = '".$post['itemtype']."'
+                                 AND `commentt`.`items_id` = `$table`.`id`
+                                 AND `commentt`.`language` = '".$_SESSION['glpilanguage']."'
+                                 AND `commentt`.`field` = 'comment')";
+         }
+
+         $query = "SELECT `$table`.* $addselect
+                  FROM `$table`
+                  $addjoin
+                  $where
+                  ORDER BY $add_order `$table`.`completename`
+                  $LIMIT";
+
+         if ($result = $DB->query($query)) {
+            // Empty search text : display first
+            if ($post['page'] == 1 && empty($post['searchText'])) {
+               if ($post['display_emptychoice']) {
+                  array_push($datas, ['id'   => 0,
+                                    'text' => $post['emptylabel']]);
+               }
+            }
+
+            if ($post['page'] == 1) {
+               if (count($toadd)) {
+                  foreach ($toadd as $key => $val) {
+                     array_push($datas, ['id'   => $key,
+                                       'text' => stripslashes($val)]);
+                  }
+               }
+            }
+            $last_level_displayed = [];
+            $datastoadd           = [];
+
+            // Ignore first item for all pages except first page
+            $firstitem = (($post['page'] > 1));
+            if ($DB->numrows($result)) {
+               $prev             = -1;
+               $firstitem_entity = -1;
+
+               while ($data = $DB->fetch_assoc($result)) {
+                  $ID    = $data['id'];
+                  $level = $data['level'];
+
+                  if (isset($data['transname']) && !empty($data['transname'])) {
+                     $outputval = $data['transname'];
+                  } else {
+                     $outputval = $data['name'];
+                  }
+
+                  if ($multi
+                     && ($data["entities_id"] != $prev)) {
+                     // Do not do it for first item for next page load
+                     if (!$firstitem) {
+                        if ($prev >= 0) {
+                           if (count($datastoadd)) {
+                              array_push($datas,
+                                       ['text'     => Dropdown::getDropdownName("glpi_entities",
+                                                                                       $prev),
+                                             'children' => $datastoadd]);
+                           }
+                        }
+                     }
+                     $prev = $data["entities_id"];
+                     if ($firstitem) {
+                        $firstitem_entity = $prev;
+                     }
+                     // Reset last level displayed :
+                     $datastoadd = [];
+                  }
+
+                  if ($_SESSION['glpiuse_flat_dropdowntree']) {
+                     if (isset($data['transcompletename']) && !empty($data['transcompletename'])) {
+                        $outputval = $data['transcompletename'];
+                     } else {
+                        $outputval = $data['completename'];
+                     }
+                     $level = 0;
+                  } else { // Need to check if parent is the good one
+                           // Do not do if only get one item
+                     if (($level > 1)) {
+                        // Last parent is not the good one need to display arbo
+                        if (!isset($last_level_displayed[$level-1])
+                           || ($last_level_displayed[$level-1] != $data[$item->getForeignKeyField()])) {
+
+                           $work_level    = $level-1;
+                           $work_parentID = $data[$item->getForeignKeyField()];
+                           $parent_datas  = [];
+                           do {
+                              // Get parent
+                              if ($item->getFromDB($work_parentID)) {
+                                 // Do not do for first item for next page load
+                                 if (!$firstitem) {
+                                    $title = $item->fields['completename'];
+
+                                    if (isset($item->fields["comment"])) {
+                                       $addcomment
+                                       = DropdownTranslation::getTranslatedValue($ID, $post['itemtype'],
+                                                                                 'comment',
+                                                                                 $_SESSION['glpilanguage'],
+                                                                                 $item->fields['comment']);
+                                       $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
+                                    }
+                                    $output2 = DropdownTranslation::getTranslatedValue($item->fields['id'],
+                                                                                       $post['itemtype'],
+                                                                                       'name',
+                                                                                       $_SESSION['glpilanguage'],
+                                                                                       $item->fields['name']);
+
+                                    $temp = ['id'       => $ID,
+                                                'text'     => $output2,
+                                                'level'    => $work_level,
+                                                'disabled' => true];
+                                    if ($post['permit_select_parent']) {
+                                       unset($temp['disabled']);
+                                    }
+                                    array_unshift($parent_datas, $temp);
+                                 }
+                                 $last_level_displayed[$work_level] = $item->fields['id'];
+                                 $work_level--;
+                                 $work_parentID = $item->fields[$item->getForeignKeyField()];
+
+                              } else { // Error getting item : stop
+                                 $work_level = -1;
+                              }
+
+                           } while (($work_level >= 1)
+                                    && (!isset($last_level_displayed[$work_level])
+                                       || ($last_level_displayed[$work_level] != $work_parentID)));
+                           // Add parents
+                           foreach ($parent_datas as $val) {
+                              array_push($datastoadd, $val);
+                           }
+                        }
+                     }
+                     $last_level_displayed[$level] = $data['id'];
+                  }
+
+                  // Do not do for first item for next page load
+                  if (!$firstitem) {
+                     if ($_SESSION["glpiis_ids_visible"]
+                        || (Toolbox::strlen($outputval) == 0)) {
+                        $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
+                     }
+
+                     if (isset($data['transcompletename']) && !empty($data['transcompletename'])) {
+                        $title = $data['transcompletename'];
+                     } else {
+                        $title = $data['completename'];
+                     }
+
+                     if (isset($data["comment"])) {
+                        if (isset($data['transcomment']) && !empty($data['transcomment'])) {
+                           $addcomment = $data['transcomment'];
+                        } else {
+                           $addcomment = $data['comment'];
+                        }
+                        $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
+                     }
+                     array_push($datastoadd, ['id'    => $ID,
+                                                   'text'  => $outputval,
+                                                   'level' => $level,
+                                                   'title' => $title]);
+                     $count++;
+                  }
+                  $firstitem = false;
+               }
+            }
+         }
+         if ($multi) {
+            if (count($datastoadd)) {
+               // On paging mode do not add entity information each time
+               if ($prev == $firstitem_entity) {
+                  $datas = array_merge($datas, $datastoadd);
+               } else {
+                  array_push($datas, ['text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                          'children' => $datastoadd]);
+               }
+            }
+         } else {
+            if (count($datastoadd)) {
+               $datas = array_merge($datas, $datastoadd);
+            }
+         }
+      } else { // Not a dropdowntree
+         $multi = false;
+         // No multi if get one item
+         if ($item->isEntityAssign()) {
+            $multi = $item->maybeRecursive();
+
+            if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
+               $where .= getEntitiesRestrictRequest("AND", $table, "entities_id",
+                                                   $post["entity_restrict"], $multi);
+
+               if (is_array($post["entity_restrict"]) && (count($post["entity_restrict"]) > 1)) {
+                  $multi = true;
+               }
+
+            } else {
+               // Do not use entity if may be private
+               if (!$item->maybePrivate()) {
+                  $where .= getEntitiesRestrictRequest("AND", $table, '', '', $multi);
+
+                  if (count($_SESSION['glpiactiveentities'])>1) {
+                     $multi = true;
+                  }
+               } else {
+                  $multi = false;
+               }
+            }
+         }
+
+         $field = "name";
+         if ($item instanceof CommonDevice) {
+            $field = "designation";
+         } else if ($item instanceof Item_Devices) {
+            $field = "itemtype";
+         }
+
+         if (!empty($post['searchText'])) {
+            $search = Search::makeTextSearch($post['searchText']);
+            $where .=" AND  (`$table`.`$field` ".$search;
+
+            if (Session::haveTranslations($post['itemtype'], $field)) {
+               $where .= " OR `namet`.`value` ".$search;
+            }
+            if ($post['itemtype'] == "SoftwareLicense") {
+               $where .= " OR `glpi_softwares`.`name` ".$search;
+            }
+            // Also search by id
+            if ($displaywith && in_array('id', $post['displaywith'])) {
+               $where .= " OR `$table`.`id` ".$search;
+            }
+
+            $where .= ')';
+         }
+         $addselect = '';
+         $addjoin = '';
+         if (Session::haveTranslations($post['itemtype'], $field)) {
+            $addselect .= ", `namet`.`value` AS transname";
+            $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
+                              ON (`namet`.`itemtype` = '".$post['itemtype']."'
+                                 AND `namet`.`items_id` = `$table`.`id`
+                                 AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                                 AND `namet`.`field` = '$field')";
+         }
+         if (Session::haveTranslations($post['itemtype'], 'comment')) {
+            $addselect .= ", `commentt`.`value` AS transcomment";
+            $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS commentt
+                              ON (`commentt`.`itemtype` = '".$post['itemtype']."'
+                                 AND `commentt`.`items_id` = `$table`.`id`
+                                 AND `commentt`.`language` = '".$_SESSION['glpilanguage']."'
+                                 AND `commentt`.`field` = 'comment')";
+         }
+
+         switch ($post['itemtype']) {
+            case "Contact" :
+               $query = "SELECT `$table`.`entities_id`,
+                              CONCAT(IFNULL(`name`,''),' ',IFNULL(`firstname`,'')) AS $field,
+                              `$table`.`comment`, `$table`.`id`
+                        FROM `$table`
+                        $where";
+               break;
+
+            case "SoftwareLicense" :
+               $query = "SELECT `$table`.*,
+                              CONCAT(`glpi_softwares`.`name`,' - ',`glpi_softwarelicenses`.`name`)
+                                    AS $field
+                        FROM `$table`
+                        LEFT JOIN `glpi_softwares`
+                              ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                        $where";
+               break;
+
+            case "Profile" :
+               $query = "SELECT DISTINCT `$table`.*
+                        FROM `$table`
+                        LEFT JOIN `glpi_profilerights`
+                              ON (`glpi_profilerights`.`profiles_id` = `$table`.`id`)
+                        $where";
+               break;
+
+            case KnowbaseItem::getType():
+               $addjoin   .= KnowbaseItem::addVisibilityJoins();
+               //no break to reach default case.
+
+            default :
+               $query = "SELECT `$table`.* $addselect
+                        FROM `$table`
+                        $addjoin
+                        $where";
+         }
+
+         if ($multi) {
+            $query .= " ORDER BY `$table`.`entities_id`, `$table`.`$field`
+                     $LIMIT";
+         } else {
+            $query .= " ORDER BY `$table`.`$field`
+                     $LIMIT";
+         }
+
+         if ($result = $DB->query($query)) {
+
+            // Display first if no search
+            if ($post['page'] == 1 && empty($post['searchText'])) {
+               if (!isset($post['display_emptychoice']) || $post['display_emptychoice']) {
+                  array_push($datas, ['id'    => 0,
+                                    'text'  => $post["emptylabel"]]);
+               }
+            }
+            if ($post['page'] == 1) {
+               if (count($toadd)) {
+                  foreach ($toadd as $key => $val) {
+                     array_push($datas, ['id'    => $key,
+                                       'text'  => stripslashes($val)]);
+                  }
+               }
+            }
+
+            $datastoadd = [];
+
+            if ($DB->numrows($result)) {
+               $prev = -1;
+
+               while ($data =$DB->fetch_assoc($result)) {
+                  if ($multi
+                     && ($data["entities_id"] != $prev)) {
+                     if ($prev >= 0) {
+                        if (count($datastoadd)) {
+                           array_push($datas,
+                                    ['text'     => Dropdown::getDropdownName("glpi_entities",
+                                                                                    $prev),
+                                          'children' => $datastoadd]);
+                        }
+                     }
+                     $prev       = $data["entities_id"];
+                     $datastoadd = [];
+                  }
+
+                  if (isset($data['transname']) && !empty($data['transname'])) {
+                     $outputval = $data['transname'];
+                  } else if ($field == 'itemtype' && class_exists($data['itemtype'])) {
+                     $tmpitem = new $data[$field]();
+                     if ($tmpitem->getFromDB($data['items_id'])) {
+                        $outputval = sprintf(__('%1$s - %2$s'), $tmpitem->getTypeName(), $tmpitem->getName());
+                     } else {
+                        $outputval = $tmpitem->getTypeName();
+                     }
+                  } else {
+                     $outputval = $data[$field];
+                  }
+                  $outputval = Toolbox::unclean_cross_side_scripting_deep($outputval);
+
+                  $ID         = $data['id'];
+                  $addcomment = "";
+                  $title      = $outputval;
+                  if (isset($data["comment"])) {
+                     if (isset($data['transcomment']) && !empty($data['transcomment'])) {
+                        $addcomment .= $data['transcomment'];
+                     } else {
+                        $addcomment .= $data["comment"];
+                     }
+
+                     $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
+                  }
+                  if ($_SESSION["glpiis_ids_visible"]
+                     || (strlen($outputval) == 0)) {
+                     //TRANS: %1$s is the name, %2$s the ID
+                     $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
+                  }
+                  if ($displaywith) {
+                     foreach ($post['displaywith'] as $key) {
+                        if (isset($data[$key])) {
+                           $withoutput = $data[$key];
+                           if (isForeignKeyField($key)) {
+                              $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
+                                                                     $data[$key]);
+                           }
+                           if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
+                              $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
+                           }
+                        }
+                     }
+                  }
+                  array_push($datastoadd, ['id'    => $ID,
+                                                'text'  => $outputval,
+                                                'title' => $title]);
+                  $count++;
+               }
+               if ($multi) {
+                  if (count($datastoadd)) {
+                     array_push($datas, ['text'     => Dropdown::getDropdownName("glpi_entities",
+                                                                                    $prev),
+                                             'children' => $datastoadd]);
+                  }
+               } else {
+                  if (count($datastoadd)) {
+                     $datas = array_merge($datas, $datastoadd);
+                  }
+               }
+            }
+         }
+      }
+
+      $ret['results'] = $datas;
+      $ret['count']   = $count;
+
+      return ($json === true) ? json_encode($ret) : $ret;
+   }
 }
