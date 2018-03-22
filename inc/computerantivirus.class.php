@@ -76,7 +76,7 @@ class ComputerAntivirus extends CommonDBChild {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -216,7 +216,7 @@ class ComputerAntivirus extends CommonDBChild {
     * @param $ID                id of the antivirus
     * @param $options array
     *
-    * @return bool TRUE if form is ok
+    * @return boolean TRUE if form is ok
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -306,7 +306,7 @@ class ComputerAntivirus extends CommonDBChild {
     * Print the computers antiviruses
     *
     * @param $comp                  Computer object
-    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
     */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB;

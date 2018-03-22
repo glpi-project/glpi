@@ -394,7 +394,7 @@ class CommonGLPI {
     * @since version 0.83
     *
     * @param CommonGLPI $item Item on which the tab need to be displayed
-    * @param bool|int $withtemplate is a template object ? (default 0)
+    * @param boolean|integer $withtemplate is a template object ? (default 0)
     * @return string tab name
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -409,8 +409,8 @@ class CommonGLPI {
     *
     * @param CommonGLPI $item Item on which the tab need to be displayed
     * @param integer $tabnum tab number (default 1)
-    * @param bool|int $withtemplate is a template object ? (default 0)
-    * @return bool
+    * @param boolean|integer $withtemplate is a template object ? (default 0)
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       return false;
@@ -422,9 +422,9 @@ class CommonGLPI {
     *
     * @param CommonGLPI $item Item on which the tab need to be displayed
     * @param string $tab tab name
-    * @param bool|int $withtemplate is a template object ? (default 0)
+    * @param boolean|integer $withtemplate is a template object ? (default 0)
     * @param array $options additional options to pass
-    * @return bool true
+    * @return boolean true
     */
    static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = []) {
 

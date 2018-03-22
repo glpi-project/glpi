@@ -307,7 +307,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $values (default '')
     * @param $options      array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
@@ -488,7 +488,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -576,7 +576,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $options   array    of possible options:
     *     - target filename : where to go when done.
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -794,7 +794,7 @@ class RSSFeed extends CommonDBVisible {
     * Get a specific RSS feed
     *
     * @param $url             string/array   URL of the feed or array of URL
-    * @param int|timestamp $cache_duration timestamp      cache duration (default DAY_TIMESTAMP)
+    * @param integer|timestamp $cache_duration timestamp      cache duration (default DAY_TIMESTAMP)
     * @return feed object
     */
    static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP) {

@@ -48,7 +48,7 @@ class Certificate extends CommonDBTM {
    protected $usenotepad       = true;
 
    /**
-    * @param int $nb
+    * @param integer $nb
     * @return string|translated
     */
    static function getTypeName($nb = 0) {
@@ -349,7 +349,7 @@ class Certificate extends CommonDBTM {
    /**
     * @param $ID
     * @param array $options
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
@@ -538,7 +538,7 @@ class Certificate extends CommonDBTM {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool|false
+    * @return boolean|false
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -673,7 +673,7 @@ class Certificate extends CommonDBTM {
     * Cron action on certificates : alert on expired certificates
     *
     * @param $task to log, if NULL display (default NULL)
-    * @return int 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
     */
    static function cronCertificate($task = null) {
       global $DB, $CFG_GLPI;

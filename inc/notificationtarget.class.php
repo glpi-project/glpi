@@ -316,7 +316,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $notification Notification object
     *
-    * @return bool
+    * @return boolean
     */
    function showForNotification(Notification $notification) {
       global $DB;
@@ -1281,7 +1281,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param $group Group object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForGroup(Group $group) {
       global $DB;
@@ -1531,7 +1531,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @deprecated 9.2 Use NotificationTarget::addForProfile()
     *
-    * @return nothing
+    * @return void
    **/
    function getUsersAddressesByProfile($profiles_id) {
       Toolbox::deprecated('getUsersAddressesByProfile() method is deprecated');

@@ -91,7 +91,7 @@ class NetworkName extends FQDNLabel {
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
+    * @return void (display)
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -357,7 +357,7 @@ class NetworkName extends FQDNLabel {
     *
     * @param $networkNameID the id of the NetworkName
     *
-    * @return bool
+    * @return boolean
     */
    static function unaffectAddressByID($networkNameID) {
       return self::affectAddress($networkNameID, 0, '');
@@ -369,7 +369,7 @@ class NetworkName extends FQDNLabel {
     * @param $items_id
     * @param $itemtype
     *
-    * @return bool
+    * @return boolean
     */
    static function affectAddress($networkNameID, $items_id, $itemtype) {
       global $DB;
@@ -676,7 +676,7 @@ class NetworkName extends FQDNLabel {
     *
     * @param CommonDBTM|CommonGLPI $item CommonGLPI object
     * @param $withtemplate   integer   withtemplate param (default 0)
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -826,7 +826,7 @@ class NetworkName extends FQDNLabel {
    /**
     * @param $item      CommonDBTM object
     *
-    * @return int
+    * @return integer
     */
    static function countForItem(CommonDBTM $item) {
       global $DB;

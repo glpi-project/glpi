@@ -178,7 +178,7 @@ class UserEmail  extends CommonDBChild {
     *
     * @param $user User object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForUser(User $user) {
 
@@ -198,7 +198,7 @@ class UserEmail  extends CommonDBChild {
    /**
     * @param $user
     *
-    * @return bool|void
+    * @return boolean|void
     */
    static function showAddEmailButton(User $user) {
 

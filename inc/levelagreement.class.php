@@ -389,7 +389,7 @@ abstract class LevelAgreement extends CommonDBChild {
     * Print the HTML for a SLM
     *
     * @param SLM $slm Slm item
-    * @return bool
+    * @return boolean
     */
    static function showForSLM(SLM $slm) {
       global $CFG_GLPI;
@@ -629,7 +629,7 @@ abstract class LevelAgreement extends CommonDBChild {
     *
     * @param $tickets_id
     * @param $type
-    * @return bool
+    * @return boolean
     */
    function getDataForTicket($tickets_id, $type) {
 

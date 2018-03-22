@@ -184,7 +184,7 @@ class NotificationTemplate extends CommonDBTM {
     *
     * @param $name      the dropdown name
     * @param $itemtype  display templates for this itemtype only
-    * @param int|the $value the dropdown's default value (0 by default)
+    * @param integer|the $value the dropdown's default value (0 by default)
     */
    static function dropdownTemplates($name, $itemtype, $value = 0) {
       global $DB;
@@ -199,7 +199,7 @@ class NotificationTemplate extends CommonDBTM {
    /**
     * @param $options
     *
-    * @return int
+    * @return integer
     */
    function getAdditionnalProcessOption($options) {
 
@@ -491,7 +491,7 @@ class NotificationTemplate extends CommonDBTM {
    /**
     * @param $language
     *
-    * @return bool|null|string[]
+    * @return boolean|null|string[]
     */
    function getByLanguage($language) {
       global $DB;

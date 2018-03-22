@@ -762,7 +762,7 @@ class Project extends CommonDBTM {
 
 
    /**
-    * @param int $output_type (default 'Search::HTML_OUTPUT')
+    * @param integer $output_type (default 'Search::HTML_OUTPUT')
     * @param id|string $mass_id id of the form to check all (default '')
     */
    static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
@@ -1059,7 +1059,7 @@ class Project extends CommonDBTM {
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
@@ -1260,7 +1260,7 @@ class Project extends CommonDBTM {
    /**
     * Show team for a project
     * @param Project $project
-    * @return bool
+    * @return boolean
     */
    function showTeam(Project $project) {
       global $DB, $CFG_GLPI;
@@ -1465,7 +1465,7 @@ class Project extends CommonDBTM {
    /** show GANTT diagram for a project or for all
     *
     * @param $ID ID of the project or -1 for all projects
-    * @return bool
+    * @return boolean
     */
    static function showGantt($ID) {
       global $DB;

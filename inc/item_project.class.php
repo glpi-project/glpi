@@ -85,7 +85,7 @@ class Item_Project extends CommonDBRelation{
    /**
     * @param $item   CommonDBTM object
     *
-    * @return int
+    * @return integer
     */
    static function countForItem(CommonDBTM $item) {
 

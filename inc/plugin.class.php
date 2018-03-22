@@ -108,7 +108,7 @@ class Plugin extends CommonDBTM {
    /**
     * Init plugins list reading plugins directory
     *
-    * @return nothing
+    * @return void
    **/
    function init() {
 
@@ -132,7 +132,7 @@ class Plugin extends CommonDBTM {
     * @param $name             Name of hook to use
     * @param $withhook boolean to load hook functions (false by default)
     *
-    * @return nothing
+    * @return void
    **/
    static function load($name, $withhook = false) {
       global $LOADED_PLUGINS;
@@ -161,7 +161,7 @@ class Plugin extends CommonDBTM {
     * @param $name            Name of hook to use
     * @param force|string $forcelang force a specific lang (default '')
     * @param lang|string $coretrytoload lang trying to be load from core (default '')
-    * @return nothing
+    * @return void
     */
    static function loadLang($name, $forcelang = '', $coretrytoload = '') {
       // $LANG needed : used when include lang file
@@ -714,7 +714,7 @@ class Plugin extends CommonDBTM {
    /**
     * Install a plugin
     *
-    * @param int $ID ID of the plugin
+    * @param integer $ID ID of the plugin
     *
     * @return void
    **/
@@ -927,7 +927,7 @@ class Plugin extends CommonDBTM {
     *
     * @param $plugin plugin directory
     *
-    * @return bool
+    * @return boolean
     */
    function isActivated($plugin) {
 
@@ -942,7 +942,7 @@ class Plugin extends CommonDBTM {
     *
     * @param $plugin plugin directory
     *
-    * @return bool
+    * @return boolean
     */
    function isInstalled($plugin) {
 
@@ -977,7 +977,7 @@ class Plugin extends CommonDBTM {
     * @param $glpitables   array of GLPI table name used by the plugin
     * @param $plugtables   array of Plugin table name which have an itemtype
     *
-    * @return nothing
+    * @return void
    **/
    static function migrateItemType($types = [], $glpitables = [], $plugtables = []) {
       global $DB;
@@ -1162,7 +1162,7 @@ class Plugin extends CommonDBTM {
     * @param $attrib    array of attributes, a hashtable with index in
     *                         (classname, typename, reservation_types)
     *
-    * @return bool
+    * @return boolean
    **/
    static function registerClass($itemtype, $attrib = []) {
       global $CFG_GLPI;
@@ -1593,7 +1593,7 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @param $name
-    * @return bool
+    * @return boolean
     *
     */
    public function checkVersions($name) {

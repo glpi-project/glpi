@@ -246,7 +246,7 @@ class NetworkAlias extends FQDNLabel {
     * @param $item                     NetworkName object
     * @param $withtemplate   integer   withtemplate param (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function showForNetworkName(NetworkName $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;

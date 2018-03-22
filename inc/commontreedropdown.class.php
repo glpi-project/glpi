@@ -610,7 +610,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
@@ -831,7 +831,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * check if a tree dropdown already exists (before import)
     *
     * @param array $input of value to import (name, ...)
-    * @return int|mixed ID of the new (or -1 if not found)
+    * @return integer|mixed ID of the new (or -1 if not found)
     */
    function findID(array &$input) {
       global $DB;

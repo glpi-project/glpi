@@ -167,7 +167,7 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * @param $item   CommonDBTM object
     *
-    * @return int
+    * @return integer
     */
    static function countForItem(CommonDBTM $item) {
 
@@ -612,10 +612,10 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @param $myname             select name
     * @param $itemtype           preselected value.for item type
-    * @param int|preselected $items_id preselected value for item ID (default 0)
-    * @param int|is $admin is an admin access ? (default 0)
-    * @param int|user $users_id user ID used to display my devices (default 0
-    * @param int|Restrict $entity_restrict Restrict to a defined entity (default -1)
+    * @param integer|preselected $items_id preselected value for item ID (default 0)
+    * @param integer|is $admin is an admin access ? (default 0)
+    * @param integer|user $users_id user ID used to display my devices (default 0
+    * @param integer|Restrict $entity_restrict Restrict to a defined entity (default -1)
     * @param $options   array of possible options:
     *    - tickets_id : ID of the ticket
     *    - used       : ID of the requester user
@@ -707,10 +707,10 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Make a select box for Ticket my devices
     *
-    * @param int|User $userID User ID for my device section (default 0)
-    * @param int|restrict $entity_restrict restrict to a specific entity (default -1)
-    * @param int|of $itemtype of selected item (default 0)
-    * @param int|of $items_id of selected item (default 0)
+    * @param integer|User $userID User ID for my device section (default 0)
+    * @param integer|restrict $entity_restrict restrict to a specific entity (default -1)
+    * @param integer|of $itemtype of selected item (default 0)
+    * @param integer|of $items_id of selected item (default 0)
     * @param $options   array of possible options:
     *    - used     : ID of the requester user
     *    - multiple : allow multiple choice
@@ -1013,7 +1013,7 @@ class Item_Ticket extends CommonDBRelation{
     *    - width        : specific width needed (default 80%)
     *
     *
-    * @return int|string|void
+    * @return integer|string|void
     */
    static function dropdown($options = []) {
       global $DB;
@@ -1119,7 +1119,7 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 

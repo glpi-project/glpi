@@ -205,9 +205,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * Get number of installed licenses of a license
     *
     * @param integer $softwarelicenses_id license ID
-    * @param int|string $entity to search for computer in (default = all entities)
+    * @param integer|string $entity to search for computer in (default = all entities)
     *                                     (default '') -1 means no entity restriction
-    * @return int number of installations
+    * @return integer number of installations
     */
    static function countForLicense($softwarelicenses_id, $entity = '') {
       global $DB;

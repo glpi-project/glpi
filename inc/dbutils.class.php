@@ -333,7 +333,7 @@ final class DbUtils {
     * @param string       $field        field name
     * @param string|array $condition condition to use (default '') or array of criteria
     *
-    * @return int nb of elements in table
+    * @return integer nb of elements in table
     */
    public function countDistinctElementsInTable($table, $field, $condition = "") {
       global $DB;

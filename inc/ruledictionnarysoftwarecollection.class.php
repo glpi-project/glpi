@@ -76,7 +76,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * @see RuleCollection::warningBeforeReplayRulesOnExistingDB()
     * @param filename $target
-    * @return bool|true
+    * @return boolean|true
     */
    function warningBeforeReplayRulesOnExistingDB($target) {
       global $CFG_GLPI;
@@ -113,11 +113,11 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
-    * @param int $offset
-    * @param int $maxtime
+    * @param integer $offset
+    * @param integer $maxtime
     * @param array $items
     * @param array $params
-    * @return bool|int|void
+    * @return boolean|integer|void
     */
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
@@ -493,7 +493,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
     * @param $software_id  software ID
     * @param $version      version name
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    function versionExists($software_id, $version) {
       global $DB;

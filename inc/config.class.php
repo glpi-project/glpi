@@ -1486,7 +1486,7 @@ class Config extends CommonDBTM {
     *
     * @param $password  string   password to validate
     * @param $display   boolean  display errors messages? (true by default)
-    * @return bool when $display is false and the password does not matches the requirements
+    * @return boolean when $display is false and the password does not matches the requirements
     *
     * @throws PasswordTooWeakException
     */
@@ -2156,7 +2156,7 @@ class Config extends CommonDBTM {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
@@ -2424,7 +2424,7 @@ class Config extends CommonDBTM {
     * Check Write Access to needed directories
     *
     * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
-    * @return int 2 : creation error 1 : delete error 0: OK
+    * @return integer 2 : creation error 1 : delete error 0: OK
     */
    static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;

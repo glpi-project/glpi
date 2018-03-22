@@ -74,7 +74,7 @@ class Certificate_Item extends CommonDBRelation {
 
    /**
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string|translated
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -103,9 +103,9 @@ class Certificate_Item extends CommonDBRelation {
 
    /**
     * @param CommonGLPI $item
-    * @param int $tabnum
-    * @param int $withtemplate
-    * @return bool
+    * @param integer $tabnum
+    * @param integer $withtemplate
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1,
                                             $withtemplate = 0) {
@@ -120,7 +120,7 @@ class Certificate_Item extends CommonDBRelation {
 
    /**
     * @param Certificate $item
-    * @return int
+    * @return integer
     */
    static function countForCertificate(Certificate $item) {
 
@@ -138,7 +138,7 @@ class Certificate_Item extends CommonDBRelation {
     *
     * @since 9.2
     * @param CommonDBTM $item
-    * @return int the number of certificates
+    * @return integer the number of certificates
     */
    static function countForItem(CommonDBTM $item) {
       return countElementsInTable('glpi_certificates_items',
@@ -151,7 +151,7 @@ class Certificate_Item extends CommonDBRelation {
     * @param $certificates_id
     * @param $items_id
     * @param $itemtype
-    * @return bool
+    * @return boolean
     */
    function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype) {
       global $DB;
@@ -208,7 +208,7 @@ class Certificate_Item extends CommonDBRelation {
     *
     * @param Certificate $certificate object
     *
-    * @return bool
+    * @return boolean
     */
    public static function showForCertificate(Certificate $certificate) {
       global $DB;
@@ -372,7 +372,7 @@ class Certificate_Item extends CommonDBRelation {
     * @param $item  CommonDBTM object for which associated certificates must be displayed
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;

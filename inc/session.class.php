@@ -52,7 +52,7 @@ class Session {
    /**
     * Destroy the current session
     *
-    * @return nothing
+    * @return void
     */
    static function destroy() {
 
@@ -71,7 +71,7 @@ class Session {
     *
     * @param $auth Auth object to init session
     *
-    * @return nothing
+    * @return void
     */
    static function init(Auth $auth) {
       global $CFG_GLPI;
@@ -294,8 +294,8 @@ class Session {
     *
     * @param string $ID of the new active entity ("all"=>load all possible entities)
     *                         (default 'all')
-    * @param bool $is_recursive also display sub entities of the active entity ? (false by default)
-    * @return bool
+    * @param boolean $is_recursive also display sub entities of the active entity ? (false by default)
+    * @return boolean
     */
    static function changeActiveEntities($ID = "all", $is_recursive = false) {
 
@@ -624,7 +624,7 @@ class Session {
     *
     * @since version 0.84
     *
-    * @return Boolean
+    * @return boolean
     */
    static function isCron() {
 
@@ -640,7 +640,7 @@ class Session {
     *
     * @param $force_human boolean   force human / do not return cron user (false by default)
     *
-    * @return bool
+    * @return boolean
     */
    static function getLoginUserID($force_human = true) {
 
@@ -821,7 +821,7 @@ class Session {
     *
     * @param $tab : list ID of entities
     *
-    * @return Boolean :
+    * @return boolean :
     */
    static function haveAccessToAllOfEntities($tab) {
 
@@ -840,8 +840,8 @@ class Session {
     * Check if you could access (read) to the entity of id = $ID
     *
     * @param $ID                    ID of the entity
-    * @param bool|int $is_recursive boolean  if recursive item (default 0)
-    * @return bool : read access to entity
+    * @param boolean|integer $is_recursive boolean  if recursive item (default 0)
+    * @return boolean : read access to entity
     */
    static function haveAccessToEntity($ID, $is_recursive = 0) {
 
@@ -877,8 +877,8 @@ class Session {
     * Check if you could access to one entity of an list
     *
     * @param $tab                   list ID of entities
-    * @param bool|int $is_recursive boolean  if recursive item (default 0)
-    * @return bool :
+    * @param boolean|integer $is_recursive boolean  if recursive item (default 0)
+    * @return boolean :
     */
    static function haveAccessToOneOfEntities($tab, $is_recursive = 0) {
 
@@ -898,7 +898,7 @@ class Session {
     *
     * @param $ID : ID of the entity
     *
-    * @return Boolean :
+    * @return boolean :
     */
    static function haveRecursiveAccessToEntity($ID) {
 
@@ -922,7 +922,7 @@ class Session {
     * @param string $module to check
     * @param string $right to check
     *
-    * @return Boolean : session variable have more than the right specified for the module
+    * @return boolean : session variable have more than the right specified for the module
     */
    static function haveRight($module, $right) {
       global $DB;
@@ -947,7 +947,7 @@ class Session {
     * @param $module           Module to check
     * @param $rights   array   Rights to check
     *
-    * @return Boolean : session variable have more than the right specified for the module
+    * @return boolean : session variable have more than the right specified for the module
      */
    static function haveRightsAnd($module, $rights = []) {
 
@@ -966,7 +966,7 @@ class Session {
     * @param string $module to check
     * @param array $rights to check
     *
-    * @return Boolean : session variable have more than the right specified for the module
+    * @return boolean : session variable have more than the right specified for the module
      */
    static function haveRightsOr($module, $rights = []) {
 
@@ -999,9 +999,9 @@ class Session {
     * Add a message to be displayed after redirect
     *
     * @param string $msg message to add
-    * @param bool $check_once Check if the message is not already added (false by default)
-    * @param int $message_type Message type (INFO, WARNING, ERROR) (default INFO)
-    * @param bool $reset Clear previous added message (false by default)
+    * @param boolean $check_once Check if the message is not already added (false by default)
+    * @param integer $message_type Message type (INFO, WARNING, ERROR) (default INFO)
+    * @param boolean $reset Clear previous added message (false by default)
     */
    static function addMessageAfterRedirect($msg, $check_once = false, $message_type = INFO,
                                            $reset = false) {

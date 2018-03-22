@@ -72,7 +72,7 @@ class Change_Ticket extends CommonDBRelation{
     *
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -102,9 +102,9 @@ class Change_Ticket extends CommonDBRelation{
    /**
     * @since version 0.85
     * @param CommonGLPI $item
-    * @param int $tabnum
-    * @param int $withtemplate
-    * @return bool
+    * @param integer $tabnum
+    * @param integer $withtemplate
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -126,7 +126,7 @@ class Change_Ticket extends CommonDBRelation{
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
@@ -240,7 +240,7 @@ class Change_Ticket extends CommonDBRelation{
     *
     * @param $change Change object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI;
@@ -348,7 +348,7 @@ class Change_Ticket extends CommonDBRelation{
     *
     * @param $ticket Ticket object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForTicket(Ticket $ticket) {
       global $DB, $CFG_GLPI;

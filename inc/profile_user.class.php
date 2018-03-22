@@ -112,7 +112,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @param $user User object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForUser(User $user) {
       global $DB,$CFG_GLPI;
@@ -272,7 +272,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @param $entity Entity object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForEntity(Entity $entity) {
       global $DB;
@@ -446,7 +446,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @param $prof Profile object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForProfile(Profile $prof) {
       global $DB, $CFG_GLPI;

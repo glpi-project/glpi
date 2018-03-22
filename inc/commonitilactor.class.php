@@ -74,7 +74,7 @@ abstract class CommonITILActor extends CommonDBRelation {
     *
     * @see CommonDBRelation::isAttach2Valid()
     *
-    * @return bool
+    * @return boolean
     */
    function isAttach2Valid(Array &$input) {
 
@@ -112,7 +112,7 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $items_id
     * @param $email
     *
-    * @return bool
+    * @return boolean
     */
    function isAlternateEmailForITILObject($items_id, $email) {
       global $DB;

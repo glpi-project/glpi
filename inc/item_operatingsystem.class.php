@@ -108,7 +108,7 @@ class Item_OperatingSystem extends CommonDBRelation {
     *
     * @param CommonDBTM $item Item instance
     *
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @since version 9.2
     *
     */

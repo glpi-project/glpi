@@ -289,7 +289,7 @@ class Problem extends CommonITILObject {
 
    /**
     * @see CommonDBTM::post_updateItem()
-    * @param int $history
+    * @param integer $history
     */
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
@@ -645,7 +645,7 @@ class Problem extends CommonITILObject {
     * @param string $status (default 'proces)
     * @param boolean $showgroupproblems (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    static function showCentralList($start, $status = "process", $showgroupproblems = true) {
       global $DB, $CFG_GLPI;
@@ -854,7 +854,7 @@ class Problem extends CommonITILObject {
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
     *
-    * @return bool
+    * @return boolean
     */
    static function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
@@ -1038,7 +1038,7 @@ class Problem extends CommonITILObject {
     * @param $ID
     * @param $options   array
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;

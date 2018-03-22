@@ -106,7 +106,7 @@ class ProjectCost extends CommonDBChild {
     * @param $item            CommonGLPI object
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -274,7 +274,7 @@ class ProjectCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
 
@@ -331,7 +331,7 @@ class ProjectCost extends CommonDBChild {
     * Print the project costs
     *
     * @param $project               Project object
-    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
     */
    static function showForProject(Project $project, $withtemplate = 0) {
       global $DB, $CFG_GLPI;

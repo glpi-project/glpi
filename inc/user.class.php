@@ -1670,7 +1670,7 @@ class User extends CommonDBTM {
     * @param $mail_method  mail method description array
     * @param $name         login of the user
     *
-    * @return bool
+    * @return boolean
     */
    function getFromIMAP($mail_method, $name) {
       global $DB;
@@ -2189,7 +2189,7 @@ class User extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @return bool
+    * @return boolean
     */
    static function showPersonalInformation($userid) {
       global $CFG_GLPI;
@@ -3169,12 +3169,12 @@ class User extends CommonDBTM {
     *
     * @param bool|true $count true if execute an count(*) (true by default)
     * @param limit|string $right limit user who have specific right (default 'all')
-    * @param int|Restrict $entity_restrict Restrict to a defined entity (default -1)
+    * @param integer|Restrict $entity_restrict Restrict to a defined entity (default -1)
     * @param default|int $value default value (default 0)
     * @param $used             array   Already used items ID: not to display in dropdown
     * @param pattern|string $search pattern (default '')
-    * @param int|start $start start LIMIT value (default 0)
-    * @param int|limit $limit limit LIMIT value (default -1 no limit)
+    * @param integer|start $start start LIMIT value (default 0)
+    * @param integer|limit $limit limit LIMIT value (default -1 no limit)
     * @return mysql result set.
     */
    static function getSqlSearchResult ($count = true, $right = "all", $entity_restrict = -1, $value = 0,
@@ -3942,7 +3942,7 @@ class User extends CommonDBTM {
    /**
     * @param $email (default '')
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    static function getOrImportByEmail($email = '') {
       global $DB, $CFG_GLPI;
@@ -3984,7 +3984,7 @@ class User extends CommonDBTM {
    /**
     * @param $users_id
     *
-    * @return bool|void
+    * @return boolean|void
     */
    static function manageDeletedUserInLdap($users_id) {
       global $CFG_GLPI;
@@ -4051,7 +4051,7 @@ class User extends CommonDBTM {
    /**
     * @param $login
     *
-    * @return bool|mixed
+    * @return boolean|mixed
     */
    static function getIdByName($login) {
       return self::getIdByField('name', $login);
@@ -4064,7 +4064,7 @@ class User extends CommonDBTM {
     * @param $field
     * @param $login
     *
-    * @return bool|mixed
+    * @return boolean|mixed
     */
    static function getIdByField($field, $login) {
       global $DB;

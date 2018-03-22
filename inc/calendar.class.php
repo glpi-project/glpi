@@ -205,7 +205,7 @@ class Calendar extends CommonDropdown {
     *
     * @param $options array of new values to set
     *
-    * @return bool
+    * @return boolean
     */
    function duplicate($options = []) {
 
@@ -394,7 +394,7 @@ class Calendar extends CommonDropdown {
     *
     * @param $start              datetime    begin
     * @param $delay              timestamp   delay to add
-    * @param int|timestamp $additional_delay timestamp   delay to add (default 0)
+    * @param integer|timestamp $additional_delay timestamp   delay to add (default 0)
     * @param $work_in_days       boolean     force working in days (false by default)
     * @param $end_of_working_day boolean     end of working day (false by default)
     * @return end date
@@ -606,7 +606,7 @@ class Calendar extends CommonDropdown {
     *
     * @param $calendars_id integer calendar ID
     *
-    * @return bool
+    * @return boolean
     */
    function updateDurationCache($calendars_id) {
 

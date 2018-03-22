@@ -351,7 +351,7 @@ class RuleAction extends CommonDBChild {
     *    - alreadyused
     *    - display
     *
-    * @return bool|int|string
+    * @return boolean|integer|string
     */
    static function dropdownActions($options = []) {
 

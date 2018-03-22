@@ -2517,7 +2517,7 @@ class AuthLDAP extends CommonDBTM {
     * @param boolean $use_tls use a TLS connection? (false by default)
     * @param integer $deref_options deref options used
     *
-    * @return bool|resource
+    * @return boolean|resource
     */
    static function connectToServer($host, $port, $login = "", $password = "",
                                    $use_tls = false, $deref_options = 0) {
@@ -3347,7 +3347,7 @@ class AuthLDAP extends CommonDBTM {
    }
 
    /**
-    * @param int $history
+    * @param integer $history
     */
    function post_updateItem($history = 1) {
       global $DB;
@@ -3724,7 +3724,7 @@ class AuthLDAP extends CommonDBTM {
     * Check if text representation of an objectguid is valid
     *
     * @param $guid_str
-    * @return bool
+    * @return boolean
     *
     */
    public static function isValidGuid($guid_str) {

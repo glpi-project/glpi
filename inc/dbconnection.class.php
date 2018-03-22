@@ -83,7 +83,7 @@ class DBConnection extends CommonDBTM {
     * @param string $user slave DB user
     * @param string $password slave DB password
     * @param string $DBname name of the slave DB
-    * @return bool for success
+    * @return boolean for success
     *
     */
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
@@ -258,11 +258,11 @@ class DBConnection extends CommonDBTM {
    /**
     *  Establish a connection to a mysql server (main or replicate)
     *
-    * @param bool $use_slave try to connect to slave server first not to main server
-    * @param bool $required connection to the specified server is required
+    * @param boolean $use_slave try to connect to slave server first not to main server
+    * @param boolean $required connection to the specified server is required
     *                      (if connection failed, do not try to connect to the other server)
-    * @param bool $display display error message (true by default)
-    * @return bool
+    * @param boolean $display display error message (true by default)
+    * @return boolean
     */
    static function establishDBConnection($use_slave, $required, $display = true) {
       global $DB;
@@ -335,7 +335,7 @@ class DBConnection extends CommonDBTM {
     *
     * @param $DBconnection DB conneciton used
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    static function getHistoryMaxDate($DBconnection) {
 
@@ -389,7 +389,7 @@ class DBConnection extends CommonDBTM {
     *
     * @param $task to log and get param
     *
-    * @return int
+    * @return integer
     */
    static function cronCheckDBreplicate($task) {
       global $DB;
@@ -487,7 +487,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Enable or disable db replication check cron task
     *
-    * @param bool $enable (true by default)
+    * @param boolean $enable (true by default)
     */
    static function changeCronTaskStatus($enable = true) {
 

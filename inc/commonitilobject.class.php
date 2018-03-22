@@ -221,7 +221,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * get users linked to a object
     *
-    * @param int $type to search (see constants)
+    * @param integer $type to search (see constants)
     *
     * @return array
    **/
@@ -238,7 +238,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * get groups linked to a object
     *
-    * @param int $type to search (see constants)
+    * @param integer $type to search (see constants)
     *
     * @return array
    **/
@@ -257,7 +257,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param int $type to search (see constants)
+    * @param integer $type to search (see constants)
     *
     * @return array
    **/
@@ -284,7 +284,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param int $type to search (see constants)
+    * @param integer $type to search (see constants)
     *
     * @return array
    **/
@@ -301,8 +301,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * count users linked to object by type or global
     *
-    * @param int $type to search (see constants) / 0 for all (default 0)
-    * @return int
+    * @param integer $type to search (see constants) / 0 for all (default 0)
+    * @return integer
     */
    function countUsers($type = 0) {
 
@@ -327,8 +327,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * count groups linked to object by type or global
     *
-    * @param int $type to search (see constants) / 0 for all (default 0)
-    * @return int
+    * @param integer $type to search (see constants) / 0 for all (default 0)
+    * @return integer
     */
    function countGroups($type = 0) {
 
@@ -355,8 +355,8 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param int $type to search (see constants) / 0 for all (default 0)
-    * @return int
+    * @param integer $type to search (see constants) / 0 for all (default 0)
+    * @return integer
     */
    function countSuppliers($type = 0) {
 
@@ -1809,7 +1809,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $value priority ID
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getPriorityName($value) {
 
@@ -1925,7 +1925,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $value urgency ID
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getUrgencyName($value) {
 
@@ -2038,7 +2038,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $value impact ID
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getImpactName($value) {
 
@@ -2552,7 +2552,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
@@ -4776,7 +4776,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param string $date1 begin date (default '')
     * @param string $date2 end date (default '')
-    * @param bool $title indicates if stat if by title (true) or type (false) (true by default)
+    * @param boolean $title indicates if stat if by title (true) or type (false) (true by default)
     * @return array contains the distinct recipients which have tickets
     */
    function getUsedUserTitleOrTypeBetween($date1 = '', $date2 = '', $title = true) {
@@ -5495,7 +5495,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
-    * @param int $output_type (default 'Search::HTML_OUTPUT')
+    * @param integer $output_type (default 'Search::HTML_OUTPUT')
     * @param id|string $mass_id id of the form to check all (default '')
     */
    static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
@@ -5550,11 +5550,11 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Summary of getTimelinePosition
     * Returns the position of the $sub_type for the $user_id
-    * @param int $items_id is the id of the item (tickets_id, problems_id, ...)
+    * @param integer $items_id is the id of the item (tickets_id, problems_id, ...)
     * @param string $sub_type is TicketFollowup, Document_Item, TicketTask, TicketValidation or Solution
-    * @param int $users_id
+    * @param integer $users_id
     * @since 9.2
-    * @return int
+    * @return integer
     */
    static function getTimelinePosition($items_id, $sub_type, $users_id) {
       return self::TIMELINE_NOTSET;

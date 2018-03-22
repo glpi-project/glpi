@@ -571,7 +571,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $target string URL
     *
-    * @return bool
+    * @return boolean
     */
    function showDeleteConfirmForm($target) {
 
@@ -642,7 +642,7 @@ abstract class CommonDropdown extends CommonDBTM {
     * check if a dropdown already exists (before import)
     *
     * @param array $input of value to import (name)
-    * @return int|mixed ID of the new (or -1 if not found)
+    * @return integer|mixed ID of the new (or -1 if not found)
     */
    function findID(array &$input) {
       global $DB;
@@ -710,7 +710,7 @@ abstract class CommonDropdown extends CommonDBTM {
     * @param string $comment (default '') (need to be addslashes)
     * @param bool|if $add if true, add it if not found. if false,
     *                                  just check if exists (true by default)
-    * @return int : dropdown id.
+    * @return integer : dropdown id.
     */
    function importExternal($value, $entities_id = -1, $external_params = [], $comment = "",
                            $add = true) {

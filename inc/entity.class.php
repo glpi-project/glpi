@@ -326,7 +326,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * @since version 0.84 (before in entitydata.class)
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -357,9 +357,9 @@ class Entity extends CommonTreeDropdown {
    /**
     * @since version 0.84 (before in entitydata.class)
     * @param CommonGLPI $item
-    * @param int $tabnum
-    * @param int $withtemplate
-    * @return bool
+    * @param integer $tabnum
+    * @param integer $withtemplate
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -397,7 +397,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * Print a good title for entity pages
     *
-    *@return nothing (display)
+    * @return void (display)
     **/
    function title() {
       // Empty title for entities
@@ -1302,7 +1302,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
     *
-    * @return bool
+    * @return boolean
     */
    static function showStandardOptions(Entity $entity) {
 
@@ -1393,7 +1393,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
     *
-    * @return bool
+    * @return boolean
     */
    static function showAdvancedOptions(Entity $entity) {
       global $DB;
@@ -1481,7 +1481,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
     *
-    * @return bool
+    * @return boolean
     */
    static function showInventoryOptions(Entity $entity) {
 
@@ -1641,7 +1641,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
     *
-    * @return bool
+    * @return boolean
     */
    static function showNotificationOptions(Entity $entity) {
 
@@ -2034,7 +2034,7 @@ class Entity extends CommonTreeDropdown {
     * @param $field
     * @param $value must be addslashes
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    private static function getEntityIDByField($field, $value) {
       global $DB;
@@ -2056,7 +2056,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    static function getEntityIDByDN($value) {
       return self::getEntityIDByField("ldap_dn", $value);
@@ -2068,7 +2068,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    static function getEntityIDByCompletename($value) {
       return self::getEntityIDByField("completename", $value);
@@ -2080,7 +2080,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    static function getEntityIDByTag($value) {
       return self::getEntityIDByField("tag", $value);
@@ -2092,7 +2092,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $value
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    static function getEntityIDByDomain($value) {
       return self::getEntityIDByField("mail_domain", $value);
@@ -2104,7 +2104,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entities_id
     *
-    * @return bool
+    * @return boolean
     */
    static function isEntityDirectoryConfigured($entities_id) {
 
@@ -2128,7 +2128,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $entity Entity object
     *
-    * @return bool
+    * @return boolean
     */
    static function showHelpdeskOptions(Entity $entity) {
       global $CFG_GLPI;
@@ -2368,8 +2368,8 @@ class Entity extends CommonTreeDropdown {
     * @param $fieldref        string   name of the referent field to know if we look at parent entity
     * @param $entities_id
     * @param $fieldval        string   name of the field that we want value (default '')
-    * @param int|value $default_value value to return (default -2)
-    * @return int
+    * @param integer|value $default_value value to return (default -2)
+    * @return integer
     */
    static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2) {
 
@@ -2565,7 +2565,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $options array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownAutoAssignMode(array $options) {
 
@@ -2771,7 +2771,7 @@ class Entity extends CommonTreeDropdown {
     * @param $values (default '')
     * @param $options      array
     *
-    * @return int|string|void
+    * @return integer|string|void
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;

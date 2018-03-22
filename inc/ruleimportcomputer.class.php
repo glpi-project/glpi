@@ -159,7 +159,7 @@ class RuleImportComputer extends Rule {
     * @param $name
     * @param $value
     *
-    * @return bool
+    * @return boolean
     */
    function manageSpecificCriteriaValues($criteria, $name, $value) {
 
@@ -207,8 +207,8 @@ class RuleImportComputer extends Rule {
     * @param $criteria
     * @param $name
     * @param $value
-    * @param bool $test
-    * @return bool
+    * @param boolean $test
+    * @return boolean
     */
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
 
@@ -231,7 +231,7 @@ class RuleImportComputer extends Rule {
     * @see Rule::displayAdditionalRuleAction()
     * @param array $action
     * @param string $value
-    * @return bool
+    * @return boolean
     */
    function displayAdditionalRuleAction(array $action, $value = '') {
 

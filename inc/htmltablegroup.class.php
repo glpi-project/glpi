@@ -78,7 +78,7 @@ class HTMLTableGroup extends HTMLTableBase {
    /**
     * @param $header    HTMLTableHeader object
     *
-    * @return bool
+    * @return boolean
     */
    function haveHeader(HTMLTableHeader $header) {
 

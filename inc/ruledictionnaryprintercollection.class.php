@@ -74,11 +74,11 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
-    * @param int $offset
-    * @param int $maxtime
+    * @param integer $offset
+    * @param integer $maxtime
     * @param array $items
     * @param array $params
-    * @return int|void
+    * @return integer|void
     */
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
@@ -178,7 +178,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @param $res_rule  array
     * @param $input     array
     *
-    * @return bool
+    * @return boolean
     */
    static function somethingHasChanged(array $res_rule, array $input) {
 
@@ -324,7 +324,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @param $ID                 the old printer's id
     * @param $new_printers_id    the new printer's id
     *
-    * @return nothing
+    * @return void
    **/
    function moveDirectConnections($ID, $new_printers_id) {
       global $DB;

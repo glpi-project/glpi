@@ -78,8 +78,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @see NotificationTarget::validateSendTo()
     * @param string $event
     * @param array $infos
-    * @param bool $notify_me
-    * @return bool
+    * @param boolean $notify_me
+    * @return boolean
     */
    function validateSendTo($event, array $infos, $notify_me = false) {
 

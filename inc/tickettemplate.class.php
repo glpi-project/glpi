@@ -480,7 +480,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $field string field
     *
-    * @return bool
+    * @return boolean
    **/
    function isHiddenField($field) {
 
@@ -498,7 +498,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $field string field
     *
-    * @return bool
+    * @return boolean
    **/
    function isPredefinedField($field) {
 
@@ -516,7 +516,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $field string field
     *
-    * @return bool
+    * @return boolean
    **/
    function isMandatoryField($field) {
 
@@ -592,7 +592,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 

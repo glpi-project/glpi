@@ -204,7 +204,7 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @see CommonDBTM::post_updateItem
-    * @param int $history
+    * @param integer $history
     */
    function post_updateItem($history = 1) {
       global $DB;
@@ -507,7 +507,7 @@ class NetworkPort extends CommonDBChild {
     * @param $item                     CommonDBTM object
     * @param $withtemplate   integer   withtemplate param (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -1195,7 +1195,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * @param CommonDBTM $item
     *
-    * @return int
+    * @return integer
     */
    static function countForItem(CommonDBTM $item) {
 

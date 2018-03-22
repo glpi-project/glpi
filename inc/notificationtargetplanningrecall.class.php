@@ -54,7 +54,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    /**
     * @see NotificationTarget::addNotificationTargets()
-    * @param int $entity
+    * @param integer $entity
     */
    function addNotificationTargets($entity) {
       $this->addTarget(Notification::AUTHOR, __('Requester'));

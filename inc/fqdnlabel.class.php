@@ -77,7 +77,7 @@ abstract class FQDNLabel extends CommonDBChild {
     *
     * @param $label        the label to check
     *
-    * @return bool
+    * @return boolean
     */
    static function checkFQDNLabel($label) {
 
@@ -104,7 +104,7 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * @param $input
     *
-    * @return bool
+    * @return boolean
     */
    function prepareLabelInput($input) {
 

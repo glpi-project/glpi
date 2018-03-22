@@ -50,7 +50,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     *
     * @since version 9.1 2 mandatory parameters
     *
-    * @return bool
+    * @return boolean
     */
    function getFromDBForTicket($ID, $slaType) {
 
@@ -145,7 +145,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     *
     * @since version 9.1   2 parameters mandatory
     *
-    * @return nothing
+    * @return void
    **/
    static function doLevelForTicket(array $data, $slaType) {
 

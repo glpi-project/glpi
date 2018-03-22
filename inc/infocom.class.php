@@ -128,7 +128,7 @@ class Infocom extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -161,7 +161,7 @@ class Infocom extends CommonDBChild {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -180,7 +180,7 @@ class Infocom extends CommonDBChild {
    /**
     * @param $item   Supplier  object
     *
-    * @return int
+    * @return integer
     */
    static function countForSupplier(Supplier $item) {
 
@@ -218,7 +218,7 @@ class Infocom extends CommonDBChild {
     * @param $values (default '')
     * @param $options      array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
@@ -245,7 +245,7 @@ class Infocom extends CommonDBChild {
     * @param string $itemtype device to retrieve infocom
     * @param integer $ID of the device to retrieve infocom
     *
-    * @return bool
+    * @return boolean
     */
    function getFromDBforDevice ($itemtype, $ID) {
 
@@ -279,7 +279,7 @@ class Infocom extends CommonDBChild {
     * Fill, if necessary, automatically some dates when status changes
     *
     * @param CommonDBTM $item object whose status have changed
-    * @param bool $action_add object is added, false if updated (true by default)
+    * @param boolean $action_add object is added, false if updated (true by default)
     *
     */
    static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true) {
@@ -326,7 +326,7 @@ class Infocom extends CommonDBChild {
     *
     * @param array $infocoms of item's infocom to modify
     * @param string $field date to modify (default '')
-    * @param int $action action to peform (copy from another date) (default 0)
+    * @param integer $action action to peform (copy from another date) (default 0)
     * @param array $params of additional parameters needed to perform the task
     *
     */
@@ -459,7 +459,7 @@ class Infocom extends CommonDBChild {
     * Cron action on infocom : alert on expired warranty
     *
     * @param $task to log, if NULL use display (default NULL)
-    * @return int 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
     */
    static function cronInfocom($task = null) {
       global $DB, $CFG_GLPI;
@@ -589,7 +589,7 @@ class Infocom extends CommonDBChild {
    /**
     * @param $options array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownAlert($options) {
 
@@ -621,7 +621,7 @@ class Infocom extends CommonDBChild {
     * @param $name      select name
     * @param default|int $value default value (default 0)
     * @param bool|display $display display or get string (true by default)
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownAmortType($name, $value = 0, $display = true) {
 
@@ -1008,7 +1008,7 @@ class Infocom extends CommonDBChild {
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $CFG_GLPI;
@@ -1965,7 +1965,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBTM::getMassiveActionsForItemtype()
     * @param array $actions
     * @param string $itemtype
-    * @param int $is_deleted
+    * @param integer $is_deleted
     * @param CommonDBTM|null $checkitem
     */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,

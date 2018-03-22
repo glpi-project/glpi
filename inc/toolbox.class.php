@@ -113,7 +113,7 @@ class Toolbox {
     * @param $offset    integer  The search offset. If it is not specified, 0 is used.
     *                            (default 0)
     *
-    * @return bool|false|int
+    * @return boolean|false|int
     */
    static function strpos($str, $tofound, $offset = 0) {
       return mb_strpos($str, $tofound, $offset, "UTF-8");
@@ -144,7 +144,7 @@ class Toolbox {
     *
     * @param $str string
     *
-    * @return int
+    * @return integer
     */
    static function strlen($str) {
       return mb_strlen($str, "UTF-8");
@@ -495,7 +495,7 @@ class Toolbox {
     * @param $text   string   text to log
     * @param $force  boolean  force log in file not seeing use_log_in_files config (false by default)
     *
-    * @return bool
+    * @return boolean
     */
    static function logInFile($name, $text, $force = false) {
       global $CFG_GLPI;
@@ -668,7 +668,7 @@ class Toolbox {
     * @param $filename  string: file title
     * @param $mime      string: file mime type
     *
-    * @return nothing
+    * @return void
    **/
    static function sendFile($file, $filename, $mime = null) {
 
@@ -813,7 +813,7 @@ class Toolbox {
     *
     * @param string $ininame name of the ini ooption to retrieve (since 9.1)
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getMemoryLimit($ininame = 'memory_limit') {
 
@@ -849,7 +849,7 @@ class Toolbox {
     * Check is current memory_limit is enough for GLPI
     *
     * @since version 0.83
-    * @return int 0 if PHP not compiled with memory_limit support
+    * @return integer 0 if PHP not compiled with memory_limit support
     *         1 no memory limit (memory_limit = -1)
     *         2 insufficient memory for GLPI
     *         3 enough memory for GLPI
@@ -872,7 +872,7 @@ class Toolbox {
 
    /**
     * Common Checks needed to use GLPI
-    * @return int 2 : creation error 1 : delete error 0: OK
+    * @return integer 2 : creation error 1 : delete error 0: OK
     */
    static function commonCheckForUseGLPI() {
       global $CFG_GLPI;
@@ -1100,7 +1100,7 @@ class Toolbox {
     *
     * @param $path string: directory or file to get size
     *
-    * @return int size of the $path
+    * @return integer size of the $path
    **/
    static function filesizeDirectory($path) {
 
@@ -1187,14 +1187,14 @@ class Toolbox {
     *
     * @param $source_path   string   path of the picture to be resized
     * @param $dest_path     string   path of the new resized picture
-    * @param int|string $new_width string   new width after resized (default 71)
-    * @param int|string $new_height string   new height after resized (default 71)
-    * @param int|string $img_y string   y axis of picture (default 0)
-    * @param int|string $img_x string   x axis of picture (default 0)
-    * @param int|string $img_width string   width of picture (default 0)
-    * @param int|string $img_height string   height of picture (default 0)
+    * @param integer|string $new_width string   new width after resized (default 71)
+    * @param integer|string $new_height string   new height after resized (default 71)
+    * @param integer|string $img_y string   y axis of picture (default 0)
+    * @param integer|string $img_x string   x axis of picture (default 0)
+    * @param integer|string $img_width string   width of picture (default 0)
+    * @param integer|string $img_height string   height of picture (default 0)
     * @param $max_size      integer  max size of the picture (default 500, is set to 0 no resize)
-    * @return bool : true or false
+    * @return boolean : true or false
     */
    static function resizePicture($source_path, $dest_path, $new_width = 71, $new_height = 71,
                                  $img_y = 0, $img_x = 0, $img_width = 0, $img_height = 0, $max_size = 500) {
@@ -1383,7 +1383,7 @@ class Toolbox {
     * Check Write Access to a directory
     *
     * @param $dir string: directory to check
-    * @return int 2 : creation error 1 : delete error 0: OK
+    * @return integer 2 : creation error 1 : delete error 0: OK
     */
    static function testWriteAccessToDirectory($dir) {
 
@@ -1671,7 +1671,7 @@ class Toolbox {
     * @param $need
     * @param $tab
     *
-    * @return bool
+    * @return boolean
     */
    static function key_exists_deep($need, $tab) {
 
@@ -1857,7 +1857,7 @@ class Toolbox {
     * Convert a value in byte, kbyte, megabyte etc...
     *
     * @param $val string: config value (like 10k, 5M)
-    * @return int|string $val
+    * @return integer|string $val
     */
    static function return_bytes_from_ini_vars($val) {
 
@@ -2460,9 +2460,9 @@ class Toolbox {
     *
     * @param mixed $needle
     * @param array $haystack
-    * @param bool  $strict: If strict is set to TRUE then it will also
+    * @param boolean  $strict: If strict is set to TRUE then it will also
     *              check the types of the needle in the haystack.
-    * @return bool
+    * @return boolean
     */
    static function in_array_recursive($needle, $haystack, $strict = false) {
 

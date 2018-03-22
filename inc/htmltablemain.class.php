@@ -82,7 +82,7 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @param $name the name to print inside the header
     *
-    * @return nothing
+    * @return void
    **/
    function setTitle($name) {
       $this->title = $name;
@@ -105,7 +105,7 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * TODO : study to be sure that the order is the one we have defined ...
     *
-    * @return nothing
+    * @return void
    **/
    function createGroup($name, $content) {
 
@@ -132,7 +132,7 @@ class HTMLTableMain extends HTMLTableBase {
     *
     * @param $group_name (string) the group name
     *
-    * @return nothing
+    * @return void
    **/
    function getGroup($group_name) {
 

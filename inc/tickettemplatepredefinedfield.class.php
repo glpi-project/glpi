@@ -226,7 +226,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     * @since version 0.83
     *
     * @param Ticket|TicketTemplate $tt Ticket Template
-    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
     */
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = 0) {
       global $DB, $CFG_GLPI;

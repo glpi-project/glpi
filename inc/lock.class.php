@@ -59,7 +59,7 @@ class Lock {
     *
     * @param CommonDBTM $item the source item
     *
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item) {
       global $DB;
@@ -346,7 +346,7 @@ class Lock {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -466,7 +466,7 @@ class Lock {
     * @see CommonDBTM::getMassiveActionsForItemtype()
     * @param array $actions
     * @param $itemtype
-    * @param int $is_deleted
+    * @param integer $is_deleted
     * @param CommonDBTM|null $checkitem
     */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
@@ -487,7 +487,7 @@ class Lock {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 

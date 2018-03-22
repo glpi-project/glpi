@@ -1035,7 +1035,7 @@ class Transfer extends CommonDBTM {
     *
     * @param string $itemtype to transfer
     * @param integer $ID of the item to transfer
-    * @param int $newID of the item
+    * @param integer $newID of the item
     *
     * Transfer item to a new Item if $ID==$newID : only update entities_id field :
     *                                $ID!=$new ID -> copy datas (like template system)
@@ -1184,7 +1184,7 @@ class Transfer extends CommonDBTM {
     *
     * @param integer $locID location ID
     *
-    * @return int
+    * @return integer
     */
    function transferDropdownLocation($locID) {
       global $DB;
@@ -1459,7 +1459,7 @@ class Transfer extends CommonDBTM {
     * Copy (if needed) One softwareversion to the Dest Entity
     *
     * @param $ID of the version
-    * @return int|of $ID of the new version (could be the same)
+    * @return integer|of $ID of the new version (could be the same)
     */
    function copySingleVersion($ID) {
       global $DB;
@@ -2722,7 +2722,7 @@ class Transfer extends CommonDBTM {
     *
     * @param $ID ID of the enterprise
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    function transferSingleSupplier($ID) {
       global $DB, $CFG_GLPI;

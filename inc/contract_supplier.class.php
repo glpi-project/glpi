@@ -63,7 +63,7 @@ class Contract_Supplier extends CommonDBRelation {
 
    /**
     * @param string|Supplier $item string   Supplier object
-    * @return int
+    * @return integer
     */
    static function countForSupplier(Supplier $item) {
 
@@ -78,7 +78,7 @@ class Contract_Supplier extends CommonDBRelation {
 
    /**
     * @param Contract|string $item string   Contract object
-    * @return int
+    * @return integer
     */
    static function countForContract(Contract $item) {
 

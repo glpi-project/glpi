@@ -75,7 +75,7 @@ class QueuedNotification extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     * @param null $checkitem
-    * @param bool $is_deleted
+    * @param boolean $is_deleted
     * @return array
     */
    function getSpecificMassiveActions($checkitem = null, $is_deleted = false) {

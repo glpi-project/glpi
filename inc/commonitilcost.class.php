@@ -61,7 +61,7 @@ abstract class CommonITILCost extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -85,7 +85,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -334,7 +334,7 @@ abstract class CommonITILCost extends CommonDBChild {
     *
     * @param $items_id        integer  ID of the item
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    function getTotalActionTimeForItem($items_id) {
       global $DB;
@@ -380,7 +380,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
 
@@ -476,7 +476,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * Print the item costs
     *
     * @param $item                  CommonITILObject object or Project
-    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
     * @return total cost
     */
    static function showForObject($item, $withtemplate = 0) {

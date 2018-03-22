@@ -88,7 +88,7 @@ class NotImportedEmail extends CommonDBTM {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -286,7 +286,7 @@ class NotImportedEmail extends CommonDBTM {
     * @param $values (default '')
     * @param $options      array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 

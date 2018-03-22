@@ -67,7 +67,7 @@ class Alert extends CommonDBTM {
     * @param string $ID ID of the item to clear
     * @param integer $alert_type ID of the alert type to clear
     *
-    * @return bool
+    * @return boolean
     */
    function clear($itemtype, $ID, $alert_type) {
 
@@ -122,7 +122,7 @@ class Alert extends CommonDBTM {
     *
     * @param array $options Display options
     *
-    * @return int|string (see $options['display'])
+    * @return integer|string (see $options['display'])
     */
    static function dropdownYesNo($options = []) {
 
@@ -155,7 +155,7 @@ class Alert extends CommonDBTM {
     * @param string $value   Dropdown selected value
     * @param array  $options Display options
     *
-    * @return int|string (see $options['display'])
+    * @return integer|string (see $options['display'])
     */
    static function dropdownIntegerNever($name, $value, $options = []) {
 
@@ -192,9 +192,9 @@ class Alert extends CommonDBTM {
     * Does alert exists
     *
     * @param string $itemtype (default '')
-    * @param int|string $items_id (default '')
-    * @param int|string $type (default '')
-    * @return bool|int
+    * @param integer|string $items_id (default '')
+    * @param integer|string $type (default '')
+    * @return boolean|integer
     */
    static function alertExists($itemtype = '', $items_id = '', $type = '') {
       global $DB;
@@ -213,9 +213,9 @@ class Alert extends CommonDBTM {
     * @since version 0.84
     *
     * @param string $itemtype (default '')
-    * @param int|string $items_id (default '')
-    * @param int|string $type (default '')
-    * @return bool|mixed
+    * @param integer|string $items_id (default '')
+    * @param integer|string $type (default '')
+    * @return boolean|mixed
     */
    static function getAlertDate($itemtype = '', $items_id = '', $type = '') {
       global $DB;

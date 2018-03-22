@@ -244,7 +244,7 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * Display a dropdown which contains all the available itemtypes
     *
-    * @return nothing
+    * @return void
    **/
    function showItemtype() {
       global $CFG_GLPI;
@@ -312,7 +312,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param $itemtype          itemtype
     * @param $options    array    of options
     *
-    * @return bool|int|string
+    * @return boolean|integer|string
     */
    static function dropdownField($itemtype, $options = []) {
       global $DB;
@@ -384,7 +384,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param string $field to check
     * @param string $value
     *
-    * @return bool
+    * @return boolean
     */
    static function isFieldBlacklisted($itemtype, $entities_id, $field, $value) {
       global $DB;

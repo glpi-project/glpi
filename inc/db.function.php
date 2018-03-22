@@ -193,7 +193,7 @@ function getSingular($string) {
  * @param string|array $table     table name(s)
  * @param string|array $condition condition to use (default '') or array of criteria
  *
- * @return int nb of elements in table
+ * @return integer nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countElementsInTable()
 **/
@@ -209,7 +209,7 @@ function countElementsInTable($table, $condition = "") {
  * @param $field        string         field name
  * @param $condition    string         condition to use (default '')
  *
- * @return int nb of elements in table
+ * @return integer nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countDistinctElementsInTable()
 **/
@@ -224,7 +224,7 @@ function countDistinctElementsInTable($table, $field, $condition = "") {
  * @param $table        string         table name
  * @param $condition    string/array   additional condition (default '') or criteria
  *
- * @return int nb of elements in table
+ * @return integer nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countElementsInTableForMyEntities()
 **/
@@ -242,7 +242,7 @@ function countElementsInTableForMyEntities($table, $condition = '') {
  * @param string  $condition additional condition (default '')
  * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
- * @return int nb of elements in table
+ * @return integer nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countElementsInTableForEntity()
 **/
@@ -295,9 +295,9 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  *
  * @param string $table       Dropdown Tree table
  * @param integer $ID         ID of the element
- * @param bool $withcomment   1 if you want to give the array with the comments (false by default)
- * @param bool $translate     (true by default)
- * @param bool $tooltip       (true by default) returns a tooltip, else returns only 'comment'
+ * @param boolean $withcomment   1 if you want to give the array with the comments (false by default)
+ * @param boolean $translate     (true by default)
+ * @param boolean $tooltip       (true by default) returns a tooltip, else returns only 'comment'
  *
  * @return string completename of the element
  *
@@ -450,7 +450,7 @@ function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
  *
  * @param $table : dropdown tree table to compute
  *
- * @return nothing
+ * @return void
  *
  * @deprecated 9.2 see DbUtils::regenerateTreeCompleteName()
 **/
@@ -537,7 +537,7 @@ function getUserName($ID, $link = 0) {
  *
  * @param $tablename string : Name of the table we want to verify.
  *
- * @return bool : true if exists, false elseway.
+ * @return boolean : true if exists, false elseway.
  *
  * @deprecated 9.2 Use DB::tableExists()
 **/
@@ -556,7 +556,7 @@ function TableExists($tablename) {
  * @param $field     String   Name of the field we want to verify.
  * @param $usecache  Boolean  if use field list cache (default true)
  *
- * @return bool : true if exists, false elseway.
+ * @return boolean : true if exists, false elseway.
  *
  * @deprecated 9.2 Use DB::fieldExists()
 **/
@@ -591,7 +591,7 @@ function isIndex($table, $field) {
  * @param $field           field to autoname
  * @param $isTemplate      true if create an object from a template
  * @param $itemtype        item type
- * @param int|limit $entities_id limit generation to an entity (default -1)
+ * @param integer|limit $entities_id limit generation to an entity (default -1)
  * @return new auto string
  *
  * @deprecated 9.2 Use DbUtils::autoName()
@@ -605,7 +605,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
 /**
  * Close active DB connections
  *
- *@return nothing
+ * @return void
  *
  * @deprecated 9.2 Use DbUtils::autoName()
 **/
@@ -714,9 +714,9 @@ function getDbRelations() {
  * @param string $field field where apply the limit (id != entities_id) (default '')
  * @param entity|string $value entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
  *                            single item or array (default '')
- * @param bool $is_recursive need to use recursive process to find item
+ * @param boolean $is_recursive need to use recursive process to find item
  *                            (field need to be named recursive) (false by default)
- * @param bool $complete_request need to use a complete request and not a simple one
+ * @param boolean $complete_request need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
  * @return string : the WHERE clause to restrict
@@ -746,9 +746,9 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  * @param string $field where apply the limit (id != entities_id) (default '')
  * @param entity|string $value entity to restrict (if not set use $_SESSION['glpiactiveentities']).
  *                            single item or array (default '')
- * @param bool $is_recursive need to use recursive process to find item
+ * @param boolean $is_recursive need to use recursive process to find item
  *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
- * @param bool $complete_request need to use a complete request and not a simple one
+ * @param boolean $complete_request need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
  *

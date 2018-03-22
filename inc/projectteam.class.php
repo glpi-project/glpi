@@ -87,7 +87,7 @@ class ProjectTeam extends CommonDBRelation {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {

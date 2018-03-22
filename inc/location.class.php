@@ -216,9 +216,9 @@ class Location extends CommonTreeDropdown {
    /**
     * @since version 0.85
     * @param CommonGLPI $item
-    * @param int $tabnum
-    * @param int $withtemplate
-    * @return bool
+    * @param integer $tabnum
+    * @param integer $withtemplate
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 

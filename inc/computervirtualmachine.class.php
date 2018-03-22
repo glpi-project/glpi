@@ -59,7 +59,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -99,7 +99,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -320,7 +320,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param Computer $comp
     *
-    * @return bool
+    * @return boolean
     */
    static function showForComputer(Computer $comp) {
       global $DB;
@@ -471,7 +471,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     * Find a virtual machine by uuid or false otherwise
     *
     * @param array $fields of virtualmachine
-    * @return bool|mixed
+    * @return boolean|mixed
     */
    static function findVirtualMachine($fields = []) {
       global $DB;

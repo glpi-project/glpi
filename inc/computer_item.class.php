@@ -216,7 +216,7 @@ class Computer_Item extends CommonDBRelation{
     * Actions done when item is deleted from the database
     * Overloaded to manage autoupdate feature
     *
-    *@return nothing
+    * @return void
    **/
    function cleanDBonPurge() {
       global $CFG_GLPI;
@@ -276,7 +276,7 @@ class Computer_Item extends CommonDBRelation{
     * @see CommonDBTM::getMassiveActionsForItemtype()
     * @param array $actions
     * @param string $itemtype
-    * @param int $is_deleted
+    * @param integer $is_deleted
     * @param CommonDBTM|null $checkitem
     */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
@@ -354,7 +354,7 @@ class Computer_Item extends CommonDBRelation{
     * Print the form for computers or templates connections to printers, screens or peripherals
     *
     * @param $comp                     Computer object
-    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
     */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -687,7 +687,7 @@ class Computer_Item extends CommonDBRelation{
     *
     * @param $fromtype               from where the connection is
     * @param $myname                 select name
-    * @param int|Restrict $entity_restrict Restrict to a defined entity (default = -1)
+    * @param integer|Restrict $entity_restrict Restrict to a defined entity (default = -1)
     * @param display|int $onlyglobal display only global devices (used for templates) (default 0)
     * @param $used             array Already used items ID: not to display in dropdown
     */
@@ -730,7 +730,7 @@ class Computer_Item extends CommonDBRelation{
     * @param $itemtype               type to connect
     * @param $fromtype               from where the connection is
     * @param $myname                 select name
-    * @param int|Restrict $entity_restrict Restrict to a defined entity (default = -1)
+    * @param integer|Restrict $entity_restrict Restrict to a defined entity (default = -1)
     * @param display|int $onlyglobal display only global devices (used for templates) (default 0)
     * @param $used             array Already used items ID: not to display in dropdown
     */
@@ -758,7 +758,7 @@ class Computer_Item extends CommonDBRelation{
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -802,7 +802,7 @@ class Computer_Item extends CommonDBRelation{
     * @param $item         CommonGLPI object
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -880,7 +880,7 @@ class Computer_Item extends CommonDBRelation{
     * $param  $entities
     *
     * @param $entities
-    * @return bool
+    * @return boolean
     */
    static function canUnrecursSpecif($item, $entities) {
       global $DB;

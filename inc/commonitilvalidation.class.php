@@ -166,7 +166,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * @param $items_id ID of the item
     *
-    * @return bool
+    * @return boolean
     */
    static function canValidate($items_id) {
       global $DB;
@@ -464,7 +464,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *      - global   : for global validation (default false)
     *      - display  : boolean display or get string ? (default true)
     *
-    * @return int|string
+    * @return integer|string
    **/
    static function dropdownStatus($name, $options = []) {
 
@@ -492,7 +492,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $value status ID
     *
-    * @return int|mixed
+    * @return integer|mixed
     */
    static function getStatus($value) {
 
@@ -538,7 +538,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $items_id   integer  item ID
     *
-    * @return bool
+    * @return boolean
     */
    static function isAllValidationsHaveSameStatusForTicket($items_id) {
       global $DB;
@@ -560,7 +560,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $items_id   integer  item ID
     *
-    * @return bool|mixed
+    * @return boolean|mixed
     */
    static function getNumberValidationForTicket($items_id) {
       global $DB;
@@ -583,7 +583,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $users_id  integer  User ID
     *
-    * @return bool|mixed
+    * @return boolean|mixed
     */
    static function getNumberToValidate($users_id) {
       global $DB;
@@ -607,7 +607,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $items_id   integer  item ID
     * @param $status              status
     *
-    * @return bool|mixed
+    * @return boolean|mixed
     */
    static function getTicketStatusNumber($items_id, $status) {
       global $DB;
@@ -683,7 +683,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -755,7 +755,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $item class
     *
-    * @return bool
+    * @return boolean
     */
    function showSummary($item) {
       global $DB, $CFG_GLPI;
@@ -931,7 +931,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -1274,7 +1274,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $values
     * @param $options   array
     *
-    * @return int|mixed|string
+    * @return integer|mixed|string
     */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
@@ -1295,7 +1295,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $values (default '')
     * @param $options   array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 

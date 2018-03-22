@@ -121,7 +121,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * Compute licence validity indicator.
     *
     * @param $ID        ID of the licence
-    * @param int|licence $number licence count to check (default -1)
+    * @param integer|licence $number licence count to check (default -1)
     * @return validity indicator
     * @since version 0.85
     *
@@ -143,7 +143,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @since version 0.85
     *
-    * @return nothing
+    * @return void
    **/
    static function updateValidityIndicator($ID) {
 
@@ -189,7 +189,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
-    * @param int $history
+    * @param integer $history
     */
    function post_updateItem($history = 1) {
 
@@ -830,7 +830,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * Cron action on softwares : alert on expired licences
     *
     * @param $task to log, if NULL display (default NULL)
-    * @return int 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
     */
    static function cronSoftware($task = null) {
       global $DB, $CFG_GLPI;
@@ -982,7 +982,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @param $software Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $software) {
       global $DB, $CFG_GLPI;

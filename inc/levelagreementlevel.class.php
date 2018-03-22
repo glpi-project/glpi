@@ -301,7 +301,7 @@ abstract class LevelAgreementLevel extends RuleTicket {
     *       - max_time : max time to use
     *       - used : already used values
     *
-    * @return nothing
+    * @return void
    **/
    static function dropdownExecutionTime($name, $options = []) {
       $p['value']    = '';
@@ -328,7 +328,7 @@ abstract class LevelAgreementLevel extends RuleTicket {
    /**
     * Get already used execution time for a OLA
     *
-    * @param int $las_id of the OLA
+    * @param integer $las_id of the OLA
     *
     * @return array
     */

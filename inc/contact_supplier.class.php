@@ -100,7 +100,7 @@ class Contact_Supplier extends CommonDBRelation{
 
    /**
     * @param string|Supplier $item string   Supplier object
-    * @return int
+    * @return integer
     */
    static function countForSupplier(Supplier $item) {
 
@@ -115,7 +115,7 @@ class Contact_Supplier extends CommonDBRelation{
 
    /**
     * @param Contact|string $item string   Contact object
-    * @return int
+    * @return integer
     */
    static function countForContact(Contact $item) {
 
@@ -276,7 +276,7 @@ class Contact_Supplier extends CommonDBRelation{
    /**
     * Show contacts asociated to an enterprise
     * @param Supplier $supplier
-    * @return bool
+    * @return boolean
     */
    static function showForSupplier(Supplier $supplier) {
       global $DB,$CFG_GLPI;

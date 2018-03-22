@@ -189,7 +189,7 @@ class CalendarSegment extends CommonDBChild {
     * @param mixed $begin_time begin time
     * @param mixed $delay timestamp delay to add
     *
-    * @return bool|string timestamp value
+    * @return boolean|string timestamp value
     */
    static function addDelayInDay($calendars_id, $day, $begin_time, $delay) {
       global $DB;
@@ -317,7 +317,7 @@ class CalendarSegment extends CommonDBChild {
     *
     * @param $calendar Calendar object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForCalendar(Calendar $calendar) {
       global $DB, $CFG_GLPI;
@@ -412,7 +412,7 @@ class CalendarSegment extends CommonDBChild {
 
    /**
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {

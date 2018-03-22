@@ -151,8 +151,8 @@ class CartridgeItem extends CommonDBTM {
     * Add a compatible printer type for a cartridge type
     *
     * @param $cartridgeitems_id  integer: cartridge type identifier
-    * @param int $printermodels_id printer type identifier
-    * @return bool : true for success
+    * @param integer $printermodels_id printer type identifier
+    * @return boolean : true for success
     *
     */
    function addCompatibleType($cartridgeitems_id, $printermodels_id) {
@@ -557,7 +557,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @param Printer $printer object
     *
-    * @return bool|int|string
+    * @return boolean|integer|string
     */
    static function dropdownForPrinter(Printer $printer) {
       global $DB;

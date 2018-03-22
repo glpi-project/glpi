@@ -125,7 +125,7 @@ class Notepad extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|bool|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -146,7 +146,7 @@ class Notepad extends CommonDBChild {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool|void
+    * @return boolean|void
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       static::showForItem($item, $withtemplate);
@@ -283,7 +283,7 @@ class Notepad extends CommonDBChild {
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $CFG_GLPI;

@@ -273,7 +273,7 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @param $soft Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $soft) {
       global $DB, $CFG_GLPI;

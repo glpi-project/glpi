@@ -45,7 +45,7 @@ class ChangeTask extends CommonITILTask {
 
    /**
     * @since version 0.84
-    * @param int $nb
+    * @param integer $nb
     * @return string
     */
    static function getTypeName($nb = 0) {

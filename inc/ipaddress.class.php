@@ -188,7 +188,7 @@ class IPAddress extends CommonDBChild {
 
    /**
     * @see CommonDBTM::post_updateItem()
-    * @param int $history
+    * @param integer $history
     */
    function post_updateItem($history = 1) {
 

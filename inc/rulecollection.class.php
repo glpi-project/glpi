@@ -93,9 +93,9 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get Collection Size : retrieve the number of rules
     *
-    * @param bool $recursive (true by default)
-    * @param int $condition (0 by default)
-    * @return int : number of rules
+    * @param boolean $recursive (true by default)
+    * @param integer $condition (0 by default)
+    * @return integer : number of rules
     */
    function getCollectionSize($recursive = true, $condition = 0) {
 
@@ -214,9 +214,9 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get Collection Datas : retrieve descriptions and rules
     *
-    * @param int|Retrieve $retrieve_criteria Retrieve the criterias of the rules ? (default 0)
-    * @param int|Retrieve $retrieve_action Retrieve the action of the rules ? (default 0)
-    * @param int|Retrieve $condition Retrieve with a specific condition
+    * @param integer|Retrieve $retrieve_criteria Retrieve the criterias of the rules ? (default 0)
+    * @param integer|Retrieve $retrieve_action Retrieve the action of the rules ? (default 0)
+    * @param integer|Retrieve $condition Retrieve with a specific condition
     */
    function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0) {
       global $DB;
@@ -392,7 +392,7 @@ class RuleCollection extends CommonDBTM {
     * @param $target
     * @param $options   array
     *
-    * @return nothing
+    * @return void
    **/
    function showListRules($target, $options = []) {
       global $CFG_GLPI;
@@ -572,7 +572,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $target
     *
-    * @return nothing
+    * @return void
    **/
    function showAdditionalInformationsInForm($target) {
    }
@@ -584,7 +584,7 @@ class RuleCollection extends CommonDBTM {
     * @param $ID     the rule ID whose ranking must be modified
     * @param $action up or down
     * @param action|int $condition action on a specific condition
-    * @return bool|mysqli_result
+    * @return boolean|mysqli_result
     */
    function changeRuleOrder($ID, $action, $condition = 0) {
       global $DB;
@@ -879,7 +879,7 @@ class RuleCollection extends CommonDBTM {
     * @param array $items data to transform to xml
     * @since version 0.85
     *
-    * @return bool
+    * @return boolean
     */
    static function exportRulesToXML($items = []) {
 
@@ -1009,7 +1009,7 @@ class RuleCollection extends CommonDBTM {
     * @param string $condition of the rulecriteria
     * @param string $criterion
     *
-    * @return bool
+    * @return boolean
     */
    static function isCriteraADropdown($available_criteria, $condition, $criterion) {
 
@@ -1537,7 +1537,7 @@ class RuleCollection extends CommonDBTM {
     * @param array $input data used to check criterias
     * @param array $output the initial output array used to be manipulate by actions
     * @param array $params for all internal functions
-    * @param int $condition to limit rules (DEFAULT 0)
+    * @param integer $condition to limit rules (DEFAULT 0)
     *
     * @return array
     */
@@ -1898,7 +1898,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {

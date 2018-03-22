@@ -127,8 +127,8 @@ class RuleImportEntity extends Rule {
     * @param $criteria
     * @param $name
     * @param $value
-    * @param bool $test
-    * @return bool
+    * @param boolean $test
+    * @return boolean
     */
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
       global $PLUGIN_HOOKS;

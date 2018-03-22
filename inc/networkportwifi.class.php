@@ -225,7 +225,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @param $values (default '')
     * @param $options   array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 

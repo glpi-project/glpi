@@ -73,7 +73,7 @@ class Cartridge extends CommonDBChild {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -233,8 +233,8 @@ class Cartridge extends CommonDBChild {
     *
     * @since version 0.85 (before name was restore)
     * @param array $input
-    * @param int $history
-    * @return bool
+    * @param integer $history
+    * @return boolean
     */
    function backToStock(array $input, $history = 1) {
       global $DB;
@@ -606,7 +606,7 @@ class Cartridge extends CommonDBChild {
     * Print out the cartridges of a defined type
     *
     * @param CartridgeItem|object $cartitem object   of CartridgeItem class
-    * @param bool|int $show_old boolean  show old cartridges or not (default 0)
+    * @param boolean|integer $show_old boolean  show old cartridges or not (default 0)
     */
    static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
@@ -851,7 +851,7 @@ class Cartridge extends CommonDBChild {
     * @since version 0.84 (before showInstalled)
     *
     * @param $printer            Printer object
-    * @param bool|int $old boolean  old cartridges or not ? (default 0)
+    * @param boolean|integer $old boolean  old cartridges or not ? (default 0)
     */
    static function showForPrinter(Printer $printer, $old = 0) {
       global $DB, $CFG_GLPI;
@@ -1083,7 +1083,7 @@ class Cartridge extends CommonDBChild {
     * @param $options array    of possible options:
     *     - parent Object : the printers where the cartridge is used
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
@@ -1154,7 +1154,7 @@ class Cartridge extends CommonDBChild {
    /**
     * Get notification parameters by entity
     *
-    * @param int $entity id (default 0)
+    * @param integer $entity id (default 0)
     * @return mixed
     */
    static function getNotificationParameters($entity = 0) {
@@ -1213,7 +1213,7 @@ class Cartridge extends CommonDBChild {
    /**
     * @param $item Printer object
     *
-    * @return int
+    * @return integer
     */
    static function countForPrinter(Printer $item) {
 

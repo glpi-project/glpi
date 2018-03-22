@@ -480,7 +480,7 @@ class Contact extends CommonDBTM{
    /**
     * Generate the Vcard for the current Contact
     *
-    *@return Nothing (display)
+    * @return void (display)
    **/
    function generateVcard() {
 

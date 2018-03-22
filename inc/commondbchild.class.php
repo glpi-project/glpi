@@ -485,7 +485,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @since version 0.84
     *
-    * @param int $history store changes history ? (default 1)
+    * @param integer $history store changes history ? (default 1)
     */
    function post_updateItem($history = 1) {
 
@@ -744,7 +744,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param string $field_name of the HTML field inside Item's form
     * @param null|boolean $canedit (default NULL) NULL to use default behaviour
     *
-    * @return bool
+    * @return boolean
     */
    static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null) {
       global $DB, $CFG_GLPI;

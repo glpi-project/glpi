@@ -608,7 +608,7 @@ class Contract extends CommonDBTM {
     * @param $values (default '')
     * @param $options   array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
@@ -1191,7 +1191,7 @@ class Contract extends CommonDBTM {
     *
     * @param $task for log, if NULL display (default NULL)
     *
-    * @return int
+    * @return integer
     */
    static function cronContract($task = null) {
       global $DB, $CFG_GLPI;
@@ -1520,7 +1520,7 @@ class Contract extends CommonDBTM {
     * @param $value     integer  HTML select selected value (default = 0)
     * @param $display   boolean  get or display string ? (true by default)
     *
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownContractRenewal($name, $value = 0, $display = true) {
 
@@ -1579,7 +1579,7 @@ class Contract extends CommonDBTM {
    /**
     * @param $options array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownAlert(array $options) {
 
@@ -1667,7 +1667,7 @@ class Contract extends CommonDBTM {
     * @see CommonDBTM::getMassiveActionsForItemtype()
     * @param array $actions
     * @param string $itemtype
-    * @param int $is_deleted
+    * @param integer $is_deleted
     * @param CommonDBTM|null $checkitem
     */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,

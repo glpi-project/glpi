@@ -153,7 +153,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item            CommonDBTM object
     * @param $relations_id (default NULL)
     *
-    * @return bool|object
+    * @return boolean|object
     */
    static function getOpposite(CommonDBTM $item, &$relations_id = null) {
       return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
@@ -167,7 +167,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $items_id        ID of the item to search for its opposite
     * @param $relations_id (default NULL)
     *
-    * @return bool|object
+    * @return boolean|object
     */
    static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null) {
       global $DB;
@@ -240,7 +240,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @param CommonDBTM|object $item1 object 1
     * @param CommonDBTM|object $item2 object 2
-    * @return bool founded ?
+    * @return boolean founded ?
     */
    function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2) {
 
@@ -740,7 +740,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since version 0.84
     *
-    * @param int $history store changes history ? (default 1)
+    * @param integer $history store changes history ? (default 1)
     */
    function post_updateItem($history = 1) {
 
@@ -1049,9 +1049,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @param $id       the id of the CommonDBRelation to affect
     * @param $peer     the number of the peer (ie.: 0 or 1)
-    * @param int|the $items_id the id of the new item
+    * @param integer|the $items_id the id of the new item
     * @param string|the $itemtype the type of the new item
-    * @return bool : true on success
+    * @return boolean : true on success
     */
    function affectRelation($id, $peer, $items_id = 0, $itemtype = '') {
 

@@ -79,7 +79,7 @@ class Reservation extends CommonDBChild {
     * @param $tabnum (default1)
     * @param $withtemplate (default0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -208,7 +208,7 @@ class Reservation extends CommonDBChild {
    /**
     * @param $reservationitems_id
     *
-    * @return int
+    * @return integer
     */
    function getUniqueGroupFor($reservationitems_id) {
       global $DB;
@@ -278,7 +278,7 @@ class Reservation extends CommonDBChild {
     * @param $type   error type : date / is_res / other
     * @param $ID     ID of the item
     *
-    * @return nothing
+    * @return void
    **/
    function displayError($type, $ID) {
 
@@ -330,7 +330,7 @@ class Reservation extends CommonDBChild {
     * @since version 0.84
     * @param $methodItem
     * @param $methodNotItem
-    * @return bool
+    * @return boolean
     */
    function canChildItem($methodItem, $methodNotItem) {
 
@@ -377,7 +377,7 @@ class Reservation extends CommonDBChild {
     * Show reservation calendar
     *
     * @param ID|string $ID ID of the reservation item (if empty display all) (default '')
-    * @return bool
+    * @return boolean
     */
    static function showCalendar($ID = "") {
       global $CFG_GLPI;
@@ -607,7 +607,7 @@ class Reservation extends CommonDBChild {
     *     - item  reservation items ID for creation process
     *     - date date for creation process
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -1059,8 +1059,8 @@ class Reservation extends CommonDBChild {
     * Display reservations for an item
     *
     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
-    * @param int|withtemplate $withtemplate withtemplate param (default 0)
-    * @return bool
+    * @param integer|withtemplate $withtemplate withtemplate param (default 0)
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -1181,7 +1181,7 @@ class Reservation extends CommonDBChild {
     *
     * @param $ID ID a the user
     *
-    * @return bool
+    * @return boolean
     */
    static function showForUser($ID) {
       global $DB, $CFG_GLPI;

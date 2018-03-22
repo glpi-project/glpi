@@ -358,7 +358,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $name (default '')
     * @param $values (defaul '')
     * @param $options   array
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 

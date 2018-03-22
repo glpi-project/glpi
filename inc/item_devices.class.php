@@ -79,7 +79,7 @@ class Item_Devices extends CommonDBRelation {
 
    /**
     * @since version 0.85
-    * @param int $nb
+    * @param integer $nb
     * @return string
     */
    static function getTypeName($nb = 0) {
@@ -1059,7 +1059,7 @@ class Item_Devices extends CommonDBRelation {
     * @since version 0.85
     * @param $ID
     * @param array $options
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       if (!$this->isNewID($ID)) {

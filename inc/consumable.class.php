@@ -116,8 +116,8 @@ class Consumable extends CommonDBChild {
    /**
     * send back to stock
     * @param array $input
-    * @param int $history
-    * @return bool
+    * @param integer $history
+    * @return boolean
     */
    function backToStock(array $input, $history = 1) {
       global $DB;
@@ -156,7 +156,7 @@ class Consumable extends CommonDBChild {
     * @param $ID           consumable identifier
     * @param itemtype|string $itemtype itemtype of who we give the consumable (default '')
     * @param ID|int $items_id ID of the item giving the consumable (default 0)
-    * @return bool
+    * @return boolean
     */
    function out($ID, $itemtype = '', $items_id = 0) {
       global $DB;
@@ -183,7 +183,7 @@ class Consumable extends CommonDBChild {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
@@ -369,7 +369,7 @@ class Consumable extends CommonDBChild {
     *
     * @param $cID integer  consumable ID.
     *
-    * @return bool
+    * @return boolean
     */
    static function isNew($cID) {
       global $DB;
@@ -389,7 +389,7 @@ class Consumable extends CommonDBChild {
     *
     * @param $cID integer  consumable ID.
     *
-    * @return bool
+    * @return boolean
     */
    static function isOld($cID) {
       global $DB;
@@ -460,7 +460,7 @@ class Consumable extends CommonDBChild {
     * Print out the consumables of a defined type
     *
     * @param $consitem           ConsumableItem object
-    * @param bool|int $show_old boolean  show old consumables or not. (default 0)
+    * @param boolean|integer $show_old boolean  show old consumables or not. (default 0)
     */
    static function showForConsumableItem(ConsumableItem $consitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
@@ -746,7 +746,7 @@ class Consumable extends CommonDBChild {
 
    /**
     * @param ConsumableItem|string $item string  ConsumableItem object
-    * @return int
+    * @return integer
     */
    static function countForConsumableItem(ConsumableItem $item) {
 

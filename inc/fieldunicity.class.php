@@ -152,7 +152,7 @@ class FieldUnicity extends CommonDropdown {
     * Display a dropdown which contains all the available itemtypes
     *
     * @param integer $ID of item unicity field
-    * @param int $value selected value (default 0)
+    * @param integer $value selected value (default 0)
     *
     */
    function showItemtype($ID, $value = 0) {
@@ -191,8 +191,8 @@ class FieldUnicity extends CommonDropdown {
     * Return criteria unicity for an itemtype, in an entity
     *
     * @param string $itemtype for which unicity must be checked
-    * @param int $entities_id for which configuration must be retrivied (default 0)
-    * @param bool $check_active (true by default)
+    * @param integer $entities_id for which configuration must be retrivied (default 0)
+    * @param boolean $check_active (true by default)
     * @return array of fields to check, or an empty array if no
     */
    public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true) {
@@ -263,7 +263,7 @@ class FieldUnicity extends CommonDropdown {
     * @param string $itemtype
     * @param $options   array    of options
     *
-    * @return bool|int|string
+    * @return boolean|integer|string
     */
    static function dropdownFields($itemtype, $options = []) {
       global $DB;
@@ -447,7 +447,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $values (default '')
     * @param $options      array
     *
-    * @return bool|int|string
+    * @return boolean|integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;

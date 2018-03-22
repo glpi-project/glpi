@@ -567,7 +567,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -629,7 +629,7 @@ class TicketFollowup  extends CommonDBTM {
     * @param $options array of possible options:
     *     - ticket Object : the ticket
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
@@ -840,7 +840,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @param $ticket Ticket object
     *
-    * @return bool
+    * @return boolean
     */
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
@@ -1125,7 +1125,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @param $ticket Object : the ticket
     *
-    * @return bool
+    * @return boolean
     */
    function showApprobationForm($ticket) {
       global $DB, $CFG_GLPI;

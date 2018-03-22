@@ -63,7 +63,7 @@ abstract class HTMLTableBase  {
 
    /**
     * @param HTMLTableHeader $header_object
-    * @param bool $allow_super_header (false by default
+    * @param boolean $allow_super_header (false by default
     * @return HTMLTableHeader
     * @throws Exception
     */

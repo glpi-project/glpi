@@ -113,7 +113,7 @@ class PlanningRecall extends CommonDBChild {
 
    /**
     * @see CommonDBTM::post_updateItem()
-    * @param int $history
+    * @param integer $history
     */
    function post_updateItem($history = 1) {
 
@@ -128,7 +128,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @param $data array of data to manage
     *
-    * @return bool
+    * @return boolean
     */
    static function manageDatas(array $data) {
 
@@ -351,7 +351,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @param $task for log, if NULL display (default NULL)
     *
-    * @return int
+    * @return integer
     */
    static function cronPlanningRecall($task = null) {
       global $DB, $CFG_GLPI;

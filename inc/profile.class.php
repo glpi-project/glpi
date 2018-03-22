@@ -770,7 +770,7 @@ class Profile extends CommonDBTM {
     * @param $closeform boolean close the form (true by default)
     *
     *
-    * @return bool
+    * @return boolean
     */
    function showFormAsset($openform = true, $closeform = true) {
 
@@ -845,7 +845,7 @@ class Profile extends CommonDBTM {
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    function showFormManagement($openform = true, $closeform = true) {
 
@@ -912,7 +912,7 @@ class Profile extends CommonDBTM {
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    function showFormTools($openform = true, $closeform = true) {
 
@@ -978,7 +978,7 @@ class Profile extends CommonDBTM {
     * @param $openform     boolean  open the form (true by default)
     * @param $closeform    boolean  close the form (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    function showFormTracking($openform = true, $closeform = true) {
       global $CFG_GLPI;
@@ -1133,7 +1133,7 @@ class Profile extends CommonDBTM {
     * @param $statuses       all available statuses for the given cycle (obj::getAllStatusArray())
     * @param $canedit        can we edit the elements ?
     *
-    * @return nothing
+    * @return void
    **/
    function displayLifeCycleMatrix($title, $html_field, $db_field, $statuses, $canedit) {
 
@@ -1171,7 +1171,7 @@ class Profile extends CommonDBTM {
     * @param $openform   boolean  open the form (true by default)
     * @param $closeform  boolean  close the form (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    function showFormLifeCycle($openform = true, $closeform = true) {
 
@@ -1217,7 +1217,7 @@ class Profile extends CommonDBTM {
     * @param $db_field       field inside the DB (to get current state)
     * @param $canedit        can we edit the elements ?
     *
-    * @return nothing
+    * @return void
    **/
    function displayLifeCycleMatrixTicketHelpdesk($title, $html_field, $db_field, $canedit) {
 
@@ -1274,7 +1274,7 @@ class Profile extends CommonDBTM {
     * @param $openform   boolean  open the form (true by default)
     * @param $closeform  boolean  close the form (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    function showFormLifeCycleHelpdesk($openform = true, $closeform = true) {
 
@@ -1310,7 +1310,7 @@ class Profile extends CommonDBTM {
     * @param $openform     boolean  open the form (true by default)
     * @param $closeform    boolean  close the form (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    function showFormAdmin($openform = true, $closeform = true) {
       global $DB;
@@ -1407,7 +1407,7 @@ class Profile extends CommonDBTM {
     * @param $openform     boolean  open the form (true by default)
     * @param $closeform    boolean  close the form (true by default)
     *
-    * @return bool
+    * @return boolean
     */
    function showFormSetup($openform = true, $closeform = true) {
 
@@ -2447,7 +2447,7 @@ class Profile extends CommonDBTM {
     * @param $values (default '')
     * @param $options      array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
@@ -2483,7 +2483,7 @@ class Profile extends CommonDBTM {
     * @param $current   integer  value in database (sum of rights)
     * @param $options   array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownRights(array $values, $name, $current, $options = []) {
 
@@ -2714,7 +2714,7 @@ class Profile extends CommonDBTM {
     *    - name : string / name of the select (default is profiles_id)
     *    - values : array of values
     *
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownHelpdeskItemtypes($options) {
       global $CFG_GLPI;

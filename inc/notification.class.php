@@ -493,7 +493,7 @@ class Notification extends CommonDBTM {
    /**
     * @param string $event    Event name
     * @param string $itemtype Item type
-    * @param int    $entity   Restrict to entity
+    * @param integer    $entity   Restrict to entity
     *
     * @return ResultSet
    **/

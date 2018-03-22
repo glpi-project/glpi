@@ -236,7 +236,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Actions done at the end of the getEmpty function
     *
-    *@return nothing
+    * @return void
    **/
    function post_getEmpty() {
 
@@ -361,7 +361,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @since version 0.83
     *
-    * @return Boolean
+    * @return boolean
    **/
    function isPubliclyVisible() {
       global $CFG_GLPI;
@@ -833,7 +833,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Add kb item to the public FAQ
     *
-    * @return nothing
+    * @return void
    **/
    function addToFaq() {
       global $DB;
@@ -1298,7 +1298,7 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $options $_GET
     * @param $type      string   search type : browse / search (default search)
     *
-    * @return bool
+    * @return boolean
     */
    static function showList($options, $type = 'search') {
       global $DB, $CFG_GLPI;

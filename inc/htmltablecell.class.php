@@ -252,7 +252,7 @@ class HTMLTableCell extends HTMLTableEntity {
     * @param $index
     * @param $options   array
     *
-    * @return bool
+    * @return boolean
     */
    function displayCell($index, array $options = []) {
 

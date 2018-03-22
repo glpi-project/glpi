@@ -986,7 +986,7 @@ class Change extends CommonITILObject {
     *
     * @param $item CommonDBTM object
     *
-    * @return bool
+    * @return boolean
     */
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;

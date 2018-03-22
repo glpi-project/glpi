@@ -66,7 +66,7 @@ class DropdownTranslation extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -87,7 +87,7 @@ class DropdownTranslation extends CommonDBChild {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -244,7 +244,7 @@ class DropdownTranslation extends CommonDBChild {
     * @param $input array    of user values
     * @param $add   boolean  true if translation is added, false if update (tgrue by default)
     *
-    * @return nothing
+    * @return void
    **/
    function generateCompletename($input, $add = true) {
       global $DB;
@@ -421,7 +421,7 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @param field|int $ID field (default -1)
     * @param $options   array
-    * @return bool
+    * @return boolean
     */
    function showForm($ID = -1, $options = []) {
       global $CFG_GLPI;
@@ -702,7 +702,7 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @param string $itemtype to check
     *
-    * @return int
+    * @return integer
     */
    static function hasItemtypeATranslation($itemtype) {
       return countElementsInTable(self::getTable(), ['itemtype'=> $itemtype ]);

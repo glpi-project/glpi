@@ -342,7 +342,7 @@ class RuleCriteria extends CommonDBChild {
     * @param array $criterias_results
     * @param array $regex_result
     *
-    * @return bool
+    * @return boolean
     */
    static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result) {
 
@@ -556,7 +556,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $itemtype
     * @param $params    array
     *
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownConditions($itemtype, $params = []) {
 

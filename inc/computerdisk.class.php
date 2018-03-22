@@ -83,7 +83,7 @@ class ComputerDisk extends CommonDBChild {
     * @param $item            CommonGLPI object
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -223,7 +223,7 @@ class ComputerDisk extends CommonDBChild {
     * Print the computers disks
     *
     * @param $comp                  Computer object
-    * @param bool|int $withtemplate boolean  Template or basic item (default 0)
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
     */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB;

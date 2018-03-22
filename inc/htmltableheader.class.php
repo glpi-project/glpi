@@ -65,7 +65,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     * @param $header_name [out]     string   header name
     * @param $subheader_name [out]  string   sub header name ( = '' in case of super header)
     *
-    * @return nothing
+    * @return void
    **/
    abstract function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
 

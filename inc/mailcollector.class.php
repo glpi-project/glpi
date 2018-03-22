@@ -217,7 +217,7 @@ class MailCollector  extends CommonDBTM {
     * @param $tabnum (default 1
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
@@ -1366,7 +1366,7 @@ class MailCollector  extends CommonDBTM {
     * @param $uid
     * @param $part
     *
-    * @return bool|string
+    * @return boolean|string
    **/
    private function getDecodedFetchbody($structure, $uid, $part) {
 
@@ -1586,7 +1586,7 @@ class MailCollector  extends CommonDBTM {
     * @param $uid       String    mail UID
     * @param $folder    String   folder to move (delete if empty) (default '')
     *
-    * @return Boolean
+    * @return boolean
    **/
    function deleteMails($uid, $folder = '') {
 
@@ -1639,7 +1639,7 @@ class MailCollector  extends CommonDBTM {
     * Cron action on mailgate : retrieve mail and create tickets
     *
     * @param $task
-    * @return int -1 : done but not finish 1 : done with success
+    * @return integer -1 : done but not finish 1 : done with success
     */
    static function cronMailgate($task) {
       global $DB;
@@ -1688,7 +1688,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @param $task for log
     *
-    * @return int
+    * @return integer
     */
    static function cronMailgateError($task) {
       global $DB, $CFG_GLPI;

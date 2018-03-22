@@ -100,7 +100,7 @@ class Event extends CommonDBTM {
     * @param $service
     * @param $event
     *
-    * @return int
+    * @return integer
     */
    static function log($items_id, $type, $level, $service, $event) {
       global $DB;
@@ -320,7 +320,7 @@ class Event extends CommonDBTM {
     * @param $target    where to go when complete
     * @param order|string $order order by clause occurences (eg: ) (default 'DESC')
     * @param order|string $sort order by clause occurences (eg: date) (defaut 'date')
-    * @param int $start (default 0)
+    * @param integer $start (default 0)
     */
    static function showList($target, $order = 'DESC', $sort = 'date', $start = 0) {
       global $DB, $CFG_GLPI;

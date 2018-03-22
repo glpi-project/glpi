@@ -156,7 +156,7 @@ class Rule extends CommonDBTM {
     *
     * @param $options      array of parameters
     *
-    * @return bool|int|string
+    * @return boolean|integer|string
     */
    static function dropdownConditions($options = []) {
 
@@ -578,7 +578,7 @@ class Rule extends CommonDBTM {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -858,7 +858,7 @@ class Rule extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -952,7 +952,7 @@ class Rule extends CommonDBTM {
     *
     * @param $options      array of parameters
     *
-    * @return int|string
+    * @return integer|string
     */
    function dropdownRulesMatch($options = []) {
 
@@ -986,7 +986,7 @@ class Rule extends CommonDBTM {
     * @param $withcriterias 1 to retrieve all the criterias for a given rule (default 0)
     * @param $withactions 1 to retrive all the actions for a given rule (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
 
@@ -1540,7 +1540,7 @@ class Rule extends CommonDBTM {
     *
     * @param array $input data used to check criterias
     *
-    * @return bool
+    * @return boolean
     */
    function checkCriterias($input) {
 
@@ -1609,7 +1609,7 @@ class Rule extends CommonDBTM {
     * @param RuleCriteria $criteria to check
     * @param array $input data used to check criterias
     *
-    * @return bool|true
+    * @return boolean|true
     */
    function checkCriteria(&$criteria, &$input) {
 
@@ -1685,7 +1685,7 @@ class Rule extends CommonDBTM {
    /**
     * @param array $input
     *
-    * @return bool
+    * @return boolean
     */
    function findWithGlobalCriteria($input) {
       return true;
@@ -1856,10 +1856,10 @@ class Rule extends CommonDBTM {
     * Show the minimal form for the rule
     *
     * @param string $target link to the form page
-    * @param bool $first is it the first rule ?(false by default)
-    * @param bool $last is it the last rule ? (false by default)
-    * @param bool $display_entities display entities / make it read only display (false by default)
-    * @param int $active_condition used (default 0)
+    * @param boolean $first is it the first rule ?(false by default)
+    * @param boolean $last is it the last rule ? (false by default)
+    * @param boolean $display_entities display entities / make it read only display (false by default)
+    * @param integer $active_condition used (default 0)
     */
    function showMinimalForm($target, $first = false, $last = false, $display_entities = false, $active_condition = 0) {
       global $CFG_GLPI;
@@ -2603,7 +2603,7 @@ class Rule extends CommonDBTM {
     *    - name : string / name of the select (default is depending itemtype)
     *    - sub_type : integer / sub_type of rule
     *
-    * @return bool|void
+    * @return boolean|void
     */
    static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
@@ -2912,7 +2912,7 @@ class Rule extends CommonDBTM {
     * @param $value
     * @param $test (false by default)
     *
-    * @return bool
+    * @return boolean
     */
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
       return false;
@@ -2922,7 +2922,7 @@ class Rule extends CommonDBTM {
    /**
     * @param $action array
     * @param string|value $value value to display (default '')
-    * @return bool
+    * @return boolean
     */
    function displayAdditionalRuleAction(array $action, $value = '') {
       return false;
@@ -3014,7 +3014,7 @@ class Rule extends CommonDBTM {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -3088,7 +3088,7 @@ class Rule extends CommonDBTM {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 

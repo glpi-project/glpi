@@ -71,7 +71,7 @@ class Search {
     *
     * @param $itemtype item type to manage
     *
-    * @return nothing
+    * @return void
    **/
    static function show($itemtype) {
 
@@ -89,7 +89,7 @@ class Search {
     * @param $itemtype item type to manage
     * @param $params search params passed to prepareDatasForSearch function
     *
-    * @return nothing
+    * @return void
    **/
    static function showList($itemtype, $params) {
 
@@ -309,7 +309,7 @@ class Search {
     *
     * @param $data    array of search datas prepared to generate SQL
     *
-    * @return nothing
+    * @return void
    **/
    static function constructSQL(array &$data) {
       global $CFG_GLPI;
@@ -900,7 +900,7 @@ class Search {
     * @param array   $data      array of search data prepared to get data
     * @param boolean $onlycount If we just want to count results
     *
-    * @return nothing
+    * @return void
    **/
    static function constructDatas(array &$data, $onlycount = false) {
       global $CFG_GLPI;
@@ -1183,7 +1183,7 @@ class Search {
     *
     * @param $data array of search datas prepared to get datas
     *
-    * @return nothing
+    * @return void
    **/
    static function displayDatas(array &$data) {
       global $CFG_GLPI;
@@ -1827,7 +1827,7 @@ class Search {
     *
     * @param $itemtype
     *
-    * @return bool|mixed
+    * @return boolean|mixed
     */
    static function getMetaReferenceItemtype ($itemtype) {
 
@@ -2102,7 +2102,7 @@ class Search {
     * @param $itemtype  ID of the device type
     * @param $ID        field to add
     * @param $order     order define
-    * @param int|item $key item number (default 0)
+    * @param integer|item $key item number (default 0)
     * @return select string
     *
     */
@@ -2297,8 +2297,8 @@ class Search {
     * @param $itemtype     item type
     * @param $ID           ID of the item to add
     * @param $num          item num in the reque (default 0)
-    * @param bool|int $meta boolean is a meta
-    * @param int|meta $meta_type meta type table ID (default 0)
+    * @param boolean|integer $meta boolean is a meta
+    * @param integer|meta $meta_type meta type table ID (default 0)
     * @return select string
     */
    static function addSelect($itemtype, $ID, $num, $meta = 0, $meta_type = 0) {
@@ -2862,7 +2862,7 @@ class Search {
     * @param $ID           ID of the item to search
     * @param $searchtype   searchtype used (equals or contains)
     * @param $val          item num in the request
-    * @param int|is $meta is a meta search (meta=2 in search.class.php) (default 0)
+    * @param integer|is $meta is a meta search (meta=2 in search.class.php) (default 0)
     * @return select string
     */
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
@@ -3609,8 +3609,8 @@ class Search {
     * @param $already_link_tables  array  of tables already joined
     * @param $new_table                   new table to join
     * @param $linkfield                   linkfield for LeftJoin
-    * @param int|is $meta is it a meta item ? (default 0)
-    * @param int|meta $meta_type meta type table (default 0)
+    * @param integer|is $meta is it a meta item ? (default 0)
+    * @param integer|meta $meta_type meta type table (default 0)
     * @param $joinparams           array  join parameters (condition / joinbefore...)
     * @param $field                string field to display (needed for translation join) (default '')
     * @return Left join string
@@ -4093,7 +4093,7 @@ class Search {
     * @param $itemtype           item type
     * @param $ID                 ID of the SEARCH_OPTION item
     * @param $data         array retrieved data array
-    * @param int|number $num number of the displayed item (default 0)
+    * @param integer|number $num number of the displayed item (default 0)
     * @return string to print
     */
    static function displayConfigItem($itemtype, $ID, $data = [], $num = 0) {
@@ -4152,7 +4152,7 @@ class Search {
     * @param $ID                    ID of the SEARCH_OPTION item
     * @param $data            array containing data results
     * @param $num                   item num in the request
-    * @param int|is $meta is a meta item ? (default 0)
+    * @param integer|is $meta is a meta item ? (default 0)
     * @param $addobjectparams array added parameters for union search
     * @return string to print
     */
@@ -5106,7 +5106,7 @@ class Search {
    /**
     * Reset save searches
     *
-    * @return nothing
+    * @return void
    **/
    static function resetSaveSearch() {
 
@@ -5761,7 +5761,7 @@ class Search {
     * @param $value           value to display
     * @param &$num            column number
     * @param link|string $linkto link display element (HTML specific) (default '')
-    * @param int|is $issort is the sort column ? (default 0)
+    * @param integer|is $issort is the sort column ? (default 0)
     * @param order|string $order order type ASC or DESC (defaut '')
     * @param $options  string options to add (default '')
     * @return string to display
@@ -6009,7 +6009,7 @@ class Search {
     * @param $type   display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
     * @param $rows   number of rows
     * @param $cols   number of columns
-    * @param int|used $fixed used tab_cadre_fixe table for HTML export ? (default 0)
+    * @param integer|used $fixed used tab_cadre_fixe table for HTML export ? (default 0)
     * @return string to display
     */
    static function showHeader($type, $rows, $cols, $fixed = 0) {

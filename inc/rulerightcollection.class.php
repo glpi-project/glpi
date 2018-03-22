@@ -79,7 +79,7 @@ class RuleRightCollection extends RuleCollection {
     * @see RuleCollection::showTestResults()
     * @param rule $rule
     * @param array $output
-    * @param bool $global_result
+    * @param boolean $global_result
     * @return cleaned|void
     */
    function showTestResults($rule, array $output, $global_result) {

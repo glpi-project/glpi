@@ -274,9 +274,9 @@ class Dropdown {
     * Returns the value of the dropdown from $table with ID $id.
     *
     * @param string $table the dropdown table from witch we want values on the select
-    * @param int $id id of the element to get
-    * @param bool|int $withcomment give array with name and comment (default 0)
-    * @param bool $translate (true by default)
+    * @param integer $id id of the element to get
+    * @param boolean|integer $withcomment give array with name and comment (default 0)
+    * @param boolean $translate (true by default)
     * @param boolean $tooltip (true by default) returns a tooltip, else returns only 'comment'
     * @return string the value of the dropdown or &nbsp; if not exists
     */
@@ -651,7 +651,7 @@ class Dropdown {
     * 'use_checkbox' = true to the $params array to display a checkbox instead a select box
     *
     * @param $name               select name
-    * @param int|preselected $value preselected value. (default 0)
+    * @param integer|preselected $value preselected value. (default 0)
     * @param allows|int $restrict_to allows to display only yes or no in the dropdown (default -1)
     * @param $params       Array of optional options (passed to showFromArray)
     * @return rand value
@@ -1144,7 +1144,7 @@ class Dropdown {
     *    - display_emptychoice : allow selection of no language
     *    - emptylabel          : specific string to empty label if display_emptychoice is true
     *
-    * @return int|string
+    * @return integer|string
     */
    static function showLanguages($myname, $options = []) {
       global $CFG_GLPI;
@@ -1197,7 +1197,7 @@ class Dropdown {
     *     - step               step time (defaut config GLPI)
     *
     * @since 0.85 update prototype
-    *@return Nothing (display)
+    * @return void (display)
     **/
    static function showHours($name, $options = []) {
       global $CFG_GLPI;
@@ -1282,7 +1282,7 @@ class Dropdown {
     *                                    (need value_fieldname, to_update,
     *                                     url (see Ajax::updateItemOnSelectEvent for information)
     *                                     and may have moreparams)
-    * @return int rand for select id
+    * @return integer rand for select id
     */
    static function showItemType($types = '', $options = []) {
       global $CFG_GLPI;
@@ -1438,7 +1438,7 @@ class Dropdown {
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
     *
-    * @return int|string
+    * @return integer|string
     */
    static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
@@ -1573,7 +1573,7 @@ class Dropdown {
     *    - display         : boolean / display or return string
     *    - width           : string / display width of the item
     *
-    * @return int|string
+    * @return integer|string
     */
    static function showTimeStamp($myname, $options = []) {
       global $CFG_GLPI;
@@ -1695,7 +1695,7 @@ class Dropdown {
     * @param $entity          working entity ID
     * @param $is_recursive    is the item recursive ?
     *
-    * @return int
+    * @return integer
     */
    static function showPrivatePublicSwitch($is_private, $entity, $is_recursive) {
       global $CFG_GLPI;
@@ -1740,7 +1740,7 @@ class Dropdown {
     *
     * @param $enabled (default 0)
     *
-    * @return int
+    * @return integer
     */
    static function showAdvanceDateRestrictionSwitch($enabled = 0) {
       global $CFG_GLPI;
@@ -1796,7 +1796,7 @@ class Dropdown {
     *       'optgroupname2' => array('key3' => 'val3',
     *                                'key4' => 'val4'))
     *
-    * @return int|string
+    * @return integer|string
     */
    static function showFromArray($name, array $elements, $options = []) {
 
@@ -2077,7 +2077,7 @@ class Dropdown {
     * @param $itemtype  string   name of the class
     * @param $input     array    of value to import
     *
-    * @return bool
+    * @return boolean
     */
    static function import($itemtype, $input) {
 
@@ -2098,8 +2098,8 @@ class Dropdown {
     * @param $entities_id     integer  entity in case of specific dropdown (default -1)
     * @param $external_params array    (need to be addslashes)
     * @param string $comment (default '') (need to be addslashes)
-    * @param bool $add if true (default) add it if not found. if false, just check if exists
-    * @return int : dropdown id.
+    * @param boolean $add if true (default) add it if not found. if false, just check if exists
+    * @return integer : dropdown id.
     */
    static function importExternal($itemtype, $value, $entities_id = -1, $external_params = [],
                                   $comment = '', $add = true) {
@@ -2113,7 +2113,7 @@ class Dropdown {
    /**
     * Get the label associated with a management type
     *
-    * @param int $value type of management (default 0)
+    * @param integer $value type of management (default 0)
     *
     * @return string
     */
@@ -2163,8 +2163,8 @@ class Dropdown {
     *
     * @param $onchange  String   optional, for ajax (default '')
     *
-    * @param bool $display
-    * @return int|string
+    * @param boolean $display
+    * @return integer|string
     */
    static function showListLimit($onchange = '', $display = true) {
       global $CFG_GLPI;

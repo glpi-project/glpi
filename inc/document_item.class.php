@@ -214,7 +214,7 @@ class Document_Item extends CommonDBRelation{
    /**
     * @param $item   CommonDBTM object
     *
-    * @return int
+    * @return integer
     */
    static function countForItem(CommonDBTM $item) {
 
@@ -250,7 +250,7 @@ class Document_Item extends CommonDBRelation{
    /**
     * @param $item   Document object
     *
-    * @return int
+    * @return integer
     */
    static function countForDocument(Document $item) {
       return countElementsInTable(['glpi_documents_items'],
@@ -578,7 +578,7 @@ class Document_Item extends CommonDBRelation{
     * @param $item            CommonDBTM object for which associated documents must be displayed
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       $ID = $item->getField('id');
@@ -994,7 +994,7 @@ class Document_Item extends CommonDBRelation{
     *
     * @see CommonDBRelation::getRelationMassiveActionsPeerForSubForm()
     * @param MassiveAction $ma
-    * @return int|number
+    * @return integer|number
     */
    static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma) {
 

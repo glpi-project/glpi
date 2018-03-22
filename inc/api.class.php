@@ -86,7 +86,7 @@ abstract class API extends CommonGLPI {
    /**
     * Constructor
     *
-    * @var array $CFG_GLPI
+    * @var array   $CFG_GLPI
     * @var DBmysql $DB
     *
     * @return void
@@ -241,7 +241,7 @@ abstract class API extends CommonGLPI {
     * Kill GLPI Session
     * Use 'session_token' param in $this->parameters
     *
-    * @return boolean
+    * @return void
     */
    protected function killSession() {
 

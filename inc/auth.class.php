@@ -567,8 +567,8 @@ class Auth extends CommonGLPI {
     * @param string $login_password Password
     * @param boolean $noauto (false by default)
     *
-    * @param bool $remember_me
-    * @return bool (success)
+    * @param boolean $remember_me
+    * @return boolean (success)
     */
    function Login($login_name, $login_password, $noauto = false, $remember_me = false) {
       global $DB, $CFG_GLPI;

@@ -477,7 +477,7 @@ class Document extends CommonDBTM {
     * Get download link for a document
     *
     * @param additonal|string $params additonal parameters to be added to the link (default '')
-    * @param int|maximum $len maximum length of displayed string (default 20)
+    * @param integer|maximum $len maximum length of displayed string (default 20)
     * @return string
     */
    function getDownloadLink($params = '', $len = 20) {
@@ -1215,7 +1215,7 @@ class Document extends CommonDBTM {
     * @param $dir       dir to search a free path for the file
     * @param $sha1sum   SHA1 of the file
     *
-    * @return nothing
+    * @return void
    **/
    static function getUploadFileValidLocationName($dir, $sha1sum) {
       global $CFG_GLPI;
@@ -1412,7 +1412,7 @@ class Document extends CommonDBTM {
     * @see CommonDBTM::getMassiveActionsForItemtype()
     * @param array $actions
     * @param string $itemtype
-    * @param int $is_deleted
+    * @param integer $is_deleted
     * @param CommonDBTM|null $checkitem
     */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,

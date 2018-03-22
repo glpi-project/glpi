@@ -94,7 +94,7 @@ class Change_Project extends CommonDBRelation{
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -141,7 +141,7 @@ class Change_Project extends CommonDBRelation{
     *
     * @param $project Project object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForProject(Project $project) {
       global $DB, $CFG_GLPI;
@@ -238,7 +238,7 @@ class Change_Project extends CommonDBRelation{
     *
     * @param $change Change object
     *
-    * @return bool
+    * @return boolean
     */
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI;

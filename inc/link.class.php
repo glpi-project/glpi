@@ -132,7 +132,7 @@ class Link extends CommonDBTM {
    * @param $options array
    *     - target filename : where to go when done.
    *
-   * @return Nothing (display)
+   * @return void (display)
    **/
    function showForm($ID, $options = []) {
 
@@ -459,7 +459,7 @@ class Link extends CommonDBTM {
     * @param $item                     CommonDBTM object
     * @param $withtemplate    integer  withtemplate param (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;

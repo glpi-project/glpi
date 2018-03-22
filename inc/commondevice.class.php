@@ -511,7 +511,7 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
-    * @param int $history
+    * @param integer $history
     */
    function post_updateItem($history = 1) {
 

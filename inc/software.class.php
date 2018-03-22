@@ -220,7 +220,7 @@ class Software extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @return nothing
+    * @return void
    **/
    static function updateValidityIndicator($ID) {
 
@@ -740,7 +740,7 @@ class Software extends CommonDBTM {
     * @param $myname          select name
     * @param $entity_restrict restrict to a defined entity
     *
-    * @return int|string print out an HTML select box
+    * @return integer|string print out an HTML select box
     */
    static function dropdownLicenseToInstall($myname, $entity_restrict) {
       global $CFG_GLPI, $DB;
@@ -789,9 +789,9 @@ class Software extends CommonDBTM {
     * @param integer $manufacturer_id of the software's manufacturer
     * @param integer $entity in which the software must be added
     * @param string $comment (default '')
-    * @param bool $is_recursive must the software be recursive (false by default)
+    * @param boolean $is_recursive must the software be recursive (false by default)
     * @param null|boolean $is_helpdesk_visible in helpdesk, default : from config (false by default)
-    * @return int ID of the new
+    * @return integer ID of the new
     */
    function addSoftware($name, $manufacturer_id, $entity, $comment = '',
                         $is_recursive = false, $is_helpdesk_visible = null) {
@@ -837,9 +837,9 @@ class Software extends CommonDBTM {
     * @param integer $manufacturer software's manufacturer
     * @param integer $entity in which the software must be added
     * @param string $comment (default '')
-    * @param bool $is_recursive must the software be recursive (false by default)
+    * @param boolean $is_recursive must the software be recursive (false by default)
     * @param null|boolean $is_helpdesk_visible in helpdesk, default = config value (false by default)
-    * @return int
+    * @return integer
     */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '',
                                   $is_recursive = false, $is_helpdesk_visible = null) {
@@ -888,7 +888,7 @@ class Software extends CommonDBTM {
     *
     * @param $ID        the ID of the software to put in dustbin
     * @param string|the $comment the comment to add to the already existing software's comment (default '')
-    * @return bool (success)
+    * @return boolean (success)
     */
    function putInTrash($ID, $comment = '') {
       global $CFG_GLPI;
@@ -939,7 +939,7 @@ class Software extends CommonDBTM {
    /**
     * Show softwares candidates to be merged with the current
     *
-    * @return nothing
+    * @return void
    **/
    function showMergeCandidates() {
       global $DB, $CFG_GLPI;

@@ -105,7 +105,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
-    * @return bool
+    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
@@ -206,7 +206,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * @param $computers_id
     *
-    * @return bool|mysqli_result
+    * @return boolean|mysqli_result
     */
    function updateDatasForComputer($computers_id) {
       global $DB;
@@ -291,7 +291,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $software Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $software) {
       self::showInstallations($software->getField('id'), 'softwares_id');
@@ -303,7 +303,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $version SoftwareVersion object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForVersion(SoftwareVersion $version) {
       self::showInstallations($version->getField('id'), 'id');
@@ -316,7 +316,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $searchID  value of the ID to search
     * @param $crit      to search : softwares_id (software) or id (version)
     *
-    * @return nothing
+    * @return void
    **/
    private static function showInstallations($searchID, $crit) {
       global $DB, $CFG_GLPI;
@@ -613,7 +613,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $version SoftwareVersion object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForVersionByEntity(SoftwareVersion $version) {
       global $DB, $CFG_GLPI;
@@ -660,8 +660,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * Show software installed on a computer
     *
     * @param $comp            Computer object
-    * @param int|template $withtemplate template case of the view process (default 0)
-    * @return nothing
+    * @param integer|template $withtemplate template case of the view process (default 0)
+    * @return void
     */
    static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -1045,7 +1045,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $withtemplate          template case of the view process
     * @param $canedit      boolean  user can edit software ?
     *
-    * @return nothing
+    * @return void
    */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
       global $CFG_GLPI;
@@ -1099,7 +1099,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $instID                ID of the install software lienk
     * @param $softwareversions_id   ID of the new version
     * @param Do|int $dohistory Do history ? (default 1)
-    * @return nothing
+    * @return void
     */
    function upgrade($instID, $softwareversions_id, $dohistory = 1) {
 
@@ -1139,7 +1139,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -1187,7 +1187,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 

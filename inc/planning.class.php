@@ -184,7 +184,7 @@ class Planning extends CommonGLPI {
     * @param default|string $value default value (default '')
     * @param bool|display $display display of send string ? (true by default)
     * @param array|options $options options
-    * @return int|string
+    * @return integer|string
     */
    static function dropdownState($name, $value = '', $display = true, $options = []) {
 
@@ -206,7 +206,7 @@ class Planning extends CommonGLPI {
     * @param $except    array of items which not be into account array
     *                         ('Reminder'=>array(1,2,id_of_items))
     *
-    * @return bool
+    * @return boolean
     */
    static function checkAlreadyPlanned($users_id, $begin, $end, $except = []) {
       global $CFG_GLPI;
@@ -526,7 +526,7 @@ class Planning extends CommonGLPI {
     * Function name change since version 0.84 show() => showPlanning
     * Function prototype changes in 9.1 (no more parameters)
     *
-    * @param bool $fullview
+    * @param boolean $fullview
     */
    static function showPlanning($fullview = true) {
       global $CFG_GLPI, $DB;
@@ -1740,7 +1740,7 @@ class Planning extends CommonGLPI {
     *  - parent : in case of type=users_group, must contains the id of the group
     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
     *  - display : boolean value to set to his line
-    * @return nothing
+    * @return void
     */
    static function toggleFilter($options = []) {
 
@@ -1771,7 +1771,7 @@ class Planning extends CommonGLPI {
     *  - parent : in case of type=users_group, must contains the id of the group
     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
     *  - color : rgb color (preceded by '#'' char)
-    * @return nothing
+    * @return void
     */
    static function colorFilter($options = []) {
       $key = 'filters';
@@ -1797,7 +1797,7 @@ class Planning extends CommonGLPI {
     * @param  array $options: should contains :
     *  - type : event type, can be event_filter, user, group or group_users
     *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
-    * @return nothing
+    * @return void
     */
    static function deleteFilter($options = []) {
 
@@ -1933,7 +1933,7 @@ class Planning extends CommonGLPI {
     *  - color: string with #rgb color for event's foreground color.
     *  - event_type_color : string with #rgb color for event's foreground color.
     * @param  array  $raw_events: (passed by reference) the events array in construction
-    * @return nothing
+    * @return void
     */
    static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = []) {
 
@@ -1983,7 +1983,7 @@ class Planning extends CommonGLPI {
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
     *  - end : planning end .
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    * @return bool
+    * @return boolean
     */
    static function updateEventTimes($params = []) {
       if ($item = getItemForItemtype($params['itemtype'])) {

@@ -127,7 +127,7 @@ class Contract_Item extends CommonDBRelation{
     * @param $values (default '')
     * @param $options      array
     *
-    * @return bool|string
+    * @return boolean|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
@@ -187,7 +187,7 @@ class Contract_Item extends CommonDBRelation{
    /**
     * @param $item    CommonDBTM object
     *
-    * @return int
+    * @return integer
     */
    static function countForItem(CommonDBTM $item) {
 
@@ -200,7 +200,7 @@ class Contract_Item extends CommonDBRelation{
    /**
     * @param $item   Contract object
     *
-    * @return int
+    * @return integer
     */
    static function countForContract(Contract $item) {
       global $DB;
@@ -296,7 +296,7 @@ class Contract_Item extends CommonDBRelation{
    /**
     * @see CommonGLPI::getTabNameForItem()
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param integer $withtemplate
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -329,7 +329,7 @@ class Contract_Item extends CommonDBRelation{
     * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
     *
-    * @return bool
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
@@ -382,7 +382,7 @@ class Contract_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $item            CommonDBTM object wanted
-    * @param int|not $withtemplate not used (to be deleted) (default 0)
+    * @param integer|not $withtemplate not used (to be deleted) (default 0)
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -542,7 +542,7 @@ class Contract_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param Contract $contract Contract object
-    * @param bool|int $withtemplate (default 0)
+    * @param boolean|integer $withtemplate (default 0)
     * @return void (display)
     */
    static function showForContract(Contract $contract, $withtemplate = 0) {

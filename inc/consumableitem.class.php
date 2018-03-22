@@ -388,7 +388,7 @@ class ConsumableItem extends CommonDBTM {
     * Cron action on consumables : alert if a stock is behind the threshold
     *
     * @param $task   to log, if NULL display (default NULL)
-    * @return int 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
     */
    static function cronConsumable($task = null) {
       global $DB, $CFG_GLPI;
