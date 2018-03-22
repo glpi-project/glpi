@@ -1,0 +1,21 @@
+{
+  "name": "glpi",
+  "homepage": "http://glpi-project.org",
+  "authors": [
+    "Johan Cwiklinski <jcwiklinski@teclib.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "GPLV2+",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "admin-lte": "^2.4.3"
+  }
+}

@@ -30,7 +30,7 @@
  #}
 {% extends "glpi.twig" %}
 
-{% block html_class %}layout_{{ glpi_layout }}{% endblock %}
+{% block html_class %} layout_{{ glpi_layout }}{% endblock %}
 
 {% block head %}
    {% set css_paths = css_paths|default([])|merge([
@@ -44,7 +44,7 @@
       '../lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.css',
       '../lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css',
       '../lib/leaflet/plugins/Leaflet.fullscreen/leaflet.fullscreen.css',
-      '../css/jquery-glpi.css'
+      'public/css/glpi-adminlte.css'
       ]) %}
    {% for css_path in css_paths %}
       <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ css_path }}" type="text/css" media="screen" />
@@ -53,6 +53,30 @@
 {% endblock %}
 
 {% block header %}
+<header class="main-header">
+   <a href="{{ path_for('slash') }}" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini">
+         {# FIXME: create a small logo #}
+         <img src="{{ CFG_GLPI.root_doc }}/pics/fd_logo_s.png" alt="{{ __('Home') }}"/>
+      </span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg">
+         <img src="{{ CFG_GLPI.root_doc }}/pics/fd_logo.png" alt="GLPI {{ __('Home') }}"/>
+      </span>
+    </a>
+    <nav class="navbar navbar-static-top" role="navigation">
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+         <span class="sr-only">Toggle navigation</span>
+      </a>
+      <div class="navbar-custom-menu">
+        {{ block('topmenu') }}
+      </div>
+    </nav>
+  </header>
+{% endblock %}
+
+{% block header_old %}
    {% spaceless %}
    <div id='header'>
       <div id='header_top'>
@@ -431,7 +455,7 @@
       #}
 
       var _select2_common = {
-         width: '14em{#$width#}',
+         width: '100%',
          minimumInputLength: 0,
          quietMillis: 100,
          dropdownAutoWidth: true,
@@ -611,25 +635,105 @@
    {{ debugpanel()|raw }}
 {% endblock %}
 
+{% block searchform %}
+    {% if CFG_GLPI.allow_search_global %}
+{#
+      if ($full === true) {
+         /// Search engine
+#}
+<form class="sidebar-form" role="search" method="get" action="{{ CFG_GLPI.root_doc }}/front/search.php">
+   {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
+   <div class="input-group">
+      <input type="text" class="form-control" id="search-input" placeholder="{{ __s('Search') }}" name="globalsearch">
+      <span class="input-group-btn">
+         <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+            <i class="fa fa-search"></i>
+            <span class="sr-only">{{ __('Search') }}</span>
+         </button>
+      </span>
+   </div>
+</form>
+    {% endif %}
+{% endblock %}
+
 {# Prefs / Logout link #}
 {% block topmenu %}
+   <ul class="nav navbar-nav">
+      <li id="language_link">
+   {% if not constant('GLPI_DEMO_MODE') %}
+         <a href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User$1" title="{{ glpi_lang_name }}">
+            {{  glpi_lang_name }}
+         </a>
+   {% else %}
+         <span>{{ glpi_lang_name }}</span>
+   {% endif %}
+      </li>
+
+      <li id='help_link'>
+         <a href='{% if CFG_GLPI.central_doc_url is empty %}http://glpi-project.org/help-central{% else %}{{ CFG_GLPI.central_doc_url}}{% endif %}' target='_blank' title="{{ __s('Help') }}" class='fa fa-question'>
+            <span class='sr-only'>{{ __('Help') }}</span>
+         </a>
+      </li>
+
+      <li id='bookmark_link'>
+         <a href='#' id='showSavedSearchesLink' class='fa fa-star' title="{{ __s('Load a bookmark') }}">
+            <span class='sr-only'>{{ __('Saved searches') }}</span>
+         </a>
+      </li>
+
+   {% if call_static('Config', 'canUpdate') %}
+      <li id='debug_mode'>
+      {% set dbgbtn_class = 'debugoff' %}
+      {% set dbgbtn_title = __('Debug mode disabled') %}
+      {% if glpi_debug %}
+         {% set dbgbtn_class = 'debugon' %}
+         {% set dbgbtn_title = __('Debug mode enabled') %}
+      {% endif %}
+         <a href="?switch=switch-debug" class="fa fa-bug {{ dbgbtn_class }}"
+               title="{{ dbgbtn_title }}">
+            <span class='sr-only'>{{ __('Change mode') }}</span>
+         </a>
+      </li>
+   {% endif %}
+
+      <li id='preferences_link'>
+         <a href='{#{ path_for('/user/preferences') }#}' title="{{ __s('My settings') }}" class='fa fa-cog'>
+            <span class='sr-only'>{{ __('My settings') }}</span>
+
+            {# check user id : header used for display messages when session logout #}
+            {% if call_static('Session', 'getLoginUserID') and user_name is defined %}
+            <span id='myname'>{{ user_name }}</span>
+            {% endif %}
+         </a>
+      </li>
+
+      <li id='deconnexion'>
+         <a href='{#{ path_for('logout') }#}' title="{{ __s('Logout') }}" class="fa fa-sign-out">
+         {#if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
+            //FIXME: Manage in logout route?
+            echo "?noAUTO=1";
+         }}#}
+            <span class='sr-only'>{{ __('Logout') }}</span>
+         </a>
+      </li>
+{#
    {% spaceless %}
    <div id='c_preference' >
       <ul>
          <li id='deconnexion'>
-            <a href='{#{ path_for('logout') }#}' title="{{ __s('Logout') }}" class="fa fa-sign-out">
-      {#if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
+            <a href='{{ path_for('logout') }}' title="{{ __s('Logout') }}" class="fa fa-sign-out">
+      {if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
          //FIXME: Manage in logout route?
          echo "?noAUTO=1";
-      }}#}
+      }}}
                <span class='sr-only'>{{ __('Logout') }}</span>
             </a>
          </li>
          <li id='preferences_link'>
-            <a href='{#{ path_for('/user/preferences') }#}' title="{{ __s('My settings') }}" class='fa fa-cog'>
+            <a href='{{ path_for('/user/preferences') }}' title="{{ __s('My settings') }}" class='fa fa-cog'>
                <span class='sr-only'>{{ __('My settings') }}</span>
 
-               {# check user id : header used for display messages when session logout #}
+               { check user id : header used for display messages when session logout }
                {% if call_static('Session', 'getLoginUserID') and user_name is defined %}
                <span id='myname'>{{ user_name }}</span>
                {% endif %}
@@ -672,62 +776,64 @@
             <span>{{ glpi_lang_name }}</span>
       {% endif %}
          </li>
-
-         <li id='c_recherche'>
-{#
-      if ($full === true) {
-         /// Search engine
-#}
-      {% if CFG_GLPI.allow_search_global %}
-            <form method='get' action='{{ CFG_GLPI.root_doc }}/front/search.php'>
-               <span id='champRecherche'>
-                  <input size='15' type='text' name='globalsearch' placeholder='{{ __s('Search') }}'>
-                  <button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>
-               </span>
-               {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
-            </form>
-      {% endif %}
-{#
-         }
-      }
-#}
-         </li>
       </ul>
    </div>
    {% endspaceless %}
+#}
 {% endblock %}
 
 {% macro menu_links(entry) %}
-   <li class="pure-menu-item{% if entry.content is defined and entry.content|length %} pure-menu-has-children pure-menu-allow-hover{% endif %}">
-      {% set url = '#' %}
-      {% if entry.content is defined %}
-         {% set first = entry.content|first %}
-         {% if first.itemtype is defined %}{% set url = path_for('asset', {'itemtype': first.itemtype|lower}) %}{% endif %}
-      {% endif %}
-      <a href="{{ url }}{#% if entry.page is defined %}{{ entry.page }}{% endif %#}" class="pure-menu-link">{{ entry.title }}</a>
-   {% if entry.content is defined %}
-      <ul class="pure-menu-children">
-      {% for child in entry.content %}
-         <li class="pure-menu-item">
-            <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% endif %}" class="pure-menu-link itemP">{% if child.title is defined %}{{ child.title }}{% endif %}</a>
-         </li>
-      {% endfor %}
-      </ul>
-   {% endif %}
-   </li>
+    {% set url = '#' %}
+    {#% if entry.page is defined %}{% set url =  entry.page %}{% endif %#}
+    {% if entry.content is defined %}
+        {% set first = entry.content|first %}
+        {% if first.itemtype is defined %}{% set url = path_for('asset', {'itemtype': first.itemtype|lower}) %}{% endif %}
+    {% endif %}
+
+    <li {% if entry.content is defined and entry.content|length %} class="treeview"{% endif %}>
+        <a href="{{ url }}">
+            {{ entry.title }}
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+    {% if entry.content is defined %}
+        <ul class="treeview-menu">
+        {% for child in entry.content %}
+            <li>
+            {% if not child.itemtype is not defined or child.itemtype is defined %}
+                <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% endif %}">{% if child.title is defined %}{{ child.title }}{% endif %}</a>
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </li>
 {% endmacro %}
 
 {% block menu %}
-<div id="c_menu" class="pure-menu pure-menu-horizontal">
-   <ul class="pure-menu-list">
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar" style="height: auto;">
+      {{ block('searchform') }}
+
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu tree" data-widget="tree">
    {% import _self as glpi_page %}
    {% for menu in glpi_menus %}
       {{ glpi_page.menu_links(menu) }}
    {% endfor %}
-   </ul>
-</div>
+</aside>
+
 {% endblock %}
 
 {% block footer %}
    {% if glpi_debug == true %}{{ exectime() }}<br/>{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container content">
+   {{ parent() }}
+</div>
 {% endblock %}

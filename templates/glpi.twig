@@ -29,25 +29,37 @@
  * ---------------------------------------------------------------------
  #}
 <!DOCTYPE html>
-<html lang="{{ glpi_lang }}" class="{% block html_class  %}{% endblock %}">
+<html lang="{{ glpi_lang }}" class="hold-transition skin-{{ glpi_skin }} {% block html_class  %}{% endblock %}">
+{% set js_libs = glpi_js_libs|default('public/bower_components') %}
     <head>
          <meta charset="utf-8"/>
          <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <link rel="shortcut icon" type="images/x-icon" href="{{ CFG_GLPI.root_doc }}/pics/favicon.ico" />
-         <meta name='viewport' content='width=device-width, initial-scale=1'/>{# auto desktop / mobile viewport #}
-         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/styles.css" type="text/css" media="screen" />
-         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/palettes/{{ CFG_GLPI.palette }}.css" type="text/css" media="screen" />
-         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/public/css/pure-min.css" type="text/css" media="screen" />
-         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/lib/font-awesome-4.7.0/css/font-awesome.min.css" type="text/css" media="screen" />
-         <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/../lib/jquery/js/jquery-1.10.2.js"></script>
-        {% block head %}
+         <!-- Tell the browser to be responsive to screen width -->
+         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+         {% block head %}
             <title>{% block title %}{% endblock %} - GLPI</title>
-        {% endblock %}
+         {% endblock %}
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/bootstrap/dist/css/bootstrap.min.css" type="text/css" media="screen" />
+         {#<link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/styles.css" type="text/css" media="screen" />
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/palettes/{{ CFG_GLPI.palette }}.css" type="text/css" media="screen" />#}
+         {#<link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/public/css/purecss.io/pure-min.css" type="text/css" media="screen" />
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/public/css/purecss.io/grids-responsive-min.css" type="text/css" media="screen" />#}
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/lib/font-awesome-4.7.0/css/font-awesome.min.css" type="text/css" media="screen" />
+
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/css/AdminLTE.min.css" type="text/css" media="screen" />
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/css/skins/skin-{{ glpi_skin }}.min.css" type="text/css" media="screen" />
+         {#<script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/../lib/jquery/js/jquery-1.10.2.js"></script>#}
+         <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/jquery/dist/jquery.min.js"></script>
+         <!-- Google Font -->
+         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     </head>
     <body>
+       <div class="wrapper">
         {% block header %}{% endblock %}
-        <div id="content">{% block content %}{% endblock %}</div>
-        <div id="footer">
+        {% block menu %}{% endblock %}
+        <div id="content" class="content-wrapper">{% block content %}{% endblock %}</div>
+        <div id="footer" class="main-footer">
             {% block footer %}{% endblock %}
 
             <a href="http://glpi-project.org/"
@@ -57,7 +69,10 @@
                GLPI {{ constant('GLPI_VERSION') }} Copyright (C) 2015-{{ "now"|date("Y") }} Teclib' and contributors
             </a>
         </div>
+        </div>
    {% block javascripts %}
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/bootstrap/dist/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/js/adminlte.min.js"></script>
       {#% for script in glpi_scripts %}
          <script type="text/javascript">{{ script|raw }}</script>
       {% endfor %#}

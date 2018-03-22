@@ -32,5 +32,9 @@
 
 {% block title %}{{ page_title }}{% endblock %}
 {% block content %}
-   {{ contents|raw }}
+<div class="container content">
+   <div style="background-color:white;">
+      {{ contents|raw }}
+   </div>
+</div>
 {% endblock %}

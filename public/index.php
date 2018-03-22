@@ -112,6 +112,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          Dropdown::getLanguageName($_SESSION['glpilanguage'])
       );
 
+      //TODO: use a conf
+      $view->getEnvironment()->addGlobal(
+        'glpi_skin',
+        'blue'
+      );
+
       //TODO: change that!
       if (Session::getLoginUserID()) {
          ob_start();

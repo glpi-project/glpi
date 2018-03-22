@@ -28,10 +28,10 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-<form class="pure-form{% if glpi_form.pure_form is defined %} pure-form-{{ glpi_form.pure_form}}{% endif %}{{ ' ' ~ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
+<form class="container form-horizontal box{{ ' ' ~ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
-   <header class="pure-form pure-form-aligned">
+   <header class="box-header with-border">
       {% if glpi_form.header_title is defined %}
          {{ glpi_form.header_title }}
       {% else %}
@@ -53,7 +53,7 @@
          {% elseif item.fields['id'] is not defined or item.fields['id'] <= 0 %}
             {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
             printf(__('%1$s - %2$s'), __('New item'), $nametype);#}
-            {{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}
+            <h3 class="box-title">{{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}</h3>
          {% else %}
             {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
             if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
@@ -61,13 +61,13 @@
                $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
             }
             echo $nametype;#}
-            {{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}
+            <h3 class="box-title">{{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}</h3>
          {% endif %}
       {% endif %}
    </header>
    {% endif %}
 
-   <fieldset class="pure-g">
+   <fieldset class="row">
    {% for element in glpi_form.elements %}
       {% set tpl = element.type|default('input') %}
       {#% set tpl = 'input' %}
@@ -85,6 +85,16 @@
 {% endblock %}
    {% include "elements/hidden.twig" with {'element': {'name': '_glpi_csrf_token', 'value': call_static('Session', 'getNewCSRFToken')}} %}
 {% if glpi_form.submit is not defined or glpi_form.submit != false %}
-   {% include "elements/submit.twig" with {'form_class': 'center', 'element': {'name': 'submit', 'value': glpi_form.submit_label|default(__('Post')), 'width': glpi_form.columns|default(null)}} %}
+   <div class="box-footer">
+      {% include "elements/submit.twig" with {
+         'form_class': 'center',
+         'notag': true,
+         'element': {
+            'name': 'submit',
+            'value': glpi_form.submit_label|default(__('Post')),
+            'width': glpi_form.columns|default(null)
+         }
+      } %}
+   </div>
 {% endif %}
 </form>

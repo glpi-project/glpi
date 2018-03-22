@@ -47,13 +47,12 @@
     <textarea
         name="{{ element.name }}"
         id="{{ element.id|default(element.name) }}"
-        cols="25"
-        rows="6"
+        rows="{{ element.rows|default(3) }}"
         {% if element.required is defined and element.required == true %} required="required"{% endif %}
         {% if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
         {% if element.title is defined %} title="{{ title }}"{% endif %}
         {% if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
-        class="autogrow{% if element.class is defined %} {{ element.class }}{% endif %}"
+        class="form-control autogrow{% if element.class is defined %} {{ element.class }}{% endif %}"
         {% if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
         {% if element.size is defined %} size="{{ element.size }}"{% endif %}
         {%if element.placeholder is defined %}

@@ -30,12 +30,14 @@
  #}
 {% block component %}
    {% if notag is not defined or not notag %}
-   <div class="pure-u-1 pure-control-group{% if glpi_form.columns is defined and glpi_form.columns is not empty %} pure-u-1 pure-u-md-{{ element.width|default(1) }}-{{ glpi_form.columns }}{% endif %}{% if form_class is defined %} {{ form_class }}{% endif %}">
+      {% set md = 6 %}
+      {% if glpi_form.columns is defined %}{% set md = 12/glpi_form.columns %}{% endif %}
+   <div class="form-group col-md-{{ md }}">
    {% endif %}
    {% block label %}
       {% if element.label is defined %}
          {% set label = element.label %}
-      <label for="{{ element.id|default(element.name) }}"{%if label.title is defined %} title="{{ label.title }}"{% endif %}{% if label.tip is defined or label.class is defined%} class="{% if element.tip is defined %}tooltip{% endif %} {% if label.class is defined %}{{ label.class }}{% endif %}"{% endif %}>
+      <label for="{{ element.id|default(element.name) }}"{%if label.title is defined %} title="{{ label.title }}"{% endif %} class="col-sm-4{% if element.tip is defined %} tooltip{% endif %} {% if label.class is defined %} {{ label.class }}{% endif %}">
          {% if label is iterable %}
             {{ label.label }}
          {% else %}
@@ -52,6 +54,9 @@
       {% endif %}
    {% endblock %}
    {%if element.tip is defined %}<span class="tip">{{ element.tip }}</span>{% endif %}
+   {% if notag is not defined or not notag or element.label is defined %}
+   <div class="col-sm-{% if element.label is defined %}8{% else %}12{% endif %}">
+   {% endif %}
    {% block element %}<input
         type="{{ element.type|default('text') }}"
         name="{{ element.name }}"
@@ -63,7 +68,7 @@
         {%if element.autofocus is defined and element.autofocus == true %} autofocus="autofocus"{% endif %}
         {%if element.title is defined %} title="{{ element.title }}"{% endif %}
         {%if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
-        {%if element.class is defined %} class="{{ element.class }}"{% endif %}
+        class="{%if element.class is defined %}{{ element.class }}{% else %}form-control{% endif %}"
         {%if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
         {%if element.size is defined %} size="{{ element.size }}"{% endif %}
         {%if element.checked is defined and element.checked == true %} checked="checked"{% endif %}
@@ -82,6 +87,9 @@
    {% endblock %}
    {% if element.message is defined %}
       <span class="pure-form-message-inline">{{ element.message }}</span>
+   {% endif %}
+   {% if notag is not defined or not notag or element.label is defined%}
+   </div>
    {% endif %}
    {% if notag is not defined or not notag %}
    </div>

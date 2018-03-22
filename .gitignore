@@ -26,4 +26,6 @@ phpunit.xml
 /js/*.min.js
 # ignore incomplete locale, fallback to ru.js
 # see https://github.com/glpi-project/glpi/issues/3788
+/public/bower_components/
+/public/node_modules/
 /lib/tiny_mce/langs/ru_RU.js

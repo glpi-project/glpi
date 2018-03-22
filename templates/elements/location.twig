@@ -30,7 +30,9 @@
  #}
 {% extends "elements/select.twig" %}
 
-{% block element %}
+{% block extra_addons %}
    {{ parent() }}
-   <span class="fa fa-globe pointer btn_location" title="{{ __s('Display on map') }}" data-fid="{{ element.id|default(element.name) }}"></span>
+   <a href="#" class="btn btn-default">
+      <span class="fa fa-globe pointer btn_location" title="{{ __s('Display on map') }}" data-fid="{{ element.id|default(element.name) }}"></span>
+   </a>
 {% endblock %}

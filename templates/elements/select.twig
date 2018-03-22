@@ -44,10 +44,11 @@
 {% endmacro %}
 
 {% block element %}
+<div class="input-group">
     <select
         name="{{ element.name }}"
         id="{{ element.id|default(element.name) }}"
-        class="forSelect2{%if element.class is defined %} {{ element.class }}{% endif %}"
+        class="forSelect2 form-control{%if element.class is defined %} {{ element.class }}{% endif %}"
         {% if element.required is defined and element.required == true %} required="required"{% endif %}
         {% if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
         {% if element.itemtype is defined %} data-itemtype="{{ element.itemtype }}"{% endif %}
@@ -58,21 +59,27 @@
          {% import _self as glpi_select %}
          {{ glpi_select.html_options(element.values, element.value|default('')) }}
     </select>
-{% if element.listicon is not defined or element.listicon == true %}
-   <a href="{{ path_for('asset', {'itemtype': element.itemtype}) }}" class="tooltip"
-      data-tooltip="{{ __s("Show %1$s")|format(element.itemtype_name) }}">
-      <span class='fa fa-info pointer'></span>
-   </a>
-{% endif %}
-{% if element.addicon is not defined or element.addicon == true %}
-   <span class="fa fa-plus-circle pointer" title="{{ __s('Add') }}"
+   <span class="input-group-btn">
+   {% if element.listicon is not defined or element.listicon == true %}
+      <a class="btn btn-default" href="{{ path_for('asset', {'itemtype': element.itemtype}) }}"
+         data-tooltip="{{ __s("Show %1$s")|format(element.itemtype_name) }}">
+         <span class='fa fa-info pointer'></span>
+      </a>
+   {% endif %}
+   {% if element.addicon is not defined or element.addicon == true %}
+      <a class="btn btn-default" href="{#{ path_for('asset', {'itemtype': element.itemtype}) }#}">
+      <span class="fa fa-plus-circle pointer" title="{{ __s('Add') }}"
 {#onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['name'].$params['rand']).".dialog('open');\"#}
       ><span class="sr-only">{{ __s('Add') }}</span>
-   </span>
+      </span>
+      </a>
 {#
       $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['name'].$params['rand'],
                                                         $item->getFormURL(),
                                                         ['display' => false]);
       #}
-{% endif %}
+   {% endif %}
+   {% block extra_addons %}{% endblock %}
+   </span>
+</div>
 {% endblock %}
