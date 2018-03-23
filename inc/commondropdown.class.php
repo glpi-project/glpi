@@ -63,10 +63,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * @since version 0.85
-    *
-    * @param $nb
-    *
-    * @return string
     */
    static function getTypeName($nb = 0) {
       return _n('Dropdown', 'Dropdowns', $nb);
@@ -85,11 +81,6 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since version 0.85
-   **/
    static function getMenuShorcut() {
       return 'n';
    }
@@ -194,9 +185,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * @since version 0.83.3
-    *
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    */
    function prepareInputForAdd($input) {
       global $DB;
 
@@ -219,9 +208,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * @since version 0.83.3
-    *
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    */
    function prepareInputForUpdate($input) {
       return self::prepareInputForAdd($input);
    }
@@ -409,6 +396,10 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
+   /**
+    * @param integer $ID
+    * @param array   $field
+    */
    function displaySpecificTypeField($ID, $field = []) {
    }
 
@@ -704,12 +695,13 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param $value           string   Value of the new dropdown (need to be addslashes)
-    * @param $entities_id     int      entity in case of specific dropdown (default -1)
-    * @param $external_params array    (manufacturer) (need to be addslashes)
-    * @param string $comment (default '') (need to be addslashes)
-    * @param bool|if $add if true, add it if not found. if false,
+    * @param string  $value            Value of the new dropdown (need to be addslashes)
+    * @param integer $entities_id      entity in case of specific dropdown (default -1)
+    * @param array   $external_params  (manufacturer) (need to be addslashes)
+    * @param string  $comment          (default '') (need to be addslashes)
+    * @param boolean $add              if true, add it if not found. if false,
     *                                  just check if exists (true by default)
+    *
     * @return integer : dropdown id.
     */
    function importExternal($value, $entities_id = -1, $external_params = [], $comment = "",
@@ -756,9 +748,6 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -778,11 +767,6 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -798,9 +782,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
