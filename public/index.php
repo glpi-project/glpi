@@ -227,6 +227,26 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ]
       ];
 
+      $auth_methods = \Auth::getLoginAuthMethods();
+      $default = $auth_methods['_default'];
+      unset($auth_methods['_default']);
+      if (count($auth_methods) > 1) {
+         $glpi_form['elements']['auth'] = [
+            'type'   => 'select',
+            'name'   => 'auth',
+            'value'  => $default,
+            'values' => $auth_methods,
+            'listicon'  => false,
+            'addicon'   => false
+         ];
+      } else {
+         $glpi_form['elements']['auth'] = [
+            'type'   => 'hidden',
+            'name'   => 'auth',
+            'value'  => key($auth_methods)
+         ];
+      }
+
       if ($CFG_GLPI['login_remember_time']) {
          $glpi_form['elements']['remember'] = [
             'type'      => 'checkbox',
@@ -234,6 +254,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             'label'     => __('Remember me')
          ];
       }
+
       if (isset($_GET["noAUTO"])) {
          // Other CAS
          $glpi_form['elements']['noAUTO'] = [
