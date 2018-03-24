@@ -16,6 +16,11 @@
     "tests"
   ],
   "dependencies": {
-    "admin-lte": "^2.4.3"
+    "admin-lte": "^2.4.3",
+    "jquery-ui": "^1.12"
+  },
+  "resolutions": {
+    "jquery": "^3.2.1",
+    "jquery-ui": "^1.12"
   }
 }

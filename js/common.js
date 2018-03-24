@@ -644,7 +644,7 @@ $(function() {
 });
 
 var _initDebug = function() {
-   $('#debugtabs').tabs({
+   /*$('#debugtabs').tabs({
       collapsible: true
    }).addClass( 'ui-tabs-vertical ui-helper-clearfix' );
 
@@ -657,13 +657,12 @@ var _initDebug = function() {
       },
       text: false
    }).click(function() {
-         $('#debugtabs').css('display', 'none');
-   });
+         $('#debugtabs').hide();
+   });*/
 
-   $('#see_debug').click(function(e) {
+   $('#see_debug,#hide_debug').click(function(e) {
       e.preventDefault();
-      console.log('see_debug #debugtabs');
-      $('#debugtabs').css('display', 'block');
+      $('#debugtabs').toggleClass('hidden');
    });
 };
 

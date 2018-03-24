@@ -28,7 +28,11 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-<form class="container form-horizontal box{{ ' ' ~ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
+{% set glpi_form = {
+   'boxed': true,
+   'form_class': ''
+}|merge(glpi_form) %}
+<form class="{% if glpi_form.boxed %}container form-horizontal box{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
    <header class="box-header with-border">
@@ -50,18 +54,6 @@
                      'rand'      => $rand
                   ]
                );#}
-         {% elseif item.fields['id'] is not defined or item.fields['id'] <= 0 %}
-            {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
-            printf(__('%1$s - %2$s'), __('New item'), $nametype);#}
-            <h3 class="box-title">{{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}</h3>
-         {% else %}
-            {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
-            if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
-               //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-               $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
-            }
-            echo $nametype;#}
-            <h3 class="box-title">{{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}</h3>
          {% endif %}
       {% endif %}
    </header>
@@ -85,7 +77,7 @@
 {% endblock %}
    {% include "elements/hidden.twig" with {'element': {'name': '_glpi_csrf_token', 'value': call_static('Session', 'getNewCSRFToken')}} %}
 {% if glpi_form.submit is not defined or glpi_form.submit != false %}
-   <div class="box-footer">
+   <div class="{% if glpi_form.boxed %}box-footer{% endif %}">
       {% include "elements/submit.twig" with {
          'form_class': 'center',
          'notag': true,

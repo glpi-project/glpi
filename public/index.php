@@ -121,7 +121,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       //TODO: change that!
       if (Session::getLoginUserID()) {
          ob_start();
-         \Html::showProfileSelecter($container['router']->pathFor('slash')/*$CFG_GLPI["root_doc"]."/front/$mainurl.php"*/);
+         \Html::showProfileSelecter($container['router']->pathFor('slash'));
          $selecter = ob_get_contents();
          ob_end_clean();
 
@@ -204,29 +204,31 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       //if user is logged in, redirect to /central
 
       $glpi_form = [
-         'pure_form' => 'aligned',
-         'header_title' => null,
+         'header'       => false,
+         'columns'      => 1,
+         'boxed'        => false,
+         'submit_label' => __('Login'),
          'elements'  => [
             'login'     => [
-               'type'      => 'text',
-               'name'      => 'login_name',
-               'required'  => true,
+               'type'         => 'text',
+               'name'         => 'login_name',
+               'required'     => true,
                'placeholder'  => __('Login'),
                'autofocus'    => true,
-               'icon'         => 'user-circle'
+               'preicons'     => ['user-circle']
             ],
             'password'  => [
-               'type'      => 'password',
-               'name'      => 'login_password',
-               'required'  => true,
+               'type'         => 'password',
+               'name'         => 'login_password',
+               'required'     => true,
                'placeholder'  => __('Password'),
-               'icon'         => 'lock'
+               'preicons'     => ['unlock']
             ]
          ]
       ];
 
       if ($CFG_GLPI['login_remember_time']) {
-         $glpi_form['remember'] = [
+         $glpi_form['elements']['remember'] = [
             'type'      => 'checkbox',
             'name'      => 'login_remember',
             'label'     => __('Remember me')
@@ -286,8 +288,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
 
       $params = [];
+      $tpl = 'add_page';
 
       if (!$item->isTwigCompat() && !isset($get['twig'])) {
+         $tpl = 'legacy';
          Toolbox::deprecated(
             sprintf(
                '%1$s is not compatible with new templating system!',
@@ -312,8 +316,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       return $this->view->render(
          $response,
-         'add_page.twig', [
-            'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+         $tpl . '.twig', [
+            'page_title'   => sprintf(
+               __('%1$s - %2$s'),
+               __('New item'),
+               $item->getTypeName(1)
+            ),
             'item'         => $item,
             'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
          ] + $params
@@ -322,6 +330,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    $app->get('/{itemtype}/edit/{id:\d+}', function ($request, $response, $args) {
       $item = new $args['itemtype']();
+      $item->getFromdB($args['id']);
       $get = $request->getQueryParams();
 
       //reload data from session on error
@@ -356,6 +365,22 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          }
       }
 
+      $page_title = sprintf(
+         __('%1$s - %2$s'),
+         __('Edit item'),
+         $item->getTypeName(1)
+      );
+      if ($_SESSION['glpiis_ids_visible']) {
+         //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+         $nametype = sprintf(__('%1$s - ID %2$d'), $item->getTypeName(1), $item->fields['id']);
+
+         $page_title = sprintf(
+            __('%1$s - %2$s (#%2$d)'),
+            __('Edit item'),
+            $item->getTypeName(1),
+            $item->fields['id']
+         );
+      }
       return $this->view->render(
          $response,
          'edit_page.twig', [

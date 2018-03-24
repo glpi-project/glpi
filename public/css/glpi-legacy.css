@@ -1,0 +1,5408 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+*/
+/* ################--------------- GLPI CSS style   ---------------#################### */
+
+
+
+
+/* ################--------------- Default style  ---------------#################### */
+
+/*body {
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-size: 12px;
+   margin: 0;
+   padding: 0;
+   background:  #f8f7f3;
+   position: relative;
+   height: auto;
+   min-height: 100%;
+}*/
+
+body.iframed {
+   margin-top: 1em;
+   overflow-x: hidden;
+   background: inherit;
+}
+
+html.legacy #content .content ul,
+html.legacy #content .content li,
+html.legacy #content .content dt,
+html.legacy #content .content dl,
+html.legacy #content .content dd,
+html.legacy #content .content form,
+html.legacy #content .content img,
+html.legacy #content .content input {
+   margin: 0;
+   padding: 0;
+}
+
+html.legacy #content .content ul {
+   list-style-type: none;
+}
+
+html.legacy #content .content span.invisible {
+   visibility: hidden;
+}
+
+html.legacy #content .content .starthidden {
+   display: none;
+}
+
+/* separateur pour rétablir les comportements de block */
+html.legacy #content .content div.sep {
+   font-size: 1px;
+   height: 1px;
+   padding: 0;
+   margin: 0;
+   clear: both;
+}
+
+html.legacy #content .content img {
+   border: 0;
+}
+
+html.legacy #content .content small {
+   font-family: verdana;
+   font-size: 10px;
+}
+
+html.legacy #content .content sup {
+   vertical-align: baseline;
+   position: relative;
+   top: -0.4em;
+}
+
+html.legacy #content .content .big {
+   font-size: 14px;
+}
+
+html.legacy #content .content .b {
+   font-weight: bold;
+}
+
+html.legacy #content .content .center {
+   text-align:center;
+}
+
+html.legacy #content .content .left {
+   text-align:left;
+}
+
+html.legacy #content .content .right {
+   text-align:right !important;
+}
+
+html.legacy #content .content .floatright {
+   position: relative;
+   float: right;
+}
+
+html.legacy #content .content .floatleft {
+   position: relative;
+   float: left;
+}
+
+html.legacy #content .content .nofloat {
+   float: none!important;
+}
+
+html.legacy #content .content .center-h {
+   margin:auto;
+}
+
+html.legacy #content .content .middle {
+   vertical-align:middle;
+}
+
+html.legacy #content .content .bottom {
+   vertical-align:bottom;
+}
+
+html.legacy #content .content .top {
+   vertical-align:top;
+}
+
+html.legacy #content .content .relative {
+   position: relative;
+}
+
+
+html.legacy #content .content .red {
+   color:red;
+}
+
+html.legacy #content .content .blue {
+   color:blue;
+}
+
+html.legacy #content .content .green {
+   color:green;
+}
+
+html.legacy #content .content .yellow {
+   color:yellow;
+}
+
+
+html.legacy #content .content .deleted {
+   background-color:#cf9b9b;
+}
+
+html.legacy #content .content .separ {
+   clear: both;
+   visibility: hidden;
+}
+
+html.legacy #content .content a, html.legacy #content .content a:link {
+   font-weight: bold;
+   text-decoration: none;
+   font-size : 11px;
+}
+
+html.legacy #content .content a.fa, html.legacy #content .content a.fa:link {
+   font-size: inherit;
+   font-weight: normal;
+}
+html.legacy #content .content #page a.fa, html.legacy #content .content #page a.fa:link, html.legacy #content .content a .fa {
+   color: #222;
+}
+
+html.legacy #content .content a:hover {
+   color: black;
+}
+
+html.legacy #content .content hr {
+   border: 1px solid #cccccc;
+}
+
+
+html.legacy #content .content .pointer {
+   cursor:pointer;
+}
+
+
+html.legacy #content .content .pager_controls {
+   margin-left: .5em;
+}
+
+html.legacy #content .content .pager_controls .fa.pointer {
+   font-size: 1.7em;
+}
+html.legacy #content .content .pager_controls label span.fa {
+   margin-right: 1em;
+}
+
+html.legacy #content .content .invisible {
+   display: none;
+}
+
+html.legacy #content .content .unselectable {
+   -moz-user-select: none;
+   -o-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+/* ################--------------- Fuzzy ---------------#################### */
+
+#fuzzysearch {
+   position: fixed;
+   width: 500px;
+   min-height: 50px;
+   top: 30%;
+   left: 50%;
+   margin-top: -100px;
+   margin-left: -250px;
+   background: #FFF;
+   z-index: 200;
+}
+
+#fuzzysearch input {
+   border: 2px solid #CCC;
+   font-size: 1.5em;
+   border-radius: 3px;
+   height: 50px;
+   width: calc(100% - 20px);
+   margin: 10px;
+   box-sizing: border-box;
+}
+
+#fuzzysearch .results:not(:empty) {
+   width: calc(100% - 20px);
+   margin: 10px;
+   box-sizing: border-box;
+   height: 300px;
+   overflow-y: auto;
+   overflow-x: none;
+}
+
+#fuzzysearch .results li:nth-child(odd) {
+   background: #E8E8E8;
+}
+
+#fuzzysearch .results li.selected,
+#fuzzysearch .results li:hover {
+   background: #848484;
+   color: #FFF;
+}
+
+#fuzzysearch .results a {
+   padding: 10px;
+   font-size: 1.3em;
+   color: inherit;
+   font-weight: normal;
+   line-height: 100%;
+   display: block;
+}
+
+#fuzzysearch .fa-close {
+   position: absolute;
+   top: 0;
+   right: -30px;
+   color: #848484;
+   cursor: pointer;
+   background: #FFF;
+   width: 30px;
+   height: 30px;
+   padding: 3px 6px;
+   box-sizing: border-box;
+}
+
+@media screen and (max-width: 700px) {
+   #fuzzysearch {
+      width: 85%;
+      top: 20%;
+      left: 0;
+      margin: 0 5%
+   }
+}
+
+/* ################--------------- Tabs ---------------#################### */
+
+html.legacy #content .content .alltab {
+   font-size:14px;
+   text-align:center;
+   padding: 10px;
+   font-weight: bold;
+}
+
+
+/* ################--------------- Page ---------------#################### */
+
+html.legacy #content .content #page {
+   padding: 8px 8px 20px 8px;
+   min-height: 80%;
+   margin: 15px auto;
+}
+
+html.legacy #content .content #page form {
+   font-size: 12px;
+   margin:0;
+   margin-bottom:5px;
+   padding:0;
+}
+
+
+/* ################--------------- form ---------------#################### */
+
+html.legacy #content .content option {
+   border:1px solid #ccc;
+   background-color:#ffffff;
+}
+
+html.legacy #content .content .submit {
+   text-align:center;
+}
+
+html.legacy #content .content select {
+   font-size: 11px;
+   color: black;
+   background-color: white;
+   line-height: 19px; /* do not set height because using multiple select*/
+  border: 1px solid #bbb;
+}
+
+html.legacy #content .content textarea, html.legacy #content .content input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field) {
+   border: 1px solid #D3D3D3;
+   font-size: 11px;
+   border-radius: 3px;
+   padding: 0 5px;
+}
+html.legacy #content .content textarea, html.legacy #content .content input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
+   background-color:#FCFCFC;
+   color: black;
+}
+
+html.legacy #content .content textarea:focus, html.legacy #content .content input:focus {
+   border: 1px solid #5897fb;
+}
+
+html.legacy #content .content input {
+   height: 17px;
+   vertical-align: middle;
+}
+
+html.legacy #content .content input:required, html.legacy #content .content .mce-edit-area.required {
+   border:1px rgba(255, 0, 0, .6) solid!important;
+   border-left-width: 3px!important;
+   padding-right: 0!important;
+   box-shadow: none;
+}
+
+html.legacy #content .content input:required:valid {
+   border: 1px solid RGB(211, 211, 211) !important;
+}
+
+html.legacy #content .content span.required {
+   color: red;
+   margin-left: .2em;
+}
+
+html.legacy #content .content .no-wrap {
+   white-space: nowrap;
+}
+
+html.legacy #content .content .ui-datepicker-trigger {
+   cursor: pointer;
+}
+
+html.legacy #content .content .ui-datepicker {
+   background: #F3F3F3;
+}
+
+html.legacy #content .content .ui-datepicker .ui-state-default  {
+   background: #FFF;
+}
+
+html.legacy #content .content .ui-datepicker .ui-state-active  {
+   background: #CCC;
+}
+
+html.legacy #content .content .form-group-checkbox {
+   position:relative;
+   width: 16px;
+   height: 16px;
+   margin: 0 auto;
+   display: inline-block;
+}
+html.legacy #content .content th .form-group-checkbox {
+   margin: 4px auto;
+}
+
+html.legacy #content .content .label-checkbox {
+   cursor:pointer;
+   width: 16px;
+   height: 16px;
+   display: block;
+}
+
+html.legacy #content .content .label-checkbox span {
+   display:block;
+   position:absolute;
+   left:0;
+   -webkit-transition-duration:0.2s; -moz-transition-duration:0.2s; transition-duration:0.2s;
+}
+
+html.legacy #content .content input[type=checkbox].new_checkbox {
+   display:none;
+}
+
+html.legacy #content .content .label-checkbox .box {
+   top: -2px;
+   background-color: #E6E6E6;
+   border-radius: 3px;
+   height:16px;
+   width:16px;
+}
+
+html.legacy #content .content .subheader .box,
+html.legacy #content .content th .label-checkbox .box {
+   background-color: #D0D0D0;
+   border:0;
+}
+
+html.legacy #content .content .label-checkbox .check {
+   top: -5px;
+   left: 4px;
+   width: 8px;
+   height: 16px;
+   border:3px solid #727272;
+   border-top: none;
+   border-left: none;
+   opacity:0;
+   -webkit-transform:rotate(180deg); -moz-transform:rotate(180deg); transform:rotate(180deg);
+}
+
+html.legacy #content .content input[type=checkbox]:checked ~ .label-checkbox .box {
+   opacity:0;
+}
+
+html.legacy #content .content input[type=checkbox]:checked ~ .label-checkbox .check {
+   opacity:1;
+   -webkit-transform   :scale(1) rotate(45deg);
+   -moz-transform      :scale(1) rotate(45deg);
+   transform           :scale(1) rotate(45deg);
+}
+
+
+html.legacy #content .content input[type="image"] {
+   height: auto;
+   background-color: transparent;
+   border: 0;
+}
+
+html.legacy #content .content input[type="file"] {
+   height: 22px;
+   border: 1px solid #CCC;
+}
+
+html.legacy #content .content input.submit,
+html.legacy #content .content span.vsubmit, a.vsubmit {
+   padding: 5px;
+   cursor:pointer;
+   height: auto;
+   font: bold 12px Arial, Helvetica;
+   color: #8f5a0a;
+   background-color: #FEC95C;
+   border: 0;
+   white-space: nowrap;
+   display: inline-block;
+}
+
+html.legacy #content .content input.submit:hover,
+html.legacy #content .content a.vsubmit:hover {
+   opacity: .9;
+   box-shadow: 0px 1px 1px #999;
+}
+
+html.legacy #content .content input.submit[type=reset] {
+   background-color: transparent;
+   margin-left: .5em;
+}
+
+html.legacy #content .content #page .mce-fullscreen {
+   top: 105px;
+}
+
+html.legacy #content .content #page .mce-btn-group:not(:first-child) {
+   border-left: 1px solid #d9d9d9;
+   padding-left: 0;
+   margin-left: 0;
+}
+
+
+html.legacy #content .content .entity_select:hover {
+   opacity: .6;
+}
+
+html.legacy #content .content .tree {
+   width:100%;
+   border:0;
+   border-bottom:1px solid #C0CAD4;
+}
+
+html.legacy #content .content .jstree.jstree-classic ins {
+    background-image: url("../pics/d.png");
+}
+
+html.legacy #content .content .jstree .jstree-node:not(.jstree-leaf) {
+   position: relative;
+}
+html.legacy #content .content .jstree .jstree-node:not(.jstree-leaf) > a > i:last-child {
+   content: ' ';
+   height: 10px;
+   width: 10px;
+   background: url("../pics/entity_all.png") no-repeat;
+   position: absolute;
+   top: 8px;
+   margin-left: 6px;
+   cursor: pointer;
+}
+
+html.legacy #content .content .treeroot {
+   width:100%;
+   background: url("../pics/treeroot.png") 0 2px no-repeat;
+   border:0;
+   font-weight:bold;
+}
+
+html.legacy #content .content .tree:hover{
+   background-color:#eeeeee;
+}
+
+html.legacy #content .content .treeroot:hover{
+   background-color:#eeeeee;
+}
+
+html.legacy #content .content .pointer {
+   opacity: .7;
+}
+
+html.legacy #content .content .pointer:hover {
+   opacity: 1;
+}
+
+html.legacy #content .content .pointer.disabled:hover,
+html.legacy #content .content .pointer.disabled {
+   opacity: .3;
+}
+
+html.legacy #content .content #page .protected {
+   padding-right: 50px;
+}
+
+html.legacy #content .content #page .disclosablefield {
+   position: relative;
+}
+
+html.legacy #content .content #page .disclosablefield span {
+   position: absolute;
+   right: 0;
+   top: 0;
+}
+
+/* ################--------------- Layout  ---------------#################### */
+.layout_classic.form html.legacy #content .content div.navigationheader,
+.layout_vsplit.form html.legacy #content .content div.navigationheader {
+   margin: 0 auto 10px;
+   width: 90%;
+}
+
+.layout_classic.form html.legacy #content .content .main_form,
+.layout_vsplit.form html.legacy #content .content .main_form {
+   width: 950px;
+   margin: 0 auto;
+}
+
+.layout_classic.form html.legacy #content .content div.ui-tabs,
+.layout_vsplit.form html.legacy #content .content div.ui-tabs {
+   width: 950px;
+}
+
+.layout_classic.form html.legacy #content .content div.ui-tabs-panel,
+.layout_vsplit.form html.legacy #content .content div.ui-tabs-panel {
+  padding: 1px;
+}
+
+html.legacy #content .content .ui-tabs-paging-disabled {
+   display: none;
+}
+
+html.legacy #content .content .ui-tabs-paging-prev,
+html.legacy #content .content .ui-tabs-paging-next {
+   height: 25px;
+   width: 12px;
+   padding: 0 !important;
+}
+
+.layout_classic.form html.legacy #content .content div.ui-tabs-panel{
+   padding-top: 5px;
+}
+
+.layout_vsplit html.legacy #content .content #backtotop {
+   display: none;
+}
+
+.layout_lefttab html.legacy #content .content .ui-tabs,
+.layout_classic html.legacy #content .content .ui-tabs,
+.layout_vsplit html.legacy #content .content .ui-tabs {
+   border: 0;
+}
+
+html.legacy #content .content .ui-tabs {
+   background: #FFF repeat-x top left;
+   box-shadow: 0px 1px 1px #7F7979;
+   width: 90%;
+}
+
+html.legacy #content .content .ui-tabs-anchor {
+   height: 18px;
+}
+
+html.legacy #content .content .ui-tabs sup.tab_nb {
+   border-radius: 50%;
+   background-color: #FFF;
+   min-width: 18px;
+   margin-left: 5px;
+   display: inline-block;
+   text-align: center;
+   vertical-align: top;
+   padding: 3px 2px 5px;
+   box-sizing: border-box;
+   margin-right: -5px;
+}
+
+.layout_lefttab html.legacy #content .content .ui-tabs sup.tab_nb {
+   position: absolute;
+   right: 8px;
+   top: 5px;
+}
+
+html.legacy #content .content .ui-tabs .alltab sup.tab_nb {
+   position: relative;
+   top: 0;
+   right: 0;
+   background-color: #F1F1F1;
+}
+
+html.legacy #content .content .ui-tabs .ui-state-active sup.tab_nb {
+   background-color: #E6E6E6;
+}
+
+
+.layout_vsplit.form html.legacy #content .content .ui-tabs {
+   height: 100%;
+   width: 100%;
+   padding: 0;
+}
+
+
+html.legacy #content .content .debug .ui-tabs-nav,
+.layout_lefttab html.legacy #content .content .ui-tabs-nav {
+   margin: 5px !important;
+   box-sizing: border-box;
+}
+html.legacy #content .content .debug .ui-tabs-nav,
+.layout_lefttab html.legacy #content .content .ui-tabs-nav,
+.layout_classic html.legacy #content .content .ui-tabs-nav,
+.layout_vsplit html.legacy #content .content .ui-tabs-nav {
+   border: 0;
+   background: none;
+}
+
+.layout_classic.form html.legacy #content .content .stNavMain li,
+.layout_vsplit.form html.legacy #content .content .stNavMain li {
+   border: 1px solid #d3d3d3 !important;
+   border-bottom: none !important;
+}
+
+html.legacy #content .content .main_form {
+   background-color: #FFF;
+   box-shadow: 0px 1px 2px 1px #D2D2D2;
+}
+
+html.legacy #content .content .main_form .actor_title,
+html.legacy #content .content .main_form tr:not(.headerRow):not(.footerRow) th:not(.actor-th) {
+   text-align: right;
+}
+
+html.legacy #content .content .main_form tr.headerRow th {
+   border-bottom: 1px solid #EFEFEF;
+   font-size: 1.5em;
+   padding: 8px 0;
+}
+
+
+.layout_lefttab html.legacy #content .content .new_form_tabs .ui-tabs-nav {
+   width: 100%;
+}
+.layout_lefttab html.legacy #content .content .new_form_tabs .ui-tabs-panel {
+   margin: 0;
+   clear: both;
+}
+
+/* Vertical split layout */
+@media screen and (min-width: 1300px) {
+   /*html, body.layout_vsplit {
+      height:100%;
+   }
+   body.layout_vsplit {
+      overflow: hidden;
+   }*/
+
+   .layout_vsplit html.legacy #content .content #page {
+      max-width: inherit;
+      min-height: 0;
+      position: absolute;
+      top: 105px;
+      bottom: 15px;
+      width: 100%;
+      padding: 0;
+      overflow: auto;
+   }
+
+   .layout_vsplit.form html.legacy #content .content #page {
+      overflow: hidden;
+   }
+
+   .layout_vsplit html.legacy #content .content #page .glpi_tabs {
+      height: 96%;
+      position: relative;
+      z-index:1;
+   }
+
+   .layout_vsplit html.legacy #content .content #page .main_form.create_form {
+      width: 950px;
+      margin: 0 auto;
+   }
+
+   .layout_vsplit.form html.legacy #content .content table.tab_cadre_pager,
+   .layout_vsplit.form html.legacy #content .content table.tab_cadre_fixe,
+   .layout_vsplit.form html.legacy #content .content table.tab_cadre_fixehov,
+   .layout_vsplit.form html.legacy #content .content .dates_timelines {
+      width: 100%;
+      margin: 0;
+   }
+
+   .layout_vsplit html.legacy #content .content div.navigationheader,
+   .layout_vsplit.form html.legacy #content .content table.tab_cadre_pager {
+      margin: 0;
+      border: 0;
+      min-width: 150px;
+   }
+
+   .layout_vsplit.form html.legacy #content .content .ui-tabs-panel table.tab_cadre_pager {
+      width: 100%;
+   }
+
+  .layout_vsplit.form html.legacy #content .content .form_content {
+      position: relative;
+      width: 46%;
+      float: left;
+      height: 96%;
+      z-index:2;
+   }
+
+   .layout_vsplit.form html.legacy #content .content div.main_form:not(.no_tab) {
+      width: 100%;
+      margin: 0 15px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+   }
+
+   .layout_classic html.legacy #content .content #tabspanel + div.ui-tabs:not(.horizontal),
+   .layout_vsplit html.legacy #content .content #tabspanel + div.ui-tabs {
+      height: 100%;
+      /*bottom: 10px;*/
+      box-sizing:border-box;
+   }
+   .layout_vsplit.form html.legacy #content .content #tabspanel + div.ui-tabs:not(.horizontal) {
+      width: 50% !important;
+      margin: 0 15px;
+      float: right;
+      border: none;
+      box-shadow: 0px 1px 2px 1px #D2D2D2;
+   }
+
+   .layout_vsplit.form html.legacy #content .content .ui-tabs {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 52%;
+      margin: 0;
+      right: 0;
+   }
+
+   .layout_vsplit > #page > div > .ui-tabs > .ui-tabs-panel {
+      /*padding: 10px 0 0 0;*/
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: absolute;
+      top: 32px;
+      bottom: 2px;
+      width: 100%;
+      box-sizing: border-box;
+   }
+
+   .layout_vsplit html.legacy #content .content .ui-tabs-panel .tab_cadre_fixehov th {
+      background-color: #E6E6E6;
+   }
+
+   .layout_vsplit.form html.legacy #content .content .main_form input[type=text]:not([size]) {
+      width:74%;
+      min-width: 175px;
+   }
+   .layout_vsplit.form html.legacy #content .content .main_form textarea {
+      resize: vertical;
+      width:97%;
+      min-height: 125px;
+   }
+
+   .layout_vsplit.form html.legacy #content .content input.submit,
+   .layout_vsplit.form html.legacy #content .content span.vsubmit,
+   .layout_vsplit.form html.legacy #content .content a.vsubmit {
+      white-space: nowrap;
+   }
+   .layout_vsplit.form html.legacy #content .content .boxnote {
+      width: 100%;
+   }
+
+   .layout_vsplit html.legacy #content .content .debug:not(.debug_ajax),
+   .layout_vsplit #footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      z-index: 3;
+   }
+   .layout_vsplit html.legacy #content .content .debug_ajax {
+      width: 100% !important;
+   }
+}
+
+
+/* ################--------------- Table  ---------------#################### */
+html.legacy #content .content table {
+   font-size: 11px;
+   /* Probem WIth EXTJS calendar -> to sons*/
+   /*margin: 0 auto;*/
+   border:0;
+}
+
+html.legacy #content .content th { }
+
+html.legacy #content .content td { }
+
+html.legacy #content .content .tab_glpi {
+   margin: 0 auto;
+}
+
+html.legacy #content .content .tab_cadre {
+   margin: 0 auto;
+   z-index:1;
+   text-align: left;
+   font-size: 11px;
+   background-color: #ffffff;
+   border-spacing: 0;
+   box-shadow: 0px 1px 2px 1px #999;
+}
+
+html.legacy #content .content .tab_cadre_central {
+   margin: 0 auto;
+   z-index:1;
+   text-align: left;
+   font-size: 11px;
+   width:90%;
+}
+
+
+html.legacy #content .content .tab_cadre_postonly {
+   margin: 0 auto;
+   z-index:1;
+   text-align: left;
+   font-size: 11px;
+   width: 80%;
+}
+
+html.legacy #content .content .tab_cadre_navigation {
+   margin: 0 auto;
+   padding: 4px;
+   margin: 1px;
+   border: 1px solid #aaaaaa;
+   background-color: #ffffff;
+   border-radius: 5px;
+   font-size : 12px;
+   font-weight: bold;
+}
+
+html.legacy #content .content .tab_cadre_fixe, html.legacy #content .content .tab_cadre_fixehov {
+   margin: 0px auto 5px auto;
+   background: #FFF;
+   z-index:1;
+   text-align: left;
+   font-size: 11px;
+   max-width:950px;
+   width: 100%;
+   border-spacing: 0;
+}
+html.legacy #content .content .tab_cadre_fixehov {
+   box-shadow: 0px 1px 2px 1px #999;
+}
+html.legacy #content .content .ui-tabs .tab_cadre_fixehov {
+   box-shadow: inherit;
+}
+
+html.legacy #content .content .tab_cadre_fixe img {
+   vertical-align: middle;
+}
+
+html.legacy #content .content .tab_cadrehov {
+   margin: 10px auto;
+   border: 0;
+   text-align: left;
+   font-size: 11px;
+   width: 95%;
+   background-color: #ffffff;
+   box-shadow: 0px 1px 2px 1px #D2D2D2;
+   border-spacing: 0;
+}
+
+html.legacy #content .content .tab_cadre th, html.legacy #content .content .tab_cadre_fixe th, html.legacy #content .content .tab_cadre_fixehov th, html.legacy #content .content .tab_cadrehov th, html.legacy #content .content h2.header {
+   font-size: 12px;
+   font-weight: bold;
+   text-align: center;
+   border-radius: 4px;
+   padding: 2px;
+   border-radius: 0;
+   margin: 0;
+   font-size: 1.1em;
+   color: #000;
+   padding: 10px 5px;
+   background-color: #F1F1F1;
+}
+
+html.legacy #content .content .tab_spaced {
+   border-collapse: separate;
+   border-spacing: 3px;
+}
+
+html.legacy #content .content .tab_cadre_fixehov th, html.legacy #content .content .tab_cadrehov th {
+   background-color: #F8F8F8;
+   color: #2E2E2E;
+   font-size: 11px;
+   border-bottom: 1px solid #EEE;
+}
+
+html.legacy #content .content .tab_cadre_fixehov td, html.legacy #content .content .tab_cadrehov td {
+   padding: 8px 5px;
+}
+html.legacy #content .content .tab_cadre td, html.legacy #content .content .tab_cadre_fixe td {
+   padding: 5px;
+}
+html.legacy #content .content .tab_cadre td, html.legacy #content .content .tab_cadre_fixehov td, html.legacy #content .content .tab_cadrehov td {
+   border-bottom:1px solid #EEE;
+}
+
+/* Table Hover Effects */
+html.legacy #content .content .tab_cadrehov th.headHover,
+html.legacy #content .content .tab_cadre_fixehov th.headHover{
+   background-color:#F3F3F3;
+}
+
+html.legacy #content .content .tab_cadrehov td.columnHover,
+html.legacy #content .content .tab_cadre_fixehov td.columnHover{
+   background-color:#F3F3F3;
+}
+
+html.legacy #content .content .tab_cadrehov tr.rowHover,
+html.legacy #content .content .tab_cadrehov td.rowHover,
+html.legacy #content .content .tab_cadre_fixehov tr.rowHover,
+html.legacy #content .content .tab_cadre_fixehov td.rowHover{
+   background-color:#F7F7F3;
+}
+
+
+
+html.legacy #content .content .tab_format {
+   padding: 0px;
+   width: 100%;
+   margin: 0px;
+   border: 0px;
+   border-collapse:collapse;
+}
+
+html.legacy #content .content .tabcompact {
+   padding: 0px;
+   margin: 0px;
+   border: 0px;
+   border-collapse:collapse;
+}
+
+html.legacy #content .content .tab_format td {
+   padding: 1px;
+   margin: 0px;
+}
+
+
+html.legacy #content .content .tab_bg_1 {
+   background-color: #FFF;
+}
+
+html.legacy #content .content .tab_bg_1_2 {
+   background-color: #cf9b9b;
+}
+
+html.legacy #content .content .tab_bg_2 {
+   background-color: #FFF;
+}
+
+html.legacy #content .content .tab_bg_2_2 {
+   background-color: #cf9b9b;
+}
+
+html.legacy #content .content .tab_bg_3 {
+   background-color: #e7e7e2;
+}
+
+html.legacy #content .content .tab_bg_4 {
+   background-color: #EBEBEB;
+}
+
+html.legacy #content .content .tab_bg_5 {
+   background-color: #f2f2f2;
+}
+
+
+html.legacy #content .content .tab_resa {
+   border:1px dashed #cccccc;
+   background-color: #d7d7d2;
+   font-size:10px
+}
+
+html.legacy #content .content .tab_resa:hover {
+   background-color: #ffffff;
+   border:1px dotted #000000;
+}
+
+html.legacy #content .content .tab_date {
+   white-space: nowrap;
+}
+
+html.legacy #content .content .central {
+   padding-top: 15px;
+   width: 100%;
+}
+
+html.legacy #content .content .central table {
+   margin-bottom: 5px;
+}
+
+html.legacy #content .content .central .tab_cadre_fixehov th, html.legacy #content .content .central .tab_cadrehov th {
+   background-color: #F1F0F0;
+}
+
+html.legacy #content .content div.rss {
+   margin-left: 10px;
+}
+
+html.legacy #content .content td.numeric {
+   text-align:right;
+}
+
+html.legacy #content .content td.htmltable_upper_separation_cell {
+    border-top: dashed 1px #a0a0a0;
+}
+
+html.legacy #content .content td.nopadding {
+   padding:0;
+}
+
+
+html.legacy #content .content td.subheader {
+   background-color: #EEEEEE;
+   text-align: center;
+   font-weight: bold;
+}
+
+html.legacy #content .content td.rotate {
+  -moz-transform: rotate(-70.0deg);  /* FF3.5+ */
+  -o-transform: rotate(-70.0deg);  /* Opera 10.5 */
+  -webkit-transform: rotate(-70.0deg);  /* Saf3.1+, Chrome */
+  -ms-transform:rotate(-70deg); /* IE 9 */
+  width: 10%;
+  height: 80px;
+}
+
+html.legacy #content .content .order_DESC:before {
+   content: "\25bc";
+   color: #B3B3B3;
+   font-size: 0.8em;
+   padding-right: 5px;
+   vertical-align: 1px;
+}
+
+html.legacy #content .content .order_ASC:before {
+   content: "\25b2";
+   color: #B3B3B3;
+   font-size: 0.8em;
+   padding-right: 5px;
+   vertical-align: 1px;
+}
+
+html.legacy #content .content .tab_actors {
+   display: table;
+}
+
+html.legacy #content .content .actor_title {
+   width: 13%;
+   float: left;
+   font-weight: bold;
+   text-align: center;
+   padding-top: 30px;
+   font-size: 1.1em;
+   padding: 3px 5px;
+   background-color:#F1F1F1;
+}
+
+html.legacy #content .content .actor-bloc {
+   width: 29%;
+}
+
+html.legacy #content .content .actor_title, .actor-bloc {
+   display: table-cell;
+   float: none;
+   vertical-align: top;
+}
+
+html.legacy #content .content .actor-head {
+   background-color: #F1F1F1;
+   margin: 0 0 0 5px;
+   padding: 4px 0;
+   height: 16px;
+   font-weight: bold;
+   text-align: center;
+   font-size: 1.1em;
+}
+
+html.legacy #content .content .actor-head .fa {
+   padding: 0 .2em;
+}
+
+html.legacy #content .content .actor-content {
+   margin: 10px 15px;
+   padding: 4px 0;
+}
+
+html.legacy #content .content .actor_row {
+   margin-bottom: 8px;
+}
+
+html.legacy #content .content .tab_actors hr {
+   border: 0;
+}
+html.legacy #content .content .add-observer {
+   display: block;
+}
+html.legacy #content .content .actor_single {
+   border-top: 1px dashed #AAA;
+   padding: 15px 0 8px 0;
+   margin-top: 8px;
+   background-color: #F5F5F5;
+}
+html.legacy #content .content .actor_single.first-actor {
+   padding-left: 10px;
+}
+
+html.legacy #content .content .actor_clear {
+   clear: both;
+}
+
+/* ################--------------- Pager  ---------------#################### */
+
+html.legacy #content .content .tab_cadre_pager {
+   margin: 0 auto;
+   text-align:center;
+   font-size:10px;
+   width:950px;
+   border-collapse: collapse;
+   margin-top: 15px;
+}
+
+html.legacy #content .content .tab_cadre_pager tr,
+html.legacy #content .content .tab_cadre_pager td {
+   background-color: inherit;
+}
+
+html.legacy #content .content #searchcriterias .tab_cadre_fixe {
+   margin-top: 10px;
+   background-color: #FFF;
+   width: 80%;
+   box-shadow: 0px 1px 2px 1px #D2D2D2;
+   border-radius: 5px;
+}
+html.legacy #content .content #searchcriterias .tab_bg_1 {
+   background-color: inherit;
+}
+
+html.legacy #content .content #searchcriterias .switch {
+   opacity: .7;
+}
+
+html.legacy #content .content #searchcriterias .switch:hover {
+   opacity: 1;
+}
+
+html.legacy #content .content .reset-search, .reset-search:link {
+   color: #ccc!important;
+}
+
+html.legacy #content .content .reset-search:hover {
+   color: #999;
+}
+
+html.legacy #content .content .tab_cadre_pager select, html.legacy #content .content .tab_cadre_pager span, html.legacy #content .content .tab_cadre_pager form {
+   font-size:10px;
+   margin:0;
+}
+
+html.legacy #content .content .tab_cadre_pager input {
+   vertical-align:middle;
+}
+
+html.legacy #content .content .tab_cadre_pager th {
+   font-size: 10px;
+   font-weight: bold;
+   text-align: center;
+}
+
+
+html.legacy #content .content .navigationheader {
+   margin: 10px auto;
+}
+html.legacy #content .content .navigationheader .big {
+   font-size: 16px;
+}
+
+html.legacy #content .content .tab_cadre_pager html.legacy #content .content .pager_controls img {
+   padding-right: 10px;
+   vertical-align: middle;
+}
+
+
+
+/* ################--------------- Tracking  / Reminder ---------------#################### */
+
+
+html.legacy #content .content .showplan {
+   font-weight: bold;
+   text-decoration: none;
+   color : #4A8865;
+   cursor:pointer;
+}
+
+
+/* ################--------------- User Picture ---------------#################### */
+html.legacy #content .content .qtip {
+   max-width: 380px !important;
+}
+
+html.legacy #content .content .tooltip {
+   font-size: 11px !important;
+}
+html.legacy #content .content .tooltip:contains(img) {
+   white-space: nowrap;
+   height: 100px !important;
+   border:10px solid red;
+}
+
+html.legacy #content .content .tooltip_picture_border {
+   padding:2px;
+   border-radius: 51px;
+   border: 5px inset #D0D99D;
+   _border: 3px solid #D0D99D;
+   width:72px;
+   height:72px;
+   position: absolute;
+}
+html.legacy #content .content .tooltip_picture {
+   width:71px;
+   height:71px;
+   border-radius:50px;
+}
+html.legacy #content .content .tooltip_text {
+   margin-left:90px;
+   min-height: 85px;
+}
+
+html.legacy #content .content .user_picture_border {
+   padding:2px;
+   border-radius: 6px;
+   border: 5px inset #D0D99D;
+   width:232px;
+   height:232px;
+   margin-right:5px;
+   background-color: #FFF
+}
+html.legacy #content .content .user_picture {
+   margin: 0 auto;
+   width:230px;
+   height:230px;
+   border-radius: 5px;
+}
+
+html.legacy #content .content .user_picture_border_small {
+   padding:2px;
+   border-radius: 6px;
+   border: 3px inset #D0D99D;
+   width:72px;
+   height:72px;
+   margin-right:5px;
+   background-color: #FFF
+}
+html.legacy #content .content .user_picture_small {
+   margin: 0 auto;
+   width:71px;
+   height:71px;
+   border-radius: 5px;
+}
+
+html.legacy #content .content .user_picture_verysmall {
+   margin: 0 auto;
+   width:35px;
+   height:35px;
+   border-radius: 5px;
+}
+
+html.legacy #content .content img.picture_square {
+   box-shadow: 0px 1px 1px #999;
+}
+/* ################--------------- Space to replace &nbsp; ---------------#################### */
+
+/* 2 space */
+html.legacy #content .content .very_small_space {
+   margin-left: 15px;
+}
+
+/* 5 spaces */
+html.legacy #content .content .small_space {
+   margin-left: 38px;
+}
+
+/* 10 spaces */
+html.legacy #content .content .medium_space {
+   margin-left: 120px;
+}
+
+/* 20 spaces */
+html.legacy #content .content .big_space {
+   margin-left:250px;
+}
+
+
+
+/* ################--------------- Espacement des blocs ---------------#################### */
+
+html.legacy #content .content .spaced {
+   margin-bottom: 15px;
+}
+
+html.legacy #content .content .firstbloc {
+   margin: 10px 0 20px 0;
+}
+
+
+
+/* ################--------------- Calendrier  / reservation ---------------#################### */
+
+html.legacy #content .content .ui-datepicker-trigger, .slt, #refresh_planning{
+   border:none;
+   background:none;
+   padding: 0;
+   font-size: 1.3em!important;
+}
+html.legacy #content .content .fc button.ui-datepicker-trigger {
+   height: auto;
+   padding: 0;
+}
+
+html.legacy #content .content .fc .fc-toolbar > * > * {
+   float: none;
+   display: inline-block;
+}
+
+html.legacy #content .content .ui-datepicker-trigger .fa {
+   padding: 0!important;
+}
+
+html.legacy #content .content .calendrier {
+   vertical-align:middle;
+}
+
+html.legacy #content .content .calendrier:hover {
+   cursor:pointer;
+}
+
+html.legacy #content .content .calendrier_mois {
+   font-family: Verdana, Arial, Sans, sans-serif;
+   font-size: 10px;
+}
+
+html.legacy #content .content .calendrier_jour {
+   font-family: arial,helvetica,sans-serif;
+   font-size: 14px;
+   color: black;
+}
+
+html.legacy #content .content .calendrier_case1 {
+   margin-left: 10px;
+   padding: 2px;
+   border-radius: 5px;
+   margin-top: 2px;
+   border: 1px solid #666666;
+   background-color: white;
+}
+
+html.legacy #content .content .calendrier_case2 {
+   margin-left: 10px;
+   padding: 2px;
+   border-radius: 5px;
+   margin-top: 2px;
+   border: 1px solid #cccccc;
+   background-color: #eeeeee
+}
+
+html.legacy #content .content .calendrier_case_white {
+   background-color:#ffffff;
+}
+
+
+
+/* ################--------------- Knowledge FAQ  ---------------#################### */
+html.legacy #content .content #contenukb {
+   height: 100%;
+   width: 600px;
+   margin: 0 auto;
+}
+
+html.legacy #content .content #contenukb legend {
+   font-weight: bold;
+}
+
+html.legacy #content .content #contenukb fieldset {
+   background-color: #eeeeee;
+   border: 1px solid #FFC65D;
+   border-radius: 8px;
+   padding-bottom:10px;
+   width: 600px;
+}
+
+html.legacy #content .content #contenukb textarea {
+   width:550px;
+}
+
+html.legacy #content .content #kbanswer ul {
+   padding-left: 15px;
+   list-style-type: circle;
+}
+
+html.legacy #content .content #kbanswer ol {
+   padding-left: 15px;
+   list-style-type: decimal;
+}
+
+
+html.legacy #content .content #kbanswer p {
+   margin: 1.12em 0
+}
+
+html.legacy #content .content #kbanswer h1 {
+   font-size: 2em;
+   margin: .67em 0
+}
+
+html.legacy #content .content #kbanswer h2 {
+   font-size: 1.5em;
+   margin: .75em 0;
+   font-weight: bolder;
+}
+
+html.legacy #content .content #kbanswer h3 {
+   font-size: 1.17em;
+   margin: .83em 0;
+   font-weight: bolder;
+}
+
+html.legacy #content .content #kbanswer h4 {
+   margin: 1.12em 0;
+   font-weight: bolder;
+}
+
+html.legacy #content .content #kbanswer h5 {
+   font-size: .83em;
+   margin: 1.5em 0;
+   font-weight: bolder;
+}
+
+html.legacy #content .content #kbanswer h6 {
+   font-size: .75em;
+   margin: 1.67em 0;
+   font-weight: bolder;
+}
+
+html.legacy #content .content #kbanswer h1:target,
+html.legacy #content .content #kbanswer h2:target,
+html.legacy #content .content #kbanswer h3:target,
+html.legacy #content .content #kbanswer h4:target,
+html.legacy #content .content #kbanswer h5:target,
+html.legacy #content .content #kbanswer h6:target {
+  background-color: #fff2a8;
+}
+
+html.legacy #content .content #kbanswer h1 > a,
+html.legacy #content .content #kbanswer h2 > a,
+html.legacy #content .content #kbanswer h3 > a,
+html.legacy #content .content #kbanswer h4 > a,
+html.legacy #content .content #kbanswer h5 > a,
+html.legacy #content .content #kbanswer h6 > a {
+   line-height: 1;
+   margin-left: -20px;
+   padding-right: 4px;
+}
+
+html.legacy #content .content #kbanswer h1 svg,
+html.legacy #content .content #kbanswer h2 svg,
+html.legacy #content .content #kbanswer h3 svg,
+html.legacy #content .content #kbanswer h4 svg,
+html.legacy #content .content #kbanswer h5 svg,
+html.legacy #content .content #kbanswer h6 svg{
+   visibility: hidden;
+}
+
+html.legacy #content .content #kbanswer h1:hover svg,
+html.legacy #content .content #kbanswer h2:hover svg,
+html.legacy #content .content #kbanswer h3:hover svg,
+html.legacy #content .content #kbanswer h4:hover svg,
+html.legacy #content .content #kbanswer h5:hover svg,
+html.legacy #content .content #kbanswer h6:hover svg {
+   visibility: visible;
+}
+
+html.legacy #content .content #kbanswer address {
+   font-style: italic;
+}
+
+html.legacy #content .content #kbanswer pre {
+   font-family: monospace;
+   white-space: pre;
+}
+
+
+html.legacy #content .content .tdkb_result {
+   vertical-align:top;
+   text-align:left;
+   width: 33%;
+   padding: 3px 20px 3px 25px;
+}
+
+html.legacy #content .content .kb {
+   text-align:left;
+   padding-top:5px;
+}
+
+html.legacy #content .content .kb_resume {
+   text-align:left;
+   font-size: 9px;
+   line-height: 10px;
+   clear: both;
+   padding: 5px 0 10px 25px;
+}
+
+html.legacy #content .content .tdkb {
+   text-align:left;
+   font-size:10px;
+   color:#aaaaaa;
+}
+
+html.legacy #content .content .baskb {
+   position: relative;
+   text-align:left;
+   font-size:10px;
+   color:#aaaaaa;
+}
+
+html.legacy #content .content .baskb_right {
+   position:absolute;
+   right:0;
+   margin-right:5px;
+}
+
+html.legacy #content .content .code {
+   width: 95%;
+   border: dotted 2px #ccc;
+}
+
+html.legacy #content .content a.knowbase {
+   margin-left:8px;
+}
+
+html.legacy #content .content a.pubfaq {
+   padding-left:8px;
+   border-left: 5px solid #c9993C !important;
+}
+
+html.legacy #content .content a.pubfaq:hover {
+   color: black;
+}
+
+html.legacy #content .content a.icon_nav_move img {
+   padding: 4px;
+   margin: 1px;
+   border: 1px solid #aaaaaa;
+   background-color: #ffffff;
+   border-radius: 5px;
+}
+
+html.legacy #content .content a.icon_nav_move:hover img {
+   padding: 4px;
+   margin: 1px;
+   border: 1px solid #999999;
+   background-color:#e4e4e4;
+   border-radius: 5px;
+}
+
+html.legacy #content .content .faqadd_block {
+   position: relative;
+   display: inline-block;
+}
+
+html.legacy #content .content .faqadd_block .display_faq_chkbox {
+   display: none;
+}
+
+html.legacy #content .content .faqadd_entries {
+   background: white;
+   border:  1px solid #CCC;
+   box-shadow: 0px 1px 2px 1px #D2D2D2;
+   position: absolute;
+   padding: 5px;
+   width: 450px;
+   height: 40vh;
+   right: -5px;
+   z-index: 1000;
+   margin-top: 20px;
+   border-radius: 2px;
+   display: none;
+}
+
+html.legacy #content .content .faqadd_block .display_faq_chkbox:checked + .faqadd_entries {
+   display: block;
+}
+
+
+html.legacy #content .content .faqadd_entries:before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 17.3px 10px;
+    border-color: transparent transparent #CCC transparent;
+    top: -18px;
+    right: 5px;
+    position: absolute;
+}
+
+html.legacy #content .content .faqadd_entries:after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 18.3px 10px;
+    border-color: transparent transparent #ffffff transparent;
+    top: -16px;
+    right: 5px;
+    position: absolute;
+}
+
+html.legacy #content .content .faqadd_block_content {
+   overflow-x: hidden;
+   overflow-y: auto;
+   position: absolute;
+   top: 40px;
+   bottom: 0;
+   left: 0;
+   right: 0;
+}
+
+html.legacy #content .content .faqadd_entries .tab_cadre_fixe {
+   width: 100%;
+   padding: 5px;
+}
+
+html.legacy #content .content .faqadd_entries tr {
+   display: block;
+}
+
+html.legacy #content .content .main_form .faqadd_entries table.tab_cadre_fixe th:not(.actor-th) {
+   display: block;
+   text-align: center;
+}
+
+
+/* ################--------------- File upload  ---------------#################### */
+html.legacy #content .content .fileupload {
+   text-align: center;
+   border:1px dashed #cccccc;
+   min-height: 65px;
+   background-color: #fff;
+   border-radius: 5px;
+   max-width: 950px;
+   margin: .5em auto;
+   padding: .5em;
+   margin-top: 5px;
+}
+
+html.legacy #content .content .fileupload_info {
+   margin-bottom: 10px;
+}
+
+html.legacy #content .content .upload_rich_text {
+   display : none;
+}
+
+html.legacy #content .content .draghover {
+   background: #FBF8DF;
+}
+
+
+/* ################--------------- planning  ---------------#################### */
+
+html.legacy #content .content #planning_container {
+   position: relative;
+   padding-left: 310px; /* Same as planning_filter width + a 10px margin */
+}
+
+html.legacy #content .content #planning_filter {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   text-align: left;
+   left: 0;
+   overflow-y: auto;
+   width: 300px;
+}
+
+html.legacy #content .content #planning_filter .toggle {
+   float: right;
+   margin: 8px 8px 0 0;
+   height: 18px;
+   width: 18px;
+   display: block;
+   background: url(../pics/toggle-left.png) no-repeat;
+}
+
+html.legacy #content .content #planning_filter.folded .toggle {
+   float: none;
+   background: url(../pics/toggle-right.png) no-repeat;
+}
+html.legacy #content .content #planning_filter.folded {
+   width: 18px;
+}
+html.legacy #content .content #planning_container.folded {
+   padding-left: 28px; /* Same as folded planning_filter width + a 10px margin */
+}
+
+html.legacy #content .content #planning_filter h3 {
+   background: #e6e6e6;
+   margin: 2px 0 0 0;
+   padding: .5em .5em .5em .7em;
+   font-weight: normal;
+   line-height: 1.3;
+   font-size: 13px;
+}
+
+html.legacy #content .content #planning_filter ul.filters {
+   border: 0;
+   padding: 5px;
+}
+html.legacy #content .content #planning_filter ul.filters > li {
+   clear: both;
+   padding: 5px 0 5px 5px;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li:nth-child(even) {
+   background-color: #F3F3F3;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li .form-group-checkbox {
+   margin-right: 6px;
+}
+html.legacy #content .content #planning_filter ul.filters > li .actor_icon {
+   padding-bottom: 2px;
+   vertical-align: middle;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li label {
+   padding-left: 4px;
+   line-height: 16px;
+   width: 200px;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: inline-block;
+   white-space: nowrap;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li .filter-icon,
+html.legacy #content .content #planning_filter ul.filters > li .sp-replacer {
+   float: right;
+   padding: 0;
+   border: none;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li .sp-replacer .sp-preview {
+   margin-right: 0;
+   border: none;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li .sp-replacer .sp-dd {
+   display: none;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li.group_users .toggle {
+   width:14px;
+   height:14px;
+   background: url(../pics/expand.png) no-repeat;
+   display: inline-block;
+   margin: 0 4px 2px 0;
+   vertical-align: middle;
+   float: right;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li.group_users.expanded .toggle {
+   background: url(../pics/collapse.png) no-repeat;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li.group_users ul.group_listofusers {
+   border-left: 1px dashed #D4D4D4;
+   margin: 6px 0 0 6px;
+   padding: 0;
+   display: none;
+}
+
+html.legacy #content .content #planning_filter ul.filters > li.group_users.expanded ul.group_listofusers {
+   display: block;
+}
+
+html.legacy #content .content #planning_filter .planning_link {
+   text-align: center;
+   display: block;
+}
+
+html.legacy #content .content #planning_filter .planning_add_filter {
+   float: right;
+   margin-right: 3px;
+}
+
+html.legacy #content .content #planning_filter .filter_option {
+   float: right;
+   width: 12px;
+   height: 12px;
+   margin: 3px 2px;
+   display: inline-block;
+   position: relative;
+   left:0;
+}
+
+html.legacy #content .content #planning_filter .filter_option > img {
+   z-index: 1;
+}
+
+html.legacy #content .content #planning_filter .filter_option ul {
+   display: none;
+   position: absolute;
+   background: #FFF repeat-x top left;
+   box-shadow: 0px 1px 1px #7F7979;
+   padding: 5px;
+   z-index: 2;
+   left:auto;
+   right:0;
+   top: 15px;
+   margin-right:-10px;
+   width: 140px;
+   text-align: right;
+}
+
+html.legacy #content .content #planning_filter .filter_option ul li {
+   padding: 5px;
+   cursor: pointer;
+   font-size: 13px;
+}
+
+html.legacy #content .content #planning_filter .filter_option ul li:hover {
+   background-color: #EAEAEA;
+}
+
+html.legacy #content .content #planning_filter .filter_option ul li a {
+   color: inherit;
+   font-size: 13px;
+   font-weight: normal;
+}
+
+html.legacy #content .content .planning_on_central .ui-widget-content {
+   border: none;
+}
+
+html.legacy #content .content .planning_on_central .fc-head {
+   display: none;
+}
+
+html.legacy #content .content .planning_on_central .fc-scroller {
+   height: auto!important;
+   max-height: 400px;
+}
+
+html.legacy #content .content #planning {
+   width:auto;
+   overflow:hidden;
+}
+
+html.legacy #content .content #planning .fc-toolbar h2 {
+   font-size: 1.2em;
+}
+html.legacy #content .content #planning .fc-toolbar h2 .ui-datepicker-trigger{
+   margin-left: 4px;
+}
+
+html.legacy #content .content #planning .event_past .ui-widget-content,
+html.legacy #content .content #planning .event_past .ui-widget-content a {
+   color: #CCCCCC;
+}
+html.legacy #content .content #planning .event_past.event_todo .ui-widget-content,
+html.legacy #content .content #planning .event_past.event_todo .ui-widget-content a {
+   color: #FF0000;
+}
+
+html.legacy #content .content #planning .event_today.event_todo .ui-widget-content,
+html.legacy #content .content #planning .event_today.event_todo .ui-widget-content a {
+   color: #FFA100;
+}
+
+
+html.legacy #content .content #planning .fc-event {
+   font-weight: normal;
+}
+
+html.legacy #content .content #planning .fc-event .fc-content {
+   margin-right: 8px;
+}
+
+
+html.legacy #content .content #planning .fc-event .fc-time {
+   overflow: hidden;
+}
+html.legacy #content .content #planning .fc-event .fc-title {
+   font-weight: bold;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow : ellipsis;
+}
+
+html.legacy #content .content #planning .fc-event .content {
+   font-weight: normal;
+   padding: 0 7px 0 2px;
+   overflow: hidden;
+   text-overflow : ellipsis;
+}
+
+html.legacy #content .content #planning .fc-event .content .event-description {
+   border-top: 1px solid rgba(0, 0, 0, 0.2);
+   margin-top: 2px;
+   padding-top: 2px;
+}
+html.legacy #content .content #planning .fc-event .content .event-description p {
+   margin: 0;
+}
+
+html.legacy #content .content #planning .fc-event .event_type {
+   position: absolute;
+   width: 7px;
+   bottom: 0;
+   top: 0;
+   right: 0;
+}
+
+html.legacy #content .content #planning .fc-list-item-title .event_type {
+   height: 12px;
+   width: 6px;
+   margin-right: 3px;
+   display: inline-block
+}
+
+html.legacy #content .content #planning .event_past .fc-list-item-title .event_type {
+   opacity: .5;
+}
+
+html.legacy #content .content #planning .planning-select-helper {
+   border: 2px solid #3B8CBE;
+   background-color: rgba(59, 140, 190, .5);
+}
+
+html.legacy #content .content #planning .fc-day-grid-event .fc-resizer {
+   width: 10px;
+}
+
+html.legacy #content .content #planning .fc-time-grid-event .fc-resizer {
+   height: 10px;
+}
+
+html.legacy #content .content #planning .fc-divider {
+   border:1px dashed #cccccc;
+}
+
+/* for checkavailable */
+
+html.legacy #content .content .planning {
+   text-align:center;
+   border:1px dashed #cccccc;
+   background-color: #d7d7d2;
+   font-size:9px;
+}
+
+html.legacy #content .content .planning:hover {
+   border: 1px solid #999999;
+   background-color: white;
+}
+
+html.legacy #content .content .available {
+   background-color: green;
+}
+
+html.legacy #content .content .notavailable {
+   background-color: red;
+}
+
+html.legacy #content .content .partialavailableend {
+   background-image: -webkit-linear-gradient(left, red 50%, green  0%);
+   background-image: -moz-linear-gradient(left, red 50%, green  0%);
+   background-image: -ms-linear-gradient(left, red 50%, green  0%);
+   background-image: -o-linear-gradient(left, red 50%, green  0%);
+   background-image: linear-gradient(left, red 50%, green  0%);
+}
+
+html.legacy #content .content .partialavailablebegin {
+   background-image: -webkit-linear-gradient(left, green 50%, red  0%);
+   background-image: -moz-linear-gradient(left, green 50%, red  0%);
+   background-image: -ms-linear-gradient(left, green 50%, red  0%);
+   background-image: -o-linear-gradient(left, green 50%, red  0%);
+   background-image: linear-gradient(left, green 50%, red  0%);
+}
+
+/* ################--------------- Menu navigation  ---------------#################### */
+
+html.legacy #content .content #menu_navigate {
+   margin: auto;
+   z-index:1;
+   font-size: 10px;
+   width:900px;
+}
+
+html.legacy #content .content #menu_navigate li {
+   margin-left:2px;
+   display:block;
+   float:left;
+   padding:2px;
+}
+
+html.legacy #content .content #menu_navigate li.info {
+   margin-left:2px;
+   display:block;
+   float:left;
+   font-size: 12px;
+   padding:2px;
+}
+
+html.legacy #content .content #tabcontent {
+   width:950px;
+   text-align:center;
+   margin: 0 auto;
+}
+
+/* ################--------------- Notepad  ---------------#################### */
+
+html.legacy #content .content .boxnote {
+   margin: 0 auto;
+   width: 950px;
+   text-align: left;
+   border-radius:10px;
+   background: #e7e7e2;
+   margin-bottom: 5px;
+   position:relative;
+   overflow: auto;
+   font-size: 11px;
+}
+
+
+
+html.legacy #content .content .boxnoteleft {
+   float: left;
+   width: 10%;
+   min-height: 40px;
+   height: 100%;
+   padding: 4px;
+}
+html.legacy #content .content .boxnotecontent {
+   float: left;
+   padding: 1px;
+   padding: 5px 0 5px 0;
+   width: 75%;
+}
+html.legacy #content .content .boxnoteright {
+   float: right;
+/*   top:  0px;
+   left: 0px;*/
+   width: 10%;
+   min-height: 40px;
+   padding: 1px;
+   vertical-align: middle;
+}
+
+html.legacy #content .content .boxnotefloatright {
+   float: right;
+   position: relative;
+   padding-left: 20px;
+   padding-bottom:  5px;
+}
+html.legacy #content .content .boxnotetext {
+   padding: 5px;
+}
+
+html.legacy #content .content .bytech {
+   background: #f2f2f2;
+}
+
+html.legacy #content .content .byuser {
+   background: #e7e7e2;
+}
+
+html.legacy #content .content .accepted {
+   background-color:#9FD6ED;
+   color:#425B64;
+}
+
+/* ################--------------- box (redirect and other)  ---------------#################### */
+html.legacy #content .content .ui-widget-content.message_after_redirect {
+   font-family:"Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;
+   color:#393939;
+   font-size: 11px;
+   background: #DFDFDF;
+}
+
+html.legacy #content .content .message_after_redirect h3 {
+   font-size:11px;
+   font-weight:bold;
+   zoom:1;
+}
+
+/* ##### ERROR messages ##### */
+html.legacy #content .content .ui-widget-content.message_after_redirect.err_msg {
+   background-color: #ff9999;
+}
+
+html.legacy #content .content .message_after_redirect.err_msg div.ui-widget-header {
+   color: white;
+   background: rgba(255, 0, 0, .8);
+   border-color: rgba(255, 0, 0, 0.8);
+}
+
+/* ##### WARNING messages ##### */
+html.legacy #content .content .ui-widget-content.message_after_redirect.warn_msg {
+   background-color: #ffdb99;
+}
+
+html.legacy #content .content .message_after_redirect.warn_msg div.ui-widget-header {
+   color: white;
+   background: rgba(255, 165, 0, .8);
+   border-color: rgba(255, 165, 0, 0.8);
+}
+
+/* ##### INFO messages ##### */
+html.legacy #content .content .message_after_redirect.info_msg div.ui-widget-header {
+   color: white;
+   background: #A9A9A9;
+   border-color: #A9A9A9;
+}
+
+/* ################--------------- Login Null Header  ---------------#################### */
+
+html.legacy #content .content #firstboxlogin {
+   width: 100%;
+   min-height: 100%;
+   min-height: 100vh; /* double min-height, some old browser don't have vh units support*/
+}
+
+html.legacy #content .content #logo_login {
+   padding: 80px 0 0;
+   margin: 0 auto 0;
+   width: 100%;
+   height: 76px;
+}
+
+html.legacy #content .content #display-login,
+html.legacy #content .content #text-login {
+   width: 100%;
+   margin: 0 auto;
+   padding: 20px 20%;
+   font-size: 13px;
+   text-align: center;
+   overflow-x: hidden;
+   overflow-y: auto;
+   box-sizing: border-box;
+}
+
+html.legacy #content .content #boxlogin {
+   padding-top: 10px;
+   bottom: 0;
+   width: 20em;
+   margin: 0 auto;
+}
+
+
+html.legacy #content .content #boxlogin .login_input {
+   position: relative;
+   width:13em;
+   margin: 15px auto 5px;
+   width: 240px;
+}
+
+html.legacy #content .content #boxlogin input[type=text],
+html.legacy #content .content #boxlogin select,
+#html.legacy #content .content boxlogin input[type=password] {
+   width: 100%;
+   height: 30px;
+   display: block;
+   border: none;
+   padding: 3px 0 3px 40px;
+   font-size: 1.2em;
+   border-radius: 4px;
+   box-sizing: border-box;
+}
+
+html.legacy #content .content #boxlogin input[type=text]:focus,
+html.legacy #content .content #boxlogin select:focus,
+html.legacy #content .content #boxlogin input[type=password]:focus{
+   border-color:#FFA500;
+   background-color: #fff;
+   box-shadow:0 0 3px #FFA500;
+}
+
+html.legacy #content .content #boxlogin label {
+   color: #FFF;
+   font-size: 1.2em;
+}
+
+#boxlogin input:-webkit-autofill {
+   box-shadow: 0 0 0px 1000px white inset;
+}
+
+#boxlogin input:-webkit-autofill:focus {
+   box-shadow: 0 0 0px 1000px white inset;
+}
+
+html.legacy #content .content .pure-control-group {
+   position: relative;
+}
+
+html.legacy #content .content .input-img {
+   /*left:8px;
+   position:absolute;
+   top:3px;*/
+   color: #9B9B9B;
+   font-size: 1.5em!important;
+   position: absolute;
+   top: .3em;
+   left: .8em;
+}
+html.legacy #content .content #boxlogin .login_input:before {
+   font-family: FontAwesome;
+   left:8px;
+   position:absolute;
+   top:3px;
+   color: #9B9B9B;
+   font-size: 24px;
+}
+
+html.legacy #content .content #boxlogin #login_input_name:before {
+   content: "\f2be";
+}
+html.legacy #content .content #boxlogin #login_input_password:before {
+   content: "\f023";
+   left: 11px;
+}
+html.legacy #content .content #boxlogin #login_input_src:before {
+   content: "\f2ba";
+}
+
+html.legacy #content .content #boxlogin #dropdown_auth1:before {
+   background: url(../pics/login_source.png) no-repeat 3% 50%;
+}
+
+html.legacy #content .content #boxlogin input.submit {
+   margin-top: 20px;
+   width: 100%;
+   height: 30px;
+   font-size: 1.3em;
+}
+
+html.legacy #content .content #boxlogin #forget {
+   margin-top: 50px;
+   color: #FFF;
+   width: 100%;
+   display: block;
+   text-align: center;
+}
+
+html.legacy #content .content #box-faq {
+   padding-top:30px;
+   text-align:center;
+   margin:auto;
+}
+
+html.legacy #content .content #box-faq a{
+   color: #CFCFCF;
+}
+
+html.legacy #content .content .sous_logo {
+   font-family: arial;
+   font-size: 9px;
+   color: #eeeeee;
+   text-decoration: none;
+}
+
+html.legacy #content .content .error {
+   color: red;
+   margin-top:20px;
+   text-align:center;
+}
+html.legacy #content .content .error a, html.legacy #content .content .error a:link, html.legacy #content .content .ui-widget-content .error a {
+   font-weight: normal;
+   color: red;
+   font-size: inherit;
+}
+html.legacy #content .content .error a:hover {
+   text-decoration: underline;
+}
+
+html.legacy #content .content #footer-login,
+html.legacy #content .content .loginpage #footer {
+   position: absolute;
+   right: 10px;
+   bottom: 0px;
+   font-size : 10px;
+   font-family: Verdana,Arial,Helvetica,sans-serif;
+   font-weight: bold;
+   background-color: transparent;
+}
+
+html.legacy #content .content #footer-login.home,
+html.legacy #content .content .loginpage #footer {
+   bottom: 15px;
+}
+html.legacy #content .content #footer-login.home a,
+html.legacy #content .content .loginpage #footer a {
+   color: #FFF;
+}
+
+
+
+/* ################--------------- Header / menu  ---------------#################### */
+
+html.legacy #content .content #header {
+   /*height: 96px;*/
+}
+
+html.legacy #content .content #header_top {
+   width: 100%;
+   height: 20px;
+   padding: 10px 0;
+}
+
+html.legacy #content .content #c_preference {
+   height: 20px;
+   text-align: right;
+   margin-right: 5px;
+   top: 4px;
+   font-size: 0.9em;
+   display: inline-block;
+   float: right;
+}
+
+html.legacy #content .content #c_preference a.fa {
+   font-size: 1.8em;
+   color: white;
+}
+html.legacy #content .content #c_preference a.fa:hover {
+   text-decoration: none;
+   color: #ccc;
+}
+
+html.legacy #content .content #c_preference ul {
+   list-style: none;
+}
+
+html.legacy #content .content #c_preference ul li {
+   float: right;
+   margin: 0 10px;
+}
+
+html.legacy #content .content #c_preference a.debugon,
+html.legacy #content .content #c_preference a.debugon:hover {
+   color: #ff0000!important;
+}
+
+
+html.legacy #content .content #c_preference a {
+   text-decoration: none;
+   font-size: 0.9em;
+}
+
+html.legacy #content .content #c_preference a:hover{
+   text-decoration: underline;
+}
+
+html.legacy #content .content #c_preference .select2-choice {
+   color: #3a5693;
+}
+
+html.legacy #content .content #c_preference p {
+   margin: 0;
+}
+
+html.legacy #content .content #c_recherche {
+   position: relative;
+}
+
+html.legacy #content .content #c_recherche form #champRecherche button {
+   border: none;
+   height: 22px;
+   vertical-align: bottom;
+   border-radius: 0 3px 3px 0;
+   cursor: pointer;
+   margin: 0;
+}
+
+html.legacy #content .content #c_recherche form #champRecherche button:hover {
+   background-color: #ccc;
+}
+
+html.legacy #content .content #c_recherche form #champRecherche input {
+   border: none;
+   height: 22px;
+   width: 150px;
+   padding: 0 3px;
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-size: 12px;
+   border-radius: 3px 0px 0px 3px;
+   position: relative;
+}
+
+html.legacy #content .content #myname {
+   font-size: 11px;
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   margin: 0 0 .5em .5em;
+   display: inline-block;
+   vertical-align: bottom;
+   font-weight: bold;
+}
+
+html.legacy #content .content #language_link > a, #language_link > span {
+   display: inline-block;
+   padding: .5em 0;
+   font-weight: bold;
+}
+
+html.legacy #content .content #c_menu {
+   /*height: 30px;*/
+   text-align: center;
+   padding-left: 95px;
+}
+
+html.legacy #content .content #c_menu ul#menu {
+   height: 30px;
+   list-style: none;
+   font-size: 13px;
+   box-sizing: border-box;
+   margin: 0 auto;
+   display: inline-block;
+}
+
+html.legacy #content .content ul#menu a.itemP, html.legacy #content .content ul#menu a.itemP1 {
+   display: block;
+   text-align: center;
+   text-decoration: none;
+   font-size: 13px;
+   white-space: nowrap;
+   padding:7px 1em;
+}
+
+html.legacy #content .content ul#menu ul.ssmenu {
+   background: rgba(255, 255, 255, 0.9);
+   display: none;
+   box-shadow: 0px 2px 2px 1px #BCB6B3;
+}
+
+html.legacy #content .content ul#menu ul li {
+   list-style: none;
+   text-align: left;
+   line-height: 20px;
+   font-size: 0.9em;
+}
+
+html.legacy #content .content ul#menu ul li:last-child {
+   border-bottom: 0px;
+}
+
+html.legacy #content .content ul#menu ul li a {
+   text-decoration: none;
+   display: block;
+   padding: 5px 5px 5px 5px;
+}
+
+
+html.legacy #content .content #menu_all_button {
+   float: right;
+   width: 24px;
+   height: 24px;
+   margin-right: 20px;
+   display: inline-block;
+   margin-top: 2px;
+   background: url("../pics/menu_all.png");
+}
+
+/* hide menu on small screen */
+@media screen and (max-width: 1055px) {
+   html.legacy #content .content #c_menu ul#menu,
+   html.legacy #content .content #language_link,
+   html.legacy #content .content #help_link,
+   html.legacy #content .content #myname {
+      display: none;
+   }
+}
+
+@media screen and (max-width: 490px) {
+
+   html.legacy #content .content #show_all_menu .top {
+      display: block;
+      float: left;
+      height: 370px;
+      border-bottom: 2px solid #DDD;
+      margin-bottom: 15px;
+   }
+}
+
+html.legacy #content .content .button-icon:hover {
+   opacity: .5;
+}
+
+html.legacy #content .content ul#menu > li {
+   display: inline-block;
+   min-width: 135px;
+   height: 30px;
+}
+html.legacy #content .content #c_menu .pure-menu-list > li {
+   min-width: 135px;
+}
+
+html.legacy #content .content ul#menu ul.ssmenu, html.legacy #content .content #c_menu .pure-menu-list ul.ssmenu {
+   position: absolute;
+   min-width: 135px;
+   z-index: 500;
+}
+
+html.legacy #content .content #header #c_logo {
+   position: absolute;
+   z-index: 1000;
+   width: 100px;
+   height: 55px;
+   float: left;
+   background: url("../pics/fd_logo.png") 0 0 repeat-x;
+}
+
+html.legacy #content .content #header #c_logo a {
+   display: block;
+   width: 100%;
+   height: 100%;
+   text-decoration: none;
+}
+
+html.legacy #content .content #c_ssmenu1 {
+   background: #D0D99D;
+   height: 24px;
+   clear: both;
+   font-size: 0.8em;
+}
+
+html.legacy #content .content #c_ssmenu1 ul {
+   position: relative;
+   top: 4px;
+   left: 0px;
+   list-style: none;
+}
+
+html.legacy #content .content #c_ssmenu1 ul li {
+   float: left;
+   padding: 0 10px;
+}
+
+html.legacy #content .content #c_ssmenu1 ul li a {
+   text-decoration: none;
+   color: #666;
+}
+
+html.legacy #content .content #c_ssmenu1 ul li a:hover {
+   text-decoration: underline;
+}
+
+html.legacy #content .content #c_ssmenu2 {
+   min-height: 34px;
+   padding: 3px 0;
+   box-sizing: border-box;
+   background-color: #FFF;
+   margin-bottom: 1.5em;
+}
+
+html.legacy #content .content #c_ssmenu2 ul {
+   left: 0px;
+   list-style: none;
+}
+
+html.legacy #content .content #c_ssmenu2 ul li {
+   float: left;
+   padding: 5px 10px 0 10px;
+}
+
+html.legacy #content .content #c_ssmenu2 ul li a {
+   text-decoration: none;
+   color: #000;
+}
+
+html.legacy #content .content #c_ssmenu2  a.here {
+   font-size:14px;
+}
+
+html.legacy #content .content .breadcrumb_item {
+   height: 23px;
+   position: relative;
+}
+
+html.legacy #content .content .profile-selector {
+   float: right !important;
+   height: 28px;
+   line-height: 24px;
+   z-index: 40;
+   position: relative;
+}
+
+html.legacy #content .content .breadcrumb_item:before {
+   left: 100%;
+   top: 50%;
+   border: solid transparent;
+   content: " ";
+   height: 0;
+   width: 0;
+   position: absolute;
+   border-left-color: #FFF;
+   border-width: 17px;
+   margin-top: -17px;
+   z-index: 20;
+}
+
+html.legacy #content .content .breadcrumb_item:after {
+   left: 100%;
+   top: 50%;
+   border: solid transparent;
+   content: " ";
+   height: 0;
+   width: 0;
+   position: absolute;
+   border-left-color: #FFF;
+   border-width: 14px;
+   margin-top: -14px;
+   z-index: 20;
+   margin-left: -1px;
+}
+
+html.legacy #content .content .breadcrumb_item:not(:nth-of-type(1)) {
+   padding-left: 25px !important;
+}
+
+html.legacy #content .content .breadcrumb_item:nth-of-type(1) {
+   background-color: #F2F2F2;
+}
+html.legacy #content .content .breadcrumb_item:nth-of-type(1):after {
+   border-left-color: #F2F2F2;
+}
+html.legacy #content .content .breadcrumb_item:nth-of-type(2) {
+   background-color: #F2F2F2;
+}
+html.legacy #content .content .breadcrumb_item:nth-of-type(2):after {
+   border-left-color: #F2F2F2;
+}
+html.legacy #content .content .breadcrumb_item:nth-of-type(3) {
+   background-color: #FEC95C;
+}
+html.legacy #content .content .breadcrumb_item:nth-of-type(3):after {
+   border-left-color: #FEC95C;
+}
+
+html.legacy #content .content .icons_block {
+   margin-left: 10px;
+   height: 28px;
+   float: inherit !important;
+   box-sizing: border-box;
+   display: inline-block;
+   position: relative;
+   z-index: 40;
+}
+
+html.legacy #content .content .icons_block span {
+   padding: 0 8px;
+   min-width: 20px;
+   display: inline-block;
+   line-height: 23px;
+}
+html.legacy #content .content .profile-selector a {
+   display: inline-block;
+   line-height: 23px;
+}
+
+html.legacy #content .content .icons_block a > img,
+html.legacy #content .content .icons_block i.fa {
+   font-size: 1.7em;
+   vertical-align: top;
+}
+
+html.legacy #content .content #show_all_menu {
+   font-size: 11px;
+   text-align: left;
+   min-width: 150px;
+   column-count: 3;
+   -moz-column-count:3;
+}
+
+html.legacy #content .content #show_all_menu dl {
+   padding-bottom: .5em;
+   break-inside: avoid-column; /* standard */
+   page-break-inside: avoid; /* Firefox */
+   -webkit-column-break-inside: avoid; /* other webkit compliant */
+}
+
+html.legacy #content .content #show_all_menu a {
+   display: block;
+   padding: .2em .5em;
+}
+
+html.legacy #content .content #show_all_menu dt a {
+   color:white;
+}
+
+html.legacy #content .content #show_all_menu dt a:hover {
+   background: #8BAADA;
+}
+
+html.legacy #content .content #show_all_menu a:hover {
+   background-color: #3A5693;
+   color: #C7DBF5;
+}
+
+html.legacy #content .content .iframe {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-width: 0px;
+}
+
+html.legacy #content .content .iframe.hidden {
+   height: 0;
+   width: 0;
+}
+
+/* ################--------------- Footer  ---------------#################### */
+
+html.legacy #content .content #footer {
+   font-size: 9px;
+   color: #000;
+   background-color: #E2E1DE;
+   padding: 6px;
+   height: 18px;
+   padding: 5px;
+   margin-top: 1.5em;
+}
+
+html.legacy #content .content #footer > table {
+   width: 100%;
+}
+
+html.legacy #content .content a.copyright {
+   font-size: 9px;
+   color :#000;
+}
+
+
+
+/* ################--------------- DB Slave---------------#################### */
+html.legacy #content .content #dbslave-float {
+   top: 0px;
+   left: 300px;
+   position: absolute;
+   z-index: 100;
+}
+
+html.legacy #content .content #dbslave-float a {
+   border-top: 1px solid #cecece;
+   border-bottom: 2px solid #4a4a4a;
+   border-left: 1px solid #cecece;
+   border-right: 1px solid #cecece;
+   text-decoration: none;
+   text-align: center;
+   margin: 0;
+   padding: 1px .5em;
+   font-family: helvetica,arial,sans-serif;
+   font-size: 10px;
+   font-weight: bold;
+   background-color: #fff;
+   color:blue;
+}
+
+
+
+/* ################--------------- Debug  ---------------#################### */
+html.legacy #content .content #debug-float {
+   top: 0px;
+   left: 80px;
+   position: absolute;
+   z-index: 100;
+}
+
+html.legacy #content .content #maintenance-float {
+   top: 0px;
+   left: 280px;
+   position: absolute;
+   z-index: 100;
+}
+
+
+html.legacy #content .content #debug-float a, html.legacy #content .content #maintenance-float a {
+   border-top: 1px solid #cecece;
+   border-bottom: 2px solid #4a4a4a;
+   border-left: 1px solid #cecece;
+   border-right: 1px solid #cecece;
+   text-decoration: none;
+   text-align: center;
+   margin: 0;
+   padding: 1px .5em;
+   font-family: helvetica,arial,sans-serif;
+   font-size: 10px;
+   font-weight: bold;
+   background-color: #fff;
+   color:red;
+}
+
+html.legacy #content .content #debug-float a:hover, html.legacy #content .content #maintenance-float a:hover {
+   background-color: #fc3;
+   border-bottom: 2px solid #36f;
+}
+
+html.legacy #content .content #debugajax {
+   margin: auto;
+   text-align:center;
+}
+
+html.legacy #content .content .debug .ui-tabs {
+   border: 10px solid #dadada !important;
+}
+
+html.legacy #content .content .debug h1, html.legacy #content .content #debugajax h1 {
+   font-size:18px;
+   text-align:center;
+   padding: 5px;
+}
+
+html.legacy #content .content .debug h2, html.legacy #content .content #debugajax h2 {
+   font-size:14px;
+   padding-left: 10px;
+   border-left: 4px solid #FFC65D;
+   border-bottom: 2px solid #FFC65D;
+}
+
+html.legacy #content .content .debug table, html.legacy #content .content #debugajax table {
+   margin:0;
+}
+
+html.legacy #content .content .debug .ui-tabs .close {
+   right: 14px;
+   position: absolute;
+   width: 20px;
+   top: 1px;
+}
+
+html.legacy #content .content .debug .ui-tabs .tab_cadre {
+   width: 100%;
+}
+
+html.legacy #content .content .debug .ui-tabs .tab_cadre td:nth-child(2) {
+   word-break: break-all;
+}
+
+html.legacy #content .content #see_debug, html.legacy #content .content #backtotop {
+   position: fixed;
+   bottom: 35px;
+   right: 10px;
+   cursor: pointer;
+   color: white;
+   z-index: 99; /* Behind debug panel */
+}
+
+html.legacy #content .content #c_preference a.fa:hover,
+html.legacy #content .content #see_debug:hover, html.legacy #content .content #backtotop:hover {
+   opacity: .8;
+}
+
+html.legacy #content .content #see_debug.wbttop {
+   right: 40px;
+}
+
+html.legacy #content .content #see_debug.on a:hover {
+   color: #ff0000;
+}
+
+html.legacy #content .content .debug .ui-tabs {
+   display: none;
+   position: fixed !important;
+   left: 0 !important;
+   bottom: 0 !important;
+   top: inherit !important;
+   height: 300px !important;
+   z-index: 100 !important;
+   width: 98%;
+}
+
+html.legacy #content .content .debug_ajax .ui-tabs {
+   position: relative !important;
+   height: inherit !important;
+   display: block;
+}
+
+html.legacy #content .content #page .debug_ajax div.ui-tabs {
+   width: 98%;
+}
+
+
+html.legacy #content .content .debug_ajax .see_debug{
+   display: none;
+}
+
+html.legacy #content .content .debug .ui-tabs-panel {
+   height: 273px;
+   overflow: auto;
+}
+
+html.legacy #content .content .debug_ajax .ui-tabs .ui-tabs-panel {
+   height: auto;
+}
+
+html.legacy #content .content .debug .tab_cadre {
+   box-shadow: none;
+}
+
+/* Restore default behavior : drop user agent CSS*/
+html.legacy #content .content *:focus {
+  outline-width: 0;
+}
+
+html.legacy #content .content .nostyle:focus {
+  outline-width: 5px;
+}
+
+/* Timeline */
+
+html.legacy #content .content .timeline_box {
+   text-align: left;
+   padding: 4px 8px;
+   margin-top: -10px;
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+}
+
+html.legacy #content .content .timeline_box .break {
+   clear: both;
+}
+
+html.legacy #content .content .timeline_box h2 {
+   font-size: 16px;
+}
+
+html.legacy #content .content .timeline_box textarea {
+   resize: vertical;
+   width: 97%;
+}
+
+/** FORM **/
+
+html.legacy #content .content .timeline_form {
+   width: 100%;
+   padding-left: 4px;
+}
+
+html.legacy #content .content .timeline_choices h2 {
+   display: inline-block;
+   margin: 1em 1em 0 0;
+}
+html.legacy #content .content .timeline_choices li {
+   display: inline-block;
+   min-width: 90px;
+   text-align: center;
+   padding: .5em .5em;
+   margin-right: 3%;
+   cursor: pointer;
+   font-weight: bold;
+}
+
+html.legacy #content .content .timeline_choices li i {
+   margin-right: 1em;
+   font-size: 1.2em;
+   vertical-align: bottom;
+}
+
+html.legacy #content .content .timeline_choices li:before {
+   margin-right: 1em;
+   font-weight: normal;
+}
+
+html.legacy #content .content .timeline_choices li:hover {
+   box-shadow: 0px 1px 1px #999;
+ }
+
+html.legacy #content .content .timeline_choices li.followup {
+   background-color:#E0E0E0;
+   color:#535353;
+}
+html.legacy #content .content .timeline_choices li.task {
+   background-color: #FEDA90;
+   color: #535353;
+}
+html.legacy #content .content .timeline_choices li.document {
+   background-color:#80CEAD;
+   color:#3A5D4E;
+}
+html.legacy #content .content .timeline_choices li.solution {
+   background-color:#9FD6ED;
+   color:#425B64;
+}
+
+html.legacy #content .content .timeline_box .tab_cadre_fixe {
+   width: 930px;
+}
+
+
+/** TIMELINE **/
+
+html.legacy #content .content .timeline_history {
+   border-top: 1px dashed #3C5874;
+   overflow: hidden;
+   font-size: 12px; /*fix jqueryui ui-widget size*/
+   width: 100%;
+}
+
+html.legacy #content .content .timeline_history > h2 {
+   float: left;
+}
+
+html.legacy #content .content .timeline_history .filter_timeline {
+   opacity: 0.2;
+   text-align: right;
+   margin-top: .2em;
+}
+html.legacy #content .content .timeline_history .filter_timeline > * {
+   vertical-align: middle;
+}
+html.legacy #content .content .timeline_history .filter_timeline:hover {
+   opacity: 1;
+}
+
+html.legacy #content .content .timeline_history .filter_timeline {
+   float: right;
+}
+
+html.legacy #content .content .timeline_history .filter_timeline h3,
+html.legacy #content .content .timeline_history .filter_timeline ul,
+html.legacy #content .content .timeline_history .filter_timeline ul li {
+   display: inline-block;
+}
+html.legacy #content .content .timeline_history .filter_timeline h3 {
+   font-weight: bold;
+   font-size: 1em;
+   margin: 0 .5em 0 0;
+   padding: 0;
+}
+
+html.legacy #content .content .timeline_history .filter_timeline a {
+   font-size: 1.5em;
+   display: inline-block;
+   padding: 0 .2em;
+}
+
+html.legacy #content .content .filter_timeline a.h_active {
+   color: green!important;
+}
+
+html.legacy #content .content .timeline_history .h_item {
+   clear: both;
+   padding-top: 8px;
+   border-top: 1px dashed #D2D2D2;
+}
+
+html.legacy #content .content .timeline_history .h_hidden {
+   display: none;
+}
+
+html.legacy #content .content .timeline_history .h_info {
+   float: left;
+   width: 25%;
+   max-width: 140px;
+}
+html.legacy #content .content .timeline_history .right .h_info {
+   float: right;
+}
+
+
+html.legacy #content .content .timeline_history .h_user,
+html.legacy #content .content .timeline_history .h_date {
+   background-repeat: no-repeat;
+   padding-left: 24px;
+   padding-top: 1px;
+   text-transform: capitalize;
+   text-align: center;
+}
+
+html.legacy #content .content .timeline_history .h_date i {
+   font-size: 1.8em;
+   margin-right: .3em;
+   opacity: .7;
+   vertical-align: -15%;
+}
+
+html.legacy #content .content .timeline_history .h_date {
+   white-space: nowrap;
+   margin-bottom: 10px;
+   text-align: left;
+   line-height: 20px;
+   padding-left: 0!important;
+}
+
+html.legacy #content .content  .timeline_history .h_user .h_user_name {
+   display: inline-block;
+   margin-bottom: 5px;
+   vertical-align: middle;
+   width: 100%;
+   text-align: center;
+   margin-top: 5px;
+}
+
+html.legacy #content .content .timeline_history .h_user a:hover {
+   text-decoration: underline;
+}
+
+html.legacy #content .content .timeline_history .h_user .tooltip_picture_border {
+   padding: 2px;
+   border-radius: 50%;
+   border: 3px inset #E7E7E7;
+   _border: 3px solid #E7E7E7;
+   width:51px;
+   height:51px;
+   position: relative;
+   margin: 0 auto;
+}
+
+html.legacy #content .content .timeline_history .h_user .user_picture {
+   width: 51px;
+   height: 51px;
+   border-radius: 50%;
+}
+
+html.legacy #content .content .timeline_history .users_id_tech img {
+   vertical-align: middle;
+}
+
+html.legacy #content .content .timeline_history .left .h_user,
+html.legacy #content .content .timeline_history .left .h_date,
+html.legacy #content .content .timeline_history .middle .h_user,
+html.legacy #content .content .timeline_history .middle .h_date {
+   padding-left: 24px;
+   padding-right: 0;
+   padding-top: 2px;
+}
+html.legacy #content .content .timeline_history .left .h_date,
+html.legacy #content .content .timeline_history .middle .h_date {
+   margin: 0 auto;
+}
+
+html.legacy #content .content .timeline_history .h_user,
+html.legacy #content .content .timeline_history .middle .h_user,
+html.legacy #content .content .timeline_history .left .h_user {
+   padding-right: 0;
+   padding-left: 0;
+   padding-top: 0;
+}
+
+html.legacy #content .content .timeline_history img.group_assign {
+   vertical-align: bottom;
+}
+
+html.legacy #content .content .timeline_history .h_content {
+   max-width:50%;
+   min-width: 200px;
+   padding: 5px 5px 5px 8px;
+   margin-bottom: 10px;
+   min-height: 70px;
+   position: relative;
+   margin-right: 0;
+   margin-left: 160px;
+   word-wrap: break-word;
+   white-space: pre-wrap;
+}
+
+html.legacy #content .content .timeline_history .right .h_content {
+   margin-left: 0;
+   margin-right: 20px;
+   float: right;
+   text-align: left;
+}
+
+html.legacy #content .content .timeline_history .middle .h_content {
+   max-width: inherit;
+   width: 69%;
+}
+
+html.legacy #content .content .timeline_history .h_content:after, .timeline_history .h_content:before {
+   right: 100%;
+   top: 53px;
+   border: solid transparent;
+   content: " ";
+   height: 0;
+   width: 0;
+   position: absolute;
+   pointer-events: none;
+}
+
+html.legacy #content .content .timeline_history.standalone .h_content:after {
+   display: none;
+}
+
+html.legacy #content .content .timeline_history .h_content:after {
+   border-width: 8px;
+   margin-top: -15px;
+   border-top-color: transparent !important;
+   border-bottom-color: transparent !important;
+}
+
+
+html.legacy #content .content .timeline_history .right .h_content:after,
+html.legacy #content .content .timeline_history .right .h_content:before {
+   left: 100%;
+}
+
+html.legacy #content .content .timeline_history .left .h_content:after {
+   border-left-color: transparent !important;
+}
+html.legacy #content .content .timeline_history .left .h_content:before {
+   border-left-color: transparent !important;
+}
+html.legacy #content .content .timeline_history .right .h_content:after {
+   border-right-color: transparent !important;
+}
+html.legacy #content .content .timeline_history .right .h_content:before {
+   border-right-color: transparent !important;
+}
+
+html.legacy #content .content .timeline_history .TicketFollowup:after            { border-color: #E0E0E0;}
+html.legacy #content .content .timeline_history .TicketTask:after                { border-color: #FEDA90;}
+html.legacy #content .content .timeline_history .Solution:after                  { border-color: #9FD6ED;}
+html.legacy #content .content .timeline_history .TicketValidation.status_3:after { border-color: #A1D7A2;}
+html.legacy #content .content .timeline_history .TicketValidation:after          { border-color: #FFFFFF;}
+html.legacy #content .content .timeline_history .TicketValidation.status_4:after { border-color: #D3A4A4;}
+
+html.legacy #content .content .timeline_history .right .h_content p {
+   margin: 2px 0 0;
+}
+
+html.legacy #content .content .timeline_history .private {
+   width: 30px;
+   float: right;
+   padding-top: 18px;
+   background: url(../pics/timeline/private.png) no-repeat center top;
+   color: #A2A2A2;
+   font-size: .75em;
+   text-align: center;
+   white-space: nowrap;
+}
+html.legacy #content .content .timeline_history .right .private {
+   float: left;
+}
+
+html.legacy #content .content .timeline_history .left .h_content.timeline_active {
+   border-right: 8px solid #3C5874;
+}
+html.legacy #content .content .timeline_history .right .h_content.timeline_active {
+   border-left: 8px solid #3C5874;
+}
+
+html.legacy #content .content .timeline_history .h_content.edited {
+   max-width: inherit;
+   text-align: center;
+}
+
+html.legacy #content .content .timeline_history .h_content.edited .tab_cadre_fixe {
+   width: 100%;
+   margin: 0;
+}
+
+html.legacy #content .content .timeline_history .h_content .edit_item_content {
+   display: none;
+   border: 1px dotted #C0C0C0;
+}
+html.legacy #content .content .timeline_history .h_content .cancel_edit_item_content {
+   display: none;
+   background-image: url(../pics/close.png);
+   width: 16px;
+   height: 16px;
+   cursor: pointer;
+   opacity: .5;
+   position: absolute;
+   top: 12px;
+   right: 12px;
+}
+html.legacy #content .content .timeline_history .h_content .cancel_edit_item_content:hover {
+   opacity: 1;
+}
+
+html.legacy #content .content .timeline_history .h_content.TicketFollowup {
+   background-color: #E0E0E0;
+   color: #535353;
+   background-image: url(../pics/timeline/followup.png);
+   background-repeat: no-repeat;
+}
+
+html.legacy #content .content .timeline_history .h_content.TicketTask {
+   background-color: #FEDA90;
+   color: #38301F;
+   background-image: url(../pics/timeline/task.png);
+   background-repeat: no-repeat;
+}
+
+html.legacy #content .content .timeline_history .h_content.Solution {
+   border-left: 1em green solid;
+   background-color: #9FD6ED;
+   color: #425B64;
+}
+
+html.legacy #content .content .timeline_history .h_content.Solution.waiting {
+   border-left-color: orange;
+}
+html.legacy #content .content .timeline_history .h_content.Solution.refused {
+   border-left: 1em red solid;
+}
+html.legacy #content .content .timeline_history .h_content.Solution .solimg {
+   position: absolute;
+   color: rgba(66, 91, 100, .1);
+}
+
+html.legacy #content .content .timeline_history .h_content.Document_Item,
+html.legacy #content .content .timeline_history .h_content.Assign {
+   border: none;
+   box-shadow:none;
+   margin-bottom: 0;
+   padding: 0;
+}
+
+html.legacy #content .content .timeline_history .h_content.TicketContent {
+   background-color: #B2E0B6;
+   color: #093806;
+   background-repeat: no-repeat;
+}
+html.legacy #content .content .timeline_history .h_content.TicketContent .ticket_title {
+   font-weight: bold;
+   font-size: 1.2em;
+   margin-bottom: 5px;
+}
+
+html.legacy #content .content .timeline_history .h_content.TicketContent img {
+   max-width: 100%;
+}
+
+
+html.legacy #content .content .timeline_history span.buttons {
+   opacity: 0.1;
+   vertical-align: middle;
+}
+html.legacy #content .content .timeline_history span.buttons:hover {
+   opacity: 1;
+}
+
+html.legacy #content .content .edit_document,
+html.legacy #content .content .delete_document {
+   font-size: 1.5em!important;
+   margin-left: .5em;
+}
+
+
+html.legacy #content .content .timeline_history .timeline_img_preview img {
+   width: 100px;
+   border: 3px solid #4A8865;
+   border-radius: 3px;
+}
+html.legacy #content .content .timeline_history a:hover .timeline_img_preview img {
+   border: 3px solid black;
+}
+
+html.legacy #content .content .timeline_history .h_content.TicketValidation {
+   background-color: #FFFFFF;
+   border-color: #BECADD;
+   color: #030F21;
+   padding: 5px 5px 5px 8px;
+}
+
+html.legacy #content .content .timeline_history .h_content.TicketValidation.status_3 {
+   background-color: #A1D7A2;
+   border-color: #385139;
+}
+html.legacy #content .content .timeline_history .h_content.TicketValidation.status_4 {
+   background-color: #D3A4A4;
+   border-color: #5E3232;
+}
+
+html.legacy #content .content .timeline_history .h_content img.h_requesttype {
+   float: right;
+   height: 20px;
+}
+
+html.legacy #content .content .timeline_history .h_content .edit_item {
+   display: block;
+   float: right;
+   opacity: .5;
+   font-size: 1.5em;
+}
+
+html.legacy #content .content .timeline_history .h_content .edit_item:hover {
+   opacity: 1;
+   cursor: pointer;
+}
+
+html.legacy #content .content .timeline_history .h_content .long_text {
+   max-height: 350px;
+   position: relative;
+   overflow: hidden;
+}
+
+html.legacy #content .content .timeline_history .h_content .read_more {
+   position: absolute;
+   bottom: 0; left: 0;
+   width: 100%;
+   text-align: center;
+   margin: 0; padding: 30px 0;
+}
+
+html.legacy #content .content .timeline_history .h_content .read_more a {
+   bottom: 5px;
+   position: absolute;
+}
+
+html.legacy #content .content .timeline_history .h_content.TicketFollowup .read_more {
+   background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(241,244,227,1) 100%); /* FF3.6+ */
+   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(241,244,227,1))); /* Chrome,Safari4+ */
+   background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* Chrome10+,Safari5.1+ */
+   background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* Opera 11.10+ */
+   background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* IE10+ */
+   background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* W3C */
+}
+html.legacy #content .content .timeline_history .h_content.TicketTask .read_more {
+   background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(240,228,181,1) 100%); /* FF3.6+ */
+   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(240,228,181,1))); /* Chrome,Safari4+ */
+   background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* Chrome10+,Safari5.1+ */
+   background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* Opera 11.10+ */
+   background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* IE10+ */
+   background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* W3C */
+}
+html.legacy #content .content .timeline_history .h_content.Solution .read_more {
+   background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(233,241,255,1) 100%); /* FF3.6+ */
+   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(233,241,255,1))); /* Chrome,Safari4+ */
+   background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* Chrome10+,Safari5.1+ */
+   background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* Opera 11.10+ */
+   background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* IE10+ */
+   background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* W3C */
+}
+
+html.legacy #content .content .timeline_history .b_right {
+   margin-right: 3px;
+   font-style : italic;
+   color: #7E7E7E;
+   text-align: right;
+   bottom: 2px;
+}
+
+html.legacy #content .content .timeline_history .b_right .actiontime {
+   padding-left: 15px;
+   background-image: url(../pics/timeline/actiontime.png);
+   background-repeat: no-repeat;
+   margin-right: 6px;
+}
+
+html.legacy #content .content .timeline_history .state {
+   display: inline-block;
+   width: 20px;
+   height: 20px;
+   margin-right: 3px;
+   background-repeat: no-repeat;
+   vertical-align: middle;
+}
+
+html.legacy #content .content .timeline_history .state.state_0 {
+   background-image: url(../pics/timeline/information.png);
+}
+html.legacy #content .content .timeline_history .state.state_1 {
+   cursor: pointer;
+   background-image: url(../pics/timeline/todo.png);
+}
+html.legacy #content .content .timeline_history .state.state_2 {
+   cursor: pointer;
+   background-image: url(../pics/timeline/done.png);
+}
+
+html.legacy #content .content .timeline_history .b_right .planification {
+   padding-left: 17px;
+   background-image: url(../pics/timeline/planification.png);
+   background-repeat: no-repeat;
+}
+
+
+html.legacy #content .content .timeline_history .approbation_separator {
+   margin-bottom: 55px;
+}
+
+html.legacy #content .content .assign_la {
+   float: left;
+   white-space: nowrap;
+   margin-top: 4px;
+}
+
+html.legacy #content .content .displayed_content a .fa {
+   font-size: 1.5em;
+}
+
+
+html.legacy #content .content .x-split-button {
+  position: relative;
+  width: 250px;
+  left: 40%;
+  word-wrap: normal;
+  white-space: normal;
+}
+
+html.legacy #content .content .x-button {
+   position: relative;
+   margin: 0;
+   float: left;
+   outline: none;
+   padding: 5px;
+   cursor:pointer;
+   font: bold 12px Arial, Helvetica;
+   color: #8f5a0a;
+   background-color: #FEC95C;
+   border: none;
+   border-radius: 0;
+}
+
+html.legacy #content .content .x-button:hover {
+  cursor: pointer;
+   background-color: #fddb6f;
+   box-shadow: 0px 1px 1px #999;
+}
+
+html.legacy #content .content .x-button.x-button-main {
+   width: 100px;
+   height: 26px;
+}
+
+html.legacy #content .content .x-button.x-button-drop {
+   border-left: 0;
+   width: 15px;
+   height: 16px;
+
+   background-repeat: no-repeat;
+   background-position: center;
+}
+
+html.legacy #content .content .x-button.x-button-drop:after {
+   content: '\25BC';
+}
+html.legacy #content .content .open .x-button.x-button-drop:after {
+   content: '\25B2';
+}
+
+html.legacy #content .content .x-button.x-button-drop.new     { background-image: url(../pics/new.png); }
+html.legacy #content .content .x-button-drop.new:after        { content: ' ' !important; }
+html.legacy #content .content .x-button.x-button-drop.assign  { background-image: url(../pics/assign.png); }
+html.legacy #content .content .x-button-drop.assign:after     { content: ' ' !important; }
+html.legacy #content .content .x-button.x-button-drop.plan    { background-image: url(../pics/plan.png); }
+html.legacy #content .content .x-button-drop.plan:after       { content: ' ' !important; }
+html.legacy #content .content .x-button.x-button-drop.waiting { background-image: url(../pics/waiting.png); }
+html.legacy #content .content .x-button-drop.waiting:after    { content: ' ' !important; }
+html.legacy #content .content .x-button.x-button-drop.solved  { background-image: url(../pics/solved.png); }
+html.legacy #content .content .x-button-drop.solved:after     { content: ' ' !important; }
+html.legacy #content .content .x-button.x-button-drop.closed  { background-image: url(../pics/closed.png); }
+html.legacy #content .content .x-button-drop.closed:after     { content: ' ' !important; }
+
+html.legacy #content .content .open > .x-button-drop-menu {
+   display: block;
+}
+
+html.legacy #content .content .x-button-drop-menu {
+   position: absolute;
+   top: 27px;
+   left: 0;
+   z-index: 1000;
+   display: none;
+   float: left;
+   min-width: 136px;
+   list-style: none;
+   border: 0;
+   text-align: left;
+}
+
+html.legacy #content .content .x-button-drop-menu li input[type="radio"] {
+  position: absolute;
+  left: -9999px;
+}
+
+html.legacy #content .content .x-button-drop-menu li label {
+   background-color: #fddb6f;
+   padding: 4px;
+   color: #8f5a0a;
+   cursor: pointer;
+   display: block;
+   font-weight: bold;
+}
+
+html.legacy #content .content .x-button-drop-menu li:hover label {
+   background-color: #ffb94b !important;
+}
+html.legacy #content .content .x-button-drop-menu li input[type="radio"]:checked + label {
+   background-color: #FEC95C;
+}
+
+
+/** DATES TIMELINE */
+
+html.legacy #content .content .dates_timelines {
+   width: 100%;
+   max-width: 950px;
+   font-size: 11px;
+   margin: 0 auto;
+   text-align: left;
+}
+html.legacy #content .content .dates_timelines ul {
+   position: relative;
+}
+html.legacy #content .content .dates_timelines ul:before {
+   content: '';
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 163px;
+   width: 3px;
+   background-color: #A8A8A8;
+}
+
+html.legacy #content .content .dates_timelines li {
+   margin: 5px 0 25px 0;
+   display: block;
+}
+
+html.legacy #content .content .dates_timelines time {
+   height: 30px;
+   position: absolute;
+   left: 0;
+   text-align: right;
+   width: 145px;
+   color: #999;
+}
+
+html.legacy #content .content .dates_timelines .dot {
+   position: absolute;
+   left: 156px;
+   display: inline-block;
+   width: 14px;
+   height: 14px;
+   border-radius: 8px;
+   background-color: #FFF;
+   border: 2px solid #696969;
+}
+html.legacy #content .content .dates_timelines .dot:before {
+   color: #929292;
+   font-family: 'FontAwesome';
+   padding-left: 2px;
+}
+
+html.legacy #content .content .dates_timelines .now,
+html.legacy #content .content .dates_timelines .now time {
+   font-weight: bold;
+   color: inherit !important;
+}
+html.legacy #content .content .dates_timelines .now .dot {
+   background-color: #49BAF6;
+   border-color: #4A9BC5;
+}
+
+html.legacy #content .content .dates_timelines .creation .dot {
+   border: 0;
+   font-size: 15px;
+   height: 18px;
+}
+html.legacy #content .content .dates_timelines .creation .dot:before {
+   content: '\f069';
+}
+
+html.legacy #content .content .dates_timelines .passed time,
+html.legacy #content .content .dates_timelines .passed label,
+html.legacy #content .content .dates_timelines .passed .dot {
+   border-color: #FF0014;
+   color: #FF0014;
+}
+html.legacy #content .content .dates_timelines .passed .dot:before {
+   content: '\f12a';
+   padding-left: 6px;
+   color: #E54E5A;
+}
+
+html.legacy #content .content .dates_timelines .checked .dot:before {
+   content: '\f00c';
+   padding-left: 2px;
+}
+
+html.legacy #content .content .dates_timelines .end .dot {
+   border: 0;
+   font-size: 15px;
+}
+html.legacy #content .content .dates_timelines .end .dot:before {
+   content: '\f024';
+}
+
+html.legacy #content .content .dates_timelines label {
+   position: absolute;
+   left: 180px;
+   text-align: right;
+}
+
+/** SWITCHS **/
+/* Adadpted from http://materializecss.com/ */
+
+html.legacy #content .content .switch, html.legacy #content .content .switch * {
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -ms-user-select: none;
+}
+
+html.legacy #content .content .switch {
+   padding: 4px;
+   display: inline-block;
+}
+
+html.legacy #content .content .switch img {
+   padding-right: 10px;
+}
+
+html.legacy #content .content .grey_border {
+   border: 1px dotted #E2E2E2 ;
+}
+
+html.legacy #content .content .switch label {
+   cursor: pointer;
+}
+
+html.legacy #content .content .switch label input[type=checkbox] {
+   display: none;
+   opacity: 0;
+   width: 0;
+   height: 0;
+}
+
+html.legacy #content .content .switch label input[type=checkbox]:checked ~ .lever {
+   background-color: #E8AEAE;
+}
+html.legacy #content .content .switch label input[type=checkbox]:checked ~ .fa {
+   color: #E8AEAE;
+}
+
+html.legacy #content .content .switch label input[type=checkbox]:checked ~ .lever:after {
+   background-color: #cf9b9b;
+}
+
+html.legacy #content .content .switch label .lever {
+   content: "";
+   display: inline-block;
+   position: relative;
+   width: 15px;
+   height: 10px;
+   background-color: #B8B8B8;
+   border-radius: 15px;
+   margin-right: 5px;
+   transition: background 0.3s ease;
+}
+html.legacy #content .content .switch label img {
+   vertical-align: middle;
+}
+
+html.legacy #content .content .switch label .lever:after {
+   content: "";
+   position: absolute;
+   display: inline-block;
+   width: 14px;
+   height: 14px;
+   background-color: #F1F1F1;
+   border-radius: 21px;
+   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
+   left: -7px;
+   top: -2px;
+   transition: left 0.3s ease, background .3s ease, box-shadow 0.3s ease;
+}
+
+html.legacy #content .content input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after {
+   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(89, 89, 89, 0.08627450980392157);
+}
+
+html.legacy #content .content input[type=checkbox]:not(:disabled) ~ .lever:active:after {
+   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08);
+}
+
+html.legacy #content .content .switch label input[type=checkbox]:checked ~ .lever:after {
+   left: 8px;
+}
+
+html.legacy #content .content .switch input[type=checkbox][disabled] ~ .lever {
+   cursor: default;
+}
+
+html.legacy #content .content .switch label input[type=checkbox][disabled] + .lever:after,
+html.legacy #content .content .switch label input[type=checkbox][disabled]:checked + .lever:after {
+   background-color: #BDBDBD;
+}
+
+/** QUEUEMAIL **/
+html.legacy #content .content .queuemail_preview .tab_cadre {
+   width: inherit !important;
+}
+
+
+/** KB comments **/
+html.legacy #content .content .comments,
+html.legacy #content .content .comments ul {
+  margin:0 0 0 1em; /* indentation */
+  padding:0;
+  list-style:none;
+  position:relative;
+}
+
+html.legacy #content .content .comments ul {
+   margin-left: 3em;
+   clear: both;
+} /* (indentation/2) */
+
+html.legacy #content .content .comments:before,
+html.legacy #content .content .comments ul:before {
+  content:"";
+  display:block;
+  width:0;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  border-left:1px solid #CECECE;
+}
+
+html.legacy #content .content .comments li {
+  margin:0;
+  padding:0;
+  line-height:2em; /* default list item's `line-height` */
+  position:relative;
+  clear: left;
+}
+
+html.legacy #content .content .comments li:before {
+  content:"";
+  display:block;
+  width:20px; /* same with indentation */
+  height:0;
+  border-top:1px solid #CECECE;
+  margin-top:-1px; /* border top width */
+  position:absolute;
+  top:5em;
+  left:0;
+}
+
+html.legacy #content .content .comments li:last-child:before {
+  background:white; /* same with body background */
+  height:auto;
+  top:5em; /* (line-height/2) */
+  bottom:0;
+}
+
+html.legacy #content .content .comments .h_content {
+   position: relative;
+}
+
+html.legacy #content .content .comments .h_info {
+   padding-left: 20px;
+}
+
+html.legacy #content .content .comments .add_answer {
+   background-image: url(../pics/answer.png);
+   width: 16px;
+   height: 16px;
+   display: block;
+   position: absolute;
+   right: 5px;
+   bottom: 5px;
+   opacity: .5;
+}
+
+html.legacy #content .content .comments .add_answer:hover {
+   opacity: 1;
+   cursor: pointer;
+}
+
+html.legacy #content .content .comments .h_item {
+   border: none;
+}
+
+html.legacy #content .content .forcomments.timeline_history {
+   border: none;
+}
+
+html.legacy #content .content .comments hr {
+   border: none;
+   border-top: 1px #222 dotted;
+   margin-top: 2px;
+}
+
+html.legacy #content .content .comment_form textarea {
+   width: 100%;
+   min-height: 70px;
+}
+
+html.legacy #content .content input[type=checkbox].toggle_comments {
+   display: none;
+}
+
+html.legacy #content .content input[type=checkbox].toggle_comments + .toggle_label {
+   cursor: pointer;
+   position: absolute;
+   left: -6px;
+   top: calc(5em - 8px);
+   background: #FFF url("../pics/expand.png") no-repeat;
+   width: 14px;
+   height: 14px;
+}
+html.legacy #content .content input[type=checkbox].toggle_comments:checked + .toggle_label {
+   background: #FFF url("../pics/collapse.png") no-repeat;
+}
+
+html.legacy #content .content input[type=checkbox].toggle_comments ~ ul {
+   display: none;
+}
+input[type=checkbox].toggle_comments:checked ~ ul {
+   display: block;
+}
+
+html.legacy #content .content .copy_to_clipboard_wrapper,
+html.legacy #content .content .copy_to_clipboard_wrapper * {
+   cursor: pointer;
+}
+
+html.legacy #content .content .copy_to_clipboard_wrapper:after {
+   font-family: 'FontAwesome';
+   position: relative;
+   left: -15px;
+   top: 1px;
+   content: "\f0ea";
+   color: #7F7F7F;
+   transition: color 0.3s ease-in-out;
+}
+html.legacy #content .content .copy_to_clipboard_wrapper.copied:after {
+   content: "\f00c";
+   color: green;
+}
+html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
+   content: "\f071";
+   color: red;
+}
+
+/* ################--------------- Responsive  ---------------#################### */
+
+@media screen and (max-width: 700px) {
+   html.legacy #content .content #header {
+      transition: top 0.2s ease-in-out;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+   }
+
+   html.legacy #content .content #content {
+      margin-top: 7em;
+   }
+
+   html.legacy #content .content #c_ssmenu2 {
+      overflow: auto;
+      border-bottom: 1px solid #DDD;
+   }
+
+   html.legacy #content .content #header.nav-up {
+      top: -150px;
+   }
+
+   html.legacy #content .content #page {
+      padding-top: 130px;
+   }
+   html.legacy #content .content .nav-up ~ #page {
+      padding-top: 50px;
+   }
+
+   html.legacy #content .content #firstboxlogin {
+      overflow-y: auto;
+   }
+
+   html.legacy #content .content #logo_login {
+      height: inherit;
+   }
+
+   html.legacy #content .content #display-login, #text-login {
+      padding: 1px 2%;
+   }
+
+   html.legacy #content .content #footer-login,
+   html.legacy #content .content .loginpage #footer {
+      display: none;
+   }
+
+
+   html.legacy #content .content .icons_block {
+      margin-left: 0;
+   }
+
+   html.legacy #content .content .profile-selector {
+      padding: 4px 2px !important;
+      max-width: 95px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: inline-block;
+   }
+
+   html.legacy #content .content .profile-selector .select2-container {
+      max-width: 90px;
+   }
+
+   html.legacy #content .content .ui-dialog {
+      max-width: 100%;
+   }
+
+   html.legacy #content .content #page .pointer {
+      zoom: 1.1;
+   }
+
+   .layout_classic.form html.legacy #content .content .main_form, .layout_vsplit.form html.legacy #content .content .main_form {
+      width: 100%;
+   }
+
+   html.legacy #content .content .responsive_hidden {
+      display: none !important;
+   }
+
+   .html.legacy #content .content search_page > form > .center {
+      width: 100%;
+      overflow-y: auto;
+   }
+
+   html.legacy #content .content .ui-tabs {
+      width: 100% !important;
+   }
+
+   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav {
+      padding: .2em .2em 0;
+      float: inherit;
+      width: inherit;
+   }
+
+   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li {
+      clear: none;
+      width: initial;
+      border-bottom-width: 1px !important;
+      border-right-width: 0 !important;
+      margin:1px .2em 0 0;
+   }
+
+   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+      padding-bottom: 1px;
+   }
+
+   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li a {
+      width: inherit;
+   }
+
+   html.legacy #content .content .ui-tabs-panel,
+   html.legacy #content .content .ui-tabs .ui-tabs-panel
+   html.legacy #content .content .ui-tabs-vertical .ui-tabs-panel {
+      padding: 2px !important;
+      overflow-y: auto;
+   }
+
+   html.legacy #content .content .ui-tabs-vertical .ui-tabs-panel {
+      margin-left: 0;
+   }
+
+   html.legacy #content .content .tab_cadre_pager {
+      width: 100%;
+   }
+   .tab_cadre_pager .big {
+      display: none;
+   }
+
+   html.legacy #content .content .main_form tr:not(.headerRow) th:not(.actor-th),
+   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors),
+   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody,
+   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody > tr,
+   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody > tr > th,
+   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody > tr > td,
+   html.legacy #content .content .tab_actors tr,
+   html.legacy #content .content .tab_actors tr:first-child th:first-child {
+      display: block;
+      width: 100%;
+      text-align: left;
+   }
+
+   html.legacy #content .content .tab_cadre_fixe input[type=text],
+   html.legacy #content .content .tab_cadre_fixe textarea {
+     max-width: 95%;
+   }
+
+   html.legacy #content .content .tab_cadrehov {
+      margin: 0;
+      width: 100%;
+   }
+
+   html.legacy #content .content table.tab_cadre_postonly,
+   html.legacy #content .content table.tab_cadre_postonly > tbody,
+   html.legacy #content .content table.tab_cadre_postonly > tbody > tr,
+   html.legacy #content .content table.tab_cadre_postonly > tbody > tr > td,
+   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr,
+   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr:first-child > th,
+   html.legacy #content .content table.central,
+   html.legacy #content .content table.central > tbody ,
+   html.legacy #content .content table.central > tbody > tr,
+   html.legacy #content .content table.central > tbody > tr > th,
+   html.legacy #content .content table.central > tbody > tr > td,
+   html.legacy #content .content table.central > tbody > tr > td > .tab_cadrehov,
+   html.legacy #content .content table.central > tbody > tr > td > .tab_cadrehov > tbody {
+      display: inline-block;
+      width: 100%;
+   }
+
+   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > th,
+   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > td {
+      display: inline-block;
+      width: 50%;
+      box-sizing: border-box;
+   }
+
+  html.legacy #content .content  #searchcriterias table {
+      border-collapse: collapse;
+   }
+
+   html.legacy #content .content #searchcriterias .tab_cadre_fixe  {
+      width: 100%;
+   }
+
+   html.legacy #content .content .mceToolbar,
+   html.legacy #content .content #image_paste {
+      display: none;
+   }
+
+   html.legacy #content .content #searchcriterias .tab_cadre_fixe {
+      display: block;
+      width: 100%;
+   }
+   html.legacy #content .content #searchcriterias .metacriteria td,
+   html.legacy #content .content #searchcriterias .normalcriteria td {
+      display: inline-block;
+      float: left;
+      white-space: nowrap;
+      width: initial !important;
+   }
+   html.legacy #content .content #searchcriterias .metacriteria,
+   html.legacy #content .content #searchcriterias .normalcriteria {
+      clear: left;
+      display: block;
+      width: 100%;
+      margin-bottom: 6px;
+      overflow: auto;
+   }
+
+   html.legacy #content .content .timeline_history .h_date {
+      background-image: none;
+      padding-left: 0;
+   }
+
+   html.legacy #content .content .timeline_history .h_info {
+      font-size: .7em;
+   }
+
+   html.legacy #content .content .tab_cadre_central .top {
+      display: block;
+      width: 100%;
+   }
+
+   html.legacy #content .content #page .tab_actors,
+   html.legacy #content .content #page .actor-bloc {
+      display: block;
+   }
+
+   html.legacy #content .content .actor-bloc {
+      width: initial;
+      float: none;
+   }
+
+   html.legacy #content .content .actor-dropdown {
+      display: block;
+   }
+
+   html.legacy #content .content .select2-focusser,
+   html.legacy #content .content .select2-search,
+   html.legacy #content .content .select2-search input {
+       display: none !important;
+   }
+
+   html.legacy #content .content #planning_container {
+      padding-left: 10px;
+   }
+
+   html.legacy #content .content #planning_filter {
+      position: relative;
+      width: 100%;
+      margin-bottom: 10px;
+   }
+
+   html.legacy #content .content #c_preference #debug_mode {
+      display: none;
+   }
+
+   html.legacy #content .content #c_recherche form #champRecherche input{
+      width:100px;
+   }
+
+   html.legacy #content .content #c_recherche {
+      position:relative;
+      top: 33px;
+      left:77px;
+   }
+}
+
+/* ################--------------- Documentation  ---------------#################### */
+
+html.legacy #content .content .documentation {
+   background-color: white;
+   max-width: 700px;
+   margin: 0 auto;
+   padding: 10px 20px;
+}
+
+html.legacy #content .content .documentation h1 {
+   color: #300000;
+}
+
+html.legacy #content .content .documentation > ul:nth-child(2) {
+   list-style-type: disc;
+   margin-top: 40px;
+}
+
+html.legacy #content .content .documentation > ul:nth-child(2) > li {
+   margin-left: 30px;
+}
+
+html.legacy #content .content .documentation h2 {
+   color: #940000;
+   margin-top: 70px;
+   border-bottom: 1px solid #A87A7A;
+}
+
+html.legacy #content .content .documentation li {
+   margin-left: 10px;
+   padding: 5px 0 5px 5px;
+}
+
+html.legacy #content .content .documentation > ul > li > ul > li {
+   border-left: 1px solid grey;
+}
+
+html.legacy #content .content .documentation > ul > li > ul > li > ul > li {
+   list-style-type: disc;
+   margin-left: 35px;
+}
+
+html.legacy #content .content .documentation pre {
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-size: 13px;
+}
+
+html.legacy #content .content .documentation dt {
+   font-weight: bold;
+   margin-top: 20px;
+}
+
+html.legacy #content .content .documentation dd {
+   margin-left: 20px;
+}
+
+html.legacy #content .content td.diff ins {
+   color: green;
+   text-decoration: none;
+}
+
+html.legacy #content .content td.diff del {
+   color:red;
+   text-decoration: none;
+}
+
+html.legacy #content .content .planning_on_central .fc-view-container *,
+html.legacy #content .content .planning_on_central .fc-view-container *::before,
+html.legacy #content .content .planning_on_central .fc-view-container *::after {
+   min-height: 1em; /** Ensure no event message is displayed well */
+}
+
+html.legacy #content .content .loadingindicator {
+   background:  #fff url(../pics/spinner.48.gif) no-repeat center .5em;
+   padding: 60px .5em .5em;
+   text-align: center;
+   max-width: 350px;
+   margin : auto;
+   border: none;
+}
+
+html.legacy #content .content .small {
+   width: 1%;
+}
+
+/** "slide panel" component */
+
+html.legacy #content .content .slidepanel {
+   z-index: 100;
+   position: absolute;
+   width: 30em;
+   max-width: 40%;
+   background: white;
+   top: 0;
+   min-height: 100vh;
+   height: calc(100% - 28px); /* Without footer */
+   border: none;
+   overflow: auto;
+}
+
+html.legacy #content .content .slidepanel a.fa, html.legacy #content .content .slidepanel a.fa:link {
+   font-size: 1.5em;
+   color: #ccc;
+}
+
+html.legacy #content .content .fa.bookmark_record, html.legacy #content .content .fa.bookmark_record:link {
+   font-size: 1.5em;
+   color: #ccc!important;
+}
+html.legacy #content .content .fa.bookmark_default, html.legacy #content .content .fa.bookmark_default:link {
+   font-size: 1.5em;
+   color: #f3b51f!important;
+}
+
+html.legacy #content .content .fa.reset-search:hover,
+html.legacy #content .content .fa.bookmark_record.save:hover {
+   color: #999!important;
+}
+
+html.legacy #content .content .slidepanel a .count .fa {
+   color: white;
+}
+
+html.legacy #content .content .drag {
+   display: inline-block;
+   height: 18px;
+   padding-right: 1em;
+   cursor: move;
+}
+
+html.legacy #content .content .slidepanel .header {
+   border-bottom: 1px solid #ccc;
+   min-height: 2.4em;
+}
+
+html.legacy #content .content .slidepanel .header > h3 {
+   margin: 0;
+   padding-top: .3em;
+   text-align: center;
+}
+
+html.legacy #content .content .slidepanel .header .icon {
+   margin-top: .5em;
+   margin-right: .5em;
+}
+
+html.legacy #content .content .slidepanel .contents {
+   clear: both;
+}
+
+.layout_lefttab html.legacy #content .content .slidepanel .new_form_tabs .ui-tabs-nav,
+html.legacy #content .content .slidepanel .ui-tabs {
+   width: auto;
+}
+
+html.legacy #content .content .slidepanel.onleft {
+   left: 0;
+   border-right: 1px solid #ccc;
+}
+html.legacy #content .content .slidepanel.onleft .close {
+   float: right;
+}
+
+html.legacy #content .content .slidepanel.onleft .icon {
+   float: left;
+}
+
+html.legacy #content .content .slidepanel.onright {
+   right: 0;
+   border-left: 1px solid #ccc;
+}
+html.legacy #content .content .slidepanel.onright .close {
+   float: left;
+}
+
+html.legacy #content .content .slidepanel.onright .icon {
+   float:right;
+}
+
+html.legacy #content .content .slidepanel .tab_cadre_fixehov {
+   box-shadow: none;
+}
+
+html.legacy #content .content .slidepanel .default {
+   display: inline-block;
+   width: 18px;
+   height: 18px;
+}
+
+html.legacy #content .content .slidepanel td * {
+   vertical-align: middle;
+}
+
+html.legacy #content .content .slidepanel .toggle {
+   font-size: 1.5em;
+   position: absolute;
+   right: .2em;
+}
+
+/** end "slide panel" component */
+
+/** Badges */
+html.legacy #content .content a.savedsearchlink {
+   display: block;
+   padding: .4em 0;
+}
+html.legacy #content .content span.count {
+   border-radius: 10px;
+   display: inline-block;
+   text-align: center;
+   padding: .2em .5em;
+   float: right;
+   margin-top: -0.2em;
+   margin-left: .5em;
+   font-weight: bold;
+}
+
+html.legacy #content .content span.count img {
+   vertical-align: -10%;
+}
+/** End badges */
+
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+html.legacy #content .content .primary-bg {
+   background: #3A5693;
+}
+html.legacy #content .content .primary-bg-inverse {
+   background: white;
+}
+
+html.legacy #content .content .primary-fg, .primary-fg:link, .primary-fg:hover {
+   color: white;
+}
+
+html.legacy #content .content .primary-fg-inverse, .primary-fg-inverse:hover {
+   color: #3A5693;
+}
+
+html.legacy #content .content .tab_cadre_fixe .fa {
+   padding: 0 .3em;
+}
+
+html.legacy #content .content button.unstyled {
+   background: none;
+   border: none;
+   margin: none;
+}
+
+html.legacy #content .content .warning {
+   padding: .5em;
+   cursor:pointer;
+   font: bold 12px Arial, Helvetica;
+   color: #8f5a0a;
+   background-color: #FEC95C;
+   border: 0;
+   text-align: center;
+}
+
+html.legacy #content .content .warning li {
+   margin-bottom: .5em;
+}
+html.legacy #content .content .warning li:last-child {
+   margin-bottom: 0;
+}
+
+html.legacy #content .content .warning .fa {
+   color: white;
+   float:left;
+   margin-right: .2em;
+}
+
+html.legacy #content .content tr.linked-template td:not(.top) {
+   background-color: #ffb4b4;
+}
+
+html.legacy #content .content .notifs_setup {
+   display: table;
+   margin: 0 auto;
+   border-spacing: 1em 0;
+}
+
+html.legacy #content .content .notifs_setup > form,
+html.legacy #content .content .notifs_setup > table {
+   display: table-cell;
+}
+
+html.legacy #content .content .massiveactions {
+   padding: .5em;
+   width: 90%;
+}
+
+html.legacy #content .content .massiveactions input.submit {
+   margin-top: .5em;
+}
+
+html.legacy #content .content .missing {
+   color: orange;
+}
+
+html.legacy #content .content .ok {
+   color: green;
+}
+
+html.legacy #content .content #switchview {
+   font-size: 2em;
+   text-align: right;
+   float: right;
+}
+
+html.legacy #content .content #switchview i {
+   margin-left: .5em;
+}
+html.legacy #content .content #switchview i.selected {
+   color: green;
+}
+
+html.legacy #content .content #viewlist {
+   display: none;
+}
+
+html.legacy #content .content #viewgraph {
+   width: calc(100% - 80px);
+   overflow-x: auto;
+}
+
+html.legacy #content .content #viewgraph table {
+   width: 100%;
+   table-layout: fixed
+}
+
+html.legacy #content .content #viewgraph .tipcontent {
+   display: none;
+}
+
+
+html.legacy #content .content #viewgraph .rooms a.fa,html.legacy #content .content  #viewgraph .rooms a.fa:link, html.legacy #content .content #viewgraph .rooms a .fa {
+   color: white;
+   position: absolute;
+   right: 0;
+   top: 0;
+   padding: .5em;
+}
+
+html.legacy #content .content #viewgraph .rooms a.itemlink .fa {
+   right: 1.2em;
+}
+
+/* tables */
+html.legacy #content .content div#viewgraph table {
+   background-color: #e0e0e0;
+   border-collapse: collapse;
+}
+
+/* table cells */
+html.legacy #content .content div#viewgraph th,
+html.legacy #content .content div#viewgraph td {
+   height: 2em;
+   border-bottom: 1px solid white;
+   text-align: center;
+   padding: 0;
+}
+
+html.legacy #content .content div#viewgraph table.rooms th,
+html.legacy #content .content div#viewgraph table.rooms td {
+   height: 5em;
+}
+
+html.legacy #content .content div#viewgraph th {
+   border: 1px solid white;
+}
+html.legacy #content .content div#viewgraph td[data-hpos="1"] {
+   border-left: 1px solid white;
+}
+
+html.legacy #content .content div#viewgraph table.rooms td {
+   border-left: 1px solid white;
+}
+
+html.legacy #content .content div#viewgraph table th {
+   color: white;
+   background-color: SteelBlue;
+}
+
+html.legacy #content .content div#viewgraph table td div {
+   border: none!important;
+   position: relative;
+   z-index: 10;
+   color: white;
+   height: 100%;
+   display: flex;
+   padding: 0 1%;
+   flex-direction: column;
+   justify-content: center;
+   max-height: 5em; /** Fix height when dragging */
+}
+
+html.legacy #content .content div#viewgraph table td div.rack-add {
+   color: #e0e0e0;
+}
+html.legacy #content .content div#viewgraph table td div.rack-add:hover {
+   background-color: rgba(0, 128, 0, .5);
+   cursor: pointer;
+}
+
+html.legacy #content .content div#viewgraph .mini_toggle {
+   font-size: 11px;
+   opacity: .5;
+   cursor: pointer;
+   position: relative;
+   padding-left: 20px;
+   margin: 15px 5px;
+   float: left;
+}
+
+html.legacy #content .content div#viewgraph .mini_toggle:before {
+   content: "\f204";
+   left: 0;
+   top: 0;
+   font-size: 15px;
+   font-family: FontAwesome;
+   position: absolute;
+}
+html.legacy #content .content div#viewgraph .mini_toggle.active:before {
+   content: "\f205";
+}
+
+html.legacy #content .content div#viewgraph .mini_toggle:hover {
+   opacity: 1
+}
+
+html.legacy #content .content .grid-stack .grid-stack-item {
+   z-index: 3;
+   opacity: 1;
+   filter: Alpha(Opacity=100)
+}
+
+html.legacy #content .content .clear_picture .grid-stack .grid-stack-item .grid-stack-item-content,
+html.legacy #content .content .clear_picture .grid-stack .grid-stack-item:after {
+   background: none !important;
+}
+
+html.legacy #content .content .grid-stack-item {
+   position: relative; /** should be erased by lib, defined for case without lib **/
+}
+
+html.legacy #content .content .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+   font-size: 11px;
+   font-weight: bold;
+   text-align: center;
+   overflow: hidden;
+   cursor: move; /* fallback */
+   cursor: -webkit-grab;
+   cursor:    -moz-grab;
+   cursor:         grab;
+}
+
+html.legacy #content .content .grid-stack-item:not(.lock-bottom) .grid-stack-item-content:active {
+   cursor: move; /* fallback */
+   cursor: -webkit-grabbing;
+   cursor:    -moz-grabbing;
+   cursor:         grabbing;
+}
+
+html.legacy #content .content .grid-stack-item-content a {
+   font-size: 1em;
+   font-weight: bold;
+}
+
+html.legacy #content .content .clear_text:not(.clear_picture) .grid-stack .grid-stack-item .itemrack_name {
+   display: none;
+}
+
+html.legacy #content .content #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .itemrack_name {
+   background-color: rgba(255, 255, 255, .65);
+   color: #000 !important;
+}
+html.legacy #content .content #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .rel-link {
+   opacity: .6;
+}
+
+html.legacy #content .content .grid-stack-item-content .rel-link {
+   position: absolute;
+   right: 3px;
+   bottom: 3px;
+   opacity: 0;
+}
+
+html.legacy #content .content .grid-stack-item-content .rel-link a i.fa {
+   color: #000;
+}
+
+html.legacy #content .content .grid-stack-item-content:hover .rel-link {
+   opacity: .8;
+}
+
+html.legacy #content .content .grid-stack .grid-stack-item .grid-stack-item-content,
+html.legacy #content .content .grid-stack .grid-stack-item .placeholder-content {
+   left: 0;
+   right: 0;
+}
+
+html.legacy #content .content .grid-stack .grid-stack-placeholder > .placeholder-content {
+   border: 1px dashed #bcbf33;
+   background-color: #e5f5698a;
+}
+
+html.legacy #content .content #viewgraph table.outbound {
+   width: 400px;
+   margin-bottom: 20px;
+}
+
+html.legacy #content .content div#viewgraph table.outbound td div {
+   padding: 0;
+}
+
+div#viewgraph table.outbound td div .grid-stack-item-content {
+   box-shadow: none;
+}
+
+html.legacy #content .content ul.indexes {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   text-align: center;
+   font-size: .7em;
+   color: silver;
+   float: left;
+}
+
+html.legacy #content .content .virtual_pdu_space {
+   height: 20px;
+   clear: both;
+}
+
+html.legacy #content .content .side_pdus_float {
+   float: left;
+   min-height: 100%;
+   width: 20px;
+}
+html.legacy #content .content .side_pdus.side_pdus_nofloat {
+   clear: left;
+   margin: 0 2px 2px;
+}
+
+html.legacy #content .content .side_pdus_nofloat .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+   cursor: initial;
+}
+
+html.legacy #content .content .side_pdus {
+   background-color: #575757;
+   margin: 0 1px;
+}
+
+html.legacy #content .content .side_pdus .grid-stack-item:not(.lock-bottom) {
+   background-color: #FF9D1F;
+   overflow: hidden;
+}
+
+html.legacy #content .content .side_pdus_float .grid-stack-item .grid-stack-item-content {
+   border: 0 solid #0404046b;
+   border-width: 4px 1px;
+}
+
+html.legacy #content .content .side_pdus_float .grid-stack-item .grid-stack-item-content .rotated_text {
+   transform: rotate(-90deg);
+   transform-origin: bottom left;
+   position: absolute;
+   bottom: 25px;
+   left: 15px;
+   white-space: nowrap;
+}
+
+html.legacy #content .content .side_pdus_float .grid-stack-item .item_rack_icon {
+   position: absolute;
+   bottom: 1px;
+   left: 0;
+}
+
+html.legacy #content .content .side_pdus_float .grid-stack-item .item_rack_icon {
+   position: absolute;
+   bottom: 1px;
+   left: 0;
+}
+
+html.legacy #content .content .side_pdus_float .grid-stack-item-content .rel-link {
+   left: 3px;
+   top: 3px;
+   bottom: unset;
+   right: unset;
+}
+
+html.legacy #content .content .side_pdus_float .grid-stack-item:after {
+   content: '';
+   position: absolute;
+   height: 20px;
+   bottom: 4px;
+   left: 20px;
+   z-index: -1;
+   transform: rotate(-90deg);
+   transform-origin: bottom left;
+}
+
+html.legacy #content .content .racks_add .cell_add {
+   box-sizing: border-box;
+   display: block;
+   opacity: 0;
+   z-index: 2;
+   position: relative;
+}
+
+html.legacy #content .content .racks_add .cell_add:after {
+   content: "\f067";
+   left: 45%;
+   font-size: 1em;
+   color: grey;
+   top: 5px;
+   font-family: FontAwesome;
+   position: absolute;
+}
+
+html.legacy #content .content .racks_add .cell_add:hover {
+   opacity: 1;
+   cursor: pointer;
+}
+
+/*** Rack Rooms ***/
+
+html.legacy #content .content .grid-room {
+   margin: 10px 0 10px 10px;
+   float: left;
+   padding: 15px 0 0 15px;
+   overflow-y: hidden;
+}
+
+html.legacy #content .content .grid-room .blueprint {
+   margin-left: 15px;
+   width: calc(100% - 16px);
+}
+
+html.legacy #content .content .clear_blueprint .grid-room .blueprint {
+   background: none !important;
+}
+
+html.legacy #content .content .grid-room .grid-stack {
+   border: 1px solid #EEEEEE;
+   float: left;
+   border-width: 0 1px 1px 0;
+   background-size: 40px 39px;
+   background-image: linear-gradient(to right, #EEEEEE 1px, transparent 1px),
+                     linear-gradient(to bottom, #EEEEEE 1px, transparent 1px);
+}
+
+html.legacy #content .content .clear_grid .grid-room .grid-stack {
+   background-image: none;
+}
+
+html.legacy #content .content .grid-room .grid-stack-item {
+   border: 1px solid rgb(68, 68, 68);
+   box-sizing: border-box;
+}
+
+html.legacy #content .content .grid-room .grid-stack-item:after {
+   position: absolute;
+   content: " ";
+   background-color: rgba(0, 0, 0, .3)
+}
+html.legacy #content .content .grid-room .grid-stack-item.room_orientation_1:after { /* NORTH */
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 4px;
+}
+html.legacy #content .content .grid-room .grid-stack-item.room_orientation_2:after { /* EAST */
+   top: 0;
+   right: 0;
+   width: 4px;
+   height: 100%;
+}
+html.legacy #content .content .grid-room .grid-stack-item.room_orientation_3:after { /* SOUTH */
+   bottom: 0;
+   left: 0;
+   width: 100%;
+   height: 4px;
+}
+html.legacy #content .content .grid-room .grid-stack-item.room_orientation_4:after { /* WEST */
+   top: 0;
+   left: 0;
+   width: 4px;
+   height: 100%;
+}
+
+html.legacy #content .content .grid-room .grid-stack-item .grid-stack-item-content {
+   padding-top: 4px;
+}
+html.legacy #content .content .grid-room .grid-stack-item.lock-bottom {
+   display: none;
+}
+
+html.legacy #content .content .grid-room ul.indexes.indexes-x {
+   width: 100%;
+   float: none;
+   height: 15px;
+   padding-left: 15px;
+   box-sizing: border-box;
+}
+
+html.legacy #content .content .grid-room ul.indexes.indexes-x li {
+   float: left;
+   width: 40px;
+}
+html.legacy #content .content .grid-room ul.indexes.indexes-y {
+   width: 15px;
+}
+html.legacy #content .content .grid-room ul.indexes.indexes-y li {
+   width: 10px;
+   height: 39px;
+   line-height: 40px;
+}
+
+html.legacy #content .content .clear_grid .grid-room ul.indexes {
+   visibility: hidden;
+}
+
+html.legacy #content .content .grid-room .racks_add {
+   margin-left: 15px;
+}
+
+html.legacy #content .content .grid-room .racks_add .cell_add {
+   height: 39px;
+   width: 40px;
+   float: left;
+}
+
+html.legacy #content .content .grid-room .racks_add .cell_add:after {
+   left: 15px;
+   top: 14px;
+}
+
+
+
+/*** Racks ***/
+html.legacy #content .content .racks_row {
+   width: 100%;
+}
+
+html.legacy #content .content .racks_col {
+   margin-left: 2px;
+   float: left;
+   position: relative;
+}
+
+html.legacy #content .content .racks_col:not(:last-child) {
+   margin-right: 40px;
+}
+
+html.legacy #content .content .rack_side {
+   float: left;
+   text-align: center;
+   background: #4C4C4C;
+   padding-top: 18px;
+}
+
+html.legacy #content .content .racks_col h2 {
+   font-size: 1em;
+   color: #555;
+   background-color: #e6e6e6;
+   height: 18px;
+   margin: 0;
+   padding: 5px 0;
+}
+
+@media screen and (max-width: 900px) {
+   html.legacy #content .content .racks_col:not(:last-child) {
+      margin-right: 0;
+      margin-bottom: 15px;
+   }
+
+   html.legacy #content .content #viewgraph {
+      min-width: 100%;
+   }
+}
+
+html.legacy #content .content .racks_add {
+   position: absolute;
+   display: block;
+   width: 100%;
+   z-index: 2;
+}
+
+html.legacy #content .content .grid-rack .racks_add .cell_add {
+   height: 20px;
+   margin-bottom: 1px;
+   width: 100%;
+}
+
+html.legacy #content .content .grid-rack {
+   width: 217px;
+   background: repeating-linear-gradient( #FFF, #FFF 21px, #F0F0F0 21px, #F0F0F0 42px);
+   z-index: 1;
+   border: 1px solid #D4D4D4;
+   float: left;
+}
+
+html.legacy #content .content .side_pdus_nofloat .grid-stack-item .grid-stack-item-content,
+html.legacy #content .content .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+   color: #2c3e50;
+   border: 0 solid #0404046b;
+   border-width: 1px 4px;
+   box-shadow: 1px 1px 5px 0px #656565;
+}
+
+html.legacy #content .content #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
+   border-color: #04040440;
+   border-width: 0 4px;
+}
+
+html.legacy #content .content .grid-rack .grid-stack-item.reserved .grid-stack-item-content {
+   border: 1px solid #FF7C24;
+   box-shadow: none;
+}
+
+html.legacy #content .content .grid-rack .grid-stack-item.reserved .grid-stack-item-content a.itemrack_name {
+   color: #7F4723 !important;
+}
+
+html.legacy #content .content .grid-rack .grid-stack-item.item_rear {
+   background: repeating-linear-gradient(
+     45deg,
+     rgba(0, 0, 0, .15),
+     rgba(0, 0, 0, .15) 10px,
+     rgba(59, 59, 59, .15) 10px,
+     rgba(59, 59, 59, .15) 20px
+   );
+}
+
+html.legacy #content .content .grid-rack .grid-stack-item.reserved {
+   background: repeating-linear-gradient(
+     115deg,
+     #FF8A3C,
+     #FF8A3C 30px,
+     #FFD7BC 30px,
+     #FFD7BC 60px
+   );
+}
+
+html.legacy #content .content .grid-stack-item .item_rack_icon {
+   float: left;
+   opacity: .6;
+   padding: 3px 0 0 2px;
+   font-size: 14px;
+}
+
+html.legacy #content .content #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .item_rack_icon {
+   display: none;
+}
+
+html.legacy #content .content .rack_tipcontent span {
+   display: block;
+}
+
+html.legacy #content .content .rack_tipcontent label {
+   font-weight: bold;
+   margin-right: 3px;
+}
+
+html.legacy #content .content .grid-rack .grid-stack-item.lock-bottom {
+   background: #4C4C4C;
+   width: 101% !important;
+   margin: 0 -1px;
+}
+
+html.legacy #content .content .racks_row ul.indexes li {
+   height: 20px;
+   width: 20px;
+   margin-bottom: 1px;
+   box-sizing: border-box;
+   line-height: 20px;
+}
+
+html.legacy #content .content .rack_side_block {
+   width: 200px;
+   border: 1px solid #E6E6E6;
+   background-color: #F3F3F3;
+   text-align: left;
+   font-size: 11px;
+   margin-bottom: 20px;
+}
+html.legacy #content .content .rack_side_block_content {
+   padding: 10px 5px;
+}
+
+html.legacy #content .content .rack_side_block h2 {
+   color: #555;
+   margin: 0;
+   padding: 5px 10px;
+   font-size: 14px;
+   font-weight: bold;
+   background-color: #e6e6e6;
+}
+
+html.legacy #content .content .rack_side_block h3 {
+   color: #6F6F6F;
+   margin: 0;
+   font-size: 11px;
+   font-weight: bold;
+}
+
+html.legacy #content .content .rack_side_block .ui-progressbar {
+   height: 13px;
+}
+html.legacy #content .content .rack_side_block .doaction_progress_text {
+   font-weight: normal;
+   padding: 0;
+}
+
+html.legacy #content .content .rack_side_block_content i {
+   margin: 0 3px;
+}
+
+html.legacy #content .content .rack_side_block .sub_action {
+   display: block;
+   color: #555;
+   cursor: pointer;
+   padding: 5px;
+   text-align: center;
+}
+html.legacy #content .content .rack_side_block .sub_action:hover {
+   background-color: #D1D1D1;
+}
+
+html.legacy #content .content .rack_side_block .sub_action i {
+   margin-right: 3px;
+   color: #555;
+}
+
+html.legacy #content .content div#viewgraph .rack_side_block .pdu_list {
+   background: none;
+}
+
+html.legacy #content .content div#viewgraph .rack_side_block .pdu_list td {
+   text-align: left;
+   border: 1px solid rgba(0, 0, 0, .2);
+   padding: 0 3px;
+}
+
+html.legacy #content .content .pdu_list .rack_position {
+   width: 20px;
+}
+
+html.legacy #content .content .pdu_list i.fa {
+   color: rgba(0, 0, 0, .6);
+}
+
+html.legacy #content .content ul#menu ul, html.legacy #content .content #c_menu .pure-menu-list ul {
+   -webkit-column-count: 2;
+   -webkit-column-gap: 10px;
+   -moz-column-count: 2;
+   -moz-column-gap: 10px;
+   column-count:2;
+   column-gap:10px;
+}
+
+html.legacy #content .content ul#menu ul li, html.legacy #content .content #c_menu .pure-menu-list ul li {
+   break-inside: avoid;
+}
+
+html.legacy #content .content .fail_info {
+   padding: 6px 8px;
+   box-shadow: 0 0 15px rgba(0,0,0,0.2);
+   border-radius: 5px;
+   font-weight: bold;
+   background: red;
+   background-color: rgba(255, 0, 0, .8);
+   color: white;
+}
+
+html.legacy #content .content .fail_info #reload_data {
+    display: block;
+    text-align: center;
+    cursor: pointer;
+}
+
+html.legacy #content .content input[name=as_map] {
+   visibility: hidden;
+}
+
+html.legacy #content .content input[name=as_map] + label span.fa {
+   margin: .5em;
+}
+
+html.legacy #content .content input[name=as_map]:checked + label {
+   color:blue;
+}
+
+div.dropdowns_list,
+div.simpleform,
+div.add {
+   margin: 0 auto;
+}
+
+div.simpleform,
+div.add {
+   border: 1px solid #dadada;
+   background: #fff url("images/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x
+}
+
+div.dropdowns_list {
+   text-align: center;
+}
+
+div.add {
+   padding: 1.5em;
+}
+
+div.add header {
+   background-color: #F1F1F1;
+   font-size: 1.1em;
+   text-align: center;
+   padding: .6em;
+   font-weight: bold;
+}
+
+html.legacy #content .content .leaflet-control-geocoder-form {
+   margin: .2em!important;
+}
+
+html.legacy #content .content .leaflet-control-geocoder-form input[type=text] {
+   width: 10em;
+}
+html.legacy #content .content .leaflet-control-geocoder-form input[type=submit] {
+   border: 1px transparent solid;
+}
+
+.dropdowns_list dl {
+   margin: .5em 1em;
+   border: 1px solid #dadada;
+   background: #fff;
+}
+
+.dropdowns_list dt {
+   font-weight: bold;
+   padding: .5em;
+   background: #F1F1F1;
+}
+
+.dropdowns_list dd {
+   text-align: left;
+}
+
+.dropdowns_list dd a {
+   display: block;
+   padding: .2em .5em;
+}
+.dropdowns_list dd a:hover {
+   background: #8BAADA;
+}
+
+.dropdowns_list .fa {
+   color: #ccc;
+}
+
+.dropdowns_list .fa.wentity {
+   color: #3A5693;
+}
+
+/** Responsive for documentation */
+
+@media screen and (max-width: 900px) {
+   html.legacy #content .content .documentation {
+      margin-left: 0 !important;
+   }
+}
+
+
+@media screen and (min-width: 900px) {
+   html.legacy #content .content .documentation #summary {
+      position: fixed;
+      top: 40px;
+      left: 15px;
+      margin-top: 0;
+   }
+   html.legacy #content .content .documentation #summary + ul {
+      width: 200px;
+      position: fixed;
+      top: 70px;
+      left: 10px;
+      bottom: 0;
+      overflow: auto;
+   }
+}
+
+@media screen and (max-width: 1100px) {
+   html.legacy #content .content .documentation {
+      margin-left: 200px;
+   }
+}

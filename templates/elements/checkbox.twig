@@ -28,15 +28,18 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-{% extends "glpi_page.twig" %}
+{% extends "elements/input.twig" %}
 
-{% block title %}{{ page_title }}{% endblock %}
-{% block content %}
-<div class="container content">
-   {% if contents is defined %}
-      {{ contents|raw }}
-   {% else %}
-      {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
+{% block component %}
+   {% set label = element.label %}
+   {% if label is not iterable %}
+      {% set label = {'label': label} %}
    {% endif %}
-</div>
+   {% set element = element|merge({
+      'type':  'checkbox',
+      'class': 'checkbox',
+      'label': label|merge({'columns': 8}),
+      'columns': element.columns|default(4)
+   }) %}
+   {{ parent() }}
 {% endblock %}

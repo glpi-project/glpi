@@ -66,31 +66,60 @@ class GlpiDebug extends \Twig_Extension
 
       $panel .= "<div class='debug ".($ajax?"debug_ajax":"")."'>";
       if (!$ajax) {
-         $panel .= "<span class='fa-stack fa-lg' id='see_debug'>
-                  <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
-                  <a href='#' class='fa fa-bug fa-stack-1x primary-fg' title='" . __s('Display GLPI debug informations')  . "'>
+         $panel .= "<span id='see_debug'>
+                  <a href='#' class='fa fa-bug btn btn-warning' data-toggle='debugtabs' title='" . __s('Display GLPI debug informations')  . "'>
                      <span class='sr-only'>See GLPI DEBUG</span>
                   </a>
          </span>";
       }
 
-      $panel .= "<div id='debugtabs'><ul>";
+      /*
+<div class="box box-success box-solid">
+            <div class="box-header with-border">
+              <h3 class="box-title">Removable</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              The body of the box
+            </div>
+            <!-- /.box-body -->
+          </div>
+       */
+      $panel .= "<div id='debugtabs' class='hidden box box-warning box-solid'>";
+      $panel .= "      <div class='box-header with-border'>
+              <h3 class='box-title'>Debug panel</h3>
+
+              <div class='box-tools pull-right'>
+                <button type='button' class='btn btn-box-tool' id='hide_debug'><i class='fa fa-times'></i></button>
+              </div>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class='box-body'>";
+
+      $panel .= "<ul class='nav nav-pills nav-justified' role='tablist'>";
       if ($CFG_GLPI["debug_sql"]) {
-         $panel .= "<li><a href='#debugsql'>SQL REQUEST</a></li>";
+         $panel .= "<li class='active'><a href='#debugsql' data-toggle='pill'>SQL REQUEST</a></li>";
       }
       if ($CFG_GLPI["debug_vars"]) {
-         $panel .= "<li><a href='#debugautoload'>AUTOLOAD</a></li>";
-         $panel .= "<li><a href='#debugpost'>POST VARIABLE</a></li>";
-         $panel .= "<li><a href='#debugget'>GET VARIABLE</a></li>";
+         $panel .= "<li><a href='#debugautoload' data-toggle='pill'>AUTOLOAD</a></li>";
+         $panel .= "<li><a href='#debugpost' data-toggle='pill'>POST VARIABLE</a></li>";
+         $panel .= "<li><a href='#debugget' data-toggle='pill'>GET VARIABLE</a></li>";
          if ($with_session) {
-            $panel .= "<li><a href='#debugsession'>SESSION VARIABLE</a></li>";
+            $panel .= "<li><a href='#debugsession' data-toggle='pill'>SESSION VARIABLE</a></li>";
          }
-         $panel .= "<li><a href='#debugserver'>SERVER VARIABLE</a></li>";
+         $panel .= "<li><a href='#debugserver' data-toggle='pill'>SERVER VARIABLE</a></li>";
       }
       $panel .= "</ul>";
 
+      $panel .= "<div class='tab-content'>";
       if ($CFG_GLPI["debug_sql"]) {
-         $panel .= "<div id='debugsql'>";
+         $panel .= "<div id='debugsql' role='tabpanel' class='tab-pane active'>";
          $panel .= "<div class='b'>".$SQL_TOTAL_REQUEST." Queries ";
          $panel .= "took  ".array_sum($DEBUG_SQL['times'])."s</div>";
 
@@ -114,8 +143,8 @@ class GlpiDebug extends \Twig_Extension
          $panel .= "</div>";
       }
       if ($CFG_GLPI["debug_vars"]) {
-         $panel .= "<div id='debugautoload'>".implode(', ', $DEBUG_AUTOLOAD)."</div>";
-         $panel .= "<div id='debugpost'>";
+         $panel .= "<div id='debugautoload' role='tabpanel' class='tab-pane'>".implode(', ', $DEBUG_AUTOLOAD)."</div>";
+         $panel .= "<div id='debugpost' role='tabpanel' class='tab-pane'>";
 
          ob_start();
          \Html::printCleanArray($_POST, 0, true);
@@ -123,7 +152,7 @@ class GlpiDebug extends \Twig_Extension
          ob_end_clean();
 
          $panel .= "</div>";
-         $panel .= "<div id='debugget'>";
+         $panel .= "<div id='debugget' role='tabpanel' class='tab-pane'>";
 
          ob_start();
          \Html::printCleanArray($_GET, 0, true);
@@ -132,14 +161,14 @@ class GlpiDebug extends \Twig_Extension
 
          $panel .= "</div>";
          if ($with_session) {
-            $panel .= "<div id='debugsession'>";
+            $panel .= "<div id='debugsession' role='tabpanel' class='tab-pane'>";
             ob_start();
             \Html::printCleanArray($_SESSION, 0, true);
             $panel .= ob_get_contents();
             ob_end_clean();
             $panel .= "</div>";
          }
-         $panel .= "<div id='debugserver'>";
+         $panel .= "<div id='debugserver' role='tabpanel' class='tab-pane'>";
          ob_start();
          \Html::printCleanArray($_SERVER, 0, true);
          $panel .= ob_get_contents();
@@ -148,6 +177,8 @@ class GlpiDebug extends \Twig_Extension
          $panel .= "</div>";
       }
       $panel .= "</div></div>";
+      $panel .= "</div>";
+      $panel .= "</div>";
       return $panel;
    }
 

@@ -30,9 +30,21 @@
  #}
 {% extends "glpi.twig" %}
 
+{% set glpi_skin = false %}
 {% block title %}{{ __('Authentication') }}{% endblock %}
 {% block html_class %}loginpage{% endblock %}
-{% block content %}
+
+{% block head %}
+   {% set css_paths = css_paths|default([])|merge([
+      'public/css/login.css'
+   ]) %}
+   {% for css_path in css_paths %}
+      <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ css_path }}" type="text/css" media="screen" />
+   {% endfor %}
+   {{ parent() }}
+{% endblock %}
+
+{% block content_wrapper %}
    <div id='firstboxlogin'>
       <div id='logo_login'></div>
       <div id='text-login'>
@@ -41,7 +53,8 @@
 
       <div id='boxlogin'>
          {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
-
+      </div>
+   </div>
    {#
    //TODO: delegate redirects to routing
    // redirect to ticket

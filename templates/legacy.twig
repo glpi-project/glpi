@@ -29,12 +29,28 @@
  * ---------------------------------------------------------------------
  #}
 {% extends "glpi_page.twig" %}
+{% block html_class %} legacy{% endblock %}
 
-{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <div class="container content">
    <div style="background-color:white;">
       {{ contents|raw }}
    </div>
 </div>
+{% endblock %}
+
+{% block head %}
+   {% set css_paths = css_paths|default([])|merge([
+      '../lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css',
+      'public/css/glpi-legacy.css',
+      'public/css/glpi-legacy-jquery.css'
+   ]) %}
+   {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+   {% set js_paths = js_paths|default([])|merge([
+      '../lib/jquery/js/jquery-ui-1.10.4.custom.js'
+   ]) %}
+   {{ parent() }}
 {% endblock %}

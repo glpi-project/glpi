@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  #}
 <!DOCTYPE html>
-<html lang="{{ glpi_lang }}" class="hold-transition skin-{{ glpi_skin }} {% block html_class  %}{% endblock %}">
+<html lang="{{ glpi_lang }}" class="hold-transition{% if glpi_skin != false %} skin-{{ glpi_skin }}{% endif %} {% block html_class  %}{% endblock %}">
 {% set js_libs = glpi_js_libs|default('public/bower_components') %}
     <head>
          <meta charset="utf-8"/>
@@ -58,8 +58,18 @@
        <div class="wrapper">
         {% block header %}{% endblock %}
         {% block menu %}{% endblock %}
-        <div id="content" class="content-wrapper">{% block content %}{% endblock %}</div>
-        <div id="footer" class="main-footer">
+        {% block content_wrapper %}
+        <section id="content" class="content-wrapper">
+            {% block content_header %}
+            <header class="content-header">
+               <h1>{{ page_title }}</h1>
+               {% block breadcrumb %}{% endblock %}
+            </header>
+            {% endblock %}
+            {% block content %}{% endblock %}
+        </section>
+        {% endblock %}
+        <footer id="footer" class="main-footer">
             {% block footer %}{% endblock %}
 
             <a href="http://glpi-project.org/"
@@ -68,7 +78,7 @@
             >
                GLPI {{ constant('GLPI_VERSION') }} Copyright (C) 2015-{{ "now"|date("Y") }} Teclib' and contributors
             </a>
-        </div>
+        </footer>
         </div>
    {% block javascripts %}
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/bootstrap/dist/js/bootstrap.min.js"></script>

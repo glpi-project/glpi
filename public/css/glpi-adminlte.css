@@ -1,0 +1,31 @@
+/** Debug stuff */
+#see_debug, #backtotop {
+   position: fixed;
+   bottom: .1em;
+   right: .1em;
+   cursor: pointer;
+   color: white;
+   z-index: 99; /* Behind debug panel */
+}
+
+#debugtabs {
+   background: #fff;
+   position: fixed !important;
+   left: 0 !important;
+   bottom: 0 !important;
+   top: inherit !important;
+   height: 300px !important;
+   z-index: 1000 !important;
+   width: 100%;
+   margin: 0;
+   overflow: auto;
+}
+
+#debugtabs .box-body {
+   padding-top: 0;
+}
+
+#debugtabs table {
+   width: 100%;
+}
+/** /debug stuff */

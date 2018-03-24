@@ -44,7 +44,6 @@
 {% endmacro %}
 
 {% block element %}
-<div class="input-group">
     <select
         name="{{ element.name }}"
         id="{{ element.id|default(element.name) }}"
@@ -81,5 +80,4 @@
    {% endif %}
    {% block extra_addons %}{% endblock %}
    </span>
-</div>
 {% endblock %}
