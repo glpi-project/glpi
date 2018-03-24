@@ -1471,15 +1471,18 @@ class Auth extends CommonGLPI {
       Html::closeForm();
    }
 
-
    /**
-     * Display the authentication source dropdown for login form
-     */
-   static function dropdownLogin() {
+    * Get authentication methods available
+    *
+    * @return array
+    */
+   static function getLoginAuthMethods() {
       global $DB;
 
-      $elements = ['local' => __("GLPI internal database")];
-      $default = 'local';
+      $elements = [
+         '_default'  => 'local',
+         'local'     => __("GLPI internal database")
+      ];
 
       // Get LDAP
       if (Toolbox::canUseLdap()) {
@@ -1493,7 +1496,7 @@ class Auth extends CommonGLPI {
          while ($data = $iterator->next()) {
             $elements['ldap-'.$data['id']] = $data['name'];
             if ($data['is_default'] == 1) {
-               $default = 'ldap-'.$data['id'];
+               $elements['_default'] = 'ldap-'.$data['id'];
             }
          }
       }
@@ -1511,7 +1514,16 @@ class Auth extends CommonGLPI {
             $elements['mail-'.$data['id']] = $data['name'];
          }
       }
+      return $elements;
+   }
 
+   /**
+     * Display the authentication source dropdown for login form
+     */
+   static function dropdownLogin() {
+      $elements = self::getLoginAuthMethods();
+      $default = $elements['_default'];
+      unset($elements['_default']);
       // show dropdown of login src only when multiple src
       if (count($elements) > 1) {
          echo '<p class="login_input" id="login_input_src">';
