@@ -62,4 +62,13 @@ class Auth extends DbTestCase {
    public function testIsValidLogin($login, $isvalid) {
       $this->variable(\Auth::isValidLogin($login))->isIdenticalTo($isvalid);
    }
+
+   public function testGetLoginAuthMethods() {
+      $methods = \Auth::getLoginAuthMethods();
+      $expected = [
+         '_default'  => 'local',
+         'local'     => 'GLPI internal database'
+      ];
+      $this->array($methods)->isIdenticalTo($expected);
+   }
 }
