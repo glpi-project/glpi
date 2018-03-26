@@ -760,6 +760,9 @@ class SavedSearch extends CommonDBTM {
 
       $colspan = 2;
       echo "<table class='tab_cadre_fixehov'>";
+      echo "<thead><tr><th colspan='$colspan' class='search_header'>" .
+                  "<input type='text' id='filter_savedsearch' placeholder='".__('Filter list')."' style='width: 95%; padding: 5px'></i>" .
+           "</th></tr></thead>";
       echo "<thead><tr><th colspan='$colspan' class='private_header'>" .
                   sprintf(
                      _n('Private %1$s', 'Private %1$s', count($searches['private'])),
@@ -839,6 +842,31 @@ class SavedSearch extends CommonDBTM {
                   _this.removeClass('fa-chevron-circle-up')
                      .addClass('fa-chevron-circle-down');
                }
+            });
+            $('#filter_savedsearch').on('keyup', function() {
+               var _this = $(this);
+               var searchtext = _this.val() + '';
+               var searchparts = searchtext.toLowerCase().split(/\s+/);
+               var _rows = _this.parents('table').find('tbody tr');
+               _rows.each(function() {
+                  var _row = $(this);
+                  var rowtext = _row.text().toLowerCase();
+ 
+                  var show = true;
+ 
+                  for (var i=0; i < searchparts.length; i++) {
+                     if (rowtext.indexOf(searchparts[i]) == -1) {
+                        show = false;
+                        break;
+                     }
+                  }
+ 
+                  if (show) {
+                     _row.show();
+                  } else {
+                     _row.hide();
+                  }
+               });
             });
 
          });";
