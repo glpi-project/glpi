@@ -2398,6 +2398,32 @@ class Config extends CommonDBTM {
 
 
    /**
+    * Get data directories for checks
+    *
+    * @return array
+    */
+   private static function getDataDirectories() {
+      $dir_to_check = [
+         GLPI_CONFIG_DIR      => __('Checking write permissions for setting files'),
+         GLPI_DOC_DIR         => __('Checking write permissions for document files'),
+         GLPI_DUMP_DIR        => __('Checking write permissions for dump files'),
+         GLPI_SESSION_DIR     => __('Checking write permissions for session files'),
+         GLPI_CRON_DIR        => __('Checking write permissions for automatic actions files'),
+         GLPI_GRAPH_DIR       => __('Checking write permissions for graphic files'),
+         GLPI_LOCK_DIR        => __('Checking write permissions for lock files'),
+         GLPI_PLUGIN_DOC_DIR  => __('Checking write permissions for plugins document files'),
+         GLPI_TMP_DIR         => __('Checking write permissions for temporary files'),
+         GLPI_CACHE_DIR       => __('Checking write permissions for cache files'),
+         GLPI_RSS_DIR         => __('Checking write permissions for rss files'),
+         GLPI_UPLOAD_DIR      => __('Checking write permissions for upload files'),
+         GLPI_PICTURE_DIR     => __('Checking write permissions for pictures files')
+      ];
+
+      return $dir_to_check;
+   }
+
+
+   /**
     * Check Write Access to needed directories
     *
     * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
@@ -2406,32 +2432,10 @@ class Config extends CommonDBTM {
    **/
    static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
-      $dir_to_check = [GLPI_CONFIG_DIR
-                                    => __('Checking write permissions for setting files'),
-                            GLPI_DOC_DIR
-                                    => __('Checking write permissions for document files'),
-                            GLPI_DUMP_DIR
-                                    => __('Checking write permissions for dump files'),
-                            GLPI_SESSION_DIR
-                                    => __('Checking write permissions for session files'),
-                            GLPI_CRON_DIR
-                                    => __('Checking write permissions for automatic actions files'),
-                            GLPI_GRAPH_DIR
-                                    => __('Checking write permissions for graphic files'),
-                            GLPI_LOCK_DIR
-                                    => __('Checking write permissions for lock files'),
-                            GLPI_PLUGIN_DOC_DIR
-                                    => __('Checking write permissions for plugins document files'),
-                            GLPI_TMP_DIR
-                                    => __('Checking write permissions for temporary files'),
-                            GLPI_CACHE_DIR
-                                    => __('Checking write permissions for cache files'),
-                            GLPI_RSS_DIR
-                                    => __('Checking write permissions for rss files'),
-                            GLPI_UPLOAD_DIR
-                                    => __('Checking write permissions for upload files'),
-                            GLPI_PICTURE_DIR
-                                    => __('Checking write permissions for pictures files')];
+
+      $dir_to_check = self::getDataDirectories();
+      //log dir is tested differently below
+      unset($dir_to_check[GLPI_LOG_DIR]);
       $error = 0;
       foreach ($dir_to_check as $dir => $message) {
          if (!$fordebug) {
@@ -2498,65 +2502,80 @@ class Config extends CommonDBTM {
          $error = 1;
       }
 
-      $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
-      $oldlevel = error_reporting(0);
+      $check_access = false;
+      $directories = array_keys(self::getDataDirectories());
 
-      //create a context to set timeout
-      $context = stream_context_create([
-         'http' => [
-            'timeout' => 2.0
-         ]
-      ]);
-
-      /* TODO: could be improved, only default vhost checked */
-      $protocol = 'http';
-      if (isset($_SERVER['HTTPS'])) {
-         $protocol = 'https';
-      }
-      $uri = $protocol . '://' . $_SERVER['SERVER_NAME'] . $CFG_GLPI['root_doc'];
-
-      if ($fic = fopen($uri.'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
-         fclose($fic);
-         if (!$fordebug) {
-            echo "<tr class='tab_bg_1'><td class='b left'>".
-               __('Web access to files directory is protected')."</td>";
+      foreach ($directories as $dir) {
+         if (Toolbox::startsWith($dir, GLPI_ROOT)) {
+            //only check access if on of the data directories is under GLPI document root.
+            $check_access = true;
+            break;
          }
-         if ($fic = fopen($uri.'/files/_log/php-errors.log', 'r', false, $context)) {
+      }
+
+      if ($check_access) {
+         $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
+         $oldlevel = error_reporting(0);
+
+         //create a context to set timeout
+         $context = stream_context_create([
+            'http' => [
+               'timeout' => 2.0
+            ]
+         ]);
+
+         /* TODO: could be improved, only default vhost checked */
+         $protocol = 'http';
+         if (isset($_SERVER['HTTPS'])) {
+            $protocol = 'https';
+         }
+         $uri = $protocol . '://' . $_SERVER['SERVER_NAME'] . $CFG_GLPI['root_doc'];
+
+         if ($fic = fopen($uri.'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
             fclose($fic);
+            if (!$fordebug) {
+               echo "<tr class='tab_bg_1'><td class='b left'>".
+                  __('Web access to files directory is protected')."</td>";
+            }
+            if ($fic = fopen($uri.'/files/_log/php-errors.log', 'r', false, $context)) {
+               fclose($fic);
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                        __('Web access to the files directory should not be allowed')."\n".
+                        __('Check the .htaccess file and the web server configuration.')."\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                     "<p class='red'>".__('Web access to the files directory should not be allowed')."<br/>".
+                     __('Check the .htaccess file and the web server configuration.')."</p></td></tr>";
+               }
+               $error = 1;
+            } else {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                        __s('Web access to files directory is protected')."\">".
+                        __s('Web access to files directory is protected')." : OK\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                        __s('Web access to files directory is protected')."\" title=\"".
+                        __s('Web access to files directory is protected')."\"></td></tr>";
+               }
+            }
+         } else {
+            $msg = __('Web access to the files directory should not be allowed but this cannot be checked automatically on this instance.')."\n".
+               "Make sure acces to <a href='{$CFG_GLPI['root_doc']}/files/_log/php-errors.log'>".__('error log file')."</a> is forbidden; otherwise review .htaccess file and web server configuration.";
+
             if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
-                     __('Web access to the files directory, should not be allowed')."\n".
-                     __('Check the .htaccess file and the web server configuration.')."\n";
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".$msg;
             } else {
                echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
-                    "<p class='red'>".__('Web access to the files directory, should not be allowed')."<br/>".
-                    __('Check the .htaccess file and the web server configuration.')."</p></td></tr>";
-            }
-            $error = 1;
-         } else {
-            if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('Web access to files directory is protected')."\">".
-                     __s('Web access to files directory is protected')." : OK\n";
-            } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('Web access to files directory is protected')."\" title=\"".
-                     __s('Web access to files directory is protected')."\"></td></tr>";
+                     "<p class='red'>".nl2br($msg)."</p></td></tr>";
             }
          }
-      } else {
-         if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
-                  __('Web access to the files directory, should not be allowed')."\n".
-                  __('Automatic checks cannot be done; please review .htaccess file and the web server configuration.');
-         } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
-                  "<p class='red'>".__('Web access to the files directory, should not be allowed')."<br/>".
-                  __('Automatic checks cannot be done; please review .htaccess file and the web server configuration.')."</p></td></tr>";
-         }
+
+         error_reporting($oldlevel);
+         set_error_handler($oldhand);
       }
-      error_reporting($oldlevel);
-      set_error_handler($oldhand);
+
       return $error;
    }
 
