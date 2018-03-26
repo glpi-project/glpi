@@ -809,6 +809,62 @@ class Search extends DbTestCase {
          ->string['ITEM_0']->isEqualTo('test Change visibility for tech');
 
    }
+
+   public function testSearchDdTranslation() {
+      global $CFG_GLPI;
+
+      $this->login();
+      $conf = new \Config();
+      $conf->setConfigurationValues('core', ['translate_dropdowns' => 1]);
+      $CFG_GLPI['translate_dropdowns'] = 1;
+
+      $state = new \State();
+      $this->boolean($state->maybeTranslated())->isTrue();
+
+      $sid = $state->add([
+         'name'         => 'A test state',
+         'is_recursive' => 1
+      ]);
+      $this->integer($sid)->isGreaterThan(0);
+
+      $ddtrans = new \DropdownTranslation();
+      $this->integer(
+         $ddtrans->add([
+            'itemtype'  => $state->getType(),
+            'items_id'  => $state->fields['id'],
+            'language'  => 'fr_FR',
+            'field'     => 'completename',
+            'value'     => 'Un status de test'
+         ])
+      )->isGreaterThan(0);
+
+      $_SESSION['glpi_dropdowntranslations'] = [$state->getType() => ['completename' => '']];
+
+      $search_params = [
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'criteria'     => [
+            0 => [
+               'field'      => 'view',
+               'searchtype' => 'contains',
+               'value'      => 'test'
+            ]
+         ],
+         'metacriteria' => []
+      ];
+
+      $data = $this->doSearch('State', $search_params);
+
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            ->integer['totalcount']->isIdenticalTo(1);
+
+      $conf->setConfigurationValues('core', ['translate_dropdowns' => 0]);
+      $CFG_GLPI['translate_dropdowns'] = 0;
+      unset($_SESSION['glpi_dropdowntranslations']);
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
