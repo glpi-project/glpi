@@ -4884,10 +4884,12 @@ class Search {
 
             case 'glpi_projectstates.name':
                $out = '';
-               $query = "SELECT `color`
-                         FROM `glpi_projectstates`
-                         WHERE `name` = '".$data[$num][0]['name']."'";
-               foreach ($DB->request($query) as $color) {
+               $color_iterator = $DB->request([
+                  'SELECT' => ['color'],
+                  'FROM'   => 'glpi_projectstates',
+                  'WHERE'  => ['name' => $DB->escape($data[$num][0]['name'])]
+               ]);
+               while ($color = $color_iterator->next()) {
                   $color = $color['color'];
                   $out   = "<div style=\"background-color:".$color.";\">";
                   $name = $data[$num][0]['name'];
