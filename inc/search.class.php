@@ -3882,13 +3882,29 @@ class Search {
          return false;
       }
 
+      $complexjoin = self::computeComplexJoinID($joinparams);
+
+      // Auto link
+      if (($ref_table == $new_table)
+          && empty($complexjoin)) {
+         $transitemtype = getItemTypeForTable($new_table);
+         if (Session::haveTranslations($transitemtype, $field)) {
+            $transAS            = $nt.'_trans';
+            return self::joinDropdownTranslations(
+               $transAS,
+               $nt,
+               $transitemtype,
+               $field
+            );
+         }
+         return "";
+      }
+
       // Multiple link possibilies case
       if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
          $nt .= "_".$linkfield;
          $AS  = " AS `$nt`";
       }
-
-      $complexjoin = self::computeComplexJoinID($joinparams);
 
       if (!empty($complexjoin)) {
          $nt .= "_".$complexjoin;
@@ -3902,12 +3918,6 @@ class Search {
          $addmetanum = "_".$meta_type;
          $AS         = " AS `$nt$addmetanum`";
          $nt         = $nt.$addmetanum;
-      }
-
-      // Auto link
-      if (($ref_table == $new_table)
-          && empty($complexjoin)) {
-         return "";
       }
 
       // Do not take into account standard linkfield
@@ -4098,12 +4108,12 @@ class Search {
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
                      $transAS            = $nt.'_trans';
-                     $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS `$transAS`
-                                             ON (`$transAS`.`itemtype` = '$transitemtype'
-                                                 AND `$transAS`.`items_id` = `$nt`.`id`
-                                                 AND `$transAS`.`language` = '".
-                                                       $_SESSION['glpilanguage']."'
-                                                 AND `$transAS`.`field` = '$field')";
+                     return self::joinDropdownTranslations(
+                        $transAS,
+                        $nt,
+                        $transitemtype,
+                        $field
+                     );
                   }
                   break;
             }
@@ -6628,4 +6638,22 @@ class Search {
       return $tab;
    }
 
+   /**
+    * Add join for dropdown translations
+    *
+    * @param string $alias    Alias for translation table
+    * @param string $table    Table to join on
+    * @param string $itemtype Item type
+    * @param string $field    Field name
+    *
+    * @return string
+    */
+   public static function joinDropdownTranslations($alias, $table, $itemtype, $field) {
+      return "LEFT JOIN `glpi_dropdowntranslations` AS `$alias`
+                  ON (`$alias`.`itemtype` = '$itemtype'
+                        AND `$alias`.`items_id` = `$table`.`id`
+                        AND `$alias`.`language` = '".
+                              $_SESSION['glpilanguage']."'
+                        AND `$alias`.`field` = '$field')";
+   }
 }
