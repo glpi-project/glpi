@@ -634,6 +634,7 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<form action='$target' method='post'>";
          echo "<table class='tab_cadre'><tr>";
          echo "<td><input type='hidden' name='id' value='$ID'>";
+         echo "<input type='hidden' name='itemtype' value='".$this->getType()."' />";
          echo "<input type='hidden' name='forcepurge' value='1'>";
          echo "<input class='submit' type='submit' name='purge'
                 value=\""._sx('button', 'Confirm')."\">";
@@ -666,6 +667,7 @@ abstract class CommonDropdown extends CommonDBTM {
                               'used'   => [$ID]]);
       }
       echo "<input type='hidden' name='id' value='$ID' />";
+      echo "<input type='hidden' name='itemtype' value='".$this->getType()."' />";
       echo "</td><td>";
       echo "<input class='submit' type='submit' name='replace' value=\""._sx('button', 'Replace')."\">";
       echo "</td><td>";
