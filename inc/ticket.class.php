@@ -1059,6 +1059,7 @@ class Ticket extends CommonITILObject {
 
             // probably transfer
             $allowed_fields[] = 'entities_id';
+            $allowed_fields[] = 'itilcategories_id';
          } else {
             if ($this->canApprove()
                 || $this->canAssign()
