@@ -2548,9 +2548,15 @@ class Config extends CommonDBTM {
             }
          }
       } else {
+         if ($fordebug) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                  __('Web access to the files directory, should not be allowed')."\n".
+                  __('Automatic checks cannot be done; please review .htaccess file and the web server configuration.');
+         } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
                   "<p class='red'>".__('Web access to the files directory, should not be allowed')."<br/>".
                   __('Automatic checks cannot be done; please review .htaccess file and the web server configuration.')."</p></td></tr>";
+         }
       }
       error_reporting($oldlevel);
       set_error_handler($oldhand);
