@@ -385,9 +385,18 @@ class State extends CommonTreeDropdown {
       global $DB;
 
       $unicity_fields = ['states_id', 'name'];
+
+      $has_changed = false;
       $where = [];
       foreach ($unicity_fields as $unicity_field) {
+         if ($input[$unicity_field] != $this->fields[$unicity_field]) {
+            $has_changed = true;
+         }
          $where[$unicity_field] = $input[$unicity_field];
+      }
+      if (!$has_changed) {
+         //state has not changed; this is OK.
+         return true;
       }
 
       $query = [
