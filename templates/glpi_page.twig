@@ -914,9 +914,7 @@
         <ul class="treeview-menu">
         {% for child in entry.content %}
             <li>
-            {% if not child.itemtype is not defined or child.itemtype is defined %}
-                <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% endif %}">{% if child.title is defined %}{{ child.title }}{% endif %}</a>
-            {% endif %}
+                <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% else %}{{ child.page }}{% endif %}">{{ child.title|default(__('Missing menu label')) }}</a>
             </li>
         {% endfor %}
         </ul>
