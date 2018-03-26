@@ -1,3 +1,17 @@
+/** Dropdowns */
+.box-body > dl {
+   margin-bottom: 0;
+}
+
+.fa.wentity {
+   color: #3A5693;
+}
+
+.fa.woentity {
+   color: #ccc;
+}
+/** /Dropdowns */
+
 /** Debug stuff */
 #see_debug, #backtotop {
    position: fixed;

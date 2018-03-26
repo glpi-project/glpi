@@ -5307,7 +5307,6 @@ class CommonDBTM extends CommonGLPI {
       $output .= "</div>";*/
 
       return [
-         'pure_form'    => 'aligned',
          'columns'      => 2,
          'submit_label' => $add ? __('Add') : __('Update'),
          'elements'     => $this->form_elements

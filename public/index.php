@@ -622,8 +622,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $optgroup = Dropdown::getStandardDropdownItemTypes();
 
       $glpi_form = [
-         'pure_form'    => 'aligned',
-         'header_title' => false,
+         'header'       => false,
          'submit'       => false,
          'elements'     => [
             'dropdowns' => [
