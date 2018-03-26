@@ -1690,4 +1690,41 @@ class Ticket extends DbTestCase {
       $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::ASSIGNED);
    }
+
+   public function testClosedTicketTransfer() {
+
+      // 1- create a category
+      $itilcat      = new \ITILCategory;
+      $first_cat_id = $itilcat->add([
+                                       'name' => 'my first cat',
+                                    ]);
+      $this->boolean($itilcat->isNewItem())->isFalse();
+
+      // 2- create a category
+      $second_cat    = new \ITILCategory;
+      $second_cat_id = $second_cat->add([
+                                           'name' => 'my second cat',
+                                        ]);
+      $this->boolean($second_cat->isNewItem())->isFalse();
+
+      // 3- create ticket
+      $ticket    = new \Ticket;
+      $ticket_id = $ticket->add([
+                                   'name'              => 'A ticket to check the category change when using the "transfer" function.',
+                                   'content'           => 'A ticket to check the category change when using the "transfer" function.',
+                                   'itilcategories_id' => $first_cat_id,
+                                   'status'            => \CommonITILObject::CLOSED
+                                ]);
+
+      $this->boolean($ticket->isNewItem())->isFalse();
+
+      // 4 - delete category with replacement
+      $itilcat->delete(['id'          => $first_cat_id,
+                        '_replace_by' => $second_cat_id], 1);
+
+      // 5 - check that the category has been replaced in the ticket
+      $ticket->getFromDB($ticket_id);
+      $this->integer((int)$ticket->fields['itilcategories_id'])
+           ->isEqualto($second_cat_id);
+   }
 }
