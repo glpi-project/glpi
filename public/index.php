@@ -195,8 +195,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Render Twig template in route
    $app->get('/', function ($request, $response, $args) {
-      //todo do some checks and redirect the the right URL
-      return $response->withRedirect($this->router->pathFor('login'), 301);
+      //TODO: do some checks and redirect the the right URL
+      $redirect_uri = $this->router->pathFor('login');
+      if (Session::getLoginUserID()) {
+         $redirect_uri = $this->router->pathFor('central');
+      }
+      return $response->withRedirect($redirect_uri, 301);
    })->setName('slash');
 
    // Render Twig template in route
@@ -266,6 +270,113 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       return $this->view->render($response, 'login.twig', ['glpi_form' => $glpi_form]);
    })->setName('login');
+
+   $app->post('/login', function ($request, $response) use ($CFG_GLPI) {
+      $post = $request->getParsedBody();
+      $post = array_map('stripslashes', $post);
+
+      //There is certainly a beter way to achieve that test (JS?)
+      /*if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
+         if (!is_writable(GLPI_SESSION_DIR)) {
+            Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");
+         } else {
+            Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=1");
+         }
+      }*/
+
+      $login = $post['login_name'];
+      $password = $post['login_password'];
+      $login_auth = $post['auth'];
+      $remember = isset($post['login_remember']) && $CFG_GLPI["login_remember_time"];
+      $noauto = isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false;
+
+      if (empty($login) || empty($password) || empty($login_auth)) {
+         //TODO: error.
+         throw new \RuntimeExcption('Required info missing');
+      }
+
+      /*
+      // Redirect management
+      $REDIRECT = "";
+      if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
+         $REDIRECT = "?redirect=" .rawurlencode($_POST['redirect']);
+
+      } else if (isset($_GET['redirect']) && strlen($_GET['redirect'])>0) {
+         $REDIRECT = "?redirect=" .rawurlencode($_GET['redirect']);
+      }*/
+
+      $auth = new Auth();
+
+      // now we can continue with the process...
+      if ($auth->login($login, $password, $noauto, $remember, $login_auth)) {
+         return $response
+            ->withStatus(301)
+            ->withHeader('Location', $this->router->pathFor('central'));
+         Auth::redirectIfAuthenticated();
+      } else {
+         //TODO: flash message
+         return $response
+            ->withStatus(301)
+            ->withHeader('Location', $this->router->pathFor('login'));
+         // we have done at least a good login? No, we exit.
+         /*Html::nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');
+         echo '<div class="center b">' . $auth->getErr() . '<br><br>';
+         // Logout whit noAUto to manage auto_login with errors
+         echo '<a href="' . $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1'.
+               str_replace("?", "&", $REDIRECT).'">' .__('Log in again') . '</a></div>';
+         Html::nullFooter();
+         exit();*/
+      }
+   })->setName('do-login');
+
+   $app->get('/logout', function ($request, $response) use ($CFG_GLPI) {
+      /*if (!isset($_SESSION["noAUTO"])
+         && isset($_SESSION["glpiauthtype"])
+         && $_SESSION["glpiauthtype"] == Auth::CAS
+         && Toolbox::canUseCAS()) {
+
+         phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
+                        $CFG_GLPI["cas_uri"], false);
+         phpCAS::setServerLogoutURL(strval($CFG_GLPI["cas_logout"]));
+         phpCAS::logout();
+      }*/
+
+      //$toADD = "";
+
+      // Redirect management
+      /*if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
+         $toADD = "?redirect=" .$_POST['redirect'];
+
+      } else if (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
+         $toADD = "?redirect=" .$_GET['redirect'];
+      }*/
+
+      /*if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
+         if (empty($toADD)) {
+            $toADD .= "?";
+         } else {
+            $toADD .= "&";
+         }
+         $toADD .= "noAUTO=1";
+      }*/
+
+      \Session::destroy();
+
+      //Remove cookie to allow new login
+      $cookie_name = session_name() . '_rememberme';
+      $cookie_path = ini_get('session.cookie_path');
+
+      if (isset($_COOKIE[$cookie_name])) {
+         setcookie($cookie_name, '', time() - 3600, $cookie_path);
+         unset($_COOKIE[$cookie_name]);
+      }
+
+      // Redirect to the login-page
+      //Html::redirect($CFG_GLPI["root_doc"]."/index.php".$toADD);
+      return $response
+         ->withStatus(301)
+         ->withHeader('Location', $this->router->pathFor('login'));
+   })->setName('logout');
 
    $app->get('/central', function ($request, $response, $args) {
       $central = new Central();

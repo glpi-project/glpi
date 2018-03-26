@@ -30,10 +30,12 @@
  #}
 {% extends "glpi_page.twig" %}
 
-{% block title %}{{ __('Central') }}{% endblock %}
+{% set page_title = __('Central') %}
+{% set item = false %}
+
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block header %}
-   {% set item = false %}
    {{ parent() }}
 {% endblock %}
 

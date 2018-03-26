@@ -681,7 +681,7 @@
       {% endif %}
 
       <li id='deconnexion'>
-         <a href='{#{ path_for('logout') }#}' title="{{ __s('Logout') }}" class="fa fa-sign-out">
+         <a href='{{ path_for('logout') }}' title="{{ __s('Logout') }}" class="fa fa-sign-out">
          {#if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
             //FIXME: Manage in logout route?
             echo "?noAUTO=1";
@@ -937,6 +937,8 @@
    {% for menu in glpi_menus %}
       {{ glpi_page.menu_links(menu) }}
    {% endfor %}
+      </ul>
+   </section>
 </aside>
 
 {% endblock %}

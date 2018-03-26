@@ -38,7 +38,7 @@
          <!-- Tell the browser to be responsive to screen width -->
          <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
          {% block head %}
-            <title>{% block title %}{% endblock %} - GLPI</title>
+            <title>{% block title %}{{ page_title }}{% endblock %} - GLPI</title>
          {% endblock %}
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/bootstrap/dist/css/bootstrap.min.css" type="text/css" media="screen" />
          {#<link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/styles.css" type="text/css" media="screen" />
