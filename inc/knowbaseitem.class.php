@@ -159,7 +159,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @since version 0.84
     *
-    * @param bool|path $full path or relative one (true by default)
+    * @param boolean $full path or relative one (true by default)
     * @return string
     */
    static function getSearchURL($full = true) {
@@ -233,11 +233,6 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   /**
-    * Actions done at the end of the getEmpty function
-    *
-    * @return void
-   **/
    function post_getEmpty() {
 
       if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)
@@ -249,8 +244,7 @@ class KnowbaseItem extends CommonDBVisible {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_addItem()
-   **/
+    */
    function post_addItem() {
 
       // add documents (and replace inline pictures)
@@ -334,10 +328,8 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    /**
-    * @see CommonDBTM::cleanDBonPurge()
-    *
     * @since version 0.83.1
-   **/
+    */
    function cleanDBonPurge() {
 
       $class = new KnowbaseItem_User();
@@ -399,7 +391,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @since version 0.83
     *
-    * @param bool|force $forceall force all joins (false by default)
+    * @param boolean $forceall force all joins (false by default)
     * @return string joins to add
     */
    static function addVisibilityJoins($forceall = false) {
@@ -602,9 +594,6 @@ class KnowbaseItem extends CommonDBVisible {
       return $criteria;
    }
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // set new date if not exists
@@ -630,11 +619,6 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-    * @param array $input
-    * @return array
-    */
    function prepareInputForUpdate($input) {
 
       // add documents (and replace inline pictures)

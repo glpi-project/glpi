@@ -59,13 +59,6 @@ class TicketFollowup  extends CommonDBTM {
    const SEEPRIVATE      = 8192;
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-    *
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Followup', 'Followups', $nb);
    }
@@ -482,10 +475,8 @@ class TicketFollowup  extends CommonDBTM {
 
    // SPECIFIC FUNCTIONS
    /**
-    * @see CommonDBTM::getRawName()
-    *
     * @since version 0.85
-   **/
+    */
    function getRawName() {
 
       if (isset($this->fields['requesttypes_id'])) {
@@ -581,14 +572,6 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

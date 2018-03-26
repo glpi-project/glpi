@@ -232,9 +232,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * \brief recursively display the items of this
     *
-    * @param $recursiveItems     array of the items of the current elements (see recursivelyGetItems())
-    * @param $elementToDisplay         what to display : 'Type', 'Name', 'Link'
-   **/
+    * @param array  $recursiveItems   of the current elements (see recursivelyGetItems())
+    * @param string $elementToDisplay what to display : 'Type', 'Name', 'Link'
+    */
    static function displayRecursiveItems(array $recursiveItems, $elementToDisplay) {
 
       if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
@@ -269,7 +269,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @since version 0.84
     *
-    * @return an array containing all the items
+    * @return array containing all the items
    **/
    function recursivelyGetItems() {
 
@@ -367,11 +367,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since version 0.84
-    * @param array $input
-    * @return array
-    */
    function addNeededInfoToInput($input) {
 
       // is entity missing and forwarding on ?
@@ -419,8 +414,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
    /**
     * @since version 0.84
-    * @param array $input
-    * @return array|bool
     */
    function prepareInputForUpdate($input) {
 
@@ -441,7 +434,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Get the history name of item
     *
-    * @param CommonDBTM|the $item the other item
+    * @param CommonDBTM $item
     * @param $case : can be overwrite by object
     *              - 'add' when this CommonDBChild is added (to and item)
     *              - 'update item previous' transfert : this is removed from the old item
@@ -456,10 +449,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
 
-   /**
-    * Actions done after the ADD of the item in the database
-    *
-   **/
    function post_addItem() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -481,11 +470,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * Actions done after the UPDATE of the item in the database
-    *
     * @since version 0.84
-    *
-    * @param integer $history store changes history ? (default 1)
     */
    function post_updateItem($history = 1) {
 
@@ -566,8 +551,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    *  Actions done when item flag deleted is set to an item
-    *
     * @since version 0.84
     */
    function cleanDBonMarkDeleted() {
@@ -594,10 +577,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * Actions done after the restore of the item
-    *
     * @since version 0.84
-    *
     */
    function post_restoreItem() {
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])

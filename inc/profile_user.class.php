@@ -64,11 +64,6 @@ class Profile_User extends CommonDBRelation {
    static public $disableAutoEntityForwarding   = true;
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getForbiddenStandardMassiveAction()
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -609,8 +604,8 @@ class Profile_User extends CommonDBRelation {
     * Get entities for which a user have a right
     *
     * @param $user_ID         user ID
-    * @param bool|check $is_recursive check also using recursive rights (true by default)
-    * @param bool|user $default_first user default entity first (false by default)
+    * @param boolean|check $is_recursive check also using recursive rights (true by default)
+    * @param boolean|user $default_first user default entity first (false by default)
     * @return array of entities ID
     */
    static function getUserEntities($user_ID, $is_recursive = true, $default_first = false) {
@@ -799,7 +794,7 @@ class Profile_User extends CommonDBRelation {
     * Get entities for which a user have a right
     *
     * @param $user_ID         user ID
-    * @param bool|get $only_dynamic get only recursive rights (false by default)
+    * @param boolean|get $only_dynamic get only recursive rights (false by default)
     * @return array of entities ID
     */
    static function getForUser($user_ID, $only_dynamic = false) {
@@ -923,9 +918,6 @@ class Profile_User extends CommonDBRelation {
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
    function getRawName() {
 
       $name = sprintf(__('%1$s, %2$s'),

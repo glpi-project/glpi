@@ -114,9 +114,7 @@ class Link extends CommonDBTM {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getEmpty()
-   **/
+    */
    function getEmpty() {
 
       parent::getEmpty();
@@ -180,9 +178,6 @@ class Link extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();

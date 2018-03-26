@@ -155,11 +155,11 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Is a user linked to the object ?
     *
-    * @param $type               type to search (see constants)
-    * @param $users_id  integer  user ID
+    * @param integer $type     to search (see constants)
+    * @param integer $users_id user ID
     *
     * @return boolean
-   **/
+    **/
    function isUser($type, $users_id) {
 
       if (isset($this->users[$type])) {
@@ -580,10 +580,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
-   /**
-    * @param array $input
-    * @return array
-    */
+
    function prepareInputForUpdate($input) {
 
       // Add document if needed
@@ -2084,7 +2081,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $withmetaforsearch boolean (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -2100,7 +2097,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
 
@@ -2115,7 +2112,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
 
@@ -2154,7 +2151,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
 
@@ -2169,7 +2166,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatus() {
 
@@ -2210,9 +2207,9 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.84 new proto
     *
-    * @param $current   status
+    * @param string $current status
     *
-    * @return an array
+    * @return array
    **/
    static function getAllowedStatusArray($current) {
 
@@ -2235,7 +2232,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $status   status
+    * @param string $status
     *
     * @return boolean
    **/
@@ -2252,12 +2249,14 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since version 0.84 new proto
     *
     * @param $options   array of options
-    *  - name     : select name (default is status)
-    *  - value    : default value (default self::INCOMING)
-    *  - showtype : list proposed : normal, search or allowed (default normal)
-    *  - display  : boolean if false get string
+    *                   - name     : select name (default is status)
+    *                   - value    : default value (default self::INCOMING)
+    *                   - showtype : list proposed : normal, search or allowed (default normal)
+    *                   - display  : boolean if false get string
     *
-   **/
+    *
+    * @return integer|string
+    */
    static function dropdownStatus(array $options = []) {
 
       $p['name']      = 'status';
@@ -2297,9 +2296,9 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $value     status ID
+    * @param integer $value ID
     *
-    * @return status
+    * @return integer
     */
    static function getStatus($value) {
 
@@ -2316,8 +2315,8 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.84.6
     *
-    * @return get typename
-   **/
+    * @return boolean|string
+    */
    static function getActorFieldNameType($type) {
 
       switch ($type) {
@@ -2473,7 +2472,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $values    String / Array with the value to display
     * @param $options   Array          of option
     *
-    * @return a string
+    * @return string
    **/
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
@@ -2504,11 +2503,12 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * @since version 0.84
     *
-    * @param $field
-    * @param $name (default '')
-    * @param $values (default '')
-    * @param $options   array
+    * @param string $field
+    * @param string $name   (default '')
+    * @param mixed  $values (default '')
+    * @param array  $options
     *
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
@@ -2547,13 +2547,6 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    * @param MassiveAction $ma
-    * @return boolean
-    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -2594,14 +2587,6 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;
@@ -3210,10 +3195,10 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $status status to get icon URL
+    * @param integer $status to get icon URL
     *
-    * @return icon URL
-   **/
+    * @return string
+    */
    static function getStatusIconURL($status) {
       global $CFG_GLPI;
 
@@ -3261,10 +3246,11 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show Icon for Actor
     *
-    * @param $user_group   string   'user or 'group'
-    * @param $type         integer  user/group type
+    * @param string  $user_group 'user' or 'group'
+    * @param integer $type       user/group type
     *
-   **/
+    * @return string
+    */
    static function getActorIcon($user_group, $type) {
       global $CFG_GLPI;
 

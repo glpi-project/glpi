@@ -51,12 +51,6 @@ class Monitor extends CommonDBTM {
    protected $usenotepad               = true;
 
 
-   /**
-    * Name of the type
-    *
-    * @param integer|string $nb string   number of item in the type
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Monitor', 'Monitors', $nb);
    }
@@ -72,11 +66,6 @@ class Monitor extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    * @param array $options
-    * @return array
-    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -99,9 +88,6 @@ class Monitor extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && ($input["id"] > 0)) {
@@ -343,7 +329,7 @@ class Monitor extends CommonDBTM {
    /**
     * Return the linked items (in computers_items)
     *
-    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+    * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
     * @since version 0.84.4
    **/
    function getLinkedItems() {
@@ -361,11 +347,6 @@ class Monitor extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);

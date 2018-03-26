@@ -53,9 +53,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (!empty($input['begin_date'])
@@ -70,11 +67,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-    * @param array $input
-    * @return array|bool
-    */
    function prepareInputForUpdate($input) {
 
       if (!empty($input['begin_date'])

@@ -264,10 +264,11 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get a notificationtarget class by giving the object which raises the event
     *
-    * @param $item            the object which raises the event
-    * @param string|the $event the event which will be used (default '')
-    * @param $options   array of options
-    * @return a notificationtarget class or false
+    * @param object $item  which raises the event
+    * @param string $event the event which will be used (default '')
+    * @param array  $options
+    *
+    * @return boolean
     */
    static function getInstance($item, $event = '', $options = []) {
 
@@ -298,10 +299,11 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get a notificationtarget class by giving an itemtype
     *
-    * @param $itemtype           the itemtype of the object which raises the event
-    * @param string|the $event the event which will be used (default '')
-    * @param $options   array    of options
-    * @return a notificationtarget class or false
+    * @param object $itemtype of the object which raises the event
+    * @param string $event    the event which will be used (default '')
+    * @param array  $options
+    *
+    * @return boolean
     */
    static function getInstanceByType($itemtype, $event = '', $options = []) {
 
@@ -719,7 +721,7 @@ class NotificationTarget extends CommonDBChild {
     * Return main notification events for the object type
     * Internal use only => should use getAllEvents
     *
-    * @return an array which contains : event => event label
+    * @return array which contains : event => event label
    **/
    function getEvents() {
       return [];
@@ -729,7 +731,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Return all (GLPI + plugins) notification events for the object type
     *
-    * @return an array which contains : event => event label
+    * @return array which contains : event => event label
    **/
    function getAllEvents() {
 

@@ -81,11 +81,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getPostAdditionalInfosForName
-   **/
    function getPostAdditionalInfosForName() {
 
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
@@ -210,11 +205,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -514,7 +504,7 @@ class ConsumableItem extends CommonDBTM {
     *
     * Overriden here to check entities recursively
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUpdateItem() {
 

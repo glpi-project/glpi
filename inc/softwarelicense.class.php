@@ -71,9 +71,6 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       $input = parent::prepareInputForAdd($input);
@@ -100,9 +97,6 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::prepareInputForUpdate()
-    * @param array $input
-    * @return array
     */
    function prepareInputForUpdate($input) {
 
@@ -120,11 +114,11 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Compute licence validity indicator.
     *
-    * @param $ID        ID of the licence
-    * @param integer|licence $number licence count to check (default -1)
-    * @return validity indicator
-    * @since version 0.85
+    * @param integer $ID ID of the licence
+    * @param integer $number licence count to check (default -1)
     *
+    * @return integer validity indicator
+    * @since version 0.85
     */
    static function computeValidityIndicator($ID, $number = -1) {
 
@@ -139,7 +133,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * Update validity indicator of a specific license
-    * @param $ID ID of the licence
+    * @param integer $ID of the licence
     *
     * @since version 0.85
     *
@@ -188,8 +182,6 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_updateItem()
-    * @param integer $history
     */
    function post_updateItem($history = 1) {
 
@@ -201,8 +193,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_deleteFromDB()
-   **/
+    */
    function post_deleteFromDB() {
       Software::updateValidityIndicator($this->fields["softwares_id"]);
    }
@@ -475,11 +466,6 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -921,10 +907,11 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Get number of bought licenses of a version
     *
-    * @param $softwareversions_id   version ID
-    * @param string|to $entity to search for licenses in (default = all active entities)
-    *                               (default '')
-    * @return number of installations
+    * @param integer $softwareversions_id version ID
+    * @param string  $entity              to search for licenses in (default = all active entities)
+    *                                     (default '')
+    *
+    * @return integer number of installations
     */
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
@@ -946,10 +933,10 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Get number of licensesof a software
     *
-    * @param $softwares_id software ID
+    * @param integer $softwares_id software ID
     *
-    * @return number of licenses
-   **/
+    * @return integer number of licenses
+    */
    static function countForSoftware($softwares_id) {
       global $DB;
 
@@ -1209,7 +1196,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Get fields to display in the unicity error message
     *
-    * @return an array which contains field => label
+    * @return array which contains field => label
    */
    function getUnicityFieldsToDisplayInErrorMessage() {
 

@@ -366,8 +366,8 @@ class NetworkAlias extends FQDNLabel {
    /**
     * Show the aliases contained by the alias
     *
-    * @param CommonGLPI|the $item the FQDN owning the aliases
-    * @param $withtemplate  integer    withtemplate param
+    * @param CommonGLPI $item the FQDN owning the aliases
+    * @param integer    $withtemplate
     */
    static function showForFQDN(CommonGLPI $item, $withtemplate) {
       global $DB;

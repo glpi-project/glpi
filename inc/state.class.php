@@ -236,9 +236,7 @@ class State extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getEmpty()
-   **/
+    */
    function getEmpty() {
 
       parent::getEmpty();
@@ -256,8 +254,6 @@ class State extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonTreeDropdown::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
       if (!isset($input['states_id'])) {

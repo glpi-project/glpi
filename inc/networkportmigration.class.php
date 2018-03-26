@@ -97,10 +97,8 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
    /**
-    * @see CommonGLPI::defineTabs()
-    *
     * @since version 0.85
-   **/
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -317,9 +315,6 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -352,11 +347,6 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;

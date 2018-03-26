@@ -92,13 +92,6 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
    }
 
 
-   /**
-    * Used to update the ForeignKeyField
-    *
-    * @param array $input data used to add the item
-    *
-    * @return array modified $input array
-   **/
    function prepareInputForUpdate($input) {
 
       $input[$this->getForeignKeyField()] = $this->getNewAncestor();

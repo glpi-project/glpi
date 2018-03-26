@@ -424,7 +424,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @param array           $actions
     * @param string          $itemtype
-    * @param int             $is_deleted
+    * @param integer         $is_deleted
     * @param CommonDBTM|null $checkitem
     */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,

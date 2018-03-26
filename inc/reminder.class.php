@@ -151,10 +151,8 @@ class Reminder extends CommonDBVisible {
 
 
    /**
-    * @see CommonDBTM::cleanDBonPurge()
-    *
     * @since version 0.83.1
-   **/
+    */
    function cleanDBonPurge() {
       global $DB;
 
@@ -181,7 +179,7 @@ class Reminder extends CommonDBVisible {
    /**
     * Return visibility joins to add to SQL
     *
-    * @param bool|force $forceall force all joins (false by default)
+    * @param boolean|force $forceall force all joins (false by default)
     * @return string joins to add
     */
    static function addVisibilityJoins($forceall = false) {
@@ -282,10 +280,6 @@ class Reminder extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-    * @param integer $history
-    */
    function post_updateItem($history = 1) {
 
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
@@ -487,11 +481,6 @@ class Reminder extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    * @param array $options
-    * @return array
-    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -522,9 +511,6 @@ class Reminder extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
@@ -562,11 +548,6 @@ class Reminder extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-    * @param array $input
-    * @return array
-    */
    function prepareInputForUpdate($input) {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);

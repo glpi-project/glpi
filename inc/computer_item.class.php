@@ -270,15 +270,6 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-    * @param array $actions
-    * @param string $itemtype
-    * @param integer $is_deleted
-    * @param CommonDBTM|null $checkitem
-    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -293,11 +284,6 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-   **/
    static function getRelationMassiveActionsSpecificities() {
       global $CFG_GLPI;
 
@@ -851,10 +837,10 @@ class Computer_Item extends CommonDBRelation{
     *
     * @since version 0.83.3
     *
-    * @param $itemtype     type of the item to clone
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
-   **/
+    * @param string  $itemtype type of the item to clone
+    * @param integer $oldid    ID of the item to clone
+    * @param integer $newid    ID of the item cloned
+    */
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
 

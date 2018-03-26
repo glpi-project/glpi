@@ -94,13 +94,15 @@ class DeviceSoundCard extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @see CommonDevice::getHTMLTableHeader()
-    * @param string $itemtype
-    * @param HTMLTableBase $base
+    * @see   CommonDevice::getHTMLTableHeader()
+    *
+    * @param string                    $itemtype
+    * @param HTMLTableBase             $base
     * @param HTMLTableSuperHeader|null $super
-    * @param HTMLTableHeader|null $father
-    * @param array $options
-    * @return HTMLTableHeader|nothing
+    * @param HTMLTableHeader|null      $father
+    * @param array                     $options
+    *
+    * @return HTMLTableHeader|null
     */
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,

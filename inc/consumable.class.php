@@ -69,11 +69,6 @@ class Consumable extends CommonDBChild {
    }
 
 
-   /**
-    * since version 0.84
-    *
-    * @see CommonDBTM::getNameField()
-   **/
    static function getNameField() {
       return 'id';
    }
@@ -135,8 +130,6 @@ class Consumable extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::getPreAdditionalInfosForName
    **/
    function getPreAdditionalInfosForName() {
 
@@ -180,10 +173,6 @@ class Consumable extends CommonDBChild {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    * @param MassiveAction $ma
-    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;

@@ -123,8 +123,7 @@ class Manufacturer extends CommonDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_addItem()
-   **/
+    */
    function post_addItem() {
 
       $this->post_workOnItem();
@@ -134,8 +133,6 @@ class Manufacturer extends CommonDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_updateItem()
-    * @param integer $history
     */
    function post_updateItem($history = 1) {
 

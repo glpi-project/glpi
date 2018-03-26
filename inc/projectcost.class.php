@@ -53,9 +53,6 @@ class ProjectCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (empty($input['end_date'])
@@ -69,9 +66,6 @@ class ProjectCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       if (empty($input['end_date'])

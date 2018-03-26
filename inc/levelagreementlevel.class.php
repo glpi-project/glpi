@@ -295,14 +295,14 @@ abstract class LevelAgreementLevel extends RuleTicket {
    /**
     * Dropdown execution time for SLA
     *
-    * @param $name      string   name of the select
-    * @param $options   array    of possible options:
-    *       - value : default value
-    *       - max_time : max time to use
-    *       - used : already used values
+    * @param string $name    of the select
+    * @param array  $options possible options:
+    *                        - value : default value
+    *                        - max_time : max time to use
+    *                        - used : already used values
     *
-    * @return void
-   **/
+    * @return integer|string
+    */
    static function dropdownExecutionTime($name, $options = []) {
       $p['value']    = '';
       $p['max_time'] = 4*DAY_TIMESTAMP;
@@ -321,7 +321,6 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
       $possible_values = self::getExecutionTimes($p);
 
-      $p['value'] = $p['value'];
       return Dropdown::showFromArray($name, $possible_values, $p);
    }
 

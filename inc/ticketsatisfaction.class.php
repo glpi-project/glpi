@@ -49,9 +49,6 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 
-   /**
-    * for use showFormHeader
-   **/
    static function getIndexName() {
       return 'tickets_id';
    }
@@ -188,7 +185,6 @@ class TicketSatisfaction extends CommonDBTM {
 
    /**
     * @since version 0.85
-    * @param integer $history
     */
    function post_UpdateItem($history = 1) {
       global $CFG_GLPI;

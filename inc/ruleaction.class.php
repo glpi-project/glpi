@@ -65,8 +65,6 @@ class RuleAction extends CommonDBChild {
 
    /**
     * @since version 0.84.3
-    *
-    * @see CommonDBTM::post_getFromDB()
     */
    function post_getFromDB() {
 
@@ -80,21 +78,11 @@ class RuleAction extends CommonDBChild {
    }
 
 
-   /**
-    * Get title used in rule
-    *
-    * @param $nb  integer  (default 0)
-    *
-    * @return Title of the rule
-   **/
    static function getTypeName($nb = 0) {
       return _n('Action', 'Actions', $nb);
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
    function getRawName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
@@ -106,9 +94,7 @@ class RuleAction extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBChild::post_addItem()
-   **/
+    */
    function post_addItem() {
 
       parent::post_addItem();
@@ -122,9 +108,7 @@ class RuleAction extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::post_purgeItem()
-   **/
+    */
    function post_purgeItem() {
 
       parent::post_purgeItem();
@@ -301,7 +285,7 @@ class RuleAction extends CommonDBChild {
     *
     * @param $ID the rule_description ID
     *
-    * @return an array of RuleAction objects
+    * @return array of RuleAction objects
    **/
    function getRuleActions($ID) {
       global $DB;

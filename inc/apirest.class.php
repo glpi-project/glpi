@@ -43,14 +43,6 @@ class APIRest extends API {
    protected $debug           = 0;
    protected $format          = "json";
 
-   /**
-    *
-    * @param integer $nb Unused value
-    *
-    * @return string
-    *
-    * @see CommonGLPI::GetTypeName()
-    */
    public static function getTypeName($nb = 0) {
       return __('Rest API');
    }

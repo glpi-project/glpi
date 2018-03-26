@@ -71,8 +71,10 @@ class Cartridge extends CommonDBChild {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::showMassiveActionsSubForm()
+    * @see   CommonDBTM::showMassiveActionsSubForm()
+    *
     * @param MassiveAction $ma
+    *
     * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -91,11 +93,6 @@ class Cartridge extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getNameField()
-   **/
    static function getNameField() {
       return 'id';
    }
@@ -106,6 +103,13 @@ class Cartridge extends CommonDBChild {
    }
 
 
+   /**
+    * @see CommonDBTM::prepareInputForAdd()
+    *
+    * @param array $input
+    *
+    * @return array|boolean
+    */
    function prepareInputForAdd($input) {
 
       $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
@@ -145,9 +149,7 @@ class Cartridge extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::getPreAdditionalInfosForName
-   **/
+    */
    function getPreAdditionalInfosForName() {
 
       $ci = new CartridgeItem();
@@ -160,11 +162,6 @@ class Cartridge extends CommonDBChild {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
     */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {

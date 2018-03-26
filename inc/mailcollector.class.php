@@ -129,9 +129,6 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       if (isset($input["passwd"])) {
@@ -158,9 +155,6 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["passwd"])) {
@@ -183,9 +177,6 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -506,9 +497,10 @@ class MailCollector  extends CommonDBTM {
    /**
     * Constructor
     *
-    * @param $mailgateID   ID of the mailgate
-    * @param display|int $display display messages in MessageAfterRedirect or just return error (default 0=)
-    * @return if $display = false return messages result string
+    * @param integer $mailgateID ID of the mailgate
+    * @param integer $display    messages in MessageAfterRedirect or just return error (default 0)
+    *
+    * @return string
     */
    function collect($mailgateID, $display = 0) {
       global $CFG_GLPI;
@@ -659,12 +651,13 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /** function buildTicket - Builds,and returns, the major structure of the ticket to be entered.
+   /**
+    * function buildTicket - Builds,and returns, the major structure of the ticket to be entered.
     *
-    * @param @param $uid UID of the message
-    * @param $options   array    of possible options
+    * @param string $uid     UID of the message
+    * @param array  $options array    of possible options
     *
-    * @return ticket fields array
+    * @return array ticket fields
     */
    function buildTicket($uid, $options = []) {
       global $CFG_GLPI;
@@ -968,13 +961,15 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /** Clean mail content : HTML + XSS + blacklisted content
+   /**
+    * Clean mail content : HTML + XSS + blacklisted content
     *
     * @since version 0.85
     *
-    * @param $string text to clean
-    * @param bool|remove $striptags remove html tags
-    * @return cleaned text
+    * @param string  $string    text to clean
+    * @param boolean $striptags remove html tags
+    *
+    * @return string
     */
    function cleanMailContent($string, $striptags = true) {
       global $DB;
@@ -1184,18 +1179,18 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * This function is use full to Get Header info from particular mail
-    *
-    * @param $uid UID of the message
-    *
-    * @return Return Associative array with following keys
+    * This function is use full to Get Header info from particular mail with the following values:
     * subject   => Subject of Mail
     * to        => To Address of that mail
     * toOth     => Other To address of mail
     * toNameOth => To Name of Mail
     * from      => From address of mail
     * fromName  => Form Name of Mail
-   **/
+    *
+    * @param string $uid UID of the message
+    *
+    * @return array
+    */
    function getHeaders($uid) {
       // Get Header info
       //$mail_header  = imap_header($this->marubox, $mid);
@@ -1282,12 +1277,13 @@ class MailCollector  extends CommonDBTM {
    /**
     * Get Part Of Message Internal Private Use
     *
-    * @param $stream       An IMAP stream returned by imap_open
-    * @param $uid          The message UID
-    * @param $mime_type    mime type of the mail
-    * @param bool|structure $structure structure of the mail (false by default)
-    * @param bool|The $part_number The part number (false by default)
-    * @return data of false if error
+    * @param resource $stream      An IMAP stream returned by imap_open
+    * @param string   $uid         The message UID
+    * @param string   $mime_type   mime type of the mail
+    * @param boolean  $structure   structure of the mail (false by default)
+    * @param boolean  $part_number The part number (false by default)
+    *
+    * @return boolean|mixed data or false if error
     */
    function get_part($stream, $uid, $mime_type, $structure = false, $part_number = false) {
 
@@ -1348,7 +1344,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * Used to get total unread mail from that mailbox
     *
-    * @return an integer (Total Mail)
+    * @return integer
    **/
    function getTotalMails() {
 
@@ -1398,11 +1394,11 @@ class MailCollector  extends CommonDBTM {
    /**
     * Private function : Recursivly get attached documents
     *
-    * @param $uid          message uid
-    * @param $path         temporary path
-    * @param $maxsize      of document to be retrieved
-    * @param $structure    of the message or part
-    * @param part|string $part part for recursive
+    * @param string  $uid       message uid
+    * @param string  $path      temporary path
+    * @param integer $maxsize   of document to be retrieved
+    * @param object  $structure of the message or part
+    * @param string  $part      for recursive
     *
     * Result is stored in $this->files
     */
@@ -1537,9 +1533,9 @@ class MailCollector  extends CommonDBTM {
    /**
     * Public function : get attached documents in a mail
     *
-    * @param $uid       UID of the message
-    * @param $path      temporary path
-    * @param $maxsize   of document to be retrieved
+    * @param string $uid       UID of the message
+    * @param string $path      temporary path
+    * @param integer $maxsize   of document to be retrieved
     *
     * @return array containing extracted filenames in file/_tmp
    **/
@@ -1686,7 +1682,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $task for log
+    * @param CronTask $task for log
     *
     * @return integer
     */

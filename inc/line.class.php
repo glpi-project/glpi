@@ -51,21 +51,11 @@ class Line extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since version 0.84
-    **/
    function useDeletedToLockIfDynamic() {
       return false;
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    * @param array $options
-    * @return array
-    */
    function defineTabs($options = []) {
 
       $ong = [];

@@ -213,11 +213,11 @@ class RuleRightCollection extends RuleCollection {
     *
     * @see RuleCollection::prepareInputDataForProcess()
     *
-    * @param $input  input datas
-    * @param $params extra parameters given
+    * @param array $input  data
+    * @param array $params given
     *
-    * @return an array of attributes
-   **/
+    * @return array
+    */
    function prepareInputDataForProcess($input, $params) {
 
       $rule_parameters = [];

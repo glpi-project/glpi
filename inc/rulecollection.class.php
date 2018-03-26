@@ -1811,7 +1811,7 @@ class RuleCollection extends CommonDBTM {
     * Get rulecollection classname by giving his itemtype
     *
     * @param $itemtype                 itemtype
-    * @param bool|check $check_dictionnary_type check if the itemtype is a dictionnary or not
+    * @param boolean|check $check_dictionnary_type check if the itemtype is a dictionnary or not
     *                                  (false by default)
     * @return the rulecollection class or null
     */
@@ -1881,11 +1881,6 @@ class RuleCollection extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    * @param array $options
-    * @return array
-    */
    function defineTabs($options = []) {
 
       $ong               = [];

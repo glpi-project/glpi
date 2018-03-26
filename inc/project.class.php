@@ -57,13 +57,6 @@ class Project extends CommonDBTM {
    protected $team                     = [];
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-    *
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Project', 'Projects', $nb);
    }
@@ -74,11 +67,6 @@ class Project extends CommonDBTM {
    }
 
 
-   /**
-    * Is the current user have right to show the current project ?
-    *
-    * @return boolean
-   **/
    function canViewItem() {
 
       if (!Session::haveAccessToEntity($this->getEntityID())) {
@@ -192,6 +180,11 @@ class Project extends CommonDBTM {
    }
 
 
+   /**
+    * @see CommonGLPI::getAdditionalMenuContent()
+    *
+    * @return boolean|mixed
+    */
    static function getAdditionalMenuContent() {
 
       // No view to project by right on tasks add it
@@ -212,6 +205,11 @@ class Project extends CommonDBTM {
    }
 
 
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @return array
+    */
    static function getAdditionalMenuOptions() {
 
       return ['task' => ['title' => __('My tasks'),
@@ -221,7 +219,9 @@ class Project extends CommonDBTM {
 
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
-   **/
+    *
+    * @return array|boolean
+    */
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
@@ -763,7 +763,7 @@ class Project extends CommonDBTM {
 
    /**
     * @param integer $output_type (default 'Search::HTML_OUTPUT')
-    * @param id|string $mass_id id of the form to check all (default '')
+    * @param string $mass_id id of the form to check all (default '')
     */
    static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
 

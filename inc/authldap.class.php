@@ -158,10 +158,6 @@ class AuthLDAP extends CommonDBTM {
       }
    }
 
-   /**
-    * @param array $input
-    * @return array|bool
-    */
    function prepareInputForUpdate($input) {
 
       if (isset($input["rootdn_passwd"])) {
@@ -3234,7 +3230,8 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Build LDAP filter
     *
-    * @param AuthLDAP|resource $authldap AuthLDAP object
+    * @param AuthLDAP $authldap object
+    *
     * @return string
     */
    static function buildLdapFilter(AuthLdap $authldap) {
@@ -3346,9 +3343,6 @@ class AuthLDAP extends CommonDBTM {
       return 0;
    }
 
-   /**
-    * @param integer $history
-    */
    function post_updateItem($history = 1) {
       global $DB;
 

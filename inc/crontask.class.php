@@ -706,9 +706,10 @@ class CronTask extends CommonDBTM{
    /**
     * Dropdown of state
     *
-    * @param $name     select name
-    * @param default|int $value default value (default 0)
-    * @param bool|display $display display or get string (true by default)
+    * @param string  $name    select name
+    * @param integer $value   default value (default 0)
+    * @param boolean $display display or get string (true by default)
+    *
     * @return integer|string
     */
    static function dropdownState($name, $value = 0, $display = true) {
@@ -1256,9 +1257,6 @@ class CronTask extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -1271,11 +1269,6 @@ class CronTask extends CommonDBTM{
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -1456,7 +1449,7 @@ class CronTask extends CommonDBTM{
    /**
     * Garbage collector for expired file session
     *
-    * @param $task for log
+    * @param CronTask $task for log
     *
     * @return integer
     */
@@ -1496,7 +1489,7 @@ class CronTask extends CommonDBTM{
     *
     * @since version 0.85
     *
-    * @param $task for log
+    * @param CronTask $task for log
     *
     * @return integer
     */
@@ -1560,7 +1553,7 @@ class CronTask extends CommonDBTM{
    /**
     * Garbage collector for cleaning graph files
     *
-    * @param $task for log
+    * @param CronTask $task for log
     *
     * @return integer
     */
@@ -1596,7 +1589,7 @@ class CronTask extends CommonDBTM{
    /**
     * Garbage collector for cleaning tmp files
     *
-    * @param $task for log
+    * @param CronTask $task for log
     *
     * @return integer
     */
@@ -1659,7 +1652,7 @@ class CronTask extends CommonDBTM{
    /**
     * Cron job to check if a new version is available
     *
-    * @param $task for log
+    * @param CronTask $task for log
     *
     * @return integer
     */
@@ -1675,7 +1668,7 @@ class CronTask extends CommonDBTM{
    /**
     * Check zombie crontask
     *
-    * @param $task for log
+    * @param CronTask $task for log
     *
     * @return integer
     */

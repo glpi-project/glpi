@@ -239,11 +239,6 @@ class Contact extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -262,11 +257,6 @@ class Contact extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-    *
-    * @since version 0.85
-   **/
    function getRawName() {
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {

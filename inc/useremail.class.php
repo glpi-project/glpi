@@ -230,13 +230,6 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getNameField
-    *
-    * @return string
-   **/
    static function getNameField() {
       return 'email';
    }

@@ -104,11 +104,11 @@ class Search {
     *
     * @since version 0.85
     *
-    * @param $itemtype            item type to manage
-    * @param $params              search params passed to prepareDatasForSearch function
-    * @param $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
+    * @param string $itemtype            item type to manage
+    * @param array $params              search params passed to prepareDatasForSearch function
+    * @param array $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
     *
-    * @return data array
+    * @return array
    **/
    static function getDatas($itemtype, $params, array $forcedisplay = []) {
 
@@ -121,17 +121,19 @@ class Search {
 
 
    /**
-    * Prepare search criteria to be used for a search
+    * Prepare search criteria to be used for a search(include criteria and others needed
+    * informations)
     *
     * @since version 0.85
     *
-    * @param $itemtype            item type
-    * @param $params        array of parameters
-    *                             may include sort, order, start, list_limit, deleted, criteria, metacriteria
-    * @param $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
+    * @param string $itemtype     item type
+    * @param array  $params       may include sort, order, start, list_limit, deleted, criteria,
+    *                             metacriteria
+    * @param array  $forcedisplay columns to display (default empty = empty use display pref and
+    *                             search criterias)
     *
-    * @return array prepare to be used for a search (include criterias and others needed informations)
-   **/
+    * @return array
+    */
    static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = []) {
       global $CFG_GLPI;
 
@@ -307,10 +309,9 @@ class Search {
     *
     * @since version 0.85
     *
-    * @param $data    array of search datas prepared to generate SQL
+    * @param array $data     of search data prepared to generate SQL
     *
-    * @return void
-   **/
+    */
    static function constructSQL(array &$data) {
       global $CFG_GLPI;
 
@@ -5120,8 +5121,8 @@ class Search {
     *
     * @param $itemtype                 item type to manage
     * @param $params          array    params to parse
-    * @param bool|Use $usesession Use datas save in session (true by default)
-    * @param bool|force $forcebookmark force trying to load parameters from default bookmark:
+    * @param boolean|Use $usesession Use datas save in session (true by default)
+    * @param boolean|force $forcebookmark force trying to load parameters from default bookmark:
     *                                  used for global search (false by default)
     * @return parsed params array
     */
@@ -5364,13 +5365,13 @@ class Search {
 
 
    /**
-    * Get the SEARCH_OPTION array
+    * Get the SEARCH_OPTION array of search options for the given item type
     *
-    * @param $itemtype
-    * @param $withplugins boolean get search options from plugins (true by default)
+    * @param string $itemtype
+    * @param boolean   $withplugins get search options from plugins (true by default)
     *
-    * @return the reference to  array of search options for the given item type
-   **/
+    * @return mixed
+    */
    static function &getOptions($itemtype, $withplugins = true) {
       global $CFG_GLPI;
 
@@ -5757,13 +5758,14 @@ class Search {
    /**
     * Print generic Header Column
     *
-    * @param $type            display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-    * @param $value           value to display
-    * @param &$num            column number
-    * @param link|string $linkto link display element (HTML specific) (default '')
-    * @param integer|is $issort is the sort column ? (default 0)
-    * @param order|string $order order type ASC or DESC (defaut '')
-    * @param $options  string options to add (default '')
+    * @param integer $type    display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param string  $value   to display
+    * @param integer &$num    column number
+    * @param string  $linkto  link display element (HTML specific) (default '')
+    * @param integer $issort  is the sort column ? (default 0)
+    * @param string  $order   order type ASC or DESC (defaut '')
+    * @param string  $options to add (default '')
+    *
     * @return string to display
     */
    static function showHeaderItem($type, $value, &$num, $linkto = "", $issort = 0, $order = "",
@@ -6138,9 +6140,10 @@ class Search {
    /**
     * Print generic new line
     *
-    * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-    * @param bool|is $odd is it a new odd line ? (false by default)
-    * @param bool|is $is_deleted is it a deleted search ? (false by default)
+    * @param integer $type       (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param boolean $odd        is it a new odd line ? (false by default)
+    * @param boolean $is_deleted is it a deleted search ? (false by default)
+    *
     * @return string to display
     */
    static function showNewLine($type, $odd = false, $is_deleted = false) {
@@ -6283,11 +6286,12 @@ class Search {
    /**
     * Create SQL search condition
     *
-    * @param $field           name (should be ` protected)
-    * @param $val    string   value to search
-    * @param $not    boolean  is a negative search ? (false by default)
-    * @param string|with $link with previous criteria (default 'AND')
-    * @return Search SQL string
+    * @param string  $field name (should be ` protected)
+    * @param string  $val   value to search
+    * @param boolean $not   is a negative search ? (false by default)
+    * @param string  $link  with previous criteria (default 'AND')
+    *
+    * @return string
     */
    static function makeTextCriteria ($field, $val, $not = false, $link = 'AND') {
 

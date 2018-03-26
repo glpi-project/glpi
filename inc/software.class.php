@@ -337,11 +337,6 @@ class Software extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -372,14 +367,6 @@ class Software extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -886,8 +873,9 @@ class Software extends CommonDBTM {
    /**
     * Put software in dustbin because it's been removed by GLPI software dictionnary
     *
-    * @param $ID        the ID of the software to put in dustbin
-    * @param string|the $comment the comment to add to the already existing software's comment (default '')
+    * @param integer $ID      of the software to put in dustbin
+    * @param string  $comment to add to the already existing software's comment (default '')
+    *
     * @return boolean (success)
     */
    function putInTrash($ID, $comment = '') {

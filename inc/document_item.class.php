@@ -127,9 +127,7 @@ class Document_Item extends CommonDBRelation{
 
    /**
     * @since version 0.90.2
-    *
-    * @see CommonDBTM::pre_deleteItem()
-   **/
+    */
    function pre_deleteItem() {
       global $DB;
 
@@ -181,9 +179,7 @@ class Document_Item extends CommonDBRelation{
 
    /**
     * @since version 0.83
-    *
-    * @see CommonDBTM::post_purgeItem()
-   **/
+    */
    function post_purgeItem() {
 
       if ($this->fields['itemtype'] == 'Ticket') {
@@ -319,10 +315,10 @@ class Document_Item extends CommonDBRelation{
     *
     * @since version 0.84
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
-    * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    * @param string  $itemtype    itemtype of the item
+    * @param integer $oldid       ID of the item to clone
+    * @param integer $newid       ID of the item cloned
+    * @param string  $newitemtype equal to $itemtype if empty (default '')
     */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
@@ -348,9 +344,10 @@ class Document_Item extends CommonDBRelation{
     *
     * @since version 0.84
     *
-    * @param $doc Document object
+    * @param Document $doc
     *
-   **/
+    * @return boolean
+    */
    static function showForDocument(Document $doc) {
       global $DB, $CFG_GLPI;
 

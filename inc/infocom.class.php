@@ -65,11 +65,10 @@ class Infocom extends CommonDBChild {
     *
     * @since version 0.85
     *
-    * @param $item  an object or a string
+    * @param object|string $item
     *
-    * @return true if $object is an object that can have InfoCom
-    *
-   **/
+    * @return boolean
+    */
    static function canApplyOn($item) {
       global $CFG_GLPI;
 
@@ -260,9 +259,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
       if (!$this->getFromDBforDevice($input['itemtype'], $input['items_id'])) {
@@ -382,9 +378,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       //Check if one or more dates needs to be updated
@@ -620,7 +613,7 @@ class Infocom extends CommonDBChild {
     *
     * @param $name      select name
     * @param default|int $value default value (default 0)
-    * @param bool|display $display display or get string (true by default)
+    * @param boolean|display $display display or get string (true by default)
     * @return integer|string
     */
    static function dropdownAmortType($name, $value = 0, $display = true) {
@@ -1895,10 +1888,10 @@ class Infocom extends CommonDBChild {
    /**
     * Duplicate infocoms from an item template to its clone
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
-    * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    * @param string  $itemtype    of the item
+    * @param integer $oldid       ID of the item to clone
+    * @param integer $newid       ID of the item cloned
+    * @param string  $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
     */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
@@ -1932,13 +1925,13 @@ class Infocom extends CommonDBChild {
    /**
     * Get date using a begin date and a period in month
     *
-    * @param $from            date     begin date
+    * @param $from            string     begin date
     * @param $addwarranty     integer  period in months
     * @param $deletenotice    integer  period in months of notice (default 0)
     * @param $color           boolean  if show expire date in red color (false by default)
     *
-    * @return expiration date string
-   **/
+    * @return string expiration date
+    */
    static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false) {
 
       // Life warranty
@@ -1962,10 +1955,11 @@ class Infocom extends CommonDBChild {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-    * @param array $actions
-    * @param string $itemtype
-    * @param integer $is_deleted
+    * @see   CommonDBTM::getMassiveActionsForItemtype()
+    *
+    * @param array           $actions
+    * @param string          $itemtype
+    * @param integer         $is_deleted
     * @param CommonDBTM|null $checkitem
     */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
@@ -1980,14 +1974,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

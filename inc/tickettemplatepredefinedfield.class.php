@@ -71,10 +71,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
 
    /**
-    * @see CommonDBTM::getRawName()
-    *
     * @since version 0.85
-   **/
+    */
    function getRawName() {
 
       $tt     = new TicketTemplate();
@@ -159,7 +157,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     * @param $ID                    integer  the template ID
     * @param $withtypeandcategory   boolean   with type and category (false by default)
     *
-    * @return an array of predefined fields
+    * @return array of predefined fields
    **/
    function getPredefinedFields($ID, $withtypeandcategory = false) {
       global $DB;

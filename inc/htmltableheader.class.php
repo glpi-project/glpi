@@ -79,11 +79,10 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $name      string   the name of the header
-    * @param $content            see HTMLTableEntity#__construct()
-    * @param $father             HTMLTableHeader object:
-    *                            the father of the current column (default NULL)
-   **/
+    * @param string               $name    the name of the header
+    * @param mixed                $content see HTMLTableEntity#__construct()
+    * @param HTMLTableHeader|null $father  object of the current column (default NULL)
+    */
    function __construct($name, $content, HTMLTableHeader $father = null) {
 
       parent::__construct($content);
@@ -149,8 +148,8 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $with_content do we displaye the content ?
-    * @param bool|main $main_header main header (from table) or secondary (from group) ? (true by default)
+    * @param boolean $with_content do we displaye the content ?
+    * @param boolean $main_header main header (from table) or secondary (from group) ? (true by default)
     */
    function displayTableHeader($with_content, $main_header = true) {
 

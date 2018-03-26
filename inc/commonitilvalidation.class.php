@@ -385,8 +385,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    /**
     * @see CommonDBConnexity::getHistoryChangeWhenUpdateField
-    * @param the $field
-    * @return array|bool
+    *
+    * @param string $field
+    *
+    * @return array|boolean
     */
    function getHistoryChangeWhenUpdateField($field) {
 
@@ -407,9 +409,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::getHistoryNameForItem
-   **/
    function getHistoryNameForItem(CommonDBTM $item, $case) {
 
       $username = getUserName($this->fields["users_id_validate"]);
@@ -457,15 +456,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Dropdown of validation status
     *
-    * @param $name          select name
-    * @param $options array of possible options:
-    *      - value    : default value (default waiting)
-    *      - all      : boolean display all (default false)
-    *      - global   : for global validation (default false)
-    *      - display  : boolean display or get string ? (default true)
+    * @param string $name    select name
+    * @param array  $options of possible options:
+    *                        - value    : default value (default waiting)
+    *                        - all      : boolean display all (default false)
+    *                        - global   : for global validation (default false)
+    *                        - display  : boolean display or get string ? (default true)
     *
     * @return integer|string
-   **/
+    */
    static function dropdownStatus($name, $options = []) {
 
       $p['value']    = self::WAITING;
@@ -490,7 +489,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get Ticket validation status Name
     *
-    * @param $value status ID
+    * @param integer $value status ID
     *
     * @return integer|mixed
     */
@@ -505,7 +504,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get Ticket validation status Color
     *
-    * @param $value status ID
+    * @param integer $value status ID
     *
     * @return string
     */
@@ -604,8 +603,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the number of validations attached to an item having a specified status
     *
-    * @param $items_id   integer  item ID
-    * @param $status              status
+    * @param integer $items_id item ID
+    * @param string  $status
     *
     * @return boolean|mixed
     */
@@ -678,13 +677,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    * @param MassiveAction $ma
-    * @return boolean
-    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -697,14 +689,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -753,7 +737,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Print the validation list into item
     *
-    * @param $item class
+    * @param object $item
     *
     * @return boolean
     */
@@ -1313,11 +1297,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   /**
-    * @see commonDBTM::getRights()
-    * @param string $interface
-    * @return array
-    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -1432,8 +1411,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $item CommonITILObject
     *
-    * @return validation status
-   **/
+    * @return integer validation status
+    */
    static function computeValidationStatus(CommonITILObject $item) {
 
       $validation_status  = self::WAITING;
@@ -1477,10 +1456,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the validation statistics
     *
-    * @param $tID tickets id
+    * @param integer $tID tickets id
     *
-    * @return statistics array
-   **/
+    * @return string
+    */
    static function getValidationStats($tID) {
 
       $tab = self::getAllStatusArray();
@@ -1568,7 +1547,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @since version 0.85
     *
-    * @return an array
+    * @return array
     **/
    static function getCanValidationStatusArray() {
       return [self::NONE, self::ACCEPTED];
@@ -1580,7 +1559,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @since version 0.85
     *
-    * @return an array
+    * @return array
     **/
    static function getAllValidationStatusArray() {
       return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];

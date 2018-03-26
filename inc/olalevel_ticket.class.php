@@ -112,7 +112,7 @@ class OlaLevel_Ticket extends CommonDBTM {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : CronTask object
+    * @param CronTask $task object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/

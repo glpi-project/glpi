@@ -956,11 +956,11 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $id                 HTML ID of the progress bar
-    * @param $options    array   progress status
-    *                    - create    do we have to create it ?
-    *                    - message   add or change the message
-    *                    - percent   current level
+    * @param string $id      HTML ID of the progress bar
+    * @param array  $options progress status
+    *                        - create    do we have to create it ?
+    *                        - message   add or change the message
+    *                        - percent   current level
     *
     *
     */
@@ -3952,15 +3952,15 @@ class Html {
    /**
     * create a minimal form for simple action
     *
-    * @param string $action     URL to call on submit
-    * @param string $btname     button name (maybe if name <> value)
-    * @param string $btlabel    button label
-    * @param array  $fields     field name => field  value
-    * @param string $btimage    button image uri (optional)   (default '')
-    *                           If image name starts with "fa-", il will be turned into
-    *                           a font awesome element rather than an image.
-    * @param string $btoption   optional button option        (default '')
-    * @param string $confirm    optional confirm message      (default '')
+    * @param string       $action   URL to call on submit
+    * @param string|array $btname   button name (maybe if name <> value)
+    * @param string       $btlabel  button label
+    * @param array        $fields   field name => field  value
+    * @param string       $btimage  button image uri (optional)   (default '')
+    *                               If image name starts with "fa-", il will be turned into
+    *                               a font awesome element rather than an image.
+    * @param string       $btoption optional button option        (default '')
+    * @param string       $confirm  optional confirm message      (default '')
     *
     * @since version 0.84
     *
@@ -4030,13 +4030,13 @@ class Html {
    /**
     * create a minimal form for simple action
     *
-    * @param string $action URL to call on submit
-    * @param string $btname button name
-    * @param string $btlabel button label
-    * @param array $fields field name => field  value
-    * @param string $btimage button image uri (optional) (default '')
-    * @param string $btoption optional button option (default '')
-    * @param string $confirm optional confirm message (default '')
+    * @param string       $action   URL to call on submit
+    * @param string|array $btname   button name
+    * @param string       $btlabel  button label
+    * @param array        $fields   field name => field  value
+    * @param string       $btimage  button image uri (optional) (default '')
+    * @param string       $btoption optional button option (default '')
+    * @param string       $confirm  optional confirm message (default '')
     *
     * @since version 0.83.3
     */

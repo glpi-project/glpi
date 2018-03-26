@@ -391,12 +391,11 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get an Object ID by its MAC address (only if one result is found in the entity)
     *
-    * @param $value  the mac address
-    * @param $entity the entity to look for
+    * @param string  $value  the mac address
+    * @param integer $entity the entity to look for
     *
-    * @return an array containing the object ID
-    *         or an empty array is no value of serverals ID where found
-   **/
+    * @return array
+    */
    static function getUniqueItemByMac($value, $entity) {
 
       $macs_with_items = self::getItemsByMac($value);
@@ -432,7 +431,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * In case of NetworkPort attached to a network card, list the fields that must be duplicate
     * from the network card to the network port (mac address, port type, ...)
     *
-    * @return an array with SQL field (for instance : device.`type`) => form field (type)
+    * @return array with SQL field (for instance : device.`type`) => form field (type)
    **/
    function getNetworkCardInterestingFields() {
       return [];
@@ -617,10 +616,10 @@ class NetworkPortInstantiation extends CommonDBChild {
     * NetworkPortAlias and NetworkPortAggregate ara based on other physical network ports
     * (Ethernet or Wifi). This method Allows us to select which one to select.
     *
-    * @param $recursiveItems
-    * @param $origin          NetworkPortAlias are based on one NetworkPort wherever
+    * @param array  $recursiveItems
+    * @param string $origin   NetworkPortAlias are based on one NetworkPort wherever
     *                         NetworkPortAggregate are based on several NetworkPort.
-   **/
+    */
    function showNetworkPortSelector($recursiveItems, $origin) {
       global $DB;
 
@@ -745,8 +744,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Display a connection of a networking port
     *
-    * @param $netport      to be displayed
-    * @param $edit         boolean permit to edit ? (false by default)
+    * @param NetworkPort $netport to be displayed
+    * @param boolean     $edit    permit to edit ? (false by default)
     *
     * @return boolean
     */

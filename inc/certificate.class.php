@@ -47,17 +47,12 @@ class Certificate extends CommonDBTM {
    static $rightname           = "certificate";
    protected $usenotepad       = true;
 
-   /**
-    * @param integer $nb
-    * @return string|translated
-    */
+
    static function getTypeName($nb = 0) {
       return _n('Certificate', 'Certificates', $nb);
    }
 
-   /**
-    * Clean certificate items
-    */
+
    function cleanDBonPurge() {
       $cert_item = new Certificate_Item();
       $cert_item->deleteByCriteria(['certificates_id' => $this->fields['id']]);
@@ -312,9 +307,6 @@ class Certificate extends CommonDBTM {
       return $ong;
    }
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && ($input["id"] > 0)) {
@@ -515,8 +507,6 @@ class Certificate extends CommonDBTM {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getSpecificMassiveActions()
     */
    function getSpecificMassiveActions($checkitem = null) {
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -536,8 +526,10 @@ class Certificate extends CommonDBTM {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::showMassiveActionsSubForm()
+    * @see   CommonDBTM::showMassiveActionsSubForm()
+    *
     * @param MassiveAction $ma
+    *
     * @return boolean|false
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
@@ -569,10 +561,11 @@ class Certificate extends CommonDBTM {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+    * @see   CommonDBTM::processMassiveActionsForOneItemtype()
+    *
     * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
+    * @param CommonDBTM    $item
+    * @param array         $ids
     */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma,
                                                        CommonDBTM $item,

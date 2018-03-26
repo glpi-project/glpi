@@ -242,12 +242,12 @@ class CommonGLPI {
 
 
    /**
-    * get menu content
+    * get an array of menu content or false on empty
     *
     * @since version 0.85
     *
-    * @return array array for menu
-   **/
+    * @return array|boolean
+    */
    static function getMenuContent() {
 
       $menu       = [];
@@ -318,7 +318,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array array for menu
+    * @return boolean
    **/
    static function getAdditionalMenuContent() {
       return false;
@@ -330,7 +330,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array array of forbidden actions
+    * @return array of forbidden actions
    **/
    static function getForbiddenActionsForMenu() {
       return [];
@@ -342,7 +342,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array array of additional options
+    * @return boolean
    **/
    static function getAdditionalMenuOptions() {
       return false;
@@ -354,7 +354,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array array of additional options
+    * @return boolean
    **/
    static function getAdditionalMenuLinks() {
       return false;
@@ -493,8 +493,8 @@ class CommonGLPI {
     * @param string  $text text to display
     * @param integer $nb   number of items (default 0)
     *
-    *  @return array array containing the onglets
-   **/
+    * @return string containing the tabs
+    */
    static function createTabEntry($text, $nb = 0) {
 
       if ($nb) {
@@ -1084,7 +1084,7 @@ class CommonGLPI {
     *
     * @param string $sub_itemtype sub itemtype if needed (default '')
     *
-    * @return void
+    * @return mixed
    **/
    static function getDisplayOptions($sub_itemtype = '') {
 
@@ -1232,7 +1232,7 @@ class CommonGLPI {
     * @since version 0.85
     *
     * @param integer $error error type see define.php for ERROR_*
-    * @param istring|string $object string to use instead of item link (default '')
+    * @param string $object to use instead of item link (default '')
     * @return string
     */
    function getErrorMessage($error, $object = '') {

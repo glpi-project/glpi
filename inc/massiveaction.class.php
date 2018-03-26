@@ -1252,14 +1252,15 @@ class MassiveAction {
     * Set an item as done. If the delay is too long, then reload the page to continue the action.
     * Update the progress if necessary.
     *
-    * @param string  $itemtype the type of the item that has been done
-    * @param integer $id       id or array of ids of the item(s) that have been done.
-    * @param integer $result   possible values:
-    *                          self::NO_ACTION in case of no specific action (used internally for older actions)
-    *                          MassiveAction::ACTION_OK everything is OK for the action
-    *                          MassiveAction::ACTION_KO something went wrong for the action
-    *                          MassiveAction::ACTION_NORIGHT not anough right for the action
-   **/
+    * @param string        $itemtype the type of the item that has been done
+    * @param integer|array $id       of the item(s) that have been done.
+    * @param integer       $result   possible values:
+    *                                self::NO_ACTION in case of no specific action (used internally
+    *                                for older actions) MassiveAction::ACTION_OK everything is OK
+    *                                for the action MassiveAction::ACTION_KO something went wrong
+    *                                for the action MassiveAction::ACTION_NORIGHT not anough right
+    *                                for the action
+    **/
    function itemDone($itemtype, $id, $result) {
 
       $this->current_itemtype = $itemtype;

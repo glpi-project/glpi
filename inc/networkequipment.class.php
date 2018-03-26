@@ -53,13 +53,6 @@ class NetworkEquipment extends CommonDBTM {
    protected $usenotepad               = true;
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb  integer  number of item in the type (default 0)
-    *
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Network device', 'Network devices', $nb);
    }
@@ -95,9 +88,7 @@ class NetworkEquipment extends CommonDBTM {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::cleanDBonPurge()
-   **/
+    */
    function cleanDBonPurge() {
 
       $ip = new Item_Problem();
@@ -199,7 +190,7 @@ class NetworkEquipment extends CommonDBTM {
     *
     * Overloaded from CommonDBTM
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB;
@@ -406,11 +397,6 @@ class NetworkEquipment extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();

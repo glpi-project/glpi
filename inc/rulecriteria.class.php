@@ -68,8 +68,6 @@ class RuleCriteria extends CommonDBChild {
 
    /**
     * @since version 0.84.3
-    *
-    * @see CommonDBTM::post_getFromDB()
     */
    function post_getFromDB() {
 
@@ -83,21 +81,11 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
-   /**
-    * Get title used in rule
-    *
-    * @param $nb  integer  for singular or plural (default 0)
-    *
-    * @return Title of the rule
-   **/
    static function getTypeName($nb = 0) {
       return _n('Criterion', 'Criteria', $nb);
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
    function getRawName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
@@ -109,9 +97,7 @@ class RuleCriteria extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBChild::post_addItem()
-   **/
+    */
    function post_addItem() {
 
       parent::post_addItem();
@@ -124,10 +110,8 @@ class RuleCriteria extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::post_purgeItem()
-   **/
+    * @since version 0.
+    */
    function post_purgeItem() {
 
       parent::post_purgeItem();
@@ -313,9 +297,9 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Get all criterias for a given rule
     *
-    * @param $rules_id the rule ID
+    * @param integer $rules_id the rule ID
     *
-    * @return an array of RuleCriteria objects
+    * @return array of RuleCriteria objects
    **/
    function getRuleCriterias($rules_id) {
       global $DB;

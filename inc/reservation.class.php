@@ -51,19 +51,11 @@ class Reservation extends CommonDBChild {
    static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-   /**
-    * @param $nb  integer  for singular or plural
-    *
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Reservation', 'Reservations', $nb);
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
@@ -108,9 +100,6 @@ class Reservation extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       $item = 0;
@@ -145,9 +134,6 @@ class Reservation extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
@@ -163,9 +149,6 @@ class Reservation extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // Error on previous added reservation on several add

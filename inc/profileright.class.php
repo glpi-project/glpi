@@ -270,7 +270,9 @@ class ProfileRight extends CommonDBChild {
     * To avoid log out and login when rights change (very useful in debug mode)
     *
     * @see CommonDBChild::post_updateItem()
-   **/
+    *
+    * @param integer $history
+    */
    function post_updateItem($history = 1) {
 
       // update current profile
@@ -320,9 +322,7 @@ class ProfileRight extends CommonDBChild {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getLogTypeID()
-   **/
+    */
    function getLogTypeID() {
       return ['Profile', $this->fields['profiles_id']];
    }

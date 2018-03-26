@@ -352,9 +352,9 @@ class Contract_Item extends CommonDBRelation{
     *
     * @since version 0.84
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
+    * @param string  $itemtype type of the item to clone
+    * @param integer $oldid    ID of the item to clone
+    * @param integer $newid    ID of the item cloned
     * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
     */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {

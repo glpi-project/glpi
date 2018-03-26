@@ -150,10 +150,10 @@ class RuleTicket extends Rule {
 
 
    /**
-    * @param $output
-    * @param $params
+    * @param array $output
+    * @param array $params
     *
-    * @return the
+    * @return array
     */
    function executeActions($output, $params) {
 

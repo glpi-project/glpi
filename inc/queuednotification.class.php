@@ -72,12 +72,6 @@ class QueuedNotification extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @param boolean $is_deleted
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null, $is_deleted = false) {
 
       $isadmin = static::canUpdate();
@@ -91,12 +85,6 @@ class QueuedNotification extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       switch ($ma->getAction()) {
@@ -600,7 +588,7 @@ class QueuedNotification extends CommonDBTM {
    /**
     * Cron action on queued notification: clean notification queue
     *
-    * @param CommonDBTM $task for log (default NULL)
+    * @param CronTask|null $task for log (default NULL)
     *
     * @return integer either 0 or 1
    **/

@@ -187,7 +187,9 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @see CommonDBTM::prepareInputForUpdate
+    *
     * @param array $input
+    *
     * @return array|bool
     */
    function prepareInputForUpdate($input) {
@@ -202,10 +204,6 @@ class NetworkPort extends CommonDBChild {
       return $input;
    }
 
-   /**
-    * @see CommonDBTM::post_updateItem
-    * @param integer $history
-    */
    function post_updateItem($history = 1) {
       global $DB;
 
@@ -375,9 +373,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd
-    */
    function prepareInputForAdd($input) {
 
       if (isset($input["logical_number"]) && (strlen($input["logical_number"]) == 0)) {
@@ -396,9 +391,6 @@ class NetworkPort extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
-   /**
-    * @see CommonDBTM::post_addItem
-    */
    function post_addItem() {
       $this->updateDependencies(!$this->input['_no_history']);
    }
@@ -990,11 +982,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = $checkitem->canUpdate();
@@ -1104,10 +1091,10 @@ class NetworkPort extends CommonDBChild {
     *
     * @since version 0.84
     *
-    * @param $itemtype     the type of the item that was clone
-    * @param $old_items_id the id of the item that was clone
-    * @param $new_items_id the id of the item after beeing cloned
-   **/
+    * @param string  $itemtype     the type of the item that was clone
+    * @param integer $old_items_id the id of the item that was clone
+    * @param integer $new_items_id the id of the item after beeing cloned
+    */
    static function cloneItem($itemtype, $old_items_id, $new_items_id) {
       global $DB;
 

@@ -540,8 +540,7 @@ class Notification extends CommonDBTM {
 
    /**
     * @since version 0.90.4
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    */
    function prepareInputForAdd($input) {
 
       if (isset($input["itemtype"]) && empty($input["itemtype"])) {
@@ -556,8 +555,12 @@ class Notification extends CommonDBTM {
 
    /**
     * @since version 0.90.4
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    * @see   CommonDBTM::prepareInputForUpdate()
+    *
+    * @param array $input
+    *
+    * @return array|bool
+    */
    function prepareInputForUpdate($input) {
 
       if (isset($input["itemtype"]) && empty($input["itemtype"])) {

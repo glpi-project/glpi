@@ -148,11 +148,13 @@ class RuleImportEntity extends Rule {
    /**
     * @since version 0.84
     *
-    * @see Rule::getAdditionalCriteriaDisplayPattern()
-    * @param the $ID
-    * @param condition $condition
-    * @param the $pattern
-    * @return a|bool|String
+    * @see   Rule::getAdditionalCriteriaDisplayPattern()
+    *
+    * @param integer $ID
+    * @param string  $condition
+    * @param string  $pattern
+    *
+    * @return boolean|String
     */
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 

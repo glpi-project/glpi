@@ -51,12 +51,14 @@ class NetworkPortDialup extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-    * @param HTMLTableGroup $group
-    * @param HTMLTableSuperHeader $super
+    *
+    * @param HTMLTableGroup            $group
+    * @param HTMLTableSuperHeader      $super
     * @param HTMLTableSuperHeader|null $internet_super
-    * @param HTMLTableHeader|null $father
-    * @param array $options
-    * @return null|the
+    * @param HTMLTableHeader|null      $father
+    * @param array                     $options
+    *
+    * @return null
     */
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,

@@ -124,8 +124,6 @@ class Contract extends CommonDBTM {
 
    /**
     * @since version 0.83.3
-    *
-    * @see CommonDBTM::prepareInputForAdd()
     */
    function prepareInputForAdd($input) {
 
@@ -576,11 +574,6 @@ class Contract extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -1661,15 +1654,6 @@ class Contract extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-    * @param array $actions
-    * @param string $itemtype
-    * @param integer $is_deleted
-    * @param CommonDBTM|null $checkitem
-    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
       global $CFG_GLPI;

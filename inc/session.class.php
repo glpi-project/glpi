@@ -251,10 +251,11 @@ class Session {
    }
 
 
-   /** Add an item to the navigate through search results list
+   /**
+    * Add an item to the navigate through search results list
     *
-    * @param $itemtype  device type
-    * @param $ID        ID of the item
+    * @param string  $itemtype device type
+    * @param integer $ID       of the item
     */
    static function addToNavigateListItems($itemtype, $ID) {
       $_SESSION['glpilistitems'][$itemtype][] = $ID;
@@ -839,8 +840,9 @@ class Session {
    /**
     * Check if you could access (read) to the entity of id = $ID
     *
-    * @param $ID                    ID of the entity
-    * @param boolean|integer $is_recursive boolean  if recursive item (default 0)
+    * @param integer         $ID           of the entity
+    * @param boolean|integer $is_recursive item (default 0)
+    *
     * @return boolean : read access to entity
     */
    static function haveAccessToEntity($ID, $is_recursive = 0) {

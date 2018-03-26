@@ -232,11 +232,11 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get first working hour of a day
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
+    * @param integer $calendars_id id of the calendar
+    * @param integer $day          number
     *
-    * @return time value
-   **/
+    * @return boolean|mixed
+    */
    static function getFirstWorkingHour($calendars_id, $day) {
       global $DB;
 
@@ -259,11 +259,11 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get last working hour of a day
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
+    * @param integer $calendars_id id of the calendar
+    * @param integer $day          number
     *
-    * @return time value
-   **/
+    * @return boolean|mixed
+    */
    static function getLastWorkingHour($calendars_id, $day) {
       global $DB;
 
@@ -286,12 +286,12 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Is the hour passed is a working hour ?
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
-    * @param $hour            hour (Format HH:MM::SS)
+    * @param integer $calendars_id id of the calendar
+    * @param integer $day          number
+    * @param string  $hour         hour (Format HH:MM::SS)
     *
     * @return boolean
-   **/
+    */
    static function isAWorkingHour($calendars_id, $day, $hour) {
       global $DB;
 

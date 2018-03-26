@@ -45,8 +45,6 @@ class TicketTask  extends CommonITILTask {
 
    /**
     * @since version 0.84
-    * @param integer $nb
-    * @return string
     */
    static function getTypeName($nb = 0) {
       return _n('Ticket task', 'Ticket tasks', $nb);

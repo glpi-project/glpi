@@ -420,7 +420,7 @@ class TicketRecurrent extends CommonDropdown {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : crontask object
+    * @param CronTask $task object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/

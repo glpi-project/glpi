@@ -63,9 +63,6 @@ class ProjectTeam extends CommonDBRelation {
    static public $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
-   /**
-    * @see CommonDBTM::getNameField()
-   **/
    static function getNameField() {
       return 'id';
    }

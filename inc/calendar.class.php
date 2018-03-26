@@ -78,9 +78,6 @@ class Calendar extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -96,9 +93,7 @@ class Calendar extends CommonDropdown {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -121,9 +116,7 @@ class Calendar extends CommonDropdown {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -353,7 +346,7 @@ class Calendar extends CommonDropdown {
     *
     * @since version 0.84
     *
-    * @param $time    time  time to check
+    * @param integer $time timestamp to check
     *
     * @return boolean
    **/
@@ -371,7 +364,7 @@ class Calendar extends CommonDropdown {
     *
     * @since version 0.85
     *
-    * @param $time    time  time to check
+    * @param integer $time timestamp to check
     *
     * @return boolean
    **/
@@ -622,7 +615,7 @@ class Calendar extends CommonDropdown {
    /**
     * Get day number (in week) for a date
     *
-    * @param $date date
+    * @param integer $date timestamp
     *
     * @return false|string
     */

@@ -123,9 +123,6 @@ class Item_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
@@ -184,13 +181,15 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Print the HTML ajax associated item add
     *
-    * @param $ticket Ticket object
-    * @param $options   array of possible options:
-    *    - id                  : ID of the ticket
-    *    - _users_id_requester : ID of the requester user
-    *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+    * @param Ticket $ticket  object
+    * @param array  $options possible options:
+    *                        - id                  : ID of the ticket
+    *                        - _users_id_requester : ID of the requester user
+    *                        - items_id            : array of elements (itemtype => array(id1, id2,
+    *                        id3, ...))
     *
-   **/
+    * @return boolean
+    */
    static function itemAddForm(Ticket $ticket, $options = []) {
       global $CFG_GLPI;
 
@@ -387,9 +386,10 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Print the HTML array for Items linked to a ticket
     *
-    * @param $ticket Ticket object
+    * @param Ticket $ticket object
     *
-   **/
+    * @return boolean
+    */
    static function showForTicket(Ticket $ticket) {
       global $DB, $CFG_GLPI;
 
@@ -610,17 +610,19 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Make a select box for Tracking All Devices
     *
-    * @param $myname             select name
-    * @param $itemtype           preselected value.for item type
-    * @param integer|preselected $items_id preselected value for item ID (default 0)
-    * @param integer|is $admin is an admin access ? (default 0)
-    * @param integer|user $users_id user ID used to display my devices (default 0
-    * @param integer|Restrict $entity_restrict Restrict to a defined entity (default -1)
-    * @param $options   array of possible options:
-    *    - tickets_id : ID of the ticket
-    *    - used       : ID of the requester user
-    *    - multiple   : allow multiple choice
-    *    - rand       : random number
+    * @param string  $myname          select name
+    * @param string  $itemtype        preselected value.for item type
+    * @param integer $items_id        preselected value for item ID (default 0)
+    * @param integer $admin           is an admin access ? (default 0)
+    * @param integer $users_id        user ID used to display my devices (default 0
+    * @param integer $entity_restrict restrict to a defined entity (default -1)
+    * @param array   $options         possible options:
+    *                                 - tickets_id : ID of the ticket
+    *                                 - used       : ID of the requester user
+    *                                 - multiple   : allow multiple choice
+    *                                 - rand       : random number
+    *
+    * @return mixed
     */
    static function dropdownAllDevices($myname, $itemtype, $items_id = 0, $admin = 0, $users_id = 0,
                                       $entity_restrict = -1, $options = []) {
@@ -707,13 +709,13 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Make a select box for Ticket my devices
     *
-    * @param integer|User $userID User ID for my device section (default 0)
-    * @param integer|restrict $entity_restrict restrict to a specific entity (default -1)
-    * @param integer|of $itemtype of selected item (default 0)
-    * @param integer|of $items_id of selected item (default 0)
-    * @param $options   array of possible options:
-    *    - used     : ID of the requester user
-    *    - multiple : allow multiple choice
+    * @param integer $userID          for my device section (default 0)
+    * @param integer $entity_restrict restrict to a specific entity (default -1)
+    * @param integer $itemtype        of selected item (default 0)
+    * @param integer $items_id        of selected item (default 0)
+    * @param array   $options         possible options:
+    *                                 - used     : ID of the requester user
+    *                                 - multiple : allow multiple choice
     */
    static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = []) {
       global $DB, $CFG_GLPI;
@@ -998,10 +1000,8 @@ class Item_Ticket extends CommonDBRelation{
     *    - name         : string / name of the select (default is users_id)
     *    - value
     *    - comments     : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity       : integer or array / restrict to a defined entity or array of entities
-    *                      (default -1 : no restriction)
-    *    - entity_sons  : boolean / if entity restrict specified auto select its sons
-    *                      only available if entity is a single value not an array(default false)
+    *    - entity       : integer or array / restrict to a defined entity or array of entities (default -1 : no restriction)
+    *    - entity_sons  : boolean / if entity restrict specified auto select its sons only available if entity is a single value not an array(default false)
     *    - rand         : integer / already computed rand value
     *    - toupdate     : array / Update a specific item on select change on dropdown
     *                      (need value_fieldname, to_update, url
@@ -1066,8 +1066,9 @@ class Item_Ticket extends CommonDBRelation{
    /**
     * Return used items for a ticket
     *
-    * @param type $tickets_id
-    * @return type
+    * @param integer $tickets_id
+    *
+    * @return array
     */
    static function getUsedItems($tickets_id) {
 
@@ -1084,7 +1085,7 @@ class Item_Ticket extends CommonDBRelation{
 
    /**
     * Form for Followup on Massive action
-    * @param $ma
+    * @param MassiveAction $ma
     */
    static function showFormMassiveAction($ma) {
       global $CFG_GLPI;
@@ -1137,14 +1138,6 @@ class Item_Ticket extends CommonDBRelation{
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -1323,9 +1316,6 @@ class Item_Ticket extends CommonDBRelation{
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-   /**
-    * Add a message on add action
-   **/
    function addMessageOnAddAction() {
       global $CFG_GLPI;
 
@@ -1364,9 +1354,6 @@ class Item_Ticket extends CommonDBRelation{
       }
    }
 
-   /**
-    * Add a message on delete action
-   **/
    function addMessageOnPurgeAction() {
 
       if (!$this->maybeDeleted()) {

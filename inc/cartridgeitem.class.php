@@ -60,10 +60,8 @@ class CartridgeItem extends CommonDBTM {
 
 
    /**
-    * @see CommonGLPI::getMenuName()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuName() {
       return Cartridge::getTypeName(Session::getPluralNumber());
    }
@@ -71,9 +69,7 @@ class CartridgeItem extends CommonDBTM {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::getPostAdditionalInfosForName
-   **/
+    */
    function getPostAdditionalInfosForName() {
 
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
@@ -253,11 +249,6 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();

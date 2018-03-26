@@ -173,18 +173,13 @@ class Entity extends CommonTreeDropdown {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::canViewItem()
-   **/
+    */
    function canViewItem() {
       // Check the current entity
       return Session::haveAccessToEntity($this->getField('id'));
    }
 
 
-   /**
-    * @see CommonDBTM::isNewID()
-   **/
    static function isNewID($ID) {
       return (($ID < 0) || !strlen($ID));
    }
@@ -238,9 +233,6 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since version 0.84 (before in entitydata.class)
-   **/
    function prepareInputForAdd($input) {
       global $DB;
 
@@ -269,11 +261,6 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since version 0.84 (before in entitydata.class)
-    * @param array $input
-    * @return array
-    */
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);
@@ -2884,11 +2871,6 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

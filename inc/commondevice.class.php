@@ -127,9 +127,6 @@ abstract class CommonDevice extends CommonDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDropdown::displaySpecificTypeField()
-    * @param $ID
-    * @param array $field
     */
    function displaySpecificTypeField($ID, $field = []) {
 
@@ -156,7 +153,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since version 0.85
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB;
@@ -275,13 +272,6 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getNameField
-    *
-    * @return string
-   **/
    static function getNameField() {
       return 'designation';
    }
@@ -441,8 +431,6 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @see CommonDropdown::defineTabs()
-    *
     * @since version 0.85
     */
    function defineTabs($options = []) {
@@ -499,8 +487,7 @@ abstract class CommonDevice extends CommonDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_addItem()
-   **/
+    */
    function post_addItem() {
 
       $this->post_workOnItem();
@@ -510,8 +497,6 @@ abstract class CommonDevice extends CommonDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_updateItem()
-    * @param integer $history
     */
    function post_updateItem($history = 1) {
 

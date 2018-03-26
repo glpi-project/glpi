@@ -191,9 +191,10 @@ class Alert extends CommonDBTM {
    /**
     * Does alert exists
     *
-    * @param string $itemtype (default '')
+    * @param string         $itemtype (default '')
     * @param integer|string $items_id (default '')
-    * @param integer|string $type (default '')
+    * @param integer|string $type     (default '')
+    *
     * @return boolean|integer
     */
    static function alertExists($itemtype = '', $items_id = '', $type = '') {
@@ -212,9 +213,10 @@ class Alert extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param string $itemtype (default '')
+    * @param string         $itemtype (default '')
     * @param integer|string $items_id (default '')
-    * @param integer|string $type (default '')
+    * @param integer|string $type     (default '')
+    *
     * @return boolean|mixed
     */
    static function getAlertDate($itemtype = '', $items_id = '', $type = '') {

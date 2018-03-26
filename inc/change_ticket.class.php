@@ -123,10 +123,6 @@ class Change_Ticket extends CommonDBRelation{
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    * @param MassiveAction $ma
-    * @return boolean
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;

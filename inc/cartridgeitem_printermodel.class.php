@@ -64,8 +64,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
    /**
     * @param CommonGLPI $item
-    * @param integer $tabnum
-    * @param integer $withtemplate
+    * @param integer    $tabnum
+    * @param integer    $withtemplate
+    *
     * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
@@ -81,8 +82,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
 
    /**
-    * @param CommonGLPI $item
-    * @param integer $withtemplate
+    * @param CommonGLPI      $item
+    * @param integer|boolean $withtemplate
+    *
     * @return array|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {

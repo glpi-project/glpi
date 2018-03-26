@@ -171,9 +171,6 @@ class RSSFeed extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::cleanDBonPurge()
-   **/
    function cleanDBonPurge() {
 
       $class = new RSSFeed_User();
@@ -197,7 +194,7 @@ class RSSFeed extends CommonDBVisible {
    /**
     * Return visibility joins to add to SQL
     *
-    * @param bool|force $forceall force all joins (false by default)
+    * @param boolean|force $forceall force all joins (false by default)
     * @return string joins to add
     */
    static function addVisibilityJoins($forceall = false) {
@@ -469,9 +466,6 @@ class RSSFeed extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -508,9 +502,6 @@ class RSSFeed extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if ($feed = self::getRSSFeed($input['url'])) {
@@ -532,9 +523,6 @@ class RSSFeed extends CommonDBVisible {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForUpdate($input) {
 
       if (empty($input['name'])
@@ -961,11 +949,6 @@ class RSSFeed extends CommonDBVisible {
 
    }
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       if ($interface == 'helpdesk') {

@@ -65,13 +65,6 @@ class Problem extends CommonITILObject {
    const READALL              = 1024;
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-    *
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Problem', 'Problems', $nb);
    }
@@ -268,10 +261,6 @@ class Problem extends CommonITILObject {
       parent::cleanDBonPurge();
    }
 
-   /**
-    * @param array $input
-    * @return array
-    */
    function prepareInputForUpdate($input) {
 
       // Get problem : need for comparison
@@ -287,10 +276,6 @@ class Problem extends CommonITILObject {
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-    * @param integer $history
-    */
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
@@ -402,11 +387,6 @@ class Problem extends CommonITILObject {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param mixed $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();

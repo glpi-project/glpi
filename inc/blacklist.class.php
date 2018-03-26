@@ -119,9 +119,6 @@ class Blacklist extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if ((!isset($input['name']) || empty($input['name']))
@@ -132,9 +129,6 @@ class Blacklist extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
    function displaySpecificTypeField($ID, $field = []) {
 
       if ($field['name'] == 'type') {

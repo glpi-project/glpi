@@ -144,8 +144,7 @@ class DeviceProcessor extends CommonDevice {
 
    /**
     * @since version 0.85
-    * @see CommonDropdown::prepareInputForUpdate()
-   **/
+    */
    function prepareInputForUpdate($input) {
       return self::prepareInputForAddOrUpdate($input);
    }

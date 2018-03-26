@@ -58,12 +58,13 @@ abstract class HTMLTableEntity {
    /**
     * Constructor of an entity
     *
-    * @param $content The content of a cell, header, ... Can simply be a string. But it can also
-    *                 be a call to a specific function during the rendering of the table in case
-    *                 of direct display function (for instance: Dropdown::showNumber). A function
-    *                 call is an array containing two elements : 'function', the name the function
-    *                 and 'parameters', an array of the parameters given to the function.
-   **/
+    * @param mixed $content The content of a cell, header, ... Can simply be a string. But it can
+    *                       also be a call to a specific function during the rendering of the table
+    *                       in case of direct display function (for instance:
+    *                       Dropdown::showNumber). A function call is an array containing two
+    *                       elements : 'function', the name the function and 'parameters', an array
+    *                       of the parameters given to the function.
+    */
    function __construct($content) {
       $this->content = $content;
    }

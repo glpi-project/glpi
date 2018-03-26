@@ -112,7 +112,7 @@ class Rule extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $rules_id ID of the rule
+    * @param integer $rules_id ID of the rule
     *
     * @return null
     */
@@ -533,7 +533,7 @@ class Rule extends CommonDBTM {
    /**
     * Get title used in rule
     *
-    * @return Title of the rule
+    * @return string
    **/
    function getTitle() {
       return __('Rules management');
@@ -550,11 +550,6 @@ class Rule extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -632,14 +627,6 @@ class Rule extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;
@@ -982,9 +969,11 @@ class Rule extends CommonDBTM {
    /**
     * Get all criterias for a given rule
     *
-    * @param $ID              the rule_description ID
-    * @param $withcriterias 1 to retrieve all the criterias for a given rule (default 0)
-    * @param $withactions 1 to retrive all the actions for a given rule (default 0)
+    * @param integer         $ID            the rule_description ID
+    * @param integer|boolean $withcriterias 1 to retrieve all the criterias for a given rule
+    *                                       (default 0)
+    * @param integer|boolean $withactions   1 to retrive all the actions for a given rule
+    *                                       (default 0)
     *
     * @return boolean
     */
@@ -1035,7 +1024,7 @@ class Rule extends CommonDBTM {
    /**
     * Get maximum number of Actions of the Rule (0 = unlimited)
     *
-    * @return the maximum number of actions
+    * @return integer
    **/
    function maxActionsCount() {
       // Unlimited
@@ -1253,16 +1242,15 @@ class Rule extends CommonDBTM {
    }
 
 
-
    /**
     * Display the dropdown of the criterias for the rule
     *
     * @since version 0.84 new proto
     *
-    * @param $options   array of options : may be readonly
+    * @param array $options may be readonly
     *
-    * @return the initial value (first)
-   **/
+    * @return integer|string the initial value (first)
+    */
    function dropdownCriteria($options = []) {
       global $CFG_GLPI;
 
@@ -1303,8 +1291,9 @@ class Rule extends CommonDBTM {
    /**
     * Display the dropdown of the actions for the rule
     *
-    * @param already|array $options already used actions
-    * @return the initial value (first non used)
+    * @param array $options already used actions
+    *
+    * @return integer|string the initial value (first non used)
     */
    function dropdownActions($options = []) {
       global $CFG_GLPI;
@@ -1363,10 +1352,10 @@ class Rule extends CommonDBTM {
    /**
     * Get a criteria description by his ID
     *
-    * @param $ID the criteria's ID
+    * @param integer $ID criteria's ID
     *
-    * @return the criteria array
-   **/
+    * @return array
+    */
    function getCriteria($ID) {
 
       $criterias = $this->getAllCriteria();
@@ -1380,10 +1369,10 @@ class Rule extends CommonDBTM {
    /**
     * Get a action description by his ID
     *
-    * @param $ID the action's ID
+    * @param integer $ID action's ID
     *
-    * @return the action array
-   **/
+    * @return array
+    */
    function getAction($ID) {
 
       $actions = $this->getAllActions();
@@ -1397,9 +1386,9 @@ class Rule extends CommonDBTM {
    /**
     * Get a criteria description by his ID
     *
-    * @param $ID the criteria's ID
+    * @param integer $ID the criteria's ID
     *
-    * @return the criteria's description
+    * @return string
    **/
 
    function getCriteriaName($ID) {
@@ -1415,9 +1404,9 @@ class Rule extends CommonDBTM {
    /**
     * Get a action description by his ID
     *
-    * @param $ID the action's ID
+    * @param integer $ID the action's ID
     *
-    * @return the action's description
+    * @return string the action's description
    **/
    function getActionName($ID) {
 
@@ -1933,9 +1922,6 @@ class Rule extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // Before adding, add the ranking of the new rule
@@ -1971,10 +1957,10 @@ class Rule extends CommonDBTM {
    /**
     * Show the minimal form for the action rule
     *
-    * @param $fields    datas used to display the action
-    * @param $canedit   can edit the actions rule ?
-    * @param $rand      random value of the form
-   **/
+    * @param array   $fields  data used to display the action
+    * @param boolean $canedit can edit the actions rule ?
+    * @param string  $rand    random value of the form
+    */
    function showMinimalActionForm($fields, $canedit, $rand) {
       global $CFG_GLPI;
 
@@ -2005,10 +1991,10 @@ class Rule extends CommonDBTM {
    /**
     * Show preview result of a rule
     *
-    * @param $target    where to go if action
-    * @param $input     input data array
-    * @param $params    params used (see addSpecificParamsForPreview)
-   **/
+    * @param string $target where to go if action
+    * @param array  $input  data
+    * @param array  $params (see addSpecificParamsForPreview)
+    */
    function showRulePreviewResultsForm($target, $input, $params) {
 
       $actions       = $this->getAllActions();
@@ -2169,11 +2155,11 @@ class Rule extends CommonDBTM {
    /**
     * Return a value associated with a pattern associated to a criteria to display it
     *
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param $pattern   the pattern
+    * @param integer $ID        the given criteria
+    * @param string  $condition used
+    * @param string  $pattern
     *
-    * @return a|impact|string|the|type
+    * @return a|int|string|type
     */
    function getCriteriaDisplayPattern($ID, $condition, $pattern) {
 
@@ -2245,13 +2231,13 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Used to get specific criteria patterns
+    * Used to get a value associated with the criteria, or false otherwise
     *
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param $pattern   the pattern
+    * @param string $ID        the given criteria
+    * @param string $condition condition used
+    * @param string $pattern   the pattern
     *
-    * @return a value associated with the criteria, or false otherwise
+    * @return boolean|string
    **/
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
       return false;
@@ -2261,11 +2247,11 @@ class Rule extends CommonDBTM {
    /**
     * Display item used to select a pattern for a criteria
     *
-    * @param $name      criteria name
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param string|the $value the pattern (default '')
-    * @param bool|Is $test Is to test rule ? (false by default)
+    * @param string  $name      criteria name
+    * @param integer $ID        the given criteria
+    * @param string  $condition condition used
+    * @param string  $value     the pattern (default '')
+    * @param boolean $test      Is to test rule ? (false by default)
     */
    function displayCriteriaSelectPattern($name, $ID, $condition, $value = "", $test = false) {
 
@@ -2370,11 +2356,11 @@ class Rule extends CommonDBTM {
    /**
     * Return a "display" value associated with a pattern associated to a criteria
     *
-    * @param $ID     the given action
-    * @param $type   the type of action
-    * @param $value  the value
+    * @param integer $ID the given action
+    * @param string $type the type of action
+    * @param mixed $value
     *
-    * @return string|the|type
+    * @return integer|mixed|string
     */
    function getActionValue($ID, $type, $value) {
 
@@ -2435,11 +2421,11 @@ class Rule extends CommonDBTM {
    /**
     * Return a value associated with a pattern associated to a criteria to display it
     *
-    * @param $ID        the given criteria
-    * @param $condition condition used
-    * @param $value     the pattern
+    * @param integer $ID        the given criteria
+    * @param string  $condition condition used
+    * @param string  $value     the pattern
     *
-    * @return impact|priority|string|the|urgency
+    * @return integer|string
     */
    function getCriteriaValue($ID, $condition, $value) {
 
@@ -2664,14 +2650,14 @@ class Rule extends CommonDBTM {
    /**
     *  Execute a hook if necessary and merge results
     *
-    *  @since version 0.84
+    * @since version 0.84
     *
-    * @param $hook            the hook to execute
-    * @param $params   array  input parameters
-    * @param $itemtype        (default '')
+    * @param string $hook     the hook to execute
+    * @param array  $params   input parameters
+    * @param string $itemtype (default '')
     *
-    * @return input parameters merged with hook parameters
-   **/
+    * @return array
+    */
    static function doHookAndMergeResults($hook, $params = [], $itemtype = '') {
       global $PLUGIN_HOOKS;
 
@@ -2871,11 +2857,6 @@ class Rule extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    * @param array $options
-    * @return array
-    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -3134,7 +3115,7 @@ class Rule extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @return uuid
+    * @return string uuid
    **/
    static function getUuid() {
 

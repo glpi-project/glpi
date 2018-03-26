@@ -124,9 +124,11 @@ class Notepad extends CommonDBChild {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
+    *
     * @param CommonGLPI $item
-    * @param integer $withtemplate
-    * @return array|bool|string
+    * @param integer    $withtemplate
+    *
+    * @return array|boolean|string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 

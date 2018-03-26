@@ -596,7 +596,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @param $name
     *
-    * @return an array
+    * @return array
    **/
    static function cronInfo($name) {
       return ['description' => __('Alerts on reservations')];
@@ -606,7 +606,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * Cron action on reservation : alert on end of reservations
     *
-    * @param $task to log, if NULL use display (default NULL)
+    * @param CronTask|null $task to log, if NULL use display (default NULL)
     * @return integer 0 : nothing to do 1 : done with success
     */
    static function cronReservation($task = null) {
@@ -738,11 +738,7 @@ class ReservationItem extends CommonDBChild {
 
 
    /**
-    * @see CommonGLPI::defineTabs()
-    *
     * @since version 0.85
-    * @param array $options
-    * @return array
     */
    function defineTabs($options = []) {
 

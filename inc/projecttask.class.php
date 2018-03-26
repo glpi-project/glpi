@@ -919,10 +919,10 @@ class ProjectTask extends CommonDBChild {
    /**
     * Show tasks of a project
     *
-    * @param $item Project or ProjectTask object
+    * @param Project|ProjectTask $item object
     *
-    * @return void
-   **/
+    * @return boolean
+    */
    static function showFor($item) {
       global $DB, $CFG_GLPI;
 

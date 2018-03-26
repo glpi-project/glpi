@@ -69,12 +69,6 @@ abstract class CommonITILActor extends CommonDBRelation {
 
    /**
     * @since version 0.84
-    *
-    * @param $input  array of data to be added
-    *
-    * @see CommonDBRelation::isAttach2Valid()
-    *
-    * @return boolean
     */
    function isAttach2Valid(Array &$input) {
 
@@ -328,9 +322,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBRelation::prepareInputForAdd()
-   **/
+    */
    function prepareInputForAdd($input) {
 
       if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {

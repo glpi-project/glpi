@@ -189,9 +189,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI, $DB;
 
@@ -316,11 +313,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-    * @param array $input
-    * @return array
-    */
    function prepareInputForUpdate($input) {
 
       // security (don't accept filename from $_POST)
@@ -769,11 +761,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -1294,7 +1281,7 @@ class Document extends CommonDBTM {
    /**
     * Is this file a valid file ? check based on file extension
     *
-    * @param $filename filename to clean
+    * @param string $filename filename to clean
     *
     * @return string
     */
@@ -1334,14 +1321,16 @@ class Document extends CommonDBTM {
     * Make a select box for link document
     *
     * Parameters which could be used in options array :
-    *    - name : string / name of the select (default is documents_id)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *
-    * @param $options array of possible options
+    * @param array $options Parameters which could be used:
+    *                       - name : string / name of the select (default is documents_id)
+    *                       - entity : integer or array / restrict to a defined entity or array of
+    *                       entities (default -1 : no restriction)
+    *                       - used : array / Already used items ID: not to display in dropdown
+    *                       (default empty)
     *
-   **/
+    * @return integer|string|void
+    */
    static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
 
@@ -1406,15 +1395,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-    * @param array $actions
-    * @param string $itemtype
-    * @param integer $is_deleted
-    * @param CommonDBTM|null $checkitem
-    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
       global $CFG_GLPI;

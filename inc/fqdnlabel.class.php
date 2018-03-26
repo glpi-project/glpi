@@ -75,7 +75,7 @@ abstract class FQDNLabel extends CommonDBChild {
     * Check a label regarding section 2.1 of RFC 1123 : 63 lengths and no other characters
     * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
     *
-    * @param $label        the label to check
+    * @param string $label to check
     *
     * @return boolean
     */
@@ -102,9 +102,9 @@ abstract class FQDNLabel extends CommonDBChild {
 
 
    /**
-    * @param $input
+    * @param array $input
     *
-    * @return boolean
+    * @return array|boolean
     */
    function prepareLabelInput($input) {
 
@@ -226,12 +226,11 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Get an Object ID by its name (only if one result is found in the entity)
     *
-    * @param $value  the name
-    * @param $entity the entity to look for
+    * @param string $value  the name
+    * @param integer $entity the entity to look for
     *
-    * @return an array containing the object ID
-    *         or an empty array is no value of serverals ID where found
-    **/
+    * @return array
+    */
    static function getUniqueItemByFQDN($value, $entity) {
 
       $labels_with_items = self::getItemsByFQDN($value);

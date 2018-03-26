@@ -57,11 +57,6 @@ class ObjectLock extends CommonDBTM {
    private static $shutdownregistered = false;
 
 
-   /**
-    * @see CommonGLPI::getTypeName()
-    * @param integer $nb
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Object Lock', 'Object Locks', $nb);
    }
@@ -93,7 +88,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * Summary of getLockableObjects
     *
-    * @return an array of lockable objects 'itemtype' => 'plural itemtype'
+    * @return array of lockable objects 'itemtype' => 'plural itemtype'
    **/
    static function getLockableObjects() {
       global $CFG_GLPI;
@@ -614,7 +609,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * Cron for unlocking forgotten locks
     *
-    * @param $task : crontask object
+    * @param CronTask $task object
     *
     * @return integer
     *    >0 : done

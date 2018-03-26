@@ -111,7 +111,7 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : CronTask object
+    * @param CronTask $task object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
@@ -140,13 +140,13 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Do a specific SLAlevel for a ticket
     *
-    * @param $data          array data of an entry of slalevels_tickets
-    * @param $slaType             Type of sla
+    * @param array  $data    of an entry of slalevels_tickets
+    * @param string $slaType Type of sla
     *
     * @since version 9.1   2 parameters mandatory
     *
     * @return void
-   **/
+    */
    static function doLevelForTicket(array $data, $slaType) {
 
       $ticket         = new Ticket();

@@ -160,33 +160,22 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-    *
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Ticket', 'Tickets', $nb);
    }
 
 
    /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuShorcut() {
       return 't';
    }
 
 
    /**
-    * @see CommonGLPI::getAdditionalMenuOptions()
-    *
     * @since version 0.85
-   **/
+    */
    static function getAdditionalMenuOptions() {
 
       if (TicketTemplate::canView()) {
@@ -205,8 +194,8 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonGLPI::getAdditionalMenuContent()
     *
-    * @since version 0.85
-   **/
+    * @return mixed
+    */
    static function getAdditionalMenuContent() {
 
       if (static::canCreate()) {
@@ -218,10 +207,8 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see CommonGLPI::getAdditionalMenuLinks()
-    *
     * @since version 0.85
-   **/
+    */
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
@@ -2571,10 +2558,10 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @param $type itemtype of object to add
+    * @param string $type itemtype of object to add
     *
-    * @return rights
-   **/
+    * @return boolean
+    */
    function canAddItem($type) {
 
       if ($type == 'Document') {
@@ -2635,11 +2622,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
-    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -3510,9 +3492,9 @@ class Ticket extends CommonITILObject {
    /**
     * Get ticket type Name
     *
-    * @param $value type ID
+    * @param integer $value ID
     *
-    * @return string|type
+    * @return integer|string
     */
    static function getTicketTypeName($value) {
 
@@ -3535,7 +3517,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $withmetaforsearch boolean (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -3563,7 +3545,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
       return [self::CLOSED];
@@ -3575,7 +3557,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
       return [self::SOLVED];
@@ -3586,7 +3568,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING];
@@ -3597,7 +3579,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
       return [self::ASSIGNED, self::PLANNED];
@@ -3608,7 +3590,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.90.1
     *
-    * @return an array
+    * @return array
    **/
    static function getReopenableStatusArray() {
       return [self::CLOSED, self::SOLVED, self::WAITING];

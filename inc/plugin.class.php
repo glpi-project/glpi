@@ -55,10 +55,6 @@ class Plugin extends CommonDBTM {
 
    /**
     * @since version 0.85
-    *
-    * @param $nb
-    *
-    * @return string
     */
    static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
@@ -66,19 +62,15 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * @see CommonGLPI::getMenuName()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuName() {
       return static::getTypeName(Session::getPluralNumber());
    }
 
    /**
-    * @see CommonGLPI::getMenuContent()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuContent() {
       global $CFG_GLPI;
 
@@ -158,9 +150,10 @@ class Plugin extends CommonDBTM {
    /**
     * Load lang file for a plugin
     *
-    * @param $name            Name of hook to use
-    * @param force|string $forcelang force a specific lang (default '')
-    * @param lang|string $coretrytoload lang trying to be load from core (default '')
+    * @param string $name          of hook to use
+    * @param string $forcelang     force a specific lang (default '')
+    * @param string $coretrytoload lang trying to be load from core (default '')
+    *
     * @return void
     */
    static function loadLang($name, $forcelang = '', $coretrytoload = '') {
@@ -1286,11 +1279,11 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook.
     *
-    * @param $name   Name of hook to fire
-    * @param $parm   Parameters (default NULL)
+    * @param string     $name Name of hook to fire
+    * @param mixed|null $parm (default NULL)
     *
     * @return mixed $data
-   **/
+    */
    static function doHookFunction($name, $parm = null) {
       global $PLUGIN_HOOKS;
 

@@ -60,9 +60,6 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
@@ -92,13 +89,6 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    *
-    * @since version 0.85
-    * @param array $options
-    * @return array
-    */
    function defineTabs($options = []) {
 
       $ong = [];

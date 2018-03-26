@@ -115,15 +115,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * Prepare input datas for updating the item
-    *
-    * @see CommonDBTM::prepareInputForUpdate()
-    *
-    * @param $input array of datas used to update the item
-    *
-    * @return the modified $input array
-   **/
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
       // Update only an item
@@ -2027,10 +2018,11 @@ class Config extends CommonDBTM {
     * Get language in GLPI associated with the value coming from LDAP
     * Value can be, for example : English, en_EN or en
     *
-    * @param $lang : the value coming from LDAP
+    * @param string $lang : the value coming from LDAP
     *
-    * @return the locale's php page in GLPI or '' is no language associated with the value
-   **/
+    * @return integer|string the locale's php page in GLPI or '' is no language associated with the
+    *                        value
+    */
    static function getLanguage($lang) {
       global $CFG_GLPI;
 
@@ -2581,8 +2573,8 @@ class Config extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @return DB version
-   **/
+    * @return string
+    */
    static function getCurrentDBVersion() {
       global $DB;
 
@@ -2697,13 +2689,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-    * @param string $interface
-    * @return array
-    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

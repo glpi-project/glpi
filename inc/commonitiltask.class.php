@@ -69,12 +69,11 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * Get the item associated with the current object.
+    * Get the item associated with the current object or false on error
     *
     * @since version 0.84
     *
-    * @return object of the concerned item or false on error
-   **/
+    */
    function getItem() {
 
       if ($item = getItemForItemtype($this->getItilObjectItemType())) {
@@ -120,13 +119,6 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-    *
-    * @return string
-    */
    static function getTypeName($nb = 0) {
       return _n('Task', 'Tasks', $nb);
 
@@ -529,10 +521,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::cleanDBonPurge()
-    *
     * @since version 0.84
-   **/
+    */
    function cleanDBonPurge() {
 
       $class = new PlanningRecall();
@@ -542,11 +532,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    // SPECIFIC FUNCTIONS
 
-   /**
-    * @see CommonDBTM::getRawName()
-    *
-    * @since version 0.85
-   **/
    function getRawName() {
 
       if (isset($this->fields['taskcategories_id'])) {
@@ -884,20 +869,20 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * Populate the planning with planned tasks
+    * Populate the planning item with planned tasks
     *
-    * @param $itemtype  itemtype
-    * @param $options   array    of options must contains :
-    *    - who ID of the user (0 = undefined)
-    *    - who_group ID of the group of users (0 = undefined)
-    *    - begin Date
-    *    - end Date
-    *    - color
-    *    - event_type_color
-    *    - display_done_events (boolean)
+    * @param string $itemtype
+    * @param array  $options must contains :
+    *                        - who ID of the user (0 = undefined)
+    *                        - who_group ID of the group of users (0 = undefined)
+    *                        - begin Date
+    *                        - end Date
+    *                        - color
+    *                        - event_type_color
+    *                        - display_done_events (boolean)
     *
-    * @return array of planning item
-   **/
+    * @return array
+    */
    static function genericPopulatePlanning($itemtype, $options = []) {
       global $DB, $CFG_GLPI;
 
@@ -1788,10 +1773,11 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @since 9.2
     *
-    * @param $status
-    * @param $showgrouptickets
-    * @param null $start
-    * @param null $limit
+    * @param integer $status
+    * @param boolean $showgrouptickets
+    * @param integer $start
+    * @param integer $limit
+    *
     * @return DBmysqlIterator
     */
    public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null) {

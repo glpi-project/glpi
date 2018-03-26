@@ -342,9 +342,9 @@ class Lock {
 
 
    /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum (default 1)
-    * @param $withtemplate (default 0)
+    * @param CommonGLPI      $item         object
+    * @param integer         $tabnum       (default 1)
+    * @param boolean|integer $withtemplate (default 0)
     *
     * @return boolean
     */
@@ -360,11 +360,11 @@ class Lock {
    /**
     * Get infos to build an SQL query to get locks fields in a table
     *
-    * @param $itemtype       itemtype of the item to look for locked fields
-    * @param $baseitemtype   itemtype of the based item
+    * @param string $itemtype     of the item to look for locked fields
+    * @param string $baseitemtype itemtype of the based item
     *
-    * @return an array which contains necessary informations to build the SQL query
-   **/
+    * @return array
+    */
    static function getLocksQueryInfosByItemType($itemtype, $baseitemtype) {
 
       $condition = [];

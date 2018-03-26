@@ -567,10 +567,6 @@ class TicketTemplate extends CommonDropdown {
 
    /**
     * @since version 0.90
-    *
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return array
     */
    function getSpecificMassiveActions($checkitem = null) {
 
@@ -609,11 +605,6 @@ class TicketTemplate extends CommonDropdown {
 
    /**
     * @since version 0.90
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
     */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
@@ -805,8 +796,6 @@ class TicketTemplate extends CommonDropdown {
     * Forbidden massive action
     *
     * @since version 0.90
-    *
-    * @see CommonDBTM::getForbiddenStandardMassiveAction()
    **/
    function getForbiddenStandardMassiveAction() {
 

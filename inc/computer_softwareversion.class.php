@@ -79,8 +79,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    /**
     * @since version 0.84
-    * @param array $input
-    * @return array|bool
     */
    function prepareInputForUpdate($input) {
 
@@ -100,13 +98,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    * @param MassiveAction $ma
-    * @return boolean
-    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -136,14 +127,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-    * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;

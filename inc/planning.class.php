@@ -71,20 +71,14 @@ class Planning extends CommonGLPI {
 
    /**
     * @since version 0.85
-    *
-    * @param $nb
-    *
-    * @return string
     */
    static function getTypeName($nb = 0) {
       return __('Planning');
    }
 
    /**
-    *  @see CommonGLPI::getMenuContent()
-    *
-    *   @since version 9.1
-   **/
+    * @since version 9.1
+    */
    static function getMenuContent() {
       global $CFG_GLPI;
 
@@ -180,10 +174,11 @@ class Planning extends CommonGLPI {
    /**
     * Dropdown of planning state
     *
-    * @param $name   select name
-    * @param default|string $value default value (default '')
-    * @param bool|display $display display of send string ? (true by default)
-    * @param array|options $options options
+    * @param string  $name    of the select
+    * @param string  $value   default value (default '')
+    * @param boolean $display display of send string ? (true by default)
+    * @param array   $options
+    *
     * @return integer|string
     */
    static function dropdownState($name, $value = '', $display = true, $options = []) {

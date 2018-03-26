@@ -2434,7 +2434,7 @@ class Toolbox {
     * @since version 0.85.5
     *
     * @param $file   string      path of the file
-    * @param bool|string $type string      check if $file is the correct type (false by default)
+    * @param boolean|string $type string      check if $file is the correct type (false by default)
     * @return string (if $type not given) else boolean
     *
     */

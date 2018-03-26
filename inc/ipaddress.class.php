@@ -161,35 +161,22 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
       return parent::prepareInputForUpdate($this->prepareInput($input));
    }
 
 
-   /**
-    * @see CommonDBTM::post_addItem()
-   **/
    function post_addItem() {
       IPAddress_IPNetwork::addIPAddress($this);
       parent::post_addItem();
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-    * @param integer $history
-    */
    function post_updateItem($history = 1) {
 
       if ((isset($this->oldvalues['name']))
@@ -875,11 +862,14 @@ class IPAddress extends CommonDBChild {
    }
 
    /**
-    * Search IP Addresses
+    * Search IP Addresses.
     *
-    * @param $IPaddress the address to search
-    * @return array (array) each value of the array (corresponding to one IPAddress) is an array of the
-    *                 items from the master item to the IPAddress
+    * Each value of the array (corresponding to one IPAddress) is an array of the items from the
+    * master item to the IPAddress
+    *
+    * @param string $IPaddress to search
+    *
+    * @return array
     */
    static function getItemsByIPAddress($IPaddress) {
       global $DB;
@@ -916,12 +906,11 @@ class IPAddress extends CommonDBChild {
    /**
     * Get an Object ID by its IP address (only if one result is found in the entity)
     *
-    * @param $value     the ip address
-    * @param $entity    the entity to look for
+    * @param string $value the ip address
+    * @param integer $entity the entity to look for
     *
-    * @return an array containing the object ID
-    *         or an empty array is no value of serverals ID where found
-   **/
+    * @return array
+    */
    static function getUniqueItemByIPAddress($value, $entity) {
 
       $addressesWithItems = self::getItemsByIPAddress($value);

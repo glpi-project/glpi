@@ -53,8 +53,11 @@ class ComputerAntivirus extends CommonDBChild {
 
 
    /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param integer        $withtemplate
+    *
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
@@ -85,9 +88,6 @@ class ComputerAntivirus extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
