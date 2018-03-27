@@ -3319,4 +3319,92 @@ class Dropdown {
 
       return ($json === true) ? json_encode($ret) : $ret;
    }
+
+   /**
+    * Get dropdown users
+    *
+    * @param array   $post Posted values
+    * @param boolean $json Encode to JSON, default to true
+    *
+    * @return string|array
+    */
+   public static function getDropdownUsers($post, $json = true) {
+      global $DB, $CFG_GLPI;
+
+      if (!isset($post['right'])) {
+         $post['right'] = "all";
+      }
+
+      // Default view : Nobody
+      if (!isset($post['all'])) {
+         $post['all'] = 0;
+      }
+
+      $used = [];
+
+      if (isset($post['used'])) {
+         $used = $post['used'];
+      }
+
+      if (!isset($post['value'])) {
+         $post['value'] = 0;
+      }
+
+      if (!isset($post['page'])) {
+         $post['page']       = 1;
+         $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+      }
+
+      $entity_restrict = -1;
+      if (isset($post['entity_restrict'])) {
+         $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
+      }
+
+      $start  = intval(($post['page']-1)*$post['page_limit']);
+      $searchText = (isset($post['searchText']) ? $post['searchText'] : null);
+      $result = User::getSqlSearchResult(false, $post['right'], $entity_restrict,
+                                       $post['value'], $used, $searchText, $start,
+                                       intval($post['page_limit']));
+
+      $users = [];
+
+      // Count real items returned
+      $count = 0;
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $users[$data["id"]] = formatUserName($data["id"], $data["name"], $data["realname"],
+                                                $data["firstname"]);
+            $logins[$data["id"]] = $data["name"];
+         }
+      }
+
+      $datas = [];
+
+      // Display first if empty search
+      if ($post['page'] == 1 && empty($post['searchText'])) {
+         if ($post['all'] == 0) {
+            array_push($datas, ['id'   => 0,
+                              'text' => Dropdown::EMPTY_VALUE]);
+         } else if ($post['all'] == 1) {
+            array_push($datas, ['id'   => 0,
+                              'text' => __('All')]);
+         }
+      }
+
+      if (count($users)) {
+         foreach ($users as $ID => $output) {
+            $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
+
+            array_push($datas, ['id'    => $ID,
+                              'text'  => $output,
+                              'title' => $title]);
+            $count++;
+         }
+      }
+
+      $ret['results'] = $datas;
+      $ret['count']   = $count;
+
+      return ($json === true) ? json_encode($ret) : $ret;
+   }
 }
