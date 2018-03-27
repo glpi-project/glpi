@@ -187,8 +187,6 @@ $vlan_loc = [];
 
 generateGlobalDropdowns();
 
-DBmysql::optimize_tables();
-
 // Force entity right
 $_SESSION['glpiactive_profile']['entity'] = 127;
 
@@ -221,6 +219,5 @@ for ($i=0; $i<max(1, pow($entity_number, 1/2))&&$added<$entity_number; $i++) {
    }
 }
 
-DBmysql::optimize_tables();
 // clean messages;
 $_SESSION["MESSAGE_AFTER_REDIRECT"]= [];
