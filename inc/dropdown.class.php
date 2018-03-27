@@ -2982,4 +2982,131 @@ class Dropdown {
 
       return ($json === true) ? json_encode($ret) : $ret;
    }
+
+   /**
+    * Get dropdown find num
+    *
+    * @param array   $post Posted values
+    * @param boolean $json Encode to JSON, default to true
+    *
+    * @return string|array
+    */
+   public static function getDropdownFindNum($post, $json = true) {
+      global $DB;
+
+      // Security
+      if (!$DB->tableExists($post['table'])) {
+         return;
+      }
+
+      $itemtypeisplugin = isPluginItemType($post['itemtype']);
+
+      if (!$item = getItemForItemtype($post['itemtype'])) {
+         return;
+      }
+
+      if ($item->isEntityAssign()) {
+         if (isset($post["entity_restrict"]) && ($post["entity_restrict"] >= 0)) {
+            $entity = $post["entity_restrict"];
+         } else {
+            $entity = '';
+         }
+
+         // allow opening ticket on recursive object (printer, software, ...)
+         $recursive = $item->maybeRecursive();
+         $where     = getEntitiesRestrictRequest("WHERE", $post['table'], '', $entity, $recursive);
+
+      } else {
+         $where = "WHERE 1";
+      }
+
+      if (isset($post['used']) && !empty($post['used'])) {
+         $where .= " AND `id` NOT IN ('".implode("','", $post['used'])."') ";
+      }
+
+      if ($item->maybeDeleted()) {
+         $where .= " AND `is_deleted` = '0' ";
+      }
+
+      if ($item->maybeTemplate()) {
+         $where .= " AND `is_template` = '0' ";
+      }
+
+      if ((strlen($post['searchText']) > 0)) {
+         $search = Search::makeTextSearch($post['searchText']);
+
+         $where .= " AND (`name` ".$search."
+                        OR `id` = '".$post['searchText']."'";
+
+         if ($DB->fieldExists($post['table'], "contact")) {
+            $where .= " OR `contact` ".$search;
+         }
+         if ($DB->fieldExists($post['table'], "serial")) {
+            $where .= " OR `serial` ".$search;
+         }
+         if ($DB->fieldExists($post['table'], "otherserial")) {
+            $where .= " OR `otherserial` ".$search;
+         }
+         $where .= ")";
+      }
+
+      //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
+      if (in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"])) {
+         $where .= " AND `is_helpdesk_visible` = '1' ";
+      }
+
+      if (!isset($post['page'])) {
+         $post['page']       = 1;
+         $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+      }
+
+      $start = intval(($post['page']-1)*$post['page_limit']);
+      $limit = intval($post['page_limit']);
+      $LIMIT = "LIMIT $start,$limit";
+
+      $query = "SELECT *
+               FROM `".$post['table']."`
+               $where
+               ORDER BY `name`
+               $LIMIT";
+      $result = $DB->query($query);
+
+      $datas = [];
+
+      // Display first if no search
+      if ($post['page'] == 1 && empty($post['searchText'])) {
+         array_push($datas, ['id'   => 0,
+                                 'text' => Dropdown::EMPTY_VALUE]);
+      }
+      $count = 0;
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $output = $data['name'];
+
+            if (isset($data['contact']) && !empty($data['contact'])) {
+               $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);
+            }
+            if (isset($data['serial']) && !empty($data['serial'])) {
+               $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+            }
+            if (isset($data['otherserial']) && !empty($data['otherserial'])) {
+               $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+            }
+
+            if (empty($output)
+               || $_SESSION['glpiis_ids_visible']) {
+               $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+            }
+
+            array_push($datas, ['id'   => $data['id'],
+                                    'text' => $output]);
+            $count++;
+         }
+      }
+
+      $ret['count']   = $count;
+      $ret['results'] = $datas;
+
+      return ($json === true) ? json_encode($ret) : $ret;
+   }
 }
