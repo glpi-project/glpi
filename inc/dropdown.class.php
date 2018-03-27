@@ -2511,7 +2511,7 @@ class Dropdown {
                                                                                        $_SESSION['glpilanguage'],
                                                                                        $item->fields['name']);
 
-                                    $temp = ['id'       => $ID,
+                                    $temp = ['id'       => $work_parentID,
                                                 'text'     => $output2,
                                                 'level'    => $work_level,
                                                 'disabled' => true];
