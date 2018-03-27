@@ -2812,7 +2812,7 @@ class Search {
                $condition = "(";
 
                if (Session::haveRight("$right", $itemtype::READMY)) {
-                  $my_groups_keys = implode("','", $_SESSION['glpigroups']);
+                  $my_groups_keys = "'" . implode("','", $_SESSION['glpigroups']) . "'";
                   $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                                  OR $observer_table.users_id = '".Session::getLoginUserID()."'
                                  OR $assign_table.users_id = '".Session::getLoginUserID()."'
