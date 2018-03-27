@@ -2513,7 +2513,7 @@ class Dropdown {
 
                                     $temp = ['id'       => $work_parentID,
                                                 'text'     => $output2,
-                                                'level'    => $work_level,
+                                                'level'    => (int)$work_level,
                                                 'disabled' => true];
                                     if ($post['permit_select_parent']) {
                                        $temp['title'] = $title;
@@ -2564,7 +2564,7 @@ class Dropdown {
                      }
                      array_push($datastoadd, ['id'    => $ID,
                                                    'text'  => $outputval,
-                                                   'level' => $level,
+                                                   'level' => (int)$level,
                                                    'title' => $title]);
                      $count++;
                   }
@@ -2891,6 +2891,10 @@ class Dropdown {
       $where_used = '';
       if (!empty($used)) {
          $where_used = " AND `$table`.`id` NOT IN ('".implode("','", $used)."')";
+      }
+
+      if (!isset($post['onlyglobal'])) {
+         $post['onlyglobal'] = false;
       }
 
       if ($post["onlyglobal"]
@@ -3276,6 +3280,20 @@ class Dropdown {
       }
 
       $values = [];
+
+      if (!isset($post['min'])) {
+         $post['min'] = 1;
+      }
+
+      if (!isset($post['step'])) {
+         $post['step'] = 1;
+      }
+
+      if (!isset($post['max'])) {
+         //limit max entries to avoid loop issues
+         $post['max'] = $CFG_GLPI['dropdown_max'] * $post['step'];
+      }
+
       for ($i=$post['min']; $i<=$post['max']; $i+=$post['step']) {
          if (!empty($post['searchText']) && strstr($i, $post['searchText']) || empty($post['searchText'])) {
             if (!in_array($i, $used)) {

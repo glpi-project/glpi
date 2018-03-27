@@ -255,13 +255,26 @@ class Dropdown extends DbTestCase {
 
    public function dataGetValueWithUnit() {
       return [
-            [1,       'auto',              '1024 Kio'],
-            [1025,    'auto',              '1 Gio'],
-            ['1 025', 'auto',              '1 Gio'],
-            [1,       'year',              '1 year'],
-            [2,       'year',              '2 years'],
-            [3,       '%',                 '3%'],
-            ['foo',   'bar',               'foo bar'],
+            [1,         'auto',        '1024 Kio'],
+            [1025,      'auto',        '1 Gio'],
+            ['1 025',   'auto',        '1 Gio'],
+            [1,         'year',        '1 year'],
+            [2,         'year',        '2 years'],
+            [3,         '%',           '3%'],
+            ['foo',     'bar',         'foo bar'],
+            [1,         'month',       '1 month'],
+            [2,         'month',       '2 months'],
+            ['any',     '',            'any'],
+            [1,         'day',         '1 day'],
+            [2,         'day',         '2 days'],
+            [1,         'hour',        '1 hour'],
+            [2,         'hour',        '2 hours'],
+            [1,         'minute',      '1 minute'],
+            [2,         'minute',      '2 minutes'],
+            [1,         'second',      '1 second'],
+            [2,         'second',      '2 seconds'],
+            [1,         'millisecond', '1 millisecond'],
+            [2,         'millisecond', '2 milliseconds'],
       ];
    }
 
@@ -270,5 +283,768 @@ class Dropdown extends DbTestCase {
     */
    public function testGetValueWithUnit($input, $unit, $expected) {
       $this->string(\Dropdown::getValueWithUnit($input, $unit))->isIdenticalTo($expected);
+   }
+
+   protected function getDropdownValueProvider() {
+      return [
+         [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'   => '_cat_1',
+                           'level'  => 1,
+                           'title'  => '_cat_1 - Comment for category _cat_1',
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_subcat_1',
+                           'level'  => 2,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 2
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory',
+               'searchText'            => 'subcat'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'   => '_cat_1',
+                           'level'  => 1,
+                           'disabled' => true
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_subcat_1',
+                           'level'  => 2,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 1
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 1,
+               'emptylabel'            => 'EEEEEE',
+               'itemtype'              => 'TaskCategory'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id'        => 0,
+                     'text'      => 'EEEEEE'
+                  ],
+                  1 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'   => '_cat_1',
+                           'level'  => 1,
+                           'title'  => '_cat_1 - Comment for category _cat_1',
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_subcat_1',
+                           'level'  => 2,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 2
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory',
+               'used'                  => [getItemByTypeName('TaskCategory', '_cat_1', true)]
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'   => '_cat_1',
+                           'level'  => 1,
+                           'disabled' => true
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_subcat_1',
+                           'level'  => 2,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 1
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'Computer',
+               'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true)
+            ],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                           'text'   => '_test_pc21',
+                           'title'  => '_test_pc21',
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                           'text'   => '_test_pc22',
+                           'title'  => '_test_pc22',
+                        ]
+                     ]
+                  ]
+               ],
+               'count'     => 2
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'Computer',
+               'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) .']'
+            ],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                           'text'   => '_test_pc21',
+                           'title'  => '_test_pc21',
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                           'text'   => '_test_pc22',
+                           'title'  => '_test_pc22',
+                        ]
+                     ]
+                  ]
+               ],
+               'count'     => 2
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'Computer',
+               'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
+               'searchText'            => '22'
+            ],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                           'text'   => '_test_pc22',
+                           'title'  => '_test_pc22',
+                        ]
+                     ]
+                  ]
+               ],
+               'count'     => 1
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory',
+               'searchText'            => 'subcat',
+               'toadd'                 => ['key' => 'value']
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id'     => 'key',
+                     'text'   => 'value'
+                  ],
+                  1 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'   => '_cat_1',
+                           'level'  => 1,
+                           'disabled' => true
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_subcat_1',
+                           'level'  => 2,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 1
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory',
+               'searchText'            => 'subcat'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_cat_1 > _subcat_1',
+                           'level'  => 0,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 1
+            ],
+            'session_params' => [
+               'glpiuse_flat_dropdowntree' => true
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'   => '_cat_1',
+                           'level'  => 0,
+                           'title'  => '_cat_1 - Comment for category _cat_1',
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_cat_1 > _subcat_1',
+                           'level'  => 0,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 2
+            ],
+            'session_params' => [
+               'glpiuse_flat_dropdowntree' => true
+            ]
+         ], [
+            'params' => [
+               'display_emptychoice'   => 0,
+               'itemtype'              => 'TaskCategory',
+               'searchText'            => 'subcat',
+               'permit_select_parent'  => true
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text'      => 'Root entity',
+                     'children'  => [
+                        0 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'   => '_cat_1',
+                           'level'  => 1,
+                           'title'  => '_cat_1 - Comment for category _cat_1',
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'   => '_subcat_1',
+                           'level'  => 2,
+                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                        ]
+                     ]
+                  ]
+               ],
+               'count' => 1
+            ]
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider getDropdownValueProvider
+    */
+   public function testGetDropdownValue($params, $expected, $session_params = []) {
+      $bkp_params = [];
+      //set session params if any
+      if (count($session_params)) {
+         foreach ($session_params as $param => $value) {
+            if (isset($_SESSION[$param])) {
+               $bkp_params[$param] = $_SESSION[$param];
+            }
+            $_SESSION[$param] = $value;
+         }
+      }
+
+      $result = \Dropdown::getDropdownValue($params, false);
+
+      //reset session params before executing test
+      if (count($session_params)) {
+         foreach ($session_params as $param => $value) {
+            if (isset($bkp_params[$param])) {
+               $_SESSION[$param] = $bkp_params[$param];
+            } else {
+               unset($_SESSION[$param]);
+            }
+         }
+      }
+
+      $this->array($result)->isIdenticalTo($expected);
+   }
+
+   protected function getDropdownConnectProvider() {
+      return [
+         [
+            'params'    => [
+               'fromtype'  => 'Computer',
+               'itemtype'  => 'Printer'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id' => 0,
+                     'text' => '-----',
+                  ],
+                  1 => [
+                     'text' => 'Root entity > _test_root_entity',
+                     'children' => [
+                        0 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
+                           'text'   => '_test_printer_all',
+                        ],
+                        1 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
+                           'text'   => '_test_printer_ent0',
+                        ]
+                     ]
+                  ],
+                  2 => [
+                     'text' => 'Root entity > _test_root_entity > _test_child_1',
+                     'children' => [
+                        0 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
+                           'text'   => '_test_printer_ent1',
+                        ]
+                     ]
+                  ],
+                  3 => [
+                     'text' => 'Root entity > _test_root_entity > _test_child_2',
+                     'children' => [
+                        0 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_ent2', true),
+                           'text'   => '_test_printer_ent2',
+                        ]
+                     ]
+                  ]
+               ]
+            ]
+         ], [
+            'params'    => [
+               'fromtype'  => 'Computer',
+               'itemtype'  => 'Printer',
+               'used'      => [
+                  'Printer' => [
+                     getItemByTypeName('Printer', '_test_printer_ent0', true),
+                     getItemByTypeName('Printer', '_test_printer_ent2', true)
+                  ]
+               ]
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id' => 0,
+                     'text' => '-----',
+                  ],
+                  1 => [
+                     'text' => 'Root entity > _test_root_entity',
+                     'children' => [
+                        0 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
+                           'text'   => '_test_printer_all',
+                        ]
+                     ]
+                  ],
+                  2 => [
+                     'text' => 'Root entity > _test_root_entity > _test_child_1',
+                     'children' => [
+                        0 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
+                           'text'   => '_test_printer_ent1',
+                        ]
+                     ]
+                  ]
+               ]
+            ]
+         ], [
+            'params'    => [
+               'fromtype'     => 'Computer',
+               'itemtype'     => 'Printer',
+               'searchText'   => 'ent0'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text' => 'Root entity > _test_root_entity',
+                     'children' => [
+                        0 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
+                           'text'   => '_test_printer_ent0',
+                        ]
+                     ]
+                  ]
+               ]
+            ]
+         ], [
+            'params'    => [
+               'fromtype'     => 'Computer',
+               'itemtype'     => 'Printer',
+               'searchText'   => 'ent0'
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'text' => 'Root entity > _test_root_entity',
+                     'children' => [
+                        0 => [
+                           'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
+                           'text'   => '_test_printer_ent0 (' .getItemByTypeName('Printer', '_test_printer_ent0', true) . ')',
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'session_params' => [
+               'glpiis_ids_visible' => true
+            ]
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider getDropdownConnectProvider
+    */
+   public function testGetDropdownConnect($params, $expected, $session_params = []) {
+      $this->login();
+
+      $bkp_params = [];
+      //set session params if any
+      if (count($session_params)) {
+         foreach ($session_params as $param => $value) {
+            if (isset($_SESSION[$param])) {
+               $bkp_params[$param] = $_SESSION[$param];
+            }
+            $_SESSION[$param] = $value;
+         }
+      }
+
+      $result = \Dropdown::getDropdownConnect($params, false);
+
+      //reset session params before executing test
+      if (count($session_params)) {
+         foreach ($session_params as $param => $value) {
+            if (isset($bkp_params[$param])) {
+               $_SESSION[$param] = $bkp_params[$param];
+            } else {
+               unset($_SESSION[$param]);
+            }
+         }
+      }
+
+      $this->array($result)->isIdenticalTo($expected);
+   }
+
+   protected function getDropdownNumberProvider() {
+      return [
+         [
+            'params'    => [],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'id'     => 1,
+                     'text'   => '1'
+                  ],
+                  1 => [
+                     'id'     => 2,
+                     'text'   => '2'
+                  ],
+                  2 => [
+                     'id'     => 3,
+                     'text'   => '3'
+                  ],
+                  3 => [
+                     'id'     => 4,
+                     'text'   => '4'
+                  ],
+                  4 => [
+                     'id'     => 5,
+                     'text'   => '5'
+                  ],
+                  5 => [
+                     'id'     => 6,
+                     'text'   => '6'
+                  ],
+                  6 => [
+                     'id'     => 7,
+                     'text'   => '7'
+                  ],
+                  7 => [
+                     'id'     => 8,
+                     'text'   => '8'
+                  ],
+                  8 => [
+                     'id'     => 9,
+                     'text'   => '9'
+                  ],
+                  9 => [
+                     'id'     => 10,
+                     'text'   => '10'
+                  ]
+               ],
+               'count'     => 10
+            ]
+         ], [
+            'params'    => [
+               'min'    => 10,
+               'max'    => 30,
+               'step'   => 10
+            ],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'id'     => 10,
+                     'text'   => '10'
+                  ],
+                  1 => [
+                     'id'     => 20,
+                     'text'   => '20'
+                  ],
+                  2 => [
+                     'id'     => 30,
+                     'text'   => '30'
+                  ]
+               ],
+               'count'     => 3
+            ]
+         ], [
+            'params'    => [
+               'min'    => 10,
+               'max'    => 30,
+               'step'   => 10,
+               'used'   => [20]
+            ],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'id'     => 10,
+                     'text'   => '10'
+                  ],
+                  1 => [
+                     'id'     => 30,
+                     'text'   => '30'
+                  ]
+               ],
+               'count'     => 2
+            ]
+         ], [
+            'params'    => [
+               'min'    => 10,
+               'max'    => 30,
+               'step'   => 10,
+               'used'   => [20],
+               'toadd'  => [5 => 'five']
+            ],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'id'     => 5,
+                     'text'   =>'five'
+                  ],
+                  1 => [
+                     'id'     => 10,
+                     'text'   => '10'
+                  ],
+                  2 => [
+                     'id'     => 30,
+                     'text'   => '30'
+                  ]
+               ],
+               'count'     => 2
+            ]
+         ], [
+            'params'    => [
+               'min'    => 10,
+               'max'    => 30,
+               'step'   => 10,
+               'used'   => [20],
+               'unit'   => 'second'
+            ],
+            'expected'  => [
+               'results'   => [
+                  0 => [
+                     'id'     => 10,
+                     'text'   => '10 seconds'
+                  ],
+                  1 => [
+                     'id'     => 30,
+                     'text'   => '30 seconds'
+                  ]
+               ],
+               'count'     => 2
+            ]
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider getDropdownNumberProvider
+    */
+   public function testGetDropdownNumber($params, $expected) {
+      global $CFG_GLPI;
+      $orig_max = $CFG_GLPI['dropdown_max'];
+      $CFG_GLPI['dropdown_max'] = 10;
+      $result = \Dropdown::getDropdownNumber($params, false);
+      $CFG_GLPI['dropdown_max'] = $orig_max;
+      $this->array($result)->isIdenticalTo($expected);
+   }
+
+   protected function getDropdownUsersProvider() {
+      return [
+         [
+            'params'    => [],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id'     => 0,
+                     'text'   => '-----',
+                  ],
+                  1 => [
+                     'id'     => (int)getItemByTypeName('user', '_test_user', true),
+                     'text'   => '_test_user',
+                     'title'  => '_test_user - _test_user',
+                  ],
+                  2 => [
+                     'id'     => (int)getItemByTypeName('User', 'glpi', true),
+                     'text'   => 'glpi',
+                     'title'  => 'glpi - glpi',
+                  ],
+                  3 => [
+                     'id'     => (int)getItemByTypeName('User', 'normal', true),
+                     'text'   => 'normal',
+                     'title'  => 'normal - normal',
+                  ],
+                  4 => [
+                     'id'     => (int)getItemByTypeName('User', 'post-only', true),
+                     'text'   => 'post-only',
+                     'title'  => 'post-only - post-only',
+                  ],
+                  5 => [
+                     'id'     => (int)getItemByTypeName('User', 'tech', true),
+                     'text'   => 'tech',
+                     'title'  => 'tech - tech',
+                  ]
+               ],
+               'count' => 5
+            ]
+         ], [
+            'params'    => [
+               'used'   => [
+                  getItemByTypeName('User', 'glpi', true),
+                  getItemByTypeName('User', 'tech', true)
+               ]
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id'     => 0,
+                     'text'   => '-----',
+                  ],
+                  1 => [
+                     'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                     'text'   => '_test_user',
+                     'title'  => '_test_user - _test_user',
+                  ],
+                  2 => [
+                     'id'     => (int)getItemByTypeName('User', 'normal', true),
+                     'text'   => 'normal',
+                     'title'  => 'normal - normal',
+                  ],
+                  3 => [
+                     'id'     => (int)getItemByTypeName('User', 'post-only', true),
+                     'text'   => 'post-only',
+                     'title'  => 'post-only - post-only',
+                  ]
+               ],
+               'count' => 3
+            ]
+         ], [
+            'params'    => [
+               'all'    => true,
+               'used'   => [
+                  getItemByTypeName('User', 'glpi', true),
+                  getItemByTypeName('User', 'tech', true),
+                  getItemByTypeName('User', 'normal', true),
+                  getItemByTypeName('User', 'post-only', true)
+               ]
+            ],
+            'expected'  => [
+               'results' => [
+                  0 => [
+                     'id'     => 0,
+                     'text'   => 'All',
+                  ],
+                  1 => [
+                     'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                     'text'   => '_test_user',
+                     'title'  => '_test_user - _test_user',
+                  ]
+               ],
+               'count' => 1
+            ]
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider getDropdownUsersProvider
+    */
+   public function testGetDropdownUsers($params, $expected) {
+      $result = \Dropdown::getDropdownUsers($params, false);
+      $this->array($result)->isIdenticalTo($expected);
    }
 }
