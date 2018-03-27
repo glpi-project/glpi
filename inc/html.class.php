@@ -5725,7 +5725,7 @@ class Html {
       }
 
       if (file_exists(GLPI_ROOT."/js/analytics.js")) {
-         echo Html::script("js/analytics.js", ['version' => $version]);
+         echo Html::script("js/analytics.js");
       }
    }
 
