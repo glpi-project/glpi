@@ -2811,4 +2811,175 @@ class Dropdown {
 
       return ($json === true) ? json_encode($ret) : $ret;
    }
+
+   /**
+    * Get dropdown connect
+    *
+    * @param array   $post Posted values
+    * @param boolean $json Encode to JSON, default to true
+    *
+    * @return string|array
+    */
+   public static function getDropdownConnect($post, $json = true) {
+      global $DB, $CFG_GLPI;
+
+      if (!isset($post['fromtype']) || !($fromitem = getItemForItemtype($post['fromtype']))) {
+         return;
+      }
+
+      $fromitem->checkGlobal(UPDATE);
+      $used = [];
+      if (isset( $post["used"])) {
+         $used = $post["used"];
+
+         if (isset($used[$post['itemtype']])) {
+            $used = $used[$post['itemtype']];
+         } else {
+            $used = [];
+         }
+      }
+
+      // Make a select box
+      $table = getTableForItemType($post["itemtype"]);
+      if (!$item = getItemForItemtype($post['itemtype'])) {
+         return;
+      }
+
+      $datas = [];
+
+      $where = "";
+
+      if ($item->maybeDeleted()) {
+         $where .= " AND `$table`.`is_deleted` = '0' ";
+      }
+      if ($item->maybeTemplate()) {
+         $where .= " AND `$table`.`is_template` = '0' ";
+      }
+
+      if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
+         $where .= " AND (`$table`.`name` ".Search::makeTextSearch($post['searchText'])."
+                        OR `$table`.`otherserial` ".Search::makeTextSearch($post['searchText'])."
+                        OR `$table`.`serial` ".Search::makeTextSearch($post['searchText'])." )";
+      }
+
+      $multi = $item->maybeRecursive();
+
+      if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
+         $where .= getEntitiesRestrictRequest(" AND ", $table, '', $post["entity_restrict"], $multi);
+         if (is_array($post["entity_restrict"]) && (count($post["entity_restrict"]) > 1)) {
+            $multi = true;
+         }
+
+      } else {
+         $where .= getEntitiesRestrictRequest(" AND ", $table, '', $_SESSION['glpiactiveentities'],
+                                             $multi);
+         if (count($_SESSION['glpiactiveentities']) > 1) {
+            $multi = true;
+         }
+      }
+
+      if (!isset($post['page'])) {
+         $post['page']       = 1;
+         $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+      }
+
+      $start = intval(($post['page']-1)*$post['page_limit']);
+      $limit = intval($post['page_limit']);
+      $LIMIT = "LIMIT $start,$limit";
+
+      $where_used = '';
+      if (!empty($used)) {
+         $where_used = " AND `$table`.`id` NOT IN ('".implode("','", $used)."')";
+      }
+
+      if ($post["onlyglobal"]
+         && ($post["itemtype"] != 'Computer')) {
+         $CONNECT_SEARCH = " WHERE `$table`.`is_global` = '1' ";
+      } else {
+         if ($post["itemtype"] == 'Computer') {
+            $CONNECT_SEARCH = " WHERE 1
+                                    $where_used";
+         } else {
+            $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL
+                                       $where_used)
+                                       OR `$table`.`is_global` = '1') ";
+         }
+      }
+
+      $LEFTJOINCONNECT = "";
+
+      if (($post["itemtype"] != 'Computer')
+         && !$post["onlyglobal"]) {
+         $LEFTJOINCONNECT = " LEFT JOIN `glpi_computers_items`
+                                 ON (`$table`.`id` = `glpi_computers_items`.`items_id`
+                                    AND `glpi_computers_items`.`itemtype` = '".$post['itemtype']."')";
+      }
+
+      $query = "SELECT DISTINCT `$table`.`id`,
+                              `$table`.`name` AS name,
+                              `$table`.`serial` AS serial,
+                              `$table`.`otherserial` AS otherserial,
+                              `$table`.`entities_id` AS entities_id
+               FROM `$table`
+               $LEFTJOINCONNECT
+               $CONNECT_SEARCH
+                     $where
+               ORDER BY entities_id,
+                        name ASC
+               $LIMIT";
+
+      $result = $DB->query($query);
+
+      // Display first if no search
+      if (empty($post['searchText'])) {
+         array_push($datas, ['id'   => 0,
+                                 'text' => Dropdown::EMPTY_VALUE]);
+      }
+      if ($DB->numrows($result)) {
+         $prev       = -1;
+         $datastoadd = [];
+
+         while ($data = $DB->fetch_assoc($result)) {
+            if ($multi && ($data["entities_id"] != $prev)) {
+               if (count($datastoadd)) {
+                  array_push($datas, ['text'    => Dropdown::getDropdownName("glpi_entities", $prev),
+                                          'children' => $datastoadd]);
+               }
+               $prev = $data["entities_id"];
+               // Reset last level displayed :
+               $datastoadd = [];
+            }
+            $output = $data['name'];
+            $ID     = $data['id'];
+
+            if ($_SESSION["glpiis_ids_visible"]
+               || empty($output)) {
+               $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
+            }
+            if (!empty($data['serial'])) {
+               $output = sprintf(__('%1$s - %2$s'), $output, $data["serial"]);
+            }
+            if (!empty($data['otherserial'])) {
+               $output = sprintf(__('%1$s - %2$s'), $output, $data["otherserial"]);
+            }
+            array_push($datastoadd, ['id'    => $ID,
+                                          'text'  => $output]);
+         }
+
+         if ($multi) {
+            if (count($datastoadd)) {
+               array_push($datas, ['text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                       'children' => $datastoadd]);
+            }
+         } else {
+            if (count($datastoadd)) {
+               $datas = array_merge($datas, $datastoadd);
+            }
+         }
+      }
+
+      $ret['results'] = $datas;
+
+      return ($json === true) ? json_encode($ret) : $ret;
+   }
 }
