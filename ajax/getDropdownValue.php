@@ -544,7 +544,7 @@ if ($item instanceof CommonTreeDropdown) {
       case Project::getType():
          $addjoin .= Project::addVisibilityJoins();
          $where   .= Project::addVisibility();
-      //no break to reach default case.
+         //no break to reach default case.
 
       default :
          $query = "SELECT `$table`.* $addselect
