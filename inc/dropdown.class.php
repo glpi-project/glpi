@@ -3109,4 +3109,123 @@ class Dropdown {
 
       return ($json === true) ? json_encode($ret) : $ret;
    }
+
+   /**
+    * Get dropdown netpoint
+    *
+    * @param array   $post Posted values
+    * @param boolean $json Encode to JSON, default to true
+    *
+    * @return string|array
+    */
+   public static function getDropdownNetpoint($post, $json = true) {
+      global $DB;
+
+      // Make a select box with preselected values
+      $datas             = [];
+      $location_restrict = false;
+
+      if (!isset($post['page'])) {
+         $post['page']       = 1;
+         $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+      }
+
+      $start = intval(($post['page']-1)*$post['page_limit']);
+      $limit = intval($post['page_limit']);
+
+      $LIMIT = "LIMIT $start,$limit";
+
+      if (strlen($post['searchText']) > 0) {
+         $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($post['searchText'])."
+                           OR `glpi_locations`.`completename` ".Search::makeTextSearch($post['searchText']).")";
+      } else {
+         $where = " WHERE 1 ";
+      }
+
+      if (!(isset($post["devtype"])
+            && ($post["devtype"] != 'NetworkEquipment')
+            && isset($post["locations_id"])
+            && ($post["locations_id"] > 0))) {
+
+         if (isset($post["entity_restrict"]) && ($post["entity_restrict"] >= 0)) {
+            $where .= " AND `glpi_netpoints`.`entities_id` = '".$post["entity_restrict"]."'";
+         } else {
+            $where .= getEntitiesRestrictRequest(" AND ", "glpi_locations");
+         }
+      }
+
+      $query = "SELECT `glpi_netpoints`.`comment` AS comment,
+                     `glpi_netpoints`.`id`,
+                     `glpi_netpoints`.`name` AS netpname,
+                     `glpi_locations`.`completename` AS loc
+               FROM `glpi_netpoints`
+               LEFT JOIN `glpi_locations` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`) ";
+
+      if (isset($post["devtype"]) && !empty($post["devtype"])) {
+         $query .= "LEFT JOIN `glpi_networkportethernets`
+                        ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)
+                  LEFT JOIN `glpi_networkports`
+                        ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`id`
+                           AND `glpi_networkports`.`instantiation_type` = 'NetworkPortEthernet'
+                           AND `glpi_networkports`.`itemtype`";
+
+         if ($post["devtype"] == 'NetworkEquipment') {
+            $query .= " = 'NetworkEquipment' )";
+         } else {
+            $query .= " != 'NetworkEquipment' )";
+            if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
+               $location_restrict = true;
+               $where .= " AND `glpi_netpoints`.`locations_id` = '".$post["locations_id"]."' ";
+            }
+         }
+         $where .= " AND `glpi_networkportethernets`.`netpoints_id` IS NULL ";
+
+      } else if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
+         $location_restrict = true;
+         $where .= " AND `glpi_netpoints`.`locations_id` = '".$post["locations_id"]."' ";
+      }
+
+      $query .= $where ."
+               ORDER BY `glpi_locations`.`completename`,
+                        `glpi_netpoints`.`name`
+               $LIMIT";
+
+      $result = $DB->query($query);
+
+      // Display first if no search
+      if (empty($post['searchText'])) {
+         if ($post['page'] == 1) {
+            array_push($datas, ['id'   => 0,
+                              'text' => Dropdown::EMPTY_VALUE]);
+         }
+      }
+
+      $count = 0;
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $output     = $data['netpname'];
+            $loc        = $data['loc'];
+            $ID         = $data['id'];
+            $title      = $output;
+            if (isset($data["comment"])) {
+               //TRANS: %1$s is the location, %2$s is the comment
+               $title = sprintf(__('%1$s - %2$s'), $title, $loc);
+               $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
+            }
+            if (!$location_restrict) {
+               $output = sprintf(__('%1$s (%2$s)'), $output, $loc);
+            }
+
+            array_push($datas, ['id'    => $ID,
+                                    'text'  => $output,
+                                    'title' => $title]);
+            $count++;
+         }
+      }
+
+      $ret['count']   = $count;
+      $ret['results'] = $datas;
+
+      return ($json === true) ? json_encode($ret) : $ret;
+   }
 }
