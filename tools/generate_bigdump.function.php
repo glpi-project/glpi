@@ -3065,6 +3065,8 @@ function generate_entity($ID_entity) {
 }
 
 function getState() {
+   global $faker;
+
    $state = "";
    try {
       $state = $faker->state;
