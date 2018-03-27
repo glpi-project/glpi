@@ -41,7 +41,8 @@
         "patchwork/jsqueeze": "^2.0",
         "atoum/atoum": "^3.3",
         "atoum/telemetry-extension": "^1.0",
-        "sensiolabs/security-checker": "^4.1"
+        "sensiolabs/security-checker": "^4.1",
+        "fzaninotto/Faker": "^1.7"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",

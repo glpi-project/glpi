@@ -970,7 +970,8 @@ class IPAddress extends CommonDBChild {
       // To normalise the address, just make new one
       $ipaddress = new self($ipaddress);
 
-      if ((count($this->binary) != 4)
+      if (!is_array($this->binary)
+          || (count($this->binary) != 4)
           || (count($ipaddress->binary) != 4)
           || ($this->version != $ipaddress->version)) {
          return false;
