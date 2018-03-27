@@ -1026,7 +1026,7 @@ class Ticket extends CommonITILObject {
       $check_allowed_fields_for_template = false;
       $allowed_fields                    = [];
       if (!Session::isCron()
-          && (!$this->canUpdateItem()
+          && (!Session::haveRight(self::$rightname, UPDATE)
             // Closed tickets
             || in_array($this->fields['status'], $this->getClosedStatusArray()))
          ) {
