@@ -5935,7 +5935,7 @@ class Html {
          ]
       );
       echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".
-             __s('Load a bookmark'). "\">";
+             __s('Load a saved search'). "\">";
       echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 

@@ -1952,7 +1952,7 @@ class Search {
             //TODO: change that!
             Ajax::createIframeModalWindow('loadbookmark',
                                     SavedSearch::getSearchURL() . "?action=load&type=" . SavedSearch::SEARCH,
-                                    ['title'         => __('Load a bookmark')]);
+                                    ['title'         => __('Load a saved search')]);
             SavedSearch::showSaveButton(SavedSearch::SEARCH, $itemtype);
          }
 
