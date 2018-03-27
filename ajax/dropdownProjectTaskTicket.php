@@ -40,7 +40,6 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-// Make a select box
 if (isset($_POST["projects_id"])) {
 
    $rand = mt_rand();
