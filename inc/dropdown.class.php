@@ -3228,4 +3228,95 @@ class Dropdown {
 
       return ($json === true) ? json_encode($ret) : $ret;
    }
+
+   /**
+    * Get dropdown number
+    *
+    * @param array   $post Posted values
+    * @param boolean $json Encode to JSON, default to true
+    *
+    * @return string|array
+    */
+   public static function getDropdownNumber($post, $json = true) {
+      global $DB, $CFG_GLPI;
+
+      $used = [];
+
+      if (isset($post['used'])) {
+         $used = $post['used'];
+      }
+
+      if (!isset($post['value'])) {
+         $post['value'] = 0;
+      }
+
+      if (!isset($post['page'])) {
+         $post['page']       = 1;
+         $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+      }
+
+      if (isset($post['toadd'])) {
+         $toadd = $post['toadd'];
+      } else {
+         $toadd = [];
+      }
+
+      $data = [];
+      // Count real items returned
+      $count = 0;
+
+      if ($post['page'] == 1) {
+         if (count($toadd)) {
+            foreach ($toadd as $key => $val) {
+               array_push($data, ['id'   => $key,
+                                 'text' => strval(stripslashes($val))]);
+            }
+         }
+      }
+
+      $values = [];
+      for ($i=$post['min']; $i<=$post['max']; $i+=$post['step']) {
+         if (!empty($post['searchText']) && strstr($i, $post['searchText']) || empty($post['searchText'])) {
+            if (!in_array($i, $used)) {
+               $values[$i] = $i;
+            }
+         }
+      }
+
+      if (count($values)) {
+         $start  = ($post['page']-1)*$post['page_limit'];
+         $tosend = array_splice($values, $start, $post['page_limit']);
+         foreach ($tosend as $i) {
+            $txt = $i;
+            if (isset($post['unit'])) {
+               $txt = Dropdown::getValueWithUnit($i, $post['unit']);
+            }
+            array_push($data, ['id'   => $i,
+                              'text' => strval($txt)]);
+            $count++;
+         }
+
+      } else {
+         if (!isset($toadd[-1])) {
+            $value = -1;
+            if (isset($post['min']) && $value < $post['min']) {
+               $value = $post['min'];
+            } else if (isset($post['max']) && $value > $post['max']) {
+               $value = $post['max'];
+            }
+
+            if (isset($post['unit'])) {
+               $txt = Dropdown::getValueWithUnit($value, $post['unit']);
+            }
+            array_push($data, ['id'   => $value,
+                              'text' => strval(stripslashes($txt))]);
+            $count++;
+         }
+      }
+
+      $ret['results'] = $data;
+      $ret['count']   = $count;
+
+      return ($json === true) ? json_encode($ret) : $ret;
+   }
 }
