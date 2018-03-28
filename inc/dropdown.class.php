@@ -2516,6 +2516,7 @@ class Dropdown {
                                                 'level'    => $work_level,
                                                 'disabled' => true];
                                     if ($post['permit_select_parent']) {
+                                       $temp['title'] = $title;
                                        unset($temp['disabled']);
                                     }
                                     array_unshift($parent_datas, $temp);
