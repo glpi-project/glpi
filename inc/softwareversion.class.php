@@ -115,7 +115,7 @@ class SoftwareVersion extends CommonDBChild {
       if ($this->isNewID($ID)) {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
       }
-      echo "<a href='software.form.php?id=".$softwares_id."'>".
+      echo "<a href='".Software::getFormURLWithID($softwares_id)."'>".
              Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
@@ -286,7 +286,7 @@ class SoftwareVersion extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='softwareversion.form.php?softwares_id=$softwares_id'>".
+         echo "<a class='vsubmit' href='".SoftwareVersion::getFormURL()."?softwares_id=$softwares_id'>".
                 _x('button', 'Add a version')."</a>";
          echo "</div>";
       }
@@ -319,7 +319,7 @@ class SoftwareVersion extends CommonDBChild {
                $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
                echo "<tr class='tab_bg_2'>";
-               echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>";
+               echo "<td><a href='".SoftwareVersion::getFormURLWithID($data['id'])."'>";
                echo $data['name'].(empty($data['name'])?"(".$data['id'].")":"")."</a></td>";
                echo "<td>".$data['sname']."</td>";
                echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',

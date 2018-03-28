@@ -243,7 +243,7 @@ class Contact_Supplier extends CommonDBRelation{
                echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
             }
             echo "<td class='center'>";
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".$data["entID"]."'>".
+            echo "<a href='".Supplier::getFormURLWithID($data["entID"])."'>".
                    Dropdown::getDropdownName("glpi_suppliers", $data["entID"])."</a></td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entity"]);
             echo "</td>";
@@ -371,7 +371,7 @@ class Contact_Supplier extends CommonDBRelation{
                echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["ID_ent"])."</td>";
             }
             echo "<td class='center'>";
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
+            echo "<a href='".Contact::getFormURLWithID($data["id"])."'>".
                    sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"])."</a></td>";
             echo "<td class='center' width='100'>".Dropdown::getDropdownName("glpi_entities",
                                                                              $data["entity"]);

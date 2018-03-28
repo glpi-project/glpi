@@ -189,8 +189,7 @@ class Event extends CommonDBTM {
                echo " <a href='#' onClick=\"".Html::jsGetElementbyID('infocom'.$rand).".
                        dialog('open');\">$items_id</a>";
                Ajax::createIframeModalWindow('infocom'.$rand,
-                                             $CFG_GLPI["root_doc"]."/front/infocom.form.php".
-                                                "?id=".$items_id,
+                                             Infocom::getFormURLWithID($items_id),
                                              ['height' => 600]);
 
             case "devices" :

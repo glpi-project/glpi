@@ -225,7 +225,7 @@ class Group_User extends CommonDBRelation{
             if ($_SESSION["glpiis_ids_visible"]) {
                $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
             }
-            $href = "<a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".
+            $href = "<a href='".Group::getFormURLWithID($data["id"])."'>".
                       $link."</a>";
             if ($data["is_dynamic"]) {
                $href = sprintf(__('%1$s (%2$s)'), $href, "<span class='b'>".__('D')."</span>");

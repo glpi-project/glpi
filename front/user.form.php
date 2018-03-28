@@ -44,7 +44,7 @@ $groupuser = new Group_User();
 if (empty($_GET["id"]) && isset($_GET["name"])) {
 
    $user->getFromDBbyName($_GET["name"]);
-   Html::redirect($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
+   Html::redirect($user->getFormURLWithID($user->fields['id']));
 }
 
 if (empty($_GET["name"])) {

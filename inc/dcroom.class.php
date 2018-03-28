@@ -354,7 +354,7 @@ class DCRoom extends CommonDBTM {
       ]);
 
       echo "<div class='firstbloc'>";
-      Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/dcroom.form.php",
+      Html::showSimpleForm(self::getFormURL(),
                            '_add_fromitem', __('New room for this datacenter...'),
                            ['datacenters_id' => $datacenter->getID()]);
       echo "</div>";

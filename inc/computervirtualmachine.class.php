@@ -278,7 +278,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
                if ($computer->can($host['computers_id'], READ)) {
-                  echo "<a href='computer.form.php?id=".$computer->fields['id']."'>";
+                  echo "<a href='".Computer::getFormURLWithID($computer->fields['id'])."'>";
                   echo $computer->fields['name']."</a>";
                   $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].
                              '</td></tr>';
@@ -328,7 +328,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>".
-                "<a class='vsubmit' href='computervirtualmachine.form.php?computers_id=$ID'>";
+                "<a class='vsubmit' href='".ComputerAntivirus::getFormURL()."?computers_id=$ID'>";
          echo __('Add a virtual machine');
          echo "</a></div>\n";
       }
@@ -391,7 +391,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             if ($link_computer = self::findVirtualMachine($virtualmachine)) {
                $computer = new Computer();
                if ($computer->can($link_computer, READ)) {
-                  $url  = "<a href='computer.form.php?id=".$link_computer."'>";
+                  $url  = "<a href='".$computer->getFormURLWithID($link_computer)."'>";
                   $url .= $computer->fields["name"]."</a>";
 
                   $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].

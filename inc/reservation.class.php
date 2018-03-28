@@ -553,7 +553,7 @@ class Reservation extends CommonDBChild {
 
          if (!empty($ID)) {
             echo "<tr><td class='center'>";
-            echo "<a href='reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
+            echo "<a href='".Reservation::getFormURL()."?id=&amp;item[$ID]=$ID&amp;".
                   "begin=".$annee_courante."-".$mois_courant."-".$ii." 12:00:00'>";
             echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt=\"".
                   __s('Reserve')."\" title=\"".__s('Reserve')."\"></a></td></tr>\n";
@@ -632,7 +632,7 @@ class Reservation extends CommonDBChild {
          return false;
       }
 
-      echo "<div class='center'><form method='post' name=form action='reservation.form.php'>";
+      echo "<div class='center'><form method='post' name=form action='".Reservation::getFormURL()."'>";
 
       if (!empty($ID)) {
          echo "<input type='hidden' name='id' value='$ID'>";
@@ -1017,7 +1017,7 @@ class Reservation extends CommonDBChild {
                $modif = $modif_end = "";
                if ($resa->canEdit($row['id'])) {
                   $modif      = "<a id='content_".$ID.$rand."'
-                                  href='reservation.form.php?id=".$row['id']."'>";
+                                  href='".Reservation::getFormURLWithID($row['id'])."'>";
                   $modif_end  = "</a>";
                   $modif_end .= Html::showToolTip($row["comment"],
                                                   ['applyto' => "content_".$ID.$rand,
@@ -1091,8 +1091,7 @@ class Reservation extends CommonDBChild {
                echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
                echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".
-                      $data["users_id"]."'>".getUserName($data["users_id"])."</a></td>";
+               echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a></td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
                list($annee, $mois, $jour) = explode("-", $data["begin"]);
@@ -1139,8 +1138,7 @@ class Reservation extends CommonDBChild {
                echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
                echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".
-                      $data["users_id"]."'>".getUserName($data["users_id"])."</a></td>";
+               echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a></td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
                list($annee, $mois ,$jour) = explode("-", $data["begin"]);

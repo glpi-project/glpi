@@ -102,12 +102,12 @@ class Auth extends CommonGLPI {
             $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(Session::getPluralNumber());
             $menu['options']['ldap']['page']            = '/front/authldap.php';
             $menu['options']['ldap']['links']['search'] = '/front/authldap.php';
-            $menu['options']['ldap']['links']['add']    = '' .'/front/authldap.form.php';
+            $menu['options']['ldap']['links']['add']    = AuthLDAP::getFormURL();
 
             $menu['options']['imap']['title']           = AuthMail::getTypeName(Session::getPluralNumber());
             $menu['options']['imap']['page']            = '/front/authmail.php';
             $menu['options']['imap']['links']['search'] = '/front/authmail.php';
-            $menu['options']['imap']['links']['add']    = '' .'/front/authmail.form.php';
+            $menu['options']['imap']['links']['add']    = AuthMail::getFormURL();
 
             $menu['options']['others']['title']         = __('Others');
             $menu['options']['others']['page']          = '/front/auth.others.php';
@@ -1161,7 +1161,7 @@ class Auth extends CommonGLPI {
 
       } else {
          if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
-            Html::redirect($CFG_GLPI['root_doc'] . "/front/ticket.form.php");
+            Html::redirect(Ticket::getFormURL());
          }
          Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
       }

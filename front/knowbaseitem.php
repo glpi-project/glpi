@@ -37,7 +37,7 @@ if (!Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
    Html::displayRightError();
 }
 if (isset($_GET["id"])) {
-   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
+   Html::redirect(KnowbaseItem::getFormURLWithID($_GET["id"]));
 }
 
 Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");

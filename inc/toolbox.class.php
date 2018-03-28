@@ -1866,8 +1866,7 @@ class Toolbox {
                               $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
                               $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                            }
-                           Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
-                                          $data[1]."&$forcetab");
+                           Html::redirect(Ticket::getFormURLWithID($data[1])."&$forcetab");
 
                         } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
@@ -1883,8 +1882,7 @@ class Toolbox {
                         break;
 
                      case "reservation" :
-                        Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.form.php?id=".
-                                       $data[1]."&$forcetab");
+                        Html::redirect(Reservation::getFormURLWithID($data[1])."&$forcetab");
                         break;
 
                      default :
@@ -1924,7 +1922,7 @@ class Toolbox {
                                  $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
                                  $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                               }
-                              Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
+                              Html::redirect($item->getFormURLWithID($data[1])."&$forcetab");
                            }
 
                         } else if (!empty($data[0])) { // redirect to list

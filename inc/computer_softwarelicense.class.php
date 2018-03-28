@@ -375,8 +375,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       //do not allow to add more assets
       if ($canedit
          && ($license->getField('number') == -1 || $number < $license->getField('number'))) {
-         echo "<form method='post' action='".
-                $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php'>";
+         echo "<form method='post' action='".Computer_SoftwareLicense::getFormURL()."'>";
          echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";
 
          echo "<table class='tab_cadre_fixe'>";
@@ -531,7 +530,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                }
 
                if ($canshowcomputer) {
-                  echo "<td><a href='computer.form.php?id=".$data['cID']."'>$compname</a></td>";
+                  echo "<td><a href='".Computer::getFormURLWithID($data['cID'])."'>$compname</a></td>";
                } else {
                   echo "<td>".$compname."</td>";
                }

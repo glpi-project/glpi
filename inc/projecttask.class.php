@@ -477,7 +477,7 @@ class ProjectTask extends CommonDBChild {
          echo "<input type='hidden' name='projects_id' value='$projects_id'>";
          echo "<input type='hidden' name='is_recursive' value='$recursive'>";
       }
-      echo "<a href='project.form.php?id=".$projects_id."'>".
+      echo "<a href='".Project::getFormURLWithID($projects_id)."'>".
              Dropdown::getDropdownName("glpi_projects", $projects_id)."</a>";
       echo "</td>";
       echo "<td>".__('As child of')."</td>";
@@ -974,7 +974,7 @@ class ProjectTask extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='projecttask.form.php?projects_id=$ID'>".
+         echo "<a class='vsubmit' href='".ProjectTask::getFormURL()."?projects_id=$ID'>".
                 _x('button', 'Add a task')."</a>";
          echo "</div>";
       }
@@ -1060,8 +1060,8 @@ class ProjectTask extends CommonDBChild {
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
-               $link = "<a id='ProjectTask".$data["id"].$rand."' href='projecttask.form.php?id=".
-                         $data['id']."'>".$data['name'].
+               $link = "<a id='ProjectTask".$data["id"].$rand."' href='".
+                         ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
                          (empty($data['name'])?"(".$data['id'].")":"")."</a>";
                echo sprintf(__('%1$s %2$s'), $link,
                              Html::showToolTip($data['content'],
@@ -1085,8 +1085,8 @@ class ProjectTask extends CommonDBChild {
                echo "<td>";
                if ($data['projecttasks_id']>0) {
                   $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                  echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='projecttask.form.php?id=".
-                           $data['projecttasks_id']."'>".$father.
+                  echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='".
+                           ProjectTask::getFormURLWithID($data['projecttasks_id'])."'>".$father.
                            (empty($father)?"(".$data['projecttasks_id'].")":"")."</a>";
                }
                echo "</td></tr>";
@@ -1559,7 +1559,7 @@ class ProjectTask extends CommonDBChild {
       $html.= "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
              self::getTypeName(1)."\">&nbsp;";
       $html.= "<a id='project_task_".$val["id"].$rand."' href='".
-             $CFG_GLPI["root_doc"]."/front/projecttask.form.php?id=".$val["id"]."'>";
+             ProjectTask::getFormURLWithID($val["id"])."'>";
 
       switch ($type) {
          case "in" :

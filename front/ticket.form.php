@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
       if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
          $toadd = "&_sol_to_kb=1";
       }
-      Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"].$toadd);
+      Html::redirect(Ticket::getFormURLWithID($_POST["id"]).$toadd);
    }
    Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
                                     true, ERROR);
@@ -142,7 +142,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+   Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 
 } else if (isset($_POST['ola_delete'])) {
    $track->check($_POST["id"], UPDATE);
@@ -152,7 +152,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+   Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 
 } else if (isset($_POST['addme_observer'])) {
    $ticket_user = new Ticket_User();
@@ -166,7 +166,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
+   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
 
 } else if (isset($_POST['addme_assign'])) {
    $ticket_user = new Ticket_User();
@@ -180,7 +180,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
+   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
 } else if (isset($_REQUEST['delete_document'])) {
    $doc = new Document();
    $doc->getFromDB(intval($_REQUEST['documents_id']));
@@ -217,8 +217,8 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
 
    if (isset($_GET['_sol_to_kb'])) {
       Ajax::createIframeModalWindow('savetokb',
-                                    $CFG_GLPI["root_doc"].
-                                     "/front/knowbaseitem.form.php?_in_modal=1&item_itemtype=Ticket&item_items_id=".
+                                    KnowbaseItem::getFormURL().
+                                     "?_in_modal=1&item_itemtype=Ticket&item_items_id=".
                                      $_GET["id"],
                                     ['title'         => __('Save solution to the knowledge base'),
                                           'reloadonclose' => false]);

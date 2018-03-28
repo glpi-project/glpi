@@ -322,7 +322,7 @@ class ComputerAntivirus extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='computerantivirus.form.php?computers_id=$ID&amp;withtemplate=".
+               "<a class='vsubmit' href='".ComputerAntivirus::getFormURL()."?computers_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add an antivirus');
          echo "</a></div>\n";

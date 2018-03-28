@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["printers_id"]);
+   Html::redirect(Printer::getFormURLWithID($_POST["printers_id"]));
 
 } else if (isset($_POST["update"])) {
    $cart->check($_POST["id"], UPDATE);

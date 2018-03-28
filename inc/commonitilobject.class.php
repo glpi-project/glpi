@@ -2494,7 +2494,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                   if ($canedit) {
                      $opt = ['awesome-class' => 'fa-envelope',
-                                  'popup' => $linksupplier->getFormURL()."?id=".$d['id']];
+                                  'popup' => $linksupplier->getFormURLWithID($d['id'])];
                      Html::showToolTip($text, $opt);
                   }
 
@@ -3449,7 +3449,7 @@ abstract class CommonITILObject extends CommonDBTM {
                if ($canedit
                    || ($d['users_id'] == Session::getLoginUserID())) {
                   $opt      = ['awesome-class' => 'fa-envelope',
-                                    'popup' => $linkuser->getFormURL()."?id=".$d['id']];
+                                    'popup' => $linkuser->getFormURLWithID($d['id'])];
                   Html::showToolTip($text, $opt);
                }
             }
@@ -5097,8 +5097,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($DB->numrows($result) > 0) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp["id"]   = $line["suppliers_id_assign"];
-            $tmp["link"] = "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
-                           $line["suppliers_id_assign"]."'>".$line["name"]."</a>";
+            $tmp["link"] = "<a href='".Supplier::getFormURLWithID($line["suppliers_id_assign"])."'>".$line["name"]."</a>";
             $tab[] = $tmp;
          }
       }

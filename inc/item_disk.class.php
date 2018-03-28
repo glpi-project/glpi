@@ -257,7 +257,7 @@ class Item_Disk extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='item_disk.form.php?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
+               "<a class='vsubmit' href='".Item_Disk::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a volume');
          echo "</a></div>\n";

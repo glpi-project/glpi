@@ -119,7 +119,7 @@ class Item_Enclosure extends CommonDBRelation {
       if ($enclosure->canAddItem('itemtype')) {
          echo "<div class='firstbloc'>";
          Html::showSimpleForm(
-            $CFG_GLPI["root_doc"]."/front/item_enclosure.form.php",
+            Item_Enclosure::getFormURL(),
             '_add_fromitem',
             __('Add new item to this enclosure...'),
             [

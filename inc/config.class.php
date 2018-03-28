@@ -989,7 +989,7 @@ class Config extends CommonDBTM {
          if ($data["id"] === Session::getLoginUserID()) {
             $url  = $CFG_GLPI['root_doc']."/front/preference.php";
          } else {
-            $url  = $CFG_GLPI['root_doc']."/front/user.form.php";
+            $url  = User::getFormURL();
          }
       }
 

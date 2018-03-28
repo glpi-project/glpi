@@ -169,14 +169,14 @@ class KnowbaseItem_Revision extends CommonDBTM {
 
          $form = null;
          if ($item->getType() == KnowbaseItem::getType()) {
-            $form = 'knowbaseitem.form.php';
+            $form = KnowbaseItem::getFormURLWithID($revision['knowbaseitems_id']);
          } else {
-            $form = 'knowbaseitemtranslation.form.php';
+            $form = KnowbaseItemTranslation::getFormURL($revision['knowbaseitems_id']);
          }
 
          echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
                     data-revid='" . $revision['id']  . "' class='show'>" . __('show') . "</a>
-                 - <a href='{$CFG_GLPI["root_doc"]}/front/$form?id={$revision["knowbaseitems_id"]}&to_rev={$revision['id']}' class='restore'>".
+                 - <a href='$form&to_rev={$revision['id']}' class='restore'>".
                     __('restore')  . "</a></td>";
          echo "</tr>";
       }

@@ -239,7 +239,7 @@ class Contract_Supplier extends CommonDBRelation {
             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
          echo "<td class='center b'>
-               <a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$name."</a>";
+               <a href='".Contract::getFormURLWithID($cID)."'>".$name."</a>";
          echo "</td>";
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entity"]);
          echo "</td><td class='center'>".$data["num"]."</td>";
@@ -387,7 +387,7 @@ class Contract_Supplier extends CommonDBRelation {
              || empty($entname)) {
             $entname = sprintf(__('%1$s (%2$s)'), $entname, $entID);
          }
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=$entID'>".$entname;
+         echo "<a href='".Supplier::getFormURLWithID($entID)."'>".$entname;
          echo "</a></td>";
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $entity)."</td>";
          echo "<td class='center'>";

@@ -4620,7 +4620,7 @@ class Search {
                                  : $data[$num][$k]['tickets_id_2'];
                   if (($linkid > 0) && !isset($displayed[$linkid])) {
                      $text  = "<a ";
-                     $text .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$linkid\">";
+                     $text .= "href=\"".Ticket::getFormURLWithID($linkid)."\">";
                      $text .= Dropdown::getDropdownName('glpi_tickets', $linkid)."</a>";
                      if (count($displayed)) {
                         $out .= self::LBBR;
@@ -4856,12 +4856,10 @@ class Search {
             case "glpi_reservationitems.comment" :
                if (empty($data[$num][0]['name'])) {
                   return "<a title=\"".__s('Modify the comment')."\"
-                           href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                           $data["refID"]."' >".__('None')."</a>";
+                           href='".ReservationItem::getFormURLWithID($data["refID"])."' >".__('None')."</a>";
                }
                return "<a title=\"".__s('Modify the comment')."\"
-                        href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                        $data['refID']."' >".Html::resume_text($data[$num][0]['name'])."</a>";
+                        href='".ReservationItem::getFormURLWithID($data['refID'])."' >".Html::resume_text($data[$num][0]['name'])."</a>";
 
             case 'glpi_crontasks.description' :
                $tmp = new CronTask();
@@ -4897,8 +4895,7 @@ class Search {
                      $name = $data[$num][0]['trans'];
                   }
                   if ($itemtype == 'ProjectState') {
-                     $out .=   "<a href='".$CFG_GLPI["root_doc"]."/front/projectstate.form.php?id=".
-                                 $data[$num][0]["id"]."'>". $name."</a></div>";
+                     $out .=   "<a href='".ProjectState::getFormURLWithID($data[$num][0]["id"])."'>". $name."</a></div>";
                   } else {
                      $out .= $name."</div>";
                   }
@@ -5097,7 +5094,7 @@ class Search {
                         $out .= $separate;
                      }
                      $count_display++;
-                     $page  = $linkitemtype::getFormUrl();
+                     $page  = $linkitemtype::getFormURL();
                      $page .= (strpos($page, '?') ? '&id' : '?id');
                      $name  = Dropdown::getValueWithUnit($data[$num][$k]['name'], $unit);
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$num][$k]['name'])) {

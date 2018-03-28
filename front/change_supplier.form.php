@@ -59,7 +59,7 @@ if (isset($_POST["update"])) {
 
    Event::log($link->fields['changes_id'], "change", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$link->fields['changes_id']);
+   Html::redirect(Change::getFormURLWithID($link->fields['changes_id']));
 
 } else if (isset($_GET["id"])) {
    $link->showSupplierNotificationForm($_GET["id"]);

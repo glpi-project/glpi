@@ -985,8 +985,8 @@ class Problem extends CommonITILObject {
          echo "</td>";
 
          echo "<td>";
-         $link = "<a id='problem".$problem->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
-                   "/front/problem.form.php?id=".$problem->fields["id"];
+         $link = "<a id='problem".$problem->fields["id"].$rand."' href='".
+                  Problem::getFormURLWithID($problem->fields["id"]);
          if ($forcetab != '') {
             $link .= "&amp;forcetab=".$forcetab;
          }

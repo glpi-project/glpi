@@ -514,7 +514,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                }
 
                if ($crit == "softwares_id") {
-                  echo "<td><a href='softwareversion.form.php?id=".$data['vID']."'>".
+                  echo "<td><a href='".SoftwareVersion::getFormURLWithID($data['vID'])."'>".
                         $data['version']."</a></td>";
                }
 
@@ -524,7 +524,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                }
 
                if ($canshowcomputer) {
-                  echo "<td><a href='computer.form.php?id=".$data['cID']."'>$compname</a></td>";
+                  echo "<td><a href='".Computer::getFormURLWithID($data['cID'])."'>$compname</a></td>";
                } else {
                   echo "<td>".$compname."</td>";
                }
@@ -552,7 +552,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                         $serial = sprintf(__('%1$s (%2$s)'), $serial, $lic['type']);
                      }
 
-                     echo "<a href='softwarelicense.form.php?id=".$lic['id']."'>".$lic['name'];
+                     echo "<a href='".SoftwareLicense::getFormURLWithID($lic['id'])."'>".$lic['name'];
                      echo "</a> - ".$serial;
 
                      echo "<br>";
@@ -694,8 +694,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
-         echo "<form method='post' action='".
-                $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
+         echo "<form method='post' action='".Computer_SoftwareVersion::getFormURL()."'>";
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><td class='center'>";
          echo _n('Software', 'Software', Session::getPluralNumber())."&nbsp;&nbsp;";
@@ -812,8 +811,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "</div>\n";
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
-         echo "<form method='post' action='".$CFG_GLPI["root_doc"].
-                "/front/computer_softwarelicense.form.php'>";
+         echo "<form method='post' action='".Computer_SoftwareLicense::getFormURL()."'>";
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>";
          echo "<tr class='tab_bg_1'>";
@@ -944,8 +942,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "</td>";
          }
          echo "<td class='center b'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".
-                        $data['softwares_id']."'>";
+         echo "<a href='".Software::getFormURLWithID($data['softwares_id'])."'>";
          echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
                                                          $data["softname"], $data['softwares_id'])
                                                : $data["softname"]);
@@ -1048,7 +1045,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       echo "<td class='center b'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['softwares_id']."'>";
+      echo "<a href='".Software::getFormURLWithID($data['softwares_id'])."'>";
       echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
                                                       $data["softname"], $data['softwares_id'])
                                             : $data["softname"]);

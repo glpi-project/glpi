@@ -810,7 +810,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                               'entity'      => $device1->fields["entities_id"],
                                               'entity_sons' => $device1->isRecursive()]);
                } else {
-                  echo "<a href=\"".$netport->getFormURL()."?id=$ID\">". _x('button', 'Connect')."</a>";
+                  echo "<a href=\"".$netport->getFormURLWithID($ID)."\">". _x('button', 'Connect')."</a>";
                }
             } else {
                echo "&nbsp;";
