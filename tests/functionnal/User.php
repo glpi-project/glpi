@@ -41,7 +41,7 @@ class User extends \GLPITestCase {
       $this->variable($user->fields['personal_token_date'])->isNull();
       $this->variable($user->fields['personal_token'])->isNull();
 
-      $token = \User::getToken($user->getID());
+      $token = $user->getAuthToken();
       $this->string($token)->isNotEmpty();
 
       $user->getFromDB($user->getID());
