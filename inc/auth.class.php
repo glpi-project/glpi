@@ -493,11 +493,11 @@ class Auth extends CommonGLPI {
                if (count($data) === 2) {
                   list ($cookie_id, $cookie_token) = $data;
 
-                  $token = User::getToken($cookie_id, 'personal_token');
+                  $user = new User();
+                  $user->getFromDB($cookie_id);
+                  $token = $user->getAuthToken();
 
                   if ($token !== false && Auth::checkPassword($token, $cookie_token)) {
-                     $user = new User();
-                     $user->getFromDB($cookie_id); //true if $token is not false
                      $this->user->fields['name'] = $user->fields['name'];
                      return true;
                   } else {
@@ -826,12 +826,7 @@ class Auth extends CommonGLPI {
       }
 
       if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
-         $token = false;
-         if (!empty($this->user->fields['personal_token'])) {
-            $token = $this->user->fields['personal_token'];
-         } else {
-            $token = User::getToken($this->user->fields['id'], 'personal_token');
-         }
+         $token = $this->user->getAuthToken();
 
          if ($token) {
             //Cookie name (Allow multiple GLPI)

@@ -4487,17 +4487,36 @@ class User extends CommonDBTM {
 
       $user = new self();
       if ($user->getFromDB($ID)) {
-         if (!empty($user->fields[$field])) {
-            return $user->fields[$field];
-         }
-         $token = self::getUniqueToken($field);
-         $user->update(['id'             => $user->getID(),
-                             $field           => $token,
-                             $field . "_date" => $_SESSION['glpi_currenttime']]);
-         return $user->fields[$field];
+         return $user->getAuthToken($field);
       }
 
       return false;
+   }
+
+   /**
+    * Get token of a user. If it does not exists  then generate it.
+    *
+    * @since 9.4
+    *
+    * @param string $field the field storing the token
+    *
+    * @return string|false token or false in case of error
+    */
+   public function getAuthToken($field = 'personal_token') {
+      global $DB;
+
+      if ($this->isNewItem()) {
+         return false;
+      }
+
+      if (!empty($this->fields[$field])) {
+         return $this->fields[$field];
+      }
+      $token = self::getUniqueToken($field);
+      $this->update(['id'             => $this->getID(),
+                     $field           => $token,
+                     $field . "_date" => $_SESSION['glpi_currenttime']]);
+      return $this->fields[$field];
    }
 
 
