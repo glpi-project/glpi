@@ -969,11 +969,11 @@ msgstr[1] "Entidades"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "O modo de depuração foi ativado!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "O modo de depuração foi desabilitado!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -11694,11 +11694,11 @@ msgstr "Sair"
 
 #: inc/html.class.php:6002
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Modo de depuração ativado"
 
 #: inc/html.class.php:6003
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Modo de depuração desativado"
 
 #: inc/html.class.php:6007
 msgid "Change mode"
@@ -13796,7 +13796,7 @@ msgstr "Criado por %1$s em %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Erro ao inserir a notificação do navegador para fila"
 
 #: inc/notificationajax.class.php:96
 #, php-format
@@ -13805,11 +13805,11 @@ msgstr ""
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Configuração de acompanhamento do navegador"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Ativar acompanhamento do navegador"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
@@ -13848,7 +13848,7 @@ msgstr "Ver configuração"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Envie uma notificação do navegador de teste para você"
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14113,7 +14113,7 @@ msgstr "Nenhum modelo selecionado"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Navegador"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"

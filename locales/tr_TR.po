@@ -722,19 +722,19 @@ msgstr ""
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
-msgstr ""
+msgstr "Gerekli bir değer eksik!"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Bileşenin coğrafi kodlaması yapılmamış ya da bulunamadı"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "Konum coğrafi kodlaması yapılmamış!"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "Bu konumun enlem ve boylamını yazmayı düşünün."
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2414
 #: inc/mailcollector.class.php:204 inc/ruleaction.class.php:88
@@ -969,11 +969,11 @@ msgstr[1] "Kuruluş"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Hata ayıklama kipi etkinleştirildi!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Hata ayıklama kipi devre dışı bırakıldı!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -2428,15 +2428,15 @@ msgstr "Kimlik Doğrulama"
 
 #: front/helpdesk.php:85
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Destek masası bildirim formu"
 
 #: front/helpdesk.php:88
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Sorun çözülmelidir"
 
 #: front/helpdesk.php:91
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Öncelik düzeyini seçin"
 
 #: front/helpdesk.php:94 inc/commonitilobject.class.php:1983
 msgctxt "urgency"
@@ -2465,7 +2465,7 @@ msgstr "Çok düşük"
 
 #: front/helpdesk.php:103
 msgid "Describe your issue"
-msgstr ""
+msgstr "Sorunu açıklayın"
 
 #: front/helpdesk.php:105 inc/change.class.php:792
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:2760
@@ -2503,7 +2503,7 @@ msgstr "İçerik"
 #: front/helpdesk.php:114
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "ileti"
 
 #: front/helpdesk.public.php:92 front/ticket.form.php:229
 #: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4556
@@ -3986,7 +3986,7 @@ msgstr "Uyarı zamanı %s"
 msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
-msgstr ""
+msgstr "Ayarlarda IP adresinizle eşleşen etkin bir API istemcisi bulunamadı."
 
 #: inc/api.class.php:184
 msgid "parameter(s) login, password or user_token are missing"
@@ -4057,7 +4057,7 @@ msgstr "Parola sıfırlandı."
 
 #: inc/api.class.php:1943
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "app_token parametresi hatalı görünüyor"
 
 #: inc/api.class.php:1946
 msgid "missing parameter app_token"
@@ -4165,6 +4165,8 @@ msgstr "Uygulama kodu"
 #: inc/apiclient.class.php:210
 msgid "Leave these parameters empty to disable API access restriction"
 msgstr ""
+"API erişimi kısıtlamasını devre dışı bırakmak için bu parametreleri boş "
+"bırakın"
 
 #: inc/apiclient.class.php:236 inc/config.class.php:1310
 #: inc/config.class.php:1311 inc/config.class.php:1329
@@ -5624,7 +5626,7 @@ msgstr "SQL yansısı: salt okunur"
 #: inc/central.class.php:203
 #, php-format
 msgid "%1$s tables not migrated to InnoDB engine."
-msgstr ""
+msgstr "%1$s tablo InnoDB motoruna aktarılamadı."
 
 #: inc/certificate.class.php:55 inc/entity.class.php:1928
 #: inc/profile.class.php:888
@@ -5894,7 +5896,7 @@ msgstr "Bekleyen"
 #: inc/change.class.php:491
 msgctxt "change"
 msgid "Testing"
-msgstr ""
+msgstr "Sınanıyor"
 
 #: inc/change.class.php:492
 msgid "Qualification"
@@ -6509,11 +6511,11 @@ msgstr "yarım kabin"
 
 #: inc/commondcmodeldropdown.class.php:124
 msgid "Front picture"
-msgstr ""
+msgstr "Önden fotoğraf"
 
 #: inc/commondcmodeldropdown.class.php:132
 msgid "Rear picture"
-msgstr ""
+msgstr "Arkadan fotoğraf"
 
 #: inc/commondcmodeldropdown.class.php:193
 msgid "1"
@@ -7547,8 +7549,8 @@ msgstr[1] "Bellek türleri"
 #: inc/printer.class.php:672
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bellek"
+msgstr[1] "Bellek"
 
 #: inc/computer.class.php:874 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:44 inc/networkportmigration.class.php:295
@@ -8111,6 +8113,8 @@ msgstr "Kimlik doğrulama bilgileri ile oturum açılabilsin"
 #: inc/config.class.php:765
 msgid "Allow to login to API and get a session token with user credentials"
 msgstr ""
+"Kimlik doğrulama bilgileri ile API oturumu açılmasını ve bir oturum kodu "
+"alınmasını sağlar"
 
 #: inc/config.class.php:771
 msgid "Enable login with external token"
@@ -8121,6 +8125,8 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
 msgstr ""
+"Dış kullanıcı kodu ile API oturumu açılmasını ve bir oturum kodu alınmasını "
+"sağlar. Kullanıcı Ayarları sekmesindeki uzak erişim anahtarı bölümüne bakın"
 
 #: inc/config.class.php:790
 msgid "Add API client"
@@ -8706,6 +8712,8 @@ msgid ""
 "Automatic checks cannot be done; please review .htaccess file and the web "
 "server configuration."
 msgstr ""
+"Otomatik denetimler yapılamıyor. Lütfen .htaccess dosyasını ve web sunucu "
+"yapılandırmasını gözden geçirin."
 
 #: inc/config.class.php:2696
 msgid "You are using a development version, be careful!"
@@ -9600,7 +9608,7 @@ msgstr "iyileştir"
 
 #: inc/dbutils.class.php:1065
 msgid "Address:"
-msgstr ""
+msgstr "Adres:"
 
 #: inc/dcbreadcrumb.class.php:95
 msgid "Datacenter position"
@@ -9623,11 +9631,11 @@ msgstr "Satır sayısı"
 
 #: inc/dcroom.class.php:147
 msgid "Background picture (blueprint)"
-msgstr ""
+msgstr "Art alan fotoğrafı (plan çizimi)"
 
 #: inc/dcroom.class.php:358
 msgid "New room for this datacenter..."
-msgstr ""
+msgstr "Bu veri merkezi için yeni oda..."
 
 #: inc/dcroom.class.php:382
 msgid "No server room found"
@@ -9912,8 +9920,8 @@ msgstr[1] "Aygıt işlemci modeli"
 #: inc/devicesensor.class.php:45
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Almaç"
+msgstr[1] "Almaçlar"
 
 #: inc/devicesensormodel.class.php:46 inc/dropdown.class.php:911
 msgid "Device sensor model"
@@ -10241,7 +10249,7 @@ msgstr "%1$s Görüntüle"
 
 #: inc/dropdown.class.php:229
 msgid "Display on map"
-msgstr ""
+msgstr "Haritada görüntüle"
 
 #. TRANS: %s is the store path
 #: inc/dropdown.class.php:607
@@ -10542,7 +10550,7 @@ msgstr[1] "Eşsizlik nedeniyle yoksayılan değerler"
 
 #: inc/dropdown.class.php:1040
 msgid "Power management"
-msgstr ""
+msgstr "Güç yönetimi"
 
 #. TRANS: %d is a number of years
 #: inc/dropdown.class.php:1523 inc/infocom.class.php:1175
@@ -11664,11 +11672,11 @@ msgstr "Oturumu kapat"
 
 #: inc/html.class.php:6002
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Hata ayıklama kipi etkin"
 
 #: inc/html.class.php:6003
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Hata ayıklama kipi devre dışı"
 
 #: inc/html.class.php:6007
 msgid "Change mode"
@@ -12083,7 +12091,7 @@ msgstr "Görsel olarak görüntüle"
 
 #: inc/item_rack.class.php:141
 msgid "Racked items"
-msgstr ""
+msgstr "Kabindeki ögeler"
 
 #: inc/item_rack.class.php:164
 msgid "Orientation"
@@ -12105,11 +12113,11 @@ msgstr "Şu bileşenler kabin ölçülerini aşıyor"
 
 #: inc/item_rack.class.php:310
 msgid "images"
-msgstr ""
+msgstr "görseller"
 
 #: inc/item_rack.class.php:312
 msgid "texts"
-msgstr ""
+msgstr "metinler"
 
 #: inc/item_rack.class.php:376
 msgid "Insert an item here"
@@ -12117,7 +12125,7 @@ msgstr "Buraya bir öge ekleyin"
 
 #: inc/item_rack.class.php:512
 msgid "Rack stats"
-msgstr ""
+msgstr "Kabin istatistikleri"
 
 #: inc/item_rack.class.php:515
 msgid "Space"
@@ -12154,7 +12162,7 @@ msgstr "Sağda"
 
 #: inc/item_rack.class.php:697
 msgid "Reserved position ?"
-msgstr ""
+msgstr "Ayırtlımış konum ?"
 
 #: inc/item_rack.class.php:809
 msgid "asset rear side"
@@ -12180,7 +12188,7 @@ msgstr "model"
 
 #: inc/item_rack.class.php:860 inc/pdu_rack.class.php:644
 msgid "Edit rack relation"
-msgstr ""
+msgstr "Kabin ilişkisini düzenle"
 
 #: inc/item_rack.class.php:937
 msgid "An item type is required"
@@ -12472,7 +12480,7 @@ msgstr "Tüm yayınlanmamış makaleler"
 
 #: inc/knowbaseitem.class.php:1109
 msgid "All published articles"
-msgstr ""
+msgstr "Tün yayınlanmış makaleler"
 
 #: inc/knowbaseitem.class.php:1516
 msgid "Use as a solution"
@@ -12714,7 +12722,7 @@ msgstr[1] "Yükseltme düzeyi"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
-msgstr ""
+msgstr "Tarih de silinsin mi?"
 
 #: inc/levelagreement.class.php:422
 msgid "Add a new item"
@@ -12786,11 +12794,11 @@ msgstr[1] "Dış bağlantı"
 
 #: inc/link.class.php:153
 msgid "field name in DB"
-msgstr ""
+msgstr "veritabanındaki alan adı"
 
 #: inc/link.class.php:153
 msgid "Example:"
-msgstr ""
+msgstr "Örnek:"
 
 #: inc/link.class.php:161 inc/link.class.php:227
 msgid "Link or filename"
@@ -12814,7 +12822,7 @@ msgstr "Öge türü ekle"
 
 #: inc/location.class.php:68 inc/location.class.php:153
 msgid "Town"
-msgstr ""
+msgstr "İlçe"
 
 #: inc/location.class.php:83 inc/location.class.php:180
 #: inc/location.class.php:231 inc/notificationtargetticket.class.php:741
@@ -12830,7 +12838,7 @@ msgstr "Oda numarası"
 
 #: inc/location.class.php:94
 msgid "Location on map"
-msgstr ""
+msgstr "Haritadaki konum"
 
 #: inc/location.class.php:97 inc/location.class.php:207
 #: inc/location.class.php:247 inc/notificationtargetticket.class.php:744
@@ -12857,7 +12865,7 @@ msgstr "Konum notları"
 
 #: inc/location.class.php:488
 msgid "Set location here"
-msgstr ""
+msgstr "Konumu ayarlayın"
 
 #: inc/lock.class.php:53
 msgid "Lock"
@@ -13210,15 +13218,15 @@ msgstr "varsayılan_değer sayısal olmalı"
 #: inc/migration.class.php:570
 #, php-format
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
-msgstr ""
+msgstr "%1$s (%2$s) tablosunun adı %3$s (%4$s) olarak değiştirilemedi!"
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "ok"
-msgstr ""
+msgstr "iyi"
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "nok"
-msgstr ""
+msgstr "kötü"
 
 #. TRANS: %s is 'Clean DB : rename tables'
 #. TRANS: %s is the table or item implied
@@ -13263,7 +13271,7 @@ msgstr "Veritabanı düzenindeki değişiklik - %s"
 #: inc/migration.class.php:661
 #, php-format
 msgid "Adding fulltext index - %s"
-msgstr ""
+msgstr "Tam metin dizini ekleniyor - %s"
 
 #: inc/migration.class.php:704 inc/software.class.php:1113
 #: install/update.php:79
@@ -13761,26 +13769,26 @@ msgstr "%1$s tarafından %2$s zamanında oluşturuldu"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Tarayıcı bildirimi kuyruğa eklenirken sorun çıktı"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "%starayıcı bildirimi sorguya eklendi"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Tarayıcı izlemeleri yapılandırması"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Tarayıcıdan izlemeler kullanılsın"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tarayıcı bildirimi"
+msgstr[1] "Tarayıcı bildirimi"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13813,7 +13821,7 @@ msgstr "Yapılandırmayı görüntüle"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Kendinize bir tarayıcı bildirimi denemesi gönderin"
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14024,7 +14032,7 @@ msgstr "En fazla aktarım denemesi"
 
 #: inc/notificationmailingsetting.class.php:180
 msgid "Try to deliver again in (minutes)"
-msgstr ""
+msgstr "Göndermeyi yeniden deneme süresi (dakika)"
 
 #: inc/notificationmailingsetting.class.php:201
 msgid "Check certificate"
@@ -14067,11 +14075,11 @@ msgstr "Kalıp ekle"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
-msgstr ""
+msgstr "Henüz bir kalıp seçilmemiş"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Tarayıcı"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -15139,24 +15147,24 @@ msgstr[1] "İşletim sistemi sürümleri"
 #: inc/pdu.class.php:48 inc/pdu_rack.class.php:236
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Güç Dağıtım Birimi"
+msgstr[1] "Güç Dağıtım Birimi"
 
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Güç Dağıtım Birimi Modeli"
+msgstr[1] "Güç Dağıtım Birimi Modelleri"
 
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Güç Dağıtım Birimi Fişi"
+msgstr[1] "Güç Dağıtım Birimi Fişleri"
 
 #: inc/pdu_plug.class.php:131
 msgid "Add a new plug"
-msgstr ""
+msgstr "Yeni fiş ekle"
 
 #: inc/pdu_plug.class.php:137 inc/pdu_plug.class.php:171
 #: inc/softwarelicense.class.php:530
@@ -15165,70 +15173,70 @@ msgstr "Sayı"
 
 #: inc/pdu_plug.class.php:152
 msgid "No plug found"
-msgstr ""
+msgstr "Herhangi bir fiş bulunamadı"
 
 #: inc/pdu_rack.class.php:95
 msgid "A pdu is required"
-msgstr ""
+msgstr "Bir güç dağıtım birimi zorunludur"
 
 #: inc/pdu_rack.class.php:107
 msgid "A side is required"
-msgstr ""
+msgstr "Bir yan zorunludur"
 
 #: inc/pdu_rack.class.php:246
 msgid "Side (from rear perspective)"
-msgstr ""
+msgstr "Yan (arkadan görünüm)"
 
 #: inc/pdu_rack.class.php:297
 msgid "Side pdus"
-msgstr ""
+msgstr "Yan güç dağıtım birimleri"
 
 #: inc/pdu_rack.class.php:330
 msgid "Side"
-msgstr ""
+msgstr "Yan"
 
 #: inc/pdu_rack.class.php:407
 msgid "Power units"
-msgstr ""
+msgstr "Güç birimleri"
 
 #: inc/pdu_rack.class.php:422
 msgid "Racked"
-msgstr ""
+msgstr "Kabinde"
 
 #: inc/pdu_rack.class.php:427 inc/pdu_rack.class.php:435
 #: inc/pdu_rack.class.php:439
 msgid "On left"
-msgstr ""
+msgstr "Solda"
 
 #: inc/pdu_rack.class.php:431
 msgid "On right"
-msgstr ""
+msgstr "Sağda"
 
 #: inc/pdu_rack.class.php:497
 msgid "The pdu will be"
-msgstr ""
+msgstr "Güç dağıtım birimi şu olacak"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
-msgstr ""
+msgstr "kabinde"
 
 #: inc/pdu_rack.class.php:500
 msgid "placed at rack side"
-msgstr ""
+msgstr "kabin tarafına yerleştirilmiş"
 
 #: inc/pdu_rack.class.php:710
 msgid "Top"
-msgstr ""
+msgstr "Üst"
 
 #: inc/pdu_rack.class.php:711
 msgid "Bottom"
-msgstr ""
+msgstr "Alt"
 
 #: inc/pdutype.class.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Güç Dağıtım Birimi Türü"
+msgstr[1] "Güç Dağıtım Birimi Türleri"
 
 #: inc/peripheral.class.php:289 inc/peripheral.class.php:485
 #: inc/phone.class.php:283 inc/phone.class.php:512
@@ -15350,8 +15358,8 @@ msgstr "Planlama anımsatıcıları gönderilsin"
 #: inc/plug.class.php:42
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fiş"
+msgstr[1] "Fişler"
 
 #: inc/plugin.class.php:404
 msgid "Plugins list"
@@ -16137,23 +16145,23 @@ msgstr "Odadaki konum"
 
 #: inc/rack.class.php:260
 msgid "Door orientation in room"
-msgstr ""
+msgstr "Odadaki kapı doğrultusu"
 
 #: inc/rack.class.php:265
 msgid "North"
-msgstr ""
+msgstr "Kuzey"
 
 #: inc/rack.class.php:266
 msgid "East"
-msgstr ""
+msgstr "Doğu"
 
 #: inc/rack.class.php:267
 msgid "South"
-msgstr ""
+msgstr "Güney"
 
 #: inc/rack.class.php:268
 msgid "West"
-msgstr ""
+msgstr "Batı"
 
 #: inc/rack.class.php:279 inc/rack.class.php:417
 msgid "Number of units"
@@ -16189,11 +16197,11 @@ msgstr "Şu bileşenler oda ölçülerini aşıyor"
 
 #: inc/rack.class.php:678
 msgid "Blueprint"
-msgstr ""
+msgstr "Plan Çizimi"
 
 #: inc/rack.class.php:686
 msgid "Grid"
-msgstr ""
+msgstr "Tablo"
 
 #: inc/rack.class.php:716
 msgid "Insert a rack here"
@@ -17269,8 +17277,8 @@ msgstr "Kaydedilmiş arama kısmen yüklendi"
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Özel %1$s"
+msgstr[1] "Özel %1$s"
 
 #: inc/savedsearch.class.php:768 inc/savedsearch.class.php:778
 msgid "Hide/Show elements"
@@ -17280,8 +17288,8 @@ msgstr "Bileşenleri göster/gizle"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Herkese Açık %1$s"
+msgstr[1] "Herkese Açık %1$s"
 
 #: inc/savedsearch.class.php:822
 msgid "Default bookmark has not been changed!"
@@ -17335,29 +17343,31 @@ msgstr "Bildirimler oluşturuldu!"
 
 #: inc/search.class.php:157
 msgid "assets"
-msgstr ""
+msgstr "varlıklar"
 
 #: inc/search.class.php:159
 msgid "Search results for localized items only"
-msgstr ""
+msgstr "Yalnız yerel ögeler için arama sonuçları"
 
 #: inc/search.class.php:271
 msgid "An error occured loading data :("
-msgstr ""
+msgstr "Veri yüklenirken bir sorun çıktı :("
 
 #: inc/search.class.php:278
 msgid "Reload"
-msgstr ""
+msgstr "Yeniden Yükle"
 
 #: inc/search.class.php:1163
 msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"Nesne listesinde 'Tümü' ölçütü kullanılamıyor. SQL sorgusunda sorun çıkıyor "
+"(çok fazla tablo). Lütfen onun yerine 'görülen ögeler' ölçütünü kullanın"
 
 #: inc/search.class.php:1491
 msgid "Show as map"
-msgstr ""
+msgstr "Harita olarak görüntüle"
 
 #: inc/search.class.php:1828 inc/search.class.php:1829
 msgid "Show the dustbin"

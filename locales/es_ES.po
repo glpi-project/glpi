@@ -43,7 +43,7 @@ msgstr "Contraseña"
 
 #: index.php:131
 msgid "Remember me"
-msgstr "Recordarme"
+msgstr "Recuérdame"
 
 #: index.php:135 ajax/dropdownMassiveActionAuthMethods.php:65
 #: ajax/dropdownMassiveActionField.php:53 inc/authldap.class.php:1262
@@ -80,7 +80,7 @@ msgstr "Debe aceptar cookies para acceder a la aplicación"
 
 #: index.php:167 inc/config.class.php:2411
 msgid "Checking write permissions for session files"
-msgstr "Prueba de permisos de escritura en archivos de sesión"
+msgstr "Comprobación de permisos de escritura para los archivos de sesión"
 
 #: index.php:171
 msgid "Invalid use of session ID"
@@ -969,11 +969,11 @@ msgstr[1] "Entidades"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "¡El modo debug ha sido activado!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "¡El modo debug ha sido desactivado!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -11726,11 +11726,11 @@ msgstr "Desconexión"
 
 #: inc/html.class.php:6002
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Modo de depuración activado"
 
 #: inc/html.class.php:6003
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Modo de depuración desactivado"
 
 #: inc/html.class.php:6007
 msgid "Change mode"
@@ -13829,26 +13829,26 @@ msgstr "Creado por %1$s en %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Error al insertar la notificación del explorador en cola"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Se agregó una notificación de explorador a %s para la cola"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Configuración de seguimiento de navegador"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Habilitar seguimientos desde el navegador"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Notificación de navegador"
+msgstr[1] "Notificaciones del navegador"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13881,7 +13881,7 @@ msgstr "Ver configuración"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Enviar  un aviso del navegador de prueba"
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14146,7 +14146,7 @@ msgstr "Sin plantilla seleccionada"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Navegador"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -17977,7 +17977,7 @@ msgstr "Número de peticiones hijas"
 
 #: inc/ticket.class.php:3273
 msgid "Number of parent tickets"
-msgstr "Número de tickets padres"
+msgstr "Número de peticiones padres"
 
 #: inc/ticket.class.php:3293
 msgid "Problems"

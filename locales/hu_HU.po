@@ -14029,7 +14029,7 @@ msgstr "SMTP jelszó"
 
 #: inc/notificationmailingsetting.class.php:233
 msgid "Email sender"
-msgstr ""
+msgstr "Email feladó"
 
 #: inc/notificationmailingsetting.class.php:234
 msgid "May be required for some mails providers."
@@ -14048,7 +14048,7 @@ msgstr[1] ""
 
 #: inc/notification_notificationtemplate.class.php:108
 msgid "Add a template"
-msgstr ""
+msgstr "Új sablon"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
@@ -14056,7 +14056,7 @@ msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Böngésző"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"

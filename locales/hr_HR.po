@@ -68,7 +68,7 @@ msgstr "Objavi"
 #: inc/notificationtargetuser.class.php:42 inc/user.class.php:4132
 #: inc/user.class.php:4180
 msgid "Forgotten password?"
-msgstr "Ažuriraj zaporku"
+msgstr "Zaboravili ste zaporku?"
 
 #: index.php:157
 msgid "You must activate the JavaScript function of your browser"
@@ -858,7 +858,7 @@ msgstr "Obriši kriterij traženja"
 #: ajax/searchrow.php:137 ajax/searchrow.php:156 inc/config.class.php:381
 #: inc/search.class.php:1869
 msgid "Items seen"
-msgstr "Artikli nađeni"
+msgstr "Nađene stavke"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:61
 msgid "Choose an existing device"
@@ -11639,7 +11639,7 @@ msgstr "%1$s%2$d sati %3$d minuta %4$d sekundi"
 #: inc/html.class.php:396
 #, php-format
 msgid "%1$s%2$d hours %3$d minutes"
-msgstr "%1$s%2$d dana %3$d sati"
+msgstr "%1$s%2$d sati %3$d minuta"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of minutes,  %3$d number
 #. of seconds
@@ -15375,7 +15375,7 @@ msgstr "Otključaj"
 
 #: inc/objectlock.class.php:601
 msgid "Unlock forgotten locked objects"
-msgstr "Otključaj zaboravljenih zaključanih objekata"
+msgstr "Otključaj zaboravljene zaključane objekte"
 
 #: inc/objectlock.class.php:602
 msgid "Timeout to force unlock (hours)"

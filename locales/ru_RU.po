@@ -975,11 +975,11 @@ msgstr[3] "Организации"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Режим отладки был включен!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Режим отладки был выключен!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -3315,7 +3315,7 @@ msgstr "%s обновление предупреждения"
 
 #: front/savedsearch.php:37 inc/html.class.php:6017 inc/html.class.php:6026
 msgid "Saved searches"
-msgstr "Поиски сохранены"
+msgstr "Сохраненные поисковые запросы"
 
 #: front/search.php:36 inc/entity.class.php:1105 inc/html.class.php:6053
 #: inc/html.class.php:6332 inc/html.class.php:6333 inc/location.class.php:465
@@ -3447,7 +3447,7 @@ msgstr "Статистика"
 #: front/stat.global.php:84 front/stat.graph.php:346
 msgctxt "Quantity"
 msgid "Number"
-msgstr "Номер"
+msgstr "Количество"
 
 #: front/stat.global.php:87 front/stat.graph.php:349 inc/stat.class.php:431
 msgctxt "ticket"
@@ -7773,10 +7773,10 @@ msgstr[3] "Типы памяти"
 #: inc/printer.class.php:672
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Память"
+msgstr[1] "Память"
+msgstr[2] "Память"
+msgstr[3] "Память"
 
 #: inc/computer.class.php:874 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:44 inc/networkportmigration.class.php:295
@@ -9708,7 +9708,7 @@ msgstr "Журнал выполнения"
 #: inc/stat.class.php:405 inc/ticket.class.php:5768
 msgctxt "quantity"
 msgid "Number"
-msgstr "Номер"
+msgstr "Количество"
 
 #: inc/crontask.class.php:1269
 msgid "Reset last run"
@@ -12172,11 +12172,11 @@ msgstr "Выйти"
 
 #: inc/html.class.php:6002
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Режим отладки включен"
 
 #: inc/html.class.php:6003
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Режим отладки выключен"
 
 #: inc/html.class.php:6007
 msgid "Change mode"
@@ -13359,7 +13359,7 @@ msgstr "Добавить объект типа"
 
 #: inc/location.class.php:68 inc/location.class.php:153
 msgid "Town"
-msgstr ""
+msgstr "Город"
 
 #: inc/location.class.php:83 inc/location.class.php:180
 #: inc/location.class.php:231 inc/notificationtargetticket.class.php:741
@@ -13767,7 +13767,7 @@ msgstr ""
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "ok"
-msgstr ""
+msgstr "OK"
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "nok"
@@ -14320,20 +14320,20 @@ msgstr "Создано %1$s в %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Ошибка помещения браузерных уведомлений в очередь"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Браузерные уведомления для %s были добавлены в очередь"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Настройки браузерных уведомлений"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Включить наблюдение за заявками через браузер"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
@@ -14374,7 +14374,7 @@ msgstr "Смотрите настройки"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Отправить"
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14647,7 +14647,7 @@ msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Браузер"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -15763,7 +15763,7 @@ msgstr ""
 #: inc/pdu_plug.class.php:137 inc/pdu_plug.class.php:171
 #: inc/softwarelicense.class.php:530
 msgid "Number"
-msgstr "Номер"
+msgstr "Количество"
 
 #: inc/pdu_plug.class.php:152
 msgid "No plug found"
@@ -17932,10 +17932,10 @@ msgstr "Частичная загрузка сохраненного поиск�
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Приватный %1$s"
+msgstr[1] "Приватные %1$s"
+msgstr[2] "Приватные %1$s"
+msgstr[3] "Приватные %1$s"
 
 #: inc/savedsearch.class.php:768 inc/savedsearch.class.php:778
 msgid "Hide/Show elements"
@@ -17945,10 +17945,10 @@ msgstr "Скрыть/Показать элементы"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Публичный %1$s"
+msgstr[1] "Публичные %1$s"
+msgstr[2] "Публичные %1$s"
+msgstr[3] "Публичные %1$s"
 
 #: inc/savedsearch.class.php:822
 msgid "Default bookmark has not been changed!"
