@@ -90,8 +90,7 @@ if (isset($_POST["add"])) {
 
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-      Html::redirect($CFG_GLPI["root_doc"].
-                     "/front/knowbaseitem.form.php?id=new&item_itemtype=Problem&item_items_id=". $_POST["id"]);
+      Html::redirect(KnowbaseItem::getFormURL()."?id=new&item_itemtype=Problem&item_items_id=". $_POST["id"]);
    } else {
       Html::back();
    }
@@ -107,7 +106,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST['problems_id'], "problem", 4, "maintain",
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST['problems_id']);
+   Html::redirect($problem->getFormURLWithID($_POST['problems_id']));
 } else {
    Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_GET);

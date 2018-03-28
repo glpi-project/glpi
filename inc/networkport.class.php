@@ -745,12 +745,9 @@ class NetworkPort extends CommonDBChild {
                       && ($withtemplate != 2)) {
 
                      if (!empty($portType)) {
-                        $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
-                                      "/front/networkport.form.php?id=".$netport->fields["id"] ."\">";
+                        $content .= "<a href=\"" . NetworkPort::getFormURLWithID($netport->fields["id"]) ."\">";
                      } else {
-                        $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
-                                      "/front/networkportmigration.form.php?id=".
-                                      $netport->fields["id"] ."\">";
+                        $content .= "<a href=\"" . NetworkportMigration::getFormURLWithID($netport->fields["id"]) ."\">";
                      }
                   }
                   $content .= $netport->fields["logical_number"];

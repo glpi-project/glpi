@@ -1525,7 +1525,7 @@ final class DbUtils {
 
       if (($link == 1)
          && ($ID > 0)) {
-         $before = "<a title=\"".$temp."\" href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID."'>";
+         $before = "<a title=\"".$temp."\" href='".User::getFormURLWithID($ID)."'>";
          $after  = "</a>";
       }
 
@@ -1573,7 +1573,7 @@ final class DbUtils {
 
             if ($link == 2) {
                $user["name"]    = $username;
-               $user["link"]    = $CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID;
+               $user["link"]    = User::getFormURLWithID($ID);
                $user['comment'] = '';
 
                $comments        = [];

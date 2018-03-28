@@ -103,7 +103,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='" . self::getFormUrl() ."?notifications_id=$ID&amp;withtemplate=".
+               "<a class='vsubmit' href='" . self::getFormURL() ."?notifications_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a template');
          echo "</a></div>\n";

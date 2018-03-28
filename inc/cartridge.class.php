@@ -746,8 +746,7 @@ class Cartridge extends CommonDBChild {
                   if ($_SESSION['glpiis_ids_visible'] || empty($printname)) {
                      $printname = sprintf(__('%1$s (%2$s)'), $printname, $data["printID"]);
                   }
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?id=".
-                        $data["printID"]."'><span class='b'>".$printname."</span></a>";
+                  echo "<a href='".Printer::getFormURLWithID($data["printID"])."'><span class='b'>".$printname."</span></a>";
                } else {
                   echo NOT_AVAILABLE;
                }
@@ -1017,7 +1016,7 @@ class Cartridge extends CommonDBChild {
          }
          echo $data["id"]."</td>";
          echo "<td class='center' $viewitemjs>";
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">";
+         echo "<a href=\"".CartridgeItem::getFormURLWithID($data["tID"])."\">";
          printf(__('%1$s - %2$s'), $data["type"], $data["ref"]);
          echo "</a></td>";
          echo "<td class='center' $viewitemjs>".$typename."</td>";

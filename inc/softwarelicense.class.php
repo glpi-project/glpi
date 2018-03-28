@@ -289,7 +289,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       if ($ID > 0) {
          $softwares_id = $this->fields["softwares_id"];
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
-         echo "<a href='software.form.php?id=".$softwares_id."'>".
+         echo "<a href='".Software::getFormURLWithID($softwares_id)."'>".
                 Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       } else {
          Dropdown::show('Software',
@@ -1038,7 +1038,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
+         echo "<a class='vsubmit' href='".SoftwareLicense::getFormURL()."?softwares_id=$softwares_id'>".
                 _x('button', 'Add a license')."</a>";
          echo "</div>";
       }

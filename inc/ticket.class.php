@@ -2146,9 +2146,7 @@ class Ticket extends CommonITILObject {
          Session::addMessageAfterRedirect(sprintf(__('%1$s (%2$s)'),
                               __('Your ticket has been registered, its treatment is in progress.'),
                                                   sprintf(__('%1$s: %2$s'), __('Ticket'),
-                                                          "<a href='".$CFG_GLPI["root_doc"].
-                                                            "/front/ticket.form.php?id=".
-                                                            $this->fields['id']."'>".
+                                                          "<a href='".Ticket::getFormURLWithID($this->fields['id'])."'>".
                                                             $this->fields['id']."</a>")));
       }
 
@@ -4524,7 +4522,7 @@ class Ticket extends CommonITILObject {
 
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
-                $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
+                Ticket::getFormURL()."'>";
          if (isset($options['_projecttasks_id'])) {
             echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
          }
@@ -6019,7 +6017,7 @@ class Ticket extends CommonITILObject {
           && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))) {
          echo "<div class='firstbloc'>";
-         Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
+         Html::showSimpleForm(Ticket::getFormURL(),
                               '_add_fromitem', __('New ticket for this item...'),
                               ['itemtype' => $item->getType(),
                                     'items_id' => $item->getID()]);
@@ -6031,7 +6029,7 @@ class Ticket extends CommonITILObject {
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>";
-         Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
+         Html::showSimpleForm(Ticket::getFormURL(),
                               '_add_fromitem', __('New ticket for this item...'),
                               ['_users_id_requester' => $item->getID()]);
          echo "</div>";
@@ -6187,8 +6185,7 @@ class Ticket extends CommonITILObject {
          }
          echo "<td>";
 
-         $link = "<a id='ticket".$job->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
-                   "/front/ticket.form.php?id=".$job->fields["id"];
+         $link = "<a id='ticket".$job->fields["id"].$rand."' href='".Ticket::getFormURLWithID($job->fields["id"]);
          if ($forcetab != '') {
             $link .= "&amp;forcetab=".$forcetab;
          }
@@ -7129,16 +7126,15 @@ class Ticket extends CommonITILObject {
                echo "&nbsp;(".$item_i['mime'].")";
             }
             echo "<span class='buttons'>";
-            echo "<a href='".$CFG_GLPI['root_doc'].
-                   "/front/document.form.php?id=".$item_i['id']."' class='edit_document fa fa-eye pointer' title='".
+            echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
                    _sx("button", "Show")."'>";
             echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
 
             $doc = new Document();
             $doc->getFromDB($item_i['id']);
             if ($doc->can($item_i['id'], UPDATE)) {
-               echo "<a href='".$CFG_GLPI['root_doc'].
-                     "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
+               echo "<a href='".Ticket::getFormURL().
+                     "?delete_document&documents_id=".$item_i['id'].
                      "&tickets_id=".$this->getID()."' class='delete_document fa fa-trash-o pointer' title='".
                      _sx("button", "Delete permanently")."'>";
                echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";

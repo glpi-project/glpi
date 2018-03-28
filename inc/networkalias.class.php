@@ -337,7 +337,7 @@ class NetworkAlias extends FQDNLabel {
             echo "};";
             echo "</script>\n";
          }
-         echo "<a href='".static::getFormURL()."?id=".$data["id"]."'>".$name."</a>";
+         echo "<a href='".static::getFormURLWithID($data["id"])."'>".$name."</a>";
          echo "</td>";
          echo "<td class='center' $showviewjs>".Dropdown::getDropdownName("glpi_fqdns",
                                                                           $data["fqdns_id"]);
@@ -423,7 +423,7 @@ class NetworkAlias extends FQDNLabel {
             Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
             if ($address->getFromDB($data["address_id"])) {
                echo "<tr class='tab_bg_1'>";
-               echo "<td><a href='".$alias->getFormURL().'?id='.$data['alias_id']."'>" .
+               echo "<td><a href='".$alias->getFormURLWithID($data['alias_id'])."'>" .
                           $data['alias']. "</a></td>";
                echo "<td><a href='".$address->getLinkURL()."'>".$address->getInternetName().
                     "</a></td>";

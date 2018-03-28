@@ -1972,7 +1972,7 @@ class User extends CommonDBTM {
 
       if ($ID > 0) {
          $formtitle .= "<a class='pointer fa fa-address-card-o' target='_blank' href='".$CFG_GLPI["root_doc"].
-                       "/front/user.form.php?getvcard=1&amp;id=$ID' title='".__s('Download user VCard').
+                       User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
                        "'><span class='sr-only'>". __('Vcard')."</span></a>";
       }
 
@@ -4729,7 +4729,7 @@ class User extends CommonDBTM {
       }
 
       $out = '';
-      $out .= "<form method='post' name='switchlang' action='{$CFG_GLPI['root_doc']}/front/user.form.php' autocomplete='off'>";
+      $out .= "<form method='post' name='switchlang' action='".User::getFormURL()."' autocomplete='off'>";
       $out .= "<p class='center'>";
       $out .= Dropdown::showLanguages("language", $params);
       if ($params['showbutton'] === true) {

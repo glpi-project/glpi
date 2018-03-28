@@ -440,8 +440,7 @@ class Supplier extends CommonDBTM {
       }
 
       if ($this->can($this->fields['id'], READ)) {
-         $ret .= "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
-                   $this->fields['id']."'>
+         $ret .= "<a href='".Supplier::getFormURLWithID($this->fields['id'])."'>
                   <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt=\"".
                    __s('Update')."\" title=\"".__s('Update')."\"></a>";
       }

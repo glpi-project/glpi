@@ -50,7 +50,7 @@ if (isset($_POST['purge'])) {
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s purges link between tickets'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
+   Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
 
 }
 Html::displayErrorAndDie("lost");

@@ -504,8 +504,8 @@ JAVASCRIPT;
          'rand'                => $rand,
       ]);
 
-      $pra_url = PDU_Rack::getFormUrl()."?racks_id=$racks_id";
-      $ira_url = Item_Rack::getFormUrl()."?orientation=0&position=1&racks_id=$racks_id";
+      $pra_url = PDU_Rack::getFormURL()."?racks_id=$racks_id";
+      $ira_url = Item_Rack::getFormURL()."?orientation=0&position=1&racks_id=$racks_id";
 
       $js = <<<JAVASCRIPT
       var showAddPduSubForm = function() {

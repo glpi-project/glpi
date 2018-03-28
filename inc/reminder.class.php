@@ -962,8 +962,8 @@ class Reminder extends CommonDBVisible {
       $beginend = sprintf(__('From %1$s to %2$s'),
                           Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
       $out      = sprintf(__('%1$s: %2$s'), $beginend,
-                          "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
-                            $val["reminders_id"]."'>".Html::resume_text($val["name"], 80)."</a>");
+         "<a href='".Reminder::getFormURLWithID($val["reminders_id"])."'>".
+         Html::resume_text($val["name"], 80)."</a>");
       return $out;
    }
 
@@ -995,7 +995,7 @@ class Reminder extends CommonDBVisible {
       $html.= "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
              self::getTypeName(1)."\">&nbsp;";
       $html.= "<a id='reminder_".$val["reminders_id"].$rand."' href='".
-             $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
+             Reminder::getFormURLWithID($val["reminders_id"])."'>";
 
       $html.= $users_id;
       $html.= "</a>";
@@ -1097,7 +1097,7 @@ class Reminder extends CommonDBVisible {
       if (($personal && self::canCreate())
         || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
          echo "<span class='floatright'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
+         echo "<a href='".Reminder::getFormURL()."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
                 title=\"". __s('Add')."\"></a></span>";
       }
@@ -1110,7 +1110,7 @@ class Reminder extends CommonDBVisible {
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'><td>";
             $link = "<a id='content_reminder_".$data["id"].$rand."'
-                      href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."'>".
+                      href='".Reminder::getFormURLWithID($data["id"])."'>".
                       $data["name"]."</a>";
 
             $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data["text"]),

@@ -351,8 +351,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                   $rand = mt_rand();
                   echo "<tr class='tab_bg_2'>";
                   echo "<td>";
-                  $link = "<a id='Project".$data["projects_id"].$rand."' href='project.form.php?id=".
-                            $data['projects_id']."'>".$data['projectname'].
+                  $link = "<a id='Project".$data["projects_id"].$rand."' href='".
+                            Project::getFormURLWithID($data['projects_id'])."'>".$data['projectname'].
                             (empty($data['projectname'])?"(".$data['projects_id'].")":"")."</a>";
                   echo sprintf(__('%1$s %2$s'), $link,
                                Html::showToolTip($data['projectcontent'],
@@ -360,8 +360,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                                                        'applyto' => "Project".$data["projects_id"].$rand]));
                   echo "</td>";
                   echo "<td>";
-                  $link = "<a id='ProjectTask".$data["id"].$rand."' href='projecttask.form.php?id=".
-                            $data['id']."'>".$data['name'].
+                  $link = "<a id='ProjectTask".$data["id"].$rand."' href='".
+                            ProjectTask::getFormURLWithID($data['id'])."'>".$data['name'].
                             (empty($data['name'])?"(".$data['id'].")":"")."</a>";
                   echo sprintf(__('%1$s %2$s'), $link,
                                Html::showToolTip($data['content'],
@@ -383,8 +383,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                   echo "<td>";
                   if ($data['projecttasks_id']>0) {
                      $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                     echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='projecttask.form.php?id=".
-                           $data['projecttasks_id']."'>".$father.
+                     echo "<a id='ProjectTask".$data["projecttasks_id"].$rand."' href='".
+                           ProjectTask::getFormURLWithID($data['projecttasks_id'])."'>".$father.
                            (empty($father)?"(".$data['projecttasks_id'].")":"")."</a>";
                   }
                   echo "</td></tr>";

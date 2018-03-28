@@ -63,7 +63,7 @@ if (isset($_POST['add'])) {
          ERROR
       );
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitemtranslation.form.php?id=".$_GET['id']);
+   Html::redirect($translation->getFormURLWithID($_GET['id']));
 } else if (isset($_GET["id"])) {
    // modifier un item dans la base de connaissance
    $translation->check($_GET["id"], READ);

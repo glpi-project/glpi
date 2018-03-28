@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
 
    if ($item = getItemForItemtype($np->fields['itemtype'])) {
-      Html::redirect($item->getFormURL().'?id='.$np->fields['items_id']);
+      Html::redirect($item->getFormURLWithID($np->fields['items_id']));
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 

@@ -47,5 +47,5 @@ if (isset($_POST["add"])) {
                //TRANS: %s is the user login
                sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
+   Html::redirect($link->getFormURLWithID($_POST["links_id"]));
 }

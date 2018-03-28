@@ -1957,8 +1957,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</td>";
 
          echo "<td>";
-         $link = "<a id='".strtolower($item_link->getType())."ticket".$item_link->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
-                   "/front/".strtolower($item_link->getType()).".form.php?id=".$item_link->fields["id"];
+         $link = "<a id='".strtolower($item_link->getType())."ticket".$item_link->fields["id"].$rand."' href='".
+                   $item_link->getFormURLWithID($item_link->fields["id"]);
          $link .= "&amp;forcetab=".$tab_name."$1";
          $link   .= "'>";
          $link    = sprintf(__('%1$s'), $link);

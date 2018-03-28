@@ -317,7 +317,7 @@ class Item_Ticket extends CommonDBRelation{
          echo "<i>" . sprintf(_n('%1$s item not saved', '%1$s items not saved', $count_notsaved), $count_notsaved)  . "</i>";
       }
       if ($params['id'] > 0 && $usedcount > 5) {
-         echo "<i><a href='".$ticket->getFormURL()."?id=".$params['id']."&amp;forcetab=Item_Ticket$1'>"
+         echo "<i><a href='".$ticket->getFormURLWithID($params['id'])."&amp;forcetab=Item_Ticket$1'>"
                   .__('Display all items')." (".$usedcount.")</a></i>";
       }
       echo "</div>";

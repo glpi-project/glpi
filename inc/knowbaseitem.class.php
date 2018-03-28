@@ -1456,12 +1456,10 @@ class KnowbaseItem extends CommonDBVisible {
                       && isset($options['item_items_id'])) {
                      $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open'); return false;\"";
                      $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
-                                                            $CFG_GLPI["root_doc"].
-                                                               "/front/knowbaseitem.form.php?id=".$data["id"],
+                                                            KnowbaseItem::getFormURLWithID($data["id"]),
                                                             ['display' => false]);
                   } else {
-                     $href = " href=\"".$CFG_GLPI['root_doc']."/front/knowbaseitem.form.php?id=".
-                                    $data["id"]."\" ";
+                     $href = " href=\"".KnowbaseItem::getFormURLWithID($data["id"])."\" ";
                   }
 
                   echo Search::showItem($output_type,
@@ -1632,14 +1630,12 @@ class KnowbaseItem extends CommonDBVisible {
             echo "<a ".
                   ($data['is_faq']?" class='pubfaq' title='"
                                    .__s("This item is part of the FAQ")."' "
-                                   :" class='knowbase' ")." href=\"".
-                  $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".
+                                   :" class='knowbase' ")." href=\"".KnowbaseItem::getFormURLWithID($data["id"])."\">".
                   Html::resume_text($name, 80)."</a></td></tr>";
          }
          echo "</table>";
       }
    }
-
 
 
    function rawSearchOptions() {

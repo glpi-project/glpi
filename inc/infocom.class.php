@@ -716,7 +716,7 @@ class Infocom extends CommonDBChild {
                <img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
          Ajax::createIframeModalWindow('infocom'.$itemtype.$device_id,
-                                       $CFG_GLPI["root_doc"]."/front/infocom.form.php".
+                                       Infocom::getFormURL().
                                           "?itemtype=$itemtype&items_id=$device_id",
                                        ['height' => 600]);
       }
@@ -1031,7 +1031,7 @@ class Infocom extends CommonDBChild {
                echo sprintf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getName())."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
 
-               Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
+               Html::showSimpleForm(Infocom::getFormURL(),
                                     'add', __('Enable the financial and administrative information'),
                                      ['itemtype' => $item->getType(),
                                            'items_id' => $dev_ID]);
@@ -1042,8 +1042,7 @@ class Infocom extends CommonDBChild {
             $canedit = ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2));
             echo "<div class='spaced'>";
             if ($canedit) {
-               echo "<form name='form_ic' method='post' action='".$CFG_GLPI["root_doc"].
-                     "/front/infocom.form.php'>";
+               echo "<form name='form_ic' method='post' action='".Infocom::getFormURL()."'>";
             }
             echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],
                                                     "infocoms-show")?"_fixe":"")."'>";

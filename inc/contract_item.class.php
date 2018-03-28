@@ -485,7 +485,7 @@ class Contract_Item extends CommonDBRelation{
                 || empty($con->fields["name"])) {
                $name = sprintf(__('%1$s (%2$s)'), $name, $con->fields["id"]);
             }
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$name;
+            echo "<a href='".Contract::getFormURLWithID($cID)."'>".$name;
             echo "</a></td>";
             echo "<td class='center'>";
             echo Dropdown::getDropdownName("glpi_entities", $con->fields["entities_id"])."</td>";

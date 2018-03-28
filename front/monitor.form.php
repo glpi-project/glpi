@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/monitor.form.php?id=".$_POST["id"]);
+   Html::redirect($monitor->getFormURLWithID($_POST["id"]));
 
 } else {
    Html::header(Monitor::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "monitor");

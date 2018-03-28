@@ -45,7 +45,7 @@ if (isset($_POST["add"])) {
    $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights
-   Html::redirect($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
+   Html::redirect($prof->getFormURLWithID($ID));
 
 } else if (isset($_POST["purge"])) {
    $prof->check($_POST['id'], PURGE);

@@ -235,7 +235,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
             echo Dropdown::getLanguageName($data['language']);
             echo "</td><td>";
             if ($canedit) {
-               echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/knowbaseitemtranslation.form.php?id=".$data["id"] . "\">{$data['name']}</a>";
+               echo "<a href=\"" . KnowbaseItemTranslation::getFormURLWithID($data["id"]) . "\">{$data['name']}</a>";
             } else {
                echo  $data["name"];
             }
