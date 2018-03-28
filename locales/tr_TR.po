@@ -943,11 +943,11 @@ msgstr[1] "Kuruluş"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Hata ayıklama kipi etkinleştirildi!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Hata ayıklama kipi devre dışı bırakıldı!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -2389,15 +2389,15 @@ msgstr "Kimlik Doğrulama"
 
 #: front/helpdesk.php:88
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Destek masası bildirim formu"
 
 #: front/helpdesk.php:91
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Sorun çözülmelidir"
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Öncelik düzeyini seçin"
 
 #: front/helpdesk.php:97 inc/commonitilobject.class.php:1929
 msgctxt "urgency"
@@ -2426,7 +2426,7 @@ msgstr "Çok düşük"
 
 #: front/helpdesk.php:106
 msgid "Describe your issue"
-msgstr ""
+msgstr "Sorunu açıklayın"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
@@ -2464,7 +2464,7 @@ msgstr "İçerik"
 #: front/helpdesk.php:117
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "ileti"
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
 #: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4605
@@ -3914,7 +3914,7 @@ msgstr "Uyarı zamanı %s"
 msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
-msgstr ""
+msgstr "Ayarlarda IP adresinizle eşleşen etkin bir API istemcisi bulunamadı."
 
 #: inc/api.class.php:184
 msgid "parameter(s) login, password or user_token are missing"
@@ -3985,7 +3985,7 @@ msgstr "Parola sıfırlandı."
 
 #: inc/api.class.php:1944
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "app_token parametresi hatalı görünüyor"
 
 #: inc/api.class.php:1947
 msgid "missing parameter app_token"
@@ -4093,6 +4093,8 @@ msgstr "Uygulama kodu"
 #: inc/apiclient.class.php:210
 msgid "Leave these parameters empty to disable API access restriction"
 msgstr ""
+"API erişimi kısıtlamasını devre dışı bırakmak için bu parametreleri boş "
+"bırakın"
 
 #: inc/apiclient.class.php:236 inc/config.class.php:1318
 #: inc/config.class.php:1319 inc/config.class.php:1337
@@ -5804,7 +5806,7 @@ msgstr "Bekleyen"
 #: inc/change.class.php:496
 msgctxt "change"
 msgid "Testing"
-msgstr ""
+msgstr "Sınanıyor"
 
 #: inc/change.class.php:497
 msgid "Qualification"
@@ -7418,8 +7420,8 @@ msgstr[1] "Bellek türleri"
 #: inc/printer.class.php:672
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bellek"
+msgstr[1] "Bellek"
 
 #: inc/computer.class.php:875 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:48 inc/networkportmigration.class.php:299
@@ -7985,6 +7987,8 @@ msgstr "Kimlik doğrulama bilgileri ile oturum açılabilsin"
 #: inc/config.class.php:768
 msgid "Allow to login to API and get a session token with user credentials"
 msgstr ""
+"Kimlik doğrulama bilgileri ile API oturumu açılmasını ve bir oturum kodu "
+"alınmasını sağlar"
 
 #: inc/config.class.php:774
 msgid "Enable login with external token"
@@ -7995,6 +7999,8 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
 msgstr ""
+"Dış kullanıcı kodu ile API oturumu açılmasını ve bir oturum kodu alınmasını "
+"sağlar. Kullanıcı Ayarları sekmesindeki uzak erişim anahtarı bölümüne bakın"
 
 #: inc/config.class.php:793
 msgid "Add API client"
@@ -8580,6 +8586,8 @@ msgid ""
 "Automatic checks cannot be done; please review .htaccess file and the web "
 "server configuration."
 msgstr ""
+"Otomatik denetimler yapılamıyor. Lütfen .htaccess dosyasını ve web sunucu "
+"yapılandırmasını gözden geçirin."
 
 #: inc/config.class.php:2704
 msgid "You are using a development version, be careful!"
@@ -9733,8 +9741,8 @@ msgstr[1] "Aygıt işlemci modeli"
 #: inc/devicesensor.class.php:47
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Almaçlar"
+msgstr[1] "Almaçlar"
 
 #: inc/devicesensormodel.class.php:42 inc/dropdown.class.php:914
 msgid "Device sensor model"
@@ -11455,11 +11463,11 @@ msgstr "Oturumu kapat"
 
 #: inc/html.class.php:5910
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Hata ayıklama kipi etkin"
 
 #: inc/html.class.php:5911
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Hata ayıklama kipi devre dışı"
 
 #: inc/html.class.php:5915
 msgid "Change mode"
@@ -12302,7 +12310,7 @@ msgstr[1] "Yükseltme düzeyi"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
-msgstr ""
+msgstr "Tarih de silinsin mi?"
 
 #: inc/levelagreement.class.php:422
 msgid "Add a new item"
@@ -12374,11 +12382,11 @@ msgstr[1] "Dış bağlantı"
 
 #: inc/link.class.php:155
 msgid "field name in DB"
-msgstr ""
+msgstr "veritabanındaki alan adı"
 
 #: inc/link.class.php:155
 msgid "Example:"
-msgstr ""
+msgstr "Örnek:"
 
 #: inc/link.class.php:163 inc/link.class.php:229
 msgid "Link or filename"
@@ -13319,26 +13327,26 @@ msgstr "%1$s tarafından %2$s zamanında oluşturuldu"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Tarayıcı bildirimi kuyruğa eklenirken sorun çıktı"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "%starayıcı bildirimi sorguya eklendi"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Tarayıcı izlemeleri yapılandırması"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Tarayıcıdan izlemeler kullanılsın"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tarayıcı bildirimi"
+msgstr[1] "Tarayıcı bildirimi"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13371,7 +13379,7 @@ msgstr "Yapılandırmayı görüntüle"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Kendinize bir tarayıcı bildirimi denemesi gönderin"
 
 #: inc/notification.class.php:169 inc/notification.class.php:356
 #: inc/notificationevent.class.php:202
@@ -13582,7 +13590,7 @@ msgstr "En fazla aktarım denemesi"
 
 #: inc/notificationmailingsetting.class.php:184
 msgid "Try to deliver again in (minutes)"
-msgstr ""
+msgstr "Göndermeyi yeniden deneme süresi (dakika)"
 
 #: inc/notificationmailingsetting.class.php:205
 msgid "Check certificate"
@@ -13625,11 +13633,11 @@ msgstr "Kalıp ekle"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
-msgstr ""
+msgstr "Henüz bir kalıp seçilmemiş"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Tarayıcı"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -16641,8 +16649,8 @@ msgstr "Kaydedilmiş arama kısmen yüklendi"
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Özel %1$s"
+msgstr[1] "Özel %1$s"
 
 #: inc/savedsearch.class.php:768 inc/savedsearch.class.php:778
 msgid "Hide/Show elements"
@@ -16652,8 +16660,8 @@ msgstr "Bileşenleri göster/gizle"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Herkese Açık %1$s"
+msgstr[1] "Herkese Açık %1$s"
 
 #: inc/savedsearch.class.php:822
 msgid "Default bookmark has not been changed!"
@@ -16710,6 +16718,8 @@ msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"Nesne listesinde 'Tümü' ölçütü kullanılamıyor. SQL sorgusunda sorun çıkıyor "
+"(çok fazla tablo). Lütfen onun yerine 'görülen ögeler' ölçütünü kullanın"
 
 #: inc/search.class.php:1584 inc/search.class.php:1585
 msgid "Show the dustbin"

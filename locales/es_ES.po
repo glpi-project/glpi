@@ -257,7 +257,7 @@ msgstr "%1$s (%2$s)"
 #: front/ticket_user.form.php:47 inc/commonitilobject.class.php:2431
 #: inc/commonitilobject.class.php:3170 inc/commonitilobject.class.php:3368
 msgid "Email followup"
-msgstr "Seguimiento de correo electrónico"
+msgstr "Seguimiento por correo electrónico"
 
 #. TRANS: %1$s is the auth method type, %2$s the auth method name or link
 #. TRANS: %1$s is a name, %2$s is a number
@@ -943,11 +943,11 @@ msgstr[1] "Entidades"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "¡El modo debug ha sido activado!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "¡El modo debug ha sido desactivado!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -11517,11 +11517,11 @@ msgstr "Desconexión"
 
 #: inc/html.class.php:5910
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Modo de depuración activado"
 
 #: inc/html.class.php:5911
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Modo de depuración desactivado"
 
 #: inc/html.class.php:5915
 msgid "Change mode"
@@ -13387,26 +13387,26 @@ msgstr "Creado por %1$s en %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Error al insertar la notificación del navegador en cola"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Se agregó una notificación de navegador a %s para la cola"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Configuración de seguimiento de navegador"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Habilitar seguimientos desde el navegador"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Notificación de navegador"
+msgstr[1] "Notificaciones del navegador"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13439,7 +13439,7 @@ msgstr "Ver configuración"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Enviar  un aviso del navegador de prueba"
 
 #: inc/notification.class.php:169 inc/notification.class.php:356
 #: inc/notificationevent.class.php:202
@@ -13704,7 +13704,7 @@ msgstr "No se ha seleccionado ninguna plantilla"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Navegador"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"

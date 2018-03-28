@@ -2387,9 +2387,9 @@ msgstr[2] ""
 #: inc/transfer.class.php:3387 inc/wifinetwork.class.php:75
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Monitor"
+msgstr[1] "Monitory"
+msgstr[2] "Monitorov"
 
 #: front/find_num.php:105 inc/lock.class.php:485 inc/peripheral.class.php:63
 #: inc/profile.class.php:811 inc/profile.class.php:1639

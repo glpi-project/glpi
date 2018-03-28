@@ -11461,7 +11461,7 @@ msgstr[1] "+ %d ans"
 
 #: inc/html.class.php:3515
 msgid "The description field is mandatory"
-msgstr "Le champ description est olbigatoire"
+msgstr "Le champ description est obligatoire"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3678 inc/html.class.php:3880

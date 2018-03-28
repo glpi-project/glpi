@@ -943,11 +943,11 @@ msgstr[1] "Entidades"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "O modo de depuração foi ativado!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "O modo de depuração foi desabilitado!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -8609,6 +8609,8 @@ msgid ""
 "Automatic checks cannot be done; please review .htaccess file and the web "
 "server configuration."
 msgstr ""
+"As verificações automáticas não podem ser feitas, por favor reveja o arquivo"
+" .htaccess e a configuração do servidor web."
 
 #: inc/config.class.php:2704
 msgid "You are using a development version, be careful!"
@@ -11485,11 +11487,11 @@ msgstr "Sair"
 
 #: inc/html.class.php:5910
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Modo de depuração ativado"
 
 #: inc/html.class.php:5911
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Modo de depuração desativado"
 
 #: inc/html.class.php:5915
 msgid "Change mode"
@@ -13354,20 +13356,20 @@ msgstr "Criado por %1$s em %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Erro ao inserir a notificação do navegador para fila"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "A notificação do navegador para %s foi adicionada à fila "
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Configuração de acompanhamento do navegador"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Ativar acompanhamento do navegador"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
@@ -13406,7 +13408,7 @@ msgstr "Ver configuração"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Envie uma notificação do navegador de teste para você"
 
 #: inc/notification.class.php:169 inc/notification.class.php:356
 #: inc/notificationevent.class.php:202
@@ -13671,7 +13673,7 @@ msgstr "Nenhum modelo selecionado"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Navegador"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -17186,7 +17188,7 @@ msgstr "Chamados criados"
 
 #: inc/ticket.class.php:796
 msgid "Processing ticket"
-msgstr "Processando chamado"
+msgstr "Acompanhamentos"
 
 #: inc/ticket.class.php:859
 msgid "Satisfaction survey expired"

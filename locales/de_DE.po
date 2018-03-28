@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-06 11:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Stephan <stephan.rennert@web.de>, 2017\n"
+"Last-Translator: Ronny Hößrich, 2018\n"
 "Language-Team: German (Germany) (https://www.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -943,11 +943,11 @@ msgstr[1] "Einheiten"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Debug Modus wurde aktiviert."
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Debug Modus wurde deaktiviert."
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -2390,15 +2390,15 @@ msgstr "Authentifizierung"
 
 #: front/helpdesk.php:88
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Helpdesk Meldeformular"
 
 #: front/helpdesk.php:91
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Das Problem muss gelöst werden"
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Wähle eine Dringlichkeitsstufe aus"
 
 #: front/helpdesk.php:97 inc/commonitilobject.class.php:1929
 msgctxt "urgency"
@@ -2427,7 +2427,7 @@ msgstr "Sehr niedrig"
 
 #: front/helpdesk.php:106
 msgid "Describe your issue"
-msgstr ""
+msgstr "Beschreibe dein Problem"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
@@ -3921,6 +3921,8 @@ msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
 msgstr ""
+"Es gibt keinen aktiven API-Client, der mit Ihrer IP-Adresse in der "
+"Konfiguration übereinstimmt."
 
 #: inc/api.class.php:184
 msgid "parameter(s) login, password or user_token are missing"
@@ -3960,7 +3962,7 @@ msgstr "Verbotene Feld ID im Suchkriterium"
 
 #: inc/api.class.php:1415
 msgid "ID is forbidden along with 'forcedisplay' parameter."
-msgstr ""
+msgstr "ID ist in Verbindung mit dem Parameter 'forcedisplay' verboten."
 
 #: inc/api.class.php:1703 inc/api.class.php:1794 inc/api.class.php:2302
 #: inc/html.class.php:527 inc/profile_user.class.php:425
@@ -3993,7 +3995,7 @@ msgstr "Passwort erfolgreich geändert."
 
 #: inc/api.class.php:1944
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "Der Parameter app_token scheint ungültig zu sein"
 
 #: inc/api.class.php:1947
 msgid "missing parameter app_token"
@@ -4101,6 +4103,8 @@ msgstr "Anwendungstoken"
 #: inc/apiclient.class.php:210
 msgid "Leave these parameters empty to disable API access restriction"
 msgstr ""
+"Lassen Sie diese Parameter leer, um die API-Zugriffsbeschränkung zu "
+"deaktivieren"
 
 #: inc/apiclient.class.php:236 inc/config.class.php:1318
 #: inc/config.class.php:1319 inc/config.class.php:1337
@@ -4427,6 +4431,8 @@ msgstr "Speichern"
 #: inc/authldap.class.php:194 inc/authldap.class.php:394
 msgid "Synchronization field cannot be changed once in use."
 msgstr ""
+"Das Synchronisationsfeld kann nicht mehr geändert werden sobald es in "
+"Benutzung ist."
 
 #: inc/authldap.class.php:327
 msgid "Preconfiguration"
@@ -5089,8 +5095,8 @@ msgstr[1] "Budgettypen"
 #: inc/infocom.class.php:1216 inc/infocom.class.php:1598
 msgid "Business criticity"
 msgid_plural "Business criticities"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Geschäftskriterium"
+msgstr[1] "Geschäftskriterien"
 
 #: inc/calendar.class.php:67 inc/dropdown.class.php:947
 #: inc/dropdown.class.php:948 inc/entity.class.php:949
@@ -5818,7 +5824,7 @@ msgstr "In der Warteschlange"
 #: inc/change.class.php:496
 msgctxt "change"
 msgid "Testing"
-msgstr ""
+msgstr "Test"
 
 #: inc/change.class.php:497
 msgid "Qualification"
@@ -6342,7 +6348,7 @@ msgstr "Dokument Ticket %d"
 
 #: inc/commondbtm.class.php:4935
 msgid "You can define an autofill template"
-msgstr ""
+msgstr "Du kannst eine Autofill-Vorlage definieren."
 
 #: inc/commondbtm.class.php:4946
 msgid "Autofilled from template"
@@ -6873,6 +6879,8 @@ msgid ""
 "Warning: non closed children tickets depends on current ticket. Are you sure"
 " you want to close it?"
 msgstr ""
+"Achtung: Nicht geschlossene Child Tickets sind abhängig vom aktuellen "
+"Ticket. Bist du sicher, dass du ihn schließen willst?"
 
 #: inc/commonitilobject.class.php:4235 inc/commonitilobject.class.php:4329
 #: inc/dropdown.class.php:798 inc/profile.class.php:1448
@@ -7707,7 +7715,7 @@ msgstr "Eine Virtuelle Maschine hinzufügen"
 
 #: inc/computervirtualmachine.class.php:349
 msgid "No virtualized environment associated with the computer"
-msgstr ""
+msgstr "Keine virtualisierte Umgebung ist mit dem Computer verbunden."
 
 #: inc/computervirtualmachine.class.php:359 inc/contact.class.php:382
 #: inc/project.class.php:479
@@ -8009,7 +8017,7 @@ msgstr "Login mit Anmeldeinformationen aktivieren"
 
 #: inc/config.class.php:768
 msgid "Allow to login to API and get a session token with user credentials"
-msgstr ""
+msgstr "API Login mit session token und Anmeldedaten erlauben"
 
 #: inc/config.class.php:774
 msgid "Enable login with external token"
@@ -8020,6 +8028,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
 msgstr ""
+"API Login mit session token und externem Nutzer token erlauben. Der "
+"zugehörige Remotezugriff-Schlüssel ist im Reiter der persönlichen "
+"Einstellungen hinterlegt."
 
 #: inc/config.class.php:793
 msgid "Add API client"
@@ -8334,12 +8345,12 @@ msgstr "Die Erweiterung \"%s\" ist installiert"
 #: inc/config.class.php:1602 inc/config.class.php:1675
 #, php-format
 msgid "%1$ss memory usage is too low or too high"
-msgstr ""
+msgstr "%1$sSpeicherverbrauch ist zu niedrig oder zu hoch "
 
 #: inc/config.class.php:1605 inc/config.class.php:1678
 #, php-format
 msgid "%1$s memory usage is correct"
-msgstr ""
+msgstr "%1$sSpeicherverbrauch ist korrekt "
 
 #: inc/config.class.php:1614
 msgid "Hits rate"
@@ -8348,12 +8359,12 @@ msgstr "Trefferrate"
 #: inc/config.class.php:1620
 #, php-format
 msgid "%1$ss hits rate is low"
-msgstr ""
+msgstr "%1$sdie Trefferquote ist niedrig "
 
 #: inc/config.class.php:1623
 #, php-format
 msgid "%1$s hits rate is correct"
-msgstr ""
+msgstr "%1$s Trefferquote ist korrekt "
 
 #: inc/config.class.php:1629
 msgid "Out of memory restart"
@@ -8362,12 +8373,12 @@ msgstr "Neustart wegen Speichermangels"
 #: inc/config.class.php:1633
 #, php-format
 msgid "%1$ss restart rate is too high"
-msgstr ""
+msgstr "%1$ss Neustart-Rate ist zu hoch"
 
 #: inc/config.class.php:1636
 #, php-format
 msgid "%1$s restart rate is correct"
-msgstr ""
+msgstr "%1$s Neustart-Rate ist korrekt"
 
 #: inc/config.class.php:1643 inc/config.class.php:1690
 msgid "Reset"
@@ -8606,10 +8617,12 @@ msgid ""
 "Automatic checks cannot be done; please review .htaccess file and the web "
 "server configuration."
 msgstr ""
+"Automatische Prüfungen können nicht durchgeführt werden. Bitte überprüfen "
+"Sie die .htaccess-Datei und die Webserver-Konfiguration."
 
 #: inc/config.class.php:2704
 msgid "You are using a development version, be careful!"
-msgstr ""
+msgstr "Du verwendest eine Entwicklungsversion, sei vorsichtig!"
 
 #: inc/config.class.php:2705
 msgid "I know I am using a unstable version."
@@ -8617,7 +8630,7 @@ msgstr "Ich bin mir bewusst, dass ich eine instabile Version nutze."
 
 #: inc/config.class.php:2711
 msgid "Please check the unstable version checkbox."
-msgstr ""
+msgstr "Bitte aktivieren Sie das Kontrollkästchen \"Unstabile Version\"."
 
 #: inc/config.php:199 inc/config.php:207
 msgid "Service is down for maintenance. It will be back shortly."
@@ -8657,6 +8670,8 @@ msgid ""
 "You are trying to update to a development version from a development "
 "version. This is not suppoorted."
 msgstr ""
+"Sie versuchen, von einer Entwicklungsversion auf eine Entwicklungsversion zu"
+" aktualisieren. Dies wird nicht unterstützt."
 
 #: inc/consumable.class.php:199 inc/consumable.class.php:511
 msgctxt "button"
@@ -9537,8 +9552,8 @@ msgstr[1] "Gehäuse"
 #: inc/devicecasemodel.class.php:45 inc/dropdown.class.php:888
 msgid "Device case model"
 msgid_plural "Device case models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Gehäuse Modell"
+msgstr[1] "Gerät Gehäuse Modelle"
 
 #: inc/devicecasetype.class.php:46 inc/dropdown.class.php:851
 msgid "Case type"
@@ -9567,8 +9582,8 @@ msgstr "Schnittstelle"
 #: inc/devicecontrolmodel.class.php:45 inc/dropdown.class.php:890
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Controllermodell"
+msgstr[1] "Gerät Controllermodelle"
 
 #: inc/devicedrive.class.php:47
 msgid "Drive"
@@ -9589,8 +9604,8 @@ msgstr "Geschwindigkeit"
 #: inc/devicedrivemodel.class.php:45 inc/dropdown.class.php:892
 msgid "Device drive model"
 msgid_plural "Device drive models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Laufwerksmodell"
+msgstr[1] "Gerät Laufwerkmodelle"
 
 #: inc/devicefirmware.class.php:42 inc/networkequipment.class.php:563
 #: inc/phone.class.php:532
@@ -9602,8 +9617,8 @@ msgstr[1] "Firmware"
 #: inc/devicefirmwaremodel.class.php:43
 msgid "Device firmware model"
 msgid_plural "Device firmware models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Firmware Modell"
+msgstr[1] "Gerät Firmware Modelle"
 
 #: inc/devicefirmwaretype.class.php:42
 msgid "Firmware type"
@@ -9620,8 +9635,8 @@ msgstr[1] "Generische Geräte"
 #: inc/devicegenericmodel.class.php:45 inc/dropdown.class.php:894
 msgid "Device generic model"
 msgid_plural "Device generic models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Generisches Gerätemodell"
+msgstr[1] "Gerätegenerische Modelle"
 
 #: inc/devicegenerictype.class.php:42
 msgid "Generic type"
@@ -9641,8 +9656,8 @@ msgstr "Voreinstellung Arbeitsspeicher"
 #: inc/devicegraphiccardmodel.class.php:45
 msgid "Device harddrive model"
 msgid_plural "Device harddrive models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Festplatten Modell"
+msgstr[1] "Gerät Festplatten Modelle"
 
 #: inc/deviceharddrive.class.php:47
 msgid "Hard drive"
@@ -9667,8 +9682,8 @@ msgstr "Cache"
 #: inc/deviceharddrivemodel.class.php:45 inc/dropdown.class.php:898
 msgid "Device hard drive model"
 msgid_plural "Device hard drive models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Festplatten Modell"
+msgstr[1] "Gerät Festplatten Modelle"
 
 #: inc/devicememory.class.php:55 inc/devicememory.class.php:78
 msgid "Size by default"
@@ -9689,14 +9704,14 @@ msgstr "MHz"
 #: inc/devicememorymodel.class.php:45 inc/dropdown.class.php:900
 msgid "Device memory model"
 msgid_plural "Device memory models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Speicher Typ"
+msgstr[1] "Gerät Speicher Typen"
 
 #: inc/devicemotherboardmodel.class.php:45
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Systemplatinenmodell"
+msgstr[1] "Systemplatinenmodelle"
 
 #: inc/devicenetworkcard.class.php:49
 #: inc/networkportinstantiation.class.php:458
@@ -9723,8 +9738,8 @@ msgstr[1] "Netzwerkkartenmodelle"
 #: inc/devicepcimodel.class.php:45 inc/dropdown.class.php:906
 msgid "Other component model"
 msgid_plural "Other component models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Anderes Komponentenmodell"
+msgstr[1] "Andere Komponentenmodelle"
 
 #: inc/devicepowersupply.class.php:55 inc/devicepowersupply.class.php:73
 msgid "ATX"
@@ -9737,8 +9752,8 @@ msgstr "Leistung"
 #: inc/devicepowersupplymodel.class.php:45 inc/dropdown.class.php:908
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Netzteilmodell"
+msgstr[1] "Gerät Netzteilmodelle"
 
 #: inc/deviceprocessor.class.php:55 inc/deviceprocessor.class.php:82
 msgid "Frequency by default"
@@ -9757,8 +9772,8 @@ msgstr "Anzahl Ausführungstrang"
 #: inc/deviceprocessormodel.class.php:45 inc/dropdown.class.php:910
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Prozessor Modell"
+msgstr[1] "Gerät Prozessor Modelle"
 
 #: inc/devicesensor.class.php:47
 msgid "Sensor"
@@ -9769,8 +9784,8 @@ msgstr[1] "Sensoren"
 #: inc/devicesensormodel.class.php:42 inc/dropdown.class.php:914
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Sensor Modell"
+msgstr[1] "Gerät Sensor Modelle"
 
 #: inc/devicesensortype.class.php:44 inc/dropdown.class.php:841
 msgid "Sensor type"
@@ -9781,24 +9796,24 @@ msgstr[1] "Sensortypen"
 #: inc/devicesimcard.class.php:46
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "SIM-Karte"
+msgstr[1] "SIM-Karten"
 
 #: inc/devicesimcard.class.php:67 inc/devicesimcard.class.php:97
 msgid "Allow VOIP"
-msgstr ""
+msgstr "Erlaube VOIP"
 
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:862
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "SIM-Karten Modell"
+msgstr[1] "SIM-Karten Modelle"
 
 #: inc/devicesoundcardmodel.class.php:45 inc/dropdown.class.php:912
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Soundkarten Modell"
+msgstr[1] "Gerät Soundkarten Modelle"
 
 #: inc/displaypreference.class.php:291
 msgid "No personal criteria. Create personal parameters?"
@@ -10009,7 +10024,7 @@ msgstr "Unerlaubter Dateityp"
 
 #: inc/document.class.php:1226
 msgid "Manage document types"
-msgstr ""
+msgstr "Verwalten von Dokumentarten"
 
 #: inc/document.class.php:1233
 #, php-format
@@ -10152,15 +10167,15 @@ msgstr[1] "Projekttypen "
 #: inc/dropdown.class.php:805 inc/projecttasktype.class.php:50
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "Typen von Projekt Aufgaben"
-msgstr[1] "Typen von Projekt Aufgaben"
+msgstr[0] "Projektaufgabentyp"
+msgstr[1] "Typen von Projektaufgaben"
 
 #: inc/dropdown.class.php:808 inc/projecttask.class.php:424
 #: inc/projecttasktemplate.class.php:54
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Vorlage für Projektaufgabe"
+msgstr[1] "Vorlagen für Projektaufgaben"
 
 #: inc/dropdown.class.php:816 inc/networkequipmenttype.class.php:46
 #: inc/rule.class.php:400
@@ -10222,20 +10237,20 @@ msgstr[1] "Gerätemodelle"
 #: inc/dropdown.class.php:896
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Grafikkartenmodell"
+msgstr[1] "Gerät Grafikkartenmodelle"
 
 #: inc/dropdown.class.php:902
 msgid "Device mother board model"
 msgid_plural "Device mother board models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Mainboardmodell"
+msgstr[1] "Gerät Mainboardmodelle"
 
 #: inc/dropdown.class.php:904
 msgid "Device network card model"
 msgid_plural "Device network card models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerät Netzwerkkartenmodell"
+msgstr[1] "Gerät Netzwerkkartenmodelle"
 
 #: inc/dropdown.class.php:930 inc/event.class.php:162 inc/html.class.php:1325
 #: inc/infocom.class.php:149 inc/profile.class.php:104
@@ -10537,7 +10552,7 @@ msgstr "Keine Übersetzung gefunden"
 
 #: inc/entity.class.php:249
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "Sie können keine Einheit ohne Namen hinzufügen."
 
 #: inc/entity.class.php:620 inc/entity.class.php:1420
 msgid "LDAP directory information attribute representing the entity"
@@ -10659,11 +10674,11 @@ msgstr ""
 #: inc/entity.class.php:875 inc/entity.class.php:1934
 #: inc/notificationtargetcertificate.class.php:50
 msgid "Alarms on expired certificates"
-msgstr ""
+msgstr "Benachrichtigung bei abgelaufenen Zertifikaten"
 
 #: inc/entity.class.php:885
 msgid "Send Certificate alarms before"
-msgstr ""
+msgstr "Sende Zertifikatsalarme bevor"
 
 #: inc/entity.class.php:900 inc/entity.class.php:2123
 #: inc/profile.class.php:1024 inc/profile.class.php:2189
@@ -10744,7 +10759,7 @@ msgstr "Alle zeigen"
 
 #: inc/entity.class.php:1131
 msgid "Load more entities..."
-msgstr ""
+msgstr "Weitere Einheiten laden ..."
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:1237
@@ -10840,7 +10855,7 @@ msgstr "Häufigkeit der Alarme für Verbrauchsmaterial"
 
 #: inc/entity.class.php:1946
 msgid "Send certificates alarms before"
-msgstr ""
+msgstr "Sende Zertifikatsalarme bevor"
 
 #: inc/entity.class.php:1965 inc/event.class.php:153 inc/event.class.php:166
 #: inc/html.class.php:6018 inc/profile.class.php:741
@@ -11463,11 +11478,11 @@ msgstr "%1$d von %2$d"
 
 #: inc/html.class.php:4776
 msgid "Attach file by drag & drop or copy & paste in editor or "
-msgstr ""
+msgstr "Datei per Drag & Drop oder Copy & Paste in den Editor einfügen oder "
 
 #: inc/html.class.php:4777
 msgid "selecting them"
-msgstr ""
+msgstr "wählen sie aus"
 
 #: inc/html.class.php:4855
 msgid "File(s)"
@@ -11491,7 +11506,7 @@ msgstr "Auswählen alle/keine"
 
 #: inc/html.class.php:5814
 msgid "Start typing to find a menu"
-msgstr ""
+msgstr "Beginnen Sie mit der Eingabe, um ein Menü zu finden."
 
 #: inc/html.class.php:5887 inc/html.class.php:5889
 msgid "Logout"
@@ -11499,11 +11514,11 @@ msgstr "Abmelden"
 
 #: inc/html.class.php:5910
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Debug-Modus aktiviert"
 
 #: inc/html.class.php:5911
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Debug-Modus deaktiviert"
 
 #: inc/html.class.php:5915
 msgid "Change mode"
@@ -11584,10 +11599,13 @@ msgstr "Zeige"
 #: inc/infocom.class.php:750
 msgid "Please fill you fiscal year date in preferences."
 msgstr ""
+"Bitte geben Sie in den Einstellungen das Datum Ihres Geschäftsjahres an."
 
 #: inc/infocom.class.php:769
 msgid "Please fill either buy or use date in preferences."
 msgstr ""
+"Bitte geben Sie entweder Kauf- oder Verwendungsdatum in den Einstellungen "
+"an."
 
 #: inc/infocom.class.php:1008
 msgid "Requested item not found"
@@ -11835,14 +11853,16 @@ msgstr "Bitte wählen Sie ein Gerät aus"
 #: inc/item_devices.class.php:837
 msgid "You must choose any unaffected device or ask to add new."
 msgstr ""
+"Sie müssen ein beliebiges, nicht betroffenes Gerät auswählen oder um das "
+"Hinzufügen neuer Geräte beantragen."
 
 #: inc/item_devices.class.php:1094
 msgid "Copy to clipboard failed"
-msgstr ""
+msgstr "Kopieren in die Zwischenablage fehlgeschlagen"
 
 #: inc/item_devices.class.php:1252
 msgid "Update of "
-msgstr ""
+msgstr "Aktualisierung von"
 
 #: inc/item_devicesimcard.class.php:63 inc/item_devicesimcard.class.php:64
 msgid "PIN code"
@@ -11869,15 +11889,15 @@ msgstr[1] "Leitungen"
 
 #: inc/item_devicesimcard.class.php:104
 msgid "Mobile Subscriber Identification Number"
-msgstr ""
+msgstr "Identifikationsnummer des Mobilfunkteilnehmers MSIN"
 
 #: inc/item_devicesimcard.class.php:105
 msgid "MSIN"
-msgstr ""
+msgstr "MSIN"
 
 #: inc/item_devicesimcard.class.php:109
 msgid "MSIN is the last 8 or 10 digits of IMSI"
-msgstr ""
+msgstr "MSIN ist die letzten 8 oder 10 Ziffern von IMSI"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
@@ -12021,7 +12041,7 @@ msgstr "Verwalten"
 
 #: inc/knowbaseitemcategory.class.php:164
 msgid "Root category"
-msgstr ""
+msgstr "Wurzelkategorie"
 
 #: inc/knowbaseitem.class.php:203 inc/knowbaseitem.class.php:810
 #: inc/reminder.class.php:474 inc/rssfeed.class.php:459
@@ -12061,12 +12081,12 @@ msgstr[1] "%d Ansichten"
 
 #: inc/knowbaseitem.class.php:753
 msgid "Add link"
-msgstr ""
+msgstr "Link hinzufügen"
 
 #: inc/knowbaseitem.class.php:759
 #, php-format
 msgid "link with %1$s"
-msgstr ""
+msgstr "Mit %1$s verknüpfen"
 
 #: inc/knowbaseitem.class.php:769
 msgid "Visible since"
@@ -12209,7 +12229,7 @@ msgstr[1] "Wissendatenbankeinträge"
 
 #: inc/knowbaseitem_item.class.php:138
 msgid "Add a linked item"
-msgstr "Verknüpftes Elemt hinzufügen"
+msgstr "Verknüpftes Element hinzufügen"
 
 #: inc/knowbaseitem_item.class.php:140
 msgid "Link a knowledge base entry"
@@ -12262,7 +12282,7 @@ msgstr[1] "Autoren"
 
 #: inc/knowbaseitem_revision.class.php:144
 msgid "cur"
-msgstr ""
+msgstr "akt."
 
 #: inc/knowbaseitem_revision.class.php:182
 msgid "show"
@@ -12306,7 +12326,7 @@ msgstr "Laden des angeforderten Vergleiches nicht möglich!"
 
 #: inc/knowbaseitemtranslation.class.php:219
 msgid "Entry translations list"
-msgstr ""
+msgstr "Eintrag Übersetzungsliste"
 
 #. TRANS: %s is the user login, %d the revision number
 #: inc/knowbaseitemtranslation.class.php:434
@@ -12316,7 +12336,7 @@ msgstr "%ssetzt die Übersetzung des Elementes zu Revision %i zurück"
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:700
 #: inc/profile.class.php:1463
 msgid "SLM"
-msgstr ""
+msgstr "SLM"
 
 #: inc/levelagreement.class.php:196 inc/levelagreement.class.php:452
 msgid "Maximum time"
@@ -12346,7 +12366,7 @@ msgstr[1] "Eskalationsstufen"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
-msgstr ""
+msgstr "Datum auch löschen?"
 
 #: inc/levelagreement.class.php:422
 msgid "Add a new item"
@@ -12418,11 +12438,11 @@ msgstr[1] "Externe Links"
 
 #: inc/link.class.php:155
 msgid "field name in DB"
-msgstr ""
+msgstr "Feldname in DB"
 
 #: inc/link.class.php:155
 msgid "Example:"
-msgstr ""
+msgstr "Beispiel:"
 
 #: inc/link.class.php:163 inc/link.class.php:229
 msgid "Link or filename"
@@ -12633,7 +12653,7 @@ msgstr "Feldänderung"
 #: inc/log.class.php:698
 #, php-format
 msgid "Change %1$s to %2$s"
-msgstr "Änderung von %1$s nach %2$s"
+msgstr "Änderung von \"%1$s\" nach \"%2$s\""
 
 #: inc/mailcollector.class.php:246
 msgid "Email address"
@@ -12926,11 +12946,13 @@ msgstr "Datenmigration - %s"
 #, php-format
 msgid "%1$s table already exists. A backup have been done to %2$s"
 msgstr ""
+"%1$s Tabelle existiert bereits. Es wurde eine Sicherung durchgeführt, um "
+"%2$s "
 
 #: inc/migration.class.php:937
 #, php-format
 msgid "Configuration values added for %1$s."
-msgstr ""
+msgstr "Konfigurationswerte für %1$s hinzugefügt."
 
 #: inc/monitor.class.php:270 inc/peripheral.class.php:266
 #: inc/phone.class.php:263 inc/printer.class.php:363
@@ -13162,7 +13184,7 @@ msgstr "%d Mbit/s"
 
 #: inc/networkportethernet.class.php:374
 msgid "Ethernet outlet"
-msgstr ""
+msgstr "Netzwerkdose"
 
 #: inc/networkportfiberchannel.class.php:50
 msgid "Fiber channel port"
@@ -13182,7 +13204,7 @@ msgstr "Fibre Channel Port Geschwindigkeit"
 
 #: inc/networkportfiberchannel.class.php:343
 msgid "Network fiber outlet"
-msgstr ""
+msgstr "Netzwerk Glasfaserausgang"
 
 #: inc/networkportinstantiation.class.php:88
 msgid "No options available for this port type."
@@ -13372,25 +13394,26 @@ msgstr "Erstellt von %1$s auf %2$s"
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
 msgstr ""
+"Fehler beim Einfügen von Browser-Benachrichtigungen in die Warteschlange"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Eine Browser Benachrichtigung an %s wurde der Warteschlange angefügt."
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Konfiguration der Browser Benachrichtigungen"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Browser-Benachrichtigungen aktivieren"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Browser-Benachrichtigungen"
+msgstr[1] "Browser-Benachrichtigungen"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13423,7 +13446,7 @@ msgstr "Siehe Konfiguration"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Senden Sie eine Test-Browser-Benachrichtigung an Sie"
 
 #: inc/notification.class.php:169 inc/notification.class.php:356
 #: inc/notificationevent.class.php:202
@@ -13552,11 +13575,13 @@ msgstr "Absende E-Mail-Adresse"
 
 #: inc/notificationmailingsetting.class.php:92
 msgid "Address to use in from for sent emails."
-msgstr ""
+msgstr "Adresse, die für gesendete E-Mails verwendet werden soll."
 
 #: inc/notificationmailingsetting.class.php:92
 msgid "If not set, main or entity administrator email will be used."
 msgstr ""
+"Wenn nicht gesetzt, wird die E-Mail des Haupt- oder Instanzadministrators "
+"verwendet."
 
 #: inc/notificationmailingsetting.class.php:99
 msgid "From name"
@@ -13569,6 +13594,8 @@ msgstr "Absender Name für den Mail Versand"
 #: inc/notificationmailingsetting.class.php:100
 msgid "If not set, main or entity administrator name will be used."
 msgstr ""
+"Wenn nicht gesetzt, wird der Name des Haupt- oder Instanzadministrators "
+"verwendet."
 
 #: inc/notificationmailingsetting.class.php:107
 msgid "Reply-to address"
@@ -13679,11 +13706,11 @@ msgstr "Vorlage hinzufügen"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
-msgstr ""
+msgstr "Keine Vorlage ausgewählt"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -14330,12 +14357,12 @@ msgstr "URL des Objektes ist reserviert."
 #: inc/notificationtargetsavedsearch_alert.class.php:57
 #, php-format
 msgid "Search  alert for \"%1$s\" (%2$s)"
-msgstr ""
+msgstr "Suchbenachrichtigung für \"%1$s\" (%2$s)"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:62
 #: inc/notificationtargetsavedsearch_alert.class.php:66
 msgid "Private search alert"
-msgstr ""
+msgstr "Privater Suchalarm"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:106
 msgid "Number of results"
@@ -14396,7 +14423,7 @@ msgstr "Automatische Erinnerungen für SLAs"
 
 #: inc/notificationtargetticket.class.php:240
 msgid "Automatic reminders of OLAs"
-msgstr ""
+msgstr "Automatische Erinnerungen an OLAs"
 
 #: inc/notificationtargetticket.class.php:242
 msgid "Satisfaction survey answer"
@@ -14429,7 +14456,7 @@ msgstr "SLA"
 #: inc/ticket.class.php:2933 inc/ticket.class.php:2941
 #: inc/ticket.class.php:2955 inc/ticket.class.php:2968
 msgid "OLA"
-msgstr ""
+msgstr "OLA"
 
 #: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2762
 #: inc/ticket.class.php:2941 inc/ticket.class.php:4700
@@ -14706,16 +14733,20 @@ msgstr "Zeitraum um Entsperrung zu erzwingen (in Stunden)"
 
 #: inc/ola.class.php:58
 msgid "The internal time is recalculated when assigning the OLA"
-msgstr ""
+msgstr "Die interne Zeit wird bei der Zuweisung des OLAs neu berechnet."
 
 #: inc/ola.class.php:62
 msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
 msgstr ""
+"Die Zuordnung eines OLA zu einem Ticket bewirkt die Neuberechnung des "
+"Datums."
 
 #: inc/ola.class.php:63
 msgid "Escalations defined in the OLA will be triggered under this new date."
 msgstr ""
+"Eskalationen, die im OLA definiert sind, werden unter diesem neuen Datum "
+"ausgelöst."
 
 #: inc/olalevel.class.php:100 inc/slalevel.class.php:99
 msgid "Add an escalation level"
@@ -14723,11 +14754,11 @@ msgstr "Eine Eskalationsstufe hinzufügen"
 
 #: inc/olalevel.class.php:207
 msgid "Automatic reminders of OLA"
-msgstr ""
+msgstr "Automatische Erinnerungen an OLA"
 
 #: inc/olalevel_ticket.class.php:107
 msgid "Automatic actions of OLA"
-msgstr ""
+msgstr "Automatische Aktionen des OLA"
 
 #: inc/operatingsystemarchitecture.class.php:48 inc/rule.class.php:460
 #: inc/ruledictionnaryoperatingsystemarchitecture.class.php:60
@@ -14740,8 +14771,8 @@ msgstr[1] "Betriebssystemarchitekturen"
 #: inc/operatingsystemversion.class.php:48 inc/rule.class.php:448
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Betriebssystem-Versionen"
+msgstr[1] "Betriebssystem-Versionen"
 
 #: inc/peripheral.class.php:290 inc/peripheral.class.php:486
 #: inc/phone.class.php:287 inc/phone.class.php:516
@@ -14952,7 +14983,7 @@ msgstr "Plugin %1$s wurde deinstalliert!"
 #: inc/plugin.class.php:881
 #, php-format
 msgid "Plugin %1$s not found!"
-msgstr ""
+msgstr "Plugin %1$s nicht gefunden!"
 
 #: inc/plugin.class.php:738
 #, php-format
@@ -14961,7 +14992,7 @@ msgstr "Plugin %1$s wurde installiert!"
 
 #: inc/plugin.class.php:743
 msgid "Do you want to %activate_link it?"
-msgstr ""
+msgstr "Möchten Sie es %aktivieren_link?"
 
 #: inc/plugin.class.php:748
 #, php-format
@@ -15526,8 +15557,8 @@ msgstr "Abschlussstatus"
 #: inc/projecttask.class.php:68
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] "Projekt Aufgaben"
-msgstr[1] "Projekt Aufgaben"
+msgstr[0] "Projektaufgabe"
+msgstr[1] "Projektaufgaben"
 
 #: inc/projecttask.class.php:185
 msgid "Update (actor)"
@@ -15549,7 +15580,7 @@ msgstr "Aufgabe einfügen"
 
 #: inc/projecttask.class.php:994
 msgid "Create a sub task from this task of project"
-msgstr "Teilaufgabe aus diesen Projekt Aufgabe herstellen"
+msgstr "Teilaufgabe aus dieser Projektaufgabe erstellen"
 
 #: inc/projecttask.class.php:1581
 #, php-format
@@ -15564,8 +15595,8 @@ msgstr "Endet um %s:"
 #: inc/projecttaskteam.class.php:75
 msgid "Task team"
 msgid_plural "Task teams"
-msgstr[0] "Aufgaben Teams"
-msgstr[1] "Aufgaben Teams"
+msgstr[0] "Aufgaben-Team"
+msgstr[1] "Aufgaben-Teams"
 
 #: inc/projecttask_ticket.class.php:68
 msgid "Link Ticket/Project task"
@@ -16327,7 +16358,7 @@ msgstr "Hersteller"
 #: inc/ruledictionnarysoftware.class.php:96
 #: inc/rulesoftwarecategory.class.php:89
 msgid "Category from inventory tool"
-msgstr ""
+msgstr "Kategorie aus der Inventarisierungssoftware"
 
 #: inc/ruledictionnarysoftware.class.php:123 inc/software.class.php:285
 #: inc/software.class.php:569
@@ -16520,13 +16551,15 @@ msgstr "Regeln, die eine Software einer Kategorie zuweisen"
 
 #: inc/rulesoftwarecategory.class.php:104
 msgid "Import category from inventory tool"
-msgstr ""
+msgstr "Importiere Kategorie aus der Inventarisierungssoftware"
 
 #: inc/ruleticket.class.php:111
 msgid ""
 "Urgency or impact used in actions, think to add Priority: recompute action "
 "if needed."
 msgstr ""
+"Dringlichkeit oder Auswirkung welche in der Aktion gewählt wurde verlangt "
+"eine Erhöhung der Priorität. Aktion neu berechnen falls benötigt."
 
 #: inc/ruleticket.class.php:364
 msgid "Requester in group"
@@ -16564,8 +16597,8 @@ msgstr "Zuordnungsregeln für Tickets (übergeordenet Einheit)"
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gespeicherte Suchwarnungen"
+msgstr[1] "Gespeicherte Suchwarnungen"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
 #: inc/savedsearch.class.php:1335
@@ -16583,6 +16616,8 @@ msgid ""
 "Compare number of results the search returns against the specified value "
 "with selected operator"
 msgstr ""
+"Vergleichen Sie die Anzahl der Ergebnisse, die die Suche mit dem angegebenen"
+" Wert liefert, mit dem ausgewählten Operator."
 
 #: inc/savedsearch_alert.class.php:207
 msgid "Notification does not exists!"
@@ -16604,7 +16639,7 @@ msgstr "Alarm hinzufügen"
 
 #: inc/savedsearch_alert.class.php:301
 msgid "Saved searches alerts"
-msgstr ""
+msgstr "Gespeicherte Suchwarnungen"
 
 #: inc/savedsearch_alert.class.php:355
 msgid "less than"
@@ -16633,11 +16668,11 @@ msgstr "größer als"
 #: inc/savedsearch_alert.class.php:384
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
-msgstr ""
+msgstr "Anzahl der Ergebnisse für %1$s ist %2$s %3$s"
 
 #: inc/savedsearch.class.php:76
 msgid "Unset as default"
-msgstr ""
+msgstr "Standardmäßig deaktiviert"
 
 #: inc/savedsearch.class.php:78
 msgid "Change count method"
@@ -16682,14 +16717,14 @@ msgstr "Zählen"
 
 #: inc/savedsearch.class.php:536
 msgid "Partial load of the saved search."
-msgstr ""
+msgstr "Gespeicherte Suche teilweise geladen"
 
 #: inc/savedsearch.class.php:765
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Privat %1$s"
+msgstr[1] "Privat %1$s"
 
 #: inc/savedsearch.class.php:768 inc/savedsearch.class.php:778
 msgid "Hide/Show elements"
@@ -16699,20 +16734,22 @@ msgstr "Elemente anzeigen/ausblenden"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Öffentlich %1$s"
+msgstr[1] "Öffentlich %1$s"
 
 #: inc/savedsearch.class.php:822
 msgid "Default bookmark has not been changed!"
-msgstr ""
+msgstr "Das Standard-Lesezeichen wurde nicht geändert!"
 
 #: inc/savedsearch.class.php:893
 msgid "Count for this saved search has been disabled."
-msgstr ""
+msgstr "Die Zählung für diese gespeicherte Suche wurde deaktiviert."
 
 #: inc/savedsearch.class.php:894
 msgid "Counting this saved search would take too long, it has been skipped."
 msgstr ""
+"Das Zählen dieser gespeicherten Suche würde zu lange dauern, sie wurde "
+"übersprungen."
 
 #: inc/savedsearch.class.php:915 inc/savedsearch.class.php:916
 msgid "Not default search"
@@ -16725,6 +16762,8 @@ msgstr "Standardsuche"
 #: inc/savedsearch.class.php:927
 msgid "Click to load or drag and drop to reorder"
 msgstr ""
+"Klicken Sie zum Laden oder nutzen sie Drag&Drop, um die Reihenfolge zu "
+"ändern."
 
 #: inc/savedsearch.class.php:928
 msgid "Click to load"
@@ -16748,7 +16787,7 @@ msgstr "Aktuelle Suche speichern"
 
 #: inc/savedsearch.class.php:1221
 msgid "Update all bookmarks execution time"
-msgstr ""
+msgstr "Ausführungszeit für das Aktualisieren aller Lesezeichen"
 
 #: inc/savedsearch.class.php:1343
 msgid "Notification has been created!"
@@ -16759,6 +16798,9 @@ msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"Das Kriterium 'Alle' ist bei dieser Objektliste nicht verwendbar, da die "
+"SQL-Abfrage fehlschlägt (zu viele Tabellen). Bitte verwenden Sie stattdessen"
+" das Kriterium \"Gesehene Artikel\"."
 
 #: inc/search.class.php:1584 inc/search.class.php:1585
 msgid "Show the dustbin"
@@ -17167,7 +17209,7 @@ msgstr ""
 
 #: inc/telemetry.class.php:466
 msgid "Reference your GLPI"
-msgstr ""
+msgstr "Referenzieren Sie Ihre GLPI"
 
 #: inc/telemetry.class.php:468
 #, php-format
@@ -17175,6 +17217,9 @@ msgid ""
 "Besides, if you appreciate GLPI and its community, please take a minute to "
 "reference your organization by filling %1$s."
 msgstr ""
+"Wenn Sie GLPI und seine Gemeinschaft schätzen, dann nehmen Sie sich bitte "
+"eine Minute Zeit, um Ihre Organisation einzutragen, indem Sie folgendes "
+"ausfüllen %1$s."
 
 #: inc/telemetry.class.php:473
 msgid "the following form"

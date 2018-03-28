@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-06 11:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Glenn Franssen <github@glennfrn.nl>, 2017\n"
+"Last-Translator: Wim Aerts <wim.aerts@politie.antwerpen.be>, 2018\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/glpi/teams/1637/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -941,11 +941,11 @@ msgstr[1] "Entiteiten"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Debug mode werd ingeschakeld!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Debug mode werd uitgeschakeld!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -971,8 +971,8 @@ msgstr "Bezig met verwerken"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s ticket in behandeling of recent opgelost voor dit item."
+msgstr[1] "%s tickets in behandeling of recent opgelost voor dit item."
 
 #: ajax/ticketsatisfaction.php:64 inc/entity.class.php:1043
 msgid "Create survey after"
@@ -2032,34 +2032,34 @@ msgstr[1] "Computertypes"
 #: inc/monitortype.class.php:46 inc/rule.class.php:364
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Schermtype"
+msgstr[1] "Schermtypes"
 
 #: front/dictionnary.php:102 inc/dropdown.class.php:819
 #: inc/printertype.class.php:46 inc/rule.class.php:376
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Printertype"
+msgstr[1] "Printertypes"
 
 #: front/dictionnary.php:105 inc/report.class.php:365 inc/report.class.php:374
 msgid "Device type"
 msgid_plural "Device types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaattype"
+msgstr[1] "Apparaattypes"
 
 #: front/dictionnary.php:108
 msgid "Network equipment type"
 msgid_plural "Network equipment types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netwerk-apparaattype"
+msgstr[1] "Netwerk-apparaattypes"
 
 #: front/dictionnary.php:112 inc/dropdown.class.php:825
 #: inc/phonetype.class.php:46 inc/rule.class.php:412
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefoontype"
+msgstr[1] "Telefoontypes"
 
 #: front/dictionnary.php:119 front/dictionnary.php:122
 #: front/stat.location.php:89 inc/dropdown.class.php:954
@@ -2072,8 +2072,8 @@ msgstr[1] ""
 #: inc/softwareversion.class.php:316
 msgid "Operating system"
 msgid_plural "Operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Besturingssysteem"
+msgstr[1] "Besturingssystemen"
 
 #: front/dictionnary.php:125 inc/dropdown.class.php:963
 #: inc/item_operatingsystem.class.php:125
@@ -2084,8 +2084,8 @@ msgstr[1] ""
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:73
 msgid "Service pack"
 msgid_plural "Service packs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Service pack"
+msgstr[1] "Service packs"
 
 #: front/dictionnary.php:127 inc/computer_softwareversion.class.php:323
 #: inc/computer_softwareversion.class.php:788
@@ -2102,8 +2102,8 @@ msgstr[1] ""
 #: inc/softwareversion.class.php:55
 msgid "Version"
 msgid_plural "Versions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Versie"
+msgstr[1] "Versies"
 
 #: front/dictionnary.php:130 inc/dropdown.class.php:966
 #: inc/item_operatingsystem.class.php:124
@@ -2167,8 +2167,8 @@ msgstr "Geen onderdeel geselecteerd of niet goed bepaalde operatie"
 #: inc/event.class.php:154 inc/profile.class.php:1837
 msgid "Dropdown"
 msgid_plural "Dropdowns"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Keuzemenu"
+msgstr[1] "Keuzemenus"
 
 #: front/find_num.php:76
 msgid "Search the ID of your hardware"
@@ -2215,8 +2215,8 @@ msgstr "Hardwaretype"
 #: inc/ticket.class.php:5722
 msgid "Associated element"
 msgid_plural "Associated elements"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gekoppeld item"
+msgstr[1] "Gekoppelde items"
 
 #: front/find_num.php:96 inc/apiclient.class.php:89 inc/authldap.class.php:866
 #: inc/authmail.class.php:107 inc/budget.class.php:209
@@ -2333,30 +2333,30 @@ msgstr "Inventarisnummer"
 #: inc/profile.class.php:1569
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Computer"
+msgstr[1] "Computers"
 
 #: front/find_num.php:102 inc/networkequipment.class.php:63
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netwerk-apparaat"
+msgstr[1] "Netwerk-apparaten"
 
 #: front/find_num.php:104 inc/lock.class.php:484 inc/monitor.class.php:60
 #: inc/profile.class.php:790 inc/profile.class.php:1583
 #: inc/transfer.class.php:3387 inc/wifinetwork.class.php:75
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Beeldscherm"
+msgstr[1] "Beeldschermen"
 
 #: front/find_num.php:105 inc/lock.class.php:485 inc/peripheral.class.php:63
 #: inc/profile.class.php:811 inc/profile.class.php:1639
 #: inc/transfer.class.php:3407
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apparaat"
+msgstr[1] "Apparaten"
 
 #. TRANS: %s is the user login
 #: front/group_user.form.php:51 front/user.form.php:122
@@ -2393,7 +2393,7 @@ msgstr ""
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Selecteer een urgentie niveau"
 
 #: front/helpdesk.php:97 inc/commonitilobject.class.php:1929
 msgctxt "urgency"
@@ -2422,7 +2422,7 @@ msgstr "Zeer laag"
 
 #: front/helpdesk.php:106
 msgid "Describe your issue"
-msgstr ""
+msgstr "Omschrijf uw probleem"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
@@ -2460,7 +2460,7 @@ msgstr "Inhoud"
 #: front/helpdesk.php:117
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "verzenden"
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
 #: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4605
@@ -2487,42 +2487,42 @@ msgstr "%s verbindt een VLAN met een netwerkpoort"
 #: front/knowbaseitem_comment.form.php:55
 #: front/knowbaseitem_comment.form.php:74 front/knowbaseitem_item.form.php:45
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "Verplichte velden zijn niet ingevuld."
 
 #: front/knowbaseitem_comment.form.php:62
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%s voegt een opmerking toe aan de kennisbank"
 
 #: front/knowbaseitem_comment.form.php:64
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Uw opmerking is toegevoegd"
 
 #: front/knowbaseitem_comment.form.php:83
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%s bewerkt een opmerking in de kennisbank"
 
 #: front/knowbaseitem_comment.form.php:85
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Jouw opmerking werd bewerkt"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:119 front/reminder.form.php:111
 #: front/rssfeed.form.php:105 inc/knowbaseitem.class.php:297
 #, php-format
 msgid "%s adds a target"
-msgstr "%s voeg een doel toe"
+msgstr "%s voegt een doel toe"
 
 #: front/knowbaseitem.form.php:129
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Kennisbank item is teruggezet naar versie %s"
 
 #: front/knowbaseitem.form.php:136
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Kennisbank item is niet teruggezet naar versie %s"
 
 #: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:874
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:235
@@ -2530,7 +2530,7 @@ msgstr ""
 #: inc/knowbaseitem_item.class.php:87 inc/profile.class.php:941
 #: inc/profile.class.php:1789
 msgid "Knowledge base"
-msgstr "Kennisdatabank"
+msgstr "Kennisbank"
 
 #: front/knowbaseitem_item.form.php:54
 #, php-format
@@ -2596,8 +2596,8 @@ msgstr "Opnieuw inloggen"
 #: inc/notificationtargetmailcollector.class.php:100
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ontvanger"
+msgstr[1] "Ontvangers"
 
 #: front/mailcollector.php:48 front/setup.auth.php:61
 #: inc/authmail.class.php:219
@@ -2698,13 +2698,13 @@ msgstr "Lijst van beschikbare tags"
 #: front/olalevel.form.php:52
 #, php-format
 msgid "%s updates an ola level"
-msgstr ""
+msgstr "%s wijzigt een ola niveau"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:76
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%s verwijdert een ola niveau"
 
 #: front/planning.php:141 inc/commonitiltask.class.php:1557
 #: inc/commonitiltask.class.php:1727 inc/event.class.php:152
@@ -2735,7 +2735,7 @@ msgstr "De plugin %s is niet uitwisselbaar met deze versie van GLPI"
 #: front/plugin.php:61
 msgid "Delete or update it otherwise GLPI will not work correctly."
 msgstr ""
-"Verwijder of update de plugin ander zal GLPI niet correct functioneren"
+"Verwijder of update de plugin anders zal GLPI niet correct functioneren."
 
 #: front/problem_ticket.form.php:48 inc/notificationtargetchange.class.php:337
 #: inc/notificationtargetchange.class.php:351
@@ -2756,8 +2756,8 @@ msgstr ""
 #: inc/stat.class.php:1226
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Probleem"
+msgstr[1] "Problemen"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:53
@@ -2917,8 +2917,8 @@ msgstr "Naam"
 #: inc/user.class.php:2228 inc/user.class.php:2460
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Locatie"
+msgstr[1] "Locaties"
 
 #: front/report.contract.list.php:184 front/report.infocom.php:136
 #: front/report.year.list.php:140 inc/entity.class.php:974
@@ -2939,8 +2939,8 @@ msgstr "Vervaldatum garantieperiode"
 #: inc/dropdown.class.php:835
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contracttype"
+msgstr[1] "Contracttypes"
 
 #: front/report.contract.list.php:187 front/report.infocom.conso.php:68
 #: front/report.infocom.php:69 front/report.year.list.php:143
@@ -2988,12 +2988,12 @@ msgstr "Toon verslag"
 #: front/report.infocom.conso.php:213 front/report.infocom.php:223
 #, php-format
 msgid "%1$s account net value"
-msgstr ""
+msgstr "%1$saccount netto waarde"
 
 #: front/report.infocom.conso.php:239 front/report.infocom.php:250
 #, php-format
 msgid "%1$s value"
-msgstr ""
+msgstr "%1$s waarde"
 
 #. TRANS: %1$s and %2$s are values
 #: front/report.infocom.conso.php:284 front/report.infocom.php:204
@@ -3004,11 +3004,11 @@ msgstr "Totaal: Waarde=%1$s - Account netto waarde=%2$s"
 
 #: front/report.infocom.conso.php:292 front/report.infocom.php:302
 msgid "Total account net value"
-msgstr ""
+msgstr "Totale account netto waarde"
 
 #: front/report.infocom.conso.php:304 front/report.infocom.php:314
 msgid "Total value"
-msgstr ""
+msgstr "Totale waarde"
 
 #: front/report.infocom.php:135 inc/budget.class.php:137
 #: inc/budget.class.php:260 inc/budget.class.php:338
@@ -3134,30 +3134,30 @@ msgstr "Verzenden"
 #: front/rule.php:73 inc/blacklist.class.php:89 inc/dropdown.class.php:781
 msgid "Blacklist"
 msgid_plural "Blacklists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Blacklist"
+msgstr[1] "Blacklists"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:51
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s voegt een alarm toe"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:64
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s verwijdert een alarm"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:76
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s werkt een alarm bij"
 
 #: front/savedsearch.php:41 inc/html.class.php:5925 inc/html.class.php:5934
 msgid "Saved searches"
-msgstr ""
+msgstr "Bewaarde zoekacties"
 
 #: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5961
 #: inc/html.class.php:6239 inc/html.class.php:6240
@@ -3172,8 +3172,8 @@ msgstr "Externe authenticatie"
 #: inc/ruleright.class.php:241 inc/user.class.php:4317
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "LDAP directory"
+msgstr[1] "LDAP directories"
 
 #: front/setup.auth.php:53 inc/authldap.class.php:428
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -3187,8 +3187,8 @@ msgstr "LDAP kan niet gebruikt worden als externe verbindingsbron"
 #: inc/notificationmailingsetting.class.php:202
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "E-mail server"
+msgstr[1] "E-mail servers"
 
 #: front/setup.auth.php:62 inc/authmail.class.php:220
 msgid "Impossible to use email server as external source of connection"
@@ -3210,8 +3210,8 @@ msgstr "Andere authenticatie methoden"
 #: inc/profile.class.php:1866
 msgid "Notification"
 msgid_plural "Notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Melding"
+msgstr[1] "Meldingen"
 
 #: front/setup.templates.php:62 inc/html.class.php:6259
 msgid "Manage templates..."
@@ -3319,8 +3319,8 @@ msgstr "Gemiddelde duur"
 #: inc/levelagreement.class.php:201
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Uur"
+msgstr[1] "Uren"
 
 #: front/stat.global.php:140 front/stat.graph.php:392
 #: inc/commonitilobject.class.php:4616 inc/stat.class.php:473
@@ -3389,8 +3389,8 @@ msgstr "Technicus"
 #: inc/supplier.class.php:60 inc/transfer.class.php:3430
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Leverancier"
+msgstr[1] "Leveranciers"
 
 #: front/stat.graph.php:109 front/stat.graph.php:116
 #: inc/authldap.class.php:1493 inc/authldap.class.php:1542
@@ -3433,8 +3433,8 @@ msgstr[1] ""
 #: install/update_0713_072.php:554
 msgid "User"
 msgid_plural "Users"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gebruiker"
+msgstr[1] "Gebruikers"
 
 #: front/stat.graph.php:129 front/stat.graph.php:219
 #: front/stat.tracking.php:86 front/stat.tracking.php:88
@@ -3491,8 +3491,8 @@ msgstr "Categorie"
 #: inc/user.class.php:3898
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Groep"
+msgstr[1] "Groepen"
 
 #: front/stat.graph.php:182 front/stat.tracking.php:92
 #: inc/change.class.php:765 inc/commonitilobject.class.php:2767
@@ -3543,8 +3543,8 @@ msgstr "Titel"
 #: inc/solutiontype.class.php:46
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Oplossingstype"
+msgstr[1] "Oplossingstypes"
 
 #: front/stat.graph.php:227 front/stat.tracking.php:97
 #: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:725
@@ -3554,8 +3554,8 @@ msgstr[1] ""
 #: inc/ticket.class.php:4859 inc/ticketfollowup.class.php:1172
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aanvraag bron"
+msgstr[1] "Aanvraag bronnen"
 
 #: front/stat.graph.php:287 front/stat.graph.php:288
 #: inc/commonglpi.class.php:837 inc/commonglpi.class.php:838
@@ -3585,12 +3585,12 @@ msgstr "Toon de grafieken"
 #: front/stat.location.php:180 front/stat.tracking.php:188
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "Geopend %1$s (%2$s)"
 
 #: front/stat.location.php:206 front/stat.tracking.php:214
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "Opgelost %1$s (%2$s)"
 
 #: front/stat.location.php:231
 #, php-format
@@ -3628,8 +3628,8 @@ msgstr ""
 #: inc/ticketfollowup.class.php:1090
 msgid "Requester"
 msgid_plural "Requesters"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aanvrager"
+msgstr[1] "Aanvragers"
 
 #: front/stat.tracking.php:82 inc/commonitilobject.class.php:3043
 #: inc/commonitiltask.class.php:721 inc/commonitiltask.class.php:1723
@@ -3745,7 +3745,7 @@ msgstr ""
 
 #: front/ticket.form.php:227
 msgid "Save solution to the knowledge base"
-msgstr "Bewaar de oplossing in de kennisdatabank"
+msgstr "Bewaar de oplossing in de kennisbank"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatehiddenfield.form.php:51
@@ -4162,7 +4162,7 @@ msgstr "Itemtype niet gevonden of niet in CommonDBTM"
 
 #: inc/apixmlrpc.class.php:153
 msgid "missing id"
-msgstr "ID  ontbreekt"
+msgstr "ID ontbreekt"
 
 #: inc/auth.class.php:116
 msgid "Others"
@@ -4290,8 +4290,8 @@ msgstr "CAS-host"
 #: inc/notificationmailingsetting.class.php:220 inc/printer.class.php:420
 msgid "Port"
 msgid_plural "Ports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Poort"
+msgstr[1] "Poorten"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1304
@@ -4372,8 +4372,8 @@ msgstr "Administratief nummer"
 #: install/update_0681_07.php:563 install/update_0723_078.php:3667
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefoon"
+msgstr[1] "Telefoons"
 
 #: inc/auth.class.php:1416 inc/authldap.class.php:764
 #: inc/authldap.class.php:952 inc/authldap.class.php:3130
@@ -4952,8 +4952,8 @@ msgstr "Hoofd"
 #: inc/reservation.class.php:1269 inc/reservationitem.class.php:362
 msgid "Item"
 msgid_plural "Items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Item"
+msgstr[1] "Items"
 
 #: inc/budget.class.php:327 inc/item_devices.class.php:1071
 #: inc/supplier.class.php:484
@@ -5788,8 +5788,8 @@ msgstr "Evaluatie"
 #: inc/ticket.class.php:4901
 msgid "Approval"
 msgid_plural "Approvals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Goedkering"
+msgstr[1] "Goedkeuringen"
 
 #: inc/change.class.php:494 inc/problem.class.php:552
 msgctxt "status"
@@ -5816,7 +5816,7 @@ msgstr "Toegepast"
 
 #: inc/change.class.php:499
 msgid "Review"
-msgstr "Evaluatie"
+msgstr "Nazorg"
 
 #: inc/change.class.php:500 inc/problem.class.php:558
 #: inc/ticket.class.php:3527
@@ -6334,7 +6334,7 @@ msgstr ""
 
 #: inc/commondbvisible.class.php:154
 msgid "Add a target"
-msgstr "voeg een doel toe"
+msgstr "Voeg een doel toe"
 
 #: inc/commondbvisible.class.php:184
 msgid ""
@@ -6490,7 +6490,7 @@ msgstr "Fout bij het uitvoeren van de actie"
 
 #: inc/commonglpi.class.php:1261
 msgid "Item already defined"
-msgstr "Item igedefinieerds al "
+msgstr "Item is reeds gedefinieerd"
 
 #: inc/commonitilactor.class.php:183 inc/commonitilactor.class.php:263
 msgid "Email Followup"
@@ -6910,12 +6910,12 @@ msgstr "Geopend op %s"
 #: inc/reservation.class.php:1014
 #, php-format
 msgid "From %s"
-msgstr "Verzender %s"
+msgstr "Van %s"
 
 #: inc/commonitilobject.class.php:5463 inc/reservation.class.php:1011
 #, php-format
 msgid "To %s"
-msgstr "Naar %s"
+msgstr "Tot %s"
 
 #. TRANS: %s is user name
 #: inc/commonitilobject.class.php:5467 inc/commonitiltask.class.php:1153

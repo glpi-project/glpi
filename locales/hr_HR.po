@@ -68,7 +68,7 @@ msgstr "Objavi"
 #: inc/notificationtargetuser.class.php:46 inc/user.class.php:4097
 #: inc/user.class.php:4145
 msgid "Forgotten password?"
-msgstr "Ažuriraj zaporku"
+msgstr "Zaboravili ste zaporku?"
 
 #: index.php:166
 msgid "You must activate the JavaScript function of your browser"
@@ -834,7 +834,7 @@ msgstr "Obriši kriterij traženja"
 #: ajax/searchrow.php:137 ajax/searchrow.php:156 inc/config.class.php:384
 #: inc/search.class.php:1625
 msgid "Items seen"
-msgstr "Artikli nađeni"
+msgstr "Artikli viđeni"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:62
 msgid "Choose an existing device"
@@ -4256,7 +4256,7 @@ msgstr "%1$s prijavljen sa IP adrese %2$s"
 #: inc/auth.class.php:807
 #, php-format
 msgid "Failed login for %1$s from IP %2$s"
-msgstr "Neusjela prijava za %1$s sa IP adrese %2$s"
+msgstr "Neuspjela prijava za %1$s sa IP adrese %2$s"
 
 #: inc/auth.class.php:873
 msgid "Authentication on GLPI database"
@@ -11426,7 +11426,7 @@ msgstr "%1$s%2$d sati %3$d minuta %4$d sekundi"
 #: inc/html.class.php:400
 #, php-format
 msgid "%1$s%2$d hours %3$d minutes"
-msgstr "%1$s%2$d dana %3$d sati"
+msgstr "%1$s%2$d sati %3$d minuta"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of minutes,  %3$d number
 #. of seconds

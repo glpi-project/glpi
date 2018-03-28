@@ -949,11 +949,11 @@ msgstr[3] "Организации"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Режим отладки был включен!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Режим отладки был выключен!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -3240,7 +3240,7 @@ msgstr "%s обновление предупреждения"
 
 #: front/savedsearch.php:41 inc/html.class.php:5925 inc/html.class.php:5934
 msgid "Saved searches"
-msgstr "Поиски сохранены"
+msgstr "Сохраненные поисковые запросы"
 
 #: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5961
 #: inc/html.class.php:6239 inc/html.class.php:6240
@@ -3372,7 +3372,7 @@ msgstr "Статистика"
 #: front/stat.global.php:88 front/stat.graph.php:346
 msgctxt "Quantity"
 msgid "Number"
-msgstr "Номер"
+msgstr "Количество"
 
 #: front/stat.global.php:91 front/stat.graph.php:349 inc/stat.class.php:435
 msgctxt "ticket"
@@ -8846,6 +8846,8 @@ msgid ""
 "Automatic checks cannot be done; please review .htaccess file and the web "
 "server configuration."
 msgstr ""
+"Автоматическая проверка не может быть выполнена; пожалуйста, проверьте файл "
+".htaccess и конфигурацию веб-сервера."
 
 #: inc/config.class.php:2704
 msgid "You are using a development version, be careful!"
@@ -9581,7 +9583,7 @@ msgstr "Журнал выполнения"
 #: inc/stat.class.php:409 inc/ticket.class.php:5828
 msgctxt "quantity"
 msgid "Number"
-msgstr "Номер"
+msgstr "Количество"
 
 #: inc/crontask.class.php:1267
 msgid "Reset last run"
@@ -11955,11 +11957,11 @@ msgstr "Выйти"
 
 #: inc/html.class.php:5910
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Режим отладки включен"
 
 #: inc/html.class.php:5911
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Режим отладки выключен"
 
 #: inc/html.class.php:5915
 msgid "Change mode"
@@ -13868,28 +13870,28 @@ msgstr "Создано %1$s в %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Ошибка помещения браузерных уведомлений в очередь"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Браузерные уведомления для %s были добавлены в очередь"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Настройки браузерных уведомлений"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Включить наблюдение за заявками через браузер"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Браузерное уведомление"
+msgstr[1] "Браузерные уведомления"
+msgstr[2] "Браузерные уведомления"
+msgstr[3] "Браузерные уведомления"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13922,7 +13924,7 @@ msgstr "Смотрите настройки"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Отправить"
 
 #: inc/notification.class.php:169 inc/notification.class.php:356
 #: inc/notificationevent.class.php:202
@@ -14195,7 +14197,7 @@ msgstr "Шаблон не выбран"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Браузер"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -17280,10 +17282,10 @@ msgstr "Частичная загрузка сохраненного поиск�
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Приватный %1$s"
+msgstr[1] "Приватные %1$s"
+msgstr[2] "Приватные %1$s"
+msgstr[3] "Приватные %1$s"
 
 #: inc/savedsearch.class.php:768 inc/savedsearch.class.php:778
 msgid "Hide/Show elements"
@@ -17293,10 +17295,10 @@ msgstr "Скрыть/Показать элементы"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Публичный %1$s"
+msgstr[1] "Публичные %1$s"
+msgstr[2] "Публичные %1$s"
+msgstr[3] "Публичные %1$s"
 
 #: inc/savedsearch.class.php:822
 msgid "Default bookmark has not been changed!"
@@ -17534,7 +17536,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:534
 msgid "Number"
-msgstr "Номер"
+msgstr "Количество"
 
 #: inc/softwarelicense.class.php:558 inc/softwarelicense.class.php:570
 msgid "states_id"

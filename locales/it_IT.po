@@ -941,11 +941,11 @@ msgstr[1] "Entità"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Modalità debug attività!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Modalità debug disattivita!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -2779,7 +2779,7 @@ msgstr "%s ha aggiunto un membro al team"
 
 #: front/report.contract.list.php:49
 msgid "List of the hardware under contract"
-msgstr "Elenco dispositivi in manutenzione"
+msgstr "Elenco dei dispositivi sotto contratto"
 
 #: front/report.contract.list.php:178 front/report.infocom.php:130
 #: front/report.year.list.php:134 inc/apiclient.class.php:81
@@ -2969,7 +2969,7 @@ msgstr "Data inizio"
 
 #: front/report.contract.php:50
 msgid "Hardware under contract"
-msgstr "Dispositivi in manutenzione"
+msgstr "Dispositivi sotto contratto"
 
 #: front/report.contract.php:54 front/report.year.php:55
 #: inc/crontask.class.php:1385 inc/notificationtargetinfocom.class.php:89
@@ -5109,7 +5109,7 @@ msgstr "Duplicato"
 
 #: inc/calendar.class.php:91 inc/calendar_holiday.class.php:106
 msgid "Add a close time"
-msgstr "Aggiungi un'ora di chiusura"
+msgstr "Aggiungi un'orario di chiusura"
 
 #: inc/calendar_holiday.class.php:137 inc/holiday.class.php:65
 #: inc/holiday.class.php:93
@@ -5121,7 +5121,7 @@ msgstr "Periodicità"
 msgid "Close time"
 msgid_plural "Close times"
 msgstr[0] "Periodo di chiusura"
-msgstr[1] "Periodi di chiusura"
+msgstr[1] "Orari di chiusura"
 
 #: inc/calendarsegment.class.php:64
 msgid "Time range"
@@ -5277,7 +5277,7 @@ msgstr "Numero di errori"
 
 #: inc/cartridge.class.php:786 inc/cartridge.class.php:1053
 msgid "Average time in stock"
-msgstr "Periodo medio di magazzino"
+msgstr "Tempo medio di magazzino"
 
 #: inc/cartridge.class.php:787 inc/cartridge.class.php:790
 #: inc/contract_item.class.php:504
@@ -5288,11 +5288,11 @@ msgstr[1] "mesi"
 
 #: inc/cartridge.class.php:789 inc/cartridge.class.php:1056
 msgid "Average time in use"
-msgstr "Periodo medio di utilizzo"
+msgstr "Tempo medio di utilizzo"
 
 #: inc/cartridge.class.php:791 inc/cartridge.class.php:1059
 msgid "Average number of printed pages"
-msgstr "Media di pagine stampate"
+msgstr "Media delle pagine stampate"
 
 #: inc/cartridge.class.php:833
 msgid "Add cartridges"
@@ -7255,7 +7255,7 @@ msgstr "Data di convalida"
 
 #: inc/commonitilvalidation.class.php:1295
 msgid "Validate"
-msgstr "Validato"
+msgstr "Conferma"
 
 #: inc/commonitilvalidation.class.php:1475
 #, php-format
@@ -8958,7 +8958,7 @@ msgstr "durante la settimana"
 
 #: inc/contract.class.php:326
 msgid "on Saturday"
-msgstr "il sabato"
+msgstr "Sabato"
 
 #: inc/contract.class.php:344
 msgid "Sundays and holidays"
@@ -11497,11 +11497,11 @@ msgstr "Esci"
 
 #: inc/html.class.php:5910
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Modalità debug attiva"
 
 #: inc/html.class.php:5911
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Modalità debug disattivata"
 
 #: inc/html.class.php:5915
 msgid "Change mode"
@@ -13364,26 +13364,26 @@ msgstr "Creato da %1$s il %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Errore nell'inserimento in coda della notifica browser"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Una notifica browser per %s è stata aggiunta alla coda"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Configurazione risposte dal browser"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Abilita commenti dal browser"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Notifica del browser"
+msgstr[1] "Notifiche del browser"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13394,7 +13394,7 @@ msgstr "Suono"
 
 #: inc/notificationajaxsetting.class.php:77
 msgid "Default notification sound"
-msgstr "Suono di notifica"
+msgstr "Suono di notifica predefinito"
 
 #: inc/notificationajaxsetting.class.php:87
 msgid "Time to check for new notifications (in seconds)"
@@ -13416,7 +13416,7 @@ msgstr "Visualizza la configurazione"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Inviami un test della notifica del browser"
 
 #: inc/notification.class.php:169 inc/notification.class.php:356
 #: inc/notificationevent.class.php:202
@@ -13678,7 +13678,7 @@ msgstr "Nessun modello selezionato"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -17051,7 +17051,7 @@ msgstr "Tempo medio di chiusura"
 
 #: inc/stat.class.php:478
 msgid "Average real duration of treatment of the ticket"
-msgstr "Tempo effettivo medio impiegato per la chiamata"
+msgstr "Tempo medio effettivo impiegato per la chiamata"
 
 #: inc/stat.class.php:481
 msgid "Total real duration of treatment of the ticket"
@@ -17554,7 +17554,7 @@ msgstr "Questa settimana"
 
 #: inc/ticketfollowup.class.php:937
 msgid "Last week"
-msgstr "Ultima settimana"
+msgstr "La settimana scorsa"
 
 #: inc/ticketfollowup.class.php:939
 msgid "This month"
