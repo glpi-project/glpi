@@ -3042,7 +3042,7 @@ class Dropdown {
          $where .= " AND `is_template` = '0' ";
       }
 
-      if ((strlen($post['searchText']) > 0)) {
+      if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
          $search = Search::makeTextSearch($post['searchText']);
 
          $where .= " AND (`name` ".$search."
