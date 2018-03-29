@@ -143,30 +143,21 @@ class Group_User extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
 
-         // All entities "edited user" have access
-         $strict_entities = Profile_User::getUserEntities($ID, true);
-         $user_entities = $_SESSION['glpiactiveentities'];
-         // Keep only entities "connected user" have access
-         $strict_entities = array_intersect($strict_entities, $user_entities);
+         $params = ['used'      => $used,
+                    'condition' => "is_usergroup
+                                     AND (`entities_id` =  ".$_SESSION['glpiactive_entity']."
+                                          OR (`entities_id` IN (0,".implode(',', $_SESSION['glpiactiveentities']).")
+                                              AND is_recursive))"];
+         Group::dropdown($params);
+         echo "</td><td>".__('Manager')."</td><td>";
+         Dropdown::showYesNo('is_manager');
 
-         $nb = countElementsInTableForEntity("glpi_groups", $strict_entities, '`is_usergroup`', false);
-         if ($nb > count($used)) {
-            Group::dropdown(['entity'    => $strict_entities,
-                                  'used'      => $used,
-                                  'condition' => '`is_usergroup`']);
-            echo "</td><td>".__('Manager')."</td><td>";
-            Dropdown::showYesNo('is_manager');
+         echo "</td><td>".__('Delegatee')."</td><td>";
+         Dropdown::showYesNo('is_userdelegate');
 
-            echo "</td><td>".__('Delegatee')."</td><td>";
-            Dropdown::showYesNo('is_userdelegate');
-
-            echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addgroup' value=\""._sx('button', 'Add')."\"
-                   class='submit'>";
-
-         } else {
-            echo __('None');
-         }
+         echo "</td><td class='tab_bg_2 center'>";
+         echo "<input type='submit' name='addgroup' value=\""._sx('button', 'Add')."\"
+                class='submit'>";
 
          echo "</td></tr>";
          echo "</table>";
