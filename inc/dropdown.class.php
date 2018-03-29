@@ -2689,6 +2689,11 @@ class Dropdown {
                $addjoin   .= KnowbaseItem::addVisibilityJoins();
                //no break to reach default case.
 
+            case Project::getType():
+               $addjoin .= Project::addVisibilityJoins();
+               $where   .= Project::addVisibility();
+               //no break to reach default case.
+
             default :
                $query = "SELECT `$table`.* $addselect
                         FROM `$table`
