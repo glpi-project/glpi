@@ -235,6 +235,11 @@ $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 
                                                   'DCRoom', 'Rack', 'Enclosure'],
                                                   $CFG_GLPI['itemdevices']);
 
+$CFG_GLPI["report_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Project',
+                                                  'Software', 'SoftwareLicense', 'Certificate'];
+
+
 $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
 
 $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Computer',
