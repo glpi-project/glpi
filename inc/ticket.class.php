@@ -1086,6 +1086,9 @@ class Ticket extends CommonITILObject {
                 $allowed_fields[] = 'itilcategories_id';
                 $allowed_fields[] = 'name';
                 $allowed_fields[] = 'items_id';
+                $allowed_fields[] = '_filename';
+                $allowed_fields[] = '_tag_filename';
+                $allowed_fields[] = '_prefix_filename';
             }
 
             if ($this->canSolve()) {
