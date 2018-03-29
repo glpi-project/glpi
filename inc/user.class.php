@@ -1298,55 +1298,57 @@ class User extends CommonDBTM {
          $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
          $v  = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
-         for ($i=0; $i<count($v['count']); $i++) {
-            //Try to find is DN in present and needed: if yes, then extract only the OU from it
-            if ((($ldap_method["group_field"] == 'dn') || in_array('ou', $group_fields))
-                && isset($v[$i]['dn'])) {
+         if (is_array($v['count'])) {
+            for ($i=0; $i<count($v['count']); $i++) {
+               //Try to find is DN in present and needed: if yes, then extract only the OU from it
+               if ((($ldap_method["group_field"] == 'dn') || in_array('ou', $group_fields))
+                  && isset($v[$i]['dn'])) {
 
-               $v[$i]['ou'] = [];
-               for ($tmp=$v[$i]['dn']; count($tmptab = explode(',', $tmp, 2))==2; $tmp=$tmptab[1]) {
-                  $v[$i]['ou'][] = $tmptab[1];
+                  $v[$i]['ou'] = [];
+                  for ($tmp=$v[$i]['dn']; count($tmptab = explode(',', $tmp, 2))==2; $tmp=$tmptab[1]) {
+                     $v[$i]['ou'][] = $tmptab[1];
+                  }
+
+                  // Search in DB for group with ldap_group_dn
+                  if (($ldap_method["group_field"] == 'dn')
+                     && (count($v[$i]['ou']) > 0)) {
+                     $query = "SELECT `id`
+                              FROM `glpi_groups`
+                              WHERE `ldap_group_dn`
+                                          IN ('".implode("', '",
+                                                         Toolbox::addslashes_deep($v[$i]['ou']))."')";
+
+                     foreach ($DB->request($query) as $group) {
+                        $this->fields["_groups"][] = $group['id'];
+                     }
+                  }
+
+                  // searching with ldap_field='OU' and ldap_value is also possible
+                  $v[$i]['ou']['count'] = count($v[$i]['ou']);
                }
 
-               // Search in DB for group with ldap_group_dn
-               if (($ldap_method["group_field"] == 'dn')
-                   && (count($v[$i]['ou']) > 0)) {
-                  $query = "SELECT `id`
-                            FROM `glpi_groups`
-                            WHERE `ldap_group_dn`
-                                       IN ('".implode("', '",
-                                                      Toolbox::addslashes_deep($v[$i]['ou']))."')";
+               // For each attribute retrieve from LDAP, search in the DB
+               foreach ($group_fields as $field) {
+                  if (isset($v[$i][$field])
+                     && isset($v[$i][$field]['count'])
+                     && ($v[$i][$field]['count'] > 0)) {
 
-                  foreach ($DB->request($query) as $group) {
-                     $this->fields["_groups"][] = $group['id'];
+                     unset($v[$i][$field]['count']);
+                     foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
+                        $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)";
+                     }
+                     $query = "SELECT `id`
+                              FROM `glpi_groups`
+                              WHERE `ldap_field` = '$field'
+                                    AND (".implode(" OR ", $lgroups).")";
+
+                     foreach ($DB->request($query) as $group) {
+                        $this->fields["_groups"][] = $group['id'];
+                     }
                   }
                }
-
-               // searching with ldap_field='OU' and ldap_value is also possible
-               $v[$i]['ou']['count'] = count($v[$i]['ou']);
-            }
-
-            // For each attribute retrieve from LDAP, search in the DB
-            foreach ($group_fields as $field) {
-               if (isset($v[$i][$field])
-                   && isset($v[$i][$field]['count'])
-                   && ($v[$i][$field]['count'] > 0)) {
-
-                  unset($v[$i][$field]['count']);
-                  foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
-                     $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)";
-                  }
-                  $query = "SELECT `id`
-                            FROM `glpi_groups`
-                            WHERE `ldap_field` = '$field'
-                                  AND (".implode(" OR ", $lgroups).")";
-
-                  foreach ($DB->request($query) as $group) {
-                     $this->fields["_groups"][] = $group['id'];
-                  }
-               }
-            }
-         } // for each ldapresult
+            } // for each ldapresult
+         } //if countable
       } // count($group_fields)
    }
 
