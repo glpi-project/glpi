@@ -407,7 +407,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             'contents'     => $contents
          ]
       );
-   })->setName('asset');
+   })->setName('list');
 
    $app->get('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
@@ -541,7 +541,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          /*if ($_SESSION['glpibackcreated']) {
             Html::redirect($computer->getLinkURL());
          }*/
-         $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
+         $redirect_uri = $this->router->pathFor('list', ['itemtype' => $args['itemtype']]);
          if ($_SESSION['glpibackcreated']) {
             $redirect_uri = $this->router->pathFor(
                'update-asset', [
@@ -572,7 +572,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                //TRANS: %s is the user login
             sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
          */
-         $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
+         $redirect_uri = $this->router->pathFor('list', ['itemtype' => $args['itemtype']]);
          if ($_SESSION['glpibackcreated']) {
             $redirect_uri = $this->router->pathFor(
                'update-asset', [

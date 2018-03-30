@@ -172,7 +172,7 @@
                   {# Search Item #}
                   {% if menu_links.search is defined %}
                      {% set menu_btn = {
-                        'url': path_for('asset', {'itemtype': menu_itemtype}),
+                        'url': path_for('list', {'itemtype': menu_itemtype}),
                         'text': __('Search'),
                      } %}
                   {% else %}
@@ -530,7 +530,7 @@
             'title':    '{{ __('Saved searches') }}',
             'url':      '{{ CFG_GLPI.root_doc }}/ajax/savedsearch.php?action=show',
             'icon':     '/pics/menu_config.png',
-            'icon_url': '{{path_for('asset', {'itemtype': 'SavedSearch'}) }}',
+            'icon_url': '{{path_for('list', {'itemtype': 'SavedSearch'}) }}',
             'icon_txt': '{{ __('Manage saved searches') }}'
          });
 
@@ -901,7 +901,7 @@
     {#% if entry.page is defined %}{% set url =  entry.page %}{% endif %#}
     {% if entry.content is defined %}
         {% set first = entry.content|first %}
-        {% if first.itemtype is defined %}{% set url = path_for('asset', {'itemtype': first.itemtype|lower}) %}{% endif %}
+        {% if first.itemtype is defined %}{% set url = path_for('list', {'itemtype': first.itemtype|lower}) %}{% endif %}
     {% endif %}
 
     <li {% if entry.content is defined and entry.content|length %} class="treeview"{% endif %}>
@@ -915,7 +915,7 @@
         <ul class="treeview-menu">
         {% for child in entry.content %}
             <li>
-                <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% else %}{{ child.page }}{% endif %}">{{ child.title|default(__('Missing menu label')) }}</a>
+                <a href="{% if child.itemtype is defined %}{{ path_for('list', {'itemtype': child.itemtype|lower}) }}{% else %}{{ child.page }}{% endif %}">{{ child.title|default(__('Missing menu label')) }}</a>
             </li>
         {% endfor %}
         </ul>
