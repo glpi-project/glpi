@@ -666,7 +666,8 @@
    {% endif %}
 
       <li id='preferences_link'>
-         <a href='{#{ path_for('/user/preferences') }#}' title="{{ __s('My settings') }}" class='fa fa-cog'>
+         <a href='{#{ path_for('/user/preferences') }#}' title="{{ __s('My settings') }}">
+            <i class="fa fa-cog"></i>
             <span class='sr-only'>{{ __('My settings') }}</span>
 
             {# check user id : header used for display messages when session logout #}
