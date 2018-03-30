@@ -287,6 +287,7 @@ $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate',
                                                   'Line', 'DCRoom', 'Rack', 'Enclosure'];
+$CFG_GLPI['itil_types']                   = $CFG_GLPI['ticket_types'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',

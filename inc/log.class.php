@@ -79,6 +79,11 @@ class Log extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
+
+      if ($IS_TWIG === true) {
+         return self::getTypeName(1);
+      }
 
       if (!$withtemplate) {
          $nb = 0;

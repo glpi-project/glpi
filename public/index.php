@@ -473,7 +473,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       $params = [];
 
-      if (!$item->isTwigCompat()) {
+      if (!$item->isTwigCompat() && !isset($get['twig'])) {
          Toolbox::deprecated(
             sprintf(
                '%1$s is not compatible with new templating system!',

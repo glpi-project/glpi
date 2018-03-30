@@ -28,17 +28,48 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-{% extends "glpi_page.twig" %}
+{% set parent_tpl = 'glpi_page' %}
+{% if contents is defined %}
+   {% set parent_tpl = 'legacy' %}
+{% endif %}
+{% extends parent_tpl ~ ".twig" %}
 
 {% block title %}{{ __('Edit %1$s')|format(page_title) }}{% endblock %}
 {% block content %}
+<div class="content">
    {% if contents is defined %}
       {{ contents|raw }}
    {% else %}
-   <div class="pure-g">
-      <div class="pure-u-1 pure-u-lg-3-4 add">
-         {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
+   <div class="row">
+      <div class="col-md-3">
+         <div class="box box-solid">
+            <div class="box-body no-padding">
+               <ul class="nav nav-pills nav-stacked">
+   {% for tab, entry in item.getTabs() %}
+      {% if entry is not iterable %}
+         {% set label = entry %}
+      {% else %}
+         {% set label = entry.label %}
+      {% endif %}
+                  <li{% if 'main' in tab %} class="active"{% endif %}>
+                     <a href="{{ path_for('update-asset', {'itemtype': item.getType(), 'id': item.fields.id}) }}#{{ tab }}">
+                        {{ label }}
+      {% if entry.count is defined %}
+                        <span class="pull-right-container">
+                           <span class="label label-{% if entry.count == 0 %}default{% else %}primary{% endif %} pull-right">{{ entry.count }}</span>
+                        </span>
+      {% endif %}
+                     </a>
+                  </li>
+   {% endfor %}
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-9">
+      {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
       </div>
    </div>
    {% endif %}
+</div>
 {% endblock %}

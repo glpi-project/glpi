@@ -125,6 +125,165 @@ class CommonGLPI {
       return [];
    }
 
+   /**
+    * Get item tabs
+    *
+    * @return array
+    */
+   public function getTabs() {
+      global $CFG_GLPI, $IS_TWIG;
+      $IS_TWIG = true;
+
+      $tabs = [];
+
+      //main tab
+      $tabs[$this->getType().'$main'] = $this->getTypeName(1);
+
+      $tabs = $tabs + $this->addMainTabs();
+
+      $guess_relations = [
+         'Item_Devices'       => 'itemdevices_types',
+         'NetworkPort'        => 'networkport_types',
+         'Infocom'            => 'infocom_types',
+         'Contract_Item'      => 'contract_types',
+         'Document_Item'      => 'document_types',
+         'KnowbaseItem_Item'  => 'kb_types',
+         'Ticket'             => 'itil_types',
+         'Item_Problem'       => 'itil_types',
+         'Change_Item'        => 'itil_types',
+         'Link'               => 'link_types',
+         'Certificate_Item'   => 'certificate_types',
+         'Lock'               => 'lock_lockable_objects',
+         'Reservation'        => 'reservation_types'
+      ];
+
+      foreach ($guess_relations as $class => $conf) {
+         if (in_array($this->getType(), $CFG_GLPI[$conf])) {
+            $tabs += $this->addTab($class);
+         }
+      }
+
+      $tabs = $tabs + $this->addExtraTabs();
+
+      $tabs += $this->addTab('Notepad');
+      $tabs += $this->addTab('Log');
+
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+          && method_exists(get_class($this), 'showDebug')) {
+          $tabs['debug'] = __('Debug');
+      }
+      $tabs['all'] = __('All');
+
+      return $tabs;
+   }
+
+   /**
+    * Add main tabs for current item
+    * @see addTabs
+    *
+    * @return array
+    */
+   protected function addMainTabs() {
+      return $this->addTabs($this->getMainTabs());
+   }
+
+   /**
+    * Add extra tabs for current item
+    * @see addTabs
+    *
+    * @return array
+    */
+   protected function addExtraTabs() {
+      return $this->addTabs($this->getExtraTabs());
+   }
+
+   /**
+    * Add tabs
+    *
+    * @param array $tabs Tabs configuration to add
+    *
+    * @return array
+    */
+   protected function addTabs($tabs) {
+      $added = [];
+      foreach ($tabs as $tab) {
+         $added += $this->addTab($tab);
+      }
+      return $added;
+   }
+
+   /**
+    * Get main tabs configuration
+    *
+    * @return array
+    */
+   protected function getMainTabs() {
+      return [];
+   }
+
+   /**
+    * Get extra tabs configuration
+    *
+    * @return array
+    */
+   protected function getExtraTabs() {
+      return [];
+   }
+
+   /**
+    * Add a tab
+    *
+    * @param string $itemtype Item type
+    *
+    * @return array
+    */
+   protected function addTab($itemtype) {
+      $tab = [];
+
+      if (!is_integer($itemtype)
+            && ($item = getItemForItemtype($itemtype))) {
+         $titles = $item->getTabNameForItem($this);
+         if (!is_array($titles)) {
+            $titles = [1 => $titles];
+         }
+
+         foreach ($titles as $key => $val) {
+            if (!empty($val)) {
+               $tabid = $itemtype . '$' . $key;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $count = $item->countForTab($this, $tabid);
+                  if ($count !== false) {
+                     $val = [
+                        'label'  => $val,
+                        'count'  => $count
+                     ];
+                  }
+               }
+               $tab[$tabid] = $val;
+            }
+         }
+      }
+
+      return $tab;
+   }
+
+   /**
+    * Count for one tab
+    *
+    * @param CommonDBTM $obj Object instance
+    * @param string     $tab Tab ID
+    *
+    * @return integer|false
+    */
+   protected function countForTab($item, $tab) {
+      $count = countElementsInTable(
+         $this->getTable(), [
+            'itemtype' => $item->getType(),
+            'items_id' => $item->getID()
+         ]
+      );
+      return $count;
+   }
 
    /**
     * Define tabs to display

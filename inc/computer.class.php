@@ -119,6 +119,22 @@ class Computer extends CommonDBTM {
       return $ong;
    }
 
+   protected function getMainTabs() {
+      return [
+         'Item_OperatingSystem',
+         'Item_Disk',
+         'Computer_SoftwareVersion',
+         'Computer_Item',
+         'NetworkPort'
+      ];
+   }
+
+   protected function getExtraTabs() {
+      return [
+         'ComputerVirtualMachine',
+         'ComputerAntivirus'
+      ];
+   }
 
    function post_restoreItem() {
 
