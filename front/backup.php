@@ -217,7 +217,7 @@ function get_def($DB, $table) {
  * @param $dumpFile  dump file
  * @param $duree     max delay before refresh
  *
- * @return bool
+ * @return boolean
  */
 function restoreMySqlDump($DB, $dumpFile, $duree) {
    global $DB, $TPSCOUR, $offset, $cpt;
@@ -338,7 +338,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
  * @param $duree     max delay before refresh
  * @param $rowlimit  rowlimit to backup in one time
  *
- * @return bool
+ * @return boolean
  */
 function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    global $TPSCOUR, $offsettable, $offsetrow, $cpt;

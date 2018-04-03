@@ -37,7 +37,7 @@
 /**
  * Update from 0.72.3 to 0.78
  *
- * @return bool for success (will die for most error)
+ * @return boolean for success (will die for most error)
 **/
 function update0723to078() {
    global $DB, $migration;

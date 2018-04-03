@@ -37,7 +37,7 @@
 /**
  * Update from 9.1 to 9.2
  *
- * @return bool for success (will die for most error)
+ * @return boolean for success (will die for most error)
 **/
 function update91to92() {
    global $DB, $migration, $CFG_GLPI;

@@ -357,7 +357,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     */
    function getHistoryChangeWhenUpdateField($field) {
 
-      return ['0', addslashes($this->oldvalues[$field]), addslashesstring ($this->fields[$field])];
+      return ['0', addslashes($this->oldvalues[$field]), addslashes($this->fields[$field])];
    }
 
 
