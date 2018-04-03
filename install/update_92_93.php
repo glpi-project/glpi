@@ -775,7 +775,7 @@ function update92to93() {
 
     //add a column for the model
     if (!$DB->fieldExists("glpi_devicepcis", "devicenetworkcardmodels_id", false)) {
-        $migration->addField("glpi_devicepcis", "devicenetworkcardmodels_id", "int(11) NOT NULL DEFAULT '0'");
+        $migration->addField("glpi_devicepcis", "devicenetworkcardmodels_id", "int(11) NOT NULL DEFAULT '0'", ['after' => 'manufacturers_id']);
         $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');
     }
 
