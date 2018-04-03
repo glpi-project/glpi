@@ -773,8 +773,14 @@ function update92to93() {
                           SET `glpi_users`.`authtype` = 1
                           WHERE `glpi_users`.`authtype` = 0");
 
-   // ************ Keep it at the end **************
-   $migration->executeMigration();
+    //add a column for the model
+    if (!$DB->fieldExists("glpi_devicepcis", "devicenetworkcardmodels_id", false)) {
+        $migration->addField("glpi_devicepcis", "devicenetworkcardmodels_id", "int(11) NOT NULL DEFAULT '0'");
+        $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');
+    }
+
+    // ************ Keep it at the end **************
+    $migration->executeMigration();
 
    return $updateresult;
 }
