@@ -481,6 +481,9 @@ class Computer extends CommonDBTM {
 
          // Add connected devices
          Computer_Item::cloneComputer($this->input["_oldID"], $this->fields['id']);
+
+         //Add notepad
+         Notepad::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
       }
    }
 
