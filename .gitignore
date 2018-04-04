@@ -23,3 +23,6 @@ phpunit.xml
 .composer.hash
 /css/**/*.min.css
 /js/*.min.js
+# ignore incomplete locale, fallback to ru.js
+# see https://github.com/glpi-project/glpi/issues/3788
+/lib/tiny_mce/langs/ru_RU.js
