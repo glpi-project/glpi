@@ -5104,14 +5104,13 @@ class Search {
                         $out .= $separate;
                      }
                      $count_display++;
-                     $page  = $linkitemtype::getFormURL();
-                     $page .= (strpos($page, '?') ? '&id' : '?id');
+                     $page  = $linkitemtype::getFormURLWithID($data[$num][$k]['id']);
                      $name  = Dropdown::getValueWithUnit($data[$num][$k]['name'], $unit);
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$num][$k]['name'])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data[$num][$k]['id']);
                      }
                      $out  .= "<a id='".$linkitemtype."_".$data['id']."_".
-                                $data[$num][$k]['id']."' href='$page=".$data[$num][$k]['id']."'>".
+                                $data[$num][$k]['id']."' href='$page'>".
                                $name."</a>";
                   }
                }
