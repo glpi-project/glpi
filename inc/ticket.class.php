@@ -7391,8 +7391,9 @@ class Ticket extends CommonITILObject {
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_task     = $ttask->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
                          array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
-      $canadd_document = $canadd_fup || $this->canAddItem('Document');
-      $canadd_solution = Ticket::canUpdate() && $this->canSolve();
+      $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
+                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_solution = Ticket::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
 
       if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
          return false;
@@ -7402,7 +7403,9 @@ class Ticket extends CommonITILObject {
       echo "<div class='timeline_form'>";
       echo "<ul class='timeline_choices'>";
 
-      echo "<h2>"._sx('button', 'Add')." : </h2>";
+      if ($canadd_fup || $canadd_task || $canadd_document || $canadd_solution) {
+         echo "<h2>"._sx('button', 'Add')." : </h2>";
+      }
       if ($canadd_fup) {
          echo "<li class='followup' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketFollowup\");'>"
