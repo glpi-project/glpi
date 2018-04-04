@@ -773,6 +773,9 @@ function update92to93() {
                           SET `glpi_users`.`authtype` = 1
                           WHERE `glpi_users`.`authtype` = 0");
 
+   //Permit same license several times on same computer
+   $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
