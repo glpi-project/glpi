@@ -359,7 +359,10 @@ function update92to93() {
       $DB->queryOrDie($query, "9.3 add table glpi_items_racks");
    }
 
-   $migration->addRight('datacenter');
+   $migration->addRight(
+      'datacenter',
+      CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK
+   );
 
    //devices models enhancement for datacenters
    $models = [

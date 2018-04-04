@@ -981,11 +981,12 @@ class Migration {
     * Add new right
     * Give full rights to profiles having config right
     *
-    * @param string $name Right name
+    * @param string  $name   Right name
+    * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
     *
     * @return void
     */
-   public function addRight($name) {
+   public function addRight($name, $rights = ALLSTANDARDRIGHT) {
       global $DB;
 
       $count = countElementsInTable(
@@ -997,7 +998,7 @@ class Migration {
          //give full rights to profiles having config right
          foreach ($DB->request("glpi_profilerights", ['name' => 'config']) as $profrights) {
             if ($profrights['rights'] && (READ + UPDATE)) {
-               $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
+               $rightValue = $rights;
             } else {
                $rightValue = 0;
             }
