@@ -29,18 +29,17 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
 /**
  * Update from 9.2 to 9.3
  *
  * @return bool for success (will die for most error)
-**/
+ * */
 function update92to93() {
    global $DB, $migration, $CFG_GLPI;
    $dbutils = new DbUtils();
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
+   $current_config = Config::getConfigurationValues('core');
+   $updateresult = true;
    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
@@ -82,10 +81,7 @@ function update92to93() {
 
    //add unicity key required for migration only
    $migration->addKey(
-      'glpi_itilsolutions',
-      ['itemtype', 'items_id', 'date_creation'],
-      'migration_unicity',
-      'UNIQUE'
+           'glpi_itilsolutions', ['itemtype', 'items_id', 'date_creation'], 'migration_unicity', 'UNIQUE'
    );
    $migration->migrationOneTable('glpi_itilsolutions');
 
@@ -364,52 +360,52 @@ function update92to93() {
       //give full rights to profiles having config right
       foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
          if ($profrights['rights'] && (READ + UPDATE)) {
-            $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
+            $rightValue = CREATE | READ | UPDATE | DELETE | PURGE | READNOTE | UPDATENOTE | UNLOCK;
          } else {
             $rightValue = 0;
          }
          $query = "INSERT INTO `glpi_profilerights`
                           (`id`, `profiles_id`, `name`, `rights`)
-                   VALUES (NULL, '".$profrights['profiles_id']."', 'datacenter',
-                           '".$rightValue."')";
+                   VALUES (NULL, '" . $profrights['profiles_id'] . "', 'datacenter',
+                           '" . $rightValue . "')";
          $DB->queryOrDie($query, "9.1 add right for datacenter");
       }
    }
 
    //devices models enhancement for datacenters
    $models = [
-      'computer',
-      'monitor',
-      'networkequipment',
-      'peripheral'
+       'computer',
+       'monitor',
+       'networkequipment',
+       'peripheral'
    ];
 
    $models_fields = [
-      [
-         'name'   => 'weight',
-         'type'   => "int(11) NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'required_units',
-         'type'   => "int(11) NOT NULL DEFAULT '1'"
-      ], [
-         'name'   => 'depth',
-         'type'   => "float NOT NULL DEFAULT 1"
-      ], [
-         'name'   => 'power_connections',
-         'type'   => "int(11) NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'power_consumption',
-         'type'   => "int(11) NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'is_half_rack',
-         'type'   => "tinyint(1) NOT NULL DEFAULT '0'"
-      ], [
-         'name'   => 'picture_front',
-         'type'   => "text"
-      ], [
-         'name'   => 'picture_rear',
-         'type'   => "text"
-      ]
+       [
+           'name' => 'weight',
+           'type' => "int(11) NOT NULL DEFAULT '0'"
+       ], [
+           'name' => 'required_units',
+           'type' => "int(11) NOT NULL DEFAULT '1'"
+       ], [
+           'name' => 'depth',
+           'type' => "float NOT NULL DEFAULT 1"
+       ], [
+           'name' => 'power_connections',
+           'type' => "int(11) NOT NULL DEFAULT '0'"
+       ], [
+           'name' => 'power_consumption',
+           'type' => "int(11) NOT NULL DEFAULT '0'"
+       ], [
+           'name' => 'is_half_rack',
+           'type' => "tinyint(1) NOT NULL DEFAULT '0'"
+       ], [
+           'name' => 'picture_front',
+           'type' => "text"
+       ], [
+           'name' => 'picture_rear',
+           'type' => "text"
+       ]
    ];
 
    foreach ($models as $model) {
@@ -418,10 +414,7 @@ function update92to93() {
       foreach ($models_fields as $field) {
          if (!$DB->fieldExists($table, $field['name'])) {
             $migration->addField(
-               $table,
-               $field['name'],
-               $field['type'],
-               ['after' => $after]
+                    $table, $field['name'], $field['type'], ['after' => $after]
             );
          }
          $after = $field['name'];
@@ -529,11 +522,7 @@ function update92to93() {
       $DB->queryOrDie($query, "9.3 ad table glpi_pdumodels");
    }
    if ($DB->fieldExists('glpi_pdumodels', 'power_consumption')) {
-      $migration->changeField('glpi_pdumodels',
-                              'power_consumption',
-                              'max_power',
-                              'integer',
-                              ['default' => 0]);
+      $migration->changeField('glpi_pdumodels', 'power_consumption', 'max_power', 'integer', ['default' => 0]);
    }
 
    if (!$DB->tableExists('glpi_pdutypes')) {
@@ -626,7 +615,7 @@ function update92to93() {
       $plugs = ['C13', 'C15', 'C19'];
       foreach ($plugs as $plug) {
          $migration->addPostQuery(
-            $DB->buildInsert('glpi_plugs', ['name' => $plug])
+                 $DB->buildInsert('glpi_plugs', ['name' => $plug])
          );
       }
    }
@@ -649,72 +638,52 @@ function update92to93() {
    }
 
    $migration->addField('glpi_states', 'is_visible_rack', 'bool', ['value' => 1,
-                                                                   'after' => 'is_visible_certificate']);
+       'after' => 'is_visible_certificate']);
    $migration->addKey('glpi_states', 'is_visible_rack');
 
    $ADDTODISPLAYPREF['datacenter'] = [3];
-   $ADDTODISPLAYPREF['Rack']       = [31, 23, 5, 7];
-   $ADDTODISPLAYPREF['DCRoom']     = [4, 5, 6];
-   $ADDTODISPLAYPREF['PDU']        = [31, 23, 5];
-   $ADDTODISPLAYPREF['Enclosure']  = [31, 23, 5];
+   $ADDTODISPLAYPREF['Rack'] = [31, 23, 5, 7];
+   $ADDTODISPLAYPREF['DCRoom'] = [4, 5, 6];
+   $ADDTODISPLAYPREF['PDU'] = [31, 23, 5];
+   $ADDTODISPLAYPREF['Enclosure'] = [31, 23, 5];
 
    /** /Datacenters */
-
    /** Add address to locations */
    if (!$DB->fieldExists('glpi_locations', 'address')) {
       $migration->addField(
-         'glpi_locations',
-         'address',
-         'text',
-         ['after' => 'sons_cache']
+              'glpi_locations', 'address', 'text', ['after' => 'sons_cache']
       );
    }
 
    if (!$DB->fieldExists('glpi_locations', 'postcode')) {
       $migration->addField(
-         'glpi_locations',
-         'postcode',
-         'string',
-         ['after' => 'address']
+              'glpi_locations', 'postcode', 'string', ['after' => 'address']
       );
    }
 
    if (!$DB->fieldExists('glpi_locations', 'town')) {
       $migration->addField(
-         'glpi_locations',
-         'town',
-         'string',
-         ['after' => 'postcode']
+              'glpi_locations', 'town', 'string', ['after' => 'postcode']
       );
    }
 
    if (!$DB->fieldExists('glpi_locations', 'state')) {
       $migration->addField(
-         'glpi_locations',
-         'state',
-         'string',
-         ['after' => 'town']
+              'glpi_locations', 'state', 'string', ['after' => 'town']
       );
    }
 
    if (!$DB->fieldExists('glpi_locations', 'country')) {
       $migration->addField(
-         'glpi_locations',
-         'country',
-         'string',
-         ['after' => 'state']
+              'glpi_locations', 'country', 'string', ['after' => 'state']
       );
    }
    /** /Add address to locations */
-
    /** Innodb */
    foreach (['glpi_knowbaseitemtranslations', 'glpi_knowbaseitems'] as $table) {
       foreach (['name', 'answer'] as $key) {
          $migration->addKey(
-            $table,
-            $key,
-            $key,
-            'FULLTEXT'
+                 $table, $key, $key, 'FULLTEXT'
          );
       }
    }
@@ -727,10 +696,7 @@ function update92to93() {
       $migration->dropField('glpi_items_disks', 'items_id');
       $migration->dropKey('glpi_items_disks', 'computers_id');
       $migration->changeField(
-         'glpi_items_disks',
-         'computers_id',
-         'items_id',
-         'integer'
+              'glpi_items_disks', 'computers_id', 'items_id', 'integer'
       );
       $migration->addKey('glpi_items_disks', 'items_id');
    }
@@ -740,20 +706,17 @@ function update92to93() {
    $migration->addKey('glpi_items_disks', 'itemtype');
    $migration->addKey('glpi_items_disks', ['itemtype', 'items_id'], 'item');
    $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_items_disks',
-         ['itemtype' => 'Computer'],
-         ['itemtype' => null]
-      )
+           $DB->buildUpdate(
+                   'glpi_items_disks', ['itemtype' => 'Computer'], ['itemtype' => null]
+           )
    );
    /** /Migrate computerdisks to items_disks */
-
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {
          $query = "REPLACE INTO `glpi_displaypreferences`
                            (`itemtype` ,`num` ,`rank` ,`users_id`)
-                     VALUES ('$type', '$newval', '".$rank++."', '0')";
+                     VALUES ('$type', '$newval', '" . $rank++ . "', '0')";
          $DB->query($query);
       }
    }
@@ -762,10 +725,7 @@ function update92to93() {
    if (!isIndex('glpi_users', 'unicityloginauth')) {
       $migration->dropKey("glpi_users", "unicity");
       $migration->addKey(
-         'glpi_users',
-         ['name', 'authtype', 'auths_id'],
-         'unicityloginauth',
-         'UNIQUE'
+              'glpi_users', ['name', 'authtype', 'auths_id'], 'unicityloginauth', 'UNIQUE'
       );
    }
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
@@ -773,14 +733,14 @@ function update92to93() {
                           SET `glpi_users`.`authtype` = 1
                           WHERE `glpi_users`.`authtype` = 0");
 
-    //add a column for the model
-    if (!$DB->fieldExists("glpi_devicepcis", "devicenetworkcardmodels_id", false)) {
-        $migration->addField("glpi_devicepcis", "devicenetworkcardmodels_id", "int(11) NOT NULL DEFAULT '0'", ['after' => 'manufacturers_id']);
-        $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');
-    }
+   //add a column for the model
+   if (!$DB->fieldExists("glpi_devicepcis", "devicenetworkcardmodels_id", false)) {
+      $migration->addField("glpi_devicepcis", "devicenetworkcardmodels_id", "int(11) NOT NULL DEFAULT '0'", ['after' => 'manufacturers_id']);
+      $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');
+   }
 
-    // ************ Keep it at the end **************
-    $migration->executeMigration();
+   // ************ Keep it at the end **************
+   $migration->executeMigration();
 
    return $updateresult;
 }
