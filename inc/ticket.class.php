@@ -7240,7 +7240,7 @@ class Ticket extends CommonITILObject {
          if ($CFG_GLPI["use_rich_text"]) {
             echo Html::setRichTextContent('', $this->fields['content'], '', true);
          } else {
-            echo Html::setSimpleTextContent($this->fields['content']);
+            echo Toolbox::getHtmlToDisplay(Html::setSimpleTextContent($this->fields['content']));
          }
 
          echo "</div>";
