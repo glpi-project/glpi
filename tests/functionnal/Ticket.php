@@ -1727,4 +1727,62 @@ class Ticket extends DbTestCase {
       $this->integer((int)$ticket->fields['itilcategories_id'])
            ->isEqualto($second_cat_id);
    }
+
+   protected function computePriorityProvider() {
+      return [
+         [
+            'input'  => [
+               'urgency'   => 2,
+               'impact'    => 2
+            ],
+            '2',
+            '2',
+            '2'
+         ], [
+            'input'  => [
+               'urgency'   => 5
+            ],
+            '5',
+            '3',
+            '4'
+         ], [
+            'input'  => [
+               'impact'   => 5
+            ],
+            '3',
+            '5',
+            '4'
+         ], [
+            'input'  => [
+               'urgency'   => 5,
+               'impact'    => 5
+            ],
+            '5',
+            '5',
+            '5'
+         ], [
+            'input'  => [
+               'urgency'   => 5,
+               'impact'    => 1
+            ],
+            '5',
+            '1',
+            '2'
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider computePriorityProvider
+    */
+   public function testComputePriority($input, $urgency, $impact, $priority) {
+      $this->login();
+      $ticket = getItemByTypeName('Ticket', '_ticket01');
+      $input['id'] = $ticket->fields['id'];
+      $result = $ticket->prepareInputForUpdate($input);
+      $this->array($result)
+         ->string['urgency']->isIdenticalTo($urgency)
+         ->string['impact']->isIdenticalTo($impact)
+         ->string['priority']->isIdenticalTo($priority);
+   }
 }
