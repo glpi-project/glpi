@@ -5096,6 +5096,15 @@ class Search {
                      }
                      $count_display++;
                      $page  = $linkitemtype::getFormURLWithID($data[$num][$k]['id']);
+                     global $router;
+                     if ($router != null) {
+                        $page = $router->pathFor(
+                           'update-asset', [
+                              'itemtype'  => $linkitemtype::getType(),
+                              'id'        => $data[$num][$k]['id']
+                           ]
+                        );
+                     }
                      $name  = Dropdown::getValueWithUnit($data[$num][$k]['name'], $unit);
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$num][$k]['name'])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data[$num][$k]['id']);
@@ -6334,7 +6343,7 @@ class Search {
             if ($fixed) {
                $out = "<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
             } else {
-               $out = "<div class='center'><table border='0' class='tab_cadrehov'>\n";
+               $out = "<div class='center'><table class='tab_cadrehov table table-hover'>\n";
             }
       }
       return $out;

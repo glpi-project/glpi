@@ -563,7 +563,7 @@ class CommonGLPI {
     *  @return string tab name
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      return '';
+      return self::getTypeName(Session::getPluralNumber());
    }
 
 

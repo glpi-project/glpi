@@ -71,6 +71,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Get container
    $container = $app->getContainer();
+   $router = $container['router'];
 
    // Register component on container
    $container['view'] = function ($container) {
