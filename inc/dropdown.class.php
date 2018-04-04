@@ -254,11 +254,11 @@ class Dropdown {
                                                   $paramscomment, false);
       }
       $output .= Ajax::commonDropdownUpdateItem($params, false);
+      $output .= "</span>";
       if ($params['display']) {
          echo $output;
          return $params['rand'];
       }
-      $output .= "</span>";
       return $output;
    }
 
