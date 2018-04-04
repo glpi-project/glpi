@@ -38,7 +38,7 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 Report::title();
 
-$items = $CFG_GLPI["contract_types"];
+$items = $CFG_GLPI["report_types"];
 
 // Titre
 echo "<div class='center b spaced'><big>".__('Device list')."</big></div>";

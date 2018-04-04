@@ -63,7 +63,11 @@ function update92to921() {
    }
 
    if (!$DB->fieldExists('glpi_tickets', 'time_to_own')) {
-      $migration->addField("glpi_tickets", "time_to_own", "datetime", ['after' => 'due_date']);
+      $after = 'due_date';
+      if (!$DB->fieldExists('glpi_tickets', 'due_date')) {
+         $after = 'time_to_resolve';
+      }
+      $migration->addField("glpi_tickets", "time_to_own", "datetime", ['after' => $after]);
       $migration->addKey('glpi_tickets', 'time_to_own');
    }
 

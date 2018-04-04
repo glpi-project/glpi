@@ -372,6 +372,11 @@ function update92to93() {
       }
    }
 
+   $migration->addRight(
+      'datacenter',
+      CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK
+   );
+
    //devices models enhancement for datacenters
    $models = [
        'computer',
@@ -738,6 +743,9 @@ function update92to93() {
       $migration->addField("glpi_devicepcis", "devicenetworkcardmodels_id", "int(11) NOT NULL DEFAULT '0'", ['after' => 'manufacturers_id']);
       $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');
    }
+
+   //Permit same license several times on same computer
+   $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
