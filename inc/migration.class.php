@@ -976,4 +976,53 @@ class Migration {
       $this->context = $context;
       return $this;
    }
+
+   /**
+    * Add new right
+    * Give full rights to profiles having config right
+    *
+    * @param string $name Right name
+    *
+    * @return void
+    */
+   public function addRight($name) {
+      global $DB;
+
+      $count = countElementsInTable(
+         'glpi_profilerights',
+         ['name' => $name]
+      );
+      if ($count == 0) {
+         //new right for certificate
+         //give full rights to profiles having config right
+         foreach ($DB->request("glpi_profilerights", ['name' => 'config']) as $profrights) {
+            if ($profrights['rights'] && (READ + UPDATE)) {
+               $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
+            } else {
+               $rightValue = 0;
+            }
+            $DB->insertOrDie(
+               'glpi_profilerights', [
+                  'id'           => null,
+                  'profiles_id'  => $profrights['profiles_id'],
+                  'name'         => $name,
+                  'rights'       => $rightValue
+               ],
+               sprintf(
+                  '%1$s add right for %2$s',
+                  $this->version,
+                  $name
+               )
+            );
+         }
+
+         $this->displayWarning(
+            sprintf(
+               'New rights has been added for %1$s, you should review ACLs after update',
+               $name
+            ),
+            true
+         );
+      }
+   }
 }

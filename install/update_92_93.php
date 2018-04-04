@@ -359,22 +359,7 @@ function update92to93() {
       $DB->queryOrDie($query, "9.3 add table glpi_items_racks");
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'datacenter'") == 0) {
-      //new right for datacenters
-      //give full rights to profiles having config right
-      foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
-         if ($profrights['rights'] && (READ + UPDATE)) {
-            $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
-         } else {
-            $rightValue = 0;
-         }
-         $query = "INSERT INTO `glpi_profilerights`
-                          (`id`, `profiles_id`, `name`, `rights`)
-                   VALUES (NULL, '".$profrights['profiles_id']."', 'datacenter',
-                           '".$rightValue."')";
-         $DB->queryOrDie($query, "9.1 add right for datacenter");
-      }
-   }
+   $migration->addRight('datacenter');
 
    //devices models enhancement for datacenters
    $models = [
