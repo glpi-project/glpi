@@ -270,7 +270,7 @@ class Item_Ticket extends CommonDBRelation{
          }
          // Global search
          Item_Ticket::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
-         echo "<span id='item_ticket_selection_information'></span>";
+         echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</div>";
 
          // Add button
@@ -438,8 +438,8 @@ class Item_Ticket extends CommonDBRelation{
             }
          }
 
-         self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used]);
-         echo "<span id='item_ticket_selection_information'></span>";
+         self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], ['tickets_id' => $instID, 'used' => $used, 'rand' => $rand]);
+         echo "<span id='item_ticket_selection_information$rand'></span>";
          echo "</td><td class='center' width='30%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='tickets_id' value='$instID'>";
@@ -985,7 +985,7 @@ class Item_Ticket extends CommonDBRelation{
          // Auto update summary of active or just solved tickets
          $params = ['my_items' => '__VALUE__'];
 
-         Ajax::updateItemOnSelectEvent("dropdown_my_items$rand", "item_ticket_selection_information",
+         Ajax::updateItemOnSelectEvent("dropdown_my_items$rand", "item_ticket_selection_information$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                                        $params);
       }
