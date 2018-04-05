@@ -5232,7 +5232,7 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             echo "<div class='center'>";
             if ($this->fields["is_deleted"] == 1) {
-               if (self::canPurge()) {
+               if (self::canDelete()) {
                   echo "<input type='submit' class='submit' name='restore' value='".
                          _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                }
