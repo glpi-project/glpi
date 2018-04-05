@@ -72,6 +72,9 @@ class Auth extends CommonGLPI {
    const COOKIE   = 8;
    const NOT_YET_AUTHENTIFIED = 0;
 
+   const USER_DOESNT_EXIST       = 0;
+   const USER_EXISTS_WITH_PWD    = 1;
+   const USER_EXISTS_WITHOUT_PWD = 2;
 
    /**
     * Constructor
@@ -129,10 +132,7 @@ class Auth extends CommonGLPI {
     * @param array $options conditions : array('name'=>'glpi')
     *                                    or array('email' => 'test at test.com')
     *
-    * @return integer
-    *         0 (Not in the DB -> check external auth),
-    *         1 (Exist in the DB with a password -> check first local connection and external after),
-    *         2 (Exist in the DB with no password -> check only external auth)
+    * @return integer Auth::USER_DOESNT_EXIST, Auth::USER_EXISTS_WITHOUT_PWD or Auth::USER_EXISTS_WITH_PWD
     */
    function userExists($options = []) {
       global $DB;
@@ -144,7 +144,7 @@ class Auth extends CommonGLPI {
       // Check if there is a row
       if ($result->numrows() == 0) {
          $this->addToError(__('Incorrect username or password'));
-         return 0;
+         return self::USER_DOESNT_EXIST;
       } else {
          // Get the first result...
          $row = $result->next();
@@ -155,10 +155,10 @@ class Auth extends CommonGLPI {
             if ($row['user_dn']) {
                $this->user_dn = $row['user_dn'];
             }
-            return 2;
+            return self::USER_EXISTS_WITHOUT_PWD;
 
          }
-         return 1;
+         return self::USER_EXISTS_WITH_PWD;
       }
    }
 
@@ -627,6 +627,8 @@ class Auth extends CommonGLPI {
                      $ldapservers[] = $ldap_config;
                   }
                }
+
+               $ldapservers_status = false;
                foreach ($ldapservers as $ldap_method) {
                   $ds = AuthLdap::connectToServer($ldap_method["host"],
                                                   $ldap_method["port"],
@@ -637,6 +639,7 @@ class Auth extends CommonGLPI {
                                                   $ldap_method["deref_option"]);
 
                   if ($ds) {
+                     $ldapservers_status = true;
                      $params['method']                             = AuthLdap::IDENTIFIER_LOGIN;
                      $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
                      $user_dn
@@ -663,13 +666,21 @@ class Auth extends CommonGLPI {
                // Case of using external auth and no LDAP servers, so get data from external auth
                $this->user->getFromSSO();
             } else {
-               //If user is set as present in GLPI but no LDAP DN found : it means that the user
-               //is not present in an ldap directory anymore
-               if ($this->user->fields['authtype'] == self::LDAP
-                   && !$user_dn
-                   && $this->user_present) {
-                  $user_deleted_ldap       = true;
-                  $this->user_deleted_ldap = true;
+               if ($this->user->fields['authtype'] == self::LDAP) {
+                  if (!$ldapservers_status) {
+                     $this->auth_succeded = false;
+                     $this->addToError(_n('Connection to LDAP directory failed',
+                                          'Connection to LDAP directories failed',
+                                          count($ldapservers)));
+                  } else if (!$user_dn && $this->user_present) {
+                     //If user is set as present in GLPI but no LDAP DN found : it means that the user
+                     //is not present in an ldap directory anymore
+                     $user_deleted_ldap       = true;
+                     $this->user_deleted_ldap = true;
+                     $this->addToError(_n('User not found in LDAP directory',
+                                          'User not found in LDAP directories',
+                                           count($ldapservers)));
+                  }
                }
             }
             // Reset to secure it
@@ -684,7 +695,10 @@ class Auth extends CommonGLPI {
       if (!$this->auth_succeded) {
          if (empty($login_name) || strstr($login_name, "\0")
              || empty($login_password) || strstr($login_password, "\0")) {
-            $this->addToError(__('Empty login or password'));
+            // only if we don't have previous errors
+            if (strlen($this->err) == 0) {
+               $this->addToError(__('Empty login or password'));
+            }
          } else {
 
             // Try connect local user if not yet authenticated
