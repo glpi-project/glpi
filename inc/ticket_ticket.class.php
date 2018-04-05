@@ -78,11 +78,6 @@ class Ticket_Ticket extends CommonDBRelation {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -162,7 +157,6 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @param $ID ID of the ticket id
     *
-    * @return nothing display
    **/
    static function displayLinkedTicketsTo ($ID) {
       global $DB, $CFG_GLPI;
@@ -373,7 +367,6 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @param $ID ID of the ticket id
     *
-    * @return nothing do the change
    **/
    static function manageLinkedTicketsOnSolved($ID) {
 

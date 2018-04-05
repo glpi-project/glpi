@@ -63,9 +63,6 @@ class ProjectTeam extends CommonDBRelation {
    static public $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
-   /**
-    * @see CommonDBTM::getNameField()
-   **/
    static function getNameField() {
       return 'id';
    }
@@ -86,7 +83,10 @@ class ProjectTeam extends CommonDBRelation {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canView()) {
@@ -151,7 +151,9 @@ class ProjectTeam extends CommonDBRelation {
     * Get team for a project
     *
     * @param $projects_id
-   **/
+    *
+    * @return array
+    */
    static function getTeamFor($projects_id) {
       global $DB;
 

@@ -123,10 +123,12 @@ class Contract_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return boolean|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -184,7 +186,9 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @param $item    CommonDBTM object
-   **/
+    *
+    * @return integer
+    */
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_contracts_items',
@@ -195,7 +199,9 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @param $item   Contract object
-   **/
+    *
+    * @return integer
+    */
    static function countForContract(Contract $item) {
       global $DB;
 
@@ -289,7 +295,10 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -317,9 +326,11 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
+    * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-   **/
+    *
+    * @return boolean
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -341,11 +352,11 @@ class Contract_Item extends CommonDBRelation{
     *
     * @since version 0.84
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
+    * @param string  $itemtype type of the item to clone
+    * @param integer $oldid    ID of the item to clone
+    * @param integer $newid    ID of the item cloned
+    * @param itemtype|string $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
@@ -371,10 +382,8 @@ class Contract_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $item            CommonDBTM object wanted
-    * @param $withtemplate    not used (to be deleted) (default 0)
-    *
-    * @return Nothing (display)
-   **/
+    * @param integer|not $withtemplate not used (to be deleted) (default 0)
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -532,11 +541,10 @@ class Contract_Item extends CommonDBRelation{
     *
     * @since version 0.84
     *
-    * @param Contract $contract     Contract object
-    * @param boolean  $withtemplate (default 0)
-    *
+    * @param Contract $contract Contract object
+    * @param boolean|integer $withtemplate (default 0)
     * @return void (display)
-   **/
+    */
    static function showForContract(Contract $contract, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 

@@ -142,9 +142,11 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @param $withtypeandcategory   (default 0)
-    * @param $withitemtype         (default 0)
-   **/
+    * @param $withtypeandcategory (default 0)
+    * @param $withitemtype (default 0)
+    *
+    * @return mixed
+    */
    static function getAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
 
       static $allowed_fields = [];
@@ -256,9 +258,11 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @param $withtypeandcategory   (default 0)
-    * @param $with_items_id         (default 0)
-   **/
+    * @param $withtypeandcategory (default 0)
+    * @param $with_items_id (default 0)
+    *
+    * @return mixed
+    */
    function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0) {
 
       $searchOption = Search::getOptions('Ticket');
@@ -476,7 +480,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $field string field
     *
-    * @return bool
+    * @return boolean
    **/
    function isHiddenField($field) {
 
@@ -494,7 +498,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $field string field
     *
-    * @return bool
+    * @return boolean
    **/
    function isPredefinedField($field) {
 
@@ -512,7 +516,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $field string field
     *
-    * @return bool
+    * @return boolean
    **/
    function isMandatoryField($field) {
 
@@ -530,7 +534,6 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $tt TicketTemplate object
     *
-    * @return Nothing (call to classes members)
    **/
    static function showCentralPreview(TicketTemplate $tt) {
 
@@ -549,7 +552,6 @@ class TicketTemplate extends CommonDropdown {
     *
     * @param $tt TicketTemplate object
     *
-    * @return Nothing (call to classes members)
    **/
    static function showHelpdeskPreview(TicketTemplate $tt) {
 
@@ -565,9 +567,7 @@ class TicketTemplate extends CommonDropdown {
 
    /**
     * @since version 0.90
-    *
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
+    */
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -587,7 +587,9 @@ class TicketTemplate extends CommonDropdown {
     * @since version 0.90
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return boolean
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -603,9 +605,7 @@ class TicketTemplate extends CommonDropdown {
 
    /**
     * @since version 0.90
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -737,7 +737,9 @@ class TicketTemplate extends CommonDropdown {
     * @since version 0.90
     *
     * @param $data
-   **/
+    *
+    * @return array
+    */
    function formatFieldsToMerge($data) {
 
       $output = [];
@@ -794,8 +796,6 @@ class TicketTemplate extends CommonDropdown {
     * Forbidden massive action
     *
     * @since version 0.90
-    *
-    * @see CommonDBTM::getForbiddenStandardMassiveAction()
    **/
    function getForbiddenStandardMassiveAction() {
 

@@ -65,12 +65,6 @@ class Change extends CommonITILObject {
    const READALL                       = 1024;
 
 
-
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-   **/
    static function getTypeName($nb = 0) {
       return _n('Change', 'Changes', $nb);
    }
@@ -170,9 +164,6 @@ class Change extends CommonITILObject {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -484,7 +475,7 @@ class Change extends CommonITILObject {
     *
     * @param $withmetaforsearch boolean (default false)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -517,7 +508,7 @@ class Change extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
 
@@ -533,7 +524,7 @@ class Change extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
       // To be overridden by class
@@ -546,7 +537,7 @@ class Change extends CommonITILObject {
     *
     * @since version 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL];
@@ -558,7 +549,7 @@ class Change extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
 
@@ -909,11 +900,6 @@ class Change extends CommonITILObject {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -981,8 +967,8 @@ class Change extends CommonITILObject {
     *
     * @param $item CommonDBTM object
     *
-    * @return nothing (display a table)
-   **/
+    * @return boolean
+    */
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 

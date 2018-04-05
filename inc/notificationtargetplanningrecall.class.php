@@ -54,7 +54,8 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    /**
     * @see NotificationTarget::addNotificationTargets()
-   **/
+    * @param integer $entity
+    */
    function addNotificationTargets($entity) {
       $this->addTarget(Notification::AUTHOR, __('Requester'));
       $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
@@ -62,7 +63,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    /**
     * @see NotificationTarget::addSpecificTargets()
-   **/
+    * @param array $data
+    * @param array $options
+    */
    function addSpecificTargets($data, $options) {
       switch ($data['type']) {
          case Notification::USER_TYPE :
@@ -78,9 +81,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    /**
     * Get tech related to the task
-    *
-    * @param $options array
-   **/
+    */
    function addTaskAssignUser() {
       $item = new $this->obj->fields['itemtype'];
       if ($item->getFromDB($this->obj->fields['items_id'])) {

@@ -73,7 +73,9 @@ class RuleTicketCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::preProcessPreviewResults()
-   **/
+    * @param $output
+    * @return array
+    */
    function preProcessPreviewResults($output) {
 
       $output = parent::preProcessPreviewResults($output);
@@ -101,7 +103,10 @@ class RuleTicketCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::prepareInputDataForProcess()
-   **/
+    * @param the $input
+    * @param parameters $params
+    * @return the
+    */
    function prepareInputDataForProcess($input, $params) {
 
       // Pass x-priority header if exists

@@ -277,7 +277,9 @@ class ReservationItem extends CommonDBChild {
 
    /**
     * @param $item   CommonDBTM object
-   **/
+    *
+    * @return boolean
+    */
    static function showActivationFormForItem(CommonDBTM $item) {
 
       if (!self::canUpdate()) {
@@ -594,7 +596,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @param $name
     *
-    * @return an array
+    * @return array
    **/
    static function cronInfo($name) {
       return ['description' => __('Alerts on reservations')];
@@ -604,10 +606,9 @@ class ReservationItem extends CommonDBChild {
    /**
     * Cron action on reservation : alert on end of reservations
     *
-    * @param $task to log, if NULL use display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @param CronTask|null $task to log, if NULL use display (default NULL)
+    * @return integer 0 : nothing to do 1 : done with success
+    */
    static function cronReservation($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -722,7 +723,9 @@ class ReservationItem extends CommonDBChild {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-   **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       if ($interface == 'central') {
@@ -735,10 +738,8 @@ class ReservationItem extends CommonDBChild {
 
 
    /**
-    * @see CommonGLPI::defineTabs()
-    *
     * @since version 0.85
-   **/
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -752,7 +753,10 @@ class ReservationItem extends CommonDBChild {
     * @see CommonGLPI::getTabNameForItem()
     *
     * @since version 0.85
-   **/
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
@@ -770,9 +774,11 @@ class ReservationItem extends CommonDBChild {
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default1)
+    * @param $tabnum (default1)
     * @param $withtemplate (default0)
-    **/
+    *
+    * @return boolean
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {

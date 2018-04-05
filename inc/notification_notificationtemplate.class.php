@@ -84,11 +84,9 @@ class Notification_NotificationTemplate extends CommonDBChild {
    /**
     * Print the notification templates
     *
-    * @param Notification $notif        Notification object
-    * @param boolean      $withtemplate Template or basic item (default '')
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param Notification $notif Notification object
+    * @param boolean|integer $withtemplate Template or basic item (default '')
+    */
    static function showForNotification(Notification $notif, $withtemplate = 0) {
       global $DB;
 

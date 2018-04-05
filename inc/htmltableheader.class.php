@@ -65,7 +65,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     * @param $header_name [out]     string   header name
     * @param $subheader_name [out]  string   sub header name ( = '' in case of super header)
     *
-    * @return nothing
+    * @return void
    **/
    abstract function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
 
@@ -79,11 +79,10 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $name      string   the name of the header
-    * @param $content            see HTMLTableEntity#__construct()
-    * @param $father             HTMLTableHeader object:
-    *                            the father of the current column (default NULL)
-   **/
+    * @param string               $name    the name of the header
+    * @param mixed                $content see HTMLTableEntity#__construct()
+    * @param HTMLTableHeader|null $father  object of the current column (default NULL)
+    */
    function __construct($name, $content, HTMLTableHeader $father = null) {
 
       parent::__construct($content);
@@ -104,7 +103,8 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
    /**
     * @param $item      CommonDBTM object (default NULL)
-   **/
+    * @throws Exception
+    */
    function checkItemType(CommonDBTM $item = null) {
 
       if (($item === null) && (count($this->itemtypes) > 0)) {
@@ -148,9 +148,9 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    /**
-    * @param $with_content do we displaye the content ?
-    * @param $main_header  main header (from table) or secondary (from group) ? (true by default)
-   **/
+    * @param boolean $with_content do we displaye the content ?
+    * @param boolean $main_header main header (from table) or secondary (from group) ? (true by default)
+    */
    function displayTableHeader($with_content, $main_header = true) {
 
       if ($main_header) {

@@ -64,7 +64,9 @@ class IPNetwork_Vlan extends CommonDBRelation {
    /**
     * @param $portID
     * @param $vlanID
-   **/
+    *
+    * @return boolean
+    */
    function unassignVlan($portID, $vlanID) {
 
       $this->getFromDBByQuery("WHERE `ipnetworks_id` = '$portID'
@@ -77,7 +79,9 @@ class IPNetwork_Vlan extends CommonDBRelation {
    /**
     * @param $port
     * @param $vlan
-   **/
+    *
+    * @return integer
+    */
    function assignVlan($port, $vlan) {
 
       $input = ['ipnetworks_id' => $port,
@@ -89,7 +93,9 @@ class IPNetwork_Vlan extends CommonDBRelation {
 
    /**
     * @param $port   IPNetwork object
-   **/
+    *
+    * @return boolean
+    */
    static function showForIPNetwork(IPNetwork $port) {
       global $DB, $CFG_GLPI;
 
@@ -197,7 +203,9 @@ class IPNetwork_Vlan extends CommonDBRelation {
 
    /**
     * @param $portID
-   **/
+    *
+    * @return array
+    */
    static function getVlansForIPNetwork($portID) {
       global $DB;
 

@@ -43,10 +43,9 @@ class TicketTask  extends CommonITILTask {
    static $rightname = 'task';
 
 
-
    /**
     * @since version 0.84
-   **/
+    */
    static function getTypeName($nb = 0) {
       return _n('Ticket task', 'Ticket tasks', $nb);
    }
@@ -219,12 +218,10 @@ class TicketTask  extends CommonITILTask {
     *
     * @param $val       array    of the item to display
     * @param $who       integer  ID of the user (0 if all)
-    * @param $type               position of the item in the time block
+    * @param position|string $type position of the item in the time block
     *                            (in, through, begin or end) (default '')
-    * @param $complete           complete display (more details) (default 0)
-    *
-    * @return Nothing (display function)
-   **/
+    * @param complete|int $complete complete display (more details) (default 0)
+    */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
@@ -234,7 +231,9 @@ class TicketTask  extends CommonITILTask {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -260,7 +259,8 @@ class TicketTask  extends CommonITILTask {
     * @since version 0.90
     *
     * @see CommonDBTM::showFormButtons()
-   **/
+    * @param array $options
+    */
    function showFormButtons($options = []) {
       global $CFG_GLPI;
 

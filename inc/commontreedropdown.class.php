@@ -107,15 +107,19 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
     * @param $thisName           string item name (need to be addslashes : comes from input)
-   **/
+    *
+    * @return string
+    */
    static function getCompleteNameFromParents($parentCompleteName, $thisName) {
       return addslashes($parentCompleteName). " > ".$thisName;
    }
 
 
    /**
-    * @param $input
-   **/
+    * @param array $input
+    *
+    * @return array
+    */
    function adaptTreeFieldsFromUpdateOrAdd($input) {
 
       $parent = clone $this;
@@ -475,7 +479,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    * @return Nothing (display)
     **/
    function showChildren() {
       global $DB, $CFG_GLPI;
@@ -585,9 +588,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -602,11 +602,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -625,11 +620,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return parent::showMassiveActionsSubForm($ma);
    }
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -822,10 +812,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * check if a tree dropdown already exists (before import)
     *
-    * @param &$input array of value to import (name, ...)
-    *
-    * @return the ID of the new (or -1 if not found)
-   **/
+    * @param array $input of value to import (name, ...)
+    * @return integer|mixed ID of the new (or -1 if not found)
+    */
    function findID(array &$input) {
       global $DB;
 
@@ -878,7 +867,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @param $input array of value to import (name or completename, ...)
     *
-    * @return the ID of the new or existing dropdown (0 on failure)
+    * @return integer ID of the new or existing dropdown (0 on failure)
    **/
    function import(array $input) {
 

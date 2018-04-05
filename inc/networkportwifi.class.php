@@ -92,7 +92,15 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-   **/
+    *
+    * @param HTMLTableGroup            $group
+    * @param HTMLTableSuperHeader      $super
+    * @param HTMLTableSuperHeader|null $internet_super
+    * @param HTMLTableHeader|null      $father
+    * @param array                     $options
+    *
+    * @return null
+    */
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,
                                              HTMLTableHeader $father = null,
@@ -111,7 +119,14 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-   **/
+    *
+    * @param NetworkPort        $netport
+    * @param HTMLTableRow       $row
+    * @param HTMLTableCell|null $father
+    * @param array              $options
+    *
+    * @return null
+    */
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
 
@@ -181,7 +196,9 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -208,10 +225,12 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
    /**
     * @param $field
-    * @param $name            (default'')
-    * @param $values           (default '')
+    * @param $name (default'')
+    * @param $values (default '')
     * @param $options   array
-   **/
+    *
+    * @return integer|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {

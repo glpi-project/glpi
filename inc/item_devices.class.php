@@ -79,7 +79,7 @@ class Item_Devices extends CommonDBRelation {
 
    /**
     * @since version 0.85
-   **/
+    */
    static function getTypeName($nb = 0) {
 
       $device_type = static::getDeviceType();
@@ -91,9 +91,7 @@ class Item_Devices extends CommonDBRelation {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getForbiddenStandardMassiveAction()
-   **/
+    */
    function getForbiddenStandardMassiveAction() {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -1007,7 +1005,9 @@ class Item_Devices extends CommonDBRelation {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -1031,12 +1031,9 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-
    /**
     * @since version 0.85
-    *
-    * @see CommonGLPI::defineTabs()
-   **/
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -1052,7 +1049,10 @@ class Item_Devices extends CommonDBRelation {
 
    /**
     * @since version 0.85
-   **/
+    * @param $ID
+    * @param array $options
+    * @return boolean
+    */
    function showForm($ID, $options = []) {
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);
@@ -1202,9 +1202,9 @@ class Item_Devices extends CommonDBRelation {
     *
     * Overloaded to manage autoupdate feature
     *
-    * @param array $input array of datas used to add the item
+    * @param array $input of datas used to add the item
     *
-    * @return the modified $input array
+    * @return array modified $input
     *
    **/
    function prepareInputForAdd($input) {

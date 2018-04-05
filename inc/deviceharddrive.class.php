@@ -137,8 +137,7 @@ class DeviceHardDrive extends CommonDevice {
 
    /**
     * @since version 0.85
-    * @see CommonDropdown::prepareInputForAdd()
-   **/
+    */
    function prepareInputForAdd($input) {
       return self::prepareInputForAddOrUpdate($input);
    }
@@ -146,8 +145,7 @@ class DeviceHardDrive extends CommonDevice {
 
    /**
     * @since version 0.85
-    * @see CommonDropdown::prepareInputForUpdate()
-   **/
+    */
    function prepareInputForUpdate($input) {
       return self::prepareInputForAddOrUpdate($input);
    }
@@ -157,7 +155,13 @@ class DeviceHardDrive extends CommonDevice {
     * @since version 0.84
     *
     * @see CommonDevice::getHTMLTableHeader()
-   **/
+    * @param string $itemtype
+    * @param HTMLTableBase $base
+    * @param HTMLTableSuperHeader|null $super
+    * @param HTMLTableHeader|null $father
+    * @param array $options
+    * @return HTMLTableHeader|nothing
+    */
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
                                       HTMLTableHeader $father = null, array $options = []) {

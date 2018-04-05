@@ -108,10 +108,10 @@ class Item_OperatingSystem extends CommonDBRelation {
     *
     * @param CommonDBTM $item Item instance
     *
+    * @param integer $withtemplate
     * @since version 9.2
     *
-    * @return Nothing (call to classes members)
-   **/
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 

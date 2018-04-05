@@ -53,7 +53,10 @@ class RuleMailCollectorCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::prepareInputDataForProcess()
-   **/
+    * @param the $input
+    * @param parameters $params
+    * @return the
+    */
    function prepareInputDataForProcess($input, $params) {
 
       $input['mailcollector']       = $params['mailcollector'];

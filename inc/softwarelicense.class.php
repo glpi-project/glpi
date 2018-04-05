@@ -71,9 +71,6 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       $input = parent::prepareInputForAdd($input);
@@ -100,8 +97,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    */
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);
@@ -118,13 +114,12 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Compute licence validity indicator.
     *
-    * @param $ID        ID of the licence
-    * @param $number    licence count to check (default -1)
+    * @param integer $ID ID of the licence
+    * @param integer $number licence count to check (default -1)
     *
+    * @return integer validity indicator
     * @since version 0.85
-    *
-    * @return validity indicator
-   **/
+    */
    static function computeValidityIndicator($ID, $number = -1) {
 
       if (($number >= 0)
@@ -138,11 +133,11 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * Update validity indicator of a specific license
-    * @param $ID ID of the licence
+    * @param integer $ID of the licence
     *
     * @since version 0.85
     *
-    * @return nothing
+    * @return void
    **/
    static function updateValidityIndicator($ID) {
 
@@ -187,8 +182,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_updateItem()
-   **/
+    */
    function post_updateItem($history = 1) {
 
       if (in_array("is_valid", $this->updates)) {
@@ -199,8 +193,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_deleteFromDB()
-   **/
+    */
    function post_deleteFromDB() {
       Software::updateValidityIndicator($this->fields["softwares_id"]);
    }
@@ -473,9 +466,6 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -826,9 +816,8 @@ class SoftwareLicense extends CommonTreeDropdown {
     * Cron action on softwares : alert on expired licences
     *
     * @param $task to log, if NULL display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return integer 0 : nothing to do 1 : done with success
+    */
    static function cronSoftware($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -918,12 +907,12 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Get number of bought licenses of a version
     *
-    * @param $softwareversions_id   version ID
-    * @param $entity                to search for licenses in (default = all active entities)
-    *                               (default '')
+    * @param integer $softwareversions_id version ID
+    * @param string  $entity              to search for licenses in (default = all active entities)
+    *                                     (default '')
     *
-    * @return number of installations
-   */
+    * @return integer number of installations
+    */
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
@@ -944,10 +933,10 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Get number of licensesof a software
     *
-    * @param $softwares_id software ID
+    * @param integer $softwares_id software ID
     *
-    * @return number of licenses
-   **/
+    * @return integer number of licenses
+    */
    static function countForSoftware($softwares_id) {
       global $DB;
 
@@ -980,7 +969,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @param $software Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $software) {
       global $DB, $CFG_GLPI;
@@ -1207,7 +1196,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * Get fields to display in the unicity error message
     *
-    * @return an array which contains field => label
+    * @return array which contains field => label
    */
    function getUnicityFieldsToDisplayInErrorMessage() {
 

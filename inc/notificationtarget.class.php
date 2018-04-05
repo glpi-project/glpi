@@ -198,8 +198,10 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * @param $event  (default '')
-   **/
+    * @param $event (default '')
+    *
+    * @return string
+    */
    function getSubjectPrefix($event = '') {
 
       $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),
@@ -262,12 +264,12 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get a notificationtarget class by giving the object which raises the event
     *
-    * @param $item            the object which raises the event
-    * @param $event           the event which will be used (default '')
-    * @param $options   array of options
+    * @param object $item  which raises the event
+    * @param string $event the event which will be used (default '')
+    * @param array  $options
     *
-    * @return a notificationtarget class or false
-   **/
+    * @return boolean
+    */
    static function getInstance($item, $event = '', $options = []) {
 
       if ($plug = isPluginItemType($item->getType())) {
@@ -297,12 +299,12 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get a notificationtarget class by giving an itemtype
     *
-    * @param $itemtype           the itemtype of the object which raises the event
-    * @param $event              the event which will be used (default '')
-    * @param $options   array    of options
+    * @param object $itemtype of the object which raises the event
+    * @param string $event    the event which will be used (default '')
+    * @param array  $options
     *
-    * @return a notificationtarget class or false
-   **/
+    * @return boolean
+    */
    static function getInstanceByType($itemtype, $event = '', $options = []) {
 
       if (($itemtype)
@@ -315,7 +317,9 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * @param $notification Notification object
-   **/
+    *
+    * @return boolean
+    */
    function showForNotification(Notification $notification) {
       global $DB;
 
@@ -538,7 +542,9 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param $usertype
     * @param $redirect
-   **/
+    *
+    * @return string
+    */
    function formatURL($usertype, $redirect) {
       global $CFG_GLPI;
 
@@ -715,7 +721,7 @@ class NotificationTarget extends CommonDBChild {
     * Return main notification events for the object type
     * Internal use only => should use getAllEvents
     *
-    * @return an array which contains : event => event label
+    * @return array which contains : event => event label
    **/
    function getEvents() {
       return [];
@@ -725,7 +731,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Return all (GLPI + plugins) notification events for the object type
     *
-    * @return an array which contains : event => event label
+    * @return array which contains : event => event label
    **/
    function getAllEvents() {
 
@@ -1143,7 +1149,9 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $event
     * @param $options
-   **/
+    *
+    * @return array
+    */
    function &getForTemplate($event, $options) {
       global $CFG_GLPI;
 
@@ -1275,7 +1283,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param $group Group object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForGroup(Group $group) {
       global $DB;
@@ -1525,7 +1533,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @deprecated 9.2 Use NotificationTarget::addForProfile()
     *
-    * @return nothing
+    * @return void
    **/
    function getUsersAddressesByProfile($profiles_id) {
       Toolbox::deprecated('getUsersAddressesByProfile() method is deprecated');

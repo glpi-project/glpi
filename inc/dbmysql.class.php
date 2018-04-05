@@ -75,7 +75,6 @@ class DBmysql {
     *
     * @param integer $choice host number (default NULL)
     *
-    * @return void
     */
    function __construct($choice = null) {
       $this->connect($choice);
@@ -253,8 +252,8 @@ class DBmysql {
     * Give result from a sql result
     *
     * @param mysqli_result $result MySQL result handler
-    * @param int           $i      Row offset to give
-    * @param type          $field  Field to give
+    * @param integer $i row offset to give
+    * @param string $field name to give
     *
     * @return mixed Value of the Row $i and the Field $field of the Mysql $result
     */
@@ -306,7 +305,7 @@ class DBmysql {
     *
     * @param mysqli_result $result MySQL result handler
     *
-    * @return string[]|null result associative array
+    * @return array|null result associative array
     */
    function fetch_assoc($result) {
       return $result->fetch_assoc();
@@ -349,7 +348,7 @@ class DBmysql {
     *
     * @param mysqli_result $result MySQL result handler
     *
-    * @return int number of fields
+    * @return integer number of fields
     */
    function num_fields($result) {
       return $result->field_count;
@@ -416,7 +415,7 @@ class DBmysql {
    /**
     * Get number of affected rows in previous MySQL operation
     *
-    * @return int number of affected rows on success, and -1 if the last query failed.
+    * @return integer number of affected rows on success, and -1 if the last query failed.
     */
    function affected_rows() {
       return $this->dbh->affected_rows;
@@ -436,7 +435,7 @@ class DBmysql {
    /**
     * Returns the numerical value of the error message from previous MySQL operation
     *
-    * @return int error number from the last MySQL function, or 0 (zero) if no error occurred.
+    * @return integer error number from the last MySQL function, or 0 (zero) if no error occurred.
     */
    function errno() {
       return $this->dbh->errno;
@@ -553,7 +552,7 @@ class DBmysql {
      *
      * @deprecated 9.2.2
      *
-     * @return int number of tables
+     * @return integer number of tables
      */
    static function optimize_tables($migration = null, $cron = false) {
       global $DB;

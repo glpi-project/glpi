@@ -68,8 +68,6 @@ class RuleCriteria extends CommonDBChild {
 
    /**
     * @since version 0.84.3
-    *
-    * @see CommonDBTM::post_getFromDB()
     */
    function post_getFromDB() {
 
@@ -83,21 +81,11 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
-   /**
-    * Get title used in rule
-    *
-    * @param $nb  integer  for singular or plural (default 0)
-    *
-    * @return Title of the rule
-   **/
    static function getTypeName($nb = 0) {
       return _n('Criterion', 'Criteria', $nb);
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
    function getRawName() {
 
       if ($rule = getItemForItemtype(static::$itemtype)) {
@@ -109,9 +97,7 @@ class RuleCriteria extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBChild::post_addItem()
-   **/
+    */
    function post_addItem() {
 
       parent::post_addItem();
@@ -124,10 +110,8 @@ class RuleCriteria extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::post_purgeItem()
-   **/
+    * @since version 0.
+    */
    function post_purgeItem() {
 
       parent::post_purgeItem();
@@ -194,7 +178,9 @@ class RuleCriteria extends CommonDBChild {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -247,10 +233,12 @@ class RuleCriteria extends CommonDBChild {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
@@ -309,9 +297,9 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Get all criterias for a given rule
     *
-    * @param $rules_id the rule ID
+    * @param integer $rules_id the rule ID
     *
-    * @return an array of RuleCriteria objects
+    * @return array of RuleCriteria objects
    **/
    function getRuleCriterias($rules_id) {
       global $DB;
@@ -333,13 +321,13 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Try to match a defined rule
     *
-    * @param &$criterion         RuleCriteria object
-    * @param $field              the field to match
-    * @param &$criterias_results
-    * @param &$regex_result
+    * @param RuleCriteria $criterion object
+    * @param string $field to match
+    * @param array $criterias_results
+    * @param array $regex_result
     *
-    * @return true if the field match the rule, false if it doesn't match
-   **/
+    * @return boolean
+    */
    static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result) {
 
       $condition = $criterion->fields['condition'];
@@ -487,12 +475,11 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Return the condition label by giving his ID
     *
-    * @param $ID        condition's ID
+    * @param $ID condition's ID
     * @param $itemtype  itemtype
-    * @param $criterion (default '')
-    *
-    * @return condition's label
-   **/
+    * @param string $criterion (default '')
+    * @return mixed|string condition's label
+    */
    static function getConditionByID($ID, $itemtype, $criterion = '') {
 
       $conditions = self::getConditions($itemtype, $criterion);
@@ -552,7 +539,9 @@ class RuleCriteria extends CommonDBChild {
     *
     * @param $itemtype
     * @param $params    array
-   **/
+    *
+    * @return integer|string
+    */
    static function dropdownConditions($itemtype, $params = []) {
 
       $p['name']             = 'condition';

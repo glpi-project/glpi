@@ -78,7 +78,9 @@ if ($nbproc<1) {
  * @param $prof
  * @param $verb
  * @param $mail
-**/
+ *
+ * @return int|mixed
+ */
 function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
    global $DB, $LANG, $CFG_GLPI;
 

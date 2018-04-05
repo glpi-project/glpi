@@ -49,9 +49,6 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 
-   /**
-    * for use showFormHeader
-   **/
    static function getIndexName() {
       return 'tickets_id';
    }
@@ -188,7 +185,7 @@ class TicketSatisfaction extends CommonDBTM {
 
    /**
     * @since version 0.85
-   **/
+    */
    function post_UpdateItem($history = 1) {
       global $CFG_GLPI;
 
@@ -205,7 +202,9 @@ class TicketSatisfaction extends CommonDBTM {
     * display satisfaction value
     *
     * @param $value decimal between 0 and 5
-   **/
+    *
+    * @return string
+    */
    static function displaySatisfaction($value) {
 
       if ($value < 0) {
@@ -226,7 +225,9 @@ class TicketSatisfaction extends CommonDBTM {
     * Get name of inquest type
     *
     * @param $value status ID
-   **/
+    *
+    * @return status|string
+    */
    static function getTypeInquestName($value) {
 
       switch ($value) {
@@ -249,7 +250,9 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return status|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -267,10 +270,12 @@ class TicketSatisfaction extends CommonDBTM {
     * @since version 0.84
     *
     * @param $field
-    * @param $name                  (default '')
-    * @param $values                (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options   array
-   **/
+    *
+    * @return integer|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {

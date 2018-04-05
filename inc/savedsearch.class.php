@@ -451,11 +451,11 @@ class SavedSearch extends CommonDBTM {
    /**
     * Prepare query to store depending of the type
     *
-    * @param integer $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
-    * @param array   $query_tab Parameters
+    * @param integer $type Saved search type (self::SEARCH, self::URI or self::ALERT)
+    * @param array $query_tab Parameters
     *
-    * @return clean query array
-   **/
+    * @return array
+    */
    protected function prepareQueryToStore($type, $query_tab) {
 
       switch ($type) {
@@ -482,11 +482,11 @@ class SavedSearch extends CommonDBTM {
    /**
     * Prepare query to use depending of the type
     *
-    * @param integer $type      Saved search type (see SavedSearch constants)
-    * @param array   $query_tab Parameters array
+    * @param integer $type Saved search type (see SavedSearch constants)
+    * @param array $query_tab Parameters array
     *
-    * @return prepared query array
-   **/
+    * @return array
+    */
    function prepareQueryToUse($type, $query_tab) {
 
       switch ($type) {
@@ -548,8 +548,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @param integer $ID ID of the saved search
     *
-    * @return nothing
-   **/
+    */
    function load($ID) {
       global $CFG_GLPI;
 
@@ -1242,6 +1241,10 @@ class SavedSearch extends CommonDBTM {
    }
 
 
+   /**
+    * @param $name
+    * @return array
+    */
    static function cronInfo($name) {
 
       switch ($name) {

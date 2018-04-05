@@ -95,7 +95,6 @@ class NetworkAlias extends FQDNLabel {
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    * @return Nothing (display)
    **/
    function showForm ($ID, $options = []) {
 
@@ -246,7 +245,9 @@ class NetworkAlias extends FQDNLabel {
     *
     * @param $item                     NetworkName object
     * @param $withtemplate   integer   withtemplate param (default 0)
-   **/
+    *
+    * @return boolean
+    */
    static function showForNetworkName(NetworkName $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -365,9 +366,9 @@ class NetworkAlias extends FQDNLabel {
    /**
     * Show the aliases contained by the alias
     *
-    * @param $item                     the FQDN owning the aliases
-    * @param $withtemplate  integer    withtemplate param
-   **/
+    * @param CommonGLPI $item the FQDN owning the aliases
+    * @param integer    $withtemplate
+    */
    static function showForFQDN(CommonGLPI $item, $withtemplate) {
       global $DB;
 

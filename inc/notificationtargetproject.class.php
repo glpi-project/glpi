@@ -78,7 +78,9 @@ class NotificationTargetProject extends NotificationTarget {
 
    /**
     * @see NotificationTarget::addSpecificTargets()
-   **/
+    * @param array $data
+    * @param array $options
+    */
    function addSpecificTargets($data, $options) {
 
       //Look for all targets whose type is Notification::ITEM_USER

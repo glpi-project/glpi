@@ -78,7 +78,9 @@ class OlaLevel extends LevelAgreementLevel {
     * @param $ola OLA object
     *
     * @since version 9.1 (before showForOLA)
-   **/
+    *
+    * @return boolean
+    */
    function showForOLA(OLA $ola) {
       global $DB;
 
@@ -218,7 +220,7 @@ class OlaLevel extends LevelAgreementLevel {
     * @param $ID              ID of the rule
     * @param $options   array of possible options
     *
-    * @return nothing
+    * @return void
    **/
    function showForm($ID, $options = []) {
 

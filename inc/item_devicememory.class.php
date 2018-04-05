@@ -52,7 +52,9 @@ class Item_DeviceMemory extends Item_Devices {
 
    /**
     * @since version 0.85
-   **/
+    * @param string $specif
+    * @return array
+    */
    static function getSpecificities($specif = '') {
 
       return ['size'   => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Size'),

@@ -410,7 +410,7 @@ class User extends CommonDBTM {
    /**
     * Retrieve an item from the database using its login
     *
-    * @param $name login of the user
+    * @param string $name login of the user
     *
     * @return true if succeed else false
    **/
@@ -421,10 +421,9 @@ class User extends CommonDBTM {
    /**
     * Retrieve an item from the database using its login
     *
-    * @param $name login of the user
-    *
+    * @param string $value login of the user
     * @return true if succeed else false
-   **/
+    */
    function getFromDBbySyncField($value) {
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`sync_field` = '$value'");
    }
@@ -434,7 +433,7 @@ class User extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $user_dn dn of the user
+    * @param string $user_dn
     *
     * @return true if succeed else false
    **/
@@ -467,8 +466,8 @@ class User extends CommonDBTM {
    /**
     * Get the default email of the user
     *
-    * @return default user email
-   **/
+    * @return string
+    */
    function getDefaultEmail() {
 
       if (!isset($this->fields['id'])) {
@@ -482,8 +481,8 @@ class User extends CommonDBTM {
    /**
     * Get all emails of the user
     *
-    * @return array of emails
-   **/
+    * @return array|string
+    */
    function getAllEmails() {
 
       if (!isset($this->fields['id'])) {
@@ -1241,9 +1240,6 @@ class User extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
    function getRawName() {
       global $CFG_GLPI;
 
@@ -1275,7 +1271,7 @@ class User extends CommonDBTM {
     * @param $userdn             Basedn of the user
     * @param $login              User login
     *
-    * @return String : basedn of the user / false if not found
+    * @return string : basedn of the user / false if not found
    **/
    private function getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB;
@@ -1362,7 +1358,6 @@ class User extends CommonDBTM {
     * @param $userdn             Basedn of the user
     * @param $login              User login
     *
-    * @return nothing : false if not applicable
    **/
    private function getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB;
@@ -1625,7 +1620,7 @@ class User extends CommonDBTM {
     * @param $use_dn                boolean  search dn of user ($login_field=$user_dn) in group_member_field
     * @param $login_field           string   user login field
     *
-    * @return String : basedn of the user / false if not founded
+    * @return string : basedn of the user / false if not founded
    **/
    function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition,
                                  $group_member_field, $use_dn, $login_field) {
@@ -1673,7 +1668,9 @@ class User extends CommonDBTM {
     *
     * @param $mail_method  mail method description array
     * @param $name         login of the user
-   **/
+    *
+    * @return boolean
+    */
    function getFromIMAP($mail_method, $name) {
       global $DB;
 
@@ -1836,7 +1833,6 @@ class User extends CommonDBTM {
    /**
     * Print a good title for user pages
     *
-    * @return nothing (display)
    **/
    function title() {
       global $CFG_GLPI;
@@ -2191,7 +2187,9 @@ class User extends CommonDBTM {
     * @param $userid Interger ID of the user
     *
     * @since version 0.84
-   **/
+    *
+    * @return boolean
+    */
    static function showPersonalInformation($userid) {
       global $CFG_GLPI;
 
@@ -2574,9 +2572,6 @@ class User extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -2627,11 +2622,6 @@ class User extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -3085,7 +3075,9 @@ class User extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -3112,10 +3104,12 @@ class User extends CommonDBTM {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (defaut '')
+    * @param $name (default '')
+    * @param $values (defaut '')
     * @param $options   array
-   **/
+    *
+    * @return string|void
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -3137,10 +3131,9 @@ class User extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @param $entities_id ID of the entity to restrict (default '')
-    *
+    * @param ID|string $entities_id ID of the entity to restrict (default '')
     * @return array of groups id
-   **/
+    */
    static function getDelegateGroupsForUser($entities_id = '') {
       global $DB;
 
@@ -3165,17 +3158,17 @@ class User extends CommonDBTM {
     *
     * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
     *
-    * @param $count                    true if execute an count(*) (true by default)
-    * @param $right                    limit user who have specific right (default 'all')
-    * @param $entity_restrict          Restrict to a defined entity (default -1)
-    * @param $value                    default value (default 0)
-    * @param $used             array   Already used items ID: not to display in dropdown
-    * @param $search                   pattern (default '')
-    * @param $start                    start LIMIT value (default 0)
-    * @param $limit                    limit LIMIT value (default -1 no limit)
+    * @param boolean $count           true if execute an count(*) (true by default)
+    * @param integer $right           limit user who have specific right (default 'all')
+    * @param integer $entity_restrict Restrict to a defined entity (default -1)
+    * @param integer $value           default value (default 0)
+    * @param array   $used            Already used items ID: not to display in dropdown
+    * @param string  $search          pattern (default '')
+    * @param integer $start           start LIMIT value (default 0)
+    * @param integer $limit           limit LIMIT value (default -1 no limit)
     *
-    * @return mysql result set.
-   **/
+    * @return mysqli_result|boolean
+    */
    static function getSqlSearchResult ($count = true, $right = "all", $entity_restrict = -1, $value = 0,
                                        $used = [], $search = '', $start = 0, $limit = -1) {
       global $DB, $CFG_GLPI;
@@ -3939,8 +3932,10 @@ class User extends CommonDBTM {
 
 
    /**
-    * @param $email  (default '')
-   **/
+    * @param $email (default '')
+    *
+    * @return integer|mixed
+    */
    static function getOrImportByEmail($email = '') {
       global $DB, $CFG_GLPI;
 
@@ -3980,7 +3975,9 @@ class User extends CommonDBTM {
 
    /**
     * @param $users_id
-   **/
+    *
+    * @return boolean|void
+    */
    static function manageDeletedUserInLdap($users_id) {
       global $CFG_GLPI;
 
@@ -4045,7 +4042,9 @@ class User extends CommonDBTM {
 
    /**
     * @param $login
-   **/
+    *
+    * @return boolean|mixed
+    */
    static function getIdByName($login) {
       return self::getIdByField('name', $login);
    }
@@ -4056,7 +4055,9 @@ class User extends CommonDBTM {
     *
     * @param $field
     * @param $login
-   **/
+    *
+    * @return boolean|mixed
+    */
    static function getIdByField($field, $login) {
       global $DB;
 
@@ -4246,7 +4247,6 @@ class User extends CommonDBTM {
     *
     * @param $email email of the user
     *
-    * @return nothing : send email or display error message
    **/
    public function showForgetPassword($email) {
       global $CFG_GLPI;
@@ -4365,7 +4365,7 @@ class User extends CommonDBTM {
    /**
     * Get fields to display in the unicity error message
     *
-    * @return an array which contains field => label
+    * @return array which contains field => label
    **/
    function getUnicityFieldsToDisplayInErrorMessage() {
 
@@ -4492,7 +4492,7 @@ class User extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $picture picture field
+    * @param string $picture field
     *
     * @return string URL to show picture
    **/
@@ -4511,7 +4511,7 @@ class User extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $picture picture field
+    * @param string $picture field
     *
     * @return string URL to show picture
    **/
@@ -4536,9 +4536,7 @@ class User extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $picture picture field
-    *
-    * @return nothing
+    * @param string $picture field
    **/
    static function dropPictureFiles($picture) {
 
@@ -4558,11 +4556,6 @@ class User extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -4588,7 +4581,7 @@ class User extends CommonDBTM {
     *
     * @param $map array of fields
     *
-    * @return Array of Ldap field names
+    * @return array of Ldap field names
    **/
    private static function getLdapFieldNames(Array $map) {
 
@@ -4615,9 +4608,10 @@ class User extends CommonDBTM {
     * @since 9.1
     *
     * @param $map String with field format
-    * @param $res LDAP result
+    * @param array $res LDAP result
     *
-   **/
+    * @return mixed|string
+    */
    private static function getLdapFieldValue($map, array $res) {
 
       $map = Toolbox::unclean_cross_side_scripting_deep($map);

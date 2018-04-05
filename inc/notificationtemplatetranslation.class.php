@@ -66,9 +66,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
    function getRawName() {
       global $CFG_GLPI;
 
@@ -246,7 +243,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
    /**
     * @param $input  array
-   */
+    * @return array
+    */
    static function cleanContentHtml(array $input) {
 
       $txt = Html::clean(Toolbox::unclean_cross_side_scripting_deep($input['content_html']));
@@ -325,7 +323,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
    /**
     * @param $language_id
-   **/
+    *
+    * @return array
+    */
    static function getAllUsedLanguages($language_id) {
 
       $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',

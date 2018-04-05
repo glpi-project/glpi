@@ -94,7 +94,9 @@ class FieldUnicity extends CommonDropdown {
     * Define tabs to display
     *
     * @param $options array
-   **/
+    *
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong          = [];
@@ -149,11 +151,10 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Display a dropdown which contains all the available itemtypes
     *
-    * @param ID      the field unicity item id
-    * @param value   the selected value (default 0)
+    * @param integer $ID of item unicity field
+    * @param integer $value selected value (default 0)
     *
-    * @return nothing
-   **/
+    */
    function showItemtype($ID, $value = 0) {
       global $CFG_GLPI;
 
@@ -189,12 +190,11 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Return criteria unicity for an itemtype, in an entity
     *
-    * @param itemtype      the itemtype for which unicity must be checked
-    * @param entities_id   the entity for which configuration must be retrivied (default 0)
-    * @param $check_active (true by default)
-    *
-    * @return an array of fields to check, or an empty array if no
-   **/
+    * @param string $itemtype for which unicity must be checked
+    * @param integer $entities_id for which configuration must be retrivied (default 0)
+    * @param boolean $check_active (true by default)
+    * @return array of fields to check, or an empty array if no
+    */
    public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true) {
       global $DB;
 
@@ -231,10 +231,8 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Display a list of available fields for unicity checks
     *
-    * @param $unicity an instance of CommonDBTM class
-    *
-    * @return nothing
-   **/
+    * @param CommonDBTM $unicity instance
+    */
    static function selectCriterias(CommonDBTM $unicity) {
       global $DB;
 
@@ -262,9 +260,11 @@ class FieldUnicity extends CommonDropdown {
     *
     * @since version 0.84
     *
-    * @param $itemtype          itemtype
+    * @param string $itemtype
     * @param $options   array    of options
-   **/
+    *
+    * @return boolean|integer|string
+    */
    static function dropdownFields($itemtype, $options = []) {
       global $DB;
 
@@ -407,7 +407,9 @@ class FieldUnicity extends CommonDropdown {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -441,10 +443,12 @@ class FieldUnicity extends CommonDropdown {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return boolean|integer|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
@@ -469,10 +473,9 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Perform checks to be sure that an itemtype and at least a field are selected
     *
-    * @param input the values to insert in DB
-    *
-    * @return input the values to insert, but modified
-   **/
+    * @param array $input values to insert in DB
+    * @return array
+    */
    static function checkBeforeInsert($input) {
 
       if (!$input['itemtype']
@@ -506,9 +509,8 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Delete all criterias for an itemtype
     *
-    * @param itemtype
+    * @param string $itemtype
     *
-    * @return nothing
    **/
    static function deleteForItemtype($itemtype) {
       global $DB;
@@ -523,8 +525,8 @@ class FieldUnicity extends CommonDropdown {
    /**
     * List doubles
     *
-    * @param $unicity an instance of FieldUnicity class
-   **/
+    * @param FieldUnicity $unicity instance
+    */
    static function showDoubles(FieldUnicity $unicity) {
       global $DB;
 

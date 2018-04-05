@@ -63,10 +63,8 @@ class Transfer extends CommonDBTM {
 
 
    /**
-    * @see CommonGLPI::defineTabs()
-    *
     * @since version 0.85
-   **/
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -244,9 +242,9 @@ class Transfer extends CommonDBTM {
    /**
     * Add an item in the needtobe_transfer list
     *
-    * @param $itemtype  of the item
-    * @param $ID        of the item
-   **/
+    * @param string $itemtype of the item
+    * @param integer $ID of the item
+    */
    function addToBeTransfer($itemtype, $ID) {
 
       if (!isset($this->needtobe_transfer[$itemtype])) {
@@ -265,9 +263,9 @@ class Transfer extends CommonDBTM {
    /**
     * Add an item in the noneedtobe_transfer list
     *
-    * @param $itemtype  of the item
-    * @param $ID        of the item
-   **/
+    * @param string $itemtype of the item
+    * @param integer $ID of the item
+    */
    function addNotToBeTransfer($itemtype, $ID) {
 
       if (!isset($this->noneedtobe_transfer[$itemtype])) {
@@ -284,8 +282,8 @@ class Transfer extends CommonDBTM {
    /**
     * simulate the transfer to know which items need to be transfer
     *
-    * @param $items Array of the items to transfer
-   **/
+    * @param array $items to transfer
+    */
    function simulateTransfer($items) {
       global $DB, $CFG_GLPI;
 
@@ -1031,14 +1029,14 @@ class Transfer extends CommonDBTM {
    /**
     * transfer an item to another item (may be the same) in the new entity
     *
-    * @param $itemtype     item type to transfer
-    * @param $ID           ID of the item to transfer
-    * @param $newID        new ID of the ite
+    * @param string $itemtype to transfer
+    * @param integer $ID of the item to transfer
+    * @param integer $newID of the item
     *
     * Transfer item to a new Item if $ID==$newID : only update entities_id field :
     *                                $ID!=$new ID -> copy datas (like template system)
-    * @return nothing (diplays)
-   **/
+    *
+    */
    function transferItem($itemtype, $ID, $newID) {
       global $CFG_GLPI, $DB;
 
@@ -1164,10 +1162,10 @@ class Transfer extends CommonDBTM {
    /**
     * Add an item to already transfer array
     *
-    * @param $itemtype  item type
-    * @param $ID        item original ID
-    * @param $newID     item new ID
-   **/
+    * @param string $itemtype name
+    * @param integer $ID item original
+    * @param integer $newID item
+    */
    function addToAlreadyTransfer($itemtype, $ID, $newID) {
 
       if (!isset($this->already_transfer[$itemtype])) {
@@ -1180,10 +1178,10 @@ class Transfer extends CommonDBTM {
    /**
     * Transfer location
     *
-    * @param $locID location ID
+    * @param integer $locID location ID
     *
-    * @return new location ID
-   **/
+    * @return integer
+    */
    function transferDropdownLocation($locID) {
       global $DB;
 
@@ -1401,10 +1399,9 @@ class Transfer extends CommonDBTM {
    /**
     * Copy (if needed) One software to the destination entity
     *
-    * @param $ID of the software
-    *
-    * @return $ID of the new software (could be the same)
-   **/
+    * @param integer $ID of the software
+    * @return integer $ID of the new software (could be the same)
+    */
    function copySingleSoftware($ID) {
       global $DB;
 
@@ -1458,9 +1455,8 @@ class Transfer extends CommonDBTM {
     * Copy (if needed) One softwareversion to the Dest Entity
     *
     * @param $ID of the version
-    *
-    * @return $ID of the new version (could be the same)
-   **/
+    * @return integer|of $ID of the new version (could be the same)
+    */
    function copySingleVersion($ID) {
       global $DB;
 
@@ -2535,7 +2531,9 @@ class Transfer extends CommonDBTM {
     * @param $data ticket data fields
     *
     * @since version 0.85 (before transferTicketAdditionalInformations)
-   **/
+    *
+    * @return array
+    */
    function transferHelpdeskAdditionalInformations($data) {
 
       $input               = [];
@@ -2719,7 +2717,9 @@ class Transfer extends CommonDBTM {
     * Transfer an enterprise
     *
     * @param $ID ID of the enterprise
-   **/
+    *
+    * @return integer|mixed
+    */
    function transferSingleSupplier($ID) {
       global $DB, $CFG_GLPI;
 

@@ -144,8 +144,7 @@ class DeviceProcessor extends CommonDevice {
 
    /**
     * @since version 0.85
-    * @see CommonDropdown::prepareInputForUpdate()
-   **/
+    */
    function prepareInputForUpdate($input) {
       return self::prepareInputForAddOrUpdate($input);
    }
@@ -155,7 +154,13 @@ class DeviceProcessor extends CommonDevice {
     * @since version 0.84
     *
     * @see CommonDevice::getHTMLTableHeader()
-   **/
+    * @param string $itemtype
+    * @param HTMLTableBase $base
+    * @param HTMLTableSuperHeader|null $super
+    * @param HTMLTableHeader|null $father
+    * @param array $options
+    * @return HTMLTableHeader|nothing
+    */
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
                                       HTMLTableHeader $father = null, array $options = []) {
@@ -178,7 +183,12 @@ class DeviceProcessor extends CommonDevice {
     * @since version 0.84
     *
     * @see CommonDevice::getHTMLTableCellForItem()
-   **/
+    * @param HTMLTableRow|null $row
+    * @param CommonDBTM|null $item
+    * @param HTMLTableCell|null $father
+    * @param array $options
+    * @return HTMLTableCell
+    */
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                     HTMLTableCell $father = null, array $options = []) {
 

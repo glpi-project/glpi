@@ -115,15 +115,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * Prepare input datas for updating the item
-    *
-    * @see CommonDBTM::prepareInputForUpdate()
-    *
-    * @param $input array of datas used to update the item
-    *
-    * @return the modified $input array
-   **/
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
       // Update only an item
@@ -269,7 +260,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for display
     *
-    * @return Nothing (display)
    **/
    function showFormDisplay() {
       global $CFG_GLPI;
@@ -461,7 +451,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
    **/
    function showFormInventory() {
       global $DB, $CFG_GLPI;
@@ -609,7 +598,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
    **/
    function showFormAuthentication() {
       global $DB, $CFG_GLPI;
@@ -653,7 +641,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for slave DB
     *
-    * @return Nothing (display)
    **/
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
@@ -723,7 +710,6 @@ class Config extends CommonDBTM {
     * Print the config form for External API
     *
     * @since 9.1
-    * @return Nothing (display)
    **/
    function showFormAPI() {
       global $CFG_GLPI;
@@ -805,7 +791,6 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for connections
     *
-    * @return Nothing (display)
    **/
    function showFormHelpdesk() {
       global $DB, $CFG_GLPI;
@@ -976,7 +961,6 @@ class Config extends CommonDBTM {
     * @param $data array containing datas
     * (CFG_GLPI for global config / glpi_users fields for user prefs)
     *
-    * @return Nothing (display)
    **/
    function showFormUserPrefs($data = []) {
       global $DB, $CFG_GLPI;
@@ -1493,11 +1477,10 @@ class Config extends CommonDBTM {
     *
     * @param $password  string   password to validate
     * @param $display   boolean  display errors messages? (true by default)
+    * @return boolean when $display is false and the password does not matches the requirements
     *
-    * @throws PasswordTooWeak when $display is false and the password does not matches the requirements
-    *
-    * @return boolean is password valid?
-   **/
+    * @throws PasswordTooWeakException
+    */
    static function validatePassword($password, $display = true) {
       global $CFG_GLPI;
 
@@ -2035,10 +2018,11 @@ class Config extends CommonDBTM {
     * Get language in GLPI associated with the value coming from LDAP
     * Value can be, for example : English, en_EN or en
     *
-    * @param $lang : the value coming from LDAP
+    * @param string $lang : the value coming from LDAP
     *
-    * @return the locale's php page in GLPI or '' is no language associated with the value
-   **/
+    * @return integer|string the locale's php page in GLPI or '' is no language associated with the
+    *                        value
+    */
    static function getLanguage($lang) {
       global $CFG_GLPI;
 
@@ -2161,9 +2145,11 @@ class Config extends CommonDBTM {
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
+    * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-   **/
+    *
+    * @return boolean
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -2430,9 +2416,8 @@ class Config extends CommonDBTM {
     * Check Write Access to needed directories
     *
     * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
-    *
-    * @return 2 : creation error 1 : delete error 0: OK
-   **/
+    * @return integer 2 : creation error 1 : delete error 0: OK
+    */
    static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
 
@@ -2588,8 +2573,8 @@ class Config extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @return DB version
-   **/
+    * @return string
+    */
    static function getCurrentDBVersion() {
       global $DB;
 
@@ -2704,11 +2689,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

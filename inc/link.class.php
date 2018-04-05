@@ -114,9 +114,7 @@ class Link extends CommonDBTM {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getEmpty()
-   **/
+    */
    function getEmpty() {
 
       parent::getEmpty();
@@ -132,7 +130,7 @@ class Link extends CommonDBTM {
    * @param $options array
    *     - target filename : where to go when done.
    *
-   * @return Nothing (display)
+   * @return void (display)
    **/
    function showForm($ID, $options = []) {
 
@@ -180,9 +178,6 @@ class Link extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -458,7 +453,9 @@ class Link extends CommonDBTM {
     *
     * @param $item                     CommonDBTM object
     * @param $withtemplate    integer  withtemplate param (default 0)
-   **/
+    *
+    * @return boolean
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -519,7 +516,9 @@ class Link extends CommonDBTM {
     *
     * @param $item                        CommonDBTM object
     * @param $params    array of params : must contain id / name / link / data
-   **/
+    *
+    * @return array
+    */
    static function getAllLinksFor($item, $params = []) {
       global $CFG_GLPI;
 

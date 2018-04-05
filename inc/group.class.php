@@ -233,7 +233,7 @@ class Group extends CommonTreeDropdown {
    *     - target filename : where to go when done.
    *     - withtemplate boolean : template or basic item
    *
-   * @return Nothing (display)
+   * @return void (display)
    **/
    function showForm($ID, $options = []) {
 
@@ -320,7 +320,7 @@ class Group extends CommonTreeDropdown {
    /**
     * Print a good title for group pages
     *
-    *@return nothing (display)
+    * @return void (display)
     **/
    function title() {
       global $CFG_GLPI;
@@ -342,9 +342,6 @@ class Group extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -369,7 +366,9 @@ class Group extends CommonTreeDropdown {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return boolean
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       $input = $ma->getInput();
@@ -397,11 +396,6 @@ class Group extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

@@ -257,7 +257,9 @@ class Notification extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -278,10 +280,12 @@ class Notification extends CommonDBTM {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -489,7 +493,7 @@ class Notification extends CommonDBTM {
    /**
     * @param string $event    Event name
     * @param string $itemtype Item type
-    * @param int    $entity   Restrict to entity
+    * @param integer    $entity   Restrict to entity
     *
     * @return ResultSet
    **/
@@ -536,8 +540,7 @@ class Notification extends CommonDBTM {
 
    /**
     * @since version 0.90.4
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
+    */
    function prepareInputForAdd($input) {
 
       if (isset($input["itemtype"]) && empty($input["itemtype"])) {
@@ -552,8 +555,12 @@ class Notification extends CommonDBTM {
 
    /**
     * @since version 0.90.4
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
+    * @see   CommonDBTM::prepareInputForUpdate()
+    *
+    * @param array $input
+    *
+    * @return array|bool
+    */
    function prepareInputForUpdate($input) {
 
       if (isset($input["itemtype"]) && empty($input["itemtype"])) {

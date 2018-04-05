@@ -56,10 +56,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Get notification subject prefix
     *
-    * @param $event Event name (default '')
-    *
+    * @param Event|string $event Event name (default '')
     * @return string
-    **/
+    */
    function getSubjectPrefix($event = '') {
 
       $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),

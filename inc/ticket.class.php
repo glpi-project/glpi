@@ -92,10 +92,11 @@ class Ticket extends CommonITILObject {
    /**
     * Summary of getTimelinePosition
     * Returns the position of the $sub_type for the $user_id in the timeline
-    * @param int $items_id is the id of the ticket
+    * @param integer $items_id is the id of the ticket
     * @param string $sub_type is TicketFollowup, Document_Item, TicketTask, TicketValidation or Solution
-    * @param int $users_id
+    * @param integer $users_id
     * @since 9.2
+    * @return integer
     */
    static function getTimelinePosition($items_id, $sub_type, $users_id) {
       $tkt = new self;
@@ -159,31 +160,22 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-   **/
    static function getTypeName($nb = 0) {
       return _n('Ticket', 'Tickets', $nb);
    }
 
 
    /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuShorcut() {
       return 't';
    }
 
 
    /**
-    * @see CommonGLPI::getAdditionalMenuOptions()
-    *
     * @since version 0.85
-   **/
+    */
    static function getAdditionalMenuOptions() {
 
       if (TicketTemplate::canView()) {
@@ -202,8 +194,8 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonGLPI::getAdditionalMenuContent()
     *
-    * @since version 0.85
-   **/
+    * @return mixed
+    */
    static function getAdditionalMenuContent() {
 
       if (static::canCreate()) {
@@ -215,10 +207,8 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @see CommonGLPI::getAdditionalMenuLinks()
-    *
     * @since version 0.85
-   **/
+    */
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
@@ -384,7 +374,11 @@ class Ticket extends CommonITILObject {
 
    /**
     * @see CommonDBTM::canMassiveAction()
-   **/
+    * @param string $action
+    * @param integer $field
+    * @param string $value
+    * @return boolean
+    */
    function canMassiveAction($action, $field, $value) {
 
       switch ($action) {
@@ -484,13 +478,12 @@ class Ticket extends CommonITILObject {
     *
     * @since version 9.2
     *
-    * @param string  $laType (SLA | OLA)
-    * @param integer $id the sla/ola id
+    * @param string $laType (SLA | OLA)
+    * @param integer $la_id the sla/ola id
     * @param integer $subtype (SLM::TTR | SLM::TTO)
-    * @param bool    $delete_date (default false)
-    *
-    * @return bool
-    **/
+    * @param boolean $delete_date (default false)
+    * @return boolean
+    */
    function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false) {
       switch ($laType) {
          case "SLA":
@@ -635,7 +628,9 @@ class Ticket extends CommonITILObject {
 
    /**
     * @see CommonITILObject::getDefaultActor()
-   **/
+    * @param type $type
+    * @return boolean|false|int
+    */
    function getDefaultActor($type) {
 
       if ($type == CommonITILActor::ASSIGN) {
@@ -656,7 +651,9 @@ class Ticket extends CommonITILObject {
 
    /**
     * @see CommonITILObject::getDefaultActorRightSearch()
-   **/
+    * @param type $type
+    * @return boolean|string
+    */
    function getDefaultActorRightSearch($type) {
 
       $right = "all";
@@ -907,7 +904,6 @@ class Ticket extends CommonITILObject {
    /**
     * Retrieve data of the hardware linked to the ticket if exists
     *
-    * @return nothing : set computerfound to 1 if founded
    **/
    function getAdditionalDatas() {
 
@@ -2214,7 +2210,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $input array : input array
     *
-    * @return nothing
+    * @return void
    **/
    function manageValidationAdd($input) {
 
@@ -2365,10 +2361,9 @@ class Ticket extends CommonITILObject {
    /**
     * Number of followups of the ticket
     *
-    * @param $with_private boolean : true : all followups / false : only public ones (default 1)
-    *
+    * @param boolean|integer $with_private boolean : true : all followups / false : only public ones (default 1)
     * @return followup count
-   **/
+    */
    function numberOfFollowups($with_private = 1) {
       global $DB;
 
@@ -2391,10 +2386,9 @@ class Ticket extends CommonITILObject {
    /**
     * Number of tasks of the ticket
     *
-    * @param $with_private boolean : true : all ticket / false : only public ones (default 1)
-    *
+    * @param boolean|integer $with_private boolean : true : all ticket / false : only public ones (default 1)
     * @return followup count
-   **/
+    */
    function numberOfTasks($with_private = 1) {
       global $DB;
 
@@ -2528,7 +2522,9 @@ class Ticket extends CommonITILObject {
     * @param $ID                           ID of the ticket
     * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
     * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
-   **/
+    *
+    * @return boolean|void
+    */
    function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0) {
       global $DB;
 
@@ -2562,10 +2558,10 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @param $type itemtype of object to add
+    * @param string $type itemtype of object to add
     *
-    * @return rights
-   **/
+    * @return boolean
+    */
    function canAddItem($type) {
 
       if ($type == 'Document') {
@@ -2626,9 +2622,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -3394,7 +3387,9 @@ class Ticket extends CommonITILObject {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return a|string|type
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -3497,8 +3492,10 @@ class Ticket extends CommonITILObject {
    /**
     * Get ticket type Name
     *
-    * @param $value type ID
-   **/
+    * @param integer $value ID
+    *
+    * @return integer|string
+    */
    static function getTicketTypeName($value) {
 
       switch ($value) {
@@ -3520,7 +3517,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $withmetaforsearch boolean (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -3548,7 +3545,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
       return [self::CLOSED];
@@ -3560,7 +3557,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
       return [self::SOLVED];
@@ -3571,7 +3568,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING];
@@ -3582,7 +3579,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
       return [self::ASSIGNED, self::PLANNED];
@@ -3593,7 +3590,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.90.1
     *
-    * @return an array
+    * @return array
    **/
    static function getReopenableStatusArray() {
       return [self::CLOSED, self::SOLVED, self::WAITING];
@@ -3639,7 +3636,6 @@ class Ticket extends CommonITILObject {
     * @param $ticket_template boolean  ticket template for preview : false if not used for preview
     *                                  (false by default)
     *
-    * @return nothing (print the helpdesk)
    **/
    function showFormHelpdesk($ID, $ticket_template = false) {
       global $DB, $CFG_GLPI;
@@ -4172,7 +4168,9 @@ class Ticket extends CommonITILObject {
     * @since version 0.83
     *
     * @param $entity  integer  entities_id usefull is function called by cron (default 0)
-   **/
+    *
+    * @return array
+    */
    static function getDefaultValues($entity = 0) {
       global $CFG_GLPI;
 
@@ -5303,8 +5301,9 @@ class Ticket extends CommonITILObject {
 
    /**
     * @param $start
-    * @param $status             (default ''process)
-    * @param $showgrouptickets   (true by default)
+    * @param $status (default ''process)
+    * @param $showgrouptickets (true by default)
+    * @return boolean
     */
    static function showCentralList($start, $status = "process", $showgrouptickets = true) {
       global $DB, $CFG_GLPI;
@@ -5741,7 +5740,9 @@ class Ticket extends CommonITILObject {
     * Get tickets count
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
-   **/
+    *
+    * @return boolean
+    */
    static function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
 
@@ -5903,15 +5904,14 @@ class Ticket extends CommonITILObject {
    }
 
    /**
-   * Display tickets for an item
+    * Display tickets for an item
     *
     * Will also display tickets of linked items
     *
-    * @param CommonDBTM $item         CommonDBTM object
-    * @param boolean    $withtemplate (default 0)
-    *
+    * @param CommonDBTM $item CommonDBTM object
+    * @param boolean|integer $withtemplate (default 0)
     * @return void (display a table)
-   **/
+    */
    static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -6549,7 +6549,9 @@ class Ticket extends CommonITILObject {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -7317,7 +7319,9 @@ class Ticket extends CommonITILObject {
     * @since version 0.90
     *
     * @param $rand
-   **/
+    *
+    * @return boolean
+    */
    function showTimelineForm($rand) {
       global $CFG_GLPI;
 
@@ -7473,8 +7477,10 @@ class Ticket extends CommonITILObject {
     * @since version 0.90
     *
     * @param $tickets_id
-    * @param $action         (default 'add')
-   **/
+    * @param $action (default 'add')
+    *
+    * @return string
+    */
    static function getSplittedSubmitButtonHtml($tickets_id, $action = "add") {
 
       $locale = _sx('button', 'Add');
@@ -7536,6 +7542,11 @@ class Ticket extends CommonITILObject {
     * Select a field using standard system
     *
     * @since version 9.1
+    * @param array|int|string $field_id_or_search_options
+    * @param string $name
+    * @param string $values
+    * @param array $options
+    * @return string
     */
    function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = []) {
       if (isset($field_id_or_search_options['linkfield'])) {

@@ -86,7 +86,7 @@ abstract class API extends CommonGLPI {
    /**
     * Constructor
     *
-    * @var array $CFG_GLPI
+    * @var array   $CFG_GLPI
     * @var DBmysql $DB
     *
     * @return void
@@ -241,7 +241,7 @@ abstract class API extends CommonGLPI {
     * Kill GLPI Session
     * Use 'session_token' param in $this->parameters
     *
-    * @return boolean
+    * @return void
     */
    protected function killSession() {
 
@@ -2144,11 +2144,10 @@ abstract class API extends CommonGLPI {
     * change value from  integer id to string name of foreign key
     * You can pass an array of array, this method is recursive.
     *
-    * @param array   $fields to check and transform
-    * @param boolean $params array of option to enable, could be :
+    * @param array $fields to check and transform
+    * @param array|bool $params array of option to enable, could be :
     *                                 - expand_dropdowns (default false)
     *                                 - get_hateoas      (default true)
-    *
     * @return array altered $fields
     */
    protected static function parseDropdowns($fields, $params = []) {

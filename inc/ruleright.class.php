@@ -61,7 +61,8 @@ class RuleRight extends Rule {
 
    /**
     * @see Rule::showNewRuleForm()
-   **/
+    * @param $ID
+    */
    function showNewRuleForm($ID) {
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";

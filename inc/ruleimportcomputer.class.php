@@ -140,10 +140,10 @@ class RuleImportComputer extends Rule {
     *
     * @see Rule::displayAdditionRuleActionValue()
     *
-    * @param value the value for this action
+    * @param string $value for this action
     *
-    * @return the label's value or ''
-   **/
+    * @return mixed|string
+    */
    function displayAdditionRuleActionValue($value) {
 
       $values = self::getRuleActionValues();
@@ -158,7 +158,9 @@ class RuleImportComputer extends Rule {
     * @param $criteria
     * @param $name
     * @param $value
-   **/
+    *
+    * @return boolean
+    */
    function manageSpecificCriteriaValues($criteria, $name, $value) {
 
       switch ($criteria['type']) {
@@ -185,7 +187,11 @@ class RuleImportComputer extends Rule {
 
    /**
     * @see Rule::getAdditionalCriteriaDisplayPattern()
-   **/
+    * @param the $ID
+    * @param condition $condition
+    * @param the $pattern
+    * @return a|bool|string
+    */
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 
       if ($condition == Rule::PATTERN_IS_EMPTY) {
@@ -197,7 +203,13 @@ class RuleImportComputer extends Rule {
 
    /**
     * @see Rule::displayAdditionalRuleCondition()
-   **/
+    * @param $condition
+    * @param $criteria
+    * @param $name
+    * @param $value
+    * @param boolean $test
+    * @return boolean
+    */
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
 
       if ($test) {
@@ -217,7 +229,10 @@ class RuleImportComputer extends Rule {
 
    /**
     * @see Rule::displayAdditionalRuleAction()
-   **/
+    * @param array $action
+    * @param string $value
+    * @return boolean
+    */
    function displayAdditionalRuleAction(array $action, $value = '') {
 
       switch ($action['type']) {
@@ -231,7 +246,9 @@ class RuleImportComputer extends Rule {
 
    /**
     * @param $ID
-   **/
+    *
+    * @return array
+    */
    function getCriteriaByID($ID) {
 
       $criteria = [];
@@ -421,7 +438,8 @@ class RuleImportComputer extends Rule {
     * Function used to display type specific criterias during rule's preview
     *
     * @see Rule::showSpecificCriteriasForPreview()
-   **/
+    * @param fields $fields
+    */
    function showSpecificCriteriasForPreview($fields) {
 
       $entity_as_criteria = false;

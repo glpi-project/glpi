@@ -48,10 +48,14 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
    public $can_replay_rules    = true;
 
 
-
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
-   **/
+    * @param integer $offset
+    * @param integer $maxtime
+    * @param array $items
+    * @param array $params
+    * @return integer|void
+    */
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
 
@@ -127,11 +131,10 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
    /**
     * Replay collection rules on an existing DB for model dropdowns
     *
-    * @param $offset    offset used to begin (default 0)
-    * @param $maxtime   maximum time of process (reload at the end) (default 0)
-    *
-    * @return -1 on completion else current offset
-   **/
+    * @param integer|offset $offset offset used to begin (default 0)
+    * @param integer|maximum $maxtime maximum time of process (reload at the end) (default 0)
+    * @return integer|offset -1 on completion else current offset
+    */
    function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0) {
       global $DB;
 

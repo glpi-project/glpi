@@ -53,7 +53,9 @@ class Manufacturer extends CommonDropdown {
    /**
     * @since version 0.85
     * @see CommonDropdown::displaySpecificTypeField()
-   **/
+    * @param $ID
+    * @param array $field
+    */
    function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
@@ -121,8 +123,7 @@ class Manufacturer extends CommonDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_addItem()
-   **/
+    */
    function post_addItem() {
 
       $this->post_workOnItem();
@@ -132,8 +133,7 @@ class Manufacturer extends CommonDropdown {
 
    /**
     * @since version 0.85
-    * @see CommonDBTM::post_updateItem()
-   **/
+    */
    function post_updateItem($history = 1) {
 
       $this->post_workOnItem();

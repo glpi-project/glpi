@@ -175,7 +175,9 @@ class ProjectTask extends CommonDBChild {
 
    /**
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -917,10 +919,10 @@ class ProjectTask extends CommonDBChild {
    /**
     * Show tasks of a project
     *
-    * @param $item Project or ProjectTask object
+    * @param Project|ProjectTask $item object
     *
-    * @return nothing
-   **/
+    * @return boolean
+    */
    static function showFor($item) {
       global $DB, $CFG_GLPI;
 
@@ -1251,8 +1253,9 @@ class ProjectTask extends CommonDBChild {
 
    /** Get data to display on GANTT for a project task
     *
-   * @param $ID ID of the project task
-   */
+    * @param $ID ID of the project task
+    * @return array
+    */
    static function getDataToDisplayOnGantt($ID) {
       global $DB;
 
@@ -1344,8 +1347,9 @@ class ProjectTask extends CommonDBChild {
 
    /** Get data to display on GANTT for a project
     *
-   * @param $ID ID of the project
-   */
+    * @param $ID ID of the project
+    * @return array
+    */
    static function getDataToDisplayOnGanttForProject($ID) {
       global $DB;
 
@@ -1541,12 +1545,10 @@ class ProjectTask extends CommonDBChild {
     *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
+    * @param position|string $type position of the item in the time block (in, through, begin or end)
     *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return Nothing (display function)
-    **/
+    * @param complete|int $complete complete display (more details) (default 0)
+    */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 

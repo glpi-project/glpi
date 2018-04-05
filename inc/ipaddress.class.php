@@ -112,7 +112,9 @@ class IPAddress extends CommonDBChild {
 
    /**
     * @param $input
-   **/
+    *
+    * @return array
+    */
    function prepareInput($input) {
 
       // If $input['name'] does not exists, then, don't check anything !
@@ -159,34 +161,22 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       return parent::prepareInputForAdd($this->prepareInput($input));
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
       return parent::prepareInputForUpdate($this->prepareInput($input));
    }
 
 
-   /**
-    * @see CommonDBTM::post_addItem()
-   **/
    function post_addItem() {
       IPAddress_IPNetwork::addIPAddress($this);
       parent::post_addItem();
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
 
       if ((isset($this->oldvalues['name']))
@@ -530,7 +520,6 @@ class IPAddress extends CommonDBChild {
    /**
     * Replace textual representation by its canonical form.
     *
-    * @return nothing (internal class update)
    **/
    function canonicalizeTextual() {
       $this->setAddressFromBinary($this->getBinary());
@@ -545,11 +534,10 @@ class IPAddress extends CommonDBChild {
     * \warning The resulting binary form is created inside the current object
     *
     * @param $address   string   textual (ie. human readable) address
-    * @param $itemtype           type of the item this address has to be attached (default '')
-    * @param $items_id           id of the item this address has to be attached (default -1)
-    *
+    * @param string|type $itemtype type of the item this address has to be attached (default '')
+    * @param id|int $items_id id of the item this address has to be attached (default -1)
     * @return true if the address is valid.
-   **/
+    */
    function setAddressFromString($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
@@ -715,12 +703,11 @@ class IPAddress extends CommonDBChild {
     * one (ie : 2001:db8:0:85a3\::ac1f:8001 rather than 2001:0db8:0000:85a3:0000:0000:ac1f:8001)
     * \warning The resulting binary form is created inside the current object
     *
-    * @param $address   (bytes[4]) binary (ie. SQL requests) address
-    * @param $itemtype  type of the item this address has to be attached (default '')
-    * @param $items_id  id of the item this address has to be attached (default -1)
-    *
+    * @param $address (bytes[4]) binary (ie. SQL requests) address
+    * @param string|type $itemtype type of the item this address has to be attached (default '')
+    * @param id|int $items_id id of the item this address has to be attached (default -1)
     * @return true if the address is valid.
-   **/
+    */
    function setAddressFromBinary($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
@@ -875,13 +862,15 @@ class IPAddress extends CommonDBChild {
    }
 
    /**
-    * Search IP Addresses
+    * Search IP Addresses.
     *
-    * @param $IPaddress the address to search
+    * Each value of the array (corresponding to one IPAddress) is an array of the items from the
+    * master item to the IPAddress
     *
-    * @return (array) each value of the array (corresponding to one IPAddress) is an array of the
-    *                 items from the master item to the IPAddress
-   **/
+    * @param string $IPaddress to search
+    *
+    * @return array
+    */
    static function getItemsByIPAddress($IPaddress) {
       global $DB;
 
@@ -917,12 +906,11 @@ class IPAddress extends CommonDBChild {
    /**
     * Get an Object ID by its IP address (only if one result is found in the entity)
     *
-    * @param $value     the ip address
-    * @param $entity    the entity to look for
+    * @param string $value the ip address
+    * @param integer $entity the entity to look for
     *
-    * @return an array containing the object ID
-    *         or an empty array is no value of serverals ID where found
-   **/
+    * @return array
+    */
    static function getUniqueItemByIPAddress($value, $entity) {
 
       $addressesWithItems = self::getItemsByIPAddress($value);

@@ -47,17 +47,12 @@ class Certificate extends CommonDBTM {
    static $rightname           = "certificate";
    protected $usenotepad       = true;
 
-   /**
-    * @param int $nb
-    * @return string|translated
-    */
+
    static function getTypeName($nb = 0) {
       return _n('Certificate', 'Certificates', $nb);
    }
 
-   /**
-    * Clean certificate items
-    */
+
    function cleanDBonPurge() {
       $cert_item = new Certificate_Item();
       $cert_item->deleteByCriteria(['certificates_id' => $this->fields['id']]);
@@ -312,9 +307,6 @@ class Certificate extends CommonDBTM {
       return $ong;
    }
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && ($input["id"] > 0)) {
@@ -349,7 +341,7 @@ class Certificate extends CommonDBTM {
    /**
     * @param $ID
     * @param array $options
-    * @return bool
+    * @return boolean
     */
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
@@ -515,10 +507,6 @@ class Certificate extends CommonDBTM {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getSpecificMassiveActions()
-    * @param null $checkitem
-    * @return an
     */
    function getSpecificMassiveActions($checkitem = null) {
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -538,9 +526,11 @@ class Certificate extends CommonDBTM {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::showMassiveActionsSubForm()
+    * @see   CommonDBTM::showMassiveActionsSubForm()
+    *
     * @param MassiveAction $ma
-    * @return bool|false
+    *
+    * @return boolean|false
     */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
@@ -571,11 +561,11 @@ class Certificate extends CommonDBTM {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+    * @see   CommonDBTM::processMassiveActionsForOneItemtype()
+    *
     * @param MassiveAction $ma
-    * @param CommonDBTM $item
-    * @param array $ids
-    * @return nothing|void
+    * @param CommonDBTM    $item
+    * @param array         $ids
     */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma,
                                                        CommonDBTM $item,
@@ -676,9 +666,8 @@ class Certificate extends CommonDBTM {
     * Cron action on certificates : alert on expired certificates
     *
     * @param $task to log, if NULL display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return integer 0 : nothing to do 1 : done with success
+    */
    static function cronCertificate($task = null) {
       global $DB, $CFG_GLPI;
 

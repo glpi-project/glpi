@@ -65,11 +65,10 @@ class Infocom extends CommonDBChild {
     *
     * @since version 0.85
     *
-    * @param $item  an object or a string
+    * @param object|string $item
     *
-    * @return true if $object is an object that can have InfoCom
-    *
-   **/
+    * @return boolean
+    */
    static function canApplyOn($item) {
       global $CFG_GLPI;
 
@@ -127,7 +126,10 @@ class Infocom extends CommonDBChild {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // Can exists on template
@@ -155,9 +157,11 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    *
+    * @return boolean
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -174,7 +178,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $item   Supplier  object
-   **/
+    *
+    * @return integer
+    */
    static function countForSupplier(Supplier $item) {
 
       $restrict = "`glpi_infocoms`.`suppliers_id` = '".$item->getField('id') ."'
@@ -207,10 +213,12 @@ class Infocom extends CommonDBChild {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return integer|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -233,11 +241,11 @@ class Infocom extends CommonDBChild {
    /**
     * Retrieve an item from the database for a device
     *
-    * @param $itemtype  type of the device to retrieve infocom
-    * @param $ID        ID of the device to retrieve infocom
+    * @param string $itemtype device to retrieve infocom
+    * @param integer $ID of the device to retrieve infocom
     *
-    * @return true if succeed else false
-   **/
+    * @return boolean
+    */
    function getFromDBforDevice ($itemtype, $ID) {
 
       if ($this->getFromDBByQuery("WHERE `".$this->getTable()."`.`items_id` = '$ID'
@@ -251,9 +259,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
       if (!$this->getFromDBforDevice($input['itemtype'], $input['items_id'])) {
@@ -269,11 +274,10 @@ class Infocom extends CommonDBChild {
    /**
     * Fill, if necessary, automatically some dates when status changes
     *
-    * @param item          CommonDBTM object: the item whose status have changed
-    * @param action_add    true if object is added, false if updated (true by default)
+    * @param CommonDBTM $item object whose status have changed
+    * @param boolean $action_add object is added, false if updated (true by default)
     *
-    * @return nothing
-   **/
+    */
    static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true) {
       global $CFG_GLPI;
 
@@ -316,13 +320,12 @@ class Infocom extends CommonDBChild {
    /**
     * Automatically manage copying one date to another is necessary
     *
-    * @param infocoms   array of item's infocom to modify
-    * @param field            the date to modify (default '')
-    * @param action           the action to peform (copy from another date) (default 0)
-    * @param params     array of additional parameters needed to perform the task
+    * @param array $infocoms of item's infocom to modify
+    * @param string $field date to modify (default '')
+    * @param integer $action action to peform (copy from another date) (default 0)
+    * @param array $params of additional parameters needed to perform the task
     *
-    * @return nothing
-   **/
+    */
    static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = []) {
 
       if (isset($infocoms[$field])) {
@@ -362,7 +365,7 @@ class Infocom extends CommonDBChild {
    /**
     * Return all infocom dates that could be automaticall filled
     *
-    * @return an array with all dates (configuration field & real field)
+    * @return array with all dates (configuration field & real field)
    **/
    static function getAutoManagemendDatesFields() {
 
@@ -375,9 +378,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       //Check if one or more dates needs to be updated
@@ -440,7 +440,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $name
-   **/
+    *
+    * @return array
+    */
    static function cronInfo($name) {
       return ['description' => __('Send alarms on financial and administrative information')];
    }
@@ -450,9 +452,8 @@ class Infocom extends CommonDBChild {
     * Cron action on infocom : alert on expired warranty
     *
     * @param $task to log, if NULL use display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return integer 0 : nothing to do 1 : done with success
+    */
    static function cronInfocom($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -580,7 +581,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $options array
-   **/
+    *
+    * @return integer|string
+    */
    static function dropdownAlert($options) {
 
       $p['name']           = 'alert';
@@ -609,9 +612,10 @@ class Infocom extends CommonDBChild {
     * Dropdown of amortissement type for infocoms
     *
     * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $display   display or get string (true by default)
-   **/
+    * @param default|int $value default value (default 0)
+    * @param boolean|display $display display or get string (true by default)
+    * @return integer|string
+    */
    static function dropdownAmortType($name, $value = 0, $display = true) {
 
       $values = [2 => __('Linear'),
@@ -628,7 +632,9 @@ class Infocom extends CommonDBChild {
     * Get amortissement type name for infocoms
     *
     * @param $value status ID
-   **/
+    *
+    * @return string
+    */
    static function getAmortTypeName($value) {
 
       switch ($value) {
@@ -731,10 +737,9 @@ class Infocom extends CommonDBChild {
     * @param $value      Purchase value
     * @param $duration   Amortise duration
     * @param $fiscaldate Begin of fiscal excercise
-    * @param $buydate    Buy date
-    * @param $usedate    Date of use
-    *
-    * @return array|boolean
+    * @param Buy|string $buydate Buy date
+    * @param Date|string $usedate Date of use
+    * @return array|bool
     */
    static public function linearAmortise($value, $duration, $fiscaldate, $buydate = '', $usedate = '') {
       //Set timezone to UTC; see https://stackoverflow.com/a/40358744
@@ -995,7 +1000,9 @@ class Infocom extends CommonDBChild {
     *
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default 0)
-   **/
+    *
+    * @return boolean
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -1308,7 +1315,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $itemtype
-   **/
+    *
+    * @return array
+    */
    static function getSearchOptionsToAddNew($itemtype = null) {
       $specific_itemtype = '';
       $beforejoin        = [];
@@ -1879,11 +1888,11 @@ class Infocom extends CommonDBChild {
    /**
     * Duplicate infocoms from an item template to its clone
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
-   **/
+    * @param string  $itemtype    of the item
+    * @param integer $oldid       ID of the item to clone
+    * @param integer $newid       ID of the item cloned
+    * @param string  $newitemtype itemtype of the new item (= $itemtype if empty) (default '')
+    */
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
@@ -1916,13 +1925,13 @@ class Infocom extends CommonDBChild {
    /**
     * Get date using a begin date and a period in month
     *
-    * @param $from            date     begin date
+    * @param $from            string     begin date
     * @param $addwarranty     integer  period in months
     * @param $deletenotice    integer  period in months of notice (default 0)
     * @param $color           boolean  if show expire date in red color (false by default)
     *
-    * @return expiration date string
-   **/
+    * @return string expiration date
+    */
    static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false) {
 
       // Life warranty
@@ -1946,8 +1955,13 @@ class Infocom extends CommonDBChild {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    * @see   CommonDBTM::getMassiveActionsForItemtype()
+    *
+    * @param array           $actions
+    * @param string          $itemtype
+    * @param integer         $is_deleted
+    * @param CommonDBTM|null $checkitem
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -1960,11 +1974,6 @@ class Infocom extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 

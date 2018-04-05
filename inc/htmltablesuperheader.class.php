@@ -95,7 +95,9 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
 
    /**
     * @see HTMLTableHeader::getHeaderAndSubHeaderName()
-   **/
+    * @param $header_name
+    * @param $subheader_name
+    */
    function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
 
       $header_name    = $this->getName();

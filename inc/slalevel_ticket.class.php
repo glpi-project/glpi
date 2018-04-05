@@ -45,13 +45,13 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Retrieve an item from the database
     *
-    * @param $ID        ID of the item to get
-    * @param $slatype
+    * @param integer $ID of the item to get
+    * @param string $slaType of SLA
     *
     * @since version 9.1 2 mandatory parameters
     *
-    * @return true if succeed else false
-   **/
+    * @return boolean
+    */
    function getFromDBForTicket($ID, $slaType) {
 
       $query = "LEFT JOIN `glpi_slalevels`
@@ -68,13 +68,12 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Delete entries for a ticket
     *
-    * @param $tickets_id    Ticket ID
-    * @param $type          Type of SLA
+    * @param integer $tickets_id
+    * @param string $slaType of SLA
     *
     * @since 9.1 2 parameters mandatory
     *
-    * @return nothing
-   **/
+    */
    function deleteForTicket($tickets_id, $slaType) {
       global $DB;
 
@@ -97,7 +96,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     *
     * @param $name : task's name
     *
-    * @return arrray of information
+    * @return array of information
    **/
    static function cronInfo($name) {
 
@@ -112,7 +111,7 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : CronTask object
+    * @param CronTask $task object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
@@ -141,13 +140,13 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Do a specific SLAlevel for a ticket
     *
-    * @param $data          array data of an entry of slalevels_tickets
-    * @param $slaType             Type of sla
+    * @param array  $data    of an entry of slalevels_tickets
+    * @param string $slaType Type of sla
     *
     * @since version 9.1   2 parameters mandatory
     *
-    * @return nothing
-   **/
+    * @return void
+    */
    static function doLevelForTicket(array $data, $slaType) {
 
       $ticket         = new Ticket();

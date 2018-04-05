@@ -63,7 +63,9 @@ class RuleRightCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::cleanTestOutputCriterias()
-   */
+    * @param array $output
+    * @return array
+    */
    function cleanTestOutputCriterias(array $output) {
 
       if (isset($output["_rule_process"])) {
@@ -75,7 +77,11 @@ class RuleRightCollection extends RuleCollection {
 
    /**
     * @see RuleCollection::showTestResults()
-   */
+    * @param rule $rule
+    * @param array $output
+    * @param boolean $global_result
+    * @return cleaned|void
+    */
    function showTestResults($rule, array $output, $global_result) {
 
       $actions = $rule->getActions();
@@ -207,11 +213,11 @@ class RuleRightCollection extends RuleCollection {
     *
     * @see RuleCollection::prepareInputDataForProcess()
     *
-    * @param $input  input datas
-    * @param $params extra parameters given
+    * @param array $input  data
+    * @param array $params given
     *
-    * @return an array of attributes
-   **/
+    * @return array
+    */
    function prepareInputDataForProcess($input, $params) {
 
       $rule_parameters = [];

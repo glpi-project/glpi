@@ -58,7 +58,9 @@ class Lock {
     * Display form to unlock fields and links
     *
     * @param CommonDBTM $item the source item
-   **/
+    *
+    * @return boolean
+    */
    static function showForItem(CommonDBTM $item) {
       global $DB;
 
@@ -326,8 +328,10 @@ class Lock {
     * @see CommonGLPI::getTabNameForItem()
     *
     * @param $item               CommonGLPI object
-    * @param $withtemplate       (default 0)
-   **/
+    * @param $withtemplate (default 0)
+    *
+    * @return string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->isDynamic() && $item->canCreate()) {
@@ -338,10 +342,12 @@ class Lock {
 
 
    /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    * @param CommonGLPI      $item         object
+    * @param integer         $tabnum       (default 1)
+    * @param boolean|integer $withtemplate (default 0)
+    *
+    * @return boolean
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->isDynamic()) {
@@ -354,11 +360,11 @@ class Lock {
    /**
     * Get infos to build an SQL query to get locks fields in a table
     *
-    * @param $itemtype       itemtype of the item to look for locked fields
-    * @param $baseitemtype   itemtype of the based item
+    * @param string $itemtype     of the item to look for locked fields
+    * @param string $baseitemtype itemtype of the based item
     *
-    * @return an array which contains necessary informations to build the SQL query
-   **/
+    * @return array
+    */
    static function getLocksQueryInfosByItemType($itemtype, $baseitemtype) {
 
       $condition = [];
@@ -458,7 +464,11 @@ class Lock {
     * @since version 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
+    * @param array $actions
+    * @param $itemtype
+    * @param integer $is_deleted
+    * @param CommonDBTM|null $checkitem
+    */
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -476,7 +486,9 @@ class Lock {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return boolean
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -511,7 +523,10 @@ class Lock {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $baseitem
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $baseitem,
                                                        array $ids) {
       global $DB;

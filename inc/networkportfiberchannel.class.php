@@ -121,7 +121,15 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
-   **/
+    *
+    * @param HTMLTableGroup            $group
+    * @param HTMLTableSuperHeader      $super
+    * @param HTMLTableSuperHeader|null $internet_super
+    * @param HTMLTableHeader|null      $father
+    * @param array                     $options
+    *
+    * @return HTMLTableHeader|null
+    */
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super = null,
                                              HTMLTableHeader $father = null,
@@ -147,7 +155,14 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getPeerInstantiationHTMLTable()
-    **/
+    *
+    * @param NetworkPort        $netport
+    * @param HTMLTableRow       $row
+    * @param HTMLTableCell|null $father
+    * @param array              $options
+    *
+    * @return void
+    */
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                                     HTMLTableCell $father = null,
                                                     array $options = []) {
@@ -170,7 +185,14 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
    /**
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-    **/
+    *
+    * @param NetworkPort        $netport
+    * @param HTMLTableRow       $row
+    * @param HTMLTableCell|null $father
+    * @param array              $options
+    *
+    * @return HTMLTableCell|null
+    */
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father = null, array $options = []) {
 
@@ -218,13 +240,13 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
 
    /**
-    * Transform a port speed from string to integerer and vice-versa
+    * Transform a port speed from string to integer and vice-versa
     *
-    * @param $val       port speed (integer or string)
-    * @param $to_string (boolean) true if we must transform the speed to string
+    * @param integer|string $val       port speed
+    * @param boolean        $to_string true if we must transform the speed to string
     *
-    * @return integer or string (regarding what is requested)
-   **/
+    * @return integer|string (regarding what is requested)
+    */
    static function transformPortSpeed($val, $to_string) {
 
       if ($to_string) {
@@ -263,12 +285,13 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
 
    /**
-    * Get the possible value for Fiberchannel port speed
+    * Get the possible value for Fiberchannel port speed, if not set ask for all values, else for 1
+    * value
     *
-    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    * @param integer|string|null $val
     *
-    * @return array or string
-   **/
+    * @return array|string
+    */
    static function getPortSpeed($val = null) {
 
       $tmp = [0     => '',
@@ -293,7 +316,9 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return array|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -309,9 +334,10 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
    /**
     * @param $field
-    * @param $name            (default '')
-    * @param $values          (defaul '')
+    * @param $name (default '')
+    * @param $values (defaul '')
     * @param $options   array
+    * @return integer|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 

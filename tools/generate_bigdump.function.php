@@ -1446,7 +1446,9 @@ function generateGlobalDropdowns() {
 /** Generate bigdump : get max ID of a table
  *
  * @param $table table name
-**/
+ *
+ * @return mixed
+ */
 function getMaxItem($table) {
    global $DB;
 

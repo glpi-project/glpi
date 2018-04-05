@@ -69,11 +69,6 @@ class Consumable extends CommonDBChild {
    }
 
 
-   /**
-    * since version 0.84
-    *
-    * @see CommonDBTM::getNameField()
-   **/
    static function getNameField() {
       return 'id';
    }
@@ -115,7 +110,10 @@ class Consumable extends CommonDBChild {
 
    /**
     * send back to stock
-   **/
+    * @param array $input
+    * @param integer $history
+    * @return boolean
+    */
    function backToStock(array $input, $history = 1) {
       global $DB;
 
@@ -132,8 +130,6 @@ class Consumable extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::getPreAdditionalInfosForName
    **/
    function getPreAdditionalInfosForName() {
 
@@ -151,11 +147,10 @@ class Consumable extends CommonDBChild {
     * UnLink the consumable identified by $ID
     *
     * @param $ID           consumable identifier
-    * @param $itemtype     itemtype of who we give the consumable (default '')
-    * @param $items_id     ID of the item giving the consumable (default 0)
-    *
+    * @param itemtype|string $itemtype itemtype of who we give the consumable (default '')
+    * @param ID|int $items_id ID of the item giving the consumable (default 0)
     * @return boolean
-   **/
+    */
    function out($ID, $itemtype = '', $items_id = 0) {
       global $DB;
 
@@ -178,9 +173,7 @@ class Consumable extends CommonDBChild {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -209,7 +202,10 @@ class Consumable extends CommonDBChild {
     * @since version 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -361,7 +357,9 @@ class Consumable extends CommonDBChild {
     * Check if a Consumable is New (not used, in stock)
     *
     * @param $cID integer  consumable ID.
-   **/
+    *
+    * @return boolean
+    */
    static function isNew($cID) {
       global $DB;
 
@@ -379,7 +377,9 @@ class Consumable extends CommonDBChild {
     * Check if a consumable is Old (used, not in stock)
     *
     * @param $cID integer  consumable ID.
-   **/
+    *
+    * @return boolean
+    */
    static function isOld($cID) {
       global $DB;
 
@@ -416,7 +416,6 @@ class Consumable extends CommonDBChild {
     *
     * @param $consitem  ConsumableItem object
     *
-    * @return Nothing (displays)
    **/
    static function showAddForm(ConsumableItem $consitem) {
       global $CFG_GLPI;
@@ -450,10 +449,8 @@ class Consumable extends CommonDBChild {
     * Print out the consumables of a defined type
     *
     * @param $consitem           ConsumableItem object
-    * @param $show_old  boolean  show old consumables or not. (default 0)
-    *
-    * @return Nothing (displays)
-   **/
+    * @param boolean|integer $show_old boolean  show old consumables or not. (default 0)
+    */
    static function showForConsumableItem(ConsumableItem $consitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
 
@@ -737,8 +734,9 @@ class Consumable extends CommonDBChild {
 
 
    /**
-    * @param $item   string  ConsumableItem object
-   **/
+    * @param ConsumableItem|string $item string  ConsumableItem object
+    * @return integer
+    */
    static function countForConsumableItem(ConsumableItem $item) {
 
       return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);

@@ -58,39 +58,21 @@ class Computer extends CommonDBTM {
    protected $usenotepad               = true;
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb  integer  number of item in the type (default 0)
-   **/
    static function getTypeName($nb = 0) {
       return _n('Computer', 'Computers', $nb);
    }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since version 0.84
-   **/
    function useDeletedToLockIfDynamic() {
       return false;
    }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since version 0.85
-   **/
    static function getMenuShorcut() {
       return 'o';
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -136,9 +118,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
       global $DB, $CFG_GLPI;
 
@@ -247,9 +226,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && ($input["id"] > 0)) {
@@ -350,7 +326,7 @@ class Computer extends CommonDBTM {
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
+    * @return void (display)
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
@@ -546,7 +522,7 @@ class Computer extends CommonDBTM {
    /**
     * Return the linked items (in computers_items)
     *
-    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+    * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
     * @since version 0.84.4
    **/
    function getLinkedItems() {
@@ -566,9 +542,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();

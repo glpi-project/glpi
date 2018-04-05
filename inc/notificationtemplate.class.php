@@ -182,10 +182,10 @@ class NotificationTemplate extends CommonDBTM {
    /**
     * Display templates available for an itemtype
     *
-    * @param $name      the dropdown name
-    * @param $itemtype  display templates for this itemtype only
-    * @param $value     the dropdown's default value (0 by default)
-   **/
+    * @param string  $name     the dropdown name
+    * @param string  $itemtype display templates for this itemtype only
+    * @param integer $value    the dropdown's default value (0 by default)
+    */
    static function dropdownTemplates($name, $itemtype, $value = 0) {
       global $DB;
 
@@ -198,7 +198,9 @@ class NotificationTemplate extends CommonDBTM {
 
    /**
     * @param $options
-   **/
+    *
+    * @return integer
+    */
    function getAdditionnalProcessOption($options) {
 
       //Additionnal option can be given for template processing
@@ -343,7 +345,9 @@ class NotificationTemplate extends CommonDBTM {
    /**
     * @param $string
     * @param $data
-   **/
+    *
+    * @return array|mixed|null|resource|string
+    */
    static function process($string, $data) {
 
       $offset = $new_offset = 0;
@@ -421,7 +425,9 @@ class NotificationTemplate extends CommonDBTM {
    /**
     * @param $string
     * @param $data
-   **/
+    *
+    * @return mixed
+    */
    static function processIf($string, $data) {
 
       if (preg_match_all("/##IF([a-z\.]*)[=]?(.*?)##/i", $string, $out)) {
@@ -484,7 +490,9 @@ class NotificationTemplate extends CommonDBTM {
 
    /**
     * @param $language
-   **/
+    *
+    * @return boolean|null|string[]
+    */
    function getByLanguage($language) {
       global $DB;
 

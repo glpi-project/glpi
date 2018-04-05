@@ -183,7 +183,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
     *
     * @param $method
-   **/
+    *
+    * @return boolean
+    */
    static function canChild($method) {
 
       return static::canConnexity($method, static::$checkParentRights, static::$itemtype,
@@ -230,9 +232,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * \brief recursively display the items of this
     *
-    * @param $recursiveItems     array of the items of the current elements (see recursivelyGetItems())
-    * @param $elementToDisplay         what to display : 'Type', 'Name', 'Link'
-   **/
+    * @param array  $recursiveItems   of the current elements (see recursivelyGetItems())
+    * @param string $elementToDisplay what to display : 'Type', 'Name', 'Link'
+    */
    static function displayRecursiveItems(array $recursiveItems, $elementToDisplay) {
 
       if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
@@ -267,7 +269,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @since version 0.84
     *
-    * @return an array containing all the items
+    * @return array containing all the items
    **/
    function recursivelyGetItems() {
 
@@ -365,9 +367,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since version 0.84
-   **/
    function addNeededInfoToInput($input) {
 
       // is entity missing and forwarding on ?
@@ -415,7 +414,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
    /**
     * @since version 0.84
-   **/
+    */
    function prepareInputForUpdate($input) {
 
       if (!is_array($input)) {
@@ -435,15 +434,14 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Get the history name of item
     *
-    * @param $item the other item
+    * @param CommonDBTM $item
     * @param $case : can be overwrite by object
     *              - 'add' when this CommonDBChild is added (to and item)
     *              - 'update item previous' transfert : this is removed from the old item
     *              - 'update item next' transfert : this is added to the new item
     *              - 'delete' when this CommonDBChild is remove (from an item)
-    *
-    * @return (string) the name of the entry for the database (ie. : correctly slashed)
-   **/
+    * @return string (string) the name of the entry for the database (ie. : correctly slashed)
+    */
    function getHistoryNameForItem(CommonDBTM $item, $case) {
 
       return $this->getNameID(['forceid'    => true,
@@ -451,11 +449,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
 
-   /**
-    * Actions done after the ADD of the item in the database
-    *
-    * @return nothing
-   **/
    function post_addItem() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -477,14 +470,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * Actions done after the UPDATE of the item in the database
-    *
     * @since version 0.84
-    *
-    * @param $history store changes history ? (default 1)
-    *
-    * @return nothing
-   **/
+    */
    function post_updateItem($history = 1) {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -537,11 +524,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
    }
 
-   /**
-    * Actions done after the DELETE of the item in the database
-    *
-    *@return nothing
-   **/
    function post_deleteFromDB() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -569,12 +551,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    *  Actions done when item flag deleted is set to an item
-    *
     * @since version 0.84
-    *
-    * @return nothing
-   **/
+    */
    function cleanDBonMarkDeleted() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -599,13 +577,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * Actions done after the restore of the item
-    *
     * @since version 0.84
-    *
-    * @return nothing
-   **/
-
+    */
    function post_restoreItem() {
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
           || !static::$logs_for_parent) {
@@ -635,12 +608,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @see showAddChildButtonForItemForm()
     *
-    * @param $field_name         the name of the HTML field inside Item's form
-    * @param $child_count_js_var the name of the javascript variable containing current child number
+    * @param string $field_name of the HTML field inside Item's form
+    * @param string $child_count_js_var of the javascript variable containing current child number
     *                            of items
-    *
-    * @return (string) the code
-   **/
+    * @return string
+    */
    static function getJSCodeToAddForItemChild($field_name, $child_count_js_var) {
       return "<input type=\'text\' size=\'40\' ". "name=\'" . $field_name .
              "[-'+$child_count_js_var+']\'>";
@@ -654,12 +626,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @see showChildsForItemForm()
     *
-    * @param $canedit     true if we can edit the child
-    * @param $field_name  the name of the HTML field inside Item's form
-    * @param $id          id of the child
-    *
-    * @return nothing (display only)
-   **/
+    * @param boolean $canedit true if we can edit the child
+    * @param string $field_name of the HTML field inside Item's form
+    * @param integer $id of the child
+    */
    function showChildForItemForm($canedit, $field_name, $id) {
 
       if ($this->isNewID($this->getID())) {
@@ -750,12 +720,12 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @todo study if we cannot use these methods for the user emails
     * @see showAddChildButtonForItemForm()
     *
-    * @param $item         CommonDBTM object the item on which to add the current CommenDBChild
-    * @param $field_name   the name of the HTML field inside Item's form
-    * @param $canedit      (default NULL) NULL to use default behaviour
+    * @param CommonDBTM $item object the item on which to add the current CommenDBChild
+    * @param string $field_name of the HTML field inside Item's form
+    * @param null|boolean $canedit (default NULL) NULL to use default behaviour
     *
-    * @return nothing (display only)
-   **/
+    * @return boolean
+    */
    static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null) {
       global $DB, $CFG_GLPI;
 

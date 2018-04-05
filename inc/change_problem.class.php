@@ -71,7 +71,10 @@ class Change_Problem extends CommonDBRelation{
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
@@ -115,7 +118,9 @@ class Change_Problem extends CommonDBRelation{
     * Show tickets for a problem
     *
     * @param $problem Problem object
-   **/
+    *
+    * @return boolean
+    */
    static function showForProblem(Problem $problem) {
       global $DB, $CFG_GLPI;
 
@@ -217,7 +222,9 @@ class Change_Problem extends CommonDBRelation{
     * Show problems for a change
     *
     * @param $change Change object
-   **/
+    *
+    * @return boolean
+    */
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI;
 

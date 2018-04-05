@@ -83,7 +83,6 @@ class Auth extends CommonGLPI {
    /**
     * Constructor
     *
-    * @return void
     */
    function __construct() {
       $this->user = new User();
@@ -564,12 +563,13 @@ class Auth extends CommonGLPI {
    /**
     * Manage use authentication and initialize the session
     *
-    * @param string  $login_name     Login
-    * @param string  $login_password Password
-    * @param boolean $noauto         (false by default)
+    * @param string $login_name Login
+    * @param string $login_password Password
+    * @param boolean $noauto (false by default)
     *
+    * @param boolean $remember_me
     * @return boolean (success)
-   */
+    */
    function Login($login_name, $login_password, $noauto = false, $remember_me = false) {
       global $DB, $CFG_GLPI;
 
@@ -1068,10 +1068,10 @@ class Auth extends CommonGLPI {
     * Check alternate authentication systems
     *
     * @param boolean $redirect        need to redirect (true) or get type of Auth system which match
-    *                                (false by default)
+    *                                 (false by default)
     * @param string  $redirect_string redirect string if exists (default '')
     *
-    * @return void|integer nothing if redirect is true, else Auth system ID
+    * @return boolean|integer nothing if redirect is true, else Auth system ID
     */
    static function checkAlternateAuthSystems($redirect = false, $redirect_string = '') {
       global $CFG_GLPI;
@@ -1140,7 +1140,7 @@ class Auth extends CommonGLPI {
     *
     * @param string $redirect redirect string if exists, if null, check in $_POST or $_GET
     *
-    * @return void|boolean nothing if redirect is true, else false
+    * @return boolean
     */
    static function redirectIfAuthenticated($redirect = null) {
       global $CFG_GLPI;
@@ -1179,8 +1179,7 @@ class Auth extends CommonGLPI {
 
    /** Display refresh button in the user page
     *
-    * @param object $user User object
-    *
+    * @param User $user object
     * @return void
     */
    static function showSynchronizationForm(User $user) {

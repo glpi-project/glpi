@@ -295,14 +295,14 @@ abstract class LevelAgreementLevel extends RuleTicket {
    /**
     * Dropdown execution time for SLA
     *
-    * @param $name      string   name of the select
-    * @param $options   array    of possible options:
-    *       - value : default value
-    *       - max_time : max time to use
-    *       - used : already used values
+    * @param string $name    of the select
+    * @param array  $options possible options:
+    *                        - value : default value
+    *                        - max_time : max time to use
+    *                        - used : already used values
     *
-    * @return nothing
-   **/
+    * @return integer|string
+    */
    static function dropdownExecutionTime($name, $options = []) {
       $p['value']    = '';
       $p['max_time'] = 4*DAY_TIMESTAMP;
@@ -321,17 +321,16 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
       $possible_values = self::getExecutionTimes($p);
 
-      $p['value'] = $p['value'];
       return Dropdown::showFromArray($name, $possible_values, $p);
    }
 
    /**
     * Get already used execution time for a OLA
     *
-    * @param $olas_id   integer  id of the OLA
+    * @param integer $las_id of the OLA
     *
-    * @return array of already used execution times
-   **/
+    * @return array
+    */
    static function getAlreadyUsedExecutionTime($las_id) {
       global $DB;
 

@@ -130,7 +130,9 @@ class CalendarSegment extends CommonDBChild {
     * @param $begin_time      begin time to check
     * @param $end_day         end day number
     * @param $end_time        end time to check
-   **/
+    *
+    * @return array
+    */
    static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time) {
       global $DB;
 
@@ -182,13 +184,13 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Add a delay of a starting hour in a specific day
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
-    * @param $begin_time      begin time
-    * @param $delay           timestamp delay to add
+    * @param integer $calendars_id
+    * @param integer $day number
+    * @param mixed $begin_time begin time
+    * @param mixed $delay timestamp delay to add
     *
-    * @return timestamp value
-   **/
+    * @return boolean|string timestamp value
+    */
    static function addDelayInDay($calendars_id, $day, $begin_time, $delay) {
       global $DB;
 
@@ -230,11 +232,11 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get first working hour of a day
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
+    * @param integer $calendars_id id of the calendar
+    * @param integer $day          number
     *
-    * @return time value
-   **/
+    * @return boolean|mixed
+    */
    static function getFirstWorkingHour($calendars_id, $day) {
       global $DB;
 
@@ -257,11 +259,11 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get last working hour of a day
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
+    * @param integer $calendars_id id of the calendar
+    * @param integer $day          number
     *
-    * @return time value
-   **/
+    * @return boolean|mixed
+    */
    static function getLastWorkingHour($calendars_id, $day) {
       global $DB;
 
@@ -284,12 +286,12 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Is the hour passed is a working hour ?
     *
-    * @param $calendars_id    id of the calendar
-    * @param $day             day number
-    * @param $hour            hour (Format HH:MM::SS)
+    * @param integer $calendars_id id of the calendar
+    * @param integer $day          number
+    * @param string  $hour         hour (Format HH:MM::SS)
     *
     * @return boolean
-   **/
+    */
    static function isAWorkingHour($calendars_id, $day, $hour) {
       global $DB;
 
@@ -314,7 +316,9 @@ class CalendarSegment extends CommonDBChild {
     * Show segments of a calendar
     *
     * @param $calendar Calendar object
-   **/
+    *
+    * @return boolean
+    */
    static function showForCalendar(Calendar $calendar) {
       global $DB, $CFG_GLPI;
 
@@ -406,6 +410,11 @@ class CalendarSegment extends CommonDBChild {
    }
 
 
+   /**
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {

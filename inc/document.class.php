@@ -189,9 +189,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI, $DB;
 
@@ -316,9 +313,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       // security (don't accept filename from $_POST)
@@ -348,7 +342,6 @@ class Document extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -475,10 +468,10 @@ class Document extends CommonDBTM {
    /**
     * Get download link for a document
     *
-    * @param $params    additonal parameters to be added to the link (default '')
-    * @param $len       maximum length of displayed string (default 20)
-    *
-   **/
+    * @param additonal|string $params additonal parameters to be added to the link (default '')
+    * @param integer|maximum $len maximum length of displayed string (default 20)
+    * @return string
+    */
    function getDownloadLink($params = '', $len = 20) {
       global $DB,$CFG_GLPI;
 
@@ -768,9 +761,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -1212,7 +1202,7 @@ class Document extends CommonDBTM {
     * @param $dir       dir to search a free path for the file
     * @param $sha1sum   SHA1 of the file
     *
-    * @return nothing
+    * @return void
    **/
    static function getUploadFileValidLocationName($dir, $sha1sum) {
       global $CFG_GLPI;
@@ -1291,8 +1281,10 @@ class Document extends CommonDBTM {
    /**
     * Is this file a valid file ? check based on file extension
     *
-    * @param $filename filename to clean
-   **/
+    * @param string $filename filename to clean
+    *
+    * @return string
+    */
    static function isValidDoc($filename) {
       global $DB;
 
@@ -1329,15 +1321,16 @@ class Document extends CommonDBTM {
     * Make a select box for link document
     *
     * Parameters which could be used in options array :
-    *    - name : string / name of the select (default is documents_id)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *
-    * @param $options array of possible options
+    * @param array $options Parameters which could be used:
+    *                       - name : string / name of the select (default is documents_id)
+    *                       - entity : integer or array / restrict to a defined entity or array of
+    *                       entities (default -1 : no restriction)
+    *                       - used : array / Already used items ID: not to display in dropdown
+    *                       (default empty)
     *
-    * @return nothing (print out an HTML select box)
-   **/
+    * @return integer|string|void
+    */
    static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
 
@@ -1402,11 +1395,6 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
       global $CFG_GLPI;

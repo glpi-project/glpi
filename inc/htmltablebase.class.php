@@ -62,9 +62,11 @@ abstract class HTMLTableBase  {
 
 
    /**
-    * @param $header_object         HTMLTableHeader object
-    * @param $allow_super_header    (false by default
-   **/
+    * @param HTMLTableHeader $header_object
+    * @param boolean $allow_super_header (false by default
+    * @return HTMLTableHeader
+    * @throws Exception
+    */
    function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false) {
 
       if (!$header_object instanceof HTMLTableHeader) {
@@ -111,20 +113,15 @@ abstract class HTMLTableBase  {
     *
     * Depending of "$this" type, this head will be an HTMLTableSuperHeader of a HTMLTableSubHeader
     *
-    * @param $name      string            The name that can be refered by getHeaderByName()
-    * @param $content   string or array   The content (see HTMLTableEntity#content) of the header
-    * @param $super                       HTMLTableSuperHeader object:
-    *                                     the header that contains this new header only used
-    *                                     for HTMLTableSubHeader (default NULL)
-    *                                     (ie: $this instanceof HTMLTableGroup)
-    * @param $father                      HTMLTableHeader object: the father of the current header
-    *                                     (default NULL)
+    * @param string $name that can be refered by getHeaderByName()
+    * @param string|array $content of the header (see HTMLTableEntity#content)
+    * @param HTMLTableSuperHeader $super object  that contains this new header only used for
+    *                      HTMLTableSubHeader (default NULL) (ie: $this instanceof HTMLTableGroup)
+    * @param HTMLTableHeader $father object of the current header (default NULL)
     *
-    * @exception Exception                If there is no super header while creating a sub
-    *                                     header or a super header while creating a super one
-    *
-    * @return the HTMLTableHeader        that have been created
-   **/
+    * @return HTMLTableHeader
+    * @throws Exception
+    */
    function addHeader($name, $content, HTMLTableSuperHeader $super = null,
                       HTMLTableHeader $father = null) {
 
@@ -145,7 +142,9 @@ abstract class HTMLTableBase  {
 
    /**
     * @param $name
-   **/
+    *
+    * @return mixed
+    */
    function getSuperHeaderByName($name) {
       return $this->getHeaderByName($name, '');
    }
@@ -154,7 +153,9 @@ abstract class HTMLTableBase  {
    /**
     * @param $name
     * @param $sub_name (default NULL)
-   **/
+    * @return mixed
+    * @throws HTMLTableUnknownHeader
+    */
    function getHeaderByName($name, $sub_name = null) {
 
       if (is_string($sub_name)) {
@@ -174,8 +175,10 @@ abstract class HTMLTableBase  {
 
 
    /**
-    * @param $header_name  (default '')
-   **/
+    * @param string $header_name (default '')
+    * @return array|mixed
+    * @throws HTMLTableUnknownHeaders
+    */
    function getHeaders($header_name = '') {
 
       if (empty($header_name)) {
@@ -189,8 +192,10 @@ abstract class HTMLTableBase  {
 
 
    /**
-    * @param $header_name  (default '')
-   **/
+    * @param string $header_name (default '')
+    * @return array|mixed
+    * @throws HTMLTableUnknownHeadersOrder
+    */
    function getHeaderOrder($header_name = '') {
 
       if (empty($header_name)) {

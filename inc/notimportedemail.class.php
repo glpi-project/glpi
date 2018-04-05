@@ -64,9 +64,6 @@ class NotImportedEmail extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -85,7 +82,9 @@ class NotImportedEmail extends CommonDBTM {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return boolean
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -99,11 +98,6 @@ class NotImportedEmail extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -218,7 +212,9 @@ class NotImportedEmail extends CommonDBTM {
 
    /**
     * @param $reason_id
-   **/
+    *
+    * @return mixed|string
+    */
    static function getReason($reason_id) {
 
       $tab = self::getAllReasons();
@@ -248,7 +244,9 @@ class NotImportedEmail extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return mixed|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -271,10 +269,12 @@ class NotImportedEmail extends CommonDBTM {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return integer|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {

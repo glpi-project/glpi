@@ -111,9 +111,6 @@ class PlanningRecall extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
 
       $alert = new Alert();
@@ -126,7 +123,9 @@ class PlanningRecall extends CommonDBChild {
     * Manage recall set
     *
     * @param $data array of data to manage
-   **/
+    *
+    * @return boolean
+    */
    static function manageDatas(array $data) {
 
       // Check data informations
@@ -224,7 +223,6 @@ class PlanningRecall extends CommonDBChild {
     *    - value    : integer preselected value for before_time
     *    - field    : string  field used as time mark (default begin)
     *
-    * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
    static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
@@ -297,7 +295,6 @@ class PlanningRecall extends CommonDBChild {
     *    - value    : integer preselected value for before_time
     *    - field    : string  field used as time mark (default begin)
     *
-    * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
    static function specificForm($options = []) {
       global $CFG_GLPI;
@@ -349,7 +346,9 @@ class PlanningRecall extends CommonDBChild {
     * Cron action on contracts : alert depending of the config : on notice and expire
     *
     * @param $task for log, if NULL display (default NULL)
-   **/
+    *
+    * @return integer
+    */
    static function cronPlanningRecall($task = null) {
       global $DB, $CFG_GLPI;
 

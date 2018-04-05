@@ -201,6 +201,12 @@ class AuthLDAP extends CommonDBTM {
       return $input;
    }
 
+   /**
+    * @param string $field
+    * @param array|string $values
+    * @param array $options
+    * @return array|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -213,6 +219,13 @@ class AuthLDAP extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
+   /**
+    * @param string $field
+    * @param string $name
+    * @param string $values
+    * @param array $options
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -228,6 +241,11 @@ class AuthLDAP extends CommonDBTM {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+   /**
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
       $input = $ma->getInput();
 
@@ -832,6 +850,10 @@ class AuthLDAP extends CommonDBTM {
       echo "</div>";
    }
 
+   /**
+    * @param array $options
+    * @return array
+    */
    function defineTabs($options = []) {
 
       $ong = [];
@@ -842,6 +864,9 @@ class AuthLDAP extends CommonDBTM {
       return $ong;
    }
 
+   /**
+    * @return array
+    */
    function getSearchOptionsNew() {
       $tab = [];
 
@@ -1664,7 +1689,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get the list of LDAP users to add/synchronize
     *
-    * @param array   $options       possible options:
+    * @param array $options possible:
     *          - authldaps_id ID of the server to use
     *          - mode user to synchronise or add?
     *          - ldap_filter ldap filter to use
@@ -1673,8 +1698,8 @@ class AuthLDAP extends CommonDBTM {
     *          - begin_date begin date to time limit
     *          - end_date end date to time limit
     *          - script true if called by an external script
-    * @param type    $results       result stats
-    * @param boolean $limitexceeded limit exceeded exception
+    * @param array $results stats
+    * @param boolean $limitexceeded exception
     *
     * @return array of the user
     */
@@ -2478,16 +2503,17 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
-    * Connect to a LDAP server
+    * Connect to a LDAP server,
+    * get resource link to the LDAP server, false if connection failed
     *
-    * @param string  $host          LDAP host to connect
-    * @param string  $port          port to use
-    * @param string  $login         login to use (default '')
-    * @param string  $password      password to use (default '')
-    * @param boolean $use_tls       use a TLS connection? (false by default)
+    * @param string $host LDAP host to connect
+    * @param string $port port to use
+    * @param string $login login to use (default '')
+    * @param string $password password to use (default '')
+    * @param boolean $use_tls use a TLS connection? (false by default)
     * @param integer $deref_options deref options used
     *
-    * @return resource link to the LDAP server : false if connection failed
+    * @return boolean|resource
     */
    static function connectToServer($host, $port, $login = "", $password = "",
                                    $use_tls = false, $deref_options = 0) {
@@ -2996,8 +3022,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Show import user form
     *
-    * @param object $authldap AuthLDAP object
-    *
+    * @param AuthLDAP|object $authldap AuthLDAP object
     * @return void
     */
    static function showUserImportForm(AuthLDAP $authldap) {
@@ -3205,7 +3230,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Build LDAP filter
     *
-    * @param resource $authldap AuthLDAP object
+    * @param AuthLDAP $authldap object
     *
     * @return string
     */
@@ -3285,8 +3310,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Search user
     *
-    * @param resource $authldap AuthLDAP object
-    *
+    * @param AuthLDAP|resource $authldap AuthLDAP object
     * @return void
     */
    static function searchUser(AuthLDAP $authldap) {
@@ -3601,8 +3625,8 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get a LDAP field value
     *
-    * @param $infos LDAP entry infos
-    * @param $field Field name to retrieve
+    * @param array $infos LDAP entry
+    * @param string $field name to retrieve
     *
     * @return string
     */
@@ -3673,8 +3697,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Converts binary objectguid to string representation
     *
-    * @param mixed $binary_guid Binary objectguid from AD
-    *
+    * @param string $guid_bin
     * @return string
     */
    public static function guidToString($guid_bin) {
@@ -3694,9 +3717,9 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Check if text representation of an objectguid is valid
     *
-    * @param string $string Strign representation
-    *
+    * @param $guid_str
     * @return boolean
+    *
     */
    public static function isValidGuid($guid_str) {
       return (bool) preg_match('/^([0-9a-fA-F]){8}(-([0-9a-fA-F]){4}){3}-([0-9a-fA-F]){12}$/', $guid_str);
@@ -3706,7 +3729,7 @@ class AuthLDAP extends CommonDBTM {
     * Get the list of LDAP users to add/synchronize
     * When importing, already existing users will be filtered
     *
-    * @param array   $options       possible options:
+    * @param array $values possible options:
     *          - authldaps_id ID of the server to use
     *          - mode user to synchronise or add?
     *          - ldap_filter ldap filter to use
@@ -3715,9 +3738,8 @@ class AuthLDAP extends CommonDBTM {
     *          - begin_date begin date to time limit
     *          - end_date end date to time limit
     *          - script true if called by an external script
-    * @param type    $results       result stats
-    * @param boolean $limitexceeded limit exceeded exception
-    *
+    * @param $results
+    * @param boolean $limitexceeded exception
     * @return array
     */
    public static function getUsers($values, &$results, &$limitexceeded) {

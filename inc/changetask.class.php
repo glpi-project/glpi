@@ -45,7 +45,7 @@ class ChangeTask extends CommonITILTask {
 
    /**
     * @since version 0.84
-   **/
+    */
    static function getTypeName($nb = 0) {
       return _n('Change task', 'Change tasks', $nb);
    }
@@ -175,12 +175,10 @@ class ChangeTask extends CommonITILTask {
     *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
+    * @param position|string $type position of the item in the time block (in, through, begin or end)
     *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
-    *
-    * @return Nothing (display function)
-   **/
+    * @param complete|int $complete complete display (more details) (default 0)
+    */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }

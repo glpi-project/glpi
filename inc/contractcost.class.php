@@ -53,9 +53,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (!empty($input['begin_date'])
@@ -70,9 +67,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       if (!empty($input['begin_date'])
@@ -89,7 +83,10 @@ class ContractCost extends CommonDBChild {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
@@ -107,8 +104,9 @@ class ContractCost extends CommonDBChild {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    * @return boolean
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -252,7 +250,9 @@ class ContractCost extends CommonDBChild {
     * Get last datas for a contract
     *
     * @param $contracts_id        integer  ID of the contract
-   **/
+    *
+    * @return array|null
+    */
    function getLastCostForContract($contracts_id) {
       global $DB;
 
@@ -273,7 +273,9 @@ class ContractCost extends CommonDBChild {
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
-   **/
+    *
+    * @return boolean
+    */
    function showForm($ID, $options = []) {
 
       if ($ID > 0) {
@@ -329,10 +331,8 @@ class ContractCost extends CommonDBChild {
     * Print the contract costs
     *
     * @param $contract               Contract object
-    * @param $withtemplate  boolean  Template or basic item (default 0)
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
+    */
    static function showForContract(Contract $contract, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 

@@ -60,7 +60,10 @@ abstract class CommonITILCost extends CommonDBChild {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
-   **/
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * @return array|string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
@@ -79,9 +82,11 @@ abstract class CommonITILCost extends CommonDBChild {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    *
+    * @return boolean
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForObject($item, $withtemplate);
@@ -328,7 +333,9 @@ abstract class CommonITILCost extends CommonDBChild {
     * Get total actiNULL        11400   0.0000  0.0000  0.0000  on time used on costs for an item
     *
     * @param $items_id        integer  ID of the item
-   **/
+    *
+    * @return integer|mixed
+    */
    function getTotalActionTimeForItem($items_id) {
       global $DB;
 
@@ -348,7 +355,9 @@ abstract class CommonITILCost extends CommonDBChild {
     * Get last datas for an item
     *
     * @param $items_id        integer  ID of the item
-   **/
+    *
+    * @return array|null
+    */
    function getLastCostForItem($items_id) {
       global $DB;
 
@@ -370,7 +379,9 @@ abstract class CommonITILCost extends CommonDBChild {
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
-   **/
+    *
+    * @return boolean
+    */
    function showForm($ID, $options = []) {
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -465,10 +476,9 @@ abstract class CommonITILCost extends CommonDBChild {
     * Print the item costs
     *
     * @param $item                  CommonITILObject object or Project
-    * @param $withtemplate boolean  Template or basic item (default 0)
-    *
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
     * @return total cost
-   **/
+    */
    static function showForObject($item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 

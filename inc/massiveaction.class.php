@@ -65,12 +65,12 @@ class MassiveAction {
     *
     * We trust all previous stages: we don't redo the checks
     *
-    * @param $POST  something like $_POST
-    * @param $GET   something like $_GET
-    * @param $stage the current stage
+    * @param array $POST
+    * @param array $GET
+    * @param string $stage current stage
     *
-    * @return nothing (it is a constructor).
-   **/
+    * @throws Exception
+    */
    function __construct (array $POST, array $GET, $stage) {
       global $CFG_GLPI;
 
@@ -322,7 +322,7 @@ class MassiveAction {
    /**
     * Get current action
     *
-    * @return a string with the current action or NULL if we are at initial stage
+    * @return mixed the current action or NULL if we are at initial stage
    **/
    function getAction() {
 
@@ -336,7 +336,7 @@ class MassiveAction {
    /**
     * Get all items on which this action must work
     *
-    * @return array of the items (empty if initial state)
+    * @return mixed array of the items (empty if initial state)
    **/
    function getItems() {
 
@@ -350,7 +350,7 @@ class MassiveAction {
    /**
     * Get remaining items
     *
-    * @return array of the remaining items (empty if not in process state)
+    * @return mixed array of the remaining items (empty if not in process state)
    **/
    function getRemainings() {
 
@@ -379,7 +379,9 @@ class MassiveAction {
 
    /**
     * @param $POST
-   **/
+    *
+    * @return null|object
+    */
    function getCheckItem($POST) {
 
       if (!isset($this->check_item)) {
@@ -405,7 +407,6 @@ class MassiveAction {
    /**
     * Add hidden fields containing all the checked items to the current form
     *
-    * @return nothing (display)
    **/
    function addHiddenFields() {
 
@@ -434,9 +435,9 @@ class MassiveAction {
     * window), then display a dropdown to select the itemtype.
     * This is only usefull in case of itemtype specific massive actions (update, ...)
     *
-    * @param $display_selector can we display the itemtype selector ?
+    * @param boolean $display_selector can we display the itemtype selector ?
     *
-    * @return the itemtype or false if we cannot define it (and we cannot display the selector)
+    * @return string|boolean itemtype or false if we cannot define it (and we cannot display the selector)
    **/
    function getItemtype($display_selector) {
 
@@ -489,12 +490,12 @@ class MassiveAction {
    /**
     * Get the standard massive actions
     *
-    * @param $item                   the item for which we want the massive actions
-    * @param $is_deleted             massive action for deleted items ?   (default 0)
-    * @param $checkitem              link item to check right              (default NULL)
+    * @param mixed           $item       for which we want the massive actions
+    * @param integer|        $is_deleted massive action for deleted items ? (default 0)
+    * @param CommonDBTM|null $checkitem  link to check right (default NULL)
     *
-    * @return an array of massive actions or false if $item is not valid
-   **/
+    * @return array|boolean massive actions or false if $item is not valid
+    */
    static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null) {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -612,7 +613,6 @@ class MassiveAction {
    /**
     * Main entry of the modal window for massive actions
     *
-    * @return nothing: display
    **/
    function showSubForm() {
       global $CFG_GLPI;
@@ -630,7 +630,6 @@ class MassiveAction {
     /**
     * Class-specific method used to show the fields to specify the massive action
     *
-    * @return nothing (display only)
    **/
    function showDefaultSubForm() {
       echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
@@ -638,8 +637,12 @@ class MassiveAction {
 
 
    /**
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * Class-specific method used to show the fields to specify the massive action
+    *
+    * @param MassiveAction $ma the current massive action object
+    *
+    * @return boolean false if parameters displayed ?
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -910,7 +913,6 @@ class MassiveAction {
     *
     * Display and update the progress bar. If the delay is more than 1 second, then activate it
     *
-    * @return nothing (display only)
    **/
    function updateProgressBars() {
 
@@ -953,7 +955,7 @@ class MassiveAction {
     * Process the massive actions for all passed items. This a switch between different methods:
     * new system, old one and plugins ...
     *
-    * @return an array of results (ok, ko, noright counts, redirect ...)
+    * @return array of results (ok, ko, noright counts, redirect ...)
    **/
    function process() {
 
@@ -997,8 +999,12 @@ class MassiveAction {
 
 
    /**
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * Class specific execution of the massive action (new system) by itemtypes
+    *
+    * @param MassiveAction $ma   the current massive action object
+    * @param CommonDBTM    $item on which apply the massive action
+    * @param array         $ids  of the item on which apply the action
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $CFG_GLPI;
@@ -1227,9 +1233,7 @@ class MassiveAction {
     * Set the page to redirect for specific actions. By default, call previous page.
     * This should be call once for the given action.
     *
-    * @param $redirect link to the page
-    *
-    * @return nothing
+    * @param string $redirect link to the page
    **/
    function setRedirect($redirect) {
       $this->redirect = $redirect;
@@ -1239,9 +1243,7 @@ class MassiveAction {
    /**
     * add a message to display when action is done.
     *
-    * @param $message the message to add
-    *
-    * @return nothing
+    * @param string $message to add
    **/
    function addMessage($message) {
       $this->results['messages'][] = $message;
@@ -1252,14 +1254,15 @@ class MassiveAction {
     * Set an item as done. If the delay is too long, then reload the page to continue the action.
     * Update the progress if necessary.
     *
-    * @param $itemtype    the type of the item that has been done
-    * @param $id          id or array of ids of the item(s) that have been done.
-    * @param $result:
-    *                self::NO_ACTION      in case of no specific action (used internally for older actions)
-    *                MassiveAction::ACTION_OK      everything is OK for the action
-    *                MassiveAction::ACTION_KO      something went wrong for the action
-    *                MassiveAction::ACTION_NORIGHT not anough right for the action
-   **/
+    * @param string        $itemtype the type of the item that has been done
+    * @param integer|array $id       of the item(s) that have been done.
+    * @param integer       $result   possible values:
+    *                                self::NO_ACTION in case of no specific action (used internally
+    *                                for older actions) MassiveAction::ACTION_OK everything is OK
+    *                                for the action MassiveAction::ACTION_KO something went wrong
+    *                                for the action MassiveAction::ACTION_NORIGHT not anough right
+    *                                for the action
+    **/
    function itemDone($itemtype, $id, $result) {
 
       $this->current_itemtype = $itemtype;

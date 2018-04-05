@@ -187,6 +187,10 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @see CommonDBTM::prepareInputForUpdate
+    *
+    * @param array $input
+    *
+    * @return array|bool
     */
    function prepareInputForUpdate($input) {
       if (!isset($input["_no_history"])) {
@@ -200,9 +204,6 @@ class NetworkPort extends CommonDBChild {
       return $input;
    }
 
-   /**
-    * @see CommonDBTM::post_updateItem
-    */
    function post_updateItem($history = 1) {
       global $DB;
 
@@ -372,9 +373,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd
-    */
    function prepareInputForAdd($input) {
 
       if (isset($input["logical_number"]) && (strlen($input["logical_number"]) == 0)) {
@@ -393,9 +391,6 @@ class NetworkPort extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
-   /**
-    * @see CommonDBTM::post_addItem
-    */
    function post_addItem() {
       $this->updateDependencies(!$this->input['_no_history']);
    }
@@ -503,7 +498,9 @@ class NetworkPort extends CommonDBChild {
     *
     * @param $item                     CommonDBTM object
     * @param $withtemplate   integer   withtemplate param (default 0)
-   **/
+    *
+    * @return boolean
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -916,7 +913,9 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @param $itemtype
-   **/
+    *
+    * @return array
+    */
    static function getSearchOptionsToAddNew($itemtype = null) {
       $tab = [];
 
@@ -983,9 +982,6 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = $checkitem->canUpdate();
@@ -1095,10 +1091,10 @@ class NetworkPort extends CommonDBChild {
     *
     * @since version 0.84
     *
-    * @param $itemtype     the type of the item that was clone
-    * @param $old_items_id the id of the item that was clone
-    * @param $new_items_id the id of the item after beeing cloned
-   **/
+    * @param string  $itemtype     the type of the item that was clone
+    * @param integer $old_items_id the id of the item that was clone
+    * @param integer $new_items_id the id of the item after beeing cloned
+    */
    static function cloneItem($itemtype, $old_items_id, $new_items_id) {
       global $DB;
 
@@ -1185,7 +1181,9 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @param CommonDBTM $item
-   **/
+    *
+    * @return integer
+    */
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_networkports',

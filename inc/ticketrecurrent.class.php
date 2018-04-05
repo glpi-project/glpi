@@ -208,7 +208,9 @@ class TicketRecurrent extends CommonDropdown {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -296,7 +298,6 @@ class TicketRecurrent extends CommonDropdown {
    /**
     * Show next creation date
     *
-    * @return nothing only display
    **/
    function showInfos() {
 
@@ -419,7 +420,7 @@ class TicketRecurrent extends CommonDropdown {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : crontask object
+    * @param CronTask $task object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/

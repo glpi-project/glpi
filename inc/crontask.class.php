@@ -125,11 +125,11 @@ class CronTask extends CommonDBTM{
     *
     * Used by plugins to load its crontasks
     *
-    * @param $itemtype  itemtype of the crontask
-    * @param $name      name of the task
+    * @param string $itemtype of the crontask
+    * @param string $name of the task
     *
-    * @return true if succeed else false
-   **/
+    * @return boolean true if succeed else false
+    */
    function getFromDBbyName($itemtype, $name) {
 
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`name` = '$name'
@@ -187,6 +187,7 @@ class CronTask extends CommonDBTM{
     * Signal handler callback
     *
     * @since 9.1
+    * @param $signo
     */
    function signal($signo) {
       if ($signo == SIGTERM) {
@@ -206,7 +207,7 @@ class CronTask extends CommonDBTM{
    /**
     * Start a task, timer, stat, log, ...
     *
-    * @return bool : true if ok (not start by another)
+    * @return boolean : true if ok (not start by another)
    **/
    function start() {
       global $DB;
@@ -273,7 +274,7 @@ class CronTask extends CommonDBTM{
     *
     * @param $retcode : <0 : need to run again, 0:nothing to do, >0:ok
     *
-    * @return bool : true if ok (not start by another)
+    * @return boolean : true if ok (not start by another)
    **/
    function end($retcode) {
       global $DB;
@@ -323,7 +324,9 @@ class CronTask extends CommonDBTM{
     * Add a log message for a running task
     *
     * @param $content
-   **/
+    *
+    * @return boolean|integer
+    */
    function log($content) {
 
       if (!isset($this->fields['id'])) {
@@ -344,13 +347,12 @@ class CronTask extends CommonDBTM{
    /**
     * read the first task which need to be run by cron
     *
-    * @param $mode   >0 retrieve task configured for this mode
+    * @param integer $mode >0 retrieve task configured for this mode
     *                <0 retrieve task allowed for this mode (force, no time check)
     *                (default 0)
-    * @param $name   one specify action (default '')
-    *
+    * @param one|string $name one specify action (default '')
     * @return false if no task to run
-   **/
+    */
    function getNeedToRun($mode = 0, $name = '') {
       global $DB;
 
@@ -432,7 +434,6 @@ class CronTask extends CommonDBTM{
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -705,12 +706,12 @@ class CronTask extends CommonDBTM{
    /**
     * Dropdown of state
     *
-    * @param $name     select name
-    * @param $value    default value (default 0)
-    * @param $display  display or get string (true by default)
+    * @param string  $name    select name
+    * @param integer $value   default value (default 0)
+    * @param boolean $display display or get string (true by default)
     *
-    * @return nothing (display)
-   **/
+    * @return integer|string
+    */
    static function dropdownState($name, $value = 0, $display = true) {
 
       return Dropdown::showFromArray($name,
@@ -745,7 +746,7 @@ class CronTask extends CommonDBTM{
    /**
     * Get a global database lock for cron
     *
-    * @return Boolean
+    * @return boolean
    **/
    static private function get_lock() {
       global $DB;
@@ -778,12 +779,11 @@ class CronTask extends CommonDBTM{
    /**
     * Launch the need cron tasks
     *
-    * @param $mode   (internal/external, <0 to force)
-    * @param $max    number of task to launch (default 1)
-    * @param $name   of task to run (default '')
-    *
+    * @param $mode (internal/external, <0 to force)
+    * @param integer|number $max number of task to launch (default 1)
+    * @param of|string $name of task to run (default '')
     * @return the name of last task launched
-   **/
+    */
    static public function launch($mode, $max = 1, $name = '') {
       global $CFG_GLPI;
 
@@ -881,7 +881,7 @@ class CronTask extends CommonDBTM{
     * @param $options   array of optional options
     *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
     *
-    * @return bool for success
+    * @return boolean for success
    **/
    static public function register($itemtype, $name, $frequency, $options = []) {
 
@@ -920,7 +920,7 @@ class CronTask extends CommonDBTM{
     *
     * @param $plugin : name of the plugin
     *
-    * @return bool for success
+    * @return boolean for success
    **/
    static public function unregister($plugin) {
       global $DB;
@@ -951,7 +951,7 @@ class CronTask extends CommonDBTM{
    /**
     * Display statistics of a task
     *
-    * @return nothing
+    * @return void
    **/
    function showStatistics() {
       global $DB, $CFG_GLPI;
@@ -1052,7 +1052,7 @@ class CronTask extends CommonDBTM{
    /**
     * Display list of a runned tasks
     *
-    * @return nothing
+    * @return void
    **/
    function showHistory() {
       global $DB, $CFG_GLPI;
@@ -1134,7 +1134,7 @@ class CronTask extends CommonDBTM{
     *
     * @param $logid : crontasklogs_id
     *
-    * @return nothing
+    * @return void
    **/
    function showHistoryDetail($logid) {
       global $DB, $CFG_GLPI;
@@ -1214,10 +1214,12 @@ class CronTask extends CommonDBTM{
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return integer|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -1255,9 +1257,6 @@ class CronTask extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -1270,11 +1269,6 @@ class CronTask extends CommonDBTM{
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -1455,8 +1449,10 @@ class CronTask extends CommonDBTM{
    /**
     * Garbage collector for expired file session
     *
-    * @param $task for log
-   **/
+    * @param CronTask $task for log
+    *
+    * @return integer
+    */
    static function cronSession($task) {
 
       // max time to keep the file session
@@ -1493,8 +1489,10 @@ class CronTask extends CommonDBTM{
     *
     * @since version 0.85
     *
-    * @param $task for log
-   **/
+    * @param CronTask $task for log
+    *
+    * @return integer
+    */
    static function cronCircularlogs($task) {
 
       $actionCode = 0; // by default
@@ -1555,8 +1553,10 @@ class CronTask extends CommonDBTM{
    /**
     * Garbage collector for cleaning graph files
     *
-    * @param $task for log
-   **/
+    * @param CronTask $task for log
+    *
+    * @return integer
+    */
    static function cronGraph($task) {
       global $CFG_GLPI;
 
@@ -1589,8 +1589,10 @@ class CronTask extends CommonDBTM{
    /**
     * Garbage collector for cleaning tmp files
     *
-    * @param $task for log
-   **/
+    * @param CronTask $task for log
+    *
+    * @return integer
+    */
    static function cronTemp($task) {
       global $CFG_GLPI;
 
@@ -1624,7 +1626,9 @@ class CronTask extends CommonDBTM{
     * Clean log cron function
     *
     * @param $task instance of CronTask
-   **/
+    *
+    * @return integer
+    */
    static function cronLogs($task) {
       global $DB;
 
@@ -1648,8 +1652,10 @@ class CronTask extends CommonDBTM{
    /**
     * Cron job to check if a new version is available
     *
-    * @param $task for log
-   **/
+    * @param CronTask $task for log
+    *
+    * @return integer
+    */
    static function cronCheckUpdate($task) {
 
       $result = Toolbox::checkNewVersionAvailable(1);
@@ -1662,8 +1668,10 @@ class CronTask extends CommonDBTM{
    /**
     * Check zombie crontask
     *
-    * @param $task for log
-   **/
+    * @param CronTask $task for log
+    *
+    * @return integer
+    */
    static function cronWatcher($task) {
       global $CFG_GLPI, $DB;
 
@@ -1735,8 +1743,8 @@ class CronTask extends CommonDBTM{
     * Dropdown for frequency (interval between 2 actions)
     *
     * @param $name   select name
-    * @param $value  default value (default 0)
-   **/
+    * @param default|int $value default value (default 0)
+    */
    function dropdownFrequency($name, $value = 0) {
 
       $tab = [];
@@ -1784,7 +1792,7 @@ class CronTask extends CommonDBTM{
    /**
     * Call cron if time since last launch elapsed
     *
-    * @return nothing
+    * @return void
    **/
    static function callCron() {
 

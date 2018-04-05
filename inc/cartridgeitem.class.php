@@ -60,10 +60,8 @@ class CartridgeItem extends CommonDBTM {
 
 
    /**
-    * @see CommonGLPI::getMenuName()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuName() {
       return Cartridge::getTypeName(Session::getPluralNumber());
    }
@@ -71,9 +69,7 @@ class CartridgeItem extends CommonDBTM {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::getPostAdditionalInfosForName
-   **/
+    */
    function getPostAdditionalInfosForName() {
 
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
@@ -151,10 +147,10 @@ class CartridgeItem extends CommonDBTM {
     * Add a compatible printer type for a cartridge type
     *
     * @param $cartridgeitems_id  integer: cartridge type identifier
-    * @param printermodels_id    integer: printer type identifier
-    *
+    * @param integer $printermodels_id printer type identifier
     * @return boolean : true for success
-   **/
+    *
+    */
    function addCompatibleType($cartridgeitems_id, $printermodels_id) {
       global $DB;
 
@@ -181,7 +177,6 @@ class CartridgeItem extends CommonDBTM {
     *     - target for the Form
     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
     *
-    * @return Nothing (display)
    **/
    function showForm($ID, $options = []) {
 
@@ -254,9 +249,6 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -465,8 +457,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @param $task for log, display information if NULL? (default NULL)
     *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    */
    static function cronCartridge($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -555,10 +546,10 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Print a select with compatible cartridge
     *
-    * @param $printer Printer object
+    * @param Printer $printer object
     *
-    * @return nothing (display)
-   **/
+    * @return boolean|integer|string
+    */
    static function dropdownForPrinter(Printer $printer) {
       global $DB;
 

@@ -64,11 +64,6 @@ class Profile_User extends CommonDBRelation {
    static public $disableAutoEntityForwarding   = true;
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getForbiddenStandardMassiveAction()
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -111,7 +106,9 @@ class Profile_User extends CommonDBRelation {
     * Show rights of a user
     *
     * @param $user User object
-   **/
+    *
+    * @return boolean
+    */
    static function showForUser(User $user) {
       global $DB,$CFG_GLPI;
 
@@ -269,7 +266,9 @@ class Profile_User extends CommonDBRelation {
     * Show users of an entity
     *
     * @param $entity Entity object
-   **/
+    *
+    * @return boolean
+    */
    static function showForEntity(Entity $entity) {
       global $DB;
 
@@ -441,7 +440,9 @@ class Profile_User extends CommonDBRelation {
     * Show the User having a profile, in allowed Entity
     *
     * @param $prof Profile object
-   **/
+    *
+    * @return boolean
+    */
    static function showForProfile(Profile $prof) {
       global $DB, $CFG_GLPI;
 
@@ -603,11 +604,10 @@ class Profile_User extends CommonDBRelation {
     * Get entities for which a user have a right
     *
     * @param $user_ID         user ID
-    * @param $is_recursive    check also using recursive rights (true by default)
-    * @param $default_first   user default entity first (false by default)
-    *
+    * @param boolean|check $is_recursive check also using recursive rights (true by default)
+    * @param boolean|user $default_first user default entity first (false by default)
     * @return array of entities ID
-   **/
+    */
    static function getUserEntities($user_ID, $is_recursive = true, $default_first = false) {
       global $DB;
 
@@ -794,10 +794,9 @@ class Profile_User extends CommonDBRelation {
     * Get entities for which a user have a right
     *
     * @param $user_ID         user ID
-    * @param $only_dynamic    get only recursive rights (false by default)
-    *
+    * @param boolean|get $only_dynamic get only recursive rights (false by default)
     * @return array of entities ID
-   **/
+    */
    static function getForUser($user_ID, $only_dynamic = false) {
       global $DB;
 
@@ -814,7 +813,9 @@ class Profile_User extends CommonDBRelation {
    /**
     * @param $user_ID
     * @param $profile_id
-   **/
+    *
+    * @return mixed
+    */
    static function haveUniqueRight($user_ID, $profile_id) {
       global $DB;
 
@@ -917,9 +918,6 @@ class Profile_User extends CommonDBRelation {
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-   **/
    function getRawName() {
 
       $name = sprintf(__('%1$s, %2$s'),
@@ -1033,7 +1031,9 @@ class Profile_User extends CommonDBRelation {
     * @since version 0.85
     *
     * @see CommonDBRelation::showRelationMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @param the $peer_number
+    */
    static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
 
       if (($ma->getAction() == 'add')
@@ -1050,7 +1050,12 @@ class Profile_User extends CommonDBRelation {
     * @since version 0.85
     *
     * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
-   **/
+    * @param the $action
+    * @param CommonDBTM $item
+    * @param array $ids
+    * @param array $input
+    * @return array
+    */
    static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item,
                                                                  array $ids, array $input) {
       $result = [];

@@ -67,9 +67,6 @@ class Item_Problem extends CommonDBRelation{
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
@@ -84,7 +81,9 @@ class Item_Problem extends CommonDBRelation{
 
    /**
     * @param $item   CommonDBTM object
-   **/
+    *
+    * @return integer
+    */
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_items_problems`.`problems_id` = `glpi_problems`.`id`
@@ -103,7 +102,6 @@ class Item_Problem extends CommonDBRelation{
     *
     * @param $problem Problem object
     *
-    * @return Nothing (display)
    **/
    static function showForProblem(Problem $problem) {
       global $DB, $CFG_GLPI;

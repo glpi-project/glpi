@@ -62,8 +62,8 @@ class UserEmail  extends CommonDBChild {
     *
     * @param $users_id user ID
     *
-    * @return default email, empty if no email set
-   **/
+    * @return string
+    */
    static function getDefaultForUser($users_id) {
       global $DB;
 
@@ -145,7 +145,7 @@ class UserEmail  extends CommonDBChild {
     * @param $canedit
     * @param $field_name
     * @param $id
-   **/
+    */
    function showChildForItemForm($canedit, $field_name, $id) {
 
       if ($this->isNewID($this->getID())) {
@@ -178,7 +178,7 @@ class UserEmail  extends CommonDBChild {
     *
     * @param $user User object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForUser(User $user) {
 
@@ -197,7 +197,9 @@ class UserEmail  extends CommonDBChild {
 
    /**
     * @param $user
-   **/
+    *
+    * @return boolean|void
+    */
    static function showAddEmailButton(User $user) {
 
       $users_id = $user->getID();
@@ -228,13 +230,6 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getNameField
-    *
-    * @return string
-   **/
    static function getNameField() {
       return 'email';
    }

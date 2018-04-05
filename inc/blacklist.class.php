@@ -119,9 +119,6 @@ class Blacklist extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if ((!isset($input['name']) || empty($input['name']))
@@ -132,9 +129,6 @@ class Blacklist extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
    function displaySpecificTypeField($ID, $field = []) {
 
       if ($field['name'] == 'type') {
@@ -147,6 +141,7 @@ class Blacklist extends CommonDropdown {
     * @param $field
     * @param $values
     * @param $options   array
+    * @return mixed|string
     */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
@@ -166,10 +161,12 @@ class Blacklist extends CommonDropdown {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-    **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {

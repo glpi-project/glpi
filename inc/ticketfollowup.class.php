@@ -59,12 +59,6 @@ class TicketFollowup  extends CommonDBTM {
    const SEEPRIVATE      = 8192;
 
 
-
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
    static function getTypeName($nb = 0) {
       return _n('Followup', 'Followups', $nb);
    }
@@ -481,10 +475,8 @@ class TicketFollowup  extends CommonDBTM {
 
    // SPECIFIC FUNCTIONS
    /**
-    * @see CommonDBTM::getRawName()
-    *
     * @since version 0.85
-   **/
+    */
    function getRawName() {
 
       if (isset($this->fields['requesttypes_id'])) {
@@ -498,10 +490,10 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @param $ticket       Tichet object
+    * @param Tichet|Ticket $ticket Tichet object
     * @param $rand
     * @param $showprivate
-   **/
+    */
    function showInTicketSumnary(Ticket $ticket, $rand, $showprivate) {
       global $DB, $CFG_GLPI;
 
@@ -565,7 +557,9 @@ class TicketFollowup  extends CommonDBTM {
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @param MassiveAction $ma
+    * @return boolean
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -578,11 +572,6 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -619,10 +608,12 @@ class TicketFollowup  extends CommonDBTM {
 
    /** form for Followup
     *
-    *@param $ID      integer : Id of the followup
-    *@param $options array of possible options:
+    * @param $ID      integer : Id of the followup
+    * @param $options array of possible options:
     *     - ticket Object : the ticket
-   **/
+    *
+    * @return boolean
+    */
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
@@ -764,7 +755,8 @@ class TicketFollowup  extends CommonDBTM {
     * @since version 0.90
     *
     * @see CommonDBTM::showFormButtons()
-   **/
+    * @param array $options
+    */
    function showFormButtons($options = []) {
       global $CFG_GLPI;
 
@@ -830,7 +822,9 @@ class TicketFollowup  extends CommonDBTM {
     * Show the current ticketfollowup summary
     *
     * @param $ticket Ticket object
-   **/
+    *
+    * @return boolean
+    */
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
@@ -1063,7 +1057,9 @@ class TicketFollowup  extends CommonDBTM {
 
    /**
     * @param $ID  integer  ID of the ticket
-   **/
+    *
+    * @return string
+    */
    static function showShortForTicket($ID) {
       global $DB, $CFG_GLPI;
 
@@ -1111,7 +1107,9 @@ class TicketFollowup  extends CommonDBTM {
    /** form for soluce's approbation
     *
     * @param $ticket Object : the ticket
-   **/
+    *
+    * @return boolean
+    */
    function showApprobationForm($ticket) {
       global $DB, $CFG_GLPI;
 
@@ -1207,7 +1205,9 @@ class TicketFollowup  extends CommonDBTM {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

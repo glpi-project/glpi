@@ -57,9 +57,6 @@ class DisplayPreference extends CommonDBTM {
 
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
       global $DB;
 
@@ -75,11 +72,6 @@ class DisplayPreference extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -117,7 +109,9 @@ class DisplayPreference extends CommonDBTM {
     *
     * @param $itemtype  itemtype
     * @param $user_id   user ID
-   **/
+    *
+    * @return array
+    */
    static function getForTypeUser($itemtype, $user_id) {
       global $DB;
 
@@ -147,7 +141,9 @@ class DisplayPreference extends CommonDBTM {
     * Active personal config based on global one
     *
     * @param $input  array parameter (itemtype,users_id)
-   **/
+    *
+    * @return boolean
+    */
    function activatePerso(array $input) {
       global $DB;
 
@@ -199,7 +195,9 @@ class DisplayPreference extends CommonDBTM {
     *
     * @param $input  array parameter (id,itemtype,users_id)
     * @param $action       up or down
-   **/
+    *
+    * @return boolean
+    */
    function orderItem(array $input, $action) {
       global $DB;
 
@@ -254,7 +252,7 @@ class DisplayPreference extends CommonDBTM {
     * @param $target    form target
     * @param $itemtype  item type
     *
-    * @return nothing
+    * @return void
    **/
    function showFormPerso($target, $itemtype) {
       global $CFG_GLPI, $DB;
@@ -421,7 +419,7 @@ class DisplayPreference extends CommonDBTM {
     * @param $target    form target
     * @param $itemtype  item type
     *
-    * @return nothing
+    * @return void
    **/
    function showFormGlobal($target, $itemtype) {
       global $CFG_GLPI, $DB;
@@ -698,11 +696,6 @@ class DisplayPreference extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       //TRANS: short for : Search result user display

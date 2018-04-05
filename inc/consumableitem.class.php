@@ -81,11 +81,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getPostAdditionalInfosForName
-   **/
    function getPostAdditionalInfosForName() {
 
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
@@ -135,7 +130,6 @@ class ConsumableItem extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
     *
     **/
    function showForm($ID, $options = []) {
@@ -211,9 +205,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -387,9 +378,8 @@ class ConsumableItem extends CommonDBTM {
     * Cron action on consumables : alert if a stock is behind the threshold
     *
     * @param $task   to log, if NULL display (default NULL)
-    *
-    * @return 0 : nothing to do 1 : done with success
-   **/
+    * @return integer 0 : nothing to do 1 : done with success
+    */
    static function cronConsumable($task = null) {
       global $DB, $CFG_GLPI;
 
@@ -514,7 +504,7 @@ class ConsumableItem extends CommonDBTM {
     *
     * Overriden here to check entities recursively
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUpdateItem() {
 

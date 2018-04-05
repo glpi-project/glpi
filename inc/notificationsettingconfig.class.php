@@ -75,6 +75,7 @@ class NotificationSettingConfig extends CommonDBTM {
    /**
     * Show configuration form
     *
+    * @param array $options
     * @return string|void
     */
    public function showForm($options = []) {

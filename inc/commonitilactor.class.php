@@ -69,11 +69,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
    /**
     * @since version 0.84
-    *
-    * @param $input  array of data to be added
-    *
-    * @see CommonDBRelation::isAttach2Valid()
-   **/
+    */
    function isAttach2Valid(Array &$input) {
 
       // Anonymous user (only email) as requester or observer
@@ -88,7 +84,9 @@ abstract class CommonITILActor extends CommonDBRelation {
 
    /**
     * @param $items_id
-   **/
+    *
+    * @return array
+    */
    function getActors($items_id) {
       global $DB;
 
@@ -107,7 +105,9 @@ abstract class CommonITILActor extends CommonDBRelation {
    /**
     * @param $items_id
     * @param $email
-   **/
+    *
+    * @return boolean
+    */
    function isAlternateEmailForITILObject($items_id, $email) {
       global $DB;
 
@@ -147,7 +147,6 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
    **/
    function showUserNotificationForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -229,7 +228,6 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
    **/
    function showSupplierNotificationForm($ID, $options = []) {
       global $CFG_GLPI;
@@ -324,9 +322,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBRelation::prepareInputForAdd()
-   **/
+    */
    function prepareInputForAdd($input) {
 
       if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {

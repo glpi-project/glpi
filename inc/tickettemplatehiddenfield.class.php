@@ -66,10 +66,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
 
    /**
-    * @see CommonDBTM::getRawName()
-    *
     * @since version 0.85
-   **/
+    */
    function getRawName() {
 
       $tt     = new TicketTemplate();
@@ -138,7 +136,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
     * @param $ID                    integer  the template ID
     * @param $withtypeandcategory   boolean  with type and category (false by default)
     *
-    * @return an array of hidden fields
+    * @return array of hidden fields
    **/
    function getHiddenFields($ID, $withtypeandcategory = false) {
       global $DB;
@@ -181,11 +179,9 @@ class TicketTemplateHiddenField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $tt                       Ticket Template
-    * @param $withtemplate    boolean  Template or basic item (default 0)
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param Ticket|TicketTemplate $tt Ticket Template
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
+    */
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = 0) {
       global $DB;
 

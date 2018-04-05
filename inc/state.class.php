@@ -91,8 +91,8 @@ class State extends CommonTreeDropdown {
     *
     * @param $name            select name
     * @param $lib    string   to add for -1 value (default '')
-    * @param $value           default value (default 0)
-   **/
+    * @param default|int $value default value (default 0)
+    */
    static function dropdownBehaviour($name, $lib = "", $value = 0) {
       global $DB;
 
@@ -236,9 +236,7 @@ class State extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::getEmpty()
-   **/
+    */
    function getEmpty() {
 
       parent::getEmpty();
@@ -256,8 +254,6 @@ class State extends CommonTreeDropdown {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonTreeDropdown::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
       if (!isset($input['states_id'])) {

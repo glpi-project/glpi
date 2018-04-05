@@ -54,8 +54,10 @@ class Group_User extends CommonDBRelation{
 
    /**
     * @param $users_id
-    * @param $condition    (default '')
-   **/
+    * @param $condition (default '')
+    *
+    * @return array
+    */
    static function getUserGroups($users_id, $condition = '') {
       global $DB;
 
@@ -85,8 +87,10 @@ class Group_User extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $groups_id
-    * @param $condition    (default '')
-   **/
+    * @param $condition (default '')
+    *
+    * @return array
+    */
    static function getGroupUsers($groups_id, $condition = '') {
       global $DB;
 
@@ -115,7 +119,9 @@ class Group_User extends CommonDBRelation{
    /**  Show groups of a user
     *
     * @param $user   User object
-   **/
+    *
+    * @return boolean
+    */
    static function showForUser(User $user) {
       global $CFG_GLPI;
 
@@ -325,10 +331,9 @@ class Group_User extends CommonDBRelation{
     * @param $members   Array    filled on output of member (filtered)
     * @param $ids       Array    of ids (not filtered)
     * @param $crit      String   filter (is_manager, is_userdelegate) (default '')
-    * @param $tree      Boolean  true to include member of sub-group (default 0)
-    *
-    * @return String tab of entity for restriction
-   **/
+    * @param boolean|integer $tree Boolean  true to include member of sub-group (default 0)
+    * @return string tab of entity for restriction
+    */
    static function getDataForGroup(Group $group, &$members, &$ids, $crit = '', $tree = 0) {
       global $DB;
 
@@ -395,7 +400,9 @@ class Group_User extends CommonDBRelation{
     * @since version 0.83
     *
     * @param $group  Group object: the group
-   **/
+    *
+    * @return boolean
+    */
    static function showForGroup(Group $group) {
       global $DB, $CFG_GLPI;
 

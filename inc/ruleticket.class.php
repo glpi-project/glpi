@@ -117,7 +117,9 @@ class RuleTicket extends Rule {
 
    /**
     * @param $params
-   **/
+    *
+    * @return mixed
+    */
    function addSpecificParamsForPreview($params) {
 
       if (!isset($params["entities_id"])) {
@@ -148,9 +150,11 @@ class RuleTicket extends Rule {
 
 
    /**
-    * @param $output
-    * @param $params
-   **/
+    * @param array $output
+    * @param array $params
+    *
+    * @return array
+    */
    function executeActions($output, $params) {
 
       if (count($this->actions)) {
@@ -664,7 +668,9 @@ class RuleTicket extends Rule {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-   **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();

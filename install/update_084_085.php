@@ -37,7 +37,7 @@
 /**
  * Update from 0.84 to 0.85
  *
- * @return bool for success (will die for most error)
+ * @return boolean for success (will die for most error)
 **/
 function update084to085() {
    global $DB, $migration;

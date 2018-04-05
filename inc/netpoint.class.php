@@ -103,15 +103,15 @@ class Netpoint extends CommonDropdown {
    /**
     * Print out an HTML "<select>" for a dropdown with preselected value
     *
-    * @param $myname             the name of the HTML select
-    * @param $value              the preselected value we want (default 0)
-    * @param $locations_id       default location ID for search (default -1)
-    * @param $display_comment    display the comment near the dropdown (default 1)
-    * @param $entity_restrict    Restrict to a defined entity(default -1)
-    * @param $devtype            (default '')
+    * @param string  $myname          the name of the HTML select
+    * @param integer $value           the preselected value we want (default 0)
+    * @param integer $locations_id    default location ID for search (default -1)
+    * @param integer $display_comment display the comment near the dropdown (default 1)
+    * @param integer $entity_restrict Restrict to a defined entity(default -1)
+    * @param string  $devtype         (default '')
     *
-    * @return nothing (display the select box)
-   **/
+    * @return integer
+    */
    static function dropdownNetpoint($myname, $value = 0, $locations_id = -1, $display_comment = 1,
                                     $entity_restrict = -1, $devtype = '') {
       global $CFG_GLPI;
@@ -249,7 +249,6 @@ class Netpoint extends CommonDropdown {
     *
     * @param $item Location
     *
-    * @return Nothing (display)
    **/
    static function showForLocation($item) {
       global $DB, $CFG_GLPI;

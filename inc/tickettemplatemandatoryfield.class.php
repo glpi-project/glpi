@@ -65,10 +65,8 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
 
    /**
-    * @see CommonDBTM::getRawName()
-    *
     * @since version 0.85
-   **/
+    */
    function getRawName() {
 
       $tt     = new TicketTemplate();
@@ -138,7 +136,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     * @param $ID                    integer  the template ID
     * @param $withtypeandcategory   boolean  with type and category (true by default)
     *
-    * @return an array of mandatory fields
+    * @return array of mandatory fields
    **/
    function getMandatoryFields($ID, $withtypeandcategory = true) {
       global $DB;
@@ -181,11 +179,9 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $tt                       Ticket Template
-    * @param $withtemplate    boolean  Template or basic item (default 0)
-    *
-    * @return Nothing (call to classes members)
-   **/
+    * @param Ticket|TicketTemplate $tt Ticket Template
+    * @param boolean|integer $withtemplate boolean  Template or basic item (default 0)
+    */
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = 0) {
       global $DB;
 

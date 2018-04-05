@@ -71,8 +71,12 @@ class Cartridge extends CommonDBChild {
    /**
     * @since version 0.85
     *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @see   CommonDBTM::showMassiveActionsSubForm()
+    *
+    * @param MassiveAction $ma
+    *
+    * @return boolean
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
@@ -89,11 +93,6 @@ class Cartridge extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::getNameField()
-   **/
    static function getNameField() {
       return 'id';
    }
@@ -104,6 +103,13 @@ class Cartridge extends CommonDBChild {
    }
 
 
+   /**
+    * @see CommonDBTM::prepareInputForAdd()
+    *
+    * @param array $input
+    *
+    * @return array|boolean
+    */
    function prepareInputForAdd($input) {
 
       $item = static::getItemFromArray(static::$itemtype, static::$items_id, $input);
@@ -143,9 +149,7 @@ class Cartridge extends CommonDBChild {
 
    /**
     * @since version 0.84
-    *
-    * @see CommonDBTM::getPreAdditionalInfosForName
-   **/
+    */
    function getPreAdditionalInfosForName() {
 
       $ci = new CartridgeItem();
@@ -158,9 +162,7 @@ class Cartridge extends CommonDBChild {
 
    /**
     * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -227,6 +229,9 @@ class Cartridge extends CommonDBChild {
     * send back to stock
     *
     * @since version 0.85 (before name was restore)
+    * @param array $input
+    * @param integer $history
+    * @return boolean
     */
    function backToStock(array $input, $history = 1) {
       global $DB;
@@ -597,11 +602,9 @@ class Cartridge extends CommonDBChild {
    /**
     * Print out the cartridges of a defined type
     *
-    * @param $cartitem  object   of CartridgeItem class
-    * @param $show_old  boolean  show old cartridges or not (default 0)
-    *
-    * @return Nothing (displays)
-   **/
+    * @param CartridgeItem|object $cartitem object   of CartridgeItem class
+    * @param boolean|integer $show_old boolean  show old cartridges or not (default 0)
+    */
    static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
 
@@ -811,7 +814,6 @@ class Cartridge extends CommonDBChild {
     *
     * @param $cartitem  CartridgeItem object
     *
-    * @return Nothing (displays)
    **/
    static function showAddForm(CartridgeItem $cartitem) {
       global $CFG_GLPI;
@@ -846,10 +848,8 @@ class Cartridge extends CommonDBChild {
     * @since version 0.84 (before showInstalled)
     *
     * @param $printer            Printer object
-    * @param $old       boolean  old cartridges or not ? (default 0)
-    *
-    * @return nothing (display)
-   **/
+    * @param boolean|integer $old boolean  old cartridges or not ? (default 0)
+    */
    static function showForPrinter(Printer $printer, $old = 0) {
       global $DB, $CFG_GLPI;
 
@@ -1079,7 +1079,9 @@ class Cartridge extends CommonDBChild {
     * @param $ID      integer  Id of the cartridge
     * @param $options array    of possible options:
     *     - parent Object : the printers where the cartridge is used
-   **/
+    *
+    * @return boolean
+    */
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
@@ -1149,7 +1151,8 @@ class Cartridge extends CommonDBChild {
    /**
     * Get notification parameters by entity
     *
-    * @param entity the entity (default 0)
+    * @param integer $entity id (default 0)
+    * @return mixed
     */
    static function getNotificationParameters($entity = 0) {
       global $DB, $CFG_GLPI;
@@ -1206,7 +1209,9 @@ class Cartridge extends CommonDBChild {
 
    /**
     * @param $item Printer object
-   **/
+    *
+    * @return integer
+    */
    static function countForPrinter(Printer $item) {
 
       return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);

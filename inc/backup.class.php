@@ -70,7 +70,9 @@ class Backup extends CommonGLPI {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-   **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = [READ                => __('Read'),

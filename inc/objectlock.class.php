@@ -57,9 +57,6 @@ class ObjectLock extends CommonDBTM {
    private static $shutdownregistered = false;
 
 
-   /**
-    * @see CommonGLPI::getTypeName()
-    */
    static function getTypeName($nb = 0) {
       return _n('Object Lock', 'Object Locks', $nb);
    }
@@ -81,8 +78,8 @@ class ObjectLock extends CommonDBTM {
 
    /**
     * Summary of getEntityID
-    * @return 0
-   **/
+    * @return integer 0
+    */
    function getEntityID() {
       return 0;
    }
@@ -91,7 +88,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * Summary of getLockableObjects
     *
-    * @return an array of lockable objects 'itemtype' => 'plural itemtype'
+    * @return array of lockable objects 'itemtype' => 'plural itemtype'
    **/
    static function getLockableObjects() {
       global $CFG_GLPI;
@@ -109,7 +106,7 @@ class ObjectLock extends CommonDBTM {
     * Summary of autoLockMode
     * Manages autolock mode
     *
-    * @return bool: true if read-only profile lock has been set
+    * @return boolean true if read-only profile lock has been set
    **/
    private function autoLockMode() {
       global $CFG_GLPI, $_SESSION, $_REQUEST;
@@ -294,7 +291,7 @@ class ObjectLock extends CommonDBTM {
     * Tries to lock object and if yes output code to auto unlock it when leaving browser page.
     * If lock can't be set (i.e.: someone has already locked it), LockedBy message is shown accordingly,
     * and read-only profile is set
-    * @return bool: true if locked
+    * @return boolean true if locked
    **/
    private function lockObject() {
       global $CFG_GLPI;
@@ -344,7 +341,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * Summary of getLockedObjectInfo
     *
-    * @return bool: true if object is locked, and $this is filled with record from DB
+    * @return boolean true if object is locked, and $this is filled with record from DB
    **/
    private function getLockedObjectInfo() {
       global $CFG_GLPI;
@@ -368,7 +365,7 @@ class ObjectLock extends CommonDBTM {
     * @param $itemtype
     * @param $items_id
     *
-    * @return bool|ObjectLock: returns ObjectLock if locked, else false
+    * @return boolean|ObjectLock: returns ObjectLock if locked, else false
    **/
    static function isLocked($itemtype, $items_id) {
 
@@ -509,7 +506,10 @@ class ObjectLock extends CommonDBTM {
 
    /**
     * @see CommonDBTM::processMassiveActionsForOneItemtype
-   **/
+    * @param MassiveAction $ma
+    * @param CommonDBTM $item
+    * @param array $ids
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       foreach ($ids as $items_id) {
@@ -609,7 +609,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * Cron for unlocking forgotten locks
     *
-    * @param $task : crontask object
+    * @param CronTask $task object
     *
     * @return integer
     *    >0 : done

@@ -76,7 +76,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    /**
     * @see NotificationTarget::validateSendTo()
-   **/
+    * @param string $event
+    * @param array $infos
+    * @param boolean $notify_me
+    * @return boolean
+    */
    function validateSendTo($event, array $infos, $notify_me = false) {
 
       // Always send notification for satisfaction : if send on ticket closure
@@ -193,7 +197,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    /**
     * @param $data   array
-   **/
+    *
+    * @return array
+    */
    function addAdditionnalUserInfo(array $data) {
       global $DB;
 

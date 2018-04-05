@@ -54,12 +54,6 @@ class Printer  extends CommonDBTM {
    protected $usenotepad               = true;
 
 
-
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
    static function getTypeName($nb = 0) {
       return _n('Printer', 'Printers', $nb);
    }
@@ -106,7 +100,7 @@ class Printer  extends CommonDBTM {
     *
     * Overloaded from CommonDBTM
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB, $CFG_GLPI;
@@ -458,7 +452,7 @@ class Printer  extends CommonDBTM {
    /**
     * Return the linked items (in computers_items)
     *
-    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+    * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
     * @since version 0.84.4
    **/
    function getLinkedItems() {
@@ -815,11 +809,13 @@ class Printer  extends CommonDBTM {
    /**
     * Add a printer. If already exist in dustbin restore it
     *
-    * @param $name          the printer's name (need to be addslashes)
-    * @param $manufacturer  the software's manufacturer (need to be addslashes)
-    * @param $entity        the entity in which the software must be added
-    * @param $comment       comment (default '')
-   **/
+    * @param string  $name         printer's name (need to be addslashes)
+    * @param string  $manufacturer software's manufacturer (need to be addslashes)
+    * @param integer $entity       in which the software must be added
+    * @param string  $comment      (default '')
+    *
+    * @return integer
+    */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '') {
       global $DB;
 
@@ -856,13 +852,13 @@ class Printer  extends CommonDBTM {
    /**
     * Create a new printer
     *
-    * @param $name         the printer's name (need to be addslashes)
-    * @param $manufacturer the printer's manufacturer (need to be addslashes)
-    * @param $entity       the entity in which the printer must be added
-    * @param $comment      (default '')
+    * @param string  $name         printer's name (need to be addslashes)
+    * @param string  $manufacturer printer's manufacturer (need to be addslashes)
+    * @param integer $entity       entity in which the printer must be added
+    * @param string  $comment      (default '')
     *
-    * @return the printer's ID
-   **/
+    * @return integer
+    */
    function addPrinter($name, $manufacturer, $entity, $comment = '') {
       global $DB, $CFG_GLPI;
 
@@ -896,10 +892,10 @@ class Printer  extends CommonDBTM {
    /**
     * Restore a software from dustbin
     *
-    * @param $ID  the ID of the software to put in dustbin
+    * @param integer $ID of the software to put in dustbin
     *
     * @return boolean (success)
-   **/
+    */
    function removeFromTrash($ID) {
       return $this->restore(["id" => $ID]);
    }

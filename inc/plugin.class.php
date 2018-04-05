@@ -53,31 +53,24 @@ class Plugin extends CommonDBTM {
    static $rightname = 'config';
 
 
-
    /**
     * @since version 0.85
-    *
-    * @param $nb
-   **/
+    */
    static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
    }
 
 
    /**
-    * @see CommonGLPI::getMenuName()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuName() {
       return static::getTypeName(Session::getPluralNumber());
    }
 
    /**
-    * @see CommonGLPI::getMenuContent()
-    *
     * @since version 0.85
-   **/
+    */
    static function getMenuContent() {
       global $CFG_GLPI;
 
@@ -107,7 +100,7 @@ class Plugin extends CommonDBTM {
    /**
     * Init plugins list reading plugins directory
     *
-    * @return nothing
+    * @return void
    **/
    function init() {
 
@@ -131,7 +124,7 @@ class Plugin extends CommonDBTM {
     * @param $name             Name of hook to use
     * @param $withhook boolean to load hook functions (false by default)
     *
-    * @return nothing
+    * @return void
    **/
    static function load($name, $withhook = false) {
       global $LOADED_PLUGINS;
@@ -157,12 +150,12 @@ class Plugin extends CommonDBTM {
    /**
     * Load lang file for a plugin
     *
-    * @param $name            Name of hook to use
-    * @param $forcelang       force a specific lang (default '')
-    * @param $coretrytoload lang trying to be load from core (default '')
+    * @param string $name          of hook to use
+    * @param string $forcelang     force a specific lang (default '')
+    * @param string $coretrytoload lang trying to be load from core (default '')
     *
-    * @return nothing
-   **/
+    * @return void
+    */
    static function loadLang($name, $forcelang = '', $coretrytoload = '') {
       // $LANG needed : used when include lang file
       global $CFG_GLPI, $LANG, $TRANSLATE;
@@ -714,7 +707,7 @@ class Plugin extends CommonDBTM {
    /**
     * Install a plugin
     *
-    * @param int $ID ID of the plugin
+    * @param integer $ID ID of the plugin
     *
     * @return void
    **/
@@ -926,7 +919,9 @@ class Plugin extends CommonDBTM {
     * is a plugin activated
     *
     * @param $plugin plugin directory
-   **/
+    *
+    * @return boolean
+    */
    function isActivated($plugin) {
 
       if ($this->getFromDBbyDir($plugin)) {
@@ -939,7 +934,9 @@ class Plugin extends CommonDBTM {
     * is a plugin installed
     *
     * @param $plugin plugin directory
-   **/
+    *
+    * @return boolean
+    */
    function isInstalled($plugin) {
 
       if ($this->getFromDBbyDir($plugin)) {
@@ -973,7 +970,7 @@ class Plugin extends CommonDBTM {
     * @param $glpitables   array of GLPI table name used by the plugin
     * @param $plugtables   array of Plugin table name which have an itemtype
     *
-    * @return nothing
+    * @return void
    **/
    static function migrateItemType($types = [], $glpitables = [], $plugtables = []) {
       global $DB;
@@ -1158,7 +1155,7 @@ class Plugin extends CommonDBTM {
     * @param $attrib    array of attributes, a hashtable with index in
     *                         (classname, typename, reservation_types)
     *
-    * @return bool
+    * @return boolean
    **/
    static function registerClass($itemtype, $attrib = []) {
       global $CFG_GLPI;
@@ -1232,11 +1229,10 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook.
     *
-    * @param $name   Name of hook to fire
-    * @param $param  Parameters if needed : if object limit to the itemtype (default NULL)
-    *
-    * @return mixed $data
-   **/
+    * @param string $name of hook to fire
+    * @param null|mixed $param if needed : if object limit to the itemtype (default NULL)
+    * @return array|null
+    */
    static function doHook ($name, $param = null) {
       global $PLUGIN_HOOKS;
 
@@ -1283,11 +1279,11 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook.
     *
-    * @param $name   Name of hook to fire
-    * @param $parm   Parameters (default NULL)
+    * @param string     $name Name of hook to fire
+    * @param mixed|null $parm (default NULL)
     *
     * @return mixed $data
-   **/
+    */
    static function doHookFunction($name, $parm = null) {
       global $PLUGIN_HOOKS;
 
@@ -1311,9 +1307,9 @@ class Plugin extends CommonDBTM {
    /**
     * This function executes a hook for 1 plugin.
     *
-    * @param $plugname        Name of the plugin
-    * @param $hook            function to be called (may be an array for call a class method)
-    * @param $options   array of params passed to the function
+    * @param string $plugname name of the plugin
+    * @param string $hook function to be called (may be an array for call a class method)
+    * @param array $options of params passed to the function
     *
     * @return mixed $data
    **/
@@ -1335,7 +1331,7 @@ class Plugin extends CommonDBTM {
    /**
     * Get dropdowns for plugins
     *
-    * @return Array containing plugin dropdowns
+    * @return array containing plugin dropdowns
    **/
    static function getDropdowns() {
 
@@ -1353,15 +1349,15 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * get information from a plugin
+    * get information from a plugin (array when $info is NULL)
     *
     * @param $plugin String name of the plugin
     * @param $info   String wanted info (name, version, ...), NULL for all
     *
     * @since version 0.84
     *
-    * @return String or Array (when $info is NULL)
-   **/
+    * @return array|mixed|string
+    */
    static function getInfo($plugin, $info = null) {
 
       $fct = 'plugin_version_'.strtolower($plugin);
@@ -1384,7 +1380,7 @@ class Plugin extends CommonDBTM {
    /**
     * Get database relations for plugins
     *
-    * @return Array containing plugin database relations
+    * @return array containing plugin database relations
    **/
    static function getDatabaseRelations() {
 
@@ -1409,7 +1405,7 @@ class Plugin extends CommonDBTM {
     *
     * @param $itemtype
     *
-    * @return Array containing plugin search options for given type
+    * @return array containing plugin search options for given type
    **/
    static function getAddSearchOptions($itemtype) {
 
@@ -1438,11 +1434,11 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @param string $itemtype Item type
-    *
     * @return array an *indexed* array of search options
     *
+    * @throws Exception
     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-   **/
+    */
    static function getAddSearchOptionsNew($itemtype) {
       $options = [];
 
@@ -1589,9 +1585,9 @@ class Plugin extends CommonDBTM {
     *
     * @since 9.2
     *
-    * @param integer $plugid Plugin id
-    *
+    * @param $name
     * @return boolean
+    *
     */
    public function checkVersions($name) {
       $infos = self::getInfo($name);

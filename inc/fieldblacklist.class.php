@@ -159,10 +159,12 @@ class Fieldblacklist extends CommonDropdown {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -195,9 +197,6 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       $input = parent::prepareInputForAdd($input);
@@ -205,9 +204,6 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);
@@ -242,7 +238,7 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * Display a dropdown which contains all the available itemtypes
     *
-    * @return nothing
+    * @return void
    **/
    function showItemtype() {
       global $CFG_GLPI;
@@ -309,7 +305,9 @@ class Fieldblacklist extends CommonDropdown {
     *
     * @param $itemtype          itemtype
     * @param $options    array    of options
-   **/
+    *
+    * @return boolean|integer|string
+    */
    static function dropdownField($itemtype, $options = []) {
       global $DB;
 
@@ -375,13 +373,13 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * Check if a field & value are blacklisted or not
     *
-    * @param itemtype      itemtype of the blacklisted field
-    * @param entities_id   the entity in which the field must be saved
-    * @param field         the field to check
-    * @param value         the field's value
+    * @param string itemtype of the blacklisted field
+    * @param integer $entities_id which the field must be saved
+    * @param string $field to check
+    * @param string $value
     *
-    * @return true is value if blacklisted, false otherwise
-   **/
+    * @return boolean
+    */
    static function isFieldBlacklisted($itemtype, $entities_id, $field, $value) {
       global $DB;
 

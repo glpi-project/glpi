@@ -77,7 +77,9 @@ class SlaLevel extends LevelAgreementLevel {
     * @param $sla SLA object
     *
     * @since version 9.1 (before showForSLA)
-   **/
+    *
+    * @return boolean
+    */
    function showForSLA(SLA $sla) {
       global $DB;
 
@@ -218,7 +220,7 @@ class SlaLevel extends LevelAgreementLevel {
     * @param $ID              ID of the rule
     * @param $options   array of possible options
     *
-    * @return nothing
+    * @return void
    **/
    function showForm($ID, $options = []) {
 

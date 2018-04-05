@@ -46,13 +46,13 @@ class OlaLevel_Ticket extends CommonDBTM {
    /**
     * Retrieve an item from the database
     *
-    * @param $ID        ID of the item to get
-    * @param $olatype
+    * @param integer $ID of the item to get
+    * @param string $olaType
     *
     * @since version 9.1 2 mandatory parameters
     *
-    * @return true if succeed else false
-   **/
+    * @return boolean
+    */
    function getFromDBForTicket($ID, $olaType) {
 
       $query = "LEFT JOIN `glpi_olalevels`
@@ -69,13 +69,12 @@ class OlaLevel_Ticket extends CommonDBTM {
    /**
     * Delete entries for a ticket
     *
-    * @param $tickets_id    Ticket ID
-    * @param $type          Type of OLA
+    * @param integer $tickets_id
+    * @param string $olaType
     *
     * @since 9.1 2 parameters mandatory
     *
-    * @return nothing
-   **/
+    */
    function deleteForTicket($tickets_id, $olaType) {
       global $DB;
 
@@ -113,7 +112,7 @@ class OlaLevel_Ticket extends CommonDBTM {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : CronTask object
+    * @param CronTask $task object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
@@ -147,7 +146,7 @@ class OlaLevel_Ticket extends CommonDBTM {
     *
     * @since version 9.1   2 parameters mandatory
     *
-    * @return nothing
+    * @return void
    **/
    static function doLevelForTicket(array $data, $olaType) {
 

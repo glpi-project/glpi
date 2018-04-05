@@ -137,7 +137,9 @@ class ProjectTask_Ticket extends CommonDBRelation{
     * Show tickets for a projecttask
     *
     * @param $projecttask ProjectTask object
-   **/
+    *
+    * @return boolean
+    */
    static function showForProjectTask(ProjectTask $projecttask) {
       global $DB, $CFG_GLPI;
 
@@ -243,7 +245,9 @@ class ProjectTask_Ticket extends CommonDBRelation{
     * Show projecttasks for a ticket
     *
     * @param $ticket Ticket object
-    **/
+    *
+    * @return boolean
+    */
    static function showForTicket(Ticket $ticket) {
       global $DB, $CFG_GLPI;
 

@@ -50,12 +50,13 @@ class Supplier extends CommonDBTM {
    protected $usenotepad       = true;
 
 
-
    /**
     * Name of the type
     *
     * @param $nb : number of item in the type
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Supplier', 'Suppliers', $nb);
    }
@@ -124,7 +125,7 @@ class Supplier extends CommonDBTM {
     *     - target form target
     *     - withtemplate boolean : template or basic item
     *
-    *@return Nothing (display)
+    * @return void (display)
    **/
    function showForm($ID, $options = []) {
 
@@ -202,9 +203,6 @@ class Supplier extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -426,7 +424,9 @@ class Supplier extends CommonDBTM {
     * Get links for an enterprise (website / edit)
     *
     * @param $withname boolean : also display name ? (false by default)
-   **/
+    *
+    * @return string
+    */
    function getLinks($withname = false) {
       global $CFG_GLPI;
 
@@ -456,7 +456,7 @@ class Supplier extends CommonDBTM {
    /**
     * Print the HTML array for infocoms linked
     *
-    *@return Nothing (display)
+    * @return void (display)
     *
    **/
    function showInfocoms() {

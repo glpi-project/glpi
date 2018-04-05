@@ -57,11 +57,6 @@ class Project extends CommonDBTM {
    protected $team                     = [];
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type (default 0)
-   **/
    static function getTypeName($nb = 0) {
       return _n('Project', 'Projects', $nb);
    }
@@ -72,11 +67,6 @@ class Project extends CommonDBTM {
    }
 
 
-   /**
-    * Is the current user have right to show the current project ?
-    *
-    * @return boolean
-   **/
    function canViewItem() {
 
       if (!Session::haveAccessToEntity($this->getEntityID())) {
@@ -110,7 +100,9 @@ class Project extends CommonDBTM {
     * @since version 0.85
     *
     * @see commonDBTM::getRights()
-    **/
+    * @param string $interface
+    * @return array
+    */
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -188,6 +180,11 @@ class Project extends CommonDBTM {
    }
 
 
+   /**
+    * @see CommonGLPI::getAdditionalMenuContent()
+    *
+    * @return boolean|mixed
+    */
    static function getAdditionalMenuContent() {
 
       // No view to project by right on tasks add it
@@ -208,6 +205,11 @@ class Project extends CommonDBTM {
    }
 
 
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @return array
+    */
    static function getAdditionalMenuOptions() {
 
       return ['task' => ['title' => __('My tasks'),
@@ -217,7 +219,9 @@ class Project extends CommonDBTM {
 
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
-   **/
+    *
+    * @return array|boolean
+    */
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
 
@@ -758,8 +762,8 @@ class Project extends CommonDBTM {
 
 
    /**
-    * @param $output_type     (default 'Search::HTML_OUTPUT')
-    * @param $mass_id         id of the form to check all (default '')
+    * @param integer $output_type (default 'Search::HTML_OUTPUT')
+    * @param string $mass_id id of the form to check all (default '')
     */
    static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
 
@@ -995,7 +999,6 @@ class Project extends CommonDBTM {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    * @return Nothing (display)
     **/
    function showChildren() {
       global $DB, $CFG_GLPI;
@@ -1051,13 +1054,13 @@ class Project extends CommonDBTM {
    /**
     * Print the computer form
     *
-    * @param $ID        integer ID of the item
-    * @param $options   array
+    * @param integer $ID of the item
+    * @param array $options
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
-   **/
+    * @return boolean
+    */
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
@@ -1230,10 +1233,12 @@ class Project extends CommonDBTM {
     * @since version 0.85
     *
     * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -1254,7 +1259,9 @@ class Project extends CommonDBTM {
 
    /**
     * Show team for a project
-   **/
+    * @param Project $project
+    * @return boolean
+    */
    function showTeam(Project $project) {
       global $DB, $CFG_GLPI;
 
@@ -1355,9 +1362,10 @@ class Project extends CommonDBTM {
 
    /** Get data to display on GANTT
     *
-   * @param $ID        integer   ID of the project
-   * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
-   */
+    * @param $ID        integer   ID of the project
+    * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
+    * @return array
+    */
    static function getDataToDisplayOnGantt($ID, $showall = true) {
       global $DB;
 
@@ -1456,8 +1464,9 @@ class Project extends CommonDBTM {
 
    /** show GANTT diagram for a project or for all
     *
-   * @param $ID ID of the project or -1 for all projects
-   */
+    * @param $ID ID of the project or -1 for all projects
+    * @return boolean
+    */
    static function showGantt($ID) {
       global $DB;
 
