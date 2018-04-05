@@ -30,12 +30,17 @@
  * ---------------------------------------------------------------------
  */
 include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
 
 Session::checkLoginUser();
 
 if (!isset($_POST['action'])) {
    exit;
+}
+
+if ($_POST['action'] == 'change_task_state') {
+   header("Content-Type: application/json; charset=UTF-8");
+} else {
+   header("Content-Type: text/html; charset=UTF-8");
 }
 
 switch ($_POST['action']) {
@@ -46,9 +51,14 @@ switch ($_POST['action']) {
       $task = new TicketTask;
       $task->getFromDB(intval($_POST['tasks_id']));
       if (!in_array($task->fields['state'], [0, Planning::INFO])) {
-         echo $new_state = ($task->fields['state'] == Planning::DONE)
-                              ? Planning::TODO
-                              : Planning::DONE;
+         $new_state = ($task->fields['state'] == Planning::DONE)
+                           ? Planning::TODO
+                           : Planning::DONE;
+         $new_label = Planning::getState($new_state);
+         echo json_encode([
+            'state'  => $new_state,
+            'label'  => $new_label
+         ]);
          $task->update(['id'         => intval($_POST['tasks_id']),
                              'tickets_id' => intval($_POST['tickets_id']),
                              'state'      => $new_state]);
