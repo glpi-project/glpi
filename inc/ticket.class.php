@@ -7340,9 +7340,10 @@ class Ticket extends CommonITILObject {
                   'tasks_id':   tasks_id,
                   'tickets_id': ".$this->fields['id']."
                 })
-                .done(function(new_state) {
+                .done(function(response) {
                   $(target).removeClass('state_1 state_2')
-                           .addClass('state_'+new_state);
+                           .addClass('state_'+response.state)
+                           .attr('title', response.label);
                 });
       }
 

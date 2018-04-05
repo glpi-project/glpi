@@ -31,12 +31,17 @@
  */
 
 include ('../inc/includes.php');
-header("Content-Type: text/html; charset=UTF-8");
 
 Session::checkLoginUser();
 
 if (!isset($_REQUEST['action'])) {
    exit;
+}
+
+if ($_REQUEST['action'] == 'change_task_state') {
+   header("Content-Type: application/json; charset=UTF-8");
+} else {
+   header("Content-Type: text/html; charset=UTF-8");
 }
 
 switch ($_REQUEST['action']) {
@@ -47,12 +52,20 @@ switch ($_REQUEST['action']) {
       $task = new TicketTask;
       $task->getFromDB(intval($_REQUEST['tasks_id']));
       if (!in_array($task->fields['state'], [0, Planning::INFO])) {
-         echo $new_state = ($task->fields['state'] == Planning::DONE)
-                              ? Planning::TODO
-                              : Planning::DONE;
-         $task->update(['id'         => intval($_REQUEST['tasks_id']),
-                             'tickets_id' => intval($_REQUEST['tickets_id']),
-                             'state'      => $new_state]);
+         $new_state = ($task->fields['state'] == Planning::DONE)
+                           ? Planning::TODO
+                           : Planning::DONE;
+         $new_label = Planning::getState($new_state);
+         echo json_encode([
+            'state'  => $new_state,
+            'label'  => $new_label
+         ]);
+
+         $task->update([
+            'id'         => intval($_REQUEST['tasks_id']),
+            'tickets_id' => intval($_REQUEST['tickets_id']),
+            'state'      => $new_state
+         ]);
       }
       break;
    case "viewsubitem":
