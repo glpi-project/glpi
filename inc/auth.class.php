@@ -654,10 +654,9 @@ class Auth extends CommonGLPI {
                      $this->addToError(_n('Connection to LDAP directory failed',
                                           'Connection to LDAP directories failed',
                                           count($ldapservers)));
-                  }
+                  } else if (!$user_dn && $this->user_present) {
                   //If user is set as present in GLPI but no LDAP DN found : it means that the user
                   //is not present in an ldap directory anymore
-                  else if (!$user_dn && $this->user_present) {
                      $user_deleted_ldap       = true;
                      $this->user_deleted_ldap = true;
                      $this->addToError(_n('User not found in LDAP directory',
