@@ -1787,7 +1787,7 @@ class CommonDBTM extends CommonGLPI {
     **/
    function canCreateItem() {
 
-      if (!$this->checkEntity()) {
+      if (!$this->checkEntity(isset($this->fields['is_recursive']) && $this->fields['is_recursive'] == 1)) {
          return false;
       }
       return true;
@@ -1805,7 +1805,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canUpdateItem() {
 
-      if (!$this->checkEntity()) {
+      if (!$this->checkEntity(isset($this->fields['is_recursive']) && $this->fields['is_recursive'] == 1)) {
          return false;
       }
       return true;
@@ -1823,7 +1823,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canDeleteItem() {
 
-      if (!$this->checkEntity()) {
+      if (!$this->checkEntity(isset($this->fields['is_recursive']) && $this->fields['is_recursive'] == 1)) {
          return false;
       }
       return true;
@@ -1841,7 +1841,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canPurgeItem() {
 
-      if (!$this->checkEntity()) {
+      if (!$this->checkEntity(isset($this->fields['is_recursive']) && $this->fields['is_recursive'] == 1)) {
          return false;
       }
 
