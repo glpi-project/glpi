@@ -4877,18 +4877,15 @@ class Search {
 
             case 'glpi_changes.status':
                $status = Change::getStatus($data[$num][0]['name']);
-               return "<img src=\"".Change::getStatusIconURL($data[$num][0]['name'])."\"
-                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+               return Change::getStatusIcon($data[$num][0]['name']) . "&nbsp;$status";
 
             case 'glpi_problems.status':
                $status = Problem::getStatus($data[$num][0]['name']);
-               return "<img src=\"".Problem::getStatusIconURL($data[$num][0]['name'])."\"
-                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+               return Problem::getStatusIcon($data[$num][0]['name']) . "&nbsp;$status";
 
             case 'glpi_tickets.status':
                $status = Ticket::getStatus($data[$num][0]['name']);
-               return "<img src=\"".Ticket::getStatusIconURL($data[$num][0]['name'])."\"
-                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+               return Ticket::getStatusIcon($data[$num][0]['name']) . "&nbsp;$status";
 
             case 'glpi_projectstates.name':
                $out = '';

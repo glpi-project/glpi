@@ -5277,6 +5277,49 @@ input[name=as_map]:checked + label {
    border: 1px transparent solid;
 }
 
+/** ITIL statuses */
+.itilstatus {
+   font-size: 1.4em;
+   margin-right: .2em;
+   color: red;
+   background-color: transparent;
+}
+
+.itilstatus.new,
+.itilstatus.accepted {
+   color: green;
+}
+
+.itilstatus.qualif,
+.itilstatus.waiting {
+   color: orange;
+}
+
+.itilstatus.approval {
+   color: #8CABDB;
+}
+
+.itilstatus.eval {
+   color: lightblue;
+}
+
+.itilstatus.test {
+   color: #ccc;
+}
+
+.itilstatus.closed,
+.itilstatus.solved,
+.itilstatus.observe {
+   color: black;
+}
+
+.itilstatus.planned,
+.itilstatus.assigned {
+   color: #1B2F62;
+}
+
+/** /ITIL statuses */
+
 /** Responsive for documentation */
 
 @media screen and (max-width: 900px) {

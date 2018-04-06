@@ -3259,11 +3259,75 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Get status icon
+    *
+    * @since 9.3
+    *
+    * @return string
+    */
+   public static function getStatusIcon($status) {
+      $class = static::getStatusClass($status);
+      $label = static::getStatus($status);
+      return "<i class='$class' title='$label'></i>";
+   }
+
+   /**
+    * Get status class
+    *
+    * @since 9.3
+    *
+    * @return string
+    */
+   public static function getStatusClass($status) {
+      $class = null;
+      switch ($status) {
+         case self::INCOMING :
+            $class = 'circle new';
+            break;
+         case self::ASSIGNED :
+            $class = 'circle assigned';
+            break;
+         case self::PLANNED :
+            $class = 'calendar planned';
+            break;
+         case self::WAITING :
+            $class = 'circle waiting';
+            break;
+         case self::SOLVED :
+            $class = 'circle-o solved';
+            break;
+         case self::CLOSED :
+            $class = 'circle closed';
+            break;
+         case self::ACCEPTED :
+            $class = 'check-circle accepted';
+            break;
+         case self::OBSERVED :
+            $class = 'eye observe';
+            break;
+         case self::EVALUATION :
+            $class = 'circle-o eval';
+            break;
+         case self::APPROVAL :
+            $class = 'question-circle approval';
+            break;
+         case self::TEST :
+            $class = 'question-circle test';
+            break;
+         case self::QUALIFICATION :
+            $class = 'circle-o qualif';
+            break;
+      }
+      return $class == null ? '' : 'itilstatus fa fa-' . $class;
+   }
 
    /**
     * Get status icon URL
     *
     * @since 0.84
+    *
+    * @deprecated 9.3
     *
     * @param $status status to get icon URL
     *
@@ -3271,6 +3335,8 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function getStatusIconURL($status) {
       global $CFG_GLPI;
+
+      Toolbox::deprecated("Use CommonITILObject::getStatusIcon()");
 
       switch ($status) {
          case self::INCOMING :
@@ -5217,9 +5283,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // First column
          $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
          if ($p['output_type'] == Search::HTML_OUTPUT) {
-            $first_col .= "<br><img src='".static::getStatusIconURL($item->fields["status"])."'
-                                alt=\"".static::getStatus($item->fields["status"])."\" title=\"".
-                                static::getStatus($item->fields["status"])."\">";
+            $first_col .= static::getStatusIcon($item->fields["status"]);
          } else {
             $first_col = sprintf(__('%1$s - %2$s'), $first_col,
                                  static::getStatus($item->fields["status"]));
