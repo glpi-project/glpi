@@ -92,7 +92,6 @@ class Computer extends CommonDBTM {
 
       $ong = [];
       $this->addDefaultFormTab($ong)
-         ->addStandardTab(__CLASS__, $ong, $options)
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
