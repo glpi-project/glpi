@@ -67,7 +67,7 @@ function isAPI() {
  *
  * @param string $classname class name to analyze
  *
- * @return boolean[object false or an object containing plugin name and class name
+ * @return array|boolean
  */
 function isPluginItemType($classname) {
 
@@ -250,9 +250,9 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi') {
 /**
  * Classes loader
  *
- * @param string $classname : class to load
+ * @param string $classname to load
  *
- * @return void
+ * @return boolean
  */
 function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD;
