@@ -73,8 +73,8 @@ class NotificationTargetCertificate extends NotificationTarget {
             '##certificate.name##'           => $certificate['name'],
             '##certificate.serial##'         => $certificate['serial'],
             '##certificate.expirationdate##' => Html::convDate($certificate["date_expiration"]),
-            '##certificate.url'              => $this->formatURL($options['additionnaloption']['usertype'],
-                                                                 "Certificate".$id),
+            '##certificate.url##'            => $this->formatURL($options['additionnaloption']['usertype'],
+                                                                 "Certificate_".$id),
          ];
       }
 
