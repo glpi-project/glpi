@@ -4345,9 +4345,7 @@ input[type=checkbox].toggle_comments:checked ~ ul {
       display: block;
    }
 
-   .select2-focusser,
-   .select2-search,
-   .select2-search input {
+   .select2-focusser {
        display: none !important;
    }
 
