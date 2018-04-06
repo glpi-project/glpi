@@ -4108,7 +4108,7 @@ class Search {
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
                      $transAS            = $nt.'_trans';
-                     return self::joinDropdownTranslations(
+                     $specific_leftjoin .= self::joinDropdownTranslations(
                         $transAS,
                         $nt,
                         $transitemtype,
