@@ -67,7 +67,7 @@ class DeviceGraphicCard extends CommonDevice {
                                                                                     '_registeredID',
                                                                                     null, false),
                                      'type'  => 'registeredIDChooser'],
-                               ['name'  => 'devicecasegraphiccardmodels_id',
+                               ['name'  => 'devicegraphiccardmodels_id',
                                      'label' => __('Model'),
                                      'type'  => 'dropdownValue']]);
    }
