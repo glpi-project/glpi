@@ -4331,6 +4331,12 @@ class Ticket extends CommonITILObject {
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
+      if (isset($options['_add_fromitem'])) {
+         $item = new $options['itemtype'];
+         $item->getFromDB($options['items_id'][$options['itemtype']][0]);
+         $options['entities_id'] = $item->fields['entities_id'];
+      }
+
       $default_values = self::getDefaultValues();
 
       // Restore saved value or override with page parameter
