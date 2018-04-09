@@ -7492,7 +7492,7 @@ class Ticket extends CommonITILObject {
          $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
                     $checked value='$status_key'>";
          $html .= "<label for='status_radio_$status_key$rand'>";
-         $html .= "<img src='".Ticket::getStatusIconURL($status_key)."' />&nbsp;";
+         $html .= Ticket::getStatusIcon($status_key) . "&nbsp;";
          $html .= $status_label;
          $html .= "</label>";
          $html .= "</li>";

@@ -171,9 +171,7 @@ class Ticket_Ticket extends CommonDBRelation {
       if (is_array($tickets) && count($tickets)) {
          foreach ($tickets as $linkID => $data) {
             if ($ticket->getFromDB($data['tickets_id'])) {
-               $icons =  "<img src='".Ticket::getStatusIconURL($ticket->fields["status"]).
-                             "' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
-                             title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
+               $icons =  Ticket::getStatusIcon($ticket->fields['status']);
                if ($canupdate) {
                   if ($tick->getFromDB($ID)
                       && ($tick->fields['status'] != CommonITILObject::CLOSED)) {

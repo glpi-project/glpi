@@ -873,6 +873,11 @@ class CommonGLPI {
          }
          echo "<td class='b big'>";
          if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
+            if ($this instanceof CommonITILObject) {
+               echo "<span class='status'>";
+               echo $this->getStatusIcon($this->fields['status']);
+               echo "</span>";
+            }
             echo $name;
          }
          echo "</td>";
