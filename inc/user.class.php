@@ -2229,6 +2229,13 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b'>";
+      echo __('Email');
+      echo "</td><td>";
+      echo $user->getDefaultEmail();
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='b'>";
       echo __('Location');
       echo "</td><td>";
       echo Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id'));
