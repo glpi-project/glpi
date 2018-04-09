@@ -5504,13 +5504,9 @@ class Html {
             }
             if (isset($image['tag'])) {
                if ($ok || empty($mime)) {
-                  $glpi_root = $CFG_GLPI['root_doc'];
-                  if (isCommandLine() && isset($CFG_GLPI['url_base'])) {
-                     $glpi_root = $CFG_GLPI['url_base'];
-                  }
                   // Replace tags by image in textarea
                   if ($addLink) {
-                     $out .= '<a href="'.$glpi_root.
+                     $out .= '<a href="'.$CFG_GLPI['root_doc'].
                              '/front/document.send.php?docid='.$id.$more_link.
                              '" target="_blank"><img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
@@ -5519,7 +5515,7 @@ class Html {
                   } else {
                      $out .= '<img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
-                             '" src="'.$glpi_root.
+                             '" src="'.$CFG_GLPI['root_doc'].
                              '/front/document.send.php?docid='.$id.$more_link.'" />';
                   }
                }
