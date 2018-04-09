@@ -5285,11 +5285,16 @@ input[name=as_map]:checked + label {
    background-color: transparent;
 }
 
-.itilstatus.new,
+.itilstatus.assigned,
+.itilstatus.new {
+   color: #49bf4d;
+}
+
 .itilstatus.accepted {
    color: green;
 }
 
+.itilstatus.test,
 .itilstatus.qualif,
 .itilstatus.waiting {
    color: orange;
@@ -5303,18 +5308,13 @@ input[name=as_map]:checked + label {
    color: lightblue;
 }
 
-.itilstatus.test {
-   color: #ccc;
-}
-
 .itilstatus.closed,
 .itilstatus.solved,
 .itilstatus.observe {
    color: black;
 }
 
-.itilstatus.planned,
-.itilstatus.assigned {
+.itilstatus.planned {
    color: #1B2F62;
 }
 

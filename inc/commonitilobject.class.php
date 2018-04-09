@@ -3286,7 +3286,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $class = 'circle new';
             break;
          case self::ASSIGNED :
-            $class = 'circle assigned';
+            $class = 'circle-o assigned';
             break;
          case self::PLANNED :
             $class = 'calendar planned';
