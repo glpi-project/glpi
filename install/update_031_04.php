@@ -565,8 +565,8 @@ function update031to04() {
       $query = "UPDATE `glpi_users`
                 SET `type` = 'super-admin'
                 WHERE `type` = 'admin'";
-      $DB->queryOrDie($query, "49");
-      if ($DB->affected_rows() != 0) {
+      $result = $DB->queryOrDie($query, "49");
+      if ($result->rowCount() != 0) {
          $ret["adminchange"] = true;
       }
    }

@@ -213,8 +213,8 @@ class Log extends CommonDBTM {
          $username = "";
       }
 
-      $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
-      $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
+      $old_value = Toolbox::substr($old_value, 0, 180);
+      $new_value = Toolbox::substr($new_value, 0, 180);
 
       // Security to be sure that values do not pass over the max length
       if (Toolbox::strlen($old_value) > 255) {
@@ -229,7 +229,7 @@ class Log extends CommonDBTM {
          'itemtype'          => $itemtype,
          'itemtype_link'     => $itemtype_link,
          'linked_action'     => $linked_action,
-         'user_name'         => addslashes($username),
+         'user_name'         => $username,
          'date_mod'          => $date_mod,
          'id_search_option'  => $id_search_option,
          'old_value'         => $old_value,
@@ -237,7 +237,7 @@ class Log extends CommonDBTM {
       ];
       $result = $DB->insert(self::getTable(), $params);
 
-      if ($result && $DB->affected_rows() > 0) {
+      if ($result->rowCount() > 0) {
          return $_SESSION['glpi_maxhistory'] = $DB->insert_id();
       }
       return false;

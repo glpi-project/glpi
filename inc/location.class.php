@@ -393,7 +393,6 @@ class Location extends CommonTreeDropdown {
          echo "<th>".__('Inventory number')."</th>";
          echo "</tr>";
 
-         $DB->data_seek($result, $start);
          for ($row=0; ($data=$DB->fetch_assoc($result)) && ($row<$_SESSION['glpilist_limit']); $row++) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);

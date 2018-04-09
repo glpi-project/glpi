@@ -3,6 +3,23 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [10.0] Unreleased
+
+- /!\ Database queries now rely on PDO; and global sanitize has been dropped
+- /!\ `DB` methods which uses to return a mysqli_statement now return a PDOStatement
+- /!\ `DB::affected_rows` can no longer be used; with PDO, you must use `PDOStatement::rowCount()`
+- Optionnal parameter `$params` added to `DB::query` and `DB::queryOrDie` to pass values to be used while executing the query
+- `DB::data_seek` now moves the pointer as it previously does; but it also return the row
+
+### Added
+
+- `DB::execute` to prepare and execute a query, setting scrollabel cursor
+- `DB::insert` (and `DB::insertOrDie`) to build insert statements
+- `DB::buildInsert` to build insert queries ready to be prepared
+- `DB::quoteName` to get tables and names quoted (for a future support of multiple database engines)
+- Add methods in `DB` to handle transactions (no usefull yet since default tables are still using MyISAM)
+- `DB::quote` for PDO quoting (escape + quote)
+
 ## [9.3] Unreleased
 
 ### Changed

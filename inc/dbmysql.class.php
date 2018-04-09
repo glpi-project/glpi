@@ -104,31 +104,49 @@ class DBmysql {
       $hostport = explode(":", $host);
       if (count($hostport) < 2) {
          // Host
-         $this->dbh = @new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault);
-
+         $dsn = "mysql:host=$host";
       } else if (intval($hostport[1])>0) {
          // Host:port
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, $hostport[1]);
+         $dsn = "mysql:host={$hostport[0]}:{$hostport[1]}";
       } else {
          // :Socket
-         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                  $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+         $dsn = "mysql:unix_socket={$hostport[1]}";
       }
 
-      if ($this->dbh->connect_error) {
-         $this->connected = false;
-         $this->error     = 1;
-      } else {
-         $this->dbh->set_charset(isset($this->dbenc) ? $this->dbenc : "utf8");
-
+      try {
+         $charset = isset($this->dbenc) ? $this->dbenc : "utf8";
+         $this->dbh = new PDO(
+            "$dsn;dbname={$this->dbdefault};charset=$charset",
+            $this->dbuser,
+            rawurldecode($this->dbpassword)
+         );
+         $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
          if (GLPI_FORCE_EMPTY_SQL_MODE) {
             $this->dbh->query("SET SESSION sql_mode = ''");
          }
          $this->connected = true;
+      } catch (\Exception $e) {
+         $this->connected = false;
+         $this->error     = 1;
+         //FIXME: drop or handle
+         throw $e;
       }
    }
+
+   /**
+    * Escapes special characters in a string for use in an SQL statement,
+    * taking into account the current charset of the connection and quote it.
+    *
+    * @since 9.3
+    *
+    * @param string $string String to quote
+    *
+    * @return string quoted string
+    */
+   function quote($string) {
+      return $this->dbh->quote($string);
+   }
+
 
    /**
     * Escapes special characters in a string for use in an SQL statement,
@@ -141,23 +159,40 @@ class DBmysql {
     * @return string escaped string
     */
    function escape($string) {
-      return $this->dbh->real_escape_string($string);
+      $quoted = $this->quote($string);
+      //TODO: this is OK for MySQL; but probably not for PostgreSQL
+      return trim($quoted, "'");
+   }
+
+   /**
+    * Executes a PDO prepared query
+    *
+    * @param string $query  The query string to execute
+    * @param array  $params Query parameters; if any
+    *
+    * @return PDOStatement
+    */
+   public function execute($query, array $params = []) {
+      $stmt = $this->dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
+      $stmt->execute($params);
+      return $stmt;
    }
 
    /**
     * Execute a MySQL query
     *
     * @param string $query Query to execute
+    * @param array  $params Query parameters; if any
     *
     * @var array   $CFG_GLPI
     * @var array   $DEBUG_SQL
     * @var integer $SQL_TOTAL_REQUEST
     *
-    * @return mysqli_result|boolean Query result handler
+    * @return PDOStatement|boolean Query result handler
     *
     * @throws GlpitestSQLError
     */
-   function query($query) {
+   function query($query, $params = []) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
@@ -171,31 +206,34 @@ class DBmysql {
          $TIMER->start();
       }
 
-      $res = @$this->dbh->query($query);
-      if (!$res) {
+      try {
+         $res = $this->execute($query, $params);
+
+         if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+            && $CFG_GLPI["debug_sql"]) {
+            $TIME                                   = $TIMER->getTime();
+            $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
+         }
+         if ($this->execution_time === true) {
+            $this->execution_time = $TIMER->getTime(0, true);
+         }
+         return $res;
+      } catch (\Exception $e) {
          // no translation for error logs
          $error = "  *** MySQL query error:\n  SQL: ".$query."\n  Error: ".
-                   $this->dbh->error."\n";
-         $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
+                   $e->getMessage()."\n";
+         $error .= print_r($params, true) . "\n";
+         $error .= $e->getTraceAsString();
 
          Toolbox::logSqlError($error);
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
                 || isAPI())
              && $CFG_GLPI["debug_sql"]) {
-            $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
+            $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $e->getMessage();
          }
       }
-
-      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-          && $CFG_GLPI["debug_sql"]) {
-         $TIME                                   = $TIMER->getTime();
-         $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
-      }
-      if ($this->execution_time === true) {
-         $this->execution_time = $TIMER->getTime(0, true);
-      }
-      return $res;
+      return false;
    }
 
    /**
@@ -206,11 +244,12 @@ class DBmysql {
     *
     * @param string $query   Query to execute
     * @param string $message Explanation of query (default '')
+    * @param array  $params  Query parameters; if any
     *
-    * @return mysqli_result Query result handler
+    * @return PDOStatement
     */
-   function queryOrDie($query, $message = '') {
-      $res = $this->query($query);
+   function queryOrDie($query, $message = '', $params = []) {
+      $res = $this->query($query, $params);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -234,48 +273,52 @@ class DBmysql {
     *
     * @param string $query Query to prepare
     *
-    * @return mysqli_stmt|boolean statement object or FALSE if an error occurred.
+    * @return PDOStatement|boolean statement object or FALSE if an error occurred.
     *
     * @throws GlpitestSQLError
     */
    function prepare($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
-      $res = @$this->dbh->prepare($query);
-      if (!$res) {
+      try {
+         $res = $this->dbh->prepare($query);
+         return $res;
+      } catch (\Exception $e) {
          // no translation for error logs
          $error = "  *** MySQL prepare error:\n  SQL: ".$query."\n  Error: ".
-                   $this->dbh->error."\n";
-         $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
+                  $e->getMessage()."\n";
+         $error .= $e->getTraceAsString();
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
-            throw new GlpitestSQLError($error);
+            throw new GlpitestSQLError($error, 0, $e);
          }
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {
             $SQL_TOTAL_REQUEST++;
-            $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
+            $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $e->getMessage();
          }
       }
-      return $res;
+      return false;
    }
 
    /**
     * Give result from a sql result
     *
-    * @param mysqli_result $result MySQL result handler
-    * @param int           $i      Row offset to give
-    * @param type          $field  Field to give
+    * @param PDOStatement $result MySQL result handler
+    * @param int          $i      Row offset to give
+    * @param type         $field  Field to give
     *
     * @return mixed Value of the Row $i and the Field $field of the Mysql $result
     */
    function result($result, $i, $field) {
-      if ($result && ($result->data_seek($i))
-          && ($data = $result->fetch_array())
-          && isset($data[$field])) {
-         return $data[$field];
+      $seek_mode = (is_int($field) ? PDO::FETCH_NUM : PDO::FETCH_ASSOC);
+      if ($result) {
+         $data = $this->data_seek($result, $i, $seek_mode);
+         if (isset($data[$field])) {
+            return $data[$field];
+         }
       }
       return null;
    }
@@ -283,69 +326,72 @@ class DBmysql {
    /**
     * Number of rows
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result MySQL result handler
     *
     * @return integer number of rows
     */
    function numrows($result) {
-      return $result->num_rows;
+      return $result->rowCount();
    }
 
    /**
     * Fetch array of the next row of a Mysql query
     * Please prefer fetch_row or fetch_assoc
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result MySQL result handler
     *
     * @return string[]|null array results
     */
    function fetch_array($result) {
-      return $result->fetch_array();
+      $result->setFetchMode(PDO::FETCH_NUM);
+      return $result->fetch();
    }
 
    /**
     * Fetch row of the next row of a Mysql query
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result MySQL result handler
     *
     * @return mixed|null result row
     */
    function fetch_row($result) {
-      return $result->fetch_row();
+      return $result->fetch();
    }
 
    /**
     * Fetch assoc of the next row of a Mysql query
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result MySQL result handler
     *
     * @return string[]|null result associative array
     */
    function fetch_assoc($result) {
-      return $result->fetch_assoc();
+      $result->setFetchMode(PDO::FETCH_ASSOC);
+      return $result->fetch();
    }
 
    /**
     * Fetch object of the next row of an SQL query
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result MySQL result handler
     *
     * @return object|null
     */
    function fetch_object($result) {
-      return $result->fetch_object();
+      $result->setFetchMode(PDO::FETCH_OBJ);
+      return $result->fetch();
    }
 
    /**
     * Move current pointer of a Mysql result to the specific row
     *
-    * @param mysqli_result $result MySQL result handler
-    * @param integer       $num    Row to move current pointer
+    * @param PDOStatement $result MySQL result handler
+    * @param integer      $num    Row to move current pointer
     *
     * @return boolean
     */
-   function data_seek($result, $num) {
-      return $result->data_seek($num);
+   function data_seek($result, $num, $seek_mode = PDO::FETCH_ASSOC) {
+      return $result->fetch($seek_mode, PDO::FETCH_ORI_ABS, $num);
    }
 
    /**
@@ -354,13 +400,13 @@ class DBmysql {
     * @return mixed
     */
    function insert_id() {
-      return $this->dbh->insert_id;
+      return (int)$this->dbh->lastInsertID();
    }
 
    /**
     * Give number of fields of a Mysql result
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result MySQL result handler
     *
     * @return int number of fields
     */
@@ -371,7 +417,7 @@ class DBmysql {
    /**
     * Give name of a field of a Mysql result
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result MySQL result handler
     * @param integer       $nb     ID of the field
     *
     * @return string name of the field
@@ -387,7 +433,7 @@ class DBmysql {
     *
     * @param string $table table name condition (glpi_% as default to retrieve only glpi tables)
     *
-    * @return mysqli_result list of tables
+    * @return PDOStatement list of tables
     *
     * @deprecated 9.3
     */
@@ -446,7 +492,7 @@ class DBmysql {
       if ($result) {
          if ($this->numrows($result) > 0) {
             $cache[$table] = [];
-            while ($data = $result->fetch_assoc()) {
+            while ($data = $this->fetch_assoc($result)) {
                $cache[$table][$data["Field"]] = $data;
             }
             return $cache[$table];
@@ -462,18 +508,18 @@ class DBmysql {
     * @return int number of affected rows on success, and -1 if the last query failed.
     */
    function affected_rows() {
-      return $this->dbh->affected_rows;
+      throw new \RuntimeException('affected_rows method could not be used... Use PDOStatement::rowCount instead.');
    }
 
    /**
     * Free result memory
     *
-    * @param mysqli_result $result MySQL result handler
+    * @param PDOStatement $result PDO statement
     *
     * @return boolean TRUE on success or FALSE on failure.
     */
    function free_result($result) {
-      return $result->free();
+      return $result->closeCursor();
    }
 
    /**
@@ -491,7 +537,12 @@ class DBmysql {
     * @return string error text from the last MySQL function, or '' (empty string) if no error occurred.
     */
    function error() {
-      return $this->dbh->error;
+      $error = $this->dbh->errorInfo();
+      if (isset($error[2])) {
+         return $error[2];
+      } else {
+         return '';
+      }
    }
 
    /**
@@ -501,7 +552,8 @@ class DBmysql {
     */
    function close() {
       if ($this->dbh) {
-         return $this->dbh->close();
+         $this->dbh = null;
+         return true;
       }
       return false;
    }
@@ -635,6 +687,7 @@ class DBmysql {
             $nb++;
          }
       }
+      $DB->free_result($result);
 
       if (!is_null($migration)
           && method_exists($migration, 'displayMessage') ) {
@@ -663,7 +716,7 @@ class DBmysql {
          if ($data['vers']) {
             $ret['Server Version'] = $data['vers'];
          } else {
-            $ret['Server Version'] = $this->dbh->server_info;
+            $ret['Server Version'] = $this->dbh->getAttribute(PDO::ATTR_SERVER_VERSION);
          }
          if ($data['mode']) {
             $ret['Server SQL Mode'] = $data['mode'];
@@ -672,7 +725,7 @@ class DBmysql {
          }
       }
       $ret['Parameters'] = $this->dbuser."@".$this->dbhost."/".$this->dbdefault;
-      $ret['Host info']  = $this->dbh->host_info;
+      $ret['Host info']  = $this->dbh->getAttribute(PDO::ATTR_SERVER_INFO);
 
       return $ret;
    }
@@ -755,7 +808,7 @@ class DBmysql {
          $query  = "CHECK TABLE `".$line['TABLE_NAME']."` FAST";
          $result  = $DB->query($query);
          if ($DB->numrows($result) > 0) {
-            $row = $DB->fetch_array($result);
+            $row = $DB->fetch_assoc($result);
             if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
                $crashed_tables[] = ['table'    => $row[0],
                                     'Msg_type' => $row['Msg_type'],
@@ -860,6 +913,41 @@ class DBmysql {
    }
 
    /**
+    * Starts a PDO transaction
+    *
+    * @return boolean
+    */
+   public function beginTransaction() {
+      return $this->dbh->beginTransaction();
+   }
+
+   /**
+    * Commits a PDO transaction
+    *
+    * @return boolean
+    */
+   public function commit() {
+      return $this->dbh->commit();
+   }
+
+   /**
+    * Roolbacks a PDO transaction
+    *
+    * @return boolean
+    */
+   public function rollBack() {
+      return $this->dbh->rollBack();
+   }
+
+   /**
+    * Is into a PDO transaction?
+    *
+    * @return boolean
+    */
+   public function inTransaction() {
+      return $this->dbh->inTransaction();
+   }
+   /**
     * Quote value for insert/update
     *
     * @param mixed $value Value
@@ -889,18 +977,24 @@ class DBmysql {
     *
     * @return string
     */
-   public function buildInsert($table, $params) {
+   public function buildInsert($table, &$params) {
       $query = "INSERT INTO " . self::quoteName($table) . " (";
 
-      $fields = [];
-      foreach ($params as $key => &$value) {
+      $fields  = [];
+      $keys    = [];
+      foreach ($params as $key => $value) {
          $fields[] = $this->quoteName($key);
-         $value = $this->quoteValue($value);
+         if ($value instanceof QueryExpression) {
+            $keys[] = $value->getValue();
+            unset($params[$key]);
+         } else {
+            $keys[]   = ':' . trim($key, '`');
+         }
       }
 
       $query .= implode(', ', $fields);
       $query .= ") VALUES (";
-      $query .= implode(", ", $params);
+      $query .= implode(", ", $keys);
       $query .= ")";
 
       return $query;
@@ -914,11 +1008,12 @@ class DBmysql {
     * @param string $table  Table name
     * @param array  $params Query parameters ([field name => field value)
     *
-    * @return mysqli_result|boolean Query result handler
+    * @return PDOStatement
     */
    public function insert($table, $params) {
       $result = $this->query(
-         $this->buildInsert($table, $params)
+         $this->buildInsert($table, $params),
+         $params
       );
       return $result;
    }
@@ -933,11 +1028,11 @@ class DBmysql {
     * @param array  $params  Query parameters ([field name => field value)
     * @param string $message Explanation of query (default '')
     *
-    * @return mysqli_result|boolean Query result handler
+    * @return PDOStatement
     */
    function insertOrDie($table, $params, $message = '') {
       $insert = $this->buildInsert($table, $params);
-      $res = $this->query($insert);
+      $res = $this->query($insert, $params);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -967,7 +1062,7 @@ class DBmysql {
     *
     * @return string
     */
-   public function buildUpdate($table, $params, $where) {
+   public function buildUpdate($table, &$params, $where) {
 
       if (!count($where)) {
          throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
@@ -976,12 +1071,18 @@ class DBmysql {
       $query  = "UPDATE ". self::quoteName($table) ." SET ";
 
       foreach ($params as $field => $value) {
-         $query .= self::quoteName($field) . " = ".$this->quoteValue($value).", ";
+         $subq = self::quoteName($field) . ' = ?, ';
+         if ($value instanceof QueryExpression) {
+            $subq = str_replace('?', $value->getValue(), $subq);
+            unset($params[$field]);
+         }
+         $query .= $subq;
       }
       $query = rtrim($query, ', ');
 
       $it = new DBmysqlIterator($this);
       $query .= " WHERE " . $it->analyseCrit($where);
+      $params = array_merge(array_values($params), $it->getParameters());
 
       return $query;
    }
@@ -995,11 +1096,11 @@ class DBmysql {
     * @param array  $params Query parameters ([:field name => field value)
     * @param array  $where  WHERE clause
     *
-    * @return mysqli_result|boolean Query result handler
+    * @return PDOStatement
     */
    public function update($table, $params, $where) {
       $query = $this->buildUpdate($table, $params, $where);
-      $result = $this->query($query);
+      $result = $this->query($query, $params);
       return $result;
    }
 
@@ -1018,7 +1119,7 @@ class DBmysql {
     */
    function updateOrDie($table, $params, $where, $message = '') {
       $update = $this->buildUpdate($table, $params, $where);
-      $res = $this->query($update);
+      $res = $this->query($update, $params);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -1074,7 +1175,7 @@ class DBmysql {
     */
    public function delete($table, $where) {
       $query = $this->buildDelete($table, $where);
-      $result = $this->query($query);
+      $result = $this->query($query, array_values($where));
       return $result;
    }
 
@@ -1092,7 +1193,7 @@ class DBmysql {
     */
    function deleteOrDie($table, $where, $message = '') {
       $update = $this->buildDelete($table, $where);
-      $res = $this->query($update);
+      $res = $this->query($update, $where);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -1123,7 +1224,7 @@ class DBmysql {
     */
    public function getTableSchema($table, $structure = null) {
       if ($structure === null) {
-         $structure = $this->query("SHOW CREATE TABLE `$table`")->fetch_row();
+         $structure = $this->query("SHOW CREATE TABLE `$table`")->fetch();
          $structure = $structure[1];
       }
 

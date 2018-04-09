@@ -12,7 +12,7 @@
     },
     "require": {
         "php": ">=5.6.0",
-        "ext-mysqli": "*",
+        "ext-pdo_mysql": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",

@@ -161,7 +161,7 @@ class CartridgeItem extends CommonDBTM {
          ];
          $result = $DB->insert('glpi_cartridgeitems_printermodels', $params);
 
-         if ($result && ($DB->affected_rows() > 0)) {
+         if ($result->rowCount() > 0) {
             return true;
          }
       }

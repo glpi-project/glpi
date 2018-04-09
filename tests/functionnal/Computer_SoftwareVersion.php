@@ -177,7 +177,7 @@ class Computer_SoftwareVersion extends DbTestCase {
       $input['is_deleted'] = '1';
       $this->boolean($computer1->update($input))->isTrue();
 
-      $this->boolean($softver->updateDatasForComputer($computer1->getID()))->isTrue();
+      $this->object($softver->updateDatasForComputer($computer1->getID()))->isInstanceOf('\PDOStatement');
 
       //check if all has been updated
       foreach ([$softver01, $softver02] as $tsoftver) {

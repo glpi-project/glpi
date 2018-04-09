@@ -835,7 +835,7 @@ class Toolbox {
                   ? array_map([__CLASS__, 'addslashes_deep'], $value)
                   : (is_null($value)
                        ? null : (is_resource($value)
-                                  ? $value : $DB->escape($value)));
+                                  ? $value : addslashes($value)));
 
       return $value;
    }

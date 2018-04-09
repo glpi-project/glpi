@@ -492,7 +492,7 @@ class CommonDBTM extends CommonGLPI {
                [$field => $this->fields[$field]],
                ['id' => $this->fields['id']]
             );
-            if ($DB->affected_rows() == 0) {
+            if ($result->rowCount() == 0) {
                if (isset($oldvalues[$field])) {
                   unset($oldvalues[$field]);
                }
@@ -529,6 +529,9 @@ class CommonDBTM extends CommonGLPI {
             //FIXME: why is that handled here?
             if (($this->getType() == 'ProfileRight') && ($value == '')) {
                $value = 0;
+            }
+            if ($value === 'NULL' || $value === 'null') {
+               $value = null;
             }
             $params[$key] = $value;
          }
@@ -584,51 +587,82 @@ class CommonDBTM extends CommonGLPI {
    function deleteFromDB($force = 0) {
       global $DB, $CFG_GLPI;
 
-      if (($force == 1)
-          || !$this->maybeDeleted()
-          || ($this->useDeletedToLockIfDynamic()
-              && !$this->isDynamic())) {
-         $this->cleanDBonPurge();
-         if ($this instanceof CommonDropdown) {
-            $this->cleanTranslations();
+      //set flag when transaction has been set by caller
+      $intransaction = $DB->inTransaction();
+      try {
+         if (!$intransaction) {
+            $DB->beginTransaction();
          }
-         $this->cleanHistory();
-         $this->cleanRelationData();
-         $this->cleanRelationTable();
+         if (($force == 1)
+            || !$this->maybeDeleted()
+            || ($this->useDeletedToLockIfDynamic()
+               && !$this->isDynamic())) {
+            $this->cleanDBonPurge();
+            if ($this instanceof CommonDropdown) {
+               $this->cleanTranslations();
+            }
+            $this->cleanHistory();
+            $this->cleanRelationData();
+            $this->cleanRelationTable();
 
-         $result = $DB->delete(
-            $this->getTable(), [
-               'id' => $this->fields['id']
-            ]
-         );
-         if ($result) {
+            $result = $DB->delete(
+               $this->getTable(), [
+                  'id' => $this->fields['id']
+               ]
+            );
+
+            if (!$result) {
+               throw new \RuntimeException(
+                  str_replace(
+                     ['%type', '%id'],
+                     [$this->getType(), $this->getID()],
+                     'Unable to delete %type %id'
+                  )
+               );
+            }
+
             $this->post_deleteFromDB();
+            if (!$intransaction && $DB->inTransaction()) {
+               $DB->commit();
+            }
+            return true;
+         } else {
+            $this->cleanDBonMarkDeleted();
+
+            $params = ['is_deleted' => 1];
+            // Auto set date_mod if exsist
+            if (isset($this->fields['date_mod'])) {
+               $params['date_mod'] = $_SESSION['glpi_currenttime'];
+            }
+            $result = $DB->update(
+               $this->getTable(),
+               $params,
+               ['id' => $this->fields['id']]
+            );
+
+            if ($result->rowCount() != 1) {
+               throw new \RuntimeException(
+                  str_replace(
+                     ['%type', '%id'],
+                     [$this->getType(), $this->getID()],
+                     'Unable to mark %type %id as deleted'
+                  )
+               );
+            }
+            if (!$intransaction && $DB->inTransaction()) {
+               $DB->commit();
+            }
             return true;
          }
-
-      } else {
-         // Auto set date_mod if exsist
-         $toadd = [];
-         if (isset($this->fields['date_mod'])) {
-            $toadd['date_mod'] = $_SESSION["glpi_currenttime"];
+      } catch (\Exception $e) {
+         if (!$intransaction && $DB->inTransaction()) {
+            $DB->rollBack();
+         } else {
+            throw $e;
          }
-
-         $result = $DB->update(
-            $this->getTable(), [
-               'is_deleted' => 1
-            ] + $toadd, [
-               'id' => $this->fields['id']
-            ]
-         );
-         $this->cleanDBonMarkDeleted();
-
-         if ($result) {
-            return true;
-         }
-
+         Toolbox::logError($e);
+         return false;
       }
-
-      return false;
    }
 
 
@@ -1215,24 +1249,24 @@ class CommonDBTM extends CommonGLPI {
                      switch ($searchopt['datatype']) {
                         case 'string' :
                         case 'text' :
-                           $ischanged = (strcmp($DB->escape($this->fields[$key]),
+                           $ischanged = (strcmp($this->fields[$key],
                                                 $this->input[$key]) != 0);
                            break;
 
                         case 'itemlink' :
                            if ($key == 'name') {
-                              $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                               $this->input[$key]) != 0);
+                              $ischanged = (strcmp($this->fields[$key],
+                                                   $this->input[$key]) != 0);
                               break;
                            } // else default
 
                         default :
-                           $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                           $ischanged = ($this->fields[$key] != $this->input[$key]);
                            break;
                      }
                   } else {
                      // No searchoption case
-                     $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                     $ischanged = ($this->fields[$key] != $this->input[$key]);
 
                   }
                   if ($ischanged) {
