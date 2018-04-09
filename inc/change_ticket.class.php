@@ -264,7 +264,7 @@ class Change_Ticket extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a ticket')."</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='right'>";
+         echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
          Ticket::dropdown(['used'        => $used,
                                 'entity'      => $change->getEntityID(),
