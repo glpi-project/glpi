@@ -367,6 +367,6 @@ class APIRest extends APIBaseClass {
       if (isset($data['headers'])) {
          unset($data['headers']);
       }
-      $this->integer(count($data))->isEqualTo(1);
+      $this->array($data)->hasSize(1);
    }
 }
