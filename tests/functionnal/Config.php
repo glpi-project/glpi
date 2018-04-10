@@ -101,6 +101,7 @@ class Config extends DbTestCase {
 
       //check extra tabs from superadmin profile
       $this->login();
+      $expected['Config$9'] = 'Logs purge';
       $expected['Config$5'] = 'System';
       $expected['Config$7'] = 'Performance';
       $expected['Config$8'] = 'API';
