@@ -46,6 +46,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Config extends CommonDBTM {
 
+   const DELETE_ALL = -1;
+   const KEEP_ALL = 0;
+
    // From CommonGLPI
    protected $displaylist         = false;
 
@@ -2136,6 +2139,7 @@ class Config extends CommonDBTM {
             $tabs[3] = __('Assets');
             $tabs[4] = __('Assistance');
             if (Config::canUpdate()) {
+               $tabs[9] = __('Logs purge');
                $tabs[5] = __('System');
                $tabs[7] = __('Performance');
                $tabs[8] = __('API');
@@ -2204,6 +2208,10 @@ class Config extends CommonDBTM {
 
             case 8 :
                $item->showFormAPI();
+               break;
+
+            case 9:
+               $item->showFormLogs();
                break;
 
          }
@@ -2863,5 +2871,208 @@ class Config extends CommonDBTM {
          }
       }
       return $themes;
+   }
+
+   /**
+    * Logs purge form
+    *
+    * @since 9.3
+    *
+    * @return void
+    */
+   function showFormLogs() {
+      global $DB, $CFG_GLPI;
+
+      if (!Config::canUpdate()) {
+         return false;
+      }
+
+      echo "<form name='form' id='purgelogs_form' method='post' action='".$this->getFormURL()."'>";
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__("Logs purge configuration").
+           "</th></tr>";
+      echo "<tr class='tab_bg_1 center'><td colspan='4'><i>".__("Change all")."</i>";
+      echo Html::scriptBlock("function form_init_all(value) {
+         $('#purgelogs_form .purgelog_interval select').val(value).trigger('change');;
+      }");
+      self::showLogsInterval(
+         'init_all',
+         0,
+         [
+            'on_change' => "form_init_all(this.value);",
+            'class'     => ''
+         ]
+      );
+      echo "</td></tr>";
+      echo "<input type='hidden' name='id' value='1'>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__("General")."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Add/update relation between items").
+           "</td><td>";
+      self::showLogsInterval('purge_addrelation', $CFG_GLPI["purge_addrelation"]);
+      echo "</td>";
+      echo "<td>".__("Delete relation between items")."</td><td>";
+      self::showLogsInterval('purge_deleterelation', $CFG_GLPI["purge_deleterelation"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Add the item")."</td><td>";
+      self::showLogsInterval('purge_createitem', $CFG_GLPI["purge_createitem"]);
+      echo "</td>";
+      echo "<td>".__("Delete the item")."</td><td>";
+      self::showLogsInterval('purge_deleteitem', $CFG_GLPI["purge_deleteitem"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Restore the item")."</td><td>";
+      self::showLogsInterval('purge_restoreitem', $CFG_GLPI["purge_restoreitem"]);
+      echo "</td>";
+
+      echo "<td>".__('Update the item')."</td><td>";
+      self::showLogsInterval('purge_updateitem', $CFG_GLPI["purge_updateitem"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Comments")."</td><td>";
+      self::showLogsInterval('purge_comments', $CFG_GLPI["purge_comments"]);
+      echo "</td>";
+      echo "<td>".__("Last update")."</td><td>";
+      self::showLogsInterval('purge_datemod', $CFG_GLPI["purge_datemod"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".
+           __("Plugins")."</td><td>";
+      self::showLogsInterval('purge_plugins', $CFG_GLPI["purge_plugins"]);
+      echo "</td>";
+      echo "<td class='center'></td><td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Software', 'Software', 2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>".
+           __("Installation/uninstallation of software on computers")."</td><td>";
+      self::showLogsInterval('purge_computer_software_install',
+                          $CFG_GLPI["purge_computer_software_install"]);
+      echo "</td>";
+      echo "<td>".__("Installation/uninstallation versions on softwares")."</td><td>";
+      self::showLogsInterval('purge_software_version_install',
+                         $CFG_GLPI["purge_software_version_install"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".
+           __("Add/Remove computers from software versions")."</td><td>";
+      self::showLogsInterval('purge_software_computer_install',
+                          $CFG_GLPI["purge_software_computer_install"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Financial and administrative information').
+           "</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>".
+           __("Add financial information to an item")."</td><td>";
+      self::showLogsInterval('purge_infocom_creation', $CFG_GLPI["purge_infocom_creation"]);
+      echo "</td>";
+      echo "<td colspan='2'></td></tr>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('User', 'Users', 2)."</th></tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".
+           __("Add/remove profiles to users")."</td><td>";
+      self::showLogsInterval('purge_profile_user', $CFG_GLPI["purge_profile_user"]);
+      echo "</td>";
+      echo "<td>".__("Add/remove groups to users")."</td><td>";
+      self::showLogsInterval('purge_group_user', $CFG_GLPI["purge_group_user"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".
+           __("User authentication method changes")."</td><td>";
+      self::showLogsInterval('purge_user_auth_changes', $CFG_GLPI["purge_user_auth_changes"]);
+      echo "</td>";
+      echo "<td class='center'>".__("Deleted user in LDAP directory").
+           "</td><td>";
+      self::showLogsInterval('purge_userdeletedfromldap', $CFG_GLPI["purge_userdeletedfromldap"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Component', 'Components', 2)."</th></tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Add component")."</td><td>";
+      self::showLogsInterval('purge_adddevice', $CFG_GLPI["purge_adddevice"]);
+      echo "</td>";
+      echo "<td>".__("Update component")."</td><td>";
+      self::showLogsInterval('purge_updatedevice', $CFG_GLPI["purge_updatedevice"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Disconnect a component").
+           "</td><td>";
+      self::showLogsInterval('purge_disconnectdevice', $CFG_GLPI["purge_disconnectdevice"]);
+      echo "</td>";
+      echo "<td>".__("Connect a component")."</td><td>";
+      self::showLogsInterval('purge_connectdevice', $CFG_GLPI["purge_connectdevice"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Delete component").
+           "</td><td>";
+      self::showLogsInterval('purge_deletedevice', $CFG_GLPI["purge_deletedevice"]);
+      echo "</td>";
+      echo "<td colspan='2'></td></tr>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__("All sections")."</th></tr>";
+
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Purge all log entries")."</td><td>";
+      self::showLogsInterval('purge_all', $CFG_GLPI["purge_all"]);
+      echo "</td>";
+      echo "<td colspan='2'></td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' class='center'>";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit' >";
+      echo"</td>";
+      echo "</tr>";
+
+      echo "</table></div>";
+      Html::closeForm();
+   }
+
+   /**
+    * Show intervals for logs purge
+    *
+    * @since 9.3
+    *
+    * @param string $name    Parameter name
+    * @param mixed  $value   Parameter value
+    * @param array  $options Options
+    *
+    * @return void
+    */
+   static function showLogsInterval($name, $value, $options = []) {
+      $values[self::DELETE_ALL] = __("Delete all");
+      $values[self::KEEP_ALL]   = __("Keep all");
+      for ($i = 1; $i < 121; $i++) {
+         $values[$i] = sprintf(
+            _n(
+               "Delete if older than %s month",
+               "Delete if older than %s months",
+               $i
+            ),
+            $i
+         );
+      }
+      $options = array_merge([
+         'value'   => $value,
+         'display' => false,
+         'class'   => 'purgelog_interval'
+      ], $options);
+
+      $out = "<div class='{$options['class']}'>";
+      $out.= Dropdown::showFromArray($name, $values, $options);
+      $out.= "</div>";
+
+      echo $out;
    }
 }

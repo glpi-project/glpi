@@ -764,6 +764,69 @@ function update92to93() {
    //Permit same license several times on same computer
    $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
 
+   /** Logs purge */
+   $purge_params = [
+      'purge_computer_software_install',
+      'purge_software_computer_install',
+      'purge_software_version_install',
+      'purge_infocom_creation',
+      'purge_profile_user',
+      'purge_group_user',
+      'purge_adddevice',
+      'purge_updatedevice',
+      'purge_deletedevice',
+      'purge_connectdevice',
+      'purge_disconnectdevice',
+      'purge_userdeletedfromldap',
+      'purge_addrelation',
+      'purge_deleterelation',
+      'purge_createitem',
+      'purge_deleteitem',
+      'purge_restoreitem',
+      'purge_updateitem',
+      'purge_comments',
+      'purge_datemod',
+      'purge_all',
+      'purge_user_auth_changes',
+      'purge_plugins'
+   ];
+
+   $purge_plugin_values = [];
+   if ($DB->tableExists('glpi_plugin_purgelogs_configs')) {
+      $purge_plugin_values = iterator_to_array(
+         $DB->request(['FROM' => 'glpi_plugin_purgelogs_configs'])
+      )[1];
+   }
+
+   $configs_toadd = [];
+   foreach ($purge_params as $purge_param) {
+      if (!isset($current_config[$purge_param])) {
+         $value = isset($purge_plugin_values[$purge_param]) ? $purge_plugin_values[$purge_param] : 0;
+         $configs_toadd[$purge_param] = $value;
+      }
+   }
+
+   if (count($configs_toadd)) {
+      $migration->addConfig($configs_toadd);
+   }
+
+   if (isset($configs_toadd['purge_plugins']) && count($purge_plugin_values)) {
+      $migration->displayWarning(
+         'There are changes on plugins logs purge between core and the old plugin. Please review your configuration.'
+      );
+   }
+
+   CronTask::Register(
+      'PurgeLogs',
+      'PurgeLogs',
+      7 * DAY_TIMESTAMP,
+      [
+         'param' => 24,
+         'mode' => CronTask::MODE_EXTERNAL
+      ]
+   );
+   /** /Logs purge */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

@@ -1363,7 +1363,29 @@ INSERT INTO `glpi_configs` VALUES ('182','core','from_email_name', NULL);
 INSERT INTO `glpi_configs` VALUES ('183','core','instance_uuid', NULL);
 INSERT INTO `glpi_configs` VALUES ('184','core','registration_uuid', NULL);
 INSERT INTO `glpi_configs` VALUES ('185','core','smtp_retry_time','5');
-
+INSERT INTO `glpi_configs` VALUES ('186','core','purge_addrelation','0');
+INSERT INTO `glpi_configs` VALUES ('187','core','purge_deleterelation','0');
+INSERT INTO `glpi_configs` VALUES ('188','core','purge_createitem','0');
+INSERT INTO `glpi_configs` VALUES ('189','core','purge_deleteitem','0');
+INSERT INTO `glpi_configs` VALUES ('190','core','purge_restoreitem','0');
+INSERT INTO `glpi_configs` VALUES ('191','core','purge_updateitem','0');
+INSERT INTO `glpi_configs` VALUES ('192','core','purge_computer_software_install','0');
+INSERT INTO `glpi_configs` VALUES ('193','core','purge_software_computer_install','0');
+INSERT INTO `glpi_configs` VALUES ('194','core','purge_software_version_install','0');
+INSERT INTO `glpi_configs` VALUES ('195','core','purge_infocom_creation','0');
+INSERT INTO `glpi_configs` VALUES ('196','core','purge_profile_user','0');
+INSERT INTO `glpi_configs` VALUES ('197','core','purge_group_user','0');
+INSERT INTO `glpi_configs` VALUES ('198','core','purge_adddevice','0');
+INSERT INTO `glpi_configs` VALUES ('199','core','purge_updatedevice','0');
+INSERT INTO `glpi_configs` VALUES ('200','core','purge_deletedevice','0');
+INSERT INTO `glpi_configs` VALUES ('201','core','purge_connectdevice','0');
+INSERT INTO `glpi_configs` VALUES ('202','core','purge_disconnectdevice','0');
+INSERT INTO `glpi_configs` VALUES ('203','core','purge_userdeletedfromldap','0');
+INSERT INTO `glpi_configs` VALUES ('204','core','purge_comments','0');
+INSERT INTO `glpi_configs` VALUES ('205','core','purge_datemod','0');
+INSERT INTO `glpi_configs` VALUES ('206','core','purge_all','0');
+INSERT INTO `glpi_configs` VALUES ('207','core','purge_user_auth_changes','0');
+INSERT INTO `glpi_configs` VALUES ('208','core','purge_plugins','0');
 
 ### Dump table glpi_consumableitems
 
