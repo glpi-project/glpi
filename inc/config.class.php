@@ -294,7 +294,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='text_login'>" . __('Text in the login box') . "</label></td>";
+      echo "<td><label for='text_login'>" . __('Text in the login box (HTML tags supported)') . "</label></td>";
       echo "<td colspan='3'>";
       echo "<textarea cols='70' rows='4' name='text_login' id='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
