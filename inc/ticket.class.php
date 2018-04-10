@@ -3681,30 +3681,7 @@ class Ticket extends CommonITILObject {
       $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
 
       // Set default values...
-      $default_values = ['_users_id_requester_notif'
-                                                    => ['use_notification'
-                                                              => (($email == "")?0:$default_use_notif)],
-                                                    'nodelegate'          => 1,
-                                                    '_users_id_requester' => 0,
-                                                    '_users_id_observer'  => [0],
-                                                    '_users_id_observer_notif'
-                                                    => ['use_notification' => $default_use_notif],
-                                                    'name'                => '',
-                                                    'content'             => '',
-                                                    'itilcategories_id'   => 0,
-                                                    'locations_id'        => 0,
-                                                    'urgency'             => 3,
-                                                    'items_id'            => 0,
-                                                    'entities_id'         => $_SESSION['glpiactive_entity'],
-                                                    'plan'                => [],
-                                                    'global_validation'   => CommonITILValidation::NONE,
-                                                    '_add_validation'     => 0,
-                                                    'type'                => Entity::getUsedConfig('tickettype',
-                                                                             $_SESSION['glpiactive_entity'],
-                                                                             '', Ticket::INCIDENT_TYPE),
-                              '_right'              => "id",
-                              '_filename'           => [],
-                              '_tag_filename'       => []];
+      $default_values = self::getDefaultValues();
 
       // Get default values from posted values on reload form
       if (!$ticket_template) {
@@ -3848,7 +3825,7 @@ class Ticket extends CommonITILObject {
 
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
+            if (isset($default_values[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
                // Set if ticket template change
@@ -3859,10 +3836,9 @@ class Ticket extends CommonITILObject {
                    || (isset($options['_tickettemplates_id'])
                        && ($options['_tickettemplates_id'] != $tt->getID()))) {
                   $options[$predeffield]            = $predefvalue;
+                  $this->fields[$predeffield]      = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
-            } else { // Not defined options set as hidden field
-               echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
             }
          }
          // All predefined override : add option to say predifined exists
@@ -3876,6 +3852,15 @@ class Ticket extends CommonITILObject {
                   $options[$predeffield] = $default_values[$predeffield];
                }
             }
+         }
+      }
+
+      if (isset($options['_projecttasks_id'])) {
+         echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
+      }
+      if (isset($this->fields['_tasktemplates_id'])) {
+         foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
+            echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
          }
       }
 
