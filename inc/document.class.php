@@ -736,6 +736,30 @@ class Document extends CommonDBTM {
          if ($DB->numrows($result) > 0) {
             return true;
          }
+
+         //copy/pasted images do not have entries in glpi_documents_items table
+         $result = $DB->request([
+            'FROM'      => 'glpi_knowbaseitems',
+            'COUNT'     => 'cpt',
+            'LEFT JOIN' => [
+               'glpi_entities_knowbaseitems' => [
+                  'FKEY' => [
+                     'glpi_knowbaseitems'          => 'id',
+                     'glpi_entities_knowbaseitems' => 'knowbaseitems_id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'glpi_knowbaseitems.answer'                  => [
+                  'LIKE',
+                  '%document.send.php?docid='.$this->fields["id"].'%'
+               ],
+               'glpi_knowbaseitems.is_faq'                  => 1,
+               'glpi_entities_knowbaseitems.entities_id'    => 0,
+               'glpi_entities_knowbaseitems.is_recursive'   => 1
+            ]
+         ])->next();
+         return $result['cpt'] > 0;
       }
 
       return false;
