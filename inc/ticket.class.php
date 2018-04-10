@@ -3704,7 +3704,8 @@ class Ticket extends CommonITILObject {
                                                                              '', Ticket::INCIDENT_TYPE),
                               '_right'              => "id",
                               '_filename'           => [],
-                              '_tag_filename'       => []];
+                              '_tag_filename'       => [],
+                              '_tasktemplates_id'   => []];
 
       // Get default values from posted values on reload form
       if (!$ticket_template) {
@@ -3876,6 +3877,12 @@ class Ticket extends CommonITILObject {
                   $options[$predeffield] = $default_values[$predeffield];
                }
             }
+         }
+      }
+
+      if (isset($options['_tasktemplates_id'])) {
+         foreach ($options['_tasktemplates_id'] as $tasktemplates_id) {
+            echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
          }
       }
 
