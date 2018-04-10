@@ -1100,7 +1100,7 @@ class Entity extends CommonTreeDropdown {
       echo "<span class='b'>".__('Select the desired entity')."<br>( <img src='".$CFG_GLPI["root_doc"].
             "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
             "<br>";
-      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
+      echo "<a style='font-size:14px;' href='".$target."?active_entity=all&is_recursive=1' title=\"".
              __s('Show all')."\">".str_replace(" ", "&nbsp;", __('Show all'))."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
