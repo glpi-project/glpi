@@ -237,7 +237,7 @@ class Log extends CommonDBTM {
       ];
       $result = $DB->insert(self::getTable(), $params);
 
-      if ($result && $DB->affected_rows() > 0) {
+      if ($result && $DB->affected_rows($result) > 0) {
          return $_SESSION['glpi_maxhistory'] = $DB->insert_id();
       }
       return false;
