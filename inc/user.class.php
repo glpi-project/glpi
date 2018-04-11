@@ -1298,7 +1298,7 @@ class User extends CommonDBTM {
          $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
          $v  = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
-         for ($i=0; $i<count($v['count']); $i++) {
+         for ($i=0; $i < $v['count']; $i++) {
             //Try to find is DN in present and needed: if yes, then extract only the OU from it
             if ((($ldap_method["group_field"] == 'dn') || in_array('ou', $group_fields))
                 && isset($v[$i]['dn'])) {
