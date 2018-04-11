@@ -221,8 +221,8 @@ class CronTask extends CommonDBTM{
             'state'  => self::STATE_RUNNING,
             'lastrun'   => new \QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
          ], [
-            'id'     => $this->fields['id'],
-            'state'  => ['NOT', self::STATE_RUNNING]
+            'id'  => $this->fields['id'],
+            'NOT' => ['state' => self::STATE_RUNNING]
          ]
       );
 
