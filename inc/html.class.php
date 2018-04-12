@@ -5748,15 +5748,14 @@ class Html {
 
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
             $version = Plugin::getInfo($plugin, 'version');
-            if (is_array($files)) {
-               foreach ($files as $file) {
-                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::script("plugins/$plugin/$file", ['version' => $version]);
-                  }
-               }
-            } else {
-               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::script("plugins/$plugin/$files", ['version' => $version]);
+            if (!is_array($files)) {
+               $files = [$files];
+            }
+            foreach ($files as $file) {
+               if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
+                  echo Html::script("plugins/$plugin/$file", ['version' => $version]);
+               } else {
+                  Toolbox::logDebug("$file file not found from plugin $plugin!");
                }
             }
          }
