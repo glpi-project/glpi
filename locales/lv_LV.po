@@ -971,11 +971,11 @@ msgstr[2] "Nodaļas"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Atkļūdošanas režīms ir ieslēgts!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Atkļūdošanas režīms ir izslēgts!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -6495,7 +6495,7 @@ msgstr ""
 
 #: inc/commondbtm.class.php:4926
 msgid "Autofilled from template"
-msgstr ""
+msgstr "Automātiski aizpildīts no veidnes"
 
 #: inc/commondbvisible.class.php:150
 msgid "Add a target"
@@ -7305,11 +7305,11 @@ msgstr "Uzdevums nav atrasts"
 
 #: inc/commonitiltask.class.php:1890
 msgid "Ticket tasks to do"
-msgstr ""
+msgstr "Pieteikuma uzdevumi, kas jādara"
 
 #: inc/commonitiltask.class.php:1893
 msgid "Problem tasks to do"
-msgstr ""
+msgstr "Problēmas uzdevumi, kas jādara"
 
 #: inc/commonitiltask.class.php:1964
 #, php-format
@@ -7318,7 +7318,7 @@ msgstr "%1$s"
 
 #: inc/commonitiltask.class.php:1977
 msgid "No tasks do to."
-msgstr ""
+msgstr "Nav izpildāmo uzdevumu."
 
 #: inc/commonitilvalidation.class.php:293
 #: inc/commonitilvalidation.class.php:416
@@ -11891,11 +11891,11 @@ msgstr "Beigt darbu"
 
 #: inc/html.class.php:6002
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Atkļūdošanas režīms ieslēgts"
 
 #: inc/html.class.php:6003
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Atkļūdošanas režīms izslēgts"
 
 #: inc/html.class.php:6007
 msgid "Change mode"
@@ -12763,7 +12763,7 @@ msgstr[2] "Piezīmes"
 
 #: inc/knowbaseitem_comment.class.php:128
 msgid "No comments"
-msgstr ""
+msgstr "Komentāru nav"
 
 #: inc/knowbaseitem_comment.class.php:181
 #: inc/knowbaseitem_comment.class.php:215
@@ -12780,7 +12780,7 @@ msgstr ""
 
 #: inc/knowbaseitem_comment.class.php:315
 msgid "Add an answer"
-msgstr ""
+msgstr "Pievienot atbildi"
 
 #: inc/knowbaseitem_comment.class.php:365
 msgid "New comment"
@@ -13339,7 +13339,7 @@ msgstr "Saņemt e-pastu (pasta saņēmēji)"
 
 #: inc/mailcollector.class.php:1621
 msgid "Number of emails to retrieve"
-msgstr ""
+msgstr "E-pastu skaits lai atgūt"
 
 #: inc/mailcollector.class.php:1624
 msgid "Send alarms on receiver errors"
@@ -13360,7 +13360,7 @@ msgstr "Nepievienoto epastu saraksts"
 #: inc/mailcollector.class.php:1802
 #, php-format
 msgid "Receivers in error: %s"
-msgstr ""
+msgstr "Saņēmēji ar kļūdām: %s"
 
 #: inc/mailcollector.class.php:1846
 msgid "No import"
@@ -14044,7 +14044,7 @@ msgstr "Ikonas URL"
 #: inc/notificationajaxsetting.class.php:103
 #: inc/notificationmailingsetting.class.php:240
 msgid "Notifications are disabled."
-msgstr ""
+msgstr "Paziņojumi ir izslēgti."
 
 #: inc/notificationajaxsetting.class.php:105
 #: inc/notificationmailingsetting.class.php:242
@@ -14169,7 +14169,7 @@ msgstr "Epasta sekojumu uzstādījumi"
 
 #: inc/notificationmailingsetting.class.php:48
 msgid "Enable followups via email"
-msgstr ""
+msgstr "Ieslēgt sekojumu sūtīšanu uz e-pastu"
 
 #: inc/notificationmailingsetting.class.php:68
 msgid "Email notification"
@@ -14314,7 +14314,7 @@ msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Pārlūkprogramma"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -14457,11 +14457,11 @@ msgstr "Nodaļas administrators"
 
 #: inc/notificationtargetcommonitilobject.class.php:79
 msgid "New user in requesters"
-msgstr ""
+msgstr "Jauns lietotājs pie pieteicējiem"
 
 #: inc/notificationtargetcommonitilobject.class.php:80
 msgid "New group in requesters"
-msgstr ""
+msgstr "Jauna grupa pie pieteicējiem"
 
 #: inc/notificationtargetcommonitilobject.class.php:81
 msgid "New user in observers"
@@ -14923,7 +14923,7 @@ msgstr ""
 
 #: inc/notificationtargetprojecttask.class.php:63
 msgid "Project team group"
-msgstr ""
+msgstr "Projektu komandas grupa"
 
 #: inc/notificationtargetprojecttask.class.php:454
 #: inc/notificationtargetprojecttask.class.php:518 inc/profile.class.php:956
@@ -16153,7 +16153,7 @@ msgstr "Mani uzdevumi"
 
 #: inc/project.class.php:504 inc/project.class.php:1086
 msgid "Show on global GANTT"
-msgstr ""
+msgstr "Rādīt uz globālas Ganta diagrammas"
 
 #: inc/project.class.php:931
 msgid "Invalid planned dates. Dates not updated."
@@ -17466,7 +17466,7 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:355
 msgid "less than"
-msgstr ""
+msgstr "mazāk nekā"
 
 #: inc/savedsearch_alert.class.php:359
 msgid "less or equals than"
@@ -17474,15 +17474,15 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:363
 msgid "equals to"
-msgstr ""
+msgstr "vienāds ar"
 
 #: inc/savedsearch_alert.class.php:367
 msgid "not equals to"
-msgstr ""
+msgstr "nav vienāds ar"
 
 #: inc/savedsearch_alert.class.php:371
 msgid "greater or equals than"
-msgstr ""
+msgstr "lielāks vai vienāds ar"
 
 #: inc/savedsearch_alert.class.php:375
 msgid "greater than"
@@ -17516,7 +17516,7 @@ msgstr "Pēdējais ilgums (ms)"
 
 #: inc/savedsearch.class.php:233
 msgid "Count"
-msgstr ""
+msgstr "Skaits"
 
 #: inc/savedsearch.class.php:242
 msgid "Default"
@@ -18385,7 +18385,7 @@ msgstr "Risinājums ir apstiprināts"
 
 #: inc/ticketfollowup.class.php:376 inc/ticketfollowup.class.php:650
 msgid "If you want to reopen the ticket, you must specify a reason"
-msgstr ""
+msgstr "Ja gribat atkaroti atvērt pieteikumu, lūdzu norādiet iemeslu"
 
 #: inc/ticketfollowup.class.php:380
 msgid "If you reject the solution, you must specify a reason"
@@ -18575,7 +18575,7 @@ msgstr ""
 
 #: inc/ticket_ticket.class.php:235
 msgid "Duplicated by"
-msgstr ""
+msgstr "Dublicējis"
 
 #: inc/ticketvalidation.class.php:99
 msgid "Create for request"

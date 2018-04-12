@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-06 11:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Marios <m.mariusz@interia.eu>, 2017\n"
+"Last-Translator: Marcin Czarnecki <velumaar@gmail.com>, 2018\n"
 "Language-Team: Polish (Poland) (https://www.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -975,11 +975,11 @@ msgstr[3] "Jednostki"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Tryb debugowania został włączony!"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Tryb debugowania został wyłączony!"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -2535,7 +2535,7 @@ msgstr "Bardzo Niski"
 
 #: front/helpdesk.php:103
 msgid "Describe your issue"
-msgstr ""
+msgstr "Opisz swój problem"
 
 #: front/helpdesk.php:105 inc/change.class.php:792
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:2760
@@ -6660,7 +6660,7 @@ msgstr "Numer produktu"
 
 #: inc/commondcmodeldropdown.class.php:63 inc/item_rack.class.php:522
 msgid "Weight"
-msgstr ""
+msgstr "Waga"
 
 #: inc/commondcmodeldropdown.class.php:72
 msgid "Required units"
@@ -6668,7 +6668,7 @@ msgstr ""
 
 #: inc/commondcmodeldropdown.class.php:80 inc/rack.class.php:298
 msgid "Depth"
-msgstr ""
+msgstr "Głębokość"
 
 #: inc/commondcmodeldropdown.class.php:88
 msgid "Power connections"
@@ -6681,7 +6681,7 @@ msgstr ""
 #: inc/commondcmodeldropdown.class.php:97
 #: inc/commondcmodeldropdown.class.php:107
 msgid "watts"
-msgstr ""
+msgstr "waty"
 
 #: inc/commondcmodeldropdown.class.php:106 inc/rack.class.php:303
 msgid "Max. power (in watts)"
@@ -6693,27 +6693,27 @@ msgstr ""
 
 #: inc/commondcmodeldropdown.class.php:124
 msgid "Front picture"
-msgstr ""
+msgstr "Zdjęcie przodu"
 
 #: inc/commondcmodeldropdown.class.php:132
 msgid "Rear picture"
-msgstr ""
+msgstr "Zdjęcie tyłu"
 
 #: inc/commondcmodeldropdown.class.php:193
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: inc/commondcmodeldropdown.class.php:194
 msgid "1/2"
-msgstr ""
+msgstr "1/2"
 
 #: inc/commondcmodeldropdown.class.php:195
 msgid "1/3"
-msgstr ""
+msgstr "1/3"
 
 #: inc/commondcmodeldropdown.class.php:196
 msgid "1/4"
-msgstr ""
+msgstr "1/4"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
@@ -7769,10 +7769,10 @@ msgstr[3] "Typy pamięci"
 #: inc/printer.class.php:672
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Pamięć"
+msgstr[1] "Pamięci"
+msgstr[2] "Pamięci"
+msgstr[3] "Pamięć"
 
 #: inc/computer.class.php:874 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:44 inc/networkportmigration.class.php:295
@@ -8963,6 +8963,8 @@ msgid ""
 "Automatic checks cannot be done; please review .htaccess file and the web "
 "server configuration."
 msgstr ""
+"Automatyczne testy nie mogą zostać wykonane; proszę sprawdzić plik .htaccess"
+" i konfigurację serwera HTTP."
 
 #: inc/config.class.php:2696
 msgid "You are using a development version, be careful!"
@@ -9853,10 +9855,10 @@ msgstr[3] "%d dni"
 #: inc/dcroom.class.php:255
 msgid "Datacenter"
 msgid_plural "Datacenters"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Centrum obliczeniowe"
+msgstr[1] "Centra obliczeniowe"
+msgstr[2] "Centra obliczeniowe"
+msgstr[3] "Centra obliczeniowe"
 
 #: inc/dbconnection.class.php:375
 msgid "Check the SQL replica"
@@ -9909,7 +9911,7 @@ msgstr "optymalizacja"
 
 #: inc/dbutils.class.php:1065
 msgid "Address:"
-msgstr ""
+msgstr "Adres:"
 
 #: inc/dcbreadcrumb.class.php:95
 msgid "Datacenter position"
@@ -9919,18 +9921,18 @@ msgstr ""
 #: inc/dcroom.class.php:50 inc/rack.class.php:199 inc/rack.class.php:409
 msgid "Server room"
 msgid_plural "Server rooms"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Serwerownia"
+msgstr[1] "Serwerownie"
+msgstr[2] "Serwerownie"
+msgstr[3] "Serwerownia"
 
 #: inc/dcroom.class.php:122 inc/dcroom.class.php:263
 msgid "Number of columns"
-msgstr ""
+msgstr "Ilość kolumn"
 
 #: inc/dcroom.class.php:133 inc/dcroom.class.php:271
 msgid "Number of rows"
-msgstr ""
+msgstr "Ilość wierszy"
 
 #: inc/dcroom.class.php:147
 msgid "Background picture (blueprint)"
@@ -15398,7 +15400,7 @@ msgstr "SLA"
 #: inc/ticket.class.php:2884 inc/ticket.class.php:2892
 #: inc/ticket.class.php:2906 inc/ticket.class.php:2919
 msgid "OLA"
-msgstr ""
+msgstr "Umowa o gwarantowanym poziomie wsparcia (OLA)"
 
 #: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2713
 #: inc/ticket.class.php:2892 inc/ticket.class.php:4651
@@ -15686,6 +15688,8 @@ msgstr ""
 #: inc/ola.class.php:58
 msgid "The internal time is recalculated when assigning the OLA"
 msgstr ""
+"Wewnętrzne czasy reakcji są przeliczane podczas przypisywania wartości w "
+"Umowie o gwarantowanym poziomie wsparcia"
 
 #: inc/ola.class.php:62
 msgid ""
@@ -18750,7 +18754,7 @@ msgstr "Zmień priorytet"
 
 #: inc/ticket.class.php:6532
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr ""
+msgstr "Zatwierdź rozwiązanie / Odpowiedz na ankietę (moje zgłoszenie)"
 
 #: inc/ticket.class.php:6533
 msgid "Approve solution and reply to survey for ticket created by me"

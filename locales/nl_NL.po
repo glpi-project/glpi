@@ -9982,11 +9982,11 @@ msgstr "Items kiezen die standaard zichtbaar zijn"
 
 #: inc/displaypreference.class.php:370 inc/displaypreference.class.php:525
 msgid "Bring up"
-msgstr "Starten"
+msgstr "Verplaats omhoog"
 
 #: inc/displaypreference.class.php:386 inc/displaypreference.class.php:541
 msgid "Bring down"
-msgstr "Stoppen"
+msgstr "Verplaats omlaag"
 
 #. TRANS: short for : Search result user display
 #: inc/displaypreference.class.php:707

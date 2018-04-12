@@ -9817,8 +9817,8 @@ msgstr[1] "Generische Geräte"
 #: inc/devicegenericmodel.class.php:44 inc/dropdown.class.php:891
 msgid "Device generic model"
 msgid_plural "Device generic models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerätegenerische Modelle"
+msgstr[1] "Gerätegenerische Modelle "
 
 #: inc/devicegenerictype.class.php:41
 msgid "Generic type"
@@ -12436,7 +12436,7 @@ msgstr "Zuletzt von %1$s am %2$s aktualisiert"
 #: inc/itilsolution.class.php:523 inc/ticket.class.php:7078
 #, php-format
 msgid "%1$s on %2$s by %3$s"
-msgstr ""
+msgstr "%1$s auf %2$s von %3$s"
 
 #: inc/itilsolution.class.php:524 inc/ticket.class.php:7079
 msgid "Accepted"
@@ -12590,7 +12590,7 @@ msgstr "FAQ lesen"
 #. TRANS: %s is the user login, %d the revision number
 #: inc/knowbaseitem.class.php:1864
 msgid "%s reverts item to revision %id"
-msgstr ""
+msgstr "%s bringt Element auf Revision %i zurück"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:368
@@ -15278,7 +15278,7 @@ msgstr "Netzteil"
 
 #: inc/pdu_rack.class.php:422
 msgid "Racked"
-msgstr ""
+msgstr "Rackeinbau"
 
 #: inc/pdu_rack.class.php:427 inc/pdu_rack.class.php:435
 #: inc/pdu_rack.class.php:439
@@ -15295,11 +15295,11 @@ msgstr "Die PDU wird"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
-msgstr ""
+msgstr "im Rack eingebaut"
 
 #: inc/pdu_rack.class.php:500
 msgid "placed at rack side"
-msgstr ""
+msgstr "plaziert auf Rackseite"
 
 #: inc/pdu_rack.class.php:710
 msgid "Top"
@@ -17428,7 +17428,7 @@ msgstr "Benachrichtigung wurde erstellt!"
 
 #: inc/search.class.php:157
 msgid "assets"
-msgstr ""
+msgstr "Assets"
 
 #: inc/search.class.php:159
 msgid "Search results for localized items only"

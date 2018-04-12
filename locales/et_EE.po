@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-06 11:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Aarne Põder <croco3008@gmail.com>, 2017\n"
+"Last-Translator: Indrek Teppan <indrek@laanesaare.ee>, 2018\n"
 "Language-Team: Estonian (Estonia) (https://www.transifex.com/glpi/teams/1637/et_EE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: apirest.php:47 apixmlrpc.php:46 inc/api.class.php:102
 msgid "API disabled"
-msgstr ""
+msgstr "API on keelatud"
 
 #: index.php:76
 msgid "GLPI - Authentication"
@@ -850,7 +850,7 @@ msgstr "Lisa üldine otsingutingimus"
 
 #: ajax/searchrow.php:104
 msgid "Delete a search criterion"
-msgstr ""
+msgstr "Kustuta otsingu kriteerium"
 
 #: ajax/searchrow.php:137 ajax/searchrow.php:156 inc/config.class.php:381
 #: inc/search.class.php:1869
@@ -871,11 +871,11 @@ msgstr "Lisa uus seade"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:65
 msgid "No unaffected device !"
-msgstr ""
+msgstr "Puudutamat seadmed puuduvad !"
 
 #: ajax/subvisibility.php:59
 msgid "No restriction"
-msgstr ""
+msgstr "Piirangud puuduvad"
 
 #: ajax/subvisibility.php:62 front/report.contract.list.php:177
 #: front/report.infocom.php:127 front/report.year.list.php:133
@@ -968,7 +968,7 @@ msgstr[1] ""
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Debug režiim on aktiveeritud."
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
@@ -980,6 +980,8 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Me kogume ainult järgmisi andmeid: pluginate kasutamine, kasutajaliidese, "
+"mälu ja riistvara seadistuse jõudluse statistika."
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:62 ajax/ticketassigninformation.php:63
