@@ -1,1 +1,1 @@
-Unit tests that require a runing LDAP server
+Unit tests that require a running LDAP server

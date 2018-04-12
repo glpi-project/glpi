@@ -1,4 +1,4 @@
-##GLPI test suite
+## GLPI test suite
 
 To run the GLPI test suite you need
 
