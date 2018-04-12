@@ -3934,7 +3934,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($ID
           && $can_admin
-          && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])) {
+          && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])
+          && !in_array($this->fields['status'], $this->getClosedStatusArray())
+      ) {
          $rand_requester = mt_rand();
          echo "&nbsp;";
          echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\"
@@ -4039,7 +4041,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($ID
           && $can_admin
-          && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])) {
+          && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])
+          && !in_array($this->fields['status'], $this->getClosedStatusArray())
+      ) {
          $rand_observer = mt_rand();
 
          echo "&nbsp;";
