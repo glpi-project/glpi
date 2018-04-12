@@ -640,17 +640,18 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function rawSearchOptionsToAdd($itemtype = null) {
       $task = new static();
       $tab = [];
+      $name = _n('Task', 'Tasks', Session::getPluralNumber());
 
       $tab[] = [
          'id'                 => 'task',
-         'name'               => _n('Task', 'Tasks', Session::getPluralNumber())
+         'name'               => $name
       ];
 
       $tab[] = [
          'id'                 => '26',
          'table'              => static::getTable(),
          'field'              => 'content',
-         'name'               => __('Description'),
+         'name'               => $name . ' - ' . __('Description'),
          'datatype'           => 'text',
          'forcegroupby'       => true,
          'splititems'         => true,
@@ -664,7 +665,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '28',
          'table'              => static::getTable(),
          'field'              => 'id',
-         'name'               => _x('quantity', 'Number of tasks'),
+         'name'               => $name . ' - ' . _x('quantity', 'Number of tasks'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'count',
@@ -679,7 +680,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => 'glpi_taskcategories',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Task category'),
+         'name'               => $name . ' - ' . __('Category'),
          'forcegroupby'       => true,
          'splititems'         => true,
          'massiveaction'      => false,
@@ -699,7 +700,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             'id'                 => '92',
             'table'              => static::getTable(),
             'field'              => 'is_private',
-            'name'               => __('Private task'),
+            'name'               => $name . ' - ' . __('Private task'),
             'datatype'           => 'bool',
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -714,7 +715,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '94',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('Writer'),
+         'name'               => $name . ' - ' . __('Writer'),
          'datatype'           => 'itemlink',
          'right'              => 'all',
          'forcegroupby'       => true,
@@ -734,7 +735,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the task'),
+         'name'               => $name . ' - ' . __('Technician in charge'),
          'datatype'           => 'itemlink',
          'right'              => 'own_ticket',
          'forcegroupby'       => true,
@@ -754,7 +755,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the task'),
+         'name'               => $name . ' - ' . __('Group in charge'),
          'datatype'           => 'itemlink',
          'condition'          => 'is_task',
          'forcegroupby'       => true,
@@ -773,7 +774,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '96',
          'table'              => static::getTable(),
          'field'              => 'actiontime',
-         'name'               => __('Duration'),
+         'name'               => $name . ' - ' . __('Duration'),
          'datatype'           => 'timestamp',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -786,7 +787,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '97',
          'table'              => static::getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => $name . ' - ' . __('Date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -799,7 +800,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '33',
          'table'              => static::getTable(),
          'field'              => 'state',
-         'name'               => __('Status'),
+         'name'               => $name . ' - ' . __('Status'),
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
          'searchequalsonfield' => true,
@@ -814,7 +815,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '173',
          'table'              => static::getTable(),
          'field'              => 'begin',
-         'name'               => __('Begin date'),
+         'name'               => $name . ' - ' . __('Begin date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -827,7 +828,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '174',
          'table'              => static::getTable(),
          'field'              => 'end',
-         'name'               => __('End date'),
+         'name'               => $name . ' - ' . __('End date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -841,7 +842,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => TaskTemplate::getTable(),
          'field'              => 'name',
          'linkfield'          => 'tasktemplates_id',
-         'name'               => __('Task template'),
+         'name'               => $name . ' - ' . __('Task template'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [

@@ -190,6 +190,11 @@ class Budget extends CommonDropdown{
       $tab = [];
 
       $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'name',

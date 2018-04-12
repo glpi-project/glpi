@@ -691,6 +691,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];
+      $name = _n('License', 'Licenses', Session::getPluralNumber());
 
       if (!self::canView()) {
          return $tab;
@@ -704,14 +705,14 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => 'license',
-         'name'               => _n('License', 'Licenses', Session::getPluralNumber())
+         'name'               => $name
       ];
 
       $tab[] = [
          'id'                 => '160',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'name',
-         'name'               => __('License name'),
+         'name'               => $name . ' - ' . __('Name'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -723,7 +724,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'serial',
          'datatype'           => 'string',
-         'name'               => __('License serial number'),
+         'name'               => $name . ' - ' . __('Serial number'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $licjoinexpire
@@ -734,7 +735,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'otherserial',
          'datatype'           => 'string',
-         'name'               => __('License inventory number'),
+         'name'               => $name . ' - ' . __('Inventory number'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $licjoinexpire
@@ -744,7 +745,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '163',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'number',
-         'name'               => __('Number of licenses'),
+         'name'               => $name . ' - ' . __('Number of licenses'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'number',
@@ -757,7 +758,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicensetypes',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('License types'),
+         'name'               => $name . ' - ' . __('Type'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -772,7 +773,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '165',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'comment',
-         'name'               => __('License comments'),
+         'name'               => $name . ' - ' . __('Comments'),
          'forcegroupby'       => true,
          'datatype'           => 'text',
          'massiveaction'      => false,
@@ -783,7 +784,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '166',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'expire',
-         'name'               => __('Expiration'),
+         'name'               => $name . ' - ' . __('Expiration'),
          'forcegroupby'       => true,
          'datatype'           => 'date',
          'emptylabel'         => 'Never expire',
@@ -795,7 +796,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '167',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'is_valid',
-         'name'               => __('Valid'),
+         'name'               => $name . ' - ' . __('Valid'),
          'forcegroupby'       => true,
          'datatype'           => 'bool',
          'massiveaction'      => false,

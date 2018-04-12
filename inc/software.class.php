@@ -620,16 +620,17 @@ class Software extends CommonDBTM {
          'massiveaction'      => false
       ];
 
+      $name = _n('Version', 'Versions', Session::getPluralNumber());
       $tab[] = [
          'id'                 => 'versions',
-         'name'               => _n('Version', 'Versions', Session::getPluralNumber())
+         'name'               => $name
       ];
 
       $tab[] = [
          'id'                 => '5',
          'table'              => 'glpi_softwareversions',
          'field'              => 'name',
-         'name'               => __('Version name'),
+         'name'               => $name . ' - ' . __('Name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'displaywith'        => ['softwares_id'],
@@ -643,7 +644,7 @@ class Software extends CommonDBTM {
          'id'                 => '31',
          'table'              => 'glpi_states',
          'field'              => 'completename',
-         'name'               => __('Status'),
+         'name'               => $name . ' - ' . __('Status'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -661,7 +662,7 @@ class Software extends CommonDBTM {
          'id'                 => '170',
          'table'              => 'glpi_softwareversions',
          'field'              => 'comment',
-         'name'               => __('Version comments'),
+         'name'               => $name . ' - ' . __('Comments'),
          'forcegroupby'       => true,
          'datatype'           => 'text',
          'massiveaction'      => false,
@@ -675,7 +676,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Operating system'),
+         'name'               => $name . ' - ' . __('Operating system'),
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [
