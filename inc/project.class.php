@@ -75,7 +75,7 @@ class Project extends CommonDBTM {
    **/
    function canViewItem() {
 
-      if (!Session::haveAccessToEntity($this->getEntityID())) {
+      if (!parent::canViewItem()) {
          return false;
       }
       return (Session::haveRight(self::$rightname, self::READALL)
