@@ -180,17 +180,18 @@ class Notepad extends CommonDBChild {
 
    static public function rawSearchOptionsToAdd() {
       $tab = [];
+      $name = _n('Note', 'Notes', Session::getPluralNumber());
 
       $tab[] = [
          'id'                 => 'notepad',
-         'name'               => _n('Note', 'Notes', Session::getPluralNumber())
+         'name'               => $name
       ];
 
       $tab[] = [
          'id'                 => '200',
          'table'              => 'glpi_notepads',
          'field'              => 'content',
-         'name'               => _n('Note', 'Notes', Session::getPluralNumber()),
+         'name'               => $name,
          'datatype'           => 'text',
          'joinparams'         => [
             'jointype'           => 'itemtype_item'
@@ -204,7 +205,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '201',
          'table'              => 'glpi_notepads',
          'field'              => 'date',
-         'name'               => __('Creation date'),
+         'name'               => $name . ' - ' . __('Creation date'),
          'datatype'           => 'datetime',
          'joinparams'         => [
             'jointype'           => 'itemtype_item'
@@ -217,7 +218,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '202',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => __('Writer'),
+         'name'               => $name . ' - ' . __('Writer'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -235,7 +236,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '203',
          'table'              => 'glpi_notepads',
          'field'              => 'date_mod',
-         'name'               => __('Last update'),
+         'name'               => $name . ' - ' . __('Last update'),
          'datatype'           => 'datetime',
          'joinparams'         => [
             'jointype'           => 'itemtype_item'
@@ -249,7 +250,7 @@ class Notepad extends CommonDBChild {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_lastupdater',
-         'name'               => __('Last updater'),
+         'name'               => $name . ' - ' . __('Last updater'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
