@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-06 11:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Marios <m.mariusz@interia.eu>, 2017\n"
+"Last-Translator: Marcin Czarnecki <velumaar@gmail.com>, 2018\n"
 "Language-Team: Polish (Poland) (https://www.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -949,11 +949,11 @@ msgstr[3] "Jednostki"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Tryb debugowania został włączony!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Tryb debugowania został wyłączony!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -2463,7 +2463,7 @@ msgstr ""
 
 #: front/helpdesk.php:91
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Problem musi zostać rozwiązany"
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
@@ -2496,7 +2496,7 @@ msgstr "Bardzo Niski"
 
 #: front/helpdesk.php:106
 msgid "Describe your issue"
-msgstr ""
+msgstr "Opisz swój problem"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
@@ -8837,6 +8837,8 @@ msgid ""
 "Automatic checks cannot be done; please review .htaccess file and the web "
 "server configuration."
 msgstr ""
+"Automatyczne testy nie mogą zostać wykonane; proszę sprawdzić plik .htaccess"
+" i konfigurację serwera HTTP."
 
 #: inc/config.class.php:2704
 msgid "You are using a development version, be careful!"
@@ -10092,10 +10094,10 @@ msgstr[3] ""
 #: inc/devicesensor.class.php:47
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Sensor"
+msgstr[1] "Sensory"
+msgstr[2] "Sensory"
+msgstr[3] "Sensory"
 
 #: inc/devicesensormodel.class.php:42 inc/dropdown.class.php:914
 msgid "Device sensor model"
@@ -10636,10 +10638,10 @@ msgstr "Narzędzia"
 #: inc/profile.class.php:1436
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kategoria bazy wiedzy"
+msgstr[1] "Kategorie bazy wiedzy"
+msgstr[2] "Kategorie bazy wiedzy"
+msgstr[3] "Kategorie bazy wiedzy"
 
 #: inc/dropdown.class.php:970 inc/item_operatingsystem.class.php:344
 #: inc/item_operatingsystem.class.php:560
@@ -10669,10 +10671,10 @@ msgstr[3] "Jądra"
 #: inc/operatingsystemkernelversion.class.php:42
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Wersja jądra"
+msgstr[1] "Wersje jądra"
+msgstr[2] "Wersje jądra"
+msgstr[3] "Wersje jądra"
 
 #: inc/dropdown.class.php:981
 msgid "Update source"
@@ -14946,7 +14948,7 @@ msgstr "SLA"
 #: inc/ticket.class.php:2933 inc/ticket.class.php:2941
 #: inc/ticket.class.php:2955 inc/ticket.class.php:2968
 msgid "OLA"
-msgstr ""
+msgstr "Umowa o gwarantowanym poziomie wsparcia"
 
 #: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2762
 #: inc/ticket.class.php:2941 inc/ticket.class.php:4700
@@ -15234,6 +15236,8 @@ msgstr ""
 #: inc/ola.class.php:58
 msgid "The internal time is recalculated when assigning the OLA"
 msgstr ""
+"Wewnętrzne czasy reakcji są przeliczane podczas przypisywania wartości w "
+"Umowie o gwarantowanym poziomie wsparcia"
 
 #: inc/ola.class.php:62
 msgid ""
@@ -15269,10 +15273,10 @@ msgstr[3] ""
 #: inc/operatingsystemversion.class.php:48 inc/rule.class.php:448
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Wersja systemu operacyjnego"
+msgstr[1] "Wersje systemów operacyjnych"
+msgstr[2] "Wersje systemów operacyjnych"
+msgstr[3] "Wersje systemów operacyjnych"
 
 #: inc/peripheral.class.php:290 inc/peripheral.class.php:486
 #: inc/phone.class.php:287 inc/phone.class.php:516
@@ -18082,11 +18086,11 @@ msgstr "Zmień priorytet"
 
 #: inc/ticket.class.php:6570
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr ""
+msgstr "Zatwierdź rozwiązanie / Odpowiedz na ankietę (moje zgłoszenie)"
 
 #: inc/ticket.class.php:6571
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr ""
+msgstr "Zatwierdź rozwiązanie i odpowiedz na ankietę stworzoną przeze mnie"
 
 #: inc/ticket.class.php:7094
 #, php-format

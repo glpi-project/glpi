@@ -62,7 +62,7 @@ msgstr "Atcerēties mani"
 #: install/update.php:356 install/update.php:372
 msgctxt "button"
 msgid "Post"
-msgstr "Nosūtīt"
+msgstr "Pieslēgties"
 
 #: index.php:153 front/lostpassword.php:48
 #: inc/notificationtargetuser.class.php:46 inc/user.class.php:4097
@@ -808,7 +808,7 @@ msgstr "Meklēšana ir saglabāta"
 
 #: ajax/savedsearch.php:54
 msgid "Search has not been saved"
-msgstr ""
+msgstr "Meklēšana nav saglabāta"
 
 #: ajax/searchmetarow.php:77
 msgid "Delete a global search criterion"
@@ -945,11 +945,11 @@ msgstr[2] "Nodaļas"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Atkļūdošanas režīms ir ieslēgts!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Atkļūdošanas režīms ir izslēgts!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -2426,7 +2426,7 @@ msgstr "Palīdzības dienesta pārskatu veidlapa"
 
 #: front/helpdesk.php:91
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Problēma ir atrisināta"
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
@@ -6080,9 +6080,9 @@ msgstr "Izmaiņas saistītājiem ierakstiem"
 #: inc/change_problem.class.php:68
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīt Problēmas/Izmaiņas"
+msgstr[1] "Saistīt Problēmu/Izmaiņu"
+msgstr[2] "Saistīt Problēmas/Izmaiņas"
 
 #: inc/change_problem.class.php:155 inc/change_project.class.php:177
 #: inc/change_ticket.class.php:371
@@ -6100,9 +6100,9 @@ msgstr "Pievienot problēmu"
 #: inc/change_project.class.php:68
 msgid "Link Project/Change"
 msgid_plural "Links Project/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīt Projektus/Izmaiņas"
+msgstr[1] "Saistīt Projektu/Izmaiņu"
+msgstr[2] "Saistīt Projektus/Izmaiņas"
 
 #: inc/change_project.class.php:273
 msgid "Add a project"
@@ -6118,9 +6118,9 @@ msgstr[2] "Mainīt uzdevumus"
 #: inc/change_ticket.class.php:66
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīt Pieteikumus/Izmaiņas"
+msgstr[1] "Saistīt Pieteikumu/Izmaiņu"
+msgstr[2] "Saistīt Pieteikumus/Izmaiņas"
 
 #: inc/change_ticket.class.php:266 inc/problem_ticket.class.php:300
 #: inc/projecttask_ticket.class.php:176
@@ -6407,7 +6407,7 @@ msgstr ""
 
 #: inc/commondbtm.class.php:4946
 msgid "Autofilled from template"
-msgstr ""
+msgstr "Automātiski aizpildīts no veidnes"
 
 #: inc/commondbvisible.class.php:154
 msgid "Add a target"
@@ -7176,11 +7176,11 @@ msgstr "Uzdevums nav atrasts"
 
 #: inc/commonitiltask.class.php:1894
 msgid "Ticket tasks to do"
-msgstr ""
+msgstr "Pieteikuma uzdevumi, kas jādara"
 
 #: inc/commonitiltask.class.php:1897
 msgid "Problem tasks to do"
-msgstr ""
+msgstr "Problēmas uzdevumi, kas jādara"
 
 #: inc/commonitiltask.class.php:1968
 #, php-format
@@ -7189,7 +7189,7 @@ msgstr "%1$s"
 
 #: inc/commonitiltask.class.php:1981
 msgid "No tasks do to."
-msgstr ""
+msgstr "Nav izpildāmo uzdevumu."
 
 #: inc/commonitilvalidation.class.php:292
 #: inc/commonitilvalidation.class.php:415
@@ -7517,9 +7517,9 @@ msgstr[2] "Operatīvās atmiņas tipi"
 #: inc/printer.class.php:672
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atmiņa"
+msgstr[1] "Atmiņa"
+msgstr[2] "Atmiņa"
 
 #: inc/computer.class.php:875 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:48 inc/networkportmigration.class.php:299
@@ -9430,9 +9430,10 @@ msgstr ""
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Iztīrīt %1$d sesijas failu kurš izveidots vēlāk par %2$s sekundēm"
+msgstr[1] "Iztīrīt %1$d sesijas failu kurš izveidots vēlāk par %2$s sekundēm"
 msgstr[2] ""
+"Iztīrīt %1$d sesijas failus kuri izveidoti vēlāk par %2$s sekundēm "
 
 #: inc/crontask.class.php:1518
 #, php-format
@@ -10839,9 +10840,9 @@ msgstr ""
 #: inc/tickettemplate.class.php:140
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pieteikumu veidne"
+msgstr[1] "Pieteikuma veidne"
+msgstr[2] "Pieteikumu veidnes"
 
 #: inc/entity.class.php:910 inc/entity.class.php:2217
 #: inc/notificationtargetticket.class.php:767
@@ -11676,11 +11677,11 @@ msgstr "Beigt darbu"
 
 #: inc/html.class.php:5910
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Atkļūdošanas režīms ieslēgts"
 
 #: inc/html.class.php:5911
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Atkļūdošanas režīms izslēgts"
 
 #: inc/html.class.php:5915
 msgid "Change mode"
@@ -12346,7 +12347,7 @@ msgstr[2] "Piezīmes"
 
 #: inc/knowbaseitem_comment.class.php:132
 msgid "No comments"
-msgstr ""
+msgstr "Komentāru nav"
 
 #: inc/knowbaseitem_comment.class.php:185
 #: inc/knowbaseitem_comment.class.php:219
@@ -12363,7 +12364,7 @@ msgstr ""
 
 #: inc/knowbaseitem_comment.class.php:319
 msgid "Add an answer"
-msgstr ""
+msgstr "Pievienot atbildi"
 
 #: inc/knowbaseitem_comment.class.php:369
 msgid "New comment"
@@ -12672,9 +12673,9 @@ msgstr "Komentāru atrašanās vieta"
 #: inc/lock.class.php:53
 msgid "Lock"
 msgid_plural "Locks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Bloķēts"
+msgstr[1] "Bloķēts"
+msgstr[2] "Bloķējumi"
 
 #: inc/lock.class.php:80
 msgid "Locked items"
@@ -12873,6 +12874,8 @@ msgid ""
 "Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
 "errors=%4$d, blacklisted=%5$d"
 msgstr ""
+"Ziņojumu skaits: pieejami=%1$d, atgūti=%2$d, atteiktie=%3$d, kļūdainie=%4$d,"
+" melnajā sarakstā=%5$d"
 
 #: inc/mailcollector.class.php:641
 msgid "Could not connect to mailgate server"
@@ -12910,7 +12913,7 @@ msgstr "Saņemt e-pastu (pasta saņēmēji)"
 
 #: inc/mailcollector.class.php:1625
 msgid "Number of emails to retrieve"
-msgstr ""
+msgstr "E-pastu skaits lai atgūt"
 
 #: inc/mailcollector.class.php:1628
 msgid "Send alarms on receiver errors"
@@ -12931,7 +12934,7 @@ msgstr "Nepievienoto epastu saraksts"
 #: inc/mailcollector.class.php:1806
 #, php-format
 msgid "Receivers in error: %s"
-msgstr ""
+msgstr "Saņēmēji ar kļūdām: %s"
 
 #: inc/mailcollector.class.php:1850
 msgid "No import"
@@ -13571,9 +13574,9 @@ msgstr ""
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pārlūkprogrammas paziņojums"
+msgstr[1] "Pārlūkprogrammas paziņojums"
+msgstr[2] "Pārlūkprogrammas paziņojumi"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13597,7 +13600,7 @@ msgstr "Ikonas URL"
 #: inc/notificationajaxsetting.class.php:103
 #: inc/notificationmailingsetting.class.php:244
 msgid "Notifications are disabled."
-msgstr ""
+msgstr "Paziņojumi ir izslēgti."
 
 #: inc/notificationajaxsetting.class.php:105
 #: inc/notificationmailingsetting.class.php:246
@@ -13615,9 +13618,9 @@ msgstr ""
 #: inc/queuednotification.class.php:696
 msgid "Notification template"
 msgid_plural "Notification templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Paziņojumu veidne"
+msgstr[1] "Paziņojumu veidne"
+msgstr[2] "Paziņojumu veidnes"
 
 #: inc/notification.class.php:327 inc/notificationevent.class.php:47
 #: inc/notificationtargetcartridgeitem.class.php:84
@@ -13637,9 +13640,9 @@ msgstr[2] ""
 #: inc/notificationtemplatetranslation.class.php:355
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Notikumu"
+msgstr[1] "Notikums"
+msgstr[2] "Notikumi"
 
 #: inc/notification.class.php:339 inc/notificationtarget.class.php:1304
 msgid "Notification method"
@@ -13722,14 +13725,14 @@ msgstr "Epasta sekojumu uzstādījumi"
 
 #: inc/notificationmailingsetting.class.php:52
 msgid "Enable followups via email"
-msgstr ""
+msgstr "Ieslēgt sekojumu sūtīšanu uz e-pastu"
 
 #: inc/notificationmailingsetting.class.php:72
 msgid "Email notification"
 msgid_plural "Email notifications"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "E-pasta paziņojumu"
+msgstr[1] "E-pasta paziņojums"
+msgstr[2] "E-pasta paziņojumi"
 
 #: inc/notificationmailingsetting.class.php:91
 msgid "From email"
@@ -13853,9 +13856,9 @@ msgstr "Sūtīt pārbaudes e-pastu administratoram"
 #: inc/notification_notificationtemplate.class.php:125
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Veidnes"
+msgstr[1] "Veidne"
+msgstr[2] "Veidnes"
 
 #: inc/notification_notificationtemplate.class.php:108
 msgid "Add a template"
@@ -13867,7 +13870,7 @@ msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Pārlūkprogramma"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -14010,11 +14013,11 @@ msgstr "Nodaļas administrators"
 
 #: inc/notificationtargetcommonitilobject.class.php:83
 msgid "New user in requesters"
-msgstr ""
+msgstr "Jauns lietotājs pie pieteicējiem"
 
 #: inc/notificationtargetcommonitilobject.class.php:84
 msgid "New group in requesters"
-msgstr ""
+msgstr "Jauna grupa pie pieteicējiem"
 
 #: inc/notificationtargetcommonitilobject.class.php:85
 msgid "New user in observers"
@@ -14472,11 +14475,11 @@ msgstr ""
 
 #: inc/notificationtargetprojecttask.class.php:66
 msgid "Project team user"
-msgstr ""
+msgstr "Projektu komandas lietotājs"
 
 #: inc/notificationtargetprojecttask.class.php:67
 msgid "Project team group"
-msgstr ""
+msgstr "Projektu komandas grupa"
 
 #: inc/notificationtargetprojecttask.class.php:458
 #: inc/notificationtargetprojecttask.class.php:522 inc/profile.class.php:950
@@ -14484,9 +14487,9 @@ msgstr ""
 #: inc/projecttask.class.php:478 inc/projecttask.class.php:739
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projektu"
+msgstr[1] "Projekts"
+msgstr[2] "Porjekti"
 
 #: inc/notificationtargetprojecttask.class.php:474
 #: inc/projecttask.class.php:615
@@ -14680,9 +14683,9 @@ msgstr "Uzaicinājums aizpildīt apsekojumu"
 #: inc/ticketfollowup.class.php:69
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Sekojumu"
+msgstr[1] "Sekojums"
+msgstr[2] "Sekojumi"
 
 #: inc/notificationtargetticket.class.php:858
 #: inc/notificationtargetticket.class.php:872
@@ -14694,9 +14697,9 @@ msgstr[2] ""
 #: inc/ticket.class.php:5135
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistītu pieteikumu"
+msgstr[1] "Saistīts pieteikums"
+msgstr[2] "Saistītie pieteikumi"
 
 #: inc/notificationtargetticket.class.php:905
 msgid "Link"
@@ -15330,16 +15333,16 @@ msgstr "Problēma saistītam ierakstam"
 #: inc/problemtask.class.php:48
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Problēmas uzdevumu"
+msgstr[1] "Problēmas uzdevums"
+msgstr[2] "Problēmas uzdevumi"
 
 #: inc/problem_ticket.class.php:63
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Piesaistīt Pieteikumus/Problēmas"
+msgstr[1] "Piesaistīt Pieteikumu/Problēmu"
+msgstr[2] "Piesaistīt Pieteikumus/Problēmas"
 
 #: inc/problem_ticket.class.php:426
 msgid "Create a problem from this ticket"
@@ -15523,9 +15526,9 @@ msgstr ""
 #: inc/profile.class.php:1423
 msgid "Global dropdown"
 msgid_plural "Global dropdowns"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Globālais nolaižamais saraksts"
+msgstr[1] "Globālais nolaižamais saraksts"
+msgstr[2] "Globālais nolaižamais saraksts"
 
 #: inc/profile.class.php:1425
 msgid "Entity dropdowns"
@@ -15600,7 +15603,7 @@ msgstr "Mani uzdevumi"
 
 #: inc/project.class.php:508 inc/project.class.php:1090
 msgid "Show on global GANTT"
-msgstr ""
+msgstr "Rādīt uz globālas Ganta diagrammas"
 
 #: inc/project.class.php:935
 msgid "Invalid planned dates. Dates not updated."
@@ -15629,9 +15632,9 @@ msgstr ""
 #: inc/project.class.php:1274 inc/projecttask.class.php:1213
 msgid "Member"
 msgid_plural "Members"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dalībnieku"
+msgstr[1] "Dalībnieks"
+msgstr[2] "Dalībnieki"
 
 #: inc/project.class.php:1504
 #, php-format
@@ -15732,9 +15735,9 @@ msgstr ""
 #: inc/projecttask.class.php:68
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekta uzdevumu"
+msgstr[1] "Projekta uzdevums"
+msgstr[2] "Projekta uzdevumi"
 
 #: inc/projecttask.class.php:185
 msgid "Update (actor)"
@@ -16826,7 +16829,7 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:355
 msgid "less than"
-msgstr ""
+msgstr "mazāk kā"
 
 #: inc/savedsearch_alert.class.php:359
 msgid "less or equals than"
@@ -16834,19 +16837,19 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:363
 msgid "equals to"
-msgstr ""
+msgstr "vienāds ar"
 
 #: inc/savedsearch_alert.class.php:367
 msgid "not equals to"
-msgstr ""
+msgstr "nav vienāds ar"
 
 #: inc/savedsearch_alert.class.php:371
 msgid "greater or equals than"
-msgstr ""
+msgstr "lielāks vai vienāds par"
 
 #: inc/savedsearch_alert.class.php:375
 msgid "greater than"
-msgstr ""
+msgstr "lielāk par"
 
 #: inc/savedsearch_alert.class.php:384
 #, php-format
@@ -16876,7 +16879,7 @@ msgstr "Pēdējais ilgums (ms)"
 
 #: inc/savedsearch.class.php:233
 msgid "Count"
-msgstr ""
+msgstr "Skaits"
 
 #: inc/savedsearch.class.php:242
 msgid "Default"
@@ -17734,7 +17737,7 @@ msgstr "Risinājums ir apstiprināts"
 
 #: inc/ticketfollowup.class.php:380 inc/ticketfollowup.class.php:653
 msgid "If you want to reopen the ticket, you must specify a reason"
-msgstr ""
+msgstr "Ja gribat atkaroti atvērt pieteikumu, lūdzu norādiet iemeslu"
 
 #: inc/ticketfollowup.class.php:384
 msgid "If you reject the solution, you must specify a reason"
@@ -17866,9 +17869,9 @@ msgstr "Apmierinātība ar pieteikuma rezolūciju"
 #: inc/tickettask.class.php:51
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pieteikuma uzdevumu"
+msgstr[1] "Pieteikuma uzdevums"
+msgstr[2] "Pieteikuma uzdevumi"
 
 #: inc/tickettask.class.php:245
 msgid "Add to all items"
@@ -17888,9 +17891,9 @@ msgstr "Pievienot slēpto lauku"
 #: inc/tickettemplatemandatoryfield.class.php:52
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Obligāto lauku"
+msgstr[1] "Obligāts lauks"
+msgstr[2] "Obligātie lauki"
 
 #: inc/tickettemplatemandatoryfield.class.php:227
 msgid "Add a mandatory field"
@@ -17924,7 +17927,7 @@ msgstr ""
 
 #: inc/ticket_ticket.class.php:239
 msgid "Duplicated by"
-msgstr ""
+msgstr "Dublicējis"
 
 #: inc/ticketvalidation.class.php:103
 msgid "Create for request"

@@ -938,18 +938,18 @@ msgstr[0] "实体"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "调试模式已开启！"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "调试模式已禁用！"
 
 #: ajax/telemetry.php:46
 msgid ""
 "We only collect the following data : plugins usage, performance and "
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
-msgstr ""
+msgstr "我们只收集以下数据：插件用法、性能和响应统计，以及相关用户界面特性、内存和硬件配置。"
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:66 ajax/ticketassigninformation.php:67
@@ -2342,15 +2342,15 @@ msgstr "身份验证"
 
 #: front/helpdesk.php:88
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "帮助中心报告"
 
 #: front/helpdesk.php:91
 msgid "The issue must be solved"
-msgstr ""
+msgstr "此问题已解决"
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
-msgstr ""
+msgstr "选择紧急级别"
 
 #: front/helpdesk.php:97 inc/commonitilobject.class.php:1929
 msgctxt "urgency"
@@ -2379,7 +2379,7 @@ msgstr "非常低"
 
 #: front/helpdesk.php:106
 msgid "Describe your issue"
-msgstr ""
+msgstr "描述您的问题"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
@@ -2417,7 +2417,7 @@ msgstr "内容"
 #: front/helpdesk.php:117
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "发送"
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
 #: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4605
@@ -2444,12 +2444,12 @@ msgstr "%s 关联VLAN到网络端口"
 #: front/knowbaseitem_comment.form.php:55
 #: front/knowbaseitem_comment.form.php:74 front/knowbaseitem_item.form.php:45
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "星号字段未填写！"
 
 #: front/knowbaseitem_comment.form.php:62
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%s 在知识库上添加注释"
 
 #: front/knowbaseitem_comment.form.php:64
 msgid "Your comment has been added"
@@ -2458,11 +2458,11 @@ msgstr ""
 #: front/knowbaseitem_comment.form.php:83
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%s 编辑知识库注释"
 
 #: front/knowbaseitem_comment.form.php:85
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "评论已被修改"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:119 front/reminder.form.php:111
@@ -2474,12 +2474,12 @@ msgstr "%s 添加一个目标"
 #: front/knowbaseitem.form.php:129
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "知识库项目已恢复为修订版 %s"
 
 #: front/knowbaseitem.form.php:136
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "知识库项目尚未恢复修订 %s"
 
 #: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:874
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:235
@@ -2492,17 +2492,17 @@ msgstr "知识库"
 #: front/knowbaseitem_item.form.php:54
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr ""
+msgstr "%s 添加知识库的超链接"
 
 #: front/knowbaseitemtranslation.form.php:54
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
-msgstr ""
+msgstr "知识库项目翻译已恢复为修订版 %s"
 
 #: front/knowbaseitemtranslation.form.php:61
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
-msgstr ""
+msgstr "知识库项目的翻译还没有恢复到修订 %s"
 
 #: front/ldap.group.import.php:44 front/ldap.group.php:43
 #: front/ldap.import.php:50 front/ldap.php:41 inc/group.class.php:166
@@ -2654,13 +2654,13 @@ msgstr "可用标签列表"
 #: front/olalevel.form.php:52
 #, php-format
 msgid "%s updates an ola level"
-msgstr ""
+msgstr "%s 更新一个OLA等级"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:76
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%s 清除一个OLA等级"
 
 #: front/planning.php:141 inc/commonitiltask.class.php:1557
 #: inc/commonitiltask.class.php:1727 inc/event.class.php:152
@@ -2940,12 +2940,12 @@ msgstr "显示报告"
 #: front/report.infocom.conso.php:213 front/report.infocom.php:223
 #, php-format
 msgid "%1$s account net value"
-msgstr ""
+msgstr "%1$s 账户净值"
 
 #: front/report.infocom.conso.php:239 front/report.infocom.php:250
 #, php-format
 msgid "%1$s value"
-msgstr ""
+msgstr "%1$s 值"
 
 #. TRANS: %1$s and %2$s are values
 #: front/report.infocom.conso.php:284 front/report.infocom.php:204
@@ -2956,11 +2956,11 @@ msgstr "总共: 值=%1$s - 账户净值=%2$s"
 
 #: front/report.infocom.conso.php:292 front/report.infocom.php:302
 msgid "Total account net value"
-msgstr ""
+msgstr "账户总净值"
 
 #: front/report.infocom.conso.php:304 front/report.infocom.php:314
 msgid "Total value"
-msgstr ""
+msgstr "总计"
 
 #: front/report.infocom.php:135 inc/budget.class.php:137
 #: inc/budget.class.php:260 inc/budget.class.php:338
@@ -3092,23 +3092,23 @@ msgstr[0] "黑名单"
 #: front/savedsearch_alert.form.php:51
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s 添加一个提醒"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:64
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s 清除一个提醒"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:76
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s 更新一个提醒"
 
 #: front/savedsearch.php:41 inc/html.class.php:5925 inc/html.class.php:5934
 msgid "Saved searches"
-msgstr ""
+msgstr "保存搜索"
 
 #: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5961
 #: inc/html.class.php:6239 inc/html.class.php:6240
@@ -3521,12 +3521,12 @@ msgstr "显示图形"
 #: front/stat.location.php:180 front/stat.tracking.php:188
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "开启 %1$s (%2$s)"
 
 #: front/stat.location.php:206 front/stat.tracking.php:214
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "已解决 %1$s (%2$s)"
 
 #: front/stat.location.php:231
 #, php-format
@@ -3536,12 +3536,12 @@ msgstr ""
 #: front/stat.location.php:256 front/stat.tracking.php:267
 #, php-format
 msgid "Closed %1$s (%2$s)"
-msgstr ""
+msgstr "关闭 %1$s (%2$s)"
 
 #: front/stat.location.php:281 front/stat.tracking.php:294
 #, php-format
 msgid "%1$s satisfaction survey (%2$s)"
-msgstr ""
+msgstr "%1$s 满意度调查 (%2$s)"
 
 #: front/stat.tracking.php:81 front/stat.tracking.php:103
 #: inc/commonitilobject.class.php:2563 inc/commonitilobject.class.php:2981
@@ -3645,7 +3645,7 @@ msgstr "作业中的技术员"
 #: front/stat.tracking.php:240
 #, php-format
 msgid "Solved late %1$s (%2$s)"
-msgstr ""
+msgstr "最后解决 %1$s (%2$s)"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:51
@@ -3728,7 +3728,7 @@ msgstr "%s 从群组中删除用户"
 
 #: front/user.form.php:155
 msgid "Lang has been changed!"
-msgstr ""
+msgstr "切换语种成功!"
 
 #: inc/ajax.class.php:157
 msgid "Close"

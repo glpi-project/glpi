@@ -1683,7 +1683,7 @@ msgid_plural "Consumables"
 msgstr[0] "Расходный матриал"
 msgstr[1] "Расходный матриал"
 msgstr[2] "Расходные матриалы"
-msgstr[3] "Расходные матриалы"
+msgstr[3] "Расходные материалы"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:52 front/contract_supplier.form.php:52
@@ -2088,7 +2088,7 @@ msgid_plural "Printer types"
 msgstr[0] "Тип принтора"
 msgstr[1] "Тип принтора"
 msgstr[2] "Типы принторов"
-msgstr[3] "Типы принторов"
+msgstr[3] "Типы принтеров"
 
 #: front/dictionnary.php:105 inc/report.class.php:365 inc/report.class.php:374
 msgid "Device type"
@@ -15111,7 +15111,7 @@ msgstr "Единственное значение"
 
 #: inc/notificationtemplatetranslation.class.php:454
 msgid "Preview"
-msgstr "Предпросмотр"
+msgstr "Предосмотр"
 
 #: inc/notimportedemail.class.php:63
 msgid "Refused email"
