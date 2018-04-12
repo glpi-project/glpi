@@ -164,6 +164,14 @@ class SLM extends CommonDBTM {
          'datatype'           => 'dropdown'
       ];
 
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
+
       return $tab;
    }
 
