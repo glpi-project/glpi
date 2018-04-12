@@ -278,7 +278,9 @@ class Ticket extends CommonITILObject {
 
    function canAssign() {
 
-      if (isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)) {
+      if (isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
+          || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+      ) {
          return false;
       }
       return Session::haveRight(self::$rightname, self::ASSIGN);
@@ -287,7 +289,9 @@ class Ticket extends CommonITILObject {
 
    function canAssignToMe() {
 
-      if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
+      if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
+         || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+      ) {
          return false;
       }
       return (Session::haveRight(self::$rightname, self::STEAL)
