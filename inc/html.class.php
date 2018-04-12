@@ -5755,7 +5755,7 @@ class Html {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
                   echo Html::script("plugins/$plugin/$file", ['version' => $version]);
                } else {
-                  Toolbox::logDebug("$file file not found from plugin $plugin!");
+                  Toolbox::logWarning("$file file not found from plugin $plugin!");
                }
             }
          }
