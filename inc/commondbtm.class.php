@@ -5343,6 +5343,12 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $element['type'] = 'select';
          }
+
+         //specific cases
+         if ($column['Field'] == 'default_requesttypes_id') {
+            $column['Field'] = 'requesttypes_id';
+         }
+
          $table = getTableNameForForeignKeyField($column['Field']);
          $itemtype = getItemTypeForTable($table);
          $element['itemtype'] = $itemtype;

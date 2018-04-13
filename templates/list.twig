@@ -1,0 +1,87 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "glpi_page.twig" %}
+
+{% block content %}
+<div class="content">
+   <div class="box box-default">
+      <div class="box-header with-border">
+         <h3 class="box-title">{{ __('Search %1$s')|format(item.getTypeName()|lower)}}</h3>
+         <div class="box-tools pull-right">
+            <div class="btn-group">
+               <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                  {{ __('Download') }}&nbsp;<span class="fa fa-caret-down"></span>
+               </button>
+               <ul class="dropdown-menu">
+                  <li><a href="{#{Search::PDF_OUTPUT_LANDSCAPE}#}">{{ __('Current page in landscape PDF') }}</a></li>
+                  <li><a href="{#{Search::PDF_OUTPUT_PORTRAIT}#}">{{ __('Current page in portrait PDF') }}</a></li>
+                  <li><a href="{#{Search::SYLK_OUTPUT}#}">{{ __('Current page in SLK') }}</a></li>
+                  <li><a href="{#{Search::CSV_OUTPUT}#}">{{ __('Current page in CSV') }}</a></li>
+                  <li><a href="{#{'-'.Search::PDF_OUTPUT_LANDSCAPE}#}">{{ __('All pages in landscape PDF') }}</a></li>
+                  <li><a href="{#{'-'.Search::PDF_OUTPUT_PORTRAIT}#}">{{ __('All pages in portrait PDF') }}</a></li>
+                  <li><a href="{#{'-'.Search::SYLK_OUTPUT}#}">{{ __('All pages in SLK') }}</a></li>
+                  <li><a href="{#{'-'.Search::CSV_OUTPUT}#}">{{ __('All pages in CSV') }}</a></li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="box-body">
+         {{ search_form|raw }}
+         <div class="mailbox-controls">
+            <!-- Check all button -->
+            <button type="button" class="btn btn-default btn-sm checkbox-toggle">
+               <i class="fa fa-square-o"></i>
+            </button>
+            <div class="btn-group">
+               <button type="button" class="btn btn-default btn-sm"><i class="fa fa-wrench"></i></button>
+            </div>
+                <!-- /.btn-group -->
+                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                <div class="pull-right">
+                  1-50/200
+                  {#{{ __('From %1$d to %2$d of %3$d')|format() }} , $current_start, $current_end, $numrows); #}
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
+                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
+                  </div>
+                  <!-- /.btn-group -->
+                </div>
+                <!-- /.pull-right -->
+              </div>
+              <div class="search_page">
+   {{ contents|raw }}
+               </div>
+      </div>
+      <div class="box-footer">
+      </div>
+   </div>
+</div>
+{% endblock %}

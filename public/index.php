@@ -396,14 +396,26 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->get('/{itemtype}/list', function ($request, $response, $args) {
       $item = new $args['itemtype']();
 
+      $params = Search::manageParams($item->getType(), $_GET);
+
       ob_start();
-      Search::show($item->getType());
+      Search::showGenericSearch($item->getType(), $params);
+      $search_form = ob_get_contents();
+      ob_end_clean();
+
+      ob_start();
+      if ($params['as_map'] == 1) {
+         Search::showMap($item->getType(), $params);
+      } else {
+         Search::showList($item->getType(), $params);
+      }
       $contents = ob_get_contents();
       ob_end_clean();
       return $this->view->render(
          $response,
-         'legacy.twig', [
+         'list.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+            'search_form'  => $search_form,
             'item'         => $item,
             'contents'     => $contents
          ]
@@ -461,7 +473,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('add-asset');
 
-   $app->get('/{itemtype}/edit/{id:\d+}', function ($request, $response, $args) {
+   $app->get('/{itemtype}/edit/{id:\d+}[/tab/{tab}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
       $item->getFromdB($args['id']);
       $get = $request->getQueryParams();
