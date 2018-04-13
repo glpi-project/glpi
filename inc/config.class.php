@@ -340,7 +340,9 @@ class Config extends CommonDBTM {
                                               'min'   => 1,
                                               'max'   => 4,
                                               'rand'  => $rand]);
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_translate_dropdowns$rand'>" . __("Translation of dropdowns") . "</label></td><td>";

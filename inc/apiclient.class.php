@@ -226,7 +226,9 @@ class APIClient extends CommonDBTM {
       echo "<td>".__('IPv6 address')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ipv6");
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('Application token'), "app_token")."</td>";
@@ -234,7 +236,7 @@ class APIClient extends CommonDBTM {
       Html::autocompletionTextField($this, "app_token");
       echo "<br><input type='checkbox' name='_reset_app_token' id='app_token'>&nbsp;";
       echo "<label for='app_token'>".__('Regenerate')."</label>";
-      echo "</td></tr>";
+      echo "</td><td></td></tr>";
 
       $this->showFormButtons($options);
    }
