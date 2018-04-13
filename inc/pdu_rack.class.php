@@ -504,8 +504,8 @@ JAVASCRIPT;
          'rand'                => $rand,
       ]);
 
-      $pra_url = PDU_Rack::getFormURL()."?racks_id=$racks_id";
-      $ira_url = Item_Rack::getFormURL()."?orientation=0&position=1&racks_id=$racks_id";
+      $pra_url = PDU_Rack::getFormURL()."?racks_id=$racks_id&ajax=true";
+      $ira_url = Item_Rack::getFormURL()."?orientation=0&position=1&racks_id=$racks_id&ajax=true";
 
       $js = <<<JAVASCRIPT
       var showAddPduSubForm = function() {
@@ -518,11 +518,8 @@ JAVASCRIPT;
             form_url = "{$pra_url}";
          }
 
-
          if (form_url.length) {
-            $('#pdu_add_sub_form$rand').load(form_url, {
-               ajax: true,
-            });
+            $('#pdu_add_sub_form$rand').load(form_url);
          } else {
             $('#pdu_add_sub_form$rand').html("");
          }
