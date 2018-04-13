@@ -202,6 +202,9 @@ class Item_Enclosure extends CommonDBRelation {
       echo "<td>";
       $types = $CFG_GLPI['rackable_types'];
       unset($types[array_search('Enclosure', $types)]);
+      foreach ($types as &$type) {
+         $type = $type::getTypeName(1);
+      }
       Dropdown::showFromArray(
          'itemtype',
          array_combine($types, $types), [

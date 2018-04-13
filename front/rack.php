@@ -36,6 +36,6 @@ Session::checkRight("datacenter", READ);
 
 Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
 
-Search::show('rack');
+Search::show('Rack');
 
 Html::footer();
