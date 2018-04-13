@@ -423,6 +423,7 @@ class ProjectTask extends CommonDBChild {
                                      'rand'      => $rand_template,
                                      'on_change' => 'projecttasktemplate_update(this.value)']);
       echo "</td>";
+      echo "<td colspan='2'></td>";
       echo "</tr>";
       echo Html::scriptBlock('
          function projecttasktemplate_update(value) {

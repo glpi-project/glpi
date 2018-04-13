@@ -164,8 +164,8 @@ class SavedSearch_Alert extends CommonDBChild {
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->getField('is_active'));
       echo "</td>";
-      echo "<td></td>";
-      echo "</td></tr>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
       $this->showFormButtons($options);
 
       return true;
