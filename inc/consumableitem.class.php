@@ -43,6 +43,7 @@ if (!defined('GLPI_ROOT')) {
 class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = ['Consumable', 'Infocom'];
+   public $dohistory                   = true;
    protected $usenotepad               = true;
 
    static $rightname                   = 'consumable';
@@ -118,6 +119,7 @@ class ConsumableItem extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
