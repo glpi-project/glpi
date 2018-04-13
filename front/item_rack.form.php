@@ -71,6 +71,9 @@ if (isset($_GET['id'])) {
       'orientation'  => $_GET['orientation'],
       'position'     => $_GET['position']
    ];
+   if (isset($_GET['_onlypdu'])) {
+      $params['_onlypdu'] = $_GET['_onlypdu'];
+   }
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
