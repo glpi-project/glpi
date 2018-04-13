@@ -505,7 +505,7 @@ JAVASCRIPT;
       ]);
 
       $pra_url = PDU_Rack::getFormURL()."?racks_id=$racks_id&ajax=true";
-      $ira_url = Item_Rack::getFormURL()."?orientation=0&position=1&racks_id=$racks_id&ajax=true";
+      $ira_url = Item_Rack::getFormURL()."?_onlypdu=true&orientation=0&position=1&racks_id=$racks_id&ajax=true";
 
       $js = <<<JAVASCRIPT
       var showAddPduSubForm = function() {
