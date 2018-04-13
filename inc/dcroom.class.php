@@ -116,7 +116,9 @@ class DCRoom extends CommonDBTM {
             'itemtype' => 'Datacenter'
          ]
       );
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='dropdown_vis_cols$rand'>" . __('Number of columns') . "</label></td><td>";
@@ -166,6 +168,7 @@ class DCRoom extends CommonDBTM {
       }
 
       echo "</td>";
+      echo "<td colspan = '2'></td>";
       echo "</tr>";
 
       $this->showFormButtons($options);

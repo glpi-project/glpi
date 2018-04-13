@@ -159,6 +159,7 @@ class PDU extends CommonDBTM {
       ]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_serial$rand'>".__('Serial number')."</label></td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'serial', ['rand' => $rand]);
