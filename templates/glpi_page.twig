@@ -44,6 +44,8 @@
       '../lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.css',
       '../lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css',
       '../lib/leaflet/plugins/Leaflet.fullscreen/leaflet.fullscreen.css',
+      '../lib/gridstack/src/gridstack.css',
+      '../lib/gridstack/src/gridstack-extra.css',
       'public/css/glpi-adminlte.css'
       ]) %}
    {% for css_path in css_paths %}
@@ -372,7 +374,11 @@
          '../lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.min.js',
          '../lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js',
          '../lib/leaflet/plugins/Leaflet.fullscreen/Leaflet.fullscreen.min.js',
-         '../js/common.js'
+         '../lib/lodash.min.js',
+         '../lib/gridstack/src/gridstack.js',
+         '../lib/gridstack/src/gridstack.jQueryUI.js',
+         '../js/common.js',
+         '../js/rack.js'
       ]) %}
    {% for js_path in js_paths %}
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_path }}"></script>
