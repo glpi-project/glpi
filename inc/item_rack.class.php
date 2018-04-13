@@ -555,18 +555,30 @@ JAVASCRIPT;
       echo "<td><label for='dropdown_itemtype$rand'>".__('Item type')."</label></td>";
       echo "<td>";
 
-      $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
-      foreach ($types as $type => &$text) {
-         $text = $type::getTypeName(1);
+      if (isset($options['_onlypdu']) && $options['_onlypdu']) {
+         $this->fields['itemtype'] = 'PDU';
+         echo Html::hidden(
+            'itemtype',
+            [
+               'id'    => "itemtype_$rand",
+               'value' => 'PDU'
+            ]
+         );
+         echo PDU::getTypeName(1);
+      } else {
+         $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
+         foreach ($types as $type => &$text) {
+            $text = $type::getTypeName(1);
+         }
+         Dropdown::showFromArray(
+            'itemtype',
+            $types, [
+               'display_emptychoice'   => true,
+               'value'                 => $this->fields["itemtype"],
+               'rand'                  => $rand
+            ]
+         );
       }
-      Dropdown::showFromArray(
-         'itemtype',
-         $types, [
-            'display_emptychoice'   => true,
-            'value'                 => $this->fields["itemtype"],
-            'rand'                  => $rand
-         ]
-      );
 
       //get all used items
       $used = $used_reserved = [];
