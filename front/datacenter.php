@@ -36,6 +36,6 @@ Session::checkRight("datacenter", READ);
 
 Html::header(Datacenter::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "datacenter");
 
-Search::show('datacenter');
+Search::show('Datacenter');
 
 Html::footer();

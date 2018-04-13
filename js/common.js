@@ -924,7 +924,8 @@ function markMatch (text, term) {
 
    // If there is no match, move on
    if (match < 0) {
-      return _result.text(text);
+      _result.append(text);
+      return _result.html();
    }
 
    // Put in whatever text is before the match
