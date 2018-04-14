@@ -491,7 +491,7 @@ class CommonDBTM extends CommonGLPI {
                if (($this->getType() == 'ProfileRight') && ($values[$i] == '')) {
                   $values[$i] = 0;
                }
-               $query .= "'".$DB->escape($values[$i])."'";
+               $query .= "'".htmlspecialchars($values[$i])."'";
             }
 
             if ($i != ($nb_fields-1)) {
