@@ -641,6 +641,8 @@ $(function() {
    if ($('#debugtabs').length) {
       _initDebug();
    }
+
+   _bind_check();
 });
 
 var _initDebug = function() {
@@ -1156,3 +1158,23 @@ var createModalWindow = function (url, params) {
    });
    return _elt;
 };
+
+var _bind_check = function() {
+    var _is_checked = true;
+    $('.checkall').click(function() {
+      var _this = $(this);
+      if (_this.data('boxelt')) {
+         boxelt = _this.data('boxelt');
+      } else {
+         boxelt = '_ids';
+      }
+
+       console.log(_this.closest('form'));
+      _this.closest('form').find(':checkbox[name="' + boxelt + '[]"]').each(function() {
+         this.checked = _is_checked;
+      });
+      _is_checked = !_is_checked;
+      return false;
+   });
+};
+

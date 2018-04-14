@@ -409,7 +409,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $search_form = ob_get_contents();
       ob_end_clean();
       $search_form = preg_replace(
-         '/<form[^>]*?>/',
+         '/<\/?form[^>]*?>/',
          '',
          $search_form
       );

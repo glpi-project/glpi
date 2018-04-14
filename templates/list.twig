@@ -99,7 +99,7 @@
                      <button type="button" class="btn btn-default btn-sm" title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}">
                         <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page}) }}">
                            <i class="fa fa-chevron-right"></i>
-                           <span class="sr-only"{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}></span>
+                           <span class="sr-only">{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}</span>
                         </a>
                      </button>
                   </div>
@@ -111,7 +111,7 @@
                <thead>
                   <tr>
                      <th class="sorting" style="width:1em;">
-                        <input type="checkbox" class="toggle-selection"/>
+                        <input type="checkbox" class="checkall"/>
                      </th>
    {% for key, header in search_data.data.cols %}
       {#
@@ -192,7 +192,7 @@
    {% for rowkey, row in search_data.data.rows %}
                   <tr>
                      <td>
-                        <input type="checkbox" class="toggle-selection"/>
+                        <input type="checkbox" name="_ids[]" value="{{ row.raw.ITEM_0_id }}"/>
                      </td>
       {% for colkey, col in search_data.data.cols %}
       {#
