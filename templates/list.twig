@@ -54,34 +54,340 @@
          </div>
       </div>
       <div class="box-body">
-         {{ search_form|raw }}
-         <div class="mailbox-controls">
-            <!-- Check all button -->
-            <button type="button" class="btn btn-default btn-sm checkbox-toggle">
-               <i class="fa fa-square-o"></i>
-            </button>
-            <div class="btn-group">
-               <button type="button" class="btn btn-default btn-sm"><i class="fa fa-wrench"></i></button>
+         <form class="form-horizontal">
+            {{ search_form|raw }}
+            <div class="row">
+               <div class="col-sm-6">
+                  <label for="">{{ __('Display (number of items)') }}</label>
+                  <select name="example1_length" aria-controls="example1" class="form-control input-sm">
+                     <option value="10">10</option>
+                     <option value="25">25</option>
+                     <option value="50">50</option>
+                     <option value="100">100</option>
+                  </select>
+               </div>
+               <div class="col-sm-6">
+                  <div id="example1_filter" class="dataTables_filter">
+                     <label>Search:</label>
+                     <input class="form-control input-sm" placeholder="" aria-controls="example1" type="search">
+                  </div>
+               </div>
             </div>
-                <!-- /.btn-group -->
-                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
-                <div class="pull-right">
-                  1-50/200
+            <div class='pager_controls'>
+
+            <div class='switch grey_border pager_controls'>
+
+   {% if item.maybeDeleted() %}
+               <label for='is_deletedswitch$rand' title="{{ __s('Show the dustbin') }}">
+                  <span class='sr-only'>{{  __s('Show the dustbin') }}</span>
+                     <input type="hidden" name="is_deleted" value="0" />
+                     <input type="checkbox" id="is_deletedswitch" name="is_deleted" value="1"{% if search_data.search.is_deleted %} onClick="toogle('is_deleted','','','');document.forms['searchform{#$_POST["itemtype"]#}'].submit();"{% endif %} />
+                     <span class='fa fa-trash-o pointer'></span>
+                     <span class='lever'></span>
+               </label>
+   {% endif %}
+               <span class='fa fa-wrench pointer' title="{{ __s('Select default items to show') }}" onClick="$('#%id').dialog('open');">
+                  <span class='sr-only'>{{ __s('Select default items to show') }}</span>
+                  {#$search_config_top .= str_replace('%id', 'search_config_top', $options_link);
+                  $search_config_bottom .= str_replace('%id', 'search_config_bottom', $options_link);}#}
+
+                  {#$search_config_top
+                  .= Ajax::createIframeModalWindow('search_config_top',
+                                                   $CFG_GLPI["root_doc"].
+                                                      "/front/displaypreference.form.php?itemtype=".
+                                                      $data['itemtype'],
+                                                   ['title'
+                                                            => __('Select default items to show'),
+                                                         'reloadonclose'
+                                                            => true,
+                                                         'display'
+                                                            => false]);#}
+               </span>
+               <input type='checkbox' name='as_map' id='as_map' value='1' {% if search_data.search.as_map == 1 %} checked="checked"{% endif %}/>
+               <label for='as_map'>
+                  <span title="{{ __s('Show as map') }}" class="pointer fa fa-globe" onClick="toogle('as_map','','','');document.forms['searchform{#$data["itemtype"]#}'].submit();"></span>
+               </label>
+            </div>
+            <div class="mailbox-controls">
+               <!-- Check all button -->
+               <button type="button" class="btn btn-default btn-sm checkbox-toggle">
+                  <i class="fa fa-square-o"></i>
+               </button>
+               <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-sm"><i class="fa fa-wrench"></i></button>
+               </div>
+               <!-- /.btn-group -->
+               <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+
+               <div class="pull-right">
+                  {{ __('%1$s-%2$s/%3$s')|format(
+                     search_data.data.begin + 1,
+                     search_data.data.end + 1,
+                     search_data.data.totalcount
+                  ) }}
                   {#{{ __('From %1$d to %2$d of %3$d')|format() }} , $current_start, $current_end, $numrows); #}
                   <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
+                     <button type="button" class="btn btn-default btn-sm" title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}">
+                        <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page}) }}">
+                           <i class="fa fa-chevron-left"></i>
+                           <span class="sr-only">{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}</span>
+                        </a>
+                     </button>
+                     <button type="button" class="btn btn-default btn-sm" title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}">
+                        <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page}) }}">
+                           <i class="fa fa-chevron-right"></i>
+                           <span class="sr-only"{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}></span>
+                        </a>
+                     </button>
                   </div>
                   <!-- /.btn-group -->
-                </div>
-                <!-- /.pull-right -->
-              </div>
-              <div class="search_page">
-   {{ contents|raw }}
                </div>
-      </div>
+               <!-- /.pull-right -->
+            </div>
+            <table class="table table-bordered table-hover">
+               <thead>
+                  <tr>
+   {% for key, header in search_data.data.cols %}
+      {#
+               $linkto = '';
+               if (!$val['meta']
+                  && (!isset($val['searchopt']['nosort'])
+                     || !$val['searchopt']['nosort'])) {
+
+                  $linkto = $data['search']['target'].(strpos($data['search']['target'], '?') ? '&amp;' : '?').
+                              "itemtype=".$data['itemtype']."&amp;sort=".
+                              $val['id']."&amp;order=".
+                              (($data['search']['order'] == "ASC") ?"DESC":"ASC").
+                              "&amp;start=".$data['search']['start']."&amp;".$globallinkto;
+               }
+               // Not main itemtype add itemtype to display
+               if ($data['itemtype'] != $val['itemtype']) {
+                  if (!isset($metanames[$val['itemtype']])) {
+                     if ($metaitem = getItemForItemtype($val['itemtype'])) {
+                        $metanames[$val['itemtype']] = $metaitem->getTypeName();
+                     }
+                  }
+                  $name = sprintf(__('%1$s - %2$s'), $metanames[$val['itemtype']],
+                                 $val["name"]);
+               }
+               $headers_line .= self::showHeaderItem($data['display_type'],
+                                                      $name,
+                                                      $header_num, $linkto,
+                                                      (!$val['meta']
+                                                      && ($data['search']['sort'] == $val['id'])),
+                                                      $data['search']['order']);
+
+      #}
+      {% set name = header.name %}
+      {# prefix by group name (corresponding to optgroup in dropdown) if exists #}
+      {% if header.groupname is defined %}
+         {% if header.groupname is iterable %}
+            {% set name = header.groupname.name ~ ' - ' ~ name  %}
+         {% else %}
+            {% set name = header.groupname ~ ' - ' ~ name  %}
+         {% endif %}
+      {% endif %}
+                     <th class="sorting">
+                        {{ name }}
+                     </th>
+   {% endfor %}
+{#
+            // Display column Headers for toview items
+            $metanames = [];
+
+            // Add specific column Header
+            if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+               $headers_line .= self::showHeaderItem($data['display_type'], __('Item type'),
+                                                      $header_num);
+            }
+            // End Line for column headers
+            $headers_line        .= self::showEndLine($data['display_type']);
+
+            $headers_line_top    .= $headers_line;
+            if ($data['display_type'] == self::HTML_OUTPUT) {
+               $headers_line_bottom .= $headers_line;
+            }
+
+            $headers_line_top    .= self::showEndHeader($data['display_type']);
+            // $headers_line_bottom .= self::showEndHeader($data['display_type']);
+
+            echo $headers_line_top;
+#}
+                  </tr>
+               </thead>
+               <tbody>
+{#
+            //IMPORTANT FOR ITEMS NAVIGATION
+            // Init list of items displayed
+            if ($data['display_type'] == self::HTML_OUTPUT) {
+               Session::initNavigateListItems($data['itemtype']);
+            }
+#}
+   {% for rowkey, row in search_data.data.rows %}
+                  <tr>
+      {% for colkey, col in search_data.data.cols %}
+      {#
+              if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                  if (!isset($typenames[$row["TYPE"]])) {
+                     if ($itemtmp = getItemForItemtype($row["TYPE"])) {
+                        $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
+                     }
+                  }
+                  echo self::showItem($data['display_type'], $typenames[$row["TYPE"]],
+                                    $item_num, $row_num);
+               }
+      #}
+                     <td>
+         {% if not col.meta %}
+                        {{ row[colkey].displayname|raw }}
+            {#echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                          $item_num, $row_num,
+                                          self::displayConfigItem($data['itemtype'], $col['id'],
+                                                                  $row, $colkey));#}
+         {% else %} {# META case #}
+                        {{ row[colkey].displayname|raw }}
+            {# echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                       $item_num, $row_num);#}
+                  }
+         {% endif %}
+                     </td>
+      {% endfor %}
+                  </tr>
+{#
+            $typenames = [];
+            // Display Loop
+            foreach ($data['data']['rows'] as $rowkey => $row) {
+               // Column num
+               $item_num = 1;
+               $row_num++;
+               // New line
+               echo self::showNewLine($data['display_type'], ($row_num%2),
+                                    $data['search']['is_deleted']);
+
+               $current_type       = (isset($row['TYPE']) ? $row['TYPE'] : $data['itemtype']);
+               $massiveaction_type = $current_type;
+
+               if (($data['itemtype'] != 'AllAssets')
+                  && isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                  $massiveaction_type = $data['itemtype'];
+               }
+
+               // Add item in item list
+               Session::addToNavigateListItems($current_type, $row["id"]);
+
+               if (($data['display_type'] == self::HTML_OUTPUT)
+                     && $showmassiveactions) { // HTML display - massive modif
+                  $tmpcheck = "";
+
+                  if (($data['itemtype'] == 'Entity')
+                        && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
+                     $tmpcheck = "&nbsp;";
+
+                  } else if ($data['itemtype'] == 'User'
+                           && !Session::isViewAllEntities()
+                           && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
+                     $tmpcheck = "&nbsp;";
+
+                  } else if (($data['item'] instanceof CommonDBTM)
+                              && $data['item']->maybeRecursive()
+                              && !in_array($row["entities_id"], $_SESSION["glpiactiveentities"])) {
+                     $tmpcheck = "&nbsp;";
+
+                  } else {
+                     $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
+                                                               $row[$massiveaction_field]);
+                  }
+                  echo self::showItem($data['display_type'], $tmpcheck, $item_num, $row_num,
+                                       "width='10'");
+               }
+
+               // Print other toview items
+               foreach ($data['data']['cols'] as $colkey => $col) {
+                  if (!$col['meta']) {
+                     echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                          $item_num, $row_num,
+                                          self::displayConfigItem($data['itemtype'], $col['id'],
+                                                                  $row, $colkey));
+                  } else { // META case
+                     echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
+                                       $item_num, $row_num);
+                  }
+               }
+
+               if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                  if (!isset($typenames[$row["TYPE"]])) {
+                     if ($itemtmp = getItemForItemtype($row["TYPE"])) {
+                        $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
+                     }
+                  }
+                  echo self::showItem($data['display_type'], $typenames[$row["TYPE"]],
+                                    $item_num, $row_num);
+               }
+               // End Line
+               echo self::showEndLine($data['display_type']);
+            }
+#}
+   {% endfor %}
+               </tbody>
+            </table>
+
+            <div class="row">
+               <div class="col-sm-5">
+                  <div role="status" aria-live="polite">
+                     {{ __('From %1$d to %2$d of %3$d')|format(
+                        search_data.data.begin + 1,
+                        search_data.data.end + 1,
+                        search_data.data.totalcount
+                     ) }}
+                  </div>
+               </div>
+               <div class="col-sm-7">
+                  <div class="paging_simple_numbers">
+                     <ul class="pagination">
+                        <li class="paginate_button first disabled">
+                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': 1}) }}">
+                              <i class="fa fa-fast-backward"></i>
+                              <span class="sr-only">{{ __("First") }}</span>
+                           </a>
+                        </li>
+                        <li class="paginate_button previous{% if search_data.pagination.previous_page == false %} disabled{% endif %}">
+                           <a href="{% if search_data.pagination.previous_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page})}}{% endif %}">
+                              <i class="fa fa-step-backward"></i>
+                              <span class="sr-only">
+                                 {{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}
+                              </span>
+                           </a>
+                        </li>
+   {% for page in search_data.pagination.pages %}
+                        <li class="paginate_button{% if page.current is defined %} active{% endif %}">
+                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': page.value}) }}" title="{{ page.title }}">
+                              {% set page_content = page.label|default(page.value) %}
+                              {{ page_content|raw  }}
+                           </a>
+                        </li>
+   {% endfor %}
+                        <li class="paginate_button next disabled">
+                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page })}}">
+                              <i class="fa fa-step-forward"></i>
+                              <span class="sr-only">
+                                 {{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}
+                              </span>
+                           </a>
+                        </li>
+                        <li class="paginate_button last disabled">
+                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.last_page }) }}">
+                              <i class="fa fa-fast-forward"></i>
+                              <span class="sr-only">{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </div> <!-- /.box-body -->
       <div class="box-footer">
       </div>
-   </div>
+   </div> <!-- /.box-default -->
 </div>
 {% endblock %}

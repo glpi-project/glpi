@@ -62,6 +62,22 @@ class Search {
    static $output_type = self::HTML_OUTPUT;
    static $search = [];
 
+   private $item;
+   private $raw_params;
+   private $params;
+   private $page;
+
+   /**
+    * Constructor
+    *
+    * @param CommonDBTM $item   Item instance
+    * @param array      $params Search parameters
+    */
+   public function __construct(CommonDBTM $item, array $params) {
+      $this->item = $item;
+      $this->raw_params = $params;
+   }
+
    /**
     * Display search engine for an type
     *
@@ -82,20 +98,118 @@ class Search {
       echo "</div>";
    }
 
+   /**
+    * Get data
+    *
+    * @return array
+    */
+   public function getData() {
+      $params = self::manageParams($this->item->getType(), $this->params);
+      if ($params['as_map'] == 1) {
+         $params['criteria'][] = [
+            'link'         => 'AND NOT',
+            'field'        => ($this->item->getType() == 'Location') ? 21 : 998,
+            'searchtype'   => 'contains',
+            'value'        => 'NULL'
+         ];
+         $params['criteria'][] = [
+            'link'         => 'AND NOT',
+            'field'        => ($this->item->getType() == 'Location') ? 20 : 999,
+            'searchtype'   => 'contains',
+            'value'        => 'NULL'
+         ];
+      }
+
+      if ($this->current_page === null) {
+         $this->current_page = 1;
+      }
+
+      $data = self::prepareDatasForSearch($this->item->getType(), $params);
+      self::constructSQL($data);
+      self::constructData($data);
+
+      $limit = $_SESSION['glpilist_limit'];
+      $count = $data['data']['totalcount'];
+
+      $this->pages = $count / $limit;
+      $last = ceil($count / $limit);
+      $previous = $this->current_page - 1;
+      if ($previous < 1) {
+         $previous = false;
+      }
+
+      $next = $this->current_page +1;
+      if ($next > $last) {
+         $next = $last;
+      }
+      $pagination = [
+         'start'           => $data['search']['start'],
+         'limit'           => $limit,
+         'count'           => $count,
+         'current_page'    => $this->current_page,
+         'previous_page'   => $previous,
+         'next_page'       => $next,
+         'last_page'       => $last,
+         'pages'           => []
+      ];
+
+      $count_pages = 3 * 2;
+      //Will show up to $count_pages
+      //Create pagination links
+      if ($this->current_page < $count_pages + 1) {
+         $idepart=1;
+      } else {
+         $idepart = $this->current_page - $count_pages;
+      }
+      if ($this->current_page + $count_pages < $pagination['last_page']) {
+         $ifin = $this->current_page + $count_pages;
+      } else {
+         $ifin = $pagination['last_page'];
+      }
+
+      $iter = 1;
+      for ($i = $idepart; $i <= $ifin; $i++) {
+         if ($ifin - $idepart == $count_pages && $count_pages / 2 == $iter) {
+            $pagination['pages'][] = [
+               'value' => null,
+               'label' => '...'
+            ];
+         }
+         ++$iter;
+         $page = [
+               'value' => $i,
+               'title' => preg_replace("(%i)", $i, __("Page %i"))
+         ];
+         if ($i == $this->current_page) {
+               $page['current'] = true;
+               $page['title'] = preg_replace(
+                  "(%i)",
+                  $i,
+                  __("Current page (%i)")
+               );
+         }
+         $pagination['pages'][] = $page;
+      }
+      $data['pagination'] = $pagination;
+
+      return $data;
+   }
 
    /**
     * Display result table for search engine for an type
     *
-    * @param $itemtype item type to manage
-    * @param $params search params passed to prepareDatasForSearch function
+    * @param string $itemtype item type to manage
+    * @param array  $params   search params passed to prepareDatasForSearch function
+    * @param array  $data     data if already processed
     *
     * @return nothing
    **/
-   static function showList($itemtype, $params) {
-
-      $data = self::prepareDatasForSearch($itemtype, $params);
-      self::constructSQL($data);
-      self::constructData($data);
+   static function showList($itemtype, $params, $data = []) {
+      if (empty($data)) {
+         $data = self::prepareDatasForSearch($itemtype, $params);
+         self::constructSQL($data);
+         self::constructData($data);
+      }
       self::displayData($data);
    }
 
@@ -104,29 +218,33 @@ class Search {
     *
     * @param string $itemtype item type to manage
     * @param array  $params   search params passed to prepareDatasForSearch function
+    * @param array  $data     data if already processed
     *
     * @return void
    **/
-   static function showMap($itemtype, $params) {
+   static function showMap($itemtype, $params, $data = []) {
       global $CFG_GLPI;
 
-      $params['criteria'][] = [
-         'link'         => 'AND NOT',
-         'field'        => ($itemtype == 'Location') ? 21 : 998,
-         'searchtype'   => 'contains',
-         'value'        => 'NULL'
-      ];
-      $params['criteria'][] = [
-         'link'         => 'AND NOT',
-         'field'        => ($itemtype == 'Location') ? 20 : 999,
-         'searchtype'   => 'contains',
-         'value'        => 'NULL'
-      ];
-      $data = self::prepareDatasForSearch($itemtype, $params);
-      self::constructSQL($data);
-      self::constructData($data);
+      if (empty($data)) {
+         $params['criteria'][] = [
+            'link'         => 'AND NOT',
+            'field'        => ($itemtype == 'Location') ? 21 : 998,
+            'searchtype'   => 'contains',
+            'value'        => 'NULL'
+         ];
+         $params['criteria'][] = [
+            'link'         => 'AND NOT',
+            'field'        => ($itemtype == 'Location') ? 20 : 999,
+            'searchtype'   => 'contains',
+            'value'        => 'NULL'
+         ];
+         $data = self::prepareDatasForSearch($itemtype, $params);
+         self::constructSQL($data);
+         self::constructData($data);
+      }
       self::displayData($data);
 
+      //TODO: adapt for new system
       if ($data['data']['totalcount'] > 0) {
          $target = $data['search']['target'];
          $criteria = $data['search']['criteria'];
@@ -6673,5 +6791,17 @@ class Search {
                         AND `$alias`.`language` = '".
                               $_SESSION['glpilanguage']."'
                         AND `$alias`.`field` = '$field')";
+   }
+
+   /**
+    * Set page
+    *
+    * @param integer $page Page
+    *
+    * @return Search
+    */
+   public function setPage($page) {
+      $this->current_page = $page;
+      return $this;
    }
 }

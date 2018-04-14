@@ -45,6 +45,7 @@
          <div class="box box-solid">
             <div class="box-body no-padding">
                <ul class="nav nav-pills nav-stacked">
+   {# TODO: add items navigation #}
    {% for tab, entry in item.getTabs() %}
       {% if entry is not iterable %}
          {% set label = entry %}

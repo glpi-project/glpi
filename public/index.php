@@ -393,31 +393,44 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('central');
 
-   $app->get('/{itemtype}/list', function ($request, $response, $args) {
+   $app->get('/{itemtype}/list[/page/{page:\d+}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
+      $search = new Search($item, $request->getQueryParams());
+      if (isset($args['page'])) {
+         $search->setPage((int)$args['page']);
+      }
+      $data = $search->getData();
 
+      //legacy
       $params = Search::manageParams($item->getType(), $_GET);
 
       ob_start();
       Search::showGenericSearch($item->getType(), $params);
       $search_form = ob_get_contents();
       ob_end_clean();
+      $search_form = preg_replace(
+         '/<form[^>]*?>/',
+         '',
+         $search_form
+      );
 
-      ob_start();
+      /*ob_start();
       if ($params['as_map'] == 1) {
-         Search::showMap($item->getType(), $params);
+         Search::showMap($item->getType(), $params, $data);
       } else {
-         Search::showList($item->getType(), $params);
+         Search::showList($item->getType(), $params, $data);
       }
       $contents = ob_get_contents();
-      ob_end_clean();
+      ob_end_clean();*/
+      //end legacy
+
       return $this->view->render(
          $response,
          'list.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+            'search_data'  => $data,
             'search_form'  => $search_form,
-            'item'         => $item,
-            'contents'     => $contents
+            'item'         => $item
          ]
       );
    })->setName('list');
