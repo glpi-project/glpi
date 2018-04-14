@@ -1160,8 +1160,8 @@ var createModalWindow = function (url, params) {
 };
 
 var _bind_check = function() {
-    var _is_checked = true;
-    $('.checkall').click(function() {
+   var _is_checked = true;
+   $('.checkall').click(function() {
       var _this = $(this);
       if (_this.data('boxelt')) {
          boxelt = _this.data('boxelt');
@@ -1169,7 +1169,6 @@ var _bind_check = function() {
          boxelt = '_ids';
       }
 
-       console.log(_this.closest('form'));
       _this.closest('form').find(':checkbox[name="' + boxelt + '[]"]').each(function() {
          this.checked = _is_checked;
       });
@@ -1177,4 +1176,3 @@ var _bind_check = function() {
       return false;
    });
 };
-

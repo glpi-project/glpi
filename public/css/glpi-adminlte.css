@@ -48,3 +48,7 @@
    width: 100%;
 }
 /** /debug stuff */
+
+ul.pagination {
+   margin: 0;
+}

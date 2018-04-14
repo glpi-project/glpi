@@ -395,7 +395,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    $app->get('/{itemtype}/list[/page/{page:\d+}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
-      $search = new Search($item, $request->getQueryParams());
+      $params = $request->getQueryParams() + $args;
+      if (isset($args['page'])) {
+         $params['start'] = ($args['page'] - 1) * $_SESSION['glpilist_limit'];
+      }
+      $search = new Search($item, $params);
       if (isset($args['page'])) {
          $search->setPage((int)$args['page']);
       }

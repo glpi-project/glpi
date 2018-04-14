@@ -65,7 +65,7 @@ class Search {
    private $item;
    private $raw_params;
    private $params;
-   private $page;
+   private $current_page;
 
    /**
     * Constructor
@@ -104,7 +104,7 @@ class Search {
     * @return array
     */
    public function getData() {
-      $params = self::manageParams($this->item->getType(), $this->params);
+      $params = self::manageParams($this->item->getType(), $this->raw_params);
       if ($params['as_map'] == 1) {
          $params['criteria'][] = [
             'link'         => 'AND NOT',
@@ -153,29 +153,17 @@ class Search {
          'pages'           => []
       ];
 
-      $count_pages = 3 * 2;
-      //Will show up to $count_pages
-      //Create pagination links
-      if ($this->current_page < $count_pages + 1) {
-         $idepart=1;
-      } else {
-         $idepart = $this->current_page - $count_pages;
-      }
-      if ($this->current_page + $count_pages < $pagination['last_page']) {
-         $ifin = $this->current_page + $count_pages;
-      } else {
-         $ifin = $pagination['last_page'];
+      $idepart = $this->current_page - 2;
+      if ($idepart< 1) {
+         $idepart = 1;
       }
 
-      $iter = 1;
+      $ifin = $this->current_page + 2;
+      if ($ifin > $last) {
+         $ifin = $last;
+      }
+
       for ($i = $idepart; $i <= $ifin; $i++) {
-         if ($ifin - $idepart == $count_pages && $count_pages / 2 == $iter) {
-            $pagination['pages'][] = [
-               'value' => null,
-               'label' => '...'
-            ];
-         }
-         ++$iter;
          $page = [
                'value' => $i,
                'title' => preg_replace("(%i)", $i, __("Page %i"))

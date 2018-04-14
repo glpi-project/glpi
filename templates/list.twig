@@ -84,20 +84,25 @@
             <div class="mailbox-controls">
                <div class="pull-right">
                   {{ __('%1$s-%2$s/%3$s')|format(
-                     search_data.data.begin + 1,
-                     search_data.data.end + 1,
+                     search_data.search.start + search_data.data.begin + 1,
+                     search_data.search.start + search_data.data.end + 1,
                      search_data.data.totalcount
                   ) }}
                   {#{{ __('From %1$d to %2$d of %3$d')|format() }} , $current_start, $current_end, $numrows); #}
                   <div class="btn-group">
-                     <button type="button" class="btn btn-default btn-sm" title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}">
-                        <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page}) }}">
+                        <a
+                           class="btn btn-default btn-sm"
+                           href="{% if search_data.pagination.previous_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page}) }}{% endif %}"
+                           title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}"
+                        >
                            <i class="fa fa-chevron-left"></i>
                            <span class="sr-only">{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}</span>
                         </a>
-                     </button>
-                     <button type="button" class="btn btn-default btn-sm" title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}">
-                        <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page}) }}">
+                        <a
+                           class="btn btn-default btn-sm"
+                           href="{% if search_data.pagination.next_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page}) }}{% endif %}"
+                           title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}"
+                        >
                            <i class="fa fa-chevron-right"></i>
                            <span class="sr-only">{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}</span>
                         </a>
@@ -301,62 +306,56 @@
             </table>
 
             <div class="row">
-               <div class="col-sm-5">
-                  <div role="status" aria-live="polite">
-                     {{ __('From %1$d to %2$d of %3$d')|format(
-                        search_data.data.begin + 1,
-                        search_data.data.end + 1,
-                        search_data.data.totalcount
-                     ) }}
-                  </div>
-               </div>
-               <div class="col-sm-7">
-                  <div class="paging_simple_numbers">
-                     <ul class="pagination">
-                        <li class="paginate_button first disabled">
-                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': 1}) }}">
-                              <i class="fa fa-fast-backward"></i>
-                              <span class="sr-only">{{ __("First") }}</span>
-                           </a>
-                        </li>
-                        <li class="paginate_button previous{% if search_data.pagination.previous_page == false %} disabled{% endif %}">
-                           <a href="{% if search_data.pagination.previous_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page})}}{% endif %}">
-                              <i class="fa fa-step-backward"></i>
-                              <span class="sr-only">
-                                 {{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}
-                              </span>
-                           </a>
-                        </li>
-   {% for page in search_data.pagination.pages %}
-                        <li class="paginate_button{% if page.current is defined %} active{% endif %}">
-                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': page.value}) }}" title="{{ page.title }}">
-                              {% set page_content = page.label|default(page.value) %}
-                              {{ page_content|raw  }}
-                           </a>
-                        </li>
-   {% endfor %}
-                        <li class="paginate_button next disabled">
-                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page })}}">
-                              <i class="fa fa-step-forward"></i>
-                              <span class="sr-only">
-                                 {{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}
-                              </span>
-                           </a>
-                        </li>
-                        <li class="paginate_button last disabled">
-                           <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.last_page }) }}">
-                              <i class="fa fa-fast-forward"></i>
-                              <span class="sr-only">{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}</span>
-                           </a>
-                        </li>
-                     </ul>
-                  </div>
-               </div>
             </div>
          </form>
       </div> <!-- /.box-body -->
       <div class="box-footer">
-      </div>
+         {{ __('From %1$d to %2$d of %3$d')|format(
+            search_data.search.start + search_data.data.begin + 1,
+            search_data.search.start + search_data.data.end + 1,
+            search_data.data.totalcount
+         ) }}
+         <div class="pull-right">
+            <ul class="pagination">
+               <li class="paginate_button first{% if search_data.pagination.current_page == 1 %} disabled{% endif %}">
+                  <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': 1}) }}" title="{{ __("First page") }}">
+                     <i class="fa fa-fast-backward"></i>
+                     <span class="sr-only">{{ __("First page") }}</span>
+                  </a>
+               </li>
+               <li class="paginate_button previous{% if search_data.pagination.previous_page == false %} disabled{% endif %}">
+                  <a href="{% if search_data.pagination.previous_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page})}}{% endif %}" title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}">
+                     <i class="fa fa-step-backward"></i>
+                     <span class="sr-only">
+                        {{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}
+                     </span>
+                  </a>
+               </li>
+{% for page in search_data.pagination.pages %}
+               <li class="paginate_button{% if page.current is defined %} active{% endif %}">
+                  <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': page.value}) }}" title="{{ page.title }}">
+                     {% set page_content = page.label|default(page.value) %}
+                     {{ page_content|raw  }}
+                  </a>
+               </li>
+{% endfor %}
+               <li class="paginate_button next{% if search_data.pagination.next_page == false %} disabled{% endif %}">
+                  <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page })}}" title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}">
+                     <i class="fa fa-step-forward"></i>
+                     <span class="sr-only">
+                        {{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}
+                     </span>
+                  </a>
+               </li>
+               <li class="paginate_button last{% if search_data.pagination.current_page == search_data.pagination.last_page %} disabled{% endif %}">
+                  <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.last_page }) }}" title="{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}">
+                     <i class="fa fa-fast-forward"></i>
+                     <span class="sr-only">{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}</span>
+                  </a>
+               </li>
+            </ul>
+         </div><!-- /.pull-right -->
+      </div><!-- /.box-footer -->
    </div> <!-- /.box-default -->
 </div>
 {% endblock %}
