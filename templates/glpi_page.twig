@@ -430,7 +430,17 @@
       #}
 
       var _select2_common = {
-         width: '100%',
+         width: function() {
+            var _this = $(this);
+            if (_this.data('width')) {
+               return _this.data('width');
+            } else {
+               if (_this.parents('form.glpi_form').length > 0) {
+                  return '100%';
+               }
+               return 'auto';
+            }
+         },
          minimumInputLength: 0,
          quietMillis: 100,
          dropdownAutoWidth: true,

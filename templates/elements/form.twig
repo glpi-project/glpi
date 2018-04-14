@@ -32,7 +32,7 @@
    'boxed': true,
    'form_class': ''
 }|merge(glpi_form) %}
-<form class="{% if glpi_form.boxed %}container form-horizontal box{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
+<form class="glpi_form{% if glpi_form.boxed %} container form-horizontal box{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
    <header class="box-header with-border">

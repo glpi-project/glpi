@@ -36,6 +36,10 @@
       <div class="box-header with-border">
          <h3 class="box-title">{{ __('Search %1$s')|format(item.getTypeName()|lower)}}</h3>
          <div class="box-tools pull-right">
+            <button id="default_items" type="button" class="btn btn-default btn-sm" title="{{ __s('Select default items to show') }}">
+               <i class="fa fa-wrench"></i>
+               <span class="sr-only">{{ __s('Select default items to show') }}</span>
+            </button>
             <div class="btn-group">
                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                   {{ __('Download') }}&nbsp;<span class="fa fa-caret-down"></span>
@@ -56,69 +60,28 @@
       <div class="box-body">
          <form class="form-horizontal">
             {{ search_form|raw }}
-            <div class="row">
-               <div class="col-sm-6">
-                  <label for="">{{ __('Display (number of items)') }}</label>
-                  <select name="example1_length" aria-controls="example1" class="form-control input-sm">
-                     <option value="10">10</option>
-                     <option value="25">25</option>
-                     <option value="50">50</option>
-                     <option value="100">100</option>
-                  </select>
-               </div>
-               <div class="col-sm-6">
-                  <div id="example1_filter" class="dataTables_filter">
-                     <label>Search:</label>
-                     <input class="form-control input-sm" placeholder="" aria-controls="example1" type="search">
-                  </div>
-               </div>
-            </div>
             <div class='pager_controls'>
 
             <div class='switch grey_border pager_controls'>
-
+               <label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label>
+               <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+               </select>
    {% if item.maybeDeleted() %}
-               <label for='is_deletedswitch$rand' title="{{ __s('Show the dustbin') }}">
-                  <span class='sr-only'>{{  __s('Show the dustbin') }}</span>
-                     <input type="hidden" name="is_deleted" value="0" />
-                     <input type="checkbox" id="is_deletedswitch" name="is_deleted" value="1"{% if search_data.search.is_deleted %} onClick="toogle('is_deleted','','','');document.forms['searchform{#$_POST["itemtype"]#}'].submit();"{% endif %} />
-                     <span class='fa fa-trash-o pointer'></span>
-                     <span class='lever'></span>
-               </label>
+               <label for='is_deletedswitch' title="{{ __s('Show the dustbin') }}"></label>
+                  {#<span class='sr-only'#>#}{{  __s('Show the dustbin') }}{#</span>#}
+                  {#<input type="hidden" name="is_deleted" value="0" />#}
+               <input type="checkbox" id="is_deletedswitch" name="is_deleted" value="1"{% if search_data.search.is_deleted %} onClick="toogle('is_deleted','','','');document.forms['searchform{#$_POST["itemtype"]#}'].submit();"{% endif %} />
    {% endif %}
-               <span class='fa fa-wrench pointer' title="{{ __s('Select default items to show') }}" onClick="$('#%id').dialog('open');">
-                  <span class='sr-only'>{{ __s('Select default items to show') }}</span>
-                  {#$search_config_top .= str_replace('%id', 'search_config_top', $options_link);
-                  $search_config_bottom .= str_replace('%id', 'search_config_bottom', $options_link);}#}
-
-                  {#$search_config_top
-                  .= Ajax::createIframeModalWindow('search_config_top',
-                                                   $CFG_GLPI["root_doc"].
-                                                      "/front/displaypreference.form.php?itemtype=".
-                                                      $data['itemtype'],
-                                                   ['title'
-                                                            => __('Select default items to show'),
-                                                         'reloadonclose'
-                                                            => true,
-                                                         'display'
-                                                            => false]);#}
-               </span>
                <input type='checkbox' name='as_map' id='as_map' value='1' {% if search_data.search.as_map == 1 %} checked="checked"{% endif %}/>
                <label for='as_map'>
                   <span title="{{ __s('Show as map') }}" class="pointer fa fa-globe" onClick="toogle('as_map','','','');document.forms['searchform{#$data["itemtype"]#}'].submit();"></span>
                </label>
             </div>
             <div class="mailbox-controls">
-               <!-- Check all button -->
-               <button type="button" class="btn btn-default btn-sm checkbox-toggle">
-                  <i class="fa fa-square-o"></i>
-               </button>
-               <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-sm"><i class="fa fa-wrench"></i></button>
-               </div>
-               <!-- /.btn-group -->
-               <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
-
                <div class="pull-right">
                   {{ __('%1$s-%2$s/%3$s')|format(
                      search_data.data.begin + 1,
@@ -144,9 +107,12 @@
                </div>
                <!-- /.pull-right -->
             </div>
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover table-striped">
                <thead>
                   <tr>
+                     <th class="sorting" style="width:1em;">
+                        <input type="checkbox" class="toggle-selection"/>
+                     </th>
    {% for key, header in search_data.data.cols %}
       {#
                $linkto = '';
@@ -225,6 +191,9 @@
 #}
    {% for rowkey, row in search_data.data.rows %}
                   <tr>
+                     <td>
+                        <input type="checkbox" class="toggle-selection"/>
+                     </td>
       {% for colkey, col in search_data.data.cols %}
       {#
               if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
@@ -390,4 +359,32 @@
       </div>
    </div> <!-- /.box-default -->
 </div>
+{% endblock %}
+
+{% block javascripts %}
+   <script type="text/javascript">
+      $(function() {
+         $('#default_items').on('click', function() {
+            createModalWindow(
+               CFG_GLPI.root_doc + '/front/displaypreference.form.php?itemtype={{ search_data.itemtype }}', {
+                  'title': '{{ __('Select default items to show') }}',
+                  {#'extraparams': '{{ {'target': path_for('slash')}|json_encode(constant('JSON_FORCE_OBJECT')) }}',#}
+                  'open': true
+               }
+            );
+         });
+                  {#$search_config_top
+                  .= Ajax::createIframeModalWindow('search_config_top',
+                                                   $CFG_GLPI["root_doc"].
+                                                      "/front/displaypreference.form.php?itemtype=".
+                                                      $data['itemtype'],
+                                                   ['title'
+                                                            => __('Select default items to show'),
+                                                         'reloadonclose'
+                                                            => true,
+                                                         'display'
+                                                            => false]);#}
+      });
+   </script>
+   {{ parent() }}
 {% endblock %}
