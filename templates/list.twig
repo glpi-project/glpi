@@ -58,7 +58,7 @@
          </div>
       </div>
       <div class="box-body">
-         <form class="form-horizontal">
+         <form class="form-horizontal" id="search_form" action="{{ path_for('list', {'itemtype': search_data.itemtype }) }}">
             {{ search_form|raw }}
             <div class='pager_controls'>
 
@@ -71,14 +71,14 @@
                   <option value="100">100</option>
                </select>
    {% if item.maybeDeleted() %}
-               <label for='is_deletedswitch' title="{{ __s('Show the dustbin') }}"></label>
-                  {#<span class='sr-only'#>#}{{  __s('Show the dustbin') }}{#</span>#}
+               <label for="is_deleted" title="{{ __s('Show the dustbin') }}">{{  __s('Show the dustbin') }}</label>
+                  {#<span class='sr-only'>{{  __s('Show the dustbin') }}</span>#}
                   {#<input type="hidden" name="is_deleted" value="0" />#}
-               <input type="checkbox" id="is_deletedswitch" name="is_deleted" value="1"{% if search_data.search.is_deleted %} onClick="toogle('is_deleted','','','');document.forms['searchform{#$_POST["itemtype"]#}'].submit();"{% endif %} />
+               <input type="checkbox" id="is_deleted" name="is_deleted" value="1" />
    {% endif %}
-               <input type='checkbox' name='as_map' id='as_map' value='1' {% if search_data.search.as_map == 1 %} checked="checked"{% endif %}/>
+               <input type='checkbox' name='as_map' id='as_map' value='1'{% if search_data.search.as_map == 1 %} checked="checked"{% endif %}/>
                <label for='as_map'>
-                  <span title="{{ __s('Show as map') }}" class="pointer fa fa-globe" onClick="toogle('as_map','','','');document.forms['searchform{#$data["itemtype"]#}'].submit();"></span>
+                  <span title="{{ __s('Show as map') }}" class="pointer fa fa-globe"></span>
                </label>
             </div>
             <div class="mailbox-controls">
@@ -106,7 +106,6 @@
                            <i class="fa fa-chevron-right"></i>
                            <span class="sr-only">{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}</span>
                         </a>
-                     </button>
                   </div>
                   <!-- /.btn-group -->
                </div>
@@ -304,9 +303,6 @@
    {% endfor %}
                </tbody>
             </table>
-
-            <div class="row">
-            </div>
          </form>
       </div> <!-- /.box-body -->
       <div class="box-footer">
@@ -383,6 +379,17 @@
                                                             => true,
                                                          'display'
                                                             => false]);#}
+            $('#is_deleted').on('click', function() {
+               //onClick="toogle('is_deleted','','','');
+               //document.forms['searchform{#$_POST["itemtype"]#}'].submit();"
+               toogle('is_deleted','','','');
+               $('form#search_form').submit();
+            });
+            $('#as_map').on('click', function() {
+               toogle('as_map','','','');
+               //document.forms['searchform{#$data["itemtype"]#}'].submit();
+               $('form#search_form').submit();
+            });
       });
    </script>
    {{ parent() }}

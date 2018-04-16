@@ -1169,7 +1169,7 @@ var _bind_check = function() {
          boxelt = '_ids';
       }
 
-      _this.closest('form').find(':checkbox[name="' + boxelt + '[]"]').each(function() {
+      _this.closest('table').find(':checkbox[name="' + boxelt + '[]"]').each(function() {
          this.checked = _is_checked;
       });
       _is_checked = !_is_checked;
