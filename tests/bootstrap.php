@@ -39,7 +39,7 @@ define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-   die("\nConfiguration file for tests not found\n\nrun: php tools/cliinstall.php --tests ...\n\n");
+   die("\nConfiguration file for tests not found\n\nrun: php scripts/cliinstall.php --tests ...\n\n");
 }
 global $CFG_GLPI;
 
