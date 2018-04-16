@@ -486,7 +486,7 @@ function step7() {
    $url_base_api = "$url_base/apirest.php/";
    $DB->update(
       'glpi_configs',
-      ['value' => $Db->escape($url_base_api)], [
+      ['value' => $DB->escape($url_base_api)], [
          'context'   => 'core',
          'name'      => 'url_base_api'
       ]
