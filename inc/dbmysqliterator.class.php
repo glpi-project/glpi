@@ -346,8 +346,6 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    public function analyseCrit ($crit, $bool = "AND") {
-      global $DB;
-
       static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&'];
 
       if (!is_array($crit)) {
@@ -391,11 +389,11 @@ class DBmysqlIterator implements Iterator, Countable {
             if (count($value) == 2
                   && isset($value[0]) && in_array($value[0], $operators, true)) {
 
-               $ret .= DBmysql::quoteName($name) . " {$value[0]} " . $DB::quoteValue($value[1]);
+               $ret .= DBmysql::quoteName($name) . " {$value[0]} " . DBmysql::quoteValue($value[1]);
             } else {
                // Array of Values
                foreach ($value as $k => $v) {
-                  $value[$k] = $DB::quoteValue($v);
+                  $value[$k] = DBmysql::quoteValue($v);
                }
                $ret .= DBmysql::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
             }
@@ -403,7 +401,7 @@ class DBmysqlIterator implements Iterator, Countable {
             // NULL condition
             $ret .= DBmysql::quoteName($name) . " IS NULL";
          } else {
-            $ret .= DBmysql::quoteName($name) . " = " . $DB::quoteValue($value);
+            $ret .= DBmysql::quoteName($name) . " = " . DBmysql::quoteValue($value);
          }
       }
       return $ret;
