@@ -81,6 +81,10 @@ class Update extends CommonGLPI {
       // Init debug variable
       // Only show errors
       Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+      $result = Config::displayCheckDbEngine(true);
+      if ($result > 0) {
+         die(1);
+      }
    }
 
    /**

@@ -1893,6 +1893,8 @@ class Config extends CommonDBTM {
 
       self::displayCheckExtensions(true);
 
+      self::displayCheckDbEngine(true);
+
       self::checkWriteAccessToDirs(true);
       toolbox::checkSELinux(true);
 
@@ -2221,6 +2223,48 @@ class Config extends CommonDBTM {
       return true;
    }
 
+   /**
+    * Display database engine checks report
+    *
+    * @since 9.3
+    *
+    * @param boolean $fordebug display for debug (no html required) (false by default)
+    *
+    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+    **/
+   static function displayCheckDbEngine($fordebug = false) {
+      global $CFG_GLPI;
+
+      $error = 0;
+      $result = self::checkDbEngine();
+      $version = key($result);
+      $db_ver = $result[$version];
+
+      $ok_message = sprintf(__s('Database version seems correct (%s) - Perfect!'), $version);
+      $ko_message = sprintf(__('Your database engine version seems too old: %s.'), $version);
+
+      if (!$db_ver) {
+         $error = 2;
+      }
+      $message = $error > 0 ? $ko_message : $ok_message;
+
+      $html = '<tr class="tab_bg_1">';
+      $html .= "<td";
+      if ($error > 0) {
+         $html .= " class='red'";
+      }
+      $html .= "><img src='".$CFG_GLPI['root_doc']."/pics/";
+      $html .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message'/>";
+      $html .= "$message</td>";
+
+      $html .= '</tr>';
+      if ($fordebug) {
+         echo $message . "\n";
+      } else {
+         echo $html;
+      }
+      return $error;
+   }
 
    /**
     * Display extensions checks report
@@ -2271,6 +2315,28 @@ class Config extends CommonDBTM {
       }
 
       return $report['error'];
+   }
+
+
+   /**
+    * Check for needed extensions
+    *
+    * @since 9.3
+    *
+    * @return boolean
+   **/
+   static function checkDbEngine() {
+      global $DB;
+
+      // MySQL >= 5.6 || MariaDB >= 10
+      $raw = $DB->getVersion();
+
+      $db_ver = false;
+      preg_match('/(\d+(\.)?)+/', $raw, $found);
+      $version = $found[0];
+
+      $db_ver = version_compare($version, '5.6', '>=');
+      return [$version => $db_ver];
    }
 
 
