@@ -420,4 +420,51 @@ class Config extends DbTestCase {
             ->isIdenticalTo($expected);
 
    }
+
+   /**
+    * Database engines data provider
+    *
+    * @return array
+    */
+   protected function dbEngineProvider() {
+      return [
+         [
+            'raw'       => '10.2.14-MariaDB',
+            'version'   => '10.2.14',
+            'compat'    => true
+         ], [
+            'raw'       => '5.5.10-MariaDB',
+            'version'   => '5.5.10',
+            'compat'    => false
+         ], [
+            'raw'       => '5.6.38-log',
+            'version'   => '5.6.38',
+            'compat'    => true
+         ], [
+            'raw'       => '5-5-57',
+            'version'   => '5',
+            'compat'    => false
+         ], [
+            'raw'       => '5-6-31',
+            'version'   => '5',
+            'compat'    => false // since version is 5, this is not compat.
+         ], [
+            'raw'       => '10-2-35',
+            'version'   => '10',
+            'compat'    => true
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider dbEngineProvider
+    */
+   public function testCheckDbEngine($raw, $version, $compat) {
+      global $DB;
+      $DB = new \mock\DB();
+      $this->calling($DB)->getVersion = $raw;
+
+      $result = \Config::checkDbEngine();
+      $this->array($result)->isIdenticalTo([$version => $compat]);
+   }
 }
