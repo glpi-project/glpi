@@ -4006,6 +4006,24 @@ input[type=checkbox].toggle_comments:checked ~ ul {
    color: red;
 }
 
+
+/* ################--------------- Log history filters ---------------#################### */
+
+tr.log_history_filter_row > th {
+   vertical-align: top;
+}
+tr.log_history_filter_row .select2-container {
+   min-width: 125px;
+}
+tr.log_history_filter_row > th > input,
+tr.log_history_filter_row .select2-container .select2-selection--multiple {
+   box-sizing: border-box;
+   min-height: 28px;
+}
+tr.log_history_filter_row .select2-container--default .select2-selection--multiple .select2-selection__choice {
+   padding: 1px;
+}
+
 /* ################--------------- Responsive  ---------------#################### */
 
 @media screen and (max-width: 700px) {

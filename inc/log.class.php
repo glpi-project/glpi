@@ -264,11 +264,14 @@ class Log extends CommonDBTM {
          $start = 0;
       }
 
+      $sql_filters = self::convertFiltersValuesToSqlCriteria(isset($_GET['filters']) ? $_GET['filters'] : []);
+
       // Total Number of events
-      $number = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ]);
+      $total_number    = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ]);
+      $filtered_number = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
 
       // No Events in database
-      if ($number < 1) {
+      if ($total_number < 1) {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".__('No historical')."</th></tr>";
@@ -278,48 +281,118 @@ class Log extends CommonDBTM {
       }
 
       // Display the pager
-      Html::printAjaxPager(self::getTypeName(1), $start, $number);
+      $additional_params = isset($_GET['filters']) ? http_build_query(['filters' => $_GET['filters']]) : '';
+      Html::printAjaxPager(self::getTypeName(1), $start, $filtered_number, '', true, $additional_params);
 
       // Output events
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixehov'>";
 
-      $header = "<tr><th>".__('ID')."</th>";
+      $header = "<tr>";
+      $header .= "<th>".__('ID')."</th>";
       $header .= "<th>".__('Date')."</th>";
       $header .= "<th>".__('User')."</th>";
       $header .= "<th>".__('Field')."</th>";
       //TRANS: a noun, modification, change
-      $header .= "<th>"._x('name', 'Update')."</th></tr>";
-      echo $header;
+      $header .= "<th>"._x('name', 'Update')."</th>";
+      $header .= "</tr>";
 
-      foreach (self::getHistoryData($item, $start, $_SESSION['glpilist_limit']) as $data) {
-         if ($data['display_history']) {
-            // show line
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>".$data['id']."</td>".
-                 "<td class='tab_date'>".$data['date_mod']."</td>".
-                 "<td>".$data['user_name']."</td>".
-                 "<td>".$data['field']."</td>";
-            echo "<td width='60%'>".$data['change']."</td></tr>";
-         }
+      echo "<thead>";
+      echo $header;
+      if (isset($_GET['filters'])) {
+         echo "<tr class='log_history_filter_row'>";
+         echo "<th>";
+         echo "<input type='hidden' name='filters[active]' value='1' />";
+         echo "<input type='hidden' name='items_id' value='$items_id' />";
+         echo "</th>";
+         $dateValue = isset($_GET['filters']['date']) ? Html::cleanInputText($_GET['filters']['date']) : null;
+         echo "<th><input type='date' name='filters[date]' value='$dateValue' /></th>";
+         echo "<th>";
+         Dropdown::showFromArray(
+            "filters[users_names]",
+            Log::getDistinctUserNamesValuesInItemLog($item),
+            [
+               'multiple'            => true,
+               'display_emptychoice' => true,
+               'values'              => isset($_GET['filters']['users_names']) ? $_GET['filters']['users_names'] : [],
+               'width'               => "100%",
+            ]
+         );
+         echo "</th>";
+         echo "<th>";
+         Dropdown::showFromArray(
+            "filters[affected_fields]",
+            Log::getDistinctAffectedFieldValuesInItemLog($item),
+            [
+               'multiple'            => true,
+               'display_emptychoice' => true,
+               'values'              => isset($_GET['filters']['affected_fields']) ? $_GET['filters']['affected_fields'] : [],
+               'width'               => "100%",
+            ]
+         );
+         echo "</th>";
+         echo "<th>";
+         Dropdown::showFromArray(
+            "filters[linked_actions]",
+            Log::getDistinctLinkedActionValuesInItemLog($item),
+            [
+               'multiple'            => true,
+               'display_emptychoice' => true,
+               'values'              => isset($_GET['filters']['linked_actions']) ? $_GET['filters']['linked_actions'] : [],
+               'width'               => "100%",
+            ]
+         );
+         echo "</th>";
+         echo "</tr>";
+      } else {
+         echo "<tr>";
+         echo "<th colspan='5'>";
+         echo "<a href='#' class='show_log_filters'>" . __('Show filters') . " <span class='fa fa-filter pointer'></span></a>";
+         echo "</th>";
+         echo "</tr>";
       }
-      echo $header;
-      echo "</table></div>";
-      Html::printAjaxPager(self::getTypeName(1), $start, $number);
+      echo "</thead>";
 
+      echo "<tfoot>$header</tfoot>";
+
+      echo "<tbody>";
+      if ($filtered_number > 0) {
+         foreach (self::getHistoryData($item, $start, $_SESSION['glpilist_limit'], $sql_filters) as $data) {
+            if ($data['display_history']) {
+               // show line
+               echo "<tr class='tab_bg_2'>";
+               echo "<td>".$data['id']."</td>";
+               echo "<td class='tab_date'>".$data['date_mod']."</td>";
+               echo "<td>".$data['user_name']."</td>";
+               echo "<td>".$data['field']."</td>";
+               echo "<td width='60%'>".$data['change']."</td>";
+               echo "</tr>";
+            }
+         }
+      } else {
+         echo "<tr>";
+         echo "<th colspan='5'>" . __('No historical matching your filters') . "</th>";
+         echo "</tr>";
+      }
+      echo "</tbody>";
+
+      echo "</table>";
+      echo "</div>";
+
+      Html::printAjaxPager(self::getTypeName(1), $start, $filtered_number, '', true, $additional_params);
    }
-
 
    /**
     * Retrieve last history Data for an item
     *
-    * @param CommonDBTM $item      Object instance
-    * @param integer    $start     first line to retrieve (default 0)
-    * @param integer    $limit     max number of line to retrive (0 for all) (default 0)
-    * @param array      $sqlfilter to add an SQL filter (default '')
+    * @param CommonDBTM $item       Object instance
+    * @param integer    $start      First line to retrieve (default 0)
+    * @param integer    $limit      Max number of line to retrieve (0 for all) (default 0)
+    * @param array      $sqlfilters SQL filters applied to history (default [])
     *
     * @return array of localized log entry (TEXT only, no HTML)
    **/
-   static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, array $sqlfilter = []) {
+   static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, array $sqlfilters = []) {
       global $DB;
 
       $itemtype  = $item->getType();
@@ -333,7 +406,7 @@ class Log extends CommonDBTM {
          'WHERE'  => [
             'items_id'  => $items_id,
             'itemtype'  => $itemtype
-         ] + $sqlfilter,
+         ] + $sqlfilters,
          'ORDER'  => 'id DESC'
       ];
 
@@ -357,26 +430,16 @@ class Log extends CommonDBTM {
 
          // This is an internal device ?
          if ($data["linked_action"]) {
+            $action_label = self::getLinkedActionLabel($data["linked_action"]);
+
             // Yes it is an internal device
             switch ($data["linked_action"]) {
                case self::HISTORY_CREATE_ITEM :
-                  $tmp['change'] = __('Add the item');
-                  break;
-
                case self::HISTORY_DELETE_ITEM :
-                  $tmp['change'] = __('Delete the item');
-                  break;
-
                case self::HISTORY_LOCK_ITEM :
-                  $tmp['change'] = __('Lock the item');
-                  break;
-
                case self::HISTORY_UNLOCK_ITEM :
-                  $tmp['change'] = __('Unlock the item');
-                  break;
-
                case self::HISTORY_RESTORE_ITEM :
-                  $tmp['change'] = __('Restore the item');
+                  $tmp['change'] = $action_label;
                   break;
 
                case self::HISTORY_ADD_DEVICE :
@@ -385,8 +448,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add the component'),
-                                           $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
                   break;
 
                case self::HISTORY_UPDATE_DEVICE :
@@ -403,10 +465,9 @@ class Log extends CommonDBTM {
                      $tmp['field']  .= " (".$specif_fields[$field]['short name'].")";
                   }
                   //TRANS: %1$s is the old_value, %2$s is the new_value
-                  $tmp['change']  = sprintf(__('Change the component %1$s: %2$s'),
-                                            $tmp['field'],
-                                            sprintf(__('%1$s by %2$s'), $data["old_value"],
-                                                    $data[ "new_value"]));
+                  $tmp['change']  = sprintf(__('%1$s: %2$s'),
+                                            sprintf(__('%1$s (%2$s)'), $action_label, $tmp['field']),
+                                            sprintf(__('%1$s by %2$s'), $data["old_value"], $data[ "new_value"]));
                   break;
 
                case self::HISTORY_DELETE_DEVICE :
@@ -415,8 +476,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete the component'),
-                                           $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
                   break;
 
                case self::HISTORY_LOCK_DEVICE :
@@ -425,8 +485,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock the component'),
-                                           $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
                   break;
 
                case self::HISTORY_UNLOCK_DEVICE :
@@ -435,22 +494,19 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock the component'),
-                                           $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
                   break;
 
                case self::HISTORY_INSTALL_SOFTWARE :
                   $tmp['field']  = _n('Software', 'Software', 1);
                   //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Install the software'),
-                                           $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
                   break;
 
                case self::HISTORY_UNINSTALL_SOFTWARE :
                   $tmp['field']  = _n('Software', 'Software', 1);
                   //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Uninstall the software'),
-                                           $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
                   break;
 
                case self::HISTORY_DISCONNECT_DEVICE :
@@ -459,8 +515,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Disconnect the item'),
-                                           $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
                   break;
 
                case self::HISTORY_CONNECT_DEVICE :
@@ -469,8 +524,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Connect the item'),
-                                           $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
                   break;
 
                case self::HISTORY_LOG_SIMPLE_MESSAGE :
@@ -483,8 +537,7 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
-                                           $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
 
                   if ($data['itemtype'] == 'Ticket') {
                      if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
@@ -526,10 +579,11 @@ class Log extends CommonDBTM {
                         }
                      }
                      if ($as) {
-                        $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
-                              sprintf(__('%1$s (%2$s)'), $data["new_value"], $as));
+                        $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                                 $action_label,
+                                                 sprintf(__('%1$s (%2$s)'), $data["new_value"], $as));
                      } else {
-                        $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'), $data["new_value"]);
+                        $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
                      }
                   }
                   break;
@@ -540,9 +594,9 @@ class Log extends CommonDBTM {
                      $linktype     = $linktype_field[0];
                      $tmp['field'] = $linktype::getTypeName();
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update a link with an item'),
-                                       sprintf(__('%1$s (%2$s)'), $data["old_value"],
-                                          $data["new_value"]));
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                           $action_label,
+                                           sprintf(__('%1$s (%2$s)'), $data["old_value"], $data["new_value"]));
                   break;
 
                case self::HISTORY_DEL_RELATION :
@@ -550,8 +604,7 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete a link with an item'),
-                                           $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
                   break;
 
                case self::HISTORY_LOCK_RELATION :
@@ -559,8 +612,7 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock a link with an item'),
-                                           $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["old_value"]);
                   break;
 
                case self::HISTORY_UNLOCK_RELATION :
@@ -568,8 +620,7 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock a link with an item'),
-                                           $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
                   break;
 
                case self::HISTORY_ADD_SUBITEM :
@@ -577,9 +628,9 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add an item'),
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
-                                                   $data["new_value"]));
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                           $action_label,
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
 
                   break;
 
@@ -588,9 +639,9 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update an item'),
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
-                                                   $data["new_value"]));
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                           $action_label,
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
                   break;
 
                case self::HISTORY_DELETE_SUBITEM :
@@ -598,9 +649,9 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Delete an item'),
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
-                                                   $data["old_value"]));
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                           $action_label,
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["old_value"]));
                   break;
 
                case self::HISTORY_LOCK_SUBITEM :
@@ -608,9 +659,9 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Lock an item'),
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
-                                                   $data["old_value"]));
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                           $action_label,
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["old_value"]));
                   break;
 
                case self::HISTORY_UNLOCK_SUBITEM :
@@ -618,9 +669,9 @@ class Log extends CommonDBTM {
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item2->getTypeName(1);
                   }
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Unlock an item'),
-                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
-                                                   $data["new_value"]));
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'),
+                                           $action_label,
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'], $data["new_value"]));
                   break;
 
                default :
@@ -704,6 +755,466 @@ class Log extends CommonDBTM {
       return $changes;
    }
 
+   /**
+    * Retrieve distinct values for user_name field in item log.
+    * Return is made to be used as select tag options.
+    *
+    * @param CommonDBTM $item  Object instance
+    *
+    * @return array
+    *
+    * @since 9.3
+    **/
+   static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item) {
+      global $DB;
+
+      $itemtype = $item->getType();
+      $items_id = $item->getField('id');
+
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'user_name',
+         'FROM'            => self::getTable(),
+         'WHERE'  => [
+               'items_id'  => $items_id,
+               'itemtype'  => $itemtype
+            ],
+         'ORDER'  => 'id DESC'
+      ]);
+
+      $values = [];
+      while ($data = $iterator->next()) {
+         if (empty($data['user_name'])) {
+            continue;
+         }
+         $values[$data['user_name']] = $data['user_name'];
+      }
+
+      asort($values, SORT_NATURAL | SORT_FLAG_CASE);
+
+      return $values;
+   }
+
+   /**
+    * Retrieve distinct values for affected field in item log.
+    * Return is made to be used as select tag options.
+    *
+    * @param CommonDBTM $item  Object instance
+    *
+    * @return array
+    *
+    * @since 9.3
+    **/
+   static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item) {
+      global $DB;
+
+      $itemtype = $item->getType();
+      $items_id = $item->getField('id');
+
+      $affected_fields = ['linked_action', 'itemtype_link', 'id_search_option'];
+
+      $iterator = $DB->request([
+         'SELECT'  => $affected_fields,
+         'FROM'    => self::getTable(),
+         'WHERE'   => [
+               'items_id'  => $items_id,
+               'itemtype'  => $itemtype
+            ],
+         'GROUPBY' => $affected_fields,
+         'ORDER'   => 'id DESC'
+      ]);
+
+      $values = [];
+      while ($data = $iterator->next()) {
+         $key = null;
+         $value = null;
+
+         // This is an internal device ?
+         if ($data["linked_action"]) {
+            // Yes it is an internal device
+            switch ($data["linked_action"]) {
+               case self::HISTORY_ADD_DEVICE :
+               case self::HISTORY_DELETE_DEVICE :
+               case self::HISTORY_LOCK_DEVICE :
+               case self::HISTORY_UNLOCK_DEVICE :
+               case self::HISTORY_DISCONNECT_DEVICE :
+               case self::HISTORY_CONNECT_DEVICE :
+               case self::HISTORY_ADD_RELATION :
+               case self::HISTORY_DEL_RELATION :
+               case self::HISTORY_LOCK_RELATION :
+               case self::HISTORY_UNLOCK_RELATION :
+               case self::HISTORY_ADD_SUBITEM :
+               case self::HISTORY_UPDATE_SUBITEM :
+               case self::HISTORY_DELETE_SUBITEM :
+               case self::HISTORY_UPDATE_RELATION :
+               case self::HISTORY_LOCK_SUBITEM :
+               case self::HISTORY_UNLOCK_SUBITEM :
+                  $linked_action_values = [
+                     self::HISTORY_ADD_DEVICE,
+                     self::HISTORY_DELETE_DEVICE,
+                     self::HISTORY_LOCK_DEVICE,
+                     self::HISTORY_UNLOCK_DEVICE,
+                     self::HISTORY_DISCONNECT_DEVICE,
+                     self::HISTORY_CONNECT_DEVICE,
+                     self::HISTORY_ADD_RELATION,
+                     self::HISTORY_UPDATE_RELATION,
+                     self::HISTORY_DEL_RELATION,
+                     self::HISTORY_LOCK_RELATION,
+                     self::HISTORY_UNLOCK_RELATION,
+                     self::HISTORY_ADD_SUBITEM,
+                     self::HISTORY_UPDATE_SUBITEM,
+                     self::HISTORY_DELETE_SUBITEM,
+                     self::HISTORY_LOCK_SUBITEM,
+                     self::HISTORY_UNLOCK_SUBITEM,
+                  ];
+                  $key = 'linked_action::' . implode(',', $linked_action_values) . ';'
+                     . 'itemtype_link::' . $data['itemtype_link'] . ';';
+
+                  $dbu = new DbUtils();
+                  if ($linked_item = $dbu->getItemForItemtype($data["itemtype_link"])) {
+                     $value = $linked_item->getTypeName(1);
+                  }
+                  break;
+
+               case self::HISTORY_UPDATE_DEVICE :
+                  $key = 'linked_action::' . self::HISTORY_UPDATE_DEVICE . ';'
+                     . 'itemtype_link::' . $data['itemtype_link'] . ';';
+
+                  $linktype_field = explode('#', $data["itemtype_link"]);
+                  $linktype       = $linktype_field[0];
+                  $field          = $linktype_field[1];
+                  $devicetype     = $linktype::getDeviceType();
+                  $specif_fields  = $linktype::getSpecificities();
+
+                  $value = $devicetype;
+                  if (isset($specif_fields[$field]['short name'])) {
+                     $value .= " (".$specif_fields[$field]['short name'].")";
+                  }
+                  break;
+
+               case self::HISTORY_INSTALL_SOFTWARE :
+               case self::HISTORY_UNINSTALL_SOFTWARE :
+                  $linked_action_values = [
+                     self::HISTORY_INSTALL_SOFTWARE,
+                     self::HISTORY_UNINSTALL_SOFTWARE,
+                  ];
+                  $key = 'linked_action::' . implode(',', $linked_action_values) . ';';
+
+                  $value = _n('Software', 'Software', 1);
+                  break;
+
+               default :
+                  $linked_action_values_to_exclude = [
+                     0, //Exclude lines corresponding to no action.
+                     self::HISTORY_ADD_DEVICE,
+                     self::HISTORY_DELETE_DEVICE,
+                     self::HISTORY_LOCK_DEVICE,
+                     self::HISTORY_UNLOCK_DEVICE,
+                     self::HISTORY_DISCONNECT_DEVICE,
+                     self::HISTORY_CONNECT_DEVICE,
+                     self::HISTORY_ADD_RELATION,
+                     self::HISTORY_UPDATE_RELATION,
+                     self::HISTORY_DEL_RELATION,
+                     self::HISTORY_LOCK_RELATION,
+                     self::HISTORY_UNLOCK_RELATION,
+                     self::HISTORY_ADD_SUBITEM,
+                     self::HISTORY_UPDATE_SUBITEM,
+                     self::HISTORY_DELETE_SUBITEM,
+                     self::HISTORY_LOCK_SUBITEM,
+                     self::HISTORY_UNLOCK_SUBITEM,
+                     self::HISTORY_UPDATE_DEVICE,
+                     self::HISTORY_INSTALL_SOFTWARE,
+                     self::HISTORY_UNINSTALL_SOFTWARE,
+                  ];
+
+                  $key = 'linked_action:NOT:' . implode(',', $linked_action_values_to_exclude) . ';';
+                  $value = __('Others');
+                  break;
+            }
+
+         } else {
+            // It's not an internal device
+            foreach (Search::getOptions($itemtype) as $search_opt_key => $search_opt_val) {
+               if ($search_opt_key == $data["id_search_option"]) {
+                  $key = 'id_search_option::' . $data['id_search_option'] . ';';
+                  $value = $search_opt_val["name"];
+                  break;
+               }
+            }
+         }
+
+         if (null !== $key && null !== $value) {
+            $values[$key] = $value;
+         }
+      }
+
+      uasort(
+         $values,
+         function ($a, $b) {
+            $other = __('Others');
+            if ($a === $other) {
+               return 1;
+            } else if ($b === $other) {
+               return -1;
+            }
+
+            return strcmp($a, $b);
+         }
+      );
+
+      return $values;
+   }
+
+   /**
+    * Retrieve distinct values for action in item log.
+    * Return is made to be used as select tag options.
+    *
+    * @param CommonDBTM $item  Object instance
+    *
+    * @return array
+    *
+    * @since 9.3
+    **/
+   static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item) {
+      global $DB;
+
+      $itemtype = $item->getType();
+      $items_id = $item->getField('id');
+
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'linked_action',
+         'FROM'            => self::getTable(),
+         'WHERE'  => [
+               'items_id'  => $items_id,
+               'itemtype'  => $itemtype
+            ],
+         'ORDER'           => 'id DESC'
+      ]);
+
+      $values = [];
+      while ($data = $iterator->next()) {
+         $key = $data["linked_action"];
+         $value = null;
+
+         // This is an internal device ?
+         if ($data["linked_action"]) {
+            $value = self::getLinkedActionLabel($data["linked_action"]);
+
+            if (null === $value) {
+               $key = 'other';
+               $value = __('Others');
+            }
+         } else {
+            $value = __('Update a field');
+         }
+
+         if (null !== $value) {
+            $values[$key] = $value;
+         }
+      }
+
+      uasort(
+         $values,
+         function ($a, $b) {
+            $other = __('Others');
+            if ($a === $other) {
+               return 1;
+            } else if ($b === $other) {
+               return -1;
+            }
+
+            return strcmp($a, $b);
+         }
+      );
+
+      return $values;
+   }
+
+   /**
+    * Returns label corresponding to the linked action of a log entry.
+    *
+    * @param integer $linked_action  Linked action value of a log entry.
+    *
+    * @return string
+    *
+    * @since 9.3
+    **/
+   static function getLinkedActionLabel($linked_action) {
+      $label = null;
+
+      switch ($linked_action) {
+         case self::HISTORY_CREATE_ITEM :
+            $label = __('Add the item');
+            break;
+
+         case self::HISTORY_DELETE_ITEM :
+            $label = __('Delete the item');
+            break;
+
+         case self::HISTORY_LOCK_ITEM :
+            $label = __('Lock the item');
+            break;
+
+         case self::HISTORY_UNLOCK_ITEM :
+            $label = __('Unlock the item');
+            break;
+
+         case self::HISTORY_RESTORE_ITEM :
+            $label = __('Restore the item');
+            break;
+
+         case self::HISTORY_ADD_DEVICE :
+            $label = __('Add a component');
+            break;
+
+         case self::HISTORY_UPDATE_DEVICE :
+            $label = __('Change a component');
+            break;
+
+         case self::HISTORY_DELETE_DEVICE :
+            $label = __('Delete a component');
+            break;
+
+         case self::HISTORY_LOCK_DEVICE :
+            $label = __('Lock a component');
+            break;
+
+         case self::HISTORY_UNLOCK_DEVICE :
+            $label = __('Unlock a component');
+            break;
+
+         case self::HISTORY_INSTALL_SOFTWARE :
+            $label = __('Install a software');
+            break;
+
+         case self::HISTORY_UNINSTALL_SOFTWARE :
+            $label = __('Uninstall a software');
+            break;
+
+         case self::HISTORY_DISCONNECT_DEVICE :
+            $label = __('Disconnect an item');
+            break;
+
+         case self::HISTORY_CONNECT_DEVICE :
+            $label = __('Connect an item');
+            break;
+
+         case self::HISTORY_ADD_RELATION :
+            $label = __('Add a link with an item');
+            break;
+
+         case self::HISTORY_UPDATE_RELATION :
+            $label = __('Update a link with an item');
+            break;
+
+         case self::HISTORY_DEL_RELATION :
+            $label = __('Delete a link with an item');
+            break;
+
+         case self::HISTORY_LOCK_RELATION :
+            $label = __('Lock a link with an item');
+            break;
+
+         case self::HISTORY_UNLOCK_RELATION :
+            $label = __('Unlock a link with an item');
+            break;
+
+         case self::HISTORY_ADD_SUBITEM :
+            $label = __('Add an item');
+            break;
+
+         case self::HISTORY_UPDATE_SUBITEM :
+            $label = __('Update an item');
+            break;
+
+         case self::HISTORY_DELETE_SUBITEM :
+            $label = __('Delete an item');
+            break;
+
+         case self::HISTORY_LOCK_SUBITEM :
+            $label = __('Lock an item');
+            break;
+
+         case self::HISTORY_UNLOCK_SUBITEM :
+            $label = __('Unlock an item');
+            break;
+
+         case self::HISTORY_LOG_SIMPLE_MESSAGE :
+         default :
+            break;
+      }
+
+      return $label;
+   }
+
+   /**
+    * Convert filters values into SQL filters usable in 'WHERE' condition of request build with 'DBmysqlIterator'.
+    *
+    * @param array $filters  Filters values.
+    *    Filters values must be passed as indexed array using following rules :
+    *     - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
+    *     - 'date' key for a date value in 'Y-m-d H:i:s' format,
+    *     - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
+    *     - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
+    *
+    * @return array
+    *
+    * @since 9.3
+    **/
+   static function convertFiltersValuesToSqlCriteria(array $filters) {
+      $sql_filters = [];
+
+      if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
+         $affected_field_crit = [];
+         foreach ($filters['affected_fields'] as $index => $affected_field) {
+            $affected_field_crit[$index] = ['AND' => []];
+            foreach (explode(";", $affected_field) as $var) {
+               if (1 === preg_match('/^(?P<key>.+):(?P<operator>.*):(?P<values>.+)$/', $var, $matches)) {
+                  $key = $matches['key'];
+                  $operator = $matches['operator'];
+                  // Each field can have multiple values for a given filter
+                  $values = explode(',', $matches['values']);
+
+                  // linked_action and id_search_option are stored as integers
+                  if (in_array($key, ['linked_action', 'id_search_option'])) {
+                     $values = array_map('intval', $values);
+                  }
+
+                  if (!empty($operator)) {
+                     $affected_field_crit[$index]['AND'][$operator][$key] = $values;
+                  } else {
+                     $affected_field_crit[$index]['AND'][$key] = $values;
+                  }
+               }
+            }
+         }
+         $sql_filters[] = [
+            'OR' => $affected_field_crit
+         ];
+      }
+
+      if (isset($filters['date']) && !empty($filters['date'])) {
+         $sql_filters['date_mod'] = ['LIKE', "%{$filters['date']}%"];
+      }
+
+      if (isset($filters['linked_actions']) && !empty($filters['linked_actions'])) {
+         $linked_action_crit = [];
+         foreach ($filters['linked_actions'] as $linked_action) {
+            if ($linked_action === 'other') {
+               $linked_action_crit[] = ['linked_action' => self::HISTORY_LOG_SIMPLE_MESSAGE];
+               $linked_action_crit[] = ['linked_action' => ['>=', self::HISTORY_PLUGIN]];
+            } else {
+               $linked_action_crit[] = ['linked_action' => $linked_action];
+            }
+         }
+         $sql_filters[] = ['OR' => $linked_action_crit];
+      }
+
+      if (isset($filters['users_names']) && !empty($filters['users_names'])) {
+         $sql_filters['user_name'] = $filters['users_names'];
+      }
+
+      return $sql_filters;
+   }
 
    /**
     * Actions done after the ADD of the item in the database
@@ -729,4 +1240,3 @@ class Log extends CommonDBTM {
    }
 
 }
-

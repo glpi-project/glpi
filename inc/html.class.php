@@ -1246,6 +1246,9 @@ class Html {
       // load fuzzy search everywhere
       Html::requireJs('fuzzy');
 
+      // load log filters everywhere
+      Html::requireJs('log_filters');
+
       echo Html::css('css/jquery-glpi.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
@@ -3630,15 +3633,16 @@ class Html {
    /**
     * Print Ajax pager for list in tab panel
     *
-    * @param $title              displayed above
-    * @param $start              from witch item we start
-    * @param $numrows            total items
-    * @param $additional_info    Additional information to display (default '')
-    * @param $display            display if true, return the pager if false
+    * @param string  $title              displayed above
+    * @param integer $start              from witch item we start
+    * @param integer $numrows            total items
+    * @param string  $additional_info    Additional information to display (default '')
+    * @param boolean $display            display if true, return the pager if false
+    * @param string  $additional_params  Additional parameters to pass to tab reload request (default '')
     *
     * @return void|string
    **/
-   static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true) {
+   static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -3667,6 +3671,10 @@ class Html {
          $back = $start-$list_limit;
       }
 
+      if (!empty($additional_params) && strpos($additional_params, '&') !== 0) {
+         $additional_params = '&' . $additional_params;
+      }
+
       $out = '';
       // Print it
       $out .= "<div><table class='tab_cadre_pager'>";
@@ -3677,16 +3685,16 @@ class Html {
 
       // Back and fast backward button
       if (!$start == 0) {
-         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
+         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0$additional_params\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
                 "\" title=\"".__s('Start')."\" class='pointer'></a></th>";
-         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
+         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back$additional_params\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                 "\" title=\"".__s('Previous')."\" class='pointer'></th>";
       }
 
       $out .= "<td width='50%' class='tab_bg_2'>";
-      $out .= self::printPagerForm('', false);
+      $out .= self::printPagerForm('', false, $additional_params);
       $out .= "</td>";
       if (!empty($additional_info)) {
          $out .= "<td class='tab_bg_2'>";
@@ -3701,10 +3709,10 @@ class Html {
 
       // Forward and fast forward button
       if ($forward < $numrows) {
-         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
+         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward$additional_params\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                 "\" title=\"".__s('Next')."\" class='pointer'></a></th>";
-         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
+         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end$additional_params\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
                 "\" title=\"".__s('End')."\" class='pointer'></a></th>";
       }
@@ -3923,14 +3931,19 @@ class Html {
    /**
     * Display the list_limit combo choice
     *
-    * @param $action    page would be posted when change the value (URL + param) (default '')
-    * @param $display   display the pager form if true, return it if false
+    * @param string  $action             page would be posted when change the value (URL + param) (default '')
+    * @param boolean $display            display the pager form if true, return it if false
+    * @param string  $additional_params  Additional parameters to pass to tab reload request (default '')
     *
     * ajax Pager will be displayed if empty
     *
     * @return void|string
    **/
-   static function printPagerForm($action = "", $display = true) {
+   static function printPagerForm($action = "", $display = true, $additional_params = '') {
+
+      if (!empty($additional_params) && strpos($additional_params, '&') !== 0) {
+         $additional_params = '&' . $additional_params;
+      }
 
       $out = '';
       if ($action) {
@@ -3941,7 +3954,7 @@ class Html {
       } else {
          $out .= "<form method='POST' action =''>\n";
          $out .= "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
-         $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)", false);
+         $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"$additional_params\")", false);
       }
       $out .= Html::closeForm(false);
 
@@ -4248,7 +4261,14 @@ class Html {
          $width = $params["width"];
          unset($params["width"]);
       }
+
+      $placeholder = '';
+      if (isset($params["placeholder"])) {
+         $placeholder = "placeholder: ".json_encode($params["placeholder"]).",";
+      }
+
       $js = "$('#$id').select2({
+                  $placeholder
                   width: '$width',
                   dropdownAutoWidth: true,
                   quietMillis: 100,
@@ -5651,6 +5671,9 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.min.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.fullscreen/Leaflet.fullscreen.min.js';
+            break;
+         case 'log_filters':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
             break;
          default:
             $found = false;
