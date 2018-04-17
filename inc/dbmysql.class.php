@@ -1202,4 +1202,16 @@ class DBmysql {
       ];
 
    }
+
+   /**
+    * Get database raw version
+    *
+    * @return string
+    */
+   public function getVersion() {
+      global $DB;
+      $req = $DB->request('SELECT version()')->next();
+      $raw = $req['version()'];
+      return $raw;
+   }
 }

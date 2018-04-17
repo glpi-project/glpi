@@ -1045,6 +1045,14 @@ class Toolbox {
          $error = $suberr;
       }
 
+      //database version check --is it posible?
+      echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing DB engine version')."</td>";
+      $suberr = Config::displayCheckDbEngine();
+      if ($suberr > $error) {
+         $error = $suberr;
+      }
+      echo "</tr>";
+
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
 
