@@ -448,8 +448,55 @@
          minimumResultsForSearch: {{ CFG_GLPI.ajax_limit_count }},
       };
 
-      $(function() {
-         $('.forSelect2:not([data-ajax_url])').select2(
+      var _select2_ajax = Object.assign({
+         ajax: {
+            url: function () {
+               return $(this).data('ajax_url');
+            },
+            dataType: 'json',
+            type: 'POST',
+            data: function (params) {
+               query = params;
+               return {
+      {#
+      foreach ($params as $key => $val) {
+         // Specific boolean case
+         if (is_bool($val)) {
+            $js .= "$key: ".($val?1:0).",\n";
+         } else {
+            $js .= "$key: ".json_encode($val).",\n";
+         }
+      }
+      #}
+                  itemtype: $(this).data('itemtype'),
+                  display_emptychoice: 1,
+                  emptylabel: '-----',
+                  searchText: params.term,
+                  page_limit: {{ CFG_GLPI.dropdown_max }}, // page size
+                  page: params.page || 1, // page number
+                  {#
+condition	08eeb2573550fa16b1bea6fa21840f2089e954f0
+entity_restrict	0
+permit_select_parent	0
+#}
+               };
+            },
+            processResults: function (data, params) {
+               params.page = params.page || 1;
+               var more = (data.count >= {{ CFG_GLPI.dropdown_max }});
+
+               return {
+                  results: data.results,
+                  pagination: {
+                        more: more
+                  }
+               };
+            }
+         }
+      }, _select2_common);
+
+      var _bindSimpleSelect = function(elt) {
+          $(elt).select2(
             Object.assign({
                formatSelection: function(object, container) {
                   text = object.text;
@@ -465,53 +512,12 @@
                  return window[_this.data('change_func')](_this, e);
              }
          });
-         $('.forSelect2[data-ajax_url]').select2(
-            Object.assign({
-               ajax: {
-                  url: function () {
-                     return $(this).data('ajax_url');
-                  },
-                  dataType: 'json',
-                  type: 'POST',
-                  data: function (params) {
-                     query = params;
-                     return {
-            {#
-            foreach ($params as $key => $val) {
-               // Specific boolean case
-               if (is_bool($val)) {
-                  $js .= "$key: ".($val?1:0).",\n";
-               } else {
-                  $js .= "$key: ".json_encode($val).",\n";
-               }
-            }
-            #}
-                        itemtype: $(this).data('itemtype'),
-                        display_emptychoice: 1,
-                        emptylabel: '-----',
-                        searchText: params.term,
-                        page_limit: {{ CFG_GLPI.dropdown_max }}, // page size
-                        page: params.page || 1, // page number
-                        {#
-      condition	08eeb2573550fa16b1bea6fa21840f2089e954f0
-      entity_restrict	0
-      permit_select_parent	0
-#}
-                     };
-                  },
-                  processResults: function (data, params) {
-                     params.page = params.page || 1;
-                     var more = (data.count >= {{ CFG_GLPI.dropdown_max }});
+      }
 
-                     return {
-                        results: data.results,
-                        pagination: {
-                              more: more
-                        }
-                     };
-                  }
-               }
-            }, _select2_common)
+      $(function() {
+        _bindSimpleSelect('.forSelect2:not([data-ajax_url])');
+         $('.forSelect2[data-ajax_url]').select2(
+            _select2_ajax
          ).on("change", function (e) {
              var _this = $(this);
              if (_this.data('change_func')) {

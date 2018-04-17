@@ -357,6 +357,7 @@
 {% endblock %}
 
 {% block javascripts %}
+   {{ parent() }}
    <script type="text/javascript">
       $(function() {
          $('#default_items').on('click', function() {
@@ -379,18 +380,17 @@
                                                             => true,
                                                          'display'
                                                             => false]);#}
-            $('#is_deleted').on('click', function() {
-               //onClick="toogle('is_deleted','','','');
-               //document.forms['searchform{#$_POST["itemtype"]#}'].submit();"
-               toogle('is_deleted','','','');
-               $('form#search_form').submit();
-            });
-            $('#as_map').on('click', function() {
-               toogle('as_map','','','');
-               //document.forms['searchform{#$data["itemtype"]#}'].submit();
-               $('form#search_form').submit();
-            });
+         $('#is_deleted').on('click', function() {
+            //onClick="toogle('is_deleted','','','');
+            //document.forms['searchform{#$_POST["itemtype"]#}'].submit();"
+            toogle('is_deleted','','','');
+            $('form#search_form').submit();
+         });
+         $('#as_map').on('click', function() {
+            toogle('as_map','','','');
+            //document.forms['searchform{#$data["itemtype"]#}'].submit();
+            $('form#search_form').submit();
+         });
       });
    </script>
-   {{ parent() }}
 {% endblock %}
