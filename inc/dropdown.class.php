@@ -1783,7 +1783,7 @@ class Dropdown {
     *    - rand                : specific rand if needed (default is generated one)
     *    - width               : specific width needed (default not set)
     *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
-    *    - display_emptychoice : display empty choice (default false)
+    *    - display_emptychoice : display empty choice, cannot be used when "multiple" option set to true (default false)
     *    - tooltip             : string / message to add as tooltip on the dropdown (default '')
     *    - option_tooltips     : array / message to add as tooltip on the dropdown options. Use the same keys as for the $elements parameter, but none is mandotary. Missing keys will just be ignored and no tooltip will be added. To add a tooltip on an option group, is the '__optgroup_label' key inside the array describing option tooltips : 'optgroupname1' => array('__optgroup_label' => 'tooltip for option group') (default empty)
     *
@@ -1839,7 +1839,7 @@ class Dropdown {
 
       $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
 
-      if ($param["display_emptychoice"]) {
+      if ($param["display_emptychoice"] && !$param["multiple"]) {
          $elements = [ 0 => $param['emptylabel'] ] + $elements;
       }
 
