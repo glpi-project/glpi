@@ -50,7 +50,7 @@ $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($revid);
 $rev = [
    'name'   => $revision->fields['name'],
-   'answer' => Toolbox::unclean_html_cross_side_scripting_deep($revision->fields['answer'])
+   'answer' => Html::entity_decode($revision->fields['answer'])
 ];
 
 echo json_encode($rev);
