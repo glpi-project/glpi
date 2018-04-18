@@ -428,13 +428,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       ob_end_clean();*/
       //end legacy
 
+      var_dump(Search::getCleanedOptions($item->getType()));
       return $this->view->render(
          $response,
          'list.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
             'search_data'  => $data,
             'search_form'  => $search_form,
-            'item'         => $item
+            'item'         => $item,
+            'search_options'  => Search::getCleanedOptions($item->getType())
          ]
       );
    })->setName('list');
