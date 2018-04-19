@@ -28,52 +28,52 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-html.legacy #content .content .ui-dialog { z-index: 1000 !important ;}
-html.legacy #content .content .ui-widget-overlay.glpi_modal { z-index: 2000 !important ;}
-html.legacy #content .content .glpi_modal { z-index: 5000 !important ;}
+.legacy .ui-dialog { z-index: 1000 !important ;}
+.legacy .ui-widget-overlay.glpi_modal { z-index: 2000 !important ;}
+.legacy .glpi_modal { z-index: 5000 !important ;}
 
-html.legacy #content .content .ui-widget-content span.vsubmit, html.legacy #content .content a.vsubmit {color: #8f5a0a;}
+.legacy .ui-widget-content span.vsubmit, .legacy a.vsubmit {color: #8f5a0a;}
 /* css for timepicker */
-html.legacy #content .content .ui-datepicker {width:20em; z-index:10000 !important;}
-html.legacy #content .content .ui-timepicker-div .ui-widget-header {margin-bottom: 8px; }
-html.legacy #content .content .ui-timepicker-div dl { text-align: left; }
-html.legacy #content .content .ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
-html.legacy #content .content .ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
-html.legacy #content .content .ui-timepicker-div td { font-size: 90%; }
-html.legacy #content .content .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+.legacy .ui-datepicker {width:20em; z-index:10000 !important;}
+.legacy .ui-timepicker-div .ui-widget-header {margin-bottom: 8px; }
+.legacy .ui-timepicker-div dl { text-align: left; }
+.legacy .ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.legacy .ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.legacy .ui-timepicker-div td { font-size: 90%; }
+.legacy .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
 
-html.legacy #content .content .ui-timepicker-rtl{ direction: rtl; }
-html.legacy #content .content .ui-timepicker-rtl dl { text-align: right; }
-html.legacy #content .content .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+.legacy .ui-timepicker-rtl{ direction: rtl; }
+.legacy .ui-timepicker-rtl dl { text-align: right; }
+.legacy .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 
-html.legacy #content .content .hasDatepicker {margin-right:3px;}
+.legacy .hasDatepicker {margin-right:3px;}
 
 /* css styles for tabs */
 
-html.legacy #content .content .ui-tabs {
+.legacy .ui-tabs {
    width: 98%;
    margin: auto;
 }
 
-html.legacy #content .content .ui-tabs-vertical {
+.legacy .ui-tabs-vertical {
    width: 98%;
    border: 0;
    vertical-align:top;
 }
-html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav {
+.legacy .ui-tabs-vertical .ui-tabs-nav {
    padding: .2em .1em .2em .2em;
    float: left;
    width: 180px;
    border: 1px solid #cccccc;
 }
-html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li {
+.legacy .ui-tabs-vertical .ui-tabs-nav li {
    clear: left;
    width: 99%;
    border-bottom-width: 1px !important;
    border-right-width: 0 !important;
    margin: 0 -1px .1em -1px;
 }
-html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li a {
+.legacy .ui-tabs-vertical .ui-tabs-nav li a {
    display: block;
    width: 145px;
    text-align: left;
@@ -82,11 +82,11 @@ html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li a {
    overflow: hidden;
 }
 
-html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+.legacy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
    padding-bottom: 0;
    border-right-width: 1px;
 }
-html.legacy #content .content .ui-tabs-vertical .ui-tabs-panel {
+.legacy .ui-tabs-vertical .ui-tabs-panel {
    padding: 1em;
    margin-left: 180px;
    float: center;
@@ -94,8 +94,8 @@ html.legacy #content .content .ui-tabs-vertical .ui-tabs-panel {
 
 /* css styles for progress bar */
 
-html.legacy #content .content .ui-progressbar .ui-progressbar-value { background-image: url('../pics/jquery/pbar-ani.gif'); }
-html.legacy #content .content .doaction_progress_text {
+.legacy .ui-progressbar .ui-progressbar-value { background-image: url('../pics/jquery/pbar-ani.gif'); }
+.legacy .doaction_progress_text {
    float:left;
    color:black;
    text-align:center;
@@ -104,7 +104,7 @@ html.legacy #content .content .doaction_progress_text {
    font-weight:bold;
 }
 
-html.legacy #content .content .ui-autocomplete {
+.legacy .ui-autocomplete {
    max-height: 200px;
    font-size: 11px;
    overflow-y: auto;
@@ -112,15 +112,15 @@ html.legacy #content .content .ui-autocomplete {
    overflow-x: hidden;
 }
 
-html.legacy #content .content .ui-autocomplete a {
+.legacy .ui-autocomplete a {
    color : black;
 }
 
-html.legacy #content .content html .ui-autocomplete {
+.legacy html .ui-autocomplete {
    max-height: 100px;
 }
 
-html.legacy #content .content .ui-widget-content .error {
+.legacy .ui-widget-content .error {
    -moz-border-radius: 10px;
    -webkit-border-radius: 10px;
    -o-border-radius: 10px;
@@ -132,63 +132,63 @@ html.legacy #content .content .ui-widget-content .error {
    padding: .2em;
 }
 
-html.legacy #content .content .ui-widget-content .error {
+.legacy .ui-widget-content .error {
    border-color: red;
 }
 
 /** Select2 v4 */
-html.legacy #content .content .select2-container .select2-selection--single {
+.legacy .select2-container .select2-selection--single {
    height: 22px;
 }
 
-html.legacy #content .content .select2-container--default .select2-selection--single .select2-selection__rendered {
+.legacy .select2-container--default .select2-selection--single .select2-selection__rendered {
    line-height: 22px;
    font-weight: normal;
    font-size: 11px;
 }
 
-html.legacy #content .content .select2-container--default .select2-selection--single .select2-selection__arrow {
+.legacy .select2-container--default .select2-selection--single .select2-selection__arrow {
    height: 18px;
 }
 
-html.legacy #content .content .select2-container--default .select2-selection--single {
+.legacy .select2-container--default .select2-selection--single {
    border: 1px solid #D3D3D3;
    overflow: hidden;
 }
 
-html.legacy #content .content .select2-results__option {
+.legacy .select2-results__option {
    padding: 3px 6px;
 }
 
-html.legacy #content .content .select2-rendered__match {
+.legacy .select2-rendered__match {
    text-decoration: underline;
 }
 
-html.legacy #content .content .select2-container--default .select2-selection--multiple .select2-selection__choice {
+.legacy .select2-container--default .select2-selection--multiple .select2-selection__choice {
    padding: 4px 8px;
 }
 
-html.legacy #content .content .select2-container--default .select2-search--inline .select2-search__field {
+.legacy .select2-container--default .select2-search--inline .select2-search__field {
    border: 0!important;
 }
 
-html.legacy #content .content .select2-selection__choice > * {
+.legacy .select2-selection__choice > * {
    vertical-align: middle;
 }
 
-html.legacy #content .content .select2-container {
+.legacy .select2-container {
    max-width: 500px;
    word-break: break-all;
    font-size: 11px;
    margin-right: .5em;
 }
 
-html.legacy #content .content .select2-search--dropdown .select2-search__field {
+.legacy .select2-search--dropdown .select2-search__field {
    padding: 0 4px;
 }
 
 /** left-ellipsis stuff... */
-html.legacy #content .content .select2-selection.select2-selection--single {
+.legacy .select2-selection.select2-selection--single {
    min-width: 72px;
    position: relative;
    text-overflow: clip;
@@ -199,7 +199,7 @@ html.legacy #content .content .select2-selection.select2-selection--single {
    padding-left: 1em;
    max-width: 270px;
 }
-html.legacy #content .content .select2-selection.select2-selection--single:before {
+.legacy .select2-selection.select2-selection--single:before {
    content: '\02026';
    position: absolute;
    z-index: 1;
@@ -213,7 +213,7 @@ html.legacy #content .content .select2-selection.select2-selection--single:befor
    padding-right: .1em;
 }
 
-html.legacy #content .content .select2-selection.select2-selection--single .select2-selection__rendered {
+.legacy .select2-selection.select2-selection--single .select2-selection__rendered {
    min-width: 100%;
    position: relative;
    display: inline-block;
@@ -225,7 +225,7 @@ html.legacy #content .content .select2-selection.select2-selection--single .sele
    padding-right: 26px;
    box-sizing: border-box;
 }
-html.legacy #content .content .select2-selection.select2-selection--single .select2-selection__rendered:before {
+.legacy .select2-selection.select2-selection--single .select2-selection__rendered:before {
    content: '';
    position: absolute;
    display: inline-block;
@@ -241,58 +241,58 @@ html.legacy #content .content .select2-selection.select2-selection--single .sele
 
 /* SELECT2 */
 
-html.legacy #content .content .ui-widget input, html.legacy #content .content .ui-widget select, html.legacy #content .content .ui-widget textarea, html.legacy #content .content .ui-widget button
+.legacy .ui-widget input, .legacy .ui-widget select, .legacy .ui-widget textarea, .legacy .ui-widget button
 {
   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
   font-size: 11px;
 }
-html.legacy #content .content .select2-results li {
+.legacy .select2-results li {
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
    font-size: 11px;
 }
-html.legacy #content .content .select2-search input {
+.legacy .select2-search input {
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
    font-size: 11px;
 }
 
-html.legacy #content .content .select2-container .select2-choice {
+.legacy .select2-container .select2-choice {
     height: 22px;
     padding: 0 0 0 8px;
     font-weight: normal;
     margin-top: 0px;
     vertical-align: top;
 }
-html.legacy #content .content .select2-container .select2-choice span {
+.legacy .select2-container .select2-choice span {
     margin-top: -2px;
     /* to have cut on left : not working reverse display for simple items*/
     /*direction: rtl;*/
 }
 
-html.legacy #content .content .select2-container .select2-choice div b {
+.legacy .select2-container .select2-choice div b {
     margin-top: -2px;
 }
-html.legacy #content .content #show_validator_field .select2-container{
+.legacy #show_validator_field .select2-container{
   width: 60%;
 }
-html.legacy #content .content .select2-results ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-html.legacy #content .content .select2-results ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-html.legacy #content .content .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-html.legacy #content .content .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-html.legacy #content .content .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-html.legacy #content .content .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
-html.legacy #content .content .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
+.legacy .select2-results ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
+.legacy .select2-results ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
+.legacy .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
+.legacy .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
+.legacy .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
+.legacy .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
+.legacy .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
 
 /* Menu actions*/
-html.legacy #content .content .select2-actionable-menu {
+.legacy .select2-actionable-menu {
    width: 80%;
    margin:auto;
 }
 
-html.legacy #content .content input.submit {
+.legacy input.submit {
    font-size : 12px;
 }
 
-html.legacy #content .content .uploadbar {
+.legacy .uploadbar {
    height: 18px;
    text-align: center;
    font-weight:bold;
@@ -301,20 +301,20 @@ html.legacy #content .content .uploadbar {
 
 /* GANTT diagram */
 
-html.legacy #content .content .fn-gantt {
+.legacy .fn-gantt {
    text-align: left;
    font-size: 11px;
 }
 
-html.legacy #content .content .fn-gantt .ganttMilestone {
+.legacy .fn-gantt .ganttMilestone {
     background-color: #000000;
 }
 
 /** select2 disabled **/
-html.legacy #content .content .select2-container.select2-container-disabled .select2-choice,
-html.legacy #content .content .select2-container.select2-container-disabled .select2-choice .select2-arrow {
+.legacy .select2-container.select2-container-disabled .select2-choice,
+.legacy .select2-container.select2-container-disabled .select2-choice .select2-arrow {
    background-color: #f4f4f4 !important;
 }
-html.legacy #content .content .select2-container.select2-container-disabled .select2-choice {
+.legacy .select2-container.select2-container-disabled .select2-choice {
    border: 1px solid #ddd !important;
 }

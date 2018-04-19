@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  #}
 {% extends "glpi_page.twig" %}
-{% block html_class %} legacy{% endblock %}
+{% set is_legacy = true %}
 
 {% block content %}
 <div class="content">
@@ -39,18 +39,10 @@
 </div>
 {% endblock %}
 
-{% block head %}
-   {% set css_paths = css_paths|default([])|merge([
-      '../lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css',
-      'public/css/glpi-legacy.css',
-      'public/css/glpi-legacy-jquery.css'
-   ]) %}
-   {{ parent() }}
-{% endblock %}
-
-{% block javascripts %}
+{#Not sure this is still usefull#}
+{#% block javascripts %}
    {% set js_paths = js_paths|default([])|merge([
       '../lib/jquery/js/jquery-ui-1.10.4.custom.js'
    ]) %}
    {{ parent() }}
-{% endblock %}
+{% endblock %#}

@@ -52,32 +52,32 @@ body.iframed {
    background: inherit;
 }
 
-html.legacy #content .content ul,
-html.legacy #content .content li,
-html.legacy #content .content dt,
-html.legacy #content .content dl,
-html.legacy #content .content dd,
-html.legacy #content .content form,
-html.legacy #content .content img,
-html.legacy #content .content input {
+.legacy ul,
+.legacy li,
+.legacy dt,
+.legacy dl,
+.legacy dd,
+.legacy form,
+.legacy img,
+.legacy input {
    margin: 0;
    padding: 0;
 }
 
-html.legacy #content .content ul {
+.legacy ul {
    list-style-type: none;
 }
 
-html.legacy #content .content span.invisible {
+.legacy span.invisible {
    visibility: hidden;
 }
 
-html.legacy #content .content .starthidden {
+.legacy .starthidden {
    display: none;
 }
 
 /* separateur pour rétablir les comportements de block */
-html.legacy #content .content div.sep {
+.legacy div.sep {
    font-size: 1px;
    height: 1px;
    padding: 0;
@@ -85,146 +85,146 @@ html.legacy #content .content div.sep {
    clear: both;
 }
 
-html.legacy #content .content img {
+.legacy img {
    border: 0;
 }
 
-html.legacy #content .content small {
+.legacy small {
    font-family: verdana;
    font-size: 10px;
 }
 
-html.legacy #content .content sup {
+.legacy sup {
    vertical-align: baseline;
    position: relative;
    top: -0.4em;
 }
 
-html.legacy #content .content .big {
+.legacy .big {
    font-size: 14px;
 }
 
-html.legacy #content .content .b {
+.legacy .b {
    font-weight: bold;
 }
 
-html.legacy #content .content .center {
+.legacy .center {
    text-align:center;
 }
 
-html.legacy #content .content .left {
+.legacy .left {
    text-align:left;
 }
 
-html.legacy #content .content .right {
+.legacy .right {
    text-align:right !important;
 }
 
-html.legacy #content .content .floatright {
+.legacy .floatright {
    position: relative;
    float: right;
 }
 
-html.legacy #content .content .floatleft {
+.legacy .floatleft {
    position: relative;
    float: left;
 }
 
-html.legacy #content .content .nofloat {
+.legacy .nofloat {
    float: none!important;
 }
 
-html.legacy #content .content .center-h {
+.legacy .center-h {
    margin:auto;
 }
 
-html.legacy #content .content .middle {
+.legacy .middle {
    vertical-align:middle;
 }
 
-html.legacy #content .content .bottom {
+.legacy .bottom {
    vertical-align:bottom;
 }
 
-html.legacy #content .content .top {
+.legacy .top {
    vertical-align:top;
 }
 
-html.legacy #content .content .relative {
+.legacy .relative {
    position: relative;
 }
 
 
-html.legacy #content .content .red {
+.legacy .red {
    color:red;
 }
 
-html.legacy #content .content .blue {
+.legacy .blue {
    color:blue;
 }
 
-html.legacy #content .content .green {
+.legacy .green {
    color:green;
 }
 
-html.legacy #content .content .yellow {
+.legacy .yellow {
    color:yellow;
 }
 
 
-html.legacy #content .content .deleted {
+.legacy .deleted {
    background-color:#cf9b9b;
 }
 
-html.legacy #content .content .separ {
+.legacy .separ {
    clear: both;
    visibility: hidden;
 }
 
-html.legacy #content .content a, html.legacy #content .content a:link {
+.legacy a, .legacy a:link {
    font-weight: bold;
    text-decoration: none;
    font-size : 11px;
 }
 
-html.legacy #content .content a.fa, html.legacy #content .content a.fa:link {
+.legacy a.fa, .legacy a.fa:link {
    font-size: inherit;
    font-weight: normal;
 }
-html.legacy #content .content #page a.fa, html.legacy #content .content #page a.fa:link, html.legacy #content .content a .fa {
+.legacy #page a.fa, .legacy #page a.fa:link, .legacy a .fa {
    color: #222;
 }
 
-html.legacy #content .content a:hover {
+.legacy a:hover {
    color: black;
 }
 
-html.legacy #content .content hr {
+.legacy hr {
    border: 1px solid #cccccc;
 }
 
 
-html.legacy #content .content .pointer {
+.legacy .pointer {
    cursor:pointer;
 }
 
 
-html.legacy #content .content .pager_controls {
+.legacy .pager_controls {
    margin-left: .5em;
 }
 
-html.legacy #content .content .pager_controls .fa.pointer {
+.legacy .pager_controls .fa.pointer {
    font-size: 1.7em;
 }
-html.legacy #content .content .pager_controls label span.fa {
+.legacy .pager_controls label span.fa {
    margin-right: 1em;
 }
 
-html.legacy #content .content .invisible {
+.legacy .invisible {
    display: none;
 }
 
-html.legacy #content .content .unselectable {
+.legacy .unselectable {
    -moz-user-select: none;
    -o-user-select: none;
    -khtml-user-select: none;
@@ -309,7 +309,7 @@ html.legacy #content .content .unselectable {
 
 /* ################--------------- Tabs ---------------#################### */
 
-html.legacy #content .content .alltab {
+.legacy .alltab {
    font-size:14px;
    text-align:center;
    padding: 10px;
@@ -319,13 +319,13 @@ html.legacy #content .content .alltab {
 
 /* ################--------------- Page ---------------#################### */
 
-html.legacy #content .content #page {
+.legacy #page {
    padding: 8px 8px 20px 8px;
    min-height: 80%;
    margin: 15px auto;
 }
 
-html.legacy #content .content #page form {
+.legacy #page form {
    font-size: 12px;
    margin:0;
    margin-bottom:5px;
@@ -335,16 +335,16 @@ html.legacy #content .content #page form {
 
 /* ################--------------- form ---------------#################### */
 
-html.legacy #content .content option {
+.legacy option {
    border:1px solid #ccc;
    background-color:#ffffff;
 }
 
-html.legacy #content .content .submit {
+.legacy .submit {
    text-align:center;
 }
 
-html.legacy #content .content select {
+.legacy select {
    font-size: 11px;
    color: black;
    background-color: white;
@@ -352,92 +352,92 @@ html.legacy #content .content select {
   border: 1px solid #bbb;
 }
 
-html.legacy #content .content textarea, html.legacy #content .content input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field) {
+.legacy textarea, .legacy input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field) {
    border: 1px solid #D3D3D3;
    font-size: 11px;
    border-radius: 3px;
    padding: 0 5px;
 }
-html.legacy #content .content textarea, html.legacy #content .content input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
+.legacy textarea, .legacy input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
    background-color:#FCFCFC;
    color: black;
 }
 
-html.legacy #content .content textarea:focus, html.legacy #content .content input:focus {
+.legacy textarea:focus, .legacy input:focus {
    border: 1px solid #5897fb;
 }
 
-html.legacy #content .content input {
+.legacy input {
    height: 17px;
    vertical-align: middle;
 }
 
-html.legacy #content .content input:required, html.legacy #content .content .mce-edit-area.required {
+.legacy input:required, .legacy .mce-edit-area.required {
    border:1px rgba(255, 0, 0, .6) solid!important;
    border-left-width: 3px!important;
    padding-right: 0!important;
    box-shadow: none;
 }
 
-html.legacy #content .content input:required:valid {
+.legacy input:required:valid {
    border: 1px solid RGB(211, 211, 211) !important;
 }
 
-html.legacy #content .content span.required {
+.legacy span.required {
    color: red;
    margin-left: .2em;
 }
 
-html.legacy #content .content .no-wrap {
+.legacy .no-wrap {
    white-space: nowrap;
 }
 
-html.legacy #content .content .ui-datepicker-trigger {
+.legacy .ui-datepicker-trigger {
    cursor: pointer;
 }
 
-html.legacy #content .content .ui-datepicker {
+.legacy .ui-datepicker {
    background: #F3F3F3;
 }
 
-html.legacy #content .content .ui-datepicker .ui-state-default  {
+.legacy .ui-datepicker .ui-state-default  {
    background: #FFF;
 }
 
-html.legacy #content .content .ui-datepicker .ui-state-active  {
+.legacy .ui-datepicker .ui-state-active  {
    background: #CCC;
 }
 
-html.legacy #content .content .form-group-checkbox {
+.legacy .form-group-checkbox {
    position:relative;
    width: 16px;
    height: 16px;
    margin: 0 auto;
    display: inline-block;
 }
-html.legacy #content .content th .form-group-checkbox {
+.legacy th .form-group-checkbox {
    margin: 4px auto;
 }
 
-html.legacy #content .content .label-checkbox {
+.legacy .label-checkbox {
    cursor:pointer;
    width: 16px;
    height: 16px;
    display: block;
 }
 
-html.legacy #content .content .label-checkbox span {
+.legacy .label-checkbox span {
    display:block;
    position:absolute;
    left:0;
    -webkit-transition-duration:0.2s; -moz-transition-duration:0.2s; transition-duration:0.2s;
 }
 
-html.legacy #content .content input[type=checkbox].new_checkbox {
+.legacy input[type=checkbox].new_checkbox {
    display:none;
 }
 
-html.legacy #content .content .label-checkbox .box {
+.legacy .label-checkbox .box {
    top: -2px;
    background-color: #E6E6E6;
    border-radius: 3px;
@@ -445,13 +445,13 @@ html.legacy #content .content .label-checkbox .box {
    width:16px;
 }
 
-html.legacy #content .content .subheader .box,
-html.legacy #content .content th .label-checkbox .box {
+.legacy .subheader .box,
+.legacy th .label-checkbox .box {
    background-color: #D0D0D0;
    border:0;
 }
 
-html.legacy #content .content .label-checkbox .check {
+.legacy .label-checkbox .check {
    top: -5px;
    left: 4px;
    width: 8px;
@@ -463,11 +463,11 @@ html.legacy #content .content .label-checkbox .check {
    -webkit-transform:rotate(180deg); -moz-transform:rotate(180deg); transform:rotate(180deg);
 }
 
-html.legacy #content .content input[type=checkbox]:checked ~ .label-checkbox .box {
+.legacy input[type=checkbox]:checked ~ .label-checkbox .box {
    opacity:0;
 }
 
-html.legacy #content .content input[type=checkbox]:checked ~ .label-checkbox .check {
+.legacy input[type=checkbox]:checked ~ .label-checkbox .check {
    opacity:1;
    -webkit-transform   :scale(1) rotate(45deg);
    -moz-transform      :scale(1) rotate(45deg);
@@ -475,19 +475,19 @@ html.legacy #content .content input[type=checkbox]:checked ~ .label-checkbox .ch
 }
 
 
-html.legacy #content .content input[type="image"] {
+.legacy input[type="image"] {
    height: auto;
    background-color: transparent;
    border: 0;
 }
 
-html.legacy #content .content input[type="file"] {
+.legacy input[type="file"] {
    height: 22px;
    border: 1px solid #CCC;
 }
 
-html.legacy #content .content input.submit,
-html.legacy #content .content span.vsubmit, a.vsubmit {
+.legacy input.submit,
+.legacy span.vsubmit, a.vsubmit {
    padding: 5px;
    cursor:pointer;
    height: auto;
@@ -499,46 +499,46 @@ html.legacy #content .content span.vsubmit, a.vsubmit {
    display: inline-block;
 }
 
-html.legacy #content .content input.submit:hover,
-html.legacy #content .content a.vsubmit:hover {
+.legacy input.submit:hover,
+.legacy a.vsubmit:hover {
    opacity: .9;
    box-shadow: 0px 1px 1px #999;
 }
 
-html.legacy #content .content input.submit[type=reset] {
+.legacy input.submit[type=reset] {
    background-color: transparent;
    margin-left: .5em;
 }
 
-html.legacy #content .content #page .mce-fullscreen {
+.legacy #page .mce-fullscreen {
    top: 105px;
 }
 
-html.legacy #content .content #page .mce-btn-group:not(:first-child) {
+.legacy #page .mce-btn-group:not(:first-child) {
    border-left: 1px solid #d9d9d9;
    padding-left: 0;
    margin-left: 0;
 }
 
 
-html.legacy #content .content .entity_select:hover {
+.legacy .entity_select:hover {
    opacity: .6;
 }
 
-html.legacy #content .content .tree {
+.legacy .tree {
    width:100%;
    border:0;
    border-bottom:1px solid #C0CAD4;
 }
 
-html.legacy #content .content .jstree.jstree-classic ins {
+.legacy .jstree.jstree-classic ins {
     background-image: url("../pics/d.png");
 }
 
-html.legacy #content .content .jstree .jstree-node:not(.jstree-leaf) {
+.legacy .jstree .jstree-node:not(.jstree-leaf) {
    position: relative;
 }
-html.legacy #content .content .jstree .jstree-node:not(.jstree-leaf) > a > i:last-child {
+.legacy .jstree .jstree-node:not(.jstree-leaf) > a > i:last-child {
    content: ' ';
    height: 10px;
    width: 10px;
@@ -549,107 +549,107 @@ html.legacy #content .content .jstree .jstree-node:not(.jstree-leaf) > a > i:las
    cursor: pointer;
 }
 
-html.legacy #content .content .treeroot {
+.legacy .treeroot {
    width:100%;
    background: url("../pics/treeroot.png") 0 2px no-repeat;
    border:0;
    font-weight:bold;
 }
 
-html.legacy #content .content .tree:hover{
+.legacy .tree:hover{
    background-color:#eeeeee;
 }
 
-html.legacy #content .content .treeroot:hover{
+.legacy .treeroot:hover{
    background-color:#eeeeee;
 }
 
-html.legacy #content .content .pointer {
+.legacy .pointer {
    opacity: .7;
 }
 
-html.legacy #content .content .pointer:hover {
+.legacy .pointer:hover {
    opacity: 1;
 }
 
-html.legacy #content .content .pointer.disabled:hover,
-html.legacy #content .content .pointer.disabled {
+.legacy .pointer.disabled:hover,
+.legacy .pointer.disabled {
    opacity: .3;
 }
 
-html.legacy #content .content #page .protected {
+.legacy #page .protected {
    padding-right: 50px;
 }
 
-html.legacy #content .content #page .disclosablefield {
+.legacy #page .disclosablefield {
    position: relative;
 }
 
-html.legacy #content .content #page .disclosablefield span {
+.legacy #page .disclosablefield span {
    position: absolute;
    right: 0;
    top: 0;
 }
 
 /* ################--------------- Layout  ---------------#################### */
-.layout_classic.form html.legacy #content .content div.navigationheader,
-.layout_vsplit.form html.legacy #content .content div.navigationheader {
+.layout_classic.form .legacy div.navigationheader,
+.layout_vsplit.form .legacy div.navigationheader {
    margin: 0 auto 10px;
    width: 90%;
 }
 
-.layout_classic.form html.legacy #content .content .main_form,
-.layout_vsplit.form html.legacy #content .content .main_form {
+.layout_classic.form .legacy .main_form,
+.layout_vsplit.form .legacy .main_form {
    width: 950px;
    margin: 0 auto;
 }
 
-.layout_classic.form html.legacy #content .content div.ui-tabs,
-.layout_vsplit.form html.legacy #content .content div.ui-tabs {
+.layout_classic.form .legacy div.ui-tabs,
+.layout_vsplit.form .legacy div.ui-tabs {
    width: 950px;
 }
 
-.layout_classic.form html.legacy #content .content div.ui-tabs-panel,
-.layout_vsplit.form html.legacy #content .content div.ui-tabs-panel {
+.layout_classic.form .legacy div.ui-tabs-panel,
+.layout_vsplit.form .legacy div.ui-tabs-panel {
   padding: 1px;
 }
 
-html.legacy #content .content .ui-tabs-paging-disabled {
+.legacy .ui-tabs-paging-disabled {
    display: none;
 }
 
-html.legacy #content .content .ui-tabs-paging-prev,
-html.legacy #content .content .ui-tabs-paging-next {
+.legacy .ui-tabs-paging-prev,
+.legacy .ui-tabs-paging-next {
    height: 25px;
    width: 12px;
    padding: 0 !important;
 }
 
-.layout_classic.form html.legacy #content .content div.ui-tabs-panel{
+.layout_classic.form .legacy div.ui-tabs-panel{
    padding-top: 5px;
 }
 
-.layout_vsplit html.legacy #content .content #backtotop {
+.layout_vsplit .legacy #backtotop {
    display: none;
 }
 
-.layout_lefttab html.legacy #content .content .ui-tabs,
-.layout_classic html.legacy #content .content .ui-tabs,
-.layout_vsplit html.legacy #content .content .ui-tabs {
+.layout_lefttab .legacy .ui-tabs,
+.layout_classic .legacy .ui-tabs,
+.layout_vsplit .legacy .ui-tabs {
    border: 0;
 }
 
-html.legacy #content .content .ui-tabs {
+.legacy .ui-tabs {
    background: #FFF repeat-x top left;
    box-shadow: 0px 1px 1px #7F7979;
    width: 90%;
 }
 
-html.legacy #content .content .ui-tabs-anchor {
+.legacy .ui-tabs-anchor {
    height: 18px;
 }
 
-html.legacy #content .content .ui-tabs sup.tab_nb {
+.legacy .ui-tabs sup.tab_nb {
    border-radius: 50%;
    background-color: #FFF;
    min-width: 18px;
@@ -662,71 +662,71 @@ html.legacy #content .content .ui-tabs sup.tab_nb {
    margin-right: -5px;
 }
 
-.layout_lefttab html.legacy #content .content .ui-tabs sup.tab_nb {
+.layout_lefttab .legacy .ui-tabs sup.tab_nb {
    position: absolute;
    right: 8px;
    top: 5px;
 }
 
-html.legacy #content .content .ui-tabs .alltab sup.tab_nb {
+.legacy .ui-tabs .alltab sup.tab_nb {
    position: relative;
    top: 0;
    right: 0;
    background-color: #F1F1F1;
 }
 
-html.legacy #content .content .ui-tabs .ui-state-active sup.tab_nb {
+.legacy .ui-tabs .ui-state-active sup.tab_nb {
    background-color: #E6E6E6;
 }
 
 
-.layout_vsplit.form html.legacy #content .content .ui-tabs {
+.layout_vsplit.form .legacy .ui-tabs {
    height: 100%;
    width: 100%;
    padding: 0;
 }
 
 
-html.legacy #content .content .debug .ui-tabs-nav,
-.layout_lefttab html.legacy #content .content .ui-tabs-nav {
+.legacy .debug .ui-tabs-nav,
+.layout_lefttab .legacy .ui-tabs-nav {
    margin: 5px !important;
    box-sizing: border-box;
 }
-html.legacy #content .content .debug .ui-tabs-nav,
-.layout_lefttab html.legacy #content .content .ui-tabs-nav,
-.layout_classic html.legacy #content .content .ui-tabs-nav,
-.layout_vsplit html.legacy #content .content .ui-tabs-nav {
+.legacy .debug .ui-tabs-nav,
+.layout_lefttab .legacy .ui-tabs-nav,
+.layout_classic .legacy .ui-tabs-nav,
+.layout_vsplit .legacy .ui-tabs-nav {
    border: 0;
    background: none;
 }
 
-.layout_classic.form html.legacy #content .content .stNavMain li,
-.layout_vsplit.form html.legacy #content .content .stNavMain li {
+.layout_classic.form .legacy .stNavMain li,
+.layout_vsplit.form .legacy .stNavMain li {
    border: 1px solid #d3d3d3 !important;
    border-bottom: none !important;
 }
 
-html.legacy #content .content .main_form {
+.legacy .main_form {
    background-color: #FFF;
    box-shadow: 0px 1px 2px 1px #D2D2D2;
 }
 
-html.legacy #content .content .main_form .actor_title,
-html.legacy #content .content .main_form tr:not(.headerRow):not(.footerRow) th:not(.actor-th) {
+.legacy .main_form .actor_title,
+.legacy .main_form tr:not(.headerRow):not(.footerRow) th:not(.actor-th) {
    text-align: right;
 }
 
-html.legacy #content .content .main_form tr.headerRow th {
+.legacy .main_form tr.headerRow th {
    border-bottom: 1px solid #EFEFEF;
    font-size: 1.5em;
    padding: 8px 0;
 }
 
 
-.layout_lefttab html.legacy #content .content .new_form_tabs .ui-tabs-nav {
+.layout_lefttab .legacy .new_form_tabs .ui-tabs-nav {
    width: 100%;
 }
-.layout_lefttab html.legacy #content .content .new_form_tabs .ui-tabs-panel {
+.layout_lefttab .legacy .new_form_tabs .ui-tabs-panel {
    margin: 0;
    clear: both;
 }
@@ -740,7 +740,7 @@ html.legacy #content .content .main_form tr.headerRow th {
       overflow: hidden;
    }*/
 
-   .layout_vsplit html.legacy #content .content #page {
+   .layout_vsplit .legacy #page {
       max-width: inherit;
       min-height: 0;
       position: absolute;
@@ -751,41 +751,41 @@ html.legacy #content .content .main_form tr.headerRow th {
       overflow: auto;
    }
 
-   .layout_vsplit.form html.legacy #content .content #page {
+   .layout_vsplit.form .legacy #page {
       overflow: hidden;
    }
 
-   .layout_vsplit html.legacy #content .content #page .glpi_tabs {
+   .layout_vsplit .legacy #page .glpi_tabs {
       height: 96%;
       position: relative;
       z-index:1;
    }
 
-   .layout_vsplit html.legacy #content .content #page .main_form.create_form {
+   .layout_vsplit .legacy #page .main_form.create_form {
       width: 950px;
       margin: 0 auto;
    }
 
-   .layout_vsplit.form html.legacy #content .content table.tab_cadre_pager,
-   .layout_vsplit.form html.legacy #content .content table.tab_cadre_fixe,
-   .layout_vsplit.form html.legacy #content .content table.tab_cadre_fixehov,
-   .layout_vsplit.form html.legacy #content .content .dates_timelines {
+   .layout_vsplit.form .legacy table.tab_cadre_pager,
+   .layout_vsplit.form .legacy table.tab_cadre_fixe,
+   .layout_vsplit.form .legacy table.tab_cadre_fixehov,
+   .layout_vsplit.form .legacy .dates_timelines {
       width: 100%;
       margin: 0;
    }
 
-   .layout_vsplit html.legacy #content .content div.navigationheader,
-   .layout_vsplit.form html.legacy #content .content table.tab_cadre_pager {
+   .layout_vsplit .legacy div.navigationheader,
+   .layout_vsplit.form .legacy table.tab_cadre_pager {
       margin: 0;
       border: 0;
       min-width: 150px;
    }
 
-   .layout_vsplit.form html.legacy #content .content .ui-tabs-panel table.tab_cadre_pager {
+   .layout_vsplit.form .legacy .ui-tabs-panel table.tab_cadre_pager {
       width: 100%;
    }
 
-  .layout_vsplit.form html.legacy #content .content .form_content {
+  .layout_vsplit.form .legacy .form_content {
       position: relative;
       width: 46%;
       float: left;
@@ -793,7 +793,7 @@ html.legacy #content .content .main_form tr.headerRow th {
       z-index:2;
    }
 
-   .layout_vsplit.form html.legacy #content .content div.main_form:not(.no_tab) {
+   .layout_vsplit.form .legacy div.main_form:not(.no_tab) {
       width: 100%;
       margin: 0 15px;
       overflow-x: hidden;
@@ -803,13 +803,13 @@ html.legacy #content .content .main_form tr.headerRow th {
       bottom: 0;
    }
 
-   .layout_classic html.legacy #content .content #tabspanel + div.ui-tabs:not(.horizontal),
-   .layout_vsplit html.legacy #content .content #tabspanel + div.ui-tabs {
+   .layout_classic .legacy #tabspanel + div.ui-tabs:not(.horizontal),
+   .layout_vsplit .legacy #tabspanel + div.ui-tabs {
       height: 100%;
       /*bottom: 10px;*/
       box-sizing:border-box;
    }
-   .layout_vsplit.form html.legacy #content .content #tabspanel + div.ui-tabs:not(.horizontal) {
+   .layout_vsplit.form .legacy #tabspanel + div.ui-tabs:not(.horizontal) {
       width: 50% !important;
       margin: 0 15px;
       float: right;
@@ -817,7 +817,7 @@ html.legacy #content .content .main_form tr.headerRow th {
       box-shadow: 0px 1px 2px 1px #D2D2D2;
    }
 
-   .layout_vsplit.form html.legacy #content .content .ui-tabs {
+   .layout_vsplit.form .legacy .ui-tabs {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -837,59 +837,59 @@ html.legacy #content .content .main_form tr.headerRow th {
       box-sizing: border-box;
    }
 
-   .layout_vsplit html.legacy #content .content .ui-tabs-panel .tab_cadre_fixehov th {
+   .layout_vsplit .legacy .ui-tabs-panel .tab_cadre_fixehov th {
       background-color: #E6E6E6;
    }
 
-   .layout_vsplit.form html.legacy #content .content .main_form input[type=text]:not([size]) {
+   .layout_vsplit.form .legacy .main_form input[type=text]:not([size]) {
       width:74%;
       min-width: 175px;
    }
-   .layout_vsplit.form html.legacy #content .content .main_form textarea {
+   .layout_vsplit.form .legacy .main_form textarea {
       resize: vertical;
       width:97%;
       min-height: 125px;
    }
 
-   .layout_vsplit.form html.legacy #content .content input.submit,
-   .layout_vsplit.form html.legacy #content .content span.vsubmit,
-   .layout_vsplit.form html.legacy #content .content a.vsubmit {
+   .layout_vsplit.form .legacy input.submit,
+   .layout_vsplit.form .legacy span.vsubmit,
+   .layout_vsplit.form .legacy a.vsubmit {
       white-space: nowrap;
    }
-   .layout_vsplit.form html.legacy #content .content .boxnote {
+   .layout_vsplit.form .legacy .boxnote {
       width: 100%;
    }
 
-   .layout_vsplit html.legacy #content .content .debug:not(.debug_ajax),
+   .layout_vsplit .legacy .debug:not(.debug_ajax),
    .layout_vsplit #footer {
       position: absolute;
       bottom: 0;
       width: 100%;
       z-index: 3;
    }
-   .layout_vsplit html.legacy #content .content .debug_ajax {
+   .layout_vsplit .legacy .debug_ajax {
       width: 100% !important;
    }
 }
 
 
 /* ################--------------- Table  ---------------#################### */
-html.legacy #content .content table {
+.legacy table {
    font-size: 11px;
    /* Probem WIth EXTJS calendar -> to sons*/
    /*margin: 0 auto;*/
    border:0;
 }
 
-html.legacy #content .content th { }
+.legacy th { }
 
-html.legacy #content .content td { }
+.legacy td { }
 
-html.legacy #content .content .tab_glpi {
+.legacy .tab_glpi {
    margin: 0 auto;
 }
 
-html.legacy #content .content .tab_cadre {
+.legacy .tab_cadre {
    margin: 0 auto;
    z-index:1;
    text-align: left;
@@ -899,7 +899,7 @@ html.legacy #content .content .tab_cadre {
    box-shadow: 0px 1px 2px 1px #999;
 }
 
-html.legacy #content .content .tab_cadre_central {
+.legacy .tab_cadre_central {
    margin: 0 auto;
    z-index:1;
    text-align: left;
@@ -908,7 +908,7 @@ html.legacy #content .content .tab_cadre_central {
 }
 
 
-html.legacy #content .content .tab_cadre_postonly {
+.legacy .tab_cadre_postonly {
    margin: 0 auto;
    z-index:1;
    text-align: left;
@@ -916,7 +916,7 @@ html.legacy #content .content .tab_cadre_postonly {
    width: 80%;
 }
 
-html.legacy #content .content .tab_cadre_navigation {
+.legacy .tab_cadre_navigation {
    margin: 0 auto;
    padding: 4px;
    margin: 1px;
@@ -927,7 +927,7 @@ html.legacy #content .content .tab_cadre_navigation {
    font-weight: bold;
 }
 
-html.legacy #content .content .tab_cadre_fixe, html.legacy #content .content .tab_cadre_fixehov {
+.legacy .tab_cadre_fixe, .legacy .tab_cadre_fixehov {
    margin: 0px auto 5px auto;
    background: #FFF;
    z-index:1;
@@ -937,18 +937,18 @@ html.legacy #content .content .tab_cadre_fixe, html.legacy #content .content .ta
    width: 100%;
    border-spacing: 0;
 }
-html.legacy #content .content .tab_cadre_fixehov {
+.legacy .tab_cadre_fixehov {
    box-shadow: 0px 1px 2px 1px #999;
 }
-html.legacy #content .content .ui-tabs .tab_cadre_fixehov {
+.legacy .ui-tabs .tab_cadre_fixehov {
    box-shadow: inherit;
 }
 
-html.legacy #content .content .tab_cadre_fixe img {
+.legacy .tab_cadre_fixe img {
    vertical-align: middle;
 }
 
-html.legacy #content .content .tab_cadrehov {
+.legacy .tab_cadrehov {
    margin: 10px auto;
    border: 0;
    text-align: left;
@@ -959,7 +959,7 @@ html.legacy #content .content .tab_cadrehov {
    border-spacing: 0;
 }
 
-html.legacy #content .content .tab_cadre th, html.legacy #content .content .tab_cadre_fixe th, html.legacy #content .content .tab_cadre_fixehov th, html.legacy #content .content .tab_cadrehov th, html.legacy #content .content h2.header {
+.legacy .tab_cadre th, .legacy .tab_cadre_fixe th, .legacy .tab_cadre_fixehov th, .legacy .tab_cadrehov th, .legacy h2.header {
    font-size: 12px;
    font-weight: bold;
    text-align: center;
@@ -973,49 +973,49 @@ html.legacy #content .content .tab_cadre th, html.legacy #content .content .tab_
    background-color: #F1F1F1;
 }
 
-html.legacy #content .content .tab_spaced {
+.legacy .tab_spaced {
    border-collapse: separate;
    border-spacing: 3px;
 }
 
-html.legacy #content .content .tab_cadre_fixehov th, html.legacy #content .content .tab_cadrehov th {
+.legacy .tab_cadre_fixehov th, .legacy .tab_cadrehov th {
    background-color: #F8F8F8;
    color: #2E2E2E;
    font-size: 11px;
    border-bottom: 1px solid #EEE;
 }
 
-html.legacy #content .content .tab_cadre_fixehov td, html.legacy #content .content .tab_cadrehov td {
+.legacy .tab_cadre_fixehov td, .legacy .tab_cadrehov td {
    padding: 8px 5px;
 }
-html.legacy #content .content .tab_cadre td, html.legacy #content .content .tab_cadre_fixe td {
+.legacy .tab_cadre td, .legacy .tab_cadre_fixe td {
    padding: 5px;
 }
-html.legacy #content .content .tab_cadre td, html.legacy #content .content .tab_cadre_fixehov td, html.legacy #content .content .tab_cadrehov td {
+.legacy .tab_cadre td, .legacy .tab_cadre_fixehov td, .legacy .tab_cadrehov td {
    border-bottom:1px solid #EEE;
 }
 
 /* Table Hover Effects */
-html.legacy #content .content .tab_cadrehov th.headHover,
-html.legacy #content .content .tab_cadre_fixehov th.headHover{
+.legacy .tab_cadrehov th.headHover,
+.legacy .tab_cadre_fixehov th.headHover{
    background-color:#F3F3F3;
 }
 
-html.legacy #content .content .tab_cadrehov td.columnHover,
-html.legacy #content .content .tab_cadre_fixehov td.columnHover{
+.legacy .tab_cadrehov td.columnHover,
+.legacy .tab_cadre_fixehov td.columnHover{
    background-color:#F3F3F3;
 }
 
-html.legacy #content .content .tab_cadrehov tr.rowHover,
-html.legacy #content .content .tab_cadrehov td.rowHover,
-html.legacy #content .content .tab_cadre_fixehov tr.rowHover,
-html.legacy #content .content .tab_cadre_fixehov td.rowHover{
+.legacy .tab_cadrehov tr.rowHover,
+.legacy .tab_cadrehov td.rowHover,
+.legacy .tab_cadre_fixehov tr.rowHover,
+.legacy .tab_cadre_fixehov td.rowHover{
    background-color:#F7F7F3;
 }
 
 
 
-html.legacy #content .content .tab_format {
+.legacy .tab_format {
    padding: 0px;
    width: 100%;
    margin: 0px;
@@ -1023,100 +1023,100 @@ html.legacy #content .content .tab_format {
    border-collapse:collapse;
 }
 
-html.legacy #content .content .tabcompact {
+.legacy .tabcompact {
    padding: 0px;
    margin: 0px;
    border: 0px;
    border-collapse:collapse;
 }
 
-html.legacy #content .content .tab_format td {
+.legacy .tab_format td {
    padding: 1px;
    margin: 0px;
 }
 
 
-html.legacy #content .content .tab_bg_1 {
+.legacy .tab_bg_1 {
    background-color: #FFF;
 }
 
-html.legacy #content .content .tab_bg_1_2 {
+.legacy .tab_bg_1_2 {
    background-color: #cf9b9b;
 }
 
-html.legacy #content .content .tab_bg_2 {
+.legacy .tab_bg_2 {
    background-color: #FFF;
 }
 
-html.legacy #content .content .tab_bg_2_2 {
+.legacy .tab_bg_2_2 {
    background-color: #cf9b9b;
 }
 
-html.legacy #content .content .tab_bg_3 {
+.legacy .tab_bg_3 {
    background-color: #e7e7e2;
 }
 
-html.legacy #content .content .tab_bg_4 {
+.legacy .tab_bg_4 {
    background-color: #EBEBEB;
 }
 
-html.legacy #content .content .tab_bg_5 {
+.legacy .tab_bg_5 {
    background-color: #f2f2f2;
 }
 
 
-html.legacy #content .content .tab_resa {
+.legacy .tab_resa {
    border:1px dashed #cccccc;
    background-color: #d7d7d2;
    font-size:10px
 }
 
-html.legacy #content .content .tab_resa:hover {
+.legacy .tab_resa:hover {
    background-color: #ffffff;
    border:1px dotted #000000;
 }
 
-html.legacy #content .content .tab_date {
+.legacy .tab_date {
    white-space: nowrap;
 }
 
-html.legacy #content .content .central {
+.legacy .central {
    padding-top: 15px;
    width: 100%;
 }
 
-html.legacy #content .content .central table {
+.legacy .central table {
    margin-bottom: 5px;
 }
 
-html.legacy #content .content .central .tab_cadre_fixehov th, html.legacy #content .content .central .tab_cadrehov th {
+.legacy .central .tab_cadre_fixehov th, .legacy .central .tab_cadrehov th {
    background-color: #F1F0F0;
 }
 
-html.legacy #content .content div.rss {
+.legacy div.rss {
    margin-left: 10px;
 }
 
-html.legacy #content .content td.numeric {
+.legacy td.numeric {
    text-align:right;
 }
 
-html.legacy #content .content td.htmltable_upper_separation_cell {
+.legacy td.htmltable_upper_separation_cell {
     border-top: dashed 1px #a0a0a0;
 }
 
-html.legacy #content .content td.nopadding {
+.legacy td.nopadding {
    padding:0;
 }
 
 
-html.legacy #content .content td.subheader {
+.legacy td.subheader {
    background-color: #EEEEEE;
    text-align: center;
    font-weight: bold;
 }
 
-html.legacy #content .content td.rotate {
+.legacy td.rotate {
   -moz-transform: rotate(-70.0deg);  /* FF3.5+ */
   -o-transform: rotate(-70.0deg);  /* Opera 10.5 */
   -webkit-transform: rotate(-70.0deg);  /* Saf3.1+, Chrome */
@@ -1125,7 +1125,7 @@ html.legacy #content .content td.rotate {
   height: 80px;
 }
 
-html.legacy #content .content .order_DESC:before {
+.legacy .order_DESC:before {
    content: "\25bc";
    color: #B3B3B3;
    font-size: 0.8em;
@@ -1133,7 +1133,7 @@ html.legacy #content .content .order_DESC:before {
    vertical-align: 1px;
 }
 
-html.legacy #content .content .order_ASC:before {
+.legacy .order_ASC:before {
    content: "\25b2";
    color: #B3B3B3;
    font-size: 0.8em;
@@ -1141,11 +1141,11 @@ html.legacy #content .content .order_ASC:before {
    vertical-align: 1px;
 }
 
-html.legacy #content .content .tab_actors {
+.legacy .tab_actors {
    display: table;
 }
 
-html.legacy #content .content .actor_title {
+.legacy .actor_title {
    width: 13%;
    float: left;
    font-weight: bold;
@@ -1156,17 +1156,17 @@ html.legacy #content .content .actor_title {
    background-color:#F1F1F1;
 }
 
-html.legacy #content .content .actor-bloc {
+.legacy .actor-bloc {
    width: 29%;
 }
 
-html.legacy #content .content .actor_title, .actor-bloc {
+.legacy .actor_title, .actor-bloc {
    display: table-cell;
    float: none;
    vertical-align: top;
 }
 
-html.legacy #content .content .actor-head {
+.legacy .actor-head {
    background-color: #F1F1F1;
    margin: 0 0 0 5px;
    padding: 4px 0;
@@ -1176,42 +1176,42 @@ html.legacy #content .content .actor-head {
    font-size: 1.1em;
 }
 
-html.legacy #content .content .actor-head .fa {
+.legacy .actor-head .fa {
    padding: 0 .2em;
 }
 
-html.legacy #content .content .actor-content {
+.legacy .actor-content {
    margin: 10px 15px;
    padding: 4px 0;
 }
 
-html.legacy #content .content .actor_row {
+.legacy .actor_row {
    margin-bottom: 8px;
 }
 
-html.legacy #content .content .tab_actors hr {
+.legacy .tab_actors hr {
    border: 0;
 }
-html.legacy #content .content .add-observer {
+.legacy .add-observer {
    display: block;
 }
-html.legacy #content .content .actor_single {
+.legacy .actor_single {
    border-top: 1px dashed #AAA;
    padding: 15px 0 8px 0;
    margin-top: 8px;
    background-color: #F5F5F5;
 }
-html.legacy #content .content .actor_single.first-actor {
+.legacy .actor_single.first-actor {
    padding-left: 10px;
 }
 
-html.legacy #content .content .actor_clear {
+.legacy .actor_clear {
    clear: both;
 }
 
 /* ################--------------- Pager  ---------------#################### */
 
-html.legacy #content .content .tab_cadre_pager {
+.legacy .tab_cadre_pager {
    margin: 0 auto;
    text-align:center;
    font-size:10px;
@@ -1220,62 +1220,62 @@ html.legacy #content .content .tab_cadre_pager {
    margin-top: 15px;
 }
 
-html.legacy #content .content .tab_cadre_pager tr,
-html.legacy #content .content .tab_cadre_pager td {
+.legacy .tab_cadre_pager tr,
+.legacy .tab_cadre_pager td {
    background-color: inherit;
 }
 
-html.legacy #content .content #searchcriterias .tab_cadre_fixe {
+.legacy #searchcriterias .tab_cadre_fixe {
    margin-top: 10px;
    background-color: #FFF;
    width: 80%;
    box-shadow: 0px 1px 2px 1px #D2D2D2;
    border-radius: 5px;
 }
-html.legacy #content .content #searchcriterias .tab_bg_1 {
+.legacy #searchcriterias .tab_bg_1 {
    background-color: inherit;
 }
 
-html.legacy #content .content #searchcriterias .switch {
+.legacy #searchcriterias .switch {
    opacity: .7;
 }
 
-html.legacy #content .content #searchcriterias .switch:hover {
+.legacy #searchcriterias .switch:hover {
    opacity: 1;
 }
 
-html.legacy #content .content .reset-search, .reset-search:link {
+.legacy .reset-search, .reset-search:link {
    color: #ccc!important;
 }
 
-html.legacy #content .content .reset-search:hover {
+.legacy .reset-search:hover {
    color: #999;
 }
 
-html.legacy #content .content .tab_cadre_pager select, html.legacy #content .content .tab_cadre_pager span, html.legacy #content .content .tab_cadre_pager form {
+.legacy .tab_cadre_pager select, .legacy .tab_cadre_pager span, .legacy .tab_cadre_pager form {
    font-size:10px;
    margin:0;
 }
 
-html.legacy #content .content .tab_cadre_pager input {
+.legacy .tab_cadre_pager input {
    vertical-align:middle;
 }
 
-html.legacy #content .content .tab_cadre_pager th {
+.legacy .tab_cadre_pager th {
    font-size: 10px;
    font-weight: bold;
    text-align: center;
 }
 
 
-html.legacy #content .content .navigationheader {
+.legacy .navigationheader {
    margin: 10px auto;
 }
-html.legacy #content .content .navigationheader .big {
+.legacy .navigationheader .big {
    font-size: 16px;
 }
 
-html.legacy #content .content .tab_cadre_pager html.legacy #content .content .pager_controls img {
+.legacy .tab_cadre_pager .legacy .pager_controls img {
    padding-right: 10px;
    vertical-align: middle;
 }
@@ -1285,7 +1285,7 @@ html.legacy #content .content .tab_cadre_pager html.legacy #content .content .pa
 /* ################--------------- Tracking  / Reminder ---------------#################### */
 
 
-html.legacy #content .content .showplan {
+.legacy .showplan {
    font-weight: bold;
    text-decoration: none;
    color : #4A8865;
@@ -1294,20 +1294,20 @@ html.legacy #content .content .showplan {
 
 
 /* ################--------------- User Picture ---------------#################### */
-html.legacy #content .content .qtip {
+.legacy .qtip {
    max-width: 380px !important;
 }
 
-html.legacy #content .content .tooltip {
+.legacy .tooltip {
    font-size: 11px !important;
 }
-html.legacy #content .content .tooltip:contains(img) {
+.legacy .tooltip:contains(img) {
    white-space: nowrap;
    height: 100px !important;
    border:10px solid red;
 }
 
-html.legacy #content .content .tooltip_picture_border {
+.legacy .tooltip_picture_border {
    padding:2px;
    border-radius: 51px;
    border: 5px inset #D0D99D;
@@ -1316,17 +1316,17 @@ html.legacy #content .content .tooltip_picture_border {
    height:72px;
    position: absolute;
 }
-html.legacy #content .content .tooltip_picture {
+.legacy .tooltip_picture {
    width:71px;
    height:71px;
    border-radius:50px;
 }
-html.legacy #content .content .tooltip_text {
+.legacy .tooltip_text {
    margin-left:90px;
    min-height: 85px;
 }
 
-html.legacy #content .content .user_picture_border {
+.legacy .user_picture_border {
    padding:2px;
    border-radius: 6px;
    border: 5px inset #D0D99D;
@@ -1335,14 +1335,14 @@ html.legacy #content .content .user_picture_border {
    margin-right:5px;
    background-color: #FFF
 }
-html.legacy #content .content .user_picture {
+.legacy .user_picture {
    margin: 0 auto;
    width:230px;
    height:230px;
    border-radius: 5px;
 }
 
-html.legacy #content .content .user_picture_border_small {
+.legacy .user_picture_border_small {
    padding:2px;
    border-radius: 6px;
    border: 3px inset #D0D99D;
@@ -1351,42 +1351,42 @@ html.legacy #content .content .user_picture_border_small {
    margin-right:5px;
    background-color: #FFF
 }
-html.legacy #content .content .user_picture_small {
+.legacy .user_picture_small {
    margin: 0 auto;
    width:71px;
    height:71px;
    border-radius: 5px;
 }
 
-html.legacy #content .content .user_picture_verysmall {
+.legacy .user_picture_verysmall {
    margin: 0 auto;
    width:35px;
    height:35px;
    border-radius: 5px;
 }
 
-html.legacy #content .content img.picture_square {
+.legacy img.picture_square {
    box-shadow: 0px 1px 1px #999;
 }
 /* ################--------------- Space to replace &nbsp; ---------------#################### */
 
 /* 2 space */
-html.legacy #content .content .very_small_space {
+.legacy .very_small_space {
    margin-left: 15px;
 }
 
 /* 5 spaces */
-html.legacy #content .content .small_space {
+.legacy .small_space {
    margin-left: 38px;
 }
 
 /* 10 spaces */
-html.legacy #content .content .medium_space {
+.legacy .medium_space {
    margin-left: 120px;
 }
 
 /* 20 spaces */
-html.legacy #content .content .big_space {
+.legacy .big_space {
    margin-left:250px;
 }
 
@@ -1394,11 +1394,11 @@ html.legacy #content .content .big_space {
 
 /* ################--------------- Espacement des blocs ---------------#################### */
 
-html.legacy #content .content .spaced {
+.legacy .spaced {
    margin-bottom: 15px;
 }
 
-html.legacy #content .content .firstbloc {
+.legacy .firstbloc {
    margin: 10px 0 20px 0;
 }
 
@@ -1406,46 +1406,46 @@ html.legacy #content .content .firstbloc {
 
 /* ################--------------- Calendrier  / reservation ---------------#################### */
 
-html.legacy #content .content .ui-datepicker-trigger, .slt, #refresh_planning{
+.legacy .ui-datepicker-trigger, .slt, #refresh_planning{
    border:none;
    background:none;
    padding: 0;
    font-size: 1.3em!important;
 }
-html.legacy #content .content .fc button.ui-datepicker-trigger {
+.legacy .fc button.ui-datepicker-trigger {
    height: auto;
    padding: 0;
 }
 
-html.legacy #content .content .fc .fc-toolbar > * > * {
+.legacy .fc .fc-toolbar > * > * {
    float: none;
    display: inline-block;
 }
 
-html.legacy #content .content .ui-datepicker-trigger .fa {
+.legacy .ui-datepicker-trigger .fa {
    padding: 0!important;
 }
 
-html.legacy #content .content .calendrier {
+.legacy .calendrier {
    vertical-align:middle;
 }
 
-html.legacy #content .content .calendrier:hover {
+.legacy .calendrier:hover {
    cursor:pointer;
 }
 
-html.legacy #content .content .calendrier_mois {
+.legacy .calendrier_mois {
    font-family: Verdana, Arial, Sans, sans-serif;
    font-size: 10px;
 }
 
-html.legacy #content .content .calendrier_jour {
+.legacy .calendrier_jour {
    font-family: arial,helvetica,sans-serif;
    font-size: 14px;
    color: black;
 }
 
-html.legacy #content .content .calendrier_case1 {
+.legacy .calendrier_case1 {
    margin-left: 10px;
    padding: 2px;
    border-radius: 5px;
@@ -1454,7 +1454,7 @@ html.legacy #content .content .calendrier_case1 {
    background-color: white;
 }
 
-html.legacy #content .content .calendrier_case2 {
+.legacy .calendrier_case2 {
    margin-left: 10px;
    padding: 2px;
    border-radius: 5px;
@@ -1463,24 +1463,24 @@ html.legacy #content .content .calendrier_case2 {
    background-color: #eeeeee
 }
 
-html.legacy #content .content .calendrier_case_white {
+.legacy .calendrier_case_white {
    background-color:#ffffff;
 }
 
 
 
 /* ################--------------- Knowledge FAQ  ---------------#################### */
-html.legacy #content .content #contenukb {
+.legacy #contenukb {
    height: 100%;
    width: 600px;
    margin: 0 auto;
 }
 
-html.legacy #content .content #contenukb legend {
+.legacy #contenukb legend {
    font-weight: bold;
 }
 
-html.legacy #content .content #contenukb fieldset {
+.legacy #contenukb fieldset {
    background-color: #eeeeee;
    border: 1px solid #FFC65D;
    border-radius: 8px;
@@ -1488,120 +1488,120 @@ html.legacy #content .content #contenukb fieldset {
    width: 600px;
 }
 
-html.legacy #content .content #contenukb textarea {
+.legacy #contenukb textarea {
    width:550px;
 }
 
-html.legacy #content .content #kbanswer ul {
+.legacy #kbanswer ul {
    padding-left: 15px;
    list-style-type: circle;
 }
 
-html.legacy #content .content #kbanswer ol {
+.legacy #kbanswer ol {
    padding-left: 15px;
    list-style-type: decimal;
 }
 
 
-html.legacy #content .content #kbanswer p {
+.legacy #kbanswer p {
    margin: 1.12em 0
 }
 
-html.legacy #content .content #kbanswer h1 {
+.legacy #kbanswer h1 {
    font-size: 2em;
    margin: .67em 0
 }
 
-html.legacy #content .content #kbanswer h2 {
+.legacy #kbanswer h2 {
    font-size: 1.5em;
    margin: .75em 0;
    font-weight: bolder;
 }
 
-html.legacy #content .content #kbanswer h3 {
+.legacy #kbanswer h3 {
    font-size: 1.17em;
    margin: .83em 0;
    font-weight: bolder;
 }
 
-html.legacy #content .content #kbanswer h4 {
+.legacy #kbanswer h4 {
    margin: 1.12em 0;
    font-weight: bolder;
 }
 
-html.legacy #content .content #kbanswer h5 {
+.legacy #kbanswer h5 {
    font-size: .83em;
    margin: 1.5em 0;
    font-weight: bolder;
 }
 
-html.legacy #content .content #kbanswer h6 {
+.legacy #kbanswer h6 {
    font-size: .75em;
    margin: 1.67em 0;
    font-weight: bolder;
 }
 
-html.legacy #content .content #kbanswer h1:target,
-html.legacy #content .content #kbanswer h2:target,
-html.legacy #content .content #kbanswer h3:target,
-html.legacy #content .content #kbanswer h4:target,
-html.legacy #content .content #kbanswer h5:target,
-html.legacy #content .content #kbanswer h6:target {
+.legacy #kbanswer h1:target,
+.legacy #kbanswer h2:target,
+.legacy #kbanswer h3:target,
+.legacy #kbanswer h4:target,
+.legacy #kbanswer h5:target,
+.legacy #kbanswer h6:target {
   background-color: #fff2a8;
 }
 
-html.legacy #content .content #kbanswer h1 > a,
-html.legacy #content .content #kbanswer h2 > a,
-html.legacy #content .content #kbanswer h3 > a,
-html.legacy #content .content #kbanswer h4 > a,
-html.legacy #content .content #kbanswer h5 > a,
-html.legacy #content .content #kbanswer h6 > a {
+.legacy #kbanswer h1 > a,
+.legacy #kbanswer h2 > a,
+.legacy #kbanswer h3 > a,
+.legacy #kbanswer h4 > a,
+.legacy #kbanswer h5 > a,
+.legacy #kbanswer h6 > a {
    line-height: 1;
    margin-left: -20px;
    padding-right: 4px;
 }
 
-html.legacy #content .content #kbanswer h1 svg,
-html.legacy #content .content #kbanswer h2 svg,
-html.legacy #content .content #kbanswer h3 svg,
-html.legacy #content .content #kbanswer h4 svg,
-html.legacy #content .content #kbanswer h5 svg,
-html.legacy #content .content #kbanswer h6 svg{
+.legacy #kbanswer h1 svg,
+.legacy #kbanswer h2 svg,
+.legacy #kbanswer h3 svg,
+.legacy #kbanswer h4 svg,
+.legacy #kbanswer h5 svg,
+.legacy #kbanswer h6 svg{
    visibility: hidden;
 }
 
-html.legacy #content .content #kbanswer h1:hover svg,
-html.legacy #content .content #kbanswer h2:hover svg,
-html.legacy #content .content #kbanswer h3:hover svg,
-html.legacy #content .content #kbanswer h4:hover svg,
-html.legacy #content .content #kbanswer h5:hover svg,
-html.legacy #content .content #kbanswer h6:hover svg {
+.legacy #kbanswer h1:hover svg,
+.legacy #kbanswer h2:hover svg,
+.legacy #kbanswer h3:hover svg,
+.legacy #kbanswer h4:hover svg,
+.legacy #kbanswer h5:hover svg,
+.legacy #kbanswer h6:hover svg {
    visibility: visible;
 }
 
-html.legacy #content .content #kbanswer address {
+.legacy #kbanswer address {
    font-style: italic;
 }
 
-html.legacy #content .content #kbanswer pre {
+.legacy #kbanswer pre {
    font-family: monospace;
    white-space: pre;
 }
 
 
-html.legacy #content .content .tdkb_result {
+.legacy .tdkb_result {
    vertical-align:top;
    text-align:left;
    width: 33%;
    padding: 3px 20px 3px 25px;
 }
 
-html.legacy #content .content .kb {
+.legacy .kb {
    text-align:left;
    padding-top:5px;
 }
 
-html.legacy #content .content .kb_resume {
+.legacy .kb_resume {
    text-align:left;
    font-size: 9px;
    line-height: 10px;
@@ -1609,44 +1609,44 @@ html.legacy #content .content .kb_resume {
    padding: 5px 0 10px 25px;
 }
 
-html.legacy #content .content .tdkb {
+.legacy .tdkb {
    text-align:left;
    font-size:10px;
    color:#aaaaaa;
 }
 
-html.legacy #content .content .baskb {
+.legacy .baskb {
    position: relative;
    text-align:left;
    font-size:10px;
    color:#aaaaaa;
 }
 
-html.legacy #content .content .baskb_right {
+.legacy .baskb_right {
    position:absolute;
    right:0;
    margin-right:5px;
 }
 
-html.legacy #content .content .code {
+.legacy .code {
    width: 95%;
    border: dotted 2px #ccc;
 }
 
-html.legacy #content .content a.knowbase {
+.legacy a.knowbase {
    margin-left:8px;
 }
 
-html.legacy #content .content a.pubfaq {
+.legacy a.pubfaq {
    padding-left:8px;
    border-left: 5px solid #c9993C !important;
 }
 
-html.legacy #content .content a.pubfaq:hover {
+.legacy a.pubfaq:hover {
    color: black;
 }
 
-html.legacy #content .content a.icon_nav_move img {
+.legacy a.icon_nav_move img {
    padding: 4px;
    margin: 1px;
    border: 1px solid #aaaaaa;
@@ -1654,7 +1654,7 @@ html.legacy #content .content a.icon_nav_move img {
    border-radius: 5px;
 }
 
-html.legacy #content .content a.icon_nav_move:hover img {
+.legacy a.icon_nav_move:hover img {
    padding: 4px;
    margin: 1px;
    border: 1px solid #999999;
@@ -1662,16 +1662,16 @@ html.legacy #content .content a.icon_nav_move:hover img {
    border-radius: 5px;
 }
 
-html.legacy #content .content .faqadd_block {
+.legacy .faqadd_block {
    position: relative;
    display: inline-block;
 }
 
-html.legacy #content .content .faqadd_block .display_faq_chkbox {
+.legacy .faqadd_block .display_faq_chkbox {
    display: none;
 }
 
-html.legacy #content .content .faqadd_entries {
+.legacy .faqadd_entries {
    background: white;
    border:  1px solid #CCC;
    box-shadow: 0px 1px 2px 1px #D2D2D2;
@@ -1686,12 +1686,12 @@ html.legacy #content .content .faqadd_entries {
    display: none;
 }
 
-html.legacy #content .content .faqadd_block .display_faq_chkbox:checked + .faqadd_entries {
+.legacy .faqadd_block .display_faq_chkbox:checked + .faqadd_entries {
    display: block;
 }
 
 
-html.legacy #content .content .faqadd_entries:before {
+.legacy .faqadd_entries:before {
     content: "";
     display: inline-block;
     width: 0;
@@ -1704,7 +1704,7 @@ html.legacy #content .content .faqadd_entries:before {
     position: absolute;
 }
 
-html.legacy #content .content .faqadd_entries:after {
+.legacy .faqadd_entries:after {
     content: "";
     display: inline-block;
     width: 0;
@@ -1717,7 +1717,7 @@ html.legacy #content .content .faqadd_entries:after {
     position: absolute;
 }
 
-html.legacy #content .content .faqadd_block_content {
+.legacy .faqadd_block_content {
    overflow-x: hidden;
    overflow-y: auto;
    position: absolute;
@@ -1727,23 +1727,23 @@ html.legacy #content .content .faqadd_block_content {
    right: 0;
 }
 
-html.legacy #content .content .faqadd_entries .tab_cadre_fixe {
+.legacy .faqadd_entries .tab_cadre_fixe {
    width: 100%;
    padding: 5px;
 }
 
-html.legacy #content .content .faqadd_entries tr {
+.legacy .faqadd_entries tr {
    display: block;
 }
 
-html.legacy #content .content .main_form .faqadd_entries table.tab_cadre_fixe th:not(.actor-th) {
+.legacy .main_form .faqadd_entries table.tab_cadre_fixe th:not(.actor-th) {
    display: block;
    text-align: center;
 }
 
 
 /* ################--------------- File upload  ---------------#################### */
-html.legacy #content .content .fileupload {
+.legacy .fileupload {
    text-align: center;
    border:1px dashed #cccccc;
    min-height: 65px;
@@ -1755,27 +1755,27 @@ html.legacy #content .content .fileupload {
    margin-top: 5px;
 }
 
-html.legacy #content .content .fileupload_info {
+.legacy .fileupload_info {
    margin-bottom: 10px;
 }
 
-html.legacy #content .content .upload_rich_text {
+.legacy .upload_rich_text {
    display : none;
 }
 
-html.legacy #content .content .draghover {
+.legacy .draghover {
    background: #FBF8DF;
 }
 
 
 /* ################--------------- planning  ---------------#################### */
 
-html.legacy #content .content #planning_container {
+.legacy #planning_container {
    position: relative;
    padding-left: 310px; /* Same as planning_filter width + a 10px margin */
 }
 
-html.legacy #content .content #planning_filter {
+.legacy #planning_filter {
    position: absolute;
    top: 0;
    bottom: 0;
@@ -1785,7 +1785,7 @@ html.legacy #content .content #planning_filter {
    width: 300px;
 }
 
-html.legacy #content .content #planning_filter .toggle {
+.legacy #planning_filter .toggle {
    float: right;
    margin: 8px 8px 0 0;
    height: 18px;
@@ -1794,18 +1794,18 @@ html.legacy #content .content #planning_filter .toggle {
    background: url(../pics/toggle-left.png) no-repeat;
 }
 
-html.legacy #content .content #planning_filter.folded .toggle {
+.legacy #planning_filter.folded .toggle {
    float: none;
    background: url(../pics/toggle-right.png) no-repeat;
 }
-html.legacy #content .content #planning_filter.folded {
+.legacy #planning_filter.folded {
    width: 18px;
 }
-html.legacy #content .content #planning_container.folded {
+.legacy #planning_container.folded {
    padding-left: 28px; /* Same as folded planning_filter width + a 10px margin */
 }
 
-html.legacy #content .content #planning_filter h3 {
+.legacy #planning_filter h3 {
    background: #e6e6e6;
    margin: 2px 0 0 0;
    padding: .5em .5em .5em .7em;
@@ -1814,28 +1814,28 @@ html.legacy #content .content #planning_filter h3 {
    font-size: 13px;
 }
 
-html.legacy #content .content #planning_filter ul.filters {
+.legacy #planning_filter ul.filters {
    border: 0;
    padding: 5px;
 }
-html.legacy #content .content #planning_filter ul.filters > li {
+.legacy #planning_filter ul.filters > li {
    clear: both;
    padding: 5px 0 5px 5px;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li:nth-child(even) {
+.legacy #planning_filter ul.filters > li:nth-child(even) {
    background-color: #F3F3F3;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li .form-group-checkbox {
+.legacy #planning_filter ul.filters > li .form-group-checkbox {
    margin-right: 6px;
 }
-html.legacy #content .content #planning_filter ul.filters > li .actor_icon {
+.legacy #planning_filter ul.filters > li .actor_icon {
    padding-bottom: 2px;
    vertical-align: middle;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li label {
+.legacy #planning_filter ul.filters > li label {
    padding-left: 4px;
    line-height: 16px;
    width: 200px;
@@ -1845,23 +1845,23 @@ html.legacy #content .content #planning_filter ul.filters > li label {
    white-space: nowrap;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li .filter-icon,
-html.legacy #content .content #planning_filter ul.filters > li .sp-replacer {
+.legacy #planning_filter ul.filters > li .filter-icon,
+.legacy #planning_filter ul.filters > li .sp-replacer {
    float: right;
    padding: 0;
    border: none;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li .sp-replacer .sp-preview {
+.legacy #planning_filter ul.filters > li .sp-replacer .sp-preview {
    margin-right: 0;
    border: none;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li .sp-replacer .sp-dd {
+.legacy #planning_filter ul.filters > li .sp-replacer .sp-dd {
    display: none;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li.group_users .toggle {
+.legacy #planning_filter ul.filters > li.group_users .toggle {
    width:14px;
    height:14px;
    background: url(../pics/expand.png) no-repeat;
@@ -1871,32 +1871,32 @@ html.legacy #content .content #planning_filter ul.filters > li.group_users .togg
    float: right;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li.group_users.expanded .toggle {
+.legacy #planning_filter ul.filters > li.group_users.expanded .toggle {
    background: url(../pics/collapse.png) no-repeat;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li.group_users ul.group_listofusers {
+.legacy #planning_filter ul.filters > li.group_users ul.group_listofusers {
    border-left: 1px dashed #D4D4D4;
    margin: 6px 0 0 6px;
    padding: 0;
    display: none;
 }
 
-html.legacy #content .content #planning_filter ul.filters > li.group_users.expanded ul.group_listofusers {
+.legacy #planning_filter ul.filters > li.group_users.expanded ul.group_listofusers {
    display: block;
 }
 
-html.legacy #content .content #planning_filter .planning_link {
+.legacy #planning_filter .planning_link {
    text-align: center;
    display: block;
 }
 
-html.legacy #content .content #planning_filter .planning_add_filter {
+.legacy #planning_filter .planning_add_filter {
    float: right;
    margin-right: 3px;
 }
 
-html.legacy #content .content #planning_filter .filter_option {
+.legacy #planning_filter .filter_option {
    float: right;
    width: 12px;
    height: 12px;
@@ -1906,11 +1906,11 @@ html.legacy #content .content #planning_filter .filter_option {
    left:0;
 }
 
-html.legacy #content .content #planning_filter .filter_option > img {
+.legacy #planning_filter .filter_option > img {
    z-index: 1;
 }
 
-html.legacy #content .content #planning_filter .filter_option ul {
+.legacy #planning_filter .filter_option ul {
    display: none;
    position: absolute;
    background: #FFF repeat-x top left;
@@ -1925,98 +1925,98 @@ html.legacy #content .content #planning_filter .filter_option ul {
    text-align: right;
 }
 
-html.legacy #content .content #planning_filter .filter_option ul li {
+.legacy #planning_filter .filter_option ul li {
    padding: 5px;
    cursor: pointer;
    font-size: 13px;
 }
 
-html.legacy #content .content #planning_filter .filter_option ul li:hover {
+.legacy #planning_filter .filter_option ul li:hover {
    background-color: #EAEAEA;
 }
 
-html.legacy #content .content #planning_filter .filter_option ul li a {
+.legacy #planning_filter .filter_option ul li a {
    color: inherit;
    font-size: 13px;
    font-weight: normal;
 }
 
-html.legacy #content .content .planning_on_central .ui-widget-content {
+.legacy .planning_on_central .ui-widget-content {
    border: none;
 }
 
-html.legacy #content .content .planning_on_central .fc-head {
+.legacy .planning_on_central .fc-head {
    display: none;
 }
 
-html.legacy #content .content .planning_on_central .fc-scroller {
+.legacy .planning_on_central .fc-scroller {
    height: auto!important;
    max-height: 400px;
 }
 
-html.legacy #content .content #planning {
+.legacy #planning {
    width:auto;
    overflow:hidden;
 }
 
-html.legacy #content .content #planning .fc-toolbar h2 {
+.legacy #planning .fc-toolbar h2 {
    font-size: 1.2em;
 }
-html.legacy #content .content #planning .fc-toolbar h2 .ui-datepicker-trigger{
+.legacy #planning .fc-toolbar h2 .ui-datepicker-trigger{
    margin-left: 4px;
 }
 
-html.legacy #content .content #planning .event_past .ui-widget-content,
-html.legacy #content .content #planning .event_past .ui-widget-content a {
+.legacy #planning .event_past .ui-widget-content,
+.legacy #planning .event_past .ui-widget-content a {
    color: #CCCCCC;
 }
-html.legacy #content .content #planning .event_past.event_todo .ui-widget-content,
-html.legacy #content .content #planning .event_past.event_todo .ui-widget-content a {
+.legacy #planning .event_past.event_todo .ui-widget-content,
+.legacy #planning .event_past.event_todo .ui-widget-content a {
    color: #FF0000;
 }
 
-html.legacy #content .content #planning .event_today.event_todo .ui-widget-content,
-html.legacy #content .content #planning .event_today.event_todo .ui-widget-content a {
+.legacy #planning .event_today.event_todo .ui-widget-content,
+.legacy #planning .event_today.event_todo .ui-widget-content a {
    color: #FFA100;
 }
 
 
-html.legacy #content .content #planning .fc-event {
+.legacy #planning .fc-event {
    font-weight: normal;
 }
 
-html.legacy #content .content #planning .fc-event .fc-content {
+.legacy #planning .fc-event .fc-content {
    margin-right: 8px;
 }
 
 
-html.legacy #content .content #planning .fc-event .fc-time {
+.legacy #planning .fc-event .fc-time {
    overflow: hidden;
 }
-html.legacy #content .content #planning .fc-event .fc-title {
+.legacy #planning .fc-event .fc-title {
    font-weight: bold;
    white-space: nowrap;
    overflow: hidden;
    text-overflow : ellipsis;
 }
 
-html.legacy #content .content #planning .fc-event .content {
+.legacy #planning .fc-event .content {
    font-weight: normal;
    padding: 0 7px 0 2px;
    overflow: hidden;
    text-overflow : ellipsis;
 }
 
-html.legacy #content .content #planning .fc-event .content .event-description {
+.legacy #planning .fc-event .content .event-description {
    border-top: 1px solid rgba(0, 0, 0, 0.2);
    margin-top: 2px;
    padding-top: 2px;
 }
-html.legacy #content .content #planning .fc-event .content .event-description p {
+.legacy #planning .fc-event .content .event-description p {
    margin: 0;
 }
 
-html.legacy #content .content #planning .fc-event .event_type {
+.legacy #planning .fc-event .event_type {
    position: absolute;
    width: 7px;
    bottom: 0;
@@ -2024,57 +2024,57 @@ html.legacy #content .content #planning .fc-event .event_type {
    right: 0;
 }
 
-html.legacy #content .content #planning .fc-list-item-title .event_type {
+.legacy #planning .fc-list-item-title .event_type {
    height: 12px;
    width: 6px;
    margin-right: 3px;
    display: inline-block
 }
 
-html.legacy #content .content #planning .event_past .fc-list-item-title .event_type {
+.legacy #planning .event_past .fc-list-item-title .event_type {
    opacity: .5;
 }
 
-html.legacy #content .content #planning .planning-select-helper {
+.legacy #planning .planning-select-helper {
    border: 2px solid #3B8CBE;
    background-color: rgba(59, 140, 190, .5);
 }
 
-html.legacy #content .content #planning .fc-day-grid-event .fc-resizer {
+.legacy #planning .fc-day-grid-event .fc-resizer {
    width: 10px;
 }
 
-html.legacy #content .content #planning .fc-time-grid-event .fc-resizer {
+.legacy #planning .fc-time-grid-event .fc-resizer {
    height: 10px;
 }
 
-html.legacy #content .content #planning .fc-divider {
+.legacy #planning .fc-divider {
    border:1px dashed #cccccc;
 }
 
 /* for checkavailable */
 
-html.legacy #content .content .planning {
+.legacy .planning {
    text-align:center;
    border:1px dashed #cccccc;
    background-color: #d7d7d2;
    font-size:9px;
 }
 
-html.legacy #content .content .planning:hover {
+.legacy .planning:hover {
    border: 1px solid #999999;
    background-color: white;
 }
 
-html.legacy #content .content .available {
+.legacy .available {
    background-color: green;
 }
 
-html.legacy #content .content .notavailable {
+.legacy .notavailable {
    background-color: red;
 }
 
-html.legacy #content .content .partialavailableend {
+.legacy .partialavailableend {
    background-image: -webkit-linear-gradient(left, red 50%, green  0%);
    background-image: -moz-linear-gradient(left, red 50%, green  0%);
    background-image: -ms-linear-gradient(left, red 50%, green  0%);
@@ -2082,7 +2082,7 @@ html.legacy #content .content .partialavailableend {
    background-image: linear-gradient(left, red 50%, green  0%);
 }
 
-html.legacy #content .content .partialavailablebegin {
+.legacy .partialavailablebegin {
    background-image: -webkit-linear-gradient(left, green 50%, red  0%);
    background-image: -moz-linear-gradient(left, green 50%, red  0%);
    background-image: -ms-linear-gradient(left, green 50%, red  0%);
@@ -2092,21 +2092,21 @@ html.legacy #content .content .partialavailablebegin {
 
 /* ################--------------- Menu navigation  ---------------#################### */
 
-html.legacy #content .content #menu_navigate {
+.legacy #menu_navigate {
    margin: auto;
    z-index:1;
    font-size: 10px;
    width:900px;
 }
 
-html.legacy #content .content #menu_navigate li {
+.legacy #menu_navigate li {
    margin-left:2px;
    display:block;
    float:left;
    padding:2px;
 }
 
-html.legacy #content .content #menu_navigate li.info {
+.legacy #menu_navigate li.info {
    margin-left:2px;
    display:block;
    float:left;
@@ -2114,7 +2114,7 @@ html.legacy #content .content #menu_navigate li.info {
    padding:2px;
 }
 
-html.legacy #content .content #tabcontent {
+.legacy #tabcontent {
    width:950px;
    text-align:center;
    margin: 0 auto;
@@ -2122,7 +2122,7 @@ html.legacy #content .content #tabcontent {
 
 /* ################--------------- Notepad  ---------------#################### */
 
-html.legacy #content .content .boxnote {
+.legacy .boxnote {
    margin: 0 auto;
    width: 950px;
    text-align: left;
@@ -2136,20 +2136,20 @@ html.legacy #content .content .boxnote {
 
 
 
-html.legacy #content .content .boxnoteleft {
+.legacy .boxnoteleft {
    float: left;
    width: 10%;
    min-height: 40px;
    height: 100%;
    padding: 4px;
 }
-html.legacy #content .content .boxnotecontent {
+.legacy .boxnotecontent {
    float: left;
    padding: 1px;
    padding: 5px 0 5px 0;
    width: 75%;
 }
-html.legacy #content .content .boxnoteright {
+.legacy .boxnoteright {
    float: right;
 /*   top:  0px;
    left: 0px;*/
@@ -2159,67 +2159,67 @@ html.legacy #content .content .boxnoteright {
    vertical-align: middle;
 }
 
-html.legacy #content .content .boxnotefloatright {
+.legacy .boxnotefloatright {
    float: right;
    position: relative;
    padding-left: 20px;
    padding-bottom:  5px;
 }
-html.legacy #content .content .boxnotetext {
+.legacy .boxnotetext {
    padding: 5px;
 }
 
-html.legacy #content .content .bytech {
+.legacy .bytech {
    background: #f2f2f2;
 }
 
-html.legacy #content .content .byuser {
+.legacy .byuser {
    background: #e7e7e2;
 }
 
-html.legacy #content .content .accepted {
+.legacy .accepted {
    background-color:#9FD6ED;
    color:#425B64;
 }
 
 /* ################--------------- box (redirect and other)  ---------------#################### */
-html.legacy #content .content .ui-widget-content.message_after_redirect {
+.legacy .ui-widget-content.message_after_redirect {
    font-family:"Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;
    color:#393939;
    font-size: 11px;
    background: #DFDFDF;
 }
 
-html.legacy #content .content .message_after_redirect h3 {
+.legacy .message_after_redirect h3 {
    font-size:11px;
    font-weight:bold;
    zoom:1;
 }
 
 /* ##### ERROR messages ##### */
-html.legacy #content .content .ui-widget-content.message_after_redirect.err_msg {
+.legacy .ui-widget-content.message_after_redirect.err_msg {
    background-color: #ff9999;
 }
 
-html.legacy #content .content .message_after_redirect.err_msg div.ui-widget-header {
+.legacy .message_after_redirect.err_msg div.ui-widget-header {
    color: white;
    background: rgba(255, 0, 0, .8);
    border-color: rgba(255, 0, 0, 0.8);
 }
 
 /* ##### WARNING messages ##### */
-html.legacy #content .content .ui-widget-content.message_after_redirect.warn_msg {
+.legacy .ui-widget-content.message_after_redirect.warn_msg {
    background-color: #ffdb99;
 }
 
-html.legacy #content .content .message_after_redirect.warn_msg div.ui-widget-header {
+.legacy .message_after_redirect.warn_msg div.ui-widget-header {
    color: white;
    background: rgba(255, 165, 0, .8);
    border-color: rgba(255, 165, 0, 0.8);
 }
 
 /* ##### INFO messages ##### */
-html.legacy #content .content .message_after_redirect.info_msg div.ui-widget-header {
+.legacy .message_after_redirect.info_msg div.ui-widget-header {
    color: white;
    background: #A9A9A9;
    border-color: #A9A9A9;
@@ -2227,21 +2227,21 @@ html.legacy #content .content .message_after_redirect.info_msg div.ui-widget-hea
 
 /* ################--------------- Login Null Header  ---------------#################### */
 
-html.legacy #content .content #firstboxlogin {
+.legacy #firstboxlogin {
    width: 100%;
    min-height: 100%;
    min-height: 100vh; /* double min-height, some old browser don't have vh units support*/
 }
 
-html.legacy #content .content #logo_login {
+.legacy #logo_login {
    padding: 80px 0 0;
    margin: 0 auto 0;
    width: 100%;
    height: 76px;
 }
 
-html.legacy #content .content #display-login,
-html.legacy #content .content #text-login {
+.legacy #display-login,
+.legacy #text-login {
    width: 100%;
    margin: 0 auto;
    padding: 20px 20%;
@@ -2252,7 +2252,7 @@ html.legacy #content .content #text-login {
    box-sizing: border-box;
 }
 
-html.legacy #content .content #boxlogin {
+.legacy #boxlogin {
    padding-top: 10px;
    bottom: 0;
    width: 20em;
@@ -2260,16 +2260,16 @@ html.legacy #content .content #boxlogin {
 }
 
 
-html.legacy #content .content #boxlogin .login_input {
+.legacy #boxlogin .login_input {
    position: relative;
    width:13em;
    margin: 15px auto 5px;
    width: 240px;
 }
 
-html.legacy #content .content #boxlogin input[type=text],
-html.legacy #content .content #boxlogin select,
-#html.legacy #content .content boxlogin input[type=password] {
+.legacy #boxlogin input[type=text],
+.legacy #boxlogin select,
+#.legacy boxlogin input[type=password] {
    width: 100%;
    height: 30px;
    display: block;
@@ -2280,15 +2280,15 @@ html.legacy #content .content #boxlogin select,
    box-sizing: border-box;
 }
 
-html.legacy #content .content #boxlogin input[type=text]:focus,
-html.legacy #content .content #boxlogin select:focus,
-html.legacy #content .content #boxlogin input[type=password]:focus{
+.legacy #boxlogin input[type=text]:focus,
+.legacy #boxlogin select:focus,
+.legacy #boxlogin input[type=password]:focus{
    border-color:#FFA500;
    background-color: #fff;
    box-shadow:0 0 3px #FFA500;
 }
 
-html.legacy #content .content #boxlogin label {
+.legacy #boxlogin label {
    color: #FFF;
    font-size: 1.2em;
 }
@@ -2301,11 +2301,11 @@ html.legacy #content .content #boxlogin label {
    box-shadow: 0 0 0px 1000px white inset;
 }
 
-html.legacy #content .content .pure-control-group {
+.legacy .pure-control-group {
    position: relative;
 }
 
-html.legacy #content .content .input-img {
+.legacy .input-img {
    /*left:8px;
    position:absolute;
    top:3px;*/
@@ -2315,7 +2315,7 @@ html.legacy #content .content .input-img {
    top: .3em;
    left: .8em;
 }
-html.legacy #content .content #boxlogin .login_input:before {
+.legacy #boxlogin .login_input:before {
    font-family: FontAwesome;
    left:8px;
    position:absolute;
@@ -2324,29 +2324,29 @@ html.legacy #content .content #boxlogin .login_input:before {
    font-size: 24px;
 }
 
-html.legacy #content .content #boxlogin #login_input_name:before {
+.legacy #boxlogin #login_input_name:before {
    content: "\f2be";
 }
-html.legacy #content .content #boxlogin #login_input_password:before {
+.legacy #boxlogin #login_input_password:before {
    content: "\f023";
    left: 11px;
 }
-html.legacy #content .content #boxlogin #login_input_src:before {
+.legacy #boxlogin #login_input_src:before {
    content: "\f2ba";
 }
 
-html.legacy #content .content #boxlogin #dropdown_auth1:before {
+.legacy #boxlogin #dropdown_auth1:before {
    background: url(../pics/login_source.png) no-repeat 3% 50%;
 }
 
-html.legacy #content .content #boxlogin input.submit {
+.legacy #boxlogin input.submit {
    margin-top: 20px;
    width: 100%;
    height: 30px;
    font-size: 1.3em;
 }
 
-html.legacy #content .content #boxlogin #forget {
+.legacy #boxlogin #forget {
    margin-top: 50px;
    color: #FFF;
    width: 100%;
@@ -2354,39 +2354,39 @@ html.legacy #content .content #boxlogin #forget {
    text-align: center;
 }
 
-html.legacy #content .content #box-faq {
+.legacy #box-faq {
    padding-top:30px;
    text-align:center;
    margin:auto;
 }
 
-html.legacy #content .content #box-faq a{
+.legacy #box-faq a{
    color: #CFCFCF;
 }
 
-html.legacy #content .content .sous_logo {
+.legacy .sous_logo {
    font-family: arial;
    font-size: 9px;
    color: #eeeeee;
    text-decoration: none;
 }
 
-html.legacy #content .content .error {
+.legacy .error {
    color: red;
    margin-top:20px;
    text-align:center;
 }
-html.legacy #content .content .error a, html.legacy #content .content .error a:link, html.legacy #content .content .ui-widget-content .error a {
+.legacy .error a, .legacy .error a:link, .legacy .ui-widget-content .error a {
    font-weight: normal;
    color: red;
    font-size: inherit;
 }
-html.legacy #content .content .error a:hover {
+.legacy .error a:hover {
    text-decoration: underline;
 }
 
-html.legacy #content .content #footer-login,
-html.legacy #content .content .loginpage #footer {
+.legacy #footer-login,
+.legacy .loginpage #footer {
    position: absolute;
    right: 10px;
    bottom: 0px;
@@ -2396,12 +2396,12 @@ html.legacy #content .content .loginpage #footer {
    background-color: transparent;
 }
 
-html.legacy #content .content #footer-login.home,
-html.legacy #content .content .loginpage #footer {
+.legacy #footer-login.home,
+.legacy .loginpage #footer {
    bottom: 15px;
 }
-html.legacy #content .content #footer-login.home a,
-html.legacy #content .content .loginpage #footer a {
+.legacy #footer-login.home a,
+.legacy .loginpage #footer a {
    color: #FFF;
 }
 
@@ -2409,17 +2409,17 @@ html.legacy #content .content .loginpage #footer a {
 
 /* ################--------------- Header / menu  ---------------#################### */
 
-html.legacy #content .content #header {
+.legacy #header {
    /*height: 96px;*/
 }
 
-html.legacy #content .content #header_top {
+.legacy #header_top {
    width: 100%;
    height: 20px;
    padding: 10px 0;
 }
 
-html.legacy #content .content #c_preference {
+.legacy #c_preference {
    height: 20px;
    text-align: right;
    margin-right: 5px;
@@ -2429,52 +2429,52 @@ html.legacy #content .content #c_preference {
    float: right;
 }
 
-html.legacy #content .content #c_preference a.fa {
+.legacy #c_preference a.fa {
    font-size: 1.8em;
    color: white;
 }
-html.legacy #content .content #c_preference a.fa:hover {
+.legacy #c_preference a.fa:hover {
    text-decoration: none;
    color: #ccc;
 }
 
-html.legacy #content .content #c_preference ul {
+.legacy #c_preference ul {
    list-style: none;
 }
 
-html.legacy #content .content #c_preference ul li {
+.legacy #c_preference ul li {
    float: right;
    margin: 0 10px;
 }
 
-html.legacy #content .content #c_preference a.debugon,
-html.legacy #content .content #c_preference a.debugon:hover {
+.legacy #c_preference a.debugon,
+.legacy #c_preference a.debugon:hover {
    color: #ff0000!important;
 }
 
 
-html.legacy #content .content #c_preference a {
+.legacy #c_preference a {
    text-decoration: none;
    font-size: 0.9em;
 }
 
-html.legacy #content .content #c_preference a:hover{
+.legacy #c_preference a:hover{
    text-decoration: underline;
 }
 
-html.legacy #content .content #c_preference .select2-choice {
+.legacy #c_preference .select2-choice {
    color: #3a5693;
 }
 
-html.legacy #content .content #c_preference p {
+.legacy #c_preference p {
    margin: 0;
 }
 
-html.legacy #content .content #c_recherche {
+.legacy #c_recherche {
    position: relative;
 }
 
-html.legacy #content .content #c_recherche form #champRecherche button {
+.legacy #c_recherche form #champRecherche button {
    border: none;
    height: 22px;
    vertical-align: bottom;
@@ -2483,11 +2483,11 @@ html.legacy #content .content #c_recherche form #champRecherche button {
    margin: 0;
 }
 
-html.legacy #content .content #c_recherche form #champRecherche button:hover {
+.legacy #c_recherche form #champRecherche button:hover {
    background-color: #ccc;
 }
 
-html.legacy #content .content #c_recherche form #champRecherche input {
+.legacy #c_recherche form #champRecherche input {
    border: none;
    height: 22px;
    width: 150px;
@@ -2498,7 +2498,7 @@ html.legacy #content .content #c_recherche form #champRecherche input {
    position: relative;
 }
 
-html.legacy #content .content #myname {
+.legacy #myname {
    font-size: 11px;
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    margin: 0 0 .5em .5em;
@@ -2507,19 +2507,19 @@ html.legacy #content .content #myname {
    font-weight: bold;
 }
 
-html.legacy #content .content #language_link > a, #language_link > span {
+.legacy #language_link > a, #language_link > span {
    display: inline-block;
    padding: .5em 0;
    font-weight: bold;
 }
 
-html.legacy #content .content #c_menu {
+.legacy #c_menu {
    /*height: 30px;*/
    text-align: center;
    padding-left: 95px;
 }
 
-html.legacy #content .content #c_menu ul#menu {
+.legacy #c_menu ul#menu {
    height: 30px;
    list-style: none;
    font-size: 13px;
@@ -2528,7 +2528,7 @@ html.legacy #content .content #c_menu ul#menu {
    display: inline-block;
 }
 
-html.legacy #content .content ul#menu a.itemP, html.legacy #content .content ul#menu a.itemP1 {
+.legacy ul#menu a.itemP, .legacy ul#menu a.itemP1 {
    display: block;
    text-align: center;
    text-decoration: none;
@@ -2537,31 +2537,31 @@ html.legacy #content .content ul#menu a.itemP, html.legacy #content .content ul#
    padding:7px 1em;
 }
 
-html.legacy #content .content ul#menu ul.ssmenu {
+.legacy ul#menu ul.ssmenu {
    background: rgba(255, 255, 255, 0.9);
    display: none;
    box-shadow: 0px 2px 2px 1px #BCB6B3;
 }
 
-html.legacy #content .content ul#menu ul li {
+.legacy ul#menu ul li {
    list-style: none;
    text-align: left;
    line-height: 20px;
    font-size: 0.9em;
 }
 
-html.legacy #content .content ul#menu ul li:last-child {
+.legacy ul#menu ul li:last-child {
    border-bottom: 0px;
 }
 
-html.legacy #content .content ul#menu ul li a {
+.legacy ul#menu ul li a {
    text-decoration: none;
    display: block;
    padding: 5px 5px 5px 5px;
 }
 
 
-html.legacy #content .content #menu_all_button {
+.legacy #menu_all_button {
    float: right;
    width: 24px;
    height: 24px;
@@ -2573,17 +2573,17 @@ html.legacy #content .content #menu_all_button {
 
 /* hide menu on small screen */
 @media screen and (max-width: 1055px) {
-   html.legacy #content .content #c_menu ul#menu,
-   html.legacy #content .content #language_link,
-   html.legacy #content .content #help_link,
-   html.legacy #content .content #myname {
+   .legacy #c_menu ul#menu,
+   .legacy #language_link,
+   .legacy #help_link,
+   .legacy #myname {
       display: none;
    }
 }
 
 @media screen and (max-width: 490px) {
 
-   html.legacy #content .content #show_all_menu .top {
+   .legacy #show_all_menu .top {
       display: block;
       float: left;
       height: 370px;
@@ -2592,26 +2592,26 @@ html.legacy #content .content #menu_all_button {
    }
 }
 
-html.legacy #content .content .button-icon:hover {
+.legacy .button-icon:hover {
    opacity: .5;
 }
 
-html.legacy #content .content ul#menu > li {
+.legacy ul#menu > li {
    display: inline-block;
    min-width: 135px;
    height: 30px;
 }
-html.legacy #content .content #c_menu .pure-menu-list > li {
+.legacy #c_menu .pure-menu-list > li {
    min-width: 135px;
 }
 
-html.legacy #content .content ul#menu ul.ssmenu, html.legacy #content .content #c_menu .pure-menu-list ul.ssmenu {
+.legacy ul#menu ul.ssmenu, .legacy #c_menu .pure-menu-list ul.ssmenu {
    position: absolute;
    min-width: 135px;
    z-index: 500;
 }
 
-html.legacy #content .content #header #c_logo {
+.legacy #header #c_logo {
    position: absolute;
    z-index: 1000;
    width: 100px;
@@ -2620,42 +2620,42 @@ html.legacy #content .content #header #c_logo {
    background: url("../pics/fd_logo.png") 0 0 repeat-x;
 }
 
-html.legacy #content .content #header #c_logo a {
+.legacy #header #c_logo a {
    display: block;
    width: 100%;
    height: 100%;
    text-decoration: none;
 }
 
-html.legacy #content .content #c_ssmenu1 {
+.legacy #c_ssmenu1 {
    background: #D0D99D;
    height: 24px;
    clear: both;
    font-size: 0.8em;
 }
 
-html.legacy #content .content #c_ssmenu1 ul {
+.legacy #c_ssmenu1 ul {
    position: relative;
    top: 4px;
    left: 0px;
    list-style: none;
 }
 
-html.legacy #content .content #c_ssmenu1 ul li {
+.legacy #c_ssmenu1 ul li {
    float: left;
    padding: 0 10px;
 }
 
-html.legacy #content .content #c_ssmenu1 ul li a {
+.legacy #c_ssmenu1 ul li a {
    text-decoration: none;
    color: #666;
 }
 
-html.legacy #content .content #c_ssmenu1 ul li a:hover {
+.legacy #c_ssmenu1 ul li a:hover {
    text-decoration: underline;
 }
 
-html.legacy #content .content #c_ssmenu2 {
+.legacy #c_ssmenu2 {
    min-height: 34px;
    padding: 3px 0;
    box-sizing: border-box;
@@ -2663,31 +2663,31 @@ html.legacy #content .content #c_ssmenu2 {
    margin-bottom: 1.5em;
 }
 
-html.legacy #content .content #c_ssmenu2 ul {
+.legacy #c_ssmenu2 ul {
    left: 0px;
    list-style: none;
 }
 
-html.legacy #content .content #c_ssmenu2 ul li {
+.legacy #c_ssmenu2 ul li {
    float: left;
    padding: 5px 10px 0 10px;
 }
 
-html.legacy #content .content #c_ssmenu2 ul li a {
+.legacy #c_ssmenu2 ul li a {
    text-decoration: none;
    color: #000;
 }
 
-html.legacy #content .content #c_ssmenu2  a.here {
+.legacy #c_ssmenu2  a.here {
    font-size:14px;
 }
 
-html.legacy #content .content .breadcrumb_item {
+.legacy .breadcrumb_item {
    height: 23px;
    position: relative;
 }
 
-html.legacy #content .content .profile-selector {
+.legacy .profile-selector {
    float: right !important;
    height: 28px;
    line-height: 24px;
@@ -2695,7 +2695,7 @@ html.legacy #content .content .profile-selector {
    position: relative;
 }
 
-html.legacy #content .content .breadcrumb_item:before {
+.legacy .breadcrumb_item:before {
    left: 100%;
    top: 50%;
    border: solid transparent;
@@ -2709,7 +2709,7 @@ html.legacy #content .content .breadcrumb_item:before {
    z-index: 20;
 }
 
-html.legacy #content .content .breadcrumb_item:after {
+.legacy .breadcrumb_item:after {
    left: 100%;
    top: 50%;
    border: solid transparent;
@@ -2724,30 +2724,30 @@ html.legacy #content .content .breadcrumb_item:after {
    margin-left: -1px;
 }
 
-html.legacy #content .content .breadcrumb_item:not(:nth-of-type(1)) {
+.legacy .breadcrumb_item:not(:nth-of-type(1)) {
    padding-left: 25px !important;
 }
 
-html.legacy #content .content .breadcrumb_item:nth-of-type(1) {
+.legacy .breadcrumb_item:nth-of-type(1) {
    background-color: #F2F2F2;
 }
-html.legacy #content .content .breadcrumb_item:nth-of-type(1):after {
+.legacy .breadcrumb_item:nth-of-type(1):after {
    border-left-color: #F2F2F2;
 }
-html.legacy #content .content .breadcrumb_item:nth-of-type(2) {
+.legacy .breadcrumb_item:nth-of-type(2) {
    background-color: #F2F2F2;
 }
-html.legacy #content .content .breadcrumb_item:nth-of-type(2):after {
+.legacy .breadcrumb_item:nth-of-type(2):after {
    border-left-color: #F2F2F2;
 }
-html.legacy #content .content .breadcrumb_item:nth-of-type(3) {
+.legacy .breadcrumb_item:nth-of-type(3) {
    background-color: #FEC95C;
 }
-html.legacy #content .content .breadcrumb_item:nth-of-type(3):after {
+.legacy .breadcrumb_item:nth-of-type(3):after {
    border-left-color: #FEC95C;
 }
 
-html.legacy #content .content .icons_block {
+.legacy .icons_block {
    margin-left: 10px;
    height: 28px;
    float: inherit !important;
@@ -2757,24 +2757,24 @@ html.legacy #content .content .icons_block {
    z-index: 40;
 }
 
-html.legacy #content .content .icons_block span {
+.legacy .icons_block span {
    padding: 0 8px;
    min-width: 20px;
    display: inline-block;
    line-height: 23px;
 }
-html.legacy #content .content .profile-selector a {
+.legacy .profile-selector a {
    display: inline-block;
    line-height: 23px;
 }
 
-html.legacy #content .content .icons_block a > img,
-html.legacy #content .content .icons_block i.fa {
+.legacy .icons_block a > img,
+.legacy .icons_block i.fa {
    font-size: 1.7em;
    vertical-align: top;
 }
 
-html.legacy #content .content #show_all_menu {
+.legacy #show_all_menu {
    font-size: 11px;
    text-align: left;
    min-width: 150px;
@@ -2782,46 +2782,46 @@ html.legacy #content .content #show_all_menu {
    -moz-column-count:3;
 }
 
-html.legacy #content .content #show_all_menu dl {
+.legacy #show_all_menu dl {
    padding-bottom: .5em;
    break-inside: avoid-column; /* standard */
    page-break-inside: avoid; /* Firefox */
    -webkit-column-break-inside: avoid; /* other webkit compliant */
 }
 
-html.legacy #content .content #show_all_menu a {
+.legacy #show_all_menu a {
    display: block;
    padding: .2em .5em;
 }
 
-html.legacy #content .content #show_all_menu dt a {
+.legacy #show_all_menu dt a {
    color:white;
 }
 
-html.legacy #content .content #show_all_menu dt a:hover {
+.legacy #show_all_menu dt a:hover {
    background: #8BAADA;
 }
 
-html.legacy #content .content #show_all_menu a:hover {
+.legacy #show_all_menu a:hover {
    background-color: #3A5693;
    color: #C7DBF5;
 }
 
-html.legacy #content .content .iframe {
+.legacy .iframe {
     width: 100%;
     height: 100%;
     margin: 0;
     border-width: 0px;
 }
 
-html.legacy #content .content .iframe.hidden {
+.legacy .iframe.hidden {
    height: 0;
    width: 0;
 }
 
 /* ################--------------- Footer  ---------------#################### */
 
-html.legacy #content .content #footer {
+.legacy #footer {
    font-size: 9px;
    color: #000;
    background-color: #E2E1DE;
@@ -2831,11 +2831,11 @@ html.legacy #content .content #footer {
    margin-top: 1.5em;
 }
 
-html.legacy #content .content #footer > table {
+.legacy #footer > table {
    width: 100%;
 }
 
-html.legacy #content .content a.copyright {
+.legacy a.copyright {
    font-size: 9px;
    color :#000;
 }
@@ -2843,14 +2843,14 @@ html.legacy #content .content a.copyright {
 
 
 /* ################--------------- DB Slave---------------#################### */
-html.legacy #content .content #dbslave-float {
+.legacy #dbslave-float {
    top: 0px;
    left: 300px;
    position: absolute;
    z-index: 100;
 }
 
-html.legacy #content .content #dbslave-float a {
+.legacy #dbslave-float a {
    border-top: 1px solid #cecece;
    border-bottom: 2px solid #4a4a4a;
    border-left: 1px solid #cecece;
@@ -2869,14 +2869,14 @@ html.legacy #content .content #dbslave-float a {
 
 
 /* ################--------------- Debug  ---------------#################### */
-html.legacy #content .content #debug-float {
+.legacy #debug-float {
    top: 0px;
    left: 80px;
    position: absolute;
    z-index: 100;
 }
 
-html.legacy #content .content #maintenance-float {
+.legacy #maintenance-float {
    top: 0px;
    left: 280px;
    position: absolute;
@@ -2884,7 +2884,7 @@ html.legacy #content .content #maintenance-float {
 }
 
 
-html.legacy #content .content #debug-float a, html.legacy #content .content #maintenance-float a {
+.legacy #debug-float a, .legacy #maintenance-float a {
    border-top: 1px solid #cecece;
    border-bottom: 2px solid #4a4a4a;
    border-left: 1px solid #cecece;
@@ -2900,53 +2900,53 @@ html.legacy #content .content #debug-float a, html.legacy #content .content #mai
    color:red;
 }
 
-html.legacy #content .content #debug-float a:hover, html.legacy #content .content #maintenance-float a:hover {
+.legacy #debug-float a:hover, .legacy #maintenance-float a:hover {
    background-color: #fc3;
    border-bottom: 2px solid #36f;
 }
 
-html.legacy #content .content #debugajax {
+.legacy #debugajax {
    margin: auto;
    text-align:center;
 }
 
-html.legacy #content .content .debug .ui-tabs {
+.legacy .debug .ui-tabs {
    border: 10px solid #dadada !important;
 }
 
-html.legacy #content .content .debug h1, html.legacy #content .content #debugajax h1 {
+.legacy .debug h1, .legacy #debugajax h1 {
    font-size:18px;
    text-align:center;
    padding: 5px;
 }
 
-html.legacy #content .content .debug h2, html.legacy #content .content #debugajax h2 {
+.legacy .debug h2, .legacy #debugajax h2 {
    font-size:14px;
    padding-left: 10px;
    border-left: 4px solid #FFC65D;
    border-bottom: 2px solid #FFC65D;
 }
 
-html.legacy #content .content .debug table, html.legacy #content .content #debugajax table {
+.legacy .debug table, .legacy #debugajax table {
    margin:0;
 }
 
-html.legacy #content .content .debug .ui-tabs .close {
+.legacy .debug .ui-tabs .close {
    right: 14px;
    position: absolute;
    width: 20px;
    top: 1px;
 }
 
-html.legacy #content .content .debug .ui-tabs .tab_cadre {
+.legacy .debug .ui-tabs .tab_cadre {
    width: 100%;
 }
 
-html.legacy #content .content .debug .ui-tabs .tab_cadre td:nth-child(2) {
+.legacy .debug .ui-tabs .tab_cadre td:nth-child(2) {
    word-break: break-all;
 }
 
-html.legacy #content .content #see_debug, html.legacy #content .content #backtotop {
+.legacy #see_debug, .legacy #backtotop {
    position: fixed;
    bottom: 35px;
    right: 10px;
@@ -2955,20 +2955,20 @@ html.legacy #content .content #see_debug, html.legacy #content .content #backtot
    z-index: 99; /* Behind debug panel */
 }
 
-html.legacy #content .content #c_preference a.fa:hover,
-html.legacy #content .content #see_debug:hover, html.legacy #content .content #backtotop:hover {
+.legacy #c_preference a.fa:hover,
+.legacy #see_debug:hover, .legacy #backtotop:hover {
    opacity: .8;
 }
 
-html.legacy #content .content #see_debug.wbttop {
+.legacy #see_debug.wbttop {
    right: 40px;
 }
 
-html.legacy #content .content #see_debug.on a:hover {
+.legacy #see_debug.on a:hover {
    color: #ff0000;
 }
 
-html.legacy #content .content .debug .ui-tabs {
+.legacy .debug .ui-tabs {
    display: none;
    position: fixed !important;
    left: 0 !important;
@@ -2979,77 +2979,77 @@ html.legacy #content .content .debug .ui-tabs {
    width: 98%;
 }
 
-html.legacy #content .content .debug_ajax .ui-tabs {
+.legacy .debug_ajax .ui-tabs {
    position: relative !important;
    height: inherit !important;
    display: block;
 }
 
-html.legacy #content .content #page .debug_ajax div.ui-tabs {
+.legacy #page .debug_ajax div.ui-tabs {
    width: 98%;
 }
 
 
-html.legacy #content .content .debug_ajax .see_debug{
+.legacy .debug_ajax .see_debug{
    display: none;
 }
 
-html.legacy #content .content .debug .ui-tabs-panel {
+.legacy .debug .ui-tabs-panel {
    height: 273px;
    overflow: auto;
 }
 
-html.legacy #content .content .debug_ajax .ui-tabs .ui-tabs-panel {
+.legacy .debug_ajax .ui-tabs .ui-tabs-panel {
    height: auto;
 }
 
-html.legacy #content .content .debug .tab_cadre {
+.legacy .debug .tab_cadre {
    box-shadow: none;
 }
 
 /* Restore default behavior : drop user agent CSS*/
-html.legacy #content .content *:focus {
+.legacy *:focus {
   outline-width: 0;
 }
 
-html.legacy #content .content .nostyle:focus {
+.legacy .nostyle:focus {
   outline-width: 5px;
 }
 
 /* Timeline */
 
-html.legacy #content .content .timeline_box {
+.legacy .timeline_box {
    text-align: left;
    padding: 4px 8px;
    margin-top: -10px;
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
 }
 
-html.legacy #content .content .timeline_box .break {
+.legacy .timeline_box .break {
    clear: both;
 }
 
-html.legacy #content .content .timeline_box h2 {
+.legacy .timeline_box h2 {
    font-size: 16px;
 }
 
-html.legacy #content .content .timeline_box textarea {
+.legacy .timeline_box textarea {
    resize: vertical;
    width: 97%;
 }
 
 /** FORM **/
 
-html.legacy #content .content .timeline_form {
+.legacy .timeline_form {
    width: 100%;
    padding-left: 4px;
 }
 
-html.legacy #content .content .timeline_choices h2 {
+.legacy .timeline_choices h2 {
    display: inline-block;
    margin: 1em 1em 0 0;
 }
-html.legacy #content .content .timeline_choices li {
+.legacy .timeline_choices li {
    display: inline-block;
    min-width: 90px;
    text-align: center;
@@ -3059,116 +3059,116 @@ html.legacy #content .content .timeline_choices li {
    font-weight: bold;
 }
 
-html.legacy #content .content .timeline_choices li i {
+.legacy .timeline_choices li i {
    margin-right: 1em;
    font-size: 1.2em;
    vertical-align: bottom;
 }
 
-html.legacy #content .content .timeline_choices li:before {
+.legacy .timeline_choices li:before {
    margin-right: 1em;
    font-weight: normal;
 }
 
-html.legacy #content .content .timeline_choices li:hover {
+.legacy .timeline_choices li:hover {
    box-shadow: 0px 1px 1px #999;
  }
 
-html.legacy #content .content .timeline_choices li.followup {
+.legacy .timeline_choices li.followup {
    background-color:#E0E0E0;
    color:#535353;
 }
-html.legacy #content .content .timeline_choices li.task {
+.legacy .timeline_choices li.task {
    background-color: #FEDA90;
    color: #535353;
 }
-html.legacy #content .content .timeline_choices li.document {
+.legacy .timeline_choices li.document {
    background-color:#80CEAD;
    color:#3A5D4E;
 }
-html.legacy #content .content .timeline_choices li.solution {
+.legacy .timeline_choices li.solution {
    background-color:#9FD6ED;
    color:#425B64;
 }
 
-html.legacy #content .content .timeline_box .tab_cadre_fixe {
+.legacy .timeline_box .tab_cadre_fixe {
    width: 930px;
 }
 
 
 /** TIMELINE **/
 
-html.legacy #content .content .timeline_history {
+.legacy .timeline_history {
    border-top: 1px dashed #3C5874;
    overflow: hidden;
    font-size: 12px; /*fix jqueryui ui-widget size*/
    width: 100%;
 }
 
-html.legacy #content .content .timeline_history > h2 {
+.legacy .timeline_history > h2 {
    float: left;
 }
 
-html.legacy #content .content .timeline_history .filter_timeline {
+.legacy .timeline_history .filter_timeline {
    opacity: 0.2;
    text-align: right;
    margin-top: .2em;
 }
-html.legacy #content .content .timeline_history .filter_timeline > * {
+.legacy .timeline_history .filter_timeline > * {
    vertical-align: middle;
 }
-html.legacy #content .content .timeline_history .filter_timeline:hover {
+.legacy .timeline_history .filter_timeline:hover {
    opacity: 1;
 }
 
-html.legacy #content .content .timeline_history .filter_timeline {
+.legacy .timeline_history .filter_timeline {
    float: right;
 }
 
-html.legacy #content .content .timeline_history .filter_timeline h3,
-html.legacy #content .content .timeline_history .filter_timeline ul,
-html.legacy #content .content .timeline_history .filter_timeline ul li {
+.legacy .timeline_history .filter_timeline h3,
+.legacy .timeline_history .filter_timeline ul,
+.legacy .timeline_history .filter_timeline ul li {
    display: inline-block;
 }
-html.legacy #content .content .timeline_history .filter_timeline h3 {
+.legacy .timeline_history .filter_timeline h3 {
    font-weight: bold;
    font-size: 1em;
    margin: 0 .5em 0 0;
    padding: 0;
 }
 
-html.legacy #content .content .timeline_history .filter_timeline a {
+.legacy .timeline_history .filter_timeline a {
    font-size: 1.5em;
    display: inline-block;
    padding: 0 .2em;
 }
 
-html.legacy #content .content .filter_timeline a.h_active {
+.legacy .filter_timeline a.h_active {
    color: green!important;
 }
 
-html.legacy #content .content .timeline_history .h_item {
+.legacy .timeline_history .h_item {
    clear: both;
    padding-top: 8px;
    border-top: 1px dashed #D2D2D2;
 }
 
-html.legacy #content .content .timeline_history .h_hidden {
+.legacy .timeline_history .h_hidden {
    display: none;
 }
 
-html.legacy #content .content .timeline_history .h_info {
+.legacy .timeline_history .h_info {
    float: left;
    width: 25%;
    max-width: 140px;
 }
-html.legacy #content .content .timeline_history .right .h_info {
+.legacy .timeline_history .right .h_info {
    float: right;
 }
 
 
-html.legacy #content .content .timeline_history .h_user,
-html.legacy #content .content .timeline_history .h_date {
+.legacy .timeline_history .h_user,
+.legacy .timeline_history .h_date {
    background-repeat: no-repeat;
    padding-left: 24px;
    padding-top: 1px;
@@ -3176,14 +3176,14 @@ html.legacy #content .content .timeline_history .h_date {
    text-align: center;
 }
 
-html.legacy #content .content .timeline_history .h_date i {
+.legacy .timeline_history .h_date i {
    font-size: 1.8em;
    margin-right: .3em;
    opacity: .7;
    vertical-align: -15%;
 }
 
-html.legacy #content .content .timeline_history .h_date {
+.legacy .timeline_history .h_date {
    white-space: nowrap;
    margin-bottom: 10px;
    text-align: left;
@@ -3191,7 +3191,7 @@ html.legacy #content .content .timeline_history .h_date {
    padding-left: 0!important;
 }
 
-html.legacy #content .content  .timeline_history .h_user .h_user_name {
+.legacy  .timeline_history .h_user .h_user_name {
    display: inline-block;
    margin-bottom: 5px;
    vertical-align: middle;
@@ -3200,11 +3200,11 @@ html.legacy #content .content  .timeline_history .h_user .h_user_name {
    margin-top: 5px;
 }
 
-html.legacy #content .content .timeline_history .h_user a:hover {
+.legacy .timeline_history .h_user a:hover {
    text-decoration: underline;
 }
 
-html.legacy #content .content .timeline_history .h_user .tooltip_picture_border {
+.legacy .timeline_history .h_user .tooltip_picture_border {
    padding: 2px;
    border-radius: 50%;
    border: 3px inset #E7E7E7;
@@ -3215,42 +3215,42 @@ html.legacy #content .content .timeline_history .h_user .tooltip_picture_border 
    margin: 0 auto;
 }
 
-html.legacy #content .content .timeline_history .h_user .user_picture {
+.legacy .timeline_history .h_user .user_picture {
    width: 51px;
    height: 51px;
    border-radius: 50%;
 }
 
-html.legacy #content .content .timeline_history .users_id_tech img {
+.legacy .timeline_history .users_id_tech img {
    vertical-align: middle;
 }
 
-html.legacy #content .content .timeline_history .left .h_user,
-html.legacy #content .content .timeline_history .left .h_date,
-html.legacy #content .content .timeline_history .middle .h_user,
-html.legacy #content .content .timeline_history .middle .h_date {
+.legacy .timeline_history .left .h_user,
+.legacy .timeline_history .left .h_date,
+.legacy .timeline_history .middle .h_user,
+.legacy .timeline_history .middle .h_date {
    padding-left: 24px;
    padding-right: 0;
    padding-top: 2px;
 }
-html.legacy #content .content .timeline_history .left .h_date,
-html.legacy #content .content .timeline_history .middle .h_date {
+.legacy .timeline_history .left .h_date,
+.legacy .timeline_history .middle .h_date {
    margin: 0 auto;
 }
 
-html.legacy #content .content .timeline_history .h_user,
-html.legacy #content .content .timeline_history .middle .h_user,
-html.legacy #content .content .timeline_history .left .h_user {
+.legacy .timeline_history .h_user,
+.legacy .timeline_history .middle .h_user,
+.legacy .timeline_history .left .h_user {
    padding-right: 0;
    padding-left: 0;
    padding-top: 0;
 }
 
-html.legacy #content .content .timeline_history img.group_assign {
+.legacy .timeline_history img.group_assign {
    vertical-align: bottom;
 }
 
-html.legacy #content .content .timeline_history .h_content {
+.legacy .timeline_history .h_content {
    max-width:50%;
    min-width: 200px;
    padding: 5px 5px 5px 8px;
@@ -3263,19 +3263,19 @@ html.legacy #content .content .timeline_history .h_content {
    white-space: pre-wrap;
 }
 
-html.legacy #content .content .timeline_history .right .h_content {
+.legacy .timeline_history .right .h_content {
    margin-left: 0;
    margin-right: 20px;
    float: right;
    text-align: left;
 }
 
-html.legacy #content .content .timeline_history .middle .h_content {
+.legacy .timeline_history .middle .h_content {
    max-width: inherit;
    width: 69%;
 }
 
-html.legacy #content .content .timeline_history .h_content:after, .timeline_history .h_content:before {
+.legacy .timeline_history .h_content:after, .timeline_history .h_content:before {
    right: 100%;
    top: 53px;
    border: solid transparent;
@@ -3286,11 +3286,11 @@ html.legacy #content .content .timeline_history .h_content:after, .timeline_hist
    pointer-events: none;
 }
 
-html.legacy #content .content .timeline_history.standalone .h_content:after {
+.legacy .timeline_history.standalone .h_content:after {
    display: none;
 }
 
-html.legacy #content .content .timeline_history .h_content:after {
+.legacy .timeline_history .h_content:after {
    border-width: 8px;
    margin-top: -15px;
    border-top-color: transparent !important;
@@ -3298,36 +3298,36 @@ html.legacy #content .content .timeline_history .h_content:after {
 }
 
 
-html.legacy #content .content .timeline_history .right .h_content:after,
-html.legacy #content .content .timeline_history .right .h_content:before {
+.legacy .timeline_history .right .h_content:after,
+.legacy .timeline_history .right .h_content:before {
    left: 100%;
 }
 
-html.legacy #content .content .timeline_history .left .h_content:after {
+.legacy .timeline_history .left .h_content:after {
    border-left-color: transparent !important;
 }
-html.legacy #content .content .timeline_history .left .h_content:before {
+.legacy .timeline_history .left .h_content:before {
    border-left-color: transparent !important;
 }
-html.legacy #content .content .timeline_history .right .h_content:after {
+.legacy .timeline_history .right .h_content:after {
    border-right-color: transparent !important;
 }
-html.legacy #content .content .timeline_history .right .h_content:before {
+.legacy .timeline_history .right .h_content:before {
    border-right-color: transparent !important;
 }
 
-html.legacy #content .content .timeline_history .TicketFollowup:after            { border-color: #E0E0E0;}
-html.legacy #content .content .timeline_history .TicketTask:after                { border-color: #FEDA90;}
-html.legacy #content .content .timeline_history .Solution:after                  { border-color: #9FD6ED;}
-html.legacy #content .content .timeline_history .TicketValidation.status_3:after { border-color: #A1D7A2;}
-html.legacy #content .content .timeline_history .TicketValidation:after          { border-color: #FFFFFF;}
-html.legacy #content .content .timeline_history .TicketValidation.status_4:after { border-color: #D3A4A4;}
+.legacy .timeline_history .TicketFollowup:after            { border-color: #E0E0E0;}
+.legacy .timeline_history .TicketTask:after                { border-color: #FEDA90;}
+.legacy .timeline_history .Solution:after                  { border-color: #9FD6ED;}
+.legacy .timeline_history .TicketValidation.status_3:after { border-color: #A1D7A2;}
+.legacy .timeline_history .TicketValidation:after          { border-color: #FFFFFF;}
+.legacy .timeline_history .TicketValidation.status_4:after { border-color: #D3A4A4;}
 
-html.legacy #content .content .timeline_history .right .h_content p {
+.legacy .timeline_history .right .h_content p {
    margin: 2px 0 0;
 }
 
-html.legacy #content .content .timeline_history .private {
+.legacy .timeline_history .private {
    width: 30px;
    float: right;
    padding-top: 18px;
@@ -3337,32 +3337,32 @@ html.legacy #content .content .timeline_history .private {
    text-align: center;
    white-space: nowrap;
 }
-html.legacy #content .content .timeline_history .right .private {
+.legacy .timeline_history .right .private {
    float: left;
 }
 
-html.legacy #content .content .timeline_history .left .h_content.timeline_active {
+.legacy .timeline_history .left .h_content.timeline_active {
    border-right: 8px solid #3C5874;
 }
-html.legacy #content .content .timeline_history .right .h_content.timeline_active {
+.legacy .timeline_history .right .h_content.timeline_active {
    border-left: 8px solid #3C5874;
 }
 
-html.legacy #content .content .timeline_history .h_content.edited {
+.legacy .timeline_history .h_content.edited {
    max-width: inherit;
    text-align: center;
 }
 
-html.legacy #content .content .timeline_history .h_content.edited .tab_cadre_fixe {
+.legacy .timeline_history .h_content.edited .tab_cadre_fixe {
    width: 100%;
    margin: 0;
 }
 
-html.legacy #content .content .timeline_history .h_content .edit_item_content {
+.legacy .timeline_history .h_content .edit_item_content {
    display: none;
    border: 1px dotted #C0C0C0;
 }
-html.legacy #content .content .timeline_history .h_content .cancel_edit_item_content {
+.legacy .timeline_history .h_content .cancel_edit_item_content {
    display: none;
    background-image: url(../pics/close.png);
    width: 16px;
@@ -3373,129 +3373,129 @@ html.legacy #content .content .timeline_history .h_content .cancel_edit_item_con
    top: 12px;
    right: 12px;
 }
-html.legacy #content .content .timeline_history .h_content .cancel_edit_item_content:hover {
+.legacy .timeline_history .h_content .cancel_edit_item_content:hover {
    opacity: 1;
 }
 
-html.legacy #content .content .timeline_history .h_content.TicketFollowup {
+.legacy .timeline_history .h_content.TicketFollowup {
    background-color: #E0E0E0;
    color: #535353;
    background-image: url(../pics/timeline/followup.png);
    background-repeat: no-repeat;
 }
 
-html.legacy #content .content .timeline_history .h_content.TicketTask {
+.legacy .timeline_history .h_content.TicketTask {
    background-color: #FEDA90;
    color: #38301F;
    background-image: url(../pics/timeline/task.png);
    background-repeat: no-repeat;
 }
 
-html.legacy #content .content .timeline_history .h_content.Solution {
+.legacy .timeline_history .h_content.Solution {
    border-left: 1em green solid;
    background-color: #9FD6ED;
    color: #425B64;
 }
 
-html.legacy #content .content .timeline_history .h_content.Solution.waiting {
+.legacy .timeline_history .h_content.Solution.waiting {
    border-left-color: orange;
 }
-html.legacy #content .content .timeline_history .h_content.Solution.refused {
+.legacy .timeline_history .h_content.Solution.refused {
    border-left: 1em red solid;
 }
-html.legacy #content .content .timeline_history .h_content.Solution .solimg {
+.legacy .timeline_history .h_content.Solution .solimg {
    position: absolute;
    color: rgba(66, 91, 100, .1);
 }
 
-html.legacy #content .content .timeline_history .h_content.Document_Item,
-html.legacy #content .content .timeline_history .h_content.Assign {
+.legacy .timeline_history .h_content.Document_Item,
+.legacy .timeline_history .h_content.Assign {
    border: none;
    box-shadow:none;
    margin-bottom: 0;
    padding: 0;
 }
 
-html.legacy #content .content .timeline_history .h_content.TicketContent {
+.legacy .timeline_history .h_content.TicketContent {
    background-color: #B2E0B6;
    color: #093806;
    background-repeat: no-repeat;
 }
-html.legacy #content .content .timeline_history .h_content.TicketContent .ticket_title {
+.legacy .timeline_history .h_content.TicketContent .ticket_title {
    font-weight: bold;
    font-size: 1.2em;
    margin-bottom: 5px;
 }
 
-html.legacy #content .content .timeline_history .h_content.TicketContent img {
+.legacy .timeline_history .h_content.TicketContent img {
    max-width: 100%;
 }
 
 
-html.legacy #content .content .timeline_history span.buttons {
+.legacy .timeline_history span.buttons {
    opacity: 0.1;
    vertical-align: middle;
 }
-html.legacy #content .content .timeline_history span.buttons:hover {
+.legacy .timeline_history span.buttons:hover {
    opacity: 1;
 }
 
-html.legacy #content .content .edit_document,
-html.legacy #content .content .delete_document {
+.legacy .edit_document,
+.legacy .delete_document {
    font-size: 1.5em!important;
    margin-left: .5em;
 }
 
 
-html.legacy #content .content .timeline_history .timeline_img_preview img {
+.legacy .timeline_history .timeline_img_preview img {
    width: 100px;
    border: 3px solid #4A8865;
    border-radius: 3px;
 }
-html.legacy #content .content .timeline_history a:hover .timeline_img_preview img {
+.legacy .timeline_history a:hover .timeline_img_preview img {
    border: 3px solid black;
 }
 
-html.legacy #content .content .timeline_history .h_content.TicketValidation {
+.legacy .timeline_history .h_content.TicketValidation {
    background-color: #FFFFFF;
    border-color: #BECADD;
    color: #030F21;
    padding: 5px 5px 5px 8px;
 }
 
-html.legacy #content .content .timeline_history .h_content.TicketValidation.status_3 {
+.legacy .timeline_history .h_content.TicketValidation.status_3 {
    background-color: #A1D7A2;
    border-color: #385139;
 }
-html.legacy #content .content .timeline_history .h_content.TicketValidation.status_4 {
+.legacy .timeline_history .h_content.TicketValidation.status_4 {
    background-color: #D3A4A4;
    border-color: #5E3232;
 }
 
-html.legacy #content .content .timeline_history .h_content img.h_requesttype {
+.legacy .timeline_history .h_content img.h_requesttype {
    float: right;
    height: 20px;
 }
 
-html.legacy #content .content .timeline_history .h_content .edit_item {
+.legacy .timeline_history .h_content .edit_item {
    display: block;
    float: right;
    opacity: .5;
    font-size: 1.5em;
 }
 
-html.legacy #content .content .timeline_history .h_content .edit_item:hover {
+.legacy .timeline_history .h_content .edit_item:hover {
    opacity: 1;
    cursor: pointer;
 }
 
-html.legacy #content .content .timeline_history .h_content .long_text {
+.legacy .timeline_history .h_content .long_text {
    max-height: 350px;
    position: relative;
    overflow: hidden;
 }
 
-html.legacy #content .content .timeline_history .h_content .read_more {
+.legacy .timeline_history .h_content .read_more {
    position: absolute;
    bottom: 0; left: 0;
    width: 100%;
@@ -3503,12 +3503,12 @@ html.legacy #content .content .timeline_history .h_content .read_more {
    margin: 0; padding: 30px 0;
 }
 
-html.legacy #content .content .timeline_history .h_content .read_more a {
+.legacy .timeline_history .h_content .read_more a {
    bottom: 5px;
    position: absolute;
 }
 
-html.legacy #content .content .timeline_history .h_content.TicketFollowup .read_more {
+.legacy .timeline_history .h_content.TicketFollowup .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(241,244,227,1) 100%); /* FF3.6+ */
    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(241,244,227,1))); /* Chrome,Safari4+ */
    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -3516,7 +3516,7 @@ html.legacy #content .content .timeline_history .h_content.TicketFollowup .read_
    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* IE10+ */
    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* W3C */
 }
-html.legacy #content .content .timeline_history .h_content.TicketTask .read_more {
+.legacy .timeline_history .h_content.TicketTask .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(240,228,181,1) 100%); /* FF3.6+ */
    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(240,228,181,1))); /* Chrome,Safari4+ */
    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -3524,7 +3524,7 @@ html.legacy #content .content .timeline_history .h_content.TicketTask .read_more
    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* IE10+ */
    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* W3C */
 }
-html.legacy #content .content .timeline_history .h_content.Solution .read_more {
+.legacy .timeline_history .h_content.Solution .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(233,241,255,1) 100%); /* FF3.6+ */
    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(233,241,255,1))); /* Chrome,Safari4+ */
    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -3533,7 +3533,7 @@ html.legacy #content .content .timeline_history .h_content.Solution .read_more {
    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* W3C */
 }
 
-html.legacy #content .content .timeline_history .b_right {
+.legacy .timeline_history .b_right {
    margin-right: 3px;
    font-style : italic;
    color: #7E7E7E;
@@ -3541,14 +3541,14 @@ html.legacy #content .content .timeline_history .b_right {
    bottom: 2px;
 }
 
-html.legacy #content .content .timeline_history .b_right .actiontime {
+.legacy .timeline_history .b_right .actiontime {
    padding-left: 15px;
    background-image: url(../pics/timeline/actiontime.png);
    background-repeat: no-repeat;
    margin-right: 6px;
 }
 
-html.legacy #content .content .timeline_history .state {
+.legacy .timeline_history .state {
    display: inline-block;
    width: 20px;
    height: 20px;
@@ -3557,41 +3557,41 @@ html.legacy #content .content .timeline_history .state {
    vertical-align: middle;
 }
 
-html.legacy #content .content .timeline_history .state.state_0 {
+.legacy .timeline_history .state.state_0 {
    background-image: url(../pics/timeline/information.png);
 }
-html.legacy #content .content .timeline_history .state.state_1 {
+.legacy .timeline_history .state.state_1 {
    cursor: pointer;
    background-image: url(../pics/timeline/todo.png);
 }
-html.legacy #content .content .timeline_history .state.state_2 {
+.legacy .timeline_history .state.state_2 {
    cursor: pointer;
    background-image: url(../pics/timeline/done.png);
 }
 
-html.legacy #content .content .timeline_history .b_right .planification {
+.legacy .timeline_history .b_right .planification {
    padding-left: 17px;
    background-image: url(../pics/timeline/planification.png);
    background-repeat: no-repeat;
 }
 
 
-html.legacy #content .content .timeline_history .approbation_separator {
+.legacy .timeline_history .approbation_separator {
    margin-bottom: 55px;
 }
 
-html.legacy #content .content .assign_la {
+.legacy .assign_la {
    float: left;
    white-space: nowrap;
    margin-top: 4px;
 }
 
-html.legacy #content .content .displayed_content a .fa {
+.legacy .displayed_content a .fa {
    font-size: 1.5em;
 }
 
 
-html.legacy #content .content .x-split-button {
+.legacy .x-split-button {
   position: relative;
   width: 250px;
   left: 40%;
@@ -3599,7 +3599,7 @@ html.legacy #content .content .x-split-button {
   white-space: normal;
 }
 
-html.legacy #content .content .x-button {
+.legacy .x-button {
    position: relative;
    margin: 0;
    float: left;
@@ -3613,18 +3613,18 @@ html.legacy #content .content .x-button {
    border-radius: 0;
 }
 
-html.legacy #content .content .x-button:hover {
+.legacy .x-button:hover {
   cursor: pointer;
    background-color: #fddb6f;
    box-shadow: 0px 1px 1px #999;
 }
 
-html.legacy #content .content .x-button.x-button-main {
+.legacy .x-button.x-button-main {
    width: 100px;
    height: 26px;
 }
 
-html.legacy #content .content .x-button.x-button-drop {
+.legacy .x-button.x-button-drop {
    border-left: 0;
    width: 15px;
    height: 16px;
@@ -3633,31 +3633,31 @@ html.legacy #content .content .x-button.x-button-drop {
    background-position: center;
 }
 
-html.legacy #content .content .x-button.x-button-drop:after {
+.legacy .x-button.x-button-drop:after {
    content: '\25BC';
 }
-html.legacy #content .content .open .x-button.x-button-drop:after {
+.legacy .open .x-button.x-button-drop:after {
    content: '\25B2';
 }
 
-html.legacy #content .content .x-button.x-button-drop.new     { background-image: url(../pics/new.png); }
-html.legacy #content .content .x-button-drop.new:after        { content: ' ' !important; }
-html.legacy #content .content .x-button.x-button-drop.assign  { background-image: url(../pics/assign.png); }
-html.legacy #content .content .x-button-drop.assign:after     { content: ' ' !important; }
-html.legacy #content .content .x-button.x-button-drop.plan    { background-image: url(../pics/plan.png); }
-html.legacy #content .content .x-button-drop.plan:after       { content: ' ' !important; }
-html.legacy #content .content .x-button.x-button-drop.waiting { background-image: url(../pics/waiting.png); }
-html.legacy #content .content .x-button-drop.waiting:after    { content: ' ' !important; }
-html.legacy #content .content .x-button.x-button-drop.solved  { background-image: url(../pics/solved.png); }
-html.legacy #content .content .x-button-drop.solved:after     { content: ' ' !important; }
-html.legacy #content .content .x-button.x-button-drop.closed  { background-image: url(../pics/closed.png); }
-html.legacy #content .content .x-button-drop.closed:after     { content: ' ' !important; }
+.legacy .x-button.x-button-drop.new     { background-image: url(../pics/new.png); }
+.legacy .x-button-drop.new:after        { content: ' ' !important; }
+.legacy .x-button.x-button-drop.assign  { background-image: url(../pics/assign.png); }
+.legacy .x-button-drop.assign:after     { content: ' ' !important; }
+.legacy .x-button.x-button-drop.plan    { background-image: url(../pics/plan.png); }
+.legacy .x-button-drop.plan:after       { content: ' ' !important; }
+.legacy .x-button.x-button-drop.waiting { background-image: url(../pics/waiting.png); }
+.legacy .x-button-drop.waiting:after    { content: ' ' !important; }
+.legacy .x-button.x-button-drop.solved  { background-image: url(../pics/solved.png); }
+.legacy .x-button-drop.solved:after     { content: ' ' !important; }
+.legacy .x-button.x-button-drop.closed  { background-image: url(../pics/closed.png); }
+.legacy .x-button-drop.closed:after     { content: ' ' !important; }
 
-html.legacy #content .content .open > .x-button-drop-menu {
+.legacy .open > .x-button-drop-menu {
    display: block;
 }
 
-html.legacy #content .content .x-button-drop-menu {
+.legacy .x-button-drop-menu {
    position: absolute;
    top: 27px;
    left: 0;
@@ -3670,12 +3670,12 @@ html.legacy #content .content .x-button-drop-menu {
    text-align: left;
 }
 
-html.legacy #content .content .x-button-drop-menu li input[type="radio"] {
+.legacy .x-button-drop-menu li input[type="radio"] {
   position: absolute;
   left: -9999px;
 }
 
-html.legacy #content .content .x-button-drop-menu li label {
+.legacy .x-button-drop-menu li label {
    background-color: #fddb6f;
    padding: 4px;
    color: #8f5a0a;
@@ -3684,27 +3684,27 @@ html.legacy #content .content .x-button-drop-menu li label {
    font-weight: bold;
 }
 
-html.legacy #content .content .x-button-drop-menu li:hover label {
+.legacy .x-button-drop-menu li:hover label {
    background-color: #ffb94b !important;
 }
-html.legacy #content .content .x-button-drop-menu li input[type="radio"]:checked + label {
+.legacy .x-button-drop-menu li input[type="radio"]:checked + label {
    background-color: #FEC95C;
 }
 
 
 /** DATES TIMELINE */
 
-html.legacy #content .content .dates_timelines {
+.legacy .dates_timelines {
    width: 100%;
    max-width: 950px;
    font-size: 11px;
    margin: 0 auto;
    text-align: left;
 }
-html.legacy #content .content .dates_timelines ul {
+.legacy .dates_timelines ul {
    position: relative;
 }
-html.legacy #content .content .dates_timelines ul:before {
+.legacy .dates_timelines ul:before {
    content: '';
    position: absolute;
    top: 0;
@@ -3714,12 +3714,12 @@ html.legacy #content .content .dates_timelines ul:before {
    background-color: #A8A8A8;
 }
 
-html.legacy #content .content .dates_timelines li {
+.legacy .dates_timelines li {
    margin: 5px 0 25px 0;
    display: block;
 }
 
-html.legacy #content .content .dates_timelines time {
+.legacy .dates_timelines time {
    height: 30px;
    position: absolute;
    left: 0;
@@ -3728,7 +3728,7 @@ html.legacy #content .content .dates_timelines time {
    color: #999;
 }
 
-html.legacy #content .content .dates_timelines .dot {
+.legacy .dates_timelines .dot {
    position: absolute;
    left: 156px;
    display: inline-block;
@@ -3738,57 +3738,57 @@ html.legacy #content .content .dates_timelines .dot {
    background-color: #FFF;
    border: 2px solid #696969;
 }
-html.legacy #content .content .dates_timelines .dot:before {
+.legacy .dates_timelines .dot:before {
    color: #929292;
    font-family: 'FontAwesome';
    padding-left: 2px;
 }
 
-html.legacy #content .content .dates_timelines .now,
-html.legacy #content .content .dates_timelines .now time {
+.legacy .dates_timelines .now,
+.legacy .dates_timelines .now time {
    font-weight: bold;
    color: inherit !important;
 }
-html.legacy #content .content .dates_timelines .now .dot {
+.legacy .dates_timelines .now .dot {
    background-color: #49BAF6;
    border-color: #4A9BC5;
 }
 
-html.legacy #content .content .dates_timelines .creation .dot {
+.legacy .dates_timelines .creation .dot {
    border: 0;
    font-size: 15px;
    height: 18px;
 }
-html.legacy #content .content .dates_timelines .creation .dot:before {
+.legacy .dates_timelines .creation .dot:before {
    content: '\f069';
 }
 
-html.legacy #content .content .dates_timelines .passed time,
-html.legacy #content .content .dates_timelines .passed label,
-html.legacy #content .content .dates_timelines .passed .dot {
+.legacy .dates_timelines .passed time,
+.legacy .dates_timelines .passed label,
+.legacy .dates_timelines .passed .dot {
    border-color: #FF0014;
    color: #FF0014;
 }
-html.legacy #content .content .dates_timelines .passed .dot:before {
+.legacy .dates_timelines .passed .dot:before {
    content: '\f12a';
    padding-left: 6px;
    color: #E54E5A;
 }
 
-html.legacy #content .content .dates_timelines .checked .dot:before {
+.legacy .dates_timelines .checked .dot:before {
    content: '\f00c';
    padding-left: 2px;
 }
 
-html.legacy #content .content .dates_timelines .end .dot {
+.legacy .dates_timelines .end .dot {
    border: 0;
    font-size: 15px;
 }
-html.legacy #content .content .dates_timelines .end .dot:before {
+.legacy .dates_timelines .end .dot:before {
    content: '\f024';
 }
 
-html.legacy #content .content .dates_timelines label {
+.legacy .dates_timelines label {
    position: absolute;
    left: 180px;
    text-align: right;
@@ -3797,49 +3797,49 @@ html.legacy #content .content .dates_timelines label {
 /** SWITCHS **/
 /* Adadpted from http://materializecss.com/ */
 
-html.legacy #content .content .switch, html.legacy #content .content .switch * {
+.legacy .switch, .legacy .switch * {
    -webkit-user-select: none;
    -moz-user-select: none;
    -khtml-user-select: none;
    -ms-user-select: none;
 }
 
-html.legacy #content .content .switch {
+.legacy .switch {
    padding: 4px;
    display: inline-block;
 }
 
-html.legacy #content .content .switch img {
+.legacy .switch img {
    padding-right: 10px;
 }
 
-html.legacy #content .content .grey_border {
+.legacy .grey_border {
    border: 1px dotted #E2E2E2 ;
 }
 
-html.legacy #content .content .switch label {
+.legacy .switch label {
    cursor: pointer;
 }
 
-html.legacy #content .content .switch label input[type=checkbox] {
+.legacy .switch label input[type=checkbox] {
    display: none;
    opacity: 0;
    width: 0;
    height: 0;
 }
 
-html.legacy #content .content .switch label input[type=checkbox]:checked ~ .lever {
+.legacy .switch label input[type=checkbox]:checked ~ .lever {
    background-color: #E8AEAE;
 }
-html.legacy #content .content .switch label input[type=checkbox]:checked ~ .fa {
+.legacy .switch label input[type=checkbox]:checked ~ .fa {
    color: #E8AEAE;
 }
 
-html.legacy #content .content .switch label input[type=checkbox]:checked ~ .lever:after {
+.legacy .switch label input[type=checkbox]:checked ~ .lever:after {
    background-color: #cf9b9b;
 }
 
-html.legacy #content .content .switch label .lever {
+.legacy .switch label .lever {
    content: "";
    display: inline-block;
    position: relative;
@@ -3850,11 +3850,11 @@ html.legacy #content .content .switch label .lever {
    margin-right: 5px;
    transition: background 0.3s ease;
 }
-html.legacy #content .content .switch label img {
+.legacy .switch label img {
    vertical-align: middle;
 }
 
-html.legacy #content .content .switch label .lever:after {
+.legacy .switch label .lever:after {
    content: "";
    position: absolute;
    display: inline-block;
@@ -3868,49 +3868,49 @@ html.legacy #content .content .switch label .lever:after {
    transition: left 0.3s ease, background .3s ease, box-shadow 0.3s ease;
 }
 
-html.legacy #content .content input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after {
+.legacy input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after {
    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(89, 89, 89, 0.08627450980392157);
 }
 
-html.legacy #content .content input[type=checkbox]:not(:disabled) ~ .lever:active:after {
+.legacy input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08);
 }
 
-html.legacy #content .content .switch label input[type=checkbox]:checked ~ .lever:after {
+.legacy .switch label input[type=checkbox]:checked ~ .lever:after {
    left: 8px;
 }
 
-html.legacy #content .content .switch input[type=checkbox][disabled] ~ .lever {
+.legacy .switch input[type=checkbox][disabled] ~ .lever {
    cursor: default;
 }
 
-html.legacy #content .content .switch label input[type=checkbox][disabled] + .lever:after,
-html.legacy #content .content .switch label input[type=checkbox][disabled]:checked + .lever:after {
+.legacy .switch label input[type=checkbox][disabled] + .lever:after,
+.legacy .switch label input[type=checkbox][disabled]:checked + .lever:after {
    background-color: #BDBDBD;
 }
 
 /** QUEUEMAIL **/
-html.legacy #content .content .queuemail_preview .tab_cadre {
+.legacy .queuemail_preview .tab_cadre {
    width: inherit !important;
 }
 
 
 /** KB comments **/
-html.legacy #content .content .comments,
-html.legacy #content .content .comments ul {
+.legacy .comments,
+.legacy .comments ul {
   margin:0 0 0 1em; /* indentation */
   padding:0;
   list-style:none;
   position:relative;
 }
 
-html.legacy #content .content .comments ul {
+.legacy .comments ul {
    margin-left: 3em;
    clear: both;
 } /* (indentation/2) */
 
-html.legacy #content .content .comments:before,
-html.legacy #content .content .comments ul:before {
+.legacy .comments:before,
+.legacy .comments ul:before {
   content:"";
   display:block;
   width:0;
@@ -3921,7 +3921,7 @@ html.legacy #content .content .comments ul:before {
   border-left:1px solid #CECECE;
 }
 
-html.legacy #content .content .comments li {
+.legacy .comments li {
   margin:0;
   padding:0;
   line-height:2em; /* default list item's `line-height` */
@@ -3929,7 +3929,7 @@ html.legacy #content .content .comments li {
   clear: left;
 }
 
-html.legacy #content .content .comments li:before {
+.legacy .comments li:before {
   content:"";
   display:block;
   width:20px; /* same with indentation */
@@ -3941,22 +3941,22 @@ html.legacy #content .content .comments li:before {
   left:0;
 }
 
-html.legacy #content .content .comments li:last-child:before {
+.legacy .comments li:last-child:before {
   background:white; /* same with body background */
   height:auto;
   top:5em; /* (line-height/2) */
   bottom:0;
 }
 
-html.legacy #content .content .comments .h_content {
+.legacy .comments .h_content {
    position: relative;
 }
 
-html.legacy #content .content .comments .h_info {
+.legacy .comments .h_info {
    padding-left: 20px;
 }
 
-html.legacy #content .content .comments .add_answer {
+.legacy .comments .add_answer {
    background-image: url(../pics/answer.png);
    width: 16px;
    height: 16px;
@@ -3967,35 +3967,35 @@ html.legacy #content .content .comments .add_answer {
    opacity: .5;
 }
 
-html.legacy #content .content .comments .add_answer:hover {
+.legacy .comments .add_answer:hover {
    opacity: 1;
    cursor: pointer;
 }
 
-html.legacy #content .content .comments .h_item {
+.legacy .comments .h_item {
    border: none;
 }
 
-html.legacy #content .content .forcomments.timeline_history {
+.legacy .forcomments.timeline_history {
    border: none;
 }
 
-html.legacy #content .content .comments hr {
+.legacy .comments hr {
    border: none;
    border-top: 1px #222 dotted;
    margin-top: 2px;
 }
 
-html.legacy #content .content .comment_form textarea {
+.legacy .comment_form textarea {
    width: 100%;
    min-height: 70px;
 }
 
-html.legacy #content .content input[type=checkbox].toggle_comments {
+.legacy input[type=checkbox].toggle_comments {
    display: none;
 }
 
-html.legacy #content .content input[type=checkbox].toggle_comments + .toggle_label {
+.legacy input[type=checkbox].toggle_comments + .toggle_label {
    cursor: pointer;
    position: absolute;
    left: -6px;
@@ -4004,23 +4004,23 @@ html.legacy #content .content input[type=checkbox].toggle_comments + .toggle_lab
    width: 14px;
    height: 14px;
 }
-html.legacy #content .content input[type=checkbox].toggle_comments:checked + .toggle_label {
+.legacy input[type=checkbox].toggle_comments:checked + .toggle_label {
    background: #FFF url("../pics/collapse.png") no-repeat;
 }
 
-html.legacy #content .content input[type=checkbox].toggle_comments ~ ul {
+.legacy input[type=checkbox].toggle_comments ~ ul {
    display: none;
 }
 input[type=checkbox].toggle_comments:checked ~ ul {
    display: block;
 }
 
-html.legacy #content .content .copy_to_clipboard_wrapper,
-html.legacy #content .content .copy_to_clipboard_wrapper * {
+.legacy .copy_to_clipboard_wrapper,
+.legacy .copy_to_clipboard_wrapper * {
    cursor: pointer;
 }
 
-html.legacy #content .content .copy_to_clipboard_wrapper:after {
+.legacy .copy_to_clipboard_wrapper:after {
    font-family: 'FontAwesome';
    position: relative;
    left: -15px;
@@ -4029,11 +4029,11 @@ html.legacy #content .content .copy_to_clipboard_wrapper:after {
    color: #7F7F7F;
    transition: color 0.3s ease-in-out;
 }
-html.legacy #content .content .copy_to_clipboard_wrapper.copied:after {
+.legacy .copy_to_clipboard_wrapper.copied:after {
    content: "\f00c";
    color: green;
 }
-html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
+.legacy .copy_to_clipboard_wrapper.copyfail:after {
    content: "\f071";
    color: red;
 }
@@ -4041,7 +4041,7 @@ html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
 /* ################--------------- Responsive  ---------------#################### */
 
 @media screen and (max-width: 700px) {
-   html.legacy #content .content #header {
+   .legacy #header {
       transition: top 0.2s ease-in-out;
       position: fixed;
       top: 0;
@@ -4049,49 +4049,49 @@ html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
       z-index: 1000;
    }
 
-   html.legacy #content .content #content {
+   .legacy #content {
       margin-top: 7em;
    }
 
-   html.legacy #content .content #c_ssmenu2 {
+   .legacy #c_ssmenu2 {
       overflow: auto;
       border-bottom: 1px solid #DDD;
    }
 
-   html.legacy #content .content #header.nav-up {
+   .legacy #header.nav-up {
       top: -150px;
    }
 
-   html.legacy #content .content #page {
+   .legacy #page {
       padding-top: 130px;
    }
-   html.legacy #content .content .nav-up ~ #page {
+   .legacy .nav-up ~ #page {
       padding-top: 50px;
    }
 
-   html.legacy #content .content #firstboxlogin {
+   .legacy #firstboxlogin {
       overflow-y: auto;
    }
 
-   html.legacy #content .content #logo_login {
+   .legacy #logo_login {
       height: inherit;
    }
 
-   html.legacy #content .content #display-login, #text-login {
+   .legacy #display-login, #text-login {
       padding: 1px 2%;
    }
 
-   html.legacy #content .content #footer-login,
-   html.legacy #content .content .loginpage #footer {
+   .legacy #footer-login,
+   .legacy .loginpage #footer {
       display: none;
    }
 
 
-   html.legacy #content .content .icons_block {
+   .legacy .icons_block {
       margin-left: 0;
    }
 
-   html.legacy #content .content .profile-selector {
+   .legacy .profile-selector {
       padding: 4px 2px !important;
       max-width: 95px;
       white-space: nowrap;
@@ -4100,42 +4100,42 @@ html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
       display: inline-block;
    }
 
-   html.legacy #content .content .profile-selector .select2-container {
+   .legacy .profile-selector .select2-container {
       max-width: 90px;
    }
 
-   html.legacy #content .content .ui-dialog {
+   .legacy .ui-dialog {
       max-width: 100%;
    }
 
-   html.legacy #content .content #page .pointer {
+   .legacy #page .pointer {
       zoom: 1.1;
    }
 
-   .layout_classic.form html.legacy #content .content .main_form, .layout_vsplit.form html.legacy #content .content .main_form {
+   .layout_classic.form .legacy .main_form, .layout_vsplit.form .legacy .main_form {
       width: 100%;
    }
 
-   html.legacy #content .content .responsive_hidden {
+   .legacy .responsive_hidden {
       display: none !important;
    }
 
-   .html.legacy #content .content search_page > form > .center {
+   ..legacy search_page > form > .center {
       width: 100%;
       overflow-y: auto;
    }
 
-   html.legacy #content .content .ui-tabs {
+   .legacy .ui-tabs {
       width: 100% !important;
    }
 
-   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav {
+   .legacy .ui-tabs-vertical .ui-tabs-nav {
       padding: .2em .2em 0;
       float: inherit;
       width: inherit;
    }
 
-   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li {
+   .legacy .ui-tabs-vertical .ui-tabs-nav li {
       clear: none;
       width: initial;
       border-bottom-width: 1px !important;
@@ -4143,105 +4143,105 @@ html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
       margin:1px .2em 0 0;
    }
 
-   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+   .legacy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
       padding-bottom: 1px;
    }
 
-   html.legacy #content .content .ui-tabs-vertical .ui-tabs-nav li a {
+   .legacy .ui-tabs-vertical .ui-tabs-nav li a {
       width: inherit;
    }
 
-   html.legacy #content .content .ui-tabs-panel,
-   html.legacy #content .content .ui-tabs .ui-tabs-panel
-   html.legacy #content .content .ui-tabs-vertical .ui-tabs-panel {
+   .legacy .ui-tabs-panel,
+   .legacy .ui-tabs .ui-tabs-panel
+   .legacy .ui-tabs-vertical .ui-tabs-panel {
       padding: 2px !important;
       overflow-y: auto;
    }
 
-   html.legacy #content .content .ui-tabs-vertical .ui-tabs-panel {
+   .legacy .ui-tabs-vertical .ui-tabs-panel {
       margin-left: 0;
    }
 
-   html.legacy #content .content .tab_cadre_pager {
+   .legacy .tab_cadre_pager {
       width: 100%;
    }
    .tab_cadre_pager .big {
       display: none;
    }
 
-   html.legacy #content .content .main_form tr:not(.headerRow) th:not(.actor-th),
-   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors),
-   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody,
-   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody > tr,
-   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody > tr > th,
-   html.legacy #content .content .tab_cadre_fixe:not(.tab_actors) > tbody > tr > td,
-   html.legacy #content .content .tab_actors tr,
-   html.legacy #content .content .tab_actors tr:first-child th:first-child {
+   .legacy .main_form tr:not(.headerRow) th:not(.actor-th),
+   .legacy .tab_cadre_fixe:not(.tab_actors),
+   .legacy .tab_cadre_fixe:not(.tab_actors) > tbody,
+   .legacy .tab_cadre_fixe:not(.tab_actors) > tbody > tr,
+   .legacy .tab_cadre_fixe:not(.tab_actors) > tbody > tr > th,
+   .legacy .tab_cadre_fixe:not(.tab_actors) > tbody > tr > td,
+   .legacy .tab_actors tr,
+   .legacy .tab_actors tr:first-child th:first-child {
       display: block;
       width: 100%;
       text-align: left;
    }
 
-   html.legacy #content .content .tab_cadre_fixe input[type=text],
-   html.legacy #content .content .tab_cadre_fixe textarea {
+   .legacy .tab_cadre_fixe input[type=text],
+   .legacy .tab_cadre_fixe textarea {
      max-width: 95%;
    }
 
-   html.legacy #content .content .tab_cadrehov {
+   .legacy .tab_cadrehov {
       margin: 0;
       width: 100%;
    }
 
-   html.legacy #content .content table.tab_cadre_postonly,
-   html.legacy #content .content table.tab_cadre_postonly > tbody,
-   html.legacy #content .content table.tab_cadre_postonly > tbody > tr,
-   html.legacy #content .content table.tab_cadre_postonly > tbody > tr > td,
-   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr,
-   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr:first-child > th,
-   html.legacy #content .content table.central,
-   html.legacy #content .content table.central > tbody ,
-   html.legacy #content .content table.central > tbody > tr,
-   html.legacy #content .content table.central > tbody > tr > th,
-   html.legacy #content .content table.central > tbody > tr > td,
-   html.legacy #content .content table.central > tbody > tr > td > .tab_cadrehov,
-   html.legacy #content .content table.central > tbody > tr > td > .tab_cadrehov > tbody {
+   .legacy table.tab_cadre_postonly,
+   .legacy table.tab_cadre_postonly > tbody,
+   .legacy table.tab_cadre_postonly > tbody > tr,
+   .legacy table.tab_cadre_postonly > tbody > tr > td,
+   .legacy table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr,
+   .legacy table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr:first-child > th,
+   .legacy table.central,
+   .legacy table.central > tbody ,
+   .legacy table.central > tbody > tr,
+   .legacy table.central > tbody > tr > th,
+   .legacy table.central > tbody > tr > td,
+   .legacy table.central > tbody > tr > td > .tab_cadrehov,
+   .legacy table.central > tbody > tr > td > .tab_cadrehov > tbody {
       display: inline-block;
       width: 100%;
    }
 
-   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > th,
-   html.legacy #content .content table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > td {
+   .legacy table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > th,
+   .legacy table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > td {
       display: inline-block;
       width: 50%;
       box-sizing: border-box;
    }
 
-  html.legacy #content .content  #searchcriterias table {
+  .legacy  #searchcriterias table {
       border-collapse: collapse;
    }
 
-   html.legacy #content .content #searchcriterias .tab_cadre_fixe  {
+   .legacy #searchcriterias .tab_cadre_fixe  {
       width: 100%;
    }
 
-   html.legacy #content .content .mceToolbar,
-   html.legacy #content .content #image_paste {
+   .legacy .mceToolbar,
+   .legacy #image_paste {
       display: none;
    }
 
-   html.legacy #content .content #searchcriterias .tab_cadre_fixe {
+   .legacy #searchcriterias .tab_cadre_fixe {
       display: block;
       width: 100%;
    }
-   html.legacy #content .content #searchcriterias .metacriteria td,
-   html.legacy #content .content #searchcriterias .normalcriteria td {
+   .legacy #searchcriterias .metacriteria td,
+   .legacy #searchcriterias .normalcriteria td {
       display: inline-block;
       float: left;
       white-space: nowrap;
       width: initial !important;
    }
-   html.legacy #content .content #searchcriterias .metacriteria,
-   html.legacy #content .content #searchcriterias .normalcriteria {
+   .legacy #searchcriterias .metacriteria,
+   .legacy #searchcriterias .normalcriteria {
       clear: left;
       display: block;
       width: 100%;
@@ -4249,59 +4249,59 @@ html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
       overflow: auto;
    }
 
-   html.legacy #content .content .timeline_history .h_date {
+   .legacy .timeline_history .h_date {
       background-image: none;
       padding-left: 0;
    }
 
-   html.legacy #content .content .timeline_history .h_info {
+   .legacy .timeline_history .h_info {
       font-size: .7em;
    }
 
-   html.legacy #content .content .tab_cadre_central .top {
+   .legacy .tab_cadre_central .top {
       display: block;
       width: 100%;
    }
 
-   html.legacy #content .content #page .tab_actors,
-   html.legacy #content .content #page .actor-bloc {
+   .legacy #page .tab_actors,
+   .legacy #page .actor-bloc {
       display: block;
    }
 
-   html.legacy #content .content .actor-bloc {
+   .legacy .actor-bloc {
       width: initial;
       float: none;
    }
 
-   html.legacy #content .content .actor-dropdown {
+   .legacy .actor-dropdown {
       display: block;
    }
 
-   html.legacy #content .content .select2-focusser,
-   html.legacy #content .content .select2-search,
-   html.legacy #content .content .select2-search input {
+   .legacy .select2-focusser,
+   .legacy .select2-search,
+   .legacy .select2-search input {
        display: none !important;
    }
 
-   html.legacy #content .content #planning_container {
+   .legacy #planning_container {
       padding-left: 10px;
    }
 
-   html.legacy #content .content #planning_filter {
+   .legacy #planning_filter {
       position: relative;
       width: 100%;
       margin-bottom: 10px;
    }
 
-   html.legacy #content .content #c_preference #debug_mode {
+   .legacy #c_preference #debug_mode {
       display: none;
    }
 
-   html.legacy #content .content #c_recherche form #champRecherche input{
+   .legacy #c_recherche form #champRecherche input{
       width:100px;
    }
 
-   html.legacy #content .content #c_recherche {
+   .legacy #c_recherche {
       position:relative;
       top: 33px;
       left:77px;
@@ -4310,78 +4310,78 @@ html.legacy #content .content .copy_to_clipboard_wrapper.copyfail:after {
 
 /* ################--------------- Documentation  ---------------#################### */
 
-html.legacy #content .content .documentation {
+.legacy .documentation {
    background-color: white;
    max-width: 700px;
    margin: 0 auto;
    padding: 10px 20px;
 }
 
-html.legacy #content .content .documentation h1 {
+.legacy .documentation h1 {
    color: #300000;
 }
 
-html.legacy #content .content .documentation > ul:nth-child(2) {
+.legacy .documentation > ul:nth-child(2) {
    list-style-type: disc;
    margin-top: 40px;
 }
 
-html.legacy #content .content .documentation > ul:nth-child(2) > li {
+.legacy .documentation > ul:nth-child(2) > li {
    margin-left: 30px;
 }
 
-html.legacy #content .content .documentation h2 {
+.legacy .documentation h2 {
    color: #940000;
    margin-top: 70px;
    border-bottom: 1px solid #A87A7A;
 }
 
-html.legacy #content .content .documentation li {
+.legacy .documentation li {
    margin-left: 10px;
    padding: 5px 0 5px 5px;
 }
 
-html.legacy #content .content .documentation > ul > li > ul > li {
+.legacy .documentation > ul > li > ul > li {
    border-left: 1px solid grey;
 }
 
-html.legacy #content .content .documentation > ul > li > ul > li > ul > li {
+.legacy .documentation > ul > li > ul > li > ul > li {
    list-style-type: disc;
    margin-left: 35px;
 }
 
-html.legacy #content .content .documentation pre {
+.legacy .documentation pre {
    border: 1px solid #ccc;
    border-radius: 4px;
    font-size: 13px;
 }
 
-html.legacy #content .content .documentation dt {
+.legacy .documentation dt {
    font-weight: bold;
    margin-top: 20px;
 }
 
-html.legacy #content .content .documentation dd {
+.legacy .documentation dd {
    margin-left: 20px;
 }
 
-html.legacy #content .content td.diff ins {
+.legacy td.diff ins {
    color: green;
    text-decoration: none;
 }
 
-html.legacy #content .content td.diff del {
+.legacy td.diff del {
    color:red;
    text-decoration: none;
 }
 
-html.legacy #content .content .planning_on_central .fc-view-container *,
-html.legacy #content .content .planning_on_central .fc-view-container *::before,
-html.legacy #content .content .planning_on_central .fc-view-container *::after {
+.legacy .planning_on_central .fc-view-container *,
+.legacy .planning_on_central .fc-view-container *::before,
+.legacy .planning_on_central .fc-view-container *::after {
    min-height: 1em; /** Ensure no event message is displayed well */
 }
 
-html.legacy #content .content .loadingindicator {
+.legacy .loadingindicator {
    background:  #fff url(../pics/spinner.48.gif) no-repeat center .5em;
    padding: 60px .5em .5em;
    text-align: center;
@@ -4390,13 +4390,13 @@ html.legacy #content .content .loadingindicator {
    border: none;
 }
 
-html.legacy #content .content .small {
+.legacy .small {
    width: 1%;
 }
 
 /** "slide panel" component */
 
-html.legacy #content .content .slidepanel {
+.legacy .slidepanel {
    z-index: 100;
    position: absolute;
    width: 30em;
@@ -4409,100 +4409,100 @@ html.legacy #content .content .slidepanel {
    overflow: auto;
 }
 
-html.legacy #content .content .slidepanel a.fa, html.legacy #content .content .slidepanel a.fa:link {
+.legacy .slidepanel a.fa, .legacy .slidepanel a.fa:link {
    font-size: 1.5em;
    color: #ccc;
 }
 
-html.legacy #content .content .fa.bookmark_record, html.legacy #content .content .fa.bookmark_record:link {
+.legacy .fa.bookmark_record, .legacy .fa.bookmark_record:link {
    font-size: 1.5em;
    color: #ccc!important;
 }
-html.legacy #content .content .fa.bookmark_default, html.legacy #content .content .fa.bookmark_default:link {
+.legacy .fa.bookmark_default, .legacy .fa.bookmark_default:link {
    font-size: 1.5em;
    color: #f3b51f!important;
 }
 
-html.legacy #content .content .fa.reset-search:hover,
-html.legacy #content .content .fa.bookmark_record.save:hover {
+.legacy .fa.reset-search:hover,
+.legacy .fa.bookmark_record.save:hover {
    color: #999!important;
 }
 
-html.legacy #content .content .slidepanel a .count .fa {
+.legacy .slidepanel a .count .fa {
    color: white;
 }
 
-html.legacy #content .content .drag {
+.legacy .drag {
    display: inline-block;
    height: 18px;
    padding-right: 1em;
    cursor: move;
 }
 
-html.legacy #content .content .slidepanel .header {
+.legacy .slidepanel .header {
    border-bottom: 1px solid #ccc;
    min-height: 2.4em;
 }
 
-html.legacy #content .content .slidepanel .header > h3 {
+.legacy .slidepanel .header > h3 {
    margin: 0;
    padding-top: .3em;
    text-align: center;
 }
 
-html.legacy #content .content .slidepanel .header .icon {
+.legacy .slidepanel .header .icon {
    margin-top: .5em;
    margin-right: .5em;
 }
 
-html.legacy #content .content .slidepanel .contents {
+.legacy .slidepanel .contents {
    clear: both;
 }
 
-.layout_lefttab html.legacy #content .content .slidepanel .new_form_tabs .ui-tabs-nav,
-html.legacy #content .content .slidepanel .ui-tabs {
+.layout_lefttab .legacy .slidepanel .new_form_tabs .ui-tabs-nav,
+.legacy .slidepanel .ui-tabs {
    width: auto;
 }
 
-html.legacy #content .content .slidepanel.onleft {
+.legacy .slidepanel.onleft {
    left: 0;
    border-right: 1px solid #ccc;
 }
-html.legacy #content .content .slidepanel.onleft .close {
+.legacy .slidepanel.onleft .close {
    float: right;
 }
 
-html.legacy #content .content .slidepanel.onleft .icon {
+.legacy .slidepanel.onleft .icon {
    float: left;
 }
 
-html.legacy #content .content .slidepanel.onright {
+.legacy .slidepanel.onright {
    right: 0;
    border-left: 1px solid #ccc;
 }
-html.legacy #content .content .slidepanel.onright .close {
+.legacy .slidepanel.onright .close {
    float: left;
 }
 
-html.legacy #content .content .slidepanel.onright .icon {
+.legacy .slidepanel.onright .icon {
    float:right;
 }
 
-html.legacy #content .content .slidepanel .tab_cadre_fixehov {
+.legacy .slidepanel .tab_cadre_fixehov {
    box-shadow: none;
 }
 
-html.legacy #content .content .slidepanel .default {
+.legacy .slidepanel .default {
    display: inline-block;
    width: 18px;
    height: 18px;
 }
 
-html.legacy #content .content .slidepanel td * {
+.legacy .slidepanel td * {
    vertical-align: middle;
 }
 
-html.legacy #content .content .slidepanel .toggle {
+.legacy .slidepanel .toggle {
    font-size: 1.5em;
    position: absolute;
    right: .2em;
@@ -4511,11 +4511,11 @@ html.legacy #content .content .slidepanel .toggle {
 /** end "slide panel" component */
 
 /** Badges */
-html.legacy #content .content a.savedsearchlink {
+.legacy a.savedsearchlink {
    display: block;
    padding: .4em 0;
 }
-html.legacy #content .content span.count {
+.legacy span.count {
    border-radius: 10px;
    display: inline-block;
    text-align: center;
@@ -4526,39 +4526,39 @@ html.legacy #content .content span.count {
    font-weight: bold;
 }
 
-html.legacy #content .content span.count img {
+.legacy span.count img {
    vertical-align: -10%;
 }
 /** End badges */
 
 /* Primary color elements (white on blue BG) designed to be overridden from palettes */
 /* Colors are same as #c_menu */
-html.legacy #content .content .primary-bg {
+.legacy .primary-bg {
    background: #3A5693;
 }
-html.legacy #content .content .primary-bg-inverse {
+.legacy .primary-bg-inverse {
    background: white;
 }
 
-html.legacy #content .content .primary-fg, .primary-fg:link, .primary-fg:hover {
+.legacy .primary-fg, .primary-fg:link, .primary-fg:hover {
    color: white;
 }
 
-html.legacy #content .content .primary-fg-inverse, .primary-fg-inverse:hover {
+.legacy .primary-fg-inverse, .primary-fg-inverse:hover {
    color: #3A5693;
 }
 
-html.legacy #content .content .tab_cadre_fixe .fa {
+.legacy .tab_cadre_fixe .fa {
    padding: 0 .3em;
 }
 
-html.legacy #content .content button.unstyled {
+.legacy button.unstyled {
    background: none;
    border: none;
    margin: none;
 }
 
-html.legacy #content .content .warning {
+.legacy .warning {
    padding: .5em;
    cursor:pointer;
    font: bold 12px Arial, Helvetica;
@@ -4568,84 +4568,84 @@ html.legacy #content .content .warning {
    text-align: center;
 }
 
-html.legacy #content .content .warning li {
+.legacy .warning li {
    margin-bottom: .5em;
 }
-html.legacy #content .content .warning li:last-child {
+.legacy .warning li:last-child {
    margin-bottom: 0;
 }
 
-html.legacy #content .content .warning .fa {
+.legacy .warning .fa {
    color: white;
    float:left;
    margin-right: .2em;
 }
 
-html.legacy #content .content tr.linked-template td:not(.top) {
+.legacy tr.linked-template td:not(.top) {
    background-color: #ffb4b4;
 }
 
-html.legacy #content .content .notifs_setup {
+.legacy .notifs_setup {
    display: table;
    margin: 0 auto;
    border-spacing: 1em 0;
 }
 
-html.legacy #content .content .notifs_setup > form,
-html.legacy #content .content .notifs_setup > table {
+.legacy .notifs_setup > form,
+.legacy .notifs_setup > table {
    display: table-cell;
 }
 
-html.legacy #content .content .massiveactions {
+.legacy .massiveactions {
    padding: .5em;
    width: 90%;
 }
 
-html.legacy #content .content .massiveactions input.submit {
+.legacy .massiveactions input.submit {
    margin-top: .5em;
 }
 
-html.legacy #content .content .missing {
+.legacy .missing {
    color: orange;
 }
 
-html.legacy #content .content .ok {
+.legacy .ok {
    color: green;
 }
 
-html.legacy #content .content #switchview {
+.legacy #switchview {
    font-size: 2em;
    text-align: right;
    float: right;
 }
 
-html.legacy #content .content #switchview i {
+.legacy #switchview i {
    margin-left: .5em;
 }
-html.legacy #content .content #switchview i.selected {
+.legacy #switchview i.selected {
    color: green;
 }
 
-html.legacy #content .content #viewlist {
+.legacy #viewlist {
    display: none;
 }
 
-html.legacy #content .content #viewgraph {
+.legacy #viewgraph {
    width: calc(100% - 80px);
    overflow-x: auto;
 }
 
-html.legacy #content .content #viewgraph table {
+.legacy #viewgraph table {
    width: 100%;
    table-layout: fixed
 }
 
-html.legacy #content .content #viewgraph .tipcontent {
+.legacy #viewgraph .tipcontent {
    display: none;
 }
 
 
-html.legacy #content .content #viewgraph .rooms a.fa,html.legacy #content .content  #viewgraph .rooms a.fa:link, html.legacy #content .content #viewgraph .rooms a .fa {
+.legacy #viewgraph .rooms a.fa,.legacy  #viewgraph .rooms a.fa:link, .legacy #viewgraph .rooms a .fa {
    color: white;
    position: absolute;
    right: 0;
@@ -4653,47 +4653,47 @@ html.legacy #content .content #viewgraph .rooms a.fa,html.legacy #content .conte
    padding: .5em;
 }
 
-html.legacy #content .content #viewgraph .rooms a.itemlink .fa {
+.legacy #viewgraph .rooms a.itemlink .fa {
    right: 1.2em;
 }
 
 /* tables */
-html.legacy #content .content div#viewgraph table {
+.legacy div#viewgraph table {
    background-color: #e0e0e0;
    border-collapse: collapse;
 }
 
 /* table cells */
-html.legacy #content .content div#viewgraph th,
-html.legacy #content .content div#viewgraph td {
+.legacy div#viewgraph th,
+.legacy div#viewgraph td {
    height: 2em;
    border-bottom: 1px solid white;
    text-align: center;
    padding: 0;
 }
 
-html.legacy #content .content div#viewgraph table.rooms th,
-html.legacy #content .content div#viewgraph table.rooms td {
+.legacy div#viewgraph table.rooms th,
+.legacy div#viewgraph table.rooms td {
    height: 5em;
 }
 
-html.legacy #content .content div#viewgraph th {
+.legacy div#viewgraph th {
    border: 1px solid white;
 }
-html.legacy #content .content div#viewgraph td[data-hpos="1"] {
+.legacy div#viewgraph td[data-hpos="1"] {
    border-left: 1px solid white;
 }
 
-html.legacy #content .content div#viewgraph table.rooms td {
+.legacy div#viewgraph table.rooms td {
    border-left: 1px solid white;
 }
 
-html.legacy #content .content div#viewgraph table th {
+.legacy div#viewgraph table th {
    color: white;
    background-color: SteelBlue;
 }
 
-html.legacy #content .content div#viewgraph table td div {
+.legacy div#viewgraph table td div {
    border: none!important;
    position: relative;
    z-index: 10;
@@ -4706,15 +4706,15 @@ html.legacy #content .content div#viewgraph table td div {
    max-height: 5em; /** Fix height when dragging */
 }
 
-html.legacy #content .content div#viewgraph table td div.rack-add {
+.legacy div#viewgraph table td div.rack-add {
    color: #e0e0e0;
 }
-html.legacy #content .content div#viewgraph table td div.rack-add:hover {
+.legacy div#viewgraph table td div.rack-add:hover {
    background-color: rgba(0, 128, 0, .5);
    cursor: pointer;
 }
 
-html.legacy #content .content div#viewgraph .mini_toggle {
+.legacy div#viewgraph .mini_toggle {
    font-size: 11px;
    opacity: .5;
    cursor: pointer;
@@ -4724,7 +4724,7 @@ html.legacy #content .content div#viewgraph .mini_toggle {
    float: left;
 }
 
-html.legacy #content .content div#viewgraph .mini_toggle:before {
+.legacy div#viewgraph .mini_toggle:before {
    content: "\f204";
    left: 0;
    top: 0;
@@ -4732,30 +4732,30 @@ html.legacy #content .content div#viewgraph .mini_toggle:before {
    font-family: FontAwesome;
    position: absolute;
 }
-html.legacy #content .content div#viewgraph .mini_toggle.active:before {
+.legacy div#viewgraph .mini_toggle.active:before {
    content: "\f205";
 }
 
-html.legacy #content .content div#viewgraph .mini_toggle:hover {
+.legacy div#viewgraph .mini_toggle:hover {
    opacity: 1
 }
 
-html.legacy #content .content .grid-stack .grid-stack-item {
+.legacy .grid-stack .grid-stack-item {
    z-index: 3;
    opacity: 1;
    filter: Alpha(Opacity=100)
 }
 
-html.legacy #content .content .clear_picture .grid-stack .grid-stack-item .grid-stack-item-content,
-html.legacy #content .content .clear_picture .grid-stack .grid-stack-item:after {
+.legacy .clear_picture .grid-stack .grid-stack-item .grid-stack-item-content,
+.legacy .clear_picture .grid-stack .grid-stack-item:after {
    background: none !important;
 }
 
-html.legacy #content .content .grid-stack-item {
+.legacy .grid-stack-item {
    position: relative; /** should be erased by lib, defined for case without lib **/
 }
 
-html.legacy #content .content .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+.legacy .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
    font-size: 11px;
    font-weight: bold;
    text-align: center;
@@ -4766,62 +4766,62 @@ html.legacy #content .content .grid-stack-item:not(.lock-bottom) .grid-stack-ite
    cursor:         grab;
 }
 
-html.legacy #content .content .grid-stack-item:not(.lock-bottom) .grid-stack-item-content:active {
+.legacy .grid-stack-item:not(.lock-bottom) .grid-stack-item-content:active {
    cursor: move; /* fallback */
    cursor: -webkit-grabbing;
    cursor:    -moz-grabbing;
    cursor:         grabbing;
 }
 
-html.legacy #content .content .grid-stack-item-content a {
+.legacy .grid-stack-item-content a {
    font-size: 1em;
    font-weight: bold;
 }
 
-html.legacy #content .content .clear_text:not(.clear_picture) .grid-stack .grid-stack-item .itemrack_name {
+.legacy .clear_text:not(.clear_picture) .grid-stack .grid-stack-item .itemrack_name {
    display: none;
 }
 
-html.legacy #content .content #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .itemrack_name {
+.legacy #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .itemrack_name {
    background-color: rgba(255, 255, 255, .65);
    color: #000 !important;
 }
-html.legacy #content .content #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .rel-link {
+.legacy #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .rel-link {
    opacity: .6;
 }
 
-html.legacy #content .content .grid-stack-item-content .rel-link {
+.legacy .grid-stack-item-content .rel-link {
    position: absolute;
    right: 3px;
    bottom: 3px;
    opacity: 0;
 }
 
-html.legacy #content .content .grid-stack-item-content .rel-link a i.fa {
+.legacy .grid-stack-item-content .rel-link a i.fa {
    color: #000;
 }
 
-html.legacy #content .content .grid-stack-item-content:hover .rel-link {
+.legacy .grid-stack-item-content:hover .rel-link {
    opacity: .8;
 }
 
-html.legacy #content .content .grid-stack .grid-stack-item .grid-stack-item-content,
-html.legacy #content .content .grid-stack .grid-stack-item .placeholder-content {
+.legacy .grid-stack .grid-stack-item .grid-stack-item-content,
+.legacy .grid-stack .grid-stack-item .placeholder-content {
    left: 0;
    right: 0;
 }
 
-html.legacy #content .content .grid-stack .grid-stack-placeholder > .placeholder-content {
+.legacy .grid-stack .grid-stack-placeholder > .placeholder-content {
    border: 1px dashed #bcbf33;
    background-color: #e5f5698a;
 }
 
-html.legacy #content .content #viewgraph table.outbound {
+.legacy #viewgraph table.outbound {
    width: 400px;
    margin-bottom: 20px;
 }
 
-html.legacy #content .content div#viewgraph table.outbound td div {
+.legacy div#viewgraph table.outbound td div {
    padding: 0;
 }
 
@@ -4829,7 +4829,7 @@ div#viewgraph table.outbound td div .grid-stack-item-content {
    box-shadow: none;
 }
 
-html.legacy #content .content ul.indexes {
+.legacy ul.indexes {
    list-style-type: none;
    margin: 0;
    padding: 0;
@@ -4839,41 +4839,41 @@ html.legacy #content .content ul.indexes {
    float: left;
 }
 
-html.legacy #content .content .virtual_pdu_space {
+.legacy .virtual_pdu_space {
    height: 20px;
    clear: both;
 }
 
-html.legacy #content .content .side_pdus_float {
+.legacy .side_pdus_float {
    float: left;
    min-height: 100%;
    width: 20px;
 }
-html.legacy #content .content .side_pdus.side_pdus_nofloat {
+.legacy .side_pdus.side_pdus_nofloat {
    clear: left;
    margin: 0 2px 2px;
 }
 
-html.legacy #content .content .side_pdus_nofloat .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+.legacy .side_pdus_nofloat .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
    cursor: initial;
 }
 
-html.legacy #content .content .side_pdus {
+.legacy .side_pdus {
    background-color: #575757;
    margin: 0 1px;
 }
 
-html.legacy #content .content .side_pdus .grid-stack-item:not(.lock-bottom) {
+.legacy .side_pdus .grid-stack-item:not(.lock-bottom) {
    background-color: #FF9D1F;
    overflow: hidden;
 }
 
-html.legacy #content .content .side_pdus_float .grid-stack-item .grid-stack-item-content {
+.legacy .side_pdus_float .grid-stack-item .grid-stack-item-content {
    border: 0 solid #0404046b;
    border-width: 4px 1px;
 }
 
-html.legacy #content .content .side_pdus_float .grid-stack-item .grid-stack-item-content .rotated_text {
+.legacy .side_pdus_float .grid-stack-item .grid-stack-item-content .rotated_text {
    transform: rotate(-90deg);
    transform-origin: bottom left;
    position: absolute;
@@ -4882,26 +4882,26 @@ html.legacy #content .content .side_pdus_float .grid-stack-item .grid-stack-item
    white-space: nowrap;
 }
 
-html.legacy #content .content .side_pdus_float .grid-stack-item .item_rack_icon {
+.legacy .side_pdus_float .grid-stack-item .item_rack_icon {
    position: absolute;
    bottom: 1px;
    left: 0;
 }
 
-html.legacy #content .content .side_pdus_float .grid-stack-item .item_rack_icon {
+.legacy .side_pdus_float .grid-stack-item .item_rack_icon {
    position: absolute;
    bottom: 1px;
    left: 0;
 }
 
-html.legacy #content .content .side_pdus_float .grid-stack-item-content .rel-link {
+.legacy .side_pdus_float .grid-stack-item-content .rel-link {
    left: 3px;
    top: 3px;
    bottom: unset;
    right: unset;
 }
 
-html.legacy #content .content .side_pdus_float .grid-stack-item:after {
+.legacy .side_pdus_float .grid-stack-item:after {
    content: '';
    position: absolute;
    height: 20px;
@@ -4912,7 +4912,7 @@ html.legacy #content .content .side_pdus_float .grid-stack-item:after {
    transform-origin: bottom left;
 }
 
-html.legacy #content .content .racks_add .cell_add {
+.legacy .racks_add .cell_add {
    box-sizing: border-box;
    display: block;
    opacity: 0;
@@ -4920,7 +4920,7 @@ html.legacy #content .content .racks_add .cell_add {
    position: relative;
 }
 
-html.legacy #content .content .racks_add .cell_add:after {
+.legacy .racks_add .cell_add:after {
    content: "\f067";
    left: 45%;
    font-size: 1em;
@@ -4930,30 +4930,30 @@ html.legacy #content .content .racks_add .cell_add:after {
    position: absolute;
 }
 
-html.legacy #content .content .racks_add .cell_add:hover {
+.legacy .racks_add .cell_add:hover {
    opacity: 1;
    cursor: pointer;
 }
 
 /*** Rack Rooms ***/
 
-html.legacy #content .content .grid-room {
+.legacy .grid-room {
    margin: 10px 0 10px 10px;
    float: left;
    padding: 15px 0 0 15px;
    overflow-y: hidden;
 }
 
-html.legacy #content .content .grid-room .blueprint {
+.legacy .grid-room .blueprint {
    margin-left: 15px;
    width: calc(100% - 16px);
 }
 
-html.legacy #content .content .clear_blueprint .grid-room .blueprint {
+.legacy .clear_blueprint .grid-room .blueprint {
    background: none !important;
 }
 
-html.legacy #content .content .grid-room .grid-stack {
+.legacy .grid-room .grid-stack {
    border: 1px solid #EEEEEE;
    float: left;
    border-width: 0 1px 1px 0;
@@ -4962,53 +4962,53 @@ html.legacy #content .content .grid-room .grid-stack {
                      linear-gradient(to bottom, #EEEEEE 1px, transparent 1px);
 }
 
-html.legacy #content .content .clear_grid .grid-room .grid-stack {
+.legacy .clear_grid .grid-room .grid-stack {
    background-image: none;
 }
 
-html.legacy #content .content .grid-room .grid-stack-item {
+.legacy .grid-room .grid-stack-item {
    border: 1px solid rgb(68, 68, 68);
    box-sizing: border-box;
 }
 
-html.legacy #content .content .grid-room .grid-stack-item:after {
+.legacy .grid-room .grid-stack-item:after {
    position: absolute;
    content: " ";
    background-color: rgba(0, 0, 0, .3)
 }
-html.legacy #content .content .grid-room .grid-stack-item.room_orientation_1:after { /* NORTH */
+.legacy .grid-room .grid-stack-item.room_orientation_1:after { /* NORTH */
    top: 0;
    left: 0;
    width: 100%;
    height: 4px;
 }
-html.legacy #content .content .grid-room .grid-stack-item.room_orientation_2:after { /* EAST */
+.legacy .grid-room .grid-stack-item.room_orientation_2:after { /* EAST */
    top: 0;
    right: 0;
    width: 4px;
    height: 100%;
 }
-html.legacy #content .content .grid-room .grid-stack-item.room_orientation_3:after { /* SOUTH */
+.legacy .grid-room .grid-stack-item.room_orientation_3:after { /* SOUTH */
    bottom: 0;
    left: 0;
    width: 100%;
    height: 4px;
 }
-html.legacy #content .content .grid-room .grid-stack-item.room_orientation_4:after { /* WEST */
+.legacy .grid-room .grid-stack-item.room_orientation_4:after { /* WEST */
    top: 0;
    left: 0;
    width: 4px;
    height: 100%;
 }
 
-html.legacy #content .content .grid-room .grid-stack-item .grid-stack-item-content {
+.legacy .grid-room .grid-stack-item .grid-stack-item-content {
    padding-top: 4px;
 }
-html.legacy #content .content .grid-room .grid-stack-item.lock-bottom {
+.legacy .grid-room .grid-stack-item.lock-bottom {
    display: none;
 }
 
-html.legacy #content .content .grid-room ul.indexes.indexes-x {
+.legacy .grid-room ul.indexes.indexes-x {
    width: 100%;
    float: none;
    height: 15px;
@@ -5016,34 +5016,34 @@ html.legacy #content .content .grid-room ul.indexes.indexes-x {
    box-sizing: border-box;
 }
 
-html.legacy #content .content .grid-room ul.indexes.indexes-x li {
+.legacy .grid-room ul.indexes.indexes-x li {
    float: left;
    width: 40px;
 }
-html.legacy #content .content .grid-room ul.indexes.indexes-y {
+.legacy .grid-room ul.indexes.indexes-y {
    width: 15px;
 }
-html.legacy #content .content .grid-room ul.indexes.indexes-y li {
+.legacy .grid-room ul.indexes.indexes-y li {
    width: 10px;
    height: 39px;
    line-height: 40px;
 }
 
-html.legacy #content .content .clear_grid .grid-room ul.indexes {
+.legacy .clear_grid .grid-room ul.indexes {
    visibility: hidden;
 }
 
-html.legacy #content .content .grid-room .racks_add {
+.legacy .grid-room .racks_add {
    margin-left: 15px;
 }
 
-html.legacy #content .content .grid-room .racks_add .cell_add {
+.legacy .grid-room .racks_add .cell_add {
    height: 39px;
    width: 40px;
    float: left;
 }
 
-html.legacy #content .content .grid-room .racks_add .cell_add:after {
+.legacy .grid-room .racks_add .cell_add:after {
    left: 15px;
    top: 14px;
 }
@@ -5051,28 +5051,28 @@ html.legacy #content .content .grid-room .racks_add .cell_add:after {
 
 
 /*** Racks ***/
-html.legacy #content .content .racks_row {
+.legacy .racks_row {
    width: 100%;
 }
 
-html.legacy #content .content .racks_col {
+.legacy .racks_col {
    margin-left: 2px;
    float: left;
    position: relative;
 }
 
-html.legacy #content .content .racks_col:not(:last-child) {
+.legacy .racks_col:not(:last-child) {
    margin-right: 40px;
 }
 
-html.legacy #content .content .rack_side {
+.legacy .rack_side {
    float: left;
    text-align: center;
    background: #4C4C4C;
    padding-top: 18px;
 }
 
-html.legacy #content .content .racks_col h2 {
+.legacy .racks_col h2 {
    font-size: 1em;
    color: #555;
    background-color: #e6e6e6;
@@ -5082,30 +5082,30 @@ html.legacy #content .content .racks_col h2 {
 }
 
 @media screen and (max-width: 900px) {
-   html.legacy #content .content .racks_col:not(:last-child) {
+   .legacy .racks_col:not(:last-child) {
       margin-right: 0;
       margin-bottom: 15px;
    }
 
-   html.legacy #content .content #viewgraph {
+   .legacy #viewgraph {
       min-width: 100%;
    }
 }
 
-html.legacy #content .content .racks_add {
+.legacy .racks_add {
    position: absolute;
    display: block;
    width: 100%;
    z-index: 2;
 }
 
-html.legacy #content .content .grid-rack .racks_add .cell_add {
+.legacy .grid-rack .racks_add .cell_add {
    height: 20px;
    margin-bottom: 1px;
    width: 100%;
 }
 
-html.legacy #content .content .grid-rack {
+.legacy .grid-rack {
    width: 217px;
    background: repeating-linear-gradient( #FFF, #FFF 21px, #F0F0F0 21px, #F0F0F0 42px);
    z-index: 1;
@@ -5113,29 +5113,29 @@ html.legacy #content .content .grid-rack {
    float: left;
 }
 
-html.legacy #content .content .side_pdus_nofloat .grid-stack-item .grid-stack-item-content,
-html.legacy #content .content .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+.legacy .side_pdus_nofloat .grid-stack-item .grid-stack-item-content,
+.legacy .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
    color: #2c3e50;
    border: 0 solid #0404046b;
    border-width: 1px 4px;
    box-shadow: 1px 1px 5px 0px #656565;
 }
 
-html.legacy #content .content #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
+.legacy #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
    border-color: #04040440;
    border-width: 0 4px;
 }
 
-html.legacy #content .content .grid-rack .grid-stack-item.reserved .grid-stack-item-content {
+.legacy .grid-rack .grid-stack-item.reserved .grid-stack-item-content {
    border: 1px solid #FF7C24;
    box-shadow: none;
 }
 
-html.legacy #content .content .grid-rack .grid-stack-item.reserved .grid-stack-item-content a.itemrack_name {
+.legacy .grid-rack .grid-stack-item.reserved .grid-stack-item-content a.itemrack_name {
    color: #7F4723 !important;
 }
 
-html.legacy #content .content .grid-rack .grid-stack-item.item_rear {
+.legacy .grid-rack .grid-stack-item.item_rear {
    background: repeating-linear-gradient(
      45deg,
      rgba(0, 0, 0, .15),
@@ -5145,7 +5145,7 @@ html.legacy #content .content .grid-rack .grid-stack-item.item_rear {
    );
 }
 
-html.legacy #content .content .grid-rack .grid-stack-item.reserved {
+.legacy .grid-rack .grid-stack-item.reserved {
    background: repeating-linear-gradient(
      115deg,
      #FF8A3C,
@@ -5155,33 +5155,33 @@ html.legacy #content .content .grid-rack .grid-stack-item.reserved {
    );
 }
 
-html.legacy #content .content .grid-stack-item .item_rack_icon {
+.legacy .grid-stack-item .item_rack_icon {
    float: left;
    opacity: .6;
    padding: 3px 0 0 2px;
    font-size: 14px;
 }
 
-html.legacy #content .content #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .item_rack_icon {
+.legacy #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .item_rack_icon {
    display: none;
 }
 
-html.legacy #content .content .rack_tipcontent span {
+.legacy .rack_tipcontent span {
    display: block;
 }
 
-html.legacy #content .content .rack_tipcontent label {
+.legacy .rack_tipcontent label {
    font-weight: bold;
    margin-right: 3px;
 }
 
-html.legacy #content .content .grid-rack .grid-stack-item.lock-bottom {
+.legacy .grid-rack .grid-stack-item.lock-bottom {
    background: #4C4C4C;
    width: 101% !important;
    margin: 0 -1px;
 }
 
-html.legacy #content .content .racks_row ul.indexes li {
+.legacy .racks_row ul.indexes li {
    height: 20px;
    width: 20px;
    margin-bottom: 1px;
@@ -5189,7 +5189,7 @@ html.legacy #content .content .racks_row ul.indexes li {
    line-height: 20px;
 }
 
-html.legacy #content .content .rack_side_block {
+.legacy .rack_side_block {
    width: 200px;
    border: 1px solid #E6E6E6;
    background-color: #F3F3F3;
@@ -5197,11 +5197,11 @@ html.legacy #content .content .rack_side_block {
    font-size: 11px;
    margin-bottom: 20px;
 }
-html.legacy #content .content .rack_side_block_content {
+.legacy .rack_side_block_content {
    padding: 10px 5px;
 }
 
-html.legacy #content .content .rack_side_block h2 {
+.legacy .rack_side_block h2 {
    color: #555;
    margin: 0;
    padding: 5px 10px;
@@ -5210,60 +5210,60 @@ html.legacy #content .content .rack_side_block h2 {
    background-color: #e6e6e6;
 }
 
-html.legacy #content .content .rack_side_block h3 {
+.legacy .rack_side_block h3 {
    color: #6F6F6F;
    margin: 0;
    font-size: 11px;
    font-weight: bold;
 }
 
-html.legacy #content .content .rack_side_block .ui-progressbar {
+.legacy .rack_side_block .ui-progressbar {
    height: 13px;
 }
-html.legacy #content .content .rack_side_block .doaction_progress_text {
+.legacy .rack_side_block .doaction_progress_text {
    font-weight: normal;
    padding: 0;
 }
 
-html.legacy #content .content .rack_side_block_content i {
+.legacy .rack_side_block_content i {
    margin: 0 3px;
 }
 
-html.legacy #content .content .rack_side_block .sub_action {
+.legacy .rack_side_block .sub_action {
    display: block;
    color: #555;
    cursor: pointer;
    padding: 5px;
    text-align: center;
 }
-html.legacy #content .content .rack_side_block .sub_action:hover {
+.legacy .rack_side_block .sub_action:hover {
    background-color: #D1D1D1;
 }
 
-html.legacy #content .content .rack_side_block .sub_action i {
+.legacy .rack_side_block .sub_action i {
    margin-right: 3px;
    color: #555;
 }
 
-html.legacy #content .content div#viewgraph .rack_side_block .pdu_list {
+.legacy div#viewgraph .rack_side_block .pdu_list {
    background: none;
 }
 
-html.legacy #content .content div#viewgraph .rack_side_block .pdu_list td {
+.legacy div#viewgraph .rack_side_block .pdu_list td {
    text-align: left;
    border: 1px solid rgba(0, 0, 0, .2);
    padding: 0 3px;
 }
 
-html.legacy #content .content .pdu_list .rack_position {
+.legacy .pdu_list .rack_position {
    width: 20px;
 }
 
-html.legacy #content .content .pdu_list i.fa {
+.legacy .pdu_list i.fa {
    color: rgba(0, 0, 0, .6);
 }
 
-html.legacy #content .content ul#menu ul, html.legacy #content .content #c_menu .pure-menu-list ul {
+.legacy ul#menu ul, .legacy #c_menu .pure-menu-list ul {
    -webkit-column-count: 2;
    -webkit-column-gap: 10px;
    -moz-column-count: 2;
@@ -5272,11 +5272,11 @@ html.legacy #content .content ul#menu ul, html.legacy #content .content #c_menu 
    column-gap:10px;
 }
 
-html.legacy #content .content ul#menu ul li, html.legacy #content .content #c_menu .pure-menu-list ul li {
+.legacy ul#menu ul li, .legacy #c_menu .pure-menu-list ul li {
    break-inside: avoid;
 }
 
-html.legacy #content .content .fail_info {
+.legacy .fail_info {
    padding: 6px 8px;
    box-shadow: 0 0 15px rgba(0,0,0,0.2);
    border-radius: 5px;
@@ -5286,21 +5286,21 @@ html.legacy #content .content .fail_info {
    color: white;
 }
 
-html.legacy #content .content .fail_info #reload_data {
+.legacy .fail_info #reload_data {
     display: block;
     text-align: center;
     cursor: pointer;
 }
 
-html.legacy #content .content input[name=as_map] {
+.legacy input[name=as_map] {
    visibility: hidden;
 }
 
-html.legacy #content .content input[name=as_map] + label span.fa {
+.legacy input[name=as_map] + label span.fa {
    margin: .5em;
 }
 
-html.legacy #content .content input[name=as_map]:checked + label {
+.legacy input[name=as_map]:checked + label {
    color:blue;
 }
 
@@ -5332,14 +5332,14 @@ div.add header {
    font-weight: bold;
 }
 
-html.legacy #content .content .leaflet-control-geocoder-form {
+.legacy .leaflet-control-geocoder-form {
    margin: .2em!important;
 }
 
-html.legacy #content .content .leaflet-control-geocoder-form input[type=text] {
+.legacy .leaflet-control-geocoder-form input[type=text] {
    width: 10em;
 }
-html.legacy #content .content .leaflet-control-geocoder-form input[type=submit] {
+.legacy .leaflet-control-geocoder-form input[type=submit] {
    border: 1px transparent solid;
 }
 
@@ -5378,20 +5378,20 @@ html.legacy #content .content .leaflet-control-geocoder-form input[type=submit] 
 /** Responsive for documentation */
 
 @media screen and (max-width: 900px) {
-   html.legacy #content .content .documentation {
+   .legacy .documentation {
       margin-left: 0 !important;
    }
 }
 
 
 @media screen and (min-width: 900px) {
-   html.legacy #content .content .documentation #summary {
+   .legacy .documentation #summary {
       position: fixed;
       top: 40px;
       left: 15px;
       margin-top: 0;
    }
-   html.legacy #content .content .documentation #summary + ul {
+   .legacy .documentation #summary + ul {
       width: 200px;
       position: fixed;
       top: 70px;
@@ -5402,7 +5402,7 @@ html.legacy #content .content .leaflet-control-geocoder-form input[type=submit] 
 }
 
 @media screen and (max-width: 1100px) {
-   html.legacy #content .content .documentation {
+   .legacy .documentation {
       margin-left: 200px;
    }
 }
