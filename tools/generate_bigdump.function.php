@@ -2495,7 +2495,7 @@ function generate_entity($ID_entity) {
    $cdevcase  = new Item_DeviceCase();
    $cdevps    = new Item_DevicePowerSupply();
 
-   $cdisk   = new ComputerDisk();
+   $idisk   = new Item_Disk();
    $np      = new Netpoint();
    $ci      = new Computer_Item();
    $phone   = new Phone();
@@ -2626,9 +2626,10 @@ function generate_entity($ID_entity) {
          $totalsize = mt_rand(10000, 1000000);
          $freesize  = mt_rand(0, $totalsize);
 
-         $cdisk->add(toolbox::addslashes_deep([
+         $idisk->add(toolbox::addslashes_deep([
+            'itemtype'        => 'Computer',
             'entities_id'     => $ID_entity,
-            'computers_id'    => $compID,
+            'items_id'        => $compID,
             'name'            => "disk '$j",
             'device'          => "/dev/disk$j",
             'mountpoint'      => "/mnt/disk$j",
