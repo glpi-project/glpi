@@ -20,7 +20,7 @@ msgstr ""
 
 #: apirest.php:48 apixmlrpc.php:47 inc/api.class.php:102
 msgid "API disabled"
-msgstr ""
+msgstr "API dinonaktifkan"
 
 #: index.php:81
 msgid "GLPI - Authentication"
@@ -80,7 +80,7 @@ msgstr "Anda harus menerima cookies untuk menjalankan aplikasi"
 
 #: index.php:176 inc/config.class.php:2419
 msgid "Checking write permissions for session files"
-msgstr "Memeriksa izin menulis untuk sesi"
+msgstr "Memeriksa izin menulis untuk file sesi"
 
 #: index.php:180
 msgid "Invalid use of session ID"
@@ -1534,19 +1534,19 @@ msgstr ""
 #: front/commonitiltask.form.php:61 front/projecttask.form.php:61
 #, php-format
 msgid "%s adds a task"
-msgstr ""
+msgstr "%s menambahkan tugas"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:70 front/projecttask.form.php:74
 #, php-format
 msgid "%s purges a task"
-msgstr ""
+msgstr "%s menghapus tugas"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:79 front/projecttask.form.php:83
 #, php-format
 msgid "%s updates a task"
-msgstr ""
+msgstr "%s memperbaharui tugas"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:68
@@ -1659,7 +1659,7 @@ msgstr ""
 #: inc/profile.class.php:805 inc/profile.class.php:1667
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
+msgstr[0] "Habis pakai"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:52 front/contract_supplier.form.php:52
@@ -1681,7 +1681,7 @@ msgstr "menjalankan script sebagai user apache"
 #: front/crontask.form.php:53
 #, php-format
 msgid "Task %s executed"
-msgstr ""
+msgstr "Tugas %s dikerjakan"
 
 #. TRANS: R for Recursive
 #. TRANS: %1$s is the name of the tab, $2$d is number of items in the tab
@@ -1753,7 +1753,7 @@ msgstr "Menjalankan berikutnya"
 #: front/crontask.php:50
 #, php-format
 msgid "Next task to run: %s"
-msgstr ""
+msgstr "Tugas selanjutnya untuk dikerjakan: %s"
 
 #: front/crontask.php:52 front/crontask.php:53
 msgid "No action pending"
@@ -2083,7 +2083,7 @@ msgstr[0] "Versi"
 #: inc/item_operatingsystem.class.php:612
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] ""
+msgstr[0] "Arsitektur"
 
 #: front/display.options.php:42 inc/commonglpi.class.php:1158
 #: inc/commonglpi.class.php:1216 inc/commonglpi.class.php:1218
@@ -2592,7 +2592,7 @@ msgstr "Operasi berhasil"
 #: front/massiveaction.php:81
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr ""
+msgstr "(%1$d masalah otorisasi, %2$d kegagalan)"
 
 #: front/migrationcleaner.php:44
 msgid "You don't need the \"migration cleaner\" tool anymore..."
@@ -2719,7 +2719,7 @@ msgstr ""
 #: inc/stat.class.php:1226
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] ""
+msgstr[0] "Masalah"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:53
@@ -3079,7 +3079,7 @@ msgstr "Dalam proses..."
 #: front/rule.common.php:102
 #, php-format
 msgid "Task completed in %s"
-msgstr ""
+msgstr "Tugas diselesaikan pada %s"
 
 #: front/rule.php:46
 msgid "Rule type"
@@ -3648,7 +3648,7 @@ msgstr "Teknisi yang ditugaskan"
 
 #: front/stat.tracking.php:108
 msgid "Technician in tasks"
-msgstr "Teknisi dalam tugas-tugas"
+msgstr "Teknisi untuk tugas"
 
 #: front/stat.tracking.php:240
 #, php-format
@@ -4306,7 +4306,7 @@ msgstr "Nomor Administrasi"
 #: install/update_0681_07.php:563 install/update_0723_078.php:3667
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] ""
+msgstr[0] "Telepon"
 
 #: inc/auth.class.php:1416 inc/authldap.class.php:764
 #: inc/authldap.class.php:952 inc/authldap.class.php:3130
@@ -5028,7 +5028,7 @@ msgstr ""
 #: inc/calendar_holiday.class.php:137 inc/holiday.class.php:65
 #: inc/holiday.class.php:93
 msgid "Recurrent"
-msgstr ""
+msgstr "Berulang"
 
 #: inc/calendar_holiday.class.php:209 inc/dropdown.class.php:950
 #: inc/holiday.class.php:52
@@ -5063,7 +5063,7 @@ msgstr[0] ""
 #: inc/profile.class.php:802 inc/profile.class.php:1653
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] ""
+msgstr[0] "Cartridge"
 
 #: inc/cartridge.class.php:282
 msgid "Installing a cartridge"
@@ -5128,7 +5128,7 @@ msgstr "Kembali ke stok"
 
 #: inc/cartridge.class.php:678 inc/cartridge.class.php:946
 msgid "Worn cartridges"
-msgstr ""
+msgstr "Cartridge aus"
 
 #: inc/cartridge.class.php:695 inc/commonitiltask.class.php:1293
 #: inc/commonitilvalidation.class.php:774
@@ -5200,7 +5200,7 @@ msgstr "Jumlah rata-rata halaman tercetak"
 
 #: inc/cartridge.class.php:833
 msgid "Add cartridges"
-msgstr ""
+msgstr "Tambah cartridge"
 
 #. TRANS : multiplier
 #: inc/cartridge.class.php:898
@@ -5321,19 +5321,19 @@ msgstr ""
 
 #: inc/cartridgeitem.class.php:338 inc/printer.class.php:709
 msgid "Number of used cartridges"
-msgstr ""
+msgstr "Jumlah cartridge terpakai"
 
 #: inc/cartridgeitem.class.php:354 inc/printer.class.php:725
 msgid "Number of worn cartridges"
-msgstr ""
+msgstr "Jumlah cartridge aus"
 
 #: inc/cartridgeitem.class.php:369
 msgid "Number of new cartridges"
-msgstr ""
+msgstr "Jumlah cartridge baru"
 
 #: inc/cartridgeitem.class.php:459 inc/cartridgeitem.class.php:604
 msgid "Send alarms on cartridges"
-msgstr ""
+msgstr "Kirim peringatan pada cartridge"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -5899,7 +5899,7 @@ msgstr ""
 #: inc/change_problem.class.php:68
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] ""
+msgstr[0] "Tautan Masalah/Perubahan"
 
 #: inc/change_problem.class.php:155 inc/change_project.class.php:177
 #: inc/change_ticket.class.php:371
@@ -5908,11 +5908,11 @@ msgstr ""
 
 #: inc/change_problem.class.php:167
 msgid "Create a change from this problem"
-msgstr ""
+msgstr "Buat perubahan untuk masalah ini"
 
 #: inc/change_problem.class.php:258 inc/problem_ticket.class.php:413
 msgid "Add a problem"
-msgstr ""
+msgstr "Tambah masalah"
 
 #: inc/change_project.class.php:68
 msgid "Link Project/Change"
@@ -5926,7 +5926,7 @@ msgstr ""
 #: inc/changetask.class.php:50
 msgid "Change task"
 msgid_plural "Change tasks"
-msgstr[0] ""
+msgstr[0] "Ubah tugas"
 
 #: inc/change_ticket.class.php:66
 msgid "Link Ticket/Change"
@@ -6821,7 +6821,7 @@ msgstr ""
 #: inc/ticket.class.php:7296 inc/ticket.class.php:7424
 msgid "Task"
 msgid_plural "Tasks"
-msgstr[0] ""
+msgstr[0] "Tugas"
 
 #: inc/commonitiltask.class.php:273 inc/commonitiltask.class.php:396
 #: inc/reminder.class.php:542 inc/reminder.class.php:587
@@ -6844,7 +6844,7 @@ msgstr ""
 #: inc/tasktemplate.class.php:102
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] ""
+msgstr[0] "Kategori tugas"
 
 #: inc/commonitiltask.class.php:597
 msgid "Public followup"
@@ -6853,7 +6853,7 @@ msgstr ""
 #: inc/commonitiltask.class.php:632 inc/commonitiltask.class.php:761
 #: inc/notificationtargetcommonitilobject.class.php:572
 msgid "Group in charge of the task"
-msgstr ""
+msgstr "Kelompok yang bertanggung jawab atas tugas"
 
 #: inc/commonitiltask.class.php:671
 #: inc/notificationtargetcommonitilobject.class.php:1265
@@ -6861,23 +6861,23 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:476
 msgctxt "quantity"
 msgid "Number of tasks"
-msgstr ""
+msgstr "Jumlah tugas"
 
 #: inc/commonitiltask.class.php:706
 msgid "Private task"
-msgstr ""
+msgstr "Tugas khusus"
 
 #: inc/commonitiltask.class.php:741
 #: inc/notificationtargetcommonitilobject.class.php:571
 #: inc/notificationtargetplanningrecall.class.php:60
 msgid "Technician in charge of the task"
-msgstr ""
+msgstr "Teknisi yang bertanggung jawab atas tugas"
 
 #: inc/commonitiltask.class.php:848 inc/commonitiltask.class.php:1400
 #: inc/dropdown.class.php:792 inc/tasktemplate.class.php:56
 msgid "Task template"
 msgid_plural "Task templates"
-msgstr[0] ""
+msgstr[0] "Kerangka tugas"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
 #: inc/commonitiltask.class.php:1093
@@ -6950,19 +6950,19 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:1622
 msgid "Plan this task"
-msgstr ""
+msgstr "Rencanakan tugas ini"
 
 #: inc/commonitiltask.class.php:1716
 msgid "No task found."
-msgstr ""
+msgstr "Tugas tidak ditemukan"
 
 #: inc/commonitiltask.class.php:1894
 msgid "Ticket tasks to do"
-msgstr ""
+msgstr "Tiket tugas untuk dikerjakan"
 
 #: inc/commonitiltask.class.php:1897
 msgid "Problem tasks to do"
-msgstr ""
+msgstr "Tugas masalah untuk dikerjakan"
 
 #: inc/commonitiltask.class.php:1968
 #, php-format
@@ -6971,7 +6971,7 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:1981
 msgid "No tasks do to."
-msgstr ""
+msgstr "Tidak ada tugas yang dikerjakan."
 
 #: inc/commonitilvalidation.class.php:292
 #: inc/commonitilvalidation.class.php:415
@@ -7597,7 +7597,7 @@ msgstr ""
 
 #: inc/config.class.php:353
 msgid "Dynamic display"
-msgstr ""
+msgstr "Tampilan dinamis"
 
 #: inc/config.class.php:358
 msgid "Page size for dropdown (paging using scroll)"
@@ -7661,7 +7661,7 @@ msgstr ""
 #: inc/profile.class.php:101 inc/profile.class.php:824
 #: inc/profile.class.php:1562 inc/transfer.class.php:3314
 msgid "Assets"
-msgstr ""
+msgstr "Aset"
 
 #: inc/config.class.php:484
 msgid "Enable the financial and administrative information by default"
@@ -9566,7 +9566,7 @@ msgstr ""
 #. TRANS: short for : Search result user display
 #: inc/displaypreference.class.php:709
 msgid "User display"
-msgstr ""
+msgstr "Tampilan pengguna"
 
 #: inc/displaypreference.class.php:710 inc/profile.class.php:1923
 msgid "Search result user display"
@@ -9575,7 +9575,7 @@ msgstr ""
 #. TRANS: short for : Search result default display
 #: inc/displaypreference.class.php:712
 msgid "Default display"
-msgstr ""
+msgstr "Tampilan default"
 
 #: inc/displaypreference.class.php:713
 msgid "Search result default display"
@@ -9919,7 +9919,7 @@ msgstr[0] ""
 #: inc/dropdown.class.php:853 inc/phonepowersupply.class.php:48
 msgid "Phone power supply type"
 msgid_plural "Phones power supply types"
-msgstr[0] ""
+msgstr[0] "Tipe catu daya telepon"
 
 #: inc/dropdown.class.php:864 inc/line.class.php:120 inc/linetype.class.php:46
 msgid "Line type"
@@ -9958,7 +9958,7 @@ msgstr[0] ""
 #: inc/profile.class.php:889 inc/profile.class.php:1707
 #: inc/transfer.class.php:3427
 msgid "Management"
-msgstr ""
+msgstr "Manajemen"
 
 #: inc/dropdown.class.php:941 inc/event.class.php:161 inc/html.class.php:1329
 #: inc/profile.class.php:99 inc/profile.class.php:105
@@ -10137,7 +10137,7 @@ msgstr ""
 #: inc/peripheral.class.php:531 inc/phone.class.php:605
 #: inc/printer.class.php:793
 msgid "Global management"
-msgstr ""
+msgstr "Manajemen global"
 
 #: inc/dropdown.class.php:2037
 msgid "Use unitary management"
@@ -10341,7 +10341,7 @@ msgstr ""
 
 #: inc/entity.class.php:855 inc/entity.class.php:1743
 msgid "Default threshold for cartridges count"
-msgstr ""
+msgstr "Batas default untuk jumlah cartridge"
 
 #: inc/entity.class.php:865 inc/entity.class.php:1783
 msgid "Default threshold for consumables count"
@@ -10665,7 +10665,7 @@ msgstr ""
 #: inc/levelagreement.class.php:504 inc/notificationevent.class.php:211
 #: inc/project.class.php:1539 inc/user.class.php:4337
 msgid "No item to display"
-msgstr ""
+msgstr "Tidak ada item ditampilkan"
 
 #: inc/fqdn.class.php:60 inc/fqdn.class.php:205
 msgid "FQDN"
@@ -10939,7 +10939,7 @@ msgstr ""
 
 #: inc/html.class.php:732
 msgid "Display GLPI debug informations"
-msgstr ""
+msgstr "Tampilkan informasi debug GLPI"
 
 #: inc/html.class.php:1085
 msgid "Progress"
@@ -11112,7 +11112,7 @@ msgstr ""
 
 #: inc/html.class.php:3917 inc/html.class.php:3922
 msgid "Display (number of items)"
-msgstr ""
+msgstr "Tampilan (jumlah item)"
 
 #: inc/html.class.php:3951
 #, php-format
@@ -11551,7 +11551,7 @@ msgstr[0] ""
 
 #: inc/item_ticket.class.php:325
 msgid "Display all items"
-msgstr ""
+msgstr "Tampilkan seluruh item"
 
 #: inc/item_ticket.class.php:479
 #: inc/notificationtargetfieldunicity.class.php:53
@@ -12499,7 +12499,7 @@ msgstr "Ubah tata letak basisdata - %s"
 #: inc/migration.class.php:675 inc/software.class.php:1099
 #: install/update.php:80
 msgid "Task completed."
-msgstr ""
+msgstr "Tugas diselesaikan."
 
 #: inc/migration.class.php:697 inc/notificationtemplate.class.php:256
 #: inc/notificationtemplate.class.php:332
@@ -12561,7 +12561,7 @@ msgstr ""
 #: inc/phone.class.php:263 inc/printer.class.php:363
 #: inc/ruledictionnaryprinter.class.php:110
 msgid "Management type"
-msgstr ""
+msgstr "Tipe manajemen"
 
 #: inc/monitor.class.php:303 inc/monitor.class.php:523
 msgid "Microphone"
@@ -12593,7 +12593,7 @@ msgstr ""
 
 #: inc/monitor.class.php:329 inc/monitor.class.php:579
 msgid "DisplayPort"
-msgstr ""
+msgstr "Tampilkan Port"
 
 #: inc/netpoint.class.php:99
 #, php-format
@@ -12669,7 +12669,7 @@ msgstr "Port alias"
 
 #: inc/networkport.class.php:474
 msgid "Global displays"
-msgstr ""
+msgstr "Tampilan global"
 
 #: inc/networkport.class.php:477 inc/networkport.class.php:483
 #: inc/networkport.class.php:630
@@ -13349,7 +13349,7 @@ msgstr ""
 #: inc/notificationtargetproblem.class.php:60
 #: inc/notificationtargetticket.class.php:233
 msgid "New task"
-msgstr ""
+msgstr "Tugas baru"
 
 #: inc/notificationtargetchange.class.php:65
 #: inc/notificationtargetproblem.class.php:61
@@ -13695,7 +13695,7 @@ msgstr ""
 
 #: inc/notificationtargetproblem.class.php:57
 msgid "New problem"
-msgstr ""
+msgstr "Masalah baru"
 
 #: inc/notificationtargetproblem.class.php:58
 msgid "Update of a problem"
@@ -14722,7 +14722,7 @@ msgstr ""
 #: inc/problemtask.class.php:48
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] ""
+msgstr[0] "Tugas masalah"
 
 #: inc/problem_ticket.class.php:63
 msgid "Link Ticket/Problem"
@@ -14834,7 +14834,7 @@ msgstr "Administrasi pemesanan"
 
 #: inc/profile.class.php:1021 inc/ticketrecurrent.class.php:64
 msgid "Recurrent tickets"
-msgstr ""
+msgstr "Tiket berulang"
 
 #: inc/profile.class.php:1088 inc/reminder.class.php:663
 #: inc/savedsearch.class.php:394 inc/state.class.php:75
@@ -14898,7 +14898,7 @@ msgstr ""
 
 #: inc/profile.class.php:1417
 msgid "Search result display"
-msgstr ""
+msgstr "Tampilan hasil pencarian"
 
 #: inc/profile.class.php:1423
 msgid "Global dropdown"
@@ -14972,7 +14972,7 @@ msgstr ""
 #: inc/project.class.php:203 inc/project.class.php:213
 #: inc/project.class.php:227
 msgid "My tasks"
-msgstr ""
+msgstr "Tugas saya"
 
 #: inc/project.class.php:508 inc/project.class.php:1090
 msgid "Show on global GANTT"
@@ -15106,7 +15106,7 @@ msgstr ""
 #: inc/projecttask.class.php:68
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] ""
+msgstr[0] "Tugas proyek"
 
 #: inc/projecttask.class.php:185
 msgid "Update (actor)"
@@ -15468,7 +15468,7 @@ msgstr[0] ""
 
 #: inc/rssfeed.class.php:383 inc/rssfeed.class.php:650
 msgid "Number of items displayed"
-msgstr ""
+msgstr "Jumlah item ditampilkan"
 
 #: inc/rssfeed.class.php:404 inc/rssfeed.class.php:635
 msgid "Refresh rate"
@@ -15540,7 +15540,7 @@ msgstr[0] ""
 
 #: inc/rule.class.php:533
 msgid "Rules management"
-msgstr ""
+msgstr "Manajemen aturan"
 
 #: inc/rule.class.php:595
 msgid "After"
@@ -16627,7 +16627,7 @@ msgstr ""
 
 #: inc/stat.class.php:1245
 msgid "Select statistics to be displayed"
-msgstr ""
+msgstr "Pilih statistik untuk ditampilkan"
 
 #: inc/stat.class.php:1355 inc/stat.class.php:1356 inc/stat.class.php:1475
 #: inc/stat.class.php:1476
@@ -16839,7 +16839,7 @@ msgstr ""
 
 #: inc/ticket.class.php:3342
 msgid "Problems"
-msgstr ""
+msgstr "Masalah"
 
 #: inc/ticket.class.php:3666
 msgid "Tickets awaiting approval"
@@ -17167,7 +17167,7 @@ msgstr ""
 #: inc/ticketrecurrent.class.php:443
 #, php-format
 msgid "Failed to create recurrent ticket %s"
-msgstr ""
+msgstr "Gagal membuat tiket berulang %s"
 
 #: inc/ticketrecurrent.class.php:503
 #, php-format
@@ -17189,7 +17189,7 @@ msgstr ""
 #: inc/tickettask.class.php:51
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] ""
+msgstr[0] "Tugas tiket"
 
 #: inc/tickettask.class.php:245
 msgid "Add to all items"
@@ -17574,7 +17574,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3421
 msgid "If phones are no longer used"
-msgstr ""
+msgstr "Jika telepon tidak digunakan lagi"
 
 #: inc/transfer.class.php:3434
 msgid "If suppliers are no longer used"

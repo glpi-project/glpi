@@ -10432,7 +10432,7 @@ msgstr[2] "Modelů síťových rozhraní zařízení"
 #: inc/profile.class.php:889 inc/profile.class.php:1707
 #: inc/transfer.class.php:3427
 msgid "Management"
-msgstr "Správa"
+msgstr "Řízení"
 
 #: inc/dropdown.class.php:941 inc/event.class.php:161 inc/html.class.php:1329
 #: inc/profile.class.php:99 inc/profile.class.php:105
@@ -10651,7 +10651,7 @@ msgstr "Ostatní…"
 #: inc/peripheral.class.php:531 inc/phone.class.php:605
 #: inc/printer.class.php:793
 msgid "Global management"
-msgstr "Globání správa"
+msgstr "Globální správa"
 
 #: inc/dropdown.class.php:2037
 msgid "Use unitary management"
