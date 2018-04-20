@@ -890,7 +890,6 @@ class SavedSearch extends CommonDBTM {
          $current_type      = -1;
          $number            = 0;
          $current_type_name = NOT_AVAILABLE;
-         $search            = new Search();
          $is_private        = null;
 
          foreach ($searches as $key => $this->fields) {
