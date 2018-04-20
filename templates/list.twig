@@ -36,6 +36,10 @@
       <div class="box-header with-border">
          <h3 class="box-title">{{ __('Search %1$s')|format(item.getTypeName()|lower)}}</h3>
          <div class="box-tools pull-right">
+            <button id="toggle_search_criteria" type="button" class="btn btn-sm btn-primary" title="{{ __s('Display/hide search panel') }}">
+               <i class="fa fa-search"></i>
+               <span class="sr-only">{{ __s('Display/hide search panel') }}</span>
+            </button>
             <button id="default_items" type="button" class="btn btn-default btn-sm" title="{{ __s('Select default items to show') }}">
                <i class="fa fa-wrench"></i>
                <span class="sr-only">{{ __s('Select default items to show') }}</span>
@@ -54,34 +58,41 @@
                   <li><a href="{#{'-'.Search::SYLK_OUTPUT}#}">{{ __('All pages in SLK') }}</a></li>
                   <li><a href="{#{'-'.Search::CSV_OUTPUT}#}">{{ __('All pages in CSV') }}</a></li>
                </ul>
-            </div>
-         </div>
+            </div><!-- /btn-group -->
+         </div><!-- /box-tools -->
       </div>
       <div class="box-body">
          <form class="form-horizontal" id="search_form" action="{{ path_for('list', {'itemtype': search_data.itemtype }) }}">
-            <div id="query_builder"></div>
-            {{ search_form|raw }}
-            <div class='pager_controls'>
-
-            <div class='switch grey_border pager_controls'>
-               <label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label>
-               <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-               </select>
-   {% if item.maybeDeleted() %}
-               <label for="is_deleted" title="{{ __s('Show the dustbin') }}">{{  __s('Show the dustbin') }}</label>
-                  {#<span class='sr-only'>{{  __s('Show the dustbin') }}</span>#}
-                  {#<input type="hidden" name="is_deleted" value="0" />#}
-               <input type="checkbox" id="is_deleted" name="is_deleted" value="1" />
-   {% endif %}
-               <input type='checkbox' name='as_map' id='as_map' value='1'{% if search_data.search.as_map == 1 %} checked="checked"{% endif %}/>
-               <label for='as_map'>
-                  <span title="{{ __s('Show as map') }}" class="pointer fa fa-globe"></span>
-               </label>
-            </div>
+            <header id="search_criteria">
+               <div class="box-body">
+                  <div id="query_builder"></div>
+                  <div class="legacy">
+                  {{ search_form|raw }}
+                  </div>
+               </div>
+               <!-- /.box-body -->
+               <div class="box-footer">
+                  <div class='switch grey_border pager_controls'>
+                     <label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label>
+                     <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                     </select>
+         {% if item.maybeDeleted() %}
+                     <label for="is_deleted" title="{{ __s('Show the dustbin') }}">{{  __s('Show the dustbin') }}</label>
+                        {#<span class='sr-only'>{{  __s('Show the dustbin') }}</span>#}
+                        {#<input type="hidden" name="is_deleted" value="0" />#}
+                     <input type="checkbox" id="is_deleted" name="is_deleted" value="1" />
+         {% endif %}
+                     <input type='checkbox' name='as_map' id='as_map' value='1'{% if search_data.search.as_map == 1 %} checked="checked"{% endif %}/>
+                     <label for='as_map'>
+                        <span title="{{ __s('Show as map') }}" class="pointer fa fa-globe"></span>
+                     </label>
+                  </div>
+               </div><!-- /.box-footer -->
+            </header>
             <div class="mailbox-controls">
                <div class="pull-right">
                   {{ __('%1$s-%2$s/%3$s')|format(
@@ -411,8 +422,8 @@
          var rules_plugins = {
             condition: 'AND',
             rules: [{
-               id: 'name',
-               operator: 'equal',
+               id: 'view',
+               operator: 'contains',
                value: ''
             }/*, {
                condition: 'OR',
@@ -470,25 +481,46 @@
                'not-group'
             ],
             filters: [
+               {
+                  id: 'view',
+                  label: '{{ __('Items seen' ) }}',
+                  type: 'string',
+                  description: '{{ __('Search on currently displayed columns')|escape('js') }}',
+                  operators: ['contains', 'not_contains'],
+               },
    {% set groupname = '' %}
    {% for key, options in search_options %}
-               {
-                  id: '{{ key }}',
-                  type: 'string',
-                  input: 'select',
-                  plugin: 'select2',
-                  plugin_config: _select2_builder_ajax,
-                  valueSetter: function(rule, value) {},
       {% if options is not iterable %}
          {% set groupname = options %}
       {% elseif options.table is not defined %}
          {% set groupname = options.name %}
       {% else %}
+               {
+                  id: '{{ key }}',
+                  type: 'string',
                   label: '{{ options.name }}',
-      {% endif %}
+                  field: '{{ options.table }}.{{ options.field }}',
                   optgroup: '{{ groupname }}',
+                  valueSetter: function(rule, value) {},
+{#
+
+itemlink
+#}
+      {% set _input = 'text' %}
+
+      {% if options.datatype == 'dropdown' %}
+         {% set _input = 'select' %}
+      {% elseif options.datatype == '' %}
+      {% endif %}
+
+      {% if _input == 'select' %}
+                  plugin: 'select2',
+                  plugin_config: _select2_builder_ajax,
+      {% endif %}
+                  input: '{{ _input }}',
                   operators: _operators
                }{% if not loop.last %},{% endif %}
+      {% endif %}
    {% endfor %}
             {#
       // Display normal search parameters
@@ -528,8 +560,6 @@
       } else {
          $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
       }
-      $p['showreset']    = true;
-      $p['showbookmark'] = true;
       $p['addhidden']    = [];
       $p['actionname']   = 'search';
       $p['actionvalue']  = _sx('button', 'Search');
@@ -599,25 +629,19 @@
       echo "<td width='80' class='center'>";
       echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='submit' >";
       echo "</td>";
-      if ($p['showbookmark'] || $p['showreset']) {
          echo "<td class='no-wrap'>";
-         if ($p['showbookmark']) {
             //TODO: change that!
             Ajax::createIframeModalWindow('loadbookmark',
                                     SavedSearch::getSearchURL() . "?action=load&type=" . SavedSearch::SEARCH,
                                     ['title'         => __('Load a saved search')]);
             SavedSearch::showSaveButton(SavedSearch::SEARCH, $itemtype);
-         }
 
-         if ($p['showreset']) {
             echo "<a class='fa fa-undo reset-search' href='"
                .$p['target']
                .(strpos($p['target'], '?') ? '&amp;' : '?')
                ."reset=reset' title=\"".__s('Blank')."\"
                ><span class='sr-only'>" . __s('Blank')  ."</span></a>";
-         }
          echo "</td>";
-      }
       echo "</tr></table>\n";
 
       echo "</td></tr>";
@@ -638,13 +662,13 @@
       Html::closeForm();
 
 #}
-            , {
+            /*, {
                id: 'name',
                label: 'Name',
                type: 'string',
                unique: true,
                description: 'This filter is "unique", it can be used only once'
-            }/*, {
+            } , {
                id: 'category',
                label: 'Category',
                type: 'integer',
@@ -705,6 +729,17 @@
          });*/
 
          _bindSimpleSelect('#query_builder .rule-filter-container select, #query_builder .rule-operator-container select');
+
+         /* Botstap magic.. Does not worK.
+            $('#search_criteria').boxWidget({
+            collapseTrigger: '#toggle_search_criteria',
+         });*/
+         $('#toggle_search_criteria').on('click', function() {
+            $('#search_criteria').toggle();
+            $(this)
+               .toggleClass('btn-default')
+               .toggleClass('btn-primary')
+         });
       });
    </script>
 {% endblock %}
