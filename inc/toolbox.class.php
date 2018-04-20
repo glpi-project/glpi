@@ -1559,7 +1559,16 @@ class Toolbox {
     * return string itemtype search URL
    **/
    static function getItemTypeSearchURL($itemtype, $full = true) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $router;
+
+      if ($router != null) {
+         $page = $router->pathFor(
+            'list', [
+               'itemtype'  => $itemtype
+            ]
+         );
+         return $page;
+      }
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 

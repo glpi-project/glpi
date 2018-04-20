@@ -707,6 +707,23 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       return $response->withJson($values);
    })->setName('dropdown-getvalue');
 
+   $app->post('/ajax/display-preference/{itemtype:.+}', function($request, $response, $args) {
+      $post = $request->getParsedBody();
+      $setupdisplay = new DisplayPreference();
+
+      //legacy
+      ob_start();
+      $setupdisplay->display(['displaytype' => $args['itemtype']]);
+      $contents = ob_get_contents();
+      ob_end_clean();
+      $contents = "<div class='legacy'>$contents</div>";
+      return $this->view->render(
+         $response,
+         'ajax.twig',
+         ['contents' => $contents]
+      );
+   })->setName('display-preference');
+
    // Run app
    $app->run();
 

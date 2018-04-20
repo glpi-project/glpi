@@ -447,7 +447,7 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
       $(function() {
          $('#default_items').on('click', function() {
             createModalWindow(
-               CFG_GLPI.root_doc + '/front/displaypreference.form.php?itemtype={{ search_data.itemtype }}', {
+               CFG_GLPI.root_doc + '{{ path_for('display-preference', {'itemtype': search_data.itemtype}) }}', {
                   'title': '{{ __('Select default items to show') }}',
                   {#'extraparams': '{{ {'target': path_for('slash')}|json_encode(constant('JSON_FORCE_OBJECT')) }}',#}
                   'open': true
