@@ -346,4 +346,9 @@ class Enclosure extends CommonDBTM {
       }
       return $filled;
    }
+
+   function cleanDBonPurge() {
+      $class = new Item_Enclosure();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+   }
 }
