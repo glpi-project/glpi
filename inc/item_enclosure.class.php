@@ -137,6 +137,7 @@ class Item_Enclosure extends CommonDBRelation {
          echo "</table>";
       } else {
          if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = [
                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
                'container'       => 'mass'.__CLASS__.$rand
