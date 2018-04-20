@@ -36,6 +36,16 @@
       <div class="box-header with-border">
          <h3 class="box-title">{{ __('Search %1$s')|format(item.getTypeName()|lower)}}</h3>
          <div class="box-tools pull-right">
+            <a href="#" id="as_map" class="btn btn-sm btn-default" title="{{ __('Show as map') }}">
+               <i class="fa fa-globe"></i>
+               <span class="sr-only">{{ __s('Show as map') }}</span>
+            </a>
+   {% if item.maybeDeleted() %}
+            <a href="#" id="is_deleted" class="btn btn-sm btn-default" title="{{ __s('Show items in dustbin') }}">
+               <i class="fa fa-trash"></i>
+               <span class="sr-only">{{ __s('Show items in dustbin') }}</span>
+            </a>
+   {% endif %}
             <button id="toggle_search_criteria" type="button" class="btn btn-sm btn-primary" title="{{ __s('Display/hide search panel') }}">
                <i class="fa fa-search"></i>
                <span class="sr-only">{{ __s('Display/hide search panel') }}</span>
@@ -46,7 +56,7 @@
             </button>
             <div class="btn-group">
                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  {{ __('Download') }}&nbsp;<span class="fa fa-caret-down"></span>
+                  <i class="fa fa-download"></i><span class="sr-only">{{ __('Download') }}</span>&nbsp;<span class="fa fa-caret-down"></span>
                </button>
                <ul class="dropdown-menu">
                   <li><a href="{#{Search::PDF_OUTPUT_LANDSCAPE}#}">{{ __('Current page in landscape PDF') }}</a></li>
@@ -65,33 +75,67 @@
          <form class="form-horizontal" id="search_form" action="{{ path_for('list', {'itemtype': search_data.itemtype }) }}">
             <header id="search_criteria">
                <div class="box-body">
+{% if old_search == false %}
                   <div id="query_builder"></div>
+{% else %}
                   <div class="legacy">
                   {{ search_form|raw }}
                   </div>
+{% endif %}
+
+{% if old_search == false %}
+                  <div>
+                     <button type="button" class="btn btn-default">
+                        <a href="#" onclick="savesearch.dialog('open'); return false;" class="bookmark_record save" title="{{ __('Save current search') }}">
+                           <i class="fa fa-star"></i>
+                           <span class="sr-only">{{ __('Save current search') }}</span>
+                        </a>
+                     </button>
+                     <button type="button" class="btn btn-default">
+                        <a class="fa fa-undo reset-search" href="/front/computer.php?reset=reset" title="{{ __('Reset to defaults') }}">
+                           <span class="sr-only">{{ __('Blank') }}</span>
+                        </a>
+                     </button>
+                     <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-search"></i>
+                        {{ __('Search') }}
+                     </button>
+                  </div>
+{% endif %}
+{#<script type="text/javascript">
+         $(function() {
+            $('#loadbookmark').dialog({
+               modal: true,
+               autoOpen: false,
+               height: 500,
+               width: 1050,
+               draggable: true,
+               resizeable: true,
+               open: function(ev, ui){
+               $('#Iframeloadbookmark').attr('src','/front/savedsearch.php?action=load&type=1&_in_modal=1').removeClass('hidden');},title: "Load a saved search"});
+         });
+            </script><a href="#" onclick="savesearch.dialog('open'); return false;" class="fa fa-star bookmark_record save" title="Save current search"><span class="sr-only">Save current search</span></a><script type="text/javascript">
+var savesearch;$(function() {savesearch=$('<div />').dialog({
+
+         width:800,
+
+         autoOpen: false,
+
+         height:400,
+
+         modal: true,
+
+         title: "Save current search",
+
+         open: function (){
+            var fields = {};
+            $(this).load('/ajax/savedsearch.php?action=create&itemtype=Computer&type=1&url=%2Fpublic%2Findex.php%2FComputer%2Flist%3Fquery_builder_rule_0_filter%3Dview%26query_builder_rule_0_operator%3Dcontains%26query_builder_rule_0_value_0%3D%26is_deleted%3D0%26as_map%3D0%26criteria%255B0%255D%255Bfield%255D%3Dview%26criteria%255B0%255D%255Bsearchtype%255D%3Dcontains%26criteria%255B0%255D%255Bvalue%255D%3D%26search%3DSearch%26itemtype%3DComputer%26start%3D0%26_glpi_csrf_token%3De26e05e67ea806606b01bedd219e5d3c', fields);
+         }
+      });
+});</script>#}
+
                </div>
                <!-- /.box-body -->
-               <div class="box-footer">
-                  <div class='switch grey_border pager_controls'>
-                     <label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label>
-                     <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                     </select>
-         {% if item.maybeDeleted() %}
-                     <label for="is_deleted" title="{{ __s('Show the dustbin') }}">{{  __s('Show the dustbin') }}</label>
-                        {#<span class='sr-only'>{{  __s('Show the dustbin') }}</span>#}
-                        {#<input type="hidden" name="is_deleted" value="0" />#}
-                     <input type="checkbox" id="is_deleted" name="is_deleted" value="1" />
-         {% endif %}
-                     <input type='checkbox' name='as_map' id='as_map' value='1'{% if search_data.search.as_map == 1 %} checked="checked"{% endif %}/>
-                     <label for='as_map'>
-                        <span title="{{ __s('Show as map') }}" class="pointer fa fa-globe"></span>
-                     </label>
-                  </div>
-               </div><!-- /.box-footer -->
             </header>
             <div class="mailbox-controls">
                <div class="pull-right">
@@ -120,6 +164,15 @@
                         </a>
                   </div>
                   <!-- /.btn-group -->
+               <!--label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label-->
+               <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+               </select>
+
+
                </div>
                <!-- /.pull-right -->
             </div>
@@ -312,6 +365,10 @@
                echo self::showEndLine($data['display_type']);
             }
 #}
+   {% else %}
+                  <tr>
+                     <td colspan="{{ search_data.data.cols|length }}">{{ __('No result found') }}</td>
+                  </tr>
    {% endfor %}
                </tbody>
             </table>
@@ -370,7 +427,8 @@
 
 {% block head %}
    {% set css_paths = css_paths|default([])|merge([
-      js_libs ~ '/jQuery-QueryBuilder/dist/css/query-builder.default.min.css'
+      js_libs ~ '/jQuery-QueryBuilder/dist/css/query-builder.default.min.css',
+      'public/css/glpi-querybuilder.css'
       ]) %}
    {{ parent() }}
 {% endblock %}
@@ -463,13 +521,11 @@
          ];
 
          _select2_builder_ajax = Object.assign({}, _select2_ajax, {
-               width: '100%',
-               ajax: Object.assign({}, _select2_ajax.ajax, {
-                  url: '{{ path_for('dropdown-getvalue') }}'
-               })
+               width: '100%'
             }
          );
 
+{% if old_search == false %}
          $('#query_builder').queryBuilder({
             plugins: [
                'sortable',
@@ -477,7 +533,6 @@
                'unique-filter',
                'bt-tooltip-errors',
                'bt-checkbox',
-               'invert',
                'not-group'
             ],
             filters: [
@@ -508,14 +563,20 @@ itemlink
 #}
       {% set _input = 'text' %}
 
-      {% if options.datatype == 'dropdown' %}
-         {% set _input = 'select' %}
-      {% elseif options.datatype == '' %}
+      {% if options.datatype is defined %}
+         {% if options.datatype == 'dropdown' %}
+            {% set _input = 'select' %}
+         {% elseif options.datatype == '' %}
+         {% endif %}
       {% endif %}
 
       {% if _input == 'select' %}
                   plugin: 'select2',
-                  plugin_config: _select2_builder_ajax,
+                  plugin_config: Object.assign({}, _select2_builder_ajax, {
+                     ajax: Object.assign({}, _select2_ajax.ajax, {
+url: '{{ path_for('dropdown-getvalue', {'itemtype': 'PLACEBO'}) }}'.replace(/PLACEBO/, 'none')
+                     })
+                  }),
       {% endif %}
                   input: '{{ _input }}',
                   operators: _operators
@@ -711,6 +772,7 @@ itemlink
             //select2 on newly created element 
             _bindSimpleSelect('#query_builder .rule-operator-container select');
          });
+{% endif %}
 
          /*$('#btn-reset').on('click', function() {
          $('#builder-plugins').queryBuilder('reset');

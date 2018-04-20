@@ -428,14 +428,17 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       ob_end_clean();*/
       //end legacy
 
-      var_dump(Search::getCleanedOptions($item->getType()));
+      $get = $request->getQueryParams();
+
+      //var_dump(Search::getCleanedOptions($item->getType()));
       return $this->view->render(
          $response,
          'list.twig', [
-            'page_title'   => $item->getTypeName(Session::getPluralNumber()),
-            'search_data'  => $data,
-            'search_form'  => $search_form,
-            'item'         => $item,
+            'page_title'      => $item->getTypeName(Session::getPluralNumber()),
+            'search_data'     => $data,
+            'search_form'     => $search_form,
+            'item'            => $item,
+            'old_search'      => isset($get['querybuilder']) ? false : true,
             'search_options'  => Search::getCleanedOptions($item->getType())
          ]
       );
@@ -695,8 +698,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('dropdowns');
 
-   $app->post('/ajax/dropdown/getvalue', function ($request, $response) {
+   $app->post('/ajax/dropdown/getvalue/{itemtype:.+}', function ($request, $response, $args) {
       $post = $request->getParsedBody();
+      if (!isset($post['itemtype'])) {
+         $post['itemtype'] = $agrs['itemtype'];
+      }
       $values = Dropdown::getDropdownValue($post, false);
       return $response->withJson($values);
    })->setName('dropdown-getvalue');
