@@ -73,6 +73,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $container = $app->getContainer();
    $router = $container['router'];
 
+   $container['flash'] = function() {
+      return new \Slim\Flash\Mssages();
+   };
+
    // Register component on container
    $container['view'] = function ($container) {
       $view = new \Slim\Views\Twig(__DIR__ .'/../templates', [
@@ -166,6 +170,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $view->addExtension(new \Twig\Glpi\Extensions\Locales());
       include_once __DIR__ . '/../twig_extensions/GlpiDebug.php';
       $view->addExtension(new \Twig\Glpi\Extensions\GlpiDebug());
+      $view->addExtension(new Knlv\Slim\Views\TwigMessages(
+         new Slim\Flash\Messages()
+      ));
 
       return $view;
    };
@@ -393,9 +400,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('central');
 
-   $app->get('/{itemtype}/list[/page/{page:\d+}]', function ($request, $response, $args) {
+   $app->get('/{itemtype}/list[/page/{page:\d+}[/{reset:reset}]]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
       $params = $request->getQueryParams() + $args;
+      if (isset($args['reset'])) {
+         $params = $args;
+         unset($params['reset']);
+         $this->flash->addMessage('glpi_info', __('Search params has been reset'));
+      }
       if (isset($args['page'])) {
          $params['start'] = ($args['page'] - 1) * $_SESSION['glpilist_limit'];
       }
@@ -497,6 +509,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    $app->get('/{itemtype}/edit/{id:\d+}[/tab/{tab}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
+      if (!isset($args['tab'])) {
+         $args['tab'] = $item->getType() . '$main';
+      }
       $item->getFromdB($args['id']);
       $get = $request->getQueryParams();
 
@@ -553,7 +568,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          'edit_page.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
             'item'         => $item,
-            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0),
+            'current_tab'  => $args['tab']
          ] + $params
       );
    })->setName('update-asset');

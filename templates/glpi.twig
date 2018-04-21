@@ -87,6 +87,15 @@
             </a>
         </footer>
         </div>
+   {% set glpi_infos = flash('info') %}
+   {% set glpi_errors = flash('error') %}
+   {% if glpi_infos|length > 0 %}
+      <ul class="alert alert-danger">
+      {% for msg in glpi_infos %}
+         <li>{{ msg }}</li>
+      {% endfor %}
+      </ul>
+   {% endif %}
    {% block javascripts %}
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/bootstrap/dist/js/bootstrap.min.js"></script>
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/js/adminlte.min.js"></script>
