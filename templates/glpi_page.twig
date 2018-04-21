@@ -676,7 +676,7 @@ permit_select_parent	0
       </li>
 
    {% if call_static('Config', 'canUpdate') %}
-      <li id='debug_mode'>
+      <li id='debug_mode'{% if glpi_debug %} class="active"{% endif %}>
       {% set dbgbtn_class = 'debugoff' %}
       {% set dbgbtn_title = __('Debug mode disabled') %}
       {% if glpi_debug %}

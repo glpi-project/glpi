@@ -1,0 +1,121 @@
+
+/** "slide panel" component */
+
+.slidepanel {
+   z-index: 100;
+   position: absolute;
+   width: 30em;
+   max-width: 40%;
+   background: white;
+   top: 0;
+   min-height: 100vh;
+   height: calc(100% - 28px); /* Without footer */
+   border: none;
+   overflow: auto;
+}
+
+.slidepanel a.fa, .slidepanel a.fa:link {
+   font-size: 1.5em;
+   color: #ccc;
+}
+
+.fa.bookmark_record, .fa.bookmark_record:link {
+   font-size: 1.5em;
+   color: #ccc!important;
+}
+.fa.bookmark_default, .fa.bookmark_default:link {
+   font-size: 1.5em;
+   color: #f3b51f!important;
+}
+
+.fa.reset-search:hover,
+.fa.bookmark_record.save:hover {
+   color: #999!important;
+}
+
+.slidepanel a .count .fa {
+   color: white;
+}
+
+.drag {
+   display: inline-block;
+   height: 18px;
+   padding-right: 1em;
+   cursor: move;
+}
+
+.slidepanel .header {
+   border-bottom: 1px solid #ccc;
+   min-height: 2.4em;
+}
+
+.slidepanel .header > h3 {
+   margin: 0;
+   padding-top: .3em;
+   text-align: center;
+}
+
+.slidepanel .header .icon {
+   margin-top: .5em;
+   margin-right: .5em;
+}
+
+.slidepanel .contents {
+   clear: both;
+}
+
+.layout_lefttab .slidepanel .new_form_tabs .ui-tabs-nav,
+.slidepanel .ui-tabs {
+   width: auto;
+}
+
+.slidepanel.onleft {
+   left: 0;
+   border-right: 1px solid #ccc;
+}
+.slidepanel.onleft .close {
+   float: right;
+}
+
+.slidepanel.onleft .icon {
+   float: left;
+}
+
+.slidepanel.onright {
+   right: 0;
+   border-left: 1px solid #ccc;
+}
+.slidepanel.onright .close {
+   float: left;
+}
+
+.slidepanel.onright .icon {
+   float:right;
+}
+
+.slidepanel .tab_cadre_fixehov {
+   box-shadow: none;
+}
+
+.slidepanel .default {
+   display: inline-block;
+   width: 18px;
+   height: 18px;
+}
+
+.slidepanel td * {
+   vertical-align: middle;
+}
+
+.slidepanel .toggle {
+   font-size: 1.5em;
+   position: absolute;
+   right: .2em;
+}
+
+/** end "slide panel" component */
+
+.skin-blue .main-header .navbar .nav > li > a.debugon,
+.skin-blue .main-header .navbar .nav > li > a.debugon:hover {
+   color: #ffa6a6!important;
+}
