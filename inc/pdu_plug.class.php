@@ -51,11 +51,13 @@ class Pdu_Plug extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
+
       $nb = 0;
       switch ($item->getType()) {
          default:
             $field = $item->getType() == PDU::getType() ? 'pdus_id' : 'plugs_id';
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                $nb = countElementsInTable(
                   self::getTable(),
                   [$field  => $item->getID()]

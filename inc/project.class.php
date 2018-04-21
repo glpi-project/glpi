@@ -120,13 +120,14 @@ class Project extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (static::canView() && !$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $ong    = [];
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable(
                      $this->getTable(),
                      [

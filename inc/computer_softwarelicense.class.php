@@ -700,12 +700,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       $nb = 0;
       switch ($item->getType()) {
          case 'SoftwareLicense' :
             if (!$withtemplate) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForLicense($item->getID());
                }
                return [1 => __('Summary'),

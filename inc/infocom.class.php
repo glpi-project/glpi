@@ -125,6 +125,7 @@ class Infocom extends CommonDBChild {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // Can exists on template
       if (Session::haveRight(self::$rightname, READ)) {
@@ -137,7 +138,7 @@ class Infocom extends CommonDBChild {
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable('glpi_infocoms',
                                              ['itemtype' => $item->getType(),
                                               'items_id' => $item->getID()]);

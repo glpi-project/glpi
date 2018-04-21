@@ -185,6 +185,7 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -192,7 +193,7 @@ class KnowbaseItem extends CommonDBVisible {
             case __CLASS__ :
                $ong[1] = $this->getTypeName(1);
                if ($item->canUpdateItem()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      $nb = $item->countVisibilities();
                   }
                   $ong[2] = self::createTabEntry(_n('Target', 'Targets', Session::getPluralNumber()),

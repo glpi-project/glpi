@@ -931,14 +931,14 @@ class Profile_User extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $DB;
+      global $DB, $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
                if (Session::haveRight('user', READ)) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      $count = $DB->request([
                         'COUNT'     => 'cpt',
                         'FROM'      => $this->getTable(),
@@ -971,7 +971,7 @@ class Profile_User extends CommonDBRelation {
                break;
 
             case 'User' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(_n('Authorization', 'Authorizations',

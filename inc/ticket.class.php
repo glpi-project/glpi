@@ -722,11 +722,12 @@ class Ticket extends CommonITILObject {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (static::canView()) {
          $nb    = 0;
          $title = self::getTypeName(Session::getPluralNumber());
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             switch ($item->getType()) {
                case 'User' :
                   $nb = countElementsInTable(

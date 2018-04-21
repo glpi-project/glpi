@@ -87,12 +87,13 @@ class ContractCost extends CommonDBChild {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for template
       if (($item->getType() == 'Contract')
           && Contract::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = countElementsInTable('glpi_contractcosts', ['contracts_id' => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

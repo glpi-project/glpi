@@ -344,12 +344,13 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case static::$parentclass:
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb =  countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]);
                }
                return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb);

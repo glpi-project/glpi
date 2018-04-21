@@ -66,18 +66,19 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'ProjectTask' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Ticket' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb);

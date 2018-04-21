@@ -81,6 +81,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -96,7 +97,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
 
       if (self::canBeTranslated($item)) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = self::getNumberOfTranslationsForItem($item);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

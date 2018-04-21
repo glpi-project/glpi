@@ -43,12 +43,14 @@ class KnowbaseItem_Comment extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
+
       if (!$item->canUpdateItem()) {
          return '';
       }
 
       $nb = 0;
-      if ($_SESSION['glpishow_count_on_tabs']) {
+      if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
          $where = [];
          if ($item->getType() == KnowbaseItem::getType()) {
             $where = [

@@ -60,11 +60,12 @@ class Item_Disk extends CommonDBChild {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for template
       if ($item::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = countElementsInTable(
                self::getTable(), [
                   'items_id'     => $item->getID(),

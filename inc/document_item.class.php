@@ -233,12 +233,13 @@ class Document_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       $nbdoc = $nbitem = 0;
       switch ($item->getType()) {
          case 'Document' :
             $ong = [];
-            if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem() && $IS_TWIG === false) {
                $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
                $nbitem = self::countForMainItem($item, ['itemtype' => 'Document']);
             }
@@ -255,7 +256,7 @@ class Document_Item extends CommonDBRelation{
                 || ($item->getType() == 'Reminder')
                 || ($item->getType() == 'KnowbaseItem')) {
 
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nbitem = self::countForItem($item);
                }
                return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),

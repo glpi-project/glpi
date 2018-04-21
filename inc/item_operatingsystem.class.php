@@ -51,14 +51,10 @@ class Item_OperatingSystem extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $IS_TWIG;
 
-      if ($IS_TWIG === true) {
-         return _n('Operating system', 'Operating systems', Session::getPluralNumber());
-      }
-
       $nb = 0;
       switch ($item->getType()) {
          default:
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                $nb = self::countForItem($item);
             }
             return self::createTabEntry(_n('Operating system', 'Operating systems', Session::getPluralNumber()), $nb);

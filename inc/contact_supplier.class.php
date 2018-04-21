@@ -58,18 +58,19 @@ class Contact_Supplier extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Supplier' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb =  self::countForItem($item);
                }
                return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Contact' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb);

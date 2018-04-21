@@ -1196,6 +1196,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -1204,7 +1205,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                if (!self::canView()) {
                   return '';
                }
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForSoftware($item->getID());
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
@@ -1214,7 +1215,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                if (!self::canView()) {
                   return '';
                }
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable(
                      $this->getTable(),
                      ['softwarelicenses_id' => $item->getID()]

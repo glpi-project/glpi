@@ -1223,12 +1223,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       $nb = 0;
       switch ($item->getType()) {
          case 'Software' :
             if (!$withtemplate) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForSoftware($item->getID());
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -1237,7 +1238,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          case 'SoftwareVersion' :
             if (!$withtemplate) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForVersion($item->getID());
                }
                return [1 => __('Summary'),
@@ -1249,7 +1250,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          case 'Computer' :
             // Installation allowed for template
             if (Software::canView()) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);

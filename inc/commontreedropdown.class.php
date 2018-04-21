@@ -75,11 +75,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate
           && ($item->getType() == $this->getType())) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = countElementsInTable($this->getTable(),
                                       [$this->getForeignKeyField() => $item->getID()]);
          }

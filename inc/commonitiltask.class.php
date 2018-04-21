@@ -174,11 +174,12 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (($item->getType() == $this->getItilObjectItemType())
           && $this->canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $restrict = [$item->getForeignKeyField() => $item->getID()];
 
             if ($this->maybePrivate()

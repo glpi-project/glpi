@@ -52,13 +52,15 @@ class ITILSolution extends CommonDBChild {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
+
       if ($item->isNewItem()) {
          return;
       }
       if ($item->maySolve()) {
          $nb    = 0;
          $title = self::getTypeName(Session::getPluralNumber());
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = self::countFor($item->getType(), $item->getID());
          }
          return self::createTabEntry($title, $nb);

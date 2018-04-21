@@ -81,13 +81,9 @@ class Log extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $IS_TWIG;
 
-      if ($IS_TWIG === true) {
-         return self::getTypeName(1);
-      }
-
       if (!$withtemplate) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = countElementsInTable('glpi_logs',
                                        ['itemtype' => $item->getType(),
                                         'items_id' => $item->getID()]);

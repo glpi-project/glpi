@@ -58,12 +58,13 @@ abstract class CommonITILCost extends CommonDBChild {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for template
       if (($item->getType() == static::$itemtype)
           && static::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = countElementsInTable($this->getTable(),
                                        [$item->getForeignKeyField() => $item->getID()]);
          }

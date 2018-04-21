@@ -64,19 +64,20 @@ class Problem_Ticket extends CommonDBRelation{
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Ticket' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable('glpi_problems_tickets',
                                              ['tickets_id' => $item->getID()]);
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Problem' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable('glpi_problems_tickets',
                                              ['problems_id' => $item->getID()]);
                }

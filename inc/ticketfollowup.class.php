@@ -178,11 +178,12 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if ($item->getType() == 'Ticket') {
          $nb = 0;
          if (self::canCreate()) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                $nb = countElementsInTable(
                   'glpi_ticketfollowups',
                   [

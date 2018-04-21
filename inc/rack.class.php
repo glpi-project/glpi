@@ -488,11 +488,12 @@ class Rack extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       switch ($item->getType()) {
          case DCRoom::getType():
             $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                $nb = countElementsInTable(
                   self::getTable(), [
                      'dcrooms_id'   => $item->getID(),

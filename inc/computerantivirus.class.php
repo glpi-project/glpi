@@ -58,15 +58,11 @@ class ComputerAntivirus extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $IS_TWIG;
 
-      if ($IS_TWIG === true) {
-         return self::getTypeName(Session::getPluralNumber());
-      }
-
       // can exists for template
       if (($item->getType() == 'Computer')
           && Computer::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = countElementsInTable('glpi_computerantiviruses',
                                       ["computers_id" => $item->getID(), 'is_deleted' => 0 ]);
          }

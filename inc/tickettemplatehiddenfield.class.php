@@ -79,12 +79,13 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
           && Session::haveRight("tickettemplate", READ)) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $nb = countElementsInTable($this->getTable(),
                                        ['tickettemplates_id' => $item->getID()]);
          }

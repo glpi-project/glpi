@@ -50,10 +50,12 @@ class Item_Rack extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
+
       $nb = 0;
       switch ($item->getType()) {
          default:
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                $nb = countElementsInTable(
                   self::getTable(),
                   ['racks_id'  => $item->getID()]

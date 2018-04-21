@@ -83,12 +83,13 @@ class ProjectTeam extends CommonDBRelation {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (self::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Project' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = $item->getTeamCount();
                }
                return self::createTabEntry(self::getTypeName(1), $nb);

@@ -522,6 +522,7 @@ class Item_Ticket extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -529,7 +530,7 @@ class Item_Ticket extends CommonDBRelation{
             case 'Ticket' :
                if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
                    && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      //$nb = self::countForMainItem($item);
                      $nb = countElementsInTable('glpi_items_tickets',
                                                 ['AND' => ['tickets_id' => $item->getID() ],

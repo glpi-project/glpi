@@ -710,13 +710,14 @@ class Group_User extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case 'User' :
                if (Group::canView()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);
@@ -725,7 +726,7 @@ class Group_User extends CommonDBRelation{
 
             case 'Group' :
                if (User::canView()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);

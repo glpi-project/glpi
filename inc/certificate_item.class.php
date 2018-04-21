@@ -74,11 +74,12 @@ class Certificate_Item extends CommonDBRelation {
     * @return string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          if ($item->getType() == 'Certificate'
             && count(Certificate::getTypes(false))) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                return self::createTabEntry(_n('Associated item', 'Associated items', 2),
                                            self::countForMainItem($item));
             }
@@ -86,7 +87,7 @@ class Certificate_Item extends CommonDBRelation {
 
          } else if (in_array($item->getType(), Certificate::getTypes(true))
             && Certificate::canView() ) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                return self::createTabEntry(Certificate::getTypeName(2),
                                            self::countForItem($item));
             }

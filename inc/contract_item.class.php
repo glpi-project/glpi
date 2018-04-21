@@ -219,20 +219,20 @@ class Contract_Item extends CommonDBRelation{
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $IS_TWIG;
 
       // Can exists on template
       if (Contract::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Contract' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForMainItem($item);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
-               if ($_SESSION['glpishow_count_on_tabs']
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false
                    && in_array($item->getType(), $CFG_GLPI["contract_types"])) {
                    $nb = self::countForItem($item);
                }

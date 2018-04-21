@@ -1198,19 +1198,20 @@ class NotificationTarget extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate && Notification::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForGroup($item);
                }
                return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()),
                                            $nb);
 
             case 'Notification' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable($this->getTable(),
                                              ['notifications_id' => $item->getID()]);
                }

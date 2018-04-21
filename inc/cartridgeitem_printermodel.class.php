@@ -69,12 +69,13 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate && Printer::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'CartridgeItem' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb);

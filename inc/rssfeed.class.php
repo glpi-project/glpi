@@ -442,6 +442,7 @@ class RSSFeed extends CommonDBVisible {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (self::canView()) {
          $nb = 0;
@@ -449,7 +450,7 @@ class RSSFeed extends CommonDBVisible {
             case 'RSSFeed' :
                $showtab = [1 => __('Content')];
                if (session::haveRight('rssfeed_public', UPDATE)) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      $nb = $item->countVisibilities();
                   }
                   $showtab[2] = self::createTabEntry(_n('Target', 'Targets',

@@ -3006,12 +3006,13 @@ class Rule extends CommonDBTM {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $types      = [];
                   $collection = new RuleRightCollection();
                   if ($collection->canList()) {
@@ -3039,7 +3040,7 @@ class Rule extends CommonDBTM {
 
             case 'SLA' :
             case 'OLA' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable('glpi_ruleactions',
                                             ['field' => $item::getFieldNames($item->fields['type'])[1],
                                              'value' => $item->getID()]);
@@ -3051,7 +3052,7 @@ class Rule extends CommonDBTM {
                   $ong    = [];
                   $nbcriteria = 0;
                   $nbaction   = 0;
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      $nbcriteria = countElementsInTable(getTableForItemType($item->getRuleCriteriaClass()),
                                                         [$item->getRuleIdField() => $item->getID()]);
                      $nbaction   = countElementsInTable(getTableForItemType($item->getRuleActionClass()),

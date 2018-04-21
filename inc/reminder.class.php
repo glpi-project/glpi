@@ -458,13 +458,14 @@ class Reminder extends CommonDBVisible {
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (self::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Reminder' :
                if ($item->canUpdate()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                      $nb = $item->countVisibilities();
                   }
                   return [1 => self::createTabEntry(_n('Target', 'Targets',

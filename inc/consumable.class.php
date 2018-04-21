@@ -723,12 +723,13 @@ class Consumable extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate && Consumable::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'ConsumableItem' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb =  self::countForConsumableItem($item);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

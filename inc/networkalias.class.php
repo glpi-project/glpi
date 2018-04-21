@@ -455,11 +455,12 @@ class NetworkAlias extends FQDNLabel {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             switch ($item->getType()) {
                case 'NetworkName' :
                   $nb = countElementsInTable($this->getTable(),

@@ -1137,13 +1137,13 @@ class NetworkPort extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $IS_TWIG;
 
       // Can exists on template
       $nb = 0;
       if (NetworkEquipment::canView()) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                $nb = self::countForItem($item);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

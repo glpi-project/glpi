@@ -132,13 +132,14 @@ class Group extends CommonTreeDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate && self::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
                $ong = [];
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                   $nb = countElementsInTable($this->getTable(),
                                              ['groups_id' => $item->getID()]);
                }

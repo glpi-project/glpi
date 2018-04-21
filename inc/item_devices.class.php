@@ -451,11 +451,7 @@ class Item_Devices extends CommonDBRelation {
       if ($item->canView()) {
          $nb = 0;
          if (in_array($item->getType(), self::getConcernedItems())) {
-            if ($IS_TWIG === true) {
-               return _n('Component', 'Components', Session::getPluralNumber());
-            }
-
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
                foreach (self::getItemAffinities($item->getType()) as $link_type) {
                   $nb   += countElementsInTable($link_type::getTable(),
                                                 ['items_id'   => $item->getID(),

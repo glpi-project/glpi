@@ -184,6 +184,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       $hidetab = false;
       // Hide if no rights on validations
@@ -199,7 +200,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       if (!$hidetab) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             $restrict = [static::$items_id => $item->getID()];
             // No rights for create only count asign ones
             if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
