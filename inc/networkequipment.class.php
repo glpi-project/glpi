@@ -414,8 +414,6 @@ class NetworkEquipment extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-
          $kb_item = new KnowbaseItem();
          $kb_item->getEmpty();
          if ($kb_item->canViewItem()) {

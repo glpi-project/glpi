@@ -576,7 +576,6 @@ class Computer extends CommonDBTM {
          $actions['Item_OperatingSystem'.MassiveAction::CLASS_ACTION_SEPARATOR.'update']    = OperatingSystem::getTypeName();
          $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
          $actions['Computer_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Install');
-         MassiveAction::getAddTransferList($actions);
 
          $kb_item = new KnowbaseItem();
          $kb_item->getEmpty();

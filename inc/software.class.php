@@ -353,8 +353,6 @@ class Software extends CommonDBTM {
       }
 
       if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-
          $kb_item = new KnowbaseItem();
          $kb_item->getEmpty();
          if ($kb_item->canViewItem()) {

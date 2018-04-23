@@ -484,7 +484,6 @@ class Printer  extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if (static::canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
-         MassiveAction::getAddTransferList($actions);
 
          $kb_item = new KnowbaseItem();
          $kb_item->getEmpty();

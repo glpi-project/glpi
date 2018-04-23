@@ -249,10 +249,6 @@ class Contact extends CommonDBTM{
                = _x('button', 'Add a supplier');
       }
 
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-      }
-
       return $actions;
    }
 

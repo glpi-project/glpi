@@ -586,10 +586,6 @@ class Contract extends CommonDBTM {
          $actions[$prefix.'remove'] = _x('button', 'Remove an item');
       }
 
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-      }
-
       return $actions;
    }
 

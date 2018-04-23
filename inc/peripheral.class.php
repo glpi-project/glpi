@@ -336,7 +336,6 @@ class Peripheral extends CommonDBTM {
 
       if (static::canUpdate()) {
          Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
-         MassiveAction::getAddTransferList($actions);
 
          $kb_item = new KnowbaseItem();
          $kb_item->getEmpty();
