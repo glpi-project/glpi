@@ -158,7 +158,7 @@ class Notification extends CommonDBTM {
          $menu['page']                                       = '/front/setup.notification.php';
          $menu['options']['notification']['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
          $menu['options']['notification']['page']            = '/front/notification.php';
-         $menu['options']['notification']['links']['add']    = Notification::getFormURL();
+         $menu['options']['notification']['links']['add']    = Notification::getFormURL(false);
          $menu['options']['notification']['links']['search'] = '/front/notification.php';
 
          $menu['options']['notificationtemplate']['title']
