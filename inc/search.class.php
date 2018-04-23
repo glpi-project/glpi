@@ -5620,7 +5620,8 @@ class Search {
                || (($searchID >= 37) && ($searchID <= 38))
                || (($searchID >= 50) && ($searchID <= 59))
                || (($searchID >= 120) && ($searchID <= 125))
-               || ($searchID == 142))
+               || ($searchID == 142)
+               || ($searchID == 159))
               && InfoCom::canApplyOn($itemtype));
    }
 
