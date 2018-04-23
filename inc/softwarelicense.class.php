@@ -469,21 +469,6 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
-   function getSpecificMassiveActions($checkitem = null) {
-
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
-
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-      }
-
-      return $actions;
-   }
-
    function rawSearchOptions() {
       $tab = [];
 

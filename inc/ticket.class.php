@@ -2625,8 +2625,6 @@ class Ticket extends CommonITILObject {
          }
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
-            MassiveAction::getAddTransferList($actions);
-
             $kb_item = new KnowbaseItem();
             $kb_item->getEmpty();
             if ($kb_item->canViewItem()) {
