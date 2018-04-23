@@ -172,16 +172,11 @@ class Change extends CommonITILObject {
    function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
-      $isadmin = static::canUpdate();
 
       if ($this->canAdminActors()) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor'] = __('Add an actor');
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'update_notif']
                = __('Set notifications for all actors');
-      }
-
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
       }
 
       return $actions;

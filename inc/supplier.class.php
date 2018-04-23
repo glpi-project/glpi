@@ -208,8 +208,6 @@ class Supplier extends CommonDBTM {
       if ($isadmin) {
          $actions['Contact_Supplier'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = _x('button', 'Add a contact');
-
-         MassiveAction::getAddTransferList($actions);
       }
       return $actions;
    }

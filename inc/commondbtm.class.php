@@ -3603,13 +3603,19 @@ class CommonDBTM extends CommonGLPI {
     * @return array an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem = null) {
+      global $DB;
 
+      $actions = [];
       // test if current profile has rights to unlock current item type
       if (Session::haveRight( static::$rightname, UNLOCK)) {
-         return ['ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock'
-                        => _x('button', 'Unlock items')];
+         $actions['ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock']
+                        = _x('button', 'Unlock items');
       }
-      return [];
+      if ($DB->fieldExists(static::getTable(), 'entities_id') && static::canUpdate()) {
+         MassiveAction::getAddTransferList($actions);
+      }
+
+      return $actions;
    }
 
 

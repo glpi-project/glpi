@@ -356,10 +356,6 @@ class Group extends CommonTreeDropdown {
          $actions[$prefix.'remove']         = _x('button', 'Remove a user');
       }
 
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-      }
-
       return $actions;
    }
 

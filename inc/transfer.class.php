@@ -177,27 +177,28 @@ class Transfer extends CommonDBTM {
          // Simulate transfers To know which items need to be transfer
          $this->simulateTransfer($items);
 
-         //Html::printCleanArray($this->needtobe_transfer);
-
-         // Software first (to avoid copy during computer transfer)
-         $this->inittype = 'Software';
-         if (isset($items['Software']) && count($items['Software'])) {
-            foreach ($items['Software'] as $ID) {
-               $this->transferItem('Software', $ID, $ID);
-            }
-         }
-
-         // Computer before all other items
-         $this->inittype = 'Computer';
-         if (isset($items['Computer']) && count($items['Computer'])) {
-            foreach ($items['Computer'] as $ID) {
-               $this->transferItem('Computer', $ID, $ID);
-            }
-         }
-
          // Inventory Items : MONITOR....
-         $INVENTORY_TYPES = ['CartridgeItem', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
-                                  'Peripheral', 'Phone', 'Printer', 'SoftwareLicense', ];
+         $INVENTORY_TYPES = [
+            'Software', // Software first (to avoid copy during computer transfer)
+            'Computer', // Computer before all other items
+            'CartridgeItem',
+            'ConsumableItem',
+            'Monitor',
+            'NetworkEquipment',
+            'Peripheral',
+            'Phone',
+            'Printer',
+            'SoftwareLicense',
+            'Contact',
+            'Contract',
+            'Document',
+            'Supplier',
+            'Group',
+            'Link',
+            'Ticket',
+            'Problem',
+            'Change'
+         ];
 
          foreach ($INVENTORY_TYPES as $itemtype) {
             $this->inittype = $itemtype;
@@ -208,30 +209,21 @@ class Transfer extends CommonDBTM {
             }
          }
 
+         //handle all other types
+         foreach (array_keys($items) as $itemtype) {
+            if (!in_array($itemtype, $INVENTORY_TYPES)) {
+               $this->inittype = $itemtype;
+               if (isset($items[$itemtype]) && count($items[$itemtype])) {
+                  foreach ($items[$itemtype] as $ID) {
+                     $this->transferItem($itemtype, $ID, $ID);
+                  }
+               }
+            }
+         }
+
          // Clean unused
+         // FIXME: only if Software or SoftwareLicense has been changed?
          $this->cleanSoftwareVersions();
-
-         // Management Items
-         $MANAGEMENT_TYPES = ['Contact', 'Contract', 'Document', 'Supplier'];
-         foreach ($MANAGEMENT_TYPES as $itemtype) {
-            $this->inittype = $itemtype;
-            if (isset($items[$itemtype]) && count($items[$itemtype])) {
-               foreach ($items[$itemtype] as $ID) {
-                  $this->transferItem($itemtype, $ID, $ID);
-               }
-            }
-         }
-
-         // Tickets
-         $OTHER_TYPES = ['Group', 'Link', 'Ticket', 'Problem', 'Change'];
-         foreach ($OTHER_TYPES as $itemtype) {
-            $this->inittype = $itemtype;
-            if (isset($items[$itemtype]) && count($items[$itemtype])) {
-               foreach ($items[$itemtype] as $ID) {
-                  $this->transferItem($itemtype, $ID, $ID);
-               }
-            }
-         }
       } // $to >= 0
    }
 
