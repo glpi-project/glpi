@@ -5859,14 +5859,16 @@ class Search {
     * @return boolean
    **/
    static function isInfocomOption($itemtype, $searchID) {
-      global $CFG_GLPI;
+      if (!InfoCom::canApplyOn($itemtype)) {
+         return false;
+      }
 
-      return (((($searchID >= 25) && ($searchID <= 28))
-               || (($searchID >= 37) && ($searchID <= 38))
-               || (($searchID >= 50) && ($searchID <= 59))
-               || (($searchID >= 120) && ($searchID <= 125))
-               || ($searchID == 142))
-              && InfoCom::canApplyOn($itemtype));
+      $infocom_options = Infocom::rawSearchOptionsToAdd($itemtype);
+      $found_infocoms  = array_filter($infocom_options, function($option) use ($searchID) {
+         return isset($option['id']) && $searchID == $option['id'];
+      });
+
+      return (count($found_infocoms) > 0);
    }
 
 
