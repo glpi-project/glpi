@@ -225,7 +225,7 @@ class Project extends CommonDBTM {
 
          $links[$pic_validate] = '/front/projecttask.php';
 
-         $links['summary'] = Project::getFormURL().'?showglobalgantt=1';
+         $links['summary'] = Project::getFormURL(false).'?showglobalgantt=1';
       }
       if (count($links)) {
          return $links;
