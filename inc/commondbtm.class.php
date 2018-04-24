@@ -243,6 +243,7 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Generator to browse object from an iterator
+    * @see http://php.net/manual/en/language.generators.syntax.php
     *
     * @since 9.2
     *
