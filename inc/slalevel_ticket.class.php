@@ -74,8 +74,9 @@ class SlaLevel_Ticket extends CommonDBTM {
          ],
          'LIMIT'        => 1
       ]);
-      if (count($iterator)) {
-         return $this->getFromIter($iterator);
+      if (count($iterator) == 1) {
+         $row = $iterator->next();
+         return $this->getFromDB($row['id']);
       }
       return false;
    }
