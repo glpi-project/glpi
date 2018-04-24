@@ -6,6 +6,7 @@ shared: &shared
     - run:
         name: Dependencies
         command: |
+          sudo apt-get update
           sudo apt-get install -y mysql-client libpng-dev libxml2-dev
           sudo docker-php-ext-install mysqli gd xmlrpc
           sudo pecl install apcu <<< '' || sudo pecl install apcu-4.0.11 <<< ''
