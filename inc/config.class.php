@@ -2241,26 +2241,28 @@ class Config extends CommonDBTM {
       $db_ver = $result[$version];
 
       $ok_message = sprintf(__s('Database version seems correct (%s) - Perfect!'), $version);
-      $ko_message = sprintf(__('Your database engine version seems too old: %s.'), $version);
+      $ko_message = sprintf(__s('Your database engine version seems too old: %s.'), $version);
 
       if (!$db_ver) {
          $error = 2;
       }
       $message = $error > 0 ? $ko_message : $ok_message;
 
-      $html = '<tr class="tab_bg_1">';
-      $html .= "<td";
-      if ($error > 0) {
-         $html .= " class='red'";
-      }
-      $html .= "><img src='".$CFG_GLPI['root_doc']."/pics/";
-      $html .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message'/>";
-      $html .= "$message</td>";
+      $img = "<img src='".$CFG_GLPI['root_doc']."/pics/";
+      $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
 
-      $html .= '</tr>';
       if ($fordebug) {
-         echo $message . "\n";
+         echo $img . $message . "\n";
       } else {
+         //$html = '<tr class="tab_bg_1">';
+         $html = "<td";
+         if ($error > 0) {
+            $html .= " class='red'";
+         }
+         $html .= ">";
+         $html .= $img;
+         $html .= '</td>';
+         //$html .= '</tr>';
          echo $html;
       }
       return $error;
