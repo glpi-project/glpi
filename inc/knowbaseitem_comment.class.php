@@ -110,7 +110,9 @@ class KnowbaseItem_Comment extends CommonDBTM {
          $where
        );
 
-      $cancomment = $item->canComment();
+      $entry = new KnowbaseItem();
+      $entry->getFromDB($kbitem->fields['knowbaseitems_id']);
+      $cancomment = $entry->canComment();
       if ($cancomment) {
          echo "<div class='firstbloc'>";
 
