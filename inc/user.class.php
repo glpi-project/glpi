@@ -401,6 +401,8 @@ class User extends CommonDBTM {
       $ue = new UserEmail();
       $ue->deleteByCriteria(['users_id' => $this->fields['id']]);
 
+      $this->dropPictureFiles($this->fields['picture']);
+
       // Ticket rules use various _users_id_*
       Rule::cleanForItemAction($this, '_users_id%');
       Rule::cleanForItemCriteria($this, '_users_id%');
