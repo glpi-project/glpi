@@ -40,7 +40,7 @@ class KnowbaseItem_Revision extends DbTestCase {
 
    public function afterTestMethod($method) {
       global $DB;
-      $DB->query('DELETE FROM glpi_knowbaseitems_revisions');
+      $DB->delete('glpi_knowbaseitems_revisions', [true]);
       parent::afterTestMethod($method);
    }
 
