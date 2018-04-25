@@ -43,8 +43,23 @@ if (PHP_SAPI != 'cli') {
    exit();
 }
 
+if (in_array('--help', $_SERVER['argv'])) {
+   die("usage: ".$_SERVER['argv'][0]."  [ --user=glpi ] [ --pass=glpi ]\n");
+}
+
+if ($_SERVER['argc']>1) {
+   for ($i=1; $i<count($_SERVER['argv']); $i++) {
+      $it           = explode("=", $argv[$i], 2);
+      $it[0]        = preg_replace('/^--/', '', $it[0]);
+      $args[$it[0]] = (isset($it[1]) ? $it[1] : true);
+   }
+}
+
+$user = isset($args['user']) ? $args['user'] : 'glpi';
+$pass = isset($args['pass']) ? $args['pass'] : 'glpi';
+
 $auth = new Auth();
-if (!$auth->login('glpi', 'glpi', true)) {
+if (!$auth->login($user, $pass, true)) {
     exit('Authentication failed!');
 }
 
