@@ -320,35 +320,40 @@ class User extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $DB->delete(
+         'glpi_profiles_users', [
+            'users_id' => $this->fields['id']
+         ]
+      );
 
       if ($this->fields['id'] > 0) { // Security
-         $query = "DELETE
-                   FROM `glpi_displaypreferences`
-                   WHERE `users_id` = '".$this->fields['id']."'";
-         $DB->query($query);
+         $DB->delete(
+            'glpi_displaypreferences', [
+               'users_id' => $this->fields['id']
+            ]
+         );
 
-         $query = "DELETE
-                   FROM `glpi_savedsearches_users`
-                   WHERE `users_id` = '".$this->fields['id']."'";
-         $DB->query($query);
+         $DB->delete(
+            'glpi_savedsearches_users', [
+               'users_id' => $this->fields['id']
+            ]
+         );
       }
 
       // Delete own reminders
-      $query = "DELETE
-                FROM `glpi_reminders`
-                WHERE `users_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $DB->delete(
+         'glpi_reminders', [
+            'users_id' => $this->fields['id']
+         ]
+      );
 
       // Delete private bookmark
-      $query = "DELETE
-                FROM `glpi_savedsearches`
-                WHERE `users_id` = '".$this->fields['id']."'
-                      AND `is_private` = '1'";
-      $DB->query($query);
+      $DB->delete(
+         'glpi_savedsearches', [
+            'users_id'     => $this->fields['id'],
+            'is_private'   => 1
+         ]
+      );
 
       // Set no user to public bookmark
       $DB->update(
@@ -381,17 +386,19 @@ class User extends CommonDBTM {
       $cu = new Change_User();
       $cu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-      $query1 = "DELETE
-                 FROM `glpi_projecttaskteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_projecttaskteams', [
+            'items_id'  => $this->fields['id'],
+            'itemtype'  => __CLASS__
+         ]
+      );
 
-      $query1 = "DELETE
-                 FROM `glpi_projectteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_projectteams', [
+            'items_id'  => $this->fields['id'],
+            'itemtype'  => __CLASS__
+         ]
+      );
 
       $kiu = new KnowbaseItem_User();
       $kiu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
