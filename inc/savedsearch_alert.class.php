@@ -308,7 +308,7 @@ class SavedSearch_Alert extends CommonDBChild {
     *
     * @param Crontask $task Crontask instance
     *
-    * @return void
+    * @return int : <0 : need to run again, 0:nothing to do, >0:ok
     */
    static public function cronSavedSearchesAlerts($task) {
       global $DB;
