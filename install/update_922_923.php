@@ -70,7 +70,7 @@ function update922to923() {
       $notification = new Notification();
       $template = new NotificationTemplate();
 
-      if ($notification->getFromDBByCrit(['itemtype' => $notif])
+      if ($notification->getFromDBByCrit(['itemtype' => $notif, 'event' => 'alert'])
          && $template->getFromDBByCrit(['itemtype' => $notif])
       ) {
          $query = "UPDATE glpi_notificationtemplatetranslations SET " .
@@ -83,13 +83,14 @@ function update922to923() {
                'glpi_notifications_notificationtemplates',
                "notifications_id = ".$notification->fields['id'].
                " AND notificationtemplates_id = ".$template->fields['id'] .
-               " AND mode = 'mailing'"
+               " AND mode = '".Notification_NotificationTemplate::MODE_MAIL."'"
             ) == 0
          ) {
             //Add missing notification template link for saved searches
             $query = "INSERT INTO glpi_notifications_notificationtemplates " .
                "(notifications_id, mode, notificationtemplates_id) " .
-               "VALUEs(".$notification->fields['id'].", 'mailing', ".$template->fields['id'].")";
+               "VALUES(".$notification->fields['id'].", '".Notification_NotificationTemplate::MODE_MAIL.
+               "', ".$template->fields['id'].")";
             $DB->queryOrDie($query);
          }
       }
