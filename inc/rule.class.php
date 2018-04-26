@@ -1782,18 +1782,22 @@ class Rule extends CommonDBTM {
                case "append_regex_result" :
                   //Regex result : assign value from the regex
                   //Append regex result : append result from a regex
-                  if ($action->fields["action_type"] == "append_regex_result") {
-                     $res = (isset($params[$action->fields["field"]])
-                             ?$params[$action->fields["field"]]:"");
-                  } else {
-                     $res = "";
-                  }
                   if (isset($this->regex_results[0])) {
-                     $res .= RuleAction::getRegexResultById($action->fields["value"],
+                     $res = RuleAction::getRegexResultById($action->fields["value"],
                                                             $this->regex_results[0]);
                   } else {
-                     $res .= $action->fields["value"];
+                     $res = $action->fields["value"];
                   }
+
+                  if ($action->fields["action_type"] == "append_regex_result") {
+                     if (isset($params[$action->fields["field"]])) {
+                        $res = $params[$action->fields["field"]] . $res;
+                     } else {
+                        //keep rule value to append in a separate entry
+                        $output[$action->fields['field'] . '_append'] = $res;
+                     }
+                  }
+
                   $output[$action->fields["field"]] = $res;
                   break;
 
