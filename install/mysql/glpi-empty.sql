@@ -7508,6 +7508,23 @@ CREATE TABLE `glpi_reminders` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_remindertranslations
+
+DROP TABLE IF EXISTS `glpi_remindertranslations`;
+CREATE TABLE `glpi_remindertranslations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `reminders_id` int(11) NOT NULL DEFAULT '0',
+  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` text COLLATE utf8_unicode_ci,
+  `text` longtext COLLATE utf8_unicode_ci,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `item` (`reminders_id`,`language`),
+  KEY `users_id` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_reminders_users
 

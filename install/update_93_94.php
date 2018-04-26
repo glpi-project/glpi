@@ -49,6 +49,26 @@ function update93to94() {
 
    //put your update rules here, and drop the line!
 
+   //Create remindertranslations table
+   if (!$DB->tableExists('glpi_remindertranslations')) {
+      $query = "CREATE TABLE `glpi_remindertranslations` (
+           `id` int(11) NOT NULL AUTO_INCREMENT,
+           `reminders_id` int(11) NOT NULL DEFAULT '0',
+           `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+           `name` text COLLATE utf8_unicode_ci,
+           `text` longtext COLLATE utf8_unicode_ci,
+           `users_id` int(11) NOT NULL DEFAULT '0',
+           `date_mod` datetime DEFAULT NULL,
+           `date_creation` datetime DEFAULT NULL,
+           PRIMARY KEY (`id`),
+           KEY `item` (`reminders_id`,`language`),
+           KEY `users_id` (`users_id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.4 add table glpi_remindertranslations");
+   }
+
+   $migration->migrationOneTable('glpi_remindertranslations');
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

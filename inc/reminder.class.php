@@ -42,7 +42,7 @@ class Reminder extends CommonDBVisible {
 
    // From CommonDBTM
    public $dohistory                   = true;
-
+   public $can_be_translated  = true;
    // For visibility checks
    protected $users     = [];
    protected $groups    = [];
@@ -485,6 +485,7 @@ class Reminder extends CommonDBVisible {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Reminder', $ong, $options);
+      $this->addStandardTab('ReminderTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -884,9 +885,19 @@ class Reminder extends CommonDBVisible {
                               OR (state = ".Planning::INFO."
                                   AND `end` > NOW()))";
       }
-
+      
+      $addselect = "";
+      if (ReminderTranslation::isReminderTranslationActive()
+          && (countElementsInTable('glpi_remindertranslations') > 0)) {
+         $joinstoadd .= "LEFT JOIN `glpi_remindertranslations`
+                     ON (`glpi_reminders`.`id` = `glpi_remindertranslations`.`reminders_id`
+                           AND `glpi_remindertranslations`.`language` = '".$_SESSION['glpilanguage']."')";
+         $addselect .= ", `glpi_remindertranslations`.`name` AS transname,
+                          `glpi_remindertranslations`.`text` AS transtext ";
+      }
+      
       if ($ASSIGN) {
-         $query2 = "SELECT DISTINCT `glpi_reminders`.*
+         $query2 = "SELECT DISTINCT `glpi_reminders`.* $addselect
                     FROM `glpi_reminders`
                     $joinstoadd
                     WHERE `glpi_reminders`.`is_planned` = '1'
@@ -920,9 +931,17 @@ class Reminder extends CommonDBVisible {
                   } else {
                      $interv[$key]["end"] = $data["end"];
                   }
-                  $interv[$key]["name"] = Html::clean(Html::resume_text($data["name"], $CFG_GLPI["cut"]));
+                  $name = $data['name'];
+                  if (isset($data['transname']) && !empty($data['transname'])) {
+                     $name = $data['transname'];
+                  }
+                  $interv[$key]["name"] = Html::clean(Html::resume_text($name, $CFG_GLPI["cut"]));
+                  $text = $data["text"];
+                  if (isset($data['transtext']) && !empty($data['transtext'])) {
+                     $text = $data['transtext'];
+                  }
                   $interv[$key]["text"]
-                     = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
+                     = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($text)),
                                          $CFG_GLPI["cut"]);
 
                   $interv[$key]["users_id"]   = $data["users_id"];
@@ -1041,6 +1060,16 @@ class Reminder extends CommonDBVisible {
                                     OR `glpi_reminders`.`begin_view_date` < '$now')
                               AND (`glpi_reminders`.`end_view_date` IS NULL
                                    OR `glpi_reminders`.`end_view_date` > '$now') ";
+      $join = "";
+      $addselect = "";
+      if (ReminderTranslation::isReminderTranslationActive()
+          && (countElementsInTable('glpi_remindertranslations') > 0)) {
+         $join .= "LEFT JOIN `glpi_remindertranslations`
+                     ON (`glpi_reminders`.`id` = `glpi_remindertranslations`.`reminders_id`
+                           AND `glpi_remindertranslations`.`language` = '".$_SESSION['glpilanguage']."')";
+         $addselect .= ", `glpi_remindertranslations`.`name` AS transname,
+                          `glpi_remindertranslations`.`text` AS transtext ";
+      }
 
       if ($personal) {
 
@@ -1049,8 +1078,9 @@ class Reminder extends CommonDBVisible {
             return false;
          }
 
-         $query = "SELECT `glpi_reminders`.*
+         $query = "SELECT `glpi_reminders`.* $addselect
                    FROM `glpi_reminders`
+                   $join
                    WHERE `glpi_reminders`.`users_id` = '$users_id'
                          AND (`glpi_reminders`.`end` >= '$today'
                               OR `glpi_reminders`.`is_planned` = '0')
@@ -1072,8 +1102,9 @@ class Reminder extends CommonDBVisible {
             $restrict_user = "`glpi_reminders`.`users_id` <> '$users_id'";
          }
 
-         $query = "SELECT DISTINCT `glpi_reminders`.*
-                   FROM `glpi_reminders` ".
+         $query = "SELECT DISTINCT `glpi_reminders`.* $addselect
+                   FROM `glpi_reminders` 
+                   $join ".
                    self::addVisibilityJoins()."
                    WHERE $restrict_user
                          $restrict_visibility
@@ -1108,12 +1139,22 @@ class Reminder extends CommonDBVisible {
          $rand = mt_rand();
 
          while ($data = $DB->fetch_assoc($result)) {
+            $self = new self();
+            $self->getFromDB($data["id"]);
             echo "<tr class='tab_bg_2'><td>";
+            $name = $data['name'];
+
+            if (isset($data['transname']) && !empty($data['transname'])) {
+               $name = $data['transname'];
+            }
             $link = "<a id='content_reminder_".$data["id"].$rand."'
                       href='".Reminder::getFormURLWithID($data["id"])."'>".
-                      $data["name"]."</a>";
-
-            $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data["text"]),
+                      $name."</a>";
+            $text = $data["text"];
+            if (isset($data['transtext']) && !empty($data['transtext'])) {
+               $text = $data['transtext'];
+            }
+            $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($text),
                                          ['applyto' => "content_reminder_".$data["id"].$rand,
                                                'display' => false]);
             printf(__('%1$s %2$s'), $link, $tooltip);
