@@ -4283,14 +4283,14 @@ msgstr "auto login désactivé"
 #: inc/auth.class.php:672
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Test de connexion à l'annuaire LDAP"
+msgstr[1] "Échec de connexion aux annuaires LDAP"
 
 #: inc/auth.class.php:680
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Utilisateur non trouvé dans l'annuaire LDAP"
+msgstr[1] "Utilisateur non trouvé dans les annuaires LDAP"
 
 #: inc/auth.class.php:691 inc/auth.class.php:700
 msgid "Empty login or password"
@@ -4412,6 +4412,8 @@ msgid ""
 "The CAS lib isn't available, GLPI doesn't package it anymore for license "
 "compatibility issue."
 msgstr ""
+"La bibliothèque CAS n'est pas disponible, GLPI ne la fournit plus par défaut"
+" en raison d'incompatibilités de licence."
 
 #: inc/auth.class.php:1336
 msgid "Impossible to use CAS as external source of connection"
@@ -4685,6 +4687,7 @@ msgstr "Déréférencés pendant la localisation (pas pendant la recherche)"
 #: inc/authldap.class.php:497
 msgid "Domain name used by inventory tool for link the user"
 msgstr ""
+"Nom de domaine utilisé par l'outil d'inventaire pour lier l'utilisateur"
 
 #: inc/authldap.class.php:548
 msgid "List of LDAP directory replicates"
@@ -8761,7 +8764,7 @@ msgstr "L'accès web au répertoire des fichiers est protégé"
 
 #: inc/config.class.php:2544 inc/config.class.php:2548
 msgid "Web access to the files directory should not be allowed"
-msgstr ""
+msgstr "L4accès web au dossier \"files\" ne devrait pas être autorisé"
 
 #: inc/config.class.php:2545 inc/config.class.php:2549
 msgid "Check the .htaccess file and the web server configuration."
@@ -8772,10 +8775,12 @@ msgid ""
 "Web access to the files directory should not be allowed but this cannot be "
 "checked automatically on this instance."
 msgstr ""
+"L'accès web au dossier \"files\" ne devrait pas être autorisé mais cela ne "
+"peut être vérifié de manière automatique sur cette instance."
 
 #: inc/config.class.php:2565
 msgid "error log file"
-msgstr ""
+msgstr "fichier de log des erreurs"
 
 #: inc/config.class.php:2727
 msgid "You are using a development version, be careful!"
@@ -16168,7 +16173,7 @@ msgstr "Créer un ticket à partir de cette tâche"
 
 #: inc/projecttask_ticket.class.php:278
 msgid "Add a project task"
-msgstr ""
+msgstr "Ajouter une nouvelle tâche de projet"
 
 #: inc/queuednotification.class.php:80
 msgctxt "button"
@@ -17372,7 +17377,7 @@ msgstr "Chargement partiel de la recherche sauvegardée."
 
 #: inc/savedsearch.class.php:764
 msgid "Filter list"
-msgstr ""
+msgstr "Filtrer la liste"
 
 #: inc/savedsearch.class.php:768
 #, php-format

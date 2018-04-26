@@ -2619,12 +2619,12 @@ msgstr "%s pievieno mērķauditoriju"
 #: front/knowbaseitem.form.php:125
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Zināšanu bāzes %sieraksts tika atgriezts pārskatīšanai"
 
 #: front/knowbaseitem.form.php:132
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Zināšanu bāzes %sieraksts netika atjaunots pārskatīšanai"
 
 #: front/knowbaseitem.form.php:142 inc/commondropdown.class.php:918
 #: inc/itilcategory.class.php:67 inc/itilcategory.class.php:231
@@ -2647,7 +2647,7 @@ msgstr "Zināšanu bāzes vienības tulkojums ir atgriezts pārskatīšanai %s"
 #: front/knowbaseitemtranslation.form.php:59
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
-msgstr ""
+msgstr "Zināšanu bāzes vienības tulkojums nav atgriezts pārskatīšanai %s"
 
 #: front/ldap.group.import.php:40 front/ldap.group.php:39
 #: front/ldap.import.php:46 front/ldap.php:37 inc/group.class.php:165
@@ -4476,9 +4476,9 @@ msgstr "HTTP pieprasījumā nosūtīta atšķirīga autentifikācija"
 #: inc/ssovariable.class.php:49
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Lauks, kurā glabāt HTTP pieprasījuma lietotājvārdu"
+msgstr[1] "Lauks, kurā glabāt HTTP pieprasījuma lietotājvārdu"
+msgstr[2] "Lauki, kuros glabāt HTTP pieprasījuma lietotājvārdu"
 
 #: inc/auth.class.php:1376
 msgid "Remove the domain of logins like login@domain"
@@ -4952,7 +4952,7 @@ msgstr "Mape nav izvēlēta"
 
 #: inc/authldap.class.php:3207
 msgid "No directory associated to entity: impossible search"
-msgstr ""
+msgstr "Nav neviena saistīta direktorija ar entītiju: meklēšana nav iespējama"
 
 #: inc/authldap.class.php:3391 inc/transfer.class.php:3323
 #: inc/transfer.class.php:3325
@@ -5713,7 +5713,7 @@ msgstr "Drošības apsvērumu dēļ, lūdzu, noņemiet datni: %s"
 #: inc/central.class.php:178
 #, php-format
 msgid "SQL strict mode is not fully enabled, recommended for development: %s"
-msgstr ""
+msgstr "SQL stingrs režīms nav pilnībā iespējots, ieteicams izstrādei: %s"
 
 #: inc/central.class.php:189
 msgid "The following SQL tables are marked as crashed:"
@@ -5726,7 +5726,7 @@ msgstr "SQL replika: tikai lasāma"
 #: inc/central.class.php:203
 #, php-format
 msgid "%1$s tables not migrated to InnoDB engine."
-msgstr ""
+msgstr "%1$s tabulas nav migrētas uz InnoDB dzinēju."
 
 #: inc/certificate.class.php:55 inc/entity.class.php:1928
 #: inc/profile.class.php:888
@@ -5916,7 +5916,7 @@ msgstr "Piesaistīt"
 
 #: inc/certificate_item.class.php:544
 msgid "Does not expire"
-msgstr ""
+msgstr "Derīguma termiņš nav"
 
 #: inc/certificatetype.class.php:45 inc/dropdown.class.php:854
 msgid "Certificate type"
@@ -6197,9 +6197,9 @@ msgstr "Izmaiņas saistītājiem ierakstiem"
 #: inc/change_problem.class.php:64
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīt Problēmu/Izmaiņu"
+msgstr[1] "Saistīt Problēmu/Izmaiņu"
+msgstr[2] "Saistīt Problēmas/Izmaiņas"
 
 #: inc/change_problem.class.php:151 inc/change_project.class.php:173
 #: inc/change_ticket.class.php:370
@@ -6217,9 +6217,9 @@ msgstr "Pievienot problēmu"
 #: inc/change_project.class.php:64
 msgid "Link Project/Change"
 msgid_plural "Links Project/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīt Projektu/Izmaiņu"
+msgstr[1] "Saistīt Projektu/Izmaiņu"
+msgstr[2] "Saistīt Projektus/Izmaiņas"
 
 #: inc/change_project.class.php:269
 msgid "Add a project"
@@ -6235,9 +6235,9 @@ msgstr[2] "Mainīt uzdevumus"
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīt Pieteikumu/Izmaiņu"
+msgstr[1] "Saistīt Pieteikumu/Izmaiņu"
+msgstr[2] "Saistīt Pieteikumus/Izmaiņas"
 
 #: inc/change_ticket.class.php:265 inc/problem_ticket.class.php:299
 #: inc/projecttask_ticket.class.php:172
@@ -6284,6 +6284,7 @@ msgstr "Pievienot"
 #: inc/commondbconnexity.class.php:239
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
 msgstr ""
+"Nevar atjaunināt vienību: nav nepieciešamo tiesību uz vecākelemtu(iem)"
 
 #: inc/commondbconnexity.class.php:414 inc/commondbconnexity.class.php:531
 #: inc/networkname.class.php:117 inc/networkname.class.php:441
@@ -6378,7 +6379,7 @@ msgstr "Atjaunot"
 
 #: inc/commondbtm.class.php:2269
 msgid "Check to keep the devices while deleting this item"
-msgstr ""
+msgstr "Pārbaudiet, vai saglabāsies ierīces dzēšot šo vienību"
 
 #: inc/commondbtm.class.php:2289 inc/notepad.class.php:367
 #: inc/ticket.class.php:5202 inc/ticketfollowup.class.php:812
@@ -6519,7 +6520,7 @@ msgstr "Pieteikuma dokuments %d"
 
 #: inc/commondbtm.class.php:4989
 msgid "You can define an autofill template"
-msgstr ""
+msgstr "Jūs varat definēt automātiskās aizpildes veidni"
 
 #: inc/commondbtm.class.php:5000
 msgid "Autofilled from template"
@@ -7125,9 +7126,9 @@ msgstr "Pievienot mani"
 #: inc/commonitilobject.class.php:4603 inc/levelagreement.class.php:689
 msgid "Time"
 msgid_plural "Times"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Reize"
+msgstr[1] "Reize"
+msgstr[2] "Reizes"
 
 #: inc/commonitilobject.class.php:5296
 #, php-format
@@ -7680,9 +7681,9 @@ msgstr[2] "Operatīvās atmiņas tipi"
 #: inc/printer.class.php:672
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atmiņa"
+msgstr[1] "Atmiņa"
+msgstr[2] "Atmiņa"
 
 #: inc/computer.class.php:876 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:44 inc/networkportmigration.class.php:295
@@ -8272,6 +8273,8 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
 msgstr ""
+"Ļaujiet pieteikties API un saņemt sesijas pilnvaru ar lietotāja ārējo "
+"marķieri. Skatiet Attālās piekļuves atslēgu cilnē Lietotāja iestatījumi"
 
 #: inc/config.class.php:790
 msgid "Add API client"
@@ -8477,7 +8480,7 @@ msgstr "Attālinātās piekļuves atslēgas"
 
 #: inc/config.class.php:1296
 msgid "Personal token"
-msgstr ""
+msgstr "Personisks marķieris"
 
 #: inc/config.class.php:1305 inc/config.class.php:1324
 #, php-format
@@ -8486,7 +8489,7 @@ msgstr "Ģenerēta %s"
 
 #: inc/config.class.php:1315
 msgid "API token"
-msgstr ""
+msgstr "API marķieris"
 
 #: inc/config.class.php:1334
 msgid "Due date progression"
@@ -8567,7 +8570,7 @@ msgstr "Parolē jābūt vismaz vienam simbolam!"
 
 #: inc/config.class.php:1573
 msgid "PHP opcode cache"
-msgstr ""
+msgstr "PHP opcode kešatmiņa"
 
 #: inc/config.class.php:1576 inc/config.class.php:2377
 #, php-format
@@ -8632,6 +8635,7 @@ msgstr "%s paplašinājums neeksistē"
 #, php-format
 msgid "Installing and enabling the \"%s\" extension may improve GLPI performance"
 msgstr ""
+"Instalēšana un ieslēgšana \"%s\" papild spraudņa var uzlabot GLPI veiktspēju"
 
 #: inc/config.class.php:1644
 msgid "User data cache"
@@ -8723,11 +8727,11 @@ msgstr "Lai kopētu/ievietotu jūsu atbalsta pieprasījumā"
 
 #: inc/config.class.php:2019
 msgid "Yes - Restrict to unit management for manual add"
-msgstr ""
+msgstr "Jā - Ierobežot vienības vadību manuālajai pievienošanai"
 
 #: inc/config.class.php:2020
 msgid "Yes - Restrict to global management for manual add"
-msgstr ""
+msgstr "Jā - Ierobežojiet globālo pārvaldību manuālajai pievienošanai"
 
 #: inc/config.class.php:2129 inc/preference.class.php:43
 msgid "Settings"
@@ -8982,7 +8986,7 @@ msgstr "Skaits ar izmantotiem palīgmateriāliem"
 
 #: inc/consumableitem.class.php:307
 msgid "Number of new consumables"
-msgstr ""
+msgstr "Skaits ar jauniem palīgmateriāliem"
 
 #: inc/consumableitem.class.php:378 inc/consumableitem.class.php:481
 msgid "Send alarms on consumables"
@@ -9001,7 +9005,7 @@ msgstr ""
 #: inc/consumableitem.class.php:466
 #, php-format
 msgid "%s: send consumable alert failed"
-msgstr ""
+msgstr "%s: brīdinājums par piederumiem netika nosūtīts"
 
 #: inc/consumableitemtype.class.php:42 inc/dropdown.class.php:828
 msgid "Consumable type"
@@ -9099,9 +9103,9 @@ msgstr[2] "Saistītie piegādātāji"
 #: inc/contact_supplier.class.php:49
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīts Kontakts/Piegādātājs"
+msgstr[1] "Saistīts Kontakts/Piegādātājs"
+msgstr[2] "Saistītie Kontakti/Piegādātāji"
 
 #: inc/contact_supplier.class.php:175 inc/contract_supplier.class.php:324
 msgid "Add a supplier"
@@ -9114,9 +9118,9 @@ msgstr "Pievienot piegādātāju"
 #: inc/suppliertype.class.php:42
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Trešo pušu tips"
+msgstr[1] "Trešo pušu tips"
+msgstr[2] "Trešo pušu tipi"
 
 #: inc/contact_supplier.class.php:214 inc/contract_supplier.class.php:361
 #: inc/entity.class.php:509 inc/entity.class.php:1330
@@ -9296,7 +9300,7 @@ msgstr "Līgums beidzies"
 
 #: inc/contract.class.php:1332
 msgid "Contract entered in notice time for period"
-msgstr ""
+msgstr "Līgums ir ievadīts brīdinājuma periodā"
 
 #: inc/contract.class.php:1336
 msgid "Contract period ended"
@@ -9304,7 +9308,7 @@ msgstr "Līguma periods beidzās "
 
 #: inc/contract.class.php:1378
 msgid "send contract alert failed"
-msgstr ""
+msgstr "nosūtīt līguma paziņojumu neizdevās"
 
 #: inc/contract.class.php:1518 inc/contract.class.php:1539
 #: inc/contract.class.php:1559
@@ -9341,9 +9345,9 @@ msgstr "Noņemt līgumu"
 #: inc/contract_item.class.php:91
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīts Līgums/Vienība"
+msgstr[1] "Saistīts Līgums/Vienība"
+msgstr[2] "Saistīti Līgumi/Vienības"
 
 #: inc/contract_item.class.php:161 inc/queuednotification.class.php:335
 msgid "Associated item ID"
@@ -9479,7 +9483,7 @@ msgstr "Nevar palaist"
 #: inc/crontask.class.php:851 inc/crontask.class.php:858
 #, php-format
 msgid "Undefined function %s (for cron)"
-msgstr ""
+msgstr "Nenoteiktās funkcijas %s (cron)"
 
 #: inc/crontask.class.php:864
 msgid "Nothing to launch"
@@ -9602,7 +9606,7 @@ msgstr[2] ""
 #: inc/crontask.class.php:1522
 #, php-format
 msgid "Deletion of archived log file: %s"
-msgstr ""
+msgstr "Arhivēta žurnāl faila dzēšana: %s"
 
 #: inc/crontask.class.php:1525
 #, php-format
@@ -9619,6 +9623,8 @@ msgstr "Arhivēt žurnāl failu: %1$s līdz %2$s"
 msgid ""
 "Unable to archive log file: %1$s. %2$s already exists. Wait till next day."
 msgstr ""
+"Nevar arhivēt žurnāl failu: %1$s. %2$s jau eksistē. Pagaidiet līdz nākamajai"
+" dienai."
 
 #: inc/crontask.class.php:1583
 #, php-format
@@ -9646,7 +9652,7 @@ msgstr "Iztīrīt vecos žurnalēšanas datus"
 
 #: inc/crontask.class.php:1717
 msgid "System logs retention period (in days, 0 for infinite)"
-msgstr ""
+msgstr "Sistēmas žurnāl failu saglabāšanas periods (dienās, 0 - bezgalīgi)"
 
 #: inc/crontask.class.php:1720
 msgid "Clean expired sessions"
@@ -9667,7 +9673,7 @@ msgstr "Automātisko darbību uzraudzība"
 
 #: inc/crontask.class.php:1732
 msgid "Archives log files and deletes aging ones"
-msgstr ""
+msgstr "Arhivēt žurnāl failus un izdzēst novecošos"
 
 #: inc/crontask.class.php:1733
 msgid "Number of days to keep archived logs"
@@ -9723,7 +9729,7 @@ msgstr "Pārbaudiet MySQL replikāciju"
 
 #: inc/dbconnection.class.php:376
 msgid "Max delay between master and slave (minutes)"
-msgstr ""
+msgstr "Maksimālā kavēšanās starp master un slave (minūtes)"
 
 #: inc/dbconnection.class.php:406
 #, php-format
@@ -9753,7 +9759,7 @@ msgstr "Atšķirība starp galveno (master) un padoto (slave)"
 #: inc/dbmysql.class.php:1025 inc/dbmysql.class.php:1099
 #, php-format
 msgid "%1$s - Error during the database query: %2$s - Error is %3$s"
-msgstr ""
+msgstr "%1$s - Kļūda datu bāzes vaicājuma laikā: %2$s - Kļūda %3$s"
 
 #: inc/dbmysql.class.php:615
 msgid "Optimizing tables"
@@ -10347,6 +10353,8 @@ msgstr "Augšupielāde veiksmīga."
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr ""
+"Iespējamais augšupielādes uzbrukums vai faila izmērs ir pārāk liels. Pagaidu"
+" faila pārvietošana neizdevās."
 
 #: inc/document.class.php:1246 inc/rulecollection.class.php:1052
 msgid "Unauthorized file type"
@@ -10354,7 +10362,7 @@ msgstr "Neatļauts datnes tips"
 
 #: inc/document.class.php:1251
 msgid "Manage document types"
-msgstr ""
+msgstr "Pārvaldīt dokumentu tipus"
 
 #: inc/document.class.php:1258
 #, php-format
@@ -10899,7 +10907,7 @@ msgstr[2] "Tulkojumi"
 
 #: inc/dropdowntranslation.class.php:101 inc/dropdowntranslation.class.php:112
 msgid "There's already a translation for this field in this language"
-msgstr ""
+msgstr "Šim laukam jau ir tulkojums izvēlētā valodā"
 
 #: inc/dropdowntranslation.class.php:343
 #: inc/knowbaseitemtranslation.class.php:202
@@ -10950,7 +10958,7 @@ msgstr[2] ""
 
 #: inc/entity.class.php:245
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "Jūs nevarat pievienot entītiju bez nosaukuma"
 
 #: inc/entity.class.php:616 inc/entity.class.php:1416
 msgid "LDAP directory information attribute representing the entity"
@@ -11026,7 +11034,7 @@ msgstr "Licenšu beigšanās brīdinājumi"
 
 #: inc/entity.class.php:771 inc/entity.class.php:1909
 msgid "Send license alarms before"
-msgstr ""
+msgstr "Sūtīt paziņojumu par licencēm pirms"
 
 #: inc/entity.class.php:781 inc/entity.class.php:1806
 msgid "Alarms on contracts"
@@ -11034,7 +11042,7 @@ msgstr "Līgumu brīdinājumi"
 
 #: inc/entity.class.php:791 inc/entity.class.php:1831
 msgid "Send contract alarms before"
-msgstr ""
+msgstr "Sūtīt paziņojumu par līgumu pirms"
 
 #: inc/entity.class.php:801 inc/entity.class.php:1851
 #: inc/infocom.class.php:1260 inc/infocom.class.php:1835
@@ -11044,7 +11052,7 @@ msgstr "Brīdinājumus par finanšu un administratīvo informāciju"
 
 #: inc/entity.class.php:811 inc/entity.class.php:1877
 msgid "Send financial and administrative information alarms before"
-msgstr ""
+msgstr "Sūtīt finansiālos un administratīvas informācijas paziņojumus pirms"
 
 #: inc/entity.class.php:821 inc/entity.class.php:1963
 #: inc/reservationitem.class.php:598
@@ -11053,11 +11061,11 @@ msgstr "Brīdinājumi par rezervācijām"
 
 #: inc/entity.class.php:831
 msgid "Default value for alarms on contracts"
-msgstr ""
+msgstr "Noklusēta vērtība par līgumu paziņojumiem"
 
 #: inc/entity.class.php:841
 msgid "Default value for alarms on financial and administrative information"
-msgstr ""
+msgstr "Noklusēta vērtība par finansiālo un administratīvo informāciju"
 
 #: inc/entity.class.php:851 inc/entity.class.php:1739
 msgid "Default threshold for cartridges count"
@@ -11070,11 +11078,11 @@ msgstr "Noklusētais brīdinājuma slieksnis izlietojamajiem materiāliem"
 #: inc/entity.class.php:871 inc/entity.class.php:1930
 #: inc/notificationtargetcertificate.class.php:49
 msgid "Alarms on expired certificates"
-msgstr ""
+msgstr "Paziņojumi par sertifikātiem ar beigu termiņu"
 
 #: inc/entity.class.php:881
 msgid "Send Certificate alarms before"
-msgstr ""
+msgstr "Sūtīt paziņojumu par sertifikātiem pirms"
 
 #: inc/entity.class.php:896 inc/entity.class.php:2119
 #: inc/profile.class.php:1030 inc/profile.class.php:2195
@@ -11097,7 +11105,7 @@ msgstr "Uzreiz"
 
 #: inc/entity.class.php:925
 msgid "Alerts on tickets which are not solved"
-msgstr ""
+msgstr "Paziņojumi par pieteikumiem kuri nav atrisināti"
 
 #: inc/entity.class.php:935 inc/entity.class.php:2190
 msgid "Automatic assignment of tickets"
@@ -11245,11 +11253,11 @@ msgstr "Kasetņu trauksmes atgādinājumu biežums"
 
 #: inc/entity.class.php:1766
 msgid "Reminders frequency for alarms on consumables"
-msgstr ""
+msgstr "Atgādinājumu biežums paziņojumiem par palīgmateriāliem"
 
 #: inc/entity.class.php:1942
 msgid "Send certificates alarms before"
-msgstr ""
+msgstr "Sūtīt paziņojumu par sertifikātiem pirms"
 
 #: inc/entity.class.php:1961 inc/event.class.php:148 inc/event.class.php:161
 #: inc/html.class.php:6062 inc/profile.class.php:743
@@ -11264,7 +11272,7 @@ msgstr[2] "Rezervācijas"
 
 #: inc/entity.class.php:1981
 msgid "Alerts on tickets which are not solved since"
-msgstr ""
+msgstr "Brīdinājumi par pieteikumiem kas nav atrisināti kopš"
 
 #: inc/entity.class.php:2151 inc/entity.class.php:2164
 #: inc/entity.class.php:2717 inc/levelagreement.class.php:486
@@ -11305,7 +11313,7 @@ msgstr "Lasīt parametrus"
 
 #: inc/entity.class.php:2854
 msgid "Read helpdesk parameters"
-msgstr ""
+msgstr "Lasīt helpdesk parametrus"
 
 #: inc/entity.class.php:2855
 msgid "Update parameters"
@@ -11313,7 +11321,7 @@ msgstr "Atjaunināt parametrus"
 
 #: inc/entity.class.php:2856
 msgid "Update helpdesk parameters"
-msgstr ""
+msgstr "Atjaunināt helpdesk parametrus"
 
 #: inc/event.class.php:150 inc/profile.class.php:1369 inc/rule.class.php:102
 #: inc/rulecollection.class.php:1912
@@ -11408,10 +11416,12 @@ msgid ""
 "Fully Qualified Domain Name. Use the classical notation (labels separated by"
 " dots). For example: indepnet.net"
 msgstr ""
+"Pilna domēna nosaukums (FQDN). Izmantojiet klasisko apzīmējumu (nosaukumus "
+"atdala ar punktiem). Piemēram: indepnet.net"
 
 #: inc/fqdn.class.php:80
 msgid "FQDN must not be empty"
-msgstr ""
+msgstr "pilna domēna nosaukums (FQDN) nedrīkst būt tukšs"
 
 #: inc/fqdn.class.php:89
 msgid "FQDN is not valid"
@@ -11540,7 +11550,7 @@ msgstr "Dzēst lietotāju"
 
 #: inc/group.class.php:444 inc/group.class.php:583
 msgid "Attribute of the user containing its groups"
-msgstr ""
+msgstr "Lietotāja atribūts, kas satur tā grupas"
 
 #: inc/group.class.php:452 inc/group.class.php:589
 msgid "Attribute value"
@@ -11677,7 +11687,7 @@ msgstr "Kļūda"
 
 #: inc/html.class.php:728
 msgid "Display GLPI debug informations"
-msgstr ""
+msgstr "Parādīt GLPI atkļūdošanas informāciju"
 
 #: inc/html.class.php:1081
 msgid "Progress"
@@ -11689,7 +11699,7 @@ msgstr "Mani uzstādījumi"
 
 #: inc/html.class.php:1518
 msgid "Back to top of the page"
-msgstr ""
+msgstr "Atpakaļ uz lapas augšdaļu"
 
 #: inc/html.class.php:1575 inc/toolbox.class.php:1406
 #: inc/toolbox.class.php:1410
@@ -11860,7 +11870,7 @@ msgstr[2] "+ %d gadi"
 
 #: inc/html.class.php:3530
 msgid "The description field is mandatory"
-msgstr ""
+msgstr "Apraksta lauks ir obligāts"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3699 inc/html.class.php:3901
@@ -11884,6 +11894,8 @@ msgstr "%1$d uz %2$d"
 #: inc/html.class.php:4801
 msgid "Attach file by drag & drop or copy & paste in editor or "
 msgstr ""
+"Pievienojot failu izmantojiet drag & drop vai kopējiet un ielīmējiet "
+"redaktorā"
 
 #: inc/html.class.php:4802
 msgid "selecting them"
@@ -11911,7 +11923,7 @@ msgstr "Iezīmēt/noņemt visu"
 
 #: inc/html.class.php:5857
 msgid "Start typing to find a menu"
-msgstr ""
+msgstr "Sāciet rakstīt, lai atrastu izvēlni"
 
 #: inc/html.class.php:5930 inc/html.class.php:5932
 msgid "Logout"
@@ -11948,11 +11960,11 @@ msgstr "Papildus spraudņi (plugins)"
 
 #: inc/html.class.php:6273 inc/html.class.php:6275
 msgid "Add is disabled"
-msgstr ""
+msgstr "Pievienošana ir atspējota"
 
 #: inc/html.class.php:6286 inc/html.class.php:6288
 msgid "Search is disabled"
-msgstr ""
+msgstr "Meklēšana ir atspējota"
 
 #: inc/html.class.php:6360 inc/html.class.php:6361 inc/ticket.class.php:253
 #: inc/ticket.class.php:254 inc/ticket.class.php:3623
@@ -11966,6 +11978,8 @@ msgid ""
 "Purchase date incompatible with the associated budget. %1$s not in budget "
 "period: %2$s / %3$s"
 msgstr ""
+"Iepirkuma datums nav saderīgs ar saistīto budžetu. %1$s nav budžeta periodā:"
+" %2$s / %3$s"
 
 #: inc/infocom.class.php:443
 msgid "Send alarms on financial and administrative information"
@@ -11979,11 +11993,11 @@ msgstr ""
 
 #: inc/infocom.class.php:500
 msgid "No item reaching the end of warranty."
-msgstr ""
+msgstr "Nav vienību kuri sasniedz garantijas beigas."
 
 #: inc/infocom.class.php:536
 msgid "send infocom alert failed"
-msgstr ""
+msgstr "nosūtīt infocom brīdinājumu neizdevās"
 
 #: inc/infocom.class.php:615 inc/infocom.class.php:634
 msgid "Linear"
@@ -12001,11 +12015,11 @@ msgstr "Rādīt"
 
 #: inc/infocom.class.php:748
 msgid "Please fill you fiscal year date in preferences."
-msgstr ""
+msgstr "Lūdzu, aizpildiet finanšu gada datumu iestatījumos."
 
 #: inc/infocom.class.php:767
 msgid "Please fill either buy or use date in preferences."
-msgstr ""
+msgstr "Lūdzu, aizpildiet pirkuma vai izmantošanas datumu iestatījumos."
 
 #: inc/infocom.class.php:1006
 msgid "Requested item not found"
@@ -12016,6 +12030,8 @@ msgid ""
 "For this type of item, the financial and administrative information are only"
 " a model for the items which you should add."
 msgstr ""
+"Šī veida vienībai finanšu un administratīvā informācija ir tikai to "
+"priekšmetu modelis, kurus jums vajadzētu pievienot."
 
 #: inc/infocom.class.php:1053
 msgid "Asset lifecycle"
@@ -12116,11 +12132,11 @@ msgstr "Nederīga IP adrese"
 
 #: inc/ipaddress.class.php:247
 msgid "Order by item type"
-msgstr ""
+msgstr "Kārtot pēc vienības tipa"
 
 #: inc/ipaddress.class.php:261
 msgid "Other kind of items"
-msgstr ""
+msgstr "Cita veida vienības"
 
 #: inc/ipaddress.class.php:283
 msgid "No IP address found"
@@ -12148,11 +12164,11 @@ msgstr "Adrešu tīkls"
 
 #: inc/ipnetwork.class.php:176
 msgid "Set the network using notation address/mask"
-msgstr ""
+msgstr "Iestatiet tīklu, izmantojot apzīmējumu adresi / masku"
 
 #: inc/ipnetwork.class.php:183
 msgid "An addressable network is a network defined on an equipment"
-msgstr ""
+msgstr "Adresējams tīkls ir tīkls, kas definēts uz iekārtas"
 
 #: inc/ipnetwork.class.php:231 inc/ipnetwork.class.php:243
 msgid "Invalid network address"
@@ -12160,7 +12176,7 @@ msgstr "Nederīga tīkla adrese"
 
 #: inc/ipnetwork.class.php:239
 msgid "Invalid input format for the network"
-msgstr ""
+msgstr "Nederīgs tīkla ievades formāts"
 
 #: inc/ipnetwork.class.php:247
 msgid "Invalid subnet mask"
@@ -12168,7 +12184,7 @@ msgstr "Nederīga apakštīkla maska"
 
 #: inc/ipnetwork.class.php:275
 msgid "Network already defined in visible entities"
-msgstr ""
+msgstr "Tīkls, kas jau ir definēts redzamajās entītijās"
 
 #: inc/ipnetwork.class.php:321
 msgid "Invalid gateway address"
@@ -12204,7 +12220,7 @@ msgstr "Ieraksts - %s saite"
 
 #: inc/item_devices.class.php:177
 msgid "Position of the device on its bus"
-msgstr ""
+msgstr "Ierīces atrašanās vieta uz tās kopnes"
 
 #: inc/item_devices.class.php:178
 msgid "bus ID"
@@ -12243,19 +12259,20 @@ msgstr[2] "Skatījumi"
 
 #: inc/item_devices.class.php:815
 msgid "Please select a device type"
-msgstr ""
+msgstr "Lūdzu izvēlieties ierīces tipu"
 
 #: inc/item_devices.class.php:822
 msgid "Please select a device"
-msgstr ""
+msgstr "Lūdzu izvēlieties ierīci"
 
 #: inc/item_devices.class.php:836
 msgid "You must choose any unaffected device or ask to add new."
 msgstr ""
+"Jums ir jāizvēlas jebkura neietekmēta ierīce vai jāpieprasa pievienot jaunu."
 
 #: inc/item_devices.class.php:1093
 msgid "Copy to clipboard failed"
-msgstr ""
+msgstr "Kopēt starpliktuvē neizdevās"
 
 #: inc/item_devices.class.php:1251
 msgid "Update of "
@@ -12287,7 +12304,7 @@ msgstr[2] "Līnijas"
 
 #: inc/item_devicesimcard.class.php:103
 msgid "Mobile Subscriber Identification Number"
-msgstr ""
+msgstr "Mobilā abonenta identifikācijas numurs"
 
 #: inc/item_devicesimcard.class.php:104
 msgid "MSIN"
@@ -12295,7 +12312,7 @@ msgstr "MSIN"
 
 #: inc/item_devicesimcard.class.php:108
 msgid "MSIN is the last 8 or 10 digits of IMSI"
-msgstr ""
+msgstr "MSIN ir pēdējie 8 vai 10 IMSI cipari"
 
 #: inc/item_disk.class.php:262
 msgid "Add a volume"
@@ -12614,7 +12631,7 @@ msgstr ""
 #: inc/itilsolution.class.php:511 inc/ticket.class.php:7085
 #, php-format
 msgid "Last edited on %1$s by %2$s"
-msgstr ""
+msgstr "Pēdējoreiz labots %1$s ar %2$s"
 
 #: inc/itilsolution.class.php:523 inc/ticket.class.php:7097
 #, php-format
@@ -12684,7 +12701,7 @@ msgstr "Pievienot saiti"
 #: inc/knowbaseitem.class.php:763
 #, php-format
 msgid "link with %1$s"
-msgstr ""
+msgstr "saistīt ar %1$s"
 
 #: inc/knowbaseitem.class.php:773
 msgid "Visible since"
@@ -12766,7 +12783,7 @@ msgstr "Publicēt FAQ"
 
 #: inc/knowbaseitem.class.php:1778
 msgid "Comment KB entries"
-msgstr ""
+msgstr "Komentēt KB ierakstus"
 
 #: inc/knowbaseitem.class.php:1780
 msgid "Read the FAQ"
@@ -12775,7 +12792,7 @@ msgstr "Lasīt FAQ"
 #. TRANS: %s is the user login, %d the revision number
 #: inc/knowbaseitem.class.php:1860
 msgid "%s reverts item to revision %id"
-msgstr ""
+msgstr "%s atgriež elementu pārskatam %id"
 
 #: inc/knowbaseitem_comment.class.php:42
 #: inc/knowbaseitem_comment.class.php:368
@@ -12801,7 +12818,7 @@ msgstr "Sazinājāties ar jūsu GLPI administratoru!"
 #: inc/knowbaseitem_comment.class.php:215
 #: inc/knowbaseitem_revision.class.php:219
 msgid "Unable to load revision!"
-msgstr ""
+msgstr "Nevar ielādēt pārskatu!"
 
 #: inc/knowbaseitem_comment.class.php:315
 msgid "Add an answer"
@@ -12833,19 +12850,19 @@ msgstr[2] ""
 
 #: inc/knowbaseitem_item.class.php:134
 msgid "Add a linked item"
-msgstr ""
+msgstr "Pievienot saistīto vienību"
 
 #: inc/knowbaseitem_item.class.php:136
 msgid "Link a knowledge base entry"
-msgstr ""
+msgstr "Saistīt zināšanas bāzes ierakstu"
 
 #: inc/knowbaseitem_item.class.php:167
 msgid "No linked items"
-msgstr ""
+msgstr "Nav saistīto vienību"
 
 #: inc/knowbaseitem_item.class.php:168
 msgid "No knowledge base entries linked"
-msgstr ""
+msgstr "Nav saistīto zināšanas bāzes ierakstu"
 
 #: inc/knowbaseitem_item.class.php:180
 msgid "Linked item"
@@ -12856,7 +12873,7 @@ msgstr[2] ""
 
 #: inc/knowbaseitem_item.class.php:209
 msgid "Update date"
-msgstr ""
+msgstr "Atjaunināt datumu"
 
 #: inc/knowbaseitem_item.class.php:243
 msgid "template"
@@ -12872,13 +12889,13 @@ msgstr[2] ""
 
 #: inc/knowbaseitem_revision.class.php:111
 msgid "No revisions"
-msgstr ""
+msgstr "Pārskatu nav"
 
 #: inc/knowbaseitem_revision.class.php:124
 #: inc/knowbaseitem_revision.class.php:278
 msgctxt "button"
 msgid "Compare selected revisions"
-msgstr ""
+msgstr "Saildzināt izvēlētos pārskatus"
 
 #: inc/knowbaseitem_revision.class.php:130 inc/plugin.class.php:409
 msgid "Author"
@@ -12901,31 +12918,31 @@ msgstr "atjaunot"
 
 #: inc/knowbaseitem_revision.class.php:190
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Vai vēlaties atjaunot atlasīto pārskatu?"
 
 #: inc/knowbaseitem_revision.class.php:205
 msgid "Show revision %rev"
-msgstr ""
+msgstr "Parādīt pārskatu %rev"
 
 #: inc/knowbaseitem_revision.class.php:240
 msgid "current"
-msgstr ""
+msgstr "tekošais"
 
 #: inc/knowbaseitem_revision.class.php:242
 msgid "Compare revisions old and diff"
-msgstr ""
+msgstr "Saildzināt veco un atšķirīgo pārskatu"
 
 #: inc/knowbaseitem_revision.class.php:244
 msgid "Original"
-msgstr ""
+msgstr "Sākotnējs"
 
 #: inc/knowbaseitem_revision.class.php:244
 msgid "Changed"
-msgstr ""
+msgstr "Izmainīts"
 
 #: inc/knowbaseitem_revision.class.php:244
 msgid "Differences"
-msgstr ""
+msgstr "Atšķirības"
 
 #: inc/knowbaseitem_revision.class.php:256
 msgid "Unable to load requested comparison!"
@@ -12933,7 +12950,7 @@ msgstr ""
 
 #: inc/knowbaseitemtranslation.class.php:215
 msgid "Entry translations list"
-msgstr ""
+msgstr "Ierakstu tulkojumu saraksts"
 
 #. TRANS: %s is the user login, %d the revision number
 #: inc/knowbaseitemtranslation.class.php:430
@@ -12975,7 +12992,7 @@ msgstr[2] "Eskalācijas līmeņi"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
-msgstr ""
+msgstr "Dzēst arī datumu?"
 
 #: inc/levelagreement.class.php:422
 msgid "Add a new item"
@@ -13050,11 +13067,11 @@ msgstr[2] "Ārējās saites"
 
 #: inc/link.class.php:153
 msgid "field name in DB"
-msgstr ""
+msgstr "DB lauku vārds"
 
 #: inc/link.class.php:153
 msgid "Example:"
-msgstr ""
+msgstr "Piemērs:"
 
 #: inc/link.class.php:161 inc/link.class.php:227
 msgid "Link or filename"
@@ -13157,7 +13174,7 @@ msgstr[2] "Datortīkla porti"
 
 #: inc/lock.class.php:520
 msgid "Select the type of the item that must be unlock"
-msgstr ""
+msgstr "Izvēlēties vienības tipu kuram jābūt atbloķētam"
 
 #: inc/log.class.php:274
 msgid "No historical"
@@ -13242,7 +13259,7 @@ msgstr "Izveidot saistību ar vienību"
 
 #: inc/log.class.php:543
 msgid "Update a link with an item"
-msgstr ""
+msgstr "Atjaunināt saiti ar vienību"
 
 #: inc/log.class.php:553
 msgid "Delete a link with an item"
@@ -13296,11 +13313,11 @@ msgstr "Kerberos autentifikācija"
 
 #: inc/mailcollector.class.php:276 inc/mailcollector.class.php:402
 msgid "Accepted mail archive folder (optional)"
-msgstr ""
+msgstr "Pieņemtā pasta arhīva mape (nav obligāta)"
 
 #: inc/mailcollector.class.php:280 inc/mailcollector.class.php:410
 msgid "Refused mail archive folder (optional)"
-msgstr ""
+msgstr "Atteikta pasta arhīva mape (nav obligāta)"
 
 #: inc/mailcollector.class.php:286 inc/mailcollector.class.php:377
 msgid "Maximum size of each file imported by the mails receiver"
@@ -13327,16 +13344,18 @@ msgid ""
 "Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
 "errors=%4$d, blacklisted=%5$d"
 msgstr ""
+"Ziņojumu skaits: pieejami=%1$d, atgūti=%2$d, atteiktie=%3$d, kļūdainie=%4$d,"
+" melnajā sarakstā=%5$d"
 
 #: inc/mailcollector.class.php:637
 msgid "Could not connect to mailgate server"
-msgstr ""
+msgstr "Nevarēja izveidot savienojumu ar mailgate serveri"
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:647
 #, php-format
 msgid "Could not find mailgate %d"
-msgstr ""
+msgstr "Nevar atrast mailgate %d"
 
 #. TRANS: %s is a directory
 #: inc/mailcollector.class.php:704
@@ -13356,7 +13375,7 @@ msgstr "Nederīga pievienotā datne"
 #: inc/mailcollector.class.php:1599
 #, php-format
 msgid "Invalid configuration for %1$s folder in receiver %2$s"
-msgstr ""
+msgstr "Nepareiza mapes konfigurācija %1$s saņēmēja %2$s"
 
 #: inc/mailcollector.class.php:1621
 msgid "Retrieve email (Mails receivers)"
@@ -13368,7 +13387,7 @@ msgstr "E-pastu skaits lai atgūt"
 
 #: inc/mailcollector.class.php:1625
 msgid "Send alarms on receiver errors"
-msgstr ""
+msgstr "Sūtīt brīdinājumus par saņēmēju kļūdām"
 
 #: inc/mailcollector.class.php:1780
 msgid ""
@@ -13415,7 +13434,7 @@ msgstr "Nederīgs process"
 
 #: inc/massiveaction.class.php:450 inc/massiveaction.class.php:757
 msgid "Select the type of the item on which applying this action"
-msgstr ""
+msgstr "Izvēlēties vienības tipu uz kuras tik piemērota darbība"
 
 #: inc/massiveaction.class.php:478
 msgctxt "button"
@@ -13435,33 +13454,35 @@ msgstr "Dzēst neatgriezeniski un noņemt ierīci"
 #: inc/massiveaction.class.php:558
 msgctxt "button"
 msgid "Delete permanently the relation with selected elements"
-msgstr ""
+msgstr "Izdzēst sasaisti ar izvēlētiem elementiem"
 
 #: inc/massiveaction.class.php:564
 msgctxt "button"
 msgid "Delete permanently even if linked items"
-msgstr ""
+msgstr "Izdzēst, pat ja ir saistīti elementi"
 
 #: inc/massiveaction.class.php:744
 msgid "Select the common field that you want to update"
-msgstr ""
+msgstr "Atlasiet kopēji lauku, kuru vēlaties atjaunināt"
 
 #: inc/massiveaction.class.php:746
 msgid "Select the field that you want to update"
-msgstr ""
+msgstr "Atlasiet lauku, kuru vēlaties atjaunināt"
 
 #: inc/massiveaction.class.php:1058
 msgid ""
 "You can't delete that item by massive actions, because it has sub-items"
 msgstr ""
+"Jūs nevārāt izdzēst vienību ar masveida darbību, jo tā satur apakš vienību"
 
 #: inc/massiveaction.class.php:1059 inc/massiveaction.class.php:1068
 msgid "but you can do it by the form of the item"
-msgstr ""
+msgstr "bet jūs to varat izdarīt pēc vienības formas"
 
 #: inc/massiveaction.class.php:1067
 msgid "You can't delete that item, because it is used for one or more items"
 msgstr ""
+"Jūs nevarat izdzēst šo vienību, jo to izmanto vienai vai vairākām vienībām"
 
 #: inc/migration.class.php:237
 msgid "default_value must be 0 or 1"
@@ -13583,12 +13604,12 @@ msgstr "Datu migrācija - %s"
 #: inc/migration.class.php:910
 #, php-format
 msgid "%1$s table already exists. A backup have been done to %2$s"
-msgstr ""
+msgstr "%1$s tabulā jau eksistē. Izveidots dublikāts %2$s"
 
 #: inc/migration.class.php:959
 #, php-format
 msgid "Configuration values added for %1$s."
-msgstr ""
+msgstr "Konfigurācijas vērtības pievienotas %1$s."
 
 #: inc/monitor.class.php:269 inc/peripheral.class.php:265
 #: inc/phone.class.php:259 inc/printer.class.php:363
@@ -13657,19 +13678,23 @@ msgstr "Datora vārds"
 msgid ""
 "The MAC address and the IP of the equipment are included in an aggregated "
 "network port"
-msgstr ""
+msgstr "Iekārtas MAC adrese un IP ir iekļauti apkopotā tīkla portā"
 
 #: inc/networkname.class.php:151
 msgid ""
 "IP network is not included in the database. However, you can see current "
 "available networks."
 msgstr ""
+"IP tīkls nav iekļauts datu bāzē. Tomēr jūs varat redzēt pašreizējos "
+"pieejamos tīklus."
 
 #: inc/networkname.class.php:416
 msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage "
 "them."
 msgstr ""
+"Ir pieejami vairāki tīkla nosaukumi! Atveriet cilni \"Tīkla nosaukums\", lai"
+" tos pārvaldītu."
 
 #: inc/networkname.class.php:692
 msgid "Add a network name"
@@ -13681,7 +13706,7 @@ msgstr "Nav piesaistīts"
 
 #: inc/networkname.class.php:708
 msgid "Create a new network name"
-msgstr ""
+msgstr "Izveidojiet jaunu tīkla nosaukumu"
 
 #: inc/networkname.class.php:799
 msgid "No network name found"
@@ -13689,20 +13714,20 @@ msgstr "nav atrasts datortīkla vārds"
 
 #: inc/networkportaggregate.class.php:45
 msgid "Aggregation port"
-msgstr ""
+msgstr "Agregācijas ports"
 
 #: inc/networkportaggregate.class.php:94 inc/networkportalias.class.php:92
 #: inc/networkportinstantiation.class.php:632
 msgid "Origin port"
-msgstr ""
+msgstr "Sākotnējs ports"
 
 #: inc/networkportalias.class.php:44
 msgid "Alias port"
-msgstr ""
+msgstr "Aizstājvārda ports"
 
 #: inc/networkport.class.php:470
 msgid "Global displays"
-msgstr ""
+msgstr "Globāls attēlojums"
 
 #: inc/networkport.class.php:473 inc/networkport.class.php:479
 #: inc/networkport.class.php:626
@@ -13715,7 +13740,7 @@ msgstr "Raksturlielumi"
 
 #: inc/networkport.class.php:539
 msgid "Network port type to be added"
-msgstr ""
+msgstr "Tīkla porta veids jāpievieno"
 
 #: inc/networkport.class.php:553
 msgid "Add several ports"
@@ -13728,7 +13753,7 @@ msgstr "%1$s: %2$d"
 
 #: inc/networkport.class.php:637 inc/networkport.class.php:724
 msgid "Network ports waiting for manual migration"
-msgstr ""
+msgstr "Tīkla porti gaida manuālu migrāciju"
 
 #: inc/networkport.class.php:808
 msgid "No network port found"
@@ -13752,7 +13777,7 @@ msgstr "Atvienot VLAN"
 
 #: inc/networkportdialup.class.php:44
 msgid "Connection by dial line - Dialup Port"
-msgstr ""
+msgstr "Savienojums ar izsaukuma līniju - iezvanes ports"
 
 #: inc/networkportdialup.class.php:56 inc/networkportdialup.class.php:81
 #: inc/networkportethernet.class.php:110 inc/networkportethernet.class.php:126
@@ -13832,7 +13857,7 @@ msgstr "Globāla tīmekļa vārds"
 #: inc/networkportfiberchannel.class.php:132
 #: inc/networkportfiberchannel.class.php:207
 msgid "Fiber channel port speed"
-msgstr ""
+msgstr "Šķiedra kanāla porta ātrums"
 
 #: inc/networkportfiberchannel.class.php:339
 msgid "Network fiber outlet"
@@ -13840,7 +13865,7 @@ msgstr "Šķiedra tīkla izeja"
 
 #: inc/networkportinstantiation.class.php:84
 msgid "No options available for this port type."
-msgstr ""
+msgstr "Šim porta tipam nav pieejamas opcijas."
 
 #: inc/networkportinstantiation.class.php:129
 #: inc/networkportinstantiation.class.php:157
@@ -13849,7 +13874,7 @@ msgstr "Virtuālais ports"
 
 #: inc/networkportinstantiation.class.php:131
 msgid "Opposite link"
-msgstr ""
+msgstr "Pretējā saite"
 
 #: inc/networkportinstantiation.class.php:230
 msgid "Local network port"
@@ -13904,17 +13929,17 @@ msgstr "Nederīgs tīkls (jau ir definēts vai ar nederīgām adresēm)"
 
 #: inc/networkportmigration.class.php:115
 msgid "Gateway not include inside the network"
-msgstr ""
+msgstr "Vārteja nav iekļauta tīklā"
 
 #: inc/networkportmigration.class.php:197
 #: inc/networkportmigration.class.php:325
 msgid "Transform this network port to"
-msgstr ""
+msgstr "Pārveidot šo tīkla portu uz"
 
 #: inc/networkportmigration.class.php:211
 #, php-format
 msgid "Network port information conflicting with %s"
-msgstr ""
+msgstr "Tīkla porta informācija konfliktē ar %s"
 
 #: inc/networkportmigration.class.php:214
 msgid "Invalid address or netmask"
@@ -13922,7 +13947,7 @@ msgstr "Nederīga adrese vai tīkla maska"
 
 #: inc/networkportmigration.class.php:216
 msgid "No conflicting network"
-msgstr ""
+msgstr "Nav konfliktējoša tīkla"
 
 #: inc/networkportmigration.class.php:219
 msgid "you may have to add a network"
@@ -13931,7 +13956,7 @@ msgstr "Jūs varat pievienot tīklu"
 #: inc/networkportmigration.class.php:229
 #, php-format
 msgid "Append a correct gateway to the network %s"
-msgstr ""
+msgstr "Pievienot pareizu vārteju tīklam %s"
 
 #: inc/networkportmigration.class.php:231
 msgid "Unknown network"
@@ -13943,7 +13968,7 @@ msgstr "Pievienot datortīklu"
 
 #: inc/networkportmigration.class.php:246
 msgid "Add a correct IP to the network port"
-msgstr ""
+msgstr "Pievienojiet pareizo IP tīkla portam"
 
 #: inc/networkportmigration.class.php:248
 msgid "Unknown network port"
@@ -13951,7 +13976,7 @@ msgstr "Nezināms datortīkla ports"
 
 #: inc/networkportmigration.class.php:255
 msgid "I don't understand why this migration error is not deleted."
-msgstr ""
+msgstr "Es nesaprotu, kāpēc šī migrācijas kļūda netiek izdzēsta."
 
 #: inc/networkportmigration.class.php:257
 #: inc/networkportmigration.class.php:263
@@ -13964,7 +13989,7 @@ msgstr "Visi notikumi"
 
 #: inc/networkportmigration.class.php:271
 msgid "Original network port information"
-msgstr ""
+msgstr "Oriģinālā tīkla porta informācija"
 
 #: inc/networkportmigration.class.php:283
 #: inc/networkportmigration.class.php:442
@@ -14021,31 +14046,31 @@ msgstr ""
 #: inc/notepad.class.php:341
 #, php-format
 msgid "Create by %1$s on %2$s"
-msgstr ""
+msgstr "Izveidojis %1$s uz %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Ielādējot pārlūka paziņojumu rindā, radās kļūda"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Pārlūkprogrammas paziņojums %s tika pievienots rindai"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Pārlūka sekojumu iestatījumi"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Iespējot sekojumus no pārlūkprogrammas"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pārlūkprogrammas paziņojums"
+msgstr[1] "Pārlūkprogrammas paziņojums"
+msgstr[2] "Pārlūkprogrammas paziņojumi"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -14056,11 +14081,11 @@ msgstr "Skaņa"
 
 #: inc/notificationajaxsetting.class.php:77
 msgid "Default notification sound"
-msgstr ""
+msgstr "Paziņojuma noklusējuma skaņa"
 
 #: inc/notificationajaxsetting.class.php:87
 msgid "Time to check for new notifications (in seconds)"
-msgstr ""
+msgstr "Laiks pārbaudīt jaunus paziņojumus (sekundēs)"
 
 #: inc/notificationajaxsetting.class.php:96
 msgid "URL of the icon"
@@ -14078,7 +14103,7 @@ msgstr "Skatīt konfigurāciju"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Aizsūtīt jums testa pārlūkprogrammas paziņojumu"
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14119,12 +14144,12 @@ msgstr "Paziņošanas metode"
 
 #: inc/notification.class.php:540 inc/notification.class.php:556
 msgid "Field itemtype is mandatory"
-msgstr ""
+msgstr "Lauks itemtype ir obligāts"
 
 #: inc/notificationevent.class.php:165
 #, php-format
 msgid "Unable to send notification using %1$s"
-msgstr ""
+msgstr "Nevar nosūtīt paziņojumu, izmantojot %1$s"
 
 #: inc/notificationevent.class.php:199
 #: inc/notification_notificationtemplate.class.php:126
@@ -14255,11 +14280,11 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:113
 msgid "If not set, main administrator name will be used."
-msgstr ""
+msgstr "Ja nav iestatīts, tiks izmantots galvenā administratora vārds."
 
 #: inc/notificationmailingsetting.class.php:121
 msgid "Add documents into ticket notifications"
-msgstr ""
+msgstr "Pievienot failus pieteikuma paziņojumos"
 
 #: inc/notificationmailingsetting.class.php:138
 msgid "Way of sending emails"
@@ -14319,7 +14344,7 @@ msgstr "E-pasta sūtītājs"
 
 #: inc/notificationmailingsetting.class.php:234
 msgid "May be required for some mails providers."
-msgstr ""
+msgstr "Var būt nepieciešams dažiem e-pasta pakalpojumu sniedzējiem."
 
 #: inc/notificationmailingsetting.class.php:247
 msgid "Send a test email to the administrator"
@@ -14351,7 +14376,7 @@ msgstr "Paziņojumu iestatījumi"
 
 #: inc/notificationsettingconfig.class.php:97
 msgid "You must enable at least one notification mode."
-msgstr ""
+msgstr "Jums ir jāiespējo vismaz viens paziņojumu režīms."
 
 #: inc/notificationsettingconfig.class.php:100
 msgid "Enable followup"
@@ -14362,6 +14387,8 @@ msgid ""
 "Unable to configure notifications: please configure at least one followup "
 "type using the above configuration."
 msgstr ""
+"Nevar nokonfigurēt paziņojumus: lūdzu, nokonfigurējiet vismaz vienu sekojuma"
+" tipu, izmantojot iepriekšminēto konfigurāciju."
 
 #: inc/notificationtargetcartridgeitem.class.php:47
 msgid "Cartridges alarm"
@@ -14650,11 +14677,11 @@ msgstr "Līgums ar brīdinājumu, sākot no"
 
 #: inc/notificationtargetcontract.class.php:128
 msgid "Contract reached the end of a period since the"
-msgstr ""
+msgstr "Līgums sasniedza laika posma beigas kopš"
 
 #: inc/notificationtargetcontract.class.php:133
 msgid "Contract with notice for the current period since the"
-msgstr ""
+msgstr "Līgums ar paziņojumu par pašreizējo periodu kopš"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -14676,7 +14703,7 @@ msgstr "Pakļautās datubāze nav sinhronizēta!"
 
 #: inc/notificationtargetdbconnection.class.php:93
 msgid "The slave database is desynchronized. The difference is of:"
-msgstr ""
+msgstr "Sekundāra datubāze desinhronizētā. Atšķirība:"
 
 #: inc/notificationtargetfieldunicity.class.php:42
 #: inc/notificationtargetfieldunicity.class.php:85
@@ -14828,7 +14855,7 @@ msgstr "Projektu komandas grupa izņemot grupas pārvaldniekus"
 #: inc/notificationtargetproject.class.php:70
 #: inc/notificationtargetprojecttask.class.php:67
 msgid "Contact of project team"
-msgstr ""
+msgstr "Projektu grupas kontaktpersona"
 
 #: inc/notificationtargetproject.class.php:71
 #: inc/notificationtargetprojecttask.class.php:68
@@ -14944,11 +14971,11 @@ msgstr "Jauns projekta uzdevums"
 
 #: inc/notificationtargetprojecttask.class.php:53
 msgid "Update of a project task"
-msgstr ""
+msgstr "Atjaunot projekta uzdevumu"
 
 #: inc/notificationtargetprojecttask.class.php:54
 msgid "Deletion of a project task"
-msgstr ""
+msgstr "Dzēst projekta uzdevumu"
 
 #: inc/notificationtargetprojecttask.class.php:62
 msgid "Project team user"
@@ -14991,17 +15018,17 @@ msgstr "Rezervācija beigusies"
 
 #: inc/notificationtargetreservation.class.php:147
 msgid "URL of item reserved"
-msgstr ""
+msgstr "Rezerves vienības URL"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:57
 #, php-format
 msgid "Search  alert for \"%1$s\" (%2$s)"
-msgstr ""
+msgstr "Meklēšanas brīdinājums par \"%1$s\" (%2$s)"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:62
 #: inc/notificationtargetsavedsearch_alert.class.php:66
 msgid "Private search alert"
-msgstr ""
+msgstr "Privātās meklēšanas brīdinājums"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:106
 msgid "Number of results"
@@ -15009,7 +15036,7 @@ msgstr ""
 
 #: inc/notificationtargetsavedsearch_alert.class.php:108
 msgid "Load saved search"
-msgstr ""
+msgstr "Ielādēt saglabāto meklēšanu"
 
 #: inc/notificationtargetticket.class.php:119
 msgid "To answer by email, write above this line"
@@ -15102,13 +15129,13 @@ msgstr "OLA"
 #: inc/ticket.class.php:2900 inc/ticket.class.php:4672
 #: inc/ticket.class.php:4674 inc/ticket.class.php:7620
 msgid "Internal time to own"
-msgstr ""
+msgstr "Iekšējais reakcijās laiks"
 
 #: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2685
 #: inc/ticket.class.php:2914 inc/ticket.class.php:4684
 #: inc/ticket.class.php:4686 inc/ticket.class.php:7636
 msgid "Internal time to resolve"
-msgstr ""
+msgstr "Iekšējais atrisināšanas laiks"
 
 #: inc/notificationtargetticket.class.php:732
 msgid "Location name"
@@ -15290,7 +15317,7 @@ msgstr "Noraidījuma iemesls"
 
 #: inc/notimportedemail.class.php:236
 msgid "Unable to affect the email to an entity"
-msgstr ""
+msgstr "Nevar ietekmēt e-pastu entītijai"
 
 #: inc/notimportedemail.class.php:237
 msgid "Email not found. Impossible import"
@@ -15354,7 +15381,7 @@ msgstr "Uzmanību: lasīšanas režīms!"
 
 #: inc/objectlock.class.php:285
 msgid "Request write on "
-msgstr ""
+msgstr "Pieprasījums rakstīts"
 
 #: inc/objectlock.class.php:544
 msgid "Locked by"
@@ -15374,20 +15401,21 @@ msgstr "Atbrīvot izmantotos objektus"
 
 #: inc/objectlock.class.php:605
 msgid "Timeout to force unlock (hours)"
-msgstr ""
+msgstr "Taimauts, lai aktivizētu atbloķēšanu (stundas)"
 
 #: inc/ola.class.php:58
 msgid "The internal time is recalculated when assigning the OLA"
-msgstr ""
+msgstr "Piesaistot OLA, iekšējais laiks tiek pārrēķināts"
 
 #: inc/ola.class.php:62
 msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
-msgstr ""
+msgstr "Piesaistot OLA pieteikumam, datums tiek aprēķināts no jauna."
 
 #: inc/ola.class.php:63
 msgid "Escalations defined in the OLA will be triggered under this new date."
 msgstr ""
+"OLA definētais eskalācijas līmenis iestāsies sākot ar izvēlēto datumu."
 
 #: inc/olalevel.class.php:99 inc/slalevel.class.php:95
 msgid "Add an escalation level"
@@ -15399,7 +15427,7 @@ msgstr "Automātiskie OLA atgādinājumi"
 
 #: inc/olalevel_ticket.class.php:126
 msgid "Automatic actions of OLA"
-msgstr ""
+msgstr "Automātiskās OLA darbības"
 
 #: inc/operatingsystemarchitecture.class.php:44 inc/rule.class.php:456
 #: inc/ruledictionnaryoperatingsystemarchitecture.class.php:56
@@ -15563,7 +15591,7 @@ msgstr "Plānojums"
 
 #: inc/planning.class.php:1048
 msgid "Toggle filters"
-msgstr ""
+msgstr "Mainīt filtrus"
 
 #: inc/planning.class.php:1304
 msgid "Ical"
@@ -15579,7 +15607,7 @@ msgstr ""
 
 #: inc/planning.class.php:1496
 msgid "View this item in his context"
-msgstr ""
+msgstr "Skatīt šo vienību tas kontekstā"
 
 #: inc/planning.class.php:1574
 msgid "Event type"
@@ -15694,7 +15722,7 @@ msgstr "Skatīt spraudņu katalogu internetā"
 #: inc/plugin.class.php:659
 #, php-format
 msgid "Plugin %1$s has no uninstall function!"
-msgstr ""
+msgstr "Papild spraudnim %1$s nav atinstalēšanas funkcijas!"
 
 #: inc/plugin.class.php:671
 #, php-format
@@ -15705,12 +15733,12 @@ msgstr ""
 #: inc/plugin.class.php:851
 #, php-format
 msgid "Plugin %1$s not found!"
-msgstr ""
+msgstr "Papild spraudnis %1$s nav atrasts!"
 
 #: inc/plugin.class.php:708
 #, php-format
 msgid "Plugin %1$s has been installed!"
-msgstr ""
+msgstr "Papild spraudnis %1$s tika pieinstalēts!"
 
 #: inc/plugin.class.php:713
 msgid "Do you want to %activate_link it?"
@@ -15720,31 +15748,32 @@ msgstr ""
 #, php-format
 msgid "Plugin %1$s has been installed and must be configured!"
 msgstr ""
+"Papild spraudnis %1$s pieinstalēts un ir nepieciešams nokonfigurēt to!"
 
 #: inc/plugin.class.php:725
 #, php-format
 msgid "Plugin %1$s has no install function!"
-msgstr ""
+msgstr "Papild spraudnim %1$s nav instalācijas funkcijas!"
 
 #: inc/plugin.class.php:756
 #, php-format
 msgid "Plugin %1$s is not CSRF compliant!"
-msgstr ""
+msgstr "Papild spraudnis %1$s nav CSRF savietojams!"
 
 #: inc/plugin.class.php:770
 #, php-format
 msgid "Plugin %1$s has no check function!"
-msgstr ""
+msgstr "Papild spraudnim %1$s nav pārbaudes funkcijas!"
 
 #: inc/plugin.class.php:802
 #, php-format
 msgid "Plugin %1$s has been activated!"
-msgstr ""
+msgstr "Papild spraudnis %1$s aktivizēts!"
 
 #: inc/plugin.class.php:842
 #, php-format
 msgid "Plugin %1$s has been deactivated!"
-msgstr ""
+msgstr "Papild spraudnis %1$s deaktivēts!"
 
 #: inc/plugin.class.php:1493
 #, php-format
@@ -15754,37 +15783,37 @@ msgstr ""
 #: inc/plugin.class.php:1499
 #, php-format
 msgid "This plugin requires %1$s > %2$s."
-msgstr ""
+msgstr "Šis papild spraudnis prasa %1$s > %2$s."
 
 #: inc/plugin.class.php:1506
 #, php-format
 msgid "This plugin requires %1$s > %2$s and < %3$s"
-msgstr ""
+msgstr "Šis papild spraudnis prasa %1$s > %2$s un < %3$s"
 
 #: inc/plugin.class.php:1532
 #, php-format
 msgid "This plugin requires PHP extension %1$s"
-msgstr ""
+msgstr "Šim papild spraudnim nepieciešams PHP modulis %1$s"
 
 #: inc/plugin.class.php:1538
 #, php-format
 msgid "This plugin requires %1$s plugin"
-msgstr ""
+msgstr "Šis papild spraudni prasa %1$s papildspraudni"
 
 #: inc/plugin.class.php:1544
 #, php-format
 msgid "This plugin requires PHP compiled along with \"%1$s\""
-msgstr ""
+msgstr "Šis papild spraudni prasa PHP kompilētu ar \"%1$s\""
 
 #: inc/plugin.class.php:1550
 #, php-format
 msgid "This plugin requires PHP parameter %1$s"
-msgstr ""
+msgstr "Šis papild spraudni prasa PHP parametru %1$s"
 
 #: inc/plugin.class.php:1556
 #, php-format
 msgid "This plugin requires GLPI parameter %1$s"
-msgstr ""
+msgstr "Šis papild spraudni prasa GLPI parametru %1$s"
 
 #: inc/plugin.class.php:1825
 msgctxt "plugin"
@@ -15936,7 +15965,7 @@ msgstr "Dzīves cikls"
 
 #: inc/profile.class.php:326 inc/profile.class.php:348
 msgid "This profile is the last with write rights on profiles"
-msgstr ""
+msgstr "Šis profils ir pēdējais ar rakstīšanas tiesībām uz profiliem"
 
 #: inc/profile.class.php:328 inc/profile.class.php:350
 msgid "Deletion refused"
@@ -16104,14 +16133,14 @@ msgstr "Printera vārdnīca"
 
 #: inc/profile.class.php:1423
 msgid "Search result display"
-msgstr ""
+msgstr "Meklēšanas rezultātu saraksts"
 
 #: inc/profile.class.php:1429
 msgid "Global dropdown"
 msgid_plural "Global dropdowns"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Globālais nolaižamais saraksts"
+msgstr[1] "Globālais nolaižamais saraksts"
+msgstr[2] "Globālais nolaižamie saraksti"
 
 #: inc/profile.class.php:1431
 msgid "Entity dropdowns"
@@ -16167,9 +16196,9 @@ msgstr "%1$s, %2$s"
 #: inc/profile_user.class.php:1001 inc/user.class.php:2191
 msgid "Authorization"
 msgid_plural "Authorizations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Autorizācija"
+msgstr[1] "Autorizācija"
+msgstr[2] "Autorizācijas"
 
 #: inc/project.class.php:116 inc/projecttask.class.php:180
 msgid "See (actor)"
@@ -16190,27 +16219,27 @@ msgstr "Rādīt uz globālas Ganta diagrammas"
 
 #: inc/project.class.php:973
 msgid "Invalid planned dates. Dates not updated."
-msgstr ""
+msgstr "Nederīgi plānotie datumi. Datumi nav atjaunināti."
 
 #: inc/project.class.php:982
 msgid "Invalid real dates. Dates not updated."
-msgstr ""
+msgstr "Nederīgi reāli datumi. Datumi nav atjaunināti."
 
 #: inc/project.class.php:1017
 msgid "Create a sub project from this project"
-msgstr ""
+msgstr "Izveidojiet apakšprojektu no šī projekta"
 
 #: inc/project.class.php:1176
 msgid "Sum of planned durations of tasks"
-msgstr ""
+msgstr "Plānoto uzdevumu ilgums"
 
 #: inc/project.class.php:1183
 msgid "Sum of total effective durations of tasks"
-msgstr ""
+msgstr "Kopējais faktisko uzdevumu ilgums"
 
 #: inc/project.class.php:1272 inc/projecttask.class.php:1170
 msgid "Add a team member"
-msgstr ""
+msgstr "Pievienot komandas dalībnieku"
 
 #: inc/project.class.php:1312 inc/projecttask.class.php:1209
 msgid "Member"
@@ -16318,9 +16347,9 @@ msgstr ""
 #: inc/projecttask.class.php:64
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekta uzdevums"
+msgstr[1] "Projekta uzdevums"
+msgstr[2] "Projekta uzdevumi"
 
 #: inc/projecttask.class.php:181
 msgid "Update (actor)"
@@ -16342,7 +16371,7 @@ msgstr "Pievienot uzdevumu"
 
 #: inc/projecttask.class.php:990
 msgid "Create a sub task from this task of project"
-msgstr ""
+msgstr "Izveidot apakšuzdevumu no šī projekta uzdevuma"
 
 #: inc/projecttask.class.php:1577
 #, php-format
@@ -16383,7 +16412,7 @@ msgstr "Sūtīt"
 
 #: inc/queuednotification.class.php:208 inc/queuednotification.class.php:705
 msgid "Expected send date"
-msgstr ""
+msgstr "Paredzamais nosūtīšanas datums"
 
 #: inc/queuednotification.class.php:217 inc/queuednotification.class.php:710
 msgid "Send date"
@@ -16411,7 +16440,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:280 inc/queuednotification.class.php:741
 msgid "Additional headers"
-msgstr ""
+msgstr "Papildu galvenes"
 
 #: inc/queuednotification.class.php:308 inc/queuednotification.class.php:739
 msgid "Message ID"
@@ -16419,23 +16448,23 @@ msgstr "Ziņojuma ID"
 
 #: inc/queuednotification.class.php:317 inc/queuednotification.class.php:712
 msgid "Number of tries of sent"
-msgstr ""
+msgstr "Sūtīto mēģinājumu skaits"
 
 #: inc/queuednotification.class.php:471
 msgid "Send mails in queue"
-msgstr ""
+msgstr "Sūtīt vēstules rindā"
 
 #: inc/queuednotification.class.php:472
 msgid "Maximum emails to send at once"
-msgstr ""
+msgstr "Maksimālais e-pasta ziņojumu skaits, ko vēlaties nosūtīt uzreiz"
 
 #: inc/queuednotification.class.php:475
 msgid "Clean notification queue"
-msgstr ""
+msgstr "Iztīrīt paziņojumu rindu"
 
 #: inc/queuednotification.class.php:476
 msgid "Days to keep sent emails"
-msgstr ""
+msgstr "Dienas, lai saglabātu nosūtīto e-pastu"
 
 #: inc/rack.class.php:236
 msgid "Position in room"
@@ -16636,11 +16665,11 @@ msgstr "Pēc noklusējuma sekojuma epasta saņēmējiem"
 
 #: inc/requesttype.class.php:64 inc/requesttype.class.php:124
 msgid "Request source visible for tickets"
-msgstr ""
+msgstr "Pieejams avots, kas redzams pieteikumos"
 
 #: inc/requesttype.class.php:67 inc/requesttype.class.php:132
 msgid "Request source visible for followups"
-msgstr ""
+msgstr "Pieprasījuma avots ir redzams sekojumos"
 
 #: inc/requesttype.class.php:183 inc/requesttype.class.php:191
 #: inc/requesttype.class.php:199 inc/requesttype.class.php:207
@@ -16762,11 +16791,11 @@ msgstr "Labot dokumentu"
 
 #: inc/reservationitem.class.php:402
 msgid "See all reservable items"
-msgstr ""
+msgstr "Skatīt visas rezervējamas vienības"
 
 #: inc/reservationitem.class.php:408 inc/reservationitem.class.php:419
 msgid "Find a free item in a specific period"
-msgstr ""
+msgstr "Atrast brīvo vienību noteiktā laika periodā"
 
 #: inc/reservationitem.class.php:649
 msgid "Device reservations expiring today"
@@ -16774,11 +16803,11 @@ msgstr "Materiālu rezervācija beigsies šodien"
 
 #: inc/reservationitem.class.php:690
 msgid "Send reservation alert failed"
-msgstr ""
+msgstr "Kļūda nosūtot brīdinājumu par rezervācijām"
 
 #: inc/reservationitem.class.php:729
 msgid "Make a reservation"
-msgstr ""
+msgstr "Veikt rezervāciju"
 
 #: inc/rssfeed.class.php:82 inc/rssfeed.class.php:857
 msgid "Personal RSS feed"
@@ -16789,7 +16818,7 @@ msgstr[2] ""
 
 #: inc/rssfeed.class.php:379 inc/rssfeed.class.php:646
 msgid "Number of items displayed"
-msgstr ""
+msgstr "Parādīto vienību skaits"
 
 #: inc/rssfeed.class.php:400 inc/rssfeed.class.php:631
 msgid "Refresh rate"
@@ -16801,7 +16830,7 @@ msgstr "Kļūda ielādējot RSS barotni"
 
 #: inc/rssfeed.class.php:662
 msgid "RSS feeds found"
-msgstr ""
+msgstr "RSS barotnes atrastas"
 
 #: inc/rssfeed.class.php:771
 msgctxt "button"
@@ -16819,7 +16848,7 @@ msgstr "Piešķirt vērtību no regex."
 
 #: inc/ruleaction.class.php:395
 msgid "Add the result of regular expression"
-msgstr ""
+msgstr "Pievienojiet regulārās izteiksmes rezultātu"
 
 #: inc/ruleaction.class.php:396
 msgid "Assign: equipment by IP address"
@@ -16956,7 +16985,7 @@ msgstr "Nosacījumu izpildes rezutāts tiek nodots sekojošiem."
 
 #: inc/rulecollection.class.php:376
 msgid "Rules are conditionals. Each one can be used on multiple actions."
-msgstr ""
+msgstr "Noteikumi ir darbības. Katru no tām var izmantot vairākās darbības."
 
 #: inc/rulecollection.class.php:428
 msgid "Rules used for"
@@ -17118,7 +17147,7 @@ msgstr ""
 
 #: inc/ruledictionnarydropdowncollection.class.php:140
 msgid "Error replaying rules"
-msgstr ""
+msgstr "Kļūda atkārtojot noteikumus"
 
 #: inc/ruledictionnarydropdowncollection.class.php:274
 #: inc/ruledictionnaryprintercollection.class.php:160
@@ -17219,7 +17248,7 @@ msgstr "Ražotājs / Izdevējs"
 #: inc/ruledictionnarysoftware.class.php:93
 #: inc/rulesoftwarecategory.class.php:86
 msgid "Category from inventory tool"
-msgstr ""
+msgstr "Kategorija no inventāra rīka"
 
 #: inc/ruledictionnarysoftware.class.php:120 inc/software.class.php:281
 #: inc/software.class.php:565
@@ -17295,7 +17324,7 @@ msgstr "GLPI ir tukšs"
 #: inc/ruleimportentity.class.php:46
 #: inc/ruleimportentitycollection.class.php:63
 msgid "Rules for assigning an item to an entity"
-msgstr ""
+msgstr "Noteikumi vienības piešķiršanas entītijai"
 
 #: inc/rulemailcollector.class.php:88
 msgid "Email body"
@@ -17323,7 +17352,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:121
 msgid "Received email header"
-msgstr ""
+msgstr "Saņemta e-pasta virsraksts"
 
 #: inc/rulemailcollector.class.php:135
 msgid "Known mail domain"
@@ -17412,7 +17441,7 @@ msgstr "Nosacījumi kategorijas pievienošanai programmatūrai"
 
 #: inc/rulesoftwarecategory.class.php:101
 msgid "Import category from inventory tool"
-msgstr ""
+msgstr "Importēt kategoriju no inventāra rīka"
 
 #: inc/ruleticket.class.php:108
 msgid ""
@@ -17456,9 +17485,9 @@ msgstr "'Business rules' pieteikumiem (pamata nodaļa)"
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saglabāts meklēšanas vaicājums"
+msgstr[1] "Saglabāts meklēšanas vaicājums"
+msgstr[2] "Saglabātie meklēšanas vaicājumi"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
 #: inc/savedsearch.class.php:1380
@@ -17477,21 +17506,23 @@ msgid ""
 "Compare number of results the search returns against the specified value "
 "with selected operator"
 msgstr ""
+"Salīdziniet rezultāta skaitu, pēc kura meklēšanas rezultāts atbilst "
+"izvēlētajam operatoram"
 
 #: inc/savedsearch_alert.class.php:207
 msgid "Notification does not exists!"
-msgstr ""
+msgstr "Paziņojums neeksistē!"
 
 #: inc/savedsearch_alert.class.php:210
 msgid "create it now"
-msgstr ""
+msgstr "izveidot tagad"
 
 #: inc/savedsearch_alert.class.php:214
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Izmantots paziņojums:"
+msgstr[1] "Izmantots paziņojums:"
+msgstr[2] "Izmantoti paziņojumi:"
 
 #: inc/savedsearch_alert.class.php:236
 msgid "Add an alert"
@@ -17499,7 +17530,7 @@ msgstr "Pievienot trauksmi"
 
 #: inc/savedsearch_alert.class.php:301
 msgid "Saved searches alerts"
-msgstr ""
+msgstr "Saglabātie meklēšanas vaicājumi"
 
 #: inc/savedsearch_alert.class.php:355
 msgid "less than"
@@ -17507,7 +17538,7 @@ msgstr "mazāk nekā"
 
 #: inc/savedsearch_alert.class.php:359
 msgid "less or equals than"
-msgstr ""
+msgstr "mazāk vai vienāds ar"
 
 #: inc/savedsearch_alert.class.php:363
 msgid "equals to"
@@ -17523,29 +17554,29 @@ msgstr "lielāks vai vienāds ar"
 
 #: inc/savedsearch_alert.class.php:375
 msgid "greater than"
-msgstr ""
+msgstr "lielāk par"
 
 #: inc/savedsearch_alert.class.php:384
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
-msgstr ""
+msgstr "Rezultātu skaits %1$s ir %2$s %3$s"
 
 #: inc/savedsearch.class.php:76
 msgid "Unset as default"
-msgstr ""
+msgstr "Atspējot kā noklusēto"
 
 #: inc/savedsearch.class.php:78
 msgid "Change count method"
-msgstr ""
+msgstr "Mainīt skaitīšanas metodi"
 
 #: inc/savedsearch.class.php:81
 msgid "Change visibility"
-msgstr ""
+msgstr "Mainīt redzamību"
 
 #: inc/savedsearch.class.php:91 inc/savedsearch.class.php:384
 #: inc/savedsearch.class.php:1176
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
 #: inc/savedsearch.class.php:225
 msgid "Last duration (ms)"
@@ -17565,11 +17596,11 @@ msgstr "Skaitītājs"
 
 #: inc/savedsearch.class.php:261
 msgid "Last execution date"
-msgstr ""
+msgstr "Pēdējais izpildes datums"
 
 #: inc/savedsearch.class.php:373
 msgid "New saved search"
-msgstr ""
+msgstr "Jauna saglabāta meklēšana"
 
 #: inc/savedsearch.class.php:382
 msgid "Do count"
@@ -17587,33 +17618,33 @@ msgstr ""
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Privāts %1$s"
+msgstr[1] "Privāts %1$s"
+msgstr[2] "Privātie %1$s"
 
 #: inc/savedsearch.class.php:771 inc/savedsearch.class.php:781
 msgid "Hide/Show elements"
-msgstr ""
+msgstr "Paslēpt / Rādīt elementus"
 
 #: inc/savedsearch.class.php:778
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Publisks %1$s"
+msgstr[1] "Publisks %1$s"
+msgstr[2] "Publiski %1$s"
 
 #: inc/savedsearch.class.php:825
 msgid "Default bookmark has not been changed!"
-msgstr ""
+msgstr "Noklusētā grāmatzīme nav mainīta!"
 
 #: inc/savedsearch.class.php:921
 msgid "Count for this saved search has been disabled."
-msgstr ""
+msgstr "Skaitlis par šo saglabāto meklēšanu ir atspējots."
 
 #: inc/savedsearch.class.php:922
 msgid "Counting this saved search would take too long, it has been skipped."
-msgstr ""
+msgstr "Saglabātās meklēšanas skaitīšana būtu pārāk ilga, tā tika izlaista."
 
 #: inc/savedsearch.class.php:943 inc/savedsearch.class.php:944
 msgid "Not default search"
@@ -17625,33 +17656,33 @@ msgstr "Noklusētais meklētājs"
 
 #: inc/savedsearch.class.php:955
 msgid "Click to load or drag and drop to reorder"
-msgstr ""
+msgstr "Noklikšķiniet, lai ielādētu vai velciet un nometiet, lai pārkārtotu"
 
 #: inc/savedsearch.class.php:956
 msgid "Click to load"
-msgstr ""
+msgstr "Noklikšķiniet, lai ielādētu"
 
 #: inc/savedsearch.class.php:993
 msgid "Saved searches order cannot be saved!"
-msgstr ""
+msgstr "Saglabāto meklēšanas secību nevar saglabāt!"
 
 #: inc/savedsearch.class.php:1007
 #, php-format
 msgid "You have not recorded any %1$s yet"
-msgstr ""
+msgstr "Jūs vēl neesat ierakstījis nevienu %1$s"
 
 #: inc/savedsearch.class.php:1047 inc/savedsearch.class.php:1048
 #: inc/savedsearch.class.php:1055
 msgid "Save current search"
-msgstr ""
+msgstr "Saglabājiet pašreizējo meklēšanu"
 
 #: inc/savedsearch.class.php:1260
 msgid "Update all bookmarks execution time"
-msgstr ""
+msgstr "Atjauniniet visu grāmatzīmju izpildes laiku"
 
 #: inc/savedsearch.class.php:1388
 msgid "Notification has been created!"
-msgstr ""
+msgstr "Paziņojums ir izveidots!"
 
 #: inc/search.class.php:157
 msgid "assets"
@@ -17674,6 +17705,9 @@ msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"\"Viss\" kritērijs nav izmantojams šim objektu sarakstam, SQL vaicājums "
+"neizdodas (pārāk daudz tabulu). Tā vietā izmantojiet kritēriju \"Skatīti "
+"priekšmeti\""
 
 #: inc/search.class.php:1491
 msgid "Show as map"
@@ -17741,12 +17775,12 @@ msgstr "koka struktūra"
 
 #: inc/session.class.php:1209
 msgid "The action you have requested is not allowed."
-msgstr ""
+msgstr "Pieprasītā darbība nav atļauta."
 
 #: inc/sla.class.php:61
 msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the date."
-msgstr ""
+msgstr "Piesaistot SLA pieteikumam, datums tiek aprēķināts no jauna."
 
 #: inc/sla.class.php:62
 msgid "Escalations defined in the SLA will be triggered under this new date."
@@ -17817,7 +17851,7 @@ msgstr "Pēc apvienošanas dzēstā programmatūra"
 
 #: inc/softwarelicense.class.php:78
 msgid "Please select a software for this license"
-msgstr ""
+msgstr "Lūdzu, atlasiet šīs licences programmatūru"
 
 #: inc/softwarelicense.class.php:344 inc/softwarelicense.class.php:617
 msgid "Technician in charge of the license"
@@ -17851,10 +17885,12 @@ msgid ""
 "On search engine, use \"Expiration contains NULL\" to search licenses with "
 "no expiration date"
 msgstr ""
+"Meklētājprogrammā izmantojiet terminu \"Derīguma termiņš ir NULL\", lai "
+"meklētu licences bez derīguma termiņa beigām"
 
 #: inc/softwarelicense.class.php:554 inc/softwarelicense.class.php:566
 msgid "states_id"
-msgstr ""
+msgstr "states_id"
 
 #: inc/softwarelicense.class.php:582 inc/softwarelicense.class.php:798
 msgid "Valid"
@@ -17896,7 +17932,7 @@ msgstr "Licence %1$s beigsies %2$s"
 
 #: inc/softwarelicense.class.php:901
 msgid "Send licenses alert failed"
-msgstr ""
+msgstr "Kļūda nosūtot brīdinājumu par licencēm"
 
 #: inc/softwarelicense.class.php:1042
 msgctxt "button"
@@ -17958,11 +17994,11 @@ msgstr "Vidējais aizvēršanas laiks"
 
 #: inc/stat.class.php:474
 msgid "Average real duration of treatment of the ticket"
-msgstr ""
+msgstr "Pieteikuma apstrādes reālais ilgums"
 
 #: inc/stat.class.php:477
 msgid "Total real duration of treatment of the ticket"
-msgstr ""
+msgstr "Pieteikuma apstrādes kopējais reālais ilgums"
 
 #: inc/stat.class.php:672
 msgid "No statistics are available"
@@ -17986,7 +18022,7 @@ msgstr "Pēc problēmas"
 
 #: inc/stat.class.php:1235
 msgid "By change"
-msgstr ""
+msgstr "Pēc izmaiņām"
 
 #: inc/stat.class.php:1241
 msgid "Select statistics to be displayed"
@@ -18009,12 +18045,12 @@ msgstr "Uzstādīt statusu: %s"
 #: inc/state.class.php:265
 #, php-format
 msgid "%1$s must be unique!"
-msgstr ""
+msgstr "%1$s jābūt unikālam!"
 
 #: inc/state.class.php:381
 #, php-format
 msgid "%1$s must be unique per level!"
-msgstr ""
+msgstr "%1$s jābūt unikālam katrā līmenī!"
 
 #: inc/supplier.class.php:210
 msgctxt "button"
@@ -18024,24 +18060,24 @@ msgstr "Pievienot kontaktpersonu"
 #: inc/supplier.class.php:353
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Piesaistītā kontaktpersona"
+msgstr[1] "Piesaistītā kontaktpersona"
+msgstr[2] "Piesaistītās kontaktpersonas"
 
 #: inc/supplier.class.php:398
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Saistīts līgums"
+msgstr[1] "Saistīts līgums"
+msgstr[2] "Saistītie līgumi"
 
 #: inc/telemetry.class.php:257
 msgid "Send telemetry informations"
-msgstr ""
+msgstr "Sūtīt telemetrijas informāciju"
 
 #: inc/telemetry.class.php:371
 msgid "See what would be sent..."
-msgstr ""
+msgstr "Skatīt, kas tiks nosūtīts..."
 
 #: inc/telemetry.class.php:384
 msgid "Telemetry data"
@@ -18049,11 +18085,13 @@ msgstr "Telemetrijas dati"
 
 #: inc/telemetry.class.php:452
 msgid "Send \"usage statistics\""
-msgstr ""
+msgstr "Sūtīt \"lietotāju statistiku\""
 
 #: inc/telemetry.class.php:453
 msgid "We need your help to improve GLPI and the plugins ecosystem!"
 msgstr ""
+"Mums vajadzīga jūsu palīdzība, lai uzlabotu GLPI un papild spraudņu "
+"ekosistēmu!"
 
 #: inc/telemetry.class.php:454
 msgid ""
@@ -18061,21 +18099,28 @@ msgid ""
 "“Telemetry”, that anonymously with your permission, sends data to our "
 "telemetry website."
 msgstr ""
+"Kopš GLPI 9.2 mēs esam ieviesuši jaunu statistikas funkciju ar nosaukumu "
+"\"Telemetrija\", kas anonīmi ar jūsu atļauju, nosūta datus mūsu telemetrijas"
+" vietnei."
 
 #: inc/telemetry.class.php:455
 msgid ""
 "Once sent, usage statistics are aggregated and made available to a broad "
 "range of GLPI developers."
 msgstr ""
+"Pēc nosūtīšanas lietošanas statistika tiek apkopota un pieejama plašam GLPI "
+"izstrādātāju lokam."
 
 #: inc/telemetry.class.php:456
 msgid ""
 "Let us know your usage to improve future versions of GLPI and its plugins!"
 msgstr ""
+"Informējiet mūs par savu lietošanu, lai uzlabotu GLPI un tā papild spraudņu "
+"nākamajās versijās!"
 
 #: inc/telemetry.class.php:469
 msgid "Reference your GLPI"
-msgstr ""
+msgstr "Atsauce uz jūsu GLPI"
 
 #: inc/telemetry.class.php:471
 #, php-format
@@ -18086,7 +18131,7 @@ msgstr ""
 
 #: inc/telemetry.class.php:476
 msgid "the following form"
-msgstr ""
+msgstr "sekojoša forma"
 
 #: inc/ticket.class.php:206
 msgid "Create ticket"
@@ -18115,7 +18160,7 @@ msgstr "Nezināms pieteikums"
 #: inc/ticket.class.php:1881
 #, php-format
 msgid "Invalid email address %s"
-msgstr ""
+msgstr "Nederīga e-pasta adrese %s"
 
 #: inc/ticket.class.php:2308
 #, php-format
@@ -18198,11 +18243,11 @@ msgstr "Atkarīgs pieteikums"
 
 #: inc/ticket.class.php:3265
 msgid "Number of sons tickets"
-msgstr ""
+msgstr "Apakšpieteikumu skaits"
 
 #: inc/ticket.class.php:3281
 msgid "Number of parent tickets"
-msgstr ""
+msgstr "Vecāko pieteikumu skaits"
 
 #: inc/ticket.class.php:3301
 msgid "Problems"
@@ -18323,9 +18368,9 @@ msgstr "Jums nav tiesību redzēt visus pieteikumus"
 #: inc/ticket.class.php:6120
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pieteikumi ar saistīto vienību"
+msgstr[1] "Pieteikumi ar saistīto vienību"
+msgstr[2] "Pieteikumi ar saistītam vienībām"
 
 #: inc/ticket.class.php:6230
 msgid "No ticket in progress."
@@ -18397,16 +18442,16 @@ msgstr "Mainīt prioritāti"
 
 #: inc/ticket.class.php:6552
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr ""
+msgstr "Apstiprināt risinājumu/Atbildēt uz aptauju (mans pieteikums)"
 
 #: inc/ticket.class.php:6553
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr ""
+msgstr "Apstiprināt risinājumu un atbildēt uz aptauju manam pieteikumam"
 
 #: inc/ticket.class.php:7218
 #, php-format
 msgid "Ticket# %s description"
-msgstr ""
+msgstr "Pieteikuma# %s apraksts"
 
 #: inc/ticket.class.php:7286
 msgid "Actions historical"
@@ -18467,7 +18512,7 @@ msgstr "Pirms pagājušā mēneša"
 #: inc/ticketfollowup.class.php:995
 #, php-format
 msgid "Created by %1$s on %2$s"
-msgstr ""
+msgstr "Izveidots %1$s uz %2$s"
 
 #: inc/ticketfollowup.class.php:1122
 msgid "Approval of the solution"
@@ -18529,7 +18574,7 @@ msgstr "Nākošā izveide uz %s"
 
 #: inc/ticketrecurrent.class.php:341
 msgid "Invalid frequency. It must be greater than the preliminary creation."
-msgstr ""
+msgstr "Nederīga frekvence. Tam jābūt lielākam par sākotnējo radīšanu."
 
 #. TRANS: %s is a name
 #: inc/ticketrecurrent.class.php:439
@@ -18558,9 +18603,9 @@ msgstr "Apmierinātība ar pieteikuma rezolūciju"
 #: inc/tickettask.class.php:47
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pieteikuma uzdevums"
+msgstr[1] "Pieteikuma uzdevums"
+msgstr[2] "Pieteikuma uzdevumi"
 
 #: inc/tickettask.class.php:241
 msgid "Add to all items"
@@ -18612,7 +18657,7 @@ msgstr "Padotais"
 #: inc/ticket_ticket.class.php:210 inc/ticket_ticket.class.php:230
 #: inc/ticket_ticket.class.php:234
 msgid "Parent of"
-msgstr ""
+msgstr "Vecāks par"
 
 #: inc/ticket_ticket.class.php:233
 msgid "Duplicated by"
@@ -18620,19 +18665,19 @@ msgstr "Dublicējis"
 
 #: inc/ticketvalidation.class.php:99
 msgid "Create for request"
-msgstr ""
+msgstr "Izveidot pieprasījumam"
 
 #: inc/ticketvalidation.class.php:100
 msgid "Create a validation request for a request"
-msgstr ""
+msgstr "Izveidot apstiprināšanas pieprasījumu pieprasījumam"
 
 #: inc/ticketvalidation.class.php:102
 msgid "Create for incident"
-msgstr ""
+msgstr "Izveidot incidentam"
 
 #: inc/ticketvalidation.class.php:103
 msgid "Create a validation request for an incident"
-msgstr ""
+msgstr "Izveidot apstiprināšanas pieprasījumu incidentam"
 
 #: inc/ticketvalidation.class.php:105
 msgid "Validate a request"
@@ -18723,7 +18768,7 @@ msgstr "Pieejamā atmiņa"
 
 #: inc/toolbox.class.php:1067
 msgid "A minimum of 64Mio is commonly required for GLPI."
-msgstr ""
+msgstr "Parasti GLPI ir nepieciešami vismaz 64MB atmiņas."
 
 #: inc/toolbox.class.php:1068
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -18889,6 +18934,8 @@ msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr ""
+"HTTP_REFERER ceļš neeksistē vai nav derīgs. Pārlādējiet iepriekšējo lapu, "
+"pirms atkal veicat darbību."
 
 #: inc/toolbox.class.php:2486
 msgid ""
