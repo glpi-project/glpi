@@ -342,7 +342,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          $input["version"] = addslashes($version["name"]);
          $old_version_name = $input["version"];
 
-         if (isset($res_rule["version"]) && $res_rule["version"] != '') {
+         if (isset($res_rule['version_append']) && $res_rule['version_append'] != '') {
+             $new_version_name = $old_version_name . $res_rule['version_append'];
+         } else if (isset($res_rule["version"]) && $res_rule["version"] != '') {
             $new_version_name = $res_rule["version"];
          } else {
             $new_version_name = $version["name"];
