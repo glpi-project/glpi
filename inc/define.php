@@ -104,6 +104,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jquery| tinymc
             'hr_HR' => ['Hrvatski',             'hr_HR.mo','hr',    'hr','croatian'   , 2],
             'hu_HU' => ['Magyar',               'hu_HU.mo','hu',    'hu','hungarian'  , 2],
             'it_IT' => ['Italiano',             'it_IT.mo','it',    'it','italian'    , 2],
+            'ka'    => ['ಕನ್ನಡ',                 'ka.mo',   'en-GB', 'en', 'kannada'   , 2],
             'lv_LV' => ['Latviešu',             'lv_LV.mo','lv',    'lv','latvian'    , 2],
             'lt_LT' => ['Lietuvių',             'lt_LT.mo','lt',    'lt','lithuanian' , 2],
             'nl_NL' => ['Nederlands',           'nl_NL.mo','nl',    'nl','dutch'      , 2],
