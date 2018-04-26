@@ -1214,7 +1214,7 @@ class SavedSearch extends CommonDBTM {
    public function setEntityRecur(array $ids, $eid, $recur) {
       global $DB;
 
-      $result = $DB->udpate(
+      $result = $DB->update(
          $this->getTable(), [
             'entities_id'  => $eid,
             'is_recursive' => $recur

@@ -453,7 +453,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                ]
             );
 
-            $DB->udpate(
+            $DB->update(
                'glpi_softwarelicenses', [
                   'softwareversions_id_use' => $new_versionID
                ], [
