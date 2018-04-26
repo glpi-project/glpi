@@ -82,7 +82,8 @@ function update922to923() {
             && countElementsInTable(
                'glpi_notifications_notificationtemplates',
                "notifications_id = ".$notification->fields['id'].
-               " AND notificationtemplates_id = ".$template->fields['id']
+               " AND notificationtemplates_id = ".$template->fields['id'] .
+               " AND mode = 'mailing'"
             ) == 0
          ) {
             //Add missing notification template link for saved searches
