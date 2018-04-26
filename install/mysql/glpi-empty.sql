@@ -1406,6 +1406,7 @@ CREATE TABLE `glpi_consumableitems` (
   `alarm_threshold` int(11) NOT NULL DEFAULT '10',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -1417,7 +1418,8 @@ CREATE TABLE `glpi_consumableitems` (
   KEY `alarm_threshold` (`alarm_threshold`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `otherserial` (`otherserial`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
