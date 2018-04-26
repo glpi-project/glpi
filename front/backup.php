@@ -598,8 +598,13 @@ if (Session::haveRight('backup', Backup::CHECKUPDATE)) {
 // Title backup
 echo "<div class='center'>";
 if (Session::haveRight('backup', CREATE)) {
-   echo "<table class='tab_glpi'><tr><td>".
-         "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
+   echo "<table class='tab_glpi'><tr><td colspan='4'>";
+   echo "<div class='warning'><i class='fa fa-exclamation-triangle fa-5x'></i><ul><li>";
+   echo __('GLPI internal backup system is a helper for very small instances.');
+   echo "<br/>" . __('You should rather use a dedicated tool on your server.');
+   echo "</li></ul></div>";
+   echo "</td></tr><tr><td>";
+   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
          "</td>";
    echo "<td><a class='vsubmit'
               href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
