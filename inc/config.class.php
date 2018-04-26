@@ -2251,7 +2251,9 @@ class Config extends CommonDBTM {
       $img = "<img src='".$CFG_GLPI['root_doc']."/pics/";
       $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
 
-      if ($fordebug) {
+      if (isCommandLine()) {
+         echo $message . "\n";
+      } elseif ($fordebug) {
          echo $img . $message . "\n";
       } else {
          //$html = '<tr class="tab_bg_1">';
