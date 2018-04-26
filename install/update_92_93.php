@@ -827,6 +827,13 @@ function update92to93() {
    );
    /** /Logs purge */
 
+   /** Add otherserial field on ConsumableItem */
+   if (!$DB->fieldExists('glpi_consumableitems', 'otherserial')) {
+      $migration->addField("glpi_consumableitems", "otherserial", "varchar(255) NULL DEFAULT NULL");
+      $migration->addKey("glpi_consumableitems", 'otherserial');
+   }
+   /** /Add otherserial field on ConsumableItem */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
