@@ -47,7 +47,12 @@ function update93to94() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.4'));
    $migration->setVersion('9.4');
 
-   //put your update rules here, and drop the line!
+   /** Add otherserial field on ConsumableItem */
+   if (!$DB->fieldExists('glpi_consumableitems', 'otherserial')) {
+      $migration->addField("glpi_consumableitems", "otherserial", "varchar(255) NULL DEFAULT NULL");
+      $migration->addKey("glpi_consumableitems", 'otherserial');
+   }
+   /** /Add otherserial field on ConsumableItem */
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

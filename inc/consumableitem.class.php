@@ -170,8 +170,8 @@ class ConsumableItem extends CommonDBTM {
                            'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]]);
       echo "</td>";
-      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
-      echo "<td class='middle' rowspan='4'>
+      echo "<td rowspan='5' class='middle'>".__('Comments')."</td>";
+      echo "<td class='middle' rowspan='5'>
              <textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -202,6 +202,21 @@ class ConsumableItem extends CommonDBTM {
 
       Alert::displayLastAlert('ConsumableItem', $ID);
       echo "</td></tr>";
+
+      echo "<tr>";
+      $tplmark = $this->getAutofillMark('otherserial', $options);
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark)."</td>";
+      echo "<td>";
+      $objectName = autoName(
+         $this->fields["otherserial"],
+         "otherserial",
+         (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
+         $this->getType(),
+         $this->fields["entities_id"]
+      );
+      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
+      echo "</td>";
+      echo "</tr>";
 
       $this->showFormButtons($options);
 
@@ -240,6 +255,14 @@ class ConsumableItem extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'ref',
          'name'               => __('Reference'),
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'otherserial',
+         'name'               => __('Inventory number'),
          'datatype'           => 'string'
       ];
 
