@@ -2253,7 +2253,7 @@ class Config extends CommonDBTM {
 
       if (isCommandLine()) {
          echo $message . "\n";
-      } elseif ($fordebug) {
+      } else if ($fordebug) {
          echo $img . $message . "\n";
       } else {
          //$html = '<tr class="tab_bg_1">';
