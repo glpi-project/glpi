@@ -39,7 +39,7 @@ msgstr "รหัสผ่าน"
 
 #: index.php:135
 msgid "Remember me"
-msgstr ""
+msgstr "จดจำ"
 
 #: index.php:139 ajax/dropdownMassiveActionAuthMethods.php:65
 #: ajax/dropdownMassiveActionField.php:53 inc/authldap.class.php:1268
@@ -2459,7 +2459,7 @@ msgstr "เนื้อหา"
 #: front/helpdesk.php:114
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "โพสท์"
 
 #: front/helpdesk.public.php:92 front/ticket.form.php:229
 #: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4577
@@ -2513,12 +2513,12 @@ msgstr "คุณได้รับการเปลี่ยนเส้นท
 #: front/knowbaseitem_comment.form.php:51
 #: front/knowbaseitem_comment.form.php:70 front/knowbaseitem_item.form.php:41
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "ฟิลด์ที่บังคับ!"
 
 #: front/knowbaseitem_comment.form.php:58
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%sเพิ่มความคิดเห็นในคลังความรู้ "
 
 #: front/knowbaseitem_comment.form.php:60
 msgid "Your comment has been added"
@@ -2527,11 +2527,11 @@ msgstr ""
 #: front/knowbaseitem_comment.form.php:79
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%sแก้ไขความคิดเห็นเกี่ยวกับคลังความรู้ "
 
 #: front/knowbaseitem_comment.form.php:81
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "ความคิดเห็นของคุณได้รับการแก้ไขแล้ว"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:115 front/reminder.form.php:107
@@ -2543,12 +2543,12 @@ msgstr "%s เพิ่มเป้าหมาย"
 #: front/knowbaseitem.form.php:125
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "รายการฐานความรู้ถูกเปลี่ยนกลับเป็นฉบับแก้ไขแล้ว %s"
 
 #: front/knowbaseitem.form.php:132
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "รายการคลังความรู้ยังไม่ได้เปลี่ยนกลับเป็นฉบับแก้ไข %s"
 
 #: front/knowbaseitem.form.php:142 inc/commondropdown.class.php:918
 #: inc/itilcategory.class.php:67 inc/itilcategory.class.php:231
@@ -2561,12 +2561,12 @@ msgstr "คลังความรู้"
 #: front/knowbaseitem_item.form.php:50
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr ""
+msgstr "%s  เพิ่มการเชื่อมโยงไปยังคลังความรู้"
 
 #: front/knowbaseitemtranslation.form.php:52
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
-msgstr ""
+msgstr "การแปลรายการคลังความรู้ถูกเปลี่ยนกลับเป็นฉบับปรับปรุงแล้ว %s"
 
 #: front/knowbaseitemtranslation.form.php:59
 #, php-format
@@ -2725,13 +2725,13 @@ msgstr "รายการแท็กที่มีอยู่"
 #: front/olalevel.form.php:51
 #, php-format
 msgid "%s updates an ola level"
-msgstr ""
+msgstr "%s อัปเดตระดับ Ola "
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:75
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%sล้างระดับ Ola "
 
 #: front/planning.php:137 inc/commonitiltask.class.php:1551
 #: inc/commonitiltask.class.php:1721 inc/event.class.php:147
@@ -3177,17 +3177,17 @@ msgstr ""
 #: front/savedsearch_alert.form.php:64
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s ลบการแจ้งเตือน"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:76
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s อัพเดทการแจ้งเตือน"
 
 #: front/savedsearch.php:37 inc/html.class.php:5968 inc/html.class.php:5977
 msgid "Saved searches"
-msgstr ""
+msgstr "ค้นหาที่บันทึกไว้"
 
 #: front/search.php:36 inc/entity.class.php:1105 inc/html.class.php:6004
 #: inc/html.class.php:6283 inc/html.class.php:6284 inc/location.class.php:465
@@ -3601,22 +3601,22 @@ msgstr "แสดงกราฟิก"
 #: front/stat.location.php:176 front/stat.tracking.php:184
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "เปิด  %1$s (%2$s)"
 
 #: front/stat.location.php:202 front/stat.tracking.php:210
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "แก้ไข %1$s(%2$s)"
 
 #: front/stat.location.php:227
 #, php-format
 msgid "Late solved %1$s (%2$s)"
-msgstr ""
+msgstr "แก้ไขช้า %1$s(%2$s)"
 
 #: front/stat.location.php:252 front/stat.tracking.php:263
 #, php-format
 msgid "Closed %1$s (%2$s)"
-msgstr ""
+msgstr "ปิด %1$s(%2$s)"
 
 #: front/stat.location.php:277 front/stat.tracking.php:290
 #, php-format

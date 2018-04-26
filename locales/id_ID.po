@@ -1565,7 +1565,7 @@ msgstr "%s purges a cost "
 #: front/projectcost.form.php:78 front/ticketcost.form.php:69
 #, php-format
 msgid "%s updates a cost"
-msgstr ""
+msgstr "%s memperbarui biaya"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:57 front/projecttask.form.php:60
@@ -2569,6 +2569,7 @@ msgstr ""
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
 msgstr ""
+"Penerjemahan item pengetahuan dasar telah dikembalikan untuk revisi %s"
 
 #: front/knowbaseitemtranslation.form.php:59
 #, php-format
@@ -2717,7 +2718,7 @@ msgstr "Tidak dapat mengubah port jaringan migrasi ke yang tidak diketahui"
 
 #: front/networkportmigration.form.php:89
 msgid "Network port is not available..."
-msgstr ""
+msgstr "Port jaringan tidak tersedia..."
 
 #: front/notification.tags.php:37
 msgid "List of available tags"
@@ -3069,7 +3070,7 @@ msgstr "Tanggal startup"
 #: front/report.location.list.php:44
 #, php-format
 msgid "Network report by location: %s"
-msgstr ""
+msgstr "Laporan jaringan per lokasi: %s"
 
 #: front/report.netpoint.list.php:45
 #, php-format
@@ -3095,7 +3096,7 @@ msgstr "Berdasar outlet jaringan"
 #: front/report.switch.list.php:48
 #, php-format
 msgid "Network report by hardware: %s"
-msgstr ""
+msgstr "Laporan jaringan per hardware: %s"
 
 #: front/report.year.list.php:44 inc/budget.class.php:479
 #: inc/contract_item.class.php:625
@@ -3758,7 +3759,7 @@ msgstr ""
 
 #: front/ticket.form.php:223
 msgid "Save solution to the knowledge base"
-msgstr ""
+msgstr "Simpan solusi ke pengetahuan dasar"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatehiddenfield.form.php:47
@@ -3991,6 +3992,8 @@ msgid ""
 "An email has been sent to your email address. The email contains information"
 " for reset your password."
 msgstr ""
+"Sebuah email telah dikirim ke alamat email anda. Email tersebut berisi "
+"informasi untuk mengatur ulang kata sandi anda."
 
 #: inc/api.class.php:1897 inc/user.class.php:4304
 msgid "Reset password successful."
@@ -4714,7 +4717,7 @@ msgstr ""
 #: inc/softwareversion.class.php:198 inc/supplier.class.php:336
 #: inc/ticket.class.php:2980 inc/user.class.php:2959
 msgid "Creation date"
-msgstr ""
+msgstr "Tanggal pembuatan"
 
 #: inc/authldap.class.php:1245 inc/authldap.class.php:1259
 #: inc/authldap.class.php:3084
@@ -5876,7 +5879,7 @@ msgstr ""
 #: inc/projecttask.class.php:782 inc/ticket.class.php:4588
 #: inc/ticket.class.php:4590 inc/ticket.class.php:7610
 msgid "Opening date"
-msgstr ""
+msgstr "Tanggal buka"
 
 #: inc/change.class.php:677 inc/commonitilobject.class.php:2848
 #: inc/commonitilobject.class.php:4584 inc/commonitilobject.class.php:5308
@@ -5906,14 +5909,14 @@ msgstr "Oleh"
 #: inc/notificationtargetcommonitilobject.class.php:1183
 #: inc/problem.class.php:1136
 msgid "Date of solving"
-msgstr ""
+msgstr "Tanggal penyelesaian"
 
 #: inc/change.class.php:715 inc/commonitilobject.class.php:2839
 #: inc/commonitilobject.class.php:4594
 #: inc/notificationtargetcommonitilobject.class.php:1182
 #: inc/problem.class.php:1143 inc/ticket.class.php:7657
 msgid "Closing date"
-msgstr ""
+msgstr "Tanggal tutup"
 
 #: inc/change.class.php:758 inc/commonitilobject.class.php:2925
 #: inc/commonitiltask.class.php:611 inc/crontask.class.php:1021
@@ -6032,7 +6035,7 @@ msgstr[0] ""
 
 #: inc/change_project.class.php:269
 msgid "Add a project"
-msgstr ""
+msgstr "Tambah proyek"
 
 #: inc/changetask.class.php:46
 msgid "Change task"
@@ -7263,7 +7266,7 @@ msgstr "Tanggal persetujuan"
 
 #: inc/commonitilvalidation.class.php:1263
 msgid "Validate"
-msgstr ""
+msgstr "Validasi"
 
 #: inc/commonitilvalidation.class.php:1443
 #, php-format
@@ -7400,12 +7403,12 @@ msgstr "Sambungkan"
 #: inc/software.class.php:361 inc/ticket.class.php:2629
 msgctxt "button"
 msgid "Link knowledgebase article"
-msgstr ""
+msgstr "Hubungkan artikel pengetahuan dasar"
 
 #: inc/computer.class.php:743 inc/networkequipment.class.php:591
 #: inc/printer.class.php:740
 msgid "Network Device"
-msgstr ""
+msgstr "Perangkat Jaringan"
 
 #: inc/computer.class.php:811 inc/deviceprocessor.class.php:43
 msgid "Processor"
@@ -7742,7 +7745,7 @@ msgstr ""
 
 #: inc/config.class.php:346
 msgid "Knowledge base translation"
-msgstr ""
+msgstr "Pengetahuan dasar Terjemahan"
 
 #: inc/config.class.php:350
 msgid "Dynamic display"
@@ -7868,7 +7871,7 @@ msgstr ""
 #: inc/dropdown.class.php:2065 inc/dropdown.class.php:2067
 #: inc/dropdown.class.php:2126
 msgid "Unit management"
-msgstr ""
+msgstr "Manajemen unit"
 
 #: inc/config.class.php:561
 msgid "When connecting or updating"
@@ -8057,7 +8060,7 @@ msgstr ""
 
 #: inc/config.class.php:1019
 msgid "Date format"
-msgstr ""
+msgstr "Format tanggal"
 
 #: inc/config.class.php:1025
 msgid "Display order of surnames firstnames"
@@ -8255,7 +8258,7 @@ msgstr ""
 
 #: inc/config.class.php:1476
 msgid "Password must contains"
-msgstr ""
+msgstr "Password harus berisi"
 
 #: inc/config.class.php:1502 inc/config.class.php:1504
 msgid "Password too short!"
@@ -8908,11 +8911,11 @@ msgstr "Hari minggu dan hari libur"
 #: inc/contract.class.php:390
 msgctxt "quantity"
 msgid "Number of contracts"
-msgstr ""
+msgstr "Jumlah kontrak"
 
 #: inc/contract.class.php:415
 msgid "Contract number"
-msgstr ""
+msgstr "Nomor kontrak"
 
 #: inc/contract.class.php:455 inc/contract.class.php:757
 #: inc/notificationtargetcontract.class.php:48
@@ -9156,7 +9159,7 @@ msgstr ""
 
 #: inc/crontask.class.php:842 inc/crontask.class.php:856
 msgid "Can't start"
-msgstr ""
+msgstr "Tidak bisa memulai"
 
 #: inc/crontask.class.php:851 inc/crontask.class.php:858
 #, php-format
@@ -10206,7 +10209,7 @@ msgstr[0] ""
 
 #: inc/dropdown.class.php:985 inc/networkport.class.php:918
 msgid "Networking"
-msgstr ""
+msgstr "Jaringan"
 
 #: inc/dropdown.class.php:989 inc/netpoint.class.php:60
 #: inc/netpoint.class.php:271 inc/netpoint.class.php:285
@@ -10347,11 +10350,11 @@ msgstr "Manajemen global"
 
 #: inc/dropdown.class.php:2043
 msgid "Use unitary management"
-msgstr ""
+msgstr "Gunakan manajemen kesatuan"
 
 #: inc/dropdown.class.php:2045
 msgid "Do you really want to use unitary management for this item?"
-msgstr ""
+msgstr "Anda yakin ingin menggunakan manajemen kesatuan pada item ini?"
 
 #: inc/dropdown.class.php:2046 inc/dropdown.class.php:2050
 #: inc/dropdown.class.php:2051
@@ -10609,13 +10612,13 @@ msgstr ""
 #: inc/infocom.class.php:1055 inc/infocom.class.php:1427
 #: inc/infocom.class.php:1661
 msgid "Order date"
-msgstr ""
+msgstr "Tanggal pesan"
 
 #: inc/entity.class.php:990 inc/entity.class.php:1519
 #: inc/infocom.class.php:1067 inc/infocom.class.php:1417
 #: inc/infocom.class.php:1652
 msgid "Delivery date"
-msgstr ""
+msgstr "Tanggal kirim"
 
 #: inc/entity.class.php:1010 inc/entity.class.php:1536
 #: inc/infocom.class.php:1221 inc/infocom.class.php:1437
@@ -11424,6 +11427,8 @@ msgid ""
 "Purchase date incompatible with the associated budget. %1$s not in budget "
 "period: %2$s / %3$s"
 msgstr ""
+"Tanggal pembelian tidak sesuai dengan anggaran terkait. %1$s tidak masuk di "
+"periode anggaran: %2$s / %3$s"
 
 #: inc/infocom.class.php:443
 msgid "Send alarms on financial and administrative information"
@@ -11602,7 +11607,7 @@ msgstr "Jaringan beralamat"
 
 #: inc/ipnetwork.class.php:176
 msgid "Set the network using notation address/mask"
-msgstr ""
+msgstr "Atur jaringan menggunakan catatan address/mask"
 
 #: inc/ipnetwork.class.php:183
 msgid "An addressable network is a network defined on an equipment"
@@ -12038,11 +12043,11 @@ msgstr ""
 
 #: inc/itilsolution.class.php:209
 msgid "Link to knowledge base entry #%id"
-msgstr ""
+msgstr "Hubungkan ke entri pengetahuan dasar #%i d"
 
 #: inc/itilsolution.class.php:215
 msgid "Save and add to the knowledge base"
-msgstr ""
+msgstr "Simpan dan tambahkan ke pengetahuan dasar"
 
 #: inc/itilsolution.class.php:382
 msgid "Add a new solution"
@@ -12196,7 +12201,7 @@ msgstr ""
 
 #: inc/knowbaseitem.class.php:1776
 msgid "Knowledge base administration"
-msgstr ""
+msgstr "Pengetahuan dasar Administrasi"
 
 #: inc/knowbaseitem.class.php:1777
 msgid "Publish in the FAQ"
@@ -12271,7 +12276,7 @@ msgstr ""
 
 #: inc/knowbaseitem_item.class.php:136
 msgid "Link a knowledge base entry"
-msgstr ""
+msgstr "Hubungkan sebuah entri pengetahuan dasar"
 
 #: inc/knowbaseitem_item.class.php:167
 msgid "No linked items"
@@ -12279,7 +12284,7 @@ msgstr ""
 
 #: inc/knowbaseitem_item.class.php:168
 msgid "No knowledge base entries linked"
-msgstr ""
+msgstr "Tidak ada entri pengetahuan dasar yang terhubung"
 
 #: inc/knowbaseitem_item.class.php:180
 msgid "Linked item"
@@ -12458,7 +12463,7 @@ msgstr ""
 
 #: inc/lineoperator.class.php:57 inc/lineoperator.class.php:78
 msgid "Mobile Network Code"
-msgstr ""
+msgstr "Kode jaringan seluler"
 
 #: inc/link.class.php:51 inc/link.class.php:597 inc/profile.class.php:1463
 #: inc/profile.class.php:1900 inc/search.class.php:5799
@@ -13057,7 +13062,7 @@ msgstr[0] "Alias jaringan"
 
 #: inc/networkalias.class.php:282
 msgid "Add a network alias"
-msgstr ""
+msgstr "Tambah alias jaringan"
 
 #: inc/networkalias.class.php:401 inc/ruleimportcomputer.class.php:96
 msgid "Computer's name"
@@ -13093,7 +13098,7 @@ msgstr ""
 
 #: inc/networkname.class.php:708
 msgid "Create a new network name"
-msgstr ""
+msgstr "Buat nama jaringan baru"
 
 #: inc/networkname.class.php:799
 msgid "No network name found"
@@ -13140,11 +13145,11 @@ msgstr ""
 
 #: inc/networkport.class.php:637 inc/networkport.class.php:724
 msgid "Network ports waiting for manual migration"
-msgstr ""
+msgstr "Port jaringan menunggu migrasi manual"
 
 #: inc/networkport.class.php:808
 msgid "No network port found"
-msgstr ""
+msgstr "Tidak ditemukan port jaringan"
 
 #: inc/networkport.class.php:873 inc/networkport.class.php:879
 #: inc/networkport.class.php:1026
@@ -13154,7 +13159,7 @@ msgstr[0] ""
 
 #: inc/networkport.class.php:938 inc/networkport.class.php:1042
 msgid "Network port type"
-msgstr ""
+msgstr "Jenis port jaringan"
 
 #: inc/networkport.class.php:989
 msgid "Dissociate a VLAN"
@@ -13246,7 +13251,7 @@ msgstr ""
 
 #: inc/networkportfiberchannel.class.php:339
 msgid "Network fiber outlet"
-msgstr ""
+msgstr "Outlet jaringan fiber"
 
 #: inc/networkportinstantiation.class.php:84
 msgid "No options available for this port type."
@@ -13263,7 +13268,7 @@ msgstr ""
 
 #: inc/networkportinstantiation.class.php:230
 msgid "Local network port"
-msgstr ""
+msgstr "Port jaringan lokal"
 
 #: inc/networkportinstantiation.class.php:291
 msgid "this port"
@@ -13302,7 +13307,7 @@ msgstr ""
 
 #: inc/networkportmigration.class.php:51
 msgid "Network port migration"
-msgstr ""
+msgstr "Migrasi port jaringan"
 
 #: inc/networkportmigration.class.php:111
 msgid "Undefined interface"
@@ -13319,12 +13324,12 @@ msgstr "Gateway tidak masuk dalam jaringan"
 #: inc/networkportmigration.class.php:197
 #: inc/networkportmigration.class.php:325
 msgid "Transform this network port to"
-msgstr ""
+msgstr "Ubah port jaringan ini ke"
 
 #: inc/networkportmigration.class.php:211
 #, php-format
 msgid "Network port information conflicting with %s"
-msgstr ""
+msgstr "Informasi port jaringan konflik dengan %s"
 
 #: inc/networkportmigration.class.php:214
 msgid "Invalid address or netmask"
@@ -13345,19 +13350,19 @@ msgstr "Menambahkan gateway yang benar ke jaringan %s"
 
 #: inc/networkportmigration.class.php:231
 msgid "Unknown network"
-msgstr ""
+msgstr "Jaringan tak dikenal"
 
 #: inc/networkportmigration.class.php:232
 msgid "Add a network"
-msgstr ""
+msgstr "Tambah jaringan"
 
 #: inc/networkportmigration.class.php:246
 msgid "Add a correct IP to the network port"
-msgstr ""
+msgstr "Tambah IP yang benar ke port jaringan"
 
 #: inc/networkportmigration.class.php:248
 msgid "Unknown network port"
-msgstr ""
+msgstr "Port jaringan tak dikenal"
 
 #: inc/networkportmigration.class.php:255
 msgid "I don't understand why this migration error is not deleted."
@@ -13374,7 +13379,7 @@ msgstr "Pada semua kejadian"
 
 #: inc/networkportmigration.class.php:271
 msgid "Original network port information"
-msgstr ""
+msgstr "Informasi asli port jaringan"
 
 #: inc/networkportmigration.class.php:283
 #: inc/networkportmigration.class.php:442
@@ -14174,7 +14179,7 @@ msgstr ""
 
 #: inc/notificationtargetproject.class.php:50
 msgid "New project"
-msgstr ""
+msgstr "Proyek baru"
 
 #: inc/notificationtargetproject.class.php:51
 msgid "Update of a project"
@@ -14214,17 +14219,17 @@ msgstr ""
 #: inc/notificationtargetproject.class.php:69
 #: inc/notificationtargetprojecttask.class.php:66
 msgid "Group of project team except manager users"
-msgstr ""
+msgstr "Grup dari tim proyek kecuali manajer pengguna"
 
 #: inc/notificationtargetproject.class.php:70
 #: inc/notificationtargetprojecttask.class.php:67
 msgid "Contact of project team"
-msgstr ""
+msgstr "Kontak tim proyek"
 
 #: inc/notificationtargetproject.class.php:71
 #: inc/notificationtargetprojecttask.class.php:68
 msgid "Supplier of project team"
-msgstr ""
+msgstr "Pemasok tim proyek"
 
 #: inc/notificationtargetproject.class.php:549 inc/project.class.php:470
 #: inc/project.class.php:1088
@@ -14327,23 +14332,23 @@ msgstr[0] ""
 
 #: inc/notificationtargetprojecttask.class.php:52
 msgid "New project task"
-msgstr ""
+msgstr "Tugas proyek baru"
 
 #: inc/notificationtargetprojecttask.class.php:53
 msgid "Update of a project task"
-msgstr ""
+msgstr "Memperbarui tugas proyek"
 
 #: inc/notificationtargetprojecttask.class.php:54
 msgid "Deletion of a project task"
-msgstr ""
+msgstr "Menghapus tugas proyek"
 
 #: inc/notificationtargetprojecttask.class.php:62
 msgid "Project team user"
-msgstr ""
+msgstr "Pengguna tim proyek"
 
 #: inc/notificationtargetprojecttask.class.php:63
 msgid "Project team group"
-msgstr ""
+msgstr "Grup tim proyek"
 
 #: inc/notificationtargetprojecttask.class.php:454
 #: inc/notificationtargetprojecttask.class.php:518 inc/profile.class.php:956
@@ -15533,7 +15538,7 @@ msgstr ""
 
 #: inc/project.class.php:1017
 msgid "Create a sub project from this project"
-msgstr ""
+msgstr "Buat sub proyek dari proyek ini"
 
 #: inc/project.class.php:1176
 msgid "Sum of planned durations of tasks"
@@ -15673,7 +15678,7 @@ msgstr ""
 
 #: inc/projecttask.class.php:990
 msgid "Create a sub task from this task of project"
-msgstr ""
+msgstr "Buat sub tugas dari tugas proyek ini"
 
 #: inc/projecttask.class.php:1577
 #, php-format
@@ -15877,7 +15882,7 @@ msgstr ""
 #: inc/reminder.class.php:520 inc/reminder.class.php:565
 #: inc/rssfeed.class.php:520 inc/ticket.class.php:5038
 msgid "Without title"
-msgstr ""
+msgstr "Tanpa judul"
 
 #: inc/reminder.class.php:607 inc/rssfeed.class.php:556
 msgid "New note"
@@ -16443,11 +16448,11 @@ msgstr ""
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:41
 msgid "Dictionnary of networking equipment models"
-msgstr ""
+msgstr "Kamus model peralatan jaringan"
 
 #: inc/ruledictionnarynetworkequipmenttypecollection.class.php:41
 msgid "Dictionnary of network equipment types"
-msgstr ""
+msgstr "Kamus jenis peralatan jaringan"
 
 #: inc/ruledictionnaryoperatingsystemarchitecturecollection.class.php:41
 msgid "Dictionnary of operating system architectures"
@@ -16968,6 +16973,9 @@ msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"Kriteria 'Semua' tidak bisa digunakan untuk daftar objek ini, query sql "
+"gagal (tabel terlalu banyak). Silahkan gunakan kriteria 'Item terlihat' "
+"sebagai gantinya"
 
 #: inc/search.class.php:1491
 msgid "Show as map"
@@ -17140,6 +17148,8 @@ msgid ""
 "On search engine, use \"Expiration contains NULL\" to search licenses with "
 "no expiration date"
 msgstr ""
+"Pada mesin pencari, gunakan \"Kadaluarsa berisi NULL\" untuk mencari lisensi"
+" tanpa tanggal kadaluarsa"
 
 #: inc/softwarelicense.class.php:554 inc/softwarelicense.class.php:566
 msgid "states_id"
@@ -17159,7 +17169,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:737
 msgid "License inventory number"
-msgstr ""
+msgstr "Nomor inventaris lisensi"
 
 #: inc/softwarelicense.class.php:747
 msgid "Number of licenses"
