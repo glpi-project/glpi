@@ -308,7 +308,7 @@ class SavedSearch_Alert extends CommonDBChild {
     *
     * @param Crontask $task Crontask instance
     *
-    * @return void
+    * @return int : <0 : need to run again, 0:nothing to do, >0:ok
     */
    static public function cronSavedSearchesAlerts($task) {
       global $DB;
@@ -373,6 +373,7 @@ class SavedSearch_Alert extends CommonDBChild {
                   case self::OP_GREAT:
                      $notify = $count > $value;
                      $tr_op = __('greater than');
+                     break;
                   default:
                      throw new \RuntimeException("Unknonw operator '{$row['operator']}'");
                }
@@ -393,12 +394,15 @@ class SavedSearch_Alert extends CommonDBChild {
                   $alert->getFromDB($row['id']);
                   $data['savedsearch'] = $savedsearch;
                   NotificationEvent::raiseEvent($event, $alert, $data);
+                  $task->addVolume(1);
                }
             } catch (\Exception $e) {
                Toolbox::logError($e);
             }
          }
+         return 1;
       }
+      return 0;
    }
 
    function getItemsForLog($itemtype, $items_id) {
