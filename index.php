@@ -90,6 +90,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // font awesome icons
    echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
 
+   echo Html::script('lib/jquery/js/jquery-1.10.2.js');
+   echo Html::script('lib/jqueryplugins/select2/js/select2.full.js');
+   echo Html::css('lib/jqueryplugins/select2/css/select2.css');
+   echo Html::script('js/common.js');
+
    echo "</head>";
 
    echo "<body>";
@@ -124,6 +129,17 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 placeholder="'.__('Password').'"  />
          </p>';
 
+   //lang selector
+   echo '<p class="login_input" id="login_lang">';
+   Dropdown::showLanguages(
+      'language', [
+         'display_emptychoice'   => true,
+         'emptylabel'            => __('Default (from user profile)'),
+         'width'                 => '100%'
+      ]
+   );
+   echo '</p>';
+
    // Add dropdown for auth (local, LDAPxxx, LDAPyyy, imap...)
    Auth::dropdownLogin();
 
@@ -149,9 +165,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    Html::closeForm();
 
-   echo "<script type='text/javascript' >\n";
-   echo "document.getElementById('login_name').focus();";
-   echo "</script>";
+   $js = "$(function() {
+      $('#login_name').focus();
+   });";
+   echo Html::scriptBlock($js);
 
    echo "</div>";  // end login box
 

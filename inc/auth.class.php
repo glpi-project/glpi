@@ -1518,7 +1518,7 @@ class Auth extends CommonGLPI {
          Dropdown::showFromArray('auth', $elements, [
             'rand'      => '1',
             'value'     => $default,
-            'noselect2' => true
+            'width'     => '100%'
          ]);
          echo '</p>';
       } else if (count($elements) == 1) {

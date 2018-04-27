@@ -107,7 +107,6 @@ class Session {
                $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
                $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
                $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
-               $_SESSION["glpiusers_idisation"] = true;
                $_SESSION["glpiextauth"]         = $auth->extauth;
                if (isset($_SESSION['phpCAS']['user'])) {
                   $_SESSION["glpiauthtype"]     = Auth::CAS;
@@ -124,7 +123,9 @@ class Session {
                $_SESSION['glpi_tabs']           = [];
                $auth->user->computePreferences();
                foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                  if (isset($auth->user->fields[$field])) {
+                  if ($field == 'language' && isset($_POST['language']) && $_POST['language'] != '') {
+                     $_SESSION["glpi$field"] = $_POST[$field];
+                  } else if (isset($auth->user->fields[$field])) {
                      $_SESSION["glpi$field"] = $auth->user->fields[$field];
                   }
                }
