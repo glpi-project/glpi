@@ -129,16 +129,18 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 placeholder="'.__('Password').'"  />
          </p>';
 
-   //lang selector
-   echo '<p class="login_input" id="login_lang">';
-   Dropdown::showLanguages(
-      'language', [
-         'display_emptychoice'   => true,
-         'emptylabel'            => __('Default (from user profile)'),
-         'width'                 => '100%'
-      ]
-   );
-   echo '</p>';
+   if (GLPI_DEMO_MODE) {
+      //lang selector
+      echo '<p class="login_input" id="login_lang">';
+      Dropdown::showLanguages(
+         'language', [
+            'display_emptychoice'   => true,
+            'emptylabel'            => __('Default (from user profile)'),
+            'width'                 => '100%'
+         ]
+      );
+      echo '</p>';
+   }
 
    // Add dropdown for auth (local, LDAPxxx, LDAPyyy, imap...)
    Auth::dropdownLogin();
