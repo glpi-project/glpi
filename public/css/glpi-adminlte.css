@@ -52,3 +52,18 @@
 ul.pagination {
    margin: 0;
 }
+
+/** Alpha msg */
+.alpha {
+   text-align: center;
+   border-radius: 0!important;
+   padding-top: .1em!important;
+   padding-bottom: .1em!important;
+}
+.alpha h4 {
+   margin: 0!important;
+}
+.alpha h4 span {
+   margin: 0 1em;
+}
+/** /Alpha msg */

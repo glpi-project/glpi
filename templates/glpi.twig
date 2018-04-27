@@ -61,6 +61,10 @@
         {% block menu %}{% endblock %}
         {% block content_wrapper %}
         <section id="content" class="content-wrapper">
+            <div class="alert alert-danger alert-dismissible alpha">
+               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+               <h4><span>α</span> {{ __('Alpha UI version') }} <span>α</span></h4>
+            </div>
             {% block content_header %}
             <header class="content-header">
                <h1>{{ page_title }}</h1>
