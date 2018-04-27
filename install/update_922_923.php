@@ -61,6 +61,41 @@ function update922to923() {
       $migration->addKey('glpi_devicepcis', 'devicenetworkcardmodels_id');
    }
 
+   //fix notificationtemplates_id in translations table
+   $notifs = [
+      'Certificate',
+      'SavedSearch_Alert'
+   ];
+   foreach ($notifs as $notif) {
+      $notification = new Notification();
+      $template = new NotificationTemplate();
+
+      if ($notification->getFromDBByCrit(['itemtype' => $notif, 'event' => 'alert'])
+         && $template->getFromDBByCrit(['itemtype' => $notif])
+      ) {
+         $query = "UPDATE glpi_notificationtemplatetranslations SET " .
+            "notificationtemplates_id = " . $template->fields['id'] .
+            " WHERE notificationtemplates_id = " . $notification->fields['id'];
+         $DB->queryOrDie($query);
+
+         if ($notif == 'SavedSearch_Alert'
+            && countElementsInTable(
+               'glpi_notifications_notificationtemplates',
+               "notifications_id = ".$notification->fields['id'].
+               " AND notificationtemplates_id = ".$template->fields['id'] .
+               " AND mode = '".Notification_NotificationTemplate::MODE_MAIL."'"
+            ) == 0
+         ) {
+            //Add missing notification template link for saved searches
+            $query = "INSERT INTO glpi_notifications_notificationtemplates " .
+               "(notifications_id, mode, notificationtemplates_id) " .
+               "VALUES(".$notification->fields['id'].", '".Notification_NotificationTemplate::MODE_MAIL.
+               "', ".$template->fields['id'].")";
+            $DB->queryOrDie($query);
+         }
+      }
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
