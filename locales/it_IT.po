@@ -4204,14 +4204,14 @@ msgstr "Auto login disabilitato"
 #: inc/auth.class.php:654
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Connessione alla directory LDAP fallita"
+msgstr[1] "Connessione alle directory LDAP fallita"
 
 #: inc/auth.class.php:662
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Utente non trovato nella directory LDAP"
+msgstr[1] "Utente non trovato nelle directory LDAP"
 
 #: inc/auth.class.php:673 inc/auth.class.php:683
 msgid "Empty login or password"
@@ -5128,7 +5128,7 @@ msgstr "Aggiungi un'orario di chiusura"
 #: inc/calendar_holiday.class.php:137 inc/holiday.class.php:65
 #: inc/holiday.class.php:93
 msgid "Recurrent"
-msgstr "Periodicità"
+msgstr "Ricorrenza"
 
 #: inc/calendar_holiday.class.php:209 inc/dropdown.class.php:950
 #: inc/holiday.class.php:52

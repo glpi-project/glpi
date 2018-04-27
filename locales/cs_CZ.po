@@ -4259,16 +4259,16 @@ msgstr "Automatické přihlášení je vypnuté"
 #: inc/auth.class.php:654
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Připojení do LDAP adresáře se nezdařilo"
+msgstr[1] "Připojení do LDAP adresářů se nezdařilo"
+msgstr[2] "Připojení do LDAP adresářů se nezdařilo"
 
 #: inc/auth.class.php:662
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Uživatel nenalezen v LDAP adresáři"
+msgstr[1] "Uživatel nenalezen v LDAP adresářích"
+msgstr[2] "Uživatel nenalezen v LDAP adresářích"
 
 #: inc/auth.class.php:673 inc/auth.class.php:683
 msgid "Empty login or password"
