@@ -50,8 +50,8 @@
         class="forSelect2 form-control{%if element.class is defined %} {{ element.class }}{% endif %}"
         {% if element.required is defined and element.required == true %} required="required"{% endif %}
         {% if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
-        {% if element.itemtype is defined %} data-itemtype="{{ element.itemtype }}"{% endif %}
-        {% if element.noajax is not defined or element.noajax == false %} data-ajax_url="{{ element.ajax_url|default(path_for('dropdown-getvalue', {'itemtype': element.itemtype})) }}"{% endif %}
+        {% if element.itemtype is defined %} data-itemtype="{{ element.itemtype }}"
+        {% if element.noajax is not defined or element.noajax == false %} data-ajax_url="{{ element.ajax_url|default(path_for('dropdown-getvalue', {'itemtype': element.itemtype})) }}"{% endif %}{% endif %}
         {% if element.change_func is defined %} data-change_func="{{ element.change_func }}"{% endif %}
       >
          {% if element.empty_value is defined and element.empty_value == true %}<option value="0">{{ constant('\Dropdown::EMPTY_VALUE') }}</option>{% endif %}
