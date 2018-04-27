@@ -45,7 +45,6 @@
          <div class="box box-solid">
             <div class="box-body no-padding">
                <ul class="nav nav-pills nav-stacked">
-   {# TODO: add items navigation #}
    {% for tab, entry in item.getTabs() %}
       {% if entry is not iterable %}
          {% set label = entry %}
@@ -53,7 +52,7 @@
          {% set label = entry.label %}
       {% endif %}
                   <li{% if current_tab == tab %} class="active"{% endif %}>
-                     <a href="{{ path_for('update-asset', {'itemtype': item.getType(), 'id': item.fields.id, 'tab': tab}) }}" data-toggle="itemtab">
+                     <a href="{{ path_for('update-asset', {'itemtype': item.getType(), 'id': item.fields.id, 'tab': tab}) }}" data-toggle="tab" data-target="#{{ tab }}">
                         {{ label }}
       {% if entry.count is defined %}
                         <span class="pull-right-container">
@@ -69,8 +68,8 @@
       </div>
       <div class="col-md-9 tab-content">
    {% for tab, entry in item.getTabs() %}
-         <div id="{{ tab }}" class="tab-pane{% if current_tab == tab %} active{% endif %}">
-      {% if tab == item.getType() ~ '$main' %}
+         <div id="{{ tab }}" class="tab-pane{% if current_tab == tab %} active{% endif %}"{% if current_tab == tab %} data-loaded="true"{% endif %}>
+      {% if tab == item.getType() ~ '__main' %}
          {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
       {% endif %}
          </div>
@@ -79,4 +78,31 @@
    </div>
    {% endif %}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+   $(function() {
+      $('a[data-toggle="tab"]').on('click', function (e) {
+         e.preventDefault();
+
+         var _this = $(this);
+         var _tabid = _this.attr('data-target');
+         var _target = $(_tabid);
+         var _loaded = _target.data('loaded');
+
+         var _url = '{{ path_for('ajax-tab', {'itemtype': item.getType(), 'id': item.fields.id, 'tab': 'PLACEBO'}) }}'
+            .replace(/PLACEBO/, _tabid.replace(/^#/, ''));
+         if (!_loaded) {
+            _target.load(_url, function(){
+               _target.data('loaded', true);
+               _this.tab('show');
+            });
+         } else {
+            _this.tab('show');
+         }
+      });
+   });
+</script>
 {% endblock %}

@@ -137,7 +137,7 @@ class CommonGLPI {
       $tabs = [];
 
       //main tab
-      $tabs[$this->getType().'$main'] = $this->getTypeName(1);
+      $tabs[$this->getType().'__main'] = $this->getTypeName(1);
 
       $tabs = $tabs + $this->addMainTabs();
 
@@ -249,7 +249,7 @@ class CommonGLPI {
 
          foreach ($titles as $key => $val) {
             if (!empty($val)) {
-               $tabid = $itemtype . '$' . $key;
+               $tabid = $itemtype . '__' . $key;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $count = $item->countForTab($this, $tabid);
                   if ($count !== false) {

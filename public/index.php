@@ -300,7 +300,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       if (empty($login) || empty($password) || empty($login_auth)) {
          //TODO: error.
-         throw new \RuntimeExcption('Required info missing');
+         throw new \RuntimeException('Required info missing');
       }
 
       /*
@@ -507,10 +507,69 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('add-asset');
 
+   $app->get('/ajax/tab/{itemtype}/{id:\d+}/{tab}', function ($request, $response, $args) {
+      /*if (!isset($_GET["sort"])) {
+         $_GET["sort"] = "";
+      }
+
+      if (!isset($_GET["order"])) {
+         $_GET["order"] = "";
+      }
+
+      if (!isset($_GET["withtemplate"])) {
+         $_GET["withtemplate"] = "";
+      }*/
+
+      if ($item = getItemForItemtype($args['itemtype'])) {
+         if ($item->get_item_to_display_tab) {
+            // No id if ruleCollection but check right
+            if ($item instanceof RuleCollection) {
+               if (!$item->canList()) {
+                  //TODO: redirect with error
+                  throw new \RuntimeException('Cannot list');
+                  exit();
+               }
+            } else if (!$item->can($args["id"], READ)) {
+               //TODO: redirect with error
+               throw new \RuntimeException('Cannot read');
+               exit();
+            }
+         }
+      }
+
+      /*$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate'];
+      $options         = $_GET;
+      foreach ($notvalidoptions as $key) {
+         if (isset($options[$key])) {
+            unset($options[$key]);
+         }
+      }
+      if (isset($options['locked'])) {
+         ObjectLock::setReadOnlyProfile();
+      }*/
+
+      ob_start();
+      CommonGLPI::displayStandardTab(
+         $item,
+         str_replace('__', '$', $args['tab']),
+         $_GET["withtemplate"],
+         $options
+      );
+      $contents = ob_get_contents();
+      ob_end_clean();
+
+      $contents = "<div class='legacy container box'>$contents</div>";
+      return $this->view->render(
+         $response,
+         'ajax.twig',
+         ['contents' => $contents]
+      );
+   })->setName('ajax-tab');
+
    $app->get('/{itemtype}/edit/{id:\d+}[/tab/{tab}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
       if (!isset($args['tab'])) {
-         $args['tab'] = $item->getType() . '$main';
+         $args['tab'] = $item->getType() . '__main';
       }
       $item->getFromdB($args['id']);
       $get = $request->getQueryParams();
@@ -563,6 +622,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             $item->fields['id']
          );
       }
+
       return $this->view->render(
          $response,
          'edit_page.twig', [
