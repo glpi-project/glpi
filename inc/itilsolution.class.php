@@ -482,14 +482,14 @@ class ITILSolution extends CommonDBTM {
          }
 
          echo "<div class='item_content $long_text'>";
-         echo "<p>";
 
          if ($CFG_GLPI["use_rich_text"]) {
+            echo "<div class='rich_text_container'>";
             echo html_entity_decode($content);
+            echo "</div>";
          } else {
-            echo $content;
+            echo "<p>$content</p>";
          }
-         echo "</p>";
 
          if (!empty($long_text)) {
             echo "<p class='read_more'>";

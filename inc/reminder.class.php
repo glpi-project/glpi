@@ -1012,7 +1012,7 @@ class Reminder extends CommonDBVisible {
 
       if ($complete) {
          $html.= "<span>".Planning::getState($val["state"])."</span><br>";
-         $html.= "<div class='event-description'>".$val["text"].$recall."</div>";
+         $html.= "<div class='event-description rich_text_container'>".$val["text"].$recall."</div>";
       } else {
          $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
                                    ".$val["text"].$recall,
