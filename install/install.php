@@ -151,9 +151,6 @@ function step0() {
 
 //Step 1 checking some compatibility issue and some write tests.
 function step1($update) {
-   global $CFG_GLPI;
-
-   $error = 0;
    echo "<h3>".__s('Checking of the compatibility of your environment with the execution of GLPI').
         "</h3>";
    echo "<table class='tab_check'>";
