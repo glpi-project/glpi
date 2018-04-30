@@ -1018,12 +1018,13 @@ class TicketFollowup  extends CommonDBTM {
             }
 
             if ($CFG_GLPI["use_rich_text"]) {
-               $content = html_entity_decode($content);
-               echo $content.'</div>';
+               echo "<div class='rich_text_container'>";
+               echo html_entity_decode($content);
+               echo "</div>";
             } else {
-               $content = autolink($content);
-               echo $content.'</div>';
+               echo autolink($content);;
             }
+            echo "</div>"; // boxnotetext
 
             echo "</div>"; // boxnotecontent
             echo "<div class='boxnoteright'>";

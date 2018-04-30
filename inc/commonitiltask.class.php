@@ -1175,7 +1175,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $html.= "<div>";
       $html.= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
       $html.= "</div>";
-      $html.= "<div class='event-description'>".html_entity_decode($val["content"])."</div>";
+      $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
       $html.= $recall;
 
       return $html;
