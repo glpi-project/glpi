@@ -2335,7 +2335,6 @@ class Config extends CommonDBTM {
       // MySQL >= 5.6 || MariaDB >= 10
       $raw = $DB->getVersion();
 
-      $db_ver = false;
       preg_match('/(\d+(\.)?)+/', $raw, $found);
       $version = $found[0];
 
