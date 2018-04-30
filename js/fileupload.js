@@ -68,7 +68,7 @@ function uploadFile(file, editor, input_name) {
          if(request.responseText !== undefined) {
             alert(request.responseText);
          } else {
-            // Error before sending request
+            // Error before sending request #3866
             alert(request.statusText);
          }
       }
