@@ -379,7 +379,7 @@ if (typeof tinymce != 'undefined') {
                   // fill missing file properties
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
                }
-                  uploaded = insertImageInTinyMCE(editor, file);
+               uploaded = insertImageInTinyMCE(editor, file);
             }
 
          } else if (uploaded === false
