@@ -72,8 +72,6 @@ class Config extends CommonDBTM {
     *   @since 0.85
    **/
    static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu = [];
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
