@@ -55,14 +55,14 @@ function header_html($etape) {
    echo "<title>Setup GLPI</title>";
 
     // LIBS
-   echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
-   echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
-   echo Html::script("../lib/jqueryplugins/select2/select2.min.js");
-   echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
-   echo Html::css("../lib/jqueryplugins/select2/select2.css");
+   echo Html::script("lib/jquery/js/jquery-1.10.2.min.js");
+   echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.min.js');
+   echo Html::script("lib/jqueryplugins/select2/js/select2.js");
 
    // CSS
-   echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen'>";
+   echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css');
+   echo Html::css("lib/jqueryplugins/select2/css/select2.min.css");
+   echo Html::css("css/style_install.css");
    echo "</head>";
    echo "<body>";
    echo "<div id='principal'>";
