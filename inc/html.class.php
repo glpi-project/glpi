@@ -5342,7 +5342,10 @@ class Html {
       echo self::scriptBlock("
       window.old_alert = window.alert;
       window.alert = function(message, caption) {
-         message = message.replace('\\n', '<br>');
+         // Don't apply methods on undefined objects... ;-) #3866
+         if(message !== undefined) {
+            message = message.replace('\\n', '<br>');
+         }
          caption = caption || '".addslashes(__("Information"))."';
          $('<div/>').html(message).dialog({
             title: caption,
