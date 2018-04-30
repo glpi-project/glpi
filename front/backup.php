@@ -40,9 +40,6 @@ if (isset($_POST['check_version'])) {
 
 Session::checkRight("backup", READ);
 
-// full path
-$path = realpath(GLPI_DUMP_DIR);
-
 Html::header(__('Maintenance'), $_SERVER['PHP_SELF'], "admin", "backup");
 
 $max_time = min(get_cfg_var("max_execution_time"), get_cfg_var("max_input_time"));
@@ -62,65 +59,50 @@ if ($max_time == 0) {
 
 
 /**
- * Genere un fichier backup.xml a partir de base dbhost connecte avec l'utilisateur dbuser
- * et le mot de passe dbpassword sur le serveur dbdefault
-**/
+ * Generate an XML backup file of the database
+ * @global DB $DB
+ */
 function xmlbackup() {
-   global $CFG_GLPI, $DB;
+   global $DB;
 
-   //on parcoure la DB et on liste tous les noms des tables dans $table
-   //on incremente $query[] de "select * from $table"  pour chaque occurence de $table
-
-   $result = $DB->list_tables();
-   $i      = 0;
-   while ($line = $DB->fetch_row($result)) {
-      $table = $line[0];
-
-      $query[$i] = "SELECT *
-                    FROM `$table`";
-      $i++;
+   // Will contain the select * from $table
+   $query = [];
+   // Foreach DB tables...
+   $tables = $DB->listTables();
+   foreach ($tables as $id => $row) {
+      // Save the query...
+      $query[$id] = "SELECT * FROM `" . $row['TABLE_NAME'] . "`";
    }
 
-   //le nom du fichier a generer...
-   //Si fichier existe deja il sera remplac�par le nouveau
-   $chemin = GLPI_DUMP_DIR."/backup.xml";
+   // Filename
+   $time_file = date("Y-m-d-H-i");
+   $filename = GLPI_DUMP_DIR . "/glpi-backup-" . GLPI_VERSION . "-$time_file.xml";
 
-   // Creation d'une nouvelle instance de la classe
-   // et initialisation des variables
    $A = new XML();
 
    // Your query
    $A->SqlString = $query;
 
    //File path
-   $A->FilePath = $chemin;
+   $A->FilePath = $filename;
 
-   // Type of layout : 1,2,3,4
-   // For details about Type see file genxml.php
-   if (empty($Type)) {
-      $A->Type = 4;
-   } else {
-      $A->Type = $Type;
-   }
+   // Define layout type
+   $A->Type = 4;
 
-   //appelle de la methode gerant le fichier XML
+   // Generate the XML file
    $A->DoXML();
 
-   // Affichage, si erreur affiche erreur
-   //sinon affiche un lien vers le fichier XML genere
-
+   // In case of error, display it
    if ($A->IsError == 1) {
       printf(__('ERROR:'), $A->ErrorString);
    }
-
-   //fin de fonction xmlbackup
 }
 
-
-////////////////////////// DUMP SQL FUNCTIONS
 /**
  * Init time to computer time spend
-**/
+ * @global type $TPSDEB
+ * @global int $TPSCOUR
+ */
 function init_time() {
    global $TPSDEB, $TPSCOUR;
 
@@ -129,10 +111,11 @@ function init_time() {
    $TPSCOUR         = 0;
 }
 
-
 /**
  * Get current time
-**/
+ * @global type $TPSDEB
+ * @global type $TPSCOUR
+ */
 function current_time() {
    global $TPSDEB, $TPSCOUR;
 
@@ -143,44 +126,42 @@ function current_time() {
    }
 }
 
-
-/**  Get data of a table
- *
- * @param $DB     DB object
- * @param $table  table  name
- * @param $from   begin from
- * @param $limit  limit to
-**/
+/**
+ * Get data of a table
+ * @param DB $DB
+ * @param string $table table name
+ * @param integer $from FROM xxx
+ * @param integer $limit LIMIT xxx
+ * @return string SQL query "INSERT INTO..."
+ */
 function get_content($DB, $table, $from, $limit) {
 
    $content = "";
 
-   $result = $DB->query("SELECT *
-                         FROM `$table`
-                         LIMIT ".intval($from).",".intval($limit));
+   $result = $DB->request($table, ['START' => $from, 'LIMIT' => $limit]);
+
    if ($result) {
       $num_fields = $DB->num_fields($result);
 
       while ($row = $DB->fetch_row($result)) {
          $insert = "INSERT INTO `$table` VALUES (";
 
-         for ($j=0; $j<$num_fields; $j++) {
+         for ($j = 0; $j < $num_fields; $j++) {
             if (is_null($row[$j])) {
                $insert .= "NULL,";
             } else if ($row[$j] != "") {
-               $insert .= "'".addslashes($row[$j])."',";
+               $insert .= "'" . addslashes($row[$j]) . "',";
             } else {
                $insert .= "'',";
             }
          }
-         $insert   = preg_replace("/,$/", "", $insert);
-         $insert  .= ");\n";
+         $insert = preg_replace("/,$/", "", $insert);
+         $insert .= ");\n";
          $content .= $insert;
       }
    }
    return $content;
 }
-
 
 /**  Get structure of a table
  *
@@ -424,7 +405,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 if (isset($_GET["dump"]) && $_GET["dump"] != "") {
    $time_file = date("Y-m-d-H-i");
    $cur_time  = date("Y-m-d H:i");
-   $filename  = $path . "/glpi-".GLPI_VERSION."-$time_file.sql.gz";
+   $filename  = GLPI_DUMP_DIR . "/glpi-backup-".GLPI_VERSION."-$time_file.sql.gz";
 
    if (!isset($_GET["duree"]) && is_file($filename)) {
       echo "<div class='center'>".__('The file already exists')."</div>";
@@ -513,11 +494,9 @@ if (isset($_GET["xmlnow"]) && ($_GET["xmlnow"] != "")) {
 
 // ################################## fin dump XML #############################
 
-if (isset($_GET["file"]) && ($_GET["file"] != "")
-    && is_file($path."/".$_GET["file"])) {
-
-   $filepath = realpath("$path/{$_GET['file']}");
-   if (is_file($filepath) && Toolbox::startsWith($filepath, $path)) {
+if (isset($_GET["file"]) && ($_GET["file"] != "") && is_file(GLPI_DUMP_DIR . "/" . $_GET["file"])) {
+   $filepath = realpath(GLPI_DUMP_DIR . "/" . $_GET['file']);
+   if (is_file($filepath) && Toolbox::startsWith($filepath, GLPI_DUMP_DIR)) {
       $_SESSION['TRY_OLD_CONFIG_FIRST'] = true;
       init_time(); //initialise le temps
 
@@ -577,8 +556,8 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
 
 if (isset($_POST["delfile"])) {
    if (isset($_POST['file']) && ($_POST["file"] != "")) {
-      $filepath = realpath("$path/{$_POST['file']}");
-      if (is_file($filepath) && Toolbox::startsWith($filepath, $path)) {
+      $filepath = realpath(GLPI_DUMP_DIR . "/" . $_POST['file']);
+      if (is_file($filepath) && Toolbox::startsWith($filepath, GLPI_DUMP_DIR)) {
          $filename = $_POST["file"];
          unlink($filepath);
          // TRANS: %s is a file name
@@ -626,21 +605,21 @@ echo "<br><table class='tab_cadre' cellpadding='5'>".
      "<th colspan='3'>&nbsp;</th>".
      "</tr>";
 
-$dir   = opendir($path);
+$dir   = opendir(GLPI_DUMP_DIR);
 $files = [];
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")
        && (preg_match("/\.sql.gz$/i", $file)
            || preg_match("/\.sql$/i", $file))) {
 
-      $files[$file] = filemtime($path."/".$file);
+      $files[$file] = filemtime(GLPI_DUMP_DIR . "/" . $file);
    }
 }
 arsort($files);
 
 if (count($files)) {
    foreach ($files as $file => $date) {
-      $taille_fic = filesize($path."/".$file);
+      $taille_fic = filesize(GLPI_DUMP_DIR . "/" . $file);
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
            "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i", $date)) . "</td>";
@@ -676,7 +655,7 @@ if (count($files)) {
 }
 closedir($dir);
 
-$dir   = opendir($path);
+$dir = opendir(GLPI_DUMP_DIR);
 unset($files);
 $files = [];
 
@@ -684,14 +663,14 @@ while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")
        && preg_match("/\.xml$/i", $file)) {
 
-      $files[$file] = filemtime($path."/".$file);
+      $files[$file] = filemtime(GLPI_DUMP_DIR . "/" . $file);
    }
 }
 arsort($files);
 
 if (count($files)) {
    foreach ($files as $file => $date) {
-      $taille_fic = filesize($path."/".$file);
+      $taille_fic = filesize(GLPI_DUMP_DIR . "/" . $file);
       echo "<tr class='tab_bg_1'><td colspan='6'><hr noshade></td></tr>".
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
             "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
