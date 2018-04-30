@@ -368,6 +368,11 @@ if (typeof tinymce != 'undefined') {
             //transform to blob and insert into editor
             if (base64.length) {
                var file = dataURItoBlob(base64);
+               // Fix #3866 - undefined file name
+               if(file.name === undefined) {
+                  // fill missing file properties
+                  file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
+               }
                uploaded = insertImageInTinyMCE(editor, file);
             }
 
@@ -385,7 +390,7 @@ if (typeof tinymce != 'undefined') {
                   var file  = new Blob([this.response], {type: 'image/png'});
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
 
-                  uploaded = insertImageInTinyMCE(editor, file);
+                    uploaded = insertImageInTinyMCE(editor, file);
                } else {
                   console.log("paste error");
                }
