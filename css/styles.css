@@ -226,6 +226,33 @@ hr {
    user-select: none;
 }
 
+/* ################--------------- Rich Text ---------------#################### */
+
+.rich_text_container ul {
+   list-style-type: disc;
+   margin: 1em 0;
+   padding: 0 0 0 40px;
+}
+.rich_text_container ul ul,
+.rich_text_container ol ul,
+.rich_text_container ol ol {
+   margin-bottom: 0;
+   margin-top: 0;
+}
+.rich_text_container ol {
+   list-style-type: decimal;
+}
+.rich_text_container ul ul,
+.rich_text_container ol ul {
+   list-style-type: circle;
+}
+.rich_text_container ul ul ul,
+.rich_text_container ul ol ul,
+.rich_text_container ol ul ul,
+.rich_text_container ol ol ul {
+   list-style-type: square;
+}
+
 /* ################--------------- Fuzzy ---------------#################### */
 
 #fuzzysearch {

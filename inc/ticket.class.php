@@ -7024,13 +7024,15 @@ class Ticket extends CommonITILObject {
                            title='".Planning::getState($item_i['state'])."'>";
                echo "</span>";
             }
+            echo "</p>";
 
             if ($CFG_GLPI["use_rich_text"]) {
+               echo "<div class='rich_text_container'>";
                echo html_entity_decode($content);
+               echo "</div>";
             } else {
-               echo $content;
+               echo "<p>$content</p>";
             }
-            echo "</p>";
 
             if (!empty($long_text)) {
                echo "<p class='read_more'>";
@@ -7226,15 +7228,15 @@ class Ticket extends CommonITILObject {
          echo Html::setSimpleTextContent($this->fields['name']);
          echo "</div>";
 
-         echo "<div class='ticket_description'>";
-
          if ($CFG_GLPI["use_rich_text"]) {
+            echo "<div class='rich_text_container'>";
             echo Html::setRichTextContent('', $this->fields['content'], '', true);
+            echo "</div>";
          } else {
+            echo "<div>";
             echo Toolbox::getHtmlToDisplay(Html::setSimpleTextContent($this->fields['content']));
+            echo "</div>";
          }
-
-         echo "</div>";
 
          echo "</div>"; // h_content TicketContent
 

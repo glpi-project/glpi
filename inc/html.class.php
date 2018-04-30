@@ -80,11 +80,16 @@ class Html {
       $value = preg_replace("/(<)([^>]*<)/", "&lt;$2", $value);
 
       include_once(GLPI_HTMLAWED);
-      $value = htmLawed($value, ['elements' => ($striptags) ? 'none' : '',
-                                      'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
-                                      'comment' => 1, // DROP
-                                      'cdata'   => 1, // DROP
-                                      ]);
+      $value = htmLawed(
+         $value,
+         [
+            'elements'         => ($striptags) ? 'none' : '',
+            'keep_bad'         => $keep_bad, // 1: neutralize tag and content, 2 : remove tag and neutralize content
+            'comment'          => 1, // 1: remove
+            'cdata'            => 1, // 1: remove
+            'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+         ]
+      );
 
       $value = str_replace(["\r\n", "\r"], "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
@@ -3566,6 +3571,7 @@ class Html {
                typeof tinymce.AddOnManager.PluginManager.lookup.glpi_upload_doc != 'undefined'
                   ? 'glpi_upload_doc'
                   : '',
+               'lists'
             ],
             autoresize_max_height: 500,
             toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
