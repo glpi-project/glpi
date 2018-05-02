@@ -304,7 +304,7 @@ class Rack extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='max_power$rand'>".__('Max. power (in watts)')."</label></td>";
       echo "<td>".Html::input("max_power", ['id' => "max_power$rand", 'value' => $this->fields["max_power"]]);
-      echo "<td><label for='mesured_power$rand'>".__('Mesured power (in watts)')."</label></td>";
+      echo "<td><label for='mesured_power$rand'>".__('Measured power (in watts)')."</label></td>";
       echo "<td>".Html::input("mesured_power", ['id' => "mesured_power$rand", 'value' => $this->fields["mesured_power"]]);
       echo "</td></tr>\n";
 
