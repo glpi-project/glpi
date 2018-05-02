@@ -278,7 +278,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                      __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.')."</p>";
             } else if ($dev === true) {
                echo "<p class='red'><strong>".
-                     __('You are trying to update to a development version from a development version. This is not suppoorted.')."</strong></p>";
+                     __('You are trying to update to a development version from a development version. This is not supported.')."</strong></p>";
             }
          }
 
