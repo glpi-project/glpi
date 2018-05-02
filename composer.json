@@ -31,7 +31,7 @@
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
         "paragonie/random_compat": "^2.0",
-        "sebastian/diff": "^1.4"
+        "sebastian/diff": "^1.4 || ^2.0 || ^3.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
