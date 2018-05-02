@@ -251,7 +251,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
             //add original email addess to message body
-            $text = sprintf(__('Orignal email address was %1$s'), $current->getField('recipient'));
+            $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
             $mmail->Body      .= "<br/>$text";
             $mmail->AltBody   .= $text;
          }
