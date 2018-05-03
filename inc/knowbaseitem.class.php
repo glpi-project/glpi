@@ -1850,7 +1850,7 @@ class KnowbaseItem extends CommonDBVisible {
       if ($this->update($values)) {
          Event::log($this->getID(), "knowbaseitem", 5, "tools",
                     //TRANS: %s is the user login, %d the revision number
-                    sprintf(__('%s reverts item to revision %id'), $_SESSION["glpiname"], $revision));
+                    sprintf(__('%s reverts item to revision %id'), $_SESSION["glpiname"], $revid));
          return true;
       } else {
          return false;
