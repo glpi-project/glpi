@@ -606,7 +606,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
  *
  *@return nothing
  *
- * @deprecated 9.2 Use DbUtils::autoName()
+ * @deprecated 9.2 Use DbUtils::closeDBConnections()
 **/
 function closeDBConnections() {
    $dbu = new DbUtils();
