@@ -73,7 +73,7 @@ class ReminderTranslation extends CommonDBChild {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if (self::canBeTranslated($item) 
+      if (self::canBeTranslated($item)
             && Session::getCurrentInterface() != "helpdesk") {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -93,10 +93,10 @@ class ReminderTranslation extends CommonDBChild {
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      if ($item->getType() == "Reminder" 
+      if ($item->getType() == "Reminder"
             && self::canBeTranslated($item)) {
          self::showTranslations($item);
-      } else 
+      }
       return true;
    }
 

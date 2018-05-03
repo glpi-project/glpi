@@ -885,7 +885,7 @@ class Reminder extends CommonDBVisible {
                               OR (state = ".Planning::INFO."
                                   AND `end` > NOW()))";
       }
-      
+
       $addselect = "";
       if (ReminderTranslation::isReminderTranslationActive()
           && (countElementsInTable('glpi_remindertranslations') > 0)) {
@@ -895,7 +895,7 @@ class Reminder extends CommonDBVisible {
          $addselect .= ", `glpi_remindertranslations`.`name` AS transname,
                           `glpi_remindertranslations`.`text` AS transtext ";
       }
-      
+
       if ($ASSIGN) {
          $query2 = "SELECT DISTINCT `glpi_reminders`.* $addselect
                     FROM `glpi_reminders`
