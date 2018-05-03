@@ -107,7 +107,6 @@ $obsoleted = [
    'formatNumber'                      =>  'Html::formatNumber',
    'getActiveTab'                      =>  'Session::getActiveTab',
    'getAllReplicateForAMaster'         =>  'AuthLDAP::getAllReplicateForAMaster',
-   'getCountLogin'                     =>  'Event::getCountLogin',
    'getItemTypeFormURL'                =>  'Toolbox::getItemTypeFormURL',
    'getItemTypeSearchURL'              =>  'Toolbox::getItemTypeSearchURL',
    'getItemTypeTabsURL'                =>  'Toolbox::getItemTypeTabsURL',

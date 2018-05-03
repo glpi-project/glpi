@@ -405,33 +405,6 @@ class Event extends CommonDBTM {
       }
       echo "</table></div><br>";
    }
-
-
-   /** Display how many logins since
-    *
-    * @return  nothing
-   **/
-   static function getCountLogin() {
-      global $DB;
-
-      $query = "SELECT COUNT(*)
-                FROM `glpi_events`
-                WHERE `message` LIKE '%logged in%'";
-
-      $query2 = "SELECT `date`
-                 FROM `glpi_events`
-                 ORDER BY `date` ASC
-                 LIMIT 1";
-
-      $result   = $DB->query($query);
-      $result2  = $DB->query($query2);
-      $nb_login = $DB->result($result, 0, 0);
-      $date     = $DB->result($result2, 0, 0);
-      // Only for DEMO mode (not need to be translated)
-      printf(_n('%1$s login since %2$s', '%1$s logins since %2$s', $nb_login),
-             '<span class="b">'.$nb_login.'</span>', $date);
-   }
-
 }
 
 // For compatibility
