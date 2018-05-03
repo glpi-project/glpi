@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use Config;
 use DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Storage\Message;
@@ -203,6 +204,12 @@ class MailCollector extends DbTestCase {
       $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
       $base_notif = new NotificationTarget();
 
+      $uuid = Config::getUuid('notification');
+
+      $time = time();
+      $rand = rand();
+      $uname = 'localhost';
+
       return [
          [
             'headers'  => [],
@@ -216,7 +223,25 @@ class MailCollector extends DbTestCase {
          ],
          [
             'headers'  => [
-               'message-id' => $ticket_notif->getMessageID(), // ticket format
+               'message-id' => "GLPI-1.{$time}.{$rand}@{$uname}", // old ticket format
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}", // old format with object relation
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI.{$time}.{$rand}@{$uname}", // old format without object relation
+            ],
+            'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => $ticket_notif->getMessageID(), // new format for ticket
             ],
             'expected' => true,
          ],
@@ -231,6 +256,18 @@ class MailCollector extends DbTestCase {
                'message-id' => $base_notif->getMessageID(), // new format without object relation
             ],
             'expected' => true,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI_notmyuuid-Ticket-1.{$time}.{$rand}@{$uname}", // new format with object relation
+            ],
+            'expected' => false,
+         ],
+         [
+            'headers'  => [
+               'message-id' => "GLPI_notmyuuid.{$time}.{$rand}@{$uname}", // new format without object relation
+            ],
+            'expected' => false,
          ],
       ];
    }
@@ -260,6 +297,8 @@ class MailCollector extends DbTestCase {
       $soft_id   = getItemByTypeName('SoftwareLicense', '_test_softlic_1', true);
       $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
 
+      $uuid = Config::getUuid('notification');
+
       $time1 = time() - 548;
       $time2 = $time1 - 1567;
       $rand1 = rand();
@@ -278,10 +317,10 @@ class MailCollector extends DbTestCase {
             'expected_items_id' => null,
             'accepted'          => true,
          ],
-         // ticket header format - found item
+         // old ticket format - found item
          [
             'headers'           => [
-               'in-reply-to' => $ticket_notif->getMessageID(),
+               'in-reply-to' => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname1}",
             ],
             'expected_itemtype' => Ticket::class,
             'expected_items_id' => $ticket_id,
@@ -289,13 +328,13 @@ class MailCollector extends DbTestCase {
          ],
          [
             'headers'           => [
-               'references'  => $ticket_notif->getMessageID(),
+               'references'  => "GLPI-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
             ],
             'expected_itemtype' => Ticket::class,
             'expected_items_id' => $ticket_id,
             'accepted'          => true,
          ],
-         // ticket header format - invalid items_id
+         // old ticket format - invalid items_id
          [
             'headers'           => [
                'in-reply-to' => "GLPI-9999999.{$time2}.{$rand2}@{$uname1}",
@@ -304,13 +343,40 @@ class MailCollector extends DbTestCase {
             'expected_items_id' => null,
             'accepted'          => true,
          ],
-         // other items header format - found item
+         // old items header format - found item
          [
             'headers'           => [
-               'in-reply-to' => $soft_notif->getMessageID(),
+               'in-reply-to' => "GLPI-SoftwareLicence-{$soft_id}.{$time1}.{$rand2}@{$uname2}",
             ],
             'expected_itemtype' => SoftwareLicense::class,
             'expected_items_id' => $soft_id,
+            'accepted'          => true,
+         ],
+         // old items header format - invalid itemtype
+         [
+            'headers'           => [
+               'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+         // old items header format - invalid items_id
+         [
+            'headers'           => [
+               'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => true,
+         ],
+         // new header format - found item
+         [
+            'headers'           => [
+               'in-reply-to' => $ticket_notif->getMessageID(),
+            ],
+            'expected_itemtype' => Ticket::class,
+            'expected_items_id' => $ticket_id,
             'accepted'          => true,
          ],
          [
@@ -339,23 +405,40 @@ class MailCollector extends DbTestCase {
             'expected_items_id' => $soft_id,
             'accepted'          => true,
          ],
-         // other items header format - invalid itemtype
+         // new header format - invalid itemtype
          [
             'headers'           => [
-               'references'  => "GLPI-UnknownType-{$soft_id}.{$time2}.{$rand2}@{$uname1}",
+               'references'  => "GLPI_{$uuid}-UnknownType-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
             ],
             'expected_itemtype' => null,
             'expected_items_id' => null,
             'accepted'          => true,
          ],
-         // other items header format - invalid items_id
+         // new header format - invalid items_id
          [
             'headers'           => [
-               'references'  => "GLPI-SoftwareLicense-9999999.{$time1}.{$rand1}@{$uname2}",
+               'references'  => "GLPI_{$uuid}-Ticket-9999999.{$time1}.{$rand1}@{$uname1}",
             ],
             'expected_itemtype' => null,
             'expected_items_id' => null,
             'accepted'          => true,
+         ],
+         // new header format - uuid from another GLPI instance
+         [
+            'headers'           => [
+               'in-reply-to' => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time1}.{$rand1}@{$uname2}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => false,
+         ],
+         [
+            'headers'           => [
+               'references'  => "GLPI_notmyuuid-Ticket-{$ticket_id}.{$time2}.{$rand2}@{$uname1}",
+            ],
+            'expected_itemtype' => null,
+            'expected_items_id' => null,
+            'accepted'          => false,
          ],
       ];
    }
@@ -386,6 +469,27 @@ class MailCollector extends DbTestCase {
          $this->object($item)->isInstanceOf($expected_itemtype);
          $this->integer($item->getId())->isEqualTo($expected_items_id);
       }
+   }
+
+   /**
+    * @dataProvider itemReferenceHeaderProvider
+    */
+   public function testIsResponseToMessageSentByAnotherGlpi(
+      array $headers,
+      ?string $expected_itemtype,
+      ?int $expected_items_id,
+      bool $accepted
+   ) {
+      $this->newTestedInstance();
+
+      $message = new Message(
+         [
+            'headers' => $headers,
+            'content' => 'Message contents...',
+         ]
+      );
+
+      $this->boolean($this->testedInstance->isResponseToMessageSentByAnotherGlpi($message))->isEqualTo(!$accepted);
    }
 
    private function doConnect() {
@@ -424,6 +528,9 @@ class MailCollector extends DbTestCase {
       global $DB;
       $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
 
+      // Force notification_uuid
+      Config::setConfigurationValues('core', ['notification_uuid' => 't3StN0t1f1c4tiOnUUID']);
+
       //assign email to user
       $nuid = getItemByTypeName('User', 'normal', true);
       $uemail = new \UserEmail();
@@ -451,7 +558,7 @@ class MailCollector extends DbTestCase {
       $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
       $expected_refused_count          = 2;
       $expected_error_count            = 2;
-      $expected_blacklist_count        = 1;
+      $expected_blacklist_count        = 3;
       $expected_expected_already_seen  = 0;
 
       $this->variable($msg)->isIdenticalTo(

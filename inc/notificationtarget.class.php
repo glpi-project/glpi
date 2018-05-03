@@ -243,7 +243,8 @@ class NotificationTarget extends CommonDBChild {
    function getMessageID() {
       if ($this->obj instanceof CommonDBTM) {
          return sprintf(
-            'GLPI-%s-%s.%s.%s@%s',
+            'GLPI_%s-%s-%s.%s.%s@%s',
+            Config::getUuid('notification'),
             $this->obj->getType(),
             $this->obj->getField('id'),
             time(),
@@ -253,7 +254,8 @@ class NotificationTarget extends CommonDBChild {
       }
 
       return sprintf(
-         'GLPI.%s.%s@%s',
+         'GLPI_%s.%s.%s@%s',
+         Config::getUuid('notification'),
          time(),
          rand(),
          php_uname('n')

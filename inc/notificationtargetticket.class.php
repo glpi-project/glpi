@@ -102,16 +102,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
    /**
-    * @since 0.84
-    *
-    * @return string
-   **/
-   function getMessageID() {
-      return "GLPI-".$this->obj->getField('id').".".time().".".rand(). "@".php_uname('n');
-   }
-
-
-   /**
     * Get item associated with the object on which the event was raised
     *
     * @param $event  (default '')
