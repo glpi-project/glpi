@@ -435,8 +435,9 @@ function massiveUpdateCheckbox(criterion, reference) {
     return true;
 }
 
-/* TImeline for itiobjects */
-
+/**
+ * Timeline for itiobjects
+ */
 var filter_timeline = function() {
    $(document).on("click", '.filter_timeline li a', function(event) {
       event.preventDefault();
@@ -652,7 +653,7 @@ var submitparentForm = function(input) {
       return (submit.trigger('click') !== false);
    }
 
-   return false
+   return false;
 };
 
 /**
