@@ -211,11 +211,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "</div>"; // end contenu login
 
-   if (GLPI_DEMO_MODE) {
-      echo "<div class='center'>";
-      Event::getCountLogin();
-      echo "</div>";
-   }
    echo "<div id='footer-login' class='home'>" . Html::getCopyrightMessage(false) . "</div>";
 
 }
