@@ -5343,7 +5343,7 @@ class Html {
       window.old_alert = window.alert;
       window.alert = function(message, caption) {
          // Don't apply methods on undefined objects... ;-) #3866
-         if(message !== undefined) {
+         if(typeof message == 'string') {
             message = message.replace('\\n', '<br>');
          }
          caption = caption || '".addslashes(__("Information"))."';
