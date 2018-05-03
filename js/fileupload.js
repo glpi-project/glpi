@@ -65,7 +65,7 @@ function uploadFile(file, editor, input_name) {
 
       error: function (request) {
          // If this is an error on the return
-         if (request.responseText !== undefined) {
+         if ("responseText" in request && request.responseText.length > 0) {
             alert(request.responseText);
          } else {
             // Error before sending request #3866
