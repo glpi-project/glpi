@@ -2424,7 +2424,7 @@ class User extends CommonDBTM {
             $langrand = mt_rand();
             echo "<td><label for='dropdown_language$rand'>" . __('Language') . "</label></td><td>";
             // Use session variable because field in table may be null if same of the global config
-            Dropdown::showLanguages("language", ['value' => $_SESSION["glpilanguage"], 'rand' => $langrand]);
+            Dropdown::showLanguages("language", ['value' => $this->fields["language"], 'rand' => $langrand]);
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
