@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-26 13:19+0200\n"
+"POT-Creation-Date: 2018-05-03 07:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Roshan Roche <roshan6@gmail.com>, 2017\n"
 "Language-Team: Kannada (https://www.transifex.com/glpi/teams/1637/kn/)\n"
@@ -232,7 +232,7 @@ msgstr "%1$s- ನೆಟ್ವರ್ಕ್ ಔಟ್ಲೆಟ್ %2$s "
 #: inc/notificationtargetprojecttask.class.php:540
 #: inc/profile_user.class.php:196 inc/profile_user.class.php:216
 #: inc/profile_user.class.php:338 inc/profile_user.class.php:485
-#: inc/projectcost.class.php:394 inc/rule.class.php:2182
+#: inc/projectcost.class.php:394 inc/rule.class.php:2186
 #: inc/rulecollection.class.php:1203 inc/rulemailcollector.class.php:198
 #: inc/rulemailcollector.class.php:203 inc/search.class.php:4729
 #: inc/search.class.php:4863 inc/session.class.php:371
@@ -483,7 +483,7 @@ msgstr "ಇಮೇಲ್  ಅನುಸರಣೆ"
 #: inc/projecttask.class.php:1595 inc/registeredid.class.php:116
 #: inc/reminder.class.php:968 inc/reminder.class.php:995
 #: inc/reservationitem.class.php:669 inc/reservationitem.class.php:674
-#: inc/reservationitem.class.php:692 inc/rule.class.php:3117
+#: inc/reservationitem.class.php:692 inc/rule.class.php:3121
 #: inc/rulemailcollector.class.php:130 inc/softwarelicense.class.php:885
 #: inc/softwarelicense.class.php:888 inc/softwarelicense.class.php:905
 #: inc/supplier.class.php:553 inc/supplier.class.php:590
@@ -560,7 +560,7 @@ msgstr[0] "ಇಮೇಲ್"
 #: inc/project.class.php:1289 inc/projecttask.class.php:1187
 #: inc/projecttask_ticket.class.php:195 inc/projecttask_ticket.class.php:316
 #: inc/reservation.class.php:753 inc/reservationitem.class.php:584
-#: inc/rule.class.php:2741 inc/ruleright.class.php:85
+#: inc/rule.class.php:2745 inc/ruleright.class.php:85
 #: inc/slalevel.class.php:118 inc/ticket.class.php:5284
 #: inc/ticket.class.php:7443 inc/ticket.class.php:7503
 #: inc/ticketfollowup.class.php:560
@@ -674,7 +674,7 @@ msgstr "ಯಾವುದೂ"
 #: ajax/dropdownMassiveActionOs.php:45 inc/cartridge.class.php:85
 #: inc/levelagreement.class.php:541 inc/massiveaction.class.php:547
 #: inc/notepad.class.php:388 inc/notificationtarget.class.php:362
-#: inc/rule.class.php:2782
+#: inc/rule.class.php:2786
 msgctxt "button"
 msgid "Update"
 msgstr "ನವೀಕರಿಸಿ"
@@ -1135,25 +1135,33 @@ msgstr "%sಅಳಿಸಲಾಗಿದೆ "
 msgid "Check if a new version is available"
 msgstr "ಹೊಸ ಆವೃತ್ತಿ ಲಭ್ಯವಿದೆ ಎಂದು ಪರಿಶೀಲಿಸಿ"
 
-#: front/backup.php:606 front/report.contract.list.php:179
+#: front/backup.php:607
+msgid "GLPI internal backup system is a helper for very small instances."
+msgstr ""
+
+#: front/backup.php:608
+msgid "You should rather use a dedicated tool on your server."
+msgstr ""
+
+#: front/backup.php:611 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
 #: inc/problem.class.php:936 inc/ticket.class.php:5871
 msgid "Deleted"
 msgstr "ಅಳಿಸಲಾಗಿದೆ"
 
-#: front/backup.php:609 front/backup.php:614
+#: front/backup.php:614 front/backup.php:619
 msgid "Backup the database?"
 msgstr "ಉಳಿಪಳಿ ದತ್ತಸಂಚಯ?"
 
-#: front/backup.php:612
+#: front/backup.php:617
 msgid "SQL Dump"
 msgstr "SQL ಡಂಪ್"
 
-#: front/backup.php:617
+#: front/backup.php:622
 msgid "XML Dump"
 msgstr "XML ಡಂಪ್"
 
-#: front/backup.php:622 inc/document.class.php:438 inc/document.class.php:843
+#: front/backup.php:627 inc/document.class.php:438 inc/document.class.php:843
 #: inc/document_item.class.php:785
 #: inc/notificationtargetcommonitilobject.class.php:1348
 #: inc/notificationtargetproject.class.php:643
@@ -1161,13 +1169,13 @@ msgstr "XML ಡಂಪ್"
 msgid "File"
 msgstr "ಕಡತ"
 
-#: front/backup.php:623 inc/item_devicememory.class.php:58
+#: front/backup.php:628 inc/item_devicememory.class.php:58
 #: inc/item_devicememory.class.php:60 inc/monitor.class.php:293
 #: inc/monitor.class.php:515
 msgid "Size"
 msgstr "ಗಾತ್ರ"
 
-#: front/backup.php:624 front/report.contract.php:66 front/report.year.php:67
+#: front/backup.php:629 front/report.contract.php:66 front/report.year.php:67
 #: inc/commonitilobject.class.php:4571 inc/commonitilobject.class.php:5518
 #: inc/commonitiltask.class.php:588 inc/commonitiltask.class.php:793
 #: inc/commonitiltask.class.php:1457 inc/commonitiltask.class.php:1725
@@ -1200,12 +1208,12 @@ msgid_plural "Dates"
 msgstr[0] "ದಿನಾಂಕಗಳು"
 
 #. TRANS: %s is the filename
-#: front/backup.php:649 front/backup.php:701
+#: front/backup.php:654 front/backup.php:706
 #, php-format
 msgid "Delete the file %s?"
 msgstr "%s ಕಡತ ಅಳಿಸಿ?"
 
-#: front/backup.php:651 front/backup.php:702 inc/backup.class.php:78
+#: front/backup.php:656 front/backup.php:707 inc/backup.class.php:78
 #: inc/cartridge.class.php:658 inc/cartridge.class.php:931
 #: inc/change_ticket.class.php:288 inc/commondbrelation.class.php:1119
 #: inc/commondbtm.class.php:2240 inc/commondbtm.class.php:2250
@@ -1223,7 +1231,7 @@ msgstr "%s ಕಡತ ಅಳಿಸಿ?"
 #: inc/massiveaction.class.php:533 inc/massiveaction.class.php:565
 #: inc/netpoint.class.php:331 inc/notepad.class.php:367
 #: inc/problem_ticket.class.php:328 inc/profile_user.class.php:331
-#: inc/reservation.class.php:763 inc/rule.class.php:2783
+#: inc/reservation.class.php:763 inc/rule.class.php:2787
 #: inc/ticket.class.php:5271 inc/ticket.class.php:7179
 #: inc/ticket.class.php:7180 inc/ticketfollowup.class.php:813
 #: inc/ticketfollowup.class.php:1036 inc/tickettask.class.php:310
@@ -1235,12 +1243,12 @@ msgid "Delete permanently"
 msgstr "ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಿ"
 
 #. TRANS: %s is the filename
-#: front/backup.php:659
+#: front/backup.php:664
 #, php-format
 msgid "Replace the current database with the backup file %s?"
 msgstr "%s ಬ್ಯಾಕಪ್ ಫೈಲ್ನೊಂದಿಗೆ ಪ್ರಸ್ತುತ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಬದಲಾಯಿಸಿ"
 
-#: front/backup.php:661
+#: front/backup.php:666
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
@@ -1248,11 +1256,11 @@ msgstr ""
 "ಎಚ್ಚರಿಕೆ, ನಿಮ್ಮ ನಿಜವಾದ ಡೇಟಾಬೇಸ್ ನೀವು ಪುನಃಸ್ಥಾಪಿಸಲು ಬಯಸುವ ಡೇಟಾಬೇಸ್ "
 "ಸಂಪೂರ್ಣವಾಗಿ ತಿದ್ದಿ ಬರೆಯಲಾಗುತ್ತದೆ !!!"
 
-#: front/backup.php:666
+#: front/backup.php:671
 msgid "Restore"
 msgstr "ಮರುಸ್ಥಾಪಿಸಿ"
 
-#: front/backup.php:670 front/backup.php:708
+#: front/backup.php:675 front/backup.php:713
 msgid "Download"
 msgstr "ನಕಲಿಳಿಸು"
 
@@ -1658,7 +1666,7 @@ msgstr ""
 #: inc/profile.class.php:805 inc/profile.class.php:1667
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
+msgstr[0] "ಉಪಭೋಗ್ಯ"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:52 front/contract_supplier.form.php:52
@@ -1716,7 +1724,7 @@ msgstr ""
 #: inc/projectcost.class.php:398 inc/projecttask.class.php:1070
 #: inc/projecttask_ticket.class.php:409 inc/projecttask_ticket.class.php:418
 #: inc/reminder.class.php:1123 inc/reservation.class.php:475
-#: inc/rule.class.php:1866 inc/rule.class.php:1880
+#: inc/rule.class.php:1870 inc/rule.class.php:1884
 #: inc/ruleticket.class.php:468 inc/ruleticket.class.php:476
 #: inc/ruleticket.class.php:484 inc/ruleticket.class.php:492
 #: inc/ruleticket.class.php:589 inc/ruleticket.class.php:597
@@ -2831,7 +2839,7 @@ msgstr "ಒಪ್ಪಂದದಡಿಯಲ್ಲಿ ಯಂತ್ರಾಂಶದ �
 #: inc/projectcost.class.php:376 inc/projecttask.class.php:515
 #: inc/projecttask.class.php:730 inc/reservationitem.class.php:164
 #: inc/rssfeed.class.php:336 inc/rssfeed.class.php:603 inc/rule.class.php:695
-#: inc/rule.class.php:862 inc/rule.class.php:2728
+#: inc/rule.class.php:862 inc/rule.class.php:2732
 #: inc/rulecollection.class.php:481 inc/rulecollection.class.php:512
 #: inc/rulecollection.class.php:1176 inc/rulecriteria.class.php:161
 #: inc/ruledictionnaryprinter.class.php:78
@@ -3759,7 +3767,7 @@ msgstr ""
 
 #: inc/ajax.class.php:431 inc/link.class.php:155
 #: inc/massiveaction.class.php:756 inc/rule.class.php:801
-#: inc/rule.class.php:958 inc/rule.class.php:2496
+#: inc/rule.class.php:958 inc/rule.class.php:2500
 msgid "or"
 msgstr "ಅಥವಾ"
 
@@ -3838,7 +3846,7 @@ msgstr "ಇಲ್ಲ"
 #: inc/alert.class.php:145 inc/config.class.php:386 inc/config.class.php:387
 #: inc/config.class.php:401 inc/config.class.php:1075
 #: inc/dropdown.class.php:712 inc/dropdown.class.php:731
-#: inc/html.class.php:5353 inc/plugin.class.php:509 inc/rule.class.php:2162
+#: inc/html.class.php:5353 inc/plugin.class.php:509 inc/rule.class.php:2166
 #: inc/ruleimportcomputer.class.php:192 inc/savedsearch.class.php:92
 #: inc/savedsearch.class.php:385 inc/savedsearch.class.php:1123
 #: inc/savedsearch.class.php:1174 inc/savedsearch_user.class.php:54
@@ -3980,7 +3988,7 @@ msgstr[0] "API ಕ್ಲೈಂಟ್ಗಳು"
 #: inc/olalevel.class.php:235 inc/requesttype.class.php:53
 #: inc/requesttype.class.php:120 inc/reservationitem.class.php:151
 #: inc/rssfeed.class.php:365 inc/rssfeed.class.php:629 inc/rule.class.php:730
-#: inc/rule.class.php:876 inc/rule.class.php:2801
+#: inc/rule.class.php:876 inc/rule.class.php:2805
 #: inc/rulecollection.class.php:486 inc/rulecollection.class.php:517
 #: inc/ruleright.class.php:323 inc/savedsearch_alert.class.php:163
 #: inc/savedsearch_alert.class.php:255 inc/slalevel.class.php:115
@@ -4532,7 +4540,7 @@ msgstr[0] "ಪುನರಾವರ್ತನೆಗಳು"
 #: inc/authldap.class.php:570 inc/authldap.class.php:704
 #: inc/authldap.class.php:3454 inc/authmail.class.php:248
 #: inc/authmail.class.php:352 inc/rule.class.php:918 inc/rule.class.php:922
-#: inc/rule.class.php:2535 inc/rulecollection.class.php:1521
+#: inc/rule.class.php:2539 inc/rulecollection.class.php:1521
 msgctxt "button"
 msgid "Test"
 msgstr "ಪರಿಕ್ಷೆ"
@@ -4834,7 +4842,7 @@ msgstr ""
 #: inc/dropdowntranslation.class.php:366 inc/dropdowntranslation.class.php:472
 #: inc/fieldblacklist.class.php:78 inc/fieldblacklist.class.php:117
 #: inc/ruleaction.class.php:178 inc/rule.class.php:1109
-#: inc/rule.class.php:2066 inc/rulecollection.class.php:1259
+#: inc/rule.class.php:2070 inc/rulecollection.class.php:1259
 #: inc/savedsearch_alert.class.php:157 inc/savedsearch_alert.class.php:254
 #: inc/tickettemplatepredefinedfield.class.php:335
 msgid "Value"
@@ -4985,7 +4993,7 @@ msgstr[0] "ಸಂಯೋಜಿತ ಐಟಂಗಳು"
 #: inc/profile_user.class.php:344 inc/project.class.php:1035
 #: inc/projectcost.class.php:386 inc/projecttask.class.php:1041
 #: inc/projecttask_ticket.class.php:219 inc/projecttask_ticket.class.php:378
-#: inc/rule.class.php:2808 inc/search.class.php:1649 inc/search.class.php:1651
+#: inc/rule.class.php:2812 inc/search.class.php:1649 inc/search.class.php:1651
 #: inc/search.class.php:1673 inc/search.class.php:1688
 #: inc/search.class.php:1724 inc/search.class.php:1727
 #: inc/search.class.php:1754 inc/search.class.php:1771
@@ -5395,7 +5403,7 @@ msgstr "ಹೊಂದಾಣಿಕೆಯ ಪ್ರಿಂಟರ್ ಮಾದರಿ�
 #: inc/notification_notificationtemplate.class.php:165
 #: inc/notificationtarget.class.php:1338 inc/profile_user.class.php:255
 #: inc/projectcost.class.php:425 inc/projecttask.class.php:1103
-#: inc/projecttask_ticket.class.php:449 inc/rule.class.php:2771
+#: inc/projecttask_ticket.class.php:449 inc/rule.class.php:2775
 #: inc/savedsearch_alert.class.php:272 inc/search.class.php:5908
 #: inc/software.class.php:1000 inc/softwarelicense.class.php:1183
 #: inc/softwareversion.class.php:342 inc/state.class.php:232
@@ -5869,7 +5877,7 @@ msgstr "ಒಟ್ಟು ಅವಧಿ"
 #: inc/projecttask.class.php:761 inc/projecttasktemplate.class.php:95
 #: inc/projecttasktemplate.class.php:197 inc/reminder.class.php:346
 #: inc/reminder.class.php:777 inc/rule.class.php:713 inc/rule.class.php:866
-#: inc/rule.class.php:2731 inc/rule.class.php:2800
+#: inc/rule.class.php:2735 inc/rule.class.php:2804
 #: inc/rulecollection.class.php:482 inc/rulecollection.class.php:513
 #: inc/ruleimportcomputer.class.php:104 inc/ruleright.class.php:75
 #: inc/ruleticket.class.php:340 inc/ticket.class.php:3094
@@ -6283,7 +6291,7 @@ msgstr ""
 #: inc/commondbvisible.class.php:243 inc/commondbvisible.class.php:268
 #: inc/commondbvisible.class.php:297 inc/profile_user.class.php:244
 #: inc/profile_user.class.php:407 inc/profile_user.class.php:564
-#: inc/profile_user.class.php:936 inc/rule.class.php:1880
+#: inc/profile_user.class.php:936 inc/rule.class.php:1884
 #: inc/search.class.php:4296 inc/search.class.php:4335
 msgid "R"
 msgstr ""
@@ -6355,7 +6363,7 @@ msgstr "ವಿಲೀನಗೊಳಿಸು"
 
 #: inc/commonglpi.class.php:72 inc/commonitilobject.class.php:5401
 #: inc/item_ticket.class.php:649 inc/item_ticket.class.php:733
-#: inc/rule.class.php:2198 inc/ticket.class.php:6250
+#: inc/rule.class.php:2202 inc/ticket.class.php:6250
 msgid "General"
 msgstr "ಸಾಮಾನ್ಯ"
 
@@ -7487,7 +7495,7 @@ msgstr[0] ""
 #: inc/softwarelicense.class.php:711 install/install.php:578
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] ""
+msgstr[0] "ಪರವಾನಗಿಗಳು"
 
 #: inc/computer_softwarelicense.class.php:190
 msgid "A version is required!"
@@ -7700,15 +7708,15 @@ msgstr "ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ ಹಣಕಾಸು ಮ�
 
 #: inc/config.class.php:487
 msgid "Restrict monitor management"
-msgstr ""
+msgstr "ಮಾನಿಟರ್ ನಿರ್ವಹಣೆ ನಿರ್ಬಂಧಿಸಿ"
 
 #: inc/config.class.php:494
 msgid "Software category deleted by the dictionary rules"
-msgstr ""
+msgstr "ನಿಘಂಟಿನ ನಿಯಮಗಳಿಂದ ಸಾಫ್ಟ್ವೇರ್ ವರ್ಗ ಅಳಿಸಲಾಗಿದೆ"
 
 #: inc/config.class.php:499
 msgid "Restrict device management"
-msgstr ""
+msgstr "ಸಾಧನ ನಿರ್ವಹಣೆ ನಿರ್ಬಂಧಿಸಿ"
 
 #: inc/config.class.php:506
 msgid "End of fiscal year"
@@ -7750,7 +7758,7 @@ msgstr ""
 #: inc/dropdown.class.php:2059 inc/dropdown.class.php:2061
 #: inc/dropdown.class.php:2120
 msgid "Unit management"
-msgstr ""
+msgstr "ಘಟಕ ನಿರ್ವಹಣೆ"
 
 #: inc/config.class.php:564
 msgid "When connecting or updating"
@@ -8316,11 +8324,11 @@ msgstr ""
 
 #: inc/config.class.php:2027
 msgid "Yes - Restrict to unit management for manual add"
-msgstr ""
+msgstr "ಹೌದು - ಹಸ್ತಚಾಲಿತ ಆಡ್ಗೆ ಯೂನಿಟ್ ಮ್ಯಾನೇಜ್ಮೆಂಟ್ಗೆ ನಿರ್ಬಂಧಿಸಿ"
 
 #: inc/config.class.php:2028
 msgid "Yes - Restrict to global management for manual add"
-msgstr ""
+msgstr "ಹೌದು - ಕೈಯಿಂದ ಸೇರಿಸುವ ಜಾಗತಿಕ ನಿರ್ವಹಣೆಗೆ ನಿರ್ಬಂಧಿಸಿ"
 
 #: inc/config.class.php:2137 inc/preference.class.php:47
 msgid "Settings"
@@ -8493,7 +8501,7 @@ msgstr ""
 #: inc/config.php:281
 msgid ""
 "You are trying to update to a development version from a development "
-"version. This is not suppoorted."
+"version. This is not supported."
 msgstr ""
 
 #: inc/consumable.class.php:199 inc/consumable.class.php:511
@@ -8533,11 +8541,11 @@ msgstr[0] ""
 #: inc/consumable.class.php:439
 msgctxt "button"
 msgid "Add consumables"
-msgstr ""
+msgstr "ಉಪಭೋಗ್ಯನ್ನು ಸೇರಿಸಿ"
 
 #: inc/consumable.class.php:531
 msgid "Used consumables"
-msgstr ""
+msgstr "ಉಪಯೋಗಿಸಿದ ಉಪಭೋಗ್ಯ"
 
 #: inc/consumable.class.php:551
 msgid "Given to"
@@ -8563,15 +8571,15 @@ msgstr[0] ""
 
 #: inc/consumableitem.class.php:296
 msgid "Number of used consumables"
-msgstr ""
+msgstr "ಬಳಸಿದ ಉಪಭೋಗ್ಯಗಳ ಸಂಖ್ಯೆ"
 
 #: inc/consumableitem.class.php:311
 msgid "Number of new consumables"
-msgstr ""
+msgstr "ಹೊಸ ಉಪಭೋಗ್ಯದ ಸಂಖ್ಯೆ"
 
 #: inc/consumableitem.class.php:382 inc/consumableitem.class.php:485
 msgid "Send alarms on consumables"
-msgstr ""
+msgstr "ಉಪಭೋಗ್ಯದ ಮೇಲೆ ಅಲಾರಮ್ಗಳನ್ನು ಕಳುಹಿಸಿ"
 
 #. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
 #. number
@@ -8597,7 +8605,7 @@ msgstr[0] ""
 #: inc/profile.class.php:1714
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] ""
+msgstr[0] "ಸಂಪರ್ಕಗಳು"
 
 #: inc/contact.class.php:191 inc/contact.class.php:359
 #: inc/entity.class.php:334 inc/entity.class.php:504 inc/entity.class.php:1316
@@ -8719,7 +8727,7 @@ msgstr[0] ""
 #: inc/profile.class.php:1742 inc/transfer.class.php:3460
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
+msgstr[0] "ಒಪ್ಪಂದಗಳು"
 
 #: inc/contract.class.php:209 inc/contract.class.php:682
 #: inc/contract_item.class.php:459 inc/contract_supplier.class.php:221
@@ -8786,7 +8794,7 @@ msgstr ""
 #: inc/contract.class.php:394
 msgctxt "quantity"
 msgid "Number of contracts"
-msgstr ""
+msgstr "ಒಪ್ಪಂದಗಳ ಸಂಖ್ಯೆ"
 
 #: inc/contract.class.php:419
 msgid "Contract number"
@@ -9647,7 +9655,7 @@ msgstr[0] ""
 #: inc/ticket.class.php:7458 inc/transfer.class.php:3450
 msgid "Document"
 msgid_plural "Documents"
-msgstr[0] ""
+msgstr[0] "ದಾಖಲೆಗಳು"
 
 #: inc/document.class.php:168 inc/document.class.php:1026
 #: inc/document.class.php:1113 inc/document.class.php:1200
@@ -9718,7 +9726,7 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:505
 msgctxt "quantity"
 msgid "Number of documents"
-msgstr ""
+msgstr "ದಾಖಲೆಗಳ ಸಂಖ್ಯೆ"
 
 #: inc/document.class.php:869 inc/document_item.class.php:790
 #: inc/notificationtemplatetranslation.class.php:353
@@ -9981,14 +9989,14 @@ msgstr[0] ""
 #: inc/profile.class.php:889 inc/profile.class.php:1707
 #: inc/transfer.class.php:3427
 msgid "Management"
-msgstr ""
+msgstr "ನಿರ್ವಹಣೆ"
 
 #: inc/dropdown.class.php:941 inc/event.class.php:161 inc/html.class.php:1329
 #: inc/profile.class.php:99 inc/profile.class.php:105
 #: inc/profile.class.php:750 inc/profile.class.php:946
 #: inc/profile.class.php:1782
 msgid "Tools"
-msgstr ""
+msgstr "ಪರಿಕರಗಳು"
 
 #: inc/dropdown.class.php:942 inc/knowbaseitemcategory.class.php:53
 #: inc/profile.class.php:1436
@@ -10096,7 +10104,7 @@ msgstr[0] ""
 #: inc/profile.class.php:2000 inc/ruleright.class.php:69
 #: inc/rulerightcollection.class.php:60
 msgid "Authorizations assignment rules"
-msgstr ""
+msgstr "ಅಧಿಕಾರಗಳ ನಿಯೋಜನೆ ನಿಯಮಗಳು"
 
 #: inc/dropdown.class.php:1025 inc/rulerightparameter.class.php:85
 msgid "LDAP criterion"
@@ -10160,15 +10168,15 @@ msgstr ""
 #: inc/peripheral.class.php:531 inc/phone.class.php:605
 #: inc/printer.class.php:793
 msgid "Global management"
-msgstr ""
+msgstr "ಜಾಗತಿಕ ನಿರ್ವಹಣೆ"
 
 #: inc/dropdown.class.php:2037
 msgid "Use unitary management"
-msgstr ""
+msgstr "ಏಕೀಕೃತ ನಿರ್ವಹಣೆ ಬಳಸಿ"
 
 #: inc/dropdown.class.php:2039
 msgid "Do you really want to use unitary management for this item?"
-msgstr ""
+msgstr "ಈ ಐಟಂಗಾಗಿ ಏಕೀಕೃತ ನಿರ್ವಹಣೆ ಬಳಸಲು ನೀವು ನಿಜವಾಗಿಯೂ ಬಯಸುವಿರಾ?"
 
 #: inc/dropdown.class.php:2040 inc/dropdown.class.php:2044
 #: inc/dropdown.class.php:2045
@@ -10320,12 +10328,12 @@ msgstr ""
 
 #: inc/entity.class.php:755
 msgid "Alarms on consumables"
-msgstr ""
+msgstr "ಉಪಭೋಗ್ಯದ ಮೇಲೆ ಅಲಾರಮ್ಗಳು"
 
 #: inc/entity.class.php:765 inc/entity.class.php:1901
 #: inc/notificationtargetsoftwarelicense.class.php:49
 msgid "Alarms on expired licenses"
-msgstr ""
+msgstr "ಅವಧಿ ಮುಗಿದ ಪರವಾನಗಿಗಳ ಮೇಲೆ ಅಲಾರಮ್ಗಳು"
 
 #: inc/entity.class.php:775 inc/entity.class.php:1913
 msgid "Send license alarms before"
@@ -10352,11 +10360,11 @@ msgstr ""
 #: inc/entity.class.php:825 inc/entity.class.php:1967
 #: inc/reservationitem.class.php:600
 msgid "Alerts on reservations"
-msgstr ""
+msgstr "ಮೀಸಲಾತಿ ಕುರಿತು ಎಚ್ಚರಿಕೆಗಳು"
 
 #: inc/entity.class.php:835
 msgid "Default value for alarms on contracts"
-msgstr ""
+msgstr "ಒಪ್ಪಂದಗಳಲ್ಲಿ ಅಲಾರಮ್ಗಳ ಡೀಫಾಲ್ಟ್ ಮೌಲ್ಯ"
 
 #: inc/entity.class.php:845
 msgid "Default value for alarms on financial and administrative information"
@@ -10368,7 +10376,7 @@ msgstr ""
 
 #: inc/entity.class.php:865 inc/entity.class.php:1783
 msgid "Default threshold for consumables count"
-msgstr ""
+msgstr "ಉಪಭೋಗ್ಯಗಳ ಲೆಕ್ಕಕ್ಕೆ ಡೀಫಾಲ್ಟ್ ಮಿತಿ"
 
 #: inc/entity.class.php:875 inc/entity.class.php:1934
 #: inc/notificationtargetcertificate.class.php:50
@@ -10398,7 +10406,7 @@ msgstr ""
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"
-msgstr ""
+msgstr "ಪರಿಹರಿಸದ ಟಿಕೆಟ್ಸ್ ಬಗ್ಗೆ ಎಚ್ಚರಿಕೆ "
 
 #: inc/entity.class.php:939 inc/entity.class.php:2194
 msgid "Automatic assignment of tickets"
@@ -10467,13 +10475,15 @@ msgstr ""
 
 #: inc/entity.class.php:1405
 msgid "Values for the generic rules for assignment to entities"
-msgstr ""
+msgstr "ಘಟಕಗಳಿಗೆ ನಿಯೋಜನೆಗಾಗಿ ಸಾರ್ವತ್ರಿಕ ನಿಯಮಗಳ ಮೌಲ್ಯಗಳು"
 
 #: inc/entity.class.php:1409
 msgid ""
 "These parameters are used as actions in generic rules for assignment to "
 "entities"
 msgstr ""
+"ಈ ನಿಯತಾಂಕಗಳನ್ನು ಘಟಕಗಳಿಗೆ ನಿಯೋಜನೆಗಾಗಿ ಸಾರ್ವತ್ರಿಕ ನಿಯಮಗಳಲ್ಲಿ ಕ್ರಮಗಳಾಗಿ "
+"ಬಳಸಲಾಗುತ್ತದೆ"
 
 #: inc/entity.class.php:1427
 msgid "Mail domain surrogates entity"
@@ -10544,7 +10554,7 @@ msgstr ""
 
 #: inc/entity.class.php:1770
 msgid "Reminders frequency for alarms on consumables"
-msgstr ""
+msgstr "ಉಪಭೋಗ್ಯದ ಎಚ್ಚರಿಕೆಗಳ ಆವರ್ತನ"
 
 #: inc/entity.class.php:1946
 msgid "Send certificates alarms before"
@@ -10557,11 +10567,11 @@ msgstr ""
 #: install/update_0723_078.php:4800
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] ""
+msgstr[0] "ಮೀಸಲಾತಿ"
 
 #: inc/entity.class.php:1985
 msgid "Alerts on tickets which are not solved since"
-msgstr ""
+msgstr "ಪರಿಹರಿಸದ ಟಿಕೆಟ್ಸ್ ಬಗ್ಗೆ ಎಚ್ಚರಿಕೆ "
 
 #: inc/entity.class.php:2155 inc/entity.class.php:2168
 #: inc/entity.class.php:2721 inc/levelagreement.class.php:486
@@ -10616,7 +10626,7 @@ msgstr ""
 #: inc/rulecollection.class.php:1913
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] ""
+msgstr[0] "ನಿಯಮಗಳು"
 
 #: inc/event.class.php:165
 msgid "Security"
@@ -10884,8 +10894,8 @@ msgid "Add a user"
 msgstr "ಬಳಕೆದಾರರನ್ನು ಸೇರಿಸಿ"
 
 #: inc/group_user.class.php:428 inc/rule.class.php:1196
-#: inc/rule.class.php:1212 inc/rule.class.php:1262 inc/rule.class.php:2016
-#: inc/rule.class.php:2494 inc/rulecollection.class.php:1225
+#: inc/rule.class.php:1212 inc/rule.class.php:1262 inc/rule.class.php:2020
+#: inc/rule.class.php:2498 inc/rulecollection.class.php:1225
 #: inc/rulecollection.class.php:1499 inc/rulecriteria.class.php:94
 #: inc/rulecriteria.class.php:606 inc/rulerightparameter.class.php:63
 #: inc/rulerightparameter.class.php:76
@@ -11542,7 +11552,7 @@ msgstr ""
 #: inc/line.class.php:50 inc/profile.class.php:883
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] ""
+msgstr[0] "ಲೈನ್ಸ್"
 
 #: inc/item_devicesimcard.class.php:104
 msgid "Mobile Subscriber Identification Number"
@@ -12034,7 +12044,7 @@ msgid "Execution"
 msgstr ""
 
 #: inc/levelagreementlevel.class.php:125 inc/olalevel.class.php:258
-#: inc/rule.class.php:721 inc/rule.class.php:872 inc/rule.class.php:2734
+#: inc/rule.class.php:721 inc/rule.class.php:872 inc/rule.class.php:2738
 #: inc/ruleright.class.php:78 inc/slalevel.class.php:263
 msgid "Logical operator"
 msgstr ""
@@ -12583,7 +12593,7 @@ msgstr ""
 #: inc/phone.class.php:263 inc/printer.class.php:363
 #: inc/ruledictionnaryprinter.class.php:110
 msgid "Management type"
-msgstr ""
+msgstr "ನಿರ್ವಹಣೆ ಪ್ರಕಾರ"
 
 #: inc/monitor.class.php:303 inc/monitor.class.php:523
 msgid "Microphone"
@@ -13113,7 +13123,7 @@ msgstr ""
 #: inc/notificationeventmailing.class.php:254
 #: inc/notificationmailing.class.php:101
 #, php-format
-msgid "Orignal email address was %1$s"
+msgid "Original email address was %1$s"
 msgstr ""
 
 #: inc/notificationeventmailing.class.php:265
@@ -13230,7 +13240,7 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:125
 msgid "Add documents into ticket notifications"
-msgstr ""
+msgstr "ಟಿಕೆಟ್ ಅಧಿಸೂಚನೆಗಳಿಗೆ ದಾಖಲೆಗಳನ್ನು ಸೇರಿಸಿ"
 
 #: inc/notificationmailingsetting.class.php:142
 msgid "Way of sending emails"
@@ -13412,7 +13422,7 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:797
 #: inc/notificationtargetticket.class.php:857 inc/profile.class.php:655
 #: inc/profile.class.php:1039 inc/profile.class.php:1041
-#: inc/profile.class.php:1101 inc/rule.class.php:2019 inc/rule.class.php:2040
+#: inc/profile.class.php:1101 inc/rule.class.php:2023 inc/rule.class.php:2044
 #: inc/rulecollection.class.php:1761 inc/rulerightcollection.class.php:84
 #: inc/ticket.class.php:7327 inc/ticket.class.php:7328
 msgid "Validation"
@@ -13591,7 +13601,7 @@ msgstr ""
 
 #: inc/notificationtargetconsumableitem.class.php:51
 msgid "Consumables alarm"
-msgstr ""
+msgstr "ಉಪಭೋಗ್ಯಗಳ ಎಚ್ಚರಿಕೆ"
 
 #: inc/notificationtargetcontract.class.php:50
 msgid "End of contract"
@@ -13603,7 +13613,7 @@ msgstr ""
 
 #: inc/notificationtargetcontract.class.php:61
 msgid "Contracts alarm"
-msgstr ""
+msgstr "ಒಪ್ಪಂದಗಳು ಎಚ್ಚರಿಕೆ"
 
 #: inc/notificationtargetcontract.class.php:123
 #: inc/notificationtargetcontract.class.php:161
@@ -13926,7 +13936,7 @@ msgstr ""
 #: inc/projecttask.class.php:478 inc/projecttask.class.php:739
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
+msgstr[0] "ಯೋಜನೆಗಳು"
 
 #: inc/notificationtargetprojecttask.class.php:474
 #: inc/projecttask.class.php:615
@@ -14369,7 +14379,7 @@ msgstr ""
 #: inc/phone.class.php:299 inc/phone.class.php:464
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr ""
+msgstr "ಸಾಲುಗಳ ಸಂಖ್ಯೆ"
 
 #: inc/phone.class.php:304
 msgid "Flags"
@@ -14891,21 +14901,21 @@ msgstr "ಅಧಿಸೂಚನೆ ಕ್ಯೂ"
 
 #: inc/profile.class.php:1348 inc/profile.class.php:1986
 msgid "Rules for assigning a computer to an entity"
-msgstr ""
+msgstr "ಒಂದು ಘಟಕದ ಒಂದು ಕಂಪ್ಯೂಟರ್ ನಿಯೋಜಿಸಲು ನಿಯಮಗಳು"
 
 #: inc/profile.class.php:1351 inc/profile.class.php:1972
 #: inc/rulemailcollector.class.php:61
 #: inc/rulemailcollectorcollection.class.php:50
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr ""
+msgstr "ಮೇಲ್ಗಳ ರಿಸೀವರ್ ಮೂಲಕ ರಚಿಸಲಾದ ಟಿಕೆಟ್ ನಿಯೋಜಿಸಲು ನಿಯಮಗಳು"
 
 #: inc/profile.class.php:1354 inc/profile.class.php:2014
 msgid "Rules for assigning a category to a software"
-msgstr ""
+msgstr "ಸಾಫ್ಟ್ವೇರ್ಗೆ ವರ್ಗವನ್ನು ನಿಯೋಜಿಸಲು ನಿಯಮಗಳು"
 
 #: inc/profile.class.php:1357
 msgid "Business rules for tickets (entity)"
-msgstr ""
+msgstr "ಟಿಕೆಟ್ಗಳಿಗಾಗಿ ವ್ಯವಹಾರ ನಿಯಮಗಳು (ಘಟಕದ)"
 
 #: inc/profile.class.php:1367 inc/profile.class.php:1375
 #: inc/profile.class.php:2042
@@ -15418,7 +15428,7 @@ msgstr ""
 #: inc/reservation.class.php:1077 inc/reservation.class.php:1079
 #: inc/reservation.class.php:1197
 msgid "Current and future reservations"
-msgstr ""
+msgstr "ಪ್ರಸ್ತುತ ಮತ್ತು ಭವಿಷ್ಯದ ಮೀಸಲು"
 
 #: inc/reservation.class.php:1085 inc/reservation.class.php:1133
 #: inc/reservation.class.php:1201 inc/reservation.class.php:1264
@@ -15434,7 +15444,7 @@ msgstr ""
 #: inc/reservation.class.php:1125 inc/reservation.class.php:1127
 #: inc/reservation.class.php:1260
 msgid "Past reservations"
-msgstr ""
+msgstr "ಹಿಂದಿನ ಮೀಸಲಾತಿಗಳು"
 
 #: inc/reservationitem.class.php:71
 msgid "Reservable item"
@@ -15451,7 +15461,7 @@ msgstr ""
 
 #: inc/reservationitem.class.php:318
 msgid "Prohibit reservations"
-msgstr ""
+msgstr "ಮೀಸಲಾತಿಗಳನ್ನು ನಿಷೇಧಿಸಿ"
 
 #: inc/reservationitem.class.php:320
 msgid "Are you sure you want to return this non-reservable item?"
@@ -15459,11 +15469,11 @@ msgstr ""
 
 #: inc/reservationitem.class.php:321
 msgid "That will remove all the reservations in progress."
-msgstr ""
+msgstr "ಇದು ಎಲ್ಲಾ ಮೀಸಲಾತಿಗಳು ಪ್ರಗತಿಯಲ್ಲಿದೆ ಎಂದು ತೆಗೆದುಹಾಕುತ್ತದೆ."
 
 #: inc/reservationitem.class.php:326
 msgid "Authorize reservations"
-msgstr ""
+msgstr "ಮೀಸಲಾತಿ ದೃಢೀಕರಿಸಿ"
 
 #: inc/reservationitem.class.php:359 inc/search.class.php:4617
 #: inc/search.class.php:4621
@@ -15480,7 +15490,7 @@ msgstr ""
 
 #: inc/reservationitem.class.php:651
 msgid "Device reservations expiring today"
-msgstr ""
+msgstr "ಸಾಧನ ಮೀಸಲಾತಿ ಇಂದು ಮುಕ್ತಾಯಗೊಳ್ಳುತ್ತದೆ"
 
 #: inc/reservationitem.class.php:692
 msgid "Send reservation alert failed"
@@ -15569,7 +15579,7 @@ msgstr[0] ""
 
 #: inc/rule.class.php:533
 msgid "Rules management"
-msgstr ""
+msgstr "ನಿಯಮಗಳ ನಿರ್ವಹಣೆ"
 
 #: inc/rule.class.php:595
 msgid "After"
@@ -15583,7 +15593,7 @@ msgstr ""
 msgid "Position"
 msgstr ""
 
-#: inc/rule.class.php:798 inc/rule.class.php:954 inc/rule.class.php:2496
+#: inc/rule.class.php:798 inc/rule.class.php:954 inc/rule.class.php:2500
 msgid "and"
 msgstr ""
 
@@ -15610,40 +15620,40 @@ msgstr ""
 msgid "Add a new criteria"
 msgstr ""
 
-#: inc/rule.class.php:1213 inc/rule.class.php:2017
+#: inc/rule.class.php:1213 inc/rule.class.php:2021
 #: inc/rulecollection.class.php:1226 inc/rulecriteria.class.php:171
 msgid "Condition"
 msgstr ""
 
-#: inc/rule.class.php:1214 inc/rule.class.php:2018
+#: inc/rule.class.php:1214 inc/rule.class.php:2022
 #: inc/rulecollection.class.php:1227 inc/rulecriteria.class.php:181
 msgid "Reason"
 msgstr ""
 
-#: inc/rule.class.php:2013 inc/rulecollection.class.php:1689
+#: inc/rule.class.php:2017 inc/rulecollection.class.php:1689
 msgid "Result details"
 msgstr ""
 
-#: inc/rule.class.php:2038 inc/rulecollection.class.php:1759
+#: inc/rule.class.php:2042 inc/rulecollection.class.php:1759
 #: inc/rulerightcollection.class.php:82
 msgid "Rule results"
 msgstr ""
 
-#: inc/rule.class.php:2062
+#: inc/rule.class.php:2066
 msgid "Result of the regular expression"
 msgstr ""
 
-#: inc/rule.class.php:2066
+#: inc/rule.class.php:2070
 msgid "Key"
 msgstr ""
 
-#: inc/rule.class.php:2937
+#: inc/rule.class.php:2941
 msgid "Rules using the object have been disabled."
-msgstr ""
+msgstr "ಆಬ್ಜೆಕ್ಟ್ ಅನ್ನು ಬಳಸುವ ನಿಯಮಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
 
 #: inc/rulecollection.class.php:310
 msgid "Rules list"
-msgstr ""
+msgstr "ನಿಯಮಗಳ ಪಟ್ಟಿ"
 
 #: inc/rulecollection.class.php:363
 msgid "The engine stops on the first checked rule."
@@ -15651,7 +15661,7 @@ msgstr ""
 
 #: inc/rulecollection.class.php:368
 msgid "The engine treats all the rules."
-msgstr ""
+msgstr "ಎಂಜಿನ್ ಎಲ್ಲಾ ನಿಯಮಗಳನ್ನು ಪರಿಗಣಿಸುತ್ತದೆ."
 
 #: inc/rulecollection.class.php:374
 msgid "The engine passes the result of a rule to the following one."
@@ -15659,19 +15669,19 @@ msgstr ""
 
 #: inc/rulecollection.class.php:380
 msgid "Rules are conditionals. Each one can be used on multiple actions."
-msgstr ""
+msgstr "ನಿಯಮಗಳು ಷರತ್ತುಗಳು. ಪ್ರತಿಯೊಂದನ್ನು ಬಹು ಕ್ರಿಯೆಗಳ ಮೇಲೆ ಬಳಸಬಹುದು."
 
 #: inc/rulecollection.class.php:432
 msgid "Rules used for"
-msgstr ""
+msgstr "ನಿಯಮಗಳನ್ನು ಬಳಸಲಾಗಿದೆ"
 
 #: inc/rulecollection.class.php:549 inc/rulecollection.class.php:554
 msgid "Test rules engine"
-msgstr ""
+msgstr "ಪರೀಕ್ಷಾ ನಿಯಮಗಳ ಎಂಜಿನ್"
 
 #: inc/rulecollection.class.php:560 inc/software.class.php:356
 msgid "Replay the dictionary rules"
-msgstr ""
+msgstr "ನಿಘಂಟು ನಿಯಮಗಳನ್ನು ರಿಪ್ಲೇ ಮಾಡಿ"
 
 #: inc/rulecollection.class.php:835
 #, php-format
@@ -15680,11 +15690,11 @@ msgstr ""
 
 #: inc/rulecollection.class.php:994
 msgid "Import rules from a XML file"
-msgstr ""
+msgstr "XML ಫೈಲ್ನಿಂದ ನಿಯಮಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಿ"
 
 #: inc/rulecollection.class.php:1173
 msgid "Rules refused"
-msgstr ""
+msgstr "ನಿಯಮಗಳು ನಿರಾಕರಿಸಿದವು"
 
 #: inc/rulecollection.class.php:1203
 msgid "Entity not found"
@@ -15724,7 +15734,7 @@ msgstr ""
 
 #: inc/rulecollection.class.php:1922
 msgid "Rules applicable in the sub-entities"
-msgstr ""
+msgstr "ಉಪ-ಅಸ್ತಿತ್ವಗಳಲ್ಲಿ ಅನ್ವಯವಾಗುವ ನಿಯಮಗಳು"
 
 #: inc/rulecriteria.class.php:514 inc/search.class.php:5653
 #: inc/search.class.php:5689 inc/search.class.php:5701
@@ -15821,7 +15831,7 @@ msgstr ""
 
 #: inc/ruledictionnarydropdowncollection.class.php:144
 msgid "Error replaying rules"
-msgstr ""
+msgstr "ನಿಯಮಗಳನ್ನು ಮರುಪಡೆಯುವಲ್ಲಿ ದೋಷ"
 
 #: inc/ruledictionnarydropdowncollection.class.php:272
 #: inc/ruledictionnaryprintercollection.class.php:163
@@ -15931,7 +15941,7 @@ msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:85
 msgid "Warning before running rename based on the dictionary rules"
-msgstr ""
+msgstr "ನಿಘಂಟಿನ ನಿಯಮಗಳ ಆಧಾರದ ಮೇಲೆ ಮರುಹೆಸರಿಸುವ ಮೊದಲು ಎಚ್ಚರಿಕೆ"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:89
 msgid ""
@@ -15945,17 +15955,17 @@ msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:93
 msgid "Replay dictionary rules for manufacturers (----- = All)"
-msgstr ""
+msgstr "ತಯಾರಕರುಗಳಿಗೆ ರಿಪ್ಲೇ ನಿಘಂಟಿನ ನಿಯಮಗಳು (ಎಲ್ಲವೂ)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:287
-#: inc/ruledictionnarysoftwarecollection.class.php:388
+#: inc/ruledictionnarysoftwarecollection.class.php:390
 msgid "Software deleted by GLPI dictionary rules"
-msgstr ""
+msgstr "ಜಿಎಲ್ಪಿಐ ನಿಘಂಟು ನಿಯಮಗಳಿಂದ ಅಳಿಸಲ್ಪಟ್ಟ ಸಾಫ್ಟ್ವೇರ್"
 
 #: inc/ruleimportcomputer.class.php:55
 #: inc/ruleimportcomputercollection.class.php:65
 msgid "Rules for import and link computers"
-msgstr ""
+msgstr "ಆಮದು ಮತ್ತು ಲಿಂಕ್ ಕಂಪ್ಯೂಟರ್ಗಳಿಗೆ ನಿಯಮಗಳು"
 
 #: inc/ruleimportcomputer.class.php:78
 msgid "Target entity for the computer"
@@ -15996,7 +16006,7 @@ msgstr ""
 #: inc/ruleimportentity.class.php:49
 #: inc/ruleimportentitycollection.class.php:66
 msgid "Rules for assigning an item to an entity"
-msgstr ""
+msgstr "ಘಟಕಕ್ಕೆ ಐಟಂ ಅನ್ನು ನಿಯೋಜಿಸಲು ನಿಯಮಗಳು"
 
 #: inc/rulemailcollector.class.php:91
 msgid "Email body"
@@ -16224,7 +16234,7 @@ msgstr "ಹೆಚ್ಚು ಅಥವಾ ಸಮನಾಗಿರುತ್ತದೆ"
 msgid "greater than"
 msgstr "ಅದಕ್ಕಿಂತ ಹೆಚ್ಚು"
 
-#: inc/savedsearch_alert.class.php:384
+#: inc/savedsearch_alert.class.php:385
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
 msgstr ""

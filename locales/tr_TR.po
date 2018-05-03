@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-26 13:19+0200\n"
+"POT-Creation-Date: 2018-05-03 07:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2017\n"
 "Language-Team: Turkish (Turkey) (https://www.transifex.com/glpi/teams/1637/tr_TR/)\n"
@@ -232,7 +232,7 @@ msgstr "%1$s - Ağ prizi %2$s"
 #: inc/notificationtargetprojecttask.class.php:540
 #: inc/profile_user.class.php:196 inc/profile_user.class.php:216
 #: inc/profile_user.class.php:338 inc/profile_user.class.php:485
-#: inc/projectcost.class.php:394 inc/rule.class.php:2182
+#: inc/projectcost.class.php:394 inc/rule.class.php:2186
 #: inc/rulecollection.class.php:1203 inc/rulemailcollector.class.php:198
 #: inc/rulemailcollector.class.php:203 inc/search.class.php:4729
 #: inc/search.class.php:4863 inc/session.class.php:371
@@ -483,7 +483,7 @@ msgstr "E-posta izleme"
 #: inc/projecttask.class.php:1595 inc/registeredid.class.php:116
 #: inc/reminder.class.php:968 inc/reminder.class.php:995
 #: inc/reservationitem.class.php:669 inc/reservationitem.class.php:674
-#: inc/reservationitem.class.php:692 inc/rule.class.php:3117
+#: inc/reservationitem.class.php:692 inc/rule.class.php:3121
 #: inc/rulemailcollector.class.php:130 inc/softwarelicense.class.php:885
 #: inc/softwarelicense.class.php:888 inc/softwarelicense.class.php:905
 #: inc/supplier.class.php:553 inc/supplier.class.php:590
@@ -561,7 +561,7 @@ msgstr[1] "E-posta"
 #: inc/project.class.php:1289 inc/projecttask.class.php:1187
 #: inc/projecttask_ticket.class.php:195 inc/projecttask_ticket.class.php:316
 #: inc/reservation.class.php:753 inc/reservationitem.class.php:584
-#: inc/rule.class.php:2741 inc/ruleright.class.php:85
+#: inc/rule.class.php:2745 inc/ruleright.class.php:85
 #: inc/slalevel.class.php:118 inc/ticket.class.php:5284
 #: inc/ticket.class.php:7443 inc/ticket.class.php:7503
 #: inc/ticketfollowup.class.php:560
@@ -675,7 +675,7 @@ msgstr "Hiçbiri"
 #: ajax/dropdownMassiveActionOs.php:45 inc/cartridge.class.php:85
 #: inc/levelagreement.class.php:541 inc/massiveaction.class.php:547
 #: inc/notepad.class.php:388 inc/notificationtarget.class.php:362
-#: inc/rule.class.php:2782
+#: inc/rule.class.php:2786
 msgctxt "button"
 msgid "Update"
 msgstr "Güncelle"
@@ -1142,25 +1142,33 @@ msgstr "%s silindi"
 msgid "Check if a new version is available"
 msgstr "Yeni sürümleri denetle"
 
-#: front/backup.php:606 front/report.contract.list.php:179
+#: front/backup.php:607
+msgid "GLPI internal backup system is a helper for very small instances."
+msgstr ""
+
+#: front/backup.php:608
+msgid "You should rather use a dedicated tool on your server."
+msgstr ""
+
+#: front/backup.php:611 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
 #: inc/problem.class.php:936 inc/ticket.class.php:5871
 msgid "Deleted"
 msgstr "Silinmiş"
 
-#: front/backup.php:609 front/backup.php:614
+#: front/backup.php:614 front/backup.php:619
 msgid "Backup the database?"
 msgstr "Veritabanı yedeklensin"
 
-#: front/backup.php:612
+#: front/backup.php:617
 msgid "SQL Dump"
 msgstr "SQL Dökümü"
 
-#: front/backup.php:617
+#: front/backup.php:622
 msgid "XML Dump"
 msgstr "XML Dökümü"
 
-#: front/backup.php:622 inc/document.class.php:438 inc/document.class.php:843
+#: front/backup.php:627 inc/document.class.php:438 inc/document.class.php:843
 #: inc/document_item.class.php:785
 #: inc/notificationtargetcommonitilobject.class.php:1348
 #: inc/notificationtargetproject.class.php:643
@@ -1168,13 +1176,13 @@ msgstr "XML Dökümü"
 msgid "File"
 msgstr "Dosya"
 
-#: front/backup.php:623 inc/item_devicememory.class.php:58
+#: front/backup.php:628 inc/item_devicememory.class.php:58
 #: inc/item_devicememory.class.php:60 inc/monitor.class.php:293
 #: inc/monitor.class.php:515
 msgid "Size"
 msgstr "Boyut"
 
-#: front/backup.php:624 front/report.contract.php:66 front/report.year.php:67
+#: front/backup.php:629 front/report.contract.php:66 front/report.year.php:67
 #: inc/commonitilobject.class.php:4571 inc/commonitilobject.class.php:5518
 #: inc/commonitiltask.class.php:588 inc/commonitiltask.class.php:793
 #: inc/commonitiltask.class.php:1457 inc/commonitiltask.class.php:1725
@@ -1208,12 +1216,12 @@ msgstr[0] "Tarih"
 msgstr[1] "Tarih"
 
 #. TRANS: %s is the filename
-#: front/backup.php:649 front/backup.php:701
+#: front/backup.php:654 front/backup.php:706
 #, php-format
 msgid "Delete the file %s?"
 msgstr "%s dosyası silinsin mi?"
 
-#: front/backup.php:651 front/backup.php:702 inc/backup.class.php:78
+#: front/backup.php:656 front/backup.php:707 inc/backup.class.php:78
 #: inc/cartridge.class.php:658 inc/cartridge.class.php:931
 #: inc/change_ticket.class.php:288 inc/commondbrelation.class.php:1119
 #: inc/commondbtm.class.php:2240 inc/commondbtm.class.php:2250
@@ -1231,7 +1239,7 @@ msgstr "%s dosyası silinsin mi?"
 #: inc/massiveaction.class.php:533 inc/massiveaction.class.php:565
 #: inc/netpoint.class.php:331 inc/notepad.class.php:367
 #: inc/problem_ticket.class.php:328 inc/profile_user.class.php:331
-#: inc/reservation.class.php:763 inc/rule.class.php:2783
+#: inc/reservation.class.php:763 inc/rule.class.php:2787
 #: inc/ticket.class.php:5271 inc/ticket.class.php:7179
 #: inc/ticket.class.php:7180 inc/ticketfollowup.class.php:813
 #: inc/ticketfollowup.class.php:1036 inc/tickettask.class.php:310
@@ -1243,12 +1251,12 @@ msgid "Delete permanently"
 msgstr "Kalıcı olarak sil"
 
 #. TRANS: %s is the filename
-#: front/backup.php:659
+#: front/backup.php:664
 #, php-format
 msgid "Replace the current database with the backup file %s?"
 msgstr "Geçerli veritabanı %s yedek dosyasından geri yüklensin mi?"
 
-#: front/backup.php:661
+#: front/backup.php:666
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
@@ -1256,11 +1264,11 @@ msgstr ""
 "Dikkat, geri yüklemek istediğiniz veritabanındaki bilgiler, tamamen geçerli "
 "veritabanınızın üzerine yazılacak !!!"
 
-#: front/backup.php:666
+#: front/backup.php:671
 msgid "Restore"
 msgstr "Geri yükle"
 
-#: front/backup.php:670 front/backup.php:708
+#: front/backup.php:675 front/backup.php:713
 msgid "Download"
 msgstr "İndir"
 
@@ -1725,7 +1733,7 @@ msgstr "%s görevi tamamlandı"
 #: inc/projectcost.class.php:398 inc/projecttask.class.php:1070
 #: inc/projecttask_ticket.class.php:409 inc/projecttask_ticket.class.php:418
 #: inc/reminder.class.php:1123 inc/reservation.class.php:475
-#: inc/rule.class.php:1866 inc/rule.class.php:1880
+#: inc/rule.class.php:1870 inc/rule.class.php:1884
 #: inc/ruleticket.class.php:468 inc/ruleticket.class.php:476
 #: inc/ruleticket.class.php:484 inc/ruleticket.class.php:492
 #: inc/ruleticket.class.php:589 inc/ruleticket.class.php:597
@@ -2869,7 +2877,7 @@ msgstr "Sözleşmeli donanım listesi"
 #: inc/projectcost.class.php:376 inc/projecttask.class.php:515
 #: inc/projecttask.class.php:730 inc/reservationitem.class.php:164
 #: inc/rssfeed.class.php:336 inc/rssfeed.class.php:603 inc/rule.class.php:695
-#: inc/rule.class.php:862 inc/rule.class.php:2728
+#: inc/rule.class.php:862 inc/rule.class.php:2732
 #: inc/rulecollection.class.php:481 inc/rulecollection.class.php:512
 #: inc/rulecollection.class.php:1176 inc/rulecriteria.class.php:161
 #: inc/ruledictionnaryprinter.class.php:78
@@ -3815,7 +3823,7 @@ msgstr ""
 
 #: inc/ajax.class.php:431 inc/link.class.php:155
 #: inc/massiveaction.class.php:756 inc/rule.class.php:801
-#: inc/rule.class.php:958 inc/rule.class.php:2496
+#: inc/rule.class.php:958 inc/rule.class.php:2500
 msgid "or"
 msgstr "veya"
 
@@ -3894,7 +3902,7 @@ msgstr "Hayır"
 #: inc/alert.class.php:145 inc/config.class.php:386 inc/config.class.php:387
 #: inc/config.class.php:401 inc/config.class.php:1075
 #: inc/dropdown.class.php:712 inc/dropdown.class.php:731
-#: inc/html.class.php:5353 inc/plugin.class.php:509 inc/rule.class.php:2162
+#: inc/html.class.php:5353 inc/plugin.class.php:509 inc/rule.class.php:2166
 #: inc/ruleimportcomputer.class.php:192 inc/savedsearch.class.php:92
 #: inc/savedsearch.class.php:385 inc/savedsearch.class.php:1123
 #: inc/savedsearch.class.php:1174 inc/savedsearch_user.class.php:54
@@ -4038,7 +4046,7 @@ msgstr[1] "API istemcisi"
 #: inc/olalevel.class.php:235 inc/requesttype.class.php:53
 #: inc/requesttype.class.php:120 inc/reservationitem.class.php:151
 #: inc/rssfeed.class.php:365 inc/rssfeed.class.php:629 inc/rule.class.php:730
-#: inc/rule.class.php:876 inc/rule.class.php:2801
+#: inc/rule.class.php:876 inc/rule.class.php:2805
 #: inc/rulecollection.class.php:486 inc/rulecollection.class.php:517
 #: inc/ruleright.class.php:323 inc/savedsearch_alert.class.php:163
 #: inc/savedsearch_alert.class.php:255 inc/slalevel.class.php:115
@@ -4200,14 +4208,14 @@ msgstr "Otomatik oturum açma devre dışı"
 #: inc/auth.class.php:654
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "LDAP dizini ile bağlantı kurulamadı"
+msgstr[1] "LDAP dizinleri ile bağlantı kurulamadı"
 
 #: inc/auth.class.php:662
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kullanıcı LDAP dizininde bulunamadı"
+msgstr[1] "Kullanıcı LDAP dizinlerinde bulunamadı"
 
 #: inc/auth.class.php:673 inc/auth.class.php:683
 msgid "Empty login or password"
@@ -4598,7 +4606,7 @@ msgstr[1] "Kopya"
 #: inc/authldap.class.php:570 inc/authldap.class.php:704
 #: inc/authldap.class.php:3454 inc/authmail.class.php:248
 #: inc/authmail.class.php:352 inc/rule.class.php:918 inc/rule.class.php:922
-#: inc/rule.class.php:2535 inc/rulecollection.class.php:1521
+#: inc/rule.class.php:2539 inc/rulecollection.class.php:1521
 msgctxt "button"
 msgid "Test"
 msgstr "Sına"
@@ -4904,7 +4912,7 @@ msgstr "Güncellemeleri denetle"
 #: inc/dropdowntranslation.class.php:366 inc/dropdowntranslation.class.php:472
 #: inc/fieldblacklist.class.php:78 inc/fieldblacklist.class.php:117
 #: inc/ruleaction.class.php:178 inc/rule.class.php:1109
-#: inc/rule.class.php:2066 inc/rulecollection.class.php:1259
+#: inc/rule.class.php:2070 inc/rulecollection.class.php:1259
 #: inc/savedsearch_alert.class.php:157 inc/savedsearch_alert.class.php:254
 #: inc/tickettemplatepredefinedfield.class.php:335
 msgid "Value"
@@ -5058,7 +5066,7 @@ msgstr[1] "İlişkili öge"
 #: inc/profile_user.class.php:344 inc/project.class.php:1035
 #: inc/projectcost.class.php:386 inc/projecttask.class.php:1041
 #: inc/projecttask_ticket.class.php:219 inc/projecttask_ticket.class.php:378
-#: inc/rule.class.php:2808 inc/search.class.php:1649 inc/search.class.php:1651
+#: inc/rule.class.php:2812 inc/search.class.php:1649 inc/search.class.php:1651
 #: inc/search.class.php:1673 inc/search.class.php:1688
 #: inc/search.class.php:1724 inc/search.class.php:1727
 #: inc/search.class.php:1754 inc/search.class.php:1771
@@ -5484,7 +5492,7 @@ msgstr "Uyumlu bir yazıcı modeli ekle"
 #: inc/notification_notificationtemplate.class.php:165
 #: inc/notificationtarget.class.php:1338 inc/profile_user.class.php:255
 #: inc/projectcost.class.php:425 inc/projecttask.class.php:1103
-#: inc/projecttask_ticket.class.php:449 inc/rule.class.php:2771
+#: inc/projecttask_ticket.class.php:449 inc/rule.class.php:2775
 #: inc/savedsearch_alert.class.php:272 inc/search.class.php:5908
 #: inc/software.class.php:1000 inc/softwarelicense.class.php:1183
 #: inc/softwareversion.class.php:342 inc/state.class.php:232
@@ -5962,7 +5970,7 @@ msgstr "Toplam süre"
 #: inc/projecttask.class.php:761 inc/projecttasktemplate.class.php:95
 #: inc/projecttasktemplate.class.php:197 inc/reminder.class.php:346
 #: inc/reminder.class.php:777 inc/rule.class.php:713 inc/rule.class.php:866
-#: inc/rule.class.php:2731 inc/rule.class.php:2800
+#: inc/rule.class.php:2735 inc/rule.class.php:2804
 #: inc/rulecollection.class.php:482 inc/rulecollection.class.php:513
 #: inc/ruleimportcomputer.class.php:104 inc/ruleright.class.php:75
 #: inc/ruleticket.class.php:340 inc/ticket.class.php:3094
@@ -6381,7 +6389,7 @@ msgstr "%1$s / %2$s"
 #: inc/commondbvisible.class.php:243 inc/commondbvisible.class.php:268
 #: inc/commondbvisible.class.php:297 inc/profile_user.class.php:244
 #: inc/profile_user.class.php:407 inc/profile_user.class.php:564
-#: inc/profile_user.class.php:936 inc/rule.class.php:1880
+#: inc/profile_user.class.php:936 inc/rule.class.php:1884
 #: inc/search.class.php:4296 inc/search.class.php:4335
 msgid "R"
 msgstr "R"
@@ -6454,7 +6462,7 @@ msgstr "Aktar"
 
 #: inc/commonglpi.class.php:72 inc/commonitilobject.class.php:5401
 #: inc/item_ticket.class.php:649 inc/item_ticket.class.php:733
-#: inc/rule.class.php:2198 inc/ticket.class.php:6250
+#: inc/rule.class.php:2202 inc/ticket.class.php:6250
 msgid "General"
 msgstr "Genel"
 
@@ -8651,10 +8659,8 @@ msgstr ""
 #: inc/config.php:281
 msgid ""
 "You are trying to update to a development version from a development "
-"version. This is not suppoorted."
+"version. This is not supported."
 msgstr ""
-"Bir geliştirme sürümünden geliştirme sürümüne güncelleme yapıyorsunuz. Bu "
-"işlem desteklenmez."
 
 #: inc/consumable.class.php:199 inc/consumable.class.php:511
 msgctxt "button"
@@ -11163,8 +11169,8 @@ msgid "Add a user"
 msgstr "Kullanıcı ekle"
 
 #: inc/group_user.class.php:428 inc/rule.class.php:1196
-#: inc/rule.class.php:1212 inc/rule.class.php:1262 inc/rule.class.php:2016
-#: inc/rule.class.php:2494 inc/rulecollection.class.php:1225
+#: inc/rule.class.php:1212 inc/rule.class.php:1262 inc/rule.class.php:2020
+#: inc/rule.class.php:2498 inc/rulecollection.class.php:1225
 #: inc/rulecollection.class.php:1499 inc/rulecriteria.class.php:94
 #: inc/rulecriteria.class.php:606 inc/rulerightparameter.class.php:63
 #: inc/rulerightparameter.class.php:76
@@ -12344,7 +12350,7 @@ msgid "Execution"
 msgstr "Yürütme"
 
 #: inc/levelagreementlevel.class.php:125 inc/olalevel.class.php:258
-#: inc/rule.class.php:721 inc/rule.class.php:872 inc/rule.class.php:2734
+#: inc/rule.class.php:721 inc/rule.class.php:872 inc/rule.class.php:2738
 #: inc/ruleright.class.php:78 inc/slalevel.class.php:263
 msgid "Logical operator"
 msgstr "Mantık işlemi"
@@ -13441,8 +13447,8 @@ msgstr "Kip"
 #: inc/notificationeventmailing.class.php:254
 #: inc/notificationmailing.class.php:101
 #, php-format
-msgid "Orignal email address was %1$s"
-msgstr "Özgün e-posta adres: %1$s"
+msgid "Original email address was %1$s"
+msgstr ""
 
 #: inc/notificationeventmailing.class.php:265
 msgid "Error in sending the email"
@@ -13745,7 +13751,7 @@ msgstr "%s tarafından bir onay isteğine yanıt verildi"
 #: inc/notificationtargetticket.class.php:797
 #: inc/notificationtargetticket.class.php:857 inc/profile.class.php:655
 #: inc/profile.class.php:1039 inc/profile.class.php:1041
-#: inc/profile.class.php:1101 inc/rule.class.php:2019 inc/rule.class.php:2040
+#: inc/profile.class.php:1101 inc/rule.class.php:2023 inc/rule.class.php:2044
 #: inc/rulecollection.class.php:1761 inc/rulerightcollection.class.php:84
 #: inc/ticket.class.php:7327 inc/ticket.class.php:7328
 msgid "Validation"
@@ -15956,7 +15962,7 @@ msgstr "Önce"
 msgid "Position"
 msgstr "Konum"
 
-#: inc/rule.class.php:798 inc/rule.class.php:954 inc/rule.class.php:2496
+#: inc/rule.class.php:798 inc/rule.class.php:954 inc/rule.class.php:2500
 msgid "and"
 msgstr "ve"
 
@@ -15984,34 +15990,34 @@ msgstr "İşlem türü"
 msgid "Add a new criteria"
 msgstr "Ölçüt ekle"
 
-#: inc/rule.class.php:1213 inc/rule.class.php:2017
+#: inc/rule.class.php:1213 inc/rule.class.php:2021
 #: inc/rulecollection.class.php:1226 inc/rulecriteria.class.php:171
 msgid "Condition"
 msgstr "Koşul"
 
-#: inc/rule.class.php:1214 inc/rule.class.php:2018
+#: inc/rule.class.php:1214 inc/rule.class.php:2022
 #: inc/rulecollection.class.php:1227 inc/rulecriteria.class.php:181
 msgid "Reason"
 msgstr "Neden"
 
-#: inc/rule.class.php:2013 inc/rulecollection.class.php:1689
+#: inc/rule.class.php:2017 inc/rulecollection.class.php:1689
 msgid "Result details"
 msgstr "Sonuç ayrıntıları"
 
-#: inc/rule.class.php:2038 inc/rulecollection.class.php:1759
+#: inc/rule.class.php:2042 inc/rulecollection.class.php:1759
 #: inc/rulerightcollection.class.php:82
 msgid "Rule results"
 msgstr "Kural sonuçları"
 
-#: inc/rule.class.php:2062
+#: inc/rule.class.php:2066
 msgid "Result of the regular expression"
 msgstr "Kurallı ifadenin sonucu"
 
-#: inc/rule.class.php:2066
+#: inc/rule.class.php:2070
 msgid "Key"
 msgstr "Anahtar"
 
-#: inc/rule.class.php:2937
+#: inc/rule.class.php:2941
 msgid "Rules using the object have been disabled."
 msgstr "Nesneyi kullanan kurallar devre dışı bırakıldı."
 
@@ -16328,7 +16334,7 @@ msgid "Replay dictionary rules for manufacturers (----- = All)"
 msgstr "Üreticilerin sözlük kuralları yeniden uygulansın (----- = Tümü)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:287
-#: inc/ruledictionnarysoftwarecollection.class.php:388
+#: inc/ruledictionnarysoftwarecollection.class.php:390
 msgid "Software deleted by GLPI dictionary rules"
 msgstr "Yazılım, GLPI sözlük kurallarıyla silindi"
 
@@ -16605,7 +16611,7 @@ msgstr "şundan büyük ya da eşit"
 msgid "greater than"
 msgstr "şundan büyük"
 
-#: inc/savedsearch_alert.class.php:384
+#: inc/savedsearch_alert.class.php:385
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
 msgstr "%1$s için sonuç sayısı: %2$s %3$s"
