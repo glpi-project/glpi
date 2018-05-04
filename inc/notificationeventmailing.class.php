@@ -189,7 +189,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
             // manage inline images (and not added as documents in object)
             $matches = [];
-            if (preg_match_all("/<img[^>]*src=(\"|').*document\.send\.php\?docid=([0-9]+)(\"|')[^<]*>/U",
+            if (preg_match_all("/<img[^>]*src=(\"|')[^\"']*document\.send\.php\?docid=([0-9]+)(\"|')[^<]*>/U",
                                $current->fields['body_html'],
                                $matches)) {
                if (isset($matches[2])) {
