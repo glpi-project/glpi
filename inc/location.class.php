@@ -91,7 +91,8 @@ class Location extends CommonTreeDropdown {
          ], [
             'name'   => 'setlocation',
             'type'   => 'setlocation',
-            'label'  => __('Location on map')
+            'label'  => __('Location on map'),
+            'list'   => false
          ], [
             'name'  => 'latitude',
             'label' => __('Latitude'),
