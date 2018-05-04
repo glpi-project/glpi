@@ -5513,12 +5513,12 @@ class Html {
                      $out .= '<a href="'.$glpi_root.
                              '/front/document.send.php?docid='.$id.$more_link.
                              '" target="_blank"><img alt="'.$image['tag'].
-                             '" height="'.$height.'" width="'.$width.
+                             '" width="'.$width.
                              '" src="'.$glpi_root.
                         '/front/document.send.php?docid='.$id.$more_link.'" /></a>';
                   } else {
                      $out .= '<img alt="'.$image['tag'].
-                             '" height="'.$height.'" width="'.$width.
+                             '" width="'.$width.
                              '" src="'.$glpi_root.
                              '/front/document.send.php?docid='.$id.$more_link.'" />';
                   }
