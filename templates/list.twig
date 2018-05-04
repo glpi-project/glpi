@@ -261,7 +261,7 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
    {% for rowkey, row in search_data.data.rows %}
                   <tr>
                      <td>
-                        <input type="checkbox" name="_ids[]" value="{{ row.raw.ITEM_0_id }}"/>
+                        <input type="checkbox" name="_ids[]" value="{{ row.raw.id }}"/>
                      </td>
       {% for colkey, col in search_data.data.cols %}
       {#
