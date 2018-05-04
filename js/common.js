@@ -499,20 +499,20 @@ var split_button = function() {
 
    //click on an element of status list
    $(document).on("click", '.x-button-drop-menu li', function(event) {
+      var chosen_li = $(this);
       if (event.target.children.length) {
-         var xBtnDrop = $(this).parent().siblings(".x-button-drop");
+         var xBtnDrop = chosen_li.parent().siblings(".x-button-drop");
          //clean old status class
          xBtnDrop.attr('class','x-button x-button-drop');
 
          //find status
-         var match = event.target.children[0].src.match(/.*\/(.*)\.png/);
-         var cstatus = match[1];
+         var cstatus = chosen_li.data('status');
 
          //add status to dropdown button
          xBtnDrop.addClass(cstatus);
 
          //fold status list
-         $(this).parents(".x-split-button").removeClass('open');
+         chosen_li.parents(".x-split-button").removeClass('open');
       }
    });
 

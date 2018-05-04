@@ -3283,43 +3283,96 @@ abstract class CommonITILObject extends CommonDBTM {
       $class = null;
       switch ($status) {
          case self::INCOMING :
-            $class = 'circle new';
+            $class = 'circle';
             break;
          case self::ASSIGNED :
-            $class = 'circle-o assigned';
+            $class = 'circle-o';
             break;
          case self::PLANNED :
-            $class = 'calendar planned';
+            $class = 'calendar';
             break;
          case self::WAITING :
-            $class = 'circle waiting';
+            $class = 'circle';
             break;
          case self::SOLVED :
-            $class = 'circle-o solved';
+            $class = 'circle-o';
             break;
          case self::CLOSED :
-            $class = 'circle closed';
+            $class = 'circle';
             break;
          case self::ACCEPTED :
-            $class = 'check-circle accepted';
+            $class = 'check-circle';
             break;
          case self::OBSERVED :
-            $class = 'eye observe';
+            $class = 'eye';
             break;
          case self::EVALUATION :
-            $class = 'circle-o eval';
+            $class = 'circle-o';
             break;
          case self::APPROVAL :
-            $class = 'question-circle approval';
+            $class = 'question-circle';
             break;
          case self::TEST :
-            $class = 'question-circle test';
+            $class = 'question-circle';
             break;
          case self::QUALIFICATION :
-            $class = 'circle-o qualif';
+            $class = 'circle-o';
             break;
       }
-      return $class == null ? '' : 'itilstatus fa fa-' . $class;
+
+      return $class == null
+         ? ''
+         : 'itilstatus fa fa-' . $class." ".self::getStatusKey($status);
+   }
+
+   /**
+    * Get status key
+    *
+    * @since 9.3
+    *
+    * @return string
+    */
+   public static function getStatusKey($status) {
+      $key = '';
+      switch ($status) {
+         case self::INCOMING :
+            $key = 'new';
+            break;
+         case self::ASSIGNED :
+            $key = 'assigned';
+            break;
+         case self::PLANNED :
+            $key = 'planned';
+            break;
+         case self::WAITING :
+            $key = 'waiting';
+            break;
+         case self::SOLVED :
+            $key = 'solved';
+            break;
+         case self::CLOSED :
+            $key = 'closed';
+            break;
+         case self::ACCEPTED :
+            $key = 'accepted';
+            break;
+         case self::OBSERVED :
+            $key = 'observe';
+            break;
+         case self::EVALUATION :
+            $key = 'eval';
+            break;
+         case self::APPROVAL :
+            $key = 'approval';
+            break;
+         case self::TEST :
+            $key = 'test';
+            break;
+         case self::QUALIFICATION :
+            $key = 'qualif';
+            break;
+      }
+      return $key;
    }
 
    /**
