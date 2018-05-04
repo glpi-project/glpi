@@ -157,13 +157,14 @@ class Datacenter extends CommonDBTM {
    }
 
    static function getAdditionalMenuOptions() {
-
-      return [
-         'dcroom' => [
-            'title' => DCRoom::getTypeName(Session::getPluralNumber()),
-            'page'  => DCRoom::getSearchURL(false)
-         ]
-      ];
+      if (static::canView()) {
+         return [
+            'dcroom' => [
+               'title' => DCRoom::getTypeName(Session::getPluralNumber()),
+               'page'  => DCRoom::getSearchURL(false)
+            ]
+         ];
+      }
    }
 
 }
