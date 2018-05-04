@@ -3388,7 +3388,7 @@ class CommonDBTM extends CommonGLPI {
    public final function searchOptions() {
       $options = [];
 
-      if (method_exists(get_class(), 'getSearchOptions')) {
+      if (method_exists(get_class($this), 'getSearchOptions')) {
          if (defined('TU_USER')) {
             throw new \RuntimeException('getSearchOptions must not be used!');
          }
