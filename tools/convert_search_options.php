@@ -133,10 +133,10 @@ function display($array, $table, $pad = 20, $tab = '         ') {
 }
 
 $commondbtm = new CommonDBTM();
-$commonopts = $commondbtm->getSearchOptions();
+$commonopts = $commondbtm->searchOptions();
 
 $item = new $itemtype();
-$opts = $item->getSearchOptions();
+$opts = $item->searchOptions();
 
 $commonopts[1]['table'] = $item->getTable();
 //do not proceed if item class does not define its own getSearchOptions method
