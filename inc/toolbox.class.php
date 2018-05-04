@@ -1530,7 +1530,16 @@ class Toolbox {
     * return string itemtype Form URL
    **/
    static function getItemTypeFormURL($itemtype, $full = true) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $router;
+
+      if ($router != null) {
+         $page = $router->pathFor(
+            'add-asset', [
+               'itemtype'  => $itemtype
+            ]
+         );
+         return $page;
+      }
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 

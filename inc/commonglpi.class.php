@@ -769,8 +769,20 @@ class CommonGLPI {
     * @return string
    **/
    static function getFormURLWithID($id = 0, $full = true) {
+      global $router;
 
       $itemtype = get_called_class();
+
+      if ($router != null) {
+         $page = $router->pathFor(
+            'update-asset', [
+               'itemtype'  => $itemtype,
+               'id'        => $id
+            ]
+         );
+         return $page;
+      }
+
       $link     = $itemtype::getFormURL($full);
       $link    .= (strpos($link, '?') ? '&':'?').'id=' . $id;
       return $link;
