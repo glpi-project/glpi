@@ -7507,7 +7507,7 @@ class Ticket extends CommonITILObject {
          if ($status_key == $ticket->fields['status']) {
             $checked = "checked='checked'";
          }
-         $html .= "<li>";
+         $html .= "<li data-status='".self::getStatusKey($status_key)."'>";
          $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
                     $checked value='$status_key'>";
          $html .= "<label for='status_radio_$status_key$rand'>";

@@ -3608,18 +3608,15 @@ a.copyright {
    content: '\25B2';
 }
 
-.x-button.x-button-drop.new     { background-image: url(../pics/new.png); }
-.x-button-drop.new:after        { content: ' ' !important; }
-.x-button.x-button-drop.assign  { background-image: url(../pics/assign.png); }
-.x-button-drop.assign:after     { content: ' ' !important; }
-.x-button.x-button-drop.plan    { background-image: url(../pics/plan.png); }
-.x-button-drop.plan:after       { content: ' ' !important; }
-.x-button.x-button-drop.waiting { background-image: url(../pics/waiting.png); }
-.x-button-drop.waiting:after    { content: ' ' !important; }
-.x-button.x-button-drop.solved  { background-image: url(../pics/solved.png); }
-.x-button-drop.solved:after     { content: ' ' !important; }
-.x-button.x-button-drop.closed  { background-image: url(../pics/closed.png); }
-.x-button-drop.closed:after     { content: ' ' !important; }
+.x-button-drop:after        {
+   font-family: 'FontAwesome';
+}
+.x-button.x-button-drop.new:after      { content: '\f111'; color: #49bf4d; }
+.x-button.x-button-drop.assigned:after { content: '\f10c'; color: #49bf4d; }
+.x-button.x-button-drop.planned:after  { content: '\f073'; color: #1B2F62; }
+.x-button.x-button-drop.waiting:after  { content: '\f111'; color: orange; }
+.x-button.x-button-drop.solved:after   { content: '\f10c'; color: black; }
+.x-button.x-button-drop.closed:after   { content: '\f111'; color: black; }
 
 .open > .x-button-drop-menu {
    display: block;
