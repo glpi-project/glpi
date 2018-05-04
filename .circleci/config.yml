@@ -16,7 +16,7 @@ shared: &shared
     - run:
         name: Composer
         command: |
-          composer self-update
+          sudo composer self-update
           sed -e '/"php":/d' -i composer.json
           rm -f composer.lock
           composer install --optimize-autoloader
