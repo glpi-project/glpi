@@ -375,7 +375,7 @@ if (typeof tinymce != 'undefined') {
             if (base64.length) {
                var file = dataURItoBlob(base64);
                // Fix #3866 - undefined file name
-               if (file.name === undefined) {
+               if (typeof file.name != "string") {
                   // fill missing file properties
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
                }
