@@ -365,12 +365,12 @@ $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Remin
 $CFG_GLPI['planning_add_types']           = ['Reminder'];
 
 $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
-                                                  'Document',  'Monitor',
-                                                  'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'SoftwareLicense',
-                                                  'Ticket', 'Problem', 'Change',
-                                                  'User', 'Group', 'Project', 'Supplier',
-                                                  'Budget', 'Certificate'];
+                                             'Document',  'Monitor',
+                                             'NetworkEquipment', 'Peripheral', 'Phone',
+                                             'Printer', 'Software', 'SoftwareLicense',
+                                             'Ticket', 'Problem', 'Change',
+                                             'User', 'Group', 'Project', 'Supplier',
+                                             'Budget', 'Certificate', 'Line'];
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
