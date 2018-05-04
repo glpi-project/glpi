@@ -3297,7 +3297,9 @@ class Ticket extends CommonITILObject {
          if (Session::haveRight('ticketcost', READ)) {
             $tab = array_merge($tab, TicketCost::rawSearchOptionsToAdd());
          }
+      }
 
+      if (Session::haveRight('problem', READ)) {
          $tab[] = [
             'id'                 => 'problem',
             'name'               => __('Problems')
