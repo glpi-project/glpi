@@ -786,7 +786,11 @@ class Toolbox {
       // don't download picture files, see them inline
       $attachment = "";
       // if not begin 'image/'
-      if (strncmp($mime, 'image/', 6) !== 0 && $mime != 'application/pdf') {
+      if (strncmp($mime, 'image/', 6) !== 0
+          && $mime != 'application/pdf'
+          // svg vector of attack, force attachment
+          // see https://github.com/glpi-project/glpi/issues/3873
+          || $mime == 'image/svg+xml') {
          $attachment = ' attachment;';
       }
 
