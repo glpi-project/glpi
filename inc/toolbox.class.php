@@ -839,7 +839,14 @@ class Toolbox {
                   ? array_map([__CLASS__, 'addslashes_deep'], $value)
                   : (is_null($value)
                        ? null : (is_resource($value)
-                                  ? $value : $DB->escape($value)));
+                       ? $value : $DB->escape(
+                          str_replace(
+                             ['&#039;', '&quot'],
+                             ["'", "'"],
+                             $value
+                          )
+                       ))
+                    );
 
       return $value;
    }

@@ -1606,7 +1606,16 @@ class Ticket extends DbTestCase {
                'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
             ],
             'rich'      => true
-
+         ], [
+            'input'     => [
+               'name'      => '',
+               'content'   => 'Test for buggy &#039; character'
+            ],
+            'expected'  => [
+               'name'      => 'Test for buggy \\\' character',
+               'content'   => 'Test for buggy \\\' character',
+            ],
+            'rich'      => false
          ]
       ];
    }
