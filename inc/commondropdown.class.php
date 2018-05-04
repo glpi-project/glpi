@@ -95,13 +95,19 @@ abstract class CommonDropdown extends CommonDBTM {
     *  @since 0.85
    **/
    static function getMenuContent() {
+      global $router;
 
       $menu = [];
       if (get_called_class() == 'CommonDropdown') {
+         $page = '/front/dropdown.php';
+         if ($router != null) {
+            $page = $router->pathFor('dropdowns');
+         }
+
          $menu['title']             = static::getTypeName(Session::getPluralNumber());
          $menu['shortcut']          = 'n';
-         $menu['page']              = '/front/dropdown.php';
-         $menu['config']['default'] = '/front/dropdown.php';
+         $menu['page']              = $page;
+         $menu['config']['default'] = $page;
 
          $dps = Dropdown::getStandardDropdownItemTypes();
          $menu['options'] = [];
