@@ -283,3 +283,8 @@ a.vsubmit:hover {
 .ui-widget {
    font-size: 12px;
 }
+
+/* Language dropdown */
+ul {
+    color: #000;
+}
