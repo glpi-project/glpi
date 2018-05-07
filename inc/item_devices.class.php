@@ -691,6 +691,8 @@ class Item_Devices extends CommonDBRelation {
                                             "<a href='" . $this->getLinkURL() . "'>$mode</a>");
 
          foreach ($this->getSpecificities() as $field => $attributs) {
+            $content = '';
+
             if (!empty($link[$field])) {
                // Check the user can view the field
                if (!isset($attributs['right'])) {
@@ -718,9 +720,8 @@ class Item_Devices extends CommonDBRelation {
                         $content = $link[$field];
                   }
                }
-            } else {
-               $content = '';
             }
+
             $spec_cell = $current_row->addCell($specificity_columns[$field], $content, $spec_cell);
          }
 
