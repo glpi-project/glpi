@@ -231,22 +231,24 @@ class Telemetry extends CommonGLPI {
    public static function getAverage($itemtype) {
       $count = (int)countElementsInTable(getTableForItemtype($itemtype));
 
-      if ($count <= 500) {
-         return '0-500';
+      if ($count == 0) {
+         return '0';
+      } else if ($count <= 500) {
+         return '1-500';
       } else if ($count <= 1000) {
-         return '500-1000';
+         return '501-1000';
       } else if ($count <= 2500) {
-         return '1000-2500';
+         return '1001-2500';
       } else if ($count <= 5000) {
-         return '2500-5000';
+         return '2501-5000';
       } else if ($count <= 10000) {
-         return '5000-10000';
+         return '5001-10000';
       } else if ($count <= 50000) {
-         return '10000-50000';
+         return '10001-50000';
       } else if ($count <= 100000) {
-         return '50000-100000';
+         return '50001-100000';
       } else if ($count <= 500000) {
-         return '100000-500000';
+         return '100001-500000';
       }
       return '500000+';
    }
