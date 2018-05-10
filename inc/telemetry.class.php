@@ -63,8 +63,12 @@ class Telemetry extends CommonGLPI {
    static public function grabGlpiInfos() {
       global $CFG_GLPI;
 
+      // Get instance UUID to detect if there is a new install or just telemetry update
+      $conf = Config::getConfigurationValues('core', ['instance_uuid']);
+
       $glpi = [
          'uuid'               => self::getInstanceUuid(),
+         'type'               => (is_null($conf['instance_uuid']) ? 'install' : 'update'),
          'version'            => GLPI_VERSION,
          'plugins'            => [],
          'default_language'   => $CFG_GLPI['language'],
