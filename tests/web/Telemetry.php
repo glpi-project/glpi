@@ -58,6 +58,7 @@ class Telemetry extends DbTestCase {
 
       $this->array($infos['glpi'])->keys->isEqualTo([
          'uuid',
+         'type',
          'version',
          'plugins',
          'default_language',
