@@ -72,8 +72,6 @@ class Config extends CommonDBTM {
     *   @since 0.85
    **/
    static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu = [];
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
@@ -2335,7 +2333,6 @@ class Config extends CommonDBTM {
       // MySQL >= 5.6 || MariaDB >= 10
       $raw = $DB->getVersion();
 
-      $db_ver = false;
       preg_match('/(\d+(\.)?)+/', $raw, $found);
       $version = $found[0];
 
