@@ -46,13 +46,13 @@ class Telemetry extends DbTestCase {
          'default_language'   => 'en_GB',
          'install_mode'       => GLPI_INSTALL_MODE,
          'usage'              => [
-            'avg_entities'          => '1-500',
+            'avg_entities'          => '0',
             'avg_computers'         => '1-500',
-            'avg_networkequipments' => '1-500',
-            'avg_tickets'           => '1-500',
-            'avg_problems'          => '1-500',
+            'avg_networkequipments' => '0',
+            'avg_tickets'           => '0',
+            'avg_problems'          => '0',
             'avg_changes'           => '1-500',
-            'avg_projects'          => '1-500',
+            'avg_projects'          => '0',
             'avg_users'             => '1-500',
             'avg_groups'            => '1-500',
             'ldap_enabled'          => true,
@@ -150,6 +150,7 @@ class Telemetry extends DbTestCase {
       $expected = [
          'engine'    => $dbinfos['Server Software'],
          'version'   => $dbinfos['Server Version'],
+         'motor'     => 'InnoDB',
          'size'      => '',
          'log_size'  => '',
          'sql_mode'  => $dbinfos['Server SQL Mode']
