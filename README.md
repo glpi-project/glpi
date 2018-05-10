@@ -104,7 +104,7 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 
 
 ## Support
-GLPI is a living software : continuoulsy imporvements are made, new functionnality developped and issues fixed!
+GLPI is a living software: continuoulsy imporvements are made, new functionnality developped and issues fixed!
 
 To ease support and developpement, we need your help when encoutering issues.
 There is a GLPI version typical lifecycle:
