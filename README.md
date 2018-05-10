@@ -102,3 +102,16 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
  * [TinyMCE v4.7.1](https://github.com/tinymce/tinymce) LGPL2.1
  * [Underscore.js v1.8.3](https://github.com/jashkenas/underscore) MIT
  * [Lodash v unknown](https://github.com/lodash/lodash) MIT
+
+
+## Support
+GLPI is a living software. Improvements are continuously made, new functionality is being developed, and issues are being fixed.
+
+To ease support and development, we need your help when encountering issues.
+There is a GLPI version typical lifecycle:
+ * A new major version (9.3) is released.
+ * Minor versions (9.3.x), fixing bugs or issues, are published after several weeks *(generally > 10)*.
+   Please consider updating to the latest realeased minor version if you encounter some bugs or performance issues.
+ * Several months *(generally > 12)* after major version realesed, a new major version (9.4) is released
+   Previous major versions become unsupported, please update to the new major version.
+   Obviously, we provide support for the migration tools too!
