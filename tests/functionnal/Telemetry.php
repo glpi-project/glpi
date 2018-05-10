@@ -41,7 +41,7 @@ class Telemetry extends DbTestCase {
    public function testGrabGlpiInfos() {
       $expected = [
          'uuid'               => 'TO BE SET',
-         'type'               => 'install',
+         'type'               => 'update',
          'version'            => GLPI_VERSION,
          'plugins'            => [],
          'default_language'   => 'en_GB',
