@@ -963,10 +963,11 @@ class Toolbox {
 
    /**
     * Common Checks needed to use GLPI
+    * @param boolean $isInstall Is the check run on a install process (don't check DB as not configured yet)
     *
-    * @return 2 : creation error 1 : delete error 0: OK
-   **/
-   static function commonCheckForUseGLPI() {
+    * @return integer 2 = creation error / 1 = delete error  / 0 = OK
+    */
+   static function commonCheckForUseGLPI($isInstall = false) {
       global $CFG_GLPI;
 
       $error = 0;
@@ -1056,13 +1057,16 @@ class Toolbox {
          $error = $suberr;
       }
 
-      //database version check --is it posible?
-      echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing DB engine version')."</td>";
-      $suberr = Config::displayCheckDbEngine();
-      if ($suberr > $error) {
-         $error = $suberr;
+      // No DB version check on system check on the install (DB conf not defined when test are running)
+      if (!$isInstall) {
+         //database version check
+         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing DB engine version') . "</td>";
+         $suberr = Config::displayCheckDbEngine();
+         if ($suberr > $error) {
+            $error = $suberr;
+         }
+         echo "</tr>";
       }
-      echo "</tr>";
 
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
