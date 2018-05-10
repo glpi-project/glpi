@@ -41,7 +41,7 @@ if (isset($_POST['check_version'])) {
 Session::checkRight("backup", READ);
 
 // full path
-$path = GLPI_DUMP_DIR;
+$path = realpath(GLPI_DUMP_DIR);
 
 Html::header(__('Maintenance'), $_SERVER['PHP_SELF'], "admin", "backup");
 
