@@ -49,13 +49,13 @@ class Telemetry extends DbTestCase {
          'usage'              => [
             'avg_entities'          => '1-500',
             'avg_computers'         => '1-500',
-            'avg_networkequipments' => '1-500',
+            'avg_networkequipments' => '0',
             'avg_tickets'           => '1-500',
-            'avg_problems'          => '1',
-            'avg_changes'           => '2',
-            'avg_projects'          => '3',
+            'avg_problems'          => '0',
+            'avg_changes'           => '0',
+            'avg_projects'          => '0',
             'avg_users'             => '1-500',
-            'avg_groups'            => '4',
+            'avg_groups'            => '0',
             'ldap_enabled'          => true,
             'mailcollector_enabled' => false,
             'notifications_modes'   => [],
@@ -151,8 +151,8 @@ class Telemetry extends DbTestCase {
       $expected = [
          'engine'    => $dbinfos['Server Software'],
          'version'   => $dbinfos['Server Version'],
-         'motor'     => 'InnoDB',
          'size'      => '',
+         'motor'     => 'InnoDB',
          'log_size'  => '',
          'sql_mode'  => $dbinfos['Server SQL Mode']
       ];
