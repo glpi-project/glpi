@@ -81,6 +81,7 @@ class Telemetry extends DbTestCase {
          'key'       => 'testplugin',
          'version'   => '0.x.z'
       ];
+      $expected['type'] = 'update';
       $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
       $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
