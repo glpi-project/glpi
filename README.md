@@ -51,6 +51,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - Edge
     - Firefox (including 2 latests ESR version)
     - Chrome
+
 Please, consider using browsers on editors' supported version
 
 
