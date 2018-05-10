@@ -111,7 +111,7 @@ class Telemetry extends DbTestCase {
          )->isGreaterThan(0);
       }
 
-      $expected['usage']['avg_groups'] = '500-1000';
+      $expected['usage']['avg_groups'] = '501-1000';
       $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
       global $CFG_GLPI;
