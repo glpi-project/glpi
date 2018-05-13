@@ -104,14 +104,14 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 
 
 ## Support
-GLPI is a living software: continuoulsy imporvements are made, new functionnality developped and issues fixed!
+GLPI is a living software. Improvements are continuously made, new functionality is being developed, and issues are being fixed.
 
-To ease support and developpement, we need your help when encoutering issues.
+To ease support and development, we need your help when encountering issues.
 There is a GLPI version typical lifecycle:
  * A new major version (9.3) is released.
  * Minor versions (9.3.x), fixing bugs or issues, are published approximately every 3 months.
    Please consider updating to the latest realeased minor version if you encounter some bugs or performance issues.
- * 15 to 18 months after major version realese, a new major version (9.4) is released
+ * 15 to 18 months after major version realesed, a new major version (9.4) is released
    Both new and previous major versions are supported, with latest minor version update.
    Obviously, we provide support for the migration tools too!
  * A last minor version (9.3.x) is then published to fix last bugs.
