@@ -2834,11 +2834,11 @@ class Profile extends CommonDBTM {
             }
 
             if (isset($info['rights'])) {
-               $rights = $info['rights'];
+               $itemRights = $info['rights'];
             } else {
-               $rights = self::getRightsFor($info['itemtype']);
+               $itemRights = self::getRightsFor($info['itemtype']);
             }
-            foreach ($rights as $right => $label) {
+            foreach ($itemRights as $right => $label) {
                if (!isset($column_labels[$right])) {
                   $column_labels[$right] = [];
                }
