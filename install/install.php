@@ -260,6 +260,16 @@ function step3($host, $user, $password, $update) {
                                      'password' => $password];
       echo  "<h3>".__('Database connection successful')."</h3>";
 
+      //get database raw version
+      $DB_ver = $link->query("SELECT version()");
+      $row = $DB_ver->fetch_array();
+      echo "<p class='center'>";
+      $checkdb = Config::displayCheckDbEngine(true, $row[0]);
+      echo "</p>";
+      if ($checkdb > 0) {
+         return;
+      }
+
       if ($update == "no") {
          echo "<p>".__('Please select a database:')."</p>";
          echo "<form action='install.php' method='post'>";
