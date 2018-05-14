@@ -1432,17 +1432,19 @@ abstract class CommonITILTask  extends CommonDBTM {
                   tasktinymce.setContent(data.content.replace(/\r?\n/g, "<br />"));
                }
                // set category
-               $("#dropdown_taskcategories_id'.$rand_type.'").select2("val", taskcategories_id);
+               console.log(taskcategories_id);
+               console.log($("#dropdown_taskcategories_id'.$rand_type.'"));
+               $("#dropdown_taskcategories_id'.$rand_type.'").val(taskcategories_id).trigger("change");
                // set action time
-               $("#dropdown_actiontime'.$rand_time.'").select2("val", actiontime);
+               $("#dropdown_actiontime'.$rand_time.'").val(actiontime).trigger("change");
                // set is_private
-               $("#dropdown_is_private'.$rand_is_private.'").select2("val", data.is_private);
+               $("#dropdown_is_private'.$rand_is_private.'").val(data.is_private).trigger("change");
                // set users_tech
-               $("#dropdown_users_id_tech'.$rand_user.'").select2("val", user_tech);
+               $("#dropdown_users_id_tech'.$rand_user.'").val(user_tech).trigger("change");
                // set group_tech
-               $("#dropdown_groups_id_tech'.$rand_group.'").select2("val", group_tech);
+               $("#dropdown_groups_id_tech'.$rand_group.'").val(group_tech).trigger("change");
                // set state
-               $("#dropdown_state'.$rand_state.'").select2("val", data.state);
+               $("#dropdown_state'.$rand_state.'").val(data.state).trigger("change");
             });
          }
       ');
