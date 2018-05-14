@@ -2227,14 +2227,15 @@ class Config extends CommonDBTM {
     * @since 9.3
     *
     * @param boolean $fordebug display for debug (no html required) (false by default)
+    * @param string  $version  Version to check (mainly from install), defaults to null
     *
     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
     **/
-   static function displayCheckDbEngine($fordebug = false) {
+   static function displayCheckDbEngine($fordebug = false, $version = null) {
       global $CFG_GLPI;
 
       $error = 0;
-      $result = self::checkDbEngine();
+      $result = self::checkDbEngine($version);
       $version = key($result);
       $db_ver = $result[$version];
 
@@ -2325,13 +2326,16 @@ class Config extends CommonDBTM {
     *
     * @since 9.3
     *
+    * @param string $raw Raw version to check (mainly from install), defaults to null
+    *
     * @return boolean
    **/
-   static function checkDbEngine() {
-      global $DB;
-
+   static function checkDbEngine($raw = null) {
       // MySQL >= 5.6 || MariaDB >= 10
-      $raw = $DB->getVersion();
+      if ($raw === null) {
+         global $DB;
+         $raw = $DB->getVersion();
+      }
 
       preg_match('/(\d+(\.)?)+/', $raw, $found);
       $version = $found[0];
