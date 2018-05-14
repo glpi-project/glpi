@@ -1432,17 +1432,36 @@ abstract class CommonITILTask  extends CommonDBTM {
                   tasktinymce.setContent(data.content.replace(/\r?\n/g, "<br />"));
                }
                // set category
-               console.log(taskcategories_id);
-               console.log($("#dropdown_taskcategories_id'.$rand_type.'"));
-               $("#dropdown_taskcategories_id'.$rand_type.'").val(taskcategories_id).trigger("change");
+               if ($("#dropdown_taskcategories_id'.$rand_type.'").find("option[value=\'" + taskcategories_id + "\']").length) {
+                  $("#dropdown_taskcategories_id'.$rand_type.'").val(taskcategories_id).trigger("change");
+               } else {
+                  // Create a DOM Option and pre-select by default
+                  var newOption = new Option(data.taskcategories_name, taskcategories_id, true, true);
+                  // Append it to the select
+                  $("#dropdown_taskcategories_id'.$rand_type.'").append(newOption).trigger("change");
+               }
                // set action time
                $("#dropdown_actiontime'.$rand_time.'").val(actiontime).trigger("change");
                // set is_private
                $("#dropdown_is_private'.$rand_is_private.'").val(data.is_private).trigger("change");
                // set users_tech
-               $("#dropdown_users_id_tech'.$rand_user.'").val(user_tech).trigger("change");
+               if ($("#dropdown_users_id_tech'.$rand_user.'").find("option[value=\'" + user_tech + "\']").length) {
+                  $("#dropdown_users_id_tech'.$rand_user.'").val(user_tech).trigger("change");
+               } else {
+                  // Create a DOM Option and pre-select by default
+                  var newOption = new Option(data.users_id_tech_name, user_tech, true, true);
+                  // Append it to the select
+                  $("#dropdown_users_id_tech'.$rand_user.'").append(newOption).trigger("change");
+               }
                // set group_tech
-               $("#dropdown_groups_id_tech'.$rand_group.'").val(group_tech).trigger("change");
+               if ($("#dropdown_groups_id_tech'.$rand_group.'").find("option[value=\'" + group_tech + "\']").length) {
+                  $("#dropdown_groups_id_tech'.$rand_group.'").val(group_tech).trigger("change");
+               } else {
+                  // Create a DOM Option and pre-select by default
+                  var newOption = new Option(data.groups_id_tech_name, group_tech, true, true);
+                  // Append it to the select
+                  $("#dropdown_groups_id_tech'.$rand_group.'").append(newOption).trigger("change");
+               }
                // set state
                $("#dropdown_state'.$rand_state.'").val(data.state).trigger("change");
             });
