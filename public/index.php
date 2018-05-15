@@ -400,6 +400,46 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('central');
 
+   $app->get('/knowbase', function ($request, $response) {
+      $get = $request->getQueryParams();
+
+      // Clean for search
+      $_GET = Toolbox::stripslashes_deep($_GET);
+
+      // Search a solution
+      if (!isset($_GET["contains"])
+         && isset($_GET["item_itemtype"])
+         && isset($_GET["item_items_id"])) {
+
+         if ($item = getItemForItemtype($_GET["item_itemtype"])) {
+            if ($item->getFromDB($_GET["item_items_id"])) {
+               $_GET["contains"] = $item->getField('name');
+            }
+         }
+      }
+
+      // Manage forcetab : non standard system (file name <> class name)
+      if (isset($_GET['forcetab'])) {
+         Session::setActiveTab('Knowbase', $_GET['forcetab']);
+         unset($_GET['forcetab']);
+      }
+
+      $kb = new Knowbase();
+      ob_start();
+      $kb->display($_GET);
+      $contents = ob_get_contents();
+      ob_end_clean();
+
+      return $this->view->render(
+         $response,
+         'legacy.twig', [
+            'page_title'      => KnowbaseItem::getTypeName(Session::getPluralNumber()),
+            'contents'        => $contents,
+            'item'            => $kb
+         ]
+      );
+   })->setName('knowbase');
+
    $app->get('/{itemtype}/list[/page/{page:\d+}[/{reset:reset}]]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
       $params = $request->getQueryParams() + $args;
