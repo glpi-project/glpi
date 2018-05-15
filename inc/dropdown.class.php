@@ -3002,7 +3002,7 @@ class Dropdown {
     * @return string|array
     */
    public static function getDropdownFindNum($post, $json = true) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // Security
       if (!$DB->tableExists($post['table'])) {
