@@ -874,10 +874,13 @@ abstract class CommonDropdown extends CommonDBTM {
                      // Import new
                      if ($newid = $item->import($input2)) {
                         // Delete old
-                        if ($newid > 0) {
+                        if ($newid > 0 && $key != $newid) {
                            // delete with purge for dropdown with dustbin (Budget)
                            $item->delete(['id'          => $key,
                                                '_replace_by' => $newid], 1);
+                        } else if ($newid > 0 && $key == $newid) {
+                           $input2['id'] = $newid;
+                           $item->update($input2);
                         }
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
