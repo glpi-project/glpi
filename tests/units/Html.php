@@ -389,7 +389,7 @@ class Html extends \GLPITestCase {
          'Notification',
          'SLM',
          'Config',
-         'Control',
+         'FieldUnicity',
          'Crontask',
          'Auth',
          'MailCollector',
