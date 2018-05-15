@@ -107,6 +107,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $menu['title']             = static::getTypeName(Session::getPluralNumber());
          $menu['shortcut']          = 'n';
          $menu['page']              = $page;
+         $menu['itemtype']          = self::getType();
          $menu['config']['default'] = $page;
 
          $dps = Dropdown::getStandardDropdownItemTypes();

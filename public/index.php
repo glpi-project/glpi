@@ -184,6 +184,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->add(function ($request, $response, $next) {
       $get = $request->getQueryParams();
 
+      $route = $request->getAttribute('route');
+      $arguments = $route->getArguments();
+      $this->view->getEnvironment()->addGlobal(
+         "current_itemtype",
+         isset($arguments['itemtype']) ? $arguments['itemtype'] : ''
+      );
+
       if (isset($get['switch'])) {
          $switch_route = $get['switch'];
          $route = $request->getAttribute('route');
@@ -429,6 +436,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $kb->display($_GET);
       $contents = ob_get_contents();
       ob_end_clean();
+
+      $this->view->getEnvironment()->addGlobal(
+         "current_itemtype",
+         'KnowbaseItem'
+      );
 
       return $this->view->render(
          $response,
@@ -815,6 +827,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $params['contents'] = ob_get_contents();
          ob_end_clean();
       }
+
+      $this->view->getEnvironment()->addGlobal(
+         "current_itemtype",
+         'CommonDropdown'
+      );
 
       return $this->view->render(
          $response,

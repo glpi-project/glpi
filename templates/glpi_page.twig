@@ -924,7 +924,16 @@ permit_select_parent	0
         {% if first.itemtype is defined %}{% set url = path_for('list', {'itemtype': first.itemtype|lower}) %}{% endif %}
     {% endif %}
 
-    <li {% if entry.content is defined and entry.content|length %} class="treeview"{% endif %}>
+    {% set is_active = false %}
+
+    {% if entry.content is defined and entry.content|length %}
+        {% for child in entry.content %}
+            {% if child.itemtype is defined and child.itemtype == current_itemtype %}
+                {% set is_active = true %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <li {% if entry.content is defined and entry.content|length %} class="treeview{% if is_active %} active menu-open{% endif %}"{% endif %}>
         <a href="{{ url }}">
             {{ entry.title }}
             <span class="pull-right-container">
@@ -934,7 +943,7 @@ permit_select_parent	0
     {% if entry.content is defined %}
         <ul class="treeview-menu">
         {% for child in entry.content %}
-            <li>
+            <li{% if child.itemtype is defined and child.itemtype == current_itemtype %} class="active"{% endif %}>
                 <a href="{{ child.page }}">{{ child.title|default(__('Missing menu label')) }}</a>
             </li>
         {% endfor %}
