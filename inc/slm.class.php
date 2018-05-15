@@ -180,27 +180,27 @@ class SLM extends CommonDBTM {
       $menu = [];
       if (static::canView()) {
          $menu['title']           = self::getTypeName(2);
-         $menu['page']            = '/front/slm.php';
-         $menu['links']['search'] = '/front/slm.php';
+         $menu['page']            = static::getSearchURL();
+         $menu['links']['search'] = static::getSearchURL();
          if (static::canCreate()) {
             $menu['links']['add'] = Slm::getFormURL(true);
          }
 
          $menu['options']['sla']['title']           = SLA::getTypeName(1);
-         $menu['options']['sla']['page']            = '/front/sla.php';
-         $menu['options']['sla']['links']['search'] = '/front/sla.php';
+         $menu['options']['sla']['page']            = SLA::getSearchURL();
+         $menu['options']['sla']['links']['search'] = SLA::getSearchURL();
 
          $menu['options']['ola']['title']           = OLA::getTypeName(1);
-         $menu['options']['ola']['page']            = '/front/ola.php';
-         $menu['options']['ola']['links']['search'] = '/front/ola.php';
+         $menu['options']['ola']['page']            = OLA::getSearchURL();
+         $menu['options']['ola']['links']['search'] = OLA::getSearchURL();
 
          $menu['options']['slalevel']['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
-         $menu['options']['slalevel']['page']            = '/front/slalevel.php';
-         $menu['options']['slalevel']['links']['search'] = '/front/slalevel.php';
+         $menu['options']['slalevel']['page']            = SlaLevel::getSearchURL();
+         $menu['options']['slalevel']['links']['search'] = SlaLevel::getSearchURL();
 
          $menu['options']['olalevel']['title']           = OlaLevel::getTypeName(Session::getPluralNumber());
-         $menu['options']['olalevel']['page']            = '/front/olalevel.php';
-         $menu['options']['olalevel']['links']['search'] = '/front/olalevel.php';
+         $menu['options']['olalevel']['page']            = OlaLevel::getSearchURL();
+         $menu['options']['olalevel']['links']['search'] = OlaLevel::getSearchURL();
 
       }
       if (count($menu)) {
