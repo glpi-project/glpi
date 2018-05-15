@@ -403,26 +403,30 @@ abstract class CommonDevice extends CommonDropdown {
             $compare = explode(':', $compare);
             switch ($compare[0]) {
                case 'equal':
-                  $where[] = "`".$field."`='".$input[$field]."'";
+                  $where[$field] = $input[$field];
                   break;
 
                case 'delta':
-                  $where[] = "`".$field."`>'".((int) $input[$field] - (int) $compare[1])."'";
-                  $where[] = "`".$field."`<'".((int) $input[$field] + (int) $compare[1])."'";
+                  $where[] = [
+                     [$field => ['>', ((int) $input[$field] - (int) $compare[1])]],
+                     [$field => ['<', ((int) $input[$field] + (int) $compare[1])]]
+                  ];
                   break;
             }
          }
       }
 
-      $query = "SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE ".  implode(" AND ", $where);
+      $iterator = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => $this->getTable(),
+         'WHERE'  => $where
+      ]);
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         $line = $DB->fetch_assoc($result);
+      if (count($iterator) > 0) {
+         $line = $iterator->next();
          return $line['id'];
       }
+
       return $this->add($input);
    }
 
