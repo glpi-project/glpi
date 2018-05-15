@@ -59,9 +59,9 @@ class Control extends CommonGLPI {
 
       if (static::canView()) {
          $options['FieldUnicity']['title']           = __('Fields unicity');
-         $options['FieldUnicity']['page']            = FieldUnicity::getSearchURL();
+         $options['FieldUnicity']['page']            = FieldUnicity::getSearchURL(false);
          $options['FieldUnicity']['links']['add']    = FieldUnicity::getFormURL(false);
-         $options['FieldUnicity']['links']['search'] = FieldUnicity::getSearchURL();
+         $options['FieldUnicity']['links']['search'] = FieldUnicity::getSearchURL(false);
 
          return $options;
       }
