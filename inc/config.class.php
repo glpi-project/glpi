@@ -75,11 +75,11 @@ class Config extends CommonDBTM {
       $menu = [];
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
-         $menu['page']    = '/front/config.form.php';
+         $menu['page']    = Config::getFormURL(false);
 
          $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
-         $menu['options']['apiclient']['page']            = '/front/config.form.php?forcetab=Config$8';
-         $menu['options']['apiclient']['links']['search'] = '/front/config.form.php?forcetab=Config$8';
+         $menu['options']['apiclient']['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
+         $menu['options']['apiclient']['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
          $menu['options']['apiclient']['links']['add']    = '/front/apiclient.form.php';
       }
       if (count($menu)) {
