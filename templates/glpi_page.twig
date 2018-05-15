@@ -175,12 +175,7 @@
                      </a>
 
                   {# Search Item #}
-                  {% if menu_links.search is defined %}
-                     {% set menu_btn = {
-                        'url': path_for('list', {'itemtype': menu_itemtype}),
-                        'text': __('Search'),
-                     } %}
-                  {% else %}
+                  {% if menu_links.search is not defined %}
                      {% set menu_btn = {
                         'url': '#',
                         'text': __('Search is disabled'),
@@ -940,7 +935,7 @@ permit_select_parent	0
         <ul class="treeview-menu">
         {% for child in entry.content %}
             <li>
-                <a href="{% if child.itemtype is defined %}{{ path_for('list', {'itemtype': child.itemtype|lower}) }}{% else %}{{ child.page }}{% endif %}">{{ child.title|default(__('Missing menu label')) }}</a>
+                <a href="{{ child.page }}">{{ child.title|default(__('Missing menu label')) }}</a>
             </li>
         {% endfor %}
         </ul>
