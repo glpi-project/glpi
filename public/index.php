@@ -74,7 +74,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $router = $container['router'];
 
    $container['flash'] = function() {
-      return new \Slim\Flash\Mssages();
+      return new \Slim\Flash\Messages();
    };
 
    // Register component on container
@@ -459,6 +459,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->get('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
       $get = $request->getQueryParams();
+      $display_options = [
+         'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+      ];
+
+      if (isset($get['itemtype'])) {
+         $display_options['itemtype'] = $get['itemtype'];
+      }
+      if (isset($get['items_id'])) {
+         $display_options['items_id'] = $get['items_id'];
+      }
 
       //reload data from session on error
       if (isset($get['item_rand'])) {
@@ -478,9 +488,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             )
          );
          ob_start();
-         $item->display([
-            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
-         ]);
+         $item->display($display_options);
          $params['contents'] = ob_get_contents();
          ob_end_clean();
       } else {
@@ -508,17 +516,18 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    })->setName('add-asset');
 
    $app->get('/ajax/tab/{itemtype}/{id:\d+}/{tab}', function ($request, $response, $args) {
+      $get = $request->getQueryParams();
       /*if (!isset($_GET["sort"])) {
          $_GET["sort"] = "";
       }
 
       if (!isset($_GET["order"])) {
          $_GET["order"] = "";
-      }
-
-      if (!isset($_GET["withtemplate"])) {
-         $_GET["withtemplate"] = "";
       }*/
+
+      if (!isset($get["withtemplate"])) {
+         $get["withtemplate"] = "";
+      }
 
       if ($item = getItemForItemtype($args['itemtype'])) {
          if ($item->get_item_to_display_tab) {
@@ -537,8 +546,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          }
       }
 
-      /*$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate'];
-      $options         = $_GET;
+      $notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate'];
+      $options         = $get;
       foreach ($notvalidoptions as $key) {
          if (isset($options[$key])) {
             unset($options[$key]);
@@ -546,13 +555,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
       if (isset($options['locked'])) {
          ObjectLock::setReadOnlyProfile();
-      }*/
+      }
 
       ob_start();
       CommonGLPI::displayStandardTab(
          $item,
          str_replace('__', '$', $args['tab']),
-         $_GET["withtemplate"],
+         $get["withtemplate"],
          $options
       );
       $contents = ob_get_contents();
