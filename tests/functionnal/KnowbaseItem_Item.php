@@ -185,6 +185,7 @@ class KnowbaseItem_Item extends DbTestCase {
    }
 
    public function testGetTabNameForItem() {
+       $this->login();
        $kb_item = new \KnowbaseItem_Item();
        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
 
