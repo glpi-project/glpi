@@ -1296,6 +1296,14 @@ class SavedSearch extends CommonDBTM {
             );
             $stmt = $DB->prepare($query);
 
+            if (!isset($_SESSION['glpiname'])) {
+               //required from search class
+               $_SESSION['glpiname'] = 'crontab';
+            }
+            if (!isset($_SESSION['glpigroups'])) {
+               $_SESSION['glpigroups'] = [];
+            }
+
             $DB->dbh->begin_transaction();
             while ($row = $iterator->next()) {
                try {
