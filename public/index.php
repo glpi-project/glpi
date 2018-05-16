@@ -193,10 +193,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       if (isset($get['switch'])) {
          $switch_route = $get['switch'];
-         $route = $request->getAttribute('route');
          $uri = $request->getUri();
          $route_name = $route->getName();
-         $arguments = $route->getArguments();
 
          $_SESSION['glpi_switch_route'] = [
             'name'      => $route_name,
@@ -855,7 +853,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       //legacy
       ob_start();
-      $setupdisplay->display(['displaytype' => $args['itemtype']]);
+      $setupdisplay->display([
+         'displaytype'  => $args['itemtype'],
+         '_target'      => $this->router->pathFor('do-display-preference', ['itemtype' => $args['itemtype']])
+      ]);
       $contents = ob_get_contents();
       ob_end_clean();
       $contents = "<div class='legacy'>$contents</div>";
@@ -865,6 +866,46 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ['contents' => $contents]
       );
    })->setName('display-preference');
+
+   $app->post('/ajax/do-display-preference/{itemtype:.+}', function($request, $response, $args) {
+      $post = $request->getParsedBody();
+      $setupdisplay = new DisplayPreference();
+
+      if (isset($post["activate"])) {
+         $setupdisplay->activatePerso($post);
+
+      } else if (isset($post["disable"])) {
+         if ($post['users_id'] == Session::getLoginUserID()) {
+            $setupdisplay->deleteByCriteria([
+               'users_id' => $post['users_id'],
+               'itemtype' => $post['itemtype']]);
+         }
+      } else if (isset($post["add"])) {
+         $setupdisplay->add($post);
+
+      } else if (isset($post["purge"]) || isset($post["purge_x"])) {
+         $setupdisplay->delete($post, 1);
+
+      } else if (isset($post["up"]) || isset($post["up_x"])) {
+         $setupdisplay->orderItem($post, 'up');
+
+      } else if (isset($post["down"]) || isset($post["down_x"])) {
+         $setupdisplay->orderItem($post, 'down');
+      }
+
+      // Datas may come from GET or POST : use REQUEST
+      /*if (isset($_REQUEST["itemtype"])) {
+         $setupdisplay->display(['displaytype' => $_REQUEST['itemtype']]);
+      }*/
+
+      return $response->withRedirect(
+         $this->router->pathFor(
+            'list',
+            ['itemtype' => $args['itemtype']]
+         ),
+         301
+      );
+   })->setName('do-display-preference');
 
    $app->get('/devices', function ($request, $response, $args) {
       $optgroup = Dropdown::getDeviceItemTypes();
