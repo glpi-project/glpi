@@ -1303,4 +1303,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
       return $params;
    }
+
+   protected function countForTab($item, $tab) {
+      $count = countElementsInTable(
+         $this->getTable(), [
+            'computers_id' => $item->getID()
+         ]
+      );
+      return $count;
+   }
+
 }

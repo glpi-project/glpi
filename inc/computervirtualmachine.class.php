@@ -509,4 +509,12 @@ class ComputerVirtualMachine extends CommonDBChild {
       return false;
    }
 
+   protected function countForTab($item, $tab) {
+      $count = countElementsInTable(
+         $this->getTable(), [
+            'computers_id' => $item->getID()
+         ]
+      );
+      return $count;
+   }
 }

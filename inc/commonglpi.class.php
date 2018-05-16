@@ -148,13 +148,13 @@ class CommonGLPI {
          'Contract_Item'      => 'contract_types',
          'Document_Item'      => 'document_types',
          'KnowbaseItem_Item'  => 'kb_types',
-         'Ticket'             => 'itil_types',
+         'Item_Ticket'        => 'itil_types',
          'Item_Problem'       => 'itil_types',
          'Change_Item'        => 'itil_types',
-         'Link'               => 'link_types',
+         'Link_Itemtype'      => 'link_types',
          'Certificate_Item'   => 'certificate_types',
          'Lock'               => 'lock_lockable_objects',
-         'Reservation'        => 'reservation_types'
+         'ReservationItem'    => 'reservation_types'
       ];
 
       foreach ($guess_relations as $class => $conf) {
