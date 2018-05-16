@@ -1280,6 +1280,14 @@ class SavedSearch extends CommonDBTM {
                                       `last_execution_date` = ?
                                   WHERE `id` = ?");
 
+            if (!isset($_SESSION['glpiname'])) {
+               //required from search class
+               $_SESSION['glpiname'] = 'crontab';
+            }
+            if (!isset($_SESSION['glpigroups'])) {
+               $_SESSION['glpigroups'] = [];
+            }
+
             $DB->dbh->begin_transaction();
             while ($row = $iterator->next()) {
                try {
