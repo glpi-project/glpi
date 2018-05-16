@@ -62,6 +62,23 @@ class Stat extends CommonGLPI {
    }
 
 
+   static function getMenuContent() {
+      global $CFG_GLPI, $router;
+
+      $menu = [];
+
+      $page = self::getSearchURL(false);
+      if ($router != null) {
+         $page = $router->pathFor('stats');
+      }
+
+      $menu['title']             = static::getTypeName(Session::getPluralNumber());
+      $menu['shortcut']          = 'n';
+      $menu['page']              = $page;
+
+      return $menu;
+   }
+
    /**
     * @param $itemtype
     * @param $date1
@@ -1200,6 +1217,126 @@ class Stat extends CommonGLPI {
       }
    }
 
+
+   /**
+    * List of available stats entries
+    *
+    * @return array
+    */
+   static function getStatsList() {
+      global $PLUGIN_HOOKS, $CFG_GLPI;
+
+      $opt_list["Ticket"] = __('Tickets');
+
+      $stat_list["Ticket"]["Ticket_Global"] = [
+         'name'      => __('Global'),
+         'mode'      => 'global',
+         'itemtype'  => 'Ticket',
+         "file"      => "stat.global.php?itemtype=Ticket"
+      ];
+      $stat_list["Ticket"]["Ticket_Ticket"] = [
+         'name'      => __('By ticket'),
+         'mode'      => 'tracking',
+         'itemtype'  => 'Ticket',
+         "file"      => "stat.tracking.php?itemtype=Ticket"
+      ];
+      $stat_list["Ticket"]["Ticket_Location"] = [
+         'name'      => __('By hardware characteristics'),
+         'mode'      => 'location',
+         'itemtype'  => 'Ticket',
+         "file"      => "stat.location.php?itemtype=Ticket"
+      ];
+      $stat_list["Ticket"]["Ticket_Item"] = [
+         'name'      => __('By hardware'),
+         'mode'      => 'item',
+         "file"      => "stat.item.php"
+      ];
+
+      if (Problem::canView()) {
+         $opt_list["Problem"] = _n('Problem', 'Problems', Session::getPluralNumber());
+
+         $stat_list["Problem"]["Problem_Global"] = [
+            'name'      => __('Global'),
+            'mode'      => 'global',
+            'itemtype'  => 'Problem',
+            "file"      => "stat.global.php?itemtype=Problem"
+         ];
+         $stat_list["Problem"]["Problem_Problem"] = [
+            'name'      => __('By problem'),
+            'mode'      => 'tracking',
+            'itemtype'  => 'Problem',
+            "file"      => "stat.tracking.php?itemtype=Problem"
+         ];
+      }
+
+      if (Change::canView()) {
+         $opt_list["Change"] = _n('Change', 'Changes', Session::getPluralNumber());
+
+         $stat_list["Change"]["Change_Global"] = [
+            'name'      => __('Global'),
+            'mode'      => 'global',
+            'itemtype'  => 'Change',
+            "file"      => "stat.global.php?itemtype=Change"
+         ];
+         $stat_list["Change"]["Change_Change"] = [
+            'name'      => __('By change'),
+            'mode'      => 'tracking',
+            'itemtype'  => 'Change',
+            "file"      => "stat.tracking.php?itemtype=Change"
+         ];
+      }
+
+      $values   = [];
+
+      $i        = 0;
+      $selected = -1;
+      foreach ($opt_list as $opt => $group) {
+         foreach ($stat_list[$opt] as $data) {
+            $name    = $data['name'];
+            $file    = $data['file'];
+            $comment ="";
+            if (isset($data['comment'])) {
+               $comment = $data['comment'];
+            }
+            $key                  = $CFG_GLPI["root_doc"]."/front/".$file;
+            $values[$group][$key] = $name;
+            /*if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
+               $selected = $key;
+            }*/
+         }
+      }
+
+      // Manage plugins
+      $names    = [];
+      $optgroup = [];
+      if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
+         foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages) {
+            if (is_array($pages) && count($pages)) {
+               foreach ($pages as $page => $name) {
+                  $names[$plug.'/'.$page] = ["name" => $name,
+                                                  "plug" => $plug];
+                  $optgroup[$plug] = Plugin::getInfo($plug, 'name');
+               }
+            }
+         }
+         asort($names);
+      }
+
+      foreach ($optgroup as $opt => $title) {
+         $group = $title;
+         foreach ($names as $key => $val) {
+            if ($opt == $val["plug"]) {
+               $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
+               $values[$group][$file] = $val["name"];
+               /*if (stripos($_SERVER['REQUEST_URI'], $file) !== false) {
+                  $selected = $file;
+               }*/
+            }
+         }
+      }
+
+      return $values;
+   }
 
    /**
     * @since 0.84

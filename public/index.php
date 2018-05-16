@@ -907,6 +907,47 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('devices');
 
+   $app->get('/stats[/{mode:global|trackink|location}[/{itemtype}]]', function ($request, $response, $args) {
+      /*$central = new Central();
+
+      ob_start();
+      $central->display();
+      $contents = ob_get_contents();
+      ob_end_clean();*/
+
+      $glpi_form = [
+         'header'       => false,
+         'submit'       => false,
+         'elements'     => [
+            'stats' => [
+               'type'         => 'select',
+               'name'         => 'stats',
+               'autofocus'    => true,
+               'values'       => Stat::getStatsList(),
+               'listicon'     => false,
+               'addicon'      => false,
+               'label'        => __('Statistics to display'),
+               'noajax'       => true,
+               'value'        => /*isset($args['device']) ? $args['device'] : */null,
+               'change_func'  => 'onDdListChange',
+               'empty_value'  => true
+            ]
+         ]
+      ];
+
+
+
+
+      return $this->view->render(
+         $response,
+         'stats.twig', [
+            'glpi_form' => $glpi_form
+            /*'contents' => $contents*/
+         ]
+      );
+   })->setName('stats');
+
+
    // Run app
    $app->run();
 
