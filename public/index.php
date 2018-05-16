@@ -866,6 +866,47 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('display-preference');
 
+   $app->get('/devices', function ($request, $response, $args) {
+      $optgroup = Dropdown::getDeviceItemTypes();
+
+      $glpi_form = [
+         'header'       => false,
+         'submit'       => false,
+         'elements'     => [
+            'devices' => [
+               'type'         => 'select',
+               'name'         => 'devices',
+               'autofocus'    => true,
+               'values'       => $optgroup,
+               'listicon'     => false,
+               'addicon'      => false,
+               'label'        => _n('Device', 'Devices', 2),
+               'noajax'       => true,
+               'value'        => isset($args['device']) ? $args['device'] : null,
+               'change_func'  => 'onDdListChange',
+               'empty_value'  => true
+            ]
+         ]
+      ];
+
+      $tpl = 'devices.twig';
+      $params = [
+         'page_title'   => __('Devices'),
+         'glpi_form'    => $glpi_form
+      ];
+
+      $this->view->getEnvironment()->addGlobal(
+         "current_itemtype",
+         'CommonDevice'
+      );
+
+      return $this->view->render(
+         $response,
+         $tpl,
+         $params
+      );
+   })->setName('devices');
+
    // Run app
    $app->run();
 
