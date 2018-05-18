@@ -457,7 +457,7 @@ class DBmysql {
     * @return boolean TRUE on success or FALSE on failure.
     */
    function close() {
-      if ($this->dbh) {
+      if ($this->connected && $this->dbh) {
          return $this->dbh->close();
       }
       return false;
