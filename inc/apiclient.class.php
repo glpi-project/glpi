@@ -270,6 +270,10 @@ class APIClient extends CommonDBTM {
          }
       }
 
+      if (isset($input['ipv6']) && empty($input['ipv6'])) {
+         $input['ipv6'] = "NULL";
+      }
+
       if (isset($input['_reset_app_token'])) {
          $input['app_token']      = self::getUniqueAppToken();
          $input['app_token_date'] = $_SESSION['glpi_currenttime'];
