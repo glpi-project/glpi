@@ -990,6 +990,59 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('stats');
 
+   $app->get('/dictionnaries', function ($request, $response, $args) {
+      $dictionnaries = RuleCollection::getDictionnaries();
+      $params = [
+         'page_title'      => __('Dictionaries'),
+         'dictionnaries'   => $dictionnaries
+      ];
+
+      $this->view->getEnvironment()->addGlobal(
+         "current_itemtype",
+         'RuleCollection'
+      );
+
+      return $this->view->render(
+         $response,
+         'dictionnaries.twig',
+         $params
+      );
+   })->setName('dictionnaries');
+
+   $app->get('/dictionnary/{collection}', function ($request, $response, $args) {
+      $class = "RuleDictionnary{$args['collection']}Collection";
+      if (!class_exists($class)) {
+         $this->flash->addMessage(
+            'error',
+            str_replace(
+               '%classname',
+               $class,
+               __('Class %classname does not exists!')
+            )
+         );
+         return $response->withRedirect(
+            $this->router->pathFor('dictionnaries'),
+            301
+         );
+      }
+      $collection = new $class();
+      /*$dictionnaries = RuleCollection::getDictionnaries();
+      $params = [
+         'page_title'      => __('Dictionaries'),
+         'dictionnaries'   => $dictionnaries
+      ];*/
+
+      $this->view->getEnvironment()->addGlobal(
+         "current_itemtype",
+         'RuleCollection'
+      );
+
+      return $this->view->render(
+         $response,
+         'dictionnary.twig',
+         []
+      );
+   })->setName('dictionnary');
 
    // Run app
    $app->run();

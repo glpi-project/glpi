@@ -192,7 +192,7 @@ class Rule extends CommonDBTM {
     *  @since 0.85
    **/
    static function getMenuContent() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $router;
 
       $menu = [];
 
@@ -243,10 +243,14 @@ class Rule extends CommonDBTM {
       if (Session::haveRight("rule_dictionnary_dropdown", READ)
           || Session::haveRight("rule_dictionnary_software", READ)
           || Session::haveRight("rule_dictionnary_printer", READ)) {
+         $page = '/front/dictionnary.php';
+         if ($router != null) {
+            $page = $router->pathFor('dictionnaries');
+         }
 
          $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', Session::getPluralNumber());
          $menu['dictionnary']['shortcut'] = '';
-         $menu['dictionnary']['page']     = '/front/dictionnary.php';
+         $menu['dictionnary']['page']     = $page;
 
          $menu['dictionnary']['options']['manufacturers']['title']
                            = _n('Manufacturer', 'Manufacturers', Session::getPluralNumber());
