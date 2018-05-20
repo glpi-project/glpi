@@ -53,6 +53,13 @@ ul.pagination {
    margin: 0;
 }
 
+.flash {
+   min-height: 2em;
+   min-width: 5em;
+   position: absolute;
+   right: .2em;
+}
+
 /** Alpha msg */
 .alpha {
    text-align: center;

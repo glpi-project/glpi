@@ -456,7 +456,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       if (isset($args['reset'])) {
          $params = $args;
          unset($params['reset']);
-         $this->flash->addMessage('glpi_info', __('Search params has been reset'));
+         $this->flash->addMessage('info', __('Search params has been reset'));
       }
       if (isset($args['page'])) {
          $params['start'] = ($args['page'] - 1) * $_SESSION['glpilist_limit'];
@@ -769,7 +769,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                'use_mode'  => $mode
             ]
          );
-         Session::addMessageAfterRedirect(
+
+         $this->flash->addMessage(
+            'info',
             $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ?
                __('Debug mode has been enabled!') :
                __('Debug mode has been disabled!')

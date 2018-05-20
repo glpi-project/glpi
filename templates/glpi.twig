@@ -30,6 +30,20 @@
  #}
 <!DOCTYPE html>
 <html lang="{{ glpi_lang }}" class="hold-transition{% if glpi_skin != false %} skin-{{ glpi_skin }}{% endif %} {% block html_class  %}{% endblock %}">
+{% macro flash_messages(messages, class, title, faicon) %}
+   {% if messages|length > 0 %}
+   <div class="flash alert alert-{{ class }}{% if class != 'danger' %} alert-dismissible{% endif %}">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4>
+         <i class="fa fa-{{ faicon }}"></i> {{ title }}
+      </h4>
+      {% for msg in messages %}
+      {{ msg }}<br/>
+      {% endfor %}
+   </div>
+   {% endif %}
+{% endmacro %}
+
 {% set js_libs = glpi_js_libs|default('public/bower_components') %}
     <head>
          <meta charset="utf-8"/>
@@ -50,7 +64,6 @@
 
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/css/AdminLTE.min.css" type="text/css" media="screen" />
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/css/skins/skin-{{ glpi_skin }}.min.css" type="text/css" media="screen" />
-         {#<script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/../lib/jquery/js/jquery-1.10.2.js"></script>#}
          <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/jquery/dist/jquery.min.js"></script>
          <!-- Google Font -->
          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -91,18 +104,49 @@
             </a>
         </footer>
         </div>
-   {% set glpi_infos = flash('info') %}
-   {% set glpi_errors = flash('error') %}
-   {% if glpi_infos|length > 0 %}
-      <ul class="alert alert-danger">
-      {% for msg in glpi_infos %}
-         <li>{{ msg }}</li>
-      {% endfor %}
-      </ul>
-   {% endif %}
+   {% import _self as glpi %}
+   {% for type in ['info', 'error', 'warning', 'success'] %}
+      {% set class = type %}
+      {% set faicon = type %}
+      {% if type == 'error' %}
+         {% set class = 'danger' %}
+         {% set alert_title = __('Error') %}
+         {% set faicon = 'ban' %}
+      {% endif %}
+      {% if type == 'info' %}
+         {% set alert_title = __('Information') %}
+      {% endif %}
+      {% if type == 'warning' %}
+         {% set alert_title = __('Warning') %}
+      {% endif %}
+      {% if type == 'success' %}
+         {% set alert_title = __('Success') %}
+         {% set faicon = 'check' %}
+      {% endif %}
+      {{ glpi.flash_messages(flash(type), class, alert_title, faicon) }}
+   {% endfor %}
+
    {% block javascripts %}
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/bootstrap/dist/js/bootstrap.min.js"></script>
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/js/adminlte.min.js"></script>
+      <script type="text/javascript">
+         $(function() {
+            var _of = window;
+            var _at = 'right-20 bottom-20';
+            //calculate relative dialog position
+            $('.flash').each(function() {
+               var _this = $(this);
+               _of = _this;
+               _at = 'right top-' + (10 + _this.outerHeight());
+               _this.position({
+                  my: 'right bottom',
+                  at: _at,
+                  of: _of,
+                  collision: 'none'
+               });
+            });
+         });
+      </script>
       {#% for script in glpi_scripts %}
          <script type="text/javascript">{{ script|raw }}</script>
       {% endfor %#}
