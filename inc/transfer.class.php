@@ -1500,7 +1500,7 @@ class Transfer extends CommonDBTM {
    function transferComputerDisks($ID) {
 
       if (!$this->options['keep_disk']) {
-         $disk = new ComputerDisk();
+         $disk = new Item_Disk();
          $disk->cleanDBonItemDelete('Computer', $ID);
       }
    }
