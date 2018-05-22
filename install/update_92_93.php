@@ -736,6 +736,24 @@ function update92to93() {
    );
    /** /Migrate computerdisks to items_disks */
 
+   /** Add Item_Device* display preferences */
+   $itemDeviceTypes = Item_Devices::getDeviceTypes();
+   foreach ($itemDeviceTypes as $itemDeviceType) {
+      $optToAdd = [];
+
+      // Serial number
+      $itemDeviceSpecificities = $itemDeviceType::getSpecificities();
+      if (array_key_exists('serial', $itemDeviceSpecificities)) {
+         $optToAdd[] = $itemDeviceSpecificities['serial']['id'];
+      }
+
+      // Parent device.
+      $optToAdd[] = 4;
+
+      $ADDTODISPLAYPREF[$itemDeviceType] = $optToAdd;
+   }
+   /** /Add Item_Device* display preferences */
+
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {

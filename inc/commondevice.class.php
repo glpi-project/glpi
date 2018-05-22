@@ -110,6 +110,15 @@ abstract class CommonDevice extends CommonDropdown {
                   if ($tmp->canCreate()) {
                      $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
                   }
+
+                  if ($itemClass = getItemForItemtype('Item_' . $key)) {
+                     // TODO Which label to use ? The getTypeName() function returns __('Item - %s link')
+                     $itemTypeName = $itemClass::getTypeName(Session::getPluralNumber());
+
+                     $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
+                        . '<span class="sr-only">' . $itemTypeName . '</span>';
+                     $menu['options'][$key]['links'][$listLabel] = $itemClass->getSearchURL(false);
+                  }
                }
             }
          }

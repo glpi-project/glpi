@@ -105,9 +105,41 @@ class Item_Devices extends CommonDBRelation {
       return $forbidden;
    }
 
-
    function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false,
+      ];
+
+      $deviceType = $this->getDeviceType();
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => getTableForItemType($deviceType),
+         'field'              => 'designation',
+         'name'               => $deviceType::getTypeName(1),
+         'datatype'           => 'itemlink',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => $this->getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
       foreach (static::getSpecificities() as $field => $attributs) {
          switch ($field) {
@@ -148,6 +180,34 @@ class Item_Devices extends CommonDBRelation {
          'name'               => __('Entity'),
          'datatype'           => 'dropdown'
       ];
+
+
+      $tab[] = [
+         'id'                 => 'linked_assets',
+         'name'               => __('Linked asset')
+      ];
+
+      $idx = 300;
+      $concernedItems = $this->getConcernedItems();
+      foreach ($concernedItems as $itemType) {
+         $itemTable = getTableForItemType($itemType);
+
+         $tab[] = [
+            'id'                 => (string)$idx,
+            'table'              => $itemTable,
+            'field'              => 'name',
+            'name'               => $itemType::getTypeName(1),
+            'datatype'           => 'itemlink',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+               'jointype'           => 'itemtype_item_revert',
+               'specific_itemtype'  => $itemType,
+            ],
+         ];
+
+         $idx++;
+      }
 
       return $tab;
    }
@@ -1266,4 +1326,13 @@ class Item_Devices extends CommonDBRelation {
       }
    }
 
+   static function getSearchURL($full = true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $itemtype = get_called_class();
+      $link = "$dir/front/item_device.php?itemtype=$itemtype";
+
+      return $link;
+   }
 }
