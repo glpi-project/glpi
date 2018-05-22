@@ -3912,7 +3912,7 @@ class Ticket extends CommonITILObject {
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "<tr><th>".__('Describe the incident or request')."</th><th>";
       if (Session::isMultiEntitiesMode()) {
@@ -4108,7 +4108,7 @@ class Ticket extends CommonITILObject {
 
          echo "</td></tr>";
       }
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
