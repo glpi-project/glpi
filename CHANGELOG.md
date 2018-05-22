@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 - Added `DB::insert()`, `DB::update()` and `DB::delete()` to replace raw SQL queries
 - `CommonITILObject::showMassiveSolutionForm()` now takes a `CommonITILObject` as argument
 - `Profileuser::getUserProfiles` filter parameter is now an array
+- Select2 javascript component has been upgraded to 4.0 version, see [Migrating from Select2 3.5](https://select2.org/upgrading/migrating-from-35)
 
 #### Deprecated
 
