@@ -4350,15 +4350,15 @@ class Html {
 
       $js = "
          var params_$field_id = {";
-         foreach ($params as $key => $val) {
-            // Specific boolean case
-            if (is_bool($val)) {
-               $js .= "$key: ".($val?1:0).",\n";
-            } else {
-               $js .= "$key: ".json_encode($val).",\n";
-            }
+      foreach ($params as $key => $val) {
+         // Specific boolean case
+         if (is_bool($val)) {
+            $js .= "$key: ".($val?1:0).",\n";
+         } else {
+            $js .= "$key: ".json_encode($val).",\n";
          }
-         $js.= "};
+      }
+      $js.= "};
 
          $('#$field_id').select2({
             width: '$width',
