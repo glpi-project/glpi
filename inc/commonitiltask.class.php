@@ -1432,17 +1432,17 @@ abstract class CommonITILTask  extends CommonDBTM {
                   tasktinymce.setContent(data.content.replace(/\r?\n/g, "<br />"));
                }
                // set category
-               $("#dropdown_taskcategories_id'.$rand_type.'").select2("val", taskcategories_id);
+               $("#dropdown_taskcategories_id'.$rand_type.'").trigger("setValue", taskcategories_id);
                // set action time
-               $("#dropdown_actiontime'.$rand_time.'").select2("val", actiontime);
+               $("#dropdown_actiontime'.$rand_time.'").val(actiontime).trigger("change");
                // set is_private
-               $("#dropdown_is_private'.$rand_is_private.'").select2("val", data.is_private);
+               $("#dropdown_is_private'.$rand_is_private.'").val(data.is_private).trigger("change");
                // set users_tech
-               $("#dropdown_users_id_tech'.$rand_user.'").select2("val", user_tech);
+               $("#dropdown_users_id_tech'.$rand_user.'").trigger("setValue", user_tech);
                // set group_tech
-               $("#dropdown_groups_id_tech'.$rand_group.'").select2("val", group_tech);
+               $("#dropdown_groups_id_tech'.$rand_group.'").trigger("setValue", group_tech);
                // set state
-               $("#dropdown_state'.$rand_state.'").select2("val", data.state);
+               $("#dropdown_state'.$rand_state.'").val(data.state).trigger("change");
             });
          }
       ');
