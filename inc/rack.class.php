@@ -491,6 +491,7 @@ class Rack extends CommonDBTM {
 
       switch ($item->getType()) {
          case DCRoom::getType():
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = countElementsInTable(
                   self::getTable(), [
