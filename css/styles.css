@@ -4929,13 +4929,15 @@ ul.indexes {
    background: none !important;
 }
 
-.grid-room .grid-stack {
+.grid-room .racks_add {
    border: 1px solid #EEEEEE;
-   float: left;
    border-width: 0 1px 1px 0;
    background-size: 40px 39px;
    background-image: linear-gradient(to right, #EEEEEE 1px, transparent 1px),
                      linear-gradient(to bottom, #EEEEEE 1px, transparent 1px);
+}
+.grid-room .grid-stack {
+   float: left;
 }
 
 .clear_grid .grid-room .grid-stack {
