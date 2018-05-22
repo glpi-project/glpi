@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-03 07:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Oscar Stiven Gomez Toro <oscar.gomez@clinicadeoccidente.com>, 2017\n"
+"Last-Translator: Haider Ilich López Areiza <hlopez@itsoluciones.com.co>, 2018\n"
 "Language-Team: Spanish (Colombia) (https://www.transifex.com/glpi/teams/1637/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -940,11 +940,11 @@ msgstr[1] "Entidades"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "¡El modo de depuración ha sido habilitado!"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "¡El modo de depuración ha sido des-habilitado!"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -1145,10 +1145,12 @@ msgstr "Comprobar si hay una nueva versión disponible"
 #: front/backup.php:607
 msgid "GLPI internal backup system is a helper for very small instances."
 msgstr ""
+"El sistema interno de copia de seguridad del GLPI es un asistente para "
+"instancias muy pequeñas"
 
 #: front/backup.php:608
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "Deberías usar una herramienta dedicada en tu servidor."
 
 #: front/backup.php:611 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
@@ -2399,15 +2401,15 @@ msgstr "Autenticación"
 
 #: front/helpdesk.php:88
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Formulario de informes de la mesa de ayuda"
 
 #: front/helpdesk.php:91
 msgid "The issue must be solved"
-msgstr ""
+msgstr "El error debe ser resuelto"
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Selecciona un nivel de urgencia"
 
 #: front/helpdesk.php:97 inc/commonitilobject.class.php:1929
 msgctxt "urgency"
@@ -2436,7 +2438,7 @@ msgstr "Muy baja"
 
 #: front/helpdesk.php:106
 msgid "Describe your issue"
-msgstr ""
+msgstr "Describe tu error"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
@@ -2474,7 +2476,7 @@ msgstr "Contenido"
 #: front/helpdesk.php:117
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "enviar"
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
 #: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4632
@@ -3934,6 +3936,8 @@ msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
 msgstr ""
+"No hay un cliente API activo que coincida con su dirección IP en la "
+"configuración"
 
 #: inc/api.class.php:200
 msgid "parameter(s) login, password or user_token are missing"
@@ -4004,7 +4008,7 @@ msgstr "La contraseña se ha cambiado correctamente"
 
 #: inc/api.class.php:1947
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "el parámetro app_token parece inválido"
 
 #: inc/api.class.php:1950
 msgid "missing parameter app_token"
@@ -4112,6 +4116,8 @@ msgstr "Identificador de la aplicación"
 #: inc/apiclient.class.php:210
 msgid "Leave these parameters empty to disable API access restriction"
 msgstr ""
+"Deje estos parámetros en blanco para deshabilitar la restricción de acceso "
+"al API"
 
 #: inc/apiclient.class.php:236 inc/config.class.php:1318
 #: inc/config.class.php:1319 inc/config.class.php:1337
@@ -5843,7 +5849,7 @@ msgstr "En espera"
 #: inc/change.class.php:496
 msgctxt "change"
 msgid "Testing"
-msgstr ""
+msgstr "Probando"
 
 #: inc/change.class.php:497
 msgid "Qualification"
@@ -7140,7 +7146,7 @@ msgstr "Tareas de problema por hacer"
 #: inc/commonitiltask.class.php:1972
 #, php-format
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #: inc/commonitiltask.class.php:1985
 msgid "No tasks do to."
@@ -8040,6 +8046,8 @@ msgstr "Habilitar acceso con credenciales"
 #: inc/config.class.php:768
 msgid "Allow to login to API and get a session token with user credentials"
 msgstr ""
+"Permitir ingresar a la API y obtener un identificador de sesión con "
+"credenciales de usuario"
 
 #: inc/config.class.php:774
 msgid "Enable login with external token"
@@ -8050,6 +8058,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
 msgstr ""
+"Permitir el ingreso a la API obteniendo un identificador de sesión con un "
+"identificador de usuario externo. Ver llave de acceso remoto en la pestaña "
+"Configuración"
 
 #: inc/config.class.php:793
 msgid "Add API client"
@@ -8379,12 +8390,12 @@ msgstr "Tasa de visitas"
 #: inc/config.class.php:1620
 #, php-format
 msgid "%1$ss hits rate is low"
-msgstr ""
+msgstr "%1$ss indice de visitas es bajo"
 
 #: inc/config.class.php:1623
 #, php-format
 msgid "%1$s hits rate is correct"
-msgstr ""
+msgstr "%1$s indice de visitas es normal"
 
 #: inc/config.class.php:1629
 msgid "Out of memory restart"
@@ -8633,7 +8644,7 @@ msgstr "El acceso web al directorio de archivos está protegido"
 
 #: inc/config.class.php:2547 inc/config.class.php:2551
 msgid "Web access to the files directory should not be allowed"
-msgstr ""
+msgstr "El acceso web al directorio de archivos no debería permitirse"
 
 #: inc/config.class.php:2548 inc/config.class.php:2552
 msgid "Check the .htaccess file and the web server configuration."
@@ -8644,10 +8655,12 @@ msgid ""
 "Web access to the files directory should not be allowed but this cannot be "
 "checked automatically on this instance."
 msgstr ""
+"El acceso web al directorio de archivos no debería permitirse pero no puede "
+"ser verificado automáticamente en esta instancia."
 
 #: inc/config.class.php:2568
 msgid "error log file"
-msgstr ""
+msgstr "error en el archivo de log"
 
 #: inc/config.class.php:2729
 msgid "You are using a development version, be careful!"
@@ -8659,7 +8672,7 @@ msgstr "Reconozco que estoy usando una versión inestable."
 
 #: inc/config.class.php:2736
 msgid "Please check the unstable version checkbox."
-msgstr ""
+msgstr "Por favor marque la casilla de verificación de la versión inestable."
 
 #: inc/config.php:199 inc/config.php:207
 msgid "Service is down for maintenance. It will be back shortly."
@@ -8697,6 +8710,8 @@ msgid ""
 "You are trying to update to a development version from a development "
 "version. This is not supported."
 msgstr ""
+"Está intentando actualizar a una versión de desarrollo desde una versión de "
+"desarrollo. Esto no es compatible."
 
 #: inc/consumable.class.php:199 inc/consumable.class.php:511
 msgctxt "button"
@@ -8874,7 +8889,7 @@ msgstr "Agregar un proveedor"
 
 #: inc/contact.class.php:293 inc/user.class.php:2724
 msgid "Last name"
-msgstr ""
+msgstr "Apellidos"
 
 #: inc/contact.class.php:414 inc/contract.class.php:900
 msgid "Associated supplier"
@@ -9824,7 +9839,7 @@ msgstr[1] ""
 
 #: inc/devicesimcard.class.php:67 inc/devicesimcard.class.php:97
 msgid "Allow VOIP"
-msgstr ""
+msgstr "Permitir VOIP"
 
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:862
 msgid "Simcard type"
@@ -10045,7 +10060,7 @@ msgstr "Tipo de archivo no autorizado"
 
 #: inc/document.class.php:1250
 msgid "Manage document types"
-msgstr ""
+msgstr "Administrar tipos de documentos"
 
 #: inc/document.class.php:1257
 #, php-format
@@ -10566,7 +10581,7 @@ msgstr "No se encontró la traducción"
 
 #: inc/entity.class.php:249
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "No puedes agregar una entidad sin nombre"
 
 #: inc/entity.class.php:620 inc/entity.class.php:1420
 msgid "LDAP directory information attribute representing the entity"
@@ -10772,7 +10787,7 @@ msgstr "Ver Todos"
 
 #: inc/entity.class.php:1131
 msgid "Load more entities..."
-msgstr ""
+msgstr "Cargar más entidades..."
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:1237
@@ -11305,7 +11320,7 @@ msgstr "Mis preferencias"
 
 #: inc/html.class.php:1509
 msgid "Back to top of the page"
-msgstr ""
+msgstr "Volver a la parte superior de la página"
 
 #: inc/html.class.php:1562 inc/toolbox.class.php:1323
 #: inc/toolbox.class.php:1327
@@ -11466,7 +11481,7 @@ msgstr[1] "+ %d años"
 
 #: inc/html.class.php:3516
 msgid "The description field is mandatory"
-msgstr ""
+msgstr "El campo de descripción es obligatorio"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3679 inc/html.class.php:3881
@@ -11519,7 +11534,7 @@ msgstr "Seleccionar/de-seleccionar todo"
 
 #: inc/html.class.php:5818
 msgid "Start typing to find a menu"
-msgstr ""
+msgstr "Comience a escribir para encontrar un menú"
 
 #: inc/html.class.php:5891 inc/html.class.php:5893
 msgid "Logout"
@@ -11527,15 +11542,15 @@ msgstr "Cerrar sesión"
 
 #: inc/html.class.php:5914
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Modo depuración habilitado"
 
 #: inc/html.class.php:5915
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Modo depuración deshabilitado"
 
 #: inc/html.class.php:5919
 msgid "Change mode"
-msgstr ""
+msgstr "Cambiar modo"
 
 #: inc/html.class.php:5933
 msgid "Manage saved searches"
@@ -11543,7 +11558,7 @@ msgstr "Administrar búsquedas guardadas"
 
 #: inc/html.class.php:5937 inc/search.class.php:1955
 msgid "Load a saved search"
-msgstr ""
+msgstr "Cargar una búsqueda guardada"
 
 #: inc/html.class.php:6002 inc/profile.class.php:2161
 #: inc/ticket.class.php:5851
@@ -11556,11 +11571,11 @@ msgstr "Plugins"
 
 #: inc/html.class.php:6233 inc/html.class.php:6235
 msgid "Add is disabled"
-msgstr ""
+msgstr "Adicionar esta deshabilitado"
 
 #: inc/html.class.php:6246 inc/html.class.php:6248
 msgid "Search is disabled"
-msgstr ""
+msgstr "Buscar esta deshabilitado"
 
 #: inc/html.class.php:6320 inc/html.class.php:6321 inc/ticket.class.php:257
 #: inc/ticket.class.php:258 inc/ticket.class.php:3678
@@ -11611,11 +11626,11 @@ msgstr "Ver"
 
 #: inc/infocom.class.php:750
 msgid "Please fill you fiscal year date in preferences."
-msgstr ""
+msgstr "Por favor complete la fecha del año fiscal en preferencias."
 
 #: inc/infocom.class.php:769
 msgid "Please fill either buy or use date in preferences."
-msgstr ""
+msgstr "Complete la fecha de compra o uso en las preferencias."
 
 #: inc/infocom.class.php:1008
 msgid "Requested item not found"
@@ -11861,30 +11876,31 @@ msgstr "Seleccione un dispositivo"
 #: inc/item_devices.class.php:837
 msgid "You must choose any unaffected device or ask to add new."
 msgstr ""
+"Debe elegir cualquier dispositivo no afectado o solicitar agregar uno nuevo."
 
 #: inc/item_devices.class.php:1094
 msgid "Copy to clipboard failed"
-msgstr ""
+msgstr "No se pudo copiar en el portapapeles"
 
 #: inc/item_devices.class.php:1252
 msgid "Update of "
-msgstr ""
+msgstr "Actualización de"
 
 #: inc/item_devicesimcard.class.php:63 inc/item_devicesimcard.class.php:64
 msgid "PIN code"
-msgstr ""
+msgstr "Código PIN"
 
 #: inc/item_devicesimcard.class.php:72 inc/item_devicesimcard.class.php:73
 msgid "PIN2 code"
-msgstr ""
+msgstr "Código PIN2"
 
 #: inc/item_devicesimcard.class.php:81 inc/item_devicesimcard.class.php:82
 msgid "PUK code"
-msgstr ""
+msgstr "Código PUK"
 
 #: inc/item_devicesimcard.class.php:90 inc/item_devicesimcard.class.php:91
 msgid "PUK2 code"
-msgstr ""
+msgstr "Código PUK2"
 
 #: inc/item_devicesimcard.class.php:99 inc/item_devicesimcard.class.php:100
 #: inc/line.class.php:50 inc/profile.class.php:883
@@ -11895,15 +11911,15 @@ msgstr[1] ""
 
 #: inc/item_devicesimcard.class.php:104
 msgid "Mobile Subscriber Identification Number"
-msgstr ""
+msgstr "Número de identificación del suscriptor móvil"
 
 #: inc/item_devicesimcard.class.php:105
 msgid "MSIN"
-msgstr ""
+msgstr "MSIN"
 
 #: inc/item_devicesimcard.class.php:109
 msgid "MSIN is the last 8 or 10 digits of IMSI"
-msgstr ""
+msgstr "MSIN son los últimos 8 o 10 dígitos de IMSI"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
@@ -12082,12 +12098,12 @@ msgstr[1] "%d vistas"
 
 #: inc/knowbaseitem.class.php:753
 msgid "Add link"
-msgstr ""
+msgstr "Agregar enlace"
 
 #: inc/knowbaseitem.class.php:759
 #, php-format
 msgid "link with %1$s"
-msgstr ""
+msgstr "enlace con %1$s"
 
 #: inc/knowbaseitem.class.php:769
 msgid "Visible since"
@@ -12337,7 +12353,7 @@ msgstr "%s revierte traducción de elemento a la revisión  %id"
 #: inc/levelagreement.class.php:176 inc/levelagreement.class.php:700
 #: inc/profile.class.php:1463
 msgid "SLM"
-msgstr ""
+msgstr "SLM"
 
 #: inc/levelagreement.class.php:196 inc/levelagreement.class.php:452
 msgid "Maximum time"
@@ -12367,11 +12383,11 @@ msgstr[1] "Niveles de escalamiento"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
-msgstr ""
+msgstr "¿Eliminar también la fecha?"
 
 #: inc/levelagreement.class.php:422
 msgid "Add a new item"
-msgstr ""
+msgstr "Agregar un nuevo elemento"
 
 #: inc/levelagreement.class.php:488 inc/slm.class.php:124
 msgid "Calendar of the ticket"
@@ -12416,15 +12432,15 @@ msgstr[1] "- %d minutos"
 
 #: inc/line.class.php:127 inc/line.class.php:224
 msgid "Caller number"
-msgstr ""
+msgstr "Número de llamada"
 
 #: inc/line.class.php:132 inc/line.class.php:232
 msgid "Caller name"
-msgstr ""
+msgstr "Nombre de la persona que llama"
 
 #: inc/lineoperator.class.php:53 inc/lineoperator.class.php:70
 msgid "Mobile Country Code"
-msgstr ""
+msgstr "Código de país móvil"
 
 #: inc/lineoperator.class.php:57 inc/lineoperator.class.php:78
 msgid "Mobile Network Code"
@@ -12443,7 +12459,7 @@ msgstr ""
 
 #: inc/link.class.php:155
 msgid "Example:"
-msgstr ""
+msgstr "Ejemplo:"
 
 #: inc/link.class.php:163 inc/link.class.php:229
 msgid "Link or filename"
@@ -12946,7 +12962,7 @@ msgstr "Migracion de datos - %s"
 #: inc/migration.class.php:888
 #, php-format
 msgid "%1$s table already exists. A backup have been done to %2$s"
-msgstr ""
+msgstr "%1$s la tabla ya existe. Se ha hecho una copia de seguridad para %2$s"
 
 #: inc/migration.class.php:937
 #, php-format
@@ -13404,7 +13420,7 @@ msgstr ""
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Habilitar seguimientos desde el navegador"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
@@ -13417,7 +13433,7 @@ msgstr[1] ""
 #: inc/notificationajaxsetting.class.php:72
 #: inc/notificationajaxsetting.class.php:73
 msgid "Sound"
-msgstr ""
+msgstr "Sonido"
 
 #: inc/notificationajaxsetting.class.php:77
 msgid "Default notification sound"
@@ -13434,12 +13450,12 @@ msgstr ""
 #: inc/notificationajaxsetting.class.php:103
 #: inc/notificationmailingsetting.class.php:244
 msgid "Notifications are disabled."
-msgstr ""
+msgstr "Las notificaciones están deshabilitadas"
 
 #: inc/notificationajaxsetting.class.php:105
 #: inc/notificationmailingsetting.class.php:246
 msgid "See configuration"
-msgstr ""
+msgstr "Ver configuración"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
@@ -13494,7 +13510,7 @@ msgstr ""
 #: inc/notification_notificationtemplate.class.php:217
 #: inc/queuednotification.class.php:357
 msgid "Mode"
-msgstr ""
+msgstr "Modo"
 
 #: inc/notificationeventmailing.class.php:254
 #: inc/notificationmailing.class.php:101
@@ -13557,7 +13573,7 @@ msgstr "Configuración de Seguimientos por e-mail"
 
 #: inc/notificationmailingsetting.class.php:52
 msgid "Enable followups via email"
-msgstr ""
+msgstr "Habilitar seguimientos mediante correo electrónico"
 
 #: inc/notificationmailingsetting.class.php:72
 msgid "Email notification"
@@ -13567,7 +13583,7 @@ msgstr[1] ""
 
 #: inc/notificationmailingsetting.class.php:91
 msgid "From email"
-msgstr ""
+msgstr "Desde correo electrónico"
 
 #: inc/notificationmailingsetting.class.php:92
 msgid "Address to use in from for sent emails."
@@ -13692,7 +13708,7 @@ msgstr[1] ""
 
 #: inc/notification_notificationtemplate.class.php:108
 msgid "Add a template"
-msgstr ""
+msgstr "Agregar una plantilla"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
@@ -13700,7 +13716,7 @@ msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Buscador"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -13712,7 +13728,7 @@ msgstr ""
 
 #: inc/notificationsettingconfig.class.php:100
 msgid "Enable followup"
-msgstr ""
+msgstr "Habilitar seguimiento"
 
 #: inc/notificationsettingconfig.class.php:161
 msgid ""
@@ -14358,7 +14374,7 @@ msgstr ""
 
 #: inc/notificationtargetsavedsearch_alert.class.php:106
 msgid "Number of results"
-msgstr ""
+msgstr "Número de resultados"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:108
 msgid "Load saved search"
@@ -16603,7 +16619,7 @@ msgstr[1] "Búsquedas guardadas"
 
 #: inc/savedsearch_alert.class.php:148 inc/savedsearch_alert.class.php:253
 msgid "Operator"
-msgstr ""
+msgstr "Operador"
 
 #: inc/savedsearch_alert.class.php:149
 msgid ""
@@ -16613,11 +16629,11 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:207
 msgid "Notification does not exists!"
-msgstr ""
+msgstr "Notificación no existe!"
 
 #: inc/savedsearch_alert.class.php:210
 msgid "create it now"
-msgstr ""
+msgstr "cearlo ahora"
 
 #: inc/savedsearch_alert.class.php:214
 msgid "Notification used:"
@@ -16627,7 +16643,7 @@ msgstr[1] ""
 
 #: inc/savedsearch_alert.class.php:236
 msgid "Add an alert"
-msgstr ""
+msgstr "Agregar una alerta"
 
 #: inc/savedsearch_alert.class.php:301
 msgid "Saved searches alerts"
@@ -16635,32 +16651,32 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:355
 msgid "less than"
-msgstr ""
+msgstr "menos que"
 
 #: inc/savedsearch_alert.class.php:359
 msgid "less or equals than"
-msgstr ""
+msgstr "menos o igual que"
 
 #: inc/savedsearch_alert.class.php:363
 msgid "equals to"
-msgstr ""
+msgstr "iguales a"
 
 #: inc/savedsearch_alert.class.php:367
 msgid "not equals to"
-msgstr ""
+msgstr "diferente de"
 
 #: inc/savedsearch_alert.class.php:371
 msgid "greater or equals than"
-msgstr ""
+msgstr "mayor o igual que"
 
 #: inc/savedsearch_alert.class.php:375
 msgid "greater than"
-msgstr ""
+msgstr "más grande que"
 
 #: inc/savedsearch_alert.class.php:385
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
-msgstr ""
+msgstr "Los resultados cuentan para %1$s es%2$s %3$s"
 
 #: inc/savedsearch.class.php:76
 msgid "Unset as default"
@@ -16672,7 +16688,7 @@ msgstr "Cambiar método de conteo"
 
 #: inc/savedsearch.class.php:81
 msgid "Change visibility"
-msgstr ""
+msgstr "Cambiar visibilidad"
 
 #: inc/savedsearch.class.php:91 inc/savedsearch.class.php:384
 #: inc/savedsearch.class.php:1173
@@ -16693,19 +16709,19 @@ msgstr "Predeterminado"
 
 #: inc/savedsearch.class.php:253
 msgid "Counter"
-msgstr ""
+msgstr "Contador"
 
 #: inc/savedsearch.class.php:261
 msgid "Last execution date"
-msgstr ""
+msgstr "Fecha de última ejecución"
 
 #: inc/savedsearch.class.php:373
 msgid "New saved search"
-msgstr ""
+msgstr "Nueva búsqueda guardada"
 
 #: inc/savedsearch.class.php:382
 msgid "Do count"
-msgstr ""
+msgstr "Cuenta"
 
 #: inc/savedsearch.class.php:536
 msgid "Partial load of the saved search."
@@ -16713,7 +16729,7 @@ msgstr "Carga parcial de la búsqueda guardada"
 
 #: inc/savedsearch.class.php:764
 msgid "Filter list"
-msgstr ""
+msgstr "Filtrar lista"
 
 #: inc/savedsearch.class.php:768
 #, php-format
@@ -16724,7 +16740,7 @@ msgstr[1] ""
 
 #: inc/savedsearch.class.php:771 inc/savedsearch.class.php:781
 msgid "Hide/Show elements"
-msgstr ""
+msgstr "Esconder/Mostrar elementos"
 
 #: inc/savedsearch.class.php:778
 #, php-format
@@ -16759,7 +16775,7 @@ msgstr "Pulse para cargar o arrastre y suelte para reordenar"
 
 #: inc/savedsearch.class.php:956
 msgid "Click to load"
-msgstr ""
+msgstr "Click para cargar"
 
 #: inc/savedsearch.class.php:993
 msgid "Saved searches order cannot be saved!"
@@ -16781,7 +16797,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:1371
 msgid "Notification has been created!"
-msgstr ""
+msgstr "Notificación ha sido creada!"
 
 #: inc/search.class.php:942
 msgid ""
@@ -16811,19 +16827,19 @@ msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:1848
 msgid "AND"
-msgstr ""
+msgstr "Y"
 
 #: inc/search.class.php:1849
 msgid "OR"
-msgstr ""
+msgstr "O"
 
 #: inc/search.class.php:1850
 msgid "AND NOT"
-msgstr ""
+msgstr "Y NO"
 
 #: inc/search.class.php:1851
 msgid "OR NOT"
-msgstr ""
+msgstr "O NO"
 
 #: inc/search.class.php:5673 inc/search.class.php:5721
 msgid "before"
@@ -17124,12 +17140,12 @@ msgstr "Configurar estado: %s"
 #: inc/state.class.php:268
 #, php-format
 msgid "%1$s must be unique!"
-msgstr ""
+msgstr "%1$s debe ser unico"
 
 #: inc/state.class.php:375
 #, php-format
 msgid "%1$s must be unique per level!"
-msgstr ""
+msgstr "%1$s debería ser único por nivel!"
 
 #: inc/supplier.class.php:214
 msgctxt "button"
@@ -17150,7 +17166,7 @@ msgstr[1] "Contratos asociados"
 
 #: inc/telemetry.class.php:257
 msgid "Send telemetry informations"
-msgstr ""
+msgstr "Enviar información de telemetría"
 
 #: inc/telemetry.class.php:371
 msgid "See what would be sent..."
@@ -17158,11 +17174,11 @@ msgstr ""
 
 #: inc/telemetry.class.php:384
 msgid "Telemetry data"
-msgstr ""
+msgstr "Datos de telemetría"
 
 #: inc/telemetry.class.php:449
 msgid "Send \"usage statistics\""
-msgstr ""
+msgstr "Enviar \" estadísticas de uso\""
 
 #: inc/telemetry.class.php:450
 msgid "We need your help to improve GLPI and the plugins ecosystem!"
@@ -17188,7 +17204,7 @@ msgstr ""
 
 #: inc/telemetry.class.php:466
 msgid "Reference your GLPI"
-msgstr ""
+msgstr "Referencia tu GLPI"
 
 #: inc/telemetry.class.php:468
 #, php-format
@@ -17260,10 +17276,12 @@ msgstr "Tiempo para poseer excedido"
 #: inc/ticket.class.php:2751
 msgid "Internal time to resolve + Progress"
 msgstr ""
+"35/5000\n"
+"Tiempo interno para resolver + Progreso"
 
 #: inc/ticket.class.php:2761
 msgid "Internal time to resolve exceedeed"
-msgstr ""
+msgstr "Tiempo interno para resolver excedido"
 
 #: inc/ticket.class.php:2787
 msgid "Internal time to own + Progress"
@@ -17307,7 +17325,7 @@ msgstr ""
 
 #: inc/ticket.class.php:3298
 msgid "Child tickets"
-msgstr ""
+msgstr "Solicitudes hijas"
 
 #: inc/ticket.class.php:3320
 msgid "Number of sons tickets"
@@ -17516,12 +17534,12 @@ msgstr "Aprobar solución y responder encuesta de una incidencia creada por mi"
 #: inc/ticket.class.php:7122
 #, php-format
 msgid "Last edited on %1$s by %2$s"
-msgstr ""
+msgstr "Última edición %1$s por %2$s"
 
 #: inc/ticket.class.php:7238
 #, php-format
 msgid "Ticket# %s description"
-msgstr ""
+msgstr "Solicitud# %s descripción"
 
 #: inc/ticket.class.php:7306
 msgid "Actions historical"
@@ -17582,7 +17600,7 @@ msgstr "Antes del mes pasado"
 #: inc/ticketfollowup.class.php:998
 #, php-format
 msgid "Created by %1$s on %2$s"
-msgstr ""
+msgstr "Creado por %1$s con %2$s"
 
 #: inc/ticketfollowup.class.php:1125
 msgid "Approval of the solution"
@@ -17717,16 +17735,16 @@ msgstr "Enlazado a"
 #: inc/ticket_ticket.class.php:215 inc/ticket_ticket.class.php:235
 #: inc/ticket_ticket.class.php:241
 msgid "Son of"
-msgstr ""
+msgstr "Hijo de"
 
 #: inc/ticket_ticket.class.php:216 inc/ticket_ticket.class.php:236
 #: inc/ticket_ticket.class.php:240
 msgid "Parent of"
-msgstr ""
+msgstr "Padre de"
 
 #: inc/ticket_ticket.class.php:239
 msgid "Duplicated by"
-msgstr ""
+msgstr "Duplicado por"
 
 #: inc/ticketvalidation.class.php:103
 msgid "Create for request"
@@ -18128,7 +18146,7 @@ msgstr ""
 #: inc/update.class.php:422
 #, php-format
 msgid "Unsupported version (%1$s)"
-msgstr ""
+msgstr "Versión no soportada (%1$s)"
 
 #: inc/user.class.php:123
 msgid "You must define a default profile to create a new user"
@@ -18160,7 +18178,7 @@ msgstr "... Desde un origen externo"
 
 #: inc/user.class.php:1917
 msgid "Download user VCard"
-msgstr ""
+msgstr "Descargar VCard de usuario"
 
 #: inc/user.class.php:2010 inc/user.class.php:2385 inc/user.class.php:4122
 msgid "Password confirmation"
@@ -18512,7 +18530,7 @@ msgstr "No ha seleccionada ninguna Base de Datos"
 
 #: install/install.php:446
 msgid "Collect data"
-msgstr ""
+msgstr "Recolectar datos"
 
 #: install/install.php:491
 msgid "The installation is finished"

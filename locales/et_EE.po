@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-03 07:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Indrek Teppan <indrek@laanesaare.ee>, 2018\n"
+"Last-Translator: Rivo Zängov <eraser@eraser.ee>, 2018\n"
 "Language-Team: Estonian (Estonia) (https://www.transifex.com/glpi/teams/1637/et_EE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -156,7 +156,7 @@ msgstr "%1$s - %2$s"
 #: ajax/dropdownConnectNetworkPort.php:97
 #, php-format
 msgid "%1$s - The port %2$s"
-msgstr ""
+msgstr "%1$s - port %2$s"
 
 #. TRANS: %1$s is a string (device name - port name...), %2$s is network
 #. outlet name
@@ -3023,7 +3023,7 @@ msgstr "Väärtus"
 
 #: front/report.infocom.php:135
 msgid "ANV"
-msgstr ""
+msgstr "ANV"
 
 #: front/report.infocom.php:136
 msgid "TCO"
@@ -3137,8 +3137,8 @@ msgstr "Kanna üle"
 #: front/rule.php:73 inc/blacklist.class.php:89 inc/dropdown.class.php:781
 msgid "Blacklist"
 msgid_plural "Blacklists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Must nimekiri"
+msgstr[1] "Mustad nimekirjad"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:51
@@ -3160,7 +3160,7 @@ msgstr ""
 
 #: front/savedsearch.php:41 inc/html.class.php:5929 inc/html.class.php:5938
 msgid "Saved searches"
-msgstr ""
+msgstr "Salvestatud otsingud"
 
 #: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5965
 #: inc/html.class.php:6243 inc/html.class.php:6244
@@ -3291,8 +3291,8 @@ msgstr "Lepingunumber"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Avatud"
+msgstr[1] "Avatud"
 
 #: front/stat.global.php:94 front/stat.graph.php:352 inc/stat.class.php:436
 msgctxt "ticket"

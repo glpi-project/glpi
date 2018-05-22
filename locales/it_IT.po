@@ -1142,10 +1142,12 @@ msgstr "Verifica se è presente una versione aggiornata"
 #: front/backup.php:607
 msgid "GLPI internal backup system is a helper for very small instances."
 msgstr ""
+"Il sistema interno di backup di GLPI è un aiuto per istanze molto piccole."
 
 #: front/backup.php:608
 msgid "You should rather use a dedicated tool on your server."
 msgstr ""
+"Dovresti usare, preferibilmente, uno strumento dedicato per il tuo server."
 
 #: front/backup.php:611 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
@@ -8687,6 +8689,8 @@ msgid ""
 "You are trying to update to a development version from a development "
 "version. This is not supported."
 msgstr ""
+"Stai provando ad aggiornare la tua versione di sviluppo ad una versione di "
+"sviluppo. Questo non è supportato."
 
 #: inc/consumable.class.php:199 inc/consumable.class.php:511
 msgctxt "button"
@@ -13485,7 +13489,7 @@ msgstr "Modalità"
 #: inc/notificationmailing.class.php:101
 #, php-format
 msgid "Original email address was %1$s"
-msgstr ""
+msgstr "L'indirizzo e-mail originale era %1$s"
 
 #: inc/notificationeventmailing.class.php:265
 msgid "Error in sending the email"

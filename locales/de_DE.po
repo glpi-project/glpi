@@ -7319,7 +7319,7 @@ msgstr "Neue Unterrubrik"
 #: inc/commontreedropdown.class.php:518 inc/softwarelicense.class.php:1275
 #, php-format
 msgid "Sons of %s"
-msgstr "Kind von %s"
+msgstr "Untergeordnete Tickets von %s"
 
 #: inc/commontreedropdown.class.php:598 inc/commontreedropdown.class.php:621
 #: inc/computer_softwarelicense.class.php:461
@@ -13880,7 +13880,7 @@ msgstr "Neue Gruppe in Überwachern"
 
 #: inc/notificationtargetcommonitilobject.class.php:87
 msgid "New user in assignees"
-msgstr "Neuer Benutzer in Zugewiesenen"
+msgstr "Neuer Techniker zugewiesen"
 
 #: inc/notificationtargetcommonitilobject.class.php:88
 msgid "New group in assignees"
@@ -16739,7 +16739,7 @@ msgstr "Gespeicherte Suche teilweise geladen"
 
 #: inc/savedsearch.class.php:764
 msgid "Filter list"
-msgstr ""
+msgstr "Liste filtern"
 
 #: inc/savedsearch.class.php:768
 #, php-format
@@ -17349,7 +17349,7 @@ msgstr "Anazhl doppelter Tickets"
 
 #: inc/ticket.class.php:3275
 msgid "Parent tickets"
-msgstr "Vorgänger Tickets"
+msgstr "Übergeordnete Tickets"
 
 #: inc/ticket.class.php:3298
 msgid "Child tickets"
@@ -17361,7 +17361,7 @@ msgstr "Anzahl Nachfolger Tickets"
 
 #: inc/ticket.class.php:3336
 msgid "Number of parent tickets"
-msgstr "Anzahl Vorgänger Tickets"
+msgstr "Anzahl der übergeordneten Tickets"
 
 #: inc/ticket.class.php:3356
 msgid "Problems"
@@ -17562,7 +17562,7 @@ msgstr "Lösung akzeptieren und Umfrage für mein Ticket beantworten."
 #: inc/ticket.class.php:7122
 #, php-format
 msgid "Last edited on %1$s by %2$s"
-msgstr "Zuletzt von %1$s am %2$s aktualisiert"
+msgstr "Zuletzt am%1$s von %2$s aktualisiert"
 
 #: inc/ticket.class.php:7238
 #, php-format
@@ -17766,12 +17766,12 @@ msgstr "Verbunden mit"
 #: inc/ticket_ticket.class.php:215 inc/ticket_ticket.class.php:235
 #: inc/ticket_ticket.class.php:241
 msgid "Son of"
-msgstr "Kind von"
+msgstr "Untergeordnetes Ticket von"
 
 #: inc/ticket_ticket.class.php:216 inc/ticket_ticket.class.php:236
 #: inc/ticket_ticket.class.php:240
 msgid "Parent of"
-msgstr "Vorgänger"
+msgstr "Übergeordnetes Ticket von "
 
 #: inc/ticket_ticket.class.php:239
 msgid "Duplicated by"

@@ -2486,7 +2486,7 @@ msgstr "Aprakstiet savu problēmu"
 #: inc/reminder.class.php:641 inc/ruleticket.class.php:335
 #: inc/ticket.class.php:4051 inc/ticket.class.php:5095 inc/user.class.php:2982
 msgid "Title"
-msgstr "Amats"
+msgstr "Virsraksts"
 
 #: front/helpdesk.php:112 inc/blacklistedmailcontent.class.php:74
 #: inc/blacklistedmailcontent.class.php:88 inc/knowbaseitem.class.php:790
@@ -3589,7 +3589,7 @@ msgstr "Ietekme"
 #: inc/user.class.php:2110
 msgctxt "person"
 msgid "Title"
-msgstr "Amats"
+msgstr "Virsraksts"
 
 #: front/stat.graph.php:211 front/stat.tracking.php:93
 #: inc/commonitilobject.class.php:2916 inc/commonitilobject.class.php:4265

@@ -4285,7 +4285,7 @@ msgstr ""
 
 #: inc/apixmlrpc.class.php:162
 msgid "missing id"
-msgstr "Brakujący "
+msgstr "Brakujące ID"
 
 #: inc/auth.class.php:119
 msgid "Others"

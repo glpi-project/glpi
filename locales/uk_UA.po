@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk_UA\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
 #: index.php:81
 msgid "GLPI - Authentication"
@@ -528,6 +528,7 @@ msgid_plural "Emails"
 msgstr[0] "Електронна адреса"
 msgstr[1] "Електронні адреси"
 msgstr[2] "Електронні адреси"
+msgstr[3] "Електронні адреси"
 
 #: ajax/dropdownMassiveActionAddActor.php:50
 #: ajax/dropdownMassiveActionAddValidator.php:55
@@ -717,6 +718,7 @@ msgid_plural "Actions"
 msgstr[0] "Дія"
 msgstr[1] "Дії"
 msgstr[2] "Дії"
+msgstr[3] "Дії"
 
 #: ajax/planningcheck.php:52 ajax/planningcheck.php:59 front/planning.php:62
 #: inc/commonitiltask.class.php:1534 inc/commonitiltask.class.php:1541
@@ -939,6 +941,7 @@ msgid_plural "Entities"
 msgstr[0] "Організація"
 msgstr[1] "Організації"
 msgstr[2] "Організації"
+msgstr[3] "Організації"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
@@ -975,6 +978,7 @@ msgid_plural "%s tickets in progress or recently solved on this item."
 msgstr[0] "%s заявка обробляється або нещодавно вирішена."
 msgstr[1] "%s заявки обробляються або нещодавно вирішені."
 msgstr[2] "%s заявок обробляються або нещодавно вирішені."
+msgstr[3] "%s заявок обробляються або нещодавно вирішені."
 
 #: ajax/ticketsatisfaction.php:64 inc/entity.class.php:1043
 msgid "Create survey after"
@@ -1216,6 +1220,7 @@ msgid_plural "Dates"
 msgstr[0] "Дата"
 msgstr[1] "Дати"
 msgstr[2] "Дати"
+msgstr[3] "Дати"
 
 #. TRANS: %s is the filename
 #: front/backup.php:654 front/backup.php:706
@@ -1491,6 +1496,7 @@ msgid_plural "Changes"
 msgstr[0] "Зміна"
 msgstr[1] "Зміни"
 msgstr[2] "Зміни"
+msgstr[3] "Зміни"
 
 #: front/change_ticket.form.php:53 front/problem_ticket.form.php:54
 #: inc/commonitilcost.class.php:547 inc/document_item.class.php:504
@@ -1526,6 +1532,7 @@ msgid_plural "Tickets"
 msgstr[0] "Заявка"
 msgstr[1] "Заявки"
 msgstr[2] "Заявки"
+msgstr[3] "Заявки"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:62 front/contractcost.form.php:58
@@ -1680,6 +1687,7 @@ msgid_plural "Consumables"
 msgstr[0] "Витратний матеріал"
 msgstr[1] "Витратні матеріали"
 msgstr[2] "Витратні матеріали"
+msgstr[3] "Витратні матеріали"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:52 front/contract_supplier.form.php:52
@@ -1800,6 +1808,7 @@ msgid_plural "Components"
 msgstr[0] "Компонент"
 msgstr[1] "Компоненти"
 msgstr[2] "Компоненти"
+msgstr[3] "Компоненти"
 
 #: front/dictionnary.php:42 inc/html.class.php:1337 inc/profile.class.php:106
 #: inc/profile.class.php:1341 inc/profile.class.php:1950
@@ -1831,6 +1840,7 @@ msgid_plural "Software"
 msgstr[0] "Програмне забезпечення"
 msgstr[1] "Програмне забезпечення"
 msgstr[2] "Програмне забезпечення"
+msgstr[3] "Програмне забезпечення"
 
 #: front/dictionnary.php:57 inc/cartridgeitem.class.php:206
 #: inc/cartridgeitem.class.php:318 inc/certificate.class.php:194
@@ -1861,6 +1871,7 @@ msgid_plural "Manufacturers"
 msgstr[0] "Виробник"
 msgstr[1] "Виробники"
 msgstr[2] "Виробники"
+msgstr[3] "Виробники"
 
 #: front/dictionnary.php:62 front/find_num.php:103
 #: inc/cartridge.class.php:1107 inc/lock.class.php:486
@@ -1872,6 +1883,7 @@ msgid_plural "Printers"
 msgstr[0] "Принтер"
 msgstr[1] "Принтери"
 msgstr[2] "Принтери"
+msgstr[3] "Принтери"
 
 #: front/dictionnary.php:69 front/stat.location.php:88
 #: inc/cartridgeitem_printermodel.class.php:181 inc/computer.class.php:432
@@ -1915,6 +1927,7 @@ msgid_plural "Models"
 msgstr[0] "Модель"
 msgstr[1] "Моделі"
 msgstr[2] "Моделі"
+msgstr[3] "Моделі"
 
 #: front/dictionnary.php:71 inc/computermodel.class.php:48
 #: inc/dropdown.class.php:869 inc/rule.class.php:280
@@ -1923,6 +1936,7 @@ msgid_plural "Computer models"
 msgstr[0] "Модель комп’ютера"
 msgstr[1] "Моделі комп’ютерів"
 msgstr[2] "Моделі комп’ютерів"
+msgstr[3] "Моделі комп’ютерів"
 
 #: front/dictionnary.php:74 inc/dropdown.class.php:878
 #: inc/monitormodel.class.php:48 inc/rule.class.php:292
@@ -1931,6 +1945,7 @@ msgid_plural "Monitor models"
 msgstr[0] "Модель монітора"
 msgstr[1] "Моделі моніторів"
 msgstr[2] "Моделі моніторів"
+msgstr[3] "Моделі моніторів"
 
 #: front/dictionnary.php:77 inc/cartridgeitem.class.php:436
 #: inc/dropdown.class.php:875 inc/printermodel.class.php:48
@@ -1940,6 +1955,7 @@ msgid_plural "Printer models"
 msgstr[0] "Модель принтера"
 msgstr[1] "Моделі принтерів"
 msgstr[2] "Моделі принтерів"
+msgstr[3] "Моделі принтерів"
 
 #: front/dictionnary.php:80
 msgid "Device model"
@@ -1947,6 +1963,7 @@ msgid_plural "Device models"
 msgstr[0] "Модель пристрою"
 msgstr[1] "Моделі пристроїв"
 msgstr[2] "Моделі пристроїв"
+msgstr[3] "Моделі пристроїв"
 
 #: front/dictionnary.php:83
 msgid "Network equipment model"
@@ -1954,6 +1971,7 @@ msgid_plural "Network equipment models"
 msgstr[0] "Модель мережевого обладнання"
 msgstr[1] "Моделі мережевого обладнання"
 msgstr[2] "Моделі мережевого обладнання"
+msgstr[3] "Моделі мережевого обладнання"
 
 #: front/dictionnary.php:87 inc/dropdown.class.php:884
 #: inc/phonemodel.class.php:48 inc/rule.class.php:340
@@ -1962,6 +1980,7 @@ msgid_plural "Phone models"
 msgstr[0] "Модель телефону"
 msgstr[1] "Моделі телефонів"
 msgstr[2] "Моделі телефонів"
+msgstr[3] "Моделі телефонів"
 
 #: front/dictionnary.php:94 front/stat.graph.php:151
 #: front/stat.location.php:87 front/stat.tracking.php:96
@@ -2046,6 +2065,7 @@ msgid_plural "Types"
 msgstr[0] "Тип"
 msgstr[1] "Типи"
 msgstr[2] "Типи"
+msgstr[3] "Типи"
 
 #: front/dictionnary.php:96 inc/computertype.class.php:47
 #: inc/dropdown.class.php:813 inc/rule.class.php:352
@@ -2054,6 +2074,7 @@ msgid_plural "Computer types"
 msgstr[0] "Тип комп’ютера"
 msgstr[1] "Типи комп’ютерів"
 msgstr[2] "Типи комп’ютерів"
+msgstr[3] "Типи комп’ютерів"
 
 #: front/dictionnary.php:99 inc/dropdown.class.php:821
 #: inc/monitortype.class.php:46 inc/rule.class.php:364
@@ -2062,6 +2083,7 @@ msgid_plural "Monitor types"
 msgstr[0] "Тип монітора"
 msgstr[1] "Типи моніторів"
 msgstr[2] "Типи моніторів"
+msgstr[3] "Типи моніторів"
 
 #: front/dictionnary.php:102 inc/dropdown.class.php:819
 #: inc/printertype.class.php:46 inc/rule.class.php:376
@@ -2070,6 +2092,7 @@ msgid_plural "Printer types"
 msgstr[0] "Тип принтера"
 msgstr[1] "Типи принтерів"
 msgstr[2] "Типи принтерів"
+msgstr[3] "Типи принтерів"
 
 #: front/dictionnary.php:105 inc/report.class.php:365 inc/report.class.php:374
 msgid "Device type"
@@ -2077,6 +2100,7 @@ msgid_plural "Device types"
 msgstr[0] "Тип пристрою"
 msgstr[1] "Типи пристроїв"
 msgstr[2] "Типи пристроїв"
+msgstr[3] "Типи пристроїв"
 
 #: front/dictionnary.php:108
 msgid "Network equipment type"
@@ -2084,6 +2108,7 @@ msgid_plural "Network equipment types"
 msgstr[0] "Тип мережевого обладнання"
 msgstr[1] "Типи мережевого обладнання"
 msgstr[2] "Типи мережевого обладнання"
+msgstr[3] "Типи мережевого обладнання"
 
 #: front/dictionnary.php:112 inc/dropdown.class.php:825
 #: inc/phonetype.class.php:46 inc/rule.class.php:412
@@ -2092,6 +2117,7 @@ msgid_plural "Phone types"
 msgstr[0] "Тип телефона"
 msgstr[1] "Типи телефонів"
 msgstr[2] "Типи телефонів"
+msgstr[3] "Типи телефонів"
 
 #: front/dictionnary.php:119 front/dictionnary.php:122
 #: front/stat.location.php:89 inc/dropdown.class.php:954
@@ -2107,6 +2133,7 @@ msgid_plural "Operating systems"
 msgstr[0] "Операційна система"
 msgstr[1] "Операційні системи"
 msgstr[2] "Операційні системи"
+msgstr[3] "Операційні системи"
 
 #: front/dictionnary.php:125 inc/dropdown.class.php:963
 #: inc/item_operatingsystem.class.php:125
@@ -2120,6 +2147,7 @@ msgid_plural "Service packs"
 msgstr[0] "Сервісний пакет"
 msgstr[1] "Сервісні пакети"
 msgstr[2] "Сервісні пакети"
+msgstr[3] "Сервісні пакети"
 
 #: front/dictionnary.php:127 inc/computer_softwareversion.class.php:323
 #: inc/computer_softwareversion.class.php:788
@@ -2139,6 +2167,7 @@ msgid_plural "Versions"
 msgstr[0] "Версія"
 msgstr[1] "Версії"
 msgstr[2] "Версії"
+msgstr[3] "Версії"
 
 #: front/dictionnary.php:130 inc/dropdown.class.php:966
 #: inc/item_operatingsystem.class.php:124
@@ -2150,6 +2179,7 @@ msgid_plural "Architectures"
 msgstr[0] "Архітектура"
 msgstr[1] "Архітектури"
 msgstr[2] "Архітектур"
+msgstr[3] "Архітектур"
 
 #: front/display.options.php:42 inc/commonglpi.class.php:1158
 #: inc/commonglpi.class.php:1216 inc/commonglpi.class.php:1218
@@ -2206,6 +2236,7 @@ msgid_plural "Dropdowns"
 msgstr[0] "Випадаючий список"
 msgstr[1] "Випадаючі списки"
 msgstr[2] "Випадаючі списки"
+msgstr[3] "Випадаючі списки"
 
 #: front/find_num.php:76
 msgid "Search the ID of your hardware"
@@ -2255,6 +2286,7 @@ msgid_plural "Associated elements"
 msgstr[0] "Пов’язаний елемент"
 msgstr[1] "Пов’язані елементи"
 msgstr[2] "Пов’язані елементи"
+msgstr[3] "Пов’язані елементи"
 
 #: front/find_num.php:96 inc/apiclient.class.php:89 inc/authldap.class.php:866
 #: inc/authmail.class.php:107 inc/budget.class.php:209
@@ -2374,6 +2406,7 @@ msgid_plural "Computers"
 msgstr[0] "Комп’ютер"
 msgstr[1] "Комп’ютери"
 msgstr[2] "Комп’ютери"
+msgstr[3] "Комп’ютери"
 
 #: front/find_num.php:102 inc/networkequipment.class.php:63
 msgid "Network device"
@@ -2381,6 +2414,7 @@ msgid_plural "Network devices"
 msgstr[0] "Мережевий пристрій"
 msgstr[1] "Мережеві пристрої"
 msgstr[2] "Мережеві пристрої"
+msgstr[3] "Мережеві пристрої"
 
 #: front/find_num.php:104 inc/lock.class.php:484 inc/monitor.class.php:60
 #: inc/profile.class.php:790 inc/profile.class.php:1583
@@ -2390,6 +2424,7 @@ msgid_plural "Monitors"
 msgstr[0] "Монітор"
 msgstr[1] "Монітори"
 msgstr[2] "Монітори"
+msgstr[3] "Монітори"
 
 #: front/find_num.php:105 inc/lock.class.php:485 inc/peripheral.class.php:63
 #: inc/profile.class.php:811 inc/profile.class.php:1639
@@ -2399,6 +2434,7 @@ msgid_plural "Devices"
 msgstr[0] "Пристрій"
 msgstr[1] "Пристрої"
 msgstr[2] "Пристрої"
+msgstr[3] "Пристрої"
 
 #. TRANS: %s is the user login
 #: front/group_user.form.php:51 front/user.form.php:122
@@ -2641,6 +2677,7 @@ msgid_plural "Receivers"
 msgstr[0] "Одержувач"
 msgstr[1] "Одержувачі"
 msgstr[2] "Одержувачі"
+msgstr[3] "Одержувачі"
 
 #: front/mailcollector.php:48 front/setup.auth.php:61
 #: inc/authmail.class.php:219
@@ -2802,6 +2839,7 @@ msgid_plural "Problems"
 msgstr[0] "Проблема"
 msgstr[1] "Проблеми"
 msgstr[2] "Проблеми"
+msgstr[3] "Проблеми"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:53
@@ -2964,6 +3002,7 @@ msgid_plural "Locations"
 msgstr[0] "Приміщення"
 msgstr[1] "Приміщення"
 msgstr[2] "Приміщення"
+msgstr[3] "Приміщення"
 
 #: front/report.contract.list.php:184 front/report.infocom.php:136
 #: front/report.year.list.php:140 inc/entity.class.php:974
@@ -2987,6 +3026,7 @@ msgid_plural "Contract types"
 msgstr[0] "Тип договору"
 msgstr[1] "Типи договорів"
 msgstr[2] "Типи договорів"
+msgstr[3] "Типи договорів"
 
 #: front/report.contract.list.php:187 front/report.infocom.conso.php:68
 #: front/report.infocom.php:69 front/report.year.list.php:143
@@ -3183,6 +3223,7 @@ msgid_plural "Blacklists"
 msgstr[0] "Список заборон"
 msgstr[1] "Списки заборон"
 msgstr[2] "Списки заборон"
+msgstr[3] "Списки заборон"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:51
@@ -3222,6 +3263,7 @@ msgid_plural "LDAP directories"
 msgstr[0] "Каталог LDAP"
 msgstr[1] "Каталоги LDAP"
 msgstr[2] "Каталоги LDAP"
+msgstr[3] "Каталоги LDAP"
 
 #: front/setup.auth.php:53 inc/authldap.class.php:428
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -3238,6 +3280,7 @@ msgid_plural "Mail servers"
 msgstr[0] "Поштовий сервер"
 msgstr[1] "Поштові сервери"
 msgstr[2] "Поштові сервери"
+msgstr[3] "Поштові сервери"
 
 #: front/setup.auth.php:62 inc/authmail.class.php:220
 msgid "Impossible to use email server as external source of connection"
@@ -3262,6 +3305,7 @@ msgid_plural "Notifications"
 msgstr[0] "Повідомлення"
 msgstr[1] "Повідомлення"
 msgstr[2] "Повідомлення"
+msgstr[3] "Повідомлення"
 
 #: front/setup.templates.php:62 inc/html.class.php:6263
 msgid "Manage templates..."
@@ -3343,6 +3387,7 @@ msgid_plural "Opened"
 msgstr[0] "Відкрито"
 msgstr[1] "Відкрито"
 msgstr[2] "Відкрито"
+msgstr[3] "Відкрито"
 
 #: front/stat.global.php:94 front/stat.graph.php:352 inc/stat.class.php:436
 msgctxt "ticket"
@@ -3351,6 +3396,7 @@ msgid_plural "Solved"
 msgstr[0] "Вирішено"
 msgstr[1] "Вирішено"
 msgstr[2] "Вирішено"
+msgstr[3] "Вирішено"
 
 #: front/stat.global.php:97 front/stat.graph.php:355 inc/stat.class.php:438
 msgid "Late"
@@ -3374,6 +3420,7 @@ msgid_plural "Hours"
 msgstr[0] "Година"
 msgstr[1] "Години"
 msgstr[2] "Години"
+msgstr[3] "Години"
 
 #: front/stat.global.php:140 front/stat.graph.php:392
 #: inc/commonitilobject.class.php:4620 inc/stat.class.php:473
@@ -3406,6 +3453,7 @@ msgid_plural "Opened"
 msgstr[0] "Відкрито"
 msgstr[1] "Відкрито"
 msgstr[2] "Відкрито"
+msgstr[3] "Відкрито"
 
 #: front/stat.global.php:171 front/stat.graph.php:445 inc/stat.class.php:455
 msgctxt "survey"
@@ -3414,6 +3462,7 @@ msgid_plural "Answered"
 msgstr[0] "Заповнено"
 msgstr[1] "Заповнено"
 msgstr[2] "Заповнено"
+msgstr[3] "Заповнено"
 
 #: front/stat.global.php:183 front/stat.global.php:186
 #: front/stat.graph.php:458 front/stat.graph.php:461
@@ -3447,6 +3496,7 @@ msgid_plural "Suppliers"
 msgstr[0] "Постачальник"
 msgstr[1] "Постачальники"
 msgstr[2] "Постачальники"
+msgstr[3] "Постачальники"
 
 #: front/stat.graph.php:109 front/stat.graph.php:116
 #: inc/authldap.class.php:1493 inc/authldap.class.php:1542
@@ -3492,6 +3542,7 @@ msgid_plural "Users"
 msgstr[0] "Користувач"
 msgstr[1] "Користувачі"
 msgstr[2] "Користувачі"
+msgstr[3] "Користувачі"
 
 #: front/stat.graph.php:129 front/stat.graph.php:219
 #: front/stat.tracking.php:86 front/stat.tracking.php:88
@@ -3551,6 +3602,7 @@ msgid_plural "Groups"
 msgstr[0] "Група"
 msgstr[1] "Групи"
 msgstr[2] "Групи"
+msgstr[3] "Групи"
 
 #: front/stat.graph.php:182 front/stat.tracking.php:92
 #: inc/change.class.php:765 inc/commonitilobject.class.php:2767
@@ -3604,6 +3656,7 @@ msgid_plural "Solution types"
 msgstr[0] "Тип вирішення"
 msgstr[1] "Типи вирішення"
 msgstr[2] "Типи вирішення"
+msgstr[3] "Типи вирішення"
 
 #: front/stat.graph.php:227 front/stat.tracking.php:97
 #: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:725
@@ -3616,6 +3669,7 @@ msgid_plural "Request sources"
 msgstr[0] "Джерело запиту"
 msgstr[1] "Джерела запиту"
 msgstr[2] "Джерела запиту"
+msgstr[3] "Джерела запиту"
 
 #: front/stat.graph.php:287 front/stat.graph.php:288
 #: inc/commonglpi.class.php:837 inc/commonglpi.class.php:838
@@ -3691,6 +3745,7 @@ msgid_plural "Requesters"
 msgstr[0] "Заявник"
 msgstr[1] "Заявники"
 msgstr[2] "Заявники"
+msgstr[3] "Заявники"
 
 #: front/stat.tracking.php:82 inc/commonitilobject.class.php:3043
 #: inc/commonitiltask.class.php:721 inc/commonitiltask.class.php:1727
@@ -4085,6 +4140,7 @@ msgid_plural "API clients"
 msgstr[0] "клієнт API"
 msgstr[1] "клієнти API"
 msgstr[2] "клієнтів API"
+msgstr[3] "клієнтів API"
 
 #: inc/apiclient.class.php:98 inc/apiclient.class.php:190
 #: inc/authldap.class.php:349 inc/authldap.class.php:1104
@@ -4197,6 +4253,7 @@ msgid_plural "Logs"
 msgstr[0] "Журнал"
 msgstr[1] "Журнали"
 msgstr[2] "Журнали"
+msgstr[3] "Журнали"
 
 #: inc/apirest.class.php:55
 msgid "Rest API"
@@ -4264,6 +4321,7 @@ msgid_plural "Connection to LDAP directories failed"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
 
 #: inc/auth.class.php:662
 msgid "User not found in LDAP directory"
@@ -4271,6 +4329,7 @@ msgid_plural "User not found in LDAP directories"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
 
 #: inc/auth.class.php:673 inc/auth.class.php:683
 msgid "Empty login or password"
@@ -4373,6 +4432,7 @@ msgid_plural "Ports"
 msgstr[0] "Порт"
 msgstr[1] "Порти"
 msgstr[2] "Порти"
+msgstr[3] "Порти"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1315
@@ -4412,6 +4472,7 @@ msgid_plural "Fields storage of the login in the HTTP request"
 msgstr[0] "Поле для аутентифікації в HTTP запиті"
 msgstr[1] "Поля для аутентифікації в HTTP запиті"
 msgstr[2] "Поля для аутентифікації в HTTP запиті"
+msgstr[3] "Поля для аутентифікації в HTTP запиті"
 
 #: inc/auth.class.php:1365
 msgid "Remove the domain of logins like login@domain"
@@ -4457,6 +4518,7 @@ msgid_plural "Phones"
 msgstr[0] "Телефон"
 msgstr[1] "Телефони"
 msgstr[2] "Телефони"
+msgstr[3] "Телефони"
 
 #: inc/auth.class.php:1427 inc/authldap.class.php:764
 #: inc/authldap.class.php:952 inc/authldap.class.php:3130
@@ -4665,6 +4727,7 @@ msgid_plural "Replicates"
 msgstr[0] "Сервер"
 msgstr[1] "Сервери"
 msgstr[2] "Сервери"
+msgstr[3] "Сервери"
 
 #: inc/authldap.class.php:570 inc/authldap.class.php:704
 #: inc/authldap.class.php:3454 inc/authmail.class.php:248
@@ -4952,6 +5015,7 @@ msgid_plural "Update Sources"
 msgstr[0] "Джерело оновлення"
 msgstr[1] "Джерела оновлення"
 msgstr[2] "Джерела оновлення"
+msgstr[3] "Джерела оновлення"
 
 #: inc/backup.class.php:76 inc/commondbtm.class.php:4729 inc/log.class.php:726
 #: inc/profile.class.php:819 inc/profile.class.php:2539
@@ -5017,6 +5081,7 @@ msgid_plural "Budgets"
 msgstr[0] "Кошторис"
 msgstr[1] "Кошториси"
 msgstr[2] "Кошториси"
+msgstr[3] "Кошториси"
 
 #: inc/budget.class.php:80 inc/user.class.php:228
 msgid "Main"
@@ -5044,6 +5109,7 @@ msgid_plural "Items"
 msgstr[0] "Елемент"
 msgstr[1] "Елементи"
 msgstr[2] "Елементи"
+msgstr[3] "Елементи"
 
 #: inc/budget.class.php:327 inc/item_devices.class.php:1071
 #: inc/supplier.class.php:484
@@ -5065,6 +5131,7 @@ msgid_plural "Associated items"
 msgstr[0] "Пов’язаний елемент"
 msgstr[1] "Пов’язані елементи"
 msgstr[2] "Пов’язані елементи"
+msgstr[3] "Пов’язані елементи"
 
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
@@ -5165,6 +5232,7 @@ msgid_plural "Budget types"
 msgstr[0] "Тип кошторису"
 msgstr[1] "Типи кошторисів"
 msgstr[2] "Типів кошторисів"
+msgstr[3] "Типів кошторисів"
 
 #: inc/businesscriticity.class.php:49 inc/dropdown.class.php:936
 #: inc/infocom.class.php:1216 inc/infocom.class.php:1598
@@ -5173,6 +5241,7 @@ msgid_plural "Business criticities"
 msgstr[0] "Критичність бізнесу"
 msgstr[1] "Критичності бізнесу"
 msgstr[2] "Критичності бізнесу"
+msgstr[3] "Критичності бізнесу"
 
 #: inc/calendar.class.php:67 inc/dropdown.class.php:947
 #: inc/dropdown.class.php:948 inc/entity.class.php:949
@@ -5185,6 +5254,7 @@ msgid_plural "Calendars"
 msgstr[0] "Календар"
 msgstr[1] "Календарі"
 msgstr[2] "Календарі"
+msgstr[3] "Календарі"
 
 #: inc/calendar.class.php:90 inc/calendar.class.php:108 inc/rule.class.php:561
 #: inc/rule.class.php:589
@@ -5208,6 +5278,7 @@ msgid_plural "Close times"
 msgstr[0] "Коли закрито"
 msgstr[1] "Коли закрито"
 msgstr[2] "Коли закрито"
+msgstr[3] "Коли закрито"
 
 #: inc/calendarsegment.class.php:64
 msgid "Time range"
@@ -5215,6 +5286,7 @@ msgid_plural "Time ranges"
 msgstr[0] "Часовий діапазон"
 msgstr[1] "Часові діапазони"
 msgstr[2] "Часові діапазони"
+msgstr[3] "Часові діапазони"
 
 #: inc/calendarsegment.class.php:73
 msgid "Can not add a range riding an existing period"
@@ -5234,6 +5306,7 @@ msgid_plural "Days"
 msgstr[0] "День"
 msgstr[1] "Дні"
 msgstr[2] "Дні"
+msgstr[3] "Дні"
 
 #: inc/cartridge.class.php:103 inc/cartridgeitem.class.php:326
 #: inc/entity.class.php:1727 inc/printer.class.php:698
@@ -5243,6 +5316,7 @@ msgid_plural "Cartridges"
 msgstr[0] "Картридж"
 msgstr[1] "Картриджі"
 msgstr[2] "Картриджі"
+msgstr[3] "Картриджі"
 
 #: inc/cartridge.class.php:282
 msgid "Installing a cartridge"
@@ -5263,6 +5337,7 @@ msgid_plural "New"
 msgstr[0] "Новий"
 msgstr[1] "Нові"
 msgstr[2] "Нові"
+msgstr[3] "Нові"
 
 #: inc/cartridge.class.php:364 inc/cartridge.class.php:416
 #: inc/cartridge.class.php:591
@@ -5272,6 +5347,7 @@ msgid_plural "Used"
 msgstr[0] "Використаний"
 msgstr[1] "Використані"
 msgstr[2] "Задіяні"
+msgstr[3] "Задіяні"
 
 #: inc/cartridge.class.php:366 inc/cartridge.class.php:418
 #: inc/cartridge.class.php:593
@@ -5281,6 +5357,7 @@ msgid_plural "Worn"
 msgstr[0] "Порожній"
 msgstr[1] "Порожні"
 msgstr[2] "Порожні"
+msgstr[3] "Порожні"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
@@ -5362,6 +5439,7 @@ msgid_plural "%d printed pages"
 msgstr[0] "%d сторінка надрукована"
 msgstr[1] "%d сторінки надруковано"
 msgstr[2] "%d сторінок надруковано"
+msgstr[3] "%d сторінок надруковано"
 
 #: inc/cartridge.class.php:771
 msgid "Counter error"
@@ -5378,6 +5456,7 @@ msgid_plural "months"
 msgstr[0] "місяць"
 msgstr[1] "місяці"
 msgstr[2] "місяці"
+msgstr[3] "місяці"
 
 #: inc/cartridge.class.php:789 inc/cartridge.class.php:1056
 msgid "Average time in use"
@@ -5428,6 +5507,7 @@ msgid_plural "Cartridge models"
 msgstr[0] "Модель картриджа"
 msgstr[1] "Моделі картриджів"
 msgstr[2] "Моделі картриджів"
+msgstr[3] "Моделі картриджів"
 
 #: inc/cartridge.class.php:962 inc/cartridgeitemtype.class.php:46
 #: inc/dropdown.class.php:829
@@ -5436,6 +5516,7 @@ msgid_plural "Cartridge types"
 msgstr[0] "Тип картриджа"
 msgstr[1] "Типи картриджів"
 msgstr[2] "Типи картриджів"
+msgstr[3] "Типи картриджів"
 
 #: inc/cartridge.class.php:968
 msgid "Printed pages"
@@ -5464,6 +5545,7 @@ msgid_plural "%d months"
 msgstr[0] "%d місяць"
 msgstr[1] "%d місяці"
 msgstr[2] "%d місяців"
+msgstr[3] "%d місяців"
 
 #: inc/cartridgeitem.class.php:202 inc/cartridgeitem.class.php:302
 #: inc/consumableitem.class.php:158 inc/consumableitem.class.php:259
@@ -5609,6 +5691,7 @@ msgid_plural "RSS feeds"
 msgstr[0] "RSS потік"
 msgstr[1] "RSS потоки"
 msgstr[2] "RSS потоки"
+msgstr[3] "RSS потоки"
 
 #: inc/central.class.php:171
 #, php-format
@@ -5642,6 +5725,7 @@ msgid_plural "Certificates"
 msgstr[0] "Сертифікат"
 msgstr[1] "Сертифікати"
 msgstr[2] "Сертифікатів"
+msgstr[3] "Сертифікатів"
 
 #: inc/certificate.class.php:119 inc/certificate.class.php:474
 #: inc/certificate_item.class.php:498
@@ -5706,6 +5790,7 @@ msgid_plural "Statuses"
 msgstr[0] "Статус"
 msgstr[1] "Статуси"
 msgstr[2] "Статуси"
+msgstr[3] "Статуси"
 
 #: inc/certificate.class.php:249 inc/document.class.php:939
 msgctxt "quantity"
@@ -5826,6 +5911,7 @@ msgid_plural "Certificate types"
 msgstr[0] "Тип сертифікатів"
 msgstr[1] "Типи сертифікатів"
 msgstr[2] "Типи сертифікатів"
+msgstr[3] "Типи сертифікатів"
 
 #: inc/change.class.php:182 inc/problem.class.php:409
 #: inc/ticket.class.php:2670
@@ -5857,6 +5943,7 @@ msgid_plural "Solutions"
 msgstr[0] "Рішення"
 msgstr[1] "Рішення"
 msgstr[2] "Рішення"
+msgstr[3] "Рішення"
 
 #: inc/change.class.php:419 inc/change.class.php:435 inc/change.class.php:844
 #: inc/notificationtargetchange.class.php:272
@@ -5900,6 +5987,7 @@ msgid_plural "Approvals"
 msgstr[0] "Схвалення"
 msgstr[1] "Схвалення"
 msgstr[2] "Схвалення"
+msgstr[3] "Схвалення"
 
 #: inc/change.class.php:494 inc/problem.class.php:552
 msgctxt "status"
@@ -6099,6 +6187,7 @@ msgid_plural "Last %d changes"
 msgstr[0] "%d остання зміна"
 msgstr[1] "%d останні зміни"
 msgstr[2] "%d останніх змін"
+msgstr[3] "%d останніх змін"
 
 #: inc/change.class.php:1106 inc/change.class.php:1160
 msgid "No change found."
@@ -6114,6 +6203,7 @@ msgid_plural "Links Problem/Change"
 msgstr[0] "Зв’язок Проблеми/Зміни"
 msgstr[1] "Зв’язки Проблеми/Зміни"
 msgstr[2] "Зв’язки Проблеми/Зміни"
+msgstr[3] "Зв’язки Проблеми/Зміни"
 
 #: inc/change_problem.class.php:155 inc/change_project.class.php:177
 #: inc/change_ticket.class.php:371
@@ -6134,6 +6224,7 @@ msgid_plural "Links Project/Change"
 msgstr[0] "Зв’язок Проект/Зміна"
 msgstr[1] "Зв’язки Проект/Зміна"
 msgstr[2] "Зв’язки Проект/Зміна"
+msgstr[3] "Зв’язки Проект/Зміна"
 
 #: inc/change_project.class.php:273
 msgid "Add a project"
@@ -6145,6 +6236,7 @@ msgid_plural "Change tasks"
 msgstr[0] "Завдання Зміни"
 msgstr[1] "Завдання Зміни"
 msgstr[2] "Завдання Зміни"
+msgstr[3] "Завдання Зміни"
 
 #: inc/change_ticket.class.php:66
 msgid "Link Ticket/Change"
@@ -6152,6 +6244,7 @@ msgid_plural "Links Ticket/Change"
 msgstr[0] "Зв’язок Заявки/Зміни"
 msgstr[1] "Зв’язки Заявки/Зміни"
 msgstr[2] "Зв’язки Заявки/Зміни"
+msgstr[3] "Зв’язки Заявки/Зміни"
 
 #: inc/change_ticket.class.php:266 inc/problem_ticket.class.php:300
 #: inc/projecttask_ticket.class.php:176
@@ -6460,6 +6553,7 @@ msgid_plural "Recipients"
 msgstr[0] "Отримувач"
 msgstr[1] "Отримувачі"
 msgstr[2] "Отримувачі"
+msgstr[3] "Отримувачі"
 
 #. TRANS: %1$s is address, %2$s is netmask
 #: inc/commondbvisible.class.php:237 inc/commondbvisible.class.php:292
@@ -6497,6 +6591,7 @@ msgid_plural "Profiles"
 msgstr[0] "Профіль"
 msgstr[1] "Профілі"
 msgstr[2] "Профілі"
+msgstr[3] "Профілі"
 
 #: inc/commondropdown.class.php:147
 msgid "Product Number"
@@ -6650,6 +6745,7 @@ msgid_plural "Costs"
 msgstr[0] "Вартість"
 msgstr[1] "Вартості"
 msgstr[2] "Вартості"
+msgstr[3] "Вартості"
 
 #: inc/commonitilcost.class.php:131 inc/commonitilcost.class.php:408
 #: inc/commonitilcost.class.php:551 inc/commonitiltask.class.php:821
@@ -6716,6 +6812,7 @@ msgid_plural "Ticket costs"
 msgstr[0] "Вартість Заявки"
 msgstr[1] "Вартості Заявки"
 msgstr[2] "Вартості Заявки"
+msgstr[3] "Вартості Заявки"
 
 #: inc/commonitilcost.class.php:539
 msgid "Item duration"
@@ -6883,6 +6980,7 @@ msgid_plural "Watchers"
 msgstr[0] "Спостерігач"
 msgstr[1] "Спостерігачі"
 msgstr[2] "Спостерігачі"
+msgstr[3] "Спостерігачі"
 
 #: inc/commonitilobject.class.php:2805
 msgid "Time to resolve + Progress"
@@ -6922,6 +7020,7 @@ msgid_plural "Requester groups"
 msgstr[0] "Група Заявника"
 msgstr[1] "Групи Заявника"
 msgstr[2] "Групи Заявника"
+msgstr[3] "Групи Заявника"
 
 #: inc/commonitilobject.class.php:3082 inc/commonitilobject.class.php:3287
 #: inc/notificationtargetcommonitilobject.class.php:558
@@ -6932,6 +7031,7 @@ msgid_plural "Watcher groups"
 msgstr[0] "Група спостерігача"
 msgstr[1] "Групи спостерігачів"
 msgstr[2] "Групи спостерігачів"
+msgstr[3] "Групи спостерігачів"
 
 #: inc/commonitilobject.class.php:3127
 #: inc/notificationtargetcommonitilobject.class.php:1216
@@ -6985,6 +7085,7 @@ msgid_plural "Solution templates"
 msgstr[0] "Шаблон рішення"
 msgstr[1] "Шаблони рішень"
 msgstr[2] "Шаблони рішень"
+msgstr[3] "Шаблони рішень"
 
 #: inc/commonitilobject.class.php:4256 inc/commonitilobject.class.php:4259
 msgid "Search a solution"
@@ -7004,6 +7105,7 @@ msgid_plural "Times"
 msgstr[0] "Раз"
 msgstr[1] "Рази"
 msgstr[2] "Рази"
+msgstr[3] "Рази"
 
 #: inc/commonitilobject.class.php:5288
 #, php-format
@@ -7070,6 +7172,7 @@ msgid_plural "Tasks"
 msgstr[0] "Завдання"
 msgstr[1] "Завдання"
 msgstr[2] "Завдання"
+msgstr[3] "Завдання"
 
 #: inc/commonitiltask.class.php:273 inc/commonitiltask.class.php:396
 #: inc/reminder.class.php:542 inc/reminder.class.php:587
@@ -7095,6 +7198,7 @@ msgid_plural "Task categories"
 msgstr[0] "Категорія Завдань"
 msgstr[1] "Категорії Завдань"
 msgstr[2] "Категорії Завдань"
+msgstr[3] "Категорії Завдань"
 
 #: inc/commonitiltask.class.php:597
 msgid "Public followup"
@@ -7130,6 +7234,7 @@ msgid_plural "Task templates"
 msgstr[0] "Шаблон завдання"
 msgstr[1] "Шаблони завдань"
 msgstr[2] "Шаблонів завдань"
+msgstr[3] "Шаблонів завдань"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
 #: inc/commonitiltask.class.php:1097
@@ -7150,6 +7255,7 @@ msgid_plural "Information"
 msgstr[0] "Інформація"
 msgstr[1] "Інформація"
 msgstr[2] "Інформація"
+msgstr[3] "Інформація"
 
 #: inc/commonitiltask.class.php:1227 inc/planning.class.php:168
 #: inc/planning.class.php:187
@@ -7420,6 +7526,7 @@ msgid_plural "Antiviruses"
 msgstr[0] "Антивірус"
 msgstr[1] "Антивіруси"
 msgstr[2] "Антивірусів"
+msgstr[3] "Антивірусів"
 
 #: inc/computerantivirus.class.php:143 inc/computerantivirus.class.php:279
 #: inc/computerantivirus.class.php:350
@@ -7490,6 +7597,7 @@ msgid_plural "Networks"
 msgstr[0] "Мережа"
 msgstr[1] "Мережі"
 msgstr[2] "Мережі"
+msgstr[3] "Мережі"
 
 #: inc/computer.class.php:510 inc/computer.class.php:752
 #: inc/domain.class.php:50 inc/dropdown.class.php:991
@@ -7501,6 +7609,7 @@ msgid_plural "Domains"
 msgstr[0] "Домен"
 msgstr[1] "Домени"
 msgstr[2] "Домени"
+msgstr[3] "Домени"
 
 #: inc/computer.class.php:578 inc/computer_item.class.php:285
 #: inc/computer_item.class.php:310 inc/computer_item.class.php:412
@@ -7528,6 +7637,7 @@ msgid_plural "Processors"
 msgstr[0] "Процесор"
 msgstr[1] "Процесори"
 msgstr[2] "Процесори"
+msgstr[3] "Процесори"
 
 #: inc/computer.class.php:829
 msgid "Processor frequency"
@@ -7540,6 +7650,7 @@ msgid_plural "Memory types"
 msgstr[0] "Тип пам’яті"
 msgstr[1] "Типи пам’яті"
 msgstr[2] "Типи пам’яті"
+msgstr[3] "Типи пам’яті"
 
 #: inc/computer.class.php:862 inc/computervirtualmachine.class.php:209
 #: inc/computervirtualmachine.class.php:362 inc/config.class.php:1596
@@ -7553,6 +7664,7 @@ msgid_plural "Memory"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:877 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:48 inc/networkportmigration.class.php:299
@@ -7562,6 +7674,7 @@ msgid_plural "Network interfaces"
 msgstr[0] "Мережевий інтерфейс"
 msgstr[1] "Мережеві інтерфейси"
 msgstr[2] "Мережеві інтерфейси"
+msgstr[3] "Мережеві інтерфейси"
 
 #: inc/computer.class.php:893 inc/item_devicenetworkcard.class.php:58
 #: inc/item_devicenetworkcard.class.php:59 inc/networkport.class.php:934
@@ -7576,6 +7689,7 @@ msgid_plural "Soundcards"
 msgstr[0] "Звукова карта"
 msgstr[1] "Звукові карти"
 msgstr[2] "Звукові карти"
+msgstr[3] "Звукові карти"
 
 #: inc/computer.class.php:920 inc/devicegraphiccard.class.php:47
 msgid "Graphics card"
@@ -7583,6 +7697,7 @@ msgid_plural "Graphics cards"
 msgstr[0] "Графічна карта"
 msgstr[1] "Графічні карти"
 msgstr[2] "Графічні карти"
+msgstr[3] "Графічні карти"
 
 #: inc/computer.class.php:936 inc/devicemotherboard.class.php:47
 msgid "System board"
@@ -7590,6 +7705,7 @@ msgid_plural "System boards"
 msgstr[0] "Системна плата"
 msgstr[1] "Системні плати"
 msgstr[2] "Системні плати"
+msgstr[3] "Системні плати"
 
 #: inc/computer.class.php:952
 msgid "Hard drive type"
@@ -7606,6 +7722,7 @@ msgid_plural "Power supplies"
 msgstr[0] "Блок живлення"
 msgstr[1] "Блоки живлення"
 msgstr[2] "Блоки живлення"
+msgstr[3] "Блоки живлення"
 
 #: inc/computer.class.php:1002 inc/devicepci.class.php:49
 msgid "Other component"
@@ -7613,6 +7730,7 @@ msgid_plural "Other components"
 msgstr[0] "Інший компонент"
 msgstr[1] "Інші компоненти"
 msgstr[2] "Інші компоненти"
+msgstr[3] "Інші компоненти"
 
 #: inc/computer.class.php:1017 inc/computer.class.php:1024
 #: inc/computerdisk.class.php:53 inc/lock.class.php:491
@@ -7622,6 +7740,7 @@ msgid_plural "Volumes"
 msgstr[0] "Том"
 msgstr[1] "Томи"
 msgstr[2] "Томи"
+msgstr[3] "Томи"
 
 #: inc/computer.class.php:1038 inc/computerdisk.class.php:201
 #: inc/computerdisk.class.php:275
@@ -7655,6 +7774,7 @@ msgid_plural "File systems"
 msgstr[0] "Файлова система"
 msgstr[1] "Файлові системи"
 msgstr[2] "Файлові системи"
+msgstr[3] "Файлові системи"
 
 #: inc/computer.class.php:1127 inc/computer.class.php:1134
 #: inc/dropdown.class.php:918 inc/lock.class.php:493
@@ -7663,6 +7783,7 @@ msgid_plural "Virtual machines"
 msgstr[0] "Віртуальна машина"
 msgstr[1] "Віртуальні машини"
 msgstr[2] "Віртуальні машини"
+msgstr[3] "Віртуальні машини"
 
 #: inc/computer.class.php:1147 inc/computervirtualmachine.class.php:184
 #: inc/dropdown.class.php:925 inc/virtualmachinestate.class.php:46
@@ -7671,6 +7792,7 @@ msgid_plural "States of the virtual machine"
 msgstr[0] "Статус віртуальної машини"
 msgstr[1] "Статуси віртуальних машин"
 msgstr[2] "Статуси віртуальних машин"
+msgstr[3] "Статуси віртуальних машин"
 
 #: inc/computer.class.php:1165 inc/computervirtualmachine.class.php:179
 #: inc/computervirtualmachine.class.php:358 inc/dropdown.class.php:922
@@ -7680,6 +7802,7 @@ msgid_plural "Virtualization models"
 msgstr[0] "Модель віртуалізації"
 msgstr[1] "Моделі віртуалізації"
 msgstr[2] "Моделі віртуалізації"
+msgstr[3] "Моделі віртуалізації"
 
 #: inc/computer.class.php:1183 inc/computervirtualmachine.class.php:173
 #: inc/computervirtualmachine.class.php:357 inc/dropdown.class.php:919
@@ -7689,6 +7812,7 @@ msgid_plural "Virtualization systems"
 msgstr[0] "Система віртуалізації"
 msgstr[1] "Системи віртуалізації"
 msgstr[2] "Системи віртуалізації"
+msgstr[3] "Системи віртуалізації"
 
 #: inc/computer.class.php:1201
 msgid "Virtual machine processor number"
@@ -7744,6 +7868,7 @@ msgid_plural "Connections"
 msgstr[0] "З’єднання"
 msgstr[1] "З’єднання"
 msgstr[2] "З’єднання"
+msgstr[3] "З’єднання"
 
 #: inc/computer_softwarelicense.class.php:91
 #: inc/computer_softwareversion.class.php:332
@@ -7758,6 +7883,7 @@ msgid_plural "Licenses"
 msgstr[0] "Ліцензія"
 msgstr[1] "Ліцензії"
 msgstr[2] "Ліцензії"
+msgstr[3] "Ліцензії"
 
 #: inc/computer_softwarelicense.class.php:190
 msgid "A version is required!"
@@ -7785,6 +7911,7 @@ msgid_plural "Installations"
 msgstr[0] "Встановлення"
 msgstr[1] "Встановлення"
 msgstr[2] "Встановлення"
+msgstr[3] "Встановлення"
 
 #: inc/computer_softwareversion.class.php:333
 #: inc/computer_softwareversion.class.php:789
@@ -8077,6 +8204,7 @@ msgid_plural "SQL replicas"
 msgstr[0] "SQL реплікація"
 msgstr[1] "SQL реплікації"
 msgstr[2] "SQL реплікацій"
+msgstr[3] "SQL реплікацій"
 
 #: inc/config.class.php:681 install/install.php:218
 msgid "SQL server (MariaDB or MySQL)"
@@ -8809,6 +8937,7 @@ msgid_plural "New"
 msgstr[0] "Новий"
 msgstr[1] "Нові"
 msgstr[2] "Нові"
+msgstr[3] "Нові"
 
 #: inc/consumable.class.php:409
 msgctxt "consumable"
@@ -8817,6 +8946,7 @@ msgid_plural "Used"
 msgstr[0] "Використаний"
 msgstr[1] "Використані"
 msgstr[2] "Задіяні"
+msgstr[3] "Задіяні"
 
 #: inc/consumable.class.php:439
 msgctxt "button"
@@ -8850,6 +8980,7 @@ msgid_plural "Consumable models"
 msgstr[0] "Модель витратного матеріалу"
 msgstr[1] "Моделі витратних матеріалів"
 msgstr[2] "Моделі витратних матеріалів"
+msgstr[3] "Моделі витратних матеріалів"
 
 #: inc/consumableitem.class.php:296
 msgid "Number of used consumables"
@@ -8888,6 +9019,7 @@ msgid_plural "Consumable types"
 msgstr[0] "Тип витратних матеріалів"
 msgstr[1] "Типи витратних матеріалів"
 msgstr[2] "Типи витратних матеріалів"
+msgstr[3] "Типи витратних матеріалів"
 
 #: inc/contact.class.php:57 inc/profile.class.php:867
 #: inc/profile.class.php:1714
@@ -8896,6 +9028,7 @@ msgid_plural "Contacts"
 msgstr[0] "Контакт"
 msgstr[1] "Контакти"
 msgstr[2] "Контакти"
+msgstr[3] "Контакти"
 
 #: inc/contact.class.php:191 inc/contact.class.php:359
 #: inc/entity.class.php:334 inc/entity.class.php:504 inc/entity.class.php:1316
@@ -8971,6 +9104,7 @@ msgid_plural "Associated suppliers"
 msgstr[0] "Пов’язаний постачальник"
 msgstr[1] "Пов’язані постачальники"
 msgstr[2] "Пов’язані постачальники"
+msgstr[3] "Пов’язані постачальники"
 
 #: inc/contact_supplier.class.php:53
 msgid "Link Contact/Supplier"
@@ -8978,6 +9112,7 @@ msgid_plural "Links Contact/Supplier"
 msgstr[0] "Зв’язок Контакт/Постачальник"
 msgstr[1] "Зв’язки Контакт/Постачальник"
 msgstr[2] "Зв’язки Контакт/Постачальник"
+msgstr[3] "Зв’язки Контакт/Постачальник"
 
 #: inc/contact_supplier.class.php:179 inc/contract_supplier.class.php:328
 msgid "Add a supplier"
@@ -8993,6 +9128,7 @@ msgid_plural "Third party types"
 msgstr[0] "Тип третьої сторони"
 msgstr[1] "Типи третьої сторони"
 msgstr[2] "Типи третьої сторони"
+msgstr[3] "Типи третьої сторони"
 
 #: inc/contact_supplier.class.php:218 inc/contract_supplier.class.php:365
 #: inc/entity.class.php:513 inc/entity.class.php:1334
@@ -9013,6 +9149,7 @@ msgid_plural "Contact types"
 msgstr[0] "Тип контактів"
 msgstr[1] "Типи контактів"
 msgstr[2] "Типи контактів"
+msgstr[3] "Типи контактів"
 
 #: inc/contract.class.php:56 inc/contract.class.php:430
 #: inc/contract.class.php:445 inc/contract.class.php:459
@@ -9028,6 +9165,7 @@ msgid_plural "Contracts"
 msgstr[0] "Договір"
 msgstr[1] "Договори"
 msgstr[2] "Договори"
+msgstr[3] "Договори"
 
 #: inc/contract.class.php:209 inc/contract.class.php:682
 #: inc/contract_item.class.php:459 inc/contract_supplier.class.php:221
@@ -9220,6 +9358,7 @@ msgid_plural "Links Contract/Item"
 msgstr[0] "Зв’язок Договір/Елемент"
 msgstr[1] "Зв’язки Договір/Елемент"
 msgstr[2] "Зв’язки Договір/Елемент"
+msgstr[3] "Зв’язки Договір/Елемент"
 
 #: inc/contract_item.class.php:165 inc/queuednotification.class.php:339
 msgid "Associated item ID"
@@ -9235,6 +9374,7 @@ msgid_plural "Checks"
 msgstr[0] "Перевірка"
 msgstr[1] "Перевірки"
 msgstr[2] "Перевірки"
+msgstr[3] "Перевірки"
 
 #: inc/control.class.php:65 inc/dropdown.class.php:1029
 #: inc/fieldunicity.class.php:56
@@ -9248,6 +9388,7 @@ msgid_plural "Automatic actions"
 msgstr[0] "Автоматична дія"
 msgstr[1] "Автоматичні дії"
 msgstr[2] "Автоматичні дії"
+msgstr[3] "Автоматичні дії"
 
 #: inc/crontask.class.php:201 inc/crontask.class.php:294
 msgid "Action aborted"
@@ -9376,6 +9517,7 @@ msgid_plural "%s starts"
 msgstr[0] "%s запуск"
 msgstr[1] "%s запуски"
 msgstr[2] "%s запусків"
+msgstr[3] "%s запусків"
 
 #. TRANS: %s is the number of stops
 #: inc/crontask.class.php:979
@@ -9385,6 +9527,7 @@ msgid_plural "%s stops"
 msgstr[0] "%s зупинка"
 msgstr[1] "%s зупинки"
 msgstr[2] "%s зупинок"
+msgstr[3] "%s зупинок"
 
 #: inc/crontask.class.php:1002
 msgid "Minimal time"
@@ -9400,6 +9543,7 @@ msgid_plural "%s seconds"
 msgstr[0] "%s секунда"
 msgstr[1] "%s секунди"
 msgstr[2] "%s секунд"
+msgstr[3] "%s секунд"
 
 #: inc/crontask.class.php:1007
 msgid "Maximal time"
@@ -9418,6 +9562,7 @@ msgid_plural "%s items"
 msgstr[0] "%s елемент"
 msgstr[1] "%s елементи"
 msgstr[2] "%s елементів"
+msgstr[3] "%s елементів"
 
 #: inc/crontask.class.php:1029
 msgid "Maximal count"
@@ -9474,6 +9619,8 @@ msgstr[0] "Очистити %1$d файл сесії, створений біл�
 msgstr[1] "Очистити %1$d файли сесії, створених більше, чим %2$s секунд назад"
 msgstr[2] ""
 "Очистити %1$d файлів сесії, створених більше, чим %2$s секунд назад"
+msgstr[3] ""
+"Очистити %1$d файлів сесії, створених більше, чим %2$s секунд назад"
 
 #: inc/crontask.class.php:1518
 #, php-format
@@ -9507,6 +9654,8 @@ msgstr[1] ""
 "Очистити %1$d графічних файли, створених більше, чим %2$s секунд назад"
 msgstr[2] ""
 "Очистити %1$d графічних файлів, створених більше, чим %2$s секунд назад"
+msgstr[3] ""
+"Очистити %1$d графічних файлів, створених більше, чим %2$s секунд назад"
 
 #: inc/crontask.class.php:1613
 #, php-format
@@ -9517,6 +9666,8 @@ msgstr[0] ""
 msgstr[1] ""
 "Очистити %1$d тимчасових файли, створених більше чим %2$s секунд назад"
 msgstr[2] ""
+"Очистити %1$d тимчасових файлів, створених більше чим %2$s секунд назад"
+msgstr[3] ""
 "Очистити %1$d тимчасових файлів, створених більше чим %2$s секунд назад"
 
 #: inc/crontask.class.php:1708
@@ -9566,6 +9717,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d хвилина"
 msgstr[1] "%d хвилини"
 msgstr[2] "%d хвилин"
+msgstr[3] "%d хвилин"
 
 #. TRANS: %d is a number of hours
 #: inc/crontask.class.php:1753 inc/dropdown.class.php:1532
@@ -9577,6 +9729,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d година"
 msgstr[1] "%d години"
 msgstr[2] "%d годин"
+msgstr[3] "%d годин"
 
 #. TRANS: %d is a number of days
 #: inc/crontask.class.php:1759 inc/dropdown.class.php:1528
@@ -9590,6 +9743,7 @@ msgid_plural "%d days"
 msgstr[0] "%d день"
 msgstr[1] "%d дні"
 msgstr[2] "%d днів"
+msgstr[3] "%d днів"
 
 #: inc/dbconnection.class.php:379
 msgid "Check the SQL replica"
@@ -9644,6 +9798,7 @@ msgid_plural "Batteries"
 msgstr[0] "Батарея"
 msgstr[1] "Батареї"
 msgstr[2] "Батарей"
+msgstr[3] "Батарей"
 
 #: inc/devicebattery.class.php:57 inc/devicebattery.class.php:79
 #: inc/devicebattery.class.php:115 inc/item_deviceharddrive.class.php:56
@@ -9671,6 +9826,7 @@ msgid_plural "Device batteries models"
 msgstr[0] "Модель батареї пристрою"
 msgstr[1] "Моделі батарей пристроїв"
 msgstr[2] "Моделі батарей пристроїв"
+msgstr[3] "Моделі батарей пристроїв"
 
 #: inc/devicebatterytype.class.php:42
 msgid "Battery type"
@@ -9678,6 +9834,7 @@ msgid_plural "Battery types"
 msgstr[0] "Тип батареї"
 msgstr[1] "Типи батареї"
 msgstr[2] "Типів батареї"
+msgstr[3] "Типів батареї"
 
 #: inc/devicecase.class.php:47
 msgid "Case"
@@ -9685,6 +9842,7 @@ msgid_plural "Cases"
 msgstr[0] "Корпус"
 msgstr[1] "Корпуси"
 msgstr[2] "Корпуси"
+msgstr[3] "Корпуси"
 
 #: inc/devicecasemodel.class.php:45 inc/dropdown.class.php:888
 msgid "Device case model"
@@ -9692,6 +9850,7 @@ msgid_plural "Device case models"
 msgstr[0] "Модель корпусу пристроїв"
 msgstr[1] "Моделі корпусу пристроїв"
 msgstr[2] "Моделі корпусу пристроїв"
+msgstr[3] "Моделі корпусу пристроїв"
 
 #: inc/devicecasetype.class.php:46 inc/dropdown.class.php:851
 msgid "Case type"
@@ -9699,6 +9858,7 @@ msgid_plural "Case types"
 msgstr[0] "Тип корпусу"
 msgstr[1] "Типи корпусу"
 msgstr[2] "Типи корпусу"
+msgstr[3] "Типи корпусу"
 
 #: inc/devicecontrol.class.php:49
 msgid "Controller"
@@ -9706,6 +9866,7 @@ msgid_plural "Controllers"
 msgstr[0] "Контроллер"
 msgstr[1] "Контроллери"
 msgstr[2] "Контроллери"
+msgstr[3] "Контроллери"
 
 #: inc/devicecontrol.class.php:57 inc/devicecontrol.class.php:81
 msgid "RAID"
@@ -9725,6 +9886,7 @@ msgid_plural "Device control models"
 msgstr[0] "Модель контролерів пристроїв"
 msgstr[1] "Моделі контролерів пристроїв"
 msgstr[2] "Моделі контролерів пристроїв"
+msgstr[3] "Моделі контролерів пристроїв"
 
 #: inc/devicedrive.class.php:47
 msgid "Drive"
@@ -9732,6 +9894,7 @@ msgid_plural "Drives"
 msgstr[0] "Диск"
 msgstr[1] "Диски"
 msgstr[2] "Диски"
+msgstr[3] "Диски"
 
 #: inc/devicedrive.class.php:55 inc/devicedrive.class.php:76
 #: inc/devicedrive.class.php:126
@@ -9749,6 +9912,7 @@ msgid_plural "Device drive models"
 msgstr[0] "Модель приводу пристроїв"
 msgstr[1] "Моделі приводу пристроїв"
 msgstr[2] "Моделі приводу пристроїв"
+msgstr[3] "Моделі приводу пристроїв"
 
 #: inc/devicefirmware.class.php:42 inc/networkequipment.class.php:563
 #: inc/phone.class.php:532
@@ -9757,6 +9921,7 @@ msgid_plural "Firmware"
 msgstr[0] "Прошивка"
 msgstr[1] "Прошивки"
 msgstr[2] "Прошивки"
+msgstr[3] "Прошивки"
 
 #: inc/devicefirmwaremodel.class.php:43
 msgid "Device firmware model"
@@ -9764,6 +9929,7 @@ msgid_plural "Device firmware models"
 msgstr[0] "Модель прошивки пристроїв"
 msgstr[1] "Моделі прошивки пристроїв"
 msgstr[2] "Моделі прошивок пристроїв"
+msgstr[3] "Моделі прошивок пристроїв"
 
 #: inc/devicefirmwaretype.class.php:42
 msgid "Firmware type"
@@ -9771,6 +9937,7 @@ msgid_plural "Firmware types"
 msgstr[0] "Тип прошивки"
 msgstr[1] "Типи прошивки"
 msgstr[2] "Типи прошивки"
+msgstr[3] "Типи прошивки"
 
 #: inc/devicegeneric.class.php:45
 msgid "Generic device"
@@ -9778,6 +9945,7 @@ msgid_plural "Generic devices"
 msgstr[0] "Загальний пристрій"
 msgstr[1] "Загальні пристрої"
 msgstr[2] "Загальні пристрої"
+msgstr[3] "Загальні пристрої"
 
 #: inc/devicegenericmodel.class.php:45 inc/dropdown.class.php:894
 msgid "Device generic model"
@@ -9785,6 +9953,7 @@ msgid_plural "Device generic models"
 msgstr[0] "Загальна модель пристроїв"
 msgstr[1] "Загальні моделі пристроїв"
 msgstr[2] "Загальні моделі пристроїв"
+msgstr[3] "Загальні моделі пристроїв"
 
 #: inc/devicegenerictype.class.php:42
 msgid "Generic type"
@@ -9792,6 +9961,7 @@ msgid_plural "Generic types"
 msgstr[0] "Загальний тип"
 msgstr[1] "Загальні типи"
 msgstr[2] "Загальні типи"
+msgstr[3] "Загальні типи"
 
 #: inc/devicegraphiccard.class.php:55 inc/devicegraphiccard.class.php:161
 #: inc/devicemotherboard.class.php:55 inc/devicemotherboard.class.php:70
@@ -9808,6 +9978,7 @@ msgid_plural "Device graphic card models"
 msgstr[0] "Модель графічної карти пристрою"
 msgstr[1] "Моделі графічних карт пристрою"
 msgstr[2] "Моделі графічних карт пристрою"
+msgstr[3] "Моделі графічних карт пристрою"
 
 #: inc/deviceharddrive.class.php:47
 msgid "Hard drive"
@@ -9815,6 +9986,7 @@ msgid_plural "Hard drives"
 msgstr[0] "Жорсткий диск"
 msgstr[1] "Жорсткі диски"
 msgstr[2] "Жорсткі диски"
+msgstr[3] "Жорсткі диски"
 
 #: inc/deviceharddrive.class.php:55 inc/deviceharddrive.class.php:81
 msgid "Capacity by default"
@@ -9836,6 +10008,7 @@ msgid_plural "Device hard drive models"
 msgstr[0] "Модель жорсткого диску пристрою"
 msgstr[1] "Моделі жорстких дисків пристрою"
 msgstr[2] "Моделі жорстких дисків пристрою"
+msgstr[3] "Моделі жорстких дисків пристрою"
 
 #: inc/devicememory.class.php:55 inc/devicememory.class.php:78
 msgid "Size by default"
@@ -9859,6 +10032,7 @@ msgid_plural "Device memory models"
 msgstr[0] "Модель пам'яті пристрою"
 msgstr[1] "Моделі пам'яті пристрою"
 msgstr[2] "Моделі пам'яті пристрою"
+msgstr[3] "Моделі пам'яті пристрою"
 
 #: inc/devicemotherboardmodel.class.php:45
 msgid "System board model"
@@ -9866,6 +10040,7 @@ msgid_plural "System board models"
 msgstr[0] "Модель системної плати"
 msgstr[1] "Моделі системних плат"
 msgstr[2] "Моделі системних плат"
+msgstr[3] "Моделі системних плат"
 
 #: inc/devicenetworkcard.class.php:49
 #: inc/networkportinstantiation.class.php:458
@@ -9874,6 +10049,7 @@ msgid_plural "Network cards"
 msgstr[0] "Мережева карта"
 msgstr[1] "Мережеві карти"
 msgstr[2] "Мережеві карти"
+msgstr[3] "Мережеві карти"
 
 #: inc/devicenetworkcard.class.php:70 inc/devicenetworkcard.class.php:94
 msgid "MAC address by default"
@@ -9890,6 +10066,7 @@ msgid_plural "Network card models"
 msgstr[0] "Модель мережевої карти"
 msgstr[1] "Моделі мережевих карт"
 msgstr[2] "Моделі мережевих карт"
+msgstr[3] "Моделі мережевих карт"
 
 #: inc/devicepcimodel.class.php:45 inc/dropdown.class.php:906
 msgid "Other component model"
@@ -9897,6 +10074,7 @@ msgid_plural "Other component models"
 msgstr[0] "Модель інших компонент"
 msgstr[1] "Моделі інших компонент"
 msgstr[2] "Моделі інших компонент"
+msgstr[3] "Моделі інших компонент"
 
 #: inc/devicepowersupply.class.php:55 inc/devicepowersupply.class.php:73
 msgid "ATX"
@@ -9912,6 +10090,7 @@ msgid_plural "Device power supply models"
 msgstr[0] "Модель блоків живлення"
 msgstr[1] "Моделі блоків живлення"
 msgstr[2] "Моделі блоків живлення"
+msgstr[3] "Моделі блоків живлення"
 
 #: inc/deviceprocessor.class.php:55 inc/deviceprocessor.class.php:82
 msgid "Frequency by default"
@@ -9933,6 +10112,7 @@ msgid_plural "Device processor models"
 msgstr[0] "Модель процесорів пристроїв"
 msgstr[1] "Моделі процесорів пристроїв"
 msgstr[2] "Моделі процесорів пристроїв"
+msgstr[3] "Моделі процесорів пристроїв"
 
 #: inc/devicesensor.class.php:47
 msgid "Sensor"
@@ -9940,6 +10120,7 @@ msgid_plural "Sensors"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicesensormodel.class.php:42 inc/dropdown.class.php:914
 msgid "Device sensor model"
@@ -9947,6 +10128,7 @@ msgid_plural "Device sensor models"
 msgstr[0] "Модель датчиків"
 msgstr[1] "Моделі датчиків"
 msgstr[2] "Моделі датчиків"
+msgstr[3] "Моделі датчиків"
 
 #: inc/devicesensortype.class.php:44 inc/dropdown.class.php:841
 msgid "Sensor type"
@@ -9954,6 +10136,7 @@ msgid_plural "Sensor types"
 msgstr[0] "Тип датчиків"
 msgstr[1] "Типи датчиків"
 msgstr[2] "Типи датчиків"
+msgstr[3] "Типи датчиків"
 
 #: inc/devicesimcard.class.php:46
 msgid "Simcard"
@@ -9961,6 +10144,7 @@ msgid_plural "Simcards"
 msgstr[0] "SIM-карта"
 msgstr[1] "SIM-карти"
 msgstr[2] "SIM-карти"
+msgstr[3] "SIM-карти"
 
 #: inc/devicesimcard.class.php:67 inc/devicesimcard.class.php:97
 msgid "Allow VOIP"
@@ -9972,6 +10156,7 @@ msgid_plural "Simcard types"
 msgstr[0] "Тип SIM-карт"
 msgstr[1] "Типи SIM-карт"
 msgstr[2] "Типи SIM-карт"
+msgstr[3] "Типи SIM-карт"
 
 #: inc/devicesoundcardmodel.class.php:45 inc/dropdown.class.php:912
 msgid "Device sound card model"
@@ -9979,6 +10164,7 @@ msgid_plural "Device sound card models"
 msgstr[0] "Модель звукової карти пристрою"
 msgstr[1] "Моделі звукових карт пристрою"
 msgstr[2] "Моделі звукових карт пристрою"
+msgstr[3] "Моделі звукових карт пристрою"
 
 #: inc/displaypreference.class.php:291
 msgid "No personal criteria. Create personal parameters?"
@@ -10023,6 +10209,7 @@ msgid_plural "Document headings"
 msgstr[0] "Заголовок документу"
 msgstr[1] "Заголовки документів"
 msgstr[2] "Заголовки документів"
+msgstr[3] "Заголовки документів"
 
 #: inc/document.class.php:59 inc/document.class.php:220
 #: inc/document_item.class.php:151 inc/event.class.php:168
@@ -10060,6 +10247,7 @@ msgid_plural "Documents"
 msgstr[0] "Документ"
 msgstr[1] "Документи"
 msgstr[2] "Документи"
+msgstr[3] "Документи"
 
 #: inc/document.class.php:168 inc/document.class.php:1026
 #: inc/document.class.php:1113 inc/document.class.php:1200
@@ -10264,6 +10452,7 @@ msgid_plural "Document types"
 msgstr[0] "Тип документів"
 msgstr[1] "Типи документів"
 msgstr[2] "Типи документів"
+msgstr[3] "Типи документів"
 
 #: inc/documenttype.class.php:177 inc/documenttype.class.php:178
 #: inc/html.class.php:5945 inc/html.class.php:5946
@@ -10299,6 +10488,7 @@ msgid_plural "%s hours"
 msgstr[0] "%s година"
 msgstr[1] "%s години"
 msgstr[2] "%s годин"
+msgstr[3] "%s годин"
 
 #: inc/dropdown.class.php:773
 msgid "Common"
@@ -10311,6 +10501,7 @@ msgid_plural "Statuses of items"
 msgstr[0] "Статус елемента"
 msgstr[1] "Статуси елементів"
 msgstr[2] "Статуси елементів"
+msgstr[3] "Статуси елементів"
 
 #: inc/dropdown.class.php:787 inc/itilcategory.class.php:244
 #: inc/profile.class.php:1433
@@ -10319,6 +10510,7 @@ msgid_plural "Ticket categories"
 msgstr[0] "Категорія заявок"
 msgstr[1] "Категорії заявок"
 msgstr[2] "Категорії заявок"
+msgstr[3] "Категорії заявок"
 
 #: inc/dropdown.class.php:801 inc/projectstate.class.php:50
 msgid "Project state"
@@ -10326,6 +10518,7 @@ msgid_plural "Project states"
 msgstr[0] "Статус проекту"
 msgstr[1] "Статуси проекту"
 msgstr[2] "Статуси проекту"
+msgstr[3] "Статуси проекту"
 
 #: inc/dropdown.class.php:803 inc/projecttype.class.php:50
 msgid "Project type"
@@ -10333,6 +10526,7 @@ msgid_plural "Project types"
 msgstr[0] "Тип проекту"
 msgstr[1] "Типи проектів"
 msgstr[2] "Типи проектів"
+msgstr[3] "Типи проектів"
 
 #: inc/dropdown.class.php:805 inc/projecttasktype.class.php:50
 msgid "Project tasks type"
@@ -10340,6 +10534,7 @@ msgid_plural "Project tasks types"
 msgstr[0] "Тип завдань проекту"
 msgstr[1] "Типи завдань проекту"
 msgstr[2] "Типи завдань проекту"
+msgstr[3] "Типи завдань проекту"
 
 #: inc/dropdown.class.php:808 inc/projecttask.class.php:424
 #: inc/projecttasktemplate.class.php:54
@@ -10348,6 +10543,7 @@ msgid_plural "Project task templates"
 msgstr[0] "Шаблон завдань проекту"
 msgstr[1] "Шаблони завдань проекту"
 msgstr[2] "Шаблони завдань проекту"
+msgstr[3] "Шаблони завдань проекту"
 
 #: inc/dropdown.class.php:816 inc/networkequipmenttype.class.php:46
 #: inc/rule.class.php:400
@@ -10356,6 +10552,7 @@ msgid_plural "Networking equipment types"
 msgstr[0] "Тип мережевого обладнання"
 msgstr[1] "Типи мережевого обладнання"
 msgstr[2] "Типи мережевого обладнання"
+msgstr[3] "Типи мережевого обладнання"
 
 #: inc/dropdown.class.php:823 inc/peripheraltype.class.php:46
 msgid "Devices type"
@@ -10363,6 +10560,7 @@ msgid_plural "Devices types"
 msgstr[0] "Тип пристроїв"
 msgstr[1] "Типи пристроїв"
 msgstr[2] "Типи пристроїв"
+msgstr[3] "Типи пристроїв"
 
 #: inc/dropdown.class.php:827 inc/softwarelicensetype.class.php:47
 msgid "License type"
@@ -10370,6 +10568,7 @@ msgid_plural "License types"
 msgstr[0] "Тип ліцензій"
 msgstr[1] "Типи ліцензій"
 msgstr[2] "Типи ліцензій"
+msgstr[3] "Типи ліцензій"
 
 #: inc/dropdown.class.php:839
 msgid "Generic device type"
@@ -10377,6 +10576,7 @@ msgid_plural "Generic device types"
 msgstr[0] "Тип загальних пристроїв"
 msgstr[1] "Типи загальних пристроїв"
 msgstr[2] "Типи загальних пристроїв"
+msgstr[3] "Типи загальних пристроїв"
 
 #: inc/dropdown.class.php:848 inc/interfacetype.class.php:48
 msgid "Interface type (Hard drive...)"
@@ -10384,6 +10584,7 @@ msgid_plural "Interface types (Hard drive...)"
 msgstr[0] "Тип інтерфейсу (Жорстких дисків)"
 msgstr[1] "Типи інтерфейсу (Жорстких дисків)"
 msgstr[2] "Типи інтерфейсу (Жорстких дисків)"
+msgstr[3] "Типи інтерфейсу (Жорстких дисків)"
 
 #: inc/dropdown.class.php:853 inc/phonepowersupply.class.php:48
 msgid "Phone power supply type"
@@ -10391,6 +10592,7 @@ msgid_plural "Phones power supply types"
 msgstr[0] "Тип телефонної зарядки"
 msgstr[1] "Типи телефонної зарядки"
 msgstr[2] "Типи телефонної зарядки"
+msgstr[3] "Типи телефонної зарядки"
 
 #: inc/dropdown.class.php:864 inc/line.class.php:120 inc/linetype.class.php:46
 msgid "Line type"
@@ -10398,6 +10600,7 @@ msgid_plural "Line types"
 msgstr[0] "Тип лінії"
 msgstr[1] "Типи ліній"
 msgstr[2] "Типів ліній"
+msgstr[3] "Типів ліній"
 
 #: inc/dropdown.class.php:872 inc/networkequipmentmodel.class.php:48
 #: inc/rule.class.php:328
@@ -10406,6 +10609,7 @@ msgid_plural "Networking equipment models"
 msgstr[0] "Модель мережевого обладнання"
 msgstr[1] "Моделі мережевого обладнання"
 msgstr[2] "Моделі мережевого обладнання"
+msgstr[3] "Моделі мережевого обладнання"
 
 #: inc/dropdown.class.php:881 inc/peripheralmodel.class.php:48
 #: inc/rule.class.php:316
@@ -10414,6 +10618,7 @@ msgid_plural "Peripheral models"
 msgstr[0] "Модель периферії"
 msgstr[1] "Моделі периферії"
 msgstr[2] "Моделі периферії"
+msgstr[3] "Моделі периферії"
 
 #: inc/dropdown.class.php:902
 msgid "Device mother board model"
@@ -10421,6 +10626,7 @@ msgid_plural "Device mother board models"
 msgstr[0] "Модель системної плати пристрою"
 msgstr[1] "Моделі системних плат пристрою"
 msgstr[2] "Моделі системних плат пристрою"
+msgstr[3] "Моделі системних плат пристрою"
 
 #: inc/dropdown.class.php:904
 msgid "Device network card model"
@@ -10428,6 +10634,7 @@ msgid_plural "Device network card models"
 msgstr[0] "Модель мережевої карти пристрою"
 msgstr[1] "Моделі мережевої карти пристрою"
 msgstr[2] "Моделі мережевих карт пристрою"
+msgstr[3] "Моделі мережевих карт пристрою"
 
 #: inc/dropdown.class.php:930 inc/event.class.php:162 inc/html.class.php:1325
 #: inc/infocom.class.php:149 inc/profile.class.php:104
@@ -10450,6 +10657,7 @@ msgid_plural "Knowledge base categories"
 msgstr[0] "Категорія бази знань"
 msgstr[1] "Категорії бази знань"
 msgstr[2] "Категорії бази знань"
+msgstr[3] "Категорії бази знань"
 
 #: inc/dropdown.class.php:970 inc/item_operatingsystem.class.php:344
 #: inc/item_operatingsystem.class.php:560
@@ -10460,6 +10668,7 @@ msgid_plural "Editions"
 msgstr[0] "Редакція"
 msgstr[1] "Редакції"
 msgstr[2] "Редакції"
+msgstr[3] "Редакції"
 
 #: inc/dropdown.class.php:974 inc/item_operatingsystem.class.php:335
 #: inc/item_operatingsystem.class.php:519
@@ -10471,6 +10680,7 @@ msgid_plural "Kernels"
 msgstr[0] "Ядро"
 msgstr[1] "Ядра"
 msgstr[2] "Ядра"
+msgstr[3] "Ядра"
 
 #: inc/dropdown.class.php:978 inc/item_operatingsystem.class.php:542
 #: inc/item_operatingsystem.class.php:614
@@ -10480,6 +10690,7 @@ msgid_plural "Kernel versions"
 msgstr[0] "Версія ядра"
 msgstr[1] "Версії ядра"
 msgstr[2] "Версії ядра"
+msgstr[3] "Версії ядра"
 
 #: inc/dropdown.class.php:981
 msgid "Update source"
@@ -10487,6 +10698,7 @@ msgid_plural "Update sources"
 msgstr[0] "Джерело оновлень"
 msgstr[1] "Джерела оновлень"
 msgstr[2] "Джерела оновлень"
+msgstr[3] "Джерела оновлень"
 
 #: inc/dropdown.class.php:985 inc/networkport.class.php:925
 msgid "Networking"
@@ -10503,6 +10715,7 @@ msgid_plural "Network outlets"
 msgstr[0] "Мережева розетка"
 msgstr[1] "Мережеві розетки"
 msgstr[2] "Мережеві розетки"
+msgstr[3] "Мережеві розетки"
 
 #: inc/dropdown.class.php:995 inc/networkport.class.php:975
 #: inc/networkportinstantiation.class.php:131 inc/vlan.class.php:53
@@ -10516,6 +10729,7 @@ msgid_plural "Line operators"
 msgstr[0] "Оператор лінії"
 msgstr[1] "Оператори ліній"
 msgstr[2] "Операторів ліній"
+msgstr[3] "Операторів ліній"
 
 #: inc/dropdown.class.php:1000 inc/profile.class.php:814
 #: inc/profile.class.php:1695
@@ -10528,6 +10742,7 @@ msgid_plural "IP networks"
 msgstr[0] "IP мережа"
 msgstr[1] "IP мережі"
 msgstr[2] "IP мережі"
+msgstr[3] "IP мережі"
 
 #: inc/dropdown.class.php:1003 inc/fqdn.class.php:53
 #: inc/networkalias.class.php:311
@@ -10536,6 +10751,7 @@ msgid_plural "Internet domains"
 msgstr[0] "Інтернет-домен"
 msgstr[1] "Інтернет-домени"
 msgstr[2] "Інтернет-домени"
+msgstr[3] "Інтернет-домени"
 
 #: inc/dropdown.class.php:1005 inc/wifinetwork.class.php:53
 msgid "Wifi network"
@@ -10543,6 +10759,7 @@ msgid_plural "Wifi networks"
 msgstr[0] "мережа Wifi"
 msgstr[1] "мережі Wifi"
 msgstr[2] "мережі Wifi"
+msgstr[3] "мережі Wifi"
 
 #: inc/dropdown.class.php:1007 inc/lock.class.php:489
 #: inc/networkname.class.php:71
@@ -10551,6 +10768,7 @@ msgid_plural "Network names"
 msgstr[0] "Назва мережі"
 msgstr[1] "Назви мережі"
 msgstr[2] "Назви мережі"
+msgstr[3] "Назви мережі"
 
 #: inc/dropdown.class.php:1012 inc/softwarecategory.class.php:48
 msgid "Software category"
@@ -10558,6 +10776,7 @@ msgid_plural "Software categories"
 msgstr[0] "Категорія ПЗ"
 msgstr[1] "Категорії ПЗ"
 msgstr[2] "Категорії ПЗ"
+msgstr[3] "Категорії ПЗ"
 
 #: inc/dropdown.class.php:1018 inc/usertitle.class.php:46
 msgid "User title"
@@ -10565,6 +10784,7 @@ msgid_plural "Users titles"
 msgstr[0] "Титул користувача"
 msgstr[1] "Титули користувача"
 msgstr[2] "Титули користувача"
+msgstr[3] "Титули користувача"
 
 #: inc/dropdown.class.php:1020 inc/usercategory.class.php:46
 msgid "User category"
@@ -10572,6 +10792,7 @@ msgid_plural "User categories"
 msgstr[0] "Категорія користувача"
 msgstr[1] "Категорії користувача"
 msgstr[2] "Категорії користувача"
+msgstr[3] "Категорії користувача"
 
 #: inc/dropdown.class.php:1024 inc/profile.class.php:1345
 #: inc/profile.class.php:2000 inc/ruleright.class.php:69
@@ -10585,6 +10806,7 @@ msgid_plural "LDAP criteria"
 msgstr[0] "LDAP критерій"
 msgstr[1] "LDAP критерії"
 msgstr[2] "LDAP критерії"
+msgstr[3] "LDAP критерії"
 
 #: inc/dropdown.class.php:1030 inc/fieldblacklist.class.php:52
 msgid "Ignored value for the unicity"
@@ -10592,6 +10814,7 @@ msgid_plural "Ignored values for the unicity"
 msgstr[0] "Ігнороване значення для унікальності"
 msgstr[1] "Ігноровані значення для унікальності"
 msgstr[2] "Ігноровані значення для унікальності"
+msgstr[3] "Ігноровані значення для унікальності"
 
 #. TRANS: %d is a number of years
 #: inc/dropdown.class.php:1520 inc/infocom.class.php:1179
@@ -10602,6 +10825,7 @@ msgid_plural "%d years"
 msgstr[0] "%d рік"
 msgstr[1] "%d роки"
 msgstr[2] "%d років"
+msgstr[3] "%d років"
 
 #. TRANS: %d is a number of seconds
 #: inc/dropdown.class.php:1540
@@ -10611,6 +10835,7 @@ msgid_plural "%d seconds"
 msgstr[0] "%d секунда"
 msgstr[1] "%d секунди"
 msgstr[2] "%d секунд"
+msgstr[3] "%d секунд"
 
 #. TRANS: %d is a number of milliseconds
 #: inc/dropdown.class.php:1544
@@ -10620,6 +10845,7 @@ msgid_plural "%d milliseconds"
 msgstr[0] "%d мілісекунда"
 msgstr[1] "%d мілісекунди"
 msgstr[2] "%d мілісекунд"
+msgstr[3] "%d мілісекунд"
 
 #. TRANS: %d is the percentage. %% to display %
 #: inc/dropdown.class.php:1551 inc/entity.class.php:2289
@@ -10636,6 +10862,7 @@ msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] "%1$d день %2$dгод.%3$s"
 msgstr[1] "%1$d дні %2$dгод.%3$s"
 msgstr[2] "%1$d днів %2$dгод.%3$s"
+msgstr[3] "%1$d днів %2$dгод.%3$s"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: inc/dropdown.class.php:1675
@@ -10714,6 +10941,7 @@ msgid_plural "Translations"
 msgstr[0] "Переклад"
 msgstr[1] "Переклади"
 msgstr[2] "Переклади"
+msgstr[3] "Переклади"
 
 #: inc/dropdowntranslation.class.php:101 inc/dropdowntranslation.class.php:112
 msgid "There's already a translation for this field in this language"
@@ -10742,6 +10970,7 @@ msgid_plural "Fields"
 msgstr[0] "Поле"
 msgstr[1] "Поля"
 msgstr[2] "Поля"
+msgstr[3] "Поля"
 
 #: inc/dropdowntranslation.class.php:409
 #: inc/knowbaseitemtranslation.class.php:260
@@ -10888,6 +11117,7 @@ msgid_plural "Ticket templates"
 msgstr[0] "Шаблон Заявки"
 msgstr[1] "Шаблони Заявок"
 msgstr[2] "Шаблони Заявок"
+msgstr[3] "Шаблони Заявок"
 
 #: inc/entity.class.php:910 inc/entity.class.php:2217
 #: inc/notificationtargetticket.class.php:767
@@ -11066,6 +11296,7 @@ msgid_plural "Reservations"
 msgstr[0] "Резервування"
 msgstr[1] "Резервування"
 msgstr[2] "Резервування"
+msgstr[3] "Резервування"
 
 #: inc/entity.class.php:1985
 msgid "Alerts on tickets which are not solved since"
@@ -11127,6 +11358,7 @@ msgid_plural "Rules"
 msgstr[0] "Правило"
 msgstr[1] "Правила"
 msgstr[2] "Правила"
+msgstr[3] "Правила"
 
 #: inc/event.class.php:165
 msgid "Security"
@@ -11139,6 +11371,7 @@ msgid_plural "Plugins"
 msgstr[0] "Плугін"
 msgstr[1] "Плугіни"
 msgstr[2] "Плугіни"
+msgstr[3] "Плугіни"
 
 #: inc/event.class.php:261 inc/event.class.php:359
 msgid "No Event"
@@ -11175,6 +11408,7 @@ msgid_plural "%1$s logins since %2$s"
 msgstr[0] "%1$s вхід з %2$s"
 msgstr[1] "%1$s входи з %2$s"
 msgstr[2] "%1$s входів з %2$s"
+msgstr[3] "%1$s входів з %2$s"
 
 #: inc/fieldunicity.class.php:82 inc/fieldunicity.class.php:335
 msgid "Unique fields"
@@ -11411,6 +11645,7 @@ msgid_plural "Criteria"
 msgstr[0] "Критерій"
 msgstr[1] "Критерії"
 msgstr[2] "Критерії"
+msgstr[3] "Критерії"
 
 #: inc/group_user.class.php:453 inc/group_user.class.php:543
 msgid "D=Dynamic"
@@ -11467,6 +11702,7 @@ msgid_plural "%1$s%2$d minutes"
 msgstr[0] "%1$s%2$d хвилина"
 msgstr[1] "%1$s%2$d хвилини"
 msgstr[2] "%1$s%2$d хвилин"
+msgstr[3] "%1$s%2$d хвилин"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
 #: inc/html.class.php:417
@@ -11476,6 +11712,7 @@ msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s секунда"
 msgstr[1] "%1$s%2$s секунди"
 msgstr[2] "%1$s%2$s секунд"
+msgstr[3] "%1$s%2$s секунд"
 
 #: inc/html.class.php:563 inc/rssfeed.class.php:374 inc/rssfeed.class.php:581
 msgid "Error"
@@ -11553,6 +11790,7 @@ msgid_plural "- %d hours"
 msgstr[0] "- %d година"
 msgstr[1] "- %d години"
 msgstr[2] "- %d годин"
+msgstr[3] "- %d годин"
 
 #: inc/html.class.php:2975 inc/levelagreementlevel.class.php:276
 #, php-format
@@ -11561,6 +11799,7 @@ msgid_plural "- %d days"
 msgstr[0] "- %d день"
 msgstr[1] "- %d дні"
 msgstr[2] "- %d днів"
+msgstr[3] "- %d днів"
 
 #: inc/html.class.php:2979
 msgid "last Sunday"
@@ -11597,6 +11836,7 @@ msgid_plural "- %d weeks"
 msgstr[0] "- %d тиждень"
 msgstr[1] "- %d тижні"
 msgstr[2] "- %d тижнів"
+msgstr[3] "- %d тижнів"
 
 #: inc/html.class.php:2993
 msgid "Beginning of the month"
@@ -11609,6 +11849,7 @@ msgid_plural "- %d months"
 msgstr[0] "- %d місяць"
 msgstr[1] "- %d місяці"
 msgstr[2] "- %d місяців"
+msgstr[3] "- %d місяців"
 
 #: inc/html.class.php:3001
 msgid "Beginning of the year"
@@ -11621,6 +11862,7 @@ msgid_plural "- %d years"
 msgstr[0] "- %d рік"
 msgstr[1] "- %d роки"
 msgstr[2] "- %d років"
+msgstr[3] "- %d років"
 
 #: inc/html.class.php:3011 inc/levelagreementlevel.class.php:260
 #, php-format
@@ -11629,6 +11871,7 @@ msgid_plural "+ %d hours"
 msgstr[0] "+ %d година"
 msgstr[1] "+ %d години"
 msgstr[2] "+ %d годин"
+msgstr[3] "+ %d годин"
 
 #: inc/html.class.php:3016 inc/levelagreementlevel.class.php:272
 #, php-format
@@ -11637,6 +11880,7 @@ msgid_plural "+ %d days"
 msgstr[0] "+ %d день"
 msgstr[1] "+ %d дні"
 msgstr[2] "+ %d днів"
+msgstr[3] "+ %d днів"
 
 #: inc/html.class.php:3020
 #, php-format
@@ -11645,6 +11889,7 @@ msgid_plural "+ %d weeks"
 msgstr[0] "+ %d тиждень"
 msgstr[1] "+ %d тижні"
 msgstr[2] "+ %d тижнів"
+msgstr[3] "+ %d тижнів"
 
 #: inc/html.class.php:3024
 #, php-format
@@ -11653,6 +11898,7 @@ msgid_plural "+ %d months"
 msgstr[0] "+ %d місяць"
 msgstr[1] "+ %d місяці"
 msgstr[2] "+ %d місяців"
+msgstr[3] "+ %d місяців"
 
 #: inc/html.class.php:3028
 #, php-format
@@ -11661,6 +11907,7 @@ msgid_plural "+ %d years"
 msgstr[0] "+ %d рік"
 msgstr[1] "+ %d роки"
 msgstr[2] "+ %d років"
+msgstr[3] "+ %d років"
 
 #: inc/html.class.php:3516
 msgid "The description field is mandatory"
@@ -11917,6 +12164,7 @@ msgid_plural "IP addresses"
 msgstr[0] "IP адреса"
 msgstr[1] "IP адреси"
 msgstr[2] "IP адреси"
+msgstr[3] "IP адреси"
 
 #: inc/ipaddress.class.php:135 inc/networkportmigration.class.php:121
 msgid "Invalid IP address"
@@ -11940,6 +12188,7 @@ msgid_plural "Subnet masks"
 msgstr[0] "Маска підмережі"
 msgstr[1] "Маски підмережі"
 msgstr[2] "Маски підмережі"
+msgstr[3] "Маски підмережі"
 
 #: inc/ipnetwork.class.php:70
 msgid "IP version"
@@ -12048,6 +12297,7 @@ msgid_plural "Views"
 msgstr[0] "Перегляд"
 msgstr[1] "Перегляди"
 msgstr[2] "Перегляди"
+msgstr[3] "Перегляди"
 
 #: inc/item_devices.class.php:816
 msgid "Please select a device type"
@@ -12094,6 +12344,7 @@ msgid_plural "Lines"
 msgstr[0] "Лінія"
 msgstr[1] "Лінії"
 msgstr[2] "Ліній"
+msgstr[3] "Ліній"
 
 #: inc/item_devicesimcard.class.php:104
 msgid "Mobile Subscriber Identification Number"
@@ -12113,6 +12364,7 @@ msgid_plural "Item operating systems"
 msgstr[0] "Операційна система елементу"
 msgstr[1] "Операційні системи елементу"
 msgstr[2] "Операційні системи елементу"
+msgstr[3] "Операційні системи елементу"
 
 #: inc/item_operatingsystem.class.php:353
 #: inc/item_operatingsystem.class.php:488
@@ -12130,6 +12382,7 @@ msgid_plural "%1$s items not saved"
 msgstr[0] "%1$s елемент не збережено "
 msgstr[1] " %1$s елементи не збережено"
 msgstr[2] "%1$s елементів не збережено"
+msgstr[3] "%1$s елементів не збережено"
 
 #: inc/item_ticket.class.php:325
 msgid "Display all items"
@@ -12171,6 +12424,7 @@ msgid_plural "Associated item types"
 msgstr[0] "Тип пов’язаного елементу"
 msgstr[1] "Типи пов’язаних елементів"
 msgstr[2] "Типи пов’язаних елементів"
+msgstr[3] "Типи пов’язаних елементів"
 
 #: inc/itilcategory.class.php:75 inc/itilcategory.class.php:188
 msgid "Visible in the simplified interface"
@@ -12256,6 +12510,7 @@ msgid_plural "Targets"
 msgstr[0] "Ціль"
 msgstr[1] "Цілі"
 msgstr[2] "Цілі"
+msgstr[3] "Цілі"
 
 #: inc/knowbaseitem.class.php:205 inc/knowbaseitemtranslation.class.php:93
 #: inc/user.class.php:2246
@@ -12286,6 +12541,7 @@ msgid_plural "%d views"
 msgstr[0] "%d перегляд"
 msgstr[1] "%d перегляди"
 msgstr[2] "%d переглядів"
+msgstr[3] "%d переглядів"
 
 #: inc/knowbaseitem.class.php:753
 msgid "Add link"
@@ -12391,6 +12647,7 @@ msgid_plural "Comments"
 msgstr[0] "Коментар"
 msgstr[1] "Коментарі"
 msgstr[2] "Коментарі"
+msgstr[3] "Коментарі"
 
 #: inc/knowbaseitem_comment.class.php:134
 msgid "No comments"
@@ -12436,6 +12693,7 @@ msgid_plural "Knowledge base items"
 msgstr[0] "Запис Бази знань"
 msgstr[1] "Записи Бази знань"
 msgstr[2] "Записи Бази знань"
+msgstr[3] "Записи Бази знань"
 
 #: inc/knowbaseitem_item.class.php:138
 msgid "Add a linked item"
@@ -12459,6 +12717,7 @@ msgid_plural "Linked items"
 msgstr[0] "Пов'язаний елемент"
 msgstr[1] "Пов'язані елементи"
 msgstr[2] "Пов'язані елементи"
+msgstr[3] "Пов'язані елементи"
 
 #: inc/knowbaseitem_item.class.php:213
 msgid "Update date"
@@ -12475,6 +12734,7 @@ msgid_plural "Revisions"
 msgstr[0] "Версія"
 msgstr[1] "Версії"
 msgstr[2] "Версії"
+msgstr[3] "Версії"
 
 #: inc/knowbaseitem_revision.class.php:115
 msgid "No revisions"
@@ -12492,6 +12752,7 @@ msgid_plural "Authors"
 msgstr[0] "Автор"
 msgstr[1] "Автори"
 msgstr[2] "Автори"
+msgstr[3] "Автори"
 
 #: inc/knowbaseitem_revision.class.php:144
 msgid "cur"
@@ -12561,6 +12822,7 @@ msgid_plural "Minutes"
 msgstr[0] "Хвилина"
 msgstr[1] "Хвилини"
 msgstr[2] "Хвилини"
+msgstr[3] "Хвилини"
 
 #: inc/levelagreement.class.php:222 inc/levelagreement.class.php:683
 msgid "End of working day"
@@ -12578,6 +12840,7 @@ msgid_plural "Escalation levels"
 msgstr[0] "Рівень ескалації"
 msgstr[1] "Рівні ескалації"
 msgstr[2] "Рівні ескалації"
+msgstr[3] "Рівні ескалації"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
@@ -12621,6 +12884,7 @@ msgid_plural "+ %d minutes"
 msgstr[0] "+ %d хвилина"
 msgstr[1] "+ %d хвилини"
 msgstr[2] "+ %d хвилин"
+msgstr[3] "+ %d хвилин"
 
 #: inc/levelagreementlevel.class.php:253
 #, php-format
@@ -12629,6 +12893,7 @@ msgid_plural "- %d minutes"
 msgstr[0] "- %d хвилина"
 msgstr[1] "- %d хвилини"
 msgstr[2] "- %d хвилин"
+msgstr[3] "- %d хвилин"
 
 #: inc/line.class.php:127 inc/line.class.php:224
 msgid "Caller number"
@@ -12653,6 +12918,7 @@ msgid_plural "External links"
 msgstr[0] "Зовнішній зв’язок"
 msgstr[1] "Зовнішні зв’язки"
 msgstr[2] "Зовнішні зв’язки"
+msgstr[3] "Зовнішні зв’язки"
 
 #: inc/link.class.php:155
 msgid "field name in DB"
@@ -12723,6 +12989,7 @@ msgid_plural "Locks"
 msgstr[0] "Блокування"
 msgstr[1] "Блокування"
 msgstr[2] "Блокування"
+msgstr[3] "Блокування"
 
 #: inc/lock.class.php:80
 msgid "Locked items"
@@ -12748,6 +13015,7 @@ msgid_plural "Network ports"
 msgstr[0] "Мережевий порт"
 msgstr[1] "Мережеві порти"
 msgstr[2] "Мережеві порти"
+msgstr[3] "Мережеві порти"
 
 #: inc/lock.class.php:495
 msgid "Select the type of the item that must be unlock"
@@ -13226,6 +13494,7 @@ msgid_plural "Network aliases"
 msgstr[0] "Синонім мережі"
 msgstr[1] "Синоніми мережі"
 msgstr[2] "Синоніми мережі"
+msgstr[3] "Синоніми мережі"
 
 #: inc/networkalias.class.php:286
 msgid "Add a network alias"
@@ -13326,6 +13595,7 @@ msgid_plural "Ports number"
 msgstr[0] "Номер порту"
 msgstr[1] "Номери портів"
 msgstr[2] "Номери портів"
+msgstr[3] "Номери портів"
 
 #: inc/networkport.class.php:945 inc/networkport.class.php:1049
 msgid "Network port type"
@@ -13592,6 +13862,7 @@ msgid_plural "Notes"
 msgstr[0] "Нотатка"
 msgstr[1] "Нотатки"
 msgstr[2] "Нотатки"
+msgstr[3] "Нотатки"
 
 #: inc/notepad.class.php:256
 #: inc/notificationtargetcommonitilobject.class.php:1214
@@ -13631,6 +13902,7 @@ msgid_plural "Browser notifications"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13675,6 +13947,7 @@ msgid_plural "Notification templates"
 msgstr[0] "Шаблон повідомлення"
 msgstr[1] "Шаблони повідомлень"
 msgstr[2] "Шаблони повідомлень"
+msgstr[3] "Шаблони повідомлень"
 
 #: inc/notification.class.php:327 inc/notificationevent.class.php:47
 #: inc/notificationtargetcartridgeitem.class.php:84
@@ -13697,6 +13970,7 @@ msgid_plural "Events"
 msgstr[0] "Подія"
 msgstr[1] "Події"
 msgstr[2] "Події"
+msgstr[3] "Події"
 
 #: inc/notification.class.php:339 inc/notificationtarget.class.php:1304
 msgid "Notification method"
@@ -13787,6 +14061,7 @@ msgid_plural "Email notifications"
 msgstr[0] "Email повідомлення"
 msgstr[1] "Email повідомлення"
 msgstr[2] "Email повідомлення"
+msgstr[3] "Email повідомлення"
 
 #: inc/notificationmailingsetting.class.php:91
 msgid "From email"
@@ -13917,6 +14192,7 @@ msgid_plural "Templates"
 msgstr[0] "Шаблон"
 msgstr[1] "Шаблони"
 msgstr[2] "Шаблони"
+msgstr[3] "Шаблони"
 
 #: inc/notification_notificationtemplate.class.php:108
 msgid "Add a template"
@@ -14038,6 +14314,7 @@ msgid_plural "Validations"
 msgstr[0] "Перевірка"
 msgstr[1] "Перевірки"
 msgstr[2] "Перевірки"
+msgstr[3] "Перевірки"
 
 #: inc/notificationtargetchange.class.php:306
 #: inc/notificationtargetticket.class.php:796
@@ -14516,6 +14793,7 @@ msgid_plural "Team members"
 msgstr[0] "Учасник команди"
 msgstr[1] "Учасники команди"
 msgstr[2] "Учасники команди"
+msgstr[3] "Учасники команди"
 
 #: inc/notificationtargetproject.class.php:673
 #: inc/notificationtargetprojecttask.class.php:561
@@ -14525,6 +14803,7 @@ msgid_plural "Project teams"
 msgstr[0] "Проектна команда"
 msgstr[1] "Проектні команди"
 msgstr[2] "Проектні команди"
+msgstr[3] "Проектні команди"
 
 #: inc/notificationtargetprojecttask.class.php:56
 msgid "New project task"
@@ -14555,6 +14834,7 @@ msgid_plural "Projects"
 msgstr[0] "Проект"
 msgstr[1] "Проекти"
 msgstr[2] "Проекти"
+msgstr[3] "Проекти"
 
 #: inc/notificationtargetprojecttask.class.php:474
 #: inc/projecttask.class.php:615
@@ -14666,6 +14946,7 @@ msgid_plural ""
 msgstr[0] "Без відповіді Заявка буде автоматично закрита через %s день"
 msgstr[1] "Без відповіді Заявка буде автоматично закрита через %s дні"
 msgstr[2] "Без відповіді Заявка буде автоматично закрита через %s днів"
+msgstr[3] "Без відповіді Заявка буде автоматично закрита через %s днів"
 
 #: inc/notificationtargetticket.class.php:712
 #: inc/notificationtargetticket.class.php:714
@@ -14751,6 +15032,7 @@ msgid_plural "Followups"
 msgstr[0] "Відповідь"
 msgstr[1] "Відповіді"
 msgstr[2] "Відповіді"
+msgstr[3] "Відповіді"
 
 #: inc/notificationtargetticket.class.php:858
 #: inc/notificationtargetticket.class.php:872
@@ -14765,6 +15047,7 @@ msgid_plural "Linked tickets"
 msgstr[0] "Пов’язана Заявка"
 msgstr[1] "Пов’язані Заявки"
 msgstr[2] "Пов’язані Заявки"
+msgstr[3] "Пов’язані Заявки"
 
 #: inc/notificationtargetticket.class.php:905
 msgid "Link"
@@ -14792,6 +15075,7 @@ msgid_plural "Template translations"
 msgstr[0] "Переклад шаблону"
 msgstr[1] "Переклади шаблону"
 msgstr[2] "Переклади шаблону"
+msgstr[3] "Переклади шаблону"
 
 #: inc/notificationtemplatetranslation.class.php:127
 msgid "Show list of available tags"
@@ -14846,6 +15130,7 @@ msgid_plural "Refused emails"
 msgstr[0] "Відхилений лист"
 msgstr[1] "Відхилені листи"
 msgstr[2] "Відхилені листи"
+msgstr[3] "Відхилені листи"
 
 #: inc/notimportedemail.class.php:77
 msgid "Delete emails"
@@ -14890,6 +15175,7 @@ msgid_plural "Object Locks"
 msgstr[0] "Блокування об'єкту"
 msgstr[1] "Блокування об'єкту"
 msgstr[2] "Блокувань об'єкту"
+msgstr[3] "Блокувань об'єкту"
 
 #: inc/objectlock.class.php:153 inc/objectlock.class.php:240
 msgid "Reload page?"
@@ -14997,6 +15283,7 @@ msgid_plural "Operating system architectures"
 msgstr[0] "Архітектура Операційної системи"
 msgstr[1] "Архітектури Операційної системи"
 msgstr[2] "Архітектур Операційної системи"
+msgstr[3] "Архітектур Операційної системи"
 
 #: inc/operatingsystemversion.class.php:48 inc/rule.class.php:448
 msgid "Version of the operating system"
@@ -15004,6 +15291,7 @@ msgid_plural "Versions of the operating systems"
 msgstr[0] "Версія операційної системи"
 msgstr[1] "Версії операційної системи"
 msgstr[2] "Версій операційної системи"
+msgstr[3] "Версій операційної системи"
 
 #: inc/peripheral.class.php:290 inc/peripheral.class.php:486
 #: inc/phone.class.php:287 inc/phone.class.php:516
@@ -15111,6 +15399,7 @@ msgid_plural "Planning reminders"
 msgstr[0] "Нагадування планування"
 msgstr[1] "Нагадування планування"
 msgstr[2] "Нагадування планування"
+msgstr[3] "Нагадування планування"
 
 #: inc/planningrecall.class.php:273
 #, php-format
@@ -15119,6 +15408,7 @@ msgid_plural "%d weeks"
 msgstr[0] "%d тиждень"
 msgstr[1] "%d тижнів"
 msgstr[2] "%d тижнів"
+msgstr[3] "%d тижнів"
 
 #: inc/planningrecall.class.php:342
 msgid "Send planning recalls"
@@ -15373,6 +15663,7 @@ msgid_plural "%d associated documents"
 msgstr[0] "%d пов’язаний документ"
 msgstr[1] "%d пов’язаних документи"
 msgstr[2] "%d пов’язаних документів"
+msgstr[3] "%d пов’язаних документів"
 
 #: inc/problem.class.php:1398
 msgid "Last problems"
@@ -15386,6 +15677,7 @@ msgid_plural "Last %d problems"
 msgstr[0] "%d остання проблема"
 msgstr[1] "%d останніх проблеми"
 msgstr[2] "%d останніх проблем"
+msgstr[3] "%d останніх проблем"
 
 #: inc/problem.class.php:1466 inc/problem.class.php:1520
 msgid "No problem found."
@@ -15401,6 +15693,7 @@ msgid_plural "Problem tasks"
 msgstr[0] "Завдання проблеми"
 msgstr[1] "Завдання проблеми"
 msgstr[2] "Завдання проблеми"
+msgstr[3] "Завдання проблеми"
 
 #: inc/problem_ticket.class.php:63
 msgid "Link Ticket/Problem"
@@ -15408,6 +15701,7 @@ msgid_plural "Links Ticket/Problem"
 msgstr[0] "Зв’язок Заявки/Проблеми"
 msgstr[1] "Зв’язки Заявки/Проблеми"
 msgstr[2] "Зв’язки Заявки/Проблеми"
+msgstr[3] "Зв’язки Заявки/Проблеми"
 
 #: inc/problem_ticket.class.php:426
 msgid "Create a problem from this ticket"
@@ -15483,6 +15777,7 @@ msgid_plural "Public reminders"
 msgstr[0] "Публічне нагадування"
 msgstr[1] "Публічні нагадування"
 msgstr[2] "Публічні нагадування"
+msgstr[3] "Публічні нагадування"
 
 #: inc/profile.class.php:747 inc/profile.class.php:932
 #: inc/profile.class.php:2378 inc/rssfeed.class.php:884
@@ -15492,6 +15787,7 @@ msgid_plural "Public RSS feeds"
 msgstr[0] "Публічний RSS потік"
 msgstr[1] "Публічні RSS потоки"
 msgstr[2] "Публічні RSS потоки"
+msgstr[3] "Публічні RSS потоки"
 
 #: inc/profile.class.php:817
 msgid "Simcard PIN/PUK"
@@ -15507,6 +15803,7 @@ msgid_plural "Public saved searches"
 msgstr[0] "Публічний збережений пошук"
 msgstr[1] "Публічні збережені пошуки"
 msgstr[2] "Публічних збережених пошуків"
+msgstr[3] "Публічних збережених пошуків"
 
 #: inc/profile.class.php:938 inc/profile.class.php:1817
 #: inc/report.class.php:62
@@ -15515,6 +15812,7 @@ msgid_plural "Reports"
 msgstr[0] "Звіт"
 msgstr[1] "Звіти"
 msgstr[2] "Звіти"
+msgstr[3] "Звіти"
 
 #: inc/profile.class.php:944
 msgid "Administration of reservations"
@@ -15594,6 +15892,7 @@ msgid_plural "Global dropdowns"
 msgstr[0] "Загальний випадаючий список"
 msgstr[1] "Загальні випадаючі списки"
 msgstr[2] "Загальні випадаючі списки"
+msgstr[3] "Загальні випадаючі списки"
 
 #: inc/profile.class.php:1425
 msgid "Entity dropdowns"
@@ -15652,6 +15951,7 @@ msgid_plural "Authorizations"
 msgstr[0] "Авторизація"
 msgstr[1] "Авторизації"
 msgstr[2] "Авторизації"
+msgstr[3] "Авторизації"
 
 #: inc/project.class.php:120 inc/projecttask.class.php:184
 msgid "See (actor)"
@@ -15700,6 +16000,7 @@ msgid_plural "Members"
 msgstr[0] "Учасник"
 msgstr[1] "Учасники"
 msgstr[2] "Учасники"
+msgstr[3] "Учасники"
 
 #: inc/project.class.php:1546
 #, php-format
@@ -15803,6 +16104,7 @@ msgid_plural "Project tasks"
 msgstr[0] "Завдання проекту"
 msgstr[1] "Завдання проекту"
 msgstr[2] "Завдання проекту"
+msgstr[3] "Завдання проекту"
 
 #: inc/projecttask.class.php:185
 msgid "Update (actor)"
@@ -15842,6 +16144,7 @@ msgid_plural "Task teams"
 msgstr[0] "Команда Завдання"
 msgstr[1] "Команди Завдання"
 msgstr[2] "Команди Завдання"
+msgstr[3] "Команди Завдання"
 
 #: inc/projecttask_ticket.class.php:68
 msgid "Link Ticket/Project task"
@@ -15849,6 +16152,7 @@ msgid_plural "Links Ticket/Project task"
 msgstr[0] "Зв’язок Заявки/Завдання проекту"
 msgstr[1] "Зв’язки Заявки/Завдання проекту"
 msgstr[2] "Зв’язки Заявки/Завдання проекту"
+msgstr[3] "Зв’язки Заявки/Завдання проекту"
 
 #: inc/projecttask_ticket.class.php:192
 msgid "Create a ticket from this task"
@@ -15929,6 +16233,7 @@ msgid_plural "Registered IDs (issued by PCI-SIG)"
 msgstr[0] "Зареєстрований ID (випущений PCI-SIG)"
 msgstr[1] "Зареєстровані ID (випущені PCI-SIG)"
 msgstr[2] "Зареєстровані ID (випущені PCI-SIG)"
+msgstr[3] "Зареєстровані ID (випущені PCI-SIG)"
 
 #: inc/reminder.class.php:63
 msgid "Reminder"
@@ -15936,6 +16241,7 @@ msgid_plural "Reminders"
 msgstr[0] "Нагадування"
 msgstr[1] "Нагадування"
 msgstr[2] "Нагадування"
+msgstr[3] "Нагадування"
 
 #: inc/reminder.class.php:65 inc/reminder.class.php:1065
 msgid "Personal reminder"
@@ -15943,6 +16249,7 @@ msgid_plural "Personal reminders"
 msgstr[0] "Персональне нагадування"
 msgstr[1] "Персональні нагадування"
 msgstr[2] "Персональні нагадування"
+msgstr[3] "Персональні нагадування"
 
 #: inc/reminder.class.php:381
 msgid "Planning start date"
@@ -16125,6 +16432,7 @@ msgid_plural "Reservable items"
 msgstr[0] "Предмет резервування"
 msgstr[1] "Предмети резервування"
 msgstr[2] "Предмети резервування"
+msgstr[3] "Предмети резервування"
 
 #: inc/reservationitem.class.php:308
 msgid "Make unavailable"
@@ -16181,6 +16489,7 @@ msgid_plural "Personal RSS feed"
 msgstr[0] "Особисти поток RSS"
 msgstr[1] "Особисті потоки RSS"
 msgstr[2] "Особисті потоки RSS"
+msgstr[3] "Особисті потоки RSS"
 
 #: inc/rssfeed.class.php:383 inc/rssfeed.class.php:650
 msgid "Number of items displayed"
@@ -16250,6 +16559,7 @@ msgid_plural "Dictionaries"
 msgstr[0] "Каталог"
 msgstr[1] "Каталоги"
 msgstr[2] "Каталоги"
+msgstr[3] "Каталоги"
 
 #: inc/rule.class.php:388
 msgid "Peripheral type"
@@ -16257,6 +16567,7 @@ msgid_plural "Peripheral types"
 msgstr[0] "Тип периферії"
 msgstr[1] "Типи периферії"
 msgstr[2] "Типи периферії"
+msgstr[3] "Типи периферії"
 
 #: inc/rule.class.php:533
 msgid "Rules management"
@@ -16854,6 +17165,7 @@ msgid_plural "Saved searches alerts"
 msgstr[0] "Попередження збережених пошуків"
 msgstr[1] "Попередження збережених пошуків"
 msgstr[2] "Попереджень збережених пошуків"
+msgstr[3] "Попереджень збережених пошуків"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
 #: inc/savedsearch.class.php:1363
@@ -16862,6 +17174,7 @@ msgid_plural "Saved searches"
 msgstr[0] "Збережений пошук"
 msgstr[1] "Збережені пошуки"
 msgstr[2] "Збережені пошуки"
+msgstr[3] "Збережені пошуки"
 
 #: inc/savedsearch_alert.class.php:148 inc/savedsearch_alert.class.php:253
 msgid "Operator"
@@ -16889,6 +17202,7 @@ msgid_plural "Notifications used:"
 msgstr[0] "Використане повідомлення:"
 msgstr[1] "Використаних повідомлень:"
 msgstr[2] "Використаних повідомлень:"
+msgstr[3] "Використаних повідомлень:"
 
 #: inc/savedsearch_alert.class.php:236
 msgid "Add an alert"
@@ -16987,6 +17301,7 @@ msgid_plural "Private %1$s"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
 
 #: inc/savedsearch.class.php:771 inc/savedsearch.class.php:781
 msgid "Hide/Show elements"
@@ -16999,6 +17314,7 @@ msgid_plural "Public %1$s"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
 
 #: inc/savedsearch.class.php:825
 msgid "Default bookmark has not been changed!"
@@ -17146,6 +17462,7 @@ msgid_plural "Service levels"
 msgstr[0] "Рівень обслуговування"
 msgstr[1] "Рівні обслуговування"
 msgstr[2] "Рівнів обслуговування"
+msgstr[3] "Рівнів обслуговування"
 
 #: inc/software.class.php:78 inc/software.class.php:1022
 msgid "Merging"
@@ -17412,6 +17729,7 @@ msgid_plural "Associated contacts"
 msgstr[0] "Пов’язаний контакт"
 msgstr[1] "Пов’язані контакти"
 msgstr[2] "Пов’язані контакти"
+msgstr[3] "Пов’язані контакти"
 
 #: inc/supplier.class.php:402
 msgid "Associated contract"
@@ -17419,6 +17737,7 @@ msgid_plural "Associated contracts"
 msgstr[0] "Пов’язаний договір"
 msgstr[1] "Пов’язані договори"
 msgstr[2] "Пов’язані договори"
+msgstr[3] "Пов’язані договори"
 
 #: inc/telemetry.class.php:257
 msgid "Send telemetry informations"
@@ -17688,6 +18007,7 @@ msgid_plural "%d new tickets"
 msgstr[0] "%d нова Заявка"
 msgstr[1] "%d нові Заявки"
 msgstr[2] "%d нових Заявок"
+msgstr[3] "%d нових Заявок"
 
 #: inc/ticket.class.php:5922 inc/ticket.class.php:6126
 #: inc/ticket.class.php:6176
@@ -17709,6 +18029,7 @@ msgid_plural "Last %d tickets"
 msgstr[0] "Остання %d Заявка"
 msgstr[1] "Останні %d Заявки"
 msgstr[2] "Останніх %d Заявок"
+msgstr[3] "Останніх %d Заявок"
 
 #: inc/ticket.class.php:6121
 msgid "You don't have right to see all tickets"
@@ -17720,6 +18041,7 @@ msgid_plural "Tickets on linked items"
 msgstr[0] "Заявка щодо пов’язаних елементів"
 msgstr[1] "Заявки щодо пов’язаних елементів"
 msgstr[2] "Заявки щодо пов’язаних елементів"
+msgstr[3] "Заявки щодо пов’язаних елементів"
 
 #: inc/ticket.class.php:6277
 msgid "No ticket in progress."
@@ -17959,6 +18281,7 @@ msgid_plural "Ticket tasks"
 msgstr[0] "Завдання Заявки"
 msgstr[1] "Завдання Заявки"
 msgstr[2] "Завдання Заявки"
+msgstr[3] "Завдання Заявки"
 
 #: inc/tickettask.class.php:245
 msgid "Add to all items"
@@ -17970,6 +18293,7 @@ msgid_plural "Hidden fields"
 msgstr[0] "Приховане поле"
 msgstr[1] "Приховані поля"
 msgstr[2] "Приховані поля"
+msgstr[3] "Приховані поля"
 
 #: inc/tickettemplatehiddenfield.class.php:226
 msgid "Add a hidden field"
@@ -17981,6 +18305,7 @@ msgid_plural "Mandatory fields"
 msgstr[0] "Обов’язкове поле"
 msgstr[1] "Обов’язкові поля"
 msgstr[2] "Обов’язкові поля"
+msgstr[3] "Обов’язкові поля"
 
 #: inc/tickettemplatemandatoryfield.class.php:227
 msgid "Add a mandatory field"
@@ -17992,6 +18317,7 @@ msgid_plural "Predefined fields"
 msgstr[0] "Попередньо визначене поле"
 msgstr[1] "Попередньо визначені поля"
 msgstr[2] "Попередньо визначені поля"
+msgstr[3] "Попередньо визначені поля"
 
 #: inc/tickettemplatepredefinedfield.class.php:273
 msgid "Add a predefined field"

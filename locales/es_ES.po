@@ -1143,10 +1143,12 @@ msgstr "Comprobar si hay una nueva versión disponible"
 #: front/backup.php:607
 msgid "GLPI internal backup system is a helper for very small instances."
 msgstr ""
+"El sistema interno de copias de seguridad de GLPI ayuda en muy pequeños "
+"casos."
 
 #: front/backup.php:608
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "Debería utilizar una herramienta dedicada en su servidor."
 
 #: front/backup.php:611 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
@@ -8704,6 +8706,8 @@ msgid ""
 "You are trying to update to a development version from a development "
 "version. This is not supported."
 msgstr ""
+"Está intentando actualizar a una versión de desarrollo a partir de una "
+"versión de desarrollo. Esto no está soportado."
 
 #: inc/consumable.class.php:199 inc/consumable.class.php:511
 msgctxt "button"
@@ -13508,7 +13512,7 @@ msgstr "Modo"
 #: inc/notificationmailing.class.php:101
 #, php-format
 msgid "Original email address was %1$s"
-msgstr ""
+msgstr "La dirección de correo electrónico original era %1$s"
 
 #: inc/notificationeventmailing.class.php:265
 msgid "Error in sending the email"
@@ -13673,7 +13677,7 @@ msgstr "Tratar de entregar de nuevo en (minutos)"
 
 #: inc/notificationmailingsetting.class.php:205
 msgid "Check certificate"
-msgstr "Cjavascript:;omprobar certificado"
+msgstr "Comprobar certificado"
 
 #: inc/notificationmailingsetting.class.php:216
 msgid "SMTP host"
