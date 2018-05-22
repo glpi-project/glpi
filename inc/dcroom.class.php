@@ -310,6 +310,7 @@ class DCRoom extends CommonDBTM {
 
       switch ($item->getType()) {
          case Datacenter::getType():
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb =countElementsInTable(
                   self::getTable(), [
