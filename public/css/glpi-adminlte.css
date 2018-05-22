@@ -55,9 +55,10 @@ ul.pagination {
 
 .flash {
    min-height: 2em;
-   min-width: 5em;
-   position: absolute;
+   min-width: 15em;
+   position: fixed;
    right: .2em;
+   bottom: .2em;
 }
 
 /** Alpha msg */

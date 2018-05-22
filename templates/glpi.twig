@@ -131,19 +131,19 @@
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_libs }}/admin-lte/dist/js/adminlte.min.js"></script>
       <script type="text/javascript">
          $(function() {
-            var _of = window;
-            var _at = 'right-20 bottom-20';
             //calculate relative dialog position
             $('.flash').each(function() {
                var _this = $(this);
-               _of = _this;
-               _at = 'right top-' + (10 + _this.outerHeight());
-               _this.position({
-                  my: 'right bottom',
-                  at: _at,
-                  of: _of,
-                  collision: 'none'
+               var _bottom = _this.css('bottom').replace('px', '');
+               var _position = _this.position();
+               var _previous = _this.prevAll('.flash');
+
+               var _movepos = 0;
+               _previous.each(function() {
+                  var _prev = $(this);
+                  _movepos += _prev.outerHeight();
                });
+               _this.css('bottom', parseFloat(_bottom) + _movepos + 'px');
             });
          });
       </script>
