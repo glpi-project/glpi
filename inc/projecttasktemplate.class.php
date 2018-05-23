@@ -60,7 +60,7 @@ class ProjectTaskTemplate extends CommonDropdown {
               ['name'  => 'projecttasktypes_id',
                'label' => __('Type'),
                'type'  => 'dropdownValue'],
-              ['name'  => 'projects_id',
+              ['name'  => 'projecttasks_id',
                'label' => __('As child of'),
                'type'  => 'dropdownValue'],
               ['name'  => 'percent_done',

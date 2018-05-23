@@ -4226,7 +4226,7 @@ class Html {
     * @return string
    **/
    static function jsSetDropdownValue($id, $value) {
-      return self::jsGetElementbyID($id).".val('$value').trigger('change');";
+      return self::jsGetElementbyID($id).".trigger('setValue', '$value');";
    }
 
    /**
