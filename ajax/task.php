@@ -46,6 +46,25 @@ if (isset($_POST['tasktemplates_id']) && ($_POST['tasktemplates_id'] > 0)) {
    $template = new TaskTemplate();
    $template->getFromDB($_POST['tasktemplates_id']);
 
-   $template->fields = array_map('html_entity_decode', $template->fields);
-   echo json_encode($template->fields);
+   $fields = $template->fields;
+   if ($fields['taskcategories_id']) {
+      $cat = new TaskCategory();
+      $cat->getFromDB($fields['taskcategories_id']);
+      $fields['taskcategories_name'] = $cat->fields['name'];
+   }
+
+   if ($fields['users_id_tech']) {
+      $user = new User();
+      $user->getFromDB($fields['users_id_tech']);
+      $fields['users_id_tech_name'] = $user->getRawName();
+   }
+
+   if ($fields['groups_id_tech']) {
+      $group = new Group();
+      $group->getFromDB($fields['groups_id_tech']);
+      $fields['groups_id_tech_name'] = $group->fields['name'];
+   }
+
+   $fields = array_map('html_entity_decode', $fields);
+   echo json_encode($fields);
 }
