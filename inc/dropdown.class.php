@@ -2311,25 +2311,33 @@ class Dropdown {
          $where .= " AND ".$post['condition']." ";
       }
 
+      $one_item = -1;
+      if (isset($post['_one_id'])) {
+         $one_item = $post['_one_id'];
+      }
+
       // Count real items returned
       $count = 0;
 
       if ($item instanceof CommonTreeDropdown) {
+         if ($one_item >= 0) {
+            $where .= " AND `$table`.`id` = '$one_item'";
+         } else {
+            if (!empty($post['searchText'])) {
+               $search = Search::makeTextSearch($post['searchText']);
+               if (Session::haveTranslations($post['itemtype'], 'completename')) {
+                  $where .= " AND (`$table`.`completename` $search ".
+                                    "OR `namet`.`value` $search ";
+               } else {
+                  $where .= " AND (`$table`.`completename` $search ";
+               }
+               // Also search by id
+               if ($displaywith && in_array('id', $post['displaywith'])) {
+                  $where .= " OR `$table`.`id` ".$search;
+               }
 
-         if (!empty($post['searchText'])) {
-            $search = Search::makeTextSearch($post['searchText']);
-            if (Session::haveTranslations($post['itemtype'], 'completename')) {
-               $where .= " AND (`$table`.`completename` $search ".
-                                 "OR `namet`.`value` $search ";
-            } else {
-               $where .= " AND (`$table`.`completename` $search ";
+               $where .= ")";
             }
-            // Also search by id
-            if ($displaywith && in_array('id', $post['displaywith'])) {
-               $where .= " OR `$table`.`id` ".$search;
-            }
-
-            $where .= ")";
          }
 
          $multi = false;

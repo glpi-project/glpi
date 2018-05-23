@@ -443,16 +443,16 @@ class ProjectTask extends CommonDBChild {
                 // set textarea comment
                $("#comment'.$rand_comment.'").val(data.comments);
 
-               // set project
-               $("#dropdown_projects_id'.$rand_project.'").select2("val", data.projects_id);
+               // set project task
+               $("#dropdown_projecttasks_id'.$rand_project.'").trigger("setValue", data.projecttasks_id);
                // set state
-               $("#dropdown_projectstates_id'.$rand_state.'").select2("val", data.projectstates_id);
+               $("#dropdown_projectstates_id'.$rand_state.'").trigger("setValue", data.projectstates_id);
                // set type
-               $("#dropdown_projecttasktypes_id'.$rand_type.'").select2("val", data.projecttasktypes_id);
+               $("#dropdown_projecttasktypes_id'.$rand_type.'").trigger("setValue", data.projecttasktypes_id);
                // set percent done
-               $("#dropdown_percent_done'.$rand_percent.'").select2("val", data.percent_done);
+               $("#dropdown_percent_done'.$rand_percent.'").trigger("setValue", data.percent_done);
                // set milestone
-               $("#dropdown_is_milestone'.$rand_milestone.'").select2("val", data.is_milestone);
+               $("#dropdown_is_milestone'.$rand_milestone.'").trigger("setValue", data.is_milestone);
 
                // set plan_start_date
                $("#showdate'.$rand_plan_start_date.'").val(data.plan_start_date);
@@ -464,9 +464,9 @@ class ProjectTask extends CommonDBChild {
                $("#showdate'.$rand_real_end_date.'").val(data.real_end_date);
 
                // set effective_duration
-               $("#dropdown_effective_duration'.$rand_effective_duration.'").select2("val", data.effective_duration);
+               $("#dropdown_effective_duration'.$rand_effective_duration.'").trigger("setValue", data.effective_duration);
                // set planned_duration
-               $("#dropdown_planned_duration'.$rand_planned_duration.'").select2("val", data.planned_duration);
+               $("#dropdown_planned_duration'.$rand_planned_duration.'").trigger("setValue", data.planned_duration);
 
             });
          }
