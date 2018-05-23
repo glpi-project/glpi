@@ -4268,25 +4268,28 @@ class Html {
       }
 
       $js = "$('#$id').select2({
-                  $placeholder
-                  width: '$width',
-                  dropdownAutoWidth: true,
-                  quietMillis: 100,
-                  minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-                  formatSelection: function(object, container) {
-                     text = object.text;
-                     if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
-                        text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
-                     }
-                     return text;
-                  },
-                  formatResult: function (result, container) {
-                     container.attr('title', result.title || result.element[0].title);
-                     return result.text;
-                  }
+         $placeholder
+         width: '$width',
+         dropdownAutoWidth: true,
+         quietMillis: 100,
+         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
+         formatSelection: function(object, container) {
+            text = object.text;
+            if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
+               text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
+            }
+            return text;
+         },
+         formatResult: function (result, container) {
+            container.attr('title', result.title || result.element[0].title);
+            return result.text;
+         }
 
-             });
-             $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
+      })
+      .bind('setValue', function(e, value) {
+         $('#$id').val(value).trigger('change');
+      })
+      $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
       return Html::scriptBlock($js);
    }
 
@@ -4391,9 +4394,8 @@ class Html {
                }
             },
             templateResult: formatResult
-         });
-
-         $('#$field_id').bind('setValue', function(e, value) {
+         })
+         .bind('setValue', function(e, value) {
             $.ajax('$url', {
                data: $.extend({}, params_$field_id, {
                   _one_id: value,

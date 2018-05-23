@@ -1434,15 +1434,15 @@ abstract class CommonITILTask  extends CommonDBTM {
                // set category
                $("#dropdown_taskcategories_id'.$rand_type.'").trigger("setValue", taskcategories_id);
                // set action time
-               $("#dropdown_actiontime'.$rand_time.'").val(actiontime).trigger("change");
+               $("#dropdown_actiontime'.$rand_time.'").trigger("setValue", actiontime);
                // set is_private
-               $("#dropdown_is_private'.$rand_is_private.'").val(data.is_private).trigger("change");
+               $("#dropdown_is_private'.$rand_is_private.'").trigger("setValue", data.is_private);
                // set users_tech
                $("#dropdown_users_id_tech'.$rand_user.'").trigger("setValue", user_tech);
                // set group_tech
                $("#dropdown_groups_id_tech'.$rand_group.'").trigger("setValue", group_tech);
                // set state
-               $("#dropdown_state'.$rand_state.'").val(data.state).trigger("change");
+               $("#dropdown_state'.$rand_state.'").trigger("setValue", data.state);
             });
          }
       ');
