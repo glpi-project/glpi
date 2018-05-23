@@ -58,7 +58,7 @@ $types = ['Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersio
                'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
                'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
                'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',
-               'ComputerDisk', 'ComputerVirtualMachine', 'Infocom'];
+               'ComputerVirtualMachine', 'Infocom'];
 $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
 $types = array_merge($types, $CFG_GLPI["device_types"]);
 $types = array_merge($types, $CFG_GLPI['networkport_instantiations']);

@@ -992,7 +992,7 @@ class Plugin extends CommonDBTM {
                           38 => "SavedSearch",
                           39 => "SoftwareVersion",
                           40 => "Plugin",
-                          41 => "ComputerDisk",
+                          41 => "Item_Disk",
                           42 => "NetworkPort",
                           43 => "TicketFollowup",
                           44 => "Budget"];
