@@ -44,15 +44,18 @@
       '../lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.css',
       '../lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css',
       '../lib/leaflet/plugins/Leaflet.fullscreen/leaflet.fullscreen.css',
-      '../lib/gridstack/src/gridstack.css',
-      '../lib/gridstack/src/gridstack-extra.css',
       'public/css/glpi-adminlte.css',
       'public/css/glpi-legacy.css',
       'public/css/glpi-legacy-jquery.css',
       'public/css/glpi-legacy-jquery-ui.css'
       ]) %}
    {% for css_path in css_paths %}
-      <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ css_path }}" type="text/css" media="screen" />
+      {% set media = 'screen' %}
+      {% if css_path is iterable %}
+         {% set media = css_path.media %}
+         {% set css_path = css_path.path %}
+      {% endif %}
+      <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ css_path }}" type="text/css" media="{{ media }}" />
    {% endfor %}
    {{ parent() }}
 {% endblock %}
@@ -372,11 +375,7 @@
          '../lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.min.js',
          '../lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js',
          '../lib/leaflet/plugins/Leaflet.fullscreen/Leaflet.fullscreen.min.js',
-         '../lib/lodash.min.js',
-         '../lib/gridstack/src/gridstack.js',
-         '../lib/gridstack/src/gridstack.jQueryUI.js',
          '../js/common.js',
-         '../js/rack.js'
       ]) %}
    {% for js_path in js_paths %}
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_path }}"></script>

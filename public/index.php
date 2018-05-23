@@ -206,6 +206,114 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       return $next($request, $response);
    });
 
+   /**
+    * Detect javascript dependencies
+    */
+   $app->add(function ($request, $response, $next) use ($CFG_GLPI) {
+      $get = $request->getQueryParams();
+      $route = $request->getAttribute('route');
+      $arguments = [];
+      if ($route) {
+         $arguments = $route->getArguments();
+      }
+
+      $key = $route->getName();
+      if (isset($arguments['itemtype'])) {
+         $key = mb_strtolower($arguments['itemtype']);
+      }
+      $requirements = Html::getJsRequirements($CFG_GLPI['javascript'], $key);
+
+      $css_paths = [];
+      $js_paths = [];
+
+      $js_libs = 'public/bower_components';
+      if (in_array('fullcalendar', $requirements)) {
+         $css_paths = array_merge($css_paths, [
+            $js_libs . '/fullcalendar/dist/fullcalendar.css',
+            [
+               'path'   => $js_libs . '/fullcalendar/dist/fullcalendar.print.css',
+               'media'  => 'print'
+            ]
+         ]);
+         $js_paths = array_merge($js_paths, [
+            $js_libs . '/moment/min/moment-with-locales.min.js',
+            $js_libs . '/fullcalendar/dist/fullcalendar.min.js',
+         ]);
+
+         if (isset($_SESSION['glpilanguage'])) {
+            foreach ([2, 3] as $loc) {
+               $filename = $js_libs . "/fullcalendar/dist/locale/".
+                  strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]).".js";
+               if (file_exists(GLPI_ROOT . '/' . $filename)) {
+                  $js_paths[] = $filename;
+                  break;
+               }
+            }
+         }
+      }
+
+      if (in_array('gantt', $requirements)) {
+         $css_paths[] = 'lib/jqueryplugins/jquery-gantt/css/style.css';
+         $js_paths[] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js';
+      }
+
+      if (in_array('rateit', $requirements)) {
+         $css_paths[] = 'lib/jqueryplugins/rateit/rateit.css';
+         $js_paths[] = 'lib/jqueryplugins/rateit/jquery.rateit.js';
+      }
+
+      if (in_array('colorpicker', $requirements)) {
+         $css_paths[] = 'lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css';
+         $js_paths[] = 'lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js';
+      }
+
+      if (in_array('gridstack', $requirements)) {
+         $css_paths = array_merge($css_paths, [
+            'lib/gridstack/src/gridstack.css',
+            'lib/gridstack/src/gridstack-extra.css'
+         ]);
+         $js_paths = array_merge($js_paths, [
+            'lib/lodash.min.js',
+            'lib/gridstack/src/gridstack.js',
+            'lib/gridstack/src/gridstack.jQueryUI.js',
+            'js/rack.js'
+         ]);
+      }
+
+      if (in_array('tinymce', $requirements)) {
+         $js_paths[] = 'lib/tiny_mce/tinymce.js';
+      }
+
+      if (in_array('clipboard', $requirements)) {
+         $js_paths[] = 'js/clipboard.js';
+      }
+
+      if (in_array('charts', $requirements)) {
+         $css_paths = array_merge($css_paths, [
+            'lib/chartist-js-0.10.1/chartist.css',
+            'css/chartists-glpi.css',
+            'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.css'
+         ]);
+         $js_paths = array_merge($js_paths, [
+            'lib/chartist-js-0.10.1/chartist.js',
+            'lib/chartist-plugin-legend-0.6.0/chartist-plugin-legend.js',
+            'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.js'
+         ]);
+      }
+
+      $this->view->getEnvironment()->addGlobal(
+         "css_paths",
+         $css_paths
+      );
+      $this->view->getEnvironment()->addGlobal(
+         "js_paths",
+         $js_paths
+      );
+
+      return $next($request, $response);
+   });
+
+
    // Render Twig template in route
    $app->get('/', function ($request, $response, $args) {
       //TODO: do some checks and redirect the the right URL

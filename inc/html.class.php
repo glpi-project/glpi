@@ -6473,4 +6473,37 @@ class Html {
          + str_pad($g, 2, '0', STR_PAD_LEFT)
          + str_pad($b, 2, '0', STR_PAD_LEFT);
    }
+
+   /**
+    * Get javascript requirement for route or itemtype
+    *
+    * @param array  $entries Configuration entries
+    * @param string $current Current route/itemtype
+    *
+    * @return array
+    */
+   public static function getJsRequirements($entries, $current) {
+      $requirements = [];
+      foreach ($entries as $key => $values) {
+         if ($key !== $current) {
+            $requirements = array_merge(
+               $requirements,
+               self::getJsRequirements($values, $current)
+            );
+         } else {
+            if (is_array(array_values($values)[0])) {
+               $requirements =  array_merge(
+                  $requirements,
+                  self::getJsRequirements($values, $current)
+               );
+            } else {
+               $requirements = array_merge(
+                  $requirements,
+                  $values
+               );
+            }
+         }
+      }
+      return $requirements;
+   }
 }
