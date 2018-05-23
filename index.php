@@ -135,7 +135,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Dropdown::showLanguages(
          'language', [
             'display_emptychoice'   => true,
-            'emptylabel'            => __('Default (from user profile)'),
+            'emptylabel'            => __('Lang (from user profile)'),
             'width'                 => '100%'
          ]
       );
