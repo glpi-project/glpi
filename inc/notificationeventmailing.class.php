@@ -233,8 +233,8 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             // replace img[src] and a[href] by cid:tag in html content
             foreach ($inline_docs as $docID => $tag) {
                $current->fields['body_html'] = preg_replace([
-                     '/src=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
-                     '/href=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
+                     '/src=["\'][^"\']*document\.send\.php\?docid='.$docID.'["\']/',
+                     '/href=["\'][^"\']*document\.send\.php\?docid='.$docID.'["\']/',
                   ], [
                      "src=\"cid:$tag\"",
                      "href='".$CFG_GLPI['url_base']."/front/document.send.php?docid=$docID'",
