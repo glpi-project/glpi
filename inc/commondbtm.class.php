@@ -4630,9 +4630,6 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      // force template
-      $item->fields['is_template'] = true;
-
       $request = [
          'FROM'   => $item->getTable(),
          'WHERE'  => [
