@@ -4226,7 +4226,7 @@ class Html {
     * @return string
    **/
    static function jsSetDropdownValue($id, $value) {
-      return self::jsGetElementbyID($id).".val('$value').trigger('change');";
+      return self::jsGetElementbyID($id).".trigger('setValue', '$value');";
    }
 
    /**
@@ -4268,25 +4268,28 @@ class Html {
       }
 
       $js = "$('#$id').select2({
-                  $placeholder
-                  width: '$width',
-                  dropdownAutoWidth: true,
-                  quietMillis: 100,
-                  minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-                  formatSelection: function(object, container) {
-                     text = object.text;
-                     if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
-                        text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
-                     }
-                     return text;
-                  },
-                  formatResult: function (result, container) {
-                     container.attr('title', result.title || result.element[0].title);
-                     return result.text;
-                  }
+         $placeholder
+         width: '$width',
+         dropdownAutoWidth: true,
+         quietMillis: 100,
+         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
+         formatSelection: function(object, container) {
+            text = object.text;
+            if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
+               text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
+            }
+            return text;
+         },
+         formatResult: function (result, container) {
+            container.attr('title', result.title || result.element[0].title);
+            return result.text;
+         }
 
-             });
-             $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
+      })
+      .bind('setValue', function(e, value) {
+         $('#$id').val(value).trigger('change');
+      })
+      $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
       return Html::scriptBlock($js);
    }
 
@@ -4348,19 +4351,8 @@ class Html {
       $values = [$value => $valuename];
       $output = self::select($name, $values, $options);
 
-      $js = " $('#$field_id').select2({
-                        width: '$width',
-                        minimumInputLength: 0,
-                        quietMillis: 100,
-                        dropdownAutoWidth: true,
-                        minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-                        ajax: {
-                           url: '$url',
-                           dataType: 'json',
-                           type: 'POST',
-                           data: function (params) {
-                              query = params;
-                              return { ";
+      $js = "
+         var params_$field_id = {";
       foreach ($params as $key => $val) {
          // Specific boolean case
          if (is_bool($val)) {
@@ -4369,26 +4361,74 @@ class Html {
             $js .= "$key: ".json_encode($val).",\n";
          }
       }
+      $js.= "};
 
-      $js .= "               searchText: params.term,
-                                 page_limit: ".$CFG_GLPI['dropdown_max'].", // page size
-                                 page: params.page || 1, // page number
-                              };
-                           },
-                           processResults: function (data, params) {
-                              params.page = params.page || 1;
-                              var more = (data.count >= ".$CFG_GLPI['dropdown_max'].");
+         $('#$field_id').select2({
+            width: '$width',
+            minimumInputLength: 0,
+            quietMillis: 100,
+            dropdownAutoWidth: true,
+            minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
+            ajax: {
+               url: '$url',
+               dataType: 'json',
+               type: 'POST',
+               data: function (params) {
+                  query = params;
+                  return $.extend({}, params_$field_id, {
+                     searchText: params.term,
+                     page_limit: ".$CFG_GLPI['dropdown_max'].", // page size
+                     page: params.page || 1, // page number
+                  });
+               },
+               processResults: function (data, params) {
+                  params.page = params.page || 1;
+                  var more = (data.count >= ".$CFG_GLPI['dropdown_max'].");
 
-                              return {
-                                 results: data.results,
-                                 pagination: {
-                                       more: more
-                                 }
-                              };
-                           }
-                        },
-                        templateResult: formatResult
-                     });";
+                  return {
+                     results: data.results,
+                     pagination: {
+                           more: more
+                     }
+                  };
+               }
+            },
+            templateResult: formatResult
+         })
+         .bind('setValue', function(e, value) {
+            $.ajax('$url', {
+               data: $.extend({}, params_$field_id, {
+                  _one_id: value,
+               }),
+               dataType: 'json',
+               type: 'POST',
+            }).done(function(data) {
+
+               var iterate_options = function(options, value) {
+                  var to_return = false;
+                  $.each(options, function(index, option) {
+                     if (option.hasOwnProperty('id')
+                         && option.id == value) {
+                        to_return = option;
+                        return false; // act as break;
+                     }
+
+                     if (option.hasOwnProperty('children')) {
+                        to_return = iterate_options(option.children, value);
+                     }
+                  });
+
+                  return to_return;
+               };
+
+               var option = iterate_options(data.results, value);
+               if (option !== false) {
+                  var newOption = new Option(option.text, option.id, true, true);
+                   $('#$field_id').append(newOption).trigger('change');
+               }
+            });
+         });
+         ";
       if (!empty($on_change)) {
          $js .= " $('#$field_id').on('change', function(e) {".
                   stripslashes($on_change)."});";
