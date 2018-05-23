@@ -1136,7 +1136,7 @@ class Transfer extends CommonDBTM {
                // License / Software :  keep / delete + clean unused / keep unused
                $this->transferComputerSoftwares($ID);
                // Computer Disks :  delete them or not ?
-               $this->transferComputerDisks($ID);
+               $this->transferItem_Disks($itemtype, $ID);
             }
 
             Plugin::doHook("item_transfer", ['type'        => $itemtype,
@@ -1495,16 +1495,29 @@ class Transfer extends CommonDBTM {
    /**
     * Transfer disks of a computer
     *
+    * @deprecated 9.3 @see transferItem_Disks
+    *
     * @param $ID ID of the computer
+    *
+    * @return void
    **/
    function transferComputerDisks($ID) {
-
-      if (!$this->options['keep_disk']) {
-         $disk = new Item_Disk();
-         $disk->cleanDBonItemDelete('Computer', $ID);
-      }
+      Toolbox::deprecated();
+      return $this->transferItem_Disks('Computer', $ID);
    }
 
+   /**
+    * Transfer disks of an item
+    *
+    * @param string $itemtype Item type
+    * @param intger $ID       ID of the item
+    */
+   function transferItemDisks($itemtype, $ID) {
+      if (!$this->options['keep_disk']) {
+         $disk = new Item_Disk();
+         $disk->cleanDBonItemDelete($itemtype, $ID);
+      }
+   }
 
    /**
     * Transfer softwares of a computer
