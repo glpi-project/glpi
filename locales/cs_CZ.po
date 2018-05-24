@@ -39,7 +39,7 @@ msgstr "Heslo"
 
 #: index.php:138
 msgid "Default (from user profile)"
-msgstr ""
+msgstr "Výchozí (z uživatelského profilu)"
 
 #: index.php:153
 msgid "Remember me"
@@ -8037,7 +8037,7 @@ msgstr "URL adresa aplikace"
 
 #: inc/config.class.php:295
 msgid "Text in the login box (HTML tags supported)"
-msgstr ""
+msgstr "Text v přihlašovacím okně (je možné použít i HTML značky)"
 
 #: inc/config.class.php:301
 msgid "Allow FAQ anonymous access"
@@ -10834,10 +10834,10 @@ msgstr[3] "Typy zařízení"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Typ telefonu"
+msgstr[1] "Typy telefonů"
+msgstr[2] "Typů telefonů"
+msgstr[3] "Typů telefonů"
 
 #: inc/dropdown.class.php:823 inc/softwarelicensetype.class.php:43
 msgid "License type"

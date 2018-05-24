@@ -39,7 +39,7 @@ msgstr "Contraseña"
 
 #: index.php:138
 msgid "Default (from user profile)"
-msgstr ""
+msgstr "Predeterminado (desde el perfil de usuario)"
 
 #: index.php:153
 msgid "Remember me"
@@ -7834,7 +7834,7 @@ msgstr "URL de la aplicación"
 
 #: inc/config.class.php:295
 msgid "Text in the login box (HTML tags supported)"
-msgstr ""
+msgstr "Texto en el cuadro de inicio de sesión (etiquetas HTML compatibles)"
 
 #: inc/config.class.php:301
 msgid "Allow FAQ anonymous access"
@@ -9774,7 +9774,7 @@ msgstr "Nuevo cuarto para este centro de datos..."
 
 #: inc/dcroom.class.php:386
 msgid "No server room found"
-msgstr ""
+msgstr "No se encontró una sala de servidores"
 
 #: inc/dcroom.class.php:466
 #, php-format
@@ -9893,8 +9893,8 @@ msgstr[1] "Firmware"
 #: inc/devicefirmwaremodel.class.php:43
 msgid "Device firmware model"
 msgid_plural "Device firmware models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de firmware del dispositivo"
+msgstr[1] "Modelos de firmware del dispositivo"
 
 #: inc/devicefirmwaretype.class.php:41
 msgid "Firmware type"
@@ -10061,8 +10061,8 @@ msgstr[1] "Sensores"
 #: inc/devicesensormodel.class.php:46 inc/dropdown.class.php:911
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo del sensor del dispositivo"
+msgstr[1] "Modelos de sensores de dispositivo"
 
 #: inc/devicesensortype.class.php:43 inc/dropdown.class.php:837
 msgid "Sensor type"
@@ -10073,8 +10073,8 @@ msgstr[1] "Tipos de sensor"
 #: inc/devicesimcard.class.php:42
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tarjeta SIM"
+msgstr[1] "Tarjetas SIM"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:93
 msgid "Allow VOIP"
@@ -10083,8 +10083,8 @@ msgstr "Permitir VOIP"
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:858
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de tarjeta SIM"
+msgstr[1] "Tipos de tarjetas SIM"
 
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:909
 msgid "Device sound card model"
@@ -10493,8 +10493,8 @@ msgstr[1] "Tipos de dispositivos"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipos de teléfonos"
+msgstr[1] "Tipos de teléfonos"
 
 #: inc/dropdown.class.php:823 inc/softwarelicensetype.class.php:43
 msgid "License type"
@@ -10737,7 +10737,7 @@ msgstr[1] "Valores ignorados por unicidad"
 
 #: inc/dropdown.class.php:1040
 msgid "Power management"
-msgstr ""
+msgstr "Administración de energía"
 
 #. TRANS: %d is a number of years
 #: inc/dropdown.class.php:1523 inc/infocom.class.php:1176
@@ -11027,11 +11027,11 @@ msgstr "Umbral por defecto para contador de consumibles"
 #: inc/entity.class.php:871 inc/entity.class.php:1930
 #: inc/notificationtargetcertificate.class.php:49
 msgid "Alarms on expired certificates"
-msgstr ""
+msgstr "Alertas para certificados caducados"
 
 #: inc/entity.class.php:881
 msgid "Send Certificate alarms before"
-msgstr ""
+msgstr "Enviar alertas de certificado antes"
 
 #: inc/entity.class.php:896 inc/entity.class.php:2119
 #: inc/profile.class.php:1030 inc/profile.class.php:2195
@@ -11208,7 +11208,7 @@ msgstr "Frecuencia de recordatorios para alertas de consumibles"
 
 #: inc/entity.class.php:1942
 msgid "Send certificates alarms before"
-msgstr ""
+msgstr "Enviar alertas de certificados antes"
 
 #: inc/entity.class.php:1961 inc/event.class.php:148 inc/event.class.php:161
 #: inc/html.class.php:6084 inc/profile.class.php:743
@@ -12283,7 +12283,7 @@ msgstr "Ver representación gráfica"
 
 #: inc/item_rack.class.php:141
 msgid "Racked items"
-msgstr ""
+msgstr "Elementos en gabinete"
 
 #: inc/item_rack.class.php:164
 msgid "Orientation"
@@ -12301,7 +12301,7 @@ msgstr "Atrás"
 
 #: inc/item_rack.class.php:295
 msgid "Following elements are out of rack bounds"
-msgstr ""
+msgstr "Los siguientes elementos están fuera de los límites del gabinete"
 
 #: inc/item_rack.class.php:310
 msgid "images"
@@ -12317,7 +12317,7 @@ msgstr "Inserta un ítem aquí"
 
 #: inc/item_rack.class.php:512
 msgid "Rack stats"
-msgstr ""
+msgstr "Estadísticas de gabinete"
 
 #: inc/item_rack.class.php:515
 msgid "Space"
@@ -12328,8 +12328,8 @@ msgstr "Espacio"
 #: inc/rack.class.php:62
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gabinete"
+msgstr[1] "Gabinetes"
 
 #: inc/item_rack.class.php:671
 msgid "Orientation (front rack point of view)"
@@ -12380,7 +12380,7 @@ msgstr "modelo"
 
 #: inc/item_rack.class.php:872 inc/pdu_rack.class.php:641
 msgid "Edit rack relation"
-msgstr ""
+msgstr "Editar relación de gabinete"
 
 #: inc/item_rack.class.php:949
 msgid "An item type is required"
@@ -12408,7 +12408,7 @@ msgstr "Debes definir una orientación para este elemento"
 
 #: inc/item_rack.class.php:1026 inc/pdu_rack.class.php:146
 msgid "Item is out of rack bounds"
-msgstr ""
+msgstr "Elemento fuera de los límites del gabinete"
 
 #: inc/item_rack.class.php:1040 inc/item_rack.class.php:1053
 #: inc/pdu_rack.class.php:151
@@ -12580,7 +12580,7 @@ msgstr "Administar"
 
 #: inc/knowbaseitemcategory.class.php:160
 msgid "Root category"
-msgstr ""
+msgstr "Categoría raiz"
 
 #: inc/knowbaseitem.class.php:199 inc/knowbaseitem.class.php:814
 #: inc/reminder.class.php:470 inc/rssfeed.class.php:455
@@ -12970,7 +12970,7 @@ msgstr "Código de país móvil"
 
 #: inc/lineoperator.class.php:57 inc/lineoperator.class.php:78
 msgid "Mobile Network Code"
-msgstr ""
+msgstr "Código de red móvil"
 
 #: inc/link.class.php:51 inc/link.class.php:581 inc/profile.class.php:1463
 #: inc/profile.class.php:1900 inc/search.class.php:5800
@@ -12981,7 +12981,7 @@ msgstr[1] "Enlaces externos"
 
 #: inc/link.class.php:153
 msgid "field name in DB"
-msgstr ""
+msgstr "campo nombre en BD"
 
 #: inc/link.class.php:153
 msgid "Example:"
@@ -13052,7 +13052,7 @@ msgstr "Comentarios de ubicación"
 
 #: inc/location.class.php:489
 msgid "Set location here"
-msgstr ""
+msgstr "Establecer ubicación aquí"
 
 #: inc/lock.class.php:53
 msgid "Lock"
@@ -13106,7 +13106,7 @@ msgstr "Mostrar filtros"
 
 #: inc/log.class.php:374
 msgid "No historical matching your filters"
-msgstr ""
+msgstr "Sin histórico que coincida con sus filtros"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:470 inc/projecttask.class.php:503
@@ -13403,7 +13403,7 @@ msgstr "El valor por defecto puede ser numerico"
 #: inc/migration.class.php:570
 #, php-format
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
-msgstr ""
+msgstr "¡No se puede cambiar el nombre de la tabla %1$s (%2$s) a %3$s (%4$s)!"
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "ok"
@@ -13456,7 +13456,7 @@ msgstr "Cambio del diseño de la Base de datos - %s"
 #: inc/migration.class.php:662
 #, php-format
 msgid "Adding fulltext index - %s"
-msgstr ""
+msgstr "Agregar índice de texto completo - %s"
 
 #: inc/migration.class.php:705 inc/software.class.php:1112
 #: install/update.php:79
@@ -13517,7 +13517,7 @@ msgstr "%1$s la tabla ya existe. Se ha hecho una copia de seguridad para %2$s"
 #: inc/migration.class.php:959
 #, php-format
 msgid "Configuration values added for %1$s."
-msgstr ""
+msgstr "Valores de configuración agregados por %1$s."
 
 #: inc/monitor.class.php:269 inc/peripheral.class.php:265
 #: inc/phone.class.php:259 inc/printer.class.php:363
@@ -13749,7 +13749,7 @@ msgstr "%d Mbit/s"
 
 #: inc/networkportethernet.class.php:370
 msgid "Ethernet outlet"
-msgstr ""
+msgstr "Salida de Ethernet"
 
 #: inc/networkportfiberchannel.class.php:46
 msgid "Fiber channel port"
@@ -13769,7 +13769,7 @@ msgstr "velocidad del puerto del canal de fibra"
 
 #: inc/networkportfiberchannel.class.php:339
 msgid "Network fiber outlet"
-msgstr ""
+msgstr "Salida de fibra óptica"
 
 #: inc/networkportinstantiation.class.php:84
 msgid "No options available for this port type."
@@ -13956,16 +13956,16 @@ msgstr "Creado por %1$s on %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Error insertando la notificación del navegador a la cola"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Una notificación del navegador para %s fue agregada a la cola"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Configuración de seguimientos del navegador"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
@@ -13974,8 +13974,8 @@ msgstr "Habilitar seguimientos desde el navegador"
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Notificación del navegador"
+msgstr[1] "Notificaciones del navegador"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13986,15 +13986,15 @@ msgstr "Sonido"
 
 #: inc/notificationajaxsetting.class.php:77
 msgid "Default notification sound"
-msgstr ""
+msgstr "Sonido de notificación predeterminado"
 
 #: inc/notificationajaxsetting.class.php:87
 msgid "Time to check for new notifications (in seconds)"
-msgstr ""
+msgstr "Lapso de tiempo para verificar nuevas notificaciones (en segundos)"
 
 #: inc/notificationajaxsetting.class.php:96
 msgid "URL of the icon"
-msgstr ""
+msgstr "URL del icono"
 
 #: inc/notificationajaxsetting.class.php:103
 #: inc/notificationmailingsetting.class.php:240
@@ -14008,7 +14008,7 @@ msgstr "Ver configuración"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Enviarte una notificación de prueba de navegador"
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14052,7 +14052,7 @@ msgstr "Campo tipo de elemento es obligatorio"
 #: inc/notificationevent.class.php:165
 #, php-format
 msgid "Unable to send notification using %1$s"
-msgstr ""
+msgstr "No se puede enviar una notificación usando %1$s"
 
 #: inc/notificationevent.class.php:199
 #: inc/notification_notificationtemplate.class.php:126
@@ -14065,7 +14065,7 @@ msgstr "Modo"
 #: inc/notificationmailing.class.php:97
 #, php-format
 msgid "Original email address was %1$s"
-msgstr ""
+msgstr "La dirección de correo electrónico original era %1$s"
 
 #: inc/notificationeventmailing.class.php:265
 msgid "Error in sending the email"
@@ -14074,17 +14074,19 @@ msgstr "Error enviando el correo electrónico"
 #: inc/notificationeventmailing.class.php:272
 #, php-format
 msgid "%1$s. Message: %2$s, Error: %3$s"
-msgstr ""
+msgstr "%1$s. Mensaje: %2$s, Error: %3$s"
 
 #: inc/notificationeventmailing.class.php:273
 #, php-format
 msgid "Warning: an email was undeliverable to %s with %d retries remaining"
 msgstr ""
+"Advertencia: no se pudo entregar un correo electrónico a %s con %d "
+"reintentos restantes"
 
 #: inc/notificationeventmailing.class.php:281
 #, php-format
 msgid "Fatal error: giving up delivery of email to %s"
-msgstr ""
+msgstr "Error fatal: renunciando a la entrega de correo electrónico para %s"
 
 #: inc/notificationeventmailing.class.php:301
 #, php-format
@@ -14136,36 +14138,42 @@ msgstr "Desde correo electrónico"
 
 #: inc/notificationmailingsetting.class.php:88
 msgid "Address to use in from for sent emails."
-msgstr ""
+msgstr "Dirección a usar en remitente para los correos electrónicos enviados."
 
 #: inc/notificationmailingsetting.class.php:88
 msgid "If not set, main or entity administrator email will be used."
 msgstr ""
+"Si no está configurado, se usará el correo electrónico del administrador "
+"principal o de la entidad."
 
 #: inc/notificationmailingsetting.class.php:95
 msgid "From name"
-msgstr ""
+msgstr "De nombre"
 
 #: inc/notificationmailingsetting.class.php:96
 msgid "Name to use in from for sent emails."
-msgstr ""
+msgstr "Nombre para usar en remitente para los correos electrónicos enviados."
 
 #: inc/notificationmailingsetting.class.php:96
 msgid "If not set, main or entity administrator name will be used."
 msgstr ""
+"Si no está configurado, se usará el nombre del administrador principal o de "
+"la entidad."
 
 #: inc/notificationmailingsetting.class.php:103
 msgid "Reply-to address"
-msgstr ""
+msgstr "Responder a dirección"
 
 #: inc/notificationmailingsetting.class.php:104
 msgid "Optionnal reply to address."
-msgstr ""
+msgstr "Respuesta opcional a la dirección."
 
 #: inc/notificationmailingsetting.class.php:104
 #: inc/notificationmailingsetting.class.php:234
 msgid "If not set, main administrator email will be used."
 msgstr ""
+"Si no está configurado, se usará el correo electrónico principal del "
+"administrador."
 
 #: inc/notificationmailingsetting.class.php:112
 #: inc/queuednotification.class.php:271 inc/queuednotification.class.php:734
@@ -14174,11 +14182,12 @@ msgstr "Nombre al cual responder"
 
 #: inc/notificationmailingsetting.class.php:113
 msgid "Optionnal reply to name."
-msgstr ""
+msgstr "Respuesta opcional a nombre"
 
 #: inc/notificationmailingsetting.class.php:113
 msgid "If not set, main administrator name will be used."
 msgstr ""
+"Si no está configurado, se usará el nombre del administrador principal."
 
 #: inc/notificationmailingsetting.class.php:121
 msgid "Add documents into ticket notifications"
@@ -14214,11 +14223,11 @@ msgstr "Es imprescindible utilizar un servidor SMTP."
 
 #: inc/notificationmailingsetting.class.php:174
 msgid "Max. delivery retries"
-msgstr ""
+msgstr "Max. reintentos de entrega"
 
 #: inc/notificationmailingsetting.class.php:180
 msgid "Try to deliver again in (minutes)"
-msgstr ""
+msgstr "Intenta entregar de nuevo en (minutos)"
 
 #: inc/notificationmailingsetting.class.php:201
 msgid "Check certificate"
@@ -14238,11 +14247,11 @@ msgstr "Contraseña SMTP"
 
 #: inc/notificationmailingsetting.class.php:233
 msgid "Email sender"
-msgstr ""
+msgstr "Remitente de correo electrónico"
 
 #: inc/notificationmailingsetting.class.php:234
 msgid "May be required for some mails providers."
-msgstr ""
+msgstr "Puede ser requerido para algunos proveedores de correos."
 
 #: inc/notificationmailingsetting.class.php:247
 msgid "Send a test email to the administrator"
@@ -14261,7 +14270,7 @@ msgstr "Agregar una plantilla"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
-msgstr ""
+msgstr "Sin plantilla seleccionada"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
@@ -14269,11 +14278,11 @@ msgstr "Buscador"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
-msgstr ""
+msgstr "Configuración de notificaciones"
 
 #: inc/notificationsettingconfig.class.php:97
 msgid "You must enable at least one notification mode."
-msgstr ""
+msgstr "Debe habilitar al menos un modo de notificación."
 
 #: inc/notificationsettingconfig.class.php:100
 msgid "Enable followup"
@@ -14284,6 +14293,8 @@ msgid ""
 "Unable to configure notifications: please configure at least one followup "
 "type using the above configuration."
 msgstr ""
+"No se pueden configurar las notificaciones: configure al menos un tipo de "
+"seguimiento utilizando la configuración anterior."
 
 #: inc/notificationtargetcartridgeitem.class.php:47
 msgid "Cartridges alarm"
@@ -14915,12 +14926,12 @@ msgstr "URL de elemento reservado"
 #: inc/notificationtargetsavedsearch_alert.class.php:57
 #, php-format
 msgid "Search  alert for \"%1$s\" (%2$s)"
-msgstr ""
+msgstr "Alerta de búsqueda para \"%1$s\" (%2$s)"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:62
 #: inc/notificationtargetsavedsearch_alert.class.php:66
 msgid "Private search alert"
-msgstr ""
+msgstr "Alerta de búsqueda privada"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:106
 msgid "Number of results"
@@ -14928,7 +14939,7 @@ msgstr "Número de resultados"
 
 #: inc/notificationtargetsavedsearch_alert.class.php:108
 msgid "Load saved search"
-msgstr ""
+msgstr "Cargar búsqueda guardada"
 
 #: inc/notificationtargetticket.class.php:119
 msgid "To answer by email, write above this line"
@@ -14981,7 +14992,7 @@ msgstr "Avisos automáticos de ANS"
 
 #: inc/notificationtargetticket.class.php:240
 msgid "Automatic reminders of OLAs"
-msgstr ""
+msgstr "Recordatorios automáticos de OLAs"
 
 #: inc/notificationtargetticket.class.php:242
 msgid "Satisfaction survey answer"
@@ -15016,19 +15027,19 @@ msgstr "ANS (Acuerdo de nivel de servicio)"
 #: inc/ticket.class.php:2894 inc/ticket.class.php:2902
 #: inc/ticket.class.php:2916 inc/ticket.class.php:2929
 msgid "OLA"
-msgstr ""
+msgstr "OLA"
 
 #: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2723
 #: inc/ticket.class.php:2902 inc/ticket.class.php:4676
 #: inc/ticket.class.php:4678 inc/ticket.class.php:7625
 msgid "Internal time to own"
-msgstr ""
+msgstr "Tiempo interno para apropiarse"
 
 #: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2687
 #: inc/ticket.class.php:2916 inc/ticket.class.php:4688
 #: inc/ticket.class.php:4690 inc/ticket.class.php:7641
 msgid "Internal time to resolve"
-msgstr ""
+msgstr "Tiempo interno para resolver"
 
 #: inc/notificationtargetticket.class.php:732
 msgid "Location name"
@@ -15241,7 +15252,7 @@ msgstr "¡Bloqueado por usted!"
 #: inc/objectlock.class.php:176
 #, php-format
 msgid "Unlock %1s #%2s"
-msgstr ""
+msgstr "Desbloquear %1s #%2s"
 
 #: inc/objectlock.class.php:207
 msgid "Ask for unlock item?"
@@ -15293,16 +15304,16 @@ msgstr "Tiempo límite para forzar desbloqueo (horas)"
 
 #: inc/ola.class.php:58
 msgid "The internal time is recalculated when assigning the OLA"
-msgstr ""
+msgstr "El tiempo interno es recalculado cuando se asigna el OLA"
 
 #: inc/ola.class.php:62
 msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
-msgstr ""
+msgstr "La asignación de un OLA a un ticket causa el recálculo de la fecha."
 
 #: inc/ola.class.php:63
 msgid "Escalations defined in the OLA will be triggered under this new date."
-msgstr ""
+msgstr "Escalamientos definidos en el OLA se activarán en esta nueva fecha."
 
 #: inc/olalevel.class.php:99 inc/slalevel.class.php:95
 msgid "Add an escalation level"
@@ -15310,11 +15321,11 @@ msgstr "Agregar un nivel de escalamiento"
 
 #: inc/olalevel.class.php:206
 msgid "Automatic reminders of OLA"
-msgstr ""
+msgstr "Recordatorios automáticos de OLA"
 
 #: inc/olalevel_ticket.class.php:126
 msgid "Automatic actions of OLA"
-msgstr ""
+msgstr "Acciones automáticas de OLA"
 
 #: inc/operatingsystemarchitecture.class.php:44 inc/rule.class.php:456
 #: inc/ruledictionnaryoperatingsystemarchitecture.class.php:56
@@ -15327,30 +15338,30 @@ msgstr[1] "Arquitecturas de los sistemas operativos"
 #: inc/operatingsystemversion.class.php:44 inc/rule.class.php:444
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Versión del sistema operativo"
+msgstr[1] "Versiones de los sistemas operativos"
 
 #: inc/pdu.class.php:48 inc/pdu_rack.class.php:236
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Multitoma"
+msgstr[1] "Multitomas"
 
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de multitoma"
+msgstr[1] "Modelos de multitoma"
 
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Enchufe de multitoma"
+msgstr[1] "Enchufes de multitoma"
 
 #: inc/pdu_plug.class.php:131
 msgid "Add a new plug"
-msgstr ""
+msgstr "Agregar un nuevo enchufe"
 
 #: inc/pdu_plug.class.php:137 inc/pdu_plug.class.php:171
 #: inc/softwarelicense.class.php:515
@@ -15359,15 +15370,15 @@ msgstr "Número"
 
 #: inc/pdu_plug.class.php:152
 msgid "No plug found"
-msgstr ""
+msgstr "No se encontró un enchufe"
 
 #: inc/pdu_rack.class.php:95
 msgid "A pdu is required"
-msgstr ""
+msgstr "Un multitoma es requerido"
 
 #: inc/pdu_rack.class.php:107
 msgid "A side is required"
-msgstr ""
+msgstr "Un lado es requerido"
 
 #: inc/pdu_rack.class.php:246
 msgid "Side (from rear perspective)"
@@ -15912,7 +15923,7 @@ msgstr[1] "Canales RSS públicos"
 
 #: inc/profile.class.php:819
 msgid "Simcard PIN/PUK"
-msgstr ""
+msgstr "Tarjeta SIM PIN/PUK"
 
 #: inc/profile.class.php:879 inc/profile.class.php:1762
 msgid "Financial and administratives information"
@@ -17592,7 +17603,7 @@ msgstr ""
 
 #: inc/search.class.php:1491
 msgid "Show as map"
-msgstr ""
+msgstr "Mostrar como mapa"
 
 #: inc/search.class.php:1828 inc/search.class.php:1829
 msgid "Show the dustbin"
@@ -17940,6 +17951,7 @@ msgstr "Enviar \" estadísticas de uso\""
 #: inc/telemetry.class.php:453
 msgid "We need your help to improve GLPI and the plugins ecosystem!"
 msgstr ""
+"¡Necesitamos su ayuda para mejorar GLPI y el ecosistema de complementos!"
 
 #: inc/telemetry.class.php:454
 msgid ""
@@ -17947,17 +17959,24 @@ msgid ""
 "“Telemetry”, that anonymously with your permission, sends data to our "
 "telemetry website."
 msgstr ""
+"Desde GLPI 9.2, hemos introducido una nueva característica de estadísticas "
+"llamada \"Telemetría\", que de forma anónima con su permiso, envía datos a "
+"nuestro sitio web de telemetría."
 
 #: inc/telemetry.class.php:455
 msgid ""
 "Once sent, usage statistics are aggregated and made available to a broad "
 "range of GLPI developers."
 msgstr ""
+"Una vez enviadas, las estadísticas de uso se agregan y se ponen a "
+"disposición de una amplia gama de desarrolladores de GLPI."
 
 #: inc/telemetry.class.php:456
 msgid ""
 "Let us know your usage to improve future versions of GLPI and its plugins!"
 msgstr ""
+"¡Háganos saber su uso para mejorar las versiones futuras de GLPI y sus "
+"complementos!"
 
 #: inc/telemetry.class.php:469
 msgid "Reference your GLPI"
@@ -17969,6 +17988,8 @@ msgid ""
 "Besides, if you appreciate GLPI and its community, please take a minute to "
 "reference your organization by filling %1$s."
 msgstr ""
+"Además, si aprecia GLPI y su comunidad, tómese un minuto para hacer "
+"referencia a su organización rellenando %1$s."
 
 #: inc/telemetry.class.php:476
 msgid "the following form"
