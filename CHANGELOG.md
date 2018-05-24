@@ -16,6 +16,7 @@ The present file will list all changes made to the project; according to the
 - `CommonITILObject::showMassiveSolutionForm()` now takes a `CommonITILObject` as argument
 - `Profileuser::getUserProfiles` filter parameter is now an array
 - Select2 javascript component has been upgraded to 4.0 version, see [Migrating from Select2 3.5](https://select2.org/upgrading/migrating-from-35)
+- `CommonDevice::getItem_DeviceType` has a new optional `$devicetype` parameter
 
 #### Deprecated
 
