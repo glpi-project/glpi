@@ -550,6 +550,12 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    // Step 2
    if (test_connect()) {
       echo "<h3>".__('Database connection successful')."</h3>";
+      echo "<p class='center'>";
+      $result = Config::displayCheckDbEngine(true);
+      echo "</p>";
+      if ($result > 0) {
+         die(1);
+      }
       if (!isset($_POST["update_location"])) {
          $current_version = "0.31";
          $config_table    = "glpi_config";
