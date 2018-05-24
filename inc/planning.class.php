@@ -60,7 +60,7 @@ class Planning extends CommonGLPI {
                               '#364959', '#8C5344', '#FF8100', '#F600C4', '#0017FF',
                               '#000000', '#FFFFFF', '#005800', '#925EFF');
 
-   static $directgroup_itemtype = array('ProjectTask', 'TicketTask', 'ProblemTask');
+   static $directgroup_itemtype = array('ProjectTask', 'TicketTask', 'ProblemTask', 'ChangeTask');
 
    const READMY    =    1;
    const READGROUP = 1024;
