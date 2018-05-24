@@ -74,12 +74,17 @@ abstract class CommonDevice extends CommonDropdown {
     * This method can be override, for instance by the plugin
     *
     * @since 0.85
+    * @since 9.3 added the $devicetype parameter
+    *
+    * @param string $devicetype class name of device type, defaults to called class name
     *
     * @return array of the types of CommonDevice available
    **/
-   static function getItem_DeviceType() {
+   static function getItem_DeviceType($devicetype = null) {
 
-      $devicetype = get_called_class();
+      if (null === $devicetype) {
+         $devicetype = get_called_class();
+      }
       if ($plug = isPluginItemType($devicetype)) {
          return 'Plugin'.$plug['plugin'].'Item_'.$plug['class'];
       }
@@ -109,6 +114,13 @@ abstract class CommonDevice extends CommonDropdown {
                   $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
                   if ($tmp->canCreate()) {
                      $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
+                  }
+                  if ($itemClass = getItemForItemtype(self::getItem_DeviceType($key))) {
+                     $itemTypeName = sprintf(__('%1$s items'), $key::getTypeName(1));
+
+                     $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
+                        . '<span class="sr-only">' . $itemTypeName . '</span>';
+                     $menu['options'][$key]['links'][$listLabel] = $itemClass->getSearchURL(false);
                   }
                }
             }
