@@ -31,9 +31,9 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
+if (!isset($_POST['do_continue'])) {
+   die("Sorry. You can't access this file directly");
+}
 
 //#################### INCLUDE & SESSIONS ############################
 define('GLPI_ROOT', realpath('..'));
