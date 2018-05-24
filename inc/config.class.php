@@ -2255,7 +2255,6 @@ class Config extends CommonDBTM {
       } else if ($fordebug) {
          echo $img . $message . "\n";
       } else {
-         //$html = '<tr class="tab_bg_1">';
          $html = "<td";
          if ($error > 0) {
             $html .= " class='red'";
@@ -2263,7 +2262,6 @@ class Config extends CommonDBTM {
          $html .= ">";
          $html .= $img;
          $html .= '</td>';
-         //$html .= '</tr>';
          echo $html;
       }
       return $error;
