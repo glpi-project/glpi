@@ -3574,9 +3574,9 @@ class User extends CommonDBTM {
          }
 
          if (empty($user['comment'])) {
-            $user['comment'] = sprintf(
-               __('Show %1$s'),
-               mb_strtolower(
+            $user['comment'] = Toolbox::ucfirst(
+               sprintf(
+                  __('Show %1$s'),
                   self::getTypeName(Session::getPluralNumber())
                )
             );

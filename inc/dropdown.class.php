@@ -200,9 +200,9 @@ class Dropdown {
          }
 
          if (empty($comment)) {
-            $comment = sprintf(
-               __('Show %1$s'),
-               mb_strtolower(
+            $comment = Toolbox::ucfirst(
+               sprintf(
+                  __('Show %1$s'),
                   $item::getTypeName(Session::getPluralNumber())
                )
             );
