@@ -749,6 +749,10 @@ function update92to93() {
 
       // Parent device.
       $optToAdd[] = 4;
+      // Associated item.
+      $optToAdd[] = 5;
+      // Associated itemtype.
+      $optToAdd[] = 6;
 
       $ADDTODISPLAYPREF[$itemDeviceType] = $optToAdd;
    }

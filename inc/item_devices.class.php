@@ -141,6 +141,27 @@ class Item_Devices extends CommonDBRelation {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => _n('Associated element', 'Associated elements', 2),
+         'datatype'           => 'specific',
+         'comments'           => true,
+         'nosort'             => true,
+         'additionalfields'   => ['itemtype']
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => _n('Associated item type', 'Associated item types', 2),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'itemdevices_types',
+         'nosort'             => true
+      ];
+
       foreach (static::getSpecificities() as $field => $attributs) {
          switch ($field) {
             case 'states_id':
@@ -181,35 +202,56 @@ class Item_Devices extends CommonDBRelation {
          'datatype'           => 'dropdown'
       ];
 
-
-      $tab[] = [
-         'id'                 => 'linked_assets',
-         'name'               => __('Linked asset')
-      ];
-
-      $idx = 300;
-      $concernedItems = $this->getConcernedItems();
-      foreach ($concernedItems as $itemType) {
-         $itemTable = getTableForItemType($itemType);
-
-         $tab[] = [
-            'id'                 => (string)$idx,
-            'table'              => $itemTable,
-            'field'              => 'name',
-            'name'               => $itemType::getTypeName(1),
-            'datatype'           => 'itemlink',
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => [
-               'jointype'           => 'itemtype_item_revert',
-               'specific_itemtype'  => $itemType,
-            ],
-         ];
-
-         $idx++;
-      }
-
       return $tab;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'items_id':
+            if (isset($values['itemtype'])) {
+               if (isset($options['comments']) && $options['comments']) {
+                  $valueData = Dropdown::getDropdownName(
+                     getTableForItemtype($values['itemtype']),
+                     $values[$field],
+                     1
+                  );
+                  return sprintf(
+                     __('%1$s %2$s'),
+                     $valueData['name'],
+                     Html::showToolTip($valueData['comment'], ['display' => false])
+                  );
+
+               }
+               return Dropdown::getDropdownName(
+                  getTableForItemtype($values['itemtype']),
+                  $values[$field]
+               );
+            }
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'items_id' :
+            if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+               $options['name']  = $name;
+               $options['value'] = $values[$field];
+               return Dropdown::show($values['itemtype'], $options);
+            }
+            break;
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
 
