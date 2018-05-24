@@ -13,6 +13,7 @@ shared: &shared
           sudo docker-php-ext-enable apcu
           echo "apc.enable=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
           echo "apc.enable_cli=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+          echo "memory_limit = 512M" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-memory.ini
     - run:
         name: Composer
         command: |
