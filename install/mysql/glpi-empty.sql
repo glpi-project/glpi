@@ -7035,12 +7035,12 @@ INSERT INTO `glpi_profilerights` VALUES ('859','7','certificate','127');
 INSERT INTO `glpi_profilerights` VALUES ('860','8','certificate','161');
 INSERT INTO `glpi_profilerights` VALUES ('861','1','datacenter','0');
 INSERT INTO `glpi_profilerights` VALUES ('862','2','datacenter','0');
-INSERT INTO `glpi_profilerights` VALUES ('863','3','datacenter','0');
+INSERT INTO `glpi_profilerights` VALUES ('863','3','datacenter','255');
 INSERT INTO `glpi_profilerights` VALUES ('864','4','datacenter','255');
 INSERT INTO `glpi_profilerights` VALUES ('865','5','datacenter','0');
-INSERT INTO `glpi_profilerights` VALUES ('866','6','datacenter','0');
-INSERT INTO `glpi_profilerights` VALUES ('867','7','datacenter','0');
-INSERT INTO `glpi_profilerights` VALUES ('868','8','datacenter','255');
+INSERT INTO `glpi_profilerights` VALUES ('866','6','datacenter','255');
+INSERT INTO `glpi_profilerights` VALUES ('867','7','datacenter','255');
+INSERT INTO `glpi_profilerights` VALUES ('868','8','datacenter','0');
 
 
 ### Dump table glpi_profiles
