@@ -64,18 +64,16 @@ class Toolbox {
     * Convert first caracter in upper
     *
     * @since 0.83
+    * @since 9.3 Rework
     *
     * @param $str string to change
     *
     * @return string changed
    **/
    static function ucfirst($str) {
-
-      if ($str{0} >= "\xc3") {
-         return (($str{1} >= "\xa0") ? ($str{0}.chr(ord($str{1})-32))
-                                     : ($str{0}.$str{1})).substr($str, 2);
-      }
-      return ucfirst($str);
+      $first_letter = mb_strtoupper(mb_substr ($str, 0, 1));
+      $str_end = mb_substr($str, 1, mb_strlen ($str));
+      return $first_letter . $str_end;
    }
 
 
