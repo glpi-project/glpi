@@ -2785,7 +2785,11 @@ class Config extends CommonDBTM {
          //Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
       if (!isset($opt['options']['namespace'])) {
-         $opt['options']['namespace'] = "glpi_${optname}_" . GLPI_VERSION . $CFG_GLPI['instance_uuid'];
+         $namespace = "glpi_${optname}_" . GLPI_VERSION;
+         if (isset($CFG_GLPI['instance_uuid'])) {
+            $namespace .= $CFG_GLPI['instance_uuid'];
+         }
+         $opt['options']['namespace'] = $namespace;
       }
       if (!isset($opt['adapter'])) {
          if (function_exists('apcu_fetch')) {
