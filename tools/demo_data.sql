@@ -23,6 +23,6 @@ UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'tick
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'reminder_public';
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'rssfeed_public';
 UPDATE glpi_profilerights SET rights = 23 WHERE profiles_id = 3 AND name = 'bookmark_public';
-REPLACE INTO glpi_users (name, password, language) VALUES ('admin', MD5('admin'), 'en_GB');
-REPLACE INTO glpi_profiles_users (users_id, profiles_id)
+INSERT INTO glpi_users (name, password, authtype, language) VALUES ('admin', 1, '$2y$10$ERFSQRmAVBzX9xNDtkV82.AixFN3ds6WKWQOwwUBcG2.7.U4c2hCa', 'en_GB');
+INSERT INTO glpi_profiles_users (users_id, profiles_id)
    SELECT id, 3 from glpi_users WHERE name = 'admin';
