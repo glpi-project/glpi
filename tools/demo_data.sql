@@ -1,15 +1,16 @@
-UPDATE glpi_configs SET url_base = 'http://demo.glpi-project.org';
-UPDATE glpi_configs SET text_login = 'Pick an account, choose a language and try GLPI!
+UPDATE glpi_configs SET value = 'http://demo.glpi-project.org' WHERE name = 'url_base';
+UPDATE glpi_configs SET value = 'Pick an account, choose a language and try GLPI!
 
 Following accounts are available:
 
 - Administrator (login admin, password admin),
 - Standard user (login normal, password normal),
-- Self-service helpdesk user (login post-only, password postonly)';
-UPDATE glpi_configs SET use_public_faq = 1;
-UPDATE glpi_configs SET translate_dropdowns = 1;
-UPDATE glpi_configs SET translate_kb = 1;
-UPDATE glpi_configs SET use_rich_text = 1;
+- Self-service helpdesk user (login post-only, password postonly)'
+   WHERE name = 'text_login';
+UPDATE glpi_configs SET value = 1 WHERE name = 'use_public_faq';
+UPDATE glpi_configs SET value = 1 WHERE name = 'translate_dropdowns';
+UPDATE glpi_configs SET value = 1 WHERE name = 'translate_kb';
+UPDATE glpi_configs SET value = 1 WHERE name = 'use_rich_text';
 -- all profile rights
 UPDATE glpi_profilerights SET rights = 0 WHERE name = 'password_update';
 -- admin profile rights
