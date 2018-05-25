@@ -64,7 +64,13 @@ function uploadFile(file, editor, input_name) {
       },
 
       error: function (request) {
-         alert(request.responseText);
+         // If this is an error on the return
+         if ("responseText" in request && request.responseText.length > 0) {
+            alert(request.responseText);
+         } else {
+            // Error before sending request #3866
+            alert(request.statusText);
+         }
       }
    });
 
@@ -368,6 +374,11 @@ if (typeof tinymce != 'undefined') {
             //transform to blob and insert into editor
             if (base64.length) {
                var file = dataURItoBlob(base64);
+               // Fix #3866 - undefined file name
+               if (typeof file.name != "string") {
+                  // fill missing file properties
+                  file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
+               }
                uploaded = insertImageInTinyMCE(editor, file);
             }
 
