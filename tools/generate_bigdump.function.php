@@ -480,7 +480,7 @@ function addTracking($type, $ID, $ID_entity) {
       $closetime       = 0;
       $actiontime      = 0;
 
-      $solution        = "";
+      $solution        = null;
       $solutiontype    = 0;
       $due_date        = $opendate + $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+
                          mt_rand(0, 10)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
@@ -533,9 +533,7 @@ function addTracking($type, $ID, $ID_entity) {
          'priority'                    => mt_rand(1, 5),
          'itilcategories_id'           => mt_rand(0, $MAX['tracking_category']),
          'type'                        => mt_rand(1, 2),
-         'solutiontypes_id'            => $solutiontype,
          'locations_id'                => mt_rand($FIRST['locations'], $LAST['locations']),
-         'solution'                    => $solution,
          'actiontime'                  => $actiontime,
          'time_to_resolve'             => $duedatetoadd,
          'close_delay_stat'            => $closetime,
@@ -546,6 +544,8 @@ function addTracking($type, $ID, $ID_entity) {
          '_groups_id_assign'           => mt_rand($FIRST["techgroups"], $LAST['techgroups']),
          '_groups_id_requester'        => mt_rand($FIRST["groups"], $LAST['groups']),
       ]));
+
+      $oldsoluce = null;
 
       // Add followups
       $i     = 0;
@@ -561,6 +561,33 @@ function addTracking($type, $ID, $ID_entity) {
          } else {
             $date += mt_rand(3600, 7776000);
          }
+
+         if ($solution !== null && $faker->boolean($chanceOfGettingTrue = 5)) {
+            //a first solution, that should be refused because a followup will be added.
+            $itilsoluce = new ITILSolution();
+            $oldsoluce = $itilsoluce->add(Toolbox::addslashes_deep([
+               'itemtype'           => 'Ticket',
+               'items_id'           => $tID,
+               'content'            => $faker->realText,
+               'solutiontypes_id'   => $solutiontype,
+               'users_id'           => $faker->numberBetween($FIRST['users_normal'], $LAST['users_normal']),
+               'users_id_approval'  => $faker->numberBetween($FIRST['users_postonly'], $LAST['users_normal'])
+            ]));
+
+            //set date
+            $itilsoluce->update([
+               'id'              => $itilsoluce->fields['id'],
+               'date_creation'   => date('Y-m-d H:i:s', $date + mt_rand(10, 3600))
+            ]);
+
+            //approve solution
+            $follow = new \TicketFollowup();
+            $follow->add([
+               'tickets_id'   => $tID,
+               'add_close'    => '1'
+            ]);
+         }
+
          $tf->add(toolbox::addslashes_deep(
                   ['tickets_id'      => $tID,
                    'date'            => date("Y-m-d H:i:s", $date),
@@ -605,6 +632,49 @@ function addTracking($type, $ID, $ID_entity) {
          }
          $tt->add($params);
          $i++;
+      }
+
+      if ($solution !== null) {
+         //final solution, accepted
+         $itilsoluce = new ITILSolution();
+         if ($oldsoluce !== null) {
+            //mark old solution as refused (framework do this on Ticket::prei_upddateInDB
+            $itilsoluce->update([
+               'id'     => $oldsoluce,
+               'status' => CommonITILValidation::REFUSED
+            ]);
+         }
+         $itilsoluce->add(Toolbox::addslashes_deep([
+            'itemtype'           => 'Ticket',
+            'items_id'           => $tID,
+            'content'            => $solution,
+            'solutiontypes_id'   => $solutiontype,
+            'users_id'           => $faker->numberBetween($FIRST['users_normal'], $LAST['users_normal']),
+            'users_id_approval'  => $faker->numberBetween($FIRST['users_postonly'], $LAST['users_normal']),
+            'status'             => CommonITILValidation::ACCEPTED
+         ]));
+
+         //set date
+         $itilsoluce->update([
+            'id'              => $itilsoluce->fields['id'],
+            'date_creation'   => date('Y-m-d H:i:s', $date + mt_rand(3600, 7776000))
+         ]);
+
+         $follow = new \TicketFollowup();
+         if ($faker->boolean($chanceOfGettingTrue = 85)) {
+            //approve solution
+            $follow->add([
+               'tickets_id'   => $tID,
+               'add_close'    => '1'
+            ]);
+         } else if ($faker->boolean($chanceOfGettingTrue = 35)) {
+            //refuse solution and reopen ticket
+            $follow->add([
+               'tickets_id'   => $tID,
+               'add_reopen'   => '1',
+               'content'      => $faker->realText()
+            ]);
+         }
       }
 
       $tc = new TicketCost();
