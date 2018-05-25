@@ -1,31 +1,46 @@
-[![Build Status](https://secure.travis-ci.org/glpi-project/glpi.svg?branch=master)](https://secure.travis-ci.org/glpi-project/glpi)
-
 ![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/master/pics/logos/logo-GLPI-250-black.png)
+
+[![CircleCI](https://img.shields.io/circleci/project/github/glpi-project/glpi/9.3/bugfixes.svg)](https://circleci.com/gh/glpi-project)
+[![Github All Releases](https://img.shields.io/github/downloads/glpi-project/glpi/total.svg)](#download)
+[![Twitter Follow](https://img.shields.io/twitter/follow/GLPI_PROJECT.svg?style=social&label=Follow)](https://twitter.com/GLPI_PROJECT)
+
+
+## About GLPI
 
 GLPI stands for **Gestionnaire Libre de Parc Informatique** is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
 
 GLPI features:
-* Multilingual support: 45 translations available
-* Inventory of computers, peripherals, network printers and any associated components through an interface, with inventory tools such as: OCS Inventory or FusionInventory
-* Assignment of equipment by geographical area to users and groups
+* Inventory of computers, peripherals, network printers and any associated components through an interface, with inventory tools such as: [FusionInventory](http://fusioninventory.org/) or [OCS Inventory](https://www.ocsinventory-ng.org/fr/)
+* Data Center Infrastructure Management (DCIM)
 * Item lifecycle management
-* Asset reservation
 * Licenses management (ITIL compliant)
 * Management of warranty and financial information (purchase order, warranty and extension, damping)
 * Management of contracts, contacts, documents related to inventory items
 * Incidents, requests, problems and changes management
-* Ticket creation through emails, end-user or technician interface
-* Ticket lifecycle (assignment, tickets scheduling, solutions, etc.)
 * Knowledge base and Frequently-Asked Questions (FAQ)
-* Report generator: hardware, network or interventions (support)
+* Asset reservation
 
 Moreover, GLPI supports many [plugins](http://plugins.glpi-project.org) that provide additional features.
 
-
 ## License
+
+![license](https://img.shields.io/github/license/glpi-project/glpi.svg)
 
 It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consult the file called [COPYING](https://raw.githubusercontent.com/glpi-project/glpi/master/COPYING.txt) for more details.
 
+## Some screenshots
+
+**Tickets Timeline**
+
+![Tickets Timeline](pics/screenshots/timeline.png)
+
+**DCIM drag&drop**
+
+![DCIM drag&drop](pics/screenshots/dcim_racks_draganddrop.gif)
+
+**Components**
+
+![Components](pics/screenshots/components.png)
 
 ## Prerequisites
 
@@ -52,7 +67,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - Firefox (including 2 latests ESR version)
     - Chrome
 
-Please, consider using browsers on editors' supported version
+Please, consider using browsers on editor's supported version
 
 
 ## Download
@@ -105,13 +120,13 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 
 
 ## Support
-GLPI is a living software. Improvements are continuously made, new functionality is being developed, and issues are being fixed.
+GLPI is a living software. Improvements are continuously made, new functionalities are being developed, and issues are being fixed.
 
 To ease support and development, we need your help when encountering issues.
 There is a GLPI version typical lifecycle:
  * A new major version (9.3) is released.
- * Minor versions (9.3.x), fixing bugs or issues, are published after several weeks *(generally > 10)*.
+ * Minor versions (9.3.x), fixing bugs or issues, are published after several weeks.
    Please consider updating to the latest realeased minor version if you encounter some bugs or performance issues.
- * Several months *(generally > 12)* after major version realesed, a new major version (9.4) is released
+ * Several months after major version realesed, a new major version (9.4) is released
    Previous major versions become unsupported, please update to the new major version.
    Obviously, we provide support for the migration tools too!
