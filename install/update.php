@@ -125,13 +125,12 @@ function update_importDropdown ($table, $name) {
  * @return nothing (displays)
  */
 function showContentUpdateForm() {
-
+   $_SESSION['do_content_update'] = true;
    echo "<form action='update_content.php' method='post'>";
    echo "<div class='center'>";
    echo "<h3>".__('Update successful, your database is up to date')."</h3>";
    echo "<p>".__('You must now proceed to updating your database content')."</p></div>";
    echo "<p>";
-   echo "<input typ='hidden' name='do_continue' value='1'/>";
    echo "<input type='submit' class='vsubmit' value='.__('Continue?').'/>";
    echo "</form>";
 }
