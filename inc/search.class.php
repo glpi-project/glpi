@@ -777,7 +777,7 @@ class Search {
                      if ($tmp_new_where !== false) {
                         $new_where .= $tmp_new_where;
                         if (!empty($METAWHERE)) {
-                          $new_where .= ' AND ' . $METAWHERE;
+                           $new_where .= ' AND ' . $METAWHERE;
                         }
                         $new_where .= ' ) ';
                         $WHERE .= $new_where;
