@@ -636,7 +636,7 @@ class Rack extends CommonDBTM {
             $item['_y'] = $y - 1;
          }
 
-         if ($x <= $cols && $y <= $rows) {
+         if ($x <= $cols && $y <= $rows && $x > 0 && $y > 0) {
             $in = true;
             $cells[] = $item;
          }
