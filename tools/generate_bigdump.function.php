@@ -710,6 +710,40 @@ function addTracking($type, $ID, $ID_entity) {
 
 }
 
+/**
+ * Add disk to an itemtype
+ *
+ * @param string  $itemtype  Item type
+ * @param integer $items_id  Item ID
+ * @param integer $ID_entity Entity ID
+ * @param boolean $chance    Chance to add disks; default to 100 (will add)
+ *
+ * @return void
+ */
+function addDisks($itemtype, $items_id, $ID_entity, $chance = 100) {
+   global $MAX_DISK, $faker;
+
+   // insert disk
+   if ($faker->boolean($chanceOfGettingTrue = $chance)) {
+      $idisk   = new Item_Disk();
+      $nb_disk = $faker->numberBetween(1, $MAX_DISK);
+      for ($j=1; $j<=$nb_disk; $j++) {
+         $totalsize = $faker->numberBetween(10000, 1000000);
+
+         $idisk->add(toolbox::addslashes_deep([
+            'itemtype'        => $itemtype,
+            'entities_id'     => $ID_entity,
+            'items_id'        => $items_id,
+            'name'            => "disk '$j",
+            'device'          => "/dev/disk$j",
+            'mountpoint'      => "/mnt/disk$j",
+            'filesystems_id'  => $faker->numberBetween(1, 10),
+            'totalsize'       => $totalsize,
+            'freesize'        => $faker->numberBetween(0, $totalsize)
+         ]));
+      }
+   }
+}
 
 /** Generate bigdump : generate global dropdowns
 **/
@@ -2436,6 +2470,9 @@ function generate_entity($ID_entity) {
                                              ? mt_rand($FIRST['state'], $LAST['state'])
                                              : 0)
       ]));
+
+      addDisks('NetworkEquipment', $netwID, $ID_entity, 50);
+
       $NET_LOC[$data['id']] = $netwID;
       addDocuments('NetworkEquipment', $netwID);
       addContracts('NetworkEquipment', $netwID);
@@ -2485,6 +2522,8 @@ function generate_entity($ID_entity) {
                                  ? mt_rand($FIRST['state'], $LAST['state'])
                                  : 0)
       ]));
+
+      addDisks('Printer', $netwID, $ID_entity, 10);
 
       addDocuments('Printer', $printID);
       addContracts('Printer', $printID);
@@ -2565,7 +2604,6 @@ function generate_entity($ID_entity) {
    $cdevcase  = new Item_DeviceCase();
    $cdevps    = new Item_DevicePowerSupply();
 
-   $idisk   = new Item_Disk();
    $np      = new Netpoint();
    $ci      = new Computer_Item();
    $phone   = new Phone();
@@ -2690,24 +2728,8 @@ function generate_entity($ID_entity) {
                              ['serial' => Toolbox::getRandomString(15)]);
       }
 
-      // insert disk
-      $nb_disk = mt_rand(1, $MAX_DISK);
-      for ($j=1; $j<=$nb_disk; $j++) {
-         $totalsize = mt_rand(10000, 1000000);
-         $freesize  = mt_rand(0, $totalsize);
-
-         $idisk->add(toolbox::addslashes_deep([
-            'itemtype'        => 'Computer',
-            'entities_id'     => $ID_entity,
-            'items_id'        => $compID,
-            'name'            => "disk '$j",
-            'device'          => "/dev/disk$j",
-            'mountpoint'      => "/mnt/disk$j",
-            'filesystems_id'  => mt_rand(1, 10),
-            'totalsize'       => $totalsize,
-            'freesize'        => $freesize
-         ]));
-      }
+      // insert disks
+      addDisks('Computer', $compID, $ID_entity);
 
       // Add networking ports
       addNetworkEthernetPort('Computer', $compID, $ID_entity, $loc);
