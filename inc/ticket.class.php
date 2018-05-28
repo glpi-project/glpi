@@ -6782,7 +6782,7 @@ class Ticket extends CommonITILObject {
             return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
          }, $solution_item['content']);
 
-         $timeline[$solution_item['date_creation']."_solution"] = [
+         $timeline[$solution_item['date_creation']."_solution_" . $solution_item['id'] ] = [
             'type' => 'Solution',
             'item' => [
                'id'                 => $solution_item['id'],
