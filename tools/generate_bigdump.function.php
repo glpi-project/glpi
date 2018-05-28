@@ -1963,13 +1963,13 @@ function generate_entity($ID_entity) {
 
    $FIRST["solutiontypes"] = getMaxItem("glpi_solutiontypes")+1;
 
-   $items = ["d'apr??s KB"];
+   $items = ["From KB"];
    $st    = new SolutionType();
    for ($i=0; $i<$MAX['solutiontypes']; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
       } else {
-         $val = "type de solution ' $i";
+         $val = "Solution type ' $i";
       }
       $st->add(toolbox::addslashes_deep(['name'         => $val,
                                               'comment'      => "comment $val",
