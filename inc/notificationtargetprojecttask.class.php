@@ -628,7 +628,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
     * @return void
    **/
    function getTeamSuppliers() {
-      Toolbox::deprecated('getTeamContacts() method is deprecated');
+      Toolbox::deprecated('getTeamSuppliers() method is deprecated');
       $this->addTeamSuppliers();
    }
 }
