@@ -103,32 +103,32 @@ class NotificationTargetProject extends NotificationTarget {
 
                //Send to the users in project team
                case Notification::TEAM_USER :
-                  $this->getTeamUsers();
+                  $this->addTeamUsers();
                   break;
 
                //Send to the groups in project team
                case Notification::TEAM_GROUP :
-                  $this->getTeamGroups(0);
+                  $this->addTeamGroups(0);
                   break;
 
                //Send to the group supervisors in project team
                case Notification::TEAM_GROUP_SUPERVISOR :
-                  $this->getTeamGroups(1);
+                  $this->addTeamGroups(1);
                   break;
 
                //Send to the group without supervisors in project team
                case Notification::TEAM_GROUP_WITHOUT_SUPERVISOR :
-                  $this->getTeamGroups(2);
+                  $this->addTeamGroups(2);
                   break;
 
                //Send to the contacts in project team
                case Notification::TEAM_CONTACT :
-                  $this->getTeamContacts();
+                  $this->addTeamContacts();
                   break;
 
                   //Send to the suppliers in project team
                case Notification::TEAM_SUPPLIER :
-                  $this->getTeamSuppliers();
+                  $this->addTeamSuppliers();
                   break;
 
             }
@@ -138,8 +138,10 @@ class NotificationTargetProject extends NotificationTarget {
 
    /**
     * Add team users to the notified user list
-   **/
-   function getTeamUsers() {
+    *
+    * @return void
+    **/
+   function addTeamUsers() {
       global $DB;
 
       $query = "SELECT `items_id`
@@ -159,9 +161,11 @@ class NotificationTargetProject extends NotificationTarget {
    /**
     * Add team groups to the notified user list
     *
-    * @param $manager      0 all users, 1 only supervisors, 2 all users without supervisors
-   **/
-   function getTeamGroups($manager) {
+    * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+    *
+    * @return void
+    **/
+   function addTeamGroups($manager) {
       global $DB;
 
       $query = "SELECT `items_id`
@@ -176,8 +180,10 @@ class NotificationTargetProject extends NotificationTarget {
 
    /**
     * Add team contacts to the notified user list
-   **/
-   function getTeamContacts() {
+    *
+    * @return void
+    **/
+   function addTeamContacts() {
       global $DB, $CFG_GLPI;
 
       $query = "SELECT `items_id`
@@ -198,8 +204,10 @@ class NotificationTargetProject extends NotificationTarget {
 
    /**
     * Add team suppliers to the notified user list
-   **/
-   function getTeamSuppliers() {
+    *
+    * @return void
+    **/
+   function addTeamSuppliers() {
       global $DB, $CFG_GLPI;
 
       $query = "SELECT `items_id`
@@ -695,4 +703,56 @@ class NotificationTargetProject extends NotificationTarget {
       asort($this->tag_descriptions);
    }
 
+   /**
+    * Add team users to the notified user list
+    *
+    * @deprecated 9.3 Use NotificationTargetProjectTask::addTeamUsers()
+    *
+    * @return void
+    **/
+   function getTeamUsers() {
+      Toolbox::deprecated('getTeamUsers() method is deprecated');
+      $this->addTeamUsers();
+   }
+
+
+   /**
+    * Add team groups to the notified user list
+    *
+    * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+    *
+    * @deprecated 9.3 Use NotificationTargetProjectTask::addTeamGroups()
+    *
+    * @return void
+    **/
+   function getTeamGroups($manager) {
+      Toolbox::deprecated('getTeamGroups() method is deprecated');
+      $this->addTeamGroups($manager);
+   }
+
+
+   /**
+    * Add team contacts to the notified user list
+    *
+    * @deprecated 9.3 Use NotificationTargetProjectTask::addTeamContacts()
+    *
+    * @return void
+    **/
+   function getTeamContacts() {
+      Toolbox::deprecated('getTeamContacts() method is deprecated');
+      $this->addTeamContacts();
+   }
+
+
+   /**
+    * Add team suppliers to the notified user list
+    *
+    * @deprecated 9.3 Use NotificationTargetProject::addTeamSuppliers()
+    *
+    * @return void
+    **/
+   function getTeamSuppliers() {
+      Toolbox::deprecated('getTeamSuppliers() method is deprecated');
+      $this->addTeamSuppliers();
+   }
 }
