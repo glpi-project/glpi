@@ -22,15 +22,19 @@ The present file will list all changes made to the project; according to the
 
 The following methods have been deprecated:
 
-- `Search::constructDatas`
-- `Search::displayDatas`
-- `DBMysql::list_tables`
-- `Search::getSearchOptions`
-- `Search::getSearchOptionsNew`
-- `Search::getSearchOptionsToAdd`
-- `Search::getSearchOptionsToAddNew`
-- `CommonDBTM::getFromDBByQuery`
+- `Search::constructDatas()`
+- `Search::displayDatas()`
+- `DBMysql::list_tables()`
+- `Search::getSearchOptions()`
+- `Search::getSearchOptionsNew()`
+- `Search::getSearchOptionsToAdd()`
+- `Search::getSearchOptionsToAddNew()`
+- `CommonDBTM::getFromDBByQuery()`
 - `User::getFromDBbyEmail()` call with a string
+- `NotificationTargetProject::getTeamContacts()`
+- `NotificationTargetProject::getTeamGroups()`
+- `NotificationTargetProject::getTeamSuppliers()`
+- `NotificationTargetProject::getTeamUsers()`
 
 #### Removed
 
