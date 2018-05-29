@@ -335,6 +335,8 @@ $CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 
 
 $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 
+$CFG_GLPI['itemdevicepci_types']          = ['*'];
+
 $CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral'];
 
 
