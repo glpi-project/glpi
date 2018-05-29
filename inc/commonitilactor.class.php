@@ -196,11 +196,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          // Several emails : select in the list
          $emailtab = [];
          foreach ($emails as $new_email) {
-            if ($new_email != $default_email) {
-               $emailtab[$new_email] = $new_email;
-            } else {
-               $emailtab[''] = $new_email;
-            }
+            $emailtab[$new_email] = $new_email;
          }
          Dropdown::showFromArray("alternative_email", $emailtab,
                                  ['value'   => $this->fields['alternative_email']]);
