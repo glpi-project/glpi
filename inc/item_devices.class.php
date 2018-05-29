@@ -292,7 +292,15 @@ class Item_Devices extends CommonDBRelation {
    **/
    static function getConcernedItems() {
       global $CFG_GLPI;
-      return $CFG_GLPI["itemdevices_types"];
+
+      $itemtypes = $CFG_GLPI['itemdevices_types'];
+
+      $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
+      if (isset($CFG_GLPI[$conf_param]) && !in_array('*', $CFG_GLPI[$conf_param])) {
+         $itemtypes = array_intersect($itemtypes, $CFG_GLPI[$conf_param]);
+      }
+
+      return $itemtypes;
    }
 
 
