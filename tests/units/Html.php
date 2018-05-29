@@ -421,7 +421,7 @@ class Html extends atoum {
       ];
       $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
       $base_expected = '<link rel="stylesheet" type="text/css" href="'.
-         $CFG_GLPI['root_doc'] . $dir .'/%url?v='. md5(Telemetry::getInstanceUuid() . GLPI_VERSION) .'" %attrs>';
+         $CFG_GLPI['root_doc'] . $dir .'/%url?v='. md5(\Telemetry::getInstanceUuid() . GLPI_VERSION) .'" %attrs>';
       $base_attrs = 'media="screen"';
 
       //create test files
