@@ -4736,7 +4736,10 @@ class Html {
       $url = self::getPrefixedUrl($url);
 
       if ($version) {
-         $url .= '?v=' . $version;
+         // Calculate a token specific to the instance & the version
+         $instance = md5(Telemetry::getInstanceUuid() . GLPI_VERSION);
+         // Add the token on the URL to invalidate local cache after a GLPI update
+         $url .= '?v=' . $instance;
       }
 
       return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,
