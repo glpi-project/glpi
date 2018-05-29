@@ -1496,14 +1496,14 @@ class Plugin extends CommonDBTM {
          );
       } else if ($min !== null && $max === null) {
          return sprintf(
-            __('This plugin requires %1$s > %2$s.'),
+            __('This plugin requires %1$s >= %2$s.'),
             $type,
             $min
          );
 
       } else {
          return sprintf(
-            __('This plugin requires %1$s > %2$s and < %3$s'),
+            __('This plugin requires %1$s >= %2$s and < %3$s.'),
             $type,
             $min,
             $max
