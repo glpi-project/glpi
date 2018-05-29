@@ -130,7 +130,7 @@ class Html {
    /**
     * Convert a date YY-MM-DD to DD-MM-YY for calendar
     *
-    * @param string $time        datetime to convert
+    * @param mixed $time datetime to convert
     * @param string|null $format (default null)
     *
     * @return string
@@ -179,7 +179,7 @@ class Html {
    /**
     * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
     *
-    * @param string $time        datetime to convert
+    * @param mixed $time datetime to convert
     * @param string|null $format (default null)
     *
     * @return null|string
@@ -299,7 +299,7 @@ class Html {
    /**
     * Convert a number to correct display
     *
-    * @param float $number         Number to display
+    * @param float   $number       Number to display
     * @param boolean $edit         display number for edition ? (id edit use . in all  case) false
     *                              by default)
     * @param integer $forcedecimal Force decimal number (do not use default value) (default -1)
@@ -448,8 +448,9 @@ class Html {
    /**
     * Redirection hack
     *
-    * @param string $dest                  Redirection destination
-    * @param integer $http_response_code   Forces the HTTP response code to the specified value
+    * @param string  $dest               Redirection destination
+    * @param integer $http_response_code Forces the HTTP response code to the specified value
+    * @return void
     */
    static function redirect($dest, $http_response_code = 302) {
 
@@ -861,8 +862,8 @@ class Html {
    /**
     * Simple Error message page
     *
-    * @param string $message    displayed before dying
-    * @param boolean $minimal   set to true do not display app menu (false by default)
+    * @param string  $message displayed before dying
+    * @param boolean $minimal set to true do not display app menu (false by default)
     */
    static function displayErrorAndDie ($message, $minimal = false) {
       global $CFG_GLPI, $HEADER_LOADED;
@@ -1051,8 +1052,8 @@ class Html {
    /**
     * Display a simple progress bar
     *
-    * @param integer $width      of the progress bar
-    * @param integer $percent    of the progress bar
+    * @param integer $width      width of the progress bar
+    * @param integer $percent    percent of the progress bar
     * @param array   $options    possible options:
     *                            - title : string title to display (default Progesssion)
     *                            - simple : display a simple progress bar (no title / only percent)
@@ -1104,7 +1105,7 @@ class Html {
    /**
     * Include common HTML headers
     *
-    * @param string $title    used for the page (default '')
+    * @param string $title    title used for the page (default '')
     * @param string $sector   sector in which the page displayed is (default 'none')
     * @param string $item     item corresponding to the page displayed (default 'none')
     * @param string $option   option corresponding to the page displayed (default '')
@@ -1436,11 +1437,11 @@ class Html {
    /**
     * Print a nice HTML head for every page
     *
-    * @param string $title    of the page
+    * @param string $title    title of the page
     * @param string $url      not used anymore (default '')
-    * @param string $sector   in which the page displayed is (default 'none')
-    * @param string $item     corresponding to the page displayed (default 'none')
-    * @param string $option   corresponding to the page displayed (default '')
+    * @param string $sector   sector in which the page displayed is (default 'none')
+    * @param string $item     item corresponding to the page displayed (default 'none')
+    * @param string $option   option corresponding to the page displayed (default '')
     */
    static function header($title, $url = '', $sector = "none", $item = "none", $option = "") {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
@@ -1618,8 +1619,8 @@ class Html {
    /**
     * Print a simple HTML head with links
     *
-    * @param string $title   of the page
-    * @param array  $links   of links to display
+    * @param string $title title of the page
+    * @param array  $links array of links to display
     */
    static function simpleHeader($title, $links = []) {
       global $CFG_GLPI, $HEADER_LOADED;
@@ -1682,8 +1683,8 @@ class Html {
    /**
     * Print a nice HTML head for help page
     *
-    * @param string $title   of the page
-    * @param string $url     not used anymore (default '')
+    * @param string $title title of the page
+    * @param string $url   not used anymore (default '')
     */
    static function helpHeader($title, $url = '') {
       global $CFG_GLPI, $HEADER_LOADED, $PLUGIN_HOOKS;
@@ -1836,9 +1837,9 @@ class Html {
    /**
     * Print a nice HTML head for modal window (nothing to display)
     *
-    * @param string $title      of the page
-    * @param string $url        not used anymore (default '')
-    * @param boolean $iframed   indicate if page loaded in iframe - css target (default false)
+    * @param string  $title   title of the page
+    * @param string  $url     not used anymore (default '')
+    * @param boolean $iframed indicate if page loaded in iframe - css target (default false)
     */
    static function popHeader($title, $url = '', $iframed = false) {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED;
@@ -2149,7 +2150,7 @@ class Html {
 
 
    /**
-    * Get a HTML code for checkbox.
+    * Get HTML code for a checkbox.
     *
     * @since 0.85
     *
@@ -2265,7 +2266,7 @@ class Html {
     * @since 0.84
     *
     * @param string  $itemtype massive action itemtype
-    * @param integer $id       of the item
+    * @param integer $id       ID of the item
     * @param array   $options
     *
     * @return string
@@ -2289,7 +2290,7 @@ class Html {
     * @since 0.84
     *
     * @param string  $itemtype Massive action itemtype
-    * @param integer $id       of the item
+    * @param integer $id       ID of the item
     * @param array   $options
     *
     * @return string
@@ -2519,17 +2520,17 @@ class Html {
     *
     * @since 0.84
     *
-    * @param string $name     of the element
-    * @param array  $options  of possible options:
-    *                         - value      : default value to display (default '')
-    *                         - maybeempty : may be empty ? (true by default)
-    *                         - canedit    :  could not modify element (true by default)
-    *                         - min        :  minimum allowed date (default '')
-    *                         - max        : maximum allowed date (default '')
-    *                         - showyear   : should we set/diplay the year? (true by default)
-    *                         - display    : boolean display of return string (default true)
-    *                         - rand       : specific rand value (default generated one)
-    *                         - yearrange  : set a year range to show in drop-down (default '')
+    * @param string $name     name of the element
+    * @param array  $options  possible key values:
+    *                         - value     : default value to display (default '')
+    *                         - maybeempty: may be empty ? (true by default)
+    *                         - canedit   :  could not modify element (true by default)
+    *                         - min       :  minimum allowed date (default '')
+    *                         - max       : maximum allowed date (default '')
+    *                         - showyear  : should we set/diplay the year? (true by default)
+    *                         - display   : boolean display of return string (default true)
+    *                         - rand      : specific rand value (default generated one)
+    *                         - yearrange : set a year range to show in drop-down (default '')
     *
     * @return integer|string
     */
@@ -2630,8 +2631,8 @@ class Html {
     *
     * @since 0.85
     *
-    * @param string $name     of the element
-    * @param array  $options  possible:
+    * @param string $name     name of the element
+    * @param array  $options  possible key values:
     *                         - value : default value to display (default '')
     *                         - display : boolean display or get string (default true)
     *                         - rand : specific random value (default generated one)
@@ -2670,20 +2671,20 @@ class Html {
     *
     * @since 0.84
     *
-    * @param string $name of the element
-    * @param array $options
-    *   - value      : default value to display (default '')
-    *   - timestep   : step for time in minute (-1 use default config) (default -1)
-    *   - maybeempty : may be empty ? (true by default)
-    *   - canedit    : could not modify element (true by default)
-    *   - mindate    : minimum allowed date (default '')
-    *   - maxdate    : maximum allowed date (default '')
-    *   - mintime    : minimum allowed time (default '')
-    *   - maxtime    : maximum allowed time (default '')
-    *   - showyear   : should we set/diplay the year? (true by default)
-    *   - display    : boolean display or get string (default true)
-    *   - rand       : specific random value (default generated one)
-    *   - required   : required field (will add required attribute)
+    * @param string $name    name of the element
+    * @param array  $options possible key values:
+    *                        - value      : default value to display (default '')
+    *                        - timestep   : step for time in minute (-1 use default config)
+    *                        - maybeempty : may be empty ? (true by default)
+    *                        - canedit    : could not modify element (true by default)
+    *                        - mindate    : minimum allowed date (default '')
+    *                        - maxdate    : maximum allowed date (default '')
+    *                        - mintime    : minimum allowed time (default '')
+    *                        - maxtime    : maximum allowed time (default '')
+    *                        - showyear   : should we set/diplay the year? (true by default)
+    *                        - display    : boolean display or get string (default true)
+    *                        - rand       : specific random value (default generated one)
+    *                        - required   : required field (will add required attribute)
     *
     * @return integer|string
     */
@@ -3248,19 +3249,18 @@ class Html {
    /**
     * Show a tooltip on an item
     *
-    * @param string $content   to put in the tooltip
-    * @param array $options    possible:
-    *   - applyto : string / id of the item to apply tooltip (default empty).
-    *                  If not set display an icon
-    *   - title : string / title to display (default empty)
-    *   - contentid : string / id for the content html container (default auto generated) (used for ajax)
-    *   - link : string / link to put on displayed image if contentid is empty
-    *   - linkid : string / html id to put to the link link (used for ajax)
-    *   - linktarget : string / target for the link
-    *   - popup : string / popup action : link not needed to use it
-    *   - img : string / url of a specific img to use
-    *   - display : boolean / display the item : false return the datas
-    *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
+    * @param string $content to put in the tooltip
+    * @param array  $options possible key values:
+    *                        - applyto : string / id of the item to apply tooltip (default empty). If not set display an icon
+    *                        - title : string / title to display (default empty)
+    *                        - contentid : string / id for the content html container (default auto generated) (used for ajax)
+    *                        - link : string / link to put on displayed image if contentid is empty
+    *                        - linkid : string / html id to put to the link link (used for ajax)
+    *                        - linktarget : string / target for the link
+    *                        - popup : string / popup action : link not needed to use it
+    *                        - img : string / url of a specific img to use
+    *                        - display : boolean / display the item : false return the datas
+    *                        - autoclose : boolean / autoclose the item : default true (false permit to scroll)
     *
     * @return string
     */
@@ -3367,9 +3367,9 @@ class Html {
     /**
     * Show div with auto completion
     *
-    * @param CommonDBTM $item      object used for create dropdown
-    * @param string     $field     to search for autocompletion
-    * @param array      $options   of possible values:
+    * @param CommonDBTM $item    item object used for create dropdown
+    * @param string     $field   field to search for autocompletion
+    * @param array      $options possible key values:
     *    - name    : string / name of the select (default is field parameter)
     *    - value   : integer / preselected value (default value of the item object)
     *    - size    : integer / size of the text field
@@ -3464,10 +3464,10 @@ class Html {
    /**
     * Init the Editor System to a textarea
     *
-    * @param string  $name       of the html textarea to use
-    * @param string  $rand       of the html textarea to use (if empty no image paste system)
-    * @param boolean $display    or get js script (true by default)
-    * @param boolean $readonly   editor will be readonly or not
+    * @param string  $name     the html textarea name to use
+    * @param string  $rand     the html textarea to use (if empty no image paste system)(default '')
+    * @param boolean $display  choose if display or get js script (true by default)
+    * @param boolean $readonly editor will be readonly or not
     *
     * @return string
     */
@@ -3599,12 +3599,11 @@ class Html {
     *
     * @since 9.2
     *
-    * @param string $name        name of textarea
-    * @param string $content     content to convert in html
-    * @param string $rand        used for randomize tinymce dom id
-    * @param boolean $readonly   true will set editor in readonly mode
-    *
-    * @return string $content
+    * @param string $name name of textarea
+    * @param string $content content to convert in html
+    * @param string $rand used for randomize tinymce dom id
+    * @param boolean $readonly true will set editor in readonly mode
+    * @return string
     */
    static function setRichTextContent($name, $content, $rand, $readonly = false) {
 
@@ -3725,8 +3724,8 @@ class Html {
     * Clean Printing of and array in a table
     * ONLY FOR DEBUG
     *
-    * @param array $tab to display
-    * @param integer $pad used (default 0)
+    * @param array   $tab      the array to display
+    * @param integer $pad      pad used (default 0)
     * @param boolean $jsexpand expand using JS ? (default  false)
     */
    static function printCleanArray($tab, $pad = 0, $jsexpand = false) {
@@ -4437,10 +4436,10 @@ class Html {
     *
     * @since 0.85
     *
-    * @param string $path      to the image file
-    * @param array  $options   of HTML attributes
-    *                          - `url` If provided an image link will be generated and the link will
-    *                          point at `$options['url']`.
+    * @param string $path    to the image file
+    * @param array  $options HTML attributes
+    *                        - `url` If provided an image link will be generated and the link will
+    *                        point at `$options['url']`.
     *
     * @return string completed img tag
     */
@@ -4483,11 +4482,11 @@ class Html {
     *
     * @since 0.85
     *
-    * @param string $text      the content to be wrapped by a tags.
-    * @param string $url       URL parameter
-    * @param array  $options   of HTML attributes:
-    *                          - `confirm` JavaScript confirmation message.
-    *                          - `confirmation` optional action to do on confirmation
+    * @param string $text    the content to be wrapped by a tags.
+    * @param string $url     URL parameter
+    * @param array  $options HTML attributes:
+    *                        - `confirm` JavaScript confirmation message.
+    *                        - `confirmation` optional action to do on confirmation
     *
     * @return string an `a` element.
     */
@@ -4526,7 +4525,7 @@ class Html {
     * @since 0.85
     *
     * @param string $fieldName
-    * @param array  $options     of HTML attributes.
+    * @param array  $options   HTML attributes.
     *
     * @return string A generated hidden input
     */
@@ -4552,7 +4551,7 @@ class Html {
     * @since 0.85
     *
     * @param string $fieldName
-    * @param array  $options of HTML attributes.
+    * @param array  $options   HTML attributes.
     *
     * @return string A generated hidden input
     */
@@ -4608,11 +4607,11 @@ class Html {
     *
     * @since 0.85
     *
-    * @param string $caption   of the input
-    * @param array  $options   possible values:
-    *                          - image, will use a submit image input
-    *                          - confirm, JavaScript confirmation message.
-    *                          - confirmaction, optional action to do on confirmation
+    * @param string $caption caption of the input
+    * @param array  $options possible values:
+    *                        - image, will use a submit image input
+    *                        - confirm, JavaScript confirmation message.
+    *                        - confirmaction, optional action to do on confirmation
     *
     * @return string A HTML submit button
     */
@@ -4706,7 +4705,7 @@ class Html {
     *
     * @since 0.85
     *
-    * @param string $script to wrap
+    * @param string $script the script to wrap
     *
     * @return string
     */
@@ -4724,11 +4723,11 @@ class Html {
     * @since 0.85
     * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
     *
-    * @param string $url       File to include (relative to GLPI_ROOT)
-    * @param array $options    of HTML attributes
-    * @param boolean $minify   Try to load minified file (defaults to true)
+    * @param string  $url     file to include (relative to GLPI_ROOT)
+    * @param array   $options HTML attributes
+    * @param boolean $minify  try to load minified file (defaults to true)
     *
-    * @return string of script tags
+    * @return string
     */
    static function script($url, $options = [], $minify = true) {
       $version = GLPI_VERSION;
@@ -4758,7 +4757,7 @@ class Html {
     * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
     *
     * @param string  $url     File to include (raltive to GLPI_ROOT)
-    * @param array   $options of HTML attributes
+    * @param array   $options HTML attributes
     * @param boolean $minify  Try to load minified file (defaults to true)
     *
     * @return string CSS link tag
@@ -4994,7 +4993,7 @@ class Html {
    }
 
    /**
-    * Display an html textarea with extended options if display paremeter is false or true
+    * Display an html textarea with extended options
     *
     * @since 9.2
     *
@@ -5528,7 +5527,7 @@ class Html {
     * @since 9.2
     *
     * @param string  $tag       the tag identifier of the document
-    * @param integer $width     witdh of the final image
+    * @param integer $width     width of the final image
     * @param integer $height    height of the final image
     * @param boolean $addLink   boolean, do we need to add an anchor link
     * @param string  $more_link append to the link (ex &test=true)

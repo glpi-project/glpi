@@ -134,7 +134,7 @@ class CommonGLPI {
     * @param array $options Options
     *     - withtemplate is a template view ?
     *
-    * @return array containing the tabs
+    * @return array
     */
    function defineTabs($options = []) {
 
@@ -190,7 +190,7 @@ class CommonGLPI {
    /**
     * Add standard define tab
     *
-    * @param string $itemtype link to the tab
+    * @param string $itemtype itemtype link to the tab
     * @param array  $ong      defined tabs
     * @param array  $options  options (for withtemplate)
     *
@@ -245,7 +245,7 @@ class CommonGLPI {
 
 
    /**
-    * get an array of menu content or false on empty
+    * get menu content or false on empty
     *
     * @since 0.85
     *
@@ -317,7 +317,7 @@ class CommonGLPI {
 
 
    /**
-    * get an array of additional menu content (false by default)
+    * get additional menu content (false by default)
     *
     * @since 0.85
     *
@@ -333,15 +333,15 @@ class CommonGLPI {
     *
     * @since 0.85
     *
-    * @return array of forbidden actions
-    */
+    * @return array
+   **/
    static function getForbiddenActionsForMenu() {
       return [];
    }
 
 
    /**
-    * Get an array of additional menu options (false by default)
+    * Get additional menu options (false by default)
     *
     * @since 0.85
     *
@@ -396,7 +396,7 @@ class CommonGLPI {
     *
     * @since 0.83
     *
-    * @param CommonGLPI      $item           on which the tab need to be displayed
+    * @param CommonGLPI      $item           item on which the tab need to be displayed
     * @param boolean|integer $withtemplate   is a template object ? (default 0)
     *
     * @return string tab name
@@ -411,8 +411,8 @@ class CommonGLPI {
     *
     * @since 0.83
     *
-    * @param CommonGLPI      $item           on which the tab need to be displayed
-    * @param integer         $tabnum         number (default 1)
+    * @param CommonGLPI      $item           item on which the tab need to be displayed
+    * @param integer         $tabnum         tab number (default 1)
     * @param boolean|integer $withtemplate   is a template object ? (default 0)
     *
     * @return boolean
@@ -425,8 +425,8 @@ class CommonGLPI {
    /**
     * display standard tab contents
     *
-    * @param CommonGLPI      $item           on which the tab need to be displayed
-    * @param string          $tab            name
+    * @param CommonGLPI      $item           item on which the tab need to be displayed
+    * @param string          $tab            tab name
     * @param boolean|integer $withtemplate   is a template object ? (default 0)
     * @param array           $options        additional options to pass
     *
@@ -496,10 +496,10 @@ class CommonGLPI {
    /**
     * create tab text entry
     *
-    * @param string  $text   to display
+    * @param string  $text   text to display
     * @param integer $nb     number of items (default 0)
     *
-    * @return string containing the tabs
+    * @return string
     */
    static function createTabEntry($text, $nb = 0) {
 

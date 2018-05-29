@@ -82,8 +82,8 @@ class Toolbox {
     *
     * @since 0.83
     *
-    * @param string   $str        from dico
-    * @param string   $shortcut   letter of shortcut
+    * @param $str       string   from dico
+    * @param $shortcut  string   letter of shortcut
     *
     * @return string
     */
@@ -102,9 +102,10 @@ class Toolbox {
    /**
     * substr function for utf8 string
     *
-    * @param string    $str
-    * @param string    $tofound   string to found
-    * @param integer   $offset    The search offset. If it is not specified, 0 is used (default 0)
+    * @param $str       string   string
+    * @param $tofound   string   string to found
+    * @param $offset    integer  The search offset. If it is not specified, 0 is used.
+    *                            (default 0)
     *
     * @return boolean|false|integer
     */
@@ -118,10 +119,10 @@ class Toolbox {
     *  Replace str_pad()
     *  who bug with utf8
     *
-    * @param $input        string    input string
-    * @param $pad_length   integer   padding length
-    * @param $pad_string   string    padding string (default '')
-    * @param $pad_type     integer   padding type (default STR_PAD_RIGHT)
+    * @param $input        string   input string
+    * @param $pad_length   integer  padding length
+    * @param $pad_string   string   padding string (default '')
+    * @param $pad_type     integer  padding type (default STR_PAD_RIGHT)
     *
     * @return string
     */
@@ -147,9 +148,9 @@ class Toolbox {
    /**
     * substr function for utf8 string
     *
-    * @param string    $str
-    * @param integer   $start    of the result substring
-    * @param integer   $length   The maximum length of the returned string if > 0 (default -1)
+    * @param $str       string
+    * @param $start     integer  start of the result substring
+    * @param $length    integer  The maximum length of the returned string if > 0 (default -1)
     *
     * @return string
     */
@@ -498,10 +499,10 @@ class Toolbox {
    /**
     * Generate a Backtrace
     *
-    * @param string   $log    log file name (default php-errors)
-    *                         if false, return the strung
-    * @param string   $hide   call to hide (but display script/line) (default '')
-    * @param array    $skip   of call to not display at all
+    * @param $log    string    log file name (default php-errors)
+    *                          if false, return the strung
+    * @param $hide   string    call to hide (but display script/line) (default '')
+    * @param $skip   array     of call to not display at all
     *
     * @since 0.85
     *
@@ -862,9 +863,9 @@ class Toolbox {
    /**
     * Converts an array of parameters into a query string to be appended to a URL.
     *
-    * @param array    $array       parameters to append to the query string.
-    * @param string   $separator   may be defined as &amp; to display purpose (default '&')
-    * @param string   $parent      This should be left blank (it is used internally by the function)
+    * @param $array     array parameters to append to the query string.
+    * @param $separator string separator may be defined as &amp; to display purpose (default '&')
+    * @param $parent    string This should be left blank (it is used internally by the function). (default '')
     *
     * @return string
     */
@@ -1120,8 +1121,6 @@ class Toolbox {
     *
     * @since version 0.84
     *
-    * @param boolean $fordebug true is displayed in system information
-    *
     * @return integer
     */
    static function checkSELinux($fordebug = false) {
@@ -1230,7 +1229,7 @@ class Toolbox {
    /**
     * Format a size passing a size in octet
     *
-    * @param integer $size in octet
+    * @param   $size integer Size in octet
     *
     * @return string
     */
@@ -1542,8 +1541,8 @@ class Toolbox {
    /**
     * Get form URL for itemtype
     *
-    * @param string    $itemtype   name
-    * @param boolean   $full       path or relative one (true by default)
+    * @param string  $itemtype name of the itemtype
+    * @param boolean $full     path or relative one (true by default)
     *
     * @return string
     */
@@ -1571,8 +1570,8 @@ class Toolbox {
    /**
     * Get search URL for itemtype
     *
-    * @param string    $itemtype   name
-    * @param boolean   $full       path or relative one (true by default)
+    * @param string  $itemtype name of the itemtype
+    * @param boolean $full     path or relative one (true by default)
     *
     * @return string
     */
@@ -2531,8 +2530,9 @@ class Toolbox {
     *
     * @since 0.85.5
     *
-    * @param string    $file   path of the file
-    * @param boolean   $type   check if $file is the correct type (false by default)
+    * @param $file   string      path of the file
+    * @param boolean|string $type string      check if $file is the correct type (false by default)
+    * @return string|boolean
     *
     * @return string|boolean
     */
@@ -2557,11 +2557,10 @@ class Toolbox {
     *
     * @since 9.1
     *
-    * @param mixed $needle
-    * @param array $haystack
-    * @param boolean $strict If strict is set to TRUE then it will also check the types of the
-    *                        needle in the haystack.
-    *
+    * @param mixed   $needle
+    * @param array   $haystack
+    * @param boolean $strict   If strict is set to TRUE then it will also check the types of the
+    *                          needle in the haystack.
     * @return boolean
     */
    static function in_array_recursive($needle, $haystack, $strict = false) {
@@ -2776,8 +2775,8 @@ class Toolbox {
     *
     * @since 9.2
     *
-    * @param string    $content    html content of input
-    * @param array     $tags       list of tags to clean
+    * @param string $content   html content of input
+    * @param array $tags       list of tags to clean
     *
     * @return array|mixed|string
     */
