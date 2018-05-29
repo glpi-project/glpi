@@ -1607,31 +1607,28 @@ class Plugin extends CommonDBTM {
     * Check for GLPI version
     *
     * @since 9.2
+    * @since 9.3 Removed the 'dev' key of $info parameter.
     *
     * @param array $infos Requirements infos:
     *                     - min: minimal supported version,
-    *                     - max: maximal supported version,
-    *                     - dev: support GLPI development version
+    *                     - max: maximal supported version
     *                     One of min or max is required.
     *
     * @return boolean
     */
    public function checkGlpiVersion($infos) {
-      $compat = true;
-      $prever = true;
-
-      if (defined('GLPI_PREVER') && isset($infos['min']) && isset($infos['dev']) && $infos['dev'] == true) {
-         $prever = version_compare($this->getGlpiPrever(), $infos['min'], 'lt');
+      if (!isset($infos['min']) && !isset($infos['max'])) {
+         throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
       }
 
-      if (isset($infos['min']) && isset($infos['max'])) {
-         $compat = !($prever && (version_compare($this->getGlpiVersion(), $infos['min'], 'lt') || version_compare($this->getGlpiVersion(), $infos['max'], 'ge')));
-      } else if (isset($infos['min'])) {
-         $compat = !($prever && version_compare($this->getGlpiVersion(), $infos['min'], 'lt'));
-      } else if (isset($infos['max'])) {
-         $compat = !(version_compare($this->getGlpiVersion(), $infos['max'], 'ge'));
-      } else {
-         throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
+      $glpiVersion = $this->isGlpiPrever() ? $this->getGlpiPrever() : $this->getGlpiVersion();
+
+      $compat = true;
+      if (isset($infos['min']) && !version_compare($glpiVersion, $infos['min'], '>=')) {
+         $compat = false;
+      }
+      if (isset($infos['max']) && !version_compare($glpiVersion, $infos['max'], '<')) {
+         $compat = false;
       }
 
       if (!$compat) {
@@ -1793,6 +1790,17 @@ class Plugin extends CommonDBTM {
     */
    public function getGlpiPrever() {
       return GLPI_PREVER;
+   }
+
+   /**
+    * Check if GLPI version is a pre version
+    *
+    * @since 9.3
+    *
+    * @return string
+    */
+   public function isGlpiPrever() {
+      return defined('GLPI_PREVER');
    }
 
    /**
