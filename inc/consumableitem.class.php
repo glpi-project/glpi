@@ -400,7 +400,7 @@ class ConsumableItem extends CommonDBTM {
                                   AND `glpi_consumableitems`.`alarm_threshold` >= '0'
                                   AND `glpi_consumableitems`.`entities_id` = '".$entity."'
                                   AND (`glpi_alerts`.`date` IS NULL
-                                       OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
+                                       OR (`glpi_alerts`.date+ INTERVAL $repeat second) < CURRENT_TIMESTAMP());";
             $message = "";
             $items   = [];
 
