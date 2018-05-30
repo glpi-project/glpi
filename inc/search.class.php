@@ -3433,13 +3433,16 @@ class Search {
          case "glpi_projects.priority" :
             if (is_numeric($val)) {
                if ($val > 0) {
-                  return $link." `$table`.`$field` = '$val'";
+                  $compare = ($nott ? '<>' : '=');
+                  return $link." `$table`.`$field` $compare '$val'";
                }
                if ($val < 0) {
-                  return $link." `$table`.`$field` >= '".abs($val)."'";
+                  $compare = ($nott ? '<' : '>=');
+                  return $link." `$table`.`$field` $compare '".abs($val)."'";
                }
                // Show all
-               return $link." `$table`.`$field` >= '0' ";
+               $compare = ($nott ? '<' : '>=');
+               return $link." `$table`.`$field` $compare '0' ";
             }
             return "";
 
