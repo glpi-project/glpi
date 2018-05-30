@@ -674,7 +674,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
       $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
       $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
-      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
       $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
       $this->boolean((boolean)$ticket->canDelete())->isFalse();
       $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
@@ -1003,8 +1003,28 @@ class Ticket extends DbTestCase {
          $location = true
       );
 
-      //drop update ticket right from tech profile
+      //drop UPDATE ticket right from tech profile (still with OWN)
       $this->changeTechRight(168965);
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = false,
+         $openDate = true,
+         $timeOwnResolve = true,
+         $type = true,
+         $status = true,
+         $urgency = true,
+         $impact = true,
+         $category = true,
+         $requestSource = true,
+         $location = true
+      );
+
+      //drop UPDATE ticket right from tech profile (without OWN)
+      $this->changeTechRight(136197);
       $this->checkFormOutput(
          $ticket,
          $name = false,
@@ -1023,13 +1043,13 @@ class Ticket extends DbTestCase {
          $location = false
       );
 
-      // only assign right for tech (without UPDATE right)
-      $this->changeTechRight(61441);
+      // only assign and priority right for tech (without UPDATE and OWN rights)
+      $this->changeTechRight(94209);
       $this->checkFormOutput(
          $ticket,
          $name = false,
          $textarea = false,
-         $priority = false,
+         $priority = true,
          $save = true,
          $assign = true,
          $openDate = false,
