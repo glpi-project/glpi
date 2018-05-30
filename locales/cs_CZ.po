@@ -20,7 +20,7 @@ msgstr ""
 
 #: index.php:76
 msgid "GLPI - Authentication"
-msgstr "GLPI – ověření"
+msgstr "GLPI – ověření totožnosti"
 
 #: index.php:125 inc/authldap.class.php:3139 inc/authmail.class.php:236
 #: inc/config.class.php:1810 inc/dbutils.class.php:1584
@@ -39,7 +39,7 @@ msgstr "Heslo"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "Jazyk (z uživatelského profilu)"
 
 #: index.php:153
 msgid "Remember me"
@@ -741,7 +741,7 @@ msgstr "U umístění zdá se není zadána zeměpisná poloha!"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr "Zvažte vyplnění zeměpisné šířky a délky u tohoto umístění."
+msgstr "Zvažte vyplnění zeměpisné šířky a délky tohoto umístění."
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2422
 #: inc/mailcollector.class.php:204 inc/ruleaction.class.php:88
@@ -865,7 +865,7 @@ msgstr "Smazat kritérium vyhledávání"
 #: ajax/searchrow.php:137 ajax/searchrow.php:156 inc/config.class.php:384
 #: inc/search.class.php:1869
 msgid "Items seen"
-msgstr "Zobrazené položky"
+msgstr "Položky, které byly zobrazeny"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:61
 msgid "Choose an existing device"
@@ -1017,7 +1017,7 @@ msgstr[1] ""
 msgstr[2] ""
 "Na této položce je nyní v běhu nebo právě bylo vyřešeno %s  požadavků."
 msgstr[3] ""
-"Na této položce je nyní v běhu nebo právě bylo vyřešeno %s  požadavků."
+"Na této položce jsou nyní v běhu nebo právě byly vyřešené %s požadavky."
 
 #: ajax/ticketsatisfaction.php:60 inc/entity.class.php:1039
 msgid "Create survey after"
@@ -1133,7 +1133,7 @@ msgstr "Replikovat %s"
 
 #: front/auth.others.php:46 front/auth.settings.php:39 front/setup.auth.php:37
 msgid "External authentication sources"
-msgstr "Vnější zdroje ověření"
+msgstr "Vnější zdroje ověření totožnosti"
 
 #: front/backup.php:46 inc/backup.class.php:61 inc/profile.class.php:1342
 #: inc/profile.class.php:2147
@@ -1159,13 +1159,13 @@ msgstr "Neoprávněný přístup k souboru %s"
 #: front/backup.php:242 front/backup.php:249
 #, php-format
 msgid "Unable to find the byte %s"
-msgstr "Nepodařilo se nalézt data %s"
+msgstr "Nepodařilo se nalézt bajt %s"
 
 #. TRANS: %s is the SQL query which generates the error
 #: front/backup.php:310 front/backup.php:413 install/update_content.php:245
 #, php-format
 msgid "SQL error starting from %s"
-msgstr "SQL chyba, která má začátek od %s"
+msgstr "Chyba v SQL dotazu, která začíná v %s"
 
 #: front/backup.php:430
 msgid "The file already exists"
@@ -1179,7 +1179,7 @@ msgstr "Automatické přesměrování, jinak klikněte"
 #: front/backup.php:585
 #, php-format
 msgid "%s deleted"
-msgstr "%s smazán"
+msgstr "%s smazáno"
 
 #: front/backup.php:594
 msgid "Check if a new version is available"
@@ -1204,7 +1204,7 @@ msgstr "Smazáno"
 
 #: front/backup.php:610 front/backup.php:615
 msgid "Backup the database?"
-msgstr "Zálohovat databázi?"
+msgstr "Zazálohovat databázi?"
 
 #: front/backup.php:613
 msgid "SQL Dump"
@@ -1709,7 +1709,7 @@ msgstr "%s změnil virtuální stroj"
 
 #: front/config.form.php:49 front/config.form.php:56
 msgid "Cache reset successful"
-msgstr "Úspěšný reset mezipaměti"
+msgstr "Reset mezipaměti úspěšný"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:51
@@ -6640,7 +6640,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s položek"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
@@ -8813,7 +8813,7 @@ msgstr "Verze databáze se zdá být správná (%s) – skvělé!"
 #: inc/config.class.php:2243
 #, php-format
 msgid "Your database engine version seems too old: %s."
-msgstr "Verze vašeho databázového stroje se zdá příliš stará: %s."
+msgstr "Verze vámi používaného databázového stroje se zdá příliš stará: %s."
 
 #: inc/config.class.php:2286 inc/config.class.php:2299
 #: inc/config.class.php:2310
@@ -8997,15 +8997,15 @@ msgstr "Přidat/odebrat počítače z verzí softwaru"
 
 #: inc/config.class.php:3049
 msgid "Add financial information to an item"
-msgstr "Přidat finanční informace k položce"
+msgstr "Přidat k položce finanční informace"
 
 #: inc/config.class.php:3057
 msgid "Add/remove profiles to users"
-msgstr "Přidat/odebrat profily uživatelům"
+msgstr "Přidat/odebrat uživatelům profily"
 
 #: inc/config.class.php:3060
 msgid "Add/remove groups to users"
-msgstr "Přidat/odebrat skupiny uživatelům"
+msgstr "Přidat/odebrat uživatelům skupiny"
 
 #: inc/config.class.php:3066
 msgid "User authentication method changes"
@@ -9207,7 +9207,7 @@ msgid "Consumable type"
 msgid_plural "Consumable types"
 msgstr[0] "Typ spotřebního materiálu"
 msgstr[1] "Typy spotřebního materiálu"
-msgstr[2] "Typy spotřebního materiálu"
+msgstr[2] "Typů spotřebního materiálu"
 msgstr[3] "Typy spotřebního materiálu"
 
 #: inc/contact.class.php:53 inc/profile.class.php:869
@@ -9216,7 +9216,7 @@ msgid "Contact"
 msgid_plural "Contacts"
 msgstr[0] "Kontakt"
 msgstr[1] "Kontakty"
-msgstr[2] "Kontakty"
+msgstr[2] "Kontaktů"
 msgstr[3] "Kontakty"
 
 #: inc/contact.class.php:187 inc/contact.class.php:351
@@ -9295,7 +9295,7 @@ msgid "Associated supplier"
 msgid_plural "Associated suppliers"
 msgstr[0] "Přiřazený dodavatel"
 msgstr[1] "Přiřazení dodavatelé"
-msgstr[2] "Přiřazení dodavatelé"
+msgstr[2] "Přiřazených dodavatelů"
 msgstr[3] "Přiřazení dodavatelé"
 
 #: inc/contact_supplier.class.php:49
@@ -9319,7 +9319,7 @@ msgid "Third party type"
 msgid_plural "Third party types"
 msgstr[0] "Typ třetí strany"
 msgstr[1] "Typy třetích stran"
-msgstr[2] "Typy třetích stran"
+msgstr[2] "Typů třetích stran"
 msgstr[3] "Typy třetích stran"
 
 #: inc/contact_supplier.class.php:214 inc/contract_supplier.class.php:361
@@ -9340,7 +9340,7 @@ msgid "Contact type"
 msgid_plural "Contact types"
 msgstr[0] "Typ kontaktu"
 msgstr[1] "Typy kontaktů"
-msgstr[2] "Typy kontaktů"
+msgstr[2] "Typů kontaktů"
 msgstr[3] "Typy kontaktů"
 
 #: inc/contract.class.php:52 inc/contract.class.php:426
@@ -9356,7 +9356,7 @@ msgid "Contract"
 msgid_plural "Contracts"
 msgstr[0] "Smlouva"
 msgstr[1] "Smlouvy"
-msgstr[2] "Smlouvy"
+msgstr[2] "Smluv"
 msgstr[3] "Smlouvy"
 
 #: inc/contract.class.php:205 inc/contract.class.php:674
@@ -9566,7 +9566,7 @@ msgid "Automatic action"
 msgid_plural "Automatic actions"
 msgstr[0] "Automatická akce"
 msgstr[1] "Automatické akce"
-msgstr[2] "Automatické akce"
+msgstr[2] "Automatických akcí"
 msgstr[3] "Automatické akce"
 
 #: inc/crontask.class.php:198 inc/crontask.class.php:298
@@ -9929,7 +9929,7 @@ msgid "Datacenter"
 msgid_plural "Datacenters"
 msgstr[0] "Datacentrum"
 msgstr[1] "Datacentra"
-msgstr[2] "Datacentra"
+msgstr[2] "Datacenter"
 msgstr[3] "Datacentra"
 
 #: inc/dbconnection.class.php:375
@@ -9993,7 +9993,7 @@ msgid "Server room"
 msgid_plural "Server rooms"
 msgstr[0] "Serverovna"
 msgstr[1] "Serverovny"
-msgstr[2] "Serverovny"
+msgstr[2] "Serveroven"
 msgstr[3] "Serverovny"
 
 #: inc/dcroom.class.php:124 inc/dcroom.class.php:266
@@ -10071,14 +10071,14 @@ msgid_plural "Cases"
 msgstr[0] "Skříň"
 msgstr[1] "Skříně"
 msgstr[2] "Skříně"
-msgstr[3] "Skříně"
+msgstr[3] "Skříní"
 
 #: inc/devicecasemodel.class.php:44 inc/dropdown.class.php:885
 msgid "Device case model"
 msgid_plural "Device case models"
 msgstr[0] "Model skříně zařízení"
 msgstr[1] "Modely skříně zařízení"
-msgstr[2] "Modely skříně zařízení"
+msgstr[2] "Modelů skříní zařízení"
 msgstr[3] "Modely skříně zařízení"
 
 #: inc/devicecasetype.class.php:42 inc/dropdown.class.php:847
@@ -10086,7 +10086,7 @@ msgid "Case type"
 msgid_plural "Case types"
 msgstr[0] "Typ skříně"
 msgstr[1] "Typy skříní"
-msgstr[2] "Typy skříní"
+msgstr[2] "Typů skříní"
 msgstr[3] "Typy skříní"
 
 #: inc/devicecontrol.class.php:45
@@ -10094,7 +10094,7 @@ msgid "Controller"
 msgid_plural "Controllers"
 msgstr[0] "Řadič"
 msgstr[1] "Řadiče"
-msgstr[2] "Řadiče"
+msgstr[2] "Řadičů"
 msgstr[3] "Řadiče"
 
 #: inc/devicecontrol.class.php:53 inc/devicecontrol.class.php:77
@@ -10114,7 +10114,7 @@ msgid "Device control model"
 msgid_plural "Device control models"
 msgstr[0] "Model ovládání zařízení"
 msgstr[1] "Modely ovládání zařízení"
-msgstr[2] "Modely ovládání zařízení"
+msgstr[2] "Modelů ovládání zařízení"
 msgstr[3] "Modely ovládání zařízení"
 
 #: inc/devicedrive.class.php:43
@@ -10122,7 +10122,7 @@ msgid "Drive"
 msgid_plural "Drives"
 msgstr[0] "Mechanika"
 msgstr[1] "Mechaniky"
-msgstr[2] "Mechaniky"
+msgstr[2] "Mechanik"
 msgstr[3] "Mechaniky"
 
 #: inc/devicedrive.class.php:51 inc/devicedrive.class.php:72
@@ -10140,7 +10140,7 @@ msgid "Device drive model"
 msgid_plural "Device drive models"
 msgstr[0] "Model mechaniky"
 msgstr[1] "Modely mechanik"
-msgstr[2] "Modely mechanik"
+msgstr[2] "Modelů mechanik"
 msgstr[3] "Modely mechanik"
 
 #: inc/devicefirmware.class.php:42 inc/networkequipment.class.php:561
@@ -10149,7 +10149,7 @@ msgid "Firmware"
 msgid_plural "Firmware"
 msgstr[0] "Firmware"
 msgstr[1] "Firmware"
-msgstr[2] "Firmware"
+msgstr[2] "Firmwarů"
 msgstr[3] "Firmware"
 
 #: inc/devicefirmwaremodel.class.php:43
@@ -10157,7 +10157,7 @@ msgid "Device firmware model"
 msgid_plural "Device firmware models"
 msgstr[0] "Model firmware"
 msgstr[1] "Modely firmware"
-msgstr[2] "Modely firmware"
+msgstr[2] "Modelů firmware"
 msgstr[3] "Modely firmware"
 
 #: inc/devicefirmwaretype.class.php:41
@@ -10165,7 +10165,7 @@ msgid "Firmware type"
 msgid_plural "Firmware types"
 msgstr[0] "Typ firmware"
 msgstr[1] "Typy firmware"
-msgstr[2] "Typy firmware"
+msgstr[2] "Typů firmware"
 msgstr[3] "Typy firmware"
 
 #: inc/devicegeneric.class.php:43
@@ -10173,7 +10173,7 @@ msgid "Generic device"
 msgid_plural "Generic devices"
 msgstr[0] "Obecné zařízení"
 msgstr[1] "Obecná zařízení"
-msgstr[2] "Obecná zařízení"
+msgstr[2] "Obecných zařízení"
 msgstr[3] "Obecná zařízení"
 
 #: inc/devicegenericmodel.class.php:44 inc/dropdown.class.php:891
@@ -10181,7 +10181,7 @@ msgid "Device generic model"
 msgid_plural "Device generic models"
 msgstr[0] "Obecný model zařízení"
 msgstr[1] "Obecné modely zařízení"
-msgstr[2] "Obecné modely zařízení"
+msgstr[2] "Obecných modelů zařízení"
 msgstr[3] "Obecné modely zařízení"
 
 #: inc/devicegenerictype.class.php:41
@@ -10189,7 +10189,7 @@ msgid "Generic type"
 msgid_plural "Generic types"
 msgstr[0] "Obecný typ"
 msgstr[1] "Obecné typy"
-msgstr[2] "Obecné typy"
+msgstr[2] "Obecných typů"
 msgstr[3] "Obecné typy"
 
 #: inc/devicegraphiccard.class.php:51 inc/devicegraphiccard.class.php:157
@@ -10204,10 +10204,10 @@ msgstr "Výchozí paměť"
 #: inc/devicegraphiccardmodel.class.php:44 inc/dropdown.class.php:893
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] "Model grafické karty"
-msgstr[1] "Modely grafických karet"
-msgstr[2] "Modely grafických karet"
-msgstr[3] "Modely grafických karet"
+msgstr[0] "Model grafického čipu"
+msgstr[1] "Modely grafických čipů"
+msgstr[2] "Modely grafických čipů"
+msgstr[3] "Modely grafických čipů"
 
 #: inc/deviceharddrive.class.php:43
 msgid "Hard drive"
@@ -10260,7 +10260,7 @@ msgid "Device memory model"
 msgid_plural "Device memory models"
 msgstr[0] "Model operační paměti"
 msgstr[1] "Modely operačních pamětí"
-msgstr[2] "Modely operačních pamětí"
+msgstr[2] "Modelů operační paměti zařízení"
 msgstr[3] "Modely operačních pamětí"
 
 #: inc/devicemotherboardmodel.class.php:44
@@ -10268,7 +10268,7 @@ msgid "System board model"
 msgid_plural "System board models"
 msgstr[0] "Model základní desky"
 msgstr[1] "Modely základních desek"
-msgstr[2] "Modely základních desek"
+msgstr[2] "Modelů základní desky zařízení"
 msgstr[3] "Modely základních desek"
 
 #: inc/devicenetworkcard.class.php:45
@@ -10277,7 +10277,7 @@ msgid "Network card"
 msgid_plural "Network cards"
 msgstr[0] "Síťová karta"
 msgstr[1] "Síťové karty"
-msgstr[2] "Síťové karty"
+msgstr[2] "Síťových karet"
 msgstr[3] "Síťové karty"
 
 #: inc/devicenetworkcard.class.php:66 inc/devicenetworkcard.class.php:90
@@ -10294,7 +10294,7 @@ msgid "Network card model"
 msgid_plural "Network card models"
 msgstr[0] "Model síťové karty"
 msgstr[1] "Modely síťových karet"
-msgstr[2] "Modely síťových karet"
+msgstr[2] "Modelů síťových karet"
 msgstr[3] "Modely síťových karet"
 
 #: inc/devicepcimodel.class.php:44 inc/dropdown.class.php:903
@@ -10302,7 +10302,7 @@ msgid "Other component model"
 msgid_plural "Other component models"
 msgstr[0] "Model ostatní komponenty"
 msgstr[1] "Modely ostatních komponent"
-msgstr[2] "Modely ostatních komponent"
+msgstr[2] "Modelů ostatních komponent"
 msgstr[3] "Modely ostatních komponent"
 
 #: inc/devicepowersupply.class.php:51 inc/devicepowersupply.class.php:69
@@ -10319,7 +10319,7 @@ msgid "Device power supply model"
 msgid_plural "Device power supply models"
 msgstr[0] "Model napájecího zdroje"
 msgstr[1] "Modely napájecích zdrojů"
-msgstr[2] "Modely napájecích zdrojů"
+msgstr[2] "Modelů napájecích zdrojů"
 msgstr[3] "Modely napájecích zdrojů"
 
 #: inc/deviceprocessor.class.php:51 inc/deviceprocessor.class.php:78
@@ -10341,7 +10341,7 @@ msgid "Device processor model"
 msgid_plural "Device processor models"
 msgstr[0] "Model procesoru"
 msgstr[1] "Modely procesorů"
-msgstr[2] "Modely procesorů"
+msgstr[2] "Modelů procesorů"
 msgstr[3] "Modely procesorů"
 
 #: inc/devicesensor.class.php:45
@@ -10349,7 +10349,7 @@ msgid "Sensor"
 msgid_plural "Sensors"
 msgstr[0] "Senzor"
 msgstr[1] "Senzory"
-msgstr[2] "Senzory"
+msgstr[2] "Senzorů"
 msgstr[3] "Senzory"
 
 #: inc/devicesensormodel.class.php:46 inc/dropdown.class.php:911
@@ -10357,7 +10357,7 @@ msgid "Device sensor model"
 msgid_plural "Device sensor models"
 msgstr[0] "Model senzoru"
 msgstr[1] "Modely senzorů"
-msgstr[2] "Modely senzorů"
+msgstr[2] "Modelů senzorů"
 msgstr[3] "Modely senzorů"
 
 #: inc/devicesensortype.class.php:43 inc/dropdown.class.php:837
@@ -10365,7 +10365,7 @@ msgid "Sensor type"
 msgid_plural "Sensor types"
 msgstr[0] "Typ senzoru"
 msgstr[1] "Typy senzorů"
-msgstr[2] "Typy senzorů"
+msgstr[2] "Typů senzorů"
 msgstr[3] "Typy senzorů"
 
 #: inc/devicesimcard.class.php:42
@@ -11054,7 +11054,7 @@ msgid "IP network"
 msgid_plural "IP networks"
 msgstr[0] "IP síť"
 msgstr[1] "IP sítě"
-msgstr[2] "IP sítě"
+msgstr[2] "IP sítí"
 msgstr[3] "IP sítě"
 
 #: inc/dropdown.class.php:1003 inc/fqdn.class.php:49
@@ -14761,7 +14761,7 @@ msgid "Template"
 msgid_plural "Templates"
 msgstr[0] "Šablona"
 msgstr[1] "Šablony"
-msgstr[2] "Šablony"
+msgstr[2] "Šablon"
 msgstr[3] "Šablony"
 
 #: inc/notification_notificationtemplate.class.php:108
@@ -16949,7 +16949,7 @@ msgstr "Výška"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
-msgstr "Naměřený výkon (ve wattech)"
+msgstr "Naměřený příkon (ve wattech)"
 
 #: inc/rack.class.php:312
 msgid "Max. weight"
@@ -16985,7 +16985,7 @@ msgid "Rack model"
 msgid_plural "Rack models"
 msgstr[0] "Model rozvaděče"
 msgstr[1] "Modely rozvaděčů"
-msgstr[2] "Modely rozvaděčů"
+msgstr[2] "Modelů rozvaděčů"
 msgstr[3] "Modely rozvaděčů"
 
 #: inc/racktype.class.php:41
@@ -16993,7 +16993,7 @@ msgid "Rack type"
 msgid_plural "Rack types"
 msgstr[0] "Typ rozvaděče"
 msgstr[1] "Typy rozvaděčů"
-msgstr[2] "Typy rozvaděčů"
+msgstr[2] "Typů rozvaděčů"
 msgstr[3] "Typy rozvaděčů"
 
 #: inc/registeredid.class.php:54
@@ -17013,7 +17013,7 @@ msgid "Reminder"
 msgid_plural "Reminders"
 msgstr[0] "Připomínka"
 msgstr[1] "Připomínky"
-msgstr[2] "Připomínky"
+msgstr[2] "Připomínek"
 msgstr[3] "Připomínky"
 
 #: inc/reminder.class.php:61 inc/reminder.class.php:1061
@@ -17021,7 +17021,7 @@ msgid "Personal reminder"
 msgid_plural "Personal reminders"
 msgstr[0] "Osobní připomínka"
 msgstr[1] "Osobní připomínky"
-msgstr[2] "Osobní připomínky"
+msgstr[2] "Osobních připomínek"
 msgstr[3] "Osobní připomínky"
 
 #: inc/reminder.class.php:377
@@ -17092,7 +17092,7 @@ msgid_plural "Device types"
 msgstr[0] "Typ zařízení"
 msgstr[1] "Typy zařízení"
 msgstr[2] "Typy zařízení"
-msgstr[3] "Typy zařízení"
+msgstr[3] "Typů zařízení"
 
 #: inc/report.class.php:362 inc/report.class.php:371
 msgid "Device name"
@@ -17271,7 +17271,7 @@ msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
 msgstr[0] "Osobní RSS zdroj"
 msgstr[1] "Osobní RSS zdroje"
-msgstr[2] "Osobní RSS zdroje"
+msgstr[2] "Osobních RSS zdrojů"
 msgstr[3] "Osobní RSS zdroje"
 
 #: inc/rssfeed.class.php:379 inc/rssfeed.class.php:646
@@ -17341,7 +17341,7 @@ msgid "Dictionary"
 msgid_plural "Dictionaries"
 msgstr[0] "Číselník"
 msgstr[1] "Číselníky"
-msgstr[2] "Číselníky"
+msgstr[2] "Číselníků"
 msgstr[3] "Číselníky"
 
 #: inc/rule.class.php:384
@@ -17521,7 +17521,7 @@ msgid "Device model"
 msgid_plural "Device models"
 msgstr[0] "Model zařízení"
 msgstr[1] "Modely zařízení"
-msgstr[2] "Modely zařízení"
+msgstr[2] "Modelů zařízení"
 msgstr[3] "Modely zařízení"
 
 #: inc/rulecollection.class.php:2013
@@ -17529,7 +17529,7 @@ msgid "Network equipment model"
 msgid_plural "Network equipment models"
 msgstr[0] "Model síťového zařízení"
 msgstr[1] "Modely síťových zařízení"
-msgstr[2] "Modely síťových zařízení"
+msgstr[2] "Modelů síťových zařízení"
 msgstr[3] "Modely síťových zařízení"
 
 #: inc/rulecollection.class.php:2040
@@ -17537,7 +17537,7 @@ msgid "Network equipment type"
 msgid_plural "Network equipment types"
 msgstr[0] "Typ síťového zařízení"
 msgstr[1] "Typy síťových zařízení"
-msgstr[2] "Typy síťových zařízení"
+msgstr[2] "Typů síťových zařízení"
 msgstr[3] "Typy síťových zařízení"
 
 #: inc/rulecriteria.class.php:511 inc/search.class.php:5899
@@ -17989,7 +17989,7 @@ msgid "Saved search"
 msgid_plural "Saved searches"
 msgstr[0] "Uložené hledání"
 msgstr[1] "Uložená hledání"
-msgstr[2] "Uložená hledání"
+msgstr[2] "Uložených hledání"
 msgstr[3] "Uložená hledání"
 
 #: inc/savedsearch_alert.class.php:148 inc/savedsearch_alert.class.php:253
@@ -18015,10 +18015,10 @@ msgstr "vytvořit ho nyní"
 #: inc/savedsearch_alert.class.php:214
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] "Použito oznámení:"
-msgstr[1] "Použita oznámení:"
+msgstr[0] "Použito upozornění:"
+msgstr[1] "Použita upozornění:"
 msgstr[2] "Použito upozornění:"
-msgstr[3] "Použito upozornění:"
+msgstr[3] "Použita upozornění:"
 
 #: inc/savedsearch_alert.class.php:236
 msgid "Add an alert"
@@ -18835,7 +18835,7 @@ msgid_plural "Last %d tickets"
 msgstr[0] "Poslední %d požadavek"
 msgstr[1] "Posledních %d požadavků"
 msgstr[2] "Posledních %d požadavků"
-msgstr[3] "Posledních %d požadavků"
+msgstr[3] "Poslední %d požadavky"
 
 #: inc/ticket.class.php:6080
 msgid "You don't have right to see all tickets"
@@ -19083,7 +19083,7 @@ msgid "Ticket task"
 msgid_plural "Ticket tasks"
 msgstr[0] "Úkol požadavku"
 msgstr[1] "Úkoly požadavku"
-msgstr[2] "Úkoly požadavku"
+msgstr[2] "Úkolů požadavku"
 msgstr[3] "Úkoly požadavku"
 
 #: inc/tickettask.class.php:241

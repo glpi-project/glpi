@@ -788,7 +788,7 @@ msgstr "Sous-entités"
 
 #: ajax/private_public.php:70
 msgid "Set personal"
-msgstr "Rendre privé"
+msgstr "Rendre personnel"
 
 #: ajax/resaperiod.php:51 ajax/resaperiod.php:57 ajax/resaperiod.php:80
 #: front/report.contract.list.php:184 front/report.infocom.conso.php:69
@@ -877,7 +877,7 @@ msgstr "Ajouter de nouveaux composants"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:65
 msgid "No unaffected device !"
-msgstr "Pas de périphérique non affecté !"
+msgstr "Aucun composant disponible !"
 
 #: ajax/subvisibility.php:59
 msgid "No restriction"
@@ -1009,7 +1009,7 @@ msgstr[1] "%s tickets en cours ou récemment résolus pour cet élément."
 
 #: ajax/ticketsatisfaction.php:60 inc/entity.class.php:1039
 msgid "Create survey after"
-msgstr "Création de l'enquête après"
+msgstr "Déclencher l'enquête après"
 
 #: ajax/ticketsatisfaction.php:67 inc/crontask.class.php:554
 #: inc/crontask.class.php:583

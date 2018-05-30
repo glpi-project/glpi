@@ -92,7 +92,7 @@ msgstr "Maiz egindako galderetara joan"
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:255
 msgid "No room found or selected"
-msgstr ""
+msgstr "Ez da gelarik aurkitu edo aukeratu"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is Contract, %2$s is field name

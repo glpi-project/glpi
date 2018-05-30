@@ -39,7 +39,7 @@ msgstr "Contraseña"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "Lenguaje (desde el perfil de usuario)"
 
 #: index.php:153
 msgid "Remember me"
@@ -1865,7 +1865,7 @@ msgstr "Archivo no encontrado"
 
 #: front/document.send.php:53
 msgid "File is altered (bad checksum)"
-msgstr "Archivo alterado (checksum erróneo)"
+msgstr "Archivo alterado (suma de verificación errónea)"
 
 #: front/document.send.php:59 front/document.send.php:80
 #: front/graph.send.php:52
@@ -5816,7 +5816,7 @@ msgstr "Plan de Backup"
 #: inc/change.class.php:452 inc/change.class.php:885
 #: inc/notificationtargetchange.class.php:271
 msgid "Checklist"
-msgstr "Checklist"
+msgstr "Lista de chequeo"
 
 #: inc/change.class.php:481 inc/plugin.class.php:1821
 #: inc/problem.class.php:531 inc/ticket.class.php:3485
@@ -6500,7 +6500,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s elementos"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
