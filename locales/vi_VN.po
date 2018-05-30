@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-03 07:13+0200\n"
+"POT-Creation-Date: 2018-05-30 07:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: ltkhanh <ltkhanh@bigdolphin.com.vn>, 2017\n"
 "Language-Team: Vietnamese (Viet Nam) (https://www.transifex.com/glpi/teams/1637/vi_VN/)\n"
@@ -55,7 +55,7 @@ msgstr ""
 #: inc/rulecollection.class.php:1284
 #: inc/ruledictionnarysoftwarecollection.class.php:99
 #: inc/ticket_ticket.class.php:74 inc/user.class.php:2630
-#: install/update.php:356 install/update.php:372
+#: install/update.php:358 install/update.php:374
 msgctxt "button"
 msgid "Post"
 msgstr "Gửi"
@@ -106,7 +106,7 @@ msgstr "Truy cập vào các câu hỏi thường gặp"
 #: inc/commondbtm.class.php:3252 inc/commondbtm.class.php:3256
 #: inc/commondbtm.class.php:3262 inc/commondbtm.class.php:3334
 #: inc/commondbtm.class.php:3870 inc/commondbtm.class.php:3876
-#: inc/commondbtm.class.php:4861 inc/commonglpi.class.php:861
+#: inc/commondbtm.class.php:4858 inc/commonglpi.class.php:861
 #: inc/commonitilcost.class.php:245 inc/commonitilobject.class.php:5280
 #: inc/commonitilobject.class.php:5429 inc/commonitiltask.class.php:1243
 #: inc/computer_softwarelicense.class.php:478
@@ -118,7 +118,7 @@ msgstr "Truy cập vào các câu hỏi thường gặp"
 #: inc/contract.class.php:546 inc/contract.class.php:568
 #: inc/contract.class.php:958 inc/contract.class.php:971
 #: inc/contract.class.php:984 inc/contract.class.php:997
-#: inc/contract.class.php:1495 inc/contract.class.php:1496
+#: inc/contract.class.php:1488 inc/contract.class.php:1489
 #: inc/crontask.class.php:451 inc/dbmysql.class.php:572
 #: inc/dbmysql.class.php:585 inc/dbmysql.class.php:597
 #: inc/document.class.php:221 inc/document_item.class.php:509
@@ -144,7 +144,7 @@ msgstr "Truy cập vào các câu hỏi thường gặp"
 #: inc/stat.class.php:1182 inc/state.class.php:297 inc/state.class.php:305
 #: inc/state.class.php:314 inc/state.class.php:322 inc/state.class.php:330
 #: inc/state.class.php:338 inc/state.class.php:346 inc/state.class.php:355
-#: inc/state.class.php:364 inc/ticket.class.php:6262
+#: inc/state.class.php:364 inc/ticket.class.php:6264
 #: inc/ticketfollowup.class.php:518 inc/ticketfollowup.class.php:1001
 #: inc/ticketfollowup.class.php:1006 inc/tickettemplate.class.php:460
 #: inc/vlan.class.php:167 install/update_0723_078.php:4824
@@ -173,9 +173,9 @@ msgstr "%1$s - Ổ cắm mạng %2$s"
 #: ajax/dropdownSoftwareLicense.php:69 ajax/getDropdownConnect.php:178
 #: ajax/getDropdownFindNum.php:146 ajax/getDropdownNetpoint.php:152
 #: ajax/getDropdownValue.php:393 ajax/getDropdownValue.php:637
-#: inc/apiclient.class.php:232 inc/cartridge.class.php:734
+#: inc/apiclient.class.php:235 inc/cartridge.class.php:734
 #: inc/cartridgeitem.class.php:590 inc/change_item.class.php:216
-#: inc/commondbtm.class.php:3329 inc/commondbtm.class.php:4626
+#: inc/commondbtm.class.php:3329 inc/commondbtm.class.php:4623
 #: inc/commonglpi.class.php:873 inc/commonitilcost.class.php:572
 #: inc/commonitilobject.class.php:5428 inc/commonitilobject.class.php:5433
 #: inc/commonitiltask.class.php:1287 inc/commonitiltask.class.php:1313
@@ -189,15 +189,15 @@ msgstr "%1$s - Ổ cắm mạng %2$s"
 #: inc/computervirtualmachine.class.php:209
 #: inc/computervirtualmachine.class.php:362 inc/config.class.php:386
 #: inc/config.class.php:387 inc/config.class.php:401
-#: inc/contract.class.php:1492 inc/contractcost.class.php:398
+#: inc/contract.class.php:1485 inc/contractcost.class.php:398
 #: inc/contract_item.class.php:490 inc/contract_item.class.php:729
 #: inc/contract_supplier.class.php:243 inc/contract_supplier.class.php:392
 #: inc/dbutils.class.php:1480 inc/document.class.php:402
 #: inc/document.class.php:438 inc/document.class.php:922
 #: inc/document_item.class.php:521 inc/dropdown.class.php:402
-#: inc/glpipdf.class.php:108 inc/group_user.class.php:230
-#: inc/group_user.class.php:235 inc/group_user.class.php:452
-#: inc/group_user.class.php:542 inc/html.class.php:4856
+#: inc/glpipdf.class.php:108 inc/group_user.class.php:221
+#: inc/group_user.class.php:226 inc/group_user.class.php:443
+#: inc/group_user.class.php:533 inc/html.class.php:4856
 #: inc/ipnetwork_vlan.class.php:174 inc/item_devicegraphiccard.class.php:56
 #: inc/item_deviceharddrive.class.php:56 inc/item_devicememory.class.php:58
 #: inc/item_deviceprocessor.class.php:57
@@ -238,8 +238,8 @@ msgstr "%1$s - Ổ cắm mạng %2$s"
 #: inc/search.class.php:4863 inc/session.class.php:371
 #: inc/session.class.php:374 inc/softwareversion.class.php:260
 #: inc/supplier.class.php:577 inc/ticket.class.php:2206
-#: inc/ticket.class.php:4622 inc/ticket.class.php:6118
-#: inc/ticket.class.php:6261 inc/tickettemplatemandatoryfield.class.php:234
+#: inc/ticket.class.php:4624 inc/ticket.class.php:6120
+#: inc/ticket.class.php:6263 inc/tickettemplatemandatoryfield.class.php:234
 #: inc/tickettemplatemandatoryfield.class.php:236 inc/user.class.php:2908
 #: inc/user.class.php:2963 inc/user.class.php:3822 inc/user.class.php:3903
 #, php-format
@@ -307,9 +307,9 @@ msgstr "Email theo dõi"
 #: inc/commonitilobject.class.php:3615 inc/commonitilobject.class.php:5274
 #: inc/commonitilobject.class.php:5300 inc/commonitiltask.class.php:1181
 #: inc/commonitiltask.class.php:1961 inc/config.class.php:1419
-#: inc/config.class.php:1484 inc/contract.class.php:1251
-#: inc/contract.class.php:1328 inc/contract.class.php:1362
-#: inc/contract.class.php:1365 inc/contract.class.php:1382
+#: inc/config.class.php:1484 inc/contract.class.php:1249
+#: inc/contract.class.php:1324 inc/contract.class.php:1356
+#: inc/contract.class.php:1359 inc/contract.class.php:1375
 #: inc/contract_item.class.php:632 inc/contract_item.class.php:743
 #: inc/crontask.class.php:828 inc/crontask.class.php:836
 #: inc/crontask.class.php:850 inc/crontask.class.php:860
@@ -443,34 +443,34 @@ msgstr "Email theo dõi"
 #: inc/notificationtargetprojecttask.class.php:536
 #: inc/notificationtargetprojecttask.class.php:542
 #: inc/notificationtargetprojecttask.class.php:545
-#: inc/notificationtargetticket.class.php:730
-#: inc/notificationtargetticket.class.php:733
-#: inc/notificationtargetticket.class.php:736
-#: inc/notificationtargetticket.class.php:739
-#: inc/notificationtargetticket.class.php:742
-#: inc/notificationtargetticket.class.php:745
-#: inc/notificationtargetticket.class.php:748
-#: inc/notificationtargetticket.class.php:790
-#: inc/notificationtargetticket.class.php:792
+#: inc/notificationtargetticket.class.php:734
+#: inc/notificationtargetticket.class.php:737
+#: inc/notificationtargetticket.class.php:740
+#: inc/notificationtargetticket.class.php:743
+#: inc/notificationtargetticket.class.php:746
+#: inc/notificationtargetticket.class.php:749
+#: inc/notificationtargetticket.class.php:752
 #: inc/notificationtargetticket.class.php:794
-#: inc/notificationtargetticket.class.php:797
-#: inc/notificationtargetticket.class.php:896
-#: inc/notificationtargetticket.class.php:898
+#: inc/notificationtargetticket.class.php:796
+#: inc/notificationtargetticket.class.php:798
+#: inc/notificationtargetticket.class.php:801
 #: inc/notificationtargetticket.class.php:900
-#: inc/notificationtargetticket.class.php:903
-#: inc/notificationtargetticket.class.php:906
-#: inc/notificationtargetticket.class.php:909
-#: inc/notificationtargetticket.class.php:912
-#: inc/notificationtargetticket.class.php:915
+#: inc/notificationtargetticket.class.php:902
+#: inc/notificationtargetticket.class.php:904
+#: inc/notificationtargetticket.class.php:907
+#: inc/notificationtargetticket.class.php:910
+#: inc/notificationtargetticket.class.php:913
 #: inc/notificationtargetticket.class.php:916
-#: inc/notificationtargetticket.class.php:917
-#: inc/notificationtargetticket.class.php:918
+#: inc/notificationtargetticket.class.php:919
 #: inc/notificationtargetticket.class.php:920
+#: inc/notificationtargetticket.class.php:921
 #: inc/notificationtargetticket.class.php:922
-#: inc/notificationtargetticket.class.php:923
 #: inc/notificationtargetticket.class.php:924
-#: inc/notificationtargetticket.class.php:925
+#: inc/notificationtargetticket.class.php:926
 #: inc/notificationtargetticket.class.php:927
+#: inc/notificationtargetticket.class.php:928
+#: inc/notificationtargetticket.class.php:929
+#: inc/notificationtargetticket.class.php:931
 #: inc/notificationtemplatetranslation.class.php:394 inc/plugin.class.php:529
 #: inc/plugin.class.php:574 inc/plugin.class.php:587 inc/plugin.class.php:603
 #: inc/plugin.class.php:611 inc/plugin.class.php:634 inc/problem.class.php:964
@@ -484,12 +484,12 @@ msgstr "Email theo dõi"
 #: inc/reminder.class.php:968 inc/reminder.class.php:995
 #: inc/reservationitem.class.php:669 inc/reservationitem.class.php:674
 #: inc/reservationitem.class.php:692 inc/rule.class.php:3121
-#: inc/rulemailcollector.class.php:130 inc/softwarelicense.class.php:885
-#: inc/softwarelicense.class.php:888 inc/softwarelicense.class.php:905
+#: inc/rulemailcollector.class.php:130 inc/softwarelicense.class.php:879
+#: inc/softwarelicense.class.php:882 inc/softwarelicense.class.php:899
 #: inc/supplier.class.php:553 inc/supplier.class.php:590
-#: inc/ticket.class.php:2208 inc/ticket.class.php:6206
-#: inc/ticket.class.php:6456 inc/ticket.class.php:6546
-#: inc/ticket_ticket.class.php:70 inc/toolbox.class.php:981
+#: inc/ticket.class.php:2208 inc/ticket.class.php:6208
+#: inc/ticket.class.php:6458 inc/ticket.class.php:6548
+#: inc/ticket_ticket.class.php:70 inc/toolbox.class.php:992
 #: inc/user.class.php:2068 inc/user.class.php:2287 inc/user.class.php:3689
 #: inc/vlan.class.php:168 inc/vlan.class.php:170
 #: install/update_0681_07.php:533 install/update_0681_07.php:556
@@ -508,7 +508,7 @@ msgstr "%1$s: %2$s"
 #: inc/authldap.class.php:1023 inc/authldap.class.php:3120
 #: inc/authldap.class.php:3122 inc/authldap.class.php:3124
 #: inc/authldap.class.php:3126 inc/blacklist.class.php:235
-#: inc/commonitilactor.class.php:188 inc/commonitilactor.class.php:268
+#: inc/commonitilactor.class.php:188 inc/commonitilactor.class.php:264
 #: inc/commonitilobject.class.php:2439 inc/commonitilobject.class.php:3376
 #: inc/contact.class.php:209 inc/contact.class.php:351
 #: inc/contact_supplier.class.php:356 inc/dbutils.class.php:1547
@@ -545,8 +545,8 @@ msgstr[0] "Các email"
 #: inc/contract_item.class.php:428 inc/contract_item.class.php:670
 #: inc/contract_supplier.class.php:193 inc/contract_supplier.class.php:336
 #: inc/displaypreference.class.php:332 inc/displaypreference.class.php:478
-#: inc/document_item.class.php:390 inc/group_user.class.php:168
-#: inc/group_user.class.php:311 inc/item_devices.class.php:481
+#: inc/document_item.class.php:390 inc/group_user.class.php:163
+#: inc/group_user.class.php:302 inc/item_devices.class.php:489
 #: inc/item_problem.class.php:148 inc/item_project.class.php:144
 #: inc/item_ticket.class.php:281 inc/item_ticket.class.php:448
 #: inc/item_ticket.class.php:1092 inc/knowbaseitem_comment.class.php:379
@@ -561,8 +561,8 @@ msgstr[0] "Các email"
 #: inc/projecttask_ticket.class.php:195 inc/projecttask_ticket.class.php:316
 #: inc/reservation.class.php:753 inc/reservationitem.class.php:584
 #: inc/rule.class.php:2745 inc/ruleright.class.php:85
-#: inc/slalevel.class.php:118 inc/ticket.class.php:5284
-#: inc/ticket.class.php:7443 inc/ticket.class.php:7503
+#: inc/slalevel.class.php:118 inc/ticket.class.php:5286
+#: inc/ticket.class.php:7445 inc/ticket.class.php:7505
 #: inc/ticketfollowup.class.php:560
 #: inc/tickettemplatehiddenfield.class.php:231
 #: inc/tickettemplatemandatoryfield.class.php:242
@@ -572,7 +572,7 @@ msgid "Add"
 msgstr "Thêm"
 
 #: ajax/dropdownMassiveActionAddValidator.php:52
-#: ajax/dropdownMassiveActionAddValidator.php:120 inc/apiclient.class.php:184
+#: ajax/dropdownMassiveActionAddValidator.php:120 inc/apiclient.class.php:187
 #: inc/auth.class.php:1383 inc/authldap.class.php:384
 #: inc/authldap.class.php:736 inc/authldap.class.php:988
 #: inc/authmail.class.php:150 inc/authmail.class.php:202
@@ -616,8 +616,8 @@ msgstr "Thêm"
 #: inc/notificationtargetprojecttask.class.php:460
 #: inc/notificationtargetprojecttask.class.php:481
 #: inc/notificationtargetreservation.class.php:163
-#: inc/notificationtargetticket.class.php:793
-#: inc/notificationtargetticket.class.php:798
+#: inc/notificationtargetticket.class.php:797
+#: inc/notificationtargetticket.class.php:802
 #: inc/notificationtemplate.class.php:129
 #: inc/notificationtemplate.class.php:174 inc/peripheral.class.php:284
 #: inc/peripheral.class.php:478 inc/phone.class.php:281
@@ -636,7 +636,7 @@ msgstr "Thêm"
 #: inc/rulesoftwarecategory.class.php:85 inc/search.class.php:5439
 #: inc/slm.class.php:114 inc/slm.class.php:171 inc/software.class.php:297
 #: inc/software.class.php:489 inc/softwarelicense.class.php:397
-#: inc/softwarelicense.class.php:612 inc/softwarelicense.class.php:1284
+#: inc/softwarelicense.class.php:606 inc/softwarelicense.class.php:1278
 #: inc/softwareversion.class.php:125 inc/softwareversion.class.php:185
 #: inc/softwareversion.class.php:318 inc/supplier.class.php:149
 #: inc/supplier.class.php:377 inc/ticket.class.php:3071
@@ -656,17 +656,17 @@ msgstr "Các bình luận"
 #: inc/notificationtemplatetranslation.class.php:372
 #: inc/planning.class.php:361 inc/problem.class.php:565
 #: inc/profile_user.class.php:533 inc/search.class.php:1220
-#: inc/search.class.php:1621 inc/ticket.class.php:3548 inc/user.class.php:3546
+#: inc/search.class.php:1621 inc/ticket.class.php:3550 inc/user.class.php:3546
 msgid "All"
 msgstr "Tất cả"
 
 #: ajax/dropdownMassiveActionAddValidator.php:113
 #: ajax/dropdownValidator.php:135 inc/commonitiltask.class.php:1292
 #: inc/commonitiltask.class.php:1631 inc/dbconnection.class.php:456
-#: inc/dropdown.class.php:1975 inc/group_user.class.php:172
-#: inc/group_user.class.php:259 inc/htmltablemain.class.php:242
-#: inc/item_devices.class.php:674 inc/planningrecall.class.php:255
-#: inc/profileright.class.php:313 inc/search.class.php:4619
+#: inc/dropdown.class.php:1975 inc/group_user.class.php:250
+#: inc/htmltablemain.class.php:242 inc/item_devices.class.php:682
+#: inc/planningrecall.class.php:255 inc/profileright.class.php:313
+#: inc/search.class.php:4619
 msgid "None"
 msgstr "Không"
 
@@ -746,7 +746,7 @@ msgstr "Công khai"
 #: inc/profile_user.class.php:906 inc/project.class.php:666
 #: inc/projecttask.class.php:907 inc/rule.class.php:755
 #: inc/savedsearch.class.php:102 inc/savedsearch.class.php:410
-#: inc/software.class.php:622 inc/softwarelicense.class.php:675
+#: inc/software.class.php:622 inc/softwarelicense.class.php:669
 #: inc/supplier.class.php:394
 msgid "Child entities"
 msgstr "Các đối tượng con"
@@ -854,7 +854,7 @@ msgstr "Không giới hạn"
 #: inc/cartridgeitem.class.php:426 inc/certificate.class.php:263
 #: inc/certificate_item.class.php:285 inc/certificate_item.class.php:494
 #: inc/change_item.class.php:171 inc/commondbtm.class.php:3799
-#: inc/commondbtm.class.php:4618 inc/commondbvisible.class.php:262
+#: inc/commondbtm.class.php:4615 inc/commondbvisible.class.php:262
 #: inc/commondevice.class.php:256 inc/commondropdown.class.php:474
 #: inc/commonitilcost.class.php:187 inc/commonitilobject.class.php:2862
 #: inc/commonitilobject.class.php:5522 inc/commontreedropdown.class.php:524
@@ -924,8 +924,8 @@ msgstr "Không giới hạn"
 #: inc/rulerightcollection.class.php:159 inc/ruleticket.class.php:443
 #: inc/savedsearch.class.php:407 inc/search.class.php:5485
 #: inc/software.class.php:588 inc/software.class.php:982
-#: inc/softwarelicense.class.php:667 inc/softwarelicense.class.php:997
-#: inc/softwarelicense.class.php:1216 inc/softwarelicense.class.php:1281
+#: inc/softwarelicense.class.php:661 inc/softwarelicense.class.php:991
+#: inc/softwarelicense.class.php:1210 inc/softwarelicense.class.php:1275
 #: inc/stat.class.php:1161 inc/supplier.class.php:385
 #: inc/supplier.class.php:490 inc/user.class.php:2144 inc/user.class.php:2909
 #: inc/user.class.php:2963 inc/user.class.php:3787 inc/user.class.php:3867
@@ -955,7 +955,7 @@ msgstr ""
 #: ajax/ticketassigninformation.php:112 ajax/ticketassigninformation.php:113
 #: inc/change.class.php:506 inc/commonitilobject.class.php:3614
 #: inc/commonitilobject.class.php:3615 inc/problem.class.php:563
-#: inc/ticket.class.php:3546 install/update_084_085.php:2015
+#: inc/ticket.class.php:3548 install/update_084_085.php:2015
 msgid "Processing"
 msgstr "Đang xử lý"
 
@@ -978,7 +978,7 @@ msgstr "Sớm nhất có thể"
 msgid "Rate to trigger survey"
 msgstr "Tỷ lệ để kích hoạt khảo sát"
 
-#: ajax/ticketsatisfaction.php:82 inc/apiclient.class.php:288
+#: ajax/ticketsatisfaction.php:82 inc/apiclient.class.php:295
 #: inc/config.class.php:438 inc/crontask.class.php:698
 #: inc/crontask.class.php:717 inc/entity.class.php:2280
 #: inc/notificationajaxsetting.class.php:82
@@ -1025,9 +1025,9 @@ msgstr "Các thẻ hợp lệ"
 #: inc/notificationtargetprojecttask.class.php:537
 #: inc/notificationtargetreservation.class.php:150
 #: inc/notificationtargetsoftwarelicense.class.php:90
-#: inc/notificationtargetticket.class.php:897
-#: inc/notificationtargetticket.class.php:899
-#: inc/notificationtargetticket.class.php:908
+#: inc/notificationtargetticket.class.php:901
+#: inc/notificationtargetticket.class.php:903
+#: inc/notificationtargetticket.class.php:912
 #: inc/notificationtargetuser.class.php:115 inc/rssfeed.class.php:356
 #: inc/rssfeed.class.php:611
 msgid "URL"
@@ -1141,8 +1141,8 @@ msgid "You should rather use a dedicated tool on your server."
 msgstr ""
 
 #: front/backup.php:611 front/report.contract.list.php:179
-#: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
-#: inc/problem.class.php:936 inc/ticket.class.php:5871
+#: front/report.year.list.php:135 inc/notificationtargetticket.class.php:760
+#: inc/problem.class.php:936 inc/ticket.class.php:5873
 msgid "Deleted"
 msgstr "Đã xóa"
 
@@ -1192,12 +1192,12 @@ msgstr "Kích cỡ"
 #: inc/notificationtargetproject.class.php:619
 #: inc/notificationtargetprojecttask.class.php:496
 #: inc/notificationtargetprojecttask.class.php:516
-#: inc/notificationtargetticket.class.php:791
 #: inc/notificationtargetticket.class.php:795
-#: inc/notificationtargetticket.class.php:916
-#: inc/notificationtargetticket.class.php:923
+#: inc/notificationtargetticket.class.php:799
+#: inc/notificationtargetticket.class.php:920
+#: inc/notificationtargetticket.class.php:927
 #: inc/notimportedemail.class.php:202 inc/project.class.php:775
-#: inc/ticket.class.php:3114 inc/ticket.class.php:7680
+#: inc/ticket.class.php:3114 inc/ticket.class.php:7682
 #: inc/ticketfollowup.class.php:696 inc/ticketfollowup.class.php:1090
 #: inc/ticketfollowup.class.php:1181
 msgid "Date"
@@ -1214,7 +1214,7 @@ msgstr "Xóa tập tin %s?"
 #: inc/cartridge.class.php:658 inc/cartridge.class.php:931
 #: inc/change_ticket.class.php:288 inc/commondbrelation.class.php:1119
 #: inc/commondbtm.class.php:2240 inc/commondbtm.class.php:2250
-#: inc/commondbtm.class.php:4646 inc/commondbtm.class.php:4732
+#: inc/commondbtm.class.php:4643 inc/commondbtm.class.php:4729
 #: inc/commondbvisible.class.php:180 inc/commonitilobject.class.php:2372
 #: inc/commonitilobject.class.php:2452 inc/commonitilobject.class.php:3392
 #: inc/computer_softwarelicense.class.php:457
@@ -1229,8 +1229,8 @@ msgstr "Xóa tập tin %s?"
 #: inc/netpoint.class.php:331 inc/notepad.class.php:367
 #: inc/problem_ticket.class.php:328 inc/profile_user.class.php:331
 #: inc/reservation.class.php:763 inc/rule.class.php:2787
-#: inc/ticket.class.php:5271 inc/ticket.class.php:7179
-#: inc/ticket.class.php:7180 inc/ticketfollowup.class.php:813
+#: inc/ticket.class.php:5273 inc/ticket.class.php:7181
+#: inc/ticket.class.php:7182 inc/ticketfollowup.class.php:813
 #: inc/ticketfollowup.class.php:1036 inc/tickettask.class.php:310
 #: inc/ticket_ticket.class.php:185 inc/transfer.class.php:3296
 #: inc/transfer.class.php:3301 inc/transfer.class.php:3318
@@ -1466,13 +1466,13 @@ msgstr "Các trường bắt buộc chưa được điền. Xin vui lòng sửa:
 #: inc/notificationtargetproject.class.php:623
 #: inc/notificationtargetproject.class.php:675
 #: inc/notificationtargetproject.class.php:689
-#: inc/notificationtargetticket.class.php:860
-#: inc/notificationtargetticket.class.php:874
-#: inc/notificationtargetticket.class.php:922
-#: inc/notificationtargetticket.class.php:923
-#: inc/notificationtargetticket.class.php:924
-#: inc/notificationtargetticket.class.php:925
-#: inc/notificationtargetticket.class.php:927 inc/profile.class.php:1098
+#: inc/notificationtargetticket.class.php:864
+#: inc/notificationtargetticket.class.php:878
+#: inc/notificationtargetticket.class.php:926
+#: inc/notificationtargetticket.class.php:927
+#: inc/notificationtargetticket.class.php:928
+#: inc/notificationtargetticket.class.php:929
+#: inc/notificationtargetticket.class.php:931 inc/profile.class.php:1098
 #: inc/profile.class.php:1103 inc/profile.class.php:2319
 #: inc/stat.class.php:1235
 msgid "Change"
@@ -1506,7 +1506,7 @@ msgstr[0] "Các thay đổi"
 #: inc/notificationtargetprojecttask.class.php:574 inc/profile.class.php:646
 #: inc/profile.class.php:994 inc/profile.class.php:1015
 #: inc/profile.class.php:1026 inc/ticket.class.php:168
-#: inc/ticket.class.php:2208 inc/ticket.class.php:5857
+#: inc/ticket.class.php:2208 inc/ticket.class.php:5859
 #: inc/ticket_ticket.class.php:70 inc/transfer.class.php:3324
 msgid "Ticket"
 msgid_plural "Tickets"
@@ -1734,10 +1734,10 @@ msgstr "Nhiệm vụ %s đã thực thi"
 #: inc/search.class.php:1766 inc/search.class.php:4237
 #: inc/search.class.php:4276 inc/search.class.php:4305
 #: inc/search.class.php:4344 inc/search.class.php:4734
-#: inc/search.class.php:4896 inc/ticket.class.php:6216
-#: inc/ticket.class.php:6267 inc/ticket_ticket.class.php:192
-#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:982
-#: inc/toolbox.class.php:1143 inc/useremail.class.php:169
+#: inc/search.class.php:4896 inc/ticket.class.php:6218
+#: inc/ticket.class.php:6269 inc/ticket_ticket.class.php:192
+#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:993
+#: inc/toolbox.class.php:1154 inc/useremail.class.php:169
 #: install/update_0681_07.php:538 install/update_0681_07.php:541
 #: install/update_0681_07.php:546 install/update_0681_07.php:549
 #, php-format
@@ -1773,8 +1773,8 @@ msgstr ""
 #: front/devices.php:41 front/devices.php:45 inc/commondevice.class.php:57
 #: inc/commondevice.class.php:266 inc/computer.class.php:802
 #: inc/dropdown.class.php:756 inc/event.class.php:151
-#: inc/item_devices.class.php:350 inc/item_devices.class.php:402
-#: inc/item_devices.class.php:1077 inc/lock.class.php:282
+#: inc/item_devices.class.php:358 inc/item_devices.class.php:410
+#: inc/item_devices.class.php:1086 inc/lock.class.php:282
 #: inc/lock.class.php:492 inc/profile.class.php:1420
 #: inc/profile.class.php:1851 inc/transfer.class.php:3347
 #: install/update_0723_078.php:3868
@@ -1804,7 +1804,7 @@ msgstr "Từ điển toàn cục"
 #: inc/ruledictionnarysoftware.class.php:83
 #: inc/ruledictionnarysoftware.class.php:109
 #: inc/rulesoftwarecategory.class.php:77 inc/software.class.php:57
-#: inc/softwarelicense.class.php:594 inc/softwarelicense.class.php:1217
+#: inc/softwarelicense.class.php:588 inc/softwarelicense.class.php:1211
 #: inc/softwareversion.class.php:117 install/update_0713_072.php:159
 #: install/update_0713_072.php:509
 msgid "Software"
@@ -1869,7 +1869,7 @@ msgstr[0] "Máy in"
 #: inc/notificationtargetchange.class.php:283
 #: inc/notificationtargetproblem.class.php:217
 #: inc/notificationtargetproject.class.php:604
-#: inc/notificationtargetticket.class.php:751 inc/peripheral.class.php:228
+#: inc/notificationtargetticket.class.php:755 inc/peripheral.class.php:228
 #: inc/peripheral.class.php:393 inc/phone.class.php:226
 #: inc/phone.class.php:415 inc/printer.class.php:325 inc/printer.class.php:539
 #: inc/ruledictionnarycomputermodel.class.php:60
@@ -1972,7 +1972,7 @@ msgstr[0] "Các mô-đen điện thoại"
 #: inc/notificationtargetprojecttask.class.php:469
 #: inc/notificationtargetprojecttask.class.php:484
 #: inc/notificationtargetprojecttask.class.php:547
-#: inc/notificationtargetticket.class.php:711
+#: inc/notificationtargetticket.class.php:715
 #: inc/notificationtemplate.class.php:123
 #: inc/notificationtemplate.class.php:164
 #: inc/notificationtemplatetranslation.class.php:356
@@ -1998,10 +1998,10 @@ msgstr[0] "Các mô-đen điện thoại"
 #: inc/ruledictionnaryprintertype.class.php:60
 #: inc/ruledictionnaryprintertype.class.php:73 inc/ruleticket.class.php:351
 #: inc/ruleticket.class.php:510 inc/softwarelicense.class.php:342
-#: inc/softwarelicense.class.php:546 inc/softwarelicense.class.php:1001
+#: inc/softwarelicense.class.php:540 inc/softwarelicense.class.php:995
 #: inc/supplier.class.php:489 inc/ticket.class.php:2814
-#: inc/ticket.class.php:3021 inc/ticket.class.php:3924
-#: inc/ticket.class.php:4782 inc/user.class.php:3786 inc/user.class.php:3866
+#: inc/ticket.class.php:3021 inc/ticket.class.php:3926
+#: inc/ticket.class.php:4784 inc/user.class.php:3786 inc/user.class.php:3866
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "Các kiểu"
@@ -2163,30 +2163,30 @@ msgstr "Tìm"
 #: inc/notificationtargetchange.class.php:284
 #: inc/notificationtargetproblem.class.php:218
 #: inc/notificationtargetproject.class.php:605
-#: inc/notificationtargetticket.class.php:752 inc/peripheral.class.php:244
+#: inc/notificationtargetticket.class.php:756 inc/peripheral.class.php:244
 #: inc/peripheral.class.php:426 inc/phone.class.php:242
 #: inc/phone.class.php:448 inc/printer.class.php:341 inc/printer.class.php:572
 #: inc/search.class.php:5448
 msgid "Alternate username"
 msgstr "Tên người dùng thay thế"
 
-#: front/find_num.php:94 inc/ticket.class.php:3986
+#: front/find_num.php:94 inc/ticket.class.php:3988
 msgid "Hardware type"
 msgstr "Kiểu phần cứng"
 
 #: front/find_num.php:95 front/item_ticket.form.php:56
 #: inc/commonitilobject.class.php:5529 inc/item_ticket.class.php:1223
 #: inc/knowbaseitem_item.class.php:85
-#: inc/notificationtargetticket.class.php:731
-#: inc/notificationtargetticket.class.php:734
-#: inc/notificationtargetticket.class.php:737
-#: inc/notificationtargetticket.class.php:740
-#: inc/notificationtargetticket.class.php:743
-#: inc/notificationtargetticket.class.php:746
-#: inc/notificationtargetticket.class.php:749 inc/problem.class.php:445
+#: inc/notificationtargetticket.class.php:735
+#: inc/notificationtargetticket.class.php:738
+#: inc/notificationtargetticket.class.php:741
+#: inc/notificationtargetticket.class.php:744
+#: inc/notificationtargetticket.class.php:747
+#: inc/notificationtargetticket.class.php:750
+#: inc/notificationtargetticket.class.php:753 inc/problem.class.php:445
 #: inc/ruleticket.class.php:582 inc/stat.class.php:1159
-#: inc/ticket.class.php:2823 inc/ticket.class.php:5042
-#: inc/ticket.class.php:5751
+#: inc/ticket.class.php:2823 inc/ticket.class.php:5044
+#: inc/ticket.class.php:5753
 msgid "Associated element"
 msgid_plural "Associated elements"
 msgstr[0] "Các thành phần được kết hợp"
@@ -2205,7 +2205,7 @@ msgstr[0] "Các thành phần được kết hợp"
 #: inc/contract.class.php:673 inc/contractcost.class.php:142
 #: inc/contract_item.class.php:156 inc/crontask.class.php:1328
 #: inc/document.class.php:834 inc/entity.class.php:486 inc/event.class.php:331
-#: inc/fieldunicity.class.php:326 inc/group_user.class.php:615
+#: inc/fieldunicity.class.php:326 inc/group_user.class.php:606
 #: inc/infocom.class.php:1630 inc/infocom.class.php:1829
 #: inc/knowbaseitem.class.php:1646 inc/levelagreement.class.php:663
 #: inc/link.class.php:220 inc/log.class.php:285 inc/monitor.class.php:403
@@ -2223,17 +2223,17 @@ msgstr[0] "Các thành phần được kết hợp"
 #: inc/notificationtargetprojecttask.class.php:515
 #: inc/notificationtargetprojecttask.class.php:529
 #: inc/notificationtargetsavedsearch_alert.class.php:105
-#: inc/notificationtargetticket.class.php:902
-#: inc/notificationtargetticket.class.php:915
-#: inc/notificationtargetticket.class.php:922 inc/peripheral.class.php:374
+#: inc/notificationtargetticket.class.php:906
+#: inc/notificationtargetticket.class.php:919
+#: inc/notificationtargetticket.class.php:926 inc/peripheral.class.php:374
 #: inc/phone.class.php:396 inc/printer.class.php:520 inc/problem.class.php:964
 #: inc/profile_user.class.php:860 inc/project.class.php:465
 #: inc/project.class.php:773 inc/projectcost.class.php:139
 #: inc/queuednotification.class.php:194 inc/reservationitem.class.php:176
 #: inc/savedsearch.class.php:201 inc/search.class.php:5399
 #: inc/search.class.php:5420 inc/slm.class.php:154 inc/software.class.php:478
-#: inc/softwarelicense.class.php:514 inc/softwarelicense.class.php:1214
-#: inc/supplier.class.php:242 inc/ticket.class.php:6206
+#: inc/softwarelicense.class.php:508 inc/softwarelicense.class.php:1208
+#: inc/supplier.class.php:242 inc/ticket.class.php:6208
 #: inc/ticket_ticket.class.php:70 inc/user.class.php:2715
 #: inc/user.class.php:4379
 msgid "ID"
@@ -2263,12 +2263,12 @@ msgstr "ID"
 #: inc/notificationtargetproblem.class.php:214
 #: inc/notificationtargetproject.class.php:601
 #: inc/notificationtargetsoftwarelicense.class.php:88
-#: inc/notificationtargetticket.class.php:728 inc/peripheral.class.php:238
+#: inc/notificationtargetticket.class.php:732 inc/peripheral.class.php:238
 #: inc/peripheral.class.php:410 inc/phone.class.php:236
 #: inc/phone.class.php:432 inc/printer.class.php:335 inc/printer.class.php:556
 #: inc/ruleimportcomputer.class.php:106 inc/search.class.php:5431
-#: inc/softwarelicense.class.php:368 inc/softwarelicense.class.php:526
-#: inc/softwarelicense.class.php:998 inc/softwarelicense.class.php:1215
+#: inc/softwarelicense.class.php:368 inc/softwarelicense.class.php:520
+#: inc/softwarelicense.class.php:992 inc/softwarelicense.class.php:1209
 #: inc/supplier.class.php:492 inc/user.class.php:3789 inc/user.class.php:3869
 msgid "Serial number"
 msgstr "Số sê-ri"
@@ -2289,11 +2289,11 @@ msgstr "Số sê-ri"
 #: inc/notificationtargetchange.class.php:281
 #: inc/notificationtargetproblem.class.php:215
 #: inc/notificationtargetproject.class.php:602
-#: inc/notificationtargetticket.class.php:729 inc/peripheral.class.php:250
+#: inc/notificationtargetticket.class.php:733 inc/peripheral.class.php:250
 #: inc/peripheral.class.php:418 inc/phone.class.php:247
 #: inc/phone.class.php:440 inc/printer.class.php:347 inc/printer.class.php:564
 #: inc/reservationitem.class.php:204 inc/search.class.php:5435
-#: inc/softwarelicense.class.php:382 inc/softwarelicense.class.php:683
+#: inc/softwarelicense.class.php:382 inc/softwarelicense.class.php:677
 #: inc/supplier.class.php:493 inc/user.class.php:3790 inc/user.class.php:3870
 msgid "Inventory number"
 msgstr "Số hàng tồn kho"
@@ -2339,7 +2339,7 @@ msgstr "%s thêm một người dùng vào một nhóm"
 #: front/knowbaseitem.form.php:172 front/knowbaseitemtranslation.form.php:77
 #: front/knowbaseitemtranslation.form.php:79
 #: front/knowbaseitemtranslation.form.php:83
-#: front/knowbaseitemtranslation.form.php:86 inc/commondropdown.class.php:873
+#: front/knowbaseitemtranslation.form.php:86 inc/commondropdown.class.php:876
 #: inc/html.class.php:6031 inc/knowbaseitem.class.php:88
 #: inc/profile.class.php:738
 msgid "FAQ"
@@ -2405,12 +2405,12 @@ msgstr ""
 #: inc/notificationtargetproblem.class.php:263
 #: inc/notificationtargetproject.class.php:622
 #: inc/notificationtargetprojecttask.class.php:519
-#: inc/notificationtargetticket.class.php:911
-#: inc/notificationtargetticket.class.php:919
-#: inc/notificationtargetticket.class.php:926 inc/problem.class.php:1218
+#: inc/notificationtargetticket.class.php:915
+#: inc/notificationtargetticket.class.php:923
+#: inc/notificationtargetticket.class.php:930 inc/problem.class.php:1218
 #: inc/projectcost.class.php:129 inc/reminder.class.php:316
 #: inc/reminder.class.php:641 inc/ruleticket.class.php:335
-#: inc/ticket.class.php:4051 inc/ticket.class.php:5095 inc/user.class.php:2982
+#: inc/ticket.class.php:4053 inc/ticket.class.php:5097 inc/user.class.php:2982
 msgid "Title"
 msgstr "Tên"
 
@@ -2422,7 +2422,7 @@ msgstr "Tên"
 #: inc/knowbaseitemtranslation.class.php:166
 #: inc/knowbaseitemtranslation.class.php:312 inc/rssfeed.class.php:454
 #: inc/solutiontemplate.class.php:66 inc/solutiontemplate.class.php:76
-#: inc/tasktemplate.class.php:63 inc/tasktemplate.class.php:93
+#: inc/tasktemplate.class.php:63 inc/tasktemplate.class.php:94
 msgid "Content"
 msgstr "Nội dung"
 
@@ -2432,7 +2432,7 @@ msgid "post"
 msgstr ""
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
-#: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4632
+#: inc/notificationtargetticket.class.php:228 inc/ticket.class.php:4634
 msgid "New ticket"
 msgstr "Vé mới"
 
@@ -2493,7 +2493,7 @@ msgstr ""
 msgid "Knowledge base item has not been reverted to revision %s"
 msgstr ""
 
-#: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:876
+#: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:879
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:235
 #: inc/knowbase.class.php:52 inc/knowbaseitem.class.php:68
 #: inc/knowbaseitem_item.class.php:87 inc/profile.class.php:941
@@ -2712,13 +2712,13 @@ msgstr "Xóa hoặc cập nhật nó nếu không GLPI sẽ không hoạt độn
 #: inc/notificationtargetchange.class.php:369
 #: inc/notificationtargetchange.class.php:370
 #: inc/notificationtargetchange.class.php:371
-#: inc/notificationtargetticket.class.php:859
-#: inc/notificationtargetticket.class.php:873
-#: inc/notificationtargetticket.class.php:915
-#: inc/notificationtargetticket.class.php:916
-#: inc/notificationtargetticket.class.php:917
-#: inc/notificationtargetticket.class.php:918
-#: inc/notificationtargetticket.class.php:920 inc/problem.class.php:74
+#: inc/notificationtargetticket.class.php:863
+#: inc/notificationtargetticket.class.php:877
+#: inc/notificationtargetticket.class.php:919
+#: inc/notificationtargetticket.class.php:920
+#: inc/notificationtargetticket.class.php:921
+#: inc/notificationtargetticket.class.php:922
+#: inc/notificationtargetticket.class.php:924 inc/problem.class.php:74
 #: inc/problem.class.php:922 inc/profile.class.php:1092
 #: inc/profile.class.php:1094 inc/profile.class.php:2295
 #: inc/stat.class.php:1226
@@ -2744,7 +2744,7 @@ msgstr "Danh sách các phần cứng theo hợp đồng"
 
 #: front/report.contract.list.php:178 front/report.infocom.php:130
 #: front/report.year.list.php:134 inc/apiclient.class.php:81
-#: inc/apiclient.class.php:180 inc/authldap.class.php:334
+#: inc/apiclient.class.php:183 inc/authldap.class.php:334
 #: inc/authldap.class.php:555 inc/authldap.class.php:857
 #: inc/authldap.class.php:2244 inc/authldapreplicate.class.php:87
 #: inc/authmail.class.php:98 inc/authmail.class.php:185
@@ -2847,8 +2847,8 @@ msgstr "Danh sách các phần cứng theo hợp đồng"
 #: inc/slalevel.class.php:231 inc/slm.class.php:111 inc/slm.class.php:145
 #: inc/software.class.php:261 inc/software.class.php:469
 #: inc/software.class.php:981 inc/softwarelicense.class.php:313
-#: inc/softwarelicense.class.php:504 inc/softwarelicense.class.php:996
-#: inc/softwarelicense.class.php:1279 inc/softwareversion.class.php:130
+#: inc/softwarelicense.class.php:498 inc/softwarelicense.class.php:990
+#: inc/softwarelicense.class.php:1273 inc/softwareversion.class.php:130
 #: inc/softwareversion.class.php:169 inc/supplier.class.php:135
 #: inc/supplier.class.php:233 inc/supplier.class.php:491
 #: inc/tickettemplatehiddenfield.class.php:263
@@ -2875,12 +2875,12 @@ msgstr "Tên"
 #: inc/notificationtargetchange.class.php:282
 #: inc/notificationtargetproblem.class.php:216
 #: inc/notificationtargetproject.class.php:603
-#: inc/notificationtargetticket.class.php:768 inc/peripheral.class.php:197
+#: inc/notificationtargetticket.class.php:772 inc/peripheral.class.php:197
 #: inc/phone.class.php:195 inc/printer.class.php:294
 #: inc/profile.class.php:1430 inc/ruleimportentity.class.php:168
 #: inc/ruleticket.class.php:650 inc/software.class.php:270
 #: inc/softwarelicense.class.php:338 inc/ticket.class.php:2865
-#: inc/ticket.class.php:3997 inc/ticket.class.php:4994 inc/user.class.php:2117
+#: inc/ticket.class.php:3999 inc/ticket.class.php:4996 inc/user.class.php:2117
 #: inc/user.class.php:2239 inc/user.class.php:2471
 msgid "Location"
 msgid_plural "Locations"
@@ -2935,7 +2935,7 @@ msgstr "Phần cứng theo hợp đồng"
 #: inc/notificationtargetplanningrecall.class.php:185
 #: inc/notificationtargetreservation.class.php:149
 #: inc/notificationtargetsavedsearch_alert.class.php:107
-#: inc/notificationtargetticket.class.php:726
+#: inc/notificationtargetticket.class.php:730
 #: inc/reservationitem.class.php:447 inc/ruleticket.class.php:437
 #: inc/savedsearch.class.php:216 inc/search.class.php:1420
 msgid "Item type"
@@ -3293,8 +3293,8 @@ msgid "Real duration"
 msgstr "Chu kỳ thực"
 
 #: front/stat.global.php:165 front/stat.graph.php:439
-#: inc/notificationtargetticket.class.php:241 inc/ticket.class.php:3014
-#: inc/ticket.class.php:5726
+#: inc/notificationtargetticket.class.php:245 inc/ticket.class.php:3014
+#: inc/ticket.class.php:5728
 msgid "Satisfaction survey"
 msgstr "Khảo sát sự hài lòng"
 
@@ -3316,8 +3316,8 @@ msgstr[0] "Đã trả lời"
 
 #: front/stat.global.php:183 front/stat.global.php:186
 #: front/stat.graph.php:458 front/stat.graph.php:461
-#: inc/notificationtargetticket.class.php:825
-#: inc/notificationtargetticket.class.php:898 inc/stat.class.php:412
+#: inc/notificationtargetticket.class.php:829
+#: inc/notificationtargetticket.class.php:902 inc/stat.class.php:412
 #: inc/ticket.class.php:811 inc/ticket.class.php:3059
 #: inc/ticketsatisfaction.class.php:48
 msgid "Satisfaction"
@@ -3350,14 +3350,14 @@ msgstr[0] "Các nhà cung cấp"
 #: inc/authldap.class.php:3455 inc/certificate.class.php:231
 #: inc/certificate.class.php:433 inc/commondbtm.class.php:3091
 #: inc/commondbvisible.class.php:214 inc/commonitilactor.class.php:180
-#: inc/commonitilactor.class.php:260 inc/commonitilobject.class.php:3262
+#: inc/commonitilactor.class.php:256 inc/commonitilobject.class.php:3262
 #: inc/commonitilobject.class.php:3420 inc/commonitiltask.class.php:1516
 #: inc/commonitilvalidation.class.php:645
 #: inc/commonitilvalidation.class.php:1330 inc/computer.class.php:474
 #: inc/computer.class.php:708 inc/computer_softwarelicense.class.php:491
 #: inc/computer_softwareversion.class.php:331 inc/config.class.php:556
 #: inc/dropdown.class.php:1017 inc/group.class.php:308
-#: inc/group_user.class.php:642 inc/knowbaseitem.class.php:1731
+#: inc/group_user.class.php:633 inc/knowbaseitem.class.php:1731
 #: inc/line.class.php:139 inc/line.class.php:197 inc/log.class.php:287
 #: inc/monitor.class.php:264 inc/monitor.class.php:471
 #: inc/networkequipment.class.php:352 inc/networkequipment.class.php:519
@@ -3368,7 +3368,7 @@ msgstr[0] "Các nhà cung cấp"
 #: inc/notificationtargetproject.class.php:607
 #: inc/notificationtargetprojecttask.class.php:498
 #: inc/notificationtargetsavedsearch_alert.class.php:122
-#: inc/notificationtargetticket.class.php:754
+#: inc/notificationtargetticket.class.php:758
 #: inc/notificationtargetuser.class.php:54 inc/peripheral.class.php:260
 #: inc/peripheral.class.php:442 inc/phone.class.php:257
 #: inc/phone.class.php:472 inc/planning.class.php:1356
@@ -3381,7 +3381,7 @@ msgstr[0] "Các nhà cung cấp"
 #: inc/rulemailcollector.class.php:130 inc/ruleticket.class.php:621
 #: inc/savedsearch.class.php:209 inc/search.class.php:5444
 #: inc/software.class.php:303 inc/software.class.php:551
-#: inc/softwarelicense.class.php:374 inc/softwarelicense.class.php:649
+#: inc/softwarelicense.class.php:374 inc/softwarelicense.class.php:643
 #: inc/ticketfollowup.class.php:1197 inc/user.class.php:67
 #: install/update_0713_072.php:554
 msgid "User"
@@ -3405,8 +3405,8 @@ msgstr[0] "Các người dùng"
 #: inc/problem.class.php:1182 inc/ruledictionnarysoftware.class.php:131
 #: inc/rulesoftwarecategory.class.php:99 inc/ruleticket.class.php:345
 #: inc/ruleticket.class.php:506 inc/software.class.php:274
-#: inc/software.class.php:497 inc/ticket.class.php:3931
-#: inc/ticket.class.php:4807 inc/user.class.php:2090 inc/user.class.php:2990
+#: inc/software.class.php:497 inc/ticket.class.php:3933
+#: inc/ticket.class.php:4809 inc/user.class.php:2090 inc/user.class.php:2990
 msgid "Category"
 msgstr "Danh mục"
 
@@ -3420,7 +3420,7 @@ msgstr "Danh mục"
 #: inc/commonitilvalidation.class.php:1331 inc/computer.class.php:489
 #: inc/computer.class.php:717 inc/computer_softwarelicense.class.php:490
 #: inc/computer_softwareversion.class.php:330 inc/config.class.php:557
-#: inc/group.class.php:54 inc/group_user.class.php:633
+#: inc/group.class.php:54 inc/group_user.class.php:624
 #: inc/itilcategory.class.php:130 inc/line.class.php:156
 #: inc/line.class.php:206 inc/monitor.class.php:281 inc/monitor.class.php:480
 #: inc/networkequipment.class.php:366 inc/networkequipment.class.php:528
@@ -3428,7 +3428,7 @@ msgstr "Danh mục"
 #: inc/notificationtarget.class.php:781
 #: inc/notificationtargetproblem.class.php:221
 #: inc/notificationtargetproject.class.php:608
-#: inc/notificationtargetticket.class.php:755 inc/peripheral.class.php:278
+#: inc/notificationtargetticket.class.php:759 inc/peripheral.class.php:278
 #: inc/peripheral.class.php:451 inc/phone.class.php:275
 #: inc/phone.class.php:481 inc/planning.class.php:1360
 #: inc/planning.class.php:1444 inc/planning.class.php:1538
@@ -3438,8 +3438,8 @@ msgstr "Danh mục"
 #: inc/ruleimportentity.class.php:172 inc/rulemailcollector.class.php:131
 #: inc/ruleticket.class.php:627 inc/search.class.php:5458
 #: inc/software.class.php:311 inc/software.class.php:560
-#: inc/softwarelicense.class.php:392 inc/softwarelicense.class.php:658
-#: inc/tasktemplate.class.php:82 inc/user.class.php:2806
+#: inc/softwarelicense.class.php:392 inc/softwarelicense.class.php:652
+#: inc/tasktemplate.class.php:83 inc/user.class.php:2806
 #: inc/user.class.php:3909
 msgid "Group"
 msgid_plural "Groups"
@@ -3452,7 +3452,7 @@ msgstr[0] "Các nhóm"
 #: inc/notificationtargetproject.class.php:562 inc/problem.class.php:1197
 #: inc/project.class.php:504 inc/project.class.php:782
 #: inc/project.class.php:1099 inc/ruleticket.class.php:453
-#: inc/ruleticket.class.php:575 inc/ticket.class.php:5010
+#: inc/ruleticket.class.php:575 inc/ticket.class.php:5012
 msgid "Priority"
 msgstr "Ưu tiên"
 
@@ -3461,8 +3461,8 @@ msgstr "Ưu tiên"
 #: inc/config.class.php:919
 #: inc/notificationtargetcommonitilobject.class.php:1181
 #: inc/problem.class.php:1175 inc/ruleticket.class.php:447
-#: inc/ruleticket.class.php:569 inc/ticket.class.php:3959
-#: inc/ticket.class.php:4902
+#: inc/ruleticket.class.php:569 inc/ticket.class.php:3961
+#: inc/ticket.class.php:4904
 msgid "Urgency"
 msgstr "Khẩn cấp"
 
@@ -3472,7 +3472,7 @@ msgstr "Khẩn cấp"
 #: inc/notificationtargetchange.class.php:271
 #: inc/notificationtargetcommonitilobject.class.php:1182
 #: inc/problem.class.php:1189 inc/ruleticket.class.php:450
-#: inc/ruleticket.class.php:572 inc/ticket.class.php:4978
+#: inc/ruleticket.class.php:572 inc/ticket.class.php:4980
 msgid "Impact"
 msgstr "Va chạm"
 
@@ -3497,11 +3497,11 @@ msgid_plural "Solution types"
 msgstr[0] "Các dạng giải pháp"
 
 #: front/stat.graph.php:227 front/stat.tracking.php:97
-#: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:725
-#: inc/notificationtargetticket.class.php:761 inc/requesttype.class.php:46
+#: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:729
+#: inc/notificationtargetticket.class.php:765 inc/requesttype.class.php:46
 #: inc/ruleticket.class.php:431 inc/ruleticket.class.php:655
 #: inc/ticket.class.php:2856 inc/ticket.class.php:3143
-#: inc/ticket.class.php:4886 inc/ticketfollowup.class.php:1172
+#: inc/ticket.class.php:4888 inc/ticketfollowup.class.php:1172
 msgid "Request source"
 msgid_plural "Request sources"
 msgstr[0] "Các nguồn yêu cầu"
@@ -3523,7 +3523,7 @@ msgid "Next"
 msgstr "Tiếp"
 
 #: front/stat.graph.php:414 inc/commonitilobject.class.php:4598
-#: inc/stat.class.php:470 inc/ticket.class.php:7632
+#: inc/stat.class.php:470 inc/ticket.class.php:7634
 msgid "Take into account"
 msgstr "Đưa vào tài khoản"
 
@@ -3569,11 +3569,11 @@ msgstr ""
 #: inc/notificationtargetcommonitilobject.class.php:1297
 #: inc/notificationtargetplanningrecall.class.php:59
 #: inc/notificationtargetreservation.class.php:63
-#: inc/notificationtargetticket.class.php:788
+#: inc/notificationtargetticket.class.php:792
 #: inc/notimportedemail.class.php:184 inc/problem.class.php:823
 #: inc/rulemailcollector.class.php:82 inc/ruleticket.class.php:357
-#: inc/ruleticket.class.php:514 inc/ticket.class.php:5750
-#: inc/ticket.class.php:7005 inc/ticket.class.php:7230
+#: inc/ruleticket.class.php:514 inc/ticket.class.php:5752
+#: inc/ticket.class.php:7007 inc/ticket.class.php:7232
 #: inc/ticketfollowup.class.php:1090
 msgid "Requester"
 msgid_plural "Requesters"
@@ -3590,7 +3590,7 @@ msgstr[0] "Những người yêu cầu"
 #: inc/notificationtargetplanningrecall.class.php:179
 #: inc/notificationtargetprojecttask.class.php:468
 #: inc/notificationtargetreservation.class.php:160
-#: inc/notificationtargetticket.class.php:759 inc/reminder.class.php:326
+#: inc/notificationtargetticket.class.php:763 inc/reminder.class.php:326
 #: inc/ticket.class.php:3177
 msgid "Writer"
 msgstr "Người viết"
@@ -3616,7 +3616,7 @@ msgstr "Cây vị trí"
 #: inc/consumableitem.class.php:234 inc/contact.class.php:286
 #: inc/contract.class.php:657 inc/contractcost.class.php:125
 #: inc/crontask.class.php:1312 inc/document.class.php:818
-#: inc/entity.class.php:470 inc/group_user.class.php:608
+#: inc/entity.class.php:470 inc/group_user.class.php:599
 #: inc/infocom.class.php:1623 inc/knowbaseitem.class.php:1639
 #: inc/levelagreement.class.php:647 inc/levelagreementlevel.class.php:90
 #: inc/link.class.php:204 inc/mailcollector.class.php:339
@@ -3634,7 +3634,7 @@ msgstr "Cây vị trí"
 #: inc/reservationitem.class.php:157 inc/rssfeed.class.php:329
 #: inc/savedsearch.class.php:187 inc/search.class.php:5389
 #: inc/search.class.php:5410 inc/slm.class.php:138 inc/software.class.php:462
-#: inc/softwarelicense.class.php:497 inc/softwareversion.class.php:162
+#: inc/softwarelicense.class.php:491 inc/softwareversion.class.php:162
 #: inc/supplier.class.php:226 inc/ticketfollowup.class.php:1157
 #: inc/transfer.class.php:84 inc/user.class.php:2698
 msgid "Characteristics"
@@ -3725,8 +3725,8 @@ msgstr "Vé của bạn đã được đăng ký, việc xử lý nó đang đư
 #: front/tracking.injector.php:80 inc/config.class.php:2468
 #: inc/config.class.php:2488 inc/html.class.php:5306 inc/html.class.php:5465
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:346
-#: inc/telemetry.class.php:386 inc/toolbox.class.php:1037
-#: inc/toolbox.class.php:1071 inc/toolbox.class.php:1072
+#: inc/telemetry.class.php:386 inc/toolbox.class.php:1048
+#: inc/toolbox.class.php:1082 inc/toolbox.class.php:1083
 msgid "OK"
 msgstr "OK"
 
@@ -3772,7 +3772,7 @@ msgid "try to reload"
 msgstr ""
 
 #: inc/alert.class.php:108 inc/alert.class.php:141 inc/alert.class.php:169
-#: inc/contract.class.php:1591 inc/entity.class.php:678
+#: inc/contract.class.php:1584 inc/entity.class.php:678
 #: inc/entity.class.php:919 inc/entity.class.php:1495
 #: inc/entity.class.php:1547 inc/entity.class.php:1563
 #: inc/entity.class.php:1584 inc/entity.class.php:1679
@@ -3796,14 +3796,14 @@ msgstr "Thừa kế của đối tượng mẹ"
 #: inc/cartridgeitem.class.php:247 inc/config.class.php:377
 #: inc/config.class.php:697 inc/config.class.php:1078
 #: inc/config.class.php:1243 inc/consumableitem.class.php:203
-#: inc/contract.class.php:1521 inc/contract.class.php:1540
+#: inc/contract.class.php:1514 inc/contract.class.php:1533
 #: inc/crontask.class.php:520 inc/entity.class.php:920
 #: inc/entity.class.php:1746 inc/entity.class.php:1748
 #: inc/entity.class.php:1786 inc/entity.class.php:1788
 #: inc/entity.class.php:2220 inc/entity.class.php:2582
 #: inc/entity.class.php:2593 inc/entity.class.php:2618
 #: inc/entity.class.php:2641 inc/infocom.class.php:1931
-#: inc/levelagreement.class.php:186 inc/notificationtargetticket.class.php:308
+#: inc/levelagreement.class.php:186 inc/notificationtargetticket.class.php:312
 #: inc/transfer.class.php:3292
 msgid "Never"
 msgstr "Chưa bao giờ"
@@ -3970,13 +3970,13 @@ msgid "API client"
 msgid_plural "API clients"
 msgstr[0] ""
 
-#: inc/apiclient.class.php:98 inc/apiclient.class.php:190
+#: inc/apiclient.class.php:98 inc/apiclient.class.php:193
 #: inc/authldap.class.php:349 inc/authldap.class.php:1104
 #: inc/authmail.class.php:133 inc/authmail.class.php:190
 #: inc/computerantivirus.class.php:157 inc/computerantivirus.class.php:263
 #: inc/computerantivirus.class.php:352 inc/fieldunicity.class.php:76
-#: inc/fieldunicity.class.php:387 inc/group_user.class.php:490
-#: inc/group_user.class.php:531 inc/levelagreement.class.php:557
+#: inc/fieldunicity.class.php:387 inc/group_user.class.php:481
+#: inc/group_user.class.php:522 inc/levelagreement.class.php:557
 #: inc/levelagreementlevel.class.php:135 inc/mailcollector.class.php:257
 #: inc/mailcollector.class.php:355 inc/notification.class.php:212
 #: inc/notification.class.php:383 inc/notificationtarget.class.php:1302
@@ -3995,16 +3995,16 @@ msgstr[0] ""
 msgid "Active"
 msgstr "Hoạt động"
 
-#: inc/apiclient.class.php:106 inc/apiclient.class.php:196
+#: inc/apiclient.class.php:106 inc/apiclient.class.php:199
 msgid "Log connections"
 msgstr ""
 
-#: inc/apiclient.class.php:112 inc/apiclient.class.php:205
+#: inc/apiclient.class.php:112 inc/apiclient.class.php:208
 msgid "Filter access"
 msgstr ""
 
 #: inc/apiclient.class.php:119 inc/apiclient.class.php:127
-#: inc/apiclient.class.php:215
+#: inc/apiclient.class.php:218
 msgid "IPv4 address range"
 msgstr ""
 
@@ -4022,7 +4022,7 @@ msgstr "Bắt đầu"
 #: inc/calendarsegment.class.php:349 inc/calendarsegment.class.php:376
 #: inc/commonitiltask.class.php:1302 inc/contract.class.php:320
 #: inc/contract.class.php:336 inc/contract.class.php:353
-#: inc/contract.class.php:1612 inc/crontask.class.php:1180
+#: inc/contract.class.php:1605 inc/crontask.class.php:1180
 #: inc/dbmysql.class.php:597 inc/holiday.class.php:62 inc/holiday.class.php:85
 #: inc/html.class.php:3688 inc/html.class.php:3689 inc/html.class.php:3894
 #: inc/html.class.php:3895 inc/planning.class.php:354
@@ -4030,25 +4030,25 @@ msgstr "Bắt đầu"
 msgid "End"
 msgstr "Kết thúc"
 
-#: inc/apiclient.class.php:135 inc/apiclient.class.php:226
+#: inc/apiclient.class.php:135 inc/apiclient.class.php:229
 msgid "IPv6 address"
 msgstr ""
 
-#: inc/apiclient.class.php:143 inc/apiclient.class.php:232
+#: inc/apiclient.class.php:143 inc/apiclient.class.php:235
 msgid "Application token"
 msgstr ""
 
-#: inc/apiclient.class.php:210
+#: inc/apiclient.class.php:213
 msgid "Leave these parameters empty to disable API access restriction"
 msgstr ""
 
-#: inc/apiclient.class.php:236 inc/config.class.php:1318
+#: inc/apiclient.class.php:239 inc/config.class.php:1318
 #: inc/config.class.php:1319 inc/config.class.php:1337
 #: inc/config.class.php:1338
 msgid "Regenerate"
 msgstr "Tạo lại"
 
-#: inc/apiclient.class.php:289 inc/log.class.php:81
+#: inc/apiclient.class.php:296 inc/log.class.php:81
 #: inc/notificationtargetcommonitilobject.class.php:1294
 #: inc/notificationtargetcommonitilobject.class.php:1312
 #: inc/notificationtargetcommonitilobject.class.php:1329
@@ -4073,7 +4073,7 @@ msgstr "Tạo lại"
 msgid "Historical"
 msgstr "Lịch sử"
 
-#: inc/apiclient.class.php:290 inc/crontasklog.class.php:88
+#: inc/apiclient.class.php:297 inc/crontasklog.class.php:88
 #: inc/event.class.php:60 inc/profile.class.php:1339
 #: inc/profile.class.php:2126
 msgid "Log"
@@ -4411,7 +4411,7 @@ msgstr "Giá trị mặc định"
 #: inc/reminder.class.php:397 inc/reservationitem.class.php:240
 #: inc/rssfeed.class.php:424 inc/rule.class.php:764 inc/search.class.php:5462
 #: inc/software.class.php:505 inc/supplier.class.php:331
-#: inc/ticket.class.php:4685 inc/transfer.class.php:100
+#: inc/ticket.class.php:4687 inc/transfer.class.php:100
 #: inc/transfer.class.php:3290 inc/user.class.php:2890
 msgid "Last update"
 msgstr "Cập nhật lần cuối"
@@ -4423,7 +4423,7 @@ msgstr "Máy chủ mặc định"
 
 #: inc/authldap.class.php:354 inc/authldap.class.php:875
 #: inc/authldapreplicate.class.php:88 inc/authmail.class.php:116
-#: inc/config.class.php:1807 inc/toolbox.class.php:1985
+#: inc/config.class.php:1807 inc/toolbox.class.php:1996
 msgid "Server"
 msgstr "Máy chủ"
 
@@ -4499,7 +4499,7 @@ msgstr "Số lượng kết quả tối đa"
 
 #: inc/authldap.class.php:481 inc/contract.class.php:289
 #: inc/search.class.php:4604 inc/softwarelicense.class.php:425
-#: inc/softwarelicense.class.php:1142 inc/softwarelicense.class.php:1168
+#: inc/softwarelicense.class.php:1136 inc/softwarelicense.class.php:1162
 msgid "Unlimited"
 msgstr "Không giới hạn"
 
@@ -4586,8 +4586,8 @@ msgid "Binding to the LDAP directory"
 msgstr "Liên kết với các thư mục LDAP"
 
 #: inc/authldap.class.php:782 inc/authldap.class.php:3134
-#: inc/notepad.class.php:328 inc/ticket.class.php:6994
-#: inc/ticket.class.php:7218 inc/ticketfollowup.class.php:986
+#: inc/notepad.class.php:328 inc/ticket.class.php:6996
+#: inc/ticket.class.php:7220 inc/ticketfollowup.class.php:986
 #: inc/user.class.php:1939 inc/user.class.php:1942 inc/user.class.php:1947
 #: inc/user.class.php:2306 inc/user.class.php:2309 inc/user.class.php:2313
 #: inc/user.class.php:2753 inc/user.class.php:3111
@@ -4789,7 +4789,7 @@ msgstr "Thêm một bản sao thư mục LDAP"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:124 inc/mailcollector.class.php:363
-#: inc/toolbox.class.php:2086
+#: inc/toolbox.class.php:2097
 msgid "Connection string"
 msgstr "Chuỗi kết nối"
 
@@ -4820,14 +4820,14 @@ msgid "Update Source"
 msgid_plural "Update Sources"
 msgstr[0] "Các nguồn cập nhật"
 
-#: inc/backup.class.php:76 inc/commondbtm.class.php:4729 inc/log.class.php:726
+#: inc/backup.class.php:76 inc/commondbtm.class.php:4726 inc/log.class.php:726
 #: inc/profile.class.php:819 inc/profile.class.php:2539
 #: inc/reminder.class.php:1153 inc/report.class.php:449
 #: inc/rssfeed.class.php:967 inc/stat.class.php:1312
 msgid "Read"
 msgstr "Đọc"
 
-#: inc/backup.class.php:77 inc/commondbtm.class.php:4728
+#: inc/backup.class.php:77 inc/commondbtm.class.php:4725
 #: inc/displaypreference.class.php:292
 msgid "Create"
 msgstr "Tạo"
@@ -4891,8 +4891,8 @@ msgstr "Chính"
 #: inc/contract_item.class.php:304 inc/group.class.php:302
 #: inc/group.class.php:502 inc/infocom.class.php:141
 #: inc/ipaddress.class.php:246 inc/ipaddress.class.php:1008
-#: inc/item_devices.class.php:363 inc/item_devices.class.php:412
-#: inc/item_devices.class.php:1068 inc/item_problem.class.php:274
+#: inc/item_devices.class.php:371 inc/item_devices.class.php:420
+#: inc/item_devices.class.php:1077 inc/item_problem.class.php:274
 #: inc/item_project.class.php:271 inc/item_ticket.class.php:583
 #: inc/knowbaseitem_item.class.php:211 inc/location.class.php:208
 #: inc/notificationtargetchange.class.php:338
@@ -4908,7 +4908,7 @@ msgid "Item"
 msgid_plural "Items"
 msgstr[0] "Các mục"
 
-#: inc/budget.class.php:327 inc/item_devices.class.php:1071
+#: inc/budget.class.php:327 inc/item_devices.class.php:1080
 #: inc/supplier.class.php:484
 msgid "No associated item"
 msgstr "Không mục được kết hợp"
@@ -4921,8 +4921,8 @@ msgstr "Không mục được kết hợp"
 #: inc/notificationtargetproject.class.php:600
 #: inc/notificationtargetreservation.class.php:148
 #: inc/notificationtargetreservation.class.php:165
-#: inc/notificationtargetticket.class.php:727
-#: inc/notificationtargetticket.class.php:861 inc/supplier.class.php:486
+#: inc/notificationtargetticket.class.php:731
+#: inc/notificationtargetticket.class.php:865 inc/supplier.class.php:486
 msgid "Associated item"
 msgid_plural "Associated items"
 msgstr[0] "Các mục được kết hợp"
@@ -4977,9 +4977,9 @@ msgstr[0] "Các mục được kết hợp"
 #: inc/computervirtualmachine.class.php:344 inc/contact_supplier.class.php:227
 #: inc/contact_supplier.class.php:365 inc/contractcost.class.php:389
 #: inc/contract_item.class.php:471 inc/document_item.class.php:922
-#: inc/group_user.class.php:213 inc/group_user.class.php:459
-#: inc/ipaddress.class.php:275 inc/item_devices.class.php:440
-#: inc/item_devices.class.php:457 inc/item_project.class.php:248
+#: inc/group_user.class.php:204 inc/group_user.class.php:450
+#: inc/ipaddress.class.php:275 inc/item_devices.class.php:448
+#: inc/item_devices.class.php:465 inc/item_project.class.php:248
 #: inc/levelagreement.class.php:428 inc/levelagreement.class.php:563
 #: inc/netpoint.class.php:354 inc/networkalias.class.php:412
 #: inc/networkname.class.php:779 inc/networkport.class.php:577
@@ -4995,9 +4995,9 @@ msgstr[0] "Các mục được kết hợp"
 #: inc/search.class.php:1673 inc/search.class.php:1688
 #: inc/search.class.php:1724 inc/search.class.php:1727
 #: inc/search.class.php:1754 inc/search.class.php:1771
-#: inc/slalevel.class.php:152 inc/softwarelicense.class.php:1040
+#: inc/slalevel.class.php:152 inc/softwarelicense.class.php:1034
 #: inc/softwareversion.class.php:308 inc/supplier.class.php:610
-#: inc/ticket.class.php:6111 inc/user.class.php:3909
+#: inc/ticket.class.php:6113 inc/user.class.php:3909
 #, php-format
 msgid "%1$s = %2$s"
 msgstr "%1$s = %2$s"
@@ -5007,7 +5007,7 @@ msgstr "%1$s = %2$s"
 #: inc/commonitilcost.class.php:618 inc/computer_softwarelicense.class.php:309
 #: inc/computer_softwareversion.class.php:642 inc/consumable.class.php:669
 #: inc/consumable.class.php:707 inc/item_project.class.php:248
-#: inc/softwarelicense.class.php:1167 inc/softwareversion.class.php:336
+#: inc/softwarelicense.class.php:1161 inc/softwareversion.class.php:336
 #: inc/state.class.php:166 inc/state.class.php:220 inc/supplier.class.php:610
 msgid "Total"
 msgstr "Tổng"
@@ -5395,7 +5395,7 @@ msgstr "Thêm một mô-đen máy in tương thích"
 #: inc/contract_item.class.php:517 inc/crontask.class.php:1078
 #: inc/crontask.class.php:1123 inc/crontask.class.php:1205
 #: inc/displaypreference.class.php:632 inc/group.class.php:880
-#: inc/group_user.class.php:548 inc/itilcategory.class.php:356
+#: inc/group_user.class.php:539 inc/itilcategory.class.php:356
 #: inc/knowbaseitem.class.php:1531 inc/levelagreement.class.php:532
 #: inc/location.class.php:316 inc/netpoint.class.php:316
 #: inc/networkalias.class.php:396
@@ -5404,7 +5404,7 @@ msgstr "Thêm một mô-đen máy in tương thích"
 #: inc/projectcost.class.php:425 inc/projecttask.class.php:1103
 #: inc/projecttask_ticket.class.php:449 inc/rule.class.php:2775
 #: inc/savedsearch_alert.class.php:272 inc/search.class.php:5908
-#: inc/software.class.php:1000 inc/softwarelicense.class.php:1183
+#: inc/software.class.php:1000 inc/softwarelicense.class.php:1177
 #: inc/softwareversion.class.php:342 inc/state.class.php:232
 #: inc/tickettemplatehiddenfield.class.php:277
 #: inc/tickettemplatemandatoryfield.class.php:296
@@ -5524,10 +5524,10 @@ msgstr ""
 #: inc/report.class.php:114 inc/ruleticket.class.php:579
 #: inc/search.class.php:5404 inc/search.class.php:5425
 #: inc/software.class.php:650 inc/softwarelicense.class.php:321
-#: inc/softwarelicense.class.php:630 inc/softwareversion.class.php:139
+#: inc/softwarelicense.class.php:624 inc/softwareversion.class.php:139
 #: inc/softwareversion.class.php:193 inc/softwareversion.class.php:315
-#: inc/state.class.php:155 inc/tasktemplate.class.php:70
-#: inc/ticket.class.php:4861 inc/user.class.php:3791 inc/user.class.php:3871
+#: inc/state.class.php:155 inc/tasktemplate.class.php:71
+#: inc/ticket.class.php:4863 inc/user.class.php:3791 inc/user.class.php:3871
 msgid "Status"
 msgid_plural "Statuses"
 msgstr[0] "Các trạng thái"
@@ -5557,20 +5557,20 @@ msgstr "Số lượng các mục liên quan"
 #: inc/profile_user.class.php:566 inc/search.class.php:4298
 #: inc/search.class.php:4302 inc/search.class.php:4337
 #: inc/search.class.php:4341 inc/softwarelicense.class.php:313
-#: inc/softwarelicense.class.php:382 inc/ticket.class.php:3924
-#: inc/ticket.class.php:3931 inc/ticket.class.php:3959
-#: inc/ticket.class.php:3986 inc/ticket.class.php:3997
-#: inc/ticket.class.php:4006 inc/ticket.class.php:4051
-#: inc/ticket.class.php:4073 inc/ticket.class.php:4643
-#: inc/ticket.class.php:4700 inc/ticket.class.php:4712
-#: inc/ticket.class.php:4727 inc/ticket.class.php:4739
-#: inc/ticket.class.php:4782 inc/ticket.class.php:4807
-#: inc/ticket.class.php:4861 inc/ticket.class.php:4886
-#: inc/ticket.class.php:4902 inc/ticket.class.php:4924
-#: inc/ticket.class.php:4978 inc/ticket.class.php:4994
-#: inc/ticket.class.php:5010 inc/ticket.class.php:5042
-#: inc/ticket.class.php:5075 inc/ticket.class.php:5095
-#: inc/ticket.class.php:5116 inc/ticket.class.php:5209
+#: inc/softwarelicense.class.php:382 inc/ticket.class.php:3926
+#: inc/ticket.class.php:3933 inc/ticket.class.php:3961
+#: inc/ticket.class.php:3988 inc/ticket.class.php:3999
+#: inc/ticket.class.php:4008 inc/ticket.class.php:4053
+#: inc/ticket.class.php:4075 inc/ticket.class.php:4645
+#: inc/ticket.class.php:4702 inc/ticket.class.php:4714
+#: inc/ticket.class.php:4729 inc/ticket.class.php:4741
+#: inc/ticket.class.php:4784 inc/ticket.class.php:4809
+#: inc/ticket.class.php:4863 inc/ticket.class.php:4888
+#: inc/ticket.class.php:4904 inc/ticket.class.php:4926
+#: inc/ticket.class.php:4980 inc/ticket.class.php:4996
+#: inc/ticket.class.php:5012 inc/ticket.class.php:5044
+#: inc/ticket.class.php:5077 inc/ticket.class.php:5097
+#: inc/ticket.class.php:5118 inc/ticket.class.php:5211
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -5587,7 +5587,7 @@ msgstr ""
 #: inc/notificationtargetchange.class.php:285
 #: inc/notificationtargetproblem.class.php:219
 #: inc/notificationtargetproject.class.php:606
-#: inc/notificationtargetticket.class.php:753 inc/peripheral.class.php:234
+#: inc/notificationtargetticket.class.php:757 inc/peripheral.class.php:234
 #: inc/peripheral.class.php:434 inc/phone.class.php:232
 #: inc/phone.class.php:456 inc/printer.class.php:331 inc/printer.class.php:580
 #: inc/search.class.php:5453
@@ -5673,8 +5673,8 @@ msgstr "Các kế hoạcj"
 #: inc/commonitilobject.class.php:2924
 #: inc/notificationtargetcommonitilobject.class.php:1222
 #: inc/problem.class.php:182 inc/problem.class.php:195
-#: inc/ticket.class.php:805 inc/ticket.class.php:7329
-#: inc/ticket.class.php:7330 inc/ticket.class.php:7463
+#: inc/ticket.class.php:805 inc/ticket.class.php:7331
+#: inc/ticket.class.php:7332 inc/ticket.class.php:7465
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "Các giải pháp"
@@ -5700,7 +5700,7 @@ msgid "Checklist"
 msgstr "Danh sách đánh dấu"
 
 #: inc/change.class.php:491 inc/plugin.class.php:465 inc/problem.class.php:551
-#: inc/ticket.class.php:3536
+#: inc/ticket.class.php:3538
 msgctxt "status"
 msgid "New"
 msgstr "Mới"
@@ -5715,7 +5715,7 @@ msgstr "Đánh giá"
 #: inc/commonitilvalidation.class.php:1111
 #: inc/commonitilvalidation.class.php:1130
 #: inc/notificationtargetcommonitilobject.class.php:735
-#: inc/ticket.class.php:4928
+#: inc/ticket.class.php:4930
 msgid "Approval"
 msgid_plural "Approvals"
 msgstr[0] "Các phê chuẩn"
@@ -5726,7 +5726,7 @@ msgid "Accepted"
 msgstr "Được chấp nhận"
 
 #: inc/change.class.php:495 inc/commonitilobject.class.php:4629
-#: inc/problem.class.php:555 inc/ticket.class.php:3539
+#: inc/problem.class.php:555 inc/ticket.class.php:3541
 msgid "Pending"
 msgstr "Đang chờ"
 
@@ -5748,25 +5748,25 @@ msgid "Review"
 msgstr "Xem xét"
 
 #: inc/change.class.php:500 inc/problem.class.php:558
-#: inc/ticket.class.php:3541
+#: inc/ticket.class.php:3543
 msgctxt "status"
 msgid "Closed"
 msgstr "Đã đóng"
 
 #: inc/change.class.php:504 inc/problem.class.php:561
-#: inc/ticket.class.php:3544
+#: inc/ticket.class.php:3546
 msgctxt "status"
 msgid "Not solved"
 msgstr "Chưa được giải quyết"
 
 #: inc/change.class.php:505 inc/problem.class.php:562
-#: inc/ticket.class.php:3545
+#: inc/ticket.class.php:3547
 msgctxt "status"
 msgid "Not closed"
 msgstr "Chưa được đón"
 
 #: inc/change.class.php:507 inc/problem.class.php:564
-#: inc/ticket.class.php:3547
+#: inc/ticket.class.php:3549
 msgctxt "status"
 msgid "Solved + Closed"
 msgstr "Đã giải quyết + Đã đóng"
@@ -5779,7 +5779,7 @@ msgstr "Đã giải quyết + Đã đóng"
 #: inc/commondbtm.class.php:1343 inc/commondbtm.class.php:2443
 #: inc/commonglpi.class.php:863 inc/item_ticket.class.php:1337
 #: inc/problem.class.php:1091 inc/savedsearch.class.php:368
-#: inc/ticket.class.php:4620
+#: inc/ticket.class.php:4622
 #, php-format
 msgid "%1$s - ID %2$d"
 msgstr "%1$s - ID %2$d"
@@ -5790,9 +5790,9 @@ msgstr "%1$s - ID %2$d"
 #: inc/notificationtargetcommonitilobject.class.php:1254
 #: inc/notificationtargetproject.class.php:573
 #: inc/notificationtargetprojecttask.class.php:478
-#: inc/notificationtargetticket.class.php:757 inc/problem.class.php:1101
-#: inc/projecttask.class.php:786 inc/ticket.class.php:4643
-#: inc/ticket.class.php:4645 inc/ticket.class.php:7627
+#: inc/notificationtargetticket.class.php:761 inc/problem.class.php:1101
+#: inc/projecttask.class.php:786 inc/ticket.class.php:4645
+#: inc/ticket.class.php:4647 inc/ticket.class.php:7629
 msgid "Opening date"
 msgstr "Ngày khai mạc"
 
@@ -5800,12 +5800,12 @@ msgstr "Ngày khai mạc"
 #: inc/commonitilobject.class.php:4576 inc/commonitilobject.class.php:5300
 #: inc/levelagreement.class.php:912 inc/levelagreementlevel.class.php:286
 #: inc/notificationtargetcommonitilobject.class.php:1188
-#: inc/notificationtargetticket.class.php:718 inc/olalevel.class.php:179
+#: inc/notificationtargetticket.class.php:722 inc/olalevel.class.php:179
 #: inc/problem.class.php:1116 inc/ruleticket.class.php:469
 #: inc/ruleticket.class.php:485 inc/ruleticket.class.php:590
 #: inc/ruleticket.class.php:606 inc/slalevel.class.php:179
-#: inc/ticket.class.php:2918 inc/ticket.class.php:4712
-#: inc/ticket.class.php:4714 inc/ticket.class.php:7661
+#: inc/ticket.class.php:2918 inc/ticket.class.php:4714
+#: inc/ticket.class.php:4716 inc/ticket.class.php:7663
 msgid "Time to resolve"
 msgstr ""
 
@@ -5815,8 +5815,8 @@ msgstr ""
 #: inc/reminder.class.php:995 inc/reservation.class.php:681
 #: inc/reservation.class.php:1090 inc/reservation.class.php:1138
 #: inc/reservation.class.php:1208 inc/reservation.class.php:1271
-#: inc/rssfeed.class.php:617 inc/tasktemplate.class.php:79
-#: inc/ticket.class.php:4665
+#: inc/rssfeed.class.php:617 inc/tasktemplate.class.php:80
+#: inc/ticket.class.php:4667
 msgid "By"
 msgstr "Bởi"
 
@@ -5829,7 +5829,7 @@ msgstr "Ngày giải quyết"
 #: inc/change.class.php:720 inc/commonitilobject.class.php:2785
 #: inc/commonitilobject.class.php:4586
 #: inc/notificationtargetcommonitilobject.class.php:1186
-#: inc/problem.class.php:1154 inc/ticket.class.php:7674
+#: inc/problem.class.php:1154 inc/ticket.class.php:7676
 msgid "Closing date"
 msgstr "Ngày đóng cửa"
 
@@ -5840,7 +5840,7 @@ msgstr "Ngày đóng cửa"
 #: inc/notificationtargetcommonitilobject.class.php:1259
 #: inc/notificationtargetprojecttask.class.php:475 inc/problem.class.php:1195
 #: inc/projecttask.class.php:618 inc/stat.class.php:485
-#: inc/ticket.class.php:5075
+#: inc/ticket.class.php:5077
 msgid "Total duration"
 msgstr "Tổng thời hạn"
 
@@ -5866,10 +5866,10 @@ msgstr "Tổng thời hạn"
 #: inc/notificationtargetprojecttask.class.php:459
 #: inc/notificationtargetprojecttask.class.php:480
 #: inc/notificationtargetprojecttask.class.php:521
-#: inc/notificationtargetticket.class.php:760
-#: inc/notificationtargetticket.class.php:914
-#: inc/notificationtargetticket.class.php:921
-#: inc/notificationtargetticket.class.php:928 inc/problem.class.php:824
+#: inc/notificationtargetticket.class.php:764
+#: inc/notificationtargetticket.class.php:918
+#: inc/notificationtargetticket.class.php:925
+#: inc/notificationtargetticket.class.php:932 inc/problem.class.php:824
 #: inc/problem.class.php:1225 inc/project.class.php:495
 #: inc/project.class.php:1195 inc/projecttask.class.php:625
 #: inc/projecttask.class.php:761 inc/projecttasktemplate.class.php:95
@@ -5879,8 +5879,8 @@ msgstr "Tổng thời hạn"
 #: inc/rulecollection.class.php:482 inc/rulecollection.class.php:513
 #: inc/ruleimportcomputer.class.php:104 inc/ruleright.class.php:75
 #: inc/ruleticket.class.php:340 inc/ticket.class.php:3094
-#: inc/ticket.class.php:4073 inc/ticket.class.php:5116
-#: inc/ticket.class.php:5752 inc/ticketfollowup.class.php:556
+#: inc/ticket.class.php:4075 inc/ticket.class.php:5118
+#: inc/ticket.class.php:5754 inc/ticketfollowup.class.php:556
 #: inc/ticketfollowup.class.php:679 inc/ticketfollowup.class.php:731
 #: inc/ticketfollowup.class.php:1091 inc/ticketfollowup.class.php:1164
 msgid "Description"
@@ -5905,8 +5905,8 @@ msgid "Last changes"
 msgstr "Các thay đổi cuối"
 
 #: inc/change.class.php:1040 inc/group.class.php:154 inc/group.class.php:776
-#: inc/group_user.class.php:436 inc/problem.class.php:1400
-#: inc/ticket.class.php:6008
+#: inc/group_user.class.php:427 inc/problem.class.php:1400
+#: inc/ticket.class.php:6010
 msgid "Child groups"
 msgstr "Các nhóm con"
 
@@ -5998,9 +5998,9 @@ msgstr "Mục chưa liên kết tới một vật"
 #: inc/reminder.class.php:1105 inc/reminder.class.php:1106
 #: inc/rssfeed.class.php:915 inc/rssfeed.class.php:916
 #: inc/ruleaction.class.php:396 inc/ruleticket.class.php:83
-#: inc/ruleticket.class.php:85 inc/ticket.class.php:4171
-#: inc/ticket.class.php:5167 inc/ticket.class.php:5314
-#: inc/ticket.class.php:5323 inc/ticket.class.php:5851
+#: inc/ruleticket.class.php:85 inc/ticket.class.php:4173
+#: inc/ticket.class.php:5169 inc/ticket.class.php:5316
+#: inc/ticket.class.php:5325 inc/ticket.class.php:5853
 msgid "Add"
 msgstr "Thêm"
 
@@ -6073,29 +6073,29 @@ msgstr "Được tạo từ biểu mẫu %s"
 
 #. TRANS : means update / actualize
 #: inc/commondbtm.class.php:2204 inc/commondbtm.class.php:2216
-#: inc/commonglpi.class.php:1179 inc/commonitilactor.class.php:215
-#: inc/commonitilactor.class.php:279 inc/commonitilvalidation.class.php:788
+#: inc/commonglpi.class.php:1179 inc/commonitilactor.class.php:211
+#: inc/commonitilactor.class.php:275 inc/commonitilvalidation.class.php:788
 #: inc/config.class.php:452 inc/config.class.php:600 inc/config.class.php:644
 #: inc/config.class.php:714 inc/config.class.php:783 inc/config.class.php:964
 #: inc/config.class.php:1397 inc/config.class.php:1824
 #: inc/entity.class.php:1370 inc/entity.class.php:1459
 #: inc/entity.class.php:1614 inc/entity.class.php:2005
 #: inc/entity.class.php:2319 inc/infocom.class.php:1283
-#: inc/item_devices.class.php:498 inc/planningrecall.class.php:325
+#: inc/item_devices.class.php:506 inc/planningrecall.class.php:325
 #: inc/profile.class.php:706 inc/profile.class.php:756
 #: inc/profile.class.php:830 inc/profile.class.php:896
 #: inc/profile.class.php:962 inc/profile.class.php:1110
 #: inc/profile.class.php:1193 inc/profile.class.php:1288
 #: inc/profile.class.php:1382 inc/profile.class.php:1477
 #: inc/reservation.class.php:774 inc/reservationitem.class.php:370
-#: inc/ticket.class.php:5265 inc/ticket.class.php:7505 inc/user.class.php:2489
+#: inc/ticket.class.php:5267 inc/ticket.class.php:7507 inc/user.class.php:2489
 #: inc/user.class.php:4665
 msgctxt "button"
 msgid "Save"
 msgstr "Lưu"
 
 #: inc/commondbtm.class.php:2226 inc/massiveaction.class.php:537
-#: inc/ticket.class.php:5260
+#: inc/ticket.class.php:5262
 msgctxt "button"
 msgid "Restore"
 msgstr "Phục hồi"
@@ -6105,13 +6105,13 @@ msgid "Check to keep the devices while deleting this item"
 msgstr "Đánh dấu để giữ các thiết bị khi xóa mục này"
 
 #: inc/commondbtm.class.php:2252 inc/notepad.class.php:371
-#: inc/ticket.class.php:5272 inc/ticketfollowup.class.php:815
+#: inc/ticket.class.php:5274 inc/ticketfollowup.class.php:815
 #: inc/ticketfollowup.class.php:1040 inc/tickettask.class.php:312
 msgid "Confirm the final deletion?"
 msgstr "Xác nhận việc xóa cuối cùng?"
 
-#: inc/commondbtm.class.php:2256 inc/commondbtm.class.php:4738
-#: inc/massiveaction.class.php:559 inc/ticket.class.php:5277
+#: inc/commondbtm.class.php:2256 inc/commondbtm.class.php:4735
+#: inc/massiveaction.class.php:559 inc/ticket.class.php:5279
 #: inc/transfer.class.php:3300
 msgctxt "button"
 msgid "Put in dustbin"
@@ -6189,65 +6189,65 @@ msgstr "%1$s đang cố thêm một mục đang tồn tại: %2$s"
 msgid "Default value"
 msgstr "Giá trị mặc định"
 
-#: inc/commondbtm.class.php:4611
+#: inc/commondbtm.class.php:4608
 msgid "Choose a template"
 msgstr "Chọn một biểu mẫu"
 
-#: inc/commondbtm.class.php:4613
+#: inc/commondbtm.class.php:4610
 msgid "Blank Template"
 msgstr "Biểu mẫu trống"
 
-#: inc/commondbtm.class.php:4620
+#: inc/commondbtm.class.php:4617
 msgid "Templates"
 msgstr "Các biểu mẫu"
 
-#: inc/commondbtm.class.php:4671
+#: inc/commondbtm.class.php:4668
 msgid "Add a template..."
 msgstr "Thêm một biểu mẫu..."
 
-#: inc/commondbtm.class.php:4730 inc/item_devices.class.php:686
+#: inc/commondbtm.class.php:4727 inc/item_devices.class.php:694
 #: inc/profile.class.php:820 inc/ruleticket.class.php:84
 #: inc/ruleticket.class.php:86 inc/supplier.class.php:450
-#: inc/ticket.class.php:5045 inc/ticket.class.php:5046
+#: inc/ticket.class.php:5047 inc/ticket.class.php:5048
 msgid "Update"
 msgstr "Cập nhật"
 
-#: inc/commondbtm.class.php:4731
+#: inc/commondbtm.class.php:4728
 msgid "Purge"
 msgstr "Loại bỏ"
 
-#: inc/commondbtm.class.php:4737 inc/displaypreference.class.php:306
+#: inc/commondbtm.class.php:4734 inc/displaypreference.class.php:306
 #: inc/planning.class.php:1290
 msgid "Delete"
 msgstr "Xóa"
 
-#: inc/commondbtm.class.php:4741
+#: inc/commondbtm.class.php:4738
 msgid "Read notes"
 msgstr "Đọc các ghi chú"
 
-#: inc/commondbtm.class.php:4742
+#: inc/commondbtm.class.php:4739
 msgid "Read the item's notes"
 msgstr "Đọc các ghi chú của mục"
 
-#: inc/commondbtm.class.php:4743
+#: inc/commondbtm.class.php:4740
 msgid "Update notes"
 msgstr "Các ghi chú cập nhật"
 
-#: inc/commondbtm.class.php:4744
+#: inc/commondbtm.class.php:4741
 msgid "Update the item's notes"
 msgstr "Cập nhật các ghi chú mục này"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/commondbtm.class.php:4842
+#: inc/commondbtm.class.php:4839
 #, php-format
 msgid "Document Ticket %d"
 msgstr "Vé tài liệu %d"
 
-#: inc/commondbtm.class.php:4935
+#: inc/commondbtm.class.php:4932
 msgid "You can define an autofill template"
 msgstr ""
 
-#: inc/commondbtm.class.php:4946
+#: inc/commondbtm.class.php:4943
 msgid "Autofilled from template"
 msgstr ""
 
@@ -6277,10 +6277,10 @@ msgstr[0] "Các người nhận"
 #: inc/ipnetwork.class.php:163 inc/ipnetwork.class.php:166
 #: inc/ipnetwork.class.php:986 inc/notepad.class.php:347
 #: inc/notificationtargetcontract.class.php:160
-#: inc/notificationtargetticket.class.php:713
-#: inc/notificationtargetticket.class.php:716
-#: inc/notificationtargetticket.class.php:719
-#: inc/notificationtargetticket.class.php:722 inc/ruleticket.class.php:85
+#: inc/notificationtargetticket.class.php:717
+#: inc/notificationtargetticket.class.php:720
+#: inc/notificationtargetticket.class.php:723
+#: inc/notificationtargetticket.class.php:726 inc/ruleticket.class.php:85
 #: inc/search.class.php:1713
 #, php-format
 msgid "%1$s / %2$s"
@@ -6362,7 +6362,7 @@ msgstr "Trộn"
 
 #: inc/commonglpi.class.php:72 inc/commonitilobject.class.php:5401
 #: inc/item_ticket.class.php:649 inc/item_ticket.class.php:733
-#: inc/rule.class.php:2202 inc/ticket.class.php:6250
+#: inc/rule.class.php:2202 inc/ticket.class.php:6252
 msgid "General"
 msgstr "Tổng thể"
 
@@ -6385,8 +6385,8 @@ msgstr "Danh sách"
 msgid "Last"
 msgstr "Cuối cùng"
 
-#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7331
-#: inc/ticket.class.php:7332
+#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7333
+#: inc/ticket.class.php:7334
 msgid "Reset display options"
 msgstr "Đặt lại các lựa chọn hiển thị"
 
@@ -6410,11 +6410,11 @@ msgstr "Lỗi khi thực thi hành động này"
 msgid "Item already defined"
 msgstr "Mục đã được định nghĩa"
 
-#: inc/commonitilactor.class.php:183 inc/commonitilactor.class.php:263
+#: inc/commonitilactor.class.php:183 inc/commonitilactor.class.php:259
 msgid "Email Followup"
 msgstr "Email theo dõi"
 
-#: inc/commonitilactor.class.php:336 inc/commonitilobject.class.php:648
+#: inc/commonitilactor.class.php:332 inc/commonitilobject.class.php:648
 #: inc/commonitilobject.class.php:704 inc/commonitilobject.class.php:3378
 #: inc/mailcollector.class.php:154 inc/mailcollector.class.php:179
 #: inc/notificationmailingsetting.class.php:82
@@ -6476,7 +6476,7 @@ msgstr "Ngày bắt đầu"
 #: inc/crontask.class.php:1157
 #: inc/notificationtargetcommonitilobject.class.php:1241
 #: inc/reservation.class.php:705 inc/reservationitem.class.php:430
-#: inc/tasktemplate.class.php:76
+#: inc/tasktemplate.class.php:77
 msgid "Duration"
 msgstr "Thời hạn"
 
@@ -6681,7 +6681,7 @@ msgstr "Tối thiểu rất cao"
 #: inc/log.class.php:521 inc/notificationtargetcommonitilobject.class.php:559
 #: inc/notificationtargetcommonitilobject.class.php:1223
 #: inc/ruleticket.class.php:419 inc/ruleticket.class.php:553
-#: inc/ticket.class.php:4006
+#: inc/ticket.class.php:4008
 msgid "Watcher"
 msgid_plural "Watchers"
 msgstr[0] "Các người xem"
@@ -6695,7 +6695,7 @@ msgid "Time to resolve exceedeed"
 msgstr ""
 
 #: inc/commonitilobject.class.php:2830 inc/commonitilobject.class.php:4581
-#: inc/ticket.class.php:4755 inc/ticket.class.php:7669
+#: inc/ticket.class.php:4757 inc/ticket.class.php:7671
 msgid "Resolution date"
 msgstr "Ngày quyết định"
 
@@ -6855,8 +6855,8 @@ msgstr "Planification"
 #: inc/notificationtargetprojecttask.class.php:560
 #: inc/notificationtargetprojecttask.class.php:573 inc/profile.class.php:652
 #: inc/profile.class.php:953 inc/profile.class.php:1033
-#: inc/profile.class.php:1035 inc/ticket.class.php:7323
-#: inc/ticket.class.php:7324 inc/ticket.class.php:7453
+#: inc/profile.class.php:1035 inc/ticket.class.php:7325
+#: inc/ticket.class.php:7326 inc/ticket.class.php:7455
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "Các nhiệm vụ"
@@ -6878,8 +6878,8 @@ msgstr "Kết thúc của khung thời gian đã chọn không phải là giờ 
 
 #: inc/commonitiltask.class.php:579 inc/commonitiltask.class.php:686
 #: inc/dropdown.class.php:790 inc/profile.class.php:1442
-#: inc/taskcategory.class.php:85 inc/tasktemplate.class.php:66
-#: inc/tasktemplate.class.php:102
+#: inc/taskcategory.class.php:85 inc/tasktemplate.class.php:67
+#: inc/tasktemplate.class.php:103
 msgid "Task category"
 msgid_plural "Task categories"
 msgstr[0] "Các danh mục nhiệm vụ"
@@ -6970,9 +6970,9 @@ msgstr "Nhắc nhở"
 #: inc/commonitiltask.class.php:1487 inc/commonitiltask.class.php:1729
 #: inc/notificationtargetcommonitilobject.class.php:1253
 #: inc/notificationtargetplanningrecall.class.php:182
-#: inc/notificationtargetticket.class.php:758 inc/savedsearch.class.php:399
-#: inc/savedsearch.class.php:415 inc/tasktemplate.class.php:73
-#: inc/ticket.class.php:7131 inc/ticketfollowup.class.php:716
+#: inc/notificationtargetticket.class.php:762 inc/savedsearch.class.php:399
+#: inc/savedsearch.class.php:415 inc/tasktemplate.class.php:74
+#: inc/ticket.class.php:7133 inc/ticketfollowup.class.php:716
 #: inc/ticketfollowup.class.php:1006 inc/ticketfollowup.class.php:1189
 msgid "Private"
 msgstr "Riêng tư"
@@ -7069,7 +7069,7 @@ msgstr "Đã cấp + Không có chủ đề được phê chuẩn"
 
 #: inc/commonitilvalidation.class.php:763
 #: inc/notificationtargetchange.class.php:288
-#: inc/notificationtargetticket.class.php:775
+#: inc/notificationtargetticket.class.php:779
 msgid "Global approval status"
 msgstr "Trạng thái xác nhận toàn cục"
 
@@ -7109,7 +7109,7 @@ msgstr "Trạng thái xác nhận"
 #: inc/commonitilvalidation.class.php:1094
 #: inc/commonitilvalidation.class.php:1225
 #: inc/notificationtargetcommonitilobject.class.php:567
-#: inc/notificationtargetticket.class.php:778
+#: inc/notificationtargetticket.class.php:782
 msgid "Approver"
 msgstr "Người xác nhận"
 
@@ -7132,7 +7132,7 @@ msgstr "Gửi yêu cầu xác nhận"
 
 #: inc/commonitilvalidation.class.php:994
 #: inc/notificationtargetchange.class.php:299
-#: inc/notificationtargetticket.class.php:789
+#: inc/notificationtargetticket.class.php:793
 msgid "Status of the approval request"
 msgstr "Trạng thái của yêu cầu xác nhận"
 
@@ -7177,7 +7177,7 @@ msgstr "Con của"
 msgid "New child heading"
 msgstr "Đề mục con mới"
 
-#: inc/commontreedropdown.class.php:518 inc/softwarelicense.class.php:1275
+#: inc/commontreedropdown.class.php:518 inc/softwarelicense.class.php:1269
 #, php-format
 msgid "Sons of %s"
 msgstr "Các con của %s"
@@ -7194,7 +7194,7 @@ msgstr "Di chuyển"
 #: inc/notificationtargetproject.class.php:563
 #: inc/notificationtargetprojecttask.class.php:467 inc/project.class.php:483
 #: inc/projecttask.class.php:748 inc/projecttask.class.php:941
-#: inc/projecttask_ticket.class.php:336 inc/softwarelicense.class.php:602
+#: inc/projecttask_ticket.class.php:336 inc/softwarelicense.class.php:596
 msgid "Father"
 msgstr "Cha"
 
@@ -7224,7 +7224,7 @@ msgstr "Phiên bản cơ sở dữ liệu chữ ký"
 #: inc/computer_softwareversion.class.php:791
 #: inc/computervirtualmachine.class.php:150
 #: inc/computervirtualmachine.class.php:355 inc/ipaddress.class.php:1025
-#: inc/item_devices.class.php:419 inc/networkname.class.php:522
+#: inc/item_devices.class.php:427 inc/networkname.class.php:522
 #: inc/networkport.class.php:479 inc/networkport.class.php:664
 msgid "Automatic inventory"
 msgstr "Hàng tồn kho tự động"
@@ -7267,10 +7267,11 @@ msgstr ""
 "Địa điểm được cập nhật. Các mục được kết nối đã được di chuyển trong cùng "
 "một vị trí."
 
-#: inc/computer.class.php:482 inc/dropdown.class.php:993
-#: inc/network.class.php:46 inc/networkequipment.class.php:358
-#: inc/printer.class.php:383 inc/profile.class.php:796
-#: inc/profile.class.php:1611
+#: inc/computer.class.php:482 inc/computer.class.php:744
+#: inc/dropdown.class.php:993 inc/network.class.php:46
+#: inc/networkequipment.class.php:358 inc/networkequipment.class.php:591
+#: inc/printer.class.php:383 inc/printer.class.php:740
+#: inc/profile.class.php:796 inc/profile.class.php:1611
 msgid "Network"
 msgid_plural "Networks"
 msgstr[0] "Các mạng"
@@ -7297,11 +7298,6 @@ msgstr "Kết nối"
 #: inc/software.class.php:365 inc/ticket.class.php:2684
 msgctxt "button"
 msgid "Link knowledgebase article"
-msgstr ""
-
-#: inc/computer.class.php:744 inc/networkequipment.class.php:591
-#: inc/printer.class.php:740
-msgid "Network Device"
 msgstr ""
 
 #: inc/computer.class.php:812 inc/deviceprocessor.class.php:47
@@ -7461,7 +7457,7 @@ msgstr "UUID máy ảo"
 #: inc/devicememory.class.php:57 inc/item_devicegraphiccard.class.php:57
 #: inc/item_deviceharddrive.class.php:57 inc/item_devicememory.class.php:59
 #: inc/networkequipment.class.php:389 inc/networkequipment.class.php:583
-#: inc/toolbox.class.php:982 inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:993 inc/toolbox.class.php:1145
 msgid "Mio"
 msgstr "Mio"
 
@@ -7502,7 +7498,7 @@ msgstr[0] "Các kết nối"
 #: inc/computer_softwareversion.class.php:904 inc/entity.class.php:1899
 #: inc/plugin.class.php:409 inc/profile.class.php:864
 #: inc/software.class.php:984 inc/softwarelicense.class.php:58
-#: inc/softwarelicense.class.php:711 install/install.php:578
+#: inc/softwarelicense.class.php:705 install/install.php:578
 msgid "License"
 msgid_plural "Licenses"
 msgstr[0] "Các giấy phép"
@@ -7517,7 +7513,7 @@ msgstr "Số lượng các máy bị ảnh hưởng"
 
 #: inc/computer_softwarelicense.class.php:406
 #: inc/computer_softwarelicense.class.php:565
-#: inc/softwarelicense.class.php:1000
+#: inc/softwarelicense.class.php:994
 msgid "Affected computers"
 msgstr "Các máy bị ảnh hưởng"
 
@@ -7605,8 +7601,8 @@ msgid "URL of the application"
 msgstr "URL của ứng dụng"
 
 #: inc/config.class.php:297
-msgid "Text in the login box"
-msgstr "Văn bản trong hộp đăng nhập"
+msgid "Text in the login box (HTML tags supported)"
+msgstr ""
 
 #: inc/config.class.php:303
 msgid "Allow FAQ anonymous access"
@@ -8762,7 +8758,7 @@ msgid "Initial contract period"
 msgstr "Chu kỳ hợp đồng ban đầu"
 
 #: inc/contract.class.php:234 inc/contract.class.php:520
-#: inc/contract.class.php:751 inc/contract.class.php:1613
+#: inc/contract.class.php:751 inc/contract.class.php:1606
 #: inc/notificationtargetcontract.class.php:51
 msgid "Notice"
 msgstr "Chú ý"
@@ -8839,8 +8835,8 @@ msgid "Remove an item"
 msgstr "Bỏ một mục"
 
 #: inc/contract.class.php:819 inc/softwarelicense.class.php:437
-#: inc/softwarelicense.class.php:578 inc/softwarelicense.class.php:790
-#: inc/softwarelicense.class.php:1004
+#: inc/softwarelicense.class.php:572 inc/softwarelicense.class.php:784
+#: inc/softwarelicense.class.php:998
 msgid "Expiration"
 msgstr "Hết hiệu lực"
 
@@ -8853,7 +8849,7 @@ msgstr "Ngày hết hạn + lưu ý"
 #: inc/notificationtargetcontract.class.php:156
 #: inc/notificationtargetproject.class.php:589
 #: inc/notificationtargetprojecttask.class.php:494
-#: inc/notificationtargetticket.class.php:766 inc/problem.class.php:431
+#: inc/notificationtargetticket.class.php:770 inc/problem.class.php:431
 msgctxt "quantity"
 msgid "Number of items"
 msgstr "Số lượng các mục"
@@ -8882,54 +8878,54 @@ msgstr "Các hợp đồng mà thông báo bắt đầu trong ít hơn 30 ngày"
 msgid "Send alarms on contracts"
 msgstr "Gửi các báo động về các hợp đồng"
 
-#: inc/contract.class.php:1260
+#: inc/contract.class.php:1258
 msgid "Contract entered in notice time"
 msgstr "Hợp đồng vào giai đoạn lưu ý"
 
-#: inc/contract.class.php:1265
+#: inc/contract.class.php:1263
 msgid "Contract ended"
 msgstr "Hợp đồng đã kết thúc"
 
-#: inc/contract.class.php:1336
+#: inc/contract.class.php:1330
 msgid "Contract entered in notice time for period"
 msgstr "Hợp đồng vào thời gian lưu ý cho một giai đoạn"
 
-#: inc/contract.class.php:1340
+#: inc/contract.class.php:1334
 msgid "Contract period ended"
 msgstr "Thời hạn hợp đồng đã kết thúc"
 
-#: inc/contract.class.php:1382
+#: inc/contract.class.php:1375
 msgid "send contract alert failed"
 msgstr "gửi báo động hợp đồng thất bại"
 
-#: inc/contract.class.php:1522 inc/contract.class.php:1543
-#: inc/contract.class.php:1563
+#: inc/contract.class.php:1515 inc/contract.class.php:1536
+#: inc/contract.class.php:1556
 msgid "Tacit"
 msgstr "Im lặng"
 
-#: inc/contract.class.php:1523 inc/contract.class.php:1546
-#: inc/contract.class.php:1566
+#: inc/contract.class.php:1516 inc/contract.class.php:1539
+#: inc/contract.class.php:1559
 msgid "Express"
 msgstr "Diễn tả"
 
-#: inc/contract.class.php:1614
+#: inc/contract.class.php:1607
 msgid "End + Notice"
 msgstr "Kết thúc + Lưu ý"
 
-#: inc/contract.class.php:1615
+#: inc/contract.class.php:1608
 msgid "Period end"
 msgstr "Cuối kỳ"
 
-#: inc/contract.class.php:1616
+#: inc/contract.class.php:1609
 msgid "Period end + Notice"
 msgstr "Thời gian kết thúc + Chú ý"
 
-#: inc/contract.class.php:1669
+#: inc/contract.class.php:1662
 msgctxt "button"
 msgid "Add a contract"
 msgstr "Thêm một hợp đồng"
 
-#: inc/contract.class.php:1670
+#: inc/contract.class.php:1663
 msgctxt "button"
 msgid "Remove a contract"
 msgstr "Loại bỏ một hợp đồng"
@@ -9153,8 +9149,8 @@ msgstr "Danh sách lần chạy cuối"
 
 #: inc/crontask.class.php:1100 inc/crontask.class.php:1158
 #: inc/fieldunicity.class.php:591 inc/problem.class.php:922
-#: inc/softwarelicense.class.php:419 inc/softwarelicense.class.php:999
-#: inc/stat.class.php:409 inc/ticket.class.php:5857
+#: inc/softwarelicense.class.php:419 inc/softwarelicense.class.php:993
+#: inc/stat.class.php:409 inc/ticket.class.php:5859
 msgctxt "quantity"
 msgid "Number"
 msgstr "Số"
@@ -9673,10 +9669,10 @@ msgstr[0] "Các tiêu đề tài liệu"
 #: inc/notificationtargetprojecttask.class.php:532
 #: inc/notificationtargetprojecttask.class.php:534
 #: inc/notificationtargetprojecttask.class.php:537
-#: inc/notificationtargetticket.class.php:862 inc/profile.class.php:871
+#: inc/notificationtargetticket.class.php:866 inc/profile.class.php:871
 #: inc/profile.class.php:1728 inc/ticket.class.php:2874
-#: inc/ticket.class.php:7325 inc/ticket.class.php:7326
-#: inc/ticket.class.php:7458 inc/transfer.class.php:3450
+#: inc/ticket.class.php:7327 inc/ticket.class.php:7328
+#: inc/ticket.class.php:7460 inc/transfer.class.php:3450
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "Các tài liệu"
@@ -9887,7 +9883,7 @@ msgstr[0] "Các kiểu tài liệu"
 msgid "Help"
 msgstr "Trợ giúp"
 
-#: inc/dropdown.class.php:204 inc/user.class.php:3578
+#: inc/dropdown.class.php:205 inc/user.class.php:3579
 #, php-format
 msgid "Show %1$s"
 msgstr ""
@@ -10423,13 +10419,13 @@ msgid_plural "Ticket templates"
 msgstr[0] "Các mẫu thẻ"
 
 #: inc/entity.class.php:910 inc/entity.class.php:2217
-#: inc/notificationtargetticket.class.php:767
+#: inc/notificationtargetticket.class.php:771
 msgid "Automatic closing of solved tickets after"
 msgstr "Tự động đóng các vé đã giải quyết sau khi"
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
-msgid "Immediatly"
-msgstr "Ngay lập tức"
+msgid "Immediately"
+msgstr ""
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"
@@ -10485,8 +10481,8 @@ msgid "to see the entity and its sub-entities"
 msgstr "để thấy đối tượng và các đối tượng con của nó"
 
 #: inc/entity.class.php:1104 inc/html.class.php:6271
-#: inc/reservation.class.php:442 inc/ticket.class.php:5908
-#: inc/ticket.class.php:6117
+#: inc/reservation.class.php:442 inc/ticket.class.php:5910
+#: inc/ticket.class.php:6119
 msgid "Show all"
 msgstr "Hiện tất cả"
 
@@ -10882,21 +10878,21 @@ msgstr "Thuộc tính của người dùng này bao gồm các nhóm của nó"
 msgid "Attribute value"
 msgstr "Giá trị thuộc tính"
 
-#: inc/group.class.php:518 inc/group_user.class.php:161
-#: inc/group_user.class.php:204 inc/group_user.class.php:246
-#: inc/group_user.class.php:303 inc/group_user.class.php:429
-#: inc/group_user.class.php:488 inc/group_user.class.php:521
-#: inc/group_user.class.php:652 inc/notificationtargetproject.class.php:64
+#: inc/group.class.php:518 inc/group_user.class.php:156
+#: inc/group_user.class.php:195 inc/group_user.class.php:237
+#: inc/group_user.class.php:294 inc/group_user.class.php:420
+#: inc/group_user.class.php:479 inc/group_user.class.php:512
+#: inc/group_user.class.php:643 inc/notificationtargetproject.class.php:64
 #: inc/notificationtargetproject.class.php:564 inc/project.class.php:559
 #: inc/project.class.php:783 inc/project.class.php:1138
 msgid "Manager"
 msgstr "Người quản lý"
 
-#: inc/group.class.php:538 inc/group_user.class.php:164
-#: inc/group_user.class.php:205 inc/group_user.class.php:251
-#: inc/group_user.class.php:306 inc/group_user.class.php:430
-#: inc/group_user.class.php:489 inc/group_user.class.php:526
-#: inc/group_user.class.php:660
+#: inc/group.class.php:538 inc/group_user.class.php:159
+#: inc/group_user.class.php:196 inc/group_user.class.php:242
+#: inc/group_user.class.php:297 inc/group_user.class.php:421
+#: inc/group_user.class.php:480 inc/group_user.class.php:517
+#: inc/group_user.class.php:651
 msgid "Delegatee"
 msgstr "Được ủy quyền"
 
@@ -10912,25 +10908,25 @@ msgstr "Di chuyển"
 msgid "Associate to a group"
 msgstr "Liên kết đến nhóm"
 
-#: inc/group_user.class.php:203 inc/group_user.class.php:241
-#: inc/group_user.class.php:487 inc/group_user.class.php:516
-#: inc/group_user.class.php:624 inc/profile_user.class.php:869
+#: inc/group_user.class.php:194 inc/group_user.class.php:232
+#: inc/group_user.class.php:478 inc/group_user.class.php:507
+#: inc/group_user.class.php:615 inc/profile_user.class.php:869
 msgid "Dynamic"
 msgstr "Động"
 
 #. TRANS: D for Dynamic
-#: inc/group_user.class.php:235 inc/profile_user.class.php:237
+#: inc/group_user.class.php:226 inc/profile_user.class.php:237
 #: inc/profile_user.class.php:401 inc/profile_user.class.php:558
 #: inc/profile_user.class.php:931 inc/search.class.php:4302
 #: inc/search.class.php:4341 inc/useremail.class.php:169
 msgid "D"
 msgstr "D"
 
-#: inc/group_user.class.php:296
+#: inc/group_user.class.php:287
 msgid "Add a user"
 msgstr "Thêm user"
 
-#: inc/group_user.class.php:428 inc/rule.class.php:1196
+#: inc/group_user.class.php:419 inc/rule.class.php:1196
 #: inc/rule.class.php:1212 inc/rule.class.php:1262 inc/rule.class.php:2020
 #: inc/rule.class.php:2498 inc/rulecollection.class.php:1225
 #: inc/rulecollection.class.php:1499 inc/rulecriteria.class.php:94
@@ -10940,7 +10936,7 @@ msgid "Criterion"
 msgid_plural "Criteria"
 msgstr[0] "Tiêu chí"
 
-#: inc/group_user.class.php:453 inc/group_user.class.php:543
+#: inc/group_user.class.php:444 inc/group_user.class.php:534
 msgid "D=Dynamic"
 msgstr "D=Động"
 
@@ -11021,14 +11017,14 @@ msgstr "Các thiết lập của tôi"
 msgid "Back to top of the page"
 msgstr ""
 
-#: inc/html.class.php:1562 inc/toolbox.class.php:1323
-#: inc/toolbox.class.php:1327
+#: inc/html.class.php:1562 inc/toolbox.class.php:1334
+#: inc/toolbox.class.php:1338
 msgid "You will find it on the GLPI-PROJECT.org site."
 msgstr "Bạn sẽ tìm thấy nó trên trang GLPI-PROJECT.org"
 
-#: inc/html.class.php:1564 inc/toolbox.class.php:1321
-#: inc/toolbox.class.php:1325 inc/toolbox.class.php:1333
-#: inc/toolbox.class.php:1336
+#: inc/html.class.php:1564 inc/toolbox.class.php:1332
+#: inc/toolbox.class.php:1336 inc/toolbox.class.php:1344
+#: inc/toolbox.class.php:1347
 #, php-format
 msgid "A new version is available: %s."
 msgstr "Một phiên bản mới đã sẵn sàng: %s"
@@ -11246,7 +11242,7 @@ msgid "Load a saved search"
 msgstr ""
 
 #: inc/html.class.php:6002 inc/profile.class.php:2161
-#: inc/ticket.class.php:5851
+#: inc/ticket.class.php:5853
 msgid "Create a ticket"
 msgstr "Tạo một vé"
 
@@ -11263,8 +11259,8 @@ msgid "Search is disabled"
 msgstr ""
 
 #: inc/html.class.php:6320 inc/html.class.php:6321 inc/ticket.class.php:257
-#: inc/ticket.class.php:258 inc/ticket.class.php:3678
-#: inc/ticket.class.php:3679
+#: inc/ticket.class.php:258 inc/ticket.class.php:3680
+#: inc/ticket.class.php:3681
 msgid "Ticket waiting for your approval"
 msgstr "Ticket đang chờ bạn xác nhận"
 
@@ -11303,8 +11299,8 @@ msgstr "Tuyến tính"
 msgid "Decreasing"
 msgstr "Đang giảm"
 
-#: inc/infocom.class.php:710 inc/ticket.class.php:7170
-#: inc/ticket.class.php:7171
+#: inc/infocom.class.php:710 inc/ticket.class.php:7172
+#: inc/ticket.class.php:7173
 msgctxt "button"
 msgid "Show"
 msgstr "Hiện"
@@ -11519,52 +11515,52 @@ msgstr "Vị trí của thiết bị trên bus của nó"
 msgid "bus ID"
 msgstr "bus ID"
 
-#: inc/item_devices.class.php:412
+#: inc/item_devices.class.php:420
 msgid "Type of component"
 msgstr "Kiểu của linh kiện"
 
-#: inc/item_devices.class.php:414
+#: inc/item_devices.class.php:422
 msgid "Specificities"
 msgstr "Các đặc trưng"
 
-#: inc/item_devices.class.php:467
+#: inc/item_devices.class.php:475
 msgid "Add a new component"
 msgstr "Thêm một thành phần mới"
 
-#: inc/item_devices.class.php:545
+#: inc/item_devices.class.php:553
 msgid "Dissociated devices"
 msgstr "Các thiết bị bị phân ly"
 
 #. TRANS : %1$s is the type of the device
 #. %2$s is the type of the item
 #. %3$s is the name of the item (used for headings of a list),
-#: inc/item_devices.class.php:560 inc/item_devices.class.php:573
+#: inc/item_devices.class.php:568 inc/item_devices.class.php:581
 #, php-format
 msgid "%1$s of %2$s: %3$s"
 msgstr "%1$s của %2$s: %3$s"
 
-#: inc/item_devices.class.php:688 inc/knowbaseitem.class.php:1697
+#: inc/item_devices.class.php:696 inc/knowbaseitem.class.php:1697
 msgid "View"
 msgid_plural "Views"
 msgstr[0] "Xem"
 
-#: inc/item_devices.class.php:816
+#: inc/item_devices.class.php:825
 msgid "Please select a device type"
 msgstr ""
 
-#: inc/item_devices.class.php:823
+#: inc/item_devices.class.php:832
 msgid "Please select a device"
 msgstr ""
 
-#: inc/item_devices.class.php:837
+#: inc/item_devices.class.php:846
 msgid "You must choose any unaffected device or ask to add new."
 msgstr ""
 
-#: inc/item_devices.class.php:1094
+#: inc/item_devices.class.php:1103
 msgid "Copy to clipboard failed"
 msgstr ""
 
-#: inc/item_devices.class.php:1252
+#: inc/item_devices.class.php:1261
 msgid "Update of "
 msgstr ""
 
@@ -11698,29 +11694,29 @@ msgid "Number of tickets"
 msgstr "Số lượng ticket"
 
 #: inc/itilcategory.class.php:209 inc/notificationtargetchange.class.php:270
-#: inc/notificationtargetticket.class.php:764 inc/search.class.php:5519
-#: inc/ticket.class.php:3363
+#: inc/notificationtargetticket.class.php:768 inc/search.class.php:5519
+#: inc/ticket.class.php:3365
 msgctxt "quantity"
 msgid "Number of problems"
 msgstr "Số lượng các vấn đề"
 
 #: inc/itilcategory.class.php:222 inc/notificationtargetproblem.class.php:209
 #: inc/notificationtargetproject.class.php:598
-#: inc/notificationtargetticket.class.php:765
+#: inc/notificationtargetticket.class.php:769
 msgctxt "quantity"
 msgid "Number of changes"
 msgstr "Số lượng các thay đổi"
 
-#: inc/itilcategory.class.php:327 inc/ticket.class.php:3498
-#: inc/ticket.class.php:3514
+#: inc/itilcategory.class.php:327 inc/ticket.class.php:3500
+#: inc/ticket.class.php:3516
 msgid "Incident"
 msgstr "Sự cố"
 
 #: inc/itilcategory.class.php:328 inc/notificationtargetchange.class.php:300
 #: inc/notificationtargetchange.class.php:302
-#: inc/notificationtargetticket.class.php:790
-#: inc/notificationtargetticket.class.php:792 inc/ticket.class.php:3499
-#: inc/ticket.class.php:3517
+#: inc/notificationtargetticket.class.php:794
+#: inc/notificationtargetticket.class.php:796 inc/ticket.class.php:3501
+#: inc/ticket.class.php:3519
 msgid "Request"
 msgstr "Yêu cầu"
 
@@ -12063,12 +12059,12 @@ msgid "Calendar of the ticket"
 msgstr "Lịch của thẻ này"
 
 #: inc/levelagreement.class.php:911 inc/levelagreementlevel.class.php:284
-#: inc/notificationtargetticket.class.php:715 inc/olalevel.class.php:178
+#: inc/notificationtargetticket.class.php:719 inc/olalevel.class.php:178
 #: inc/ruleticket.class.php:477 inc/ruleticket.class.php:493
 #: inc/ruleticket.class.php:598 inc/ruleticket.class.php:614
 #: inc/slalevel.class.php:178 inc/ticket.class.php:2702
-#: inc/ticket.class.php:2904 inc/ticket.class.php:4700
-#: inc/ticket.class.php:4702 inc/ticket.class.php:7645
+#: inc/ticket.class.php:2904 inc/ticket.class.php:4702
+#: inc/ticket.class.php:4704 inc/ticket.class.php:7647
 msgid "Time to own"
 msgstr ""
 
@@ -12148,37 +12144,37 @@ msgid "Add an item type"
 msgstr "Thêm một kiểu mục"
 
 #: inc/location.class.php:59 inc/location.class.php:102
-#: inc/location.class.php:135 inc/notificationtargetticket.class.php:741
-#: inc/notificationtargetticket.class.php:771
+#: inc/location.class.php:135 inc/notificationtargetticket.class.php:745
+#: inc/notificationtargetticket.class.php:775
 msgid "Building number"
 msgstr "Số tòa nhà"
 
 #: inc/location.class.php:63 inc/location.class.php:111
-#: inc/location.class.php:143 inc/notificationtargetticket.class.php:738
-#: inc/notificationtargetticket.class.php:770
+#: inc/location.class.php:143 inc/notificationtargetticket.class.php:742
+#: inc/notificationtargetticket.class.php:774
 msgid "Room number"
 msgstr "Số phòng"
 
 #: inc/location.class.php:67 inc/location.class.php:151
-#: inc/notificationtargetticket.class.php:747
-#: inc/notificationtargetticket.class.php:773
+#: inc/notificationtargetticket.class.php:751
+#: inc/notificationtargetticket.class.php:777
 msgid "Longitude"
 msgstr "Kinh độ"
 
 #: inc/location.class.php:71 inc/location.class.php:160
-#: inc/notificationtargetticket.class.php:744
-#: inc/notificationtargetticket.class.php:772
+#: inc/notificationtargetticket.class.php:748
+#: inc/notificationtargetticket.class.php:776
 msgid "Latitude"
 msgstr "Vĩ độ"
 
 #: inc/location.class.php:75 inc/location.class.php:169
-#: inc/notificationtargetticket.class.php:750
-#: inc/notificationtargetticket.class.php:774
+#: inc/notificationtargetticket.class.php:754
+#: inc/notificationtargetticket.class.php:778
 msgid "Altitude"
 msgstr "Độ cao"
 
-#: inc/location.class.php:120 inc/notificationtargetticket.class.php:735
-#: inc/notificationtargetticket.class.php:769
+#: inc/location.class.php:120 inc/notificationtargetticket.class.php:739
+#: inc/notificationtargetticket.class.php:773
 msgid "Location comments"
 msgstr "Các bình luận địa điểm"
 
@@ -12258,7 +12254,7 @@ msgstr "Thay đổi linh kiện %1$s: %2$s"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:407 inc/projecttask.class.php:506
-#: inc/ticket.class.php:4689
+#: inc/ticket.class.php:4691
 #, php-format
 msgid "%1$s by %2$s"
 msgstr "%1$s by %2$s"
@@ -13413,31 +13409,31 @@ msgstr "Thay đổi được giải quyết"
 
 #: inc/notificationtargetchange.class.php:62
 #: inc/notificationtargetchange.class.php:324
-#: inc/notificationtargetticket.class.php:228
-#: inc/notificationtargetticket.class.php:896 inc/ticket.class.php:6874
+#: inc/notificationtargetticket.class.php:232
+#: inc/notificationtargetticket.class.php:900 inc/ticket.class.php:6876
 msgid "Validation request"
 msgstr "Yêu cầu được xác thực"
 
 #: inc/notificationtargetchange.class.php:63
-#: inc/notificationtargetticket.class.php:229 inc/ticket.class.php:6885
+#: inc/notificationtargetticket.class.php:233 inc/ticket.class.php:6887
 msgid "Validation request answer"
 msgstr "Trả lời yêu cầu xác nhận"
 
 #: inc/notificationtargetchange.class.php:64
 #: inc/notificationtargetproblem.class.php:60
-#: inc/notificationtargetticket.class.php:233
+#: inc/notificationtargetticket.class.php:237
 msgid "New task"
 msgstr "Nhiệm vụ mới"
 
 #: inc/notificationtargetchange.class.php:65
 #: inc/notificationtargetproblem.class.php:61
-#: inc/notificationtargetticket.class.php:234
+#: inc/notificationtargetticket.class.php:238
 msgid "Update of a task"
 msgstr "Cập nhật một nhiệm vụ"
 
 #: inc/notificationtargetchange.class.php:66
 #: inc/notificationtargetproblem.class.php:62
-#: inc/notificationtargetticket.class.php:235
+#: inc/notificationtargetticket.class.php:239
 msgid "Deletion of a task"
 msgstr "Xóa một nhiệm vụ"
 
@@ -13451,14 +13447,14 @@ msgstr "Xóa một thay đổi"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetchange.class.php:224
-#: inc/notificationtargetticket.class.php:618
+#: inc/notificationtargetticket.class.php:622
 #, php-format
 msgid "An approval request has been submitted by %s"
 msgstr "Một yêu cầu phê chuẩn đã được gửi bởi %s"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetchange.class.php:229
-#: inc/notificationtargetticket.class.php:622
+#: inc/notificationtargetticket.class.php:626
 #, php-format
 msgid "An answer to an an approval request was produced by %s"
 msgstr "Một câu trả lời cho một yêu cầu phê chuẩn được đưa ra bởi %s"
@@ -13466,29 +13462,29 @@ msgstr "Một câu trả lời cho một yêu cầu phê chuẩn được đưa 
 #: inc/notificationtargetchange.class.php:304
 #: inc/notificationtargetchange.class.php:307
 #: inc/notificationtargetchange.class.php:339
-#: inc/notificationtargetticket.class.php:794
-#: inc/notificationtargetticket.class.php:797
-#: inc/notificationtargetticket.class.php:857 inc/profile.class.php:655
+#: inc/notificationtargetticket.class.php:798
+#: inc/notificationtargetticket.class.php:801
+#: inc/notificationtargetticket.class.php:861 inc/profile.class.php:655
 #: inc/profile.class.php:1039 inc/profile.class.php:1041
 #: inc/profile.class.php:1101 inc/rule.class.php:2023 inc/rule.class.php:2044
 #: inc/rulecollection.class.php:1761 inc/rulerightcollection.class.php:84
-#: inc/ticket.class.php:7327 inc/ticket.class.php:7328
+#: inc/ticket.class.php:7329 inc/ticket.class.php:7330
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "Các xác nhận"
 
 #: inc/notificationtargetchange.class.php:306
-#: inc/notificationtargetticket.class.php:796
+#: inc/notificationtargetticket.class.php:800
 msgid "Decision-maker"
 msgstr "Người ra quyết định"
 
 #: inc/notificationtargetchange.class.php:320
-#: inc/notificationtargetticket.class.php:809
+#: inc/notificationtargetticket.class.php:813
 msgid "A validation request has been submitted"
 msgstr "Một yêu cầu xác nhận đã được gửi"
 
 #: inc/notificationtargetchange.class.php:322
-#: inc/notificationtargetticket.class.php:811
+#: inc/notificationtargetticket.class.php:815
 msgid "An answer to a validation request was produced"
 msgstr "Một câu trả lời cho một yêu cầu xác nhận đã được đưa ra"
 
@@ -13643,7 +13639,7 @@ msgid "Download URL"
 msgstr "URL tải xuống"
 
 #: inc/notificationtargetcommonitilobject.class.php:1371
-#: inc/notificationtargetticket.class.php:946
+#: inc/notificationtargetticket.class.php:950
 msgid "Status value in database"
 msgstr "Giá trị trạng thái trong cơ sở dữ liệu"
 
@@ -14029,75 +14025,75 @@ msgstr ""
 msgid "Load saved search"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:123
+#: inc/notificationtargetticket.class.php:125
 msgid "To answer by email, write above this line"
 msgstr "Để trả lời qua email, viết phía trên dòng này"
 
-#: inc/notificationtargetticket.class.php:137
+#: inc/notificationtargetticket.class.php:141
 msgid "To answer by email, write under this line"
 msgstr "Để trả lời qua email, viết phía dưới dòng này"
 
-#: inc/notificationtargetticket.class.php:225
+#: inc/notificationtargetticket.class.php:229
 msgid "Update of a ticket"
 msgstr "Cập nhật của một vé"
 
-#: inc/notificationtargetticket.class.php:226
+#: inc/notificationtargetticket.class.php:230
 msgid "Ticket solved"
 msgstr "Vé đã giải quyết"
 
-#: inc/notificationtargetticket.class.php:227
+#: inc/notificationtargetticket.class.php:231
 msgid "Solution rejected"
 msgstr "Giải pháp bị từ chối"
 
-#: inc/notificationtargetticket.class.php:230
+#: inc/notificationtargetticket.class.php:234
 msgid "New followup"
 msgstr "Theo dõi mới"
 
-#: inc/notificationtargetticket.class.php:231
+#: inc/notificationtargetticket.class.php:235
 msgid "Update of a followup"
 msgstr "Cập nhật một theo dõi"
 
-#: inc/notificationtargetticket.class.php:232
+#: inc/notificationtargetticket.class.php:236
 msgid "Deletion of a followup"
 msgstr "Xóa một theo dõi"
 
-#: inc/notificationtargetticket.class.php:236
+#: inc/notificationtargetticket.class.php:240
 msgid "Closing of the ticket"
 msgstr "Đóng thẻ này"
 
-#: inc/notificationtargetticket.class.php:237
+#: inc/notificationtargetticket.class.php:241
 msgid "Deletion of a ticket"
 msgstr "Xóa thẻ này"
 
-#: inc/notificationtargetticket.class.php:238
-#: inc/notificationtargetticket.class.php:890 inc/ticket.class.php:6363
+#: inc/notificationtargetticket.class.php:242
+#: inc/notificationtargetticket.class.php:894 inc/ticket.class.php:6365
 msgid "Not solved tickets"
 msgstr "Các vé chưa giải quyết"
 
-#: inc/notificationtargetticket.class.php:239
+#: inc/notificationtargetticket.class.php:243
 msgid "Automatic reminders of SLAs"
 msgstr "Các nhắc nhở tự động của SLA"
 
-#: inc/notificationtargetticket.class.php:240
+#: inc/notificationtargetticket.class.php:244
 msgid "Automatic reminders of OLAs"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:242
+#: inc/notificationtargetticket.class.php:246
 msgid "Satisfaction survey answer"
 msgstr "Trả lời khảo sát sự hài lòng"
 
 #. TRANS: %s is the number of days before auto closing
-#: inc/notificationtargetticket.class.php:314
-#: inc/notificationtargetticket.class.php:876
+#: inc/notificationtargetticket.class.php:318
+#: inc/notificationtargetticket.class.php:880
 #, php-format
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
 msgstr[0] "Không có hồi âm, thẻ này này sẽ tự đóng sau %s ngày"
 
-#: inc/notificationtargetticket.class.php:712
-#: inc/notificationtargetticket.class.php:714
-#: inc/notificationtargetticket.class.php:717 inc/ruleticket.class.php:468
+#: inc/notificationtargetticket.class.php:716
+#: inc/notificationtargetticket.class.php:718
+#: inc/notificationtargetticket.class.php:721 inc/ruleticket.class.php:468
 #: inc/ruleticket.class.php:476 inc/ruleticket.class.php:589
 #: inc/ruleticket.class.php:597 inc/sla.class.php:54 inc/ticket.class.php:2896
 #: inc/ticket.class.php:2904 inc/ticket.class.php:2918
@@ -14105,8 +14101,8 @@ msgstr[0] "Không có hồi âm, thẻ này này sẽ tự đóng sau %s ngày"
 msgid "SLA"
 msgstr "SLA"
 
-#: inc/notificationtargetticket.class.php:720
-#: inc/notificationtargetticket.class.php:723 inc/ola.class.php:51
+#: inc/notificationtargetticket.class.php:724
+#: inc/notificationtargetticket.class.php:727 inc/ola.class.php:51
 #: inc/ruleticket.class.php:484 inc/ruleticket.class.php:492
 #: inc/ruleticket.class.php:605 inc/ruleticket.class.php:613
 #: inc/ticket.class.php:2947 inc/ticket.class.php:2955
@@ -14114,83 +14110,83 @@ msgstr "SLA"
 msgid "OLA"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2776
-#: inc/ticket.class.php:2955 inc/ticket.class.php:4727
-#: inc/ticket.class.php:4729 inc/ticket.class.php:7637
+#: inc/notificationtargetticket.class.php:725 inc/ticket.class.php:2776
+#: inc/ticket.class.php:2955 inc/ticket.class.php:4729
+#: inc/ticket.class.php:4731 inc/ticket.class.php:7639
 msgid "Internal time to own"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2740
-#: inc/ticket.class.php:2969 inc/ticket.class.php:4739
-#: inc/ticket.class.php:4741 inc/ticket.class.php:7653
+#: inc/notificationtargetticket.class.php:728 inc/ticket.class.php:2740
+#: inc/ticket.class.php:2969 inc/ticket.class.php:4741
+#: inc/ticket.class.php:4743 inc/ticket.class.php:7655
 msgid "Internal time to resolve"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:732
+#: inc/notificationtargetticket.class.php:736
 msgid "Location name"
 msgstr "Tên địa điểm"
 
-#: inc/notificationtargetticket.class.php:762 inc/ticket.class.php:3128
+#: inc/notificationtargetticket.class.php:766 inc/ticket.class.php:3128
 msgctxt "quantity"
 msgid "Number of followups"
 msgstr "Số lượng các theo dõi"
 
-#: inc/notificationtargetticket.class.php:763
+#: inc/notificationtargetticket.class.php:767
 msgctxt "quantity"
 msgid "Number of linked tickets"
 msgstr "Số lượng các vé được liên kết"
 
-#: inc/notificationtargetticket.class.php:776
+#: inc/notificationtargetticket.class.php:780
 msgid "Solution rejection comment"
 msgstr "Giải pháp từ chối bình luận"
 
-#: inc/notificationtargetticket.class.php:777
+#: inc/notificationtargetticket.class.php:781
 msgid "Solution rejection date"
 msgstr "Ngày từ chối giải pháp"
 
-#: inc/notificationtargetticket.class.php:823
+#: inc/notificationtargetticket.class.php:827
 msgid "Creation date of the satisfaction survey"
 msgstr "Ngày tạo của bảng khảo sát sự hài lòng"
 
-#: inc/notificationtargetticket.class.php:824
+#: inc/notificationtargetticket.class.php:828
 #: inc/ticketsatisfaction.class.php:156
 msgid "Response date to the satisfaction survey"
 msgstr "Ngày trả lời cho khảo sát sự hài lòng"
 
-#: inc/notificationtargetticket.class.php:826
+#: inc/notificationtargetticket.class.php:830
 msgid "Comments to the satisfaction survey"
 msgstr "Các bình luận cho khảo sát sự hài lòng"
 
-#: inc/notificationtargetticket.class.php:835
+#: inc/notificationtargetticket.class.php:839
 msgid "Survey type"
 msgstr "Kiểu khảo sát"
 
-#: inc/notificationtargetticket.class.php:845
+#: inc/notificationtargetticket.class.php:849
 msgid "Invitation to fill out the survey"
 msgstr "Lời mời để điền vào bảng khảo sát"
 
-#: inc/notificationtargetticket.class.php:856 inc/profile.class.php:649
+#: inc/notificationtargetticket.class.php:860 inc/profile.class.php:649
 #: inc/profile.class.php:1030 inc/profile.class.php:1035
-#: inc/ticket.class.php:3081 inc/ticket.class.php:7321
-#: inc/ticket.class.php:7322 inc/ticket.class.php:7447
+#: inc/ticket.class.php:3081 inc/ticket.class.php:7323
+#: inc/ticket.class.php:7324 inc/ticket.class.php:7449
 #: inc/ticketfollowup.class.php:69
 msgid "Followup"
 msgid_plural "Followups"
 msgstr[0] "Các theo dõi"
 
-#: inc/notificationtargetticket.class.php:858
-#: inc/notificationtargetticket.class.php:872
-#: inc/notificationtargetticket.class.php:901
-#: inc/notificationtargetticket.class.php:904
-#: inc/notificationtargetticket.class.php:907
-#: inc/notificationtargetticket.class.php:910
-#: inc/notificationtargetticket.class.php:913 inc/ticket.class.php:3211
-#: inc/ticket.class.php:5162
+#: inc/notificationtargetticket.class.php:862
+#: inc/notificationtargetticket.class.php:876
+#: inc/notificationtargetticket.class.php:905
+#: inc/notificationtargetticket.class.php:908
+#: inc/notificationtargetticket.class.php:911
+#: inc/notificationtargetticket.class.php:914
+#: inc/notificationtargetticket.class.php:917 inc/ticket.class.php:3211
+#: inc/ticket.class.php:5164
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
 msgstr[0] "Các thẻ liên kết"
 
-#: inc/notificationtargetticket.class.php:905
+#: inc/notificationtargetticket.class.php:909
 msgid "Link"
 msgstr "Liên kết"
 
@@ -14736,17 +14732,17 @@ msgstr "Ethernet"
 msgid "Wifi"
 msgstr "Wifi"
 
-#: inc/problem.class.php:553 inc/ticket.class.php:3537
+#: inc/problem.class.php:553 inc/ticket.class.php:3539
 msgctxt "status"
 msgid "Processing (assigned)"
 msgstr "Đang xử lý (đã phân công)"
 
-#: inc/problem.class.php:554 inc/ticket.class.php:3538
+#: inc/problem.class.php:554 inc/ticket.class.php:3540
 msgctxt "status"
 msgid "Processing (planned)"
 msgstr "Đang xử lý (lên kế hoạch)"
 
-#: inc/problem.class.php:556 inc/ticket.class.php:3540
+#: inc/problem.class.php:556 inc/ticket.class.php:3542
 msgctxt "status"
 msgid "Solved"
 msgstr "Đã giải quyết"
@@ -15095,86 +15091,86 @@ msgstr[0] "Các thành viên"
 msgid "Invalid items (no start or end date): %s"
 msgstr "Các mục không hợp lệ (không ngày bắt đầu hoặc kết thúc): %s"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2155
+#: inc/project.class.php:1551 inc/toolbox.class.php:2166
 msgid "January"
 msgstr "Tháng Một"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2156
+#: inc/project.class.php:1551 inc/toolbox.class.php:2167
 msgid "February"
 msgstr "Tháng Hai"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2157
+#: inc/project.class.php:1551 inc/toolbox.class.php:2168
 msgid "March"
 msgstr "Tháng Ba"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2158
+#: inc/project.class.php:1551 inc/toolbox.class.php:2169
 msgid "April"
 msgstr "Tháng Tư"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2159
+#: inc/project.class.php:1551 inc/toolbox.class.php:2170
 msgid "May"
 msgstr "Tháng Năm"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2160
+#: inc/project.class.php:1552 inc/toolbox.class.php:2171
 msgid "June"
 msgstr "Tháng Sáu"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2161
+#: inc/project.class.php:1552 inc/toolbox.class.php:2172
 msgid "July"
 msgstr "Tháng Bảy"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2162
+#: inc/project.class.php:1552 inc/toolbox.class.php:2173
 msgid "August"
 msgstr "Tháng Tám"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2163
+#: inc/project.class.php:1552 inc/toolbox.class.php:2174
 msgid "September"
 msgstr "Tháng Chín"
 
-#: inc/project.class.php:1553 inc/toolbox.class.php:2164
+#: inc/project.class.php:1553 inc/toolbox.class.php:2175
 msgid "October"
 msgstr "Tháng Mười"
 
-#: inc/project.class.php:1553 inc/toolbox.class.php:2165
+#: inc/project.class.php:1553 inc/toolbox.class.php:2176
 msgid "November"
 msgstr "Tháng Mười Một"
 
-#: inc/project.class.php:1553 inc/toolbox.class.php:2166
+#: inc/project.class.php:1553 inc/toolbox.class.php:2177
 msgid "December"
 msgstr "Tháng Mười Hai"
 
 #: inc/project.class.php:1555 inc/reservation.class.php:533
-#: inc/toolbox.class.php:2141
+#: inc/toolbox.class.php:2152
 msgid "Sunday"
 msgstr "Chủ Nhật"
 
 #: inc/project.class.php:1555 inc/reservation.class.php:527
-#: inc/toolbox.class.php:2142
+#: inc/toolbox.class.php:2153
 msgid "Monday"
 msgstr "Thứ Hai"
 
 #: inc/project.class.php:1556 inc/reservation.class.php:528
-#: inc/toolbox.class.php:2143
+#: inc/toolbox.class.php:2154
 msgid "Tuesday"
 msgstr "Thứ Ba"
 
 #: inc/project.class.php:1556 inc/reservation.class.php:529
-#: inc/toolbox.class.php:2144
+#: inc/toolbox.class.php:2155
 msgid "Wednesday"
 msgstr "Thứ Tư"
 
 #: inc/project.class.php:1557 inc/reservation.class.php:530
-#: inc/toolbox.class.php:2145
+#: inc/toolbox.class.php:2156
 msgid "Thursday"
 msgstr "Thứ Năm"
 
 #: inc/project.class.php:1557 inc/reservation.class.php:531
-#: inc/toolbox.class.php:2146
+#: inc/toolbox.class.php:2157
 msgid "Friday"
 msgstr "Thứ Sáu"
 
 #: inc/project.class.php:1558 inc/reservation.class.php:532
-#: inc/toolbox.class.php:2147
+#: inc/toolbox.class.php:2158
 msgid "Saturday"
 msgstr "Thứ Bảy"
 
@@ -15330,7 +15326,7 @@ msgid "Planning end date"
 msgstr "Ngày kết thúc lên kế hoạch"
 
 #: inc/reminder.class.php:524 inc/reminder.class.php:569
-#: inc/rssfeed.class.php:524 inc/ticket.class.php:5106
+#: inc/rssfeed.class.php:524 inc/ticket.class.php:5108
 msgid "Without title"
 msgstr "Không kèm tựa đề"
 
@@ -15576,7 +15572,7 @@ msgid "Use"
 msgstr "Dùng"
 
 #. TRANS: short for : Assign a ticket
-#: inc/ruleaction.class.php:395 inc/ticket.class.php:6590
+#: inc/ruleaction.class.php:395 inc/ticket.class.php:6592
 msgid "Assign"
 msgstr "Gán"
 
@@ -16227,7 +16223,7 @@ msgid_plural "Saved searches alerts"
 msgstr[0] ""
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
-#: inc/savedsearch.class.php:1363
+#: inc/savedsearch.class.php:1371
 msgid "Saved search"
 msgid_plural "Saved searches"
 msgstr[0] ""
@@ -16407,7 +16403,7 @@ msgstr ""
 msgid "Update all bookmarks execution time"
 msgstr ""
 
-#: inc/savedsearch.class.php:1371
+#: inc/savedsearch.class.php:1379
 msgid "Notification has been created!"
 msgstr ""
 
@@ -16516,7 +16512,7 @@ msgid "Group in charge of the software"
 msgstr ""
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
-#: inc/software.class.php:320 install/update.php:522
+#: inc/software.class.php:320 install/update.php:524
 msgid "Upgrade"
 msgstr "Nâng cấp"
 
@@ -16554,21 +16550,21 @@ msgstr "Phần mềm trong giỏ rác sau khi trộn"
 msgid "Please select a software for this license"
 msgstr ""
 
-#: inc/softwarelicense.class.php:348 inc/softwarelicense.class.php:621
+#: inc/softwarelicense.class.php:348 inc/softwarelicense.class.php:615
 msgid "Technician in charge of the license"
 msgstr ""
 
-#: inc/softwarelicense.class.php:361 inc/softwarelicense.class.php:640
+#: inc/softwarelicense.class.php:361 inc/softwarelicense.class.php:634
 msgid "Group in charge of the license"
 msgstr ""
 
-#: inc/softwarelicense.class.php:403 inc/softwarelicense.class.php:567
-#: inc/softwarelicense.class.php:1003
+#: inc/softwarelicense.class.php:403 inc/softwarelicense.class.php:561
+#: inc/softwarelicense.class.php:997
 msgid "Version in use"
 msgstr "Sử dụng phiên bản"
 
-#: inc/softwarelicense.class.php:411 inc/softwarelicense.class.php:555
-#: inc/softwarelicense.class.php:1002
+#: inc/softwarelicense.class.php:411 inc/softwarelicense.class.php:549
+#: inc/softwarelicense.class.php:996
 msgid "Purchase version"
 msgstr "Mua phiên bản"
 
@@ -16589,57 +16585,57 @@ msgstr ""
 "Trong máy tìm kiếm, dùng \"Hết hạn bao gồm rỗng\" để tìm các giấy phép không"
 " có ngày hết hạn"
 
-#: inc/softwarelicense.class.php:534
+#: inc/softwarelicense.class.php:528
 msgid "Number"
 msgstr "Số"
 
-#: inc/softwarelicense.class.php:558 inc/softwarelicense.class.php:570
+#: inc/softwarelicense.class.php:552 inc/softwarelicense.class.php:564
 msgid "states_id"
 msgstr ""
 
-#: inc/softwarelicense.class.php:586 inc/softwarelicense.class.php:802
+#: inc/softwarelicense.class.php:580 inc/softwarelicense.class.php:796
 msgid "Valid"
 msgstr "Hiệu lực"
 
-#: inc/softwarelicense.class.php:718
+#: inc/softwarelicense.class.php:712
 msgid "License name"
 msgstr "Tên giấy phép"
 
-#: inc/softwarelicense.class.php:730
+#: inc/softwarelicense.class.php:724
 msgid "License serial number"
 msgstr "Số sê-ri giấy phép"
 
-#: inc/softwarelicense.class.php:741
+#: inc/softwarelicense.class.php:735
 msgid "License inventory number"
 msgstr "Giấy phép mã số lưu kho"
 
-#: inc/softwarelicense.class.php:751
+#: inc/softwarelicense.class.php:745
 msgid "Number of licenses"
 msgstr "Số lượng các giấy phép"
 
-#: inc/softwarelicense.class.php:764
+#: inc/softwarelicense.class.php:758
 msgid "License types"
 msgstr "Kiểu bản quyền"
 
-#: inc/softwarelicense.class.php:779
+#: inc/softwarelicense.class.php:773
 msgid "License comments"
 msgstr "Các bình luận giấy phép"
 
-#: inc/softwarelicense.class.php:821
+#: inc/softwarelicense.class.php:815
 msgid "Send alarms on expired licenses"
 msgstr "Gửi các báo động về các giấy phép hết hạn"
 
 #. TRANS: %1$s the license name, %2$s is the expiration date
-#: inc/softwarelicense.class.php:871
+#: inc/softwarelicense.class.php:865
 #, php-format
 msgid "License %1$s expired on %2$s"
 msgstr "Giấy phép %1$s đã hết hạn vào %2$s"
 
-#: inc/softwarelicense.class.php:905
+#: inc/softwarelicense.class.php:899
 msgid "Send licenses alert failed"
 msgstr "Gửi báo động giấy phép thất bại"
 
-#: inc/softwarelicense.class.php:1046
+#: inc/softwarelicense.class.php:1040
 msgctxt "button"
 msgid "Add a license"
 msgstr "Thêm bản quyền"
@@ -16863,7 +16859,7 @@ msgstr "%1$s cập nhật mục %2$s"
 msgid "Add a new followup"
 msgstr "Thêm một theo dõi mới"
 
-#: inc/ticket.class.php:2657 inc/ticket.class.php:4924
+#: inc/ticket.class.php:2657 inc/ticket.class.php:4926
 #: inc/tickettemplate.class.php:269
 msgid "Approval request"
 msgstr "Yêu cầu xác nhận"
@@ -16941,215 +16937,215 @@ msgstr ""
 msgid "Number of parent tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3356
+#: inc/ticket.class.php:3358
 msgid "Problems"
 msgstr "Các vấn đề"
 
-#: inc/ticket.class.php:3680
+#: inc/ticket.class.php:3682
 msgid "Tickets awaiting approval"
 msgstr "Ticket đang chờ bạn duyệt"
 
-#: inc/ticket.class.php:3774
+#: inc/ticket.class.php:3776
 msgid "This ticket concerns me"
 msgstr "Thẻ này liên quan đến tôi"
 
-#: inc/ticket.class.php:3796 inc/ticket.class.php:3826
+#: inc/ticket.class.php:3798 inc/ticket.class.php:3828
 msgid "Check your personnal information"
 msgstr "Kiểm tra thông tin cá nhân của bạn"
 
-#: inc/ticket.class.php:3917
+#: inc/ticket.class.php:3919
 msgid "Describe the incident or request"
 msgstr "Mô tả sự cố hoặc yêu cầu"
 
-#: inc/ticket.class.php:3970
+#: inc/ticket.class.php:3972
 msgid "Inform me about the actions taken"
 msgstr "Thông báo tôi về các hành động"
 
-#: inc/ticket.class.php:4122
+#: inc/ticket.class.php:4124
 msgid "Submit message"
 msgstr "Gửi tin nhắn"
 
-#: inc/ticket.class.php:4629
+#: inc/ticket.class.php:4631
 #, php-format
 msgid "The ticket will be added in the entity %s"
 msgstr "Thẻ này sẽ được thêm vào trong đối tượng %s"
 
-#: inc/ticket.class.php:4763
+#: inc/ticket.class.php:4765
 msgid "Close date"
 msgstr "Ngày đóng"
 
-#: inc/ticket.class.php:4879
+#: inc/ticket.class.php:4881
 msgid "Reopen"
 msgstr "Mở lại"
 
-#: inc/ticket.class.php:5208
+#: inc/ticket.class.php:5210
 #, php-format
 msgid "File (%s)"
 msgstr "Tập tin (%s)"
 
-#: inc/ticket.class.php:5224
+#: inc/ticket.class.php:5226
 msgid "Default documents:"
 msgstr "Các tài liệu mặc định:"
 
-#: inc/ticket.class.php:5504 inc/ticket.class.php:5676
+#: inc/ticket.class.php:5506 inc/ticket.class.php:5678
 msgid "Your tickets to close"
 msgstr "Các thẻ của bạn để đóng"
 
-#: inc/ticket.class.php:5520 inc/ticket.class.php:5587
+#: inc/ticket.class.php:5522 inc/ticket.class.php:5589
 msgid "Tickets on pending status"
 msgstr "Các thẻ đang chờ giải quyết"
 
-#: inc/ticket.class.php:5536 inc/ticket.class.php:5603
+#: inc/ticket.class.php:5538 inc/ticket.class.php:5605
 msgid "Tickets to be processed"
 msgstr "Các thẻ cần giải quyết"
 
-#: inc/ticket.class.php:5552 inc/ticket.class.php:5692
+#: inc/ticket.class.php:5554 inc/ticket.class.php:5694
 msgid "Your observed tickets"
 msgstr "Bạn đã xem xét các thẻ này"
 
-#: inc/ticket.class.php:5569 inc/ticket.class.php:5743
+#: inc/ticket.class.php:5571 inc/ticket.class.php:5745
 msgid "Your tickets in progress"
 msgstr "Các thẻ của bạn đang được xử lý"
 
-#: inc/ticket.class.php:5630
+#: inc/ticket.class.php:5632
 msgid "Your tickets to validate"
 msgstr "Các thẻ của bạn để xác nhận"
 
-#: inc/ticket.class.php:5647
+#: inc/ticket.class.php:5649
 msgid "Your rejected tickets"
 msgstr "Bạn đã từ chối các thẻ"
 
-#: inc/ticket.class.php:5854
+#: inc/ticket.class.php:5856
 msgid "Ticket followup"
 msgstr "Theo ticket"
 
 #. TRANS: %d is the number of new tickets
-#: inc/ticket.class.php:5906
+#: inc/ticket.class.php:5908
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] "%d thẻ mới"
 
-#: inc/ticket.class.php:5922 inc/ticket.class.php:6126
-#: inc/ticket.class.php:6176
+#: inc/ticket.class.php:5924 inc/ticket.class.php:6128
+#: inc/ticket.class.php:6178
 msgid "No ticket found."
 msgstr "Không tìm thấy thẻ nào."
 
-#: inc/ticket.class.php:6006
+#: inc/ticket.class.php:6008
 msgid "Last tickets"
 msgstr "Các thẻ cuối"
 
-#: inc/ticket.class.php:6087 inc/ticket.class.php:6099
+#: inc/ticket.class.php:6089 inc/ticket.class.php:6101
 msgid "New ticket for this item..."
 msgstr "Vé mới cho mục này..."
 
-#: inc/ticket.class.php:6115
+#: inc/ticket.class.php:6117
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] "%d thẻ cuối"
 
-#: inc/ticket.class.php:6121
+#: inc/ticket.class.php:6123
 msgid "You don't have right to see all tickets"
 msgstr "Bạn không có quyền xem tất cả các vé"
 
-#: inc/ticket.class.php:6166
+#: inc/ticket.class.php:6168
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "Các thẻ trên các mục được liên kết"
 
-#: inc/ticket.class.php:6277
+#: inc/ticket.class.php:6279
 msgid "No ticket in progress."
 msgstr "Không có thẻ nào đang được xử lý"
 
-#: inc/ticket.class.php:6334
+#: inc/ticket.class.php:6336
 msgid "Assign equipment"
 msgstr "Gán thiết bị"
 
-#: inc/ticket.class.php:6360
+#: inc/ticket.class.php:6362
 msgid "Automatic tickets closing"
 msgstr "Tự đóng các thẻ"
 
-#: inc/ticket.class.php:6366
+#: inc/ticket.class.php:6368
 msgid "Generation of satisfaction surveys"
 msgstr "Tạo ra các khảo sát sự hài lòng"
 
-#: inc/ticket.class.php:6580
+#: inc/ticket.class.php:6582
 msgid "See my ticket"
 msgstr "Xem vé của tôi"
 
 #. TRANS: short for : See tickets created by my groups
-#: inc/ticket.class.php:6582
+#: inc/ticket.class.php:6584
 msgid "See group ticket"
 msgstr "Xem nhóm vé"
 
-#: inc/ticket.class.php:6583
+#: inc/ticket.class.php:6585
 msgid "See tickets created by my groups"
 msgstr "Xem các vé đã tạo bởi nhóm của tôi"
 
-#: inc/ticket.class.php:6585
+#: inc/ticket.class.php:6587
 msgid "See all tickets"
 msgstr "Xem tất cả các vé"
 
 #. TRANS: short for : See assigned tickets (group associated)
-#: inc/ticket.class.php:6587
+#: inc/ticket.class.php:6589
 msgid "See assigned"
 msgstr "Xem đã gán"
 
-#: inc/ticket.class.php:6588
+#: inc/ticket.class.php:6590
 msgid "See assigned tickets"
 msgstr "Xem các vé đã gán"
 
-#: inc/ticket.class.php:6591
+#: inc/ticket.class.php:6593
 msgid "Assign a ticket"
 msgstr "Gán một thẻ"
 
 #. TRANS: short for : Steal a ticket
-#: inc/ticket.class.php:6593
+#: inc/ticket.class.php:6595
 msgid "Steal"
 msgstr "Giành"
 
-#: inc/ticket.class.php:6594
+#: inc/ticket.class.php:6596
 msgid "Steal a ticket"
 msgstr "Giành một vé"
 
 #. TRANS: short for : To be in charge of a ticket
-#: inc/ticket.class.php:6596
+#: inc/ticket.class.php:6598
 msgid "Beeing in charge"
 msgstr "Đang phụ trách"
 
-#: inc/ticket.class.php:6597
+#: inc/ticket.class.php:6599
 msgid "To be in charge of a ticket"
 msgstr "Chịu trách nhiệm một thẻ"
 
-#: inc/ticket.class.php:6598
+#: inc/ticket.class.php:6600
 msgid "Change the priority"
 msgstr "Thay đổi mức ưu tiên"
 
-#: inc/ticket.class.php:6599
+#: inc/ticket.class.php:6601
 msgid "Approve solution/Reply survey (my ticket)"
 msgstr "Chấp nhận giải pháp / hồi đáp bảng khảo sát (thẻ của tôi)"
 
-#: inc/ticket.class.php:6600
+#: inc/ticket.class.php:6602
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr ""
 "Chấp nhận giải pháp và hồi đáp đến bảng khảo sát cho thẻ được tạo bởi tôi"
 
-#: inc/ticket.class.php:7122
+#: inc/ticket.class.php:7124
 #, php-format
 msgid "Last edited on %1$s by %2$s"
 msgstr ""
 
-#: inc/ticket.class.php:7238
+#: inc/ticket.class.php:7240
 #, php-format
 msgid "Ticket# %s description"
 msgstr ""
 
-#: inc/ticket.class.php:7306
+#: inc/ticket.class.php:7308
 msgid "Actions historical"
 msgstr "Lịch sử các hành động"
 
-#: inc/ticket.class.php:7319
+#: inc/ticket.class.php:7321
 msgid "Timeline filter"
 msgstr "Bộ lọc dòng thời gian"
 
@@ -17370,54 +17366,54 @@ msgstr "Xác nhận một yêu cầu"
 msgid "Validate an incident"
 msgstr "Xác nhận một sự cố"
 
-#: inc/toolbox.class.php:881
+#: inc/toolbox.class.php:892
 msgid "Test done"
 msgstr "Hoàn thành kiểm tra"
 
-#: inc/toolbox.class.php:881
+#: inc/toolbox.class.php:892
 msgid "Results"
 msgstr "Các kết quả"
 
-#: inc/toolbox.class.php:884
+#: inc/toolbox.class.php:895
 msgid "Testing PHP Parser"
 msgstr "Kiểm tra bộ phân tích cú pháp PHP"
 
-#: inc/toolbox.class.php:893
+#: inc/toolbox.class.php:904
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
 msgstr "GLPI không tương thích với lựa chọn zend.ze1_compatibility_mode = On."
 
-#: inc/toolbox.class.php:897 inc/toolbox.class.php:898
+#: inc/toolbox.class.php:908 inc/toolbox.class.php:909
 #, php-format
 msgid "PHP version is at least %s - Perfect!"
 msgstr ""
 
-#: inc/toolbox.class.php:905
+#: inc/toolbox.class.php:916
 #, php-format
 msgid "You must install at least PHP %s."
 msgstr ""
 
-#: inc/toolbox.class.php:910
+#: inc/toolbox.class.php:921
 msgid "Sessions test"
 msgstr "Kiểm tra các phiên"
 
-#: inc/toolbox.class.php:915
+#: inc/toolbox.class.php:926
 msgid "Your parser PHP is not installed with sessions support!"
 msgstr "Bộ phân tích cú pháp PHP của bạn chưa được cài với hỗ trợ các phiên!"
 
-#: inc/toolbox.class.php:921 inc/toolbox.class.php:922
+#: inc/toolbox.class.php:932 inc/toolbox.class.php:933
 msgid "Sessions support is available - Perfect!"
 msgstr "Hỗ trợ các phiên có sẵn - Hoàn hảo!"
 
-#: inc/toolbox.class.php:927
+#: inc/toolbox.class.php:938
 msgid "Make sure that sessions support has been activated in your php.ini"
 msgstr "Đảm bảo rằng hỗ trợ các phiên đã được kích hoạt trong php.ini của bạn"
 
-#: inc/toolbox.class.php:934
+#: inc/toolbox.class.php:945
 msgid "Test session auto start"
 msgstr "Kiểm tra phiên tự khởi"
 
-#: inc/toolbox.class.php:937
+#: inc/toolbox.class.php:948
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
@@ -17425,194 +17421,194 @@ msgstr ""
 "session.auto_start được kích hoạt. Xem tập tin .htaccess trong GLPI gốc để "
 "biết thêm thông tin."
 
-#: inc/toolbox.class.php:944
+#: inc/toolbox.class.php:955
 msgid "Test if Session_use_trans_sid is used"
 msgstr "Kiểm tra nếu Session_use_trans_sid được sử dụng"
 
-#: inc/toolbox.class.php:949
+#: inc/toolbox.class.php:960
 msgid "You must desactivate the Session_use_trans_id option in your php.ini"
 msgstr ""
 "Bạn phải bỏ kích hoạt lựa chọn Session_use_trans_id trong php.ini của bạn"
 
-#: inc/toolbox.class.php:954 inc/toolbox.class.php:955
+#: inc/toolbox.class.php:965 inc/toolbox.class.php:966
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
 msgstr ""
 "Tốt - các phiên này làm việc (không có vấn đề với trans_id) - Hoàn hảo!"
 
-#: inc/toolbox.class.php:966
+#: inc/toolbox.class.php:977
 msgid "Allocated memory test"
 msgstr "Kiểm tra bộ nhớ được cấp phát"
 
-#: inc/toolbox.class.php:974 inc/toolbox.class.php:975
+#: inc/toolbox.class.php:985 inc/toolbox.class.php:986
 msgid "Unlimited memory - Perfect!"
 msgstr "Bộ nhớ không giới hạn - Hoàn hảo!"
 
-#: inc/toolbox.class.php:981
+#: inc/toolbox.class.php:992
 msgid "Allocated memory"
 msgstr "Bộ nhớ được cấp phát"
 
-#: inc/toolbox.class.php:984
+#: inc/toolbox.class.php:995
 msgid "A minimum of 64Mio is commonly required for GLPI."
 msgstr "GLPI thường yêu cầu tối thiểu 64Mio."
 
-#: inc/toolbox.class.php:985
+#: inc/toolbox.class.php:996
 msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr "Cố gắng tăng thông số memory_limit trong tập tin php.ini"
 
-#: inc/toolbox.class.php:992 inc/toolbox.class.php:993
+#: inc/toolbox.class.php:1003 inc/toolbox.class.php:1004
 msgid "Allocated memory > 64Mio - Perfect!"
 msgstr "Bộ nhớ được cấp phát > 64Mio - Hoàn hảo!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-#: inc/toolbox.class.php:1035
+#: inc/toolbox.class.php:1046
 #, php-format
 msgid "SELinux mode is %s"
 msgstr "Chế độ SElinux là %s"
 
-#: inc/toolbox.class.php:1061
+#: inc/toolbox.class.php:1072
 msgid "Some features may require this to be on"
 msgstr "Vài tính năng yêu cầu điều này để bật"
 
 #. TRANS: %s is an option name
-#: inc/toolbox.class.php:1068
+#: inc/toolbox.class.php:1079
 #, php-format
 msgid "SELinux boolean configuration for %s"
 msgstr "Cấu hình SELinux boolean cho %s"
 
 #. TRANS: list of unit (o for octet)
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "o"
 msgstr "o"
 
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "Kio"
 msgstr "Kio"
 
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "Gio"
 msgstr "Gio"
 
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "Tio"
 msgstr "Tio"
 
-#: inc/toolbox.class.php:1343 inc/toolbox.class.php:1345
-#: inc/toolbox.class.php:1350 inc/toolbox.class.php:1352
+#: inc/toolbox.class.php:1354 inc/toolbox.class.php:1356
+#: inc/toolbox.class.php:1361 inc/toolbox.class.php:1363
 msgid "You have the latest available version"
 msgstr "Bạn có phiên bản mới nhất"
 
-#: inc/toolbox.class.php:1635
+#: inc/toolbox.class.php:1646
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr "Kết nối thất bại. Nếu bạn dùng một proxy, hãy cấu hình nó. (%s)"
 
-#: inc/toolbox.class.php:1641
+#: inc/toolbox.class.php:1652
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "Kết nối tới máy chủ proxy thất bại (%s)"
 
-#: inc/toolbox.class.php:1649
+#: inc/toolbox.class.php:1660
 msgid "No data available on the web site"
 msgstr "Không có dữ liệu có sẵn trên web này"
 
-#: inc/toolbox.class.php:1989
+#: inc/toolbox.class.php:2000
 msgid "Connection options"
 msgstr "Tuỳ chọn kết nối"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1991
+#: inc/toolbox.class.php:2002
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1993
+#: inc/toolbox.class.php:2004
 msgid "POP"
 msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2001
+#: inc/toolbox.class.php:2012
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2010
+#: inc/toolbox.class.php:2021
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2012
+#: inc/toolbox.class.php:2023
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2028
+#: inc/toolbox.class.php:2039
 msgid "NO-VALIDATE-CERT"
 msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2030
+#: inc/toolbox.class.php:2041
 msgid "VALIDATE-CERT"
 msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2045
+#: inc/toolbox.class.php:2056
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2054
+#: inc/toolbox.class.php:2065
 msgid "SECURE"
 msgstr "SECURE"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2063
+#: inc/toolbox.class.php:2074
 msgid "DEBUG"
 msgstr "DEBUG"
 
-#: inc/toolbox.class.php:2075
+#: inc/toolbox.class.php:2086
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "Thư mục mail đến (tùy chọn, thường là INBOX)"
 
 #. TRANS: for mail connection system
-#: inc/toolbox.class.php:2080
+#: inc/toolbox.class.php:2091
 msgid "Port (optional)"
 msgstr "Cổng (không bắt buộc)"
 
-#: inc/toolbox.class.php:2356
+#: inc/toolbox.class.php:2367
 msgid ""
 "No HTTP_REFERER found in request. Reload previous page before doing action "
 "again."
 msgstr ""
 
-#: inc/toolbox.class.php:2362
+#: inc/toolbox.class.php:2373
 msgid ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
 msgstr ""
 
-#: inc/toolbox.class.php:2373
+#: inc/toolbox.class.php:2384
 msgid ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr ""
 
-#: inc/toolbox.class.php:2383
+#: inc/toolbox.class.php:2394
 msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr ""
 
-#: inc/toolbox.class.php:2390
+#: inc/toolbox.class.php:2401
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
@@ -17620,15 +17616,15 @@ msgstr ""
 "Các hành động mà bạn đã yêu cầu không được phép. Nạp lại trang trước trước "
 "khi làm hành động một lần nữa."
 
-#: inc/toolbox.class.php:2789
+#: inc/toolbox.class.php:2800
 msgid "YYYY-MM-DD"
 msgstr "YYYY-MM-DD"
 
-#: inc/toolbox.class.php:2790
+#: inc/toolbox.class.php:2801
 msgid "DD-MM-YYYY"
 msgstr "DD-MM-YYYY"
 
-#: inc/toolbox.class.php:2791
+#: inc/toolbox.class.php:2802
 msgid "MM-DD-YYYY"
 msgstr "MM-DD-YYYY"
 
@@ -18024,7 +18020,7 @@ msgstr ""
 #: install/install.php:129 install/install.php:173 install/install.php:184
 #: install/install.php:226 install/install.php:300 install/install.php:321
 #: install/install.php:359 install/install.php:459 install/install.php:519
-#: install/update.php:543
+#: install/update.php:545
 msgid "Continue"
 msgstr "Tiếp tục"
 
@@ -18077,7 +18073,7 @@ msgstr "Máy chủ đã trả lời: %s"
 msgid "The server or/and user field is empty"
 msgstr "Trường máy chủ hoặc/và người dùng là rỗng"
 
-#: install/install.php:267 install/update.php:551
+#: install/install.php:267 install/update.php:553
 msgid "Database connection successful"
 msgstr "Kết nối đến CSDL thành công"
 
@@ -18155,7 +18151,7 @@ msgstr ""
 "Bạn có thể xóa hoặc sửa đổi các tài khoản cũng như các dữ liệu ban đầu."
 
 #: install/install.php:498 install/update_content.php:368
-#: install/update.php:595
+#: install/update.php:597
 msgid "Use GLPI"
 msgstr "Dùng GLPI"
 
@@ -18275,31 +18271,27 @@ msgstr "Thêm ngày chỉnh sửa đến %s"
 msgid "Add date_creation to %s"
 msgstr "Thêm ngày tạo đến %s"
 
-#: install/update.php:130
+#: install/update.php:131
 msgid "Update successful, your database is up to date"
 msgstr "Cập nhật thành công, CSDL của bạn đã chuẩn"
 
-#: install/update.php:131
+#: install/update.php:132
 msgid "You must now proceed to updating your database content"
 msgstr "Bạn cần phải tiến hành cập nhật nội dung CSDL"
 
-#: install/update.php:133
-msgid "Continue?"
-msgstr "Tiếp tục?"
-
-#: install/update.php:346
+#: install/update.php:348
 msgid "Locations update"
 msgstr "Cập nhật vị trí"
 
-#: install/update.php:347
+#: install/update.php:349
 msgid "The new structure is hierarchical"
 msgstr "Cấu trúc mới theo kiểu phân cấp"
 
-#: install/update.php:348
+#: install/update.php:350
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
 msgstr "Cung cấp một dấu phân cách để tự động hóa các hệ thống cấp bậc mới."
 
-#: install/update.php:349
+#: install/update.php:351
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
@@ -18307,40 +18299,40 @@ msgstr ""
 "Bạn cũng có thể chỉ định một vị trí gốc mà sẽ bao gồm tất cả các địa điểm "
 "được tạo ra."
 
-#: install/update.php:352
+#: install/update.php:354
 msgid "Delimiter"
 msgstr "Ký tự phân cách"
 
-#: install/update.php:354
+#: install/update.php:356
 msgid "Root location"
 msgstr "Vị trí của Root"
 
-#: install/update.php:364
+#: install/update.php:366
 msgid "Actual locations"
 msgstr "Vị trí thực tế"
 
-#: install/update.php:366
+#: install/update.php:368
 msgid "New hierarchy"
 msgstr "Hệ phân cấp mới"
 
-#: install/update.php:368
+#: install/update.php:370
 msgid "This is the new hierarchy. If it's complete approve it."
 msgstr "Đây là hệ thống phân cấp mới. Nếu OK, bạn có thể xác nhận nó."
 
-#: install/update.php:530
+#: install/update.php:532
 msgid "Impossible to accomplish an update by this way!"
 msgstr "Không thể cập nhật theo cách này!!"
 
-#: install/update.php:532
+#: install/update.php:534
 msgid "Go back to GLPI"
 msgstr "Quay lại GLPI"
 
-#: install/update.php:537
+#: install/update.php:539
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
 msgstr "Chú ý! Bạn sẽ cập nhật cơ sở dữ liệu GLPI tên: %s"
 
-#: install/update.php:604
+#: install/update.php:606
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"

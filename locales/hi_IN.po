@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-03 07:13+0200\n"
+"POT-Creation-Date: 2018-05-30 07:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Roshan Roche <roshan6@gmail.com>, 2017\n"
 "Language-Team: Hindi (India) (https://www.transifex.com/glpi/teams/1637/hi_IN/)\n"
@@ -55,7 +55,7 @@ msgstr "मुझे याद रखना"
 #: inc/rulecollection.class.php:1284
 #: inc/ruledictionnarysoftwarecollection.class.php:99
 #: inc/ticket_ticket.class.php:74 inc/user.class.php:2630
-#: install/update.php:356 install/update.php:372
+#: install/update.php:358 install/update.php:374
 msgctxt "button"
 msgid "Post"
 msgstr "प्रकाशित करना"
@@ -106,7 +106,7 @@ msgstr "अक्सर पूछे जाने वाले प्रश्�
 #: inc/commondbtm.class.php:3252 inc/commondbtm.class.php:3256
 #: inc/commondbtm.class.php:3262 inc/commondbtm.class.php:3334
 #: inc/commondbtm.class.php:3870 inc/commondbtm.class.php:3876
-#: inc/commondbtm.class.php:4861 inc/commonglpi.class.php:861
+#: inc/commondbtm.class.php:4858 inc/commonglpi.class.php:861
 #: inc/commonitilcost.class.php:245 inc/commonitilobject.class.php:5280
 #: inc/commonitilobject.class.php:5429 inc/commonitiltask.class.php:1243
 #: inc/computer_softwarelicense.class.php:478
@@ -118,7 +118,7 @@ msgstr "अक्सर पूछे जाने वाले प्रश्�
 #: inc/contract.class.php:546 inc/contract.class.php:568
 #: inc/contract.class.php:958 inc/contract.class.php:971
 #: inc/contract.class.php:984 inc/contract.class.php:997
-#: inc/contract.class.php:1495 inc/contract.class.php:1496
+#: inc/contract.class.php:1488 inc/contract.class.php:1489
 #: inc/crontask.class.php:451 inc/dbmysql.class.php:572
 #: inc/dbmysql.class.php:585 inc/dbmysql.class.php:597
 #: inc/document.class.php:221 inc/document_item.class.php:509
@@ -144,7 +144,7 @@ msgstr "अक्सर पूछे जाने वाले प्रश्�
 #: inc/stat.class.php:1182 inc/state.class.php:297 inc/state.class.php:305
 #: inc/state.class.php:314 inc/state.class.php:322 inc/state.class.php:330
 #: inc/state.class.php:338 inc/state.class.php:346 inc/state.class.php:355
-#: inc/state.class.php:364 inc/ticket.class.php:6262
+#: inc/state.class.php:364 inc/ticket.class.php:6264
 #: inc/ticketfollowup.class.php:518 inc/ticketfollowup.class.php:1001
 #: inc/ticketfollowup.class.php:1006 inc/tickettemplate.class.php:460
 #: inc/vlan.class.php:167 install/update_0723_078.php:4824
@@ -173,9 +173,9 @@ msgstr "%1$sनेटवर्क आउटलेट-%2$s"
 #: ajax/dropdownSoftwareLicense.php:69 ajax/getDropdownConnect.php:178
 #: ajax/getDropdownFindNum.php:146 ajax/getDropdownNetpoint.php:152
 #: ajax/getDropdownValue.php:393 ajax/getDropdownValue.php:637
-#: inc/apiclient.class.php:232 inc/cartridge.class.php:734
+#: inc/apiclient.class.php:235 inc/cartridge.class.php:734
 #: inc/cartridgeitem.class.php:590 inc/change_item.class.php:216
-#: inc/commondbtm.class.php:3329 inc/commondbtm.class.php:4626
+#: inc/commondbtm.class.php:3329 inc/commondbtm.class.php:4623
 #: inc/commonglpi.class.php:873 inc/commonitilcost.class.php:572
 #: inc/commonitilobject.class.php:5428 inc/commonitilobject.class.php:5433
 #: inc/commonitiltask.class.php:1287 inc/commonitiltask.class.php:1313
@@ -189,15 +189,15 @@ msgstr "%1$sनेटवर्क आउटलेट-%2$s"
 #: inc/computervirtualmachine.class.php:209
 #: inc/computervirtualmachine.class.php:362 inc/config.class.php:386
 #: inc/config.class.php:387 inc/config.class.php:401
-#: inc/contract.class.php:1492 inc/contractcost.class.php:398
+#: inc/contract.class.php:1485 inc/contractcost.class.php:398
 #: inc/contract_item.class.php:490 inc/contract_item.class.php:729
 #: inc/contract_supplier.class.php:243 inc/contract_supplier.class.php:392
 #: inc/dbutils.class.php:1480 inc/document.class.php:402
 #: inc/document.class.php:438 inc/document.class.php:922
 #: inc/document_item.class.php:521 inc/dropdown.class.php:402
-#: inc/glpipdf.class.php:108 inc/group_user.class.php:230
-#: inc/group_user.class.php:235 inc/group_user.class.php:452
-#: inc/group_user.class.php:542 inc/html.class.php:4856
+#: inc/glpipdf.class.php:108 inc/group_user.class.php:221
+#: inc/group_user.class.php:226 inc/group_user.class.php:443
+#: inc/group_user.class.php:533 inc/html.class.php:4856
 #: inc/ipnetwork_vlan.class.php:174 inc/item_devicegraphiccard.class.php:56
 #: inc/item_deviceharddrive.class.php:56 inc/item_devicememory.class.php:58
 #: inc/item_deviceprocessor.class.php:57
@@ -238,8 +238,8 @@ msgstr "%1$sनेटवर्क आउटलेट-%2$s"
 #: inc/search.class.php:4863 inc/session.class.php:371
 #: inc/session.class.php:374 inc/softwareversion.class.php:260
 #: inc/supplier.class.php:577 inc/ticket.class.php:2206
-#: inc/ticket.class.php:4622 inc/ticket.class.php:6118
-#: inc/ticket.class.php:6261 inc/tickettemplatemandatoryfield.class.php:234
+#: inc/ticket.class.php:4624 inc/ticket.class.php:6120
+#: inc/ticket.class.php:6263 inc/tickettemplatemandatoryfield.class.php:234
 #: inc/tickettemplatemandatoryfield.class.php:236 inc/user.class.php:2908
 #: inc/user.class.php:2963 inc/user.class.php:3822 inc/user.class.php:3903
 #, php-format
@@ -307,9 +307,9 @@ msgstr "ईमेल फॉलोअप"
 #: inc/commonitilobject.class.php:3615 inc/commonitilobject.class.php:5274
 #: inc/commonitilobject.class.php:5300 inc/commonitiltask.class.php:1181
 #: inc/commonitiltask.class.php:1961 inc/config.class.php:1419
-#: inc/config.class.php:1484 inc/contract.class.php:1251
-#: inc/contract.class.php:1328 inc/contract.class.php:1362
-#: inc/contract.class.php:1365 inc/contract.class.php:1382
+#: inc/config.class.php:1484 inc/contract.class.php:1249
+#: inc/contract.class.php:1324 inc/contract.class.php:1356
+#: inc/contract.class.php:1359 inc/contract.class.php:1375
 #: inc/contract_item.class.php:632 inc/contract_item.class.php:743
 #: inc/crontask.class.php:828 inc/crontask.class.php:836
 #: inc/crontask.class.php:850 inc/crontask.class.php:860
@@ -443,34 +443,34 @@ msgstr "ईमेल फॉलोअप"
 #: inc/notificationtargetprojecttask.class.php:536
 #: inc/notificationtargetprojecttask.class.php:542
 #: inc/notificationtargetprojecttask.class.php:545
-#: inc/notificationtargetticket.class.php:730
-#: inc/notificationtargetticket.class.php:733
-#: inc/notificationtargetticket.class.php:736
-#: inc/notificationtargetticket.class.php:739
-#: inc/notificationtargetticket.class.php:742
-#: inc/notificationtargetticket.class.php:745
-#: inc/notificationtargetticket.class.php:748
-#: inc/notificationtargetticket.class.php:790
-#: inc/notificationtargetticket.class.php:792
+#: inc/notificationtargetticket.class.php:734
+#: inc/notificationtargetticket.class.php:737
+#: inc/notificationtargetticket.class.php:740
+#: inc/notificationtargetticket.class.php:743
+#: inc/notificationtargetticket.class.php:746
+#: inc/notificationtargetticket.class.php:749
+#: inc/notificationtargetticket.class.php:752
 #: inc/notificationtargetticket.class.php:794
-#: inc/notificationtargetticket.class.php:797
-#: inc/notificationtargetticket.class.php:896
-#: inc/notificationtargetticket.class.php:898
+#: inc/notificationtargetticket.class.php:796
+#: inc/notificationtargetticket.class.php:798
+#: inc/notificationtargetticket.class.php:801
 #: inc/notificationtargetticket.class.php:900
-#: inc/notificationtargetticket.class.php:903
-#: inc/notificationtargetticket.class.php:906
-#: inc/notificationtargetticket.class.php:909
-#: inc/notificationtargetticket.class.php:912
-#: inc/notificationtargetticket.class.php:915
+#: inc/notificationtargetticket.class.php:902
+#: inc/notificationtargetticket.class.php:904
+#: inc/notificationtargetticket.class.php:907
+#: inc/notificationtargetticket.class.php:910
+#: inc/notificationtargetticket.class.php:913
 #: inc/notificationtargetticket.class.php:916
-#: inc/notificationtargetticket.class.php:917
-#: inc/notificationtargetticket.class.php:918
+#: inc/notificationtargetticket.class.php:919
 #: inc/notificationtargetticket.class.php:920
+#: inc/notificationtargetticket.class.php:921
 #: inc/notificationtargetticket.class.php:922
-#: inc/notificationtargetticket.class.php:923
 #: inc/notificationtargetticket.class.php:924
-#: inc/notificationtargetticket.class.php:925
+#: inc/notificationtargetticket.class.php:926
 #: inc/notificationtargetticket.class.php:927
+#: inc/notificationtargetticket.class.php:928
+#: inc/notificationtargetticket.class.php:929
+#: inc/notificationtargetticket.class.php:931
 #: inc/notificationtemplatetranslation.class.php:394 inc/plugin.class.php:529
 #: inc/plugin.class.php:574 inc/plugin.class.php:587 inc/plugin.class.php:603
 #: inc/plugin.class.php:611 inc/plugin.class.php:634 inc/problem.class.php:964
@@ -484,12 +484,12 @@ msgstr "ईमेल फॉलोअप"
 #: inc/reminder.class.php:968 inc/reminder.class.php:995
 #: inc/reservationitem.class.php:669 inc/reservationitem.class.php:674
 #: inc/reservationitem.class.php:692 inc/rule.class.php:3121
-#: inc/rulemailcollector.class.php:130 inc/softwarelicense.class.php:885
-#: inc/softwarelicense.class.php:888 inc/softwarelicense.class.php:905
+#: inc/rulemailcollector.class.php:130 inc/softwarelicense.class.php:879
+#: inc/softwarelicense.class.php:882 inc/softwarelicense.class.php:899
 #: inc/supplier.class.php:553 inc/supplier.class.php:590
-#: inc/ticket.class.php:2208 inc/ticket.class.php:6206
-#: inc/ticket.class.php:6456 inc/ticket.class.php:6546
-#: inc/ticket_ticket.class.php:70 inc/toolbox.class.php:981
+#: inc/ticket.class.php:2208 inc/ticket.class.php:6208
+#: inc/ticket.class.php:6458 inc/ticket.class.php:6548
+#: inc/ticket_ticket.class.php:70 inc/toolbox.class.php:992
 #: inc/user.class.php:2068 inc/user.class.php:2287 inc/user.class.php:3689
 #: inc/vlan.class.php:168 inc/vlan.class.php:170
 #: install/update_0681_07.php:533 install/update_0681_07.php:556
@@ -508,7 +508,7 @@ msgstr "%1$s: %2$s"
 #: inc/authldap.class.php:1023 inc/authldap.class.php:3120
 #: inc/authldap.class.php:3122 inc/authldap.class.php:3124
 #: inc/authldap.class.php:3126 inc/blacklist.class.php:235
-#: inc/commonitilactor.class.php:188 inc/commonitilactor.class.php:268
+#: inc/commonitilactor.class.php:188 inc/commonitilactor.class.php:264
 #: inc/commonitilobject.class.php:2439 inc/commonitilobject.class.php:3376
 #: inc/contact.class.php:209 inc/contact.class.php:351
 #: inc/contact_supplier.class.php:356 inc/dbutils.class.php:1547
@@ -546,8 +546,8 @@ msgstr[1] "ईमेल"
 #: inc/contract_item.class.php:428 inc/contract_item.class.php:670
 #: inc/contract_supplier.class.php:193 inc/contract_supplier.class.php:336
 #: inc/displaypreference.class.php:332 inc/displaypreference.class.php:478
-#: inc/document_item.class.php:390 inc/group_user.class.php:168
-#: inc/group_user.class.php:311 inc/item_devices.class.php:481
+#: inc/document_item.class.php:390 inc/group_user.class.php:163
+#: inc/group_user.class.php:302 inc/item_devices.class.php:489
 #: inc/item_problem.class.php:148 inc/item_project.class.php:144
 #: inc/item_ticket.class.php:281 inc/item_ticket.class.php:448
 #: inc/item_ticket.class.php:1092 inc/knowbaseitem_comment.class.php:379
@@ -562,8 +562,8 @@ msgstr[1] "ईमेल"
 #: inc/projecttask_ticket.class.php:195 inc/projecttask_ticket.class.php:316
 #: inc/reservation.class.php:753 inc/reservationitem.class.php:584
 #: inc/rule.class.php:2745 inc/ruleright.class.php:85
-#: inc/slalevel.class.php:118 inc/ticket.class.php:5284
-#: inc/ticket.class.php:7443 inc/ticket.class.php:7503
+#: inc/slalevel.class.php:118 inc/ticket.class.php:5286
+#: inc/ticket.class.php:7445 inc/ticket.class.php:7505
 #: inc/ticketfollowup.class.php:560
 #: inc/tickettemplatehiddenfield.class.php:231
 #: inc/tickettemplatemandatoryfield.class.php:242
@@ -573,7 +573,7 @@ msgid "Add"
 msgstr "जोड़ना"
 
 #: ajax/dropdownMassiveActionAddValidator.php:52
-#: ajax/dropdownMassiveActionAddValidator.php:120 inc/apiclient.class.php:184
+#: ajax/dropdownMassiveActionAddValidator.php:120 inc/apiclient.class.php:187
 #: inc/auth.class.php:1383 inc/authldap.class.php:384
 #: inc/authldap.class.php:736 inc/authldap.class.php:988
 #: inc/authmail.class.php:150 inc/authmail.class.php:202
@@ -617,8 +617,8 @@ msgstr "जोड़ना"
 #: inc/notificationtargetprojecttask.class.php:460
 #: inc/notificationtargetprojecttask.class.php:481
 #: inc/notificationtargetreservation.class.php:163
-#: inc/notificationtargetticket.class.php:793
-#: inc/notificationtargetticket.class.php:798
+#: inc/notificationtargetticket.class.php:797
+#: inc/notificationtargetticket.class.php:802
 #: inc/notificationtemplate.class.php:129
 #: inc/notificationtemplate.class.php:174 inc/peripheral.class.php:284
 #: inc/peripheral.class.php:478 inc/phone.class.php:281
@@ -637,7 +637,7 @@ msgstr "जोड़ना"
 #: inc/rulesoftwarecategory.class.php:85 inc/search.class.php:5439
 #: inc/slm.class.php:114 inc/slm.class.php:171 inc/software.class.php:297
 #: inc/software.class.php:489 inc/softwarelicense.class.php:397
-#: inc/softwarelicense.class.php:612 inc/softwarelicense.class.php:1284
+#: inc/softwarelicense.class.php:606 inc/softwarelicense.class.php:1278
 #: inc/softwareversion.class.php:125 inc/softwareversion.class.php:185
 #: inc/softwareversion.class.php:318 inc/supplier.class.php:149
 #: inc/supplier.class.php:377 inc/ticket.class.php:3071
@@ -657,17 +657,17 @@ msgstr "टिप्पणियाँ"
 #: inc/notificationtemplatetranslation.class.php:372
 #: inc/planning.class.php:361 inc/problem.class.php:565
 #: inc/profile_user.class.php:533 inc/search.class.php:1220
-#: inc/search.class.php:1621 inc/ticket.class.php:3548 inc/user.class.php:3546
+#: inc/search.class.php:1621 inc/ticket.class.php:3550 inc/user.class.php:3546
 msgid "All"
 msgstr "सब"
 
 #: ajax/dropdownMassiveActionAddValidator.php:113
 #: ajax/dropdownValidator.php:135 inc/commonitiltask.class.php:1292
 #: inc/commonitiltask.class.php:1631 inc/dbconnection.class.php:456
-#: inc/dropdown.class.php:1975 inc/group_user.class.php:172
-#: inc/group_user.class.php:259 inc/htmltablemain.class.php:242
-#: inc/item_devices.class.php:674 inc/planningrecall.class.php:255
-#: inc/profileright.class.php:313 inc/search.class.php:4619
+#: inc/dropdown.class.php:1975 inc/group_user.class.php:250
+#: inc/htmltablemain.class.php:242 inc/item_devices.class.php:682
+#: inc/planningrecall.class.php:255 inc/profileright.class.php:313
+#: inc/search.class.php:4619
 msgid "None"
 msgstr "कोई नहीं"
 
@@ -748,7 +748,7 @@ msgstr "सार्वजनिक"
 #: inc/profile_user.class.php:906 inc/project.class.php:666
 #: inc/projecttask.class.php:907 inc/rule.class.php:755
 #: inc/savedsearch.class.php:102 inc/savedsearch.class.php:410
-#: inc/software.class.php:622 inc/softwarelicense.class.php:675
+#: inc/software.class.php:622 inc/softwarelicense.class.php:669
 #: inc/supplier.class.php:394
 msgid "Child entities"
 msgstr "अस्तित्व"
@@ -856,7 +856,7 @@ msgstr "कोई प्रतिबंध नहीं"
 #: inc/cartridgeitem.class.php:426 inc/certificate.class.php:263
 #: inc/certificate_item.class.php:285 inc/certificate_item.class.php:494
 #: inc/change_item.class.php:171 inc/commondbtm.class.php:3799
-#: inc/commondbtm.class.php:4618 inc/commondbvisible.class.php:262
+#: inc/commondbtm.class.php:4615 inc/commondbvisible.class.php:262
 #: inc/commondevice.class.php:256 inc/commondropdown.class.php:474
 #: inc/commonitilcost.class.php:187 inc/commonitilobject.class.php:2862
 #: inc/commonitilobject.class.php:5522 inc/commontreedropdown.class.php:524
@@ -926,8 +926,8 @@ msgstr "कोई प्रतिबंध नहीं"
 #: inc/rulerightcollection.class.php:159 inc/ruleticket.class.php:443
 #: inc/savedsearch.class.php:407 inc/search.class.php:5485
 #: inc/software.class.php:588 inc/software.class.php:982
-#: inc/softwarelicense.class.php:667 inc/softwarelicense.class.php:997
-#: inc/softwarelicense.class.php:1216 inc/softwarelicense.class.php:1281
+#: inc/softwarelicense.class.php:661 inc/softwarelicense.class.php:991
+#: inc/softwarelicense.class.php:1210 inc/softwarelicense.class.php:1275
 #: inc/stat.class.php:1161 inc/supplier.class.php:385
 #: inc/supplier.class.php:490 inc/user.class.php:2144 inc/user.class.php:2909
 #: inc/user.class.php:2963 inc/user.class.php:3787 inc/user.class.php:3867
@@ -961,7 +961,7 @@ msgstr ""
 #: ajax/ticketassigninformation.php:112 ajax/ticketassigninformation.php:113
 #: inc/change.class.php:506 inc/commonitilobject.class.php:3614
 #: inc/commonitilobject.class.php:3615 inc/problem.class.php:563
-#: inc/ticket.class.php:3546 install/update_084_085.php:2015
+#: inc/ticket.class.php:3548 install/update_084_085.php:2015
 msgid "Processing"
 msgstr "प्रसंस्करण"
 
@@ -985,7 +985,7 @@ msgstr "जितनी जल्दी हो सके"
 msgid "Rate to trigger survey"
 msgstr "सर्वेक्षण ट्रिगर करने के लिए दर"
 
-#: ajax/ticketsatisfaction.php:82 inc/apiclient.class.php:288
+#: ajax/ticketsatisfaction.php:82 inc/apiclient.class.php:295
 #: inc/config.class.php:438 inc/crontask.class.php:698
 #: inc/crontask.class.php:717 inc/entity.class.php:2280
 #: inc/notificationajaxsetting.class.php:82
@@ -1032,9 +1032,9 @@ msgstr "वैध टैग"
 #: inc/notificationtargetprojecttask.class.php:537
 #: inc/notificationtargetreservation.class.php:150
 #: inc/notificationtargetsoftwarelicense.class.php:90
-#: inc/notificationtargetticket.class.php:897
-#: inc/notificationtargetticket.class.php:899
-#: inc/notificationtargetticket.class.php:908
+#: inc/notificationtargetticket.class.php:901
+#: inc/notificationtargetticket.class.php:903
+#: inc/notificationtargetticket.class.php:912
 #: inc/notificationtargetuser.class.php:115 inc/rssfeed.class.php:356
 #: inc/rssfeed.class.php:611
 msgid "URL"
@@ -1148,8 +1148,8 @@ msgid "You should rather use a dedicated tool on your server."
 msgstr "आपको अपने सर्वर पर समर्पित टूल का उपयोग करना चाहिए।"
 
 #: front/backup.php:611 front/report.contract.list.php:179
-#: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
-#: inc/problem.class.php:936 inc/ticket.class.php:5871
+#: front/report.year.list.php:135 inc/notificationtargetticket.class.php:760
+#: inc/problem.class.php:936 inc/ticket.class.php:5873
 msgid "Deleted"
 msgstr "हटाए गए"
 
@@ -1199,12 +1199,12 @@ msgstr "आकार"
 #: inc/notificationtargetproject.class.php:619
 #: inc/notificationtargetprojecttask.class.php:496
 #: inc/notificationtargetprojecttask.class.php:516
-#: inc/notificationtargetticket.class.php:791
 #: inc/notificationtargetticket.class.php:795
-#: inc/notificationtargetticket.class.php:916
-#: inc/notificationtargetticket.class.php:923
+#: inc/notificationtargetticket.class.php:799
+#: inc/notificationtargetticket.class.php:920
+#: inc/notificationtargetticket.class.php:927
 #: inc/notimportedemail.class.php:202 inc/project.class.php:775
-#: inc/ticket.class.php:3114 inc/ticket.class.php:7680
+#: inc/ticket.class.php:3114 inc/ticket.class.php:7682
 #: inc/ticketfollowup.class.php:696 inc/ticketfollowup.class.php:1090
 #: inc/ticketfollowup.class.php:1181
 msgid "Date"
@@ -1222,7 +1222,7 @@ msgstr "%sफ़ाइल हटाएं"
 #: inc/cartridge.class.php:658 inc/cartridge.class.php:931
 #: inc/change_ticket.class.php:288 inc/commondbrelation.class.php:1119
 #: inc/commondbtm.class.php:2240 inc/commondbtm.class.php:2250
-#: inc/commondbtm.class.php:4646 inc/commondbtm.class.php:4732
+#: inc/commondbtm.class.php:4643 inc/commondbtm.class.php:4729
 #: inc/commondbvisible.class.php:180 inc/commonitilobject.class.php:2372
 #: inc/commonitilobject.class.php:2452 inc/commonitilobject.class.php:3392
 #: inc/computer_softwarelicense.class.php:457
@@ -1237,8 +1237,8 @@ msgstr "%sफ़ाइल हटाएं"
 #: inc/netpoint.class.php:331 inc/notepad.class.php:367
 #: inc/problem_ticket.class.php:328 inc/profile_user.class.php:331
 #: inc/reservation.class.php:763 inc/rule.class.php:2787
-#: inc/ticket.class.php:5271 inc/ticket.class.php:7179
-#: inc/ticket.class.php:7180 inc/ticketfollowup.class.php:813
+#: inc/ticket.class.php:5273 inc/ticket.class.php:7181
+#: inc/ticket.class.php:7182 inc/ticketfollowup.class.php:813
 #: inc/ticketfollowup.class.php:1036 inc/tickettask.class.php:310
 #: inc/ticket_ticket.class.php:185 inc/transfer.class.php:3296
 #: inc/transfer.class.php:3301 inc/transfer.class.php:3318
@@ -1474,13 +1474,13 @@ msgstr "अनिवार्य फ़ील्ड भर नहीं गए �
 #: inc/notificationtargetproject.class.php:623
 #: inc/notificationtargetproject.class.php:675
 #: inc/notificationtargetproject.class.php:689
-#: inc/notificationtargetticket.class.php:860
-#: inc/notificationtargetticket.class.php:874
-#: inc/notificationtargetticket.class.php:922
-#: inc/notificationtargetticket.class.php:923
-#: inc/notificationtargetticket.class.php:924
-#: inc/notificationtargetticket.class.php:925
-#: inc/notificationtargetticket.class.php:927 inc/profile.class.php:1098
+#: inc/notificationtargetticket.class.php:864
+#: inc/notificationtargetticket.class.php:878
+#: inc/notificationtargetticket.class.php:926
+#: inc/notificationtargetticket.class.php:927
+#: inc/notificationtargetticket.class.php:928
+#: inc/notificationtargetticket.class.php:929
+#: inc/notificationtargetticket.class.php:931 inc/profile.class.php:1098
 #: inc/profile.class.php:1103 inc/profile.class.php:2319
 #: inc/stat.class.php:1235
 msgid "Change"
@@ -1515,7 +1515,7 @@ msgstr[1] "परिवर्तन"
 #: inc/notificationtargetprojecttask.class.php:574 inc/profile.class.php:646
 #: inc/profile.class.php:994 inc/profile.class.php:1015
 #: inc/profile.class.php:1026 inc/ticket.class.php:168
-#: inc/ticket.class.php:2208 inc/ticket.class.php:5857
+#: inc/ticket.class.php:2208 inc/ticket.class.php:5859
 #: inc/ticket_ticket.class.php:70 inc/transfer.class.php:3324
 msgid "Ticket"
 msgid_plural "Tickets"
@@ -1745,10 +1745,10 @@ msgstr "कार्य %s निष्पादित"
 #: inc/search.class.php:1766 inc/search.class.php:4237
 #: inc/search.class.php:4276 inc/search.class.php:4305
 #: inc/search.class.php:4344 inc/search.class.php:4734
-#: inc/search.class.php:4896 inc/ticket.class.php:6216
-#: inc/ticket.class.php:6267 inc/ticket_ticket.class.php:192
-#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:982
-#: inc/toolbox.class.php:1143 inc/useremail.class.php:169
+#: inc/search.class.php:4896 inc/ticket.class.php:6218
+#: inc/ticket.class.php:6269 inc/ticket_ticket.class.php:192
+#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:993
+#: inc/toolbox.class.php:1154 inc/useremail.class.php:169
 #: install/update_0681_07.php:538 install/update_0681_07.php:541
 #: install/update_0681_07.php:546 install/update_0681_07.php:549
 #, php-format
@@ -1785,8 +1785,8 @@ msgstr ""
 #: front/devices.php:41 front/devices.php:45 inc/commondevice.class.php:57
 #: inc/commondevice.class.php:266 inc/computer.class.php:802
 #: inc/dropdown.class.php:756 inc/event.class.php:151
-#: inc/item_devices.class.php:350 inc/item_devices.class.php:402
-#: inc/item_devices.class.php:1077 inc/lock.class.php:282
+#: inc/item_devices.class.php:358 inc/item_devices.class.php:410
+#: inc/item_devices.class.php:1086 inc/lock.class.php:282
 #: inc/lock.class.php:492 inc/profile.class.php:1420
 #: inc/profile.class.php:1851 inc/transfer.class.php:3347
 #: install/update_0723_078.php:3868
@@ -1817,7 +1817,7 @@ msgstr "वैश्विक शब्दकोश"
 #: inc/ruledictionnarysoftware.class.php:83
 #: inc/ruledictionnarysoftware.class.php:109
 #: inc/rulesoftwarecategory.class.php:77 inc/software.class.php:57
-#: inc/softwarelicense.class.php:594 inc/softwarelicense.class.php:1217
+#: inc/softwarelicense.class.php:588 inc/softwarelicense.class.php:1211
 #: inc/softwareversion.class.php:117 install/update_0713_072.php:159
 #: install/update_0713_072.php:509
 msgid "Software"
@@ -1885,7 +1885,7 @@ msgstr[1] "प्रिंटर"
 #: inc/notificationtargetchange.class.php:283
 #: inc/notificationtargetproblem.class.php:217
 #: inc/notificationtargetproject.class.php:604
-#: inc/notificationtargetticket.class.php:751 inc/peripheral.class.php:228
+#: inc/notificationtargetticket.class.php:755 inc/peripheral.class.php:228
 #: inc/peripheral.class.php:393 inc/phone.class.php:226
 #: inc/phone.class.php:415 inc/printer.class.php:325 inc/printer.class.php:539
 #: inc/ruledictionnarycomputermodel.class.php:60
@@ -1995,7 +1995,7 @@ msgstr[1] "फोन मॉडल"
 #: inc/notificationtargetprojecttask.class.php:469
 #: inc/notificationtargetprojecttask.class.php:484
 #: inc/notificationtargetprojecttask.class.php:547
-#: inc/notificationtargetticket.class.php:711
+#: inc/notificationtargetticket.class.php:715
 #: inc/notificationtemplate.class.php:123
 #: inc/notificationtemplate.class.php:164
 #: inc/notificationtemplatetranslation.class.php:356
@@ -2021,10 +2021,10 @@ msgstr[1] "फोन मॉडल"
 #: inc/ruledictionnaryprintertype.class.php:60
 #: inc/ruledictionnaryprintertype.class.php:73 inc/ruleticket.class.php:351
 #: inc/ruleticket.class.php:510 inc/softwarelicense.class.php:342
-#: inc/softwarelicense.class.php:546 inc/softwarelicense.class.php:1001
+#: inc/softwarelicense.class.php:540 inc/softwarelicense.class.php:995
 #: inc/supplier.class.php:489 inc/ticket.class.php:2814
-#: inc/ticket.class.php:3021 inc/ticket.class.php:3924
-#: inc/ticket.class.php:4782 inc/user.class.php:3786 inc/user.class.php:3866
+#: inc/ticket.class.php:3021 inc/ticket.class.php:3926
+#: inc/ticket.class.php:4784 inc/user.class.php:3786 inc/user.class.php:3866
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "प्रकार"
@@ -2198,30 +2198,30 @@ msgstr "खोज"
 #: inc/notificationtargetchange.class.php:284
 #: inc/notificationtargetproblem.class.php:218
 #: inc/notificationtargetproject.class.php:605
-#: inc/notificationtargetticket.class.php:752 inc/peripheral.class.php:244
+#: inc/notificationtargetticket.class.php:756 inc/peripheral.class.php:244
 #: inc/peripheral.class.php:426 inc/phone.class.php:242
 #: inc/phone.class.php:448 inc/printer.class.php:341 inc/printer.class.php:572
 #: inc/search.class.php:5448
 msgid "Alternate username"
 msgstr "वैकल्पिक उपयोगकर्ता नाम"
 
-#: front/find_num.php:94 inc/ticket.class.php:3986
+#: front/find_num.php:94 inc/ticket.class.php:3988
 msgid "Hardware type"
 msgstr "हार्डवेयर प्रकार"
 
 #: front/find_num.php:95 front/item_ticket.form.php:56
 #: inc/commonitilobject.class.php:5529 inc/item_ticket.class.php:1223
 #: inc/knowbaseitem_item.class.php:85
-#: inc/notificationtargetticket.class.php:731
-#: inc/notificationtargetticket.class.php:734
-#: inc/notificationtargetticket.class.php:737
-#: inc/notificationtargetticket.class.php:740
-#: inc/notificationtargetticket.class.php:743
-#: inc/notificationtargetticket.class.php:746
-#: inc/notificationtargetticket.class.php:749 inc/problem.class.php:445
+#: inc/notificationtargetticket.class.php:735
+#: inc/notificationtargetticket.class.php:738
+#: inc/notificationtargetticket.class.php:741
+#: inc/notificationtargetticket.class.php:744
+#: inc/notificationtargetticket.class.php:747
+#: inc/notificationtargetticket.class.php:750
+#: inc/notificationtargetticket.class.php:753 inc/problem.class.php:445
 #: inc/ruleticket.class.php:582 inc/stat.class.php:1159
-#: inc/ticket.class.php:2823 inc/ticket.class.php:5042
-#: inc/ticket.class.php:5751
+#: inc/ticket.class.php:2823 inc/ticket.class.php:5044
+#: inc/ticket.class.php:5753
 msgid "Associated element"
 msgid_plural "Associated elements"
 msgstr[0] "एसोसिएटेड तत्व"
@@ -2241,7 +2241,7 @@ msgstr[1] "एसोसिएटेड तत्व"
 #: inc/contract.class.php:673 inc/contractcost.class.php:142
 #: inc/contract_item.class.php:156 inc/crontask.class.php:1328
 #: inc/document.class.php:834 inc/entity.class.php:486 inc/event.class.php:331
-#: inc/fieldunicity.class.php:326 inc/group_user.class.php:615
+#: inc/fieldunicity.class.php:326 inc/group_user.class.php:606
 #: inc/infocom.class.php:1630 inc/infocom.class.php:1829
 #: inc/knowbaseitem.class.php:1646 inc/levelagreement.class.php:663
 #: inc/link.class.php:220 inc/log.class.php:285 inc/monitor.class.php:403
@@ -2259,17 +2259,17 @@ msgstr[1] "एसोसिएटेड तत्व"
 #: inc/notificationtargetprojecttask.class.php:515
 #: inc/notificationtargetprojecttask.class.php:529
 #: inc/notificationtargetsavedsearch_alert.class.php:105
-#: inc/notificationtargetticket.class.php:902
-#: inc/notificationtargetticket.class.php:915
-#: inc/notificationtargetticket.class.php:922 inc/peripheral.class.php:374
+#: inc/notificationtargetticket.class.php:906
+#: inc/notificationtargetticket.class.php:919
+#: inc/notificationtargetticket.class.php:926 inc/peripheral.class.php:374
 #: inc/phone.class.php:396 inc/printer.class.php:520 inc/problem.class.php:964
 #: inc/profile_user.class.php:860 inc/project.class.php:465
 #: inc/project.class.php:773 inc/projectcost.class.php:139
 #: inc/queuednotification.class.php:194 inc/reservationitem.class.php:176
 #: inc/savedsearch.class.php:201 inc/search.class.php:5399
 #: inc/search.class.php:5420 inc/slm.class.php:154 inc/software.class.php:478
-#: inc/softwarelicense.class.php:514 inc/softwarelicense.class.php:1214
-#: inc/supplier.class.php:242 inc/ticket.class.php:6206
+#: inc/softwarelicense.class.php:508 inc/softwarelicense.class.php:1208
+#: inc/supplier.class.php:242 inc/ticket.class.php:6208
 #: inc/ticket_ticket.class.php:70 inc/user.class.php:2715
 #: inc/user.class.php:4379
 msgid "ID"
@@ -2299,12 +2299,12 @@ msgstr "ID"
 #: inc/notificationtargetproblem.class.php:214
 #: inc/notificationtargetproject.class.php:601
 #: inc/notificationtargetsoftwarelicense.class.php:88
-#: inc/notificationtargetticket.class.php:728 inc/peripheral.class.php:238
+#: inc/notificationtargetticket.class.php:732 inc/peripheral.class.php:238
 #: inc/peripheral.class.php:410 inc/phone.class.php:236
 #: inc/phone.class.php:432 inc/printer.class.php:335 inc/printer.class.php:556
 #: inc/ruleimportcomputer.class.php:106 inc/search.class.php:5431
-#: inc/softwarelicense.class.php:368 inc/softwarelicense.class.php:526
-#: inc/softwarelicense.class.php:998 inc/softwarelicense.class.php:1215
+#: inc/softwarelicense.class.php:368 inc/softwarelicense.class.php:520
+#: inc/softwarelicense.class.php:992 inc/softwarelicense.class.php:1209
 #: inc/supplier.class.php:492 inc/user.class.php:3789 inc/user.class.php:3869
 msgid "Serial number"
 msgstr "सीरियल नंबर"
@@ -2325,11 +2325,11 @@ msgstr "सीरियल नंबर"
 #: inc/notificationtargetchange.class.php:281
 #: inc/notificationtargetproblem.class.php:215
 #: inc/notificationtargetproject.class.php:602
-#: inc/notificationtargetticket.class.php:729 inc/peripheral.class.php:250
+#: inc/notificationtargetticket.class.php:733 inc/peripheral.class.php:250
 #: inc/peripheral.class.php:418 inc/phone.class.php:247
 #: inc/phone.class.php:440 inc/printer.class.php:347 inc/printer.class.php:564
 #: inc/reservationitem.class.php:204 inc/search.class.php:5435
-#: inc/softwarelicense.class.php:382 inc/softwarelicense.class.php:683
+#: inc/softwarelicense.class.php:382 inc/softwarelicense.class.php:677
 #: inc/supplier.class.php:493 inc/user.class.php:3790 inc/user.class.php:3870
 msgid "Inventory number"
 msgstr "सूची संख्या"
@@ -2379,7 +2379,7 @@ msgstr "%sएक उपयोगकर्ता को एक समूह म�
 #: front/knowbaseitem.form.php:172 front/knowbaseitemtranslation.form.php:77
 #: front/knowbaseitemtranslation.form.php:79
 #: front/knowbaseitemtranslation.form.php:83
-#: front/knowbaseitemtranslation.form.php:86 inc/commondropdown.class.php:873
+#: front/knowbaseitemtranslation.form.php:86 inc/commondropdown.class.php:876
 #: inc/html.class.php:6031 inc/knowbaseitem.class.php:88
 #: inc/profile.class.php:738
 msgid "FAQ"
@@ -2445,12 +2445,12 @@ msgstr "अपनी समस्या का वर्णन करें"
 #: inc/notificationtargetproblem.class.php:263
 #: inc/notificationtargetproject.class.php:622
 #: inc/notificationtargetprojecttask.class.php:519
-#: inc/notificationtargetticket.class.php:911
-#: inc/notificationtargetticket.class.php:919
-#: inc/notificationtargetticket.class.php:926 inc/problem.class.php:1218
+#: inc/notificationtargetticket.class.php:915
+#: inc/notificationtargetticket.class.php:923
+#: inc/notificationtargetticket.class.php:930 inc/problem.class.php:1218
 #: inc/projectcost.class.php:129 inc/reminder.class.php:316
 #: inc/reminder.class.php:641 inc/ruleticket.class.php:335
-#: inc/ticket.class.php:4051 inc/ticket.class.php:5095 inc/user.class.php:2982
+#: inc/ticket.class.php:4053 inc/ticket.class.php:5097 inc/user.class.php:2982
 msgid "Title"
 msgstr "शीर्षक"
 
@@ -2462,7 +2462,7 @@ msgstr "शीर्षक"
 #: inc/knowbaseitemtranslation.class.php:166
 #: inc/knowbaseitemtranslation.class.php:312 inc/rssfeed.class.php:454
 #: inc/solutiontemplate.class.php:66 inc/solutiontemplate.class.php:76
-#: inc/tasktemplate.class.php:63 inc/tasktemplate.class.php:93
+#: inc/tasktemplate.class.php:63 inc/tasktemplate.class.php:94
 msgid "Content"
 msgstr "सामग्री"
 
@@ -2472,7 +2472,7 @@ msgid "post"
 msgstr "प्रकाशित करना"
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
-#: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4632
+#: inc/notificationtargetticket.class.php:228 inc/ticket.class.php:4634
 msgid "New ticket"
 msgstr "नया टिकट"
 
@@ -2533,7 +2533,7 @@ msgstr "ज्ञान आधार आइटम को संशोधन म�
 msgid "Knowledge base item has not been reverted to revision %s"
 msgstr "ज्ञान आधार आइटम को संशोधन में वापस नहीं किया गया है%s"
 
-#: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:876
+#: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:879
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:235
 #: inc/knowbase.class.php:52 inc/knowbaseitem.class.php:68
 #: inc/knowbaseitem_item.class.php:87 inc/profile.class.php:941
@@ -2752,13 +2752,13 @@ msgstr "इसे हटाएं या अपडेट करें अन्�
 #: inc/notificationtargetchange.class.php:369
 #: inc/notificationtargetchange.class.php:370
 #: inc/notificationtargetchange.class.php:371
-#: inc/notificationtargetticket.class.php:859
-#: inc/notificationtargetticket.class.php:873
-#: inc/notificationtargetticket.class.php:915
-#: inc/notificationtargetticket.class.php:916
-#: inc/notificationtargetticket.class.php:917
-#: inc/notificationtargetticket.class.php:918
-#: inc/notificationtargetticket.class.php:920 inc/problem.class.php:74
+#: inc/notificationtargetticket.class.php:863
+#: inc/notificationtargetticket.class.php:877
+#: inc/notificationtargetticket.class.php:919
+#: inc/notificationtargetticket.class.php:920
+#: inc/notificationtargetticket.class.php:921
+#: inc/notificationtargetticket.class.php:922
+#: inc/notificationtargetticket.class.php:924 inc/problem.class.php:74
 #: inc/problem.class.php:922 inc/profile.class.php:1092
 #: inc/profile.class.php:1094 inc/profile.class.php:2295
 #: inc/stat.class.php:1226
@@ -2785,7 +2785,7 @@ msgstr "अनुबंध के तहत हार्डवेयर की �
 
 #: front/report.contract.list.php:178 front/report.infocom.php:130
 #: front/report.year.list.php:134 inc/apiclient.class.php:81
-#: inc/apiclient.class.php:180 inc/authldap.class.php:334
+#: inc/apiclient.class.php:183 inc/authldap.class.php:334
 #: inc/authldap.class.php:555 inc/authldap.class.php:857
 #: inc/authldap.class.php:2244 inc/authldapreplicate.class.php:87
 #: inc/authmail.class.php:98 inc/authmail.class.php:185
@@ -2888,8 +2888,8 @@ msgstr "अनुबंध के तहत हार्डवेयर की �
 #: inc/slalevel.class.php:231 inc/slm.class.php:111 inc/slm.class.php:145
 #: inc/software.class.php:261 inc/software.class.php:469
 #: inc/software.class.php:981 inc/softwarelicense.class.php:313
-#: inc/softwarelicense.class.php:504 inc/softwarelicense.class.php:996
-#: inc/softwarelicense.class.php:1279 inc/softwareversion.class.php:130
+#: inc/softwarelicense.class.php:498 inc/softwarelicense.class.php:990
+#: inc/softwarelicense.class.php:1273 inc/softwareversion.class.php:130
 #: inc/softwareversion.class.php:169 inc/supplier.class.php:135
 #: inc/supplier.class.php:233 inc/supplier.class.php:491
 #: inc/tickettemplatehiddenfield.class.php:263
@@ -2916,12 +2916,12 @@ msgstr "नाम"
 #: inc/notificationtargetchange.class.php:282
 #: inc/notificationtargetproblem.class.php:216
 #: inc/notificationtargetproject.class.php:603
-#: inc/notificationtargetticket.class.php:768 inc/peripheral.class.php:197
+#: inc/notificationtargetticket.class.php:772 inc/peripheral.class.php:197
 #: inc/phone.class.php:195 inc/printer.class.php:294
 #: inc/profile.class.php:1430 inc/ruleimportentity.class.php:168
 #: inc/ruleticket.class.php:650 inc/software.class.php:270
 #: inc/softwarelicense.class.php:338 inc/ticket.class.php:2865
-#: inc/ticket.class.php:3997 inc/ticket.class.php:4994 inc/user.class.php:2117
+#: inc/ticket.class.php:3999 inc/ticket.class.php:4996 inc/user.class.php:2117
 #: inc/user.class.php:2239 inc/user.class.php:2471
 msgid "Location"
 msgid_plural "Locations"
@@ -2978,7 +2978,7 @@ msgstr "अनुबंध के तहत हार्डवेयर"
 #: inc/notificationtargetplanningrecall.class.php:185
 #: inc/notificationtargetreservation.class.php:149
 #: inc/notificationtargetsavedsearch_alert.class.php:107
-#: inc/notificationtargetticket.class.php:726
+#: inc/notificationtargetticket.class.php:730
 #: inc/reservationitem.class.php:447 inc/ruleticket.class.php:437
 #: inc/savedsearch.class.php:216 inc/search.class.php:1420
 msgid "Item type"
@@ -3343,8 +3343,8 @@ msgid "Real duration"
 msgstr "वास्तविक अवधि"
 
 #: front/stat.global.php:165 front/stat.graph.php:439
-#: inc/notificationtargetticket.class.php:241 inc/ticket.class.php:3014
-#: inc/ticket.class.php:5726
+#: inc/notificationtargetticket.class.php:245 inc/ticket.class.php:3014
+#: inc/ticket.class.php:5728
 msgid "Satisfaction survey"
 msgstr "संतुष्टि सर्वेक्षण"
 
@@ -3368,8 +3368,8 @@ msgstr[1] "उत्तर"
 
 #: front/stat.global.php:183 front/stat.global.php:186
 #: front/stat.graph.php:458 front/stat.graph.php:461
-#: inc/notificationtargetticket.class.php:825
-#: inc/notificationtargetticket.class.php:898 inc/stat.class.php:412
+#: inc/notificationtargetticket.class.php:829
+#: inc/notificationtargetticket.class.php:902 inc/stat.class.php:412
 #: inc/ticket.class.php:811 inc/ticket.class.php:3059
 #: inc/ticketsatisfaction.class.php:48
 msgid "Satisfaction"
@@ -3403,14 +3403,14 @@ msgstr[1] "आपूर्तिकर्ता"
 #: inc/authldap.class.php:3455 inc/certificate.class.php:231
 #: inc/certificate.class.php:433 inc/commondbtm.class.php:3091
 #: inc/commondbvisible.class.php:214 inc/commonitilactor.class.php:180
-#: inc/commonitilactor.class.php:260 inc/commonitilobject.class.php:3262
+#: inc/commonitilactor.class.php:256 inc/commonitilobject.class.php:3262
 #: inc/commonitilobject.class.php:3420 inc/commonitiltask.class.php:1516
 #: inc/commonitilvalidation.class.php:645
 #: inc/commonitilvalidation.class.php:1330 inc/computer.class.php:474
 #: inc/computer.class.php:708 inc/computer_softwarelicense.class.php:491
 #: inc/computer_softwareversion.class.php:331 inc/config.class.php:556
 #: inc/dropdown.class.php:1017 inc/group.class.php:308
-#: inc/group_user.class.php:642 inc/knowbaseitem.class.php:1731
+#: inc/group_user.class.php:633 inc/knowbaseitem.class.php:1731
 #: inc/line.class.php:139 inc/line.class.php:197 inc/log.class.php:287
 #: inc/monitor.class.php:264 inc/monitor.class.php:471
 #: inc/networkequipment.class.php:352 inc/networkequipment.class.php:519
@@ -3421,7 +3421,7 @@ msgstr[1] "आपूर्तिकर्ता"
 #: inc/notificationtargetproject.class.php:607
 #: inc/notificationtargetprojecttask.class.php:498
 #: inc/notificationtargetsavedsearch_alert.class.php:122
-#: inc/notificationtargetticket.class.php:754
+#: inc/notificationtargetticket.class.php:758
 #: inc/notificationtargetuser.class.php:54 inc/peripheral.class.php:260
 #: inc/peripheral.class.php:442 inc/phone.class.php:257
 #: inc/phone.class.php:472 inc/planning.class.php:1356
@@ -3434,7 +3434,7 @@ msgstr[1] "आपूर्तिकर्ता"
 #: inc/rulemailcollector.class.php:130 inc/ruleticket.class.php:621
 #: inc/savedsearch.class.php:209 inc/search.class.php:5444
 #: inc/software.class.php:303 inc/software.class.php:551
-#: inc/softwarelicense.class.php:374 inc/softwarelicense.class.php:649
+#: inc/softwarelicense.class.php:374 inc/softwarelicense.class.php:643
 #: inc/ticketfollowup.class.php:1197 inc/user.class.php:67
 #: install/update_0713_072.php:554
 msgid "User"
@@ -3459,8 +3459,8 @@ msgstr[1] "उपयोगकर्ता "
 #: inc/problem.class.php:1182 inc/ruledictionnarysoftware.class.php:131
 #: inc/rulesoftwarecategory.class.php:99 inc/ruleticket.class.php:345
 #: inc/ruleticket.class.php:506 inc/software.class.php:274
-#: inc/software.class.php:497 inc/ticket.class.php:3931
-#: inc/ticket.class.php:4807 inc/user.class.php:2090 inc/user.class.php:2990
+#: inc/software.class.php:497 inc/ticket.class.php:3933
+#: inc/ticket.class.php:4809 inc/user.class.php:2090 inc/user.class.php:2990
 msgid "Category"
 msgstr "श्रेणी "
 
@@ -3474,7 +3474,7 @@ msgstr "श्रेणी "
 #: inc/commonitilvalidation.class.php:1331 inc/computer.class.php:489
 #: inc/computer.class.php:717 inc/computer_softwarelicense.class.php:490
 #: inc/computer_softwareversion.class.php:330 inc/config.class.php:557
-#: inc/group.class.php:54 inc/group_user.class.php:633
+#: inc/group.class.php:54 inc/group_user.class.php:624
 #: inc/itilcategory.class.php:130 inc/line.class.php:156
 #: inc/line.class.php:206 inc/monitor.class.php:281 inc/monitor.class.php:480
 #: inc/networkequipment.class.php:366 inc/networkequipment.class.php:528
@@ -3482,7 +3482,7 @@ msgstr "श्रेणी "
 #: inc/notificationtarget.class.php:781
 #: inc/notificationtargetproblem.class.php:221
 #: inc/notificationtargetproject.class.php:608
-#: inc/notificationtargetticket.class.php:755 inc/peripheral.class.php:278
+#: inc/notificationtargetticket.class.php:759 inc/peripheral.class.php:278
 #: inc/peripheral.class.php:451 inc/phone.class.php:275
 #: inc/phone.class.php:481 inc/planning.class.php:1360
 #: inc/planning.class.php:1444 inc/planning.class.php:1538
@@ -3492,8 +3492,8 @@ msgstr "श्रेणी "
 #: inc/ruleimportentity.class.php:172 inc/rulemailcollector.class.php:131
 #: inc/ruleticket.class.php:627 inc/search.class.php:5458
 #: inc/software.class.php:311 inc/software.class.php:560
-#: inc/softwarelicense.class.php:392 inc/softwarelicense.class.php:658
-#: inc/tasktemplate.class.php:82 inc/user.class.php:2806
+#: inc/softwarelicense.class.php:392 inc/softwarelicense.class.php:652
+#: inc/tasktemplate.class.php:83 inc/user.class.php:2806
 #: inc/user.class.php:3909
 msgid "Group"
 msgid_plural "Groups"
@@ -3507,7 +3507,7 @@ msgstr[1] "मेरे समूह"
 #: inc/notificationtargetproject.class.php:562 inc/problem.class.php:1197
 #: inc/project.class.php:504 inc/project.class.php:782
 #: inc/project.class.php:1099 inc/ruleticket.class.php:453
-#: inc/ruleticket.class.php:575 inc/ticket.class.php:5010
+#: inc/ruleticket.class.php:575 inc/ticket.class.php:5012
 msgid "Priority"
 msgstr "प्राथमिकता"
 
@@ -3516,8 +3516,8 @@ msgstr "प्राथमिकता"
 #: inc/config.class.php:919
 #: inc/notificationtargetcommonitilobject.class.php:1181
 #: inc/problem.class.php:1175 inc/ruleticket.class.php:447
-#: inc/ruleticket.class.php:569 inc/ticket.class.php:3959
-#: inc/ticket.class.php:4902
+#: inc/ruleticket.class.php:569 inc/ticket.class.php:3961
+#: inc/ticket.class.php:4904
 msgid "Urgency"
 msgstr "तात्कालिकता"
 
@@ -3527,7 +3527,7 @@ msgstr "तात्कालिकता"
 #: inc/notificationtargetchange.class.php:271
 #: inc/notificationtargetcommonitilobject.class.php:1182
 #: inc/problem.class.php:1189 inc/ruleticket.class.php:450
-#: inc/ruleticket.class.php:572 inc/ticket.class.php:4978
+#: inc/ruleticket.class.php:572 inc/ticket.class.php:4980
 msgid "Impact"
 msgstr "प्रभाव"
 
@@ -3553,11 +3553,11 @@ msgstr[0] "समाधान प्रकार"
 msgstr[1] "समाधान प्रकार"
 
 #: front/stat.graph.php:227 front/stat.tracking.php:97
-#: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:725
-#: inc/notificationtargetticket.class.php:761 inc/requesttype.class.php:46
+#: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:729
+#: inc/notificationtargetticket.class.php:765 inc/requesttype.class.php:46
 #: inc/ruleticket.class.php:431 inc/ruleticket.class.php:655
 #: inc/ticket.class.php:2856 inc/ticket.class.php:3143
-#: inc/ticket.class.php:4886 inc/ticketfollowup.class.php:1172
+#: inc/ticket.class.php:4888 inc/ticketfollowup.class.php:1172
 msgid "Request source"
 msgid_plural "Request sources"
 msgstr[0] "अनुरोध स्रोत"
@@ -3580,7 +3580,7 @@ msgid "Next"
 msgstr "अगला"
 
 #: front/stat.graph.php:414 inc/commonitilobject.class.php:4598
-#: inc/stat.class.php:470 inc/ticket.class.php:7632
+#: inc/stat.class.php:470 inc/ticket.class.php:7634
 msgid "Take into account"
 msgstr "ध्यान में रखना"
 
@@ -3626,11 +3626,11 @@ msgstr "%1$sसंतुष्टि सर्वेक्षण(%2$s)"
 #: inc/notificationtargetcommonitilobject.class.php:1297
 #: inc/notificationtargetplanningrecall.class.php:59
 #: inc/notificationtargetreservation.class.php:63
-#: inc/notificationtargetticket.class.php:788
+#: inc/notificationtargetticket.class.php:792
 #: inc/notimportedemail.class.php:184 inc/problem.class.php:823
 #: inc/rulemailcollector.class.php:82 inc/ruleticket.class.php:357
-#: inc/ruleticket.class.php:514 inc/ticket.class.php:5750
-#: inc/ticket.class.php:7005 inc/ticket.class.php:7230
+#: inc/ruleticket.class.php:514 inc/ticket.class.php:5752
+#: inc/ticket.class.php:7007 inc/ticket.class.php:7232
 #: inc/ticketfollowup.class.php:1090
 msgid "Requester"
 msgid_plural "Requesters"
@@ -3648,7 +3648,7 @@ msgstr[1] "अनुरोधकर्ताओं"
 #: inc/notificationtargetplanningrecall.class.php:179
 #: inc/notificationtargetprojecttask.class.php:468
 #: inc/notificationtargetreservation.class.php:160
-#: inc/notificationtargetticket.class.php:759 inc/reminder.class.php:326
+#: inc/notificationtargetticket.class.php:763 inc/reminder.class.php:326
 #: inc/ticket.class.php:3177
 msgid "Writer"
 msgstr "लेखक"
@@ -3674,7 +3674,7 @@ msgstr "स्थान पेड़"
 #: inc/consumableitem.class.php:234 inc/contact.class.php:286
 #: inc/contract.class.php:657 inc/contractcost.class.php:125
 #: inc/crontask.class.php:1312 inc/document.class.php:818
-#: inc/entity.class.php:470 inc/group_user.class.php:608
+#: inc/entity.class.php:470 inc/group_user.class.php:599
 #: inc/infocom.class.php:1623 inc/knowbaseitem.class.php:1639
 #: inc/levelagreement.class.php:647 inc/levelagreementlevel.class.php:90
 #: inc/link.class.php:204 inc/mailcollector.class.php:339
@@ -3692,7 +3692,7 @@ msgstr "स्थान पेड़"
 #: inc/reservationitem.class.php:157 inc/rssfeed.class.php:329
 #: inc/savedsearch.class.php:187 inc/search.class.php:5389
 #: inc/search.class.php:5410 inc/slm.class.php:138 inc/software.class.php:462
-#: inc/softwarelicense.class.php:497 inc/softwareversion.class.php:162
+#: inc/softwarelicense.class.php:491 inc/softwareversion.class.php:162
 #: inc/supplier.class.php:226 inc/ticketfollowup.class.php:1157
 #: inc/transfer.class.php:84 inc/user.class.php:2698
 msgid "Characteristics"
@@ -3783,8 +3783,8 @@ msgstr "आपका टिकट पंजीकृत कर दिया ग�
 #: front/tracking.injector.php:80 inc/config.class.php:2468
 #: inc/config.class.php:2488 inc/html.class.php:5306 inc/html.class.php:5465
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:346
-#: inc/telemetry.class.php:386 inc/toolbox.class.php:1037
-#: inc/toolbox.class.php:1071 inc/toolbox.class.php:1072
+#: inc/telemetry.class.php:386 inc/toolbox.class.php:1048
+#: inc/toolbox.class.php:1082 inc/toolbox.class.php:1083
 msgid "OK"
 msgstr "OK"
 
@@ -3830,7 +3830,7 @@ msgid "try to reload"
 msgstr "पुनः लोड करने का प्रयास करें"
 
 #: inc/alert.class.php:108 inc/alert.class.php:141 inc/alert.class.php:169
-#: inc/contract.class.php:1591 inc/entity.class.php:678
+#: inc/contract.class.php:1584 inc/entity.class.php:678
 #: inc/entity.class.php:919 inc/entity.class.php:1495
 #: inc/entity.class.php:1547 inc/entity.class.php:1563
 #: inc/entity.class.php:1584 inc/entity.class.php:1679
@@ -3854,14 +3854,14 @@ msgstr "मूल इकाई की विरासत"
 #: inc/cartridgeitem.class.php:247 inc/config.class.php:377
 #: inc/config.class.php:697 inc/config.class.php:1078
 #: inc/config.class.php:1243 inc/consumableitem.class.php:203
-#: inc/contract.class.php:1521 inc/contract.class.php:1540
+#: inc/contract.class.php:1514 inc/contract.class.php:1533
 #: inc/crontask.class.php:520 inc/entity.class.php:920
 #: inc/entity.class.php:1746 inc/entity.class.php:1748
 #: inc/entity.class.php:1786 inc/entity.class.php:1788
 #: inc/entity.class.php:2220 inc/entity.class.php:2582
 #: inc/entity.class.php:2593 inc/entity.class.php:2618
 #: inc/entity.class.php:2641 inc/infocom.class.php:1931
-#: inc/levelagreement.class.php:186 inc/notificationtargetticket.class.php:308
+#: inc/levelagreement.class.php:186 inc/notificationtargetticket.class.php:312
 #: inc/transfer.class.php:3292
 msgid "Never"
 msgstr "कभी नहीं"
@@ -4030,13 +4030,13 @@ msgid_plural "API clients"
 msgstr[0] "एपीआई क्लाइंट्स"
 msgstr[1] "एपीआई क्लाइंट्स"
 
-#: inc/apiclient.class.php:98 inc/apiclient.class.php:190
+#: inc/apiclient.class.php:98 inc/apiclient.class.php:193
 #: inc/authldap.class.php:349 inc/authldap.class.php:1104
 #: inc/authmail.class.php:133 inc/authmail.class.php:190
 #: inc/computerantivirus.class.php:157 inc/computerantivirus.class.php:263
 #: inc/computerantivirus.class.php:352 inc/fieldunicity.class.php:76
-#: inc/fieldunicity.class.php:387 inc/group_user.class.php:490
-#: inc/group_user.class.php:531 inc/levelagreement.class.php:557
+#: inc/fieldunicity.class.php:387 inc/group_user.class.php:481
+#: inc/group_user.class.php:522 inc/levelagreement.class.php:557
 #: inc/levelagreementlevel.class.php:135 inc/mailcollector.class.php:257
 #: inc/mailcollector.class.php:355 inc/notification.class.php:212
 #: inc/notification.class.php:383 inc/notificationtarget.class.php:1302
@@ -4055,16 +4055,16 @@ msgstr[1] "एपीआई क्लाइंट्स"
 msgid "Active"
 msgstr "सक्रिय"
 
-#: inc/apiclient.class.php:106 inc/apiclient.class.php:196
+#: inc/apiclient.class.php:106 inc/apiclient.class.php:199
 msgid "Log connections"
 msgstr "लॉग कनेक्शन"
 
-#: inc/apiclient.class.php:112 inc/apiclient.class.php:205
+#: inc/apiclient.class.php:112 inc/apiclient.class.php:208
 msgid "Filter access"
 msgstr "फ़िल्टर का उपयोग करें"
 
 #: inc/apiclient.class.php:119 inc/apiclient.class.php:127
-#: inc/apiclient.class.php:215
+#: inc/apiclient.class.php:218
 msgid "IPv4 address range"
 msgstr "आईपीवी 4 पता सीमा"
 
@@ -4082,7 +4082,7 @@ msgstr "प्रारंभ"
 #: inc/calendarsegment.class.php:349 inc/calendarsegment.class.php:376
 #: inc/commonitiltask.class.php:1302 inc/contract.class.php:320
 #: inc/contract.class.php:336 inc/contract.class.php:353
-#: inc/contract.class.php:1612 inc/crontask.class.php:1180
+#: inc/contract.class.php:1605 inc/crontask.class.php:1180
 #: inc/dbmysql.class.php:597 inc/holiday.class.php:62 inc/holiday.class.php:85
 #: inc/html.class.php:3688 inc/html.class.php:3689 inc/html.class.php:3894
 #: inc/html.class.php:3895 inc/planning.class.php:354
@@ -4090,25 +4090,25 @@ msgstr "प्रारंभ"
 msgid "End"
 msgstr "अंत"
 
-#: inc/apiclient.class.php:135 inc/apiclient.class.php:226
+#: inc/apiclient.class.php:135 inc/apiclient.class.php:229
 msgid "IPv6 address"
 msgstr "IPV6 6 पता"
 
-#: inc/apiclient.class.php:143 inc/apiclient.class.php:232
+#: inc/apiclient.class.php:143 inc/apiclient.class.php:235
 msgid "Application token"
 msgstr "आवेदन टोकन"
 
-#: inc/apiclient.class.php:210
+#: inc/apiclient.class.php:213
 msgid "Leave these parameters empty to disable API access restriction"
 msgstr "API एक्सेस प्रतिबंध अक्षम करने के लिए इन पैरामीटर को खाली छोड़ दें"
 
-#: inc/apiclient.class.php:236 inc/config.class.php:1318
+#: inc/apiclient.class.php:239 inc/config.class.php:1318
 #: inc/config.class.php:1319 inc/config.class.php:1337
 #: inc/config.class.php:1338
 msgid "Regenerate"
 msgstr "पुनर्जन्म"
 
-#: inc/apiclient.class.php:289 inc/log.class.php:81
+#: inc/apiclient.class.php:296 inc/log.class.php:81
 #: inc/notificationtargetcommonitilobject.class.php:1294
 #: inc/notificationtargetcommonitilobject.class.php:1312
 #: inc/notificationtargetcommonitilobject.class.php:1329
@@ -4133,7 +4133,7 @@ msgstr "पुनर्जन्म"
 msgid "Historical"
 msgstr "ऐतिहासिक"
 
-#: inc/apiclient.class.php:290 inc/crontasklog.class.php:88
+#: inc/apiclient.class.php:297 inc/crontasklog.class.php:88
 #: inc/event.class.php:60 inc/profile.class.php:1339
 #: inc/profile.class.php:2126
 msgid "Log"
@@ -4477,7 +4477,7 @@ msgstr "डिफ़ॉल्ट मान"
 #: inc/reminder.class.php:397 inc/reservationitem.class.php:240
 #: inc/rssfeed.class.php:424 inc/rule.class.php:764 inc/search.class.php:5462
 #: inc/software.class.php:505 inc/supplier.class.php:331
-#: inc/ticket.class.php:4685 inc/transfer.class.php:100
+#: inc/ticket.class.php:4687 inc/transfer.class.php:100
 #: inc/transfer.class.php:3290 inc/user.class.php:2890
 msgid "Last update"
 msgstr "अंतिम अद्यतन"
@@ -4489,7 +4489,7 @@ msgstr "डिफ़ॉल्ट सर्वर"
 
 #: inc/authldap.class.php:354 inc/authldap.class.php:875
 #: inc/authldapreplicate.class.php:88 inc/authmail.class.php:116
-#: inc/config.class.php:1807 inc/toolbox.class.php:1985
+#: inc/config.class.php:1807 inc/toolbox.class.php:1996
 msgid "Server"
 msgstr "सर्वर"
 
@@ -4565,7 +4565,7 @@ msgstr "परिणामों की अधिकतम संख्या"
 
 #: inc/authldap.class.php:481 inc/contract.class.php:289
 #: inc/search.class.php:4604 inc/softwarelicense.class.php:425
-#: inc/softwarelicense.class.php:1142 inc/softwarelicense.class.php:1168
+#: inc/softwarelicense.class.php:1136 inc/softwarelicense.class.php:1162
 msgid "Unlimited"
 msgstr "असीमित"
 
@@ -4653,8 +4653,8 @@ msgid "Binding to the LDAP directory"
 msgstr "LDAP निर्देशिका के लिए बाध्यकारी"
 
 #: inc/authldap.class.php:782 inc/authldap.class.php:3134
-#: inc/notepad.class.php:328 inc/ticket.class.php:6994
-#: inc/ticket.class.php:7218 inc/ticketfollowup.class.php:986
+#: inc/notepad.class.php:328 inc/ticket.class.php:6996
+#: inc/ticket.class.php:7220 inc/ticketfollowup.class.php:986
 #: inc/user.class.php:1939 inc/user.class.php:1942 inc/user.class.php:1947
 #: inc/user.class.php:2306 inc/user.class.php:2309 inc/user.class.php:2313
 #: inc/user.class.php:2753 inc/user.class.php:3111
@@ -4857,7 +4857,7 @@ msgstr "एक एलडीएपी निर्देशिका प्रत
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:124 inc/mailcollector.class.php:363
-#: inc/toolbox.class.php:2086
+#: inc/toolbox.class.php:2097
 msgid "Connection string"
 msgstr "कनेक्शन स्ट्रिंग"
 
@@ -4889,14 +4889,14 @@ msgid_plural "Update Sources"
 msgstr[0] "अद्यतन स्रोत"
 msgstr[1] "अद्यतन स्रोत"
 
-#: inc/backup.class.php:76 inc/commondbtm.class.php:4729 inc/log.class.php:726
+#: inc/backup.class.php:76 inc/commondbtm.class.php:4726 inc/log.class.php:726
 #: inc/profile.class.php:819 inc/profile.class.php:2539
 #: inc/reminder.class.php:1153 inc/report.class.php:449
 #: inc/rssfeed.class.php:967 inc/stat.class.php:1312
 msgid "Read"
 msgstr "पढ़ना"
 
-#: inc/backup.class.php:77 inc/commondbtm.class.php:4728
+#: inc/backup.class.php:77 inc/commondbtm.class.php:4725
 #: inc/displaypreference.class.php:292
 msgid "Create"
 msgstr "बनाएं"
@@ -4961,8 +4961,8 @@ msgstr "मुख्य"
 #: inc/contract_item.class.php:304 inc/group.class.php:302
 #: inc/group.class.php:502 inc/infocom.class.php:141
 #: inc/ipaddress.class.php:246 inc/ipaddress.class.php:1008
-#: inc/item_devices.class.php:363 inc/item_devices.class.php:412
-#: inc/item_devices.class.php:1068 inc/item_problem.class.php:274
+#: inc/item_devices.class.php:371 inc/item_devices.class.php:420
+#: inc/item_devices.class.php:1077 inc/item_problem.class.php:274
 #: inc/item_project.class.php:271 inc/item_ticket.class.php:583
 #: inc/knowbaseitem_item.class.php:211 inc/location.class.php:208
 #: inc/notificationtargetchange.class.php:338
@@ -4979,7 +4979,7 @@ msgid_plural "Items"
 msgstr[0] "वस्तु"
 msgstr[1] "वस्तु"
 
-#: inc/budget.class.php:327 inc/item_devices.class.php:1071
+#: inc/budget.class.php:327 inc/item_devices.class.php:1080
 #: inc/supplier.class.php:484
 msgid "No associated item"
 msgstr "कोई संबंधित वस्तु नहीं"
@@ -4992,8 +4992,8 @@ msgstr "कोई संबंधित वस्तु नहीं"
 #: inc/notificationtargetproject.class.php:600
 #: inc/notificationtargetreservation.class.php:148
 #: inc/notificationtargetreservation.class.php:165
-#: inc/notificationtargetticket.class.php:727
-#: inc/notificationtargetticket.class.php:861 inc/supplier.class.php:486
+#: inc/notificationtargetticket.class.php:731
+#: inc/notificationtargetticket.class.php:865 inc/supplier.class.php:486
 msgid "Associated item"
 msgid_plural "Associated items"
 msgstr[0] "एसोसिएटेड आइटम"
@@ -5049,9 +5049,9 @@ msgstr[1] "एसोसिएटेड आइटम"
 #: inc/computervirtualmachine.class.php:344 inc/contact_supplier.class.php:227
 #: inc/contact_supplier.class.php:365 inc/contractcost.class.php:389
 #: inc/contract_item.class.php:471 inc/document_item.class.php:922
-#: inc/group_user.class.php:213 inc/group_user.class.php:459
-#: inc/ipaddress.class.php:275 inc/item_devices.class.php:440
-#: inc/item_devices.class.php:457 inc/item_project.class.php:248
+#: inc/group_user.class.php:204 inc/group_user.class.php:450
+#: inc/ipaddress.class.php:275 inc/item_devices.class.php:448
+#: inc/item_devices.class.php:465 inc/item_project.class.php:248
 #: inc/levelagreement.class.php:428 inc/levelagreement.class.php:563
 #: inc/netpoint.class.php:354 inc/networkalias.class.php:412
 #: inc/networkname.class.php:779 inc/networkport.class.php:577
@@ -5067,9 +5067,9 @@ msgstr[1] "एसोसिएटेड आइटम"
 #: inc/search.class.php:1673 inc/search.class.php:1688
 #: inc/search.class.php:1724 inc/search.class.php:1727
 #: inc/search.class.php:1754 inc/search.class.php:1771
-#: inc/slalevel.class.php:152 inc/softwarelicense.class.php:1040
+#: inc/slalevel.class.php:152 inc/softwarelicense.class.php:1034
 #: inc/softwareversion.class.php:308 inc/supplier.class.php:610
-#: inc/ticket.class.php:6111 inc/user.class.php:3909
+#: inc/ticket.class.php:6113 inc/user.class.php:3909
 #, php-format
 msgid "%1$s = %2$s"
 msgstr "%1$s = %2$s"
@@ -5079,7 +5079,7 @@ msgstr "%1$s = %2$s"
 #: inc/commonitilcost.class.php:618 inc/computer_softwarelicense.class.php:309
 #: inc/computer_softwareversion.class.php:642 inc/consumable.class.php:669
 #: inc/consumable.class.php:707 inc/item_project.class.php:248
-#: inc/softwarelicense.class.php:1167 inc/softwareversion.class.php:336
+#: inc/softwarelicense.class.php:1161 inc/softwareversion.class.php:336
 #: inc/state.class.php:166 inc/state.class.php:220 inc/supplier.class.php:610
 msgid "Total"
 msgstr "संपूर्ण"
@@ -5483,7 +5483,7 @@ msgstr "एक संगत प्रिंटर मॉडल जोड़े�
 #: inc/contract_item.class.php:517 inc/crontask.class.php:1078
 #: inc/crontask.class.php:1123 inc/crontask.class.php:1205
 #: inc/displaypreference.class.php:632 inc/group.class.php:880
-#: inc/group_user.class.php:548 inc/itilcategory.class.php:356
+#: inc/group_user.class.php:539 inc/itilcategory.class.php:356
 #: inc/knowbaseitem.class.php:1531 inc/levelagreement.class.php:532
 #: inc/location.class.php:316 inc/netpoint.class.php:316
 #: inc/networkalias.class.php:396
@@ -5492,7 +5492,7 @@ msgstr "एक संगत प्रिंटर मॉडल जोड़े�
 #: inc/projectcost.class.php:425 inc/projecttask.class.php:1103
 #: inc/projecttask_ticket.class.php:449 inc/rule.class.php:2775
 #: inc/savedsearch_alert.class.php:272 inc/search.class.php:5908
-#: inc/software.class.php:1000 inc/softwarelicense.class.php:1183
+#: inc/software.class.php:1000 inc/softwarelicense.class.php:1177
 #: inc/softwareversion.class.php:342 inc/state.class.php:232
 #: inc/tickettemplatehiddenfield.class.php:277
 #: inc/tickettemplatemandatoryfield.class.php:296
@@ -5613,10 +5613,10 @@ msgstr "प्रमाणपत्र अनुरोध (सीएसआर)"
 #: inc/report.class.php:114 inc/ruleticket.class.php:579
 #: inc/search.class.php:5404 inc/search.class.php:5425
 #: inc/software.class.php:650 inc/softwarelicense.class.php:321
-#: inc/softwarelicense.class.php:630 inc/softwareversion.class.php:139
+#: inc/softwarelicense.class.php:624 inc/softwareversion.class.php:139
 #: inc/softwareversion.class.php:193 inc/softwareversion.class.php:315
-#: inc/state.class.php:155 inc/tasktemplate.class.php:70
-#: inc/ticket.class.php:4861 inc/user.class.php:3791 inc/user.class.php:3871
+#: inc/state.class.php:155 inc/tasktemplate.class.php:71
+#: inc/ticket.class.php:4863 inc/user.class.php:3791 inc/user.class.php:3871
 msgid "Status"
 msgid_plural "Statuses"
 msgstr[0] "वे स्थितियां"
@@ -5647,20 +5647,20 @@ msgstr "संबंधित वस्तुओं की संख्या"
 #: inc/profile_user.class.php:566 inc/search.class.php:4298
 #: inc/search.class.php:4302 inc/search.class.php:4337
 #: inc/search.class.php:4341 inc/softwarelicense.class.php:313
-#: inc/softwarelicense.class.php:382 inc/ticket.class.php:3924
-#: inc/ticket.class.php:3931 inc/ticket.class.php:3959
-#: inc/ticket.class.php:3986 inc/ticket.class.php:3997
-#: inc/ticket.class.php:4006 inc/ticket.class.php:4051
-#: inc/ticket.class.php:4073 inc/ticket.class.php:4643
-#: inc/ticket.class.php:4700 inc/ticket.class.php:4712
-#: inc/ticket.class.php:4727 inc/ticket.class.php:4739
-#: inc/ticket.class.php:4782 inc/ticket.class.php:4807
-#: inc/ticket.class.php:4861 inc/ticket.class.php:4886
-#: inc/ticket.class.php:4902 inc/ticket.class.php:4924
-#: inc/ticket.class.php:4978 inc/ticket.class.php:4994
-#: inc/ticket.class.php:5010 inc/ticket.class.php:5042
-#: inc/ticket.class.php:5075 inc/ticket.class.php:5095
-#: inc/ticket.class.php:5116 inc/ticket.class.php:5209
+#: inc/softwarelicense.class.php:382 inc/ticket.class.php:3926
+#: inc/ticket.class.php:3933 inc/ticket.class.php:3961
+#: inc/ticket.class.php:3988 inc/ticket.class.php:3999
+#: inc/ticket.class.php:4008 inc/ticket.class.php:4053
+#: inc/ticket.class.php:4075 inc/ticket.class.php:4645
+#: inc/ticket.class.php:4702 inc/ticket.class.php:4714
+#: inc/ticket.class.php:4729 inc/ticket.class.php:4741
+#: inc/ticket.class.php:4784 inc/ticket.class.php:4809
+#: inc/ticket.class.php:4863 inc/ticket.class.php:4888
+#: inc/ticket.class.php:4904 inc/ticket.class.php:4926
+#: inc/ticket.class.php:4980 inc/ticket.class.php:4996
+#: inc/ticket.class.php:5012 inc/ticket.class.php:5044
+#: inc/ticket.class.php:5077 inc/ticket.class.php:5097
+#: inc/ticket.class.php:5118 inc/ticket.class.php:5211
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -5677,7 +5677,7 @@ msgstr "Root CA"
 #: inc/notificationtargetchange.class.php:285
 #: inc/notificationtargetproblem.class.php:219
 #: inc/notificationtargetproject.class.php:606
-#: inc/notificationtargetticket.class.php:753 inc/peripheral.class.php:234
+#: inc/notificationtargetticket.class.php:757 inc/peripheral.class.php:234
 #: inc/peripheral.class.php:434 inc/phone.class.php:232
 #: inc/phone.class.php:456 inc/printer.class.php:331 inc/printer.class.php:580
 #: inc/search.class.php:5453
@@ -5764,8 +5764,8 @@ msgstr "योजना"
 #: inc/commonitilobject.class.php:2924
 #: inc/notificationtargetcommonitilobject.class.php:1222
 #: inc/problem.class.php:182 inc/problem.class.php:195
-#: inc/ticket.class.php:805 inc/ticket.class.php:7329
-#: inc/ticket.class.php:7330 inc/ticket.class.php:7463
+#: inc/ticket.class.php:805 inc/ticket.class.php:7331
+#: inc/ticket.class.php:7332 inc/ticket.class.php:7465
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "सुलझाव"
@@ -5792,7 +5792,7 @@ msgid "Checklist"
 msgstr "जांच-सूची"
 
 #: inc/change.class.php:491 inc/plugin.class.php:465 inc/problem.class.php:551
-#: inc/ticket.class.php:3536
+#: inc/ticket.class.php:3538
 msgctxt "status"
 msgid "New"
 msgstr "नया"
@@ -5807,7 +5807,7 @@ msgstr "मूल्यांकन"
 #: inc/commonitilvalidation.class.php:1111
 #: inc/commonitilvalidation.class.php:1130
 #: inc/notificationtargetcommonitilobject.class.php:735
-#: inc/ticket.class.php:4928
+#: inc/ticket.class.php:4930
 msgid "Approval"
 msgid_plural "Approvals"
 msgstr[0] "स्वीकृति"
@@ -5819,7 +5819,7 @@ msgid "Accepted"
 msgstr "स्वीकृत"
 
 #: inc/change.class.php:495 inc/commonitilobject.class.php:4629
-#: inc/problem.class.php:555 inc/ticket.class.php:3539
+#: inc/problem.class.php:555 inc/ticket.class.php:3541
 msgid "Pending"
 msgstr "अपूर्ण"
 
@@ -5841,25 +5841,25 @@ msgid "Review"
 msgstr "पुनर्विलोकन"
 
 #: inc/change.class.php:500 inc/problem.class.php:558
-#: inc/ticket.class.php:3541
+#: inc/ticket.class.php:3543
 msgctxt "status"
 msgid "Closed"
 msgstr "बंद"
 
 #: inc/change.class.php:504 inc/problem.class.php:561
-#: inc/ticket.class.php:3544
+#: inc/ticket.class.php:3546
 msgctxt "status"
 msgid "Not solved"
 msgstr "हल नहीं किया गया"
 
 #: inc/change.class.php:505 inc/problem.class.php:562
-#: inc/ticket.class.php:3545
+#: inc/ticket.class.php:3547
 msgctxt "status"
 msgid "Not closed"
 msgstr "बंद नहीं"
 
 #: inc/change.class.php:507 inc/problem.class.php:564
-#: inc/ticket.class.php:3547
+#: inc/ticket.class.php:3549
 msgctxt "status"
 msgid "Solved + Closed"
 msgstr "हल + बंद"
@@ -5872,7 +5872,7 @@ msgstr "हल + बंद"
 #: inc/commondbtm.class.php:1343 inc/commondbtm.class.php:2443
 #: inc/commonglpi.class.php:863 inc/item_ticket.class.php:1337
 #: inc/problem.class.php:1091 inc/savedsearch.class.php:368
-#: inc/ticket.class.php:4620
+#: inc/ticket.class.php:4622
 #, php-format
 msgid "%1$s - ID %2$d"
 msgstr "%1$s - ID %2$d"
@@ -5883,9 +5883,9 @@ msgstr "%1$s - ID %2$d"
 #: inc/notificationtargetcommonitilobject.class.php:1254
 #: inc/notificationtargetproject.class.php:573
 #: inc/notificationtargetprojecttask.class.php:478
-#: inc/notificationtargetticket.class.php:757 inc/problem.class.php:1101
-#: inc/projecttask.class.php:786 inc/ticket.class.php:4643
-#: inc/ticket.class.php:4645 inc/ticket.class.php:7627
+#: inc/notificationtargetticket.class.php:761 inc/problem.class.php:1101
+#: inc/projecttask.class.php:786 inc/ticket.class.php:4645
+#: inc/ticket.class.php:4647 inc/ticket.class.php:7629
 msgid "Opening date"
 msgstr "खुलने की तिथि"
 
@@ -5893,12 +5893,12 @@ msgstr "खुलने की तिथि"
 #: inc/commonitilobject.class.php:4576 inc/commonitilobject.class.php:5300
 #: inc/levelagreement.class.php:912 inc/levelagreementlevel.class.php:286
 #: inc/notificationtargetcommonitilobject.class.php:1188
-#: inc/notificationtargetticket.class.php:718 inc/olalevel.class.php:179
+#: inc/notificationtargetticket.class.php:722 inc/olalevel.class.php:179
 #: inc/problem.class.php:1116 inc/ruleticket.class.php:469
 #: inc/ruleticket.class.php:485 inc/ruleticket.class.php:590
 #: inc/ruleticket.class.php:606 inc/slalevel.class.php:179
-#: inc/ticket.class.php:2918 inc/ticket.class.php:4712
-#: inc/ticket.class.php:4714 inc/ticket.class.php:7661
+#: inc/ticket.class.php:2918 inc/ticket.class.php:4714
+#: inc/ticket.class.php:4716 inc/ticket.class.php:7663
 msgid "Time to resolve"
 msgstr "हल करने का समय"
 
@@ -5908,8 +5908,8 @@ msgstr "हल करने का समय"
 #: inc/reminder.class.php:995 inc/reservation.class.php:681
 #: inc/reservation.class.php:1090 inc/reservation.class.php:1138
 #: inc/reservation.class.php:1208 inc/reservation.class.php:1271
-#: inc/rssfeed.class.php:617 inc/tasktemplate.class.php:79
-#: inc/ticket.class.php:4665
+#: inc/rssfeed.class.php:617 inc/tasktemplate.class.php:80
+#: inc/ticket.class.php:4667
 msgid "By"
 msgstr "द्वारा"
 
@@ -5922,7 +5922,7 @@ msgstr "हल करने की तारीख"
 #: inc/change.class.php:720 inc/commonitilobject.class.php:2785
 #: inc/commonitilobject.class.php:4586
 #: inc/notificationtargetcommonitilobject.class.php:1186
-#: inc/problem.class.php:1154 inc/ticket.class.php:7674
+#: inc/problem.class.php:1154 inc/ticket.class.php:7676
 msgid "Closing date"
 msgstr "अंतिम तिथि"
 
@@ -5933,7 +5933,7 @@ msgstr "अंतिम तिथि"
 #: inc/notificationtargetcommonitilobject.class.php:1259
 #: inc/notificationtargetprojecttask.class.php:475 inc/problem.class.php:1195
 #: inc/projecttask.class.php:618 inc/stat.class.php:485
-#: inc/ticket.class.php:5075
+#: inc/ticket.class.php:5077
 msgid "Total duration"
 msgstr "कुल अवधि"
 
@@ -5959,10 +5959,10 @@ msgstr "कुल अवधि"
 #: inc/notificationtargetprojecttask.class.php:459
 #: inc/notificationtargetprojecttask.class.php:480
 #: inc/notificationtargetprojecttask.class.php:521
-#: inc/notificationtargetticket.class.php:760
-#: inc/notificationtargetticket.class.php:914
-#: inc/notificationtargetticket.class.php:921
-#: inc/notificationtargetticket.class.php:928 inc/problem.class.php:824
+#: inc/notificationtargetticket.class.php:764
+#: inc/notificationtargetticket.class.php:918
+#: inc/notificationtargetticket.class.php:925
+#: inc/notificationtargetticket.class.php:932 inc/problem.class.php:824
 #: inc/problem.class.php:1225 inc/project.class.php:495
 #: inc/project.class.php:1195 inc/projecttask.class.php:625
 #: inc/projecttask.class.php:761 inc/projecttasktemplate.class.php:95
@@ -5972,8 +5972,8 @@ msgstr "कुल अवधि"
 #: inc/rulecollection.class.php:482 inc/rulecollection.class.php:513
 #: inc/ruleimportcomputer.class.php:104 inc/ruleright.class.php:75
 #: inc/ruleticket.class.php:340 inc/ticket.class.php:3094
-#: inc/ticket.class.php:4073 inc/ticket.class.php:5116
-#: inc/ticket.class.php:5752 inc/ticketfollowup.class.php:556
+#: inc/ticket.class.php:4075 inc/ticket.class.php:5118
+#: inc/ticket.class.php:5754 inc/ticketfollowup.class.php:556
 #: inc/ticketfollowup.class.php:679 inc/ticketfollowup.class.php:731
 #: inc/ticketfollowup.class.php:1091 inc/ticketfollowup.class.php:1164
 msgid "Description"
@@ -5998,8 +5998,8 @@ msgid "Last changes"
 msgstr "अंतिम परिवर्तन"
 
 #: inc/change.class.php:1040 inc/group.class.php:154 inc/group.class.php:776
-#: inc/group_user.class.php:436 inc/problem.class.php:1400
-#: inc/ticket.class.php:6008
+#: inc/group_user.class.php:427 inc/problem.class.php:1400
+#: inc/ticket.class.php:6010
 msgid "Child groups"
 msgstr "बाल समूह"
 
@@ -6096,9 +6096,9 @@ msgstr "वस्तु किसी ऑब्जेक्ट से जुड�
 #: inc/reminder.class.php:1105 inc/reminder.class.php:1106
 #: inc/rssfeed.class.php:915 inc/rssfeed.class.php:916
 #: inc/ruleaction.class.php:396 inc/ruleticket.class.php:83
-#: inc/ruleticket.class.php:85 inc/ticket.class.php:4171
-#: inc/ticket.class.php:5167 inc/ticket.class.php:5314
-#: inc/ticket.class.php:5323 inc/ticket.class.php:5851
+#: inc/ruleticket.class.php:85 inc/ticket.class.php:4173
+#: inc/ticket.class.php:5169 inc/ticket.class.php:5316
+#: inc/ticket.class.php:5325 inc/ticket.class.php:5853
 msgid "Add"
 msgstr "जोड़ना"
 
@@ -6170,29 +6170,29 @@ msgstr "टेम्पलेट %s से बनाया गया"
 
 #. TRANS : means update / actualize
 #: inc/commondbtm.class.php:2204 inc/commondbtm.class.php:2216
-#: inc/commonglpi.class.php:1179 inc/commonitilactor.class.php:215
-#: inc/commonitilactor.class.php:279 inc/commonitilvalidation.class.php:788
+#: inc/commonglpi.class.php:1179 inc/commonitilactor.class.php:211
+#: inc/commonitilactor.class.php:275 inc/commonitilvalidation.class.php:788
 #: inc/config.class.php:452 inc/config.class.php:600 inc/config.class.php:644
 #: inc/config.class.php:714 inc/config.class.php:783 inc/config.class.php:964
 #: inc/config.class.php:1397 inc/config.class.php:1824
 #: inc/entity.class.php:1370 inc/entity.class.php:1459
 #: inc/entity.class.php:1614 inc/entity.class.php:2005
 #: inc/entity.class.php:2319 inc/infocom.class.php:1283
-#: inc/item_devices.class.php:498 inc/planningrecall.class.php:325
+#: inc/item_devices.class.php:506 inc/planningrecall.class.php:325
 #: inc/profile.class.php:706 inc/profile.class.php:756
 #: inc/profile.class.php:830 inc/profile.class.php:896
 #: inc/profile.class.php:962 inc/profile.class.php:1110
 #: inc/profile.class.php:1193 inc/profile.class.php:1288
 #: inc/profile.class.php:1382 inc/profile.class.php:1477
 #: inc/reservation.class.php:774 inc/reservationitem.class.php:370
-#: inc/ticket.class.php:5265 inc/ticket.class.php:7505 inc/user.class.php:2489
+#: inc/ticket.class.php:5267 inc/ticket.class.php:7507 inc/user.class.php:2489
 #: inc/user.class.php:4665
 msgctxt "button"
 msgid "Save"
 msgstr "सहेजें"
 
 #: inc/commondbtm.class.php:2226 inc/massiveaction.class.php:537
-#: inc/ticket.class.php:5260
+#: inc/ticket.class.php:5262
 msgctxt "button"
 msgid "Restore"
 msgstr "पुनर्स्थापित"
@@ -6202,13 +6202,13 @@ msgid "Check to keep the devices while deleting this item"
 msgstr "इस आइटम को हटाने के दौरान डिवाइस को रखने के लिए जांचें"
 
 #: inc/commondbtm.class.php:2252 inc/notepad.class.php:371
-#: inc/ticket.class.php:5272 inc/ticketfollowup.class.php:815
+#: inc/ticket.class.php:5274 inc/ticketfollowup.class.php:815
 #: inc/ticketfollowup.class.php:1040 inc/tickettask.class.php:312
 msgid "Confirm the final deletion?"
 msgstr "अंतिम हटाने की पुष्टि करें?"
 
-#: inc/commondbtm.class.php:2256 inc/commondbtm.class.php:4738
-#: inc/massiveaction.class.php:559 inc/ticket.class.php:5277
+#: inc/commondbtm.class.php:2256 inc/commondbtm.class.php:4735
+#: inc/massiveaction.class.php:559 inc/ticket.class.php:5279
 #: inc/transfer.class.php:3300
 msgctxt "button"
 msgid "Put in dustbin"
@@ -6286,65 +6286,65 @@ msgstr "%1$s एक आइटम जोड़ने की कोशिश क�
 msgid "Default value"
 msgstr "डिफ़ॉल्ट मान"
 
-#: inc/commondbtm.class.php:4611
+#: inc/commondbtm.class.php:4608
 msgid "Choose a template"
 msgstr "एक टेम्पलेट चुनें"
 
-#: inc/commondbtm.class.php:4613
+#: inc/commondbtm.class.php:4610
 msgid "Blank Template"
 msgstr "खाली टेम्पलेट"
 
-#: inc/commondbtm.class.php:4620
+#: inc/commondbtm.class.php:4617
 msgid "Templates"
 msgstr "टेम्पलेट्स"
 
-#: inc/commondbtm.class.php:4671
+#: inc/commondbtm.class.php:4668
 msgid "Add a template..."
 msgstr "एक टेम्पलेट जोड़ें"
 
-#: inc/commondbtm.class.php:4730 inc/item_devices.class.php:686
+#: inc/commondbtm.class.php:4727 inc/item_devices.class.php:694
 #: inc/profile.class.php:820 inc/ruleticket.class.php:84
 #: inc/ruleticket.class.php:86 inc/supplier.class.php:450
-#: inc/ticket.class.php:5045 inc/ticket.class.php:5046
+#: inc/ticket.class.php:5047 inc/ticket.class.php:5048
 msgid "Update"
 msgstr "अद्यतन करें"
 
-#: inc/commondbtm.class.php:4731
+#: inc/commondbtm.class.php:4728
 msgid "Purge"
 msgstr "परिशोध "
 
-#: inc/commondbtm.class.php:4737 inc/displaypreference.class.php:306
+#: inc/commondbtm.class.php:4734 inc/displaypreference.class.php:306
 #: inc/planning.class.php:1290
 msgid "Delete"
 msgstr "विलोपन"
 
-#: inc/commondbtm.class.php:4741
+#: inc/commondbtm.class.php:4738
 msgid "Read notes"
 msgstr "नोट्स पढ़ें"
 
-#: inc/commondbtm.class.php:4742
+#: inc/commondbtm.class.php:4739
 msgid "Read the item's notes"
 msgstr "आइटम के नोट्स पढ़ें"
 
-#: inc/commondbtm.class.php:4743
+#: inc/commondbtm.class.php:4740
 msgid "Update notes"
 msgstr "नोट्स अपडेट करें"
 
-#: inc/commondbtm.class.php:4744
+#: inc/commondbtm.class.php:4741
 msgid "Update the item's notes"
 msgstr "आइटम के नोट्स अपडेट करें"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/commondbtm.class.php:4842
+#: inc/commondbtm.class.php:4839
 #, php-format
 msgid "Document Ticket %d"
 msgstr "दस्तावेज़ टिकट %d"
 
-#: inc/commondbtm.class.php:4935
+#: inc/commondbtm.class.php:4932
 msgid "You can define an autofill template"
 msgstr "आप एक ऑटोफिल टेम्पलेट को परिभाषित कर सकते हैं"
 
-#: inc/commondbtm.class.php:4946
+#: inc/commondbtm.class.php:4943
 msgid "Autofilled from template"
 msgstr "टेम्पलेट से स्वतः बनाया गया"
 
@@ -6375,10 +6375,10 @@ msgstr[1] "प्राप्तकर्ता"
 #: inc/ipnetwork.class.php:163 inc/ipnetwork.class.php:166
 #: inc/ipnetwork.class.php:986 inc/notepad.class.php:347
 #: inc/notificationtargetcontract.class.php:160
-#: inc/notificationtargetticket.class.php:713
-#: inc/notificationtargetticket.class.php:716
-#: inc/notificationtargetticket.class.php:719
-#: inc/notificationtargetticket.class.php:722 inc/ruleticket.class.php:85
+#: inc/notificationtargetticket.class.php:717
+#: inc/notificationtargetticket.class.php:720
+#: inc/notificationtargetticket.class.php:723
+#: inc/notificationtargetticket.class.php:726 inc/ruleticket.class.php:85
 #: inc/search.class.php:1713
 #, php-format
 msgid "%1$s / %2$s"
@@ -6460,7 +6460,7 @@ msgstr "संविलीन"
 
 #: inc/commonglpi.class.php:72 inc/commonitilobject.class.php:5401
 #: inc/item_ticket.class.php:649 inc/item_ticket.class.php:733
-#: inc/rule.class.php:2202 inc/ticket.class.php:6250
+#: inc/rule.class.php:2202 inc/ticket.class.php:6252
 msgid "General"
 msgstr "सामान्य"
 
@@ -6483,8 +6483,8 @@ msgstr "सूची"
 msgid "Last"
 msgstr "अंतिम"
 
-#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7331
-#: inc/ticket.class.php:7332
+#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7333
+#: inc/ticket.class.php:7334
 msgid "Reset display options"
 msgstr "प्रदर्शन विकल्प रीसेट करें"
 
@@ -6508,11 +6508,11 @@ msgstr "कार्रवाई निष्पादित करने मे
 msgid "Item already defined"
 msgstr "आइटम पहले ही परिभाषित किया गया है"
 
-#: inc/commonitilactor.class.php:183 inc/commonitilactor.class.php:263
+#: inc/commonitilactor.class.php:183 inc/commonitilactor.class.php:259
 msgid "Email Followup"
 msgstr "ईमेल अनुवर्ती"
 
-#: inc/commonitilactor.class.php:336 inc/commonitilobject.class.php:648
+#: inc/commonitilactor.class.php:332 inc/commonitilobject.class.php:648
 #: inc/commonitilobject.class.php:704 inc/commonitilobject.class.php:3378
 #: inc/mailcollector.class.php:154 inc/mailcollector.class.php:179
 #: inc/notificationmailingsetting.class.php:82
@@ -6575,7 +6575,7 @@ msgstr "तिथि शुरू"
 #: inc/crontask.class.php:1157
 #: inc/notificationtargetcommonitilobject.class.php:1241
 #: inc/reservation.class.php:705 inc/reservationitem.class.php:430
-#: inc/tasktemplate.class.php:76
+#: inc/tasktemplate.class.php:77
 msgid "Duration"
 msgstr "अवधि"
 
@@ -6781,7 +6781,7 @@ msgstr "कम से कम बहुत अधिक"
 #: inc/log.class.php:521 inc/notificationtargetcommonitilobject.class.php:559
 #: inc/notificationtargetcommonitilobject.class.php:1223
 #: inc/ruleticket.class.php:419 inc/ruleticket.class.php:553
-#: inc/ticket.class.php:4006
+#: inc/ticket.class.php:4008
 msgid "Watcher"
 msgid_plural "Watchers"
 msgstr[0] "चौकीदार"
@@ -6796,7 +6796,7 @@ msgid "Time to resolve exceedeed"
 msgstr "हल करने का समय पार हो गया"
 
 #: inc/commonitilobject.class.php:2830 inc/commonitilobject.class.php:4581
-#: inc/ticket.class.php:4755 inc/ticket.class.php:7669
+#: inc/ticket.class.php:4757 inc/ticket.class.php:7671
 msgid "Resolution date"
 msgstr "संकल्प दिनांक"
 
@@ -6962,8 +6962,8 @@ msgstr "प्लानी फिक्शन"
 #: inc/notificationtargetprojecttask.class.php:560
 #: inc/notificationtargetprojecttask.class.php:573 inc/profile.class.php:652
 #: inc/profile.class.php:953 inc/profile.class.php:1033
-#: inc/profile.class.php:1035 inc/ticket.class.php:7323
-#: inc/ticket.class.php:7324 inc/ticket.class.php:7453
+#: inc/profile.class.php:1035 inc/ticket.class.php:7325
+#: inc/ticket.class.php:7326 inc/ticket.class.php:7455
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "कार्य"
@@ -6987,8 +6987,8 @@ msgstr "चयनित समय सीमा का अंत एक काम
 
 #: inc/commonitiltask.class.php:579 inc/commonitiltask.class.php:686
 #: inc/dropdown.class.php:790 inc/profile.class.php:1442
-#: inc/taskcategory.class.php:85 inc/tasktemplate.class.php:66
-#: inc/tasktemplate.class.php:102
+#: inc/taskcategory.class.php:85 inc/tasktemplate.class.php:67
+#: inc/tasktemplate.class.php:103
 msgid "Task category"
 msgid_plural "Task categories"
 msgstr[0] "कार्य श्रेणियां"
@@ -7082,9 +7082,9 @@ msgstr "अनुस्मारक"
 #: inc/commonitiltask.class.php:1487 inc/commonitiltask.class.php:1729
 #: inc/notificationtargetcommonitilobject.class.php:1253
 #: inc/notificationtargetplanningrecall.class.php:182
-#: inc/notificationtargetticket.class.php:758 inc/savedsearch.class.php:399
-#: inc/savedsearch.class.php:415 inc/tasktemplate.class.php:73
-#: inc/ticket.class.php:7131 inc/ticketfollowup.class.php:716
+#: inc/notificationtargetticket.class.php:762 inc/savedsearch.class.php:399
+#: inc/savedsearch.class.php:415 inc/tasktemplate.class.php:74
+#: inc/ticket.class.php:7133 inc/ticketfollowup.class.php:716
 #: inc/ticketfollowup.class.php:1006 inc/ticketfollowup.class.php:1189
 msgid "Private"
 msgstr "निजी"
@@ -7181,7 +7181,7 @@ msgstr "अनुमोदित + अनुमोदन के अधीन न
 
 #: inc/commonitilvalidation.class.php:763
 #: inc/notificationtargetchange.class.php:288
-#: inc/notificationtargetticket.class.php:775
+#: inc/notificationtargetticket.class.php:779
 msgid "Global approval status"
 msgstr "वैश्विक अनुमोदन की स्थिति"
 
@@ -7221,7 +7221,7 @@ msgstr "अनुमोदन स्थिति"
 #: inc/commonitilvalidation.class.php:1094
 #: inc/commonitilvalidation.class.php:1225
 #: inc/notificationtargetcommonitilobject.class.php:567
-#: inc/notificationtargetticket.class.php:778
+#: inc/notificationtargetticket.class.php:782
 msgid "Approver"
 msgstr "स्वीकृति प्रदान करने वाले"
 
@@ -7244,7 +7244,7 @@ msgstr "एक स्वीकृति अनुरोध भेजें"
 
 #: inc/commonitilvalidation.class.php:994
 #: inc/notificationtargetchange.class.php:299
-#: inc/notificationtargetticket.class.php:789
+#: inc/notificationtargetticket.class.php:793
 msgid "Status of the approval request"
 msgstr "अनुमोदन अनुरोध की स्थिति"
 
@@ -7290,7 +7290,7 @@ msgstr "के बच्चे के रूप में"
 msgid "New child heading"
 msgstr "नया बच्चा शीर्षक"
 
-#: inc/commontreedropdown.class.php:518 inc/softwarelicense.class.php:1275
+#: inc/commontreedropdown.class.php:518 inc/softwarelicense.class.php:1269
 #, php-format
 msgid "Sons of %s"
 msgstr "%s के पुत्र"
@@ -7307,7 +7307,7 @@ msgstr "संचालित करना"
 #: inc/notificationtargetproject.class.php:563
 #: inc/notificationtargetprojecttask.class.php:467 inc/project.class.php:483
 #: inc/projecttask.class.php:748 inc/projecttask.class.php:941
-#: inc/projecttask_ticket.class.php:336 inc/softwarelicense.class.php:602
+#: inc/projecttask_ticket.class.php:336 inc/softwarelicense.class.php:596
 msgid "Father"
 msgstr "पिता"
 
@@ -7338,7 +7338,7 @@ msgstr "हस्ताक्षर डेटाबेस संस्करण"
 #: inc/computer_softwareversion.class.php:791
 #: inc/computervirtualmachine.class.php:150
 #: inc/computervirtualmachine.class.php:355 inc/ipaddress.class.php:1025
-#: inc/item_devices.class.php:419 inc/networkname.class.php:522
+#: inc/item_devices.class.php:427 inc/networkname.class.php:522
 #: inc/networkport.class.php:479 inc/networkport.class.php:664
 msgid "Automatic inventory"
 msgstr "स्वचालित सूची"
@@ -7380,10 +7380,11 @@ msgid ""
 msgstr ""
 "स्थान अपडेट किया गया। जुड़े हुए आइटम एक ही स्थान पर स्थानांतरित हो गए हैं।"
 
-#: inc/computer.class.php:482 inc/dropdown.class.php:993
-#: inc/network.class.php:46 inc/networkequipment.class.php:358
-#: inc/printer.class.php:383 inc/profile.class.php:796
-#: inc/profile.class.php:1611
+#: inc/computer.class.php:482 inc/computer.class.php:744
+#: inc/dropdown.class.php:993 inc/network.class.php:46
+#: inc/networkequipment.class.php:358 inc/networkequipment.class.php:591
+#: inc/printer.class.php:383 inc/printer.class.php:740
+#: inc/profile.class.php:796 inc/profile.class.php:1611
 msgid "Network"
 msgid_plural "Networks"
 msgstr[0] "नेटवर्क"
@@ -7413,11 +7414,6 @@ msgstr "जोड़ना"
 msgctxt "button"
 msgid "Link knowledgebase article"
 msgstr "ज्ञान ज्ञान लेख लिंक करें"
-
-#: inc/computer.class.php:744 inc/networkequipment.class.php:591
-#: inc/printer.class.php:740
-msgid "Network Device"
-msgstr "नेटवर्क डिवाइस"
 
 #: inc/computer.class.php:812 inc/deviceprocessor.class.php:47
 msgid "Processor"
@@ -7591,7 +7587,7 @@ msgstr "वर्चुअल मशीन UUID"
 #: inc/devicememory.class.php:57 inc/item_devicegraphiccard.class.php:57
 #: inc/item_deviceharddrive.class.php:57 inc/item_devicememory.class.php:59
 #: inc/networkequipment.class.php:389 inc/networkequipment.class.php:583
-#: inc/toolbox.class.php:982 inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:993 inc/toolbox.class.php:1145
 msgid "Mio"
 msgstr "MB"
 
@@ -7633,7 +7629,7 @@ msgstr[1] "कनेक्शन"
 #: inc/computer_softwareversion.class.php:904 inc/entity.class.php:1899
 #: inc/plugin.class.php:409 inc/profile.class.php:864
 #: inc/software.class.php:984 inc/softwarelicense.class.php:58
-#: inc/softwarelicense.class.php:711 install/install.php:578
+#: inc/softwarelicense.class.php:705 install/install.php:578
 msgid "License"
 msgid_plural "Licenses"
 msgstr[0] "लाइसेंस"
@@ -7649,7 +7645,7 @@ msgstr "प्रभावित कंप्यूटर की संख्य
 
 #: inc/computer_softwarelicense.class.php:406
 #: inc/computer_softwarelicense.class.php:565
-#: inc/softwarelicense.class.php:1000
+#: inc/softwarelicense.class.php:994
 msgid "Affected computers"
 msgstr "प्रभावित कंप्यूटर"
 
@@ -7738,8 +7734,8 @@ msgid "URL of the application"
 msgstr "आवेदन का यूआरएल"
 
 #: inc/config.class.php:297
-msgid "Text in the login box"
-msgstr "लॉगिन बॉक्स में पाठ"
+msgid "Text in the login box (HTML tags supported)"
+msgstr ""
 
 #: inc/config.class.php:303
 msgid "Allow FAQ anonymous access"
@@ -8915,7 +8911,7 @@ msgid "Initial contract period"
 msgstr "प्रारंभिक अनुबंध अवधि"
 
 #: inc/contract.class.php:234 inc/contract.class.php:520
-#: inc/contract.class.php:751 inc/contract.class.php:1613
+#: inc/contract.class.php:751 inc/contract.class.php:1606
 #: inc/notificationtargetcontract.class.php:51
 msgid "Notice"
 msgstr "सूचना"
@@ -8992,8 +8988,8 @@ msgid "Remove an item"
 msgstr "एक आइटम निकालें"
 
 #: inc/contract.class.php:819 inc/softwarelicense.class.php:437
-#: inc/softwarelicense.class.php:578 inc/softwarelicense.class.php:790
-#: inc/softwarelicense.class.php:1004
+#: inc/softwarelicense.class.php:572 inc/softwarelicense.class.php:784
+#: inc/softwarelicense.class.php:998
 msgid "Expiration"
 msgstr "समय सीमा समाप्ति"
 
@@ -9006,7 +9002,7 @@ msgstr "समाप्ति तिथि + नोटिस"
 #: inc/notificationtargetcontract.class.php:156
 #: inc/notificationtargetproject.class.php:589
 #: inc/notificationtargetprojecttask.class.php:494
-#: inc/notificationtargetticket.class.php:766 inc/problem.class.php:431
+#: inc/notificationtargetticket.class.php:770 inc/problem.class.php:431
 msgctxt "quantity"
 msgid "Number of items"
 msgstr "वस्तुओं की संख्या"
@@ -9035,54 +9031,54 @@ msgstr "अनुबंध जहां 30 दिनों से कम सम�
 msgid "Send alarms on contracts"
 msgstr "अनुबंध पर अलर्ट भेजें"
 
-#: inc/contract.class.php:1260
+#: inc/contract.class.php:1258
 msgid "Contract entered in notice time"
 msgstr "नोटिस समय में अनुबंध दर्ज किया गया"
 
-#: inc/contract.class.php:1265
+#: inc/contract.class.php:1263
 msgid "Contract ended"
 msgstr "अनुबंध समाप्त"
 
-#: inc/contract.class.php:1336
+#: inc/contract.class.php:1330
 msgid "Contract entered in notice time for period"
 msgstr "अनुबंध अवधि के लिए नोटिस समय में दर्ज किया गया"
 
-#: inc/contract.class.php:1340
+#: inc/contract.class.php:1334
 msgid "Contract period ended"
 msgstr "अनुबंध अवधि समाप्त हो गई"
 
-#: inc/contract.class.php:1382
+#: inc/contract.class.php:1375
 msgid "send contract alert failed"
 msgstr "अनुबंध चेतावनी भेजें विफल"
 
-#: inc/contract.class.php:1522 inc/contract.class.php:1543
-#: inc/contract.class.php:1563
+#: inc/contract.class.php:1515 inc/contract.class.php:1536
+#: inc/contract.class.php:1556
 msgid "Tacit"
 msgstr "मतलब रखा हुआ"
 
-#: inc/contract.class.php:1523 inc/contract.class.php:1546
-#: inc/contract.class.php:1566
+#: inc/contract.class.php:1516 inc/contract.class.php:1539
+#: inc/contract.class.php:1559
 msgid "Express"
 msgstr "व्यक्त"
 
-#: inc/contract.class.php:1614
+#: inc/contract.class.php:1607
 msgid "End + Notice"
 msgstr "अंत + सूचना"
 
-#: inc/contract.class.php:1615
+#: inc/contract.class.php:1608
 msgid "Period end"
 msgstr "अवधि समाप्त"
 
-#: inc/contract.class.php:1616
+#: inc/contract.class.php:1609
 msgid "Period end + Notice"
 msgstr "अवधि समाप्त + नोटिस"
 
-#: inc/contract.class.php:1669
+#: inc/contract.class.php:1662
 msgctxt "button"
 msgid "Add a contract"
 msgstr "एक अनुबंध जोड़ें"
 
-#: inc/contract.class.php:1670
+#: inc/contract.class.php:1663
 msgctxt "button"
 msgid "Remove a contract"
 msgstr "एक अनुबंध निकालें"
@@ -9313,8 +9309,8 @@ msgstr "अंतिम रन सूची"
 
 #: inc/crontask.class.php:1100 inc/crontask.class.php:1158
 #: inc/fieldunicity.class.php:591 inc/problem.class.php:922
-#: inc/softwarelicense.class.php:419 inc/softwarelicense.class.php:999
-#: inc/stat.class.php:409 inc/ticket.class.php:5857
+#: inc/softwarelicense.class.php:419 inc/softwarelicense.class.php:993
+#: inc/stat.class.php:409 inc/ticket.class.php:5859
 msgctxt "quantity"
 msgid "Number"
 msgstr "संख्या"
@@ -9871,10 +9867,10 @@ msgstr[1] "दस्तावेज़ शीर्षलेख"
 #: inc/notificationtargetprojecttask.class.php:532
 #: inc/notificationtargetprojecttask.class.php:534
 #: inc/notificationtargetprojecttask.class.php:537
-#: inc/notificationtargetticket.class.php:862 inc/profile.class.php:871
+#: inc/notificationtargetticket.class.php:866 inc/profile.class.php:871
 #: inc/profile.class.php:1728 inc/ticket.class.php:2874
-#: inc/ticket.class.php:7325 inc/ticket.class.php:7326
-#: inc/ticket.class.php:7458 inc/transfer.class.php:3450
+#: inc/ticket.class.php:7327 inc/ticket.class.php:7328
+#: inc/ticket.class.php:7460 inc/transfer.class.php:3450
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "दस्तावेज़"
@@ -10086,7 +10082,7 @@ msgstr[1] "दस्तावेज़ प्रकार"
 msgid "Help"
 msgstr "मदद"
 
-#: inc/dropdown.class.php:204 inc/user.class.php:3578
+#: inc/dropdown.class.php:205 inc/user.class.php:3579
 #, php-format
 msgid "Show %1$s"
 msgstr "%1$sदिखाएं"
@@ -10662,13 +10658,13 @@ msgstr[0] "टिकट टेम्पलेट्स"
 msgstr[1] "टिकट टेम्पलेट्स"
 
 #: inc/entity.class.php:910 inc/entity.class.php:2217
-#: inc/notificationtargetticket.class.php:767
+#: inc/notificationtargetticket.class.php:771
 msgid "Automatic closing of solved tickets after"
 msgstr "हल किए गए टिकटों के स्वचालित बंद होने के बाद"
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
-msgid "Immediatly"
-msgstr "तुरंत ही"
+msgid "Immediately"
+msgstr ""
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"
@@ -10724,8 +10720,8 @@ msgid "to see the entity and its sub-entities"
 msgstr "इकाई और इसकी उप-संस्थाओं को देखने के लिए"
 
 #: inc/entity.class.php:1104 inc/html.class.php:6271
-#: inc/reservation.class.php:442 inc/ticket.class.php:5908
-#: inc/ticket.class.php:6117
+#: inc/reservation.class.php:442 inc/ticket.class.php:5910
+#: inc/ticket.class.php:6119
 msgid "Show all"
 msgstr "सब दिखाओ"
 
@@ -11121,21 +11117,21 @@ msgstr "उपयोगकर्ता के गुण युक्त उप�
 msgid "Attribute value"
 msgstr "मान बताइए"
 
-#: inc/group.class.php:518 inc/group_user.class.php:161
-#: inc/group_user.class.php:204 inc/group_user.class.php:246
-#: inc/group_user.class.php:303 inc/group_user.class.php:429
-#: inc/group_user.class.php:488 inc/group_user.class.php:521
-#: inc/group_user.class.php:652 inc/notificationtargetproject.class.php:64
+#: inc/group.class.php:518 inc/group_user.class.php:156
+#: inc/group_user.class.php:195 inc/group_user.class.php:237
+#: inc/group_user.class.php:294 inc/group_user.class.php:420
+#: inc/group_user.class.php:479 inc/group_user.class.php:512
+#: inc/group_user.class.php:643 inc/notificationtargetproject.class.php:64
 #: inc/notificationtargetproject.class.php:564 inc/project.class.php:559
 #: inc/project.class.php:783 inc/project.class.php:1138
 msgid "Manager"
 msgstr "प्रबंधक"
 
-#: inc/group.class.php:538 inc/group_user.class.php:164
-#: inc/group_user.class.php:205 inc/group_user.class.php:251
-#: inc/group_user.class.php:306 inc/group_user.class.php:430
-#: inc/group_user.class.php:489 inc/group_user.class.php:526
-#: inc/group_user.class.php:660
+#: inc/group.class.php:538 inc/group_user.class.php:159
+#: inc/group_user.class.php:196 inc/group_user.class.php:242
+#: inc/group_user.class.php:297 inc/group_user.class.php:421
+#: inc/group_user.class.php:480 inc/group_user.class.php:517
+#: inc/group_user.class.php:651
 msgid "Delegatee"
 msgstr "प्रतिनिधि"
 
@@ -11151,25 +11147,25 @@ msgstr "संचालित करना"
 msgid "Associate to a group"
 msgstr "एक समूह से सहयोग करें"
 
-#: inc/group_user.class.php:203 inc/group_user.class.php:241
-#: inc/group_user.class.php:487 inc/group_user.class.php:516
-#: inc/group_user.class.php:624 inc/profile_user.class.php:869
+#: inc/group_user.class.php:194 inc/group_user.class.php:232
+#: inc/group_user.class.php:478 inc/group_user.class.php:507
+#: inc/group_user.class.php:615 inc/profile_user.class.php:869
 msgid "Dynamic"
 msgstr "गतिशील"
 
 #. TRANS: D for Dynamic
-#: inc/group_user.class.php:235 inc/profile_user.class.php:237
+#: inc/group_user.class.php:226 inc/profile_user.class.php:237
 #: inc/profile_user.class.php:401 inc/profile_user.class.php:558
 #: inc/profile_user.class.php:931 inc/search.class.php:4302
 #: inc/search.class.php:4341 inc/useremail.class.php:169
 msgid "D"
 msgstr "D"
 
-#: inc/group_user.class.php:296
+#: inc/group_user.class.php:287
 msgid "Add a user"
 msgstr "उपयोगकर्ता जोड़ें"
 
-#: inc/group_user.class.php:428 inc/rule.class.php:1196
+#: inc/group_user.class.php:419 inc/rule.class.php:1196
 #: inc/rule.class.php:1212 inc/rule.class.php:1262 inc/rule.class.php:2020
 #: inc/rule.class.php:2498 inc/rulecollection.class.php:1225
 #: inc/rulecollection.class.php:1499 inc/rulecriteria.class.php:94
@@ -11180,7 +11176,7 @@ msgid_plural "Criteria"
 msgstr[0] "मानदंड"
 msgstr[1] "मानदंड"
 
-#: inc/group_user.class.php:453 inc/group_user.class.php:543
+#: inc/group_user.class.php:444 inc/group_user.class.php:534
 msgid "D=Dynamic"
 msgstr "D=गतिशील"
 
@@ -11263,14 +11259,14 @@ msgstr "मेरी पतिस्थिति"
 msgid "Back to top of the page"
 msgstr "पृष्ठ के शीर्ष पर वापस जाएं"
 
-#: inc/html.class.php:1562 inc/toolbox.class.php:1323
-#: inc/toolbox.class.php:1327
+#: inc/html.class.php:1562 inc/toolbox.class.php:1334
+#: inc/toolbox.class.php:1338
 msgid "You will find it on the GLPI-PROJECT.org site."
 msgstr "आप इसे GLPI-PROJECT.org साइट पर पाएंगे।"
 
-#: inc/html.class.php:1564 inc/toolbox.class.php:1321
-#: inc/toolbox.class.php:1325 inc/toolbox.class.php:1333
-#: inc/toolbox.class.php:1336
+#: inc/html.class.php:1564 inc/toolbox.class.php:1332
+#: inc/toolbox.class.php:1336 inc/toolbox.class.php:1344
+#: inc/toolbox.class.php:1347
 #, php-format
 msgid "A new version is available: %s."
 msgstr "एक नया संस्करण उपलब्ध है: %s"
@@ -11498,7 +11494,7 @@ msgid "Load a saved search"
 msgstr "लोड सहेजी गई खोज"
 
 #: inc/html.class.php:6002 inc/profile.class.php:2161
-#: inc/ticket.class.php:5851
+#: inc/ticket.class.php:5853
 msgid "Create a ticket"
 msgstr "टिकट बनाएं"
 
@@ -11515,8 +11511,8 @@ msgid "Search is disabled"
 msgstr "खोज अक्षम है"
 
 #: inc/html.class.php:6320 inc/html.class.php:6321 inc/ticket.class.php:257
-#: inc/ticket.class.php:258 inc/ticket.class.php:3678
-#: inc/ticket.class.php:3679
+#: inc/ticket.class.php:258 inc/ticket.class.php:3680
+#: inc/ticket.class.php:3681
 msgid "Ticket waiting for your approval"
 msgstr "टिकट आपकी मंजूरी के लिए इंतजार कर रहा है"
 
@@ -11554,8 +11550,8 @@ msgstr "रैखिक"
 msgid "Decreasing"
 msgstr "घटाना"
 
-#: inc/infocom.class.php:710 inc/ticket.class.php:7170
-#: inc/ticket.class.php:7171
+#: inc/infocom.class.php:710 inc/ticket.class.php:7172
+#: inc/ticket.class.php:7173
 msgctxt "button"
 msgid "Show"
 msgstr "प्रदर्शन"
@@ -11771,55 +11767,55 @@ msgstr "इसकी बस पर डिवाइस की स्थिति"
 msgid "bus ID"
 msgstr "bus ID"
 
-#: inc/item_devices.class.php:412
+#: inc/item_devices.class.php:420
 msgid "Type of component"
 msgstr "घटक का प्रकार"
 
-#: inc/item_devices.class.php:414
+#: inc/item_devices.class.php:422
 msgid "Specificities"
 msgstr "विशेषता"
 
-#: inc/item_devices.class.php:467
+#: inc/item_devices.class.php:475
 msgid "Add a new component"
 msgstr "एक नया घटक जोड़ें"
 
-#: inc/item_devices.class.php:545
+#: inc/item_devices.class.php:553
 msgid "Dissociated devices"
 msgstr "अलग डिवाइस"
 
 #. TRANS : %1$s is the type of the device
 #. %2$s is the type of the item
 #. %3$s is the name of the item (used for headings of a list),
-#: inc/item_devices.class.php:560 inc/item_devices.class.php:573
+#: inc/item_devices.class.php:568 inc/item_devices.class.php:581
 #, php-format
 msgid "%1$s of %2$s: %3$s"
 msgstr "%2$s में से %1$s: %3$s"
 
-#: inc/item_devices.class.php:688 inc/knowbaseitem.class.php:1697
+#: inc/item_devices.class.php:696 inc/knowbaseitem.class.php:1697
 msgid "View"
 msgid_plural "Views"
 msgstr[0] "विचार"
 msgstr[1] "विचार"
 
-#: inc/item_devices.class.php:816
+#: inc/item_devices.class.php:825
 msgid "Please select a device type"
 msgstr "कृपया एक डिवाइस प्रकार का चयन करें"
 
-#: inc/item_devices.class.php:823
+#: inc/item_devices.class.php:832
 msgid "Please select a device"
 msgstr "कृपया एक डिवाइस का चयन करें"
 
-#: inc/item_devices.class.php:837
+#: inc/item_devices.class.php:846
 msgid "You must choose any unaffected device or ask to add new."
 msgstr ""
 "आपको किसी भी अप्रभावित डिवाइस का चयन करना होगा या नया जोड़ने के लिए कहा जाना"
 " चाहिए।"
 
-#: inc/item_devices.class.php:1094
+#: inc/item_devices.class.php:1103
 msgid "Copy to clipboard failed"
 msgstr "क्लिपबोर्ड पर कॉपी विफल रहा"
 
-#: inc/item_devices.class.php:1252
+#: inc/item_devices.class.php:1261
 msgid "Update of "
 msgstr "का अद्यतन"
 
@@ -11957,29 +11953,29 @@ msgid "Number of tickets"
 msgstr "टिकटों की संख्या"
 
 #: inc/itilcategory.class.php:209 inc/notificationtargetchange.class.php:270
-#: inc/notificationtargetticket.class.php:764 inc/search.class.php:5519
-#: inc/ticket.class.php:3363
+#: inc/notificationtargetticket.class.php:768 inc/search.class.php:5519
+#: inc/ticket.class.php:3365
 msgctxt "quantity"
 msgid "Number of problems"
 msgstr "समस्याओं की संख्या"
 
 #: inc/itilcategory.class.php:222 inc/notificationtargetproblem.class.php:209
 #: inc/notificationtargetproject.class.php:598
-#: inc/notificationtargetticket.class.php:765
+#: inc/notificationtargetticket.class.php:769
 msgctxt "quantity"
 msgid "Number of changes"
 msgstr "परिवर्तनों की संख्या"
 
-#: inc/itilcategory.class.php:327 inc/ticket.class.php:3498
-#: inc/ticket.class.php:3514
+#: inc/itilcategory.class.php:327 inc/ticket.class.php:3500
+#: inc/ticket.class.php:3516
 msgid "Incident"
 msgstr "घटना"
 
 #: inc/itilcategory.class.php:328 inc/notificationtargetchange.class.php:300
 #: inc/notificationtargetchange.class.php:302
-#: inc/notificationtargetticket.class.php:790
-#: inc/notificationtargetticket.class.php:792 inc/ticket.class.php:3499
-#: inc/ticket.class.php:3517
+#: inc/notificationtargetticket.class.php:794
+#: inc/notificationtargetticket.class.php:796 inc/ticket.class.php:3501
+#: inc/ticket.class.php:3519
 msgid "Request"
 msgstr "निवेदन"
 
@@ -12331,12 +12327,12 @@ msgid "Calendar of the ticket"
 msgstr "टिकट का कैलेंडर"
 
 #: inc/levelagreement.class.php:911 inc/levelagreementlevel.class.php:284
-#: inc/notificationtargetticket.class.php:715 inc/olalevel.class.php:178
+#: inc/notificationtargetticket.class.php:719 inc/olalevel.class.php:178
 #: inc/ruleticket.class.php:477 inc/ruleticket.class.php:493
 #: inc/ruleticket.class.php:598 inc/ruleticket.class.php:614
 #: inc/slalevel.class.php:178 inc/ticket.class.php:2702
-#: inc/ticket.class.php:2904 inc/ticket.class.php:4700
-#: inc/ticket.class.php:4702 inc/ticket.class.php:7645
+#: inc/ticket.class.php:2904 inc/ticket.class.php:4702
+#: inc/ticket.class.php:4704 inc/ticket.class.php:7647
 msgid "Time to own"
 msgstr "स्वयं स्वीकार करने का समय"
 
@@ -12419,37 +12415,37 @@ msgid "Add an item type"
 msgstr "एक आइटम प्रकार जोड़ें"
 
 #: inc/location.class.php:59 inc/location.class.php:102
-#: inc/location.class.php:135 inc/notificationtargetticket.class.php:741
-#: inc/notificationtargetticket.class.php:771
+#: inc/location.class.php:135 inc/notificationtargetticket.class.php:745
+#: inc/notificationtargetticket.class.php:775
 msgid "Building number"
 msgstr "भवन का नंबर"
 
 #: inc/location.class.php:63 inc/location.class.php:111
-#: inc/location.class.php:143 inc/notificationtargetticket.class.php:738
-#: inc/notificationtargetticket.class.php:770
+#: inc/location.class.php:143 inc/notificationtargetticket.class.php:742
+#: inc/notificationtargetticket.class.php:774
 msgid "Room number"
 msgstr "कमरा संख्या"
 
 #: inc/location.class.php:67 inc/location.class.php:151
-#: inc/notificationtargetticket.class.php:747
-#: inc/notificationtargetticket.class.php:773
+#: inc/notificationtargetticket.class.php:751
+#: inc/notificationtargetticket.class.php:777
 msgid "Longitude"
 msgstr "देशान्तर"
 
 #: inc/location.class.php:71 inc/location.class.php:160
-#: inc/notificationtargetticket.class.php:744
-#: inc/notificationtargetticket.class.php:772
+#: inc/notificationtargetticket.class.php:748
+#: inc/notificationtargetticket.class.php:776
 msgid "Latitude"
 msgstr "चौड़ाई"
 
 #: inc/location.class.php:75 inc/location.class.php:169
-#: inc/notificationtargetticket.class.php:750
-#: inc/notificationtargetticket.class.php:774
+#: inc/notificationtargetticket.class.php:754
+#: inc/notificationtargetticket.class.php:778
 msgid "Altitude"
 msgstr "ऊंचाई"
 
-#: inc/location.class.php:120 inc/notificationtargetticket.class.php:735
-#: inc/notificationtargetticket.class.php:769
+#: inc/location.class.php:120 inc/notificationtargetticket.class.php:739
+#: inc/notificationtargetticket.class.php:773
 msgid "Location comments"
 msgstr "स्थान टिप्पणियां"
 
@@ -12531,7 +12527,7 @@ msgstr "घटक %1$s: %2$s बदलें"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:407 inc/projecttask.class.php:506
-#: inc/ticket.class.php:4689
+#: inc/ticket.class.php:4691
 #, php-format
 msgid "%1$s by %2$s"
 msgstr "%1$s से %2$s"
@@ -13697,31 +13693,31 @@ msgstr "परिवर्तन हल हो गया"
 
 #: inc/notificationtargetchange.class.php:62
 #: inc/notificationtargetchange.class.php:324
-#: inc/notificationtargetticket.class.php:228
-#: inc/notificationtargetticket.class.php:896 inc/ticket.class.php:6874
+#: inc/notificationtargetticket.class.php:232
+#: inc/notificationtargetticket.class.php:900 inc/ticket.class.php:6876
 msgid "Validation request"
 msgstr "प्रमाणीकरण अनुरोध"
 
 #: inc/notificationtargetchange.class.php:63
-#: inc/notificationtargetticket.class.php:229 inc/ticket.class.php:6885
+#: inc/notificationtargetticket.class.php:233 inc/ticket.class.php:6887
 msgid "Validation request answer"
 msgstr "प्रमाणीकरण अनुरोध उत्तर"
 
 #: inc/notificationtargetchange.class.php:64
 #: inc/notificationtargetproblem.class.php:60
-#: inc/notificationtargetticket.class.php:233
+#: inc/notificationtargetticket.class.php:237
 msgid "New task"
 msgstr "नया कार्य"
 
 #: inc/notificationtargetchange.class.php:65
 #: inc/notificationtargetproblem.class.php:61
-#: inc/notificationtargetticket.class.php:234
+#: inc/notificationtargetticket.class.php:238
 msgid "Update of a task"
 msgstr "एक कार्य का अद्यतन"
 
 #: inc/notificationtargetchange.class.php:66
 #: inc/notificationtargetproblem.class.php:62
-#: inc/notificationtargetticket.class.php:235
+#: inc/notificationtargetticket.class.php:239
 msgid "Deletion of a task"
 msgstr "एक कार्य को हटाना"
 
@@ -13735,14 +13731,14 @@ msgstr "एक बदलाव हटाना"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetchange.class.php:224
-#: inc/notificationtargetticket.class.php:618
+#: inc/notificationtargetticket.class.php:622
 #, php-format
 msgid "An approval request has been submitted by %s"
 msgstr "एक अनुमोदन अनुरोध %s द्वारा प्रस्तुत किया गया है"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetchange.class.php:229
-#: inc/notificationtargetticket.class.php:622
+#: inc/notificationtargetticket.class.php:626
 #, php-format
 msgid "An answer to an an approval request was produced by %s"
 msgstr "एक अनुमोदन अनुरोध का उत्तर %s द्वारा उत्पादित किया गया था"
@@ -13750,30 +13746,30 @@ msgstr "एक अनुमोदन अनुरोध का उत्तर %
 #: inc/notificationtargetchange.class.php:304
 #: inc/notificationtargetchange.class.php:307
 #: inc/notificationtargetchange.class.php:339
-#: inc/notificationtargetticket.class.php:794
-#: inc/notificationtargetticket.class.php:797
-#: inc/notificationtargetticket.class.php:857 inc/profile.class.php:655
+#: inc/notificationtargetticket.class.php:798
+#: inc/notificationtargetticket.class.php:801
+#: inc/notificationtargetticket.class.php:861 inc/profile.class.php:655
 #: inc/profile.class.php:1039 inc/profile.class.php:1041
 #: inc/profile.class.php:1101 inc/rule.class.php:2023 inc/rule.class.php:2044
 #: inc/rulecollection.class.php:1761 inc/rulerightcollection.class.php:84
-#: inc/ticket.class.php:7327 inc/ticket.class.php:7328
+#: inc/ticket.class.php:7329 inc/ticket.class.php:7330
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "अभिपोषण"
 msgstr[1] "अभिपोषण"
 
 #: inc/notificationtargetchange.class.php:306
-#: inc/notificationtargetticket.class.php:796
+#: inc/notificationtargetticket.class.php:800
 msgid "Decision-maker"
 msgstr "निर्णयकर्ता"
 
 #: inc/notificationtargetchange.class.php:320
-#: inc/notificationtargetticket.class.php:809
+#: inc/notificationtargetticket.class.php:813
 msgid "A validation request has been submitted"
 msgstr "एक सत्यापन अनुरोध जमा कर दिया गया है"
 
 #: inc/notificationtargetchange.class.php:322
-#: inc/notificationtargetticket.class.php:811
+#: inc/notificationtargetticket.class.php:815
 msgid "An answer to a validation request was produced"
 msgstr "सत्यापन अनुरोध का उत्तर दिया गया था"
 
@@ -13928,7 +13924,7 @@ msgid "Download URL"
 msgstr "यूआरएल डाउनलोड करें"
 
 #: inc/notificationtargetcommonitilobject.class.php:1371
-#: inc/notificationtargetticket.class.php:946
+#: inc/notificationtargetticket.class.php:950
 msgid "Status value in database"
 msgstr "डेटाबेस में स्थिति का मान"
 
@@ -14318,66 +14314,66 @@ msgstr "परिणामों की संख्या"
 msgid "Load saved search"
 msgstr "लोड सहेजी गई खोज"
 
-#: inc/notificationtargetticket.class.php:123
+#: inc/notificationtargetticket.class.php:125
 msgid "To answer by email, write above this line"
 msgstr "ईमेल द्वारा जवाब देने के लिए, इस पंक्ति के ऊपर लिखें"
 
-#: inc/notificationtargetticket.class.php:137
+#: inc/notificationtargetticket.class.php:141
 msgid "To answer by email, write under this line"
 msgstr "ईमेल द्वारा जवाब देने के लिए, इस पंक्ति के तहत लिखें"
 
-#: inc/notificationtargetticket.class.php:225
+#: inc/notificationtargetticket.class.php:229
 msgid "Update of a ticket"
 msgstr "टिकट का अद्यतन"
 
-#: inc/notificationtargetticket.class.php:226
+#: inc/notificationtargetticket.class.php:230
 msgid "Ticket solved"
 msgstr "टिकट हल हो गया"
 
-#: inc/notificationtargetticket.class.php:227
+#: inc/notificationtargetticket.class.php:231
 msgid "Solution rejected"
 msgstr "समाधान खारिज कर दिया गया"
 
-#: inc/notificationtargetticket.class.php:230
+#: inc/notificationtargetticket.class.php:234
 msgid "New followup"
 msgstr "नया अनुवर्ती"
 
-#: inc/notificationtargetticket.class.php:231
+#: inc/notificationtargetticket.class.php:235
 msgid "Update of a followup"
 msgstr "एक फॉलोअप का अद्यतन"
 
-#: inc/notificationtargetticket.class.php:232
+#: inc/notificationtargetticket.class.php:236
 msgid "Deletion of a followup"
 msgstr "एक फॉलोअप हटाने"
 
-#: inc/notificationtargetticket.class.php:236
+#: inc/notificationtargetticket.class.php:240
 msgid "Closing of the ticket"
 msgstr "टिकट बंद करना"
 
-#: inc/notificationtargetticket.class.php:237
+#: inc/notificationtargetticket.class.php:241
 msgid "Deletion of a ticket"
 msgstr "टिकट हटाना"
 
-#: inc/notificationtargetticket.class.php:238
-#: inc/notificationtargetticket.class.php:890 inc/ticket.class.php:6363
+#: inc/notificationtargetticket.class.php:242
+#: inc/notificationtargetticket.class.php:894 inc/ticket.class.php:6365
 msgid "Not solved tickets"
 msgstr "टिकट हल नहीं किया गया"
 
-#: inc/notificationtargetticket.class.php:239
+#: inc/notificationtargetticket.class.php:243
 msgid "Automatic reminders of SLAs"
 msgstr "SLA की स्वचालित अनुस्मारक"
 
-#: inc/notificationtargetticket.class.php:240
+#: inc/notificationtargetticket.class.php:244
 msgid "Automatic reminders of OLAs"
 msgstr "OLA की स्वचालित अनुस्मारक"
 
-#: inc/notificationtargetticket.class.php:242
+#: inc/notificationtargetticket.class.php:246
 msgid "Satisfaction survey answer"
 msgstr "संतुष्टि सर्वेक्षण उत्तर"
 
 #. TRANS: %s is the number of days before auto closing
-#: inc/notificationtargetticket.class.php:314
-#: inc/notificationtargetticket.class.php:876
+#: inc/notificationtargetticket.class.php:318
+#: inc/notificationtargetticket.class.php:880
 #, php-format
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
@@ -14386,9 +14382,9 @@ msgstr[0] "एक उत्तर के बिना, टिकट%s दिन�
 msgstr[1] ""
 "एक उत्तर के बिना, टिकट %s दिनों के बाद स्वचालित रूप से बंद हो जाएगा"
 
-#: inc/notificationtargetticket.class.php:712
-#: inc/notificationtargetticket.class.php:714
-#: inc/notificationtargetticket.class.php:717 inc/ruleticket.class.php:468
+#: inc/notificationtargetticket.class.php:716
+#: inc/notificationtargetticket.class.php:718
+#: inc/notificationtargetticket.class.php:721 inc/ruleticket.class.php:468
 #: inc/ruleticket.class.php:476 inc/ruleticket.class.php:589
 #: inc/ruleticket.class.php:597 inc/sla.class.php:54 inc/ticket.class.php:2896
 #: inc/ticket.class.php:2904 inc/ticket.class.php:2918
@@ -14396,8 +14392,8 @@ msgstr[1] ""
 msgid "SLA"
 msgstr "SLA"
 
-#: inc/notificationtargetticket.class.php:720
-#: inc/notificationtargetticket.class.php:723 inc/ola.class.php:51
+#: inc/notificationtargetticket.class.php:724
+#: inc/notificationtargetticket.class.php:727 inc/ola.class.php:51
 #: inc/ruleticket.class.php:484 inc/ruleticket.class.php:492
 #: inc/ruleticket.class.php:605 inc/ruleticket.class.php:613
 #: inc/ticket.class.php:2947 inc/ticket.class.php:2955
@@ -14405,85 +14401,85 @@ msgstr "SLA"
 msgid "OLA"
 msgstr "OLA"
 
-#: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2776
-#: inc/ticket.class.php:2955 inc/ticket.class.php:4727
-#: inc/ticket.class.php:4729 inc/ticket.class.php:7637
+#: inc/notificationtargetticket.class.php:725 inc/ticket.class.php:2776
+#: inc/ticket.class.php:2955 inc/ticket.class.php:4729
+#: inc/ticket.class.php:4731 inc/ticket.class.php:7639
 msgid "Internal time to own"
 msgstr "खुद के लिए आंतरिक समय"
 
-#: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2740
-#: inc/ticket.class.php:2969 inc/ticket.class.php:4739
-#: inc/ticket.class.php:4741 inc/ticket.class.php:7653
+#: inc/notificationtargetticket.class.php:728 inc/ticket.class.php:2740
+#: inc/ticket.class.php:2969 inc/ticket.class.php:4741
+#: inc/ticket.class.php:4743 inc/ticket.class.php:7655
 msgid "Internal time to resolve"
 msgstr "हल करने के लिए आंतरिक समय"
 
-#: inc/notificationtargetticket.class.php:732
+#: inc/notificationtargetticket.class.php:736
 msgid "Location name"
 msgstr "स्थान का नाम"
 
-#: inc/notificationtargetticket.class.php:762 inc/ticket.class.php:3128
+#: inc/notificationtargetticket.class.php:766 inc/ticket.class.php:3128
 msgctxt "quantity"
 msgid "Number of followups"
 msgstr "अनुवर्ती संख्याओं की संख्या"
 
-#: inc/notificationtargetticket.class.php:763
+#: inc/notificationtargetticket.class.php:767
 msgctxt "quantity"
 msgid "Number of linked tickets"
 msgstr "लिंक किए गए टिकटों की संख्या"
 
-#: inc/notificationtargetticket.class.php:776
+#: inc/notificationtargetticket.class.php:780
 msgid "Solution rejection comment"
 msgstr "समाधान अस्वीकृति टिप्पणी"
 
-#: inc/notificationtargetticket.class.php:777
+#: inc/notificationtargetticket.class.php:781
 msgid "Solution rejection date"
 msgstr "समाधान अस्वीकृति तिथि"
 
-#: inc/notificationtargetticket.class.php:823
+#: inc/notificationtargetticket.class.php:827
 msgid "Creation date of the satisfaction survey"
 msgstr "संतुष्टि सर्वेक्षण की निर्माण तिथि"
 
-#: inc/notificationtargetticket.class.php:824
+#: inc/notificationtargetticket.class.php:828
 #: inc/ticketsatisfaction.class.php:156
 msgid "Response date to the satisfaction survey"
 msgstr "संतुष्टि सर्वेक्षण के लिए प्रतिक्रिया तिथि"
 
-#: inc/notificationtargetticket.class.php:826
+#: inc/notificationtargetticket.class.php:830
 msgid "Comments to the satisfaction survey"
 msgstr "संतुष्टि सर्वेक्षण के लिए टिप्पणियाँ"
 
-#: inc/notificationtargetticket.class.php:835
+#: inc/notificationtargetticket.class.php:839
 msgid "Survey type"
 msgstr "सर्वेक्षण का प्रकार"
 
-#: inc/notificationtargetticket.class.php:845
+#: inc/notificationtargetticket.class.php:849
 msgid "Invitation to fill out the survey"
 msgstr "सर्वेक्षण भरने के लिए आमंत्रण"
 
-#: inc/notificationtargetticket.class.php:856 inc/profile.class.php:649
+#: inc/notificationtargetticket.class.php:860 inc/profile.class.php:649
 #: inc/profile.class.php:1030 inc/profile.class.php:1035
-#: inc/ticket.class.php:3081 inc/ticket.class.php:7321
-#: inc/ticket.class.php:7322 inc/ticket.class.php:7447
+#: inc/ticket.class.php:3081 inc/ticket.class.php:7323
+#: inc/ticket.class.php:7324 inc/ticket.class.php:7449
 #: inc/ticketfollowup.class.php:69
 msgid "Followup"
 msgid_plural "Followups"
 msgstr[0] "अनुवर्ती"
 msgstr[1] "अनुवर्ती"
 
-#: inc/notificationtargetticket.class.php:858
-#: inc/notificationtargetticket.class.php:872
-#: inc/notificationtargetticket.class.php:901
-#: inc/notificationtargetticket.class.php:904
-#: inc/notificationtargetticket.class.php:907
-#: inc/notificationtargetticket.class.php:910
-#: inc/notificationtargetticket.class.php:913 inc/ticket.class.php:3211
-#: inc/ticket.class.php:5162
+#: inc/notificationtargetticket.class.php:862
+#: inc/notificationtargetticket.class.php:876
+#: inc/notificationtargetticket.class.php:905
+#: inc/notificationtargetticket.class.php:908
+#: inc/notificationtargetticket.class.php:911
+#: inc/notificationtargetticket.class.php:914
+#: inc/notificationtargetticket.class.php:917 inc/ticket.class.php:3211
+#: inc/ticket.class.php:5164
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
 msgstr[0] "जुड़े टिकट"
 msgstr[1] "जुड़े टिकट"
 
-#: inc/notificationtargetticket.class.php:905
+#: inc/notificationtargetticket.class.php:909
 msgid "Link"
 msgstr "लिंक"
 
@@ -15036,17 +15032,17 @@ msgstr "ईथरनेट"
 msgid "Wifi"
 msgstr "वाईफ़ाई"
 
-#: inc/problem.class.php:553 inc/ticket.class.php:3537
+#: inc/problem.class.php:553 inc/ticket.class.php:3539
 msgctxt "status"
 msgid "Processing (assigned)"
 msgstr "प्रसंस्करण (असाइन)"
 
-#: inc/problem.class.php:554 inc/ticket.class.php:3538
+#: inc/problem.class.php:554 inc/ticket.class.php:3540
 msgctxt "status"
 msgid "Processing (planned)"
 msgstr "प्रसंस्करण (योजनाबद्ध)"
 
-#: inc/problem.class.php:556 inc/ticket.class.php:3540
+#: inc/problem.class.php:556 inc/ticket.class.php:3542
 msgctxt "status"
 msgid "Solved"
 msgstr "हल"
@@ -15405,86 +15401,86 @@ msgstr[1] "सदस्य"
 msgid "Invalid items (no start or end date): %s"
 msgstr "अमान्य आइटम (कोई प्रारंभ या समाप्ति दिनांक नहीं):%s"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2155
+#: inc/project.class.php:1551 inc/toolbox.class.php:2166
 msgid "January"
 msgstr "जनवरी"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2156
+#: inc/project.class.php:1551 inc/toolbox.class.php:2167
 msgid "February"
 msgstr "फरवरी"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2157
+#: inc/project.class.php:1551 inc/toolbox.class.php:2168
 msgid "March"
 msgstr "मार्च"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2158
+#: inc/project.class.php:1551 inc/toolbox.class.php:2169
 msgid "April"
 msgstr "अप्रैल"
 
-#: inc/project.class.php:1551 inc/toolbox.class.php:2159
+#: inc/project.class.php:1551 inc/toolbox.class.php:2170
 msgid "May"
 msgstr "मई"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2160
+#: inc/project.class.php:1552 inc/toolbox.class.php:2171
 msgid "June"
 msgstr "जून"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2161
+#: inc/project.class.php:1552 inc/toolbox.class.php:2172
 msgid "July"
 msgstr "जुलाई"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2162
+#: inc/project.class.php:1552 inc/toolbox.class.php:2173
 msgid "August"
 msgstr "अगस्त"
 
-#: inc/project.class.php:1552 inc/toolbox.class.php:2163
+#: inc/project.class.php:1552 inc/toolbox.class.php:2174
 msgid "September"
 msgstr "सितंबर"
 
-#: inc/project.class.php:1553 inc/toolbox.class.php:2164
+#: inc/project.class.php:1553 inc/toolbox.class.php:2175
 msgid "October"
 msgstr "अक्टूबर"
 
-#: inc/project.class.php:1553 inc/toolbox.class.php:2165
+#: inc/project.class.php:1553 inc/toolbox.class.php:2176
 msgid "November"
 msgstr "नवंबर"
 
-#: inc/project.class.php:1553 inc/toolbox.class.php:2166
+#: inc/project.class.php:1553 inc/toolbox.class.php:2177
 msgid "December"
 msgstr "दिसंबर"
 
 #: inc/project.class.php:1555 inc/reservation.class.php:533
-#: inc/toolbox.class.php:2141
+#: inc/toolbox.class.php:2152
 msgid "Sunday"
 msgstr "रविवार"
 
 #: inc/project.class.php:1555 inc/reservation.class.php:527
-#: inc/toolbox.class.php:2142
+#: inc/toolbox.class.php:2153
 msgid "Monday"
 msgstr "सोमवार"
 
 #: inc/project.class.php:1556 inc/reservation.class.php:528
-#: inc/toolbox.class.php:2143
+#: inc/toolbox.class.php:2154
 msgid "Tuesday"
 msgstr "मंगलवार"
 
 #: inc/project.class.php:1556 inc/reservation.class.php:529
-#: inc/toolbox.class.php:2144
+#: inc/toolbox.class.php:2155
 msgid "Wednesday"
 msgstr "बुधवार"
 
 #: inc/project.class.php:1557 inc/reservation.class.php:530
-#: inc/toolbox.class.php:2145
+#: inc/toolbox.class.php:2156
 msgid "Thursday"
 msgstr "बृहस्पतिवार"
 
 #: inc/project.class.php:1557 inc/reservation.class.php:531
-#: inc/toolbox.class.php:2146
+#: inc/toolbox.class.php:2157
 msgid "Friday"
 msgstr "शुक्रवार"
 
 #: inc/project.class.php:1558 inc/reservation.class.php:532
-#: inc/toolbox.class.php:2147
+#: inc/toolbox.class.php:2158
 msgid "Saturday"
 msgstr "शनिवार"
 
@@ -15646,7 +15642,7 @@ msgid "Planning end date"
 msgstr "योजना की समाप्ति तिथि"
 
 #: inc/reminder.class.php:524 inc/reminder.class.php:569
-#: inc/rssfeed.class.php:524 inc/ticket.class.php:5106
+#: inc/rssfeed.class.php:524 inc/ticket.class.php:5108
 msgid "Without title"
 msgstr "शीर्षक के बिना"
 
@@ -15893,7 +15889,7 @@ msgid "Use"
 msgstr "उपयोग"
 
 #. TRANS: short for : Assign a ticket
-#: inc/ruleaction.class.php:395 inc/ticket.class.php:6590
+#: inc/ruleaction.class.php:395 inc/ticket.class.php:6592
 msgid "Assign"
 msgstr "सौंपना"
 
@@ -16544,7 +16540,7 @@ msgstr[0] "सहेजी गई खोज अलर्ट"
 msgstr[1] "सहेजी गई खोज अलर्ट"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
-#: inc/savedsearch.class.php:1363
+#: inc/savedsearch.class.php:1371
 msgid "Saved search"
 msgid_plural "Saved searches"
 msgstr[0] "सहेजी गई खोजों"
@@ -16730,7 +16726,7 @@ msgstr "वर्तमान खोज बचाओ"
 msgid "Update all bookmarks execution time"
 msgstr "सभी बुकमार्क निष्पादन समय अद्यतन करें"
 
-#: inc/savedsearch.class.php:1371
+#: inc/savedsearch.class.php:1379
 msgid "Notification has been created!"
 msgstr "अधिसूचना बनाई गई है!"
 
@@ -16844,7 +16840,7 @@ msgid "Group in charge of the software"
 msgstr "सॉफ्टवेयर के प्रभारी समूह"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
-#: inc/software.class.php:320 install/update.php:522
+#: inc/software.class.php:320 install/update.php:524
 msgid "Upgrade"
 msgstr "अपग्रेड"
 
@@ -16882,21 +16878,21 @@ msgstr "विलय के बाद सॉफ्टवेयर हटा द�
 msgid "Please select a software for this license"
 msgstr "कृपया इस लाइसेंस के लिए एक सॉफ्टवेयर का चयन करें"
 
-#: inc/softwarelicense.class.php:348 inc/softwarelicense.class.php:621
+#: inc/softwarelicense.class.php:348 inc/softwarelicense.class.php:615
 msgid "Technician in charge of the license"
 msgstr "लाइसेंस के प्रभारी तकनीशियन"
 
-#: inc/softwarelicense.class.php:361 inc/softwarelicense.class.php:640
+#: inc/softwarelicense.class.php:361 inc/softwarelicense.class.php:634
 msgid "Group in charge of the license"
 msgstr "लाइसेंस के प्रभारी समूह"
 
-#: inc/softwarelicense.class.php:403 inc/softwarelicense.class.php:567
-#: inc/softwarelicense.class.php:1003
+#: inc/softwarelicense.class.php:403 inc/softwarelicense.class.php:561
+#: inc/softwarelicense.class.php:997
 msgid "Version in use"
 msgstr "उपयोग में संस्करण"
 
-#: inc/softwarelicense.class.php:411 inc/softwarelicense.class.php:555
-#: inc/softwarelicense.class.php:1002
+#: inc/softwarelicense.class.php:411 inc/softwarelicense.class.php:549
+#: inc/softwarelicense.class.php:996
 msgid "Purchase version"
 msgstr "खरीद संस्करण"
 
@@ -16917,57 +16913,57 @@ msgstr ""
 "खोज इंजन पर, किसी भी समाप्ति तिथि के साथ लाइसेंस खोजने के लिए \"समाप्ति "
 "न्यूल\" का उपयोग करें"
 
-#: inc/softwarelicense.class.php:534
+#: inc/softwarelicense.class.php:528
 msgid "Number"
 msgstr "संख्या"
 
-#: inc/softwarelicense.class.php:558 inc/softwarelicense.class.php:570
+#: inc/softwarelicense.class.php:552 inc/softwarelicense.class.php:564
 msgid "states_id"
 msgstr "states_id"
 
-#: inc/softwarelicense.class.php:586 inc/softwarelicense.class.php:802
+#: inc/softwarelicense.class.php:580 inc/softwarelicense.class.php:796
 msgid "Valid"
 msgstr "मान्य"
 
-#: inc/softwarelicense.class.php:718
+#: inc/softwarelicense.class.php:712
 msgid "License name"
 msgstr "लाइसेंस का नाम"
 
-#: inc/softwarelicense.class.php:730
+#: inc/softwarelicense.class.php:724
 msgid "License serial number"
 msgstr "लाइसेंस  आनुक्रमिक संख्या"
 
-#: inc/softwarelicense.class.php:741
+#: inc/softwarelicense.class.php:735
 msgid "License inventory number"
 msgstr "लाइसेंस सूची संख्या"
 
-#: inc/softwarelicense.class.php:751
+#: inc/softwarelicense.class.php:745
 msgid "Number of licenses"
 msgstr "लाइसेंस की संख्या"
 
-#: inc/softwarelicense.class.php:764
+#: inc/softwarelicense.class.php:758
 msgid "License types"
 msgstr "लाइसेंस प्रकार"
 
-#: inc/softwarelicense.class.php:779
+#: inc/softwarelicense.class.php:773
 msgid "License comments"
 msgstr "लाइसेंस टिप्पणियां"
 
-#: inc/softwarelicense.class.php:821
+#: inc/softwarelicense.class.php:815
 msgid "Send alarms on expired licenses"
 msgstr "समाप्त हो चुके लाइसेंस पर अलार्म भेजें"
 
 #. TRANS: %1$s the license name, %2$s is the expiration date
-#: inc/softwarelicense.class.php:871
+#: inc/softwarelicense.class.php:865
 #, php-format
 msgid "License %1$s expired on %2$s"
 msgstr "लाइसेंस %1$s %2$s पर समाप्त हो गया"
 
-#: inc/softwarelicense.class.php:905
+#: inc/softwarelicense.class.php:899
 msgid "Send licenses alert failed"
 msgstr "लाइसेंस अलर्ट भेजें विफल"
 
-#: inc/softwarelicense.class.php:1046
+#: inc/softwarelicense.class.php:1040
 msgctxt "button"
 msgid "Add a license"
 msgstr "एक लाइसेंस जोड़ें"
@@ -17204,7 +17200,7 @@ msgstr "%1$s आइटम %2$s अद्यतन करता है"
 msgid "Add a new followup"
 msgstr "एक नया अनुवर्ती जोड़ें"
 
-#: inc/ticket.class.php:2657 inc/ticket.class.php:4924
+#: inc/ticket.class.php:2657 inc/ticket.class.php:4926
 #: inc/tickettemplate.class.php:269
 msgid "Approval request"
 msgstr "स्वीकृति अनुरोध"
@@ -17282,219 +17278,219 @@ msgstr "पुत्रक टिकटों की संख्या"
 msgid "Number of parent tickets"
 msgstr "मूल टिकटों की संख्या"
 
-#: inc/ticket.class.php:3356
+#: inc/ticket.class.php:3358
 msgid "Problems"
 msgstr "समस्या"
 
-#: inc/ticket.class.php:3680
+#: inc/ticket.class.php:3682
 msgid "Tickets awaiting approval"
 msgstr "टिकट अनुमोदन की प्रतीक्षा कर रहा है"
 
-#: inc/ticket.class.php:3774
+#: inc/ticket.class.php:3776
 msgid "This ticket concerns me"
 msgstr "यह टिकट मुझसे चिंतित है"
 
-#: inc/ticket.class.php:3796 inc/ticket.class.php:3826
+#: inc/ticket.class.php:3798 inc/ticket.class.php:3828
 msgid "Check your personnal information"
 msgstr "अपनी व्यक्तिगत जानकारी जांचें"
 
-#: inc/ticket.class.php:3917
+#: inc/ticket.class.php:3919
 msgid "Describe the incident or request"
 msgstr "घटना या अनुरोध का वर्णन करें"
 
-#: inc/ticket.class.php:3970
+#: inc/ticket.class.php:3972
 msgid "Inform me about the actions taken"
 msgstr "किए गए कार्यों के बारे में मुझे सूचित करें"
 
-#: inc/ticket.class.php:4122
+#: inc/ticket.class.php:4124
 msgid "Submit message"
 msgstr "सन्देश प्रस्तुत करें"
 
-#: inc/ticket.class.php:4629
+#: inc/ticket.class.php:4631
 #, php-format
 msgid "The ticket will be added in the entity %s"
 msgstr "टिकट इकाई में जोड़ा जाएगा%s"
 
-#: inc/ticket.class.php:4763
+#: inc/ticket.class.php:4765
 msgid "Close date"
 msgstr "अंतिम तिथि"
 
-#: inc/ticket.class.php:4879
+#: inc/ticket.class.php:4881
 msgid "Reopen"
 msgstr "फिर से खोलें"
 
-#: inc/ticket.class.php:5208
+#: inc/ticket.class.php:5210
 #, php-format
 msgid "File (%s)"
 msgstr "फ़ाइल (%s)"
 
-#: inc/ticket.class.php:5224
+#: inc/ticket.class.php:5226
 msgid "Default documents:"
 msgstr "डिफ़ॉल्ट दस्तावेज:"
 
-#: inc/ticket.class.php:5504 inc/ticket.class.php:5676
+#: inc/ticket.class.php:5506 inc/ticket.class.php:5678
 msgid "Your tickets to close"
 msgstr "बंद करने के लिए आपके टिकट"
 
-#: inc/ticket.class.php:5520 inc/ticket.class.php:5587
+#: inc/ticket.class.php:5522 inc/ticket.class.php:5589
 msgid "Tickets on pending status"
 msgstr "लंबित स्थिति पर टिकट"
 
-#: inc/ticket.class.php:5536 inc/ticket.class.php:5603
+#: inc/ticket.class.php:5538 inc/ticket.class.php:5605
 msgid "Tickets to be processed"
 msgstr "संसाधित होने के टिकट"
 
-#: inc/ticket.class.php:5552 inc/ticket.class.php:5692
+#: inc/ticket.class.php:5554 inc/ticket.class.php:5694
 msgid "Your observed tickets"
 msgstr "आपके मनाए गए टिकट"
 
-#: inc/ticket.class.php:5569 inc/ticket.class.php:5743
+#: inc/ticket.class.php:5571 inc/ticket.class.php:5745
 msgid "Your tickets in progress"
 msgstr "आपके टिकट प्रगति पर हैं"
 
-#: inc/ticket.class.php:5630
+#: inc/ticket.class.php:5632
 msgid "Your tickets to validate"
 msgstr "मान्य करने के लिए आपके टिकट"
 
-#: inc/ticket.class.php:5647
+#: inc/ticket.class.php:5649
 msgid "Your rejected tickets"
 msgstr "आपके अस्वीकृत टिकट"
 
-#: inc/ticket.class.php:5854
+#: inc/ticket.class.php:5856
 msgid "Ticket followup"
 msgstr "टिकट अनुवर्ती"
 
 #. TRANS: %d is the number of new tickets
-#: inc/ticket.class.php:5906
+#: inc/ticket.class.php:5908
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] "%d नए टिकट"
 msgstr[1] "%d नए टिकट"
 
-#: inc/ticket.class.php:5922 inc/ticket.class.php:6126
-#: inc/ticket.class.php:6176
+#: inc/ticket.class.php:5924 inc/ticket.class.php:6128
+#: inc/ticket.class.php:6178
 msgid "No ticket found."
 msgstr "कोई टिकट नहीं मिला"
 
-#: inc/ticket.class.php:6006
+#: inc/ticket.class.php:6008
 msgid "Last tickets"
 msgstr "अंतिम टिकट"
 
-#: inc/ticket.class.php:6087 inc/ticket.class.php:6099
+#: inc/ticket.class.php:6089 inc/ticket.class.php:6101
 msgid "New ticket for this item..."
 msgstr "इस मद के लिए नया टिकट"
 
-#: inc/ticket.class.php:6115
+#: inc/ticket.class.php:6117
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] "अंतिम %d टिकट"
 msgstr[1] "अंतिम %d टिकट"
 
-#: inc/ticket.class.php:6121
+#: inc/ticket.class.php:6123
 msgid "You don't have right to see all tickets"
 msgstr "आपको सभी टिकट देखने का अधिकार नहीं है"
 
-#: inc/ticket.class.php:6166
+#: inc/ticket.class.php:6168
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "लिंक किए गए सामानों पर टिकट"
 msgstr[1] "लिंक किए गए सामानों पर टिकट"
 
-#: inc/ticket.class.php:6277
+#: inc/ticket.class.php:6279
 msgid "No ticket in progress."
 msgstr "कोई टिकट प्रगति पर नहीं है।"
 
-#: inc/ticket.class.php:6334
+#: inc/ticket.class.php:6336
 msgid "Assign equipment"
 msgstr "उपकरण सौंपें"
 
-#: inc/ticket.class.php:6360
+#: inc/ticket.class.php:6362
 msgid "Automatic tickets closing"
 msgstr "स्वचालित टिकट बंद हो रहा है"
 
-#: inc/ticket.class.php:6366
+#: inc/ticket.class.php:6368
 msgid "Generation of satisfaction surveys"
 msgstr "संतुष्टि सर्वेक्षण का निर्माण"
 
-#: inc/ticket.class.php:6580
+#: inc/ticket.class.php:6582
 msgid "See my ticket"
 msgstr "मेरा टिकट देखें"
 
 #. TRANS: short for : See tickets created by my groups
-#: inc/ticket.class.php:6582
+#: inc/ticket.class.php:6584
 msgid "See group ticket"
 msgstr "समूह टिकट देखें"
 
-#: inc/ticket.class.php:6583
+#: inc/ticket.class.php:6585
 msgid "See tickets created by my groups"
 msgstr "मेरे समूहों द्वारा बनाए गए टिकट देखें"
 
-#: inc/ticket.class.php:6585
+#: inc/ticket.class.php:6587
 msgid "See all tickets"
 msgstr "सभी टिकट देखें"
 
 #. TRANS: short for : See assigned tickets (group associated)
-#: inc/ticket.class.php:6587
+#: inc/ticket.class.php:6589
 msgid "See assigned"
 msgstr "असाइन  देखें"
 
-#: inc/ticket.class.php:6588
+#: inc/ticket.class.php:6590
 msgid "See assigned tickets"
 msgstr "असाइन टिकट देखें"
 
-#: inc/ticket.class.php:6591
+#: inc/ticket.class.php:6593
 msgid "Assign a ticket"
 msgstr "टिकट सौंपें"
 
 #. TRANS: short for : Steal a ticket
-#: inc/ticket.class.php:6593
+#: inc/ticket.class.php:6595
 msgid "Steal"
 msgstr "चुराना"
 
-#: inc/ticket.class.php:6594
+#: inc/ticket.class.php:6596
 msgid "Steal a ticket"
 msgstr "टिकट चोरी करो"
 
 #. TRANS: short for : To be in charge of a ticket
-#: inc/ticket.class.php:6596
+#: inc/ticket.class.php:6598
 msgid "Beeing in charge"
 msgstr "प्रभारी "
 
-#: inc/ticket.class.php:6597
+#: inc/ticket.class.php:6599
 msgid "To be in charge of a ticket"
 msgstr "टिकट के प्रभारी होने के लिए"
 
-#: inc/ticket.class.php:6598
+#: inc/ticket.class.php:6600
 msgid "Change the priority"
 msgstr "प्राथमिकता बदलें"
 
-#: inc/ticket.class.php:6599
+#: inc/ticket.class.php:6601
 msgid "Approve solution/Reply survey (my ticket)"
 msgstr "समाधान / उत्तर सर्वेक्षण (मेरा टिकट) स्वीकृत करें"
 
-#: inc/ticket.class.php:6600
+#: inc/ticket.class.php:6602
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr ""
 "समाधान द्वारा स्वीकृति दें और मेरे द्वारा बनाए गए टिकट के लिए सर्वेक्षण का "
 "उत्तर दें"
 
-#: inc/ticket.class.php:7122
+#: inc/ticket.class.php:7124
 #, php-format
 msgid "Last edited on %1$s by %2$s"
 msgstr "अंतिम बार %1$s से %2$s पर संपादित किया गया"
 
-#: inc/ticket.class.php:7238
+#: inc/ticket.class.php:7240
 #, php-format
 msgid "Ticket# %s description"
 msgstr "टिकट # %s विवरण"
 
-#: inc/ticket.class.php:7306
+#: inc/ticket.class.php:7308
 msgid "Actions historical"
 msgstr "क्रियाएं ऐतिहासिक"
 
-#: inc/ticket.class.php:7319
+#: inc/ticket.class.php:7321
 msgid "Timeline filter"
 msgstr "टाइमलाइन फिल्टर"
 
@@ -17721,55 +17717,55 @@ msgstr "एक अनुरोध मान्य करें"
 msgid "Validate an incident"
 msgstr "एक घटना की पुष्टि करें"
 
-#: inc/toolbox.class.php:881
+#: inc/toolbox.class.php:892
 msgid "Test done"
 msgstr "परीक्षण किया गया"
 
-#: inc/toolbox.class.php:881
+#: inc/toolbox.class.php:892
 msgid "Results"
 msgstr "परिणाम"
 
-#: inc/toolbox.class.php:884
+#: inc/toolbox.class.php:895
 msgid "Testing PHP Parser"
 msgstr "परीक्षण PHP पार्सर"
 
-#: inc/toolbox.class.php:893
+#: inc/toolbox.class.php:904
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
 msgstr ""
 "जीएलपीआई विकल्प zend.ze1_compatibility_mode = चालू के साथ संगत नहीं है।"
 
-#: inc/toolbox.class.php:897 inc/toolbox.class.php:898
+#: inc/toolbox.class.php:908 inc/toolbox.class.php:909
 #, php-format
 msgid "PHP version is at least %s - Perfect!"
 msgstr "PHP संस्करण कम से कम है%s - बिल्कुल सही!"
 
-#: inc/toolbox.class.php:905
+#: inc/toolbox.class.php:916
 #, php-format
 msgid "You must install at least PHP %s."
 msgstr "आपको कम से कम PHP स्थापित करना होगा%s"
 
-#: inc/toolbox.class.php:910
+#: inc/toolbox.class.php:921
 msgid "Sessions test"
 msgstr "सत्र परीक्षण"
 
-#: inc/toolbox.class.php:915
+#: inc/toolbox.class.php:926
 msgid "Your parser PHP is not installed with sessions support!"
 msgstr "आपका पार्सर PHP सत्र समर्थन के साथ स्थापित नहीं है!"
 
-#: inc/toolbox.class.php:921 inc/toolbox.class.php:922
+#: inc/toolbox.class.php:932 inc/toolbox.class.php:933
 msgid "Sessions support is available - Perfect!"
 msgstr "सत्र समर्थन उपलब्ध है - बिल्कुल सही!"
 
-#: inc/toolbox.class.php:927
+#: inc/toolbox.class.php:938
 msgid "Make sure that sessions support has been activated in your php.ini"
 msgstr "सुनिश्चित करें कि सत्र समर्थन आपके php.ini में सक्रिय किया गया है"
 
-#: inc/toolbox.class.php:934
+#: inc/toolbox.class.php:945
 msgid "Test session auto start"
 msgstr "टेस्ट सत्र ऑटो स्टार्ट"
 
-#: inc/toolbox.class.php:937
+#: inc/toolbox.class.php:948
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
@@ -17777,171 +17773,171 @@ msgstr ""
 "session.auto_start सक्रिय है। अधिक जानकारी के लिए जीएलपीआई रूट में .htaccess"
 " फ़ाइल देखें।"
 
-#: inc/toolbox.class.php:944
+#: inc/toolbox.class.php:955
 msgid "Test if Session_use_trans_sid is used"
 msgstr "परीक्षण करें यदि सत्र Use_trans_sid का उपयोग किया जाता है"
 
-#: inc/toolbox.class.php:949
+#: inc/toolbox.class.php:960
 msgid "You must desactivate the Session_use_trans_id option in your php.ini"
 msgstr "आपको अपने php.ini में सत्र_use_trans_id विकल्प को निष्क्रिय करना होगा"
 
-#: inc/toolbox.class.php:954 inc/toolbox.class.php:955
+#: inc/toolbox.class.php:965 inc/toolbox.class.php:966
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
 msgstr ""
 "ठीक है - सत्र काम करता है (trans_id के साथ कोई समस्या नहीं) - बिल्कुल सही!"
 
-#: inc/toolbox.class.php:966
+#: inc/toolbox.class.php:977
 msgid "Allocated memory test"
 msgstr "आवंटित स्मृति परीक्षण"
 
-#: inc/toolbox.class.php:974 inc/toolbox.class.php:975
+#: inc/toolbox.class.php:985 inc/toolbox.class.php:986
 msgid "Unlimited memory - Perfect!"
 msgstr "असीमित स्मृति - बिल्कुल सही!"
 
-#: inc/toolbox.class.php:981
+#: inc/toolbox.class.php:992
 msgid "Allocated memory"
 msgstr "आवंटित स्मृति"
 
-#: inc/toolbox.class.php:984
+#: inc/toolbox.class.php:995
 msgid "A minimum of 64Mio is commonly required for GLPI."
 msgstr "जीएलपीआई के लिए न्यूनतम 64 एमओओ की आवश्यकता होती है।"
 
-#: inc/toolbox.class.php:985
+#: inc/toolbox.class.php:996
 msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr "Php.ini फ़ाइल में memory_limit पैरामीटर को बढ़ाने का प्रयास करें।"
 
-#: inc/toolbox.class.php:992 inc/toolbox.class.php:993
+#: inc/toolbox.class.php:1003 inc/toolbox.class.php:1004
 msgid "Allocated memory > 64Mio - Perfect!"
 msgstr "आवंटित स्मृति> 64Mio - बिल्कुल सही!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-#: inc/toolbox.class.php:1035
+#: inc/toolbox.class.php:1046
 #, php-format
 msgid "SELinux mode is %s"
 msgstr "SELinux मोड है%s"
 
-#: inc/toolbox.class.php:1061
+#: inc/toolbox.class.php:1072
 msgid "Some features may require this to be on"
 msgstr "कुछ विशेषताओं को इस पर होने की आवश्यकता हो सकती है"
 
 #. TRANS: %s is an option name
-#: inc/toolbox.class.php:1068
+#: inc/toolbox.class.php:1079
 #, php-format
 msgid "SELinux boolean configuration for %s"
 msgstr "के लिए SELinux बूलियन विन्यास%s"
 
 #. TRANS: list of unit (o for octet)
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "o"
 msgstr "o"
 
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "Kio"
 msgstr "केबी"
 
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "Gio"
 msgstr "जीबी"
 
-#: inc/toolbox.class.php:1134
+#: inc/toolbox.class.php:1145
 msgid "Tio"
 msgstr "टीबी"
 
-#: inc/toolbox.class.php:1343 inc/toolbox.class.php:1345
-#: inc/toolbox.class.php:1350 inc/toolbox.class.php:1352
+#: inc/toolbox.class.php:1354 inc/toolbox.class.php:1356
+#: inc/toolbox.class.php:1361 inc/toolbox.class.php:1363
 msgid "You have the latest available version"
 msgstr "आपके पास नवीनतम उपलब्ध संस्करण है"
 
-#: inc/toolbox.class.php:1635
+#: inc/toolbox.class.php:1646
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr ""
 "कनेक्शन विफल यदि आप प्रॉक्सी का उपयोग करते हैं, तो कृपया इसे कॉन्फ़िगर "
 "करें।(%s)"
 
-#: inc/toolbox.class.php:1641
+#: inc/toolbox.class.php:1652
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "प्रॉक्सी सर्वर से कनेक्ट करने में विफल (%s)"
 
-#: inc/toolbox.class.php:1649
+#: inc/toolbox.class.php:1660
 msgid "No data available on the web site"
 msgstr "वेबसाइट पर कोई डेटा उपलब्ध नहीं है"
 
-#: inc/toolbox.class.php:1989
+#: inc/toolbox.class.php:2000
 msgid "Connection options"
 msgstr "कनेक्शन विकल्प"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1991
+#: inc/toolbox.class.php:2002
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1993
+#: inc/toolbox.class.php:2004
 msgid "POP"
 msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2001
+#: inc/toolbox.class.php:2012
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2010
+#: inc/toolbox.class.php:2021
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2012
+#: inc/toolbox.class.php:2023
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2028
+#: inc/toolbox.class.php:2039
 msgid "NO-VALIDATE-CERT"
 msgstr "NOVALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2030
+#: inc/toolbox.class.php:2041
 msgid "VALIDATE-CERT"
 msgstr "सत्यापित करें-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2045
+#: inc/toolbox.class.php:2056
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2054
+#: inc/toolbox.class.php:2065
 msgid "SECURE"
 msgstr "सुरक्षित"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2063
+#: inc/toolbox.class.php:2074
 msgid "DEBUG"
 msgstr "दोषमार्जन"
 
-#: inc/toolbox.class.php:2075
+#: inc/toolbox.class.php:2086
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "आने वाली मेल फ़ोल्डर (वैकल्पिक, अक्सर INBOX)"
 
 #. TRANS: for mail connection system
-#: inc/toolbox.class.php:2080
+#: inc/toolbox.class.php:2091
 msgid "Port (optional)"
 msgstr "पोर्ट (वैकल्पिक)"
 
-#: inc/toolbox.class.php:2356
+#: inc/toolbox.class.php:2367
 msgid ""
 "No HTTP_REFERER found in request. Reload previous page before doing action "
 "again."
@@ -17949,7 +17945,7 @@ msgstr ""
 "अनुरोध में कोई HTTP_REFERER नहीं मिला। कार्रवाई करने से पहले पिछले पृष्ठ को "
 "दोबारा लोड करें।"
 
-#: inc/toolbox.class.php:2362
+#: inc/toolbox.class.php:2373
 msgid ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
@@ -17957,7 +17953,7 @@ msgstr ""
 "HTTP_REFERER को पार्स करते समय त्रुटि। कार्रवाई करने से पहले पिछले पृष्ठ को "
 "दोबारा लोड करें।"
 
-#: inc/toolbox.class.php:2373
+#: inc/toolbox.class.php:2384
 msgid ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
@@ -17965,7 +17961,7 @@ msgstr ""
 "HTTP_REFERER में कोई भी या अमान्य होस्ट नहीं। कार्रवाई करने से पहले पिछले "
 "पृष्ठ को दोबारा लोड करें।"
 
-#: inc/toolbox.class.php:2383
+#: inc/toolbox.class.php:2394
 msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
@@ -17973,7 +17969,7 @@ msgstr ""
 "HTTP_REFERER में कोई नहीं या अमान्य पथ। कार्रवाई करने से पहले पिछले पृष्ठ को"
 " दोबारा लोड करें।"
 
-#: inc/toolbox.class.php:2390
+#: inc/toolbox.class.php:2401
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
@@ -17981,15 +17977,15 @@ msgstr ""
 "आपके द्वारा अनुरोधित कार्रवाई की अनुमति नहीं है। कार्रवाई करने से पहले पिछले"
 " पृष्ठ को दोबारा लोड करें।"
 
-#: inc/toolbox.class.php:2789
+#: inc/toolbox.class.php:2800
 msgid "YYYY-MM-DD"
 msgstr "YYYY-MM-DD"
 
-#: inc/toolbox.class.php:2790
+#: inc/toolbox.class.php:2801
 msgid "DD-MM-YYYY"
 msgstr "DD-MM-YYYY"
 
-#: inc/toolbox.class.php:2791
+#: inc/toolbox.class.php:2802
 msgid "MM-DD-YYYY"
 msgstr "MM-DD-YYYY"
 
@@ -18385,7 +18381,7 @@ msgstr ""
 #: install/install.php:129 install/install.php:173 install/install.php:184
 #: install/install.php:226 install/install.php:300 install/install.php:321
 #: install/install.php:359 install/install.php:459 install/install.php:519
-#: install/update.php:543
+#: install/update.php:545
 msgid "Continue"
 msgstr "जारी रहना"
 
@@ -18438,7 +18434,7 @@ msgstr "सर्वर ने उत्तर दिया:%s"
 msgid "The server or/and user field is empty"
 msgstr "सर्वर या / और उपयोगकर्ता फ़ील्ड रिक्त है"
 
-#: install/install.php:267 install/update.php:551
+#: install/install.php:267 install/update.php:553
 msgid "Database connection successful"
 msgstr "डेटाबेस कनेक्शन सफल"
 
@@ -18516,7 +18512,7 @@ msgstr ""
 "आप इन खातों को हटा सकते हैं या संशोधित कर सकते हैं साथ ही प्रारंभिक डेटा भी।"
 
 #: install/install.php:498 install/update_content.php:368
-#: install/update.php:595
+#: install/update.php:597
 msgid "Use GLPI"
 msgstr "जीएलपीआई का उपयोग करें"
 
@@ -18635,31 +18631,27 @@ msgstr "%sDate_mod को जोड़ें"
 msgid "Add date_creation to %s"
 msgstr "%sदिनांक_क्रिएशन जोड़ें"
 
-#: install/update.php:130
+#: install/update.php:131
 msgid "Update successful, your database is up to date"
 msgstr "अपडेट सफल, आपका डेटाबेस अद्यतित है"
 
-#: install/update.php:131
+#: install/update.php:132
 msgid "You must now proceed to updating your database content"
 msgstr "अब आपको अपने डेटाबेस को अपडेट करने के लिए आगे बढ़ना होगा"
 
-#: install/update.php:133
-msgid "Continue?"
-msgstr "जारी रहना?"
-
-#: install/update.php:346
+#: install/update.php:348
 msgid "Locations update"
 msgstr "स्थान अद्यतन"
 
-#: install/update.php:347
+#: install/update.php:349
 msgid "The new structure is hierarchical"
 msgstr "नई संरचना पदानुक्रमित है"
 
-#: install/update.php:348
+#: install/update.php:350
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
 msgstr "नई पदानुक्रम पीढ़ी को स्वचालित बनाने के लिए एक सीमांकक प्रदान करें।"
 
-#: install/update.php:349
+#: install/update.php:351
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
@@ -18667,40 +18659,40 @@ msgstr ""
 "आप एक रूट स्थान भी निर्दिष्ट कर सकते हैं जिसमें सभी जनरेटेड स्थान शामिल "
 "होंगे।"
 
-#: install/update.php:352
+#: install/update.php:354
 msgid "Delimiter"
 msgstr "सीमान्तक"
 
-#: install/update.php:354
+#: install/update.php:356
 msgid "Root location"
 msgstr "मूल स्थान"
 
-#: install/update.php:364
+#: install/update.php:366
 msgid "Actual locations"
 msgstr "वास्तविक स्थान"
 
-#: install/update.php:366
+#: install/update.php:368
 msgid "New hierarchy"
 msgstr "नई पदानुक्रम"
 
-#: install/update.php:368
+#: install/update.php:370
 msgid "This is the new hierarchy. If it's complete approve it."
 msgstr "यह नई पदानुक्रम है अगर यह पूरा हो गया है तो उसे स्वीकृति मिल जाएगी।"
 
-#: install/update.php:530
+#: install/update.php:532
 msgid "Impossible to accomplish an update by this way!"
 msgstr "इस तरह से एक अद्यतन को पूरा करने के लिए असंभव!"
 
-#: install/update.php:532
+#: install/update.php:534
 msgid "Go back to GLPI"
 msgstr "जीएलपीआई पर वापस जाएं"
 
-#: install/update.php:537
+#: install/update.php:539
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
 msgstr "सावधान! आप जीएलपीआई नामक डेटाबेस को अपडेट करेंगे:%s"
 
-#: install/update.php:604
+#: install/update.php:606
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
