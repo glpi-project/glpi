@@ -1692,12 +1692,16 @@ class Dropdown {
    /**
     * Private / Public switch for items which may be assign to a user and/or an entity
     *
+    * @deprecated 9.3
+    *
     * @param $is_private      default is private ?
     * @param $entity          working entity ID
     * @param $is_recursive    is the item recursive ?
    **/
    static function showPrivatePublicSwitch($is_private, $entity, $is_recursive) {
       global $CFG_GLPI;
+
+      Toolbox::deprecated();
 
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
