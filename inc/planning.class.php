@@ -1991,49 +1991,47 @@ class Planning extends CommonGLPI {
          $params['start'] = date("Y-m-d H:i:s", strtotime($params['start']));
          $params['end']   = date("Y-m-d H:i:s", strtotime($params['end']));
 
-        if (
-          $item->getFromDB($params['items_id'])
+         if ($item->getFromDB($params['items_id'])
           && empty($item->fields['is_deleted'])
-        ) {
-          // item exists and is not in bin
+         ) {
+            // item exists and is not in bin
 
-          $abort = false;
+            $abort = false;
 
-          if (!empty($item->fields['tickets_id'])) {
-            // todo: to same checks for changes, problems, projects and maybe reminders and others depending on incoming itemtypes
-            $ticket = new Ticket();
+            if (!empty($item->fields['tickets_id'])) {
+               // todo: to same checks for changes, problems, projects and maybe reminders and others depending on incoming itemtypes
+               $ticket = new Ticket();
 
-            if (
-              !$ticket->getFromDB($item->fields['tickets_id'])
-              || $ticket->fields['is_deleted']
-              || $ticket->fields['status'] == CommonITILObject::CLOSED
-            ) {
-              $abort = true;
+               if (!$ticket->getFromDB($item->fields['tickets_id'])
+               || $ticket->fields['is_deleted']
+               || $ticket->fields['status'] == CommonITILObject::CLOSED
+               ) {
+                  $abort = true;
+               }
             }
-          }
 
-          if (!$abort) {
-            $update = ['id'   => $params['items_id'],
+            if (!$abort) {
+               $update = ['id'   => $params['items_id'],
                            'plan' => ['begin' => $params['start'],
                                            'end'   => $params['end']]];
 
-            if (isset($item->fields['users_id_tech'])) {
-              $update['users_id_tech'] = $item->fields['users_id_tech'];
+               if (isset($item->fields['users_id_tech'])) {
+                  $update['users_id_tech'] = $item->fields['users_id_tech'];
+               }
+
+               if (is_subclass_of($item, "CommonITILTask")) {
+                  $parentitemtype = $item->getItilObjectItemType();
+                  if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
+                     return;
+                  }
+
+                  $fkfield = $update["_job"]->getForeignKeyField();
+                  $update[$fkfield] = $item->fields[$fkfield];
+               }
+
+               return $item->update($update);
             }
-
-            if (is_subclass_of($item, "CommonITILTask")) {
-              $parentitemtype = $item->getItilObjectItemType();
-              if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
-                 return;
-              }
-
-              $fkfield = $update["_job"]->getForeignKeyField();
-              $update[$fkfield] = $item->fields[$fkfield];
-            }
-
-            return $item->update($update);
-          }
-        }
+         }
       }
    }
 
