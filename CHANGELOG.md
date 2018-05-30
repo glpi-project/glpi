@@ -35,6 +35,7 @@ The following methods have been deprecated:
 - `NotificationTargetProject::getTeamGroups()`
 - `NotificationTargetProject::getTeamSuppliers()`
 - `NotificationTargetProject::getTeamUsers()`
+- `Dropdown::showPrivatePublicSwitch()`
 
 #### Removed
 
