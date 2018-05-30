@@ -338,16 +338,17 @@ class Event extends CommonDBTM {
       }
 
       // Query Database
-      $query_limit = "SELECT *
-                      FROM `glpi_events`
-                      ORDER BY `$sort` $order
-                      LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_events',
+         'ORDER'  => "$sort $order",
+         'START'  => (int)$start,
+         'LIMIT'  => (int)$_SESSION['glpilist_limit']
+      ]);
 
       // Number of results
       $numrows = countElementsInTable("glpi_events");
       // Get results
-      $result = $DB->query($query_limit);
-      $number = $DB->numrows($result);
+      $number = count($iterator);
 
       // No Events in database
       if ($number < 1) {
@@ -375,14 +376,14 @@ class Event extends CommonDBTM {
       }
       echo "</tr>";
 
-      while ($i < $number) {
-         $ID       = $DB->result($result, $i, "id");
-         $items_id = $DB->result($result, $i, "items_id");
-         $type     = $DB->result($result, $i, "type");
-         $date     = $DB->result($result, $i, "date");
-         $service  = $DB->result($result, $i, "service");
-         $level    = $DB->result($result, $i, "level");
-         $message  = $DB->result($result, $i, "message");
+      while ($row = $iterator->next()) {
+         $ID       = $row["id"];
+         $items_id = $row["items_id"];
+         $type     = $row["type"];
+         $date     = $row["date"];
+         $service  = $row["service"];
+         $level    = $row["level"];
+         $message  = $row["message"];
 
          $itemtype = "&nbsp;";
          if (isset($logItemtype[$type])) {
