@@ -4669,6 +4669,7 @@ class Search {
 
             case 'glpi_items_tickets.items_id' :
             case 'glpi_items_problems.items_id' :
+            case 'glpi_certificates_items.items_id' :
                if (!empty($data[$num])) {
                   $items = [];
                   foreach ($data[$num] as $key => $val) {
