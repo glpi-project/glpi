@@ -1975,9 +1975,6 @@ class Config extends CommonDBTM {
       $deps = [[ 'name'    => 'htmLawed',
                  'version' => hl_version() ,
                  'check'   => 'hl_version' ],
-               [ 'name'    => 'phpCas',
-                 'version' => phpCAS::getVersion() ,
-                 'check'   => 'phpCAS' ],
                [ 'name'    => 'PHPMailer',
                  'version' => $pm::VERSION,
                  'check'   => 'PHPMailer' ],
@@ -1996,6 +1993,14 @@ class Config extends CommonDBTM {
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
       ];
+
+      if (Toolbox::canUseCAS()) {
+         $deps[] = [
+            'name'    => 'phpCas',
+            'version' => phpCAS::getVersion() ,
+            'check'   => 'phpCAS'
+         ];
+      }
 
       foreach ($deps as $dep) {
          $path = self::getLibraryDir($dep['check']);
