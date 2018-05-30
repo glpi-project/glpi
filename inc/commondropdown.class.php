@@ -197,7 +197,7 @@ abstract class CommonDropdown extends CommonDBTM {
       global $DB;
 
       // if item based on location, create item in the same entity as location
-      if (isset($input['locations_id'])) {
+      if (isset($input['locations_id']) && !isset($input['_is_update'])) {
          $iterator = $DB->request([
             'SELECT' => ['entities_id'],
             'FROM'   => 'glpi_locations',
@@ -214,6 +214,9 @@ abstract class CommonDropdown extends CommonDBTM {
          // leading/ending space will break findID/import
          $input['name'] = trim($input['name']);
       }
+      if (isset($input['_is_update'])) {
+         unset($input['_is_update']);
+      }
       return $input;
    }
 
@@ -224,6 +227,8 @@ abstract class CommonDropdown extends CommonDBTM {
     * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
+      //add a "metadata to find if we're on an update or a add
+      $input['_is_update'] = true;
       return self::prepareInputForAdd($input);
    }
 
