@@ -37,6 +37,7 @@ use \CommonDBTM;
 use \Html;
 use \Session;
 use \Toolbox;
+use \Infocom;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
