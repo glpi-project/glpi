@@ -104,6 +104,23 @@ abstract class CommonDropdown extends DbTestCase {
          ->isIdenticalTo($input + ['entities_id' => $loc->fields['entities_id']]);
    }
 
+   public function testPrepareInputForUpdate() {
+      $this->newTestedInstance;
+
+      $input = [];
+      $this->array($this->testedInstance->prepareInputForUpdate($input))->isIdenticalTo($input);
+
+      $input = ['name' => 'Any name', 'comment' => 'Any comment'];
+      $this->array($this->testedInstance->prepareInputForUpdate($input))->isIdenticalTo($input);
+
+      $loc = getItemByTypeName('Location', '_location01');
+      $input['locations_id'] = $loc->getID();
+      //to make sure existing entities_id will not be changed on update
+      $input['entities_id'] = $loc->fields['entities_id'] + 1;
+      $this->array($this->testedInstance->prepareInputForUpdate($input))
+         ->isIdenticalTo($input + ['entities_id' => $input['entities_id']]);
+   }
+
    /**
     * Create new object in database
     *
