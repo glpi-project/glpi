@@ -172,6 +172,7 @@ class Certificate extends CommonDBTM {
          'nosearch'           => true,
          'massiveaction'      => false,
          'forcegroupby'       => true,
+         'additionalfields'   => ['itemtype'],
          'joinparams'         => ['jointype' => 'child']
       ];
 
