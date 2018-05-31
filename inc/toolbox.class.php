@@ -1804,6 +1804,22 @@ class Toolbox {
                         break;
 
                      default :
+                        // redirect to item
+                        if (!empty($data[0] )
+                            && isset($data[1])
+                            && is_numeric($data[1])
+                            && ($data[1] > 0)) {
+                           // Check entity
+                           if ($item = getItemForItemtype($data[0])) {
+                              Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
+                           }
+                        } else if (!empty($data[0])
+                                   && is_numeric($data[1])) { // redirect to list
+                           if ($item = getItemForItemtype($data[0])) {
+                              Html::redirect($item->getSearchURL()."?$forcetab");
+                           }
+                        }
+
                         Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                         break;
                   }
