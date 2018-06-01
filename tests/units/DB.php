@@ -49,6 +49,7 @@ class DB extends \GLPITestCase {
          ->if($this->newTestedInstance)
          ->then
             ->boolean($this->testedInstance->fieldExists('glpi_configs', 'id'))->isTrue()
+            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'ID'))->isFalse()
             ->boolean($this->testedInstance->fieldExists('glpi_configs', 'fakeField'))->isFalse()
             ->when(
                function () {

@@ -232,4 +232,208 @@ class Migration extends \GLPITestCase {
          0 => 'RENAME TABLE `glpi_existingtest` TO `backup_glpi_existingtest`',
       ]);
    }
+
+   public function testChangeField() {
+      global $DB;
+      $DB = $this->db;
+      $this->calling($this->db)->fieldExists = true;
+
+      $this->output(
+         function () {
+            $this->migration->changeField('change_table', 'ID', 'id', 'integer');
+            $this->migration->executeMigration();
+         }
+      )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
+
+      $this->array($this->queries)->isIdenticalTo([
+         "ALTER TABLE `change_table` DROP `id`  ,\n" .
+         "CHANGE `ID` `id` INT(11) NOT NULL DEFAULT '0'  ",
+      ]);
+   }
+
+   protected function fieldsFormatsProvider() {
+      return [
+         [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'bool',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT(1) NOT NULL DEFAULT '0'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'bool',
+            'options'   => ['value' => 1],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT(1) NOT NULL DEFAULT '1'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'char',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) DEFAULT NULL   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'char',
+            'options'   => ['value' => 'a'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) NOT NULL DEFAULT 'a'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'string',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'string',
+            'options'   => ['value' => 'a string'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'a string'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'integer',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'integer',
+            'options'   => ['value' => 2],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '2'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'date',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT NULL   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'date',
+            'options'   => ['value' => '2018-06-04'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT '2018-06-04'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'datetime',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATETIME DEFAULT NULL   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'datetime',
+            'options'   => ['value' => '2018-06-04 08:16:38'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATETIME DEFAULT '2018-06-04 08:16:38'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'text',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci DEFAULT NULL   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'text',
+            'options'   => ['value' => 'A text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` TEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A text'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'longtext',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'longtext',
+            'options'   => ['value' => 'A long text'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` LONGTEXT COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A long text'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'autoincrement',
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL AUTO_INCREMENT   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => "INT(3) NOT NULL DEFAULT '42'",
+            'options'   => [],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(3) NOT NULL DEFAULT '42'   "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'integer',
+            'options'   => ['comment' => 'a comment'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'  COMMENT 'a comment'  "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'integer',
+            'options'   => ['after' => 'other_field'],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'   AFTER `other_field` "
+         ], [
+            'table'     => 'my_table',
+            'field'     => 'my_field',
+            'format'    => 'integer',
+            'options'   => ['first' => true],
+            'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT(11) NOT NULL DEFAULT '0'   FIRST  "
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider fieldsFormatsProvider
+    */
+   public function testAddField($table, $field, $format, $options, $sql) {
+      global $DB;
+      $DB = $this->db;
+      $this->calling($this->db)->fieldExists = false;
+      $this->queries = [];
+
+      $this->output(
+         function () use ($table, $field, $format, $options) {
+            $this->migration->addField($table, $field, $format, $options);
+            $this->migration->executeMigration();
+         }
+      )->isIdenticalTo("Change of the database layout - my_tableTask completed.");
+
+      $this->array($this->queries)->isIdenticalTo([$sql]);
+   }
+
+   public function testFormatBooleanBadDefault() {
+      global $DB;
+      $DB = $this->db;
+      $this->calling($this->db)->fieldExists = false;
+      $this->queries = [];
+
+      $this->when(
+         function () {
+            $this->migration->addField('my_table', 'my_field', 'bool', ['value' => 2]);
+            $this->migration->executeMigration();
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage('default_value must be 0 or 1')
+         ->exists();
+   }
+
+   public function testFormatIntegerBadDefault() {
+      global $DB;
+      $DB = $this->db;
+      $this->calling($this->db)->fieldExists = false;
+      $this->queries = [];
+
+      $this->when(
+         function () {
+            $this->migration->addField('my_table', 'my_field', 'integer', ['value' => 'foo']);
+            $this->migration->executeMigration();
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage('default_value must be numeric')
+         ->exists();
+   }
+
 }
