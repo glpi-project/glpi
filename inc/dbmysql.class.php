@@ -957,6 +957,25 @@ class DBmysql {
    }
 
    /**
+    * Update a row in the database or insert a new one
+    *
+    * @since 9.4
+    *
+    * @param string $table   Table name
+    * @param array  $params  Query parameters ([:field name => field value)
+    * @param array  $where   WHERE clause
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function updateOrInsert($table, $params, $where) {
+      $req = $this->request($table, $where);
+      if ($req->count() == 0) {
+         return $this->insertOrDie($table, $params, 'Unable to create new element or update existing one');
+      }
+      return $this->updateOrDie($table, $params, $where, 'Unable to create new element or update existing one');
+   }
+
+   /**
     * Builds a delete statement
     *
     * @since 9.3

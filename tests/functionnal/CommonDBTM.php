@@ -255,4 +255,45 @@ class CommonDBTM extends DbTestCase {
          ->isEqualTo(\CommonDBTM::getTableField('*', \Config::class))
          ->isEqualTo('glpi_configs.*');
    }
+
+   public function testupdateOrInsert() {
+      global $DB;
+
+      //insert case
+      $res = (int)$DB->updateOrInsert(
+         \Computer::getTable(), [
+            'name'   => 'serial-to-change',
+            'serial' => 'serial-one'
+         ], [
+            'name'   => 'serial-to-change'
+         ]
+      );
+      $this->integer($res)->isGreaterThan(0);
+
+      $check = $DB->request([
+         'FROM'   => \Computer::getTable(),
+         'WHERE'  => ['name' => 'serial-to-change']
+      ])->next();
+      $this->array($check)
+         ->string['serial']->isIdenticalTo('serial-one');
+
+      //update case
+      $res = $DB->updateOrInsert(
+         \Computer::getTable(), [
+            'name'   => 'serial-to-change',
+            'serial' => 'serial-changed'
+         ], [
+            'name'   => 'serial-to-change'
+         ]
+      );
+      $this->boolean($res)->isTrue();
+
+      $check = $DB->request([
+         'FROM'   => \Computer::getTable(),
+         'WHERE'  => ['name' => 'serial-to-change']
+      ])->next();
+      $this->array($check)
+         ->string['serial']->isIdenticalTo('serial-changed');
+   }
+
 }
