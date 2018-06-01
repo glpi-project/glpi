@@ -39,7 +39,7 @@ msgstr "Password"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "Lingua (da profilo utente)"
 
 #: index.php:153
 msgid "Remember me"
@@ -6487,7 +6487,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s elementi"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
@@ -7081,11 +7081,11 @@ msgstr "Attività privata"
 
 #: inc/commonitiltask.class.php:738
 msgid "Technician in charge"
-msgstr ""
+msgstr "Tecnico incaricato"
 
 #: inc/commonitiltask.class.php:758
 msgid "Group in charge"
-msgstr ""
+msgstr "Gruppo incaricato"
 
 #: inc/commonitiltask.class.php:845 inc/commonitiltask.class.php:1399
 #: inc/dropdown.class.php:788 inc/tasktemplate.class.php:52
@@ -7652,7 +7652,7 @@ msgstr[1] "Sistemi di virtualizzazione"
 
 #: inc/computer.class.php:1202
 msgid "processor number"
-msgstr ""
+msgstr "Numero del processore"
 
 #: inc/computer_item.class.php:282 inc/computer_item.class.php:307
 #: inc/computer_item.class.php:427 inc/computer_item.class.php:572
@@ -7821,7 +7821,7 @@ msgstr "Indirizzo URL dell'applicazione"
 
 #: inc/config.class.php:295
 msgid "Text in the login box (HTML tags supported)"
-msgstr ""
+msgstr "Testo sulla pagina di accesso (supporta tag HTML)"
 
 #: inc/config.class.php:301
 msgid "Allow FAQ anonymous access"
@@ -8581,7 +8581,7 @@ msgstr "Preferenze"
 
 #: inc/config.class.php:2144
 msgid "Logs purge"
-msgstr ""
+msgstr "Elimina i log"
 
 #: inc/config.class.php:2145 inc/event.class.php:145
 msgid "System"
@@ -8730,19 +8730,19 @@ msgstr "Per favore spunta la casella di controllo \"versione di sviluppo\"."
 
 #: inc/config.class.php:2968
 msgid "Logs purge configuration"
-msgstr ""
+msgstr "Configurazione per l'eliminazione dei log"
 
 #: inc/config.class.php:2970
 msgid "Change all"
-msgstr ""
+msgstr "Modifica tutto"
 
 #: inc/config.class.php:2986
 msgid "Add/update relation between items"
-msgstr ""
+msgstr "Aggiungi/Modifica la relazione tra gli elementi"
 
 #: inc/config.class.php:2990
 msgid "Delete relation between items"
-msgstr ""
+msgstr "Elimina la relazione tra gli elementi"
 
 #: inc/config.class.php:2995 inc/log.class.php:1046
 #: inc/notificationtargetfieldunicity.class.php:49
@@ -8767,31 +8767,31 @@ msgstr "Plugin"
 
 #: inc/config.class.php:3029
 msgid "Installation/uninstallation of software on computers"
-msgstr ""
+msgstr "Installazione/disinstallazione di sofware su computer"
 
 #: inc/config.class.php:3033
 msgid "Installation/uninstallation versions on softwares"
-msgstr ""
+msgstr "Installazione/disinstallazione di versioni di sofware"
 
 #: inc/config.class.php:3040
 msgid "Add/Remove computers from software versions"
-msgstr ""
+msgstr "Aggiungi/Rimuovi computer dalle versioni di software"
 
 #: inc/config.class.php:3049
 msgid "Add financial information to an item"
-msgstr ""
+msgstr "Aggiungi informazioni finanziarie all'elemento"
 
 #: inc/config.class.php:3057
 msgid "Add/remove profiles to users"
-msgstr ""
+msgstr "Aggiungi/rimuovi profili all'utente"
 
 #: inc/config.class.php:3060
 msgid "Add/remove groups to users"
-msgstr ""
+msgstr "Aggiungi/rimuovi gruppi all'utente"
 
 #: inc/config.class.php:3066
 msgid "User authentication method changes"
-msgstr ""
+msgstr "Modifiche al metodo di autenticazione dell'utente"
 
 #: inc/config.class.php:3069 inc/user.class.php:3020
 msgid "Deleted user in LDAP directory"
@@ -8799,46 +8799,46 @@ msgstr "Utente eliminato dalla directory LDAP"
 
 #: inc/config.class.php:3077
 msgid "Add component"
-msgstr ""
+msgstr "Aggiungi componente: %s"
 
 #: inc/config.class.php:3080
 msgid "Update component"
-msgstr ""
+msgstr "Aggiorna camponente"
 
 #: inc/config.class.php:3085
 msgid "Disconnect a component"
-msgstr ""
+msgstr "Disconnetti un componente"
 
 #: inc/config.class.php:3089
 msgid "Connect a component"
-msgstr ""
+msgstr "Collega un componente"
 
 #: inc/config.class.php:3094
 msgid "Delete component"
-msgstr ""
+msgstr "Elimina il componente"
 
 #: inc/config.class.php:3100
 msgid "All sections"
-msgstr ""
+msgstr "Tutte le sezioni"
 
 #: inc/config.class.php:3102
 msgid "Purge all log entries"
-msgstr ""
+msgstr "Elimina definitivamente tutti i log"
 
 #: inc/config.class.php:3129
 msgid "Delete all"
-msgstr ""
+msgstr "Cancella tutto"
 
 #: inc/config.class.php:3130
 msgid "Keep all"
-msgstr ""
+msgstr "Mantieni tutto"
 
 #: inc/config.class.php:3134
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Cancella se più vecchio di %s mese"
+msgstr[1] "Cancella se più vecchio di %s mesi"
 
 #: inc/config.php:197 inc/config.php:205
 msgid "Service is down for maintenance. It will be back shortly."
@@ -10463,8 +10463,8 @@ msgstr[1] "Tipi di dispositivi"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo di telefono"
+msgstr[1] "Tipi di telefono"
 
 #: inc/dropdown.class.php:823 inc/softwarelicensetype.class.php:43
 msgid "License type"
@@ -13073,7 +13073,7 @@ msgstr "Aggiorna"
 
 #: inc/log.class.php:350
 msgid "Show filters"
-msgstr ""
+msgstr "Mostra i filtri"
 
 #: inc/log.class.php:374
 msgid "No historical matching your filters"
@@ -13097,7 +13097,7 @@ msgstr "Modifica %1$s con %2$s"
 
 #: inc/log.class.php:1007
 msgid "Update a field"
-msgstr ""
+msgstr "modifica del campo"
 
 #: inc/log.class.php:1054
 msgid "Lock the item"
@@ -13109,35 +13109,35 @@ msgstr "Sblocca elemento"
 
 #: inc/log.class.php:1066
 msgid "Add a component"
-msgstr ""
+msgstr "Aggiungi componente: %s"
 
 #: inc/log.class.php:1070
 msgid "Change a component"
-msgstr ""
+msgstr "Modifica un componente "
 
 #: inc/log.class.php:1074
 msgid "Delete a component"
-msgstr ""
+msgstr "Elimina un componente"
 
 #: inc/log.class.php:1078
 msgid "Lock a component"
-msgstr ""
+msgstr "Blocca un componente"
 
 #: inc/log.class.php:1082
 msgid "Unlock a component"
-msgstr ""
+msgstr "Sblocca un componente"
 
 #: inc/log.class.php:1086
 msgid "Install a software"
-msgstr ""
+msgstr "Installa un software"
 
 #: inc/log.class.php:1090
 msgid "Uninstall a software"
-msgstr ""
+msgstr "Disinstalla un software"
 
 #: inc/log.class.php:1094
 msgid "Disconnect an item"
-msgstr ""
+msgstr "Disconnetti un elemento"
 
 #: inc/log.class.php:1102
 msgid "Add a link with an item"
@@ -16248,7 +16248,7 @@ msgstr "Aggiungi una Attività (di progetto)"
 
 #: inc/purgelogs.class.php:61
 msgid "Purge history"
-msgstr ""
+msgstr "Elimina lo storico"
 
 #: inc/queuednotification.class.php:80
 msgctxt "button"
@@ -16353,7 +16353,7 @@ msgstr "Altezza"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
-msgstr ""
+msgstr "Potenza misurata (in Watt)"
 
 #: inc/rack.class.php:312
 msgid "Max. weight"
@@ -18589,7 +18589,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:1061
 msgid "Testing DB engine version"
-msgstr ""
+msgstr "Prova del motore del DB"
 
 #: inc/toolbox.class.php:1070
 msgid "Allocated memory test"

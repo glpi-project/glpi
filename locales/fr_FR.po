@@ -1033,7 +1033,7 @@ msgstr "Durée de l’enquête "
 
 #: ajax/ticketsatisfaction.php:89
 msgid "Unspecified"
-msgstr "Non spécifié"
+msgstr "Illimitée"
 
 #: ajax/ticketsatisfaction.php:94
 msgid "For tickets closed after"
@@ -2132,7 +2132,7 @@ msgstr "%s ajoute un membre à un groupe"
 #: inc/html.class.php:6142 inc/knowbaseitem.class.php:84
 #: inc/profile.class.php:740
 msgid "FAQ"
-msgstr "Foire Aux Questions"
+msgstr "Foire aux questions"
 
 #: front/helpdesk.faq.php:53 front/knowbaseitem.form.php:166
 #: front/knowbaseitemtranslation.form.php:82 inc/auth.class.php:102
@@ -2370,7 +2370,7 @@ msgstr "Import en masse d'utilisateurs depuis un annuaire LDAP"
 
 #: front/ldap.php:48 inc/authldap.class.php:3035
 msgid "Synchronizing already imported users"
-msgstr "Synchronisation des utilisateurs déjà importés"
+msgstr "Synchronisation des utilisateurs déjà importés"
 
 #: front/ldap.php:52 inc/authldap.class.php:3036
 msgid "Import new users"
@@ -2564,7 +2564,7 @@ msgstr "%s ajoute un utilisateur à une entité"
 #: front/projecttaskteam.form.php:51 front/projectteam.form.php:51
 #, php-format
 msgid "%s adds a team member"
-msgstr "%s ajoute un membre d'équipe"
+msgstr "%s ajoute un membre à l'équipe projet"
 
 #: front/report.contract.list.php:45
 msgid "List of the hardware under contract"
@@ -3539,7 +3539,7 @@ msgstr "Voir les graphiques"
 #: front/stat.location.php:176 front/stat.tracking.php:184
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr "Ouvert %1$s (%2$s)"
+msgstr "Ouverts %1$s (%2$s)"
 
 #: front/stat.location.php:202 front/stat.tracking.php:210
 #, php-format
@@ -3549,7 +3549,7 @@ msgstr "Résolus %1$s (%2$s)"
 #: front/stat.location.php:227
 #, php-format
 msgid "Late solved %1$s (%2$s)"
-msgstr "Résolus tardivement%1$s (%2$s)"
+msgstr "En retard %1$s (%2$s)"
 
 #: front/stat.location.php:252 front/stat.tracking.php:263
 #, php-format
@@ -3655,7 +3655,7 @@ msgstr "Caractéristiques"
 #: inc/group.class.php:271 inc/group.class.php:473 inc/log.class.php:573
 #: inc/notificationtargetcommonitilobject.class.php:1305
 msgid "Assigned to"
-msgstr "Assigné à"
+msgstr "Attribué à"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
@@ -3773,7 +3773,7 @@ msgstr "ou"
 
 #: inc/ajax.class.php:427
 msgid "try to reload"
-msgstr "essayer de recharger"
+msgstr "essayez de recharger"
 
 #: inc/alert.class.php:104 inc/alert.class.php:137 inc/alert.class.php:165
 #: inc/contract.class.php:1579 inc/entity.class.php:674
@@ -4007,7 +4007,7 @@ msgstr "Actif"
 
 #: inc/apiclient.class.php:106 inc/apiclient.class.php:199
 msgid "Log connections"
-msgstr "Enregistrer dans les journaux les connexions"
+msgstr "Enregistrer les connexions"
 
 #: inc/apiclient.class.php:112 inc/apiclient.class.php:208
 msgid "Filter access"
@@ -4094,11 +4094,11 @@ msgstr[1] "Journaux"
 
 #: inc/apirest.class.php:55
 msgid "Rest API"
-msgstr "API Rest"
+msgstr "API REST"
 
 #: inc/apirest.class.php:214
 msgid "Only HTTP verb PUT is allowed"
-msgstr "Seul la méthode HTTP PUT est autorisée"
+msgstr "Seul le verbe HTTP PUT est autorisé"
 
 #: inc/apirest.class.php:336
 msgid "resource not found or not an instance of CommonDBTM"
@@ -4472,11 +4472,11 @@ msgstr "BaseDN"
 
 #: inc/authldap.class.php:367
 msgid "RootDN (for non anonymous binds)"
-msgstr "RootDN (pour les connexions non anonymes)"
+msgstr "DN du compte (pour les connexions non anonymes)"
 
 #: inc/authldap.class.php:373
 msgid "Password (for non-anonymous binds)"
-msgstr "Mot de passe (pour les connexions non anonymes)"
+msgstr "Mot de passe du compte (pour les connexions non anonymes)"
 
 #: inc/authldap.class.php:377 inc/commondropdown.class.php:411
 #: inc/commondropdown.class.php:414 inc/config.class.php:583
@@ -4640,7 +4640,7 @@ msgstr ""
 
 #: inc/authldap.class.php:794
 msgid "Example for location: %{city} > %{roomnumber}"
-msgstr "Exemple pour le lieu : %{ville} > %{numeroDeChambre}"
+msgstr "Exemple pour le lieu : %{city} > %{roomnumber}"
 
 #: inc/authldap.class.php:818
 msgid "Import entities from LDAP directory"
@@ -4870,7 +4870,7 @@ msgstr[1] "Sources de mise à jour"
 #: inc/reminder.class.php:1149 inc/report.class.php:445
 #: inc/rssfeed.class.php:963 inc/stat.class.php:1308
 msgid "Read"
-msgstr "Lire"
+msgstr "Lecture"
 
 #: inc/backup.class.php:73 inc/commondbtm.class.php:4786
 #: inc/displaypreference.class.php:290
@@ -5080,14 +5080,14 @@ msgstr "Total restant sur le budget"
 msgid "Budget type"
 msgid_plural "Budget types"
 msgstr[0] "Type de budget"
-msgstr[1] "Types de budget"
+msgstr[1] "Types de budgets"
 
 #: inc/businesscriticity.class.php:45 inc/dropdown.class.php:936
 #: inc/infocom.class.php:1213 inc/infocom.class.php:1595
 msgid "Business criticity"
 msgid_plural "Business criticities"
 msgstr[0] "Criticité business"
-msgstr[1] "Criticité business"
+msgstr[1] "Criticité"
 
 #: inc/calendar.class.php:63 inc/dropdown.class.php:947
 #: inc/dropdown.class.php:948 inc/entity.class.php:945
@@ -5476,7 +5476,7 @@ msgstr[1] "Modèles d'imprimantes"
 
 #: inc/cartridgeitem.class.php:440 inc/cartridgeitem.class.php:585
 msgid "Send alarms on cartridges"
-msgstr "Envoi d'alertes pour les cartouches"
+msgstr "Envoi des alertes sur les cartouches"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -5580,7 +5580,7 @@ msgstr ""
 
 #: inc/central.class.php:189
 msgid "The following SQL tables are marked as crashed:"
-msgstr "Liste des tables SQL marquées comme corrompues :"
+msgstr "Les tables SQL suivantes sont marquées comme corrompues :"
 
 #: inc/central.class.php:197 inc/html.class.php:1535
 msgid "SQL replica: read only"
@@ -5758,7 +5758,7 @@ msgstr "Certificat %1$s expiré le %2$s"
 
 #: inc/certificate.class.php:752
 msgid "Send Certificates alert failed"
-msgstr "Envoi d'alerte sur les certificats échoué"
+msgstr "Envoi de l'alerte sur les certificats échoué"
 
 #: inc/certificate_item.class.php:243 inc/change_item.class.php:125
 #: inc/contract_item.class.php:651 inc/document_item.class.php:373
@@ -5883,7 +5883,7 @@ msgstr "Clos"
 #: inc/ticket.class.php:3493
 msgctxt "status"
 msgid "Not solved"
-msgstr "Non résolus"
+msgstr "Non résolu"
 
 #: inc/change.class.php:495 inc/problem.class.php:542
 #: inc/ticket.class.php:3494
@@ -5895,7 +5895,7 @@ msgstr "Non clos"
 #: inc/ticket.class.php:3496
 msgctxt "status"
 msgid "Solved + Closed"
-msgstr "Résolus + Clos"
+msgstr "Résolu + Clos"
 
 #. TRANS: %1$s is the itemtype, %2$d is the id of the item
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
@@ -6327,19 +6327,19 @@ msgstr "Valeur par défaut"
 
 #: inc/commondbtm.class.php:4670
 msgid "Choose a template"
-msgstr "Choisissez un modèle"
+msgstr "Choisissez un gabarit"
 
 #: inc/commondbtm.class.php:4672
 msgid "Blank Template"
-msgstr "Modèle vide"
+msgstr "Gabarit vide"
 
 #: inc/commondbtm.class.php:4679
 msgid "Templates"
-msgstr "Modèles"
+msgstr "Gabarits"
 
 #: inc/commondbtm.class.php:4730
 msgid "Add a template..."
-msgstr "Ajouter un modèle..."
+msgstr "Ajouter un gabarit..."
 
 #: inc/commondbtm.class.php:4788 inc/item_devices.class.php:795
 #: inc/profile.class.php:822 inc/ruleticket.class.php:81
@@ -6384,7 +6384,7 @@ msgstr "Vous pouvez définir un modèle de remplissage automatique"
 
 #: inc/commondbtm.class.php:5004
 msgid "Autofilled from template"
-msgstr "Créé depuis le modèle%s"
+msgstr "Créé depuis le gabarit %s"
 
 #: inc/commondbvisible.class.php:150
 msgid "Add a target"
@@ -6506,7 +6506,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s composants"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
@@ -6927,7 +6927,7 @@ msgstr "Délai de clôture"
 
 #: inc/commonitilobject.class.php:3033
 msgid "Waiting time"
-msgstr "Délai en attente"
+msgstr "Délai d'attente"
 
 #: inc/commonitilobject.class.php:3082 inc/commonitilobject.class.php:3469
 #: inc/notificationtargetcommonitilobject.class.php:550
@@ -7114,7 +7114,7 @@ msgstr "Groupe responsable"
 msgid "Task template"
 msgid_plural "Task templates"
 msgstr[0] "Gabarit de tâche"
-msgstr[1] "Modèles de tâche"
+msgstr[1] "Gabarits de tâche"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
 #: inc/commonitiltask.class.php:1094
@@ -7228,7 +7228,7 @@ msgstr ""
 
 #: inc/commonitilvalidation.class.php:311
 msgid "If approval is denied, specify a reason."
-msgstr "En cas de refus d'approbation, indiquez un motif."
+msgstr "En cas de refus d'approbation, vous devez indiquer un motif."
 
 #. TRANS: %s is the username
 #: inc/commonitilvalidation.class.php:396
@@ -7272,7 +7272,7 @@ msgstr "Accepté ou non soumis à validation"
 #: inc/notificationtargetchange.class.php:284
 #: inc/notificationtargetticket.class.php:779
 msgid "Global approval status"
-msgstr "Statut de la validation"
+msgstr "Statut global de la validation"
 
 #: inc/commonitilvalidation.class.php:749
 #: inc/commonitilvalidation.class.php:1086 inc/ruleticket.class.php:630
@@ -7533,7 +7533,7 @@ msgstr "Fréquence du processeur"
 msgid "Memory type"
 msgid_plural "Memory types"
 msgstr[0] "Type de mémoire"
-msgstr[1] "Types de mémoire"
+msgstr[1] "Types de mémoires"
 
 #: inc/computer.class.php:861 inc/computer.class.php:1215
 #: inc/computervirtualmachine.class.php:209
@@ -7885,7 +7885,7 @@ msgstr "Affichage dynamique"
 
 #: inc/config.class.php:358
 msgid "Page size for dropdown (paging using scroll)"
-msgstr "Taille de page pour cet intitulé (pagination utilisant le défilement)"
+msgstr "Taille par défaut pour les listes déroulantes"
 
 #: inc/config.class.php:365
 msgid "Autocompletion of text fields"
@@ -7936,7 +7936,7 @@ msgstr "Identifiant"
 
 #: inc/config.class.php:435
 msgid "Time to allow \"Remember Me\""
-msgstr "Temps de rétention \"souvenez-vous de moi\""
+msgstr "Temps de rétention \"se souvenir de moi\""
 
 #: inc/config.class.php:444
 msgid "Default state of checkbox"
@@ -8135,7 +8135,7 @@ msgstr ""
 
 #: inc/config.class.php:793
 msgid "Add API client"
-msgstr "Ajout d'un client API"
+msgstr "Ajouter un client de l'API"
 
 #: inc/config.class.php:825 inc/config.class.php:1208
 #: inc/config.class.php:2142 inc/dropdown.class.php:782
@@ -8430,7 +8430,7 @@ msgstr "Le mot de passe doit contenir au moins un symbole !"
 
 #: inc/config.class.php:1576
 msgid "PHP opcode cache"
-msgstr "Cache opcode de PHP"
+msgstr "Cache d’OPcode de PHP"
 
 #: inc/config.class.php:1579 inc/config.class.php:2456
 #, php-format
@@ -8759,11 +8759,11 @@ msgstr "Changer tous"
 
 #: inc/config.class.php:2986
 msgid "Add/update relation between items"
-msgstr ""
+msgstr "Ajout de relation entre objets"
 
 #: inc/config.class.php:2990
 msgid "Delete relation between items"
-msgstr ""
+msgstr "Suppression de relations entre objets"
 
 #: inc/config.class.php:2995 inc/log.class.php:1046
 #: inc/notificationtargetfieldunicity.class.php:49
@@ -8788,31 +8788,31 @@ msgstr "Plugins"
 
 #: inc/config.class.php:3029
 msgid "Installation/uninstallation of software on computers"
-msgstr ""
+msgstr "Installation / désinstallation des logiciels sur les ordinateurs"
 
 #: inc/config.class.php:3033
 msgid "Installation/uninstallation versions on softwares"
-msgstr ""
+msgstr "Installation / désinstallation des versions sur les logiciels"
 
 #: inc/config.class.php:3040
 msgid "Add/Remove computers from software versions"
-msgstr ""
+msgstr "Ajout / Suppression des versions logiciels sur les ordinateurs"
 
 #: inc/config.class.php:3049
 msgid "Add financial information to an item"
-msgstr ""
+msgstr "Ajout des informations financières à un objet"
 
 #: inc/config.class.php:3057
 msgid "Add/remove profiles to users"
-msgstr ""
+msgstr "Ajout / Suppression de profils aux utilisateurs"
 
 #: inc/config.class.php:3060
 msgid "Add/remove groups to users"
-msgstr ""
+msgstr "Ajout / Suppression de groupes aux utilisateurs"
 
 #: inc/config.class.php:3066
 msgid "User authentication method changes"
-msgstr ""
+msgstr "Changement de type d'authentification sur les utilisateurs"
 
 #: inc/config.class.php:3069 inc/user.class.php:3020
 msgid "Deleted user in LDAP directory"
@@ -8890,7 +8890,7 @@ msgid ""
 msgstr ""
 "Vous tentez d'utiliser GLPI avec des fichiers d'une version antérieure à la "
 "version de la base de données. Veuillez installer les fichiers GLPI dans la "
-"version correspondant à votre base de données.."
+"version correspondante à votre base de données."
 
 #: inc/config.php:279
 msgid ""
@@ -8978,7 +8978,7 @@ msgstr "Nombre de consommables neufs"
 
 #: inc/consumableitem.class.php:365 inc/consumableitem.class.php:468
 msgid "Send alarms on consumables"
-msgstr "Envoi d'alertes sur les consommables"
+msgstr "Envoi des alertes sur les consommables"
 
 #. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
 #. number
@@ -9255,11 +9255,11 @@ msgstr "Contrat(s) expiré(s) depuis moins de 30 jours"
 
 #: inc/contract.class.php:1116
 msgid "Contracts expiring in less than 7 days"
-msgstr "Contrat(s) expirant(s) dans moins de 7 jours"
+msgstr "Contrats expirants dans moins de 7 jours"
 
 #: inc/contract.class.php:1124
 msgid "Contracts expiring in less than 30 days"
-msgstr "Contrat(s) expirant(s) dans moins de 30 jours"
+msgstr "Contrats expirants dans moins de 30 jours"
 
 #: inc/contract.class.php:1135
 msgid "Contracts where notice begins in less than 7 days"
@@ -9397,7 +9397,7 @@ msgstr "Dernière exécution"
 #: inc/crontask.class.php:528 inc/crontask.class.php:595
 #: inc/search.class.php:2208 inc/search.class.php:2209
 msgid "Blank"
-msgstr "Ràz"
+msgstr "Remise à zéro"
 
 #: inc/crontask.class.php:696 inc/crontask.class.php:1190
 msgid "Running"
@@ -9940,7 +9940,7 @@ msgstr "Capacité par défaut"
 #: inc/deviceharddrive.class.php:55 inc/deviceharddrive.class.php:85
 #: inc/deviceharddrive.class.php:170
 msgid "Rpm"
-msgstr "TPM"
+msgstr "Vitesse de rotation"
 
 #: inc/deviceharddrive.class.php:58 inc/deviceharddrive.class.php:93
 #: inc/deviceharddrive.class.php:171
@@ -10453,7 +10453,7 @@ msgstr[1] "Types de tâche de projet"
 msgid "Project task template"
 msgid_plural "Project task templates"
 msgstr[0] "Gabarit de tâches de projets"
-msgstr[1] "Modèles de tâches de projets"
+msgstr[1] "Gabarits de tâches de projets"
 
 #: inc/dropdown.class.php:812 inc/networkequipmenttype.class.php:42
 #: inc/rule.class.php:396
@@ -11040,7 +11040,7 @@ msgstr "Envoi d'une alerte avant"
 msgid "Ticket template"
 msgid_plural "Ticket templates"
 msgstr[0] "Gabarit de tickets"
-msgstr[1] "Modèles de tickets"
+msgstr[1] "Gabarits de tickets"
 
 #: inc/entity.class.php:906 inc/entity.class.php:2213
 #: inc/notificationtargetticket.class.php:771
@@ -12827,7 +12827,7 @@ msgstr[1] "Auteurs"
 
 #: inc/knowbaseitem_revision.class.php:140
 msgid "cur"
-msgstr "act"
+msgstr "actuelle"
 
 #: inc/knowbaseitem_revision.class.php:178
 msgid "show"
@@ -14146,8 +14146,8 @@ msgstr "Adresse à utiliser comme expéditeur lors d'envoi de courriels."
 #: inc/notificationmailingsetting.class.php:88
 msgid "If not set, main or entity administrator email will be used."
 msgstr ""
-"Si il n'est pas défini, le courriel de l'administrateur global ou de "
-"l'entité sera utilisé."
+"S'il n'est pas défini, le courriel de l'administrateur global ou de l'entité"
+" sera utilisé."
 
 #: inc/notificationmailingsetting.class.php:95
 msgid "From name"
@@ -14264,11 +14264,11 @@ msgstr "Envoyer un courriel de test à l'administrateur"
 msgid "Template"
 msgid_plural "Templates"
 msgstr[0] "Gabarit"
-msgstr[1] "Modèles"
+msgstr[1] "Gabarits"
 
 #: inc/notification_notificationtemplate.class.php:108
 msgid "Add a template"
-msgstr "Ajouter un modèle"
+msgstr "Ajouter un gabarit"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
@@ -16563,7 +16563,7 @@ msgstr "Attention : il n'y a plus de valeur par défaut"
 
 #: inc/reservation.class.php:282
 msgid "The required item is already reserved for this timeframe"
-msgstr "Le matériel demandé est déjà réservé pour cette plage horaire."
+msgstr "Le matériel demandé est déjà réservé pour cette plage."
 
 #: inc/reservation.class.php:286
 msgid "Unknown error"
@@ -17369,7 +17369,7 @@ msgstr "Lieu de l'élément"
 
 #: inc/ruleticket.class.php:379
 msgid "Item group"
-msgstr "Groupe de l'objet"
+msgstr "Groupe de l'élément"
 
 #: inc/ruleticket.class.php:385
 msgid "Ticket location"
@@ -17847,7 +17847,7 @@ msgstr "Nombre d'enquêtes de satisfaction ouvertes"
 
 #: inc/stat.class.php:443
 msgid "Number of answered satisfaction survey"
-msgstr "Nombre de réponses à enquête de satisfaction"
+msgstr "Nombre de réponses aux enquête de satisfaction"
 
 #: inc/stat.class.php:445
 msgid "Average satisfaction"
@@ -17891,7 +17891,7 @@ msgstr "Par ticket"
 
 #: inc/stat.class.php:1216
 msgid "By hardware characteristics"
-msgstr "Par caractéristique du matériel"
+msgstr "Par caractéristiques matérielles"
 
 #: inc/stat.class.php:1226
 msgid "By problem"
@@ -17937,8 +17937,8 @@ msgstr "Ajouter un contact"
 #: inc/supplier.class.php:351
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] "Contacts associés"
-msgstr[1] "Contact associé"
+msgstr[0] "Contact associé"
+msgstr[1] "Contacts associés"
 
 #: inc/supplier.class.php:396
 msgid "Associated contract"
@@ -18027,7 +18027,7 @@ msgstr "Enquête de satisfaction expirée"
 
 #: inc/ticket.class.php:842
 msgid "No generated survey"
-msgstr "Aucune enquête générée"
+msgstr "Aucune enquête de satisfaction générée"
 
 #: inc/ticket.class.php:1300 inc/ticket.class.php:2069
 msgid "Unknown ticket"
@@ -18131,7 +18131,7 @@ msgstr "Problèmes"
 
 #: inc/ticket.class.php:3629
 msgid "Tickets awaiting approval"
-msgstr "Des tickets sont en attente de votre validation"
+msgstr "Tickets en attente de validation"
 
 #: inc/ticket.class.php:3723
 msgid "This ticket concerns me"
@@ -18469,7 +18469,7 @@ msgstr "Échec de la création du ticket (vérifiez les champs obligatoires)"
 
 #: inc/ticketrecurrent.class.php:505
 msgid "Ticket creation failed (no template)"
-msgstr "Échec de la création du ticket (aucun modèle)"
+msgstr "Échec de la création du ticket (aucun gabarit)"
 
 #: inc/ticketsatisfaction.class.php:119
 msgid "Satisfaction with the resolution of the ticket"
@@ -18606,7 +18606,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:1027
 msgid "Test session auto start"
-msgstr "Test sur le démarrage automatique des sessions"
+msgstr "Test du démarrage automatique des sessions"
 
 #: inc/toolbox.class.php:1030
 msgid ""
@@ -18632,7 +18632,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:1061
 msgid "Testing DB engine version"
-msgstr "Test de a version du moteur de base de données"
+msgstr "Test de la version du moteur de base de données"
 
 #: inc/toolbox.class.php:1070
 msgid "Allocated memory test"
@@ -19406,11 +19406,11 @@ msgstr "Assurances"
 
 #: install/update_051_06.php:164
 msgid "Hardware support"
-msgstr "Maintenance Hardware"
+msgstr "Maintenance matérielle"
 
 #: install/update_051_06.php:169
 msgid "Software support"
-msgstr "Maintenance Software"
+msgstr "Maintenance logicielle"
 
 #: install/update_051_06.php:174
 msgid "Service provided"
@@ -19560,5 +19560,5 @@ msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
 msgstr ""
-"La connexion à la base de données a échouée, vérifiez les paramètres de "
+"La connexion à la base de données a échoué, vérifiez les paramètres de "
 "connexion figurant dans le fichier config_db.php"

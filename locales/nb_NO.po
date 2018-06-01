@@ -539,7 +539,7 @@ msgstr "%1$s: %2$s"
 msgid "Email"
 msgid_plural "Emails"
 msgstr[0] "Mailadresse"
-msgstr[1] "Mailadresser"
+msgstr[1] "E-postadresser"
 
 #: ajax/dropdownMassiveActionAddActor.php:46
 #: ajax/dropdownMassiveActionAddValidator.php:54
@@ -2069,8 +2069,8 @@ msgstr[1] "Datamaskiner"
 #: front/find_num.php:98 inc/networkequipment.class.php:60
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nettverksenhet"
+msgstr[1] "Nettverksenheter"
 
 #: front/find_num.php:99 inc/cartridge.class.php:1119 inc/lock.class.php:511
 #: inc/printer.class.php:60 inc/profile.class.php:801
@@ -2094,8 +2094,8 @@ msgstr[1] "Skjermer"
 #: inc/transfer.class.php:3438
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Enheter"
+msgstr[1] "Enheter"
 
 #: front/find_num.php:153 inc/computer_softwareversion.class.php:700
 #: inc/config.class.php:3027 inc/dropdown.class.php:1011
@@ -3424,8 +3424,8 @@ msgstr "Tittel"
 #: inc/solutiontype.class.php:42
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] "Løsnings type"
-msgstr[1] "Løsnings typer"
+msgstr[0] "Form for løsning"
+msgstr[1] "Former for løsninger"
 
 #: front/stat.graph.php:223 front/stat.tracking.php:93
 #: inc/dropdown.class.php:792 inc/notificationtargetticket.class.php:729
@@ -3435,8 +3435,8 @@ msgstr[1] "Løsnings typer"
 #: inc/ticket.class.php:4835 inc/ticketfollowup.class.php:1170
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kilde for henvendelse"
+msgstr[1] "Kilder for henvendelser"
 
 #: front/stat.graph.php:287 front/stat.graph.php:288
 #: inc/commonglpi.class.php:833 inc/commonglpi.class.php:834
@@ -5811,8 +5811,8 @@ msgstr "Evaluering"
 #: inc/ticket.class.php:4877
 msgid "Approval"
 msgid_plural "Approvals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Godkjenning"
+msgstr[1] "Godkjenninger"
 
 #: inc/change.class.php:484 inc/problem.class.php:532
 msgctxt "status"
@@ -7499,8 +7499,8 @@ msgstr[1] ""
 #: inc/networkportmigration.class.php:459
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nettverksgrensesnitt"
+msgstr[1] "Nettverksgrensesnitt"
 
 #: inc/computer.class.php:892 inc/item_devicenetworkcard.class.php:57
 #: inc/item_devicenetworkcard.class.php:58 inc/networkport.class.php:927
@@ -10385,8 +10385,8 @@ msgstr[1] ""
 #: inc/dropdown.class.php:819 inc/peripheraltype.class.php:42
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Enhetstyper"
+msgstr[1] "Enhetstyper"
 
 #: inc/dropdown.class.php:821 inc/phonetype.class.php:42
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
@@ -10575,8 +10575,8 @@ msgstr "Internett"
 #: inc/dropdown.class.php:1001 inc/ipnetwork.class.php:55
 msgid "IP network"
 msgid_plural "IP networks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "IP-nettverk"
+msgstr[1] "IP-nettverk"
 
 #: inc/dropdown.class.php:1003 inc/fqdn.class.php:49
 #: inc/networkalias.class.php:307
@@ -10588,15 +10588,15 @@ msgstr[1] ""
 #: inc/dropdown.class.php:1005 inc/wifinetwork.class.php:49
 msgid "Wifi network"
 msgid_plural "Wifi networks"
-msgstr[0] "Wifi nettverk"
-msgstr[1] "Wifi nettverk"
+msgstr[0] "Trådløst nettverk"
+msgstr[1] "Trådløse nettverk"
 
 #: inc/dropdown.class.php:1007 inc/lock.class.php:514
 #: inc/networkname.class.php:67
 msgid "Network name"
 msgid_plural "Network names"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nettverksnavn"
+msgstr[1] "Nettverksnavn"
 
 #: inc/dropdown.class.php:1012 inc/softwarecategory.class.php:44
 msgid "Software category"
@@ -12969,8 +12969,8 @@ msgstr "Lås opp komponenter"
 #: inc/transfer.class.php:3348 install/update_0723_078.php:4797
 msgid "Network port"
 msgid_plural "Network ports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nettverksport"
+msgstr[1] "Nettverksporter"
 
 #: inc/lock.class.php:520
 msgid "Select the type of the item that must be unlock"
@@ -15844,7 +15844,7 @@ msgstr "Endringers livsløp"
 
 #: inc/profile.class.php:1339 inc/queuednotification.class.php:48
 msgid "Notification queue"
-msgstr "Varslings kø"
+msgstr "Varslingskø"
 
 #: inc/profile.class.php:1354 inc/profile.class.php:1992
 msgid "Rules for assigning a computer to an entity"
@@ -16196,7 +16196,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:471
 msgid "Send mails in queue"
-msgstr "Send post i kø"
+msgstr "Send e-post i kø"
 
 #: inc/queuednotification.class.php:472
 msgid "Maximum emails to send at once"
@@ -16204,7 +16204,7 @@ msgstr "Maksimalt antall e-post å sende på en gang"
 
 #: inc/queuednotification.class.php:475
 msgid "Clean notification queue"
-msgstr ""
+msgstr "Tøm varslingskø"
 
 #: inc/queuednotification.class.php:476
 msgid "Days to keep sent emails"
@@ -16314,8 +16314,8 @@ msgstr[1] "Påminnelser"
 #: inc/reminder.class.php:61 inc/reminder.class.php:1061
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Personlig påminnelse"
+msgstr[1] "Personlige påminnelser"
 
 #: inc/reminder.class.php:377
 msgid "Planning start date"
@@ -16623,8 +16623,8 @@ msgstr "Kopier fra element"
 #: inc/rule.class.php:247
 msgid "Dictionary"
 msgid_plural "Dictionaries"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ordliste"
+msgstr[1] "Ordlister"
 
 #: inc/rule.class.php:384
 msgid "Peripheral type"

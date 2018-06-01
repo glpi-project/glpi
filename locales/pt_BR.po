@@ -39,7 +39,7 @@ msgstr "Senha"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "Idioma (do perfil do usuário)"
 
 #: index.php:153
 msgid "Remember me"
@@ -6454,7 +6454,7 @@ msgstr "watts"
 
 #: inc/commondcmodeldropdown.class.php:106 inc/rack.class.php:305
 msgid "Max. power (in watts)"
-msgstr "Energia máxima (em watts)"
+msgstr "Potência máxima (em watts)"
 
 #: inc/commondcmodeldropdown.class.php:116
 msgid "Is half rack"
@@ -6487,7 +6487,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s itens"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
@@ -10859,8 +10859,8 @@ msgstr "Nenhuma tradução encontrada"
 #: inc/enclosure.class.php:48 inc/item_enclosure.class.php:269
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Chassi"
+msgstr[1] "Chassis"
 
 #: inc/enclosure.class.php:95
 msgid "Power supplies"
@@ -10869,8 +10869,8 @@ msgstr "Fontes de alimentação"
 #: inc/enclosuremodel.class.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de chassi"
+msgstr[1] "Modelos de chassi"
 
 #: inc/entity.class.php:245
 msgid "You can't add an entity without name"
@@ -15303,20 +15303,20 @@ msgstr[1] "Versões dos sistemas operacionais"
 #: inc/pdu.class.php:48 inc/pdu_rack.class.php:236
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "UDE (PDU)"
+msgstr[1] "UDEs (PDUs)"
 
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de UDE (PDU)"
+msgstr[1] "Modelos de UDE (PDU)"
 
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Conector de UDE (PDU)"
+msgstr[1] "Conectores de UDE (PDU)"
 
 #: inc/pdu_plug.class.php:131
 msgid "Add a new plug"
@@ -15391,8 +15391,8 @@ msgstr "Abaixo"
 #: inc/pdutype.class.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de UDE (PDU)"
+msgstr[1] "Tipos de UDE (PDU)"
 
 #: inc/peripheral.class.php:289 inc/peripheral.class.php:484
 #: inc/phone.class.php:283 inc/phone.class.php:511
@@ -15514,8 +15514,8 @@ msgstr "Enviar lembretes de planejamento"
 #: inc/plug.class.php:42
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Conector"
+msgstr[1] "Conectores"
 
 #: inc/plugin.class.php:404
 msgid "Plugins list"
@@ -16347,7 +16347,7 @@ msgstr "Altura"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
-msgstr "Potência medida (em watts)"
+msgstr "Potência média (em watts)"
 
 #: inc/rack.class.php:312
 msgid "Max. weight"
@@ -16381,14 +16381,14 @@ msgstr "%1$s posição não está disponível"
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de rack"
+msgstr[1] "Modelos de rack"
 
 #: inc/racktype.class.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de rack"
+msgstr[1] "Tipos de rack"
 
 #: inc/registeredid.class.php:54
 msgid "PCI"
@@ -17477,8 +17477,8 @@ msgstr "Lista de filtros"
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Privado %1$s"
+msgstr[1] "Privado %1$s"
 
 #: inc/savedsearch.class.php:771 inc/savedsearch.class.php:781
 msgid "Hide/Show elements"
@@ -17488,8 +17488,8 @@ msgstr "Ocultar / Mostrar elementos"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Público %1$s"
+msgstr[1] "Públicos %1$s"
 
 #: inc/savedsearch.class.php:825
 msgid "Default bookmark has not been changed!"

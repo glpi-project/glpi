@@ -969,11 +969,11 @@ msgstr[0] "實體"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "偵錯模式已開啟"
 
 #: ajax/switchdebug.php:47
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "偵錯模式已關閉"
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -3606,7 +3606,7 @@ msgstr "技術員在作業"
 #: front/stat.tracking.php:236
 #, php-format
 msgid "Solved late %1$s (%2$s)"
-msgstr ""
+msgstr "延遲解決%1$s%2$s"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:47
@@ -3976,7 +3976,7 @@ msgstr "IPv6 位置範圍"
 
 #: inc/apiclient.class.php:143 inc/apiclient.class.php:237
 msgid "Application token"
-msgstr ""
+msgstr "應用程式token"
 
 #: inc/apiclient.class.php:213
 msgid "Leave these parameters empty to disable API access restriction"
@@ -4676,7 +4676,7 @@ msgstr "簡單模式"
 #: inc/authldap.class.php:3075 inc/authldap.class.php:3103
 msgctxt "button"
 msgid "Change"
-msgstr ""
+msgstr "變更"
 
 #: inc/authldap.class.php:3111 inc/entity.class.php:1096
 #: inc/html.class.php:3263 inc/rulecollection.class.php:1206
@@ -7043,7 +7043,7 @@ msgstr ""
 #: inc/commonitiltask.class.php:1967
 #, php-format
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #: inc/commonitiltask.class.php:1980
 msgid "No tasks do to."
@@ -7279,7 +7279,7 @@ msgstr "自動資產"
 
 #: inc/computerantivirus.class.php:274 inc/computerantivirus.class.php:354
 msgid "Up to date"
-msgstr ""
+msgstr "更新至最新"
 
 #: inc/computerantivirus.class.php:280 inc/computerantivirus.class.php:351
 msgid "Antivirus version"
@@ -7736,7 +7736,7 @@ msgstr ""
 
 #: inc/config.class.php:432
 msgid "Auto Login"
-msgstr ""
+msgstr "自動登入"
 
 #: inc/config.class.php:435
 msgid "Time to allow \"Remember Me\""
@@ -8139,7 +8139,7 @@ msgstr "生成於 %s"
 
 #: inc/config.class.php:1318
 msgid "API token"
-msgstr ""
+msgstr "API token"
 
 #: inc/config.class.php:1337
 msgid "Due date progression"

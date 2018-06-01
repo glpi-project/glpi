@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-30 07:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Rivo Zängov <eraser@eraser.ee>, 2018\n"
+"Last-Translator: Diana Lõhmus <diana.lohmus@saaremaavald.ee>, 2018\n"
 "Language-Team: Estonian (Estonia) (https://www.transifex.com/glpi/teams/1637/et_EE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -171,7 +171,7 @@ msgstr "%1$s - port %2$s"
 #: ajax/dropdownConnectNetworkPort.php:103
 #, php-format
 msgid "%1$s - Network outlet %2$s"
-msgstr ""
+msgstr "%1$s - Võrguväljund %2$s"
 
 #. TRANS: %1$s is a name, %2$s is ID
 #. TRANS: %1$s is the name, %2$s the ID
@@ -707,7 +707,7 @@ msgstr "Hoiatus"
 #: ajax/dropdownShowIPNetwork.php:54
 #, php-format
 msgid "IP network: %1$s/%2$s"
-msgstr ""
+msgstr "IP võrk: %1$s/%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:55
 #, php-format
@@ -1027,7 +1027,7 @@ msgstr "Keelatud"
 
 #: ajax/ticketsatisfaction.php:82
 msgid "Duration of survey"
-msgstr ""
+msgstr "Uuringu kestus"
 
 #: ajax/ticketsatisfaction.php:89
 msgid "Unspecified"
@@ -1035,7 +1035,7 @@ msgstr "Määramata"
 
 #: ajax/ticketsatisfaction.php:94
 msgid "For tickets closed after"
-msgstr ""
+msgstr "Sulgemist ootavad teated"
 
 #: ajax/ticketsatisfaction.php:102 inc/link.class.php:140
 msgid "Valid tags"
@@ -1591,7 +1591,7 @@ msgstr "%s uuendas maksumust"
 #: front/commonitiltask.form.php:57 front/projecttask.form.php:60
 #, php-format
 msgid "%s adds a task"
-msgstr ""
+msgstr "%s lisab ülesande"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:66 front/projecttask.form.php:73
@@ -1603,7 +1603,7 @@ msgstr "%s kustutas jäädavalt tegevuse"
 #: front/commonitiltask.form.php:75 front/projecttask.form.php:82
 #, php-format
 msgid "%s updates a task"
-msgstr ""
+msgstr "%s uuendas ülesande"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:67
@@ -1621,43 +1621,43 @@ msgstr "%s uuendas kinnitust"
 #: front/commonitilvalidation.form.php:86
 #, php-format
 msgid "%s purges an approval"
-msgstr ""
+msgstr "%s kustutas jäädavalt kinnituse"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:53
 #, php-format
 msgid "%s adds an antivirus"
-msgstr ""
+msgstr "%s lisas antiviiruse"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:66
 #, php-format
 msgid "%s purges an antivirus"
-msgstr ""
+msgstr "%s kustutas antiviiruse"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:79
 #, php-format
 msgid "%s updates an antivirus"
-msgstr ""
+msgstr "%s uuendas antiviiruse"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:50
 #, php-format
 msgid "%s disconnects an item"
-msgstr ""
+msgstr "%s Ühendas asja lahti"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:60
 #, php-format
 msgid "%s connects an item"
-msgstr ""
+msgstr "%s ühendas asja"
 
 #. TRANS: %s is the user login
 #: front/computer_softwarelicense.form.php:45
 #, php-format
 msgid "%s associates a computer and a license"
-msgstr ""
+msgstr "%s seostab arvuti ja litsentsi"
 
 #. TRANS: %s is the user login
 #: front/computer_softwareversion.form.php:50
@@ -1685,7 +1685,7 @@ msgstr "%s uuendas virtuaalmasinat"
 
 #: front/config.form.php:49 front/config.form.php:56
 msgid "Cache reset successful"
-msgstr ""
+msgstr "Vahemälu tühjendamine oli edukas"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:51
@@ -1705,23 +1705,23 @@ msgstr[1] ""
 #: front/contact_supplier.form.php:51 front/contract_supplier.form.php:51
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr ""
+msgstr "%s lisab lingi tarnijale"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
 #, php-format
 msgid "ERROR: %s is not writable"
-msgstr ""
+msgstr "VIGA: %s pole kirjutatav"
 
 #: front/cron.php:43
 msgid "run script as apache user"
-msgstr ""
+msgstr "käivitage skript apache kasutajana"
 
 #. TRANS: %s is a task name
 #: front/crontask.form.php:53
 #, php-format
 msgid "Task %s executed"
-msgstr ""
+msgstr "Tööülesanne %s on käivitatud"
 
 #. TRANS: R for Recursive
 #. TRANS: %1$s is the name of the tab, $2$d is number of items in the tab
@@ -1795,7 +1795,7 @@ msgstr "Järgmine käivitus"
 #: front/crontask.php:50
 #, php-format
 msgid "Next task to run: %s"
-msgstr ""
+msgstr "Järgmine tööülesanne käivitamiseks %s"
 
 #: front/crontask.php:52 front/crontask.php:53
 msgid "No action pending"
@@ -1806,6 +1806,8 @@ msgid ""
 "You have more automatic actions which need to run each minute than the "
 "number allow each run. Increase this config."
 msgstr ""
+"Teil on rohkem automaatseid toiminguid, mis peavad kord minutis käivituma, "
+"kui konfiguratsioonis on lubatud. Suurendage seda konfiguratsiooni."
 
 #: front/devices.php:37 front/devices.php:41 inc/commondevice.class.php:53
 #: inc/commondevice.class.php:274 inc/computer.class.php:798
@@ -1833,7 +1835,7 @@ msgstr "Sõnastikud"
 #: front/display.options.php:41 inc/commonglpi.class.php:1159
 #: inc/commonglpi.class.php:1217 inc/commonglpi.class.php:1219
 msgid "Display options"
-msgstr ""
+msgstr "Kuva valikud"
 
 #: front/displaypreference.form.php:38 front/documenttype.list.php:37
 #: front/dropdown.php:37 front/plugin.php:89 front/rulesengine.test.php:61
@@ -1855,22 +1857,22 @@ msgstr "Faili ei leitud"
 
 #: front/document.send.php:53
 msgid "File is altered (bad checksum)"
-msgstr ""
+msgstr "Faili on muudetud (vigane kontrollsumma)"
 
 #: front/document.send.php:59 front/document.send.php:80
 #: front/graph.send.php:52
 msgid "Unauthorized access to this file"
-msgstr ""
+msgstr "Loata juurdepääs sellele failile"
 
 #: front/document.send.php:83
 msgid "Invalid filename"
-msgstr ""
+msgstr "Vigane failinimi"
 
 #. TRANS: %s is the user login
 #: front/dropdown.common.form.php:96 front/group.form.php:92
 #, php-format
 msgid "%s replaces an item"
-msgstr ""
+msgstr "%s asendas üksuse"
 
 #: front/dropdown.common.form.php:115 inc/profile_user.class.php:98
 #: inc/transfer.class.php:3583
@@ -1887,7 +1889,7 @@ msgstr[1] ""
 
 #: front/find_num.php:72
 msgid "Search the ID of your hardware"
-msgstr ""
+msgstr "Otsige riistvara ID-d"
 
 #: front/find_num.php:81 inc/authldap.class.php:3198 inc/knowbase.class.php:65
 #: inc/knowbaseitem.class.php:1014 inc/planning.class.php:367
@@ -2136,15 +2138,15 @@ msgstr "Kasutajatuvastus"
 
 #: front/helpdesk.php:85
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Kasutajatoe raporti vorm"
 
 #: front/helpdesk.php:88
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Probleem tuleb lahendada"
 
 #: front/helpdesk.php:91
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Vali prioriteet"
 
 #: front/helpdesk.php:94 inc/commonitilobject.class.php:1983
 msgctxt "urgency"
@@ -2173,7 +2175,7 @@ msgstr "Väga madal"
 
 #: front/helpdesk.php:103
 msgid "Describe your issue"
-msgstr ""
+msgstr "Kirjelda oma probleemi"
 
 #: front/helpdesk.php:105 inc/change.class.php:787
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:2760
@@ -2211,7 +2213,7 @@ msgstr "Sisu"
 #: front/helpdesk.php:114
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "Saada"
 
 #: front/helpdesk.public.php:92 front/ticket.form.php:229
 #: inc/notificationtargetticket.class.php:228 inc/ticket.class.php:4581
@@ -2226,13 +2228,13 @@ msgstr "Avaleht"
 
 #: front/ipnetwork.form.php:41
 msgid "Successfully recreated network tree"
-msgstr ""
+msgstr "Võrgu puu on edukalt uuesti loodud"
 
 #. TRANS: %s is the user login
 #: front/ipnetwork_vlan.form.php:50 front/networkport_vlan.form.php:47
 #, php-format
 msgid "%s associates a VLAN to a network port"
-msgstr ""
+msgstr "%s seostas VLAN-i võrgupordiga"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:56
@@ -2244,7 +2246,7 @@ msgstr "%s lisas salvestusseadme"
 #: front/item_disk.form.php:69
 #, php-format
 msgid "%s purges a volume"
-msgstr ""
+msgstr "%s eemaldas salvestusseadme"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:83
@@ -2265,25 +2267,25 @@ msgstr "Sind on ümber suunatud, sest sul pole enam ligipääsu sellele teatele"
 #: front/knowbaseitem_comment.form.php:51
 #: front/knowbaseitem_comment.form.php:70 front/knowbaseitem_item.form.php:41
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "Kohustuslik väli on täitmata"
 
 #: front/knowbaseitem_comment.form.php:58
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%s sisestas kommentaari teadmusbaasi"
 
 #: front/knowbaseitem_comment.form.php:60
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Kommentaar on lisatud"
 
 #: front/knowbaseitem_comment.form.php:79
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%s muutis kommentaari teadmusbaasis"
 
 #: front/knowbaseitem_comment.form.php:81
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Sinu kommentaari on muudetud"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:115 front/reminder.form.php:107
@@ -2295,12 +2297,12 @@ msgstr "%s lisas sihtrühma"
 #: front/knowbaseitem.form.php:125
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Teadmusbaasi üksus on saadetud tagasi üle vaatamiseks %s"
 
 #: front/knowbaseitem.form.php:132
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Teadmusbaasi üksus ei ole tagasi saadetud üle vaatamiseks %s"
 
 #: front/knowbaseitem.form.php:142 inc/commondropdown.class.php:921
 #: inc/itilcategory.class.php:67 inc/itilcategory.class.php:231
@@ -2313,7 +2315,7 @@ msgstr "Teadmistekogu"
 #: front/knowbaseitem_item.form.php:50
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr ""
+msgstr "%s sisestas lingi teadmiste kogusse"
 
 #: front/knowbaseitemtranslation.form.php:52
 #, php-format
@@ -5066,7 +5068,7 @@ msgstr "Duplikaat"
 
 #: inc/calendar.class.php:87 inc/calendar_holiday.class.php:102
 msgid "Add a close time"
-msgstr ""
+msgstr "Sisesta sulgemisaeg"
 
 #: inc/calendar_holiday.class.php:133 inc/holiday.class.php:61
 #: inc/holiday.class.php:89
@@ -14361,7 +14363,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:1252
 msgid "Category id"
-msgstr ""
+msgstr "Kategooria ID"
 
 #: inc/notificationtargetcommonitilobject.class.php:1254
 msgid "Category comment"

@@ -4906,7 +4906,7 @@ msgstr "UUID"
 
 #: inc/blacklistedmailcontent.class.php:53 inc/dropdown.class.php:779
 msgid "Blacklisted mail content"
-msgstr "Conteido de correo en listas negras"
+msgstr "Contenido de correo en la lista negra"
 
 #: inc/budget.class.php:52 inc/commonitilcost.class.php:175
 #: inc/commonitilcost.class.php:448 inc/commonitilcost.class.php:549
@@ -5399,8 +5399,8 @@ msgstr "Referencia"
 #: inc/ruleimportcomputer.class.php:109 inc/search.class.php:5713
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] "Manofacturador"
-msgstr[1] "Manofacturadores"
+msgstr[0] "Fabricante"
+msgstr[1] "Fabricantes"
 
 #: inc/cartridgeitem.class.php:208 inc/cartridgeitem.class.php:369
 #: inc/certificate.class.php:208 inc/certificate.class.php:401

@@ -39,7 +39,7 @@ msgstr "Parola"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "Dil (kullanıcı profilinden)"
 
 #: index.php:153
 msgid "Remember me"
@@ -6474,7 +6474,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s öge"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
