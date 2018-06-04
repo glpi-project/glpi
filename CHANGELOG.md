@@ -14,28 +14,32 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - Added `DB::insert()`, `DB::update()` and `DB::delete()` to replace raw SQL queries
 - `CommonITILObject::showMassiveSolutionForm()` now takes a `CommonITILObject` as argument
-- `Profileuser::getUserProfiles` filter parameter is now an array
+- `Profileuser::getUserProfiles()` `$filter` parameter is now an array
+- `User::getFromDBbyEmail()` `$condition` parameter is now an array
 - Select2 javascript component has been upgraded to 4.0 version, see [Migrating from Select2 3.5](https://select2.org/upgrading/migrating-from-35)
-- `CommonDevice::getItem_DeviceType` has a new optional `$devicetype` parameter
+- `CommonDevice::getItem_DeviceType()` has a new optional `$devicetype` parameter
 
 #### Deprecated
 
+- Usage of string `$filter` parameter in `Profileuser::getUserProfiles()` has been deprecated
+- Usage of string `$condition` parameter in `User::getFromDBbyEmail()` has been deprecated
+
 The following methods have been deprecated:
 
-- `Search::constructDatas()`
-- `Search::displayDatas()`
-- `DBMysql::list_tables()`
-- `Search::getSearchOptions()`
-- `Search::getSearchOptionsNew()`
-- `Search::getSearchOptionsToAdd()`
-- `Search::getSearchOptionsToAddNew()`
 - `CommonDBTM::getFromDBByQuery()`
-- `User::getFromDBbyEmail()` call with a string
+- `CommonDBTM::getSearchOptions()`
+- `CommonDBTM::getSearchOptionsNew()`
+- `CommonDBTM::getSearchOptionsToAddNew()`
+- `CommonITILObject::getStatusIconURL()`
+- `DBMysql::list_tables()`
+- `Dropdown::showPrivatePublicSwitch()`
 - `NotificationTargetProject::getTeamContacts()`
 - `NotificationTargetProject::getTeamGroups()`
 - `NotificationTargetProject::getTeamSuppliers()`
 - `NotificationTargetProject::getTeamUsers()`
-- `Dropdown::showPrivatePublicSwitch()`
+- `Search::constructDatas()`
+- `Search::displayDatas()`
+- `Transfer::transferComputerDisks()`
 
 #### Removed
 
