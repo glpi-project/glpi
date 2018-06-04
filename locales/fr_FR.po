@@ -6159,7 +6159,7 @@ msgstr "Second élément "
 #: inc/commondbconnexity.class.php:521
 #, php-format
 msgid "Select a peer for %s:"
-msgstr "Sélectionner une paire pour %s :"
+msgstr "Sélectionner un pair pour %s :"
 
 #: inc/commondbconnexity.class.php:557
 msgid "Unable to reaffect given elements !"
@@ -6370,7 +6370,7 @@ msgstr "Mise à jour des notes"
 
 #: inc/commondbtm.class.php:4802
 msgid "Update the item's notes"
-msgstr "Mise à jour des notes des éléments"
+msgstr "Mise à jour des notes de l'élément"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: inc/commondbtm.class.php:4900
@@ -6544,7 +6544,8 @@ msgstr "Annuler"
 #: inc/commondropdown.class.php:649
 msgid "You can also replace all uses of this dropdown by another."
 msgstr ""
-"Vous pouvez remplacer toutes les utilisation de cet intitulé par un autre."
+"Vous pouvez aussi remplacer toutes les utilisation de cet intitulé par un "
+"autre."
 
 #: inc/commondropdown.class.php:672
 msgctxt "button"
@@ -6772,12 +6773,12 @@ msgstr "Toutes"
 #: inc/commonitilobject.class.php:1890
 msgctxt "priority"
 msgid "At least very low"
-msgstr "Au moins Très basse"
+msgstr "Au moins très basse"
 
 #: inc/commonitilobject.class.php:1892
 msgctxt "priority"
 msgid "At least low"
-msgstr "Au moins Basse"
+msgstr "Au moins basse"
 
 #: inc/commonitilobject.class.php:1894
 msgctxt "priority"
@@ -6787,12 +6788,12 @@ msgstr "Au moins Moyenne"
 #: inc/commonitilobject.class.php:1896
 msgctxt "priority"
 msgid "At least high"
-msgstr "Au moins Haute"
+msgstr "Au moins haute"
 
 #: inc/commonitilobject.class.php:1898
 msgctxt "priority"
 msgid "At least very high"
-msgstr "Au moins Très haute"
+msgstr "Au moins très haute"
 
 #: inc/commonitilobject.class.php:1999
 msgctxt "urgency"
@@ -6802,27 +6803,27 @@ msgstr "Toutes"
 #: inc/commonitilobject.class.php:2001
 msgctxt "urgency"
 msgid "At least very low"
-msgstr "Au moins Très basse"
+msgstr "Au moins très basse"
 
 #: inc/commonitilobject.class.php:2003
 msgctxt "urgency"
 msgid "At least low"
-msgstr "Au moins Basse"
+msgstr "Au moins basse"
 
 #: inc/commonitilobject.class.php:2005
 msgctxt "urgency"
 msgid "At least medium"
-msgstr "Au moins Moyenne"
+msgstr "Au moins moyenne"
 
 #: inc/commonitilobject.class.php:2007
 msgctxt "urgency"
 msgid "At least high"
-msgstr "Au moins Haute"
+msgstr "Au moins haute"
 
 #: inc/commonitilobject.class.php:2009
 msgctxt "urgency"
 msgid "At least very high"
-msgstr "Au moins Très haute"
+msgstr "Au moins très haute"
 
 #: inc/commonitilobject.class.php:2094
 msgctxt "impact"
@@ -6857,27 +6858,27 @@ msgstr "Tous"
 #: inc/commonitilobject.class.php:2112
 msgctxt "impact"
 msgid "At least very low"
-msgstr "Au moins Très bas"
+msgstr "Au moins très bas"
 
 #: inc/commonitilobject.class.php:2114
 msgctxt "impact"
 msgid "At least low"
-msgstr "Au moins Bas"
+msgstr "Au moins bas"
 
 #: inc/commonitilobject.class.php:2116
 msgctxt "impact"
 msgid "At least medium"
-msgstr "Au moins Moyen"
+msgstr "Au moins moyen"
 
 #: inc/commonitilobject.class.php:2118
 msgctxt "impact"
 msgid "At least high"
-msgstr "Au moins Haut"
+msgstr "Au moins haut"
 
 #: inc/commonitilobject.class.php:2120
 msgctxt "impact"
 msgid "At least very high"
-msgstr "Au moins Très haut"
+msgstr "Au moins très haut"
 
 #: inc/commonitilobject.class.php:2618 inc/commonitilobject.class.php:3121
 #: inc/commonitilobject.class.php:3130 inc/commonitilobject.class.php:4090
@@ -6936,7 +6937,7 @@ msgstr "Délai d'attente"
 msgid "Requester group"
 msgid_plural "Requester groups"
 msgstr[0] "Groupe demandeur"
-msgstr[1] "Groupes demandeur"
+msgstr[1] "Groupes demandeurs"
 
 #: inc/commonitilobject.class.php:3149 inc/commonitilobject.class.php:3473
 #: inc/notificationtargetcommonitilobject.class.php:554
@@ -6945,7 +6946,7 @@ msgstr[1] "Groupes demandeur"
 msgid "Watcher group"
 msgid_plural "Watcher groups"
 msgstr[0] "Groupe observateur"
-msgstr[1] "Groupes observateur"
+msgstr[1] "Groupes observateurs"
 
 #: inc/commonitilobject.class.php:3194
 #: inc/notificationtargetcommonitilobject.class.php:1212
@@ -7028,7 +7029,7 @@ msgstr "Par %s"
 
 #: inc/commonitilobject.class.php:5565 inc/project.class.php:946
 msgid "No item in progress."
-msgstr "Pas d'élément en cours"
+msgstr "Pas d'élément en cours."
 
 #: inc/commonitilobject.class.php:5592
 msgid "Assigned"
@@ -7078,7 +7079,7 @@ msgstr ""
 msgid "Task category"
 msgid_plural "Task categories"
 msgstr[0] "Catégorie de tâche"
-msgstr[1] "Catégories de tâche"
+msgstr[1] "Catégories de tâches"
 
 #: inc/commonitiltask.class.php:593
 msgid "Public followup"
@@ -7142,7 +7143,7 @@ msgstr "A faire"
 
 #: inc/commonitiltask.class.php:1225
 msgid "Planned"
-msgstr "Plannifié"
+msgstr "Planifié"
 
 #: inc/commonitiltask.class.php:1231 inc/planning.class.php:167
 #: inc/planning.class.php:184
@@ -7223,8 +7224,8 @@ msgid ""
 "The selected user (%s) has no valid email address. The request has been "
 "created, without email confirmation."
 msgstr ""
-"L'utilisateur choisi (%s) n'a pas d'adresse de messagerie renseignée. La "
-"demande a été créée mais l'envoi du courriel a échoué."
+"L'utilisateur choisi (%s) n'a pas d'adresse de messagerie valide. La demande"
+" a été créée mais l'envoi du courriel a échoué."
 
 #: inc/commonitilvalidation.class.php:311
 msgid "If approval is denied, specify a reason."
@@ -7266,7 +7267,7 @@ msgstr "Non soumis à validation"
 
 #: inc/commonitilvalidation.class.php:443
 msgid "Granted + Not subject to approval"
-msgstr "Accepté ou non soumis à validation"
+msgstr "Accepté + non soumis à validation"
 
 #: inc/commonitilvalidation.class.php:731
 #: inc/notificationtargetchange.class.php:284
@@ -7312,7 +7313,7 @@ msgstr "Statut de validation"
 #: inc/notificationtargetcommonitilobject.class.php:563
 #: inc/notificationtargetticket.class.php:782
 msgid "Approver"
-msgstr "Valideur"
+msgstr "Validateur"
 
 #: inc/commonitilvalidation.class.php:799
 #: inc/commonitilvalidation.class.php:975
@@ -7324,7 +7325,7 @@ msgstr "Commentaire de la validation"
 
 #: inc/commonitilvalidation.class.php:803
 msgid "Approvals for the ticket"
-msgstr "Validation(s) pour le ticket"
+msgstr "Validations pour le ticket"
 
 #: inc/commonitilvalidation.class.php:811 inc/ruleticket.class.php:617
 #: inc/ruleticket.class.php:623 inc/ruleticket.class.php:629
@@ -7364,8 +7365,8 @@ msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
 msgstr ""
-"Cet élément est en attente d'approbation, voulez-vous le résoudre ou le "
-"fermer?"
+"Cet élément est en attente d'approbation, voulez-vous vraiment le résoudre "
+"ou le fermer?"
 
 #: inc/commontreedropdown.class.php:53 inc/commontreedropdown.class.php:620
 #: inc/group.class.php:253 inc/itilcategory.class.php:53
@@ -7427,7 +7428,7 @@ msgstr[1] "Versions"
 
 #: inc/computerantivirus.class.php:173
 msgid "Is up to date"
-msgstr "est à jour"
+msgstr "Est à jour"
 
 #: inc/computerantivirus.class.php:187 inc/computerantivirus.class.php:284
 #: inc/computerantivirus.class.php:352
@@ -7447,7 +7448,7 @@ msgstr "Inventaire automatique"
 
 #: inc/computerantivirus.class.php:274 inc/computerantivirus.class.php:354
 msgid "Up to date"
-msgstr "à jour"
+msgstr "À jour"
 
 #: inc/computerantivirus.class.php:280 inc/computerantivirus.class.php:351
 msgid "Antivirus version"
@@ -7692,7 +7693,7 @@ msgstr "Connecter un ordinateur"
 
 #: inc/computer_item.class.php:627
 msgid "Not connected"
-msgstr "Déconnecté"
+msgstr "Non connecté"
 
 #: inc/computer_item.class.php:780 inc/computer_item.class.php:793
 #: inc/event.class.php:158
@@ -7849,7 +7850,7 @@ msgstr "Autoriser l'accès anonyme à la FAQ"
 
 #: inc/config.class.php:303
 msgid "Simplified interface help link"
-msgstr "Lien Aide dans l'interface simplifiée"
+msgstr "Lien d'aide dans l'interface simplifiée"
 
 #: inc/config.class.php:309
 msgid "Default search results limit (page)"
@@ -7857,7 +7858,7 @@ msgstr "Limite par défaut pour la recherche (page)"
 
 #: inc/config.class.php:315
 msgid "Standard interface help link"
-msgstr "Lien Aide dans l'interface standard"
+msgstr "Lien d'aide dans l'interface standard"
 
 #: inc/config.class.php:321
 msgid "Default characters limit (summary text boxes)"
@@ -7932,7 +7933,7 @@ msgstr "Types d'objets à verrouiller"
 
 #: inc/config.class.php:432
 msgid "Auto Login"
-msgstr "Identifiant"
+msgstr "Identification automatique"
 
 #: inc/config.class.php:435
 msgid "Time to allow \"Remember Me\""
@@ -7959,7 +7960,7 @@ msgstr "Restreindre la gestion des moniteurs"
 
 #: inc/config.class.php:494
 msgid "Software category deleted by the dictionary rules"
-msgstr "Catégorie des logiciels supprimés par les règles du dictionnaire"
+msgstr "Catégorie logicielle supprimées par les règles du dictionnaire"
 
 #: inc/config.class.php:499
 msgid "Restrict device management"
@@ -8000,8 +8001,7 @@ msgstr "Pas de transfert automatique"
 
 #: inc/config.class.php:551
 msgid "Automatically update of the elements related to the computers"
-msgstr ""
-"Mise à jour automatique des éléments connectés directement aux ordinateurs"
+msgstr "Mise à jour automatique des éléments connectés aux ordinateurs"
 
 #: inc/config.class.php:552 inc/dropdown.class.php:2057
 #: inc/dropdown.class.php:2065 inc/dropdown.class.php:2067
@@ -8117,8 +8117,8 @@ msgstr "Activer la connexion avec identifiants"
 #: inc/config.class.php:768
 msgid "Allow to login to API and get a session token with user credentials"
 msgstr ""
-"Permettre la connexion à l'API et la récupération d'un jeton de session avec"
-" les identifiants utilisateur"
+"Permettre la connexion à l'API et l'obtention d'un jeton de session avec les"
+" identifiants utilisateur"
 
 #: inc/config.class.php:774
 msgid "Enable login with external token"
@@ -8129,8 +8129,8 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
 msgstr ""
-"Permet la connexion à l'API et la récupération d'un jeton de session avec le"
-" jeton externe d'un utilisateur. Voir la clé d'accès distant dans l'onglet "
+"Permet la connexion à l'API et l'obtention d'un jeton de session avec le "
+"jeton externe d'un utilisateur. Voir la clé d'accès distant dans l'onglet "
 "préférences utilisateur"
 
 #: inc/config.class.php:793
@@ -8286,7 +8286,7 @@ msgstr "Séparation verticale"
 
 #: inc/config.class.php:1200
 msgid "Enable high contrast"
-msgstr "Activer le contraste élévé"
+msgstr "Activer le contraste élevé"
 
 #: inc/config.class.php:1211
 msgid "Private followups by default"
@@ -8314,7 +8314,7 @@ msgstr "Rafraichissement automatique de la liste des tickets (minutes)"
 
 #: inc/config.class.php:1242
 msgid "Pre-select me as a technician when creating a ticket"
-msgstr "Pré-sélection comme technicien lors de la création de ticket"
+msgstr "Me pré-sélectionner comme technicien lors de la création de ticket"
 
 #: inc/config.class.php:1249
 msgid "Pre-select me as a requester when creating a ticket"
@@ -8343,7 +8343,7 @@ msgstr "Jeton personnel"
 #: inc/config.class.php:1308 inc/config.class.php:1327
 #, php-format
 msgid "generated on %s"
-msgstr "générée le %s"
+msgstr "généré le %s"
 
 #: inc/config.class.php:1318
 msgid "API token"
@@ -8460,7 +8460,7 @@ msgstr "Taux de succès"
 #: inc/config.class.php:1615
 #, php-format
 msgid "%1$ss hits rate is low"
-msgstr "Le taux de succès de %1$s est trop faible"
+msgstr "Le taux de succès de %1$s est faible"
 
 #: inc/config.class.php:1618
 #, php-format
@@ -8495,12 +8495,12 @@ msgstr "l'extension %s est manquante"
 #, php-format
 msgid "Installing and enabling the \"%s\" extension may improve GLPI performance"
 msgstr ""
-"Installer et activer l'extension  %s pourrait améliorer les performances de "
-"GLPI"
+"Installer et activer l'extension  \"%s\" pourrait améliorer les performances"
+" de GLPI"
 
 #: inc/config.class.php:1647
 msgid "User data cache"
-msgstr "Cache données utilisateur"
+msgstr "Cache des données utilisateur"
 
 #: inc/config.class.php:1692
 #, php-format
@@ -8577,7 +8577,7 @@ msgstr "Texte de maintenance"
 
 #: inc/config.class.php:1798
 msgid "Proxy configuration for upgrade check"
-msgstr "Configuration du proxy pour vérifier les mises à jour."
+msgstr "Configuration du proxy pour vérifier les mises à jour"
 
 #: inc/config.class.php:1830
 msgid "Information about system installation and configuration"
@@ -8585,7 +8585,7 @@ msgstr "Informations sur le système, l'installation et la configuration"
 
 #: inc/config.class.php:1912
 msgid "To copy/paste in your support request"
-msgstr "A copier/coller lors d'une demande d'assistance"
+msgstr "A copier/coller dans vos demandes d'assistance"
 
 #: inc/config.class.php:2024
 msgid "Yes - Restrict to unit management for manual add"
@@ -8638,7 +8638,7 @@ msgstr "Test d'écriture de fichiers documents"
 
 #: inc/config.class.php:2488
 msgid "Checking write permissions for dump files"
-msgstr "Test d'écriture de fichiers dump"
+msgstr "Test d'écriture de fichiers de sauvegarde"
 
 #: inc/config.class.php:2490
 msgid "Checking write permissions for automatic actions files"
@@ -8646,7 +8646,7 @@ msgstr "Test d'écriture des fichiers des actions automatiques"
 
 #: inc/config.class.php:2491
 msgid "Checking write permissions for graphic files"
-msgstr "Test d'écriture des fichiers de graphiques"
+msgstr "Test d'écriture des fichiers graphiques"
 
 #: inc/config.class.php:2492
 msgid "Checking write permissions for lock files"
@@ -8719,7 +8719,7 @@ msgstr "L'accès web au répertoire des fichiers est protégé"
 
 #: inc/config.class.php:2623 inc/config.class.php:2627
 msgid "Web access to the files directory should not be allowed"
-msgstr "L4accès web au dossier \"files\" ne devrait pas être autorisé"
+msgstr "L'accès web au dossier \"files\" ne devrait pas être autorisé"
 
 #: inc/config.class.php:2624 inc/config.class.php:2628
 msgid "Check the .htaccess file and the web server configuration."
@@ -8852,7 +8852,7 @@ msgstr "Supprimer tout"
 
 #: inc/config.class.php:3130
 msgid "Keep all"
-msgstr "Tout conserver"
+msgstr "Conserver tout"
 
 #: inc/config.class.php:3134
 #, php-format
@@ -9124,7 +9124,7 @@ msgstr "Ajouter un contact"
 msgid "Contact type"
 msgid_plural "Contact types"
 msgstr[0] "Type de contact"
-msgstr[1] "Types de contacts"
+msgstr[1] "Types de contact"
 
 #: inc/contract.class.php:52 inc/contract.class.php:426
 #: inc/contract.class.php:441 inc/contract.class.php:455
@@ -9200,7 +9200,7 @@ msgstr "le samedi"
 
 #: inc/contract.class.php:340
 msgid "Sundays and holidays"
-msgstr "dimanche et fêtes"
+msgstr "Dimanches et fêtes"
 
 #: inc/contract.class.php:390
 msgctxt "quantity"
@@ -9417,7 +9417,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:805
 msgid "A minimum of 64 Mio is commonly required for GLPI."
-msgstr "Un minimum de 64 Mio est normalement requis pour GLPI"
+msgstr "Un minimum de 64 Mio est généralement requis pour GLPI"
 
 #: inc/crontask.class.php:810
 msgid "No task with Run mode = CLI, fix your tasks configuration"
@@ -9614,7 +9614,7 @@ msgstr "Vérification de la présence de mises à jour"
 
 #: inc/crontask.class.php:1715
 msgid "Clean old logs"
-msgstr "Nettoyage des journaux"
+msgstr "Nettoyage des anciens journaux"
 
 #: inc/crontask.class.php:1717
 msgid "System logs retention period (in days, 0 for infinite)"
@@ -9771,7 +9771,7 @@ msgstr "Aucune salle serveur trouvée"
 #: inc/dcroom.class.php:466
 #, php-format
 msgid "col: %1$s, row: %2$s"
-msgstr "col: %1$s, ligne: %2$s"
+msgstr "col. : %1$s, ligne : %2$s"
 
 #: inc/devicebattery.class.php:42
 msgid "Battery"
@@ -10066,7 +10066,7 @@ msgstr[1] "Types de capteurs"
 msgid "Simcard"
 msgid_plural "Simcards"
 msgstr[0] "Carte SIM"
-msgstr[1] "Carte SIM"
+msgstr[1] "Cartes SIM"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:93
 msgid "Allow VOIP"
@@ -10204,7 +10204,7 @@ msgstr "SHA1"
 #: inc/notificationtargetproject.class.php:649
 #: inc/notificationtargetprojecttask.class.php:529
 msgid "Web Link"
-msgstr "Lien Web"
+msgstr "Lien web"
 
 #: inc/document.class.php:417 inc/document.class.php:845
 #: inc/document_item.class.php:784 inc/documenttype.class.php:58
@@ -10516,8 +10516,8 @@ msgstr[1] "Types d'alimentation de téléphone"
 #: inc/dropdown.class.php:860 inc/line.class.php:120 inc/linetype.class.php:42
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] "Type de lignes"
-msgstr[1] "Type de lignes"
+msgstr[0] "Type de ligne"
+msgstr[1] "Types de lignes"
 
 #: inc/dropdown.class.php:869 inc/networkequipmentmodel.class.php:41
 #: inc/rule.class.php:324
@@ -10652,7 +10652,7 @@ msgstr[1] "Prises réseau"
 #: inc/dropdown.class.php:995 inc/networkport.class.php:968
 #: inc/networkportinstantiation.class.php:127 inc/vlan.class.php:49
 msgid "VLAN"
-msgstr "VLANs"
+msgstr "VLAN"
 
 #: inc/dropdown.class.php:996 inc/line.class.php:166 inc/line.class.php:215
 #: inc/lineoperator.class.php:48 inc/profile.class.php:1472
@@ -10962,7 +10962,7 @@ msgstr "Adresse de réponse (si nécessaire)"
 #: inc/entity.class.php:733 inc/entity.class.php:1711
 #: inc/notificationmailingsetting.class.php:132
 msgid "Email signature"
-msgstr "Signature des messages"
+msgstr "Signature des courriels"
 
 #: inc/entity.class.php:741
 msgid "Alarms on cartridges"
@@ -19103,7 +19103,8 @@ msgstr "Mettre à jour la méthode d'authentification pour"
 #: inc/user.class.php:4181
 msgid "Please confirm your email address and enter your new password."
 msgstr ""
-"Veuillez confirmer votre courriel et saisir votre nouveau mot de passe."
+"Veuillez confirmer votre adresse de courriel et saisir votre nouveau mot de "
+"passe."
 
 #: inc/user.class.php:4210 inc/user.class.php:4287
 msgid ""
@@ -19130,11 +19131,11 @@ msgstr ""
 
 #: inc/user.class.php:4295 inc/user.class.php:4398
 msgid "Email address not found."
-msgstr "L'adresse demandée est inconnue."
+msgstr "L'adresse de courriel demandée est inconnue."
 
 #: inc/user.class.php:4421
 msgid "User information"
-msgstr "Informations utilisateurs"
+msgstr "Informations utilisateur"
 
 #: inc/user.class.php:4439
 msgid "Connection failed"
@@ -19178,7 +19179,7 @@ msgstr "Courriel par défaut"
 
 #: inc/vlan.class.php:158
 msgid "Untagged"
-msgstr "Non Taggé"
+msgstr "Non tagué"
 
 #: inc/wifinetwork.class.php:66
 msgid "Ad-hoc"

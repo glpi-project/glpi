@@ -7599,7 +7599,7 @@ msgstr "Verze databáze podpisů"
 #: inc/item_disk.class.php:290 inc/networkname.class.php:518
 #: inc/networkport.class.php:475 inc/networkport.class.php:660
 msgid "Automatic inventory"
-msgstr "Automatická inventarizace"
+msgstr "Automatizovaná inventarizace"
 
 #: inc/computerantivirus.class.php:274 inc/computerantivirus.class.php:354
 msgid "Up to date"
@@ -8178,7 +8178,7 @@ msgstr "Omezit správu telefonů"
 
 #: inc/config.class.php:521
 msgid "Automatic fields (marked by *)"
-msgstr "Automatické kolonky (označené *)"
+msgstr "Automatizované kolonky (označené *)"
 
 #: inc/config.class.php:523
 msgid "By entity"
@@ -10392,10 +10392,10 @@ msgstr[3] "Typy sim karet"
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:909
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] "Model zvukového čipu"
-msgstr[1] "Modely zvukových čipů"
-msgstr[2] "Modelů zvukových čipů"
-msgstr[3] "Modely zvukových čipů"
+msgstr[0] "Model zvukového rozhraní"
+msgstr[1] "Modely zvukových rozhraní"
+msgstr[2] "Modelů zvukových rozhraní"
+msgstr[3] "Modely zvukových rozhraní"
 
 #: inc/displaypreference.class.php:289
 msgid "No personal criteria. Create personal parameters?"
@@ -10405,7 +10405,7 @@ msgstr "Žádná osobní kritéria. Vytvořit osobní parametry?"
 #: inc/search.class.php:1497 inc/search.class.php:1498
 #: inc/search.class.php:1509 inc/search.class.php:1520
 msgid "Select default items to show"
-msgstr "Zvolit výchozí položky pro zobrazení"
+msgstr "Vybrat položky pro výchozí zobrazení"
 
 #: inc/displaypreference.class.php:370 inc/displaypreference.class.php:525
 msgid "Bring up"
@@ -10422,7 +10422,7 @@ msgstr "Uživatelské zobrazení"
 
 #: inc/displaypreference.class.php:708 inc/profile.class.php:1929
 msgid "Search result user display"
-msgstr "Seznam výsledků hledání uživatele"
+msgstr "Uživatelské zobrazení výsledků hledání"
 
 #. TRANS: short for : Search result default display
 #: inc/displaypreference.class.php:710
@@ -10431,7 +10431,7 @@ msgstr "Výchozí zobrazení"
 
 #: inc/displaypreference.class.php:711
 msgid "Search result default display"
-msgstr "Výchozí seznam výsledků hledání"
+msgstr "Výchozí zobrazení výsledků hledání"
 
 #: inc/documentcategory.class.php:44 inc/dropdown.class.php:931
 msgid "Document heading"
@@ -10488,7 +10488,7 @@ msgstr "Úspěšné smazání souboru %s"
 #: inc/document.class.php:167
 #, php-format
 msgid "Failed to delete the file %s"
-msgstr "Chyba při mazání souboru %s"
+msgstr "Nepodařilo se smazat soubor %s"
 
 #: inc/document.class.php:363
 #, php-format
@@ -10568,7 +10568,7 @@ msgstr "Nepodařilo se smazat soubor %1$s (%2$s)"
 
 #: inc/document.class.php:1029 inc/document.class.php:1116
 msgid "Document move succeeded."
-msgstr "Přesunutí dokumentu bylo úspěšné."
+msgstr "Dokument úspěšně přesunut."
 
 #: inc/document.class.php:1031 inc/document.class.php:1118
 msgid "File move failed."
@@ -10576,7 +10576,7 @@ msgstr "Přesun souboru se nezdařil."
 
 #: inc/document.class.php:1037 inc/document.class.php:1124
 msgid "Document copy succeeded."
-msgstr "Kopírování dokumentu bylo úspěšné."
+msgstr "Dokument úspěšně zkopírován."
 
 #: inc/document.class.php:1039 inc/document.class.php:1126
 msgid "File move failed"
@@ -10625,7 +10625,7 @@ msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
 "permission"
 msgstr ""
-"Nepodařilo se vytvořit složku %s. Zkontrolujte zda máte správně nastavená "
+"Nepodařilo se vytvořit složku %s. Zkontrolujte zda jsou správně nastavená "
 "přístupová oprávnění."
 
 #: inc/document.class.php:1291
@@ -10666,11 +10666,11 @@ msgstr "Ikona"
 
 #: inc/documenttype.class.php:51 inc/documenttype.class.php:105
 msgid "Authorized upload"
-msgstr "Oprávněné nahrání"
+msgstr "Platné nahrání"
 
 #: inc/documenttype.class.php:54 inc/documenttype.class.php:80
 msgid "Extension"
-msgstr "Rozšíření"
+msgstr "Přípona"
 
 #: inc/documenttype.class.php:56
 msgid "May be a regular expression"
@@ -10723,7 +10723,7 @@ msgid_plural "%s hours"
 msgstr[0] "%s hodina"
 msgstr[1] "%s hodiny"
 msgstr[2] "%s hodin"
-msgstr[3] "%s hodin"
+msgstr[3] "%s hodiny"
 
 #: inc/dropdown.class.php:769
 msgid "Common"
@@ -10793,7 +10793,7 @@ msgstr[3] "Šablony projektových úkolů"
 #: inc/rule.class.php:396
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] "Typ síťových zařízení"
+msgstr[0] "Typ síťového zařízení"
 msgstr[1] "Typy síťových zařízení"
 msgstr[2] "Typů síťových zařízení"
 msgstr[3] "Typy síťových zařízení"
@@ -10844,10 +10844,10 @@ msgstr[3] "Typy licencí"
 #: inc/dropdown.class.php:835
 msgid "Generic device type"
 msgid_plural "Generic device types"
-msgstr[0] "Obecný typ zařízení"
-msgstr[1] "Obecné typy zařízení"
-msgstr[2] "Obecných typů zařízení"
-msgstr[3] "Obecné typy zařízení"
+msgstr[0] "Typ obecného zařízení"
+msgstr[1] "Typy obecných zařízení"
+msgstr[2] "Typů obecných zařízení"
+msgstr[3] "Typy obecných zařízení"
 
 #: inc/dropdown.class.php:844 inc/interfacetype.class.php:44
 msgid "Interface type (Hard drive...)"
@@ -10930,7 +10930,7 @@ msgstr[3] "Modely síťových karet"
 #: inc/profile.class.php:895 inc/profile.class.php:1713
 #: inc/transfer.class.php:3458
 msgid "Management"
-msgstr "Řízení"
+msgstr "Management"
 
 #: inc/dropdown.class.php:941 inc/event.class.php:156 inc/html.class.php:1346
 #: inc/profile.class.php:95 inc/profile.class.php:101
@@ -11106,7 +11106,7 @@ msgid_plural "User categories"
 msgstr[0] "Kategorie uživatelů"
 msgstr[1] "Kategorie uživatelů"
 msgstr[2] "Kategorií uživatelů"
-msgstr[3] "Kategorií uživatelů"
+msgstr[3] "Kategorie uživatelů"
 
 #: inc/dropdown.class.php:1024 inc/profile.class.php:1351
 #: inc/profile.class.php:2006 inc/ruleright.class.php:66
@@ -11124,7 +11124,7 @@ msgstr[3] "LDAP kritéria"
 
 #: inc/dropdown.class.php:1029 inc/fieldunicity.class.php:52
 msgid "Fields unicity"
-msgstr "Neopakovanost kolonek"
+msgstr "Jednoznačnost kolonek"
 
 #: inc/dropdown.class.php:1030 inc/fieldblacklist.class.php:48
 msgid "Ignored value for the unicity"
@@ -11147,7 +11147,7 @@ msgid_plural "%d years"
 msgstr[0] "%d rok"
 msgstr[1] "%d roky"
 msgstr[2] "%d let"
-msgstr[3] "%d let"
+msgstr[3] "%d roky"
 
 #. TRANS: %d is a number of seconds
 #: inc/dropdown.class.php:1543
@@ -11157,7 +11157,7 @@ msgid_plural "%d seconds"
 msgstr[0] "%d sekunda"
 msgstr[1] "%d sekundy"
 msgstr[2] "%d sekund"
-msgstr[3] "%d sekund"
+msgstr[3] "%d sekundy"
 
 #. TRANS: %d is a number of milliseconds
 #: inc/dropdown.class.php:1547
@@ -11167,7 +11167,7 @@ msgid_plural "%d milliseconds"
 msgstr[0] "%d milisekunda"
 msgstr[1] " %d milisekundy"
 msgstr[2] "%d milisekund"
-msgstr[3] "%d milisekund"
+msgstr[3] "%d milisekundy"
 
 #. TRANS: %d is the percentage. %% to display %
 #: inc/dropdown.class.php:1554 inc/entity.class.php:2285
@@ -11181,16 +11181,16 @@ msgstr "%d%%"
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
-msgstr[0] "%1$d den %2$dh%3$s"
-msgstr[1] "%1$d dny %2$dh%3$s"
-msgstr[2] "%1$d dnů %2$dh%3$s"
-msgstr[3] "%1$d dnů %2$dh%3$s"
+msgstr[0] "%1$d den %2$dh %3$sm"
+msgstr[1] "%1$d dny %2$dh %3$sm"
+msgstr[2] "%1$d dnů %2$dh %3$sm"
+msgstr[3] "%1$d dnů %2$dh %3$sm"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: inc/dropdown.class.php:1678
 #, php-format
 msgid "%1$dh%2$s"
-msgstr "%1$dh %2$s"
+msgstr "%1$dh %2$sm"
 
 #: inc/dropdown.class.php:1958
 msgid "Other..."
@@ -11329,7 +11329,7 @@ msgstr "Atribut v LDAP adresáři představující entitu"
 
 #: inc/entity.class.php:625 inc/entity.class.php:1409
 msgid "Information in inventory tool (TAG) representing the entity"
-msgstr "Informace v inventarizačním nástroji (TAG) představující entitu"
+msgstr "Informace v inventarizačním nástroji (štítek) představující entitu"
 
 #: inc/entity.class.php:634 inc/entity.class.php:1434
 msgid "LDAP directory of an entity"
@@ -11349,11 +11349,11 @@ msgstr "Volby oznámení"
 
 #: inc/entity.class.php:666 inc/entity.class.php:1671
 msgid "Delay to send email notifications"
-msgstr "Zpoždění při zasílání oznámení emailem"
+msgstr "Prodleva před zasílání oznámení e-mailem"
 
 #: inc/entity.class.php:681 inc/entity.class.php:1692
 msgid "Enable notifications by default"
-msgstr "Zapnut oznámení jako výchozí"
+msgstr "Ve výchozím stavu zapnout oznamování"
 
 #: inc/entity.class.php:691 inc/entity.class.php:1649
 #: inc/notificationmailingsetting.class.php:74
@@ -11384,24 +11384,24 @@ msgstr "Podpis e-mailu"
 
 #: inc/entity.class.php:741
 msgid "Alarms on cartridges"
-msgstr "Výstrahy u náplní"
+msgstr "Výstrahy ohledně náplní"
 
 #: inc/entity.class.php:751
 msgid "Alarms on consumables"
-msgstr "Výstrahy u spotřebního materiálu"
+msgstr "Výstrahy ohledně spotřebního materiálu"
 
 #: inc/entity.class.php:761 inc/entity.class.php:1897
 #: inc/notificationtargetsoftwarelicense.class.php:45
 msgid "Alarms on expired licenses"
-msgstr "Výstrahy u prošlých licencí"
+msgstr "Výstrahy ohledně licencí, kterým skončila platnost"
 
 #: inc/entity.class.php:771 inc/entity.class.php:1909
 msgid "Send license alarms before"
-msgstr "Posílat výstrahy ohledně licence před"
+msgstr "Posílat výstrahy ohledně licencí před"
 
 #: inc/entity.class.php:781 inc/entity.class.php:1806
 msgid "Alarms on contracts"
-msgstr "Výstrahy u smluv"
+msgstr "Výstrahy ohledně smluv"
 
 #: inc/entity.class.php:791 inc/entity.class.php:1831
 msgid "Send contract alarms before"
@@ -11411,11 +11411,12 @@ msgstr "Posílat výstrahy ohledně smlouvy před"
 #: inc/infocom.class.php:1260 inc/infocom.class.php:1835
 #: inc/notificationtargetinfocom.class.php:45
 msgid "Alarms on financial and administrative information"
-msgstr "Výstrahy u finančních a administrativních informací"
+msgstr "Výstrahy ohledně finančních a administrativních informací"
 
 #: inc/entity.class.php:811 inc/entity.class.php:1877
 msgid "Send financial and administrative information alarms before"
-msgstr "Posílat výstrahy u finančních a administrativních informací před"
+msgstr ""
+"Posílat výstrahy ohledně finančních a administrativních informací před"
 
 #: inc/entity.class.php:821 inc/entity.class.php:1963
 #: inc/reservationitem.class.php:598
@@ -11424,11 +11425,12 @@ msgstr "Upozornění na rezervace"
 
 #: inc/entity.class.php:831
 msgid "Default value for alarms on contracts"
-msgstr "Výchozí hodnota výstrah u smluv"
+msgstr "Výchozí hodnota pro výstrahy ohledně smluv"
 
 #: inc/entity.class.php:841
 msgid "Default value for alarms on financial and administrative information"
-msgstr "Výchozí hodnota výstrah u finančních a administrativních informací"
+msgstr ""
+"Výchozí hodnota výstrah ohledně finančních a administrativních informací"
 
 #: inc/entity.class.php:851 inc/entity.class.php:1739
 msgid "Default threshold for cartridges count"
@@ -11518,7 +11520,7 @@ msgstr "Datum vyřazení z provozu"
 
 #: inc/entity.class.php:1097
 msgid "to see the entity and its sub-entities"
-msgstr "zobrazit tuto entitu a její pod-entity"
+msgstr "zobrazit tuto entitu a jí podřízené entity"
 
 #: inc/entity.class.php:1100 inc/html.class.php:6382
 #: inc/reservation.class.php:438 inc/ticket.class.php:5867
@@ -11554,7 +11556,7 @@ msgstr "E-mailová doména zastupující entitu"
 
 #: inc/entity.class.php:1430
 msgid "Values used in the interface to search users from a LDAP directory"
-msgstr "Hodnoty použité v rozhraní pro vyhledání uživatelů z LDAP adresáře"
+msgstr "Hodnoty použité v rozhraní pro vyhledání uživatelů v LDAP adresáři"
 
 #: inc/entity.class.php:1442
 msgid "LDAP filter associated to the entity (if necessary)"
@@ -11776,7 +11778,7 @@ msgid ""
 "Fully Qualified Domain Name. Use the classical notation (labels separated by"
 " dots). For example: indepnet.net"
 msgstr ""
-"Úplný název domény. Použijte klasický zápis (jednotlivé názvy oddělené "
+"Úplný název domény. Použijte klasický zápis (jednotlivé části oddělené "
 "tečkami). Například: indepnet.net"
 
 #: inc/fqdn.class.php:80
@@ -11795,7 +11797,8 @@ msgstr "Neplatný Internetový název: %s"
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr ""
-"Velikost nahrávaného soubor překročila hodnotu upload_max_filesize v php.ini"
+"Velikost nahrávaného soubor překročila hodnotu upload_max_filesize určenou v"
+" php.ini"
 
 #: inc/glpiuploadhandler.class.php:52
 msgid ""
@@ -11815,7 +11818,7 @@ msgstr "Nebyl nahrán žádný soubor"
 
 #: inc/glpiuploadhandler.class.php:64
 msgid "Missing a temporary folder"
-msgstr "Chybějící dočasný soubor"
+msgstr "Chybějící dočasná složka"
 
 #: inc/glpiuploadhandler.class.php:68
 msgid "Failed to write file to disk"
@@ -11823,12 +11826,13 @@ msgstr "Neúspěšný zápis souboru na úložiště"
 
 #: inc/glpiuploadhandler.class.php:72
 msgid "A PHP extension stopped the file upload"
-msgstr "Rozšíření PHP zastavilo nahrávání souboru"
+msgstr "PHP rozšíření zastavilo nahrávání souboru"
 
 #: inc/glpiuploadhandler.class.php:76
 msgid "The uploaded file exceeds the post_max_size directive in php.ini"
 msgstr ""
-"Velikost nahrávaného souboru překročila hodnotu post_max_size v php.ini"
+"Velikost nahrávaného souboru překročila hodnotu post_max_size určenou v "
+"php.ini"
 
 #: inc/glpiuploadhandler.class.php:80
 msgid "File is too big"
@@ -11860,7 +11864,7 @@ msgstr "Obrázek vyžaduje nějakou minimální výšku"
 
 #: inc/glpiuploadhandler.class.php:150
 msgid "Filetype not allowed"
-msgstr "Typ souboru není povolen"
+msgstr "Nepovolený typ souboru"
 
 #: inc/group.class.php:156 inc/group.class.php:749 inc/user.class.php:218
 msgid "Used items"
@@ -11872,11 +11876,11 @@ msgstr "Spravované položky"
 
 #: inc/group.class.php:261
 msgid "Visible in a ticket"
-msgstr "Viditelnost v požadavku"
+msgstr "Viditelné v požadavku"
 
 #: inc/group.class.php:281 inc/group.class.php:489
 msgid "Can be notified"
-msgstr "Mohou být zaslána oznámení"
+msgstr "Mohou být zasílána oznámení"
 
 #: inc/group.class.php:287
 msgid "Visible in a project"
@@ -12034,7 +12038,7 @@ msgid_plural "%1$s%2$d minutes"
 msgstr[0] "%1$s%2$d minuta"
 msgstr[1] "%1$s%2$d minuty"
 msgstr[2] "%1$s%2$d minut"
-msgstr[3] "%1$s%2$d minut"
+msgstr[3] "%1$s%2$d minuty"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
 #: inc/html.class.php:418
@@ -12044,7 +12048,7 @@ msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s sekunda"
 msgstr[1] "%1$s%2$s sekundy"
 msgstr[2] "%1$s%2$s sekund"
-msgstr[3] "%1$s%2$s sekund"
+msgstr[3] "%1$s%2$s sekundy"
 
 #: inc/html.class.php:564 inc/rssfeed.class.php:370 inc/rssfeed.class.php:577
 msgid "Error"
@@ -12076,7 +12080,7 @@ msgstr "Najdete na webu GLPI-PROJECT.org."
 #: inc/toolbox.class.php:1440
 #, php-format
 msgid "A new version is available: %s."
-msgstr "Je dostupná nová verze: %s."
+msgstr "Je k dispozici nová verze: %s."
 
 #: inc/html.class.php:2033
 msgid "Check all"
@@ -12122,7 +12126,7 @@ msgid_plural "- %d hours"
 msgstr[0] "- %d hodina"
 msgstr[1] " - %d hodiny"
 msgstr[2] "- %d hodin"
-msgstr[3] "- %d hodin"
+msgstr[3] "- %d hodiny"
 
 #: inc/html.class.php:2996 inc/levelagreementlevel.class.php:272
 #, php-format
@@ -12131,7 +12135,7 @@ msgid_plural "- %d days"
 msgstr[0] "- %d den"
 msgstr[1] "- %d dny"
 msgstr[2] "- %d dnů"
-msgstr[3] "- %d dnů"
+msgstr[3] "- %d dny"
 
 #: inc/html.class.php:3000
 msgid "last Sunday"
@@ -12168,7 +12172,7 @@ msgid_plural "- %d weeks"
 msgstr[0] "- %d týden"
 msgstr[1] "- %d týdny"
 msgstr[2] "- %d týdnů"
-msgstr[3] "- %d týdnů"
+msgstr[3] "- %d týdny"
 
 #: inc/html.class.php:3014
 msgid "Beginning of the month"
@@ -12181,7 +12185,7 @@ msgid_plural "- %d months"
 msgstr[0] "- %d měsíc"
 msgstr[1] "- %d měsíce"
 msgstr[2] "- %d měsíců"
-msgstr[3] "- %d měsíců"
+msgstr[3] "- %d měsíce"
 
 #: inc/html.class.php:3022
 msgid "Beginning of the year"
@@ -12194,7 +12198,7 @@ msgid_plural "- %d years"
 msgstr[0] "- %d rok"
 msgstr[1] "- %d roky"
 msgstr[2] "- %d let"
-msgstr[3] "- %d let"
+msgstr[3] "- %d roky"
 
 #: inc/html.class.php:3032 inc/levelagreementlevel.class.php:256
 #, php-format
@@ -12203,7 +12207,7 @@ msgid_plural "+ %d hours"
 msgstr[0] "+ %d hodina"
 msgstr[1] "+ %d hodiny"
 msgstr[2] "+ %d hodin"
-msgstr[3] "+ %d hodin"
+msgstr[3] "+ %d hodiny"
 
 #: inc/html.class.php:3037 inc/levelagreementlevel.class.php:268
 #, php-format
@@ -12212,7 +12216,7 @@ msgid_plural "+ %d days"
 msgstr[0] "+ %d den"
 msgstr[1] "+ %d dny"
 msgstr[2] "+ %d dnů"
-msgstr[3] "+ %d dnů"
+msgstr[3] "+ %d dny"
 
 #: inc/html.class.php:3041
 #, php-format
@@ -12221,7 +12225,7 @@ msgid_plural "+ %d weeks"
 msgstr[0] "+ %d týden"
 msgstr[1] "+ %d týdny"
 msgstr[2] "+ %d týdnů"
-msgstr[3] "+ %d týdnů"
+msgstr[3] "+ %d týdny"
 
 #: inc/html.class.php:3045
 #, php-format
@@ -12230,20 +12234,20 @@ msgid_plural "+ %d months"
 msgstr[0] "+ %d měsíc"
 msgstr[1] "+ %d měsíce"
 msgstr[2] "+ %d měsíců"
-msgstr[3] "+ %d měsíců"
+msgstr[3] "+ %d měsíce"
 
 #: inc/html.class.php:3049
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
-msgstr[0] "%d+ rok"
+msgstr[0] "+ %d rok"
 msgstr[1] "+ %d roky"
-msgstr[2] "+ %dlet"
-msgstr[3] "+ %dlet"
+msgstr[2] "+ %d let"
+msgstr[3] "+ %d roky"
 
 #: inc/html.class.php:3538
 msgid "The description field is mandatory"
-msgstr "Kolonku popis je třeba vyplnit"
+msgstr "Kolonku popis je povinné vyplnit"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3713 inc/html.class.php:3915
@@ -12282,7 +12286,7 @@ msgstr "Přetáhněte soubor sem nebo"
 
 #: inc/html.class.php:5019
 msgid "Upload successful"
-msgstr "Úspěšné načtení"
+msgstr "Nahrání úspěšné"
 
 #: inc/html.class.php:5157
 msgid "Check/uncheck all"
@@ -12350,7 +12354,7 @@ msgstr ""
 
 #: inc/infocom.class.php:443
 msgid "Send alarms on financial and administrative information"
-msgstr "Posílat výstrahy u finančních a administrativních informací"
+msgstr "Posílat výstrahy ohledně finančních a administrativních informací"
 
 #. TRANS: %1$s is the warranty end date and %2$s the name of the item
 #: inc/infocom.class.php:492
@@ -12716,7 +12720,7 @@ msgid_plural "Item operating systems"
 msgstr[0] "Položka operační systém"
 msgstr[1] "Položka operační systémy"
 msgstr[2] "Položka operačních systémů"
-msgstr[3] "Položka operačních systémů"
+msgstr[3] "Položka operační systémy"
 
 #: inc/item_operatingsystem.class.php:353
 #: inc/item_operatingsystem.class.php:488
@@ -12776,7 +12780,7 @@ msgstr "texty"
 
 #: inc/item_rack.class.php:376
 msgid "Insert an item here"
-msgstr "Sem zadejte položku"
+msgstr "Vložit položku sem"
 
 #: inc/item_rack.class.php:512
 msgid "Rack stats"
@@ -12887,7 +12891,7 @@ msgid_plural "%1$s items not saved"
 msgstr[0] "%1$s položka neuložena"
 msgstr[1] " %1$s položky neuloženy"
 msgstr[2] " %1$s položek neuloženo"
-msgstr[3] " %1$s položek neuloženo"
+msgstr[3] " %1$s položky neuloženy"
 
 #: inc/item_ticket.class.php:321
 msgid "Display all items"
@@ -13080,7 +13084,7 @@ msgid_plural "%d views"
 msgstr[0] "%d pohled"
 msgstr[1] "%d pohledy"
 msgstr[2] "%d pohledů"
-msgstr[3] "%d pohledů"
+msgstr[3] "%d pohledy"
 
 #: inc/knowbaseitem.class.php:757
 msgid "Add link"
@@ -13260,7 +13264,7 @@ msgid_plural "Linked items"
 msgstr[0] "Odkazovaná položka"
 msgstr[1] "Odkazované položky"
 msgstr[2] "Odkazovaných položek"
-msgstr[3] "Odkazovaných položek"
+msgstr[3] "Odkazované položky"
 
 #: inc/knowbaseitem_item.class.php:209
 msgid "Update date"
@@ -13311,7 +13315,7 @@ msgstr "obnovit"
 
 #: inc/knowbaseitem_revision.class.php:190
 msgid "Do you want to restore the selected revision?"
-msgstr "Chcete vrátit do stavu vybrané revize?"
+msgstr "Chcete vrátit do podoby vybrané revize?"
 
 #: inc/knowbaseitem_revision.class.php:205
 msgid "Show revision %rev"
@@ -13383,7 +13387,7 @@ msgid_plural "Escalation levels"
 msgstr[0] "Stupeň eskalace"
 msgstr[1] "Stupně eskalace"
 msgstr[2] "Stupňů eskalace"
-msgstr[3] "Stupňů eskalace"
+msgstr[3] "Stupně eskalace"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
@@ -13427,7 +13431,7 @@ msgid_plural "+ %d minutes"
 msgstr[0] "+ %d minuta"
 msgstr[1] "+ %d minuty"
 msgstr[2] "+ %d minut"
-msgstr[3] "+ %d minut"
+msgstr[3] "+ %d minuty"
 
 #: inc/levelagreementlevel.class.php:249
 #, php-format
@@ -13436,7 +13440,7 @@ msgid_plural "- %d minutes"
 msgstr[0] "- %d minuta"
 msgstr[1] "- %d minuty"
 msgstr[2] "- %d minut"
-msgstr[3] "- %d minut"
+msgstr[3] "- %d minuty"
 
 #: inc/line.class.php:127 inc/line.class.php:224
 msgid "Caller number"
@@ -13703,7 +13707,7 @@ msgstr "Chyby připojení"
 
 #: inc/mailcollector.class.php:270
 msgid "Use Kerberos authentication"
-msgstr "Použít ověřování přes Kerberos"
+msgstr "Ověřovat totožnost prostřednictvím Kerberos"
 
 #: inc/mailcollector.class.php:276 inc/mailcollector.class.php:402
 msgid "Accepted mail archive folder (optional)"
@@ -13822,7 +13826,7 @@ msgstr "Chyba implementace!"
 
 #: inc/massiveaction.class.php:255
 msgid "No selected items"
-msgstr "Nejsou vybrány žádné položky"
+msgstr "Nevybrány žádné položky"
 
 #: inc/massiveaction.class.php:269
 msgid "Invalid process"
@@ -13830,7 +13834,7 @@ msgstr "Neplatný proces"
 
 #: inc/massiveaction.class.php:450 inc/massiveaction.class.php:757
 msgid "Select the type of the item on which applying this action"
-msgstr "Vyberte typ položky, na kterou se má tato akce použít"
+msgstr "Vyberte typ položky, na kterou se má použít tato akce"
 
 #: inc/massiveaction.class.php:478
 msgctxt "button"
@@ -14441,7 +14445,7 @@ msgstr "Poslední změnu provedl"
 #: inc/notepad.class.php:336
 #, php-format
 msgid "Last update by %1$s on %2$s"
-msgstr "Posledně aktualizoval %1$s v %2$s"
+msgstr "Posledně změnil %1$s v %2$s"
 
 #: inc/notepad.class.php:342
 #, php-format
@@ -14468,9 +14472,9 @@ msgstr "Zobrazovat doplňující zprávy přes prohlížeč"
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] "Upozornění přes prohlížeč"
-msgstr[1] "Upozornění přes prohlížeč"
-msgstr[2] "Upozornění přes prohlížeč"
+msgstr[0] "Oznámení přes prohlížeč"
+msgstr[1] "Oznámení přes prohlížeč"
+msgstr[2] "Oznámení přes prohlížeč"
 msgstr[3] "Oznámení přes prohlížeč"
 
 #: inc/notificationajaxsetting.class.php:70
@@ -14547,7 +14551,7 @@ msgstr "Metoda oznámení"
 
 #: inc/notification.class.php:540 inc/notification.class.php:556
 msgid "Field itemtype is mandatory"
-msgstr "Kolonku typ položky je třeba vyplnit"
+msgstr "Kolonku typ položky je povinné vyplnit"
 
 #: inc/notificationevent.class.php:165
 #, php-format
@@ -14799,7 +14803,7 @@ msgstr ""
 
 #: inc/notificationtargetcartridgeitem.class.php:47
 msgid "Cartridges alarm"
-msgstr "Výstrahy ohledně náplní"
+msgstr "Výstraha ohledně náplní"
 
 #: inc/notificationtargetcartridgeitem.class.php:83
 #: inc/notificationtargetconsumableitem.class.php:84
@@ -14895,12 +14899,12 @@ msgstr "Rozhodovatel"
 #: inc/notificationtargetchange.class.php:316
 #: inc/notificationtargetticket.class.php:813
 msgid "A validation request has been submitted"
-msgstr "Požadavek o schválení byl odeslán"
+msgstr "Požadavek na ověření byl odeslán"
 
 #: inc/notificationtargetchange.class.php:318
 #: inc/notificationtargetticket.class.php:815
 msgid "An answer to a validation request was produced"
-msgstr "Odpověď pro žádost o schválení byla vytvořena"
+msgstr "Odpověď na žádost o ověření byla vytvořena"
 
 #: inc/notificationtarget.class.php:782
 msgid "Manager of group"
@@ -14953,7 +14957,7 @@ msgstr "Předchozí technik zodpovědný za tento požadavek"
 
 #: inc/notificationtargetcommonitilobject.class.php:539
 msgid "Manager of the group in charge of the ticket"
-msgstr "Vedoucí skupiny zodpovědný za tento požadavek"
+msgstr "Vedoucí skupiny zodpovědné za tento požadavek"
 
 #: inc/notificationtargetcommonitilobject.class.php:541
 msgid "Group in charge of the ticket except manager users"
@@ -15081,20 +15085,20 @@ msgstr "Výstraha ohledně smluv"
 #: inc/notificationtargetcontract.class.php:119
 #: inc/notificationtargetcontract.class.php:157
 msgid "Contract expired since the"
-msgstr "Smlouvě skončila platnost od"
+msgstr "Smlouvě skončila platnost k"
 
 #: inc/notificationtargetcontract.class.php:123
 #: inc/notificationtargetcontract.class.php:158
 msgid "Contract with notice since the"
-msgstr "Smlouva s výpovědní dobou od"
+msgstr "Smlouva s výpovědní dobou k"
 
 #: inc/notificationtargetcontract.class.php:128
 msgid "Contract reached the end of a period since the"
-msgstr "Smlouva dosáhla konce období od "
+msgstr "Smlouva dosáhla konce období k"
 
 #: inc/notificationtargetcontract.class.php:133
 msgid "Contract with notice for the current period since the"
-msgstr "Smlouva s výpovědní dobou pro aktuální období od"
+msgstr "Smlouva s výpovědní dobou pro aktuální období k"
 
 #: inc/notificationtargetcrontask.class.php:99
 msgid ""
@@ -15326,7 +15330,7 @@ msgstr "Skutečné datum dokončení"
 #: inc/projecttask.class.php:1592 inc/projecttasktemplate.class.php:67
 #: inc/projecttasktemplate.class.php:129 inc/projecttask_ticket.class.php:327
 msgid "Percent done"
-msgstr "Procent dokončeno"
+msgstr "Dokončeno procent"
 
 #: inc/notificationtargetproject.class.php:573
 #: inc/notificationtargetprojecttask.class.php:468 inc/project.class.php:590
@@ -15451,11 +15455,11 @@ msgstr "Načíst uložené výsledky"
 
 #: inc/notificationtargetticket.class.php:121
 msgid "To answer by email, write above this line"
-msgstr "Pokud chcete odpovědět e-mailem, napište ho nad tento řádek"
+msgstr "Pokud chcete odpovědět e-mailem, napište nad tento řádek"
 
 #: inc/notificationtargetticket.class.php:137
 msgid "To answer by email, write under this line"
-msgstr "Pokud chcete odpovědět e-mailem, napište ho pod tento řádek"
+msgstr "Pokud chcete odpovědět e-mailem, napište pod tento řádek"
 
 #: inc/notificationtargetticket.class.php:229
 msgid "Update of a ticket"
@@ -15516,7 +15520,7 @@ msgid_plural ""
 msgstr[0] "Bez odpovědi bude požadavek automaticky uzavřen po uplynutí %s dne"
 msgstr[1] "Bez odpovědi bude požadavek automaticky uzavřen po uplynutí %s dnů"
 msgstr[2] "Bez odpovědi bude požadavek automaticky uzavřen po uplynutí %s dní"
-msgstr[3] "Bez odpovědi bude požadavek automaticky uzavřen po uplynutí %s dní"
+msgstr[3] "Bez odpovědi bude požadavek automaticky uzavřen po uplynutí %s dnů"
 
 #: inc/notificationtargetticket.class.php:716
 #: inc/notificationtargetticket.class.php:718
@@ -15643,9 +15647,9 @@ msgstr "CSS"
 msgid "Template translation"
 msgid_plural "Template translations"
 msgstr[0] "Překlad šablony"
-msgstr[1] "Překlady šablon"
+msgstr[1] "Překlady šablony"
 msgstr[2] "Překladů šablony"
-msgstr[3] "Překlady šablon"
+msgstr[3] "Překlady šablony"
 
 #: inc/notificationtemplatetranslation.class.php:123
 msgid "Show list of available tags"
@@ -15745,7 +15749,7 @@ msgid_plural "Object Locks"
 msgstr[0] "Zámek objektu"
 msgstr[1] "Zámky objektů"
 msgstr[2] "Zámků objektů"
-msgstr[3] "Zámků objektů"
+msgstr[3] "Zámky objektů"
 
 #: inc/objectlock.class.php:152 inc/objectlock.class.php:240
 msgid "Reload page?"
@@ -15831,7 +15835,7 @@ msgstr "Přiřazení OLA k požadavku způsobí přepočet data."
 
 #: inc/ola.class.php:63
 msgid "Escalations defined in the OLA will be triggered under this new date."
-msgstr "Eskalace určené v OLA smlouvě budou spuštěny v tomto novém datu."
+msgstr "Eskalace určené v OLA smlouvě budou spuštěné k tomuto novém datu."
 
 #: inc/olalevel.class.php:99 inc/slalevel.class.php:95
 msgid "Add an escalation level"
@@ -15943,11 +15947,11 @@ msgstr "Jednotka distribuce napájení bude"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
-msgstr "umístěno v rozvaděči"
+msgstr "umístěna v rozvaděči vodorovně"
 
 #: inc/pdu_rack.class.php:500
 msgid "placed at rack side"
-msgstr "umístěno na boku rozvaděče"
+msgstr "umístěna v rozvaděči svisle, v boku"
 
 #: inc/pdu_rack.class.php:707
 msgid "Top"
@@ -16080,11 +16084,11 @@ msgid_plural "%d weeks"
 msgstr[0] "%d týden"
 msgstr[1] "%d týdny"
 msgstr[2] "%d týdnů"
-msgstr[3] "%d týdnů"
+msgstr[3] "%d týdny"
 
 #: inc/planningrecall.class.php:347
 msgid "Send planning recalls"
-msgstr "Poslat připomenutí plánování"
+msgstr "Posílat připomenutí plánování"
 
 #: inc/plug.class.php:42
 msgid "Plug"
@@ -16172,7 +16176,7 @@ msgstr "Chcete ho %activate_link?"
 #: inc/plugin.class.php:718
 #, php-format
 msgid "Plugin %1$s has been installed and must be configured!"
-msgstr "Zásuvný modul %1$s byl nainstalován a teď je třeba ho nastavit! "
+msgstr "Zásuvný modul %1$s byl nainstalován a je třeba ho nastavit! "
 
 #: inc/plugin.class.php:725
 #, php-format
@@ -16343,7 +16347,7 @@ msgid_plural "%d associated documents"
 msgstr[0] "%d související dokument"
 msgstr[1] "%d související dokumenty"
 msgstr[2] "%d souvisejících dokumentů"
-msgstr[3] "%d souvisejících dokumentů"
+msgstr[3] "%d související dokumenty"
 
 #: inc/problem.class.php:1378
 msgid "Last problems"
@@ -16357,7 +16361,7 @@ msgid_plural "Last %d problems"
 msgstr[0] "Nedávný %d problém"
 msgstr[1] "Nedávné %d problémy"
 msgstr[2] "Nedávných %d problémů"
-msgstr[3] "Nedávných %d problémů"
+msgstr[3] "Nedávné %d problémy"
 
 #: inc/problem.class.php:1446 inc/problem.class.php:1500
 msgid "No problem found."
@@ -16540,11 +16544,11 @@ msgstr "Pravidla pro přiřazování počítače k entitě"
 #: inc/rulemailcollector.class.php:58
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr "Pravidla pro přiřazování požadavků vytvořeného e-mailovým přijímačem"
+msgstr "Pravidla pro přiřazování požadavků vytvářených e-mailovým přijímačem"
 
 #: inc/profile.class.php:1360 inc/profile.class.php:2020
 msgid "Rules for assigning a category to a software"
-msgstr "Pravidla pro přiřazování software do kategorie"
+msgstr "Pravidla pro přiřazování software do kategorií"
 
 #: inc/profile.class.php:1363
 msgid "Business rules for tickets (entity)"
@@ -16898,7 +16902,7 @@ msgstr "Odeslat e-maily ve frontě"
 
 #: inc/queuednotification.class.php:472
 msgid "Maximum emails to send at once"
-msgstr "Maximální počet e-mailů, které lze poslat najednou"
+msgstr "Nejvyšší počet e-mailů, které lze poslat najednou"
 
 #: inc/queuednotification.class.php:475
 msgid "Clean notification queue"
@@ -17007,7 +17011,7 @@ msgid_plural "Registered IDs (issued by PCI-SIG)"
 msgstr[0] "Registrovaný identifikátor (vydaný organizací PCI-SIG)"
 msgstr[1] "Registrované identifikátory (vydané organizací PCI-SIG)"
 msgstr[2] "Registrovaných identifikátorů (vydaných organizací PCI-SIG)"
-msgstr[3] "Registrovaných identifikátorů (vydaných organizací PCI-SIG)"
+msgstr[3] "Registrované identifikátory (vydané organizací PCI-SIG)"
 
 #: inc/reminder.class.php:59
 msgid "Reminder"
@@ -18207,7 +18211,7 @@ msgid ""
 msgstr ""
 "Kritérium „vše“ není použitelné s tímto seznamem objektů, sql dotaz se "
 "nedaří (příliš mnoho tabulek). Použijte namísto toho kritérium „Položek "
-"viděno“"
+"zobrazeno“"
 
 #: inc/search.class.php:1491
 msgid "Show as map"
@@ -18868,7 +18872,7 @@ msgstr "Vytváření průzkumů spokojenosti"
 
 #: inc/ticket.class.php:6538
 msgid "See my ticket"
-msgstr "Zobrazit svoje požadavky"
+msgstr "Zobrazit své požadavky"
 
 #. TRANS: short for : See tickets created by my groups
 #: inc/ticket.class.php:6540

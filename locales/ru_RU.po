@@ -15856,7 +15856,7 @@ msgid_plural "PDUs"
 msgstr[0] "PDUs"
 msgstr[1] "PDUs"
 msgstr[2] "PDUs"
-msgstr[3] "PDUs"
+msgstr[3] "Распределители питания"
 
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
@@ -15864,7 +15864,7 @@ msgid_plural "PDU models"
 msgstr[0] "Модель PDU"
 msgstr[1] "Модели PDU"
 msgstr[2] "Модели PDU"
-msgstr[3] "Модель PDU"
+msgstr[3] "Модель распределителя питания"
 
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
@@ -15872,7 +15872,7 @@ msgid_plural "PDU plugs"
 msgstr[0] "Разъем PDU"
 msgstr[1] "Разъемы PDU"
 msgstr[2] "Разъемы PDU"
-msgstr[3] "Разъемы PDU"
+msgstr[3] "Разъемы распределителя питания"
 
 #: inc/pdu_plug.class.php:131
 msgid "Add a new plug"
@@ -15889,7 +15889,7 @@ msgstr "Разъем не найден"
 
 #: inc/pdu_rack.class.php:95
 msgid "A pdu is required"
-msgstr "Требуется pdu"
+msgstr "Требуется распределитель питания"
 
 #: inc/pdu_rack.class.php:107
 msgid "A side is required"
@@ -15926,7 +15926,7 @@ msgstr "Справа"
 
 #: inc/pdu_rack.class.php:497
 msgid "The pdu will be"
-msgstr "Положение PDU"
+msgstr "Положение распределителя питания"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
@@ -15950,7 +15950,7 @@ msgid_plural "PDU types"
 msgstr[0] "Тип PDU"
 msgstr[1] "Типы PDU"
 msgstr[2] "Типы PDU"
-msgstr[3] "Тип PDU"
+msgstr[3] "Тип распределителя питания"
 
 #: inc/peripheral.class.php:289 inc/peripheral.class.php:484
 #: inc/phone.class.php:283 inc/phone.class.php:511

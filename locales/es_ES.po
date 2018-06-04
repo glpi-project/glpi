@@ -39,7 +39,7 @@ msgstr "Contraseña"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "Idioma (en perfil de usuario)"
 
 #: index.php:153
 msgid "Remember me"
@@ -6495,7 +6495,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s elementos"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
