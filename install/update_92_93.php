@@ -104,8 +104,8 @@ function update92to93() {
                   IF(glsolvetype.`new_value` REGEXP '[(][0-9]+[)]$', SUBSTRING_INDEX(SUBSTRING_INDEX(glsolvetype.`new_value`, '(', -1), ')', 1), 0) AS solutiontypes_id,
                   IF(glsolvetype.`new_value` REGEXP '[(][0-9]+[)]$', NULL, glsolvetype.`new_value`) AS solutiontype_name,
                   IFNULL(
-                     glcontent.`new_value`,
-                     obj.`solution`
+                     obj.`solution`,
+                     glcontent.`new_value`
                   ) AS content,
                   IF(
                      IFNULL(glansw.`date_mod`, obj.`closedate`) IS NULL,
@@ -161,7 +161,7 @@ function update92to93() {
                         IF(glsolve.user_name REGEXP '[(][0-9]+[)]$', NULL, glsolve.`user_name`) AS user_name,
                         IF(glsolvetype.`new_value` REGEXP '[(][0-9]+[)]$', SUBSTRING_INDEX(SUBSTRING_INDEX(glsolvetype.`new_value`, '(', -1), ')', 1), 0) AS solutiontypes_id,
                         IF(glsolvetype.`new_value` REGEXP '[(][0-9]+[)]$', NULL, glsolvetype.`new_value`) AS solutiontype_name,
-                        IFNULL(glcontent.`new_value`, obj.`solution`) AS content,
+                        IFNULL(obj.`solution`, glcontent.`new_value`) AS content,
                         IF( IFNULL(glansw.`date_mod`, obj.`closedate`) IS NULL, 1, IF( glansw.`new_value` = 6 OR (glansw.`new_value` IS NULL AND obj.`closedate` IS NOT NULL), 3, 2)) AS status,
                         IFNULL(glansw.`date_mod`, obj.`closedate`) AS date_approval,
                         NULL AS 'ticketfollowups_id',
@@ -189,7 +189,7 @@ function update92to93() {
                      IF(glsolve.user_name REGEXP '[(][0-9]+[)]$', NULL, glsolve.`user_name`) AS user_name,
                      IF(glsolvetype.`new_value` REGEXP '[(][0-9]+[)]$', SUBSTRING_INDEX(SUBSTRING_INDEX(glsolvetype.`new_value`, '(', -1), ')', 1), 0) AS solutiontypes_id,
                      IF(glsolvetype.`new_value` REGEXP '[(][0-9]+[)]$', NULL, glsolvetype.`new_value`) AS solutiontype_name,
-                     IFNULL(glcontent.`new_value`, obj.`solution`) AS content,
+                     IFNULL(obj.`solution`, glcontent.`new_value`) AS content,
                      IF( IFNULL(glansw.`date_mod`, obj.`closedate`) IS NULL, 1, IF( glansw.`new_value` = 6 OR (glansw.`new_value` IS NULL AND obj.`closedate` IS NOT NULL), 3, 2)) AS status,
                      IFNULL(glansw.`date_mod`, obj.`closedate`) AS date_approval,
                      NULL AS 'ticketfollowups_id',
