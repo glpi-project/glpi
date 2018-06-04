@@ -588,61 +588,6 @@ class DBmysql {
       return $iterator;
    }
 
-    /**
-     *  Optimize sql table
-     *
-     * @var DB $DB
-     *
-     * @param mixed   $migration Migration class (default NULL)
-     * @param boolean $cron      To know if optimize must be done (false by default)
-     *
-     * @deprecated 9.2.2
-     *
-     * @return int number of tables
-     */
-   static function optimize_tables($migration = null, $cron = false) {
-      global $DB;
-
-      Toolbox::deprecated();
-
-      $crashed_tables = self::checkForCrashedTables();
-      if (!empty($crashed_tables)) {
-         Toolbox::logError("Cannot launch automatic action : crashed tables detected");
-         return -1;
-      }
-
-      if (!is_null($migration) && method_exists($migration, 'displayMessage')) {
-         $migration->displayTitle(__('Optimizing tables'));
-         $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
-         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
-      }
-      $result = $DB->listTables();
-      $nb     = 0;
-
-      while ($line = $result->next()) {
-         $table = $line[0];
-
-         // For big database to reduce delay of migration
-         if ($cron
-             || (countElementsInTable($table) < 15000000)) {
-
-            if (!is_null($migration) && method_exists($migration, 'displayMessage')) {
-               $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
-            }
-
-            $query = "OPTIMIZE TABLE `".$table."`;";
-            $DB->query($query);
-            $nb++;
-         }
-      }
-
-      if (!is_null($migration)
-          && method_exists($migration, 'displayMessage') ) {
-         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
-      }
-
-      return $nb;
-   }
 
    /**
     * Get information about DB connection for showSystemInformations

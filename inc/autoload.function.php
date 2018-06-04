@@ -149,24 +149,6 @@ function _sx($ctx, $str, $domain = 'glpi') {
 
 
 /**
- * Display (echo) a translation
- *
- * @since 0.84
- *
- * @param string $str    String to translate
- * @param string $domain domain used (default is glpi, may be plugin name)
- *
- * @deprecated 9.2 will be removed in the future.
- *
- * @return void
- */
-function _e($str, $domain = 'glpi') {
-   Toolbox::deprecated('_e() method is deprecated');
-   echo __($str, $domain);
-}
-
-
-/**
  * Pluralized translation
  *
  * @since 0.84
@@ -232,33 +214,6 @@ function _x($ctx, $str, $domain = 'glpi') {
       return $str;
    }
    return $trans;
-}
-
-
-/**
- * Display (echo) a contextualized translation
- *
- * @since 0.84
- *
- * @param string $ctx    context
- * @param string $str    to translated
- * @param string $domain domain used (default is glpi, may be plugin name)
- *
- * @deprecated 9.2 will be removed in the future.
- *
- * @return string
- */
-function _ex($ctx, $str, $domain = 'glpi') {
-   Toolbox::deprecated('_ex() method is deprecated');
-   // simulate pgettext
-   $msg   = $ctx."\004".$str;
-   $trans = __($msg, $domain);
-
-   if ($trans == $msg) {
-      // No translation
-      echo $str;
-   }
-   echo $trans;
 }
 
 
