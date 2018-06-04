@@ -3,6 +3,15 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [9.4] unreleased
+
+### API changes
+
+#### Removed
+
+- Drop all methods that have been deprecated in GLPI 9.2
+- Drop all methods that have been deprecated in GLPI 9.3
+
 ## [9.3] Unreleased
 
 ### Changed
