@@ -362,9 +362,6 @@ select {
    max-width: 500px;
    word-break: break-all;
 }
-.select2-dropdown-open .select2-choice {
-   border: 1px solid #D3D3D3 !important;
-}
 .select2-arrow {
    background: #FCFCFC !important;
    border: 0 !important;
@@ -431,8 +428,12 @@ textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([t
    color: black;
 }
 
-textarea:focus, input:focus {
-   border: 1px solid #5897fb;
+textarea:focus,
+input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):focus,
+.select2-container-active,
+.select2-dropdown-open .select2-choice,
+.select2-dropdown-open .select2-choices {
+   border-color: #5897fb !important;
 }
 
 input {
