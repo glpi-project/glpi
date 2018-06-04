@@ -404,7 +404,7 @@ class Document extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Web Link')."</td>";
+      echo "<td>".__('Web link')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "link");
       echo "</td>";
@@ -834,7 +834,7 @@ class Document extends CommonDBTM {
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'link',
-         'name'               => __('Web Link'),
+         'name'               => __('Web link'),
          'datatype'           => 'weblink'
       ];
 
