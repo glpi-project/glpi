@@ -77,7 +77,9 @@ class Ajax {
       }
 
       $out  = "<script type='text/javascript'>\n";
-      $out .= "var $name=";
+      $out .= "var $name;";
+      $out .= "$(function() {";
+      $out .= "$name=";
       if (!empty($param['container'])) {
          $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
       } else {
@@ -103,6 +105,7 @@ class Ajax {
       $out .= "            $(this).load('$url', fields);
          }
       });\n";
+      $out .= "});";
       $out .= "</script>\n";
 
       if ($param['display']) {
@@ -400,6 +403,7 @@ class Ajax {
          echo "</ul>";
          echo "</div>";
          $js = "
+         $(function(){
          forceReload$rand = false;
          $('#tabs$rand').tabs({
             active: $selected_tab,
@@ -459,6 +463,7 @@ class Ajax {
                // Restore tab
                $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
             };";
+         $js .= '});';
          echo Html::scriptBlock($js);
       }
    }
