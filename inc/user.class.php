@@ -475,52 +475,26 @@ class User extends CommonDBTM {
    function getFromDBbyEmail($email, $condition = []) {
       global $DB;
 
-      if (is_array($condition)) {
-         $crit = [
-            'SELECT'    => $this->getTable() . '.id',
-            'FROM'      => $this->getTable(),
-            'LEFT JOIN'  => [
-               'glpi_useremails' => [
-                  'FKEY' => [
-                     $this->getTable() => 'id',
-                     'glpi_useremails' => 'users_id'
-                  ]
+      $crit = [
+         'SELECT'    => $this->getTable() . '.id',
+         'FROM'      => $this->getTable(),
+         'LEFT JOIN'  => [
+            'glpi_useremails' => [
+               'FKEY' => [
+                  $this->getTable() => 'id',
+                  'glpi_useremails' => 'users_id'
                ]
-            ],
-            'WHERE'     => ['glpi_useremails.email' => $email] + $condition
-         ];
+            ]
+         ],
+         'WHERE'     => ['glpi_useremails.email' => $email] + $condition
+      ];
 
-         $iter = $DB->request($crit);
-         if ($iter->numrows()==1) {
-            $row = $iter->next();
-            return $this->getFromDB($row['id']);
-         }
-         return false;
-      } else {
-         Toolbox::deprecated('condition param for getFromDBbyEmail must be an array');
-         $request = "LEFT JOIN `glpi_useremails`
-                     ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
-                     WHERE `glpi_useremails`.`email` = '$email'";
-
-         if (!empty($condition)) {
-            $request .= " AND $condition";
-         }
-
-         //return $this->getFromDBByQuery($request);
-         $query = "SELECT `".$this->getTable()."`.*
-                  FROM `".$this->getTable()."`
-                  $request";
-
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) == 1) {
-               $this->fields = $DB->fetch_assoc($result);
-               $this->post_getFromDB();
-
-               return true;
-            }
-         }
-         return false;
+      $iter = $DB->request($crit);
+      if ($iter->numrows()==1) {
+         $row = $iter->next();
+         return $this->getFromDB($row['id']);
       }
+      return false;
    }
 
 
