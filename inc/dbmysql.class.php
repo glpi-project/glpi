@@ -385,25 +385,6 @@ class DBmysql {
    /**
     * List tables in database
     *
-    * @param string $table table name condition (glpi_% as default to retrieve only glpi tables)
-    *
-    * @return mysqli_result list of tables
-    *
-    * @deprecated 9.3
-    */
-   function list_tables($table = "glpi_%") {
-      Toolbox::deprecated('list_tables is deprecated, use listTables');
-      return $this->query(
-         "SELECT TABLE_NAME FROM information_schema.`TABLES`
-             WHERE TABLE_SCHEMA = '{$this->dbdefault}'
-                AND TABLE_TYPE = 'BASE TABLE'
-                AND TABLE_NAME LIKE '$table'"
-      );
-   }
-
-   /**
-    * List tables in database
-    *
     * @param string $table Table name condition (glpi_% as default to retrieve only glpi tables)
     * @param array  $where Where clause to append
     *

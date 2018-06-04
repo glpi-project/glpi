@@ -1690,55 +1690,6 @@ class Dropdown {
 
 
    /**
-    * Private / Public switch for items which may be assign to a user and/or an entity
-    *
-    * @deprecated 9.3
-    *
-    * @param $is_private      default is private ?
-    * @param $entity          working entity ID
-    * @param $is_recursive    is the item recursive ?
-   **/
-   static function showPrivatePublicSwitch($is_private, $entity, $is_recursive) {
-      global $CFG_GLPI;
-
-      Toolbox::deprecated();
-
-      $rand = mt_rand();
-      echo "<script type='text/javascript' >\n";
-      echo "function setPrivate$rand() {\n";
-
-         $params = ['is_private'   => 1,
-                         'is_recursive' => $is_recursive,
-                         'entities_id'  => $entity,
-                         'rand'         => $rand];
-
-         Ajax::updateItemJsCode('private_switch'.$rand,
-                                $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
-      echo "};";
-
-      echo "function setPublic$rand() {\n";
-
-         $params = ['is_private'   => 0,
-                         'is_recursive' => $is_recursive,
-                         'entities_id'  => $entity,
-                         'rand'         => $rand];
-         Ajax::updateItemJsCode('private_switch'.$rand,
-                                $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
-      echo "};";
-      echo "</script>";
-
-      echo "<span id='private_switch$rand'>";
-      $_POST['rand']         = $rand;
-      $_POST['is_private']   = $is_private;
-      $_POST['is_recursive'] = $is_recursive;
-      $_POST['entities_id']  = $entity;
-      include (GLPI_ROOT."/ajax/private_public.php");
-      echo "</span>\n";
-      return $rand;
-   }
-
-
-   /**
     * Toggle view in LDAP user import/synchro between no restriction and date restriction
     *
     * @param $enabled (default 0)
