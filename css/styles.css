@@ -387,8 +387,11 @@ textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([t
    color: black;
 }
 
-textarea:focus, input:focus {
-   border: 1px solid #5897fb;
+textarea:focus,
+input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):focus,
+.select2-container--open .select2-selection,
+.select2-container--open .select2-dropdown {
+   border-color: #5897fb;
 }
 
 input {
