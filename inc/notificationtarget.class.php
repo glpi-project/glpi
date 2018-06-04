@@ -117,18 +117,9 @@ class NotificationTarget extends CommonDBChild {
       $this->raiseevent = $event;
       $this->options    = $options;
 
-      if (method_exists($this, 'getNotificationTargets')) {
-         Toolbox::deprecated('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
-         $this->getNotificationTargets($this->entity);
-      } else {
-         $this->addNotificationTargets($this->entity);
-      }
+      $this->addNotificationTargets($this->entity);
 
       $this->addAdditionalTargets($event);
-      if (method_exists($this, 'getAdditionalTargets')) {
-         Toolbox::deprecated('getAdditionalTargets() method is deprecated (' . get_called_class() . ')');
-         $this->getAdditionalTargets();
-      }
 
       // add new target by plugin
       unset($this->data);
@@ -1058,12 +1049,7 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  if (method_exists($this, 'getSpecificTargets')) {
-                     Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
-                     $this->getSpecificTargets($data, $options);
-                  } else {
-                     $this->addSpecificTargets($data, $options);
-                  }
+                  $this->addSpecificTargets($data, $options);
             }
             break;
 
@@ -1084,12 +1070,7 @@ class NotificationTarget extends CommonDBChild {
 
          default :
             //Maybe a target specific to a type
-            if (method_exists($this, 'getSpecificTargets')) {
-               Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
-               $this->getSpecificTargets($data, $options);
-            } else {
-               $this->addSpecificTargets($data, $options);
-            }
+            $this->addSpecificTargets($data, $options);
       }
       // action for target from plugin
       $this->data = $data;
@@ -1149,11 +1130,6 @@ class NotificationTarget extends CommonDBChild {
                                 'label' => __('URL of the application')]);
 
       $this->addDataForTemplate($event, $options);
-
-      if (method_exists($this, 'getDatasForTemplate')) {
-         Toolbox::deprecated('getDatasForTemplate() method is deprecated (' . get_called_class() . ')');
-         $this->getDatasForTemplate($event, $options);
-      }
 
       Plugin::doHook('item_get_datas', $this);
 

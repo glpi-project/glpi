@@ -701,34 +701,19 @@ class Profile_User extends CommonDBRelation {
 
       $profiles = [];
 
-      if (is_array($sqlfilter)) {
-         $where = ['users_id' => $user_ID];
-         if (count($sqlfilter) > 0) {
-            $where = $where + $sqlfilter;
-         }
+      $where = ['users_id' => $user_ID];
+      if (count($sqlfilter) > 0) {
+         $where = $where + $sqlfilter;
+      }
 
-         $iterator = $DB->request([
-            'SELECT DISTINCT' => ['profiles_id'],
-            'FROM'            => 'glpi_profiles_users',
-            'WHERE'           => $where
-         ]);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => ['profiles_id'],
+         'FROM'            => 'glpi_profiles_users',
+         'WHERE'           => $where
+      ]);
 
-         while ($data = $iterator->next()) {
-            $profiles[$data['profiles_id']] = $data['profiles_id'];
-         }
-      } else {
-         Toolbox::deprecated('sqlfilter param for getUserProfiles must be an array');
-         $query = "SELECT DISTINCT `profiles_id`
-                  FROM `glpi_profiles_users`
-                  WHERE `users_id` = '$user_ID'
-                        $sqlfilter";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $profiles[$data['profiles_id']] = $data['profiles_id'];
-            }
-         }
+      while ($data = $iterator->next()) {
+         $profiles[$data['profiles_id']] = $data['profiles_id'];
       }
 
       return $profiles;

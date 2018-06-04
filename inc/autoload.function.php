@@ -267,14 +267,6 @@ function glpi_autoload($classname) {
       die(1);
    }
 
-   //hack for \Zend\Loader\SplAutoloader :(
-   //@since 9.2 -- WILL BE REMOVED IN FUTURE RELEASE
-   if ($classname === 'Zend\\Loader\\SplAutoloader') {
-      Toolbox::deprecated('Zend\Loader\SplAutoloader has been dropped from GLPI.');
-      require_once GLPI_ROOT . '/lib/zend-splautoloader.class.php';
-      return true;
-   }
-
    if ($classname === 'phpCAS'
        && file_exists(stream_resolve_include_path("CAS.php"))) {
       include_once('CAS.php');

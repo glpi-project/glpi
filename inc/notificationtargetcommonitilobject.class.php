@@ -1375,29 +1375,4 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                    'allowed_values' => $label['allowed_values']]);
       }
    }
-
-
-   /**
-    * Add requester related to the ITIL object validation
-    *
-    * @param array $options Options
-    *
-    * @return void
-   **/
-   function getValidationRequesterAddress($options = []) {
-      Toolbox::deprecated('getValidationRequesterAddress() method is deprecated');
-      $this->addValidationRequester($options);
-   }
-
-   /**
-    * Add author related to the followup
-    *
-    * @param array $options Options
-    *
-    * @return void
-    */
-   function getFollowupAuthor($options = []) {
-      Toolbox::deprecated('getFollowupAuthor() method is deprecated');
-      $this->addFollowupAuthor($options);
-   }
 }
