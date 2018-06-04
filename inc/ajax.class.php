@@ -196,10 +196,10 @@ class Ajax {
                   var _loader = $('<div id=\'loadingslide\'><div class=\'loadingindicator\'>" . __s('Loading...') . "</div></div>');
                   $('#$name .contents').html(_loader);
                },
-               complete: function() {
+               always: function() {
                   $('#loadingslide').remove();
                },
-               success: function(res) {
+               done: function(res) {
                   $('#$name .contents').html(res);
                }
             });
@@ -417,11 +417,11 @@ class Ajax {
                   var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . addslashes(__('Loading...')) . "</div></div>');
                   ui.panel.html(_loader);
 
-                  ui.jqXHR.complete(function() {
+                  ui.jqXHR.always(function() {
                      $('#loadingtabs').remove();
                   });
 
-                  ui.jqXHR.error(function(e) {
+                  ui.jqXHR.fail(function(e) {
                      console.log(e);
                      if (e.statusText != 'abort') {
                         ui.panel.html(
