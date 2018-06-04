@@ -189,44 +189,6 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
-   /**
-    * Retrieve an item from the database by query. The query must include the WHERE keyword. Thus,
-    * we can replace "WHERE" to make complex SQL JOINED queries (for instance, see
-    * User::getFromDBbyEmail()).
-    *
-    * @since 0.84
-    * @deprecated 9.3
-    *
-    * @param string $query the "WHERE" or "JOIN" part of the SQL query
-    *
-    * @return boolean true if succeed else false
-   **/
-   function getFromDBByQuery($query) {
-      global $DB;
-
-      Toolbox::deprecated('Use DBmysqlIterator');
-
-      // Make new database object and fill variables
-
-      if (empty($query)) {
-         return false;
-      }
-
-      $query = "SELECT `".$this->getTable()."`.*
-                FROM `".$this->getTable()."`
-                $query";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $this->fields = $DB->fetch_assoc($result);
-            $this->post_getFromDB();
-
-            return true;
-         }
-      }
-      return false;
-   }
-
 
    /**
     * Hydrate an object from a resultset row
@@ -3418,22 +3380,6 @@ class CommonDBTM extends CommonGLPI {
       return $options;
    }
 
-   /**
-    * Get the Search options for the given Type
-    *
-    * @since 9.2
-    * @deprecated 9.3
-    *
-    * This should be overloaded in Class
-    *
-    * @return array a *not indexed* array of search options
-    *
-    * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-   **/
-   function getSearchOptionsNew() {
-      Toolbox::deprecated('Use rawSearchOptions instead');
-      return $this->rawSearchOptions();
-   }
 
    /**
     * Provides search options configuration. Do not rely directly

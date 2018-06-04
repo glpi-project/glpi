@@ -1088,26 +1088,6 @@ class Search {
       $data['sql']['search'] = $QUERY;
    }
 
-   /**
-    * Retrieve datas from DB : construct data array containing columns definitions and rows datas
-    *
-    * add to data array a field data containing :
-    *      cols : columns definition
-    *      rows : rows data
-    *
-    * @since 0.85
-    *
-    * @param array   $data      array of search data prepared to get data
-    * @param boolean $onlycount If we just want to count results
-    *
-    * @deprecated 9.3 @see Search::constructData()
-    *
-    * @return nothing
-   **/
-   static function constructDatas(array &$data, $onlycount = false) {
-      Toolbox::deprecated('constructDatas is deprecated');
-      return self::constructData($data, $onlycount);
-   }
 
    /**
     * Retrieve datas from DB : construct data array containing columns definitions and rows datas
@@ -1398,19 +1378,6 @@ class Search {
       }
    }
 
-   /**
-    * Display datas extracted from DB
-    *
-    * @param $data array of search datas prepared to get datas
-    *
-    * @deprecated 9.3 @see Search::displayData()
-    *
-    * @return nothing
-   **/
-   static function displayDatas(array &$data) {
-      Toolbox::deprecated('displayDatas is deprecated');
-      return self::displayData($data);
-   }
 
    /**
     * Display datas extracted from DB

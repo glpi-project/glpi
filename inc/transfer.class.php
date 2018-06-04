@@ -1493,20 +1493,6 @@ class Transfer extends CommonDBTM {
 
 
    /**
-    * Transfer disks of a computer
-    *
-    * @deprecated 9.3 @see transferItem_Disks
-    *
-    * @param $ID ID of the computer
-    *
-    * @return void
-   **/
-   function transferComputerDisks($ID) {
-      Toolbox::deprecated();
-      return $this->transferItem_Disks('Computer', $ID);
-   }
-
-   /**
     * Transfer disks of an item
     *
     * @param string $itemtype Item type
