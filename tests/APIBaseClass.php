@@ -1363,9 +1363,8 @@ abstract class APIBaseClass extends \atoum {
                           400,
                           'ERROR');
 
-      $this->array($CFG_GLPI)
-         ->variable['use_notifications']->isEqualTo(0)
-         ->variable['notifications_mailing']->isEqualTo(0);
+      $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
+      $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
 
       // Test disabled notifications make this fail
       $res = $this->query('lostPassword',

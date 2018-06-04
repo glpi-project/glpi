@@ -344,11 +344,13 @@ class Item_Devices extends CommonDBRelation {
       if (!isset($CFG_GLPI['item_device_types'])
           || (count($CFG_GLPI['item_device_types']) != count($CFG_GLPI['device_types']))) {
 
-         $CFG_GLPI['item_device_types'] = [];
+         $item_device_types = [];
 
          foreach (CommonDevice::getDeviceTypes() as $deviceType) {
-            $CFG_GLPI['item_device_types'][] = $deviceType::getItem_DeviceType();
+            $item_device_types[] = $deviceType::getItem_DeviceType();
          }
+
+         $CFG_GLPI['item_device_types'] = $item_device_types;
       }
 
       return $CFG_GLPI['item_device_types'];

@@ -132,19 +132,20 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    if (count($current_config) > 0) {
-      $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
+      foreach ($current_config as $key => $value) {
+         switch ($key) {
+            case 'priority_matrix':
+            case 'lock_item_list':
+               $value = importArrayFromDB($value);
+               break;
+         }
+         $CFG_GLPI->offsetSet($key, $value);
+      }
 
-      if (isset($CFG_GLPI['priority_matrix'])) {
-         $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
-                                                          true);
-      }
-      if (isset($CFG_GLPI['lock_item_list'])) {
-          $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
-      }
-      if (isset($CFG_GLPI['lock_lockprofile_id'])
+      if ($CFG_GLPI->offsetExists('lock_lockprofile_id')
           && $CFG_GLPI["lock_use_lock_item"]
           && ($CFG_GLPI["lock_lockprofile_id"] > 0)
-          && !isset($CFG_GLPI['lock_lockprofile']) ) {
+          && !$CFG_GLPI->offsetExists('lock_lockprofile') ) {
 
             $prof = new Profile();
             $prof->getFromDB($CFG_GLPI["lock_lockprofile_id"]);
