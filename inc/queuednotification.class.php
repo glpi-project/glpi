@@ -443,21 +443,6 @@ class QueuedNotification extends CommonDBTM {
 
 
    /**
-    * Send mai lin queue
-    *
-    * @param $ID        integer ID of the item
-    *
-    * @return true if send false if not
-    *
-    * @deprecated 9.2 see QueuedNotification::sendById
-   **/
-   function sendMailById($ID) {
-      Toolbox::deprecated('sendMailById() method is deprecated');
-      return $this->sendById($ID);
-   }
-
-
-   /**
     * Give cron information
     *
     * @param $name : task's name

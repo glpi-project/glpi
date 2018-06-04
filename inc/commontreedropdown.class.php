@@ -343,35 +343,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
    }
 
-   /**
-    * @param $ID
-    *
-    * @deprecated 9.2 @see CommonTreeDropdown::cleanParentsSons()
-   **/
-   function recursiveCleanSonsAboveID($ID) {
-      global $DB;
-
-      Toolbox::deprecated();
-
-      if ($ID > 0) {
-         $DB->update(
-            $this->getTable(), [
-               'sons_cache' => 'NULL'
-            ], [
-               'id' => $ID
-            ]
-         );
-
-         $currentNode = clone $this;
-         if ($currentNode->getFromDB($ID)) {
-            $parentID = $currentNode->getField($this->getForeignKeyField());
-            if ($ID != $parentID) {
-               $this->recursiveCleanSonsAboveID($parentID);
-            }
-         }
-      }
-   }
-
 
    function post_addItem() {
 
