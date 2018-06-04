@@ -1755,7 +1755,7 @@ class Toolbox {
             if (isset($data[2])) {
                $forcetab = 'forcetab='.$data[2];
             }
-            self::redirectAction($data,$forcetab);
+            self::redirectAction($data, $forcetab);
 
          }
       }
@@ -1768,7 +1768,7 @@ class Toolbox {
     * @param $data array: redirection information
     * @param $forcetab string : if not empty force to redirect to timeline
     **/
-   static function redirectAction($data,$forcetab){
+   static function redirectAction($data, $forcetab) {
       global $DB;
       if (!empty($data[0])
           && isset($data[1])
@@ -1777,18 +1777,18 @@ class Toolbox {
          // Check entity
          if ($item = getItemForItemtype($data[0])) {
             $explodeMaj = preg_split('/(?=[A-Z])/', $data[0], -1, PREG_SPLIT_NO_EMPTY);
-            $table = '';
-            for($i=0;$i<count($explodeMaj);$i++){
-               if($i>0){
-                  $table .= '_'.$explodeMaj[$i];
-               } else{
+            $table      = '';
+            for ($i = 0; $i < count($explodeMaj); $i++) {
+               if ($i > 0) {
+                  $table .= '_' . $explodeMaj[$i];
+               } else {
                   $table = $explodeMaj[$i];
                }
             }
-            if($DB->tableExists($table)){
-               if ($item->isEntityAssign()){
-                  if($item->getFromDB($data[1])){
-                     if(!Session::haveAccessToEntity($item->getEntityID())) {
+            if ($DB->tableExists($table)) {
+               if ($item->isEntityAssign()) {
+                  if ($item->getFromDB($data[1])) {
+                     if (!Session::haveAccessToEntity($item->getEntityID())) {
                         Session::changeActiveEntities($item->getEntityID(), 1);
                      }
                   }
@@ -1796,16 +1796,15 @@ class Toolbox {
             }
             if ($_SESSION['glpiticket_timeline'] == 1) {
                // force redirect to timeline when timeline is enabled
-               $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
-               $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
+               $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
+               $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
             }
-Toolbox::logDebug($item->getFormURL());
-            Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
+            Html::redirect($item->getFormURL() . "?id=" . $data[1] . "&$forcetab");
          }
 
       } else if (!empty($data[0])) { // redirect to list
          if ($item = getItemForItemtype($data[0])) {
-            Html::redirect($item->getSearchURL()."?$forcetab");
+            Html::redirect($item->getSearchURL() . "?$forcetab");
          }
       }
    }
