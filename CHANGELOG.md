@@ -5,13 +5,21 @@ The present file will list all changes made to the project; according to the
 
 ## [9.2.2]
 
-- `CommonITILValidation::isAllValidationsHaveSameStatusForTicket` has been deprecated
-- `CommonITILValidation::getNumberValidationForTicket` as been deprecated
+### Deprecated
+
+- `CommonITILValidation::isAllValidationsHaveSameStatusForTicket`
+- `CommonITILValidation::getNumberValidationForTicket`
+- `DBMysql::optimize_tables()`
 
 ## [9.2.1]
 
 ### Added
+
 - Search engine, added ``itemtype_item_revert`` jointype
+
+### Deprecated
+
+- `Ticket::convertContentForNotification()`
 
 ## [9.2] 2017-09-25
 
@@ -69,18 +77,55 @@ new whole window
 
 #### Deprecated
 
+- Ability to use `JOIN` in `DBmysqlIterator::buildQuery()` has been deprecated
+- Usage of `NotificationTarget::datas` property has been deprecated
+- Usage of `Zend\Loader\SplAutoloader` interface has been deprecated
+
 The following methods have been deprecated:
 
 - `_e()`
 - `_ex()`
 - `Bookmark::mark_default()`
 - `Bookmark::unmark_default()`
-- `User::getUniquePersonalToken()`
-- `User::getPersonalToken()`
-- `NotificationTarget*::get*Address()`
-- many `NotificationTarget*::get*()`
-- `QueuedMail::sendMailById()`
 - `CommonTreeDropodwn::recursiveCleanSonsAboveID()`
+- `NotificationTarget::addToAddressesList()`
+- `NotificationTarget::getAdditionalTargets()`
+- `NotificationTarget::getAddressesByGroup()`
+- `NotificationTarget::getAddressesByTarget()`
+- `NotificationTarget::getAdminAddress()`
+- `NotificationTarget::getEntityAdminAddress()`
+- `NotificationTarget::getItemAuthorAddress()`
+- `NotificationTarget::getItemGroupAddress()`
+- `NotificationTarget::getItemGroupSupervisorAddress()`
+- `NotificationTarget::getItemGroupTechInChargeAddress()`
+- `NotificationTarget::getItemGroupWithoutSupervisorAddress()`
+- `NotificationTarget::getItemOwnerAddress()`
+- `NotificationTarget::getItemTechnicianInChargeAddress()`
+- `NotificationTarget::getNotificationTargets()`
+- `NotificationTarget::getSpecificTargets()`
+- `NotificationTarget::getUserByField()`
+- `NotificationTarget::getUsersAddressesByProfile()`
+- `NotificationTargetCommonITILObject::getDatasForObject()`
+- `NotificationTargetCommonITILObject::getFollowupAuthor()`
+- `NotificationTargetCommonITILObject::getLinkedGroupByType()`
+- `NotificationTargetCommonITILObject::getLinkedGroupSupervisorByType()`
+- `NotificationTargetCommonITILObject::getLinkedGroupWithoutSupervisorByType()`
+- `NotificationTargetCommonITILObject::getLinkedUserByType()`
+- `NotificationTargetCommonITILObject::getOldAssignTechnicianAddress()`
+- `NotificationTargetCommonITILObject::getRecipientAddress()`
+- `NotificationTargetCommonITILObject::getSupplierAddress()`
+- `NotificationTargetCommonITILObject::getTaskAssignGroup()`
+- `NotificationTargetCommonITILObject::getTaskAssignUser()`
+- `NotificationTargetCommonITILObject::getTaskAuthor()`
+- `NotificationTargetCommonITILObject::getValidationApproverAddress()`
+- `NotificationTargetCommonITILObject::getValidationRequesterAddress()`
+- `NotificationTargetProjectTask::getTeamContacts()`
+- `NotificationTargetProjectTask::getTeamGroups()`
+- `NotificationTargetProjectTask::getTeamSuppliers()`
+- `NotificationTargetProjectTask::getTeamUsers()`
+- `QueuedNotification::sendMailById()`
+- `User::getPersonalToken()`
+- `User::getUniquePersonalToken()`
 - `formatOutputWebLink()`
 
 #### Removals
