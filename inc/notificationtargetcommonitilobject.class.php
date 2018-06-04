@@ -1343,7 +1343,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'document.filename'          => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('File')),
                     'document.weblink'           => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                            __('Web Link')),
+                                                            __('Web link')),
                     'document.name'              => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Name')),
                      $objettype.'.urldocument'   => sprintf(__('%1$s: %2$s'),
