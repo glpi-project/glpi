@@ -9,8 +9,72 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
+- Drop ability to use `JOIN` in `DBmysqlIterator::buildQuery()`
+- Drop `NotificationTarget::datas` property
+- Drop support of string `$filter` parameter in `Profileuser::getUserProfiles()`
+- Drop support of string `$condition` parameter in `User::getFromDBbyEmail()`
+- Drop `Zend\Loader\SplAutoloader` interface
 - Drop all methods that have been deprecated in GLPI 9.2
+  - `_e()`
+  - `_ex()`
+  - `FieldExists()`
+  - `formatOutputWebLink()`
+  - `TableExists()`
+  - `CommonTreeDropodwn::recursiveCleanSonsAboveID()`
+  - `DBMysql::optimize_tables()`
+  - `NotificationTarget::addToAddressesList()`
+  - `NotificationTarget::getAdditionalTargets()`
+  - `NotificationTarget::getAddressesByGroup()`
+  - `NotificationTarget::getAddressesByTarget()`
+  - `NotificationTarget::getAdminAddress()`
+  - `NotificationTarget::getEntityAdminAddress()`
+  - `NotificationTarget::getItemAuthorAddress()`
+  - `NotificationTarget::getItemGroupAddress()`
+  - `NotificationTarget::getItemGroupSupervisorAddress()`
+  - `NotificationTarget::getItemGroupTechInChargeAddress()`
+  - `NotificationTarget::getItemGroupWithoutSupervisorAddress()`
+  - `NotificationTarget::getItemOwnerAddress()`
+  - `NotificationTarget::getItemTechnicianInChargeAddress()`
+  - `NotificationTarget::getNotificationTargets()`
+  - `NotificationTarget::getSpecificTargets()`
+  - `NotificationTarget::getUserByField()`
+  - `NotificationTarget::getUsersAddressesByProfile()`
+  - `NotificationTargetCommonITILObject::getDatasForObject()`
+  - `NotificationTargetCommonITILObject::getFollowupAuthor()`
+  - `NotificationTargetCommonITILObject::getLinkedGroupByType()`
+  - `NotificationTargetCommonITILObject::getLinkedGroupSupervisorByType()`
+  - `NotificationTargetCommonITILObject::getLinkedGroupWithoutSupervisorByType()`
+  - `NotificationTargetCommonITILObject::getLinkedUserByType()`
+  - `NotificationTargetCommonITILObject::getOldAssignTechnicianAddress()`
+  - `NotificationTargetCommonITILObject::getRecipientAddress()`
+  - `NotificationTargetCommonITILObject::getSupplierAddress()`
+  - `NotificationTargetCommonITILObject::getTaskAssignGroup()`
+  - `NotificationTargetCommonITILObject::getTaskAssignUser()`
+  - `NotificationTargetCommonITILObject::getTaskAuthor()`
+  - `NotificationTargetCommonITILObject::getValidationApproverAddress()`
+  - `NotificationTargetCommonITILObject::getValidationRequesterAddress()`
+  - `NotificationTargetProjectTask::getTeamContacts()`
+  - `NotificationTargetProjectTask::getTeamGroups()`
+  - `NotificationTargetProjectTask::getTeamSuppliers()`
+  - `NotificationTargetProjectTask::getTeamUsers()`
+  - `QueuedNotification::sendMailById()`
+  - `Ticket::convertContentForNotification()`
+  - `User::getPersonalToken()`
+  - `User::getUniquePersonalToken()`
 - Drop all methods that have been deprecated in GLPI 9.3
+  - `CommonDBTM::getFromDBByQuery()`
+  - `CommonDBTM::getSearchOptions()`
+  - `CommonDBTM::getSearchOptionsNew()`
+  - `CommonITILObject::getStatusIconURL()`
+  - `DBMysql::list_tables()`
+  - `Dropdown::showPrivatePublicSwitch()`
+  - `NotificationTargetProjectTask::getTeamContacts()`
+  - `NotificationTargetProjectTask::getTeamGroups()`
+  - `NotificationTargetProjectTask::getTeamSuppliers()`
+  - `NotificationTargetProjectTask::getTeamUsers()`
+  - `Search::constructDatas()`
+  - `Search::displayDatas()`
+  - `Transfer::transferComputerDisks()`
 
 ## [9.3] Unreleased
 
