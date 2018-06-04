@@ -1158,7 +1158,7 @@ class Plugin extends CommonDBTM {
          unset($attrib['doc_types']);
       }
       if (isset($attrib['helpdesk_types'])) {
-         $attrib['ticket_types'] = $attrib['helpdesk_types'];
+         $attrib['itil_types'] = $attrib['helpdesk_types'];
          unset($attrib['helpdesk_types']);
       }
       if (isset($attrib['netport_types'])) {
@@ -1171,7 +1171,7 @@ class Plugin extends CommonDBTM {
                      'linkgroup_types', 'linkuser_tech_types', 'linkuser_types', 'location_types',
                      'networkport_instantiations', 'networkport_types',
                      'notificationtemplates_types', 'planning_types', 'reservation_types',
-                     'rulecollections_types', 'systeminformations_types', 'ticket_types',
+                     'rulecollections_types', 'systeminformations_types', 'itil_types',
                      'unicity_types', 'link_types', 'kb_types'] as $att) {
 
          if (isset($attrib[$att]) && $attrib[$att]) {

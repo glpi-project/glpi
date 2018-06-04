@@ -441,7 +441,7 @@ class Problem extends CommonITILObject {
          'field'              => 'itemtype',
          'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
          'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'ticket_types',
+         'itemtype_list'      => 'itil_types',
          'nosort'             => true,
          'additionalfields'   => ['itemtype'],
          'joinparams'         => [

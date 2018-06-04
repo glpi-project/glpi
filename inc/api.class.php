@@ -2232,7 +2232,7 @@ abstract class API extends CommonGLPI {
       if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
          $hclasses[] = "Infocom";
       }
-      if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+      if (in_array($itemtype, $CFG_GLPI["itil_types"])) {
          $hclasses[] = "Item_Ticket";
       }if (in_array($itemtype, $CFG_GLPI["project_asset_types"])) {
          $hclasses[] = "Item_Project";
