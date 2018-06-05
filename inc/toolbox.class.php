@@ -1891,7 +1891,10 @@ class Toolbox {
 
                         } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
-                              Html::redirect($item->getSearchURL()."?$forcetab");
+                              $searchUrl = $item->getSearchURL();
+                              $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                              $searchUrl .= $forcetab;
+                              Html::redirect($searchUrl);
                            }
                         }
 
@@ -1948,7 +1951,10 @@ class Toolbox {
 
                         } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
-                              Html::redirect($item->getSearchURL()."?$forcetab");
+                              $searchUrl = $item->getSearchURL();
+                              $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                              $searchUrl .= $forcetab;
+                              Html::redirect($searchUrl);
                            }
                         }
 
