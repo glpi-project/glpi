@@ -1787,7 +1787,10 @@ class Toolbox {
 
                         } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
-                              Html::redirect($item->getSearchURL()."?$forcetab");
+                              $searchUrl = $item->getSearchURL();
+                              $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                              $searchUrl .= $forcetab;
+                              Html::redirect($searchUrl);
                            }
                         }
 
@@ -1840,12 +1843,15 @@ class Toolbox {
                                  $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
                                  $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                               }
-                              Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
+                              Html::redirect($item->getFormURLWithID($data[1])."&$forcetab");
                            }
 
                         } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
-                              Html::redirect($item->getSearchURL()."?$forcetab");
+                              $searchUrl = $item->getSearchURL();
+                              $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                              $searchUrl .= $forcetab;
+                              Html::redirect($searchUrl);
                            }
                         }
 
