@@ -212,8 +212,13 @@ final class DbUtils {
             $table = $this->getPlural($table);
          }
 
-         $CFG_GLPI['glpitablesitemtype'][$itemtype]      = $prefix.$table;
-         $CFG_GLPI['glpiitemtypetables'][$prefix.$table] = $itemtype;
+         $glpitablesitemtype = $CFG_GLPI['glpitablesitemtype'];
+         $glpitablesitemtype[$itemtype] = $prefix . $table;
+         $CFG_GLPI['glpitablesitemtype'] = $glpitablesitemtype;
+
+         $glpiitemtypetables = $CFG_GLPI['glpiitemtypetables'];
+         $glpiitemtypetables[$prefix . $table] = $itemtype;
+         $CFG_GLPI['glpiitemtypetables'] = $glpiitemtypetables;
          return $prefix.$table;
       }
    }
@@ -260,16 +265,25 @@ final class DbUtils {
          // Get real existence of itemtype
          if (($item = $this->getItemForItemtype($itemtype))) {
             $itemtype                                   = get_class($item);
-            $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+            $glpiitemtypetables = $CFG_GLPI['glpiitemtypetables'];
+            $glpiitemtypetables[$inittable] = $itemtype;
+            $CFG_GLPI['glpiitemtypetables'] = $glpiitemtypetables;
+
+            $glpitablesitemtype = $CFG_GLPI['glpitablesitemtype'];
+            $glpitablesitemtype[$itemtype] = $inittable;
             return $itemtype;
          }
          // Namespaced item
          $itemtype = $pref2 . str_replace('_', '\\', $table);
          if (($item = $this->getItemForItemtype($itemtype))) {
             $itemtype                                   = get_class($item);
-            $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+            $glpiitemtypetables = $CFG_GLPI['glpiitemtypetables'];
+            $glpiitemtypetables[$itemtype] = $itemtype;
+            $CFG_GLPI['glpiitemtypetables'] = $glpiitemtypetables;
+
+            $glpitablesitemtype = $CFG_GLPI['glpitablesitemtype'];
+            $glpitablesitemtype[$itemtype] = $inittable;
+            $CFG_GLPI['glpitablesitemtype'] = $glpitablesitemtype;
             return $itemtype;
          }
          return "UNKNOWN";

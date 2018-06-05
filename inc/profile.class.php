@@ -2674,11 +2674,11 @@ class Profile extends CommonDBTM {
       global $CFG_GLPI;
 
       $values = [];
-      foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
+      foreach ($CFG_GLPI["itil_types"] as $key => $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             $values[$itemtype] = $item->getTypeName();
          } else {
-            unset($CFG_GLPI["ticket_types"][$key]);
+            unset($CFG_GLPI["itil_types"][$key]);
          }
       }
       return $values;

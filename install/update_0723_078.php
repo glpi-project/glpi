@@ -3480,12 +3480,12 @@ function update0723to078() {
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_assoc($result)) {
                $types                    = $data['helpdesk_hardware_type'];
-               $CFG_GLPI["ticket_types"] = [COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE,
+               $CFG_GLPI["itil_types"] = [COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE,
                                                  MONITOR_TYPE, PERIPHERAL_TYPE, SOFTWARE_TYPE,
                                                  PHONE_TYPE];
                $tostore = [];
 
-               foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
+               foreach ($CFG_GLPI["itil_types"] as $itemtype) {
                   if (pow(2, $itemtype)&$types) {
                      $tostore[] = $typetoname[$itemtype];
                   }

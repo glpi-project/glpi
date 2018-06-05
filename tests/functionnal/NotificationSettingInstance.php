@@ -64,7 +64,7 @@ class NotificationSettingInstance extends DbTestCase {
 
       $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
       $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
-      $this->array($CFG_GLPI)->notHasKey('notifications_xyz');
+      $this->boolean($CFG_GLPI->offsetExists('notifications_xyz'))->isFalse();
 
       $CFG_GLPI['use_notifications'] = 1;
       $CFG_GLPI['notifications_mailing'] = 1;

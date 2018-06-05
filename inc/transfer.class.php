@@ -564,7 +564,7 @@ class Transfer extends CommonDBTM {
 
       // Tickets
       if ($this->options['keep_ticket']) {
-         foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
+         foreach ($CFG_GLPI["itil_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
                $query = "SELECT DISTINCT `glpi_tickets`.`id`
                          FROM `glpi_tickets`

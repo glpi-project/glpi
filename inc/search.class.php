@@ -5742,7 +5742,7 @@ class Search {
          }
 
          if (Session::getLoginUserID()
-             && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+             && in_array($itemtype, $CFG_GLPI["itil_types"])) {
             self::$search[$itemtype]['tracking']          = __('Assistance');
 
             self::$search[$itemtype][60]['table']         = 'glpi_tickets';

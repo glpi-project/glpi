@@ -1081,7 +1081,7 @@ class Item_Ticket extends CommonDBRelation{
          case 'add_item' :
             Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'items_id',
                                                    'itemtype_name'   => 'item_itemtype',
-                                                   'itemtypes'       => $CFG_GLPI['ticket_types'],
+                                                   'itemtypes'       => $CFG_GLPI['itil_types'],
                                                    'checkright'      => true,
                                                    'entity_restrict' => $_SESSION['glpiactive_entity']
                                                   ]);
@@ -1091,7 +1091,7 @@ class Item_Ticket extends CommonDBRelation{
          case 'delete_item' :
             Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'items_id',
                                                    'itemtype_name'   => 'item_itemtype',
-                                                   'itemtypes'       => $CFG_GLPI['ticket_types'],
+                                                   'itemtypes'       => $CFG_GLPI['itil_types'],
                                                    'checkright'      => true,
                                                    'entity_restrict' => $_SESSION['glpiactive_entity']
                                                   ]);
@@ -1229,7 +1229,7 @@ class Item_Ticket extends CommonDBRelation{
          'field'              => 'itemtype',
          'name'               => _n('Associated item type', 'Associated item types', 2),
          'datatype'           => 'itemtypename',
-         'itemtype_list'      => 'ticket_types',
+         'itemtype_list'      => 'itil_types',
          'nosort'             => true
       ];
 

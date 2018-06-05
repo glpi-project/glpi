@@ -4497,8 +4497,6 @@ abstract class CommonITILObject extends CommonDBTM {
    static function getAllTypesForHelpdesk() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
 
-      /// TODO ticket_types -> itil_types
-
       $types = [];
       $ptypes = [];
       //Types of the plugins (keep the plugin hook for right check)
@@ -4509,7 +4507,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       asort($ptypes);
       //Types of the core (after the plugin for robustness)
-      foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
+      foreach ($CFG_GLPI["itil_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype) // No plugin here
                 && in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {

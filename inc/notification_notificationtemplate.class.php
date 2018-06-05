@@ -262,10 +262,12 @@ class Notification_NotificationTemplate extends CommonDBChild {
       global $CFG_GLPI;
 
       self::getModes();
-      $CFG_GLPI['notifications_modes'][$mode] = [
+      $notifications_modes = $CFG_GLPI['notifications_modes'];
+      $notifications_modes[$mode] = [
          'label'  => $label,
          'from'   => $from
       ];
+      $CFG_GLPI['notifications_modes'] = $notifications_modes;
    }
 
    /**
@@ -301,11 +303,13 @@ class Notification_NotificationTemplate extends CommonDBChild {
          $CFG_GLPI['notifications_modes'] = $core_modes;
       } else {
          //check that core modes are part of the config
+         $notifications_modes = $CFG_GLPI['notifications_modes'];
          foreach ($core_modes as $mode => $conf) {
             if (!isset($CFG_GLPI['notifications_modes'][$mode])) {
-               $CFG_GLPI['notifications_modes'][$mode] = $conf;
+               $notifications_modes[$mode] = $conf;
             }
          }
+         $CFG_GLPI['notifications_modes'] = $notifications_modes;
       }
 
       return $CFG_GLPI['notifications_modes'];
