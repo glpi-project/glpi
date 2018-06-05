@@ -1843,10 +1843,7 @@ class Toolbox {
                                  $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
                                  $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                               }
-                              $formUrl = $item->getFormURL();
-                              $formUrl .= strpos($formUrl, '?') === false ? '?' : '&';
-                              $formUrl .= 'id=' . $data[1] . '&' . $forcetab;
-                              Html::redirect($formUrl);
+                              Html::redirect($item->getFormURLWithID($data[1])."&$forcetab");
                            }
 
                         } else if (!empty($data[0])) { // redirect to list
