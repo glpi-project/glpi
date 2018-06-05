@@ -352,11 +352,16 @@ class TicketRecurrent extends CommonDropdown {
          $timestart  = strtotime($begin_date) - $create_before;
          $now        = time();
          if ($now > $timestart) {
-            $value = $periodicity;
-            $step  = "second";
+            $value  = $periodicity;
+            $step   = "second";
+            $prefix = "";
             if (preg_match('/([0-9]+)MONTH/', $periodicity, $matches)) {
                $value = $matches[1];
                $step  = 'MONTH';
+
+               if (date('d', $timestart) === date('t', $timestart)) {
+                  $prefix = "last day of";
+               }
             } else if (preg_match('/([0-9]+)YEAR/', $periodicity, $matches)) {
                $value = $matches[1];
                $step  = 'YEAR';
@@ -371,7 +376,7 @@ class TicketRecurrent extends CommonDropdown {
             }
 
             while ($timestart < $now) {
-               $timestart = strtotime("+ $value $step", $timestart);
+               $timestart = strtotime("$prefix + $value $step", $timestart);
             }
          }
          // Time start over end date
