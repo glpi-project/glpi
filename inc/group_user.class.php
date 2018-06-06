@@ -212,15 +212,6 @@ class Group_User extends CommonDBRelation{
                Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
                echo "</td>";
             }
-            $link = $data["completename"];
-            if ($_SESSION["glpiis_ids_visible"]) {
-               $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
-            }
-            $href = "<a href='".Group::getFormURLWithID($data["id"])."'>".
-                      $link."</a>";
-            if ($data["is_dynamic"]) {
-               $href = sprintf(__('%1$s (%2$s)'), $href, "<span class='b'>".__('D')."</span>");
-            }
             echo "<td>".$group->getLink()."</td>";
             echo "<td class='center'>";
             if ($data['is_dynamic']) {
