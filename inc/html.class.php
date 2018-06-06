@@ -3598,10 +3598,10 @@ class Html {
    static function setSimpleTextContent($content) {
 
       $content = Html::entity_decode_deep($content);
+      $content = Toolbox::convertImageToTag($content);
 
       // If is html content
       if ($content != strip_tags($content)) {
-         $content = Toolbox::convertImageToTag($content);
          $content = Toolbox::getHtmlToDisplay($content);
       }
 
