@@ -6922,8 +6922,8 @@ class Ticket extends CommonITILObject {
 
          if (isset($item_i['content'])) {
             $content = $item_i['content'];
-            $content = autolink($content, false);
             $content = Toolbox::getHtmlToDisplay($content);
+            $content = autolink($content, false);
 
             $long_text = "";
             if ((substr_count($content, "<br") > 30) || (strlen($content) > 2000)) {
