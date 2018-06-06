@@ -3180,11 +3180,12 @@ class User extends CommonDBTM {
     * @param $search                   pattern (default '')
     * @param $start                    start LIMIT value (default 0)
     * @param $limit                    limit LIMIT value (default -1 no limit)
+    * @param $inactive_deleted         boolean to retreive also inactive or deleted users
     *
     * @return mysql result set.
    **/
    static function getSqlSearchResult ($count = true, $right = "all", $entity_restrict = -1, $value = 0,
-                                       $used = [], $search = '', $start = 0, $limit = -1) {
+                                       $used = [], $search = '', $start = 0, $limit = -1, $inactive_deleted = 0) {
       global $DB, $CFG_GLPI;
 
       // No entity define : use active ones
@@ -3367,12 +3368,14 @@ class User extends CommonDBTM {
             $where .= ')';
       }
 
-      $where .= " AND `glpi_users`.`is_deleted` = '0'
-                  AND `glpi_users`.`is_active` = '1'
-                  AND (`glpi_users`.`begin_date` IS NULL
-                       OR `glpi_users`.`begin_date` < NOW())
-                  AND (`glpi_users`.`end_date` IS NULL
-                       OR `glpi_users`.`end_date` > NOW())";
+      if (!$inactive_deleted) {
+         $where .= " AND `glpi_users`.`is_deleted` = '0'
+                     AND `glpi_users`.`is_active` = '1'
+                     AND (`glpi_users`.`begin_date` IS NULL
+                          OR `glpi_users`.`begin_date` < NOW())
+                     AND (`glpi_users`.`end_date` IS NULL
+                          OR `glpi_users`.`end_date` > NOW())";
+      }
 
       if ((is_numeric($value) && $value)
           || count($used)) {
@@ -3455,35 +3458,36 @@ class User extends CommonDBTM {
     * Make a select box with all glpi users where select key = name
     *
     * @param $options array of possible options:
-    *    - name           : string / name of the select (default is users_id)
+    *    - name             : string / name of the select (default is users_id)
     *    - value
-    *    - right          : string / limit user who have specific right :
-    *                           id -> only current user (default case);
-    *                           interface -> central;
-    *                           all -> all users;
-    *                           specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
-    *    - comments       : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity         : integer or array / restrict to a defined entity or array of entities
-    *                        (default -1 : no restriction)
-    *    - entity_sons    : boolean / if entity restrict specified auto select its sons
-    *                        only available if entity is a single value not an array(default false)
-    *    - all            : Nobody or All display for none selected
-    *                           all=0 (default) -> Nobody
-    *                           all=1 -> All
-    *                           all=-1-> nothing
-    *    - rand           : integer / already computed rand value
-    *    - toupdate       : array / Update a specific item on select change on dropdown
-    *                        (need value_fieldname, to_update, url
-    *                        (see Ajax::updateItemOnSelectEvent for information)
-    *                        and may have moreparams)
-    *    - used           : array / Already used items ID: not to display in dropdown (default empty)
+    *    - right            : string / limit user who have specific right :
+    *                             id -> only current user (default case);
+    *                             interface -> central;
+    *                             all -> all users;
+    *                             specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
+    *    - comments         : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity           : integer or array / restrict to a defined entity or array of entities
+    *                          (default -1 : no restriction)
+    *    - entity_sons      : boolean / if entity restrict specified auto select its sons
+    *                          only available if entity is a single value not an array(default false)
+    *    - all              : Nobody or All display for none selected
+    *                             all=0 (default) -> Nobody
+    *                             all=1 -> All
+    *                             all=-1-> nothing
+    *    - rand             : integer / already computed rand value
+    *    - toupdate         : array / Update a specific item on select change on dropdown
+    *                          (need value_fieldname, to_update, url
+    *                          (see Ajax::updateItemOnSelectEvent for information)
+    *                          and may have moreparams)
+    *    - used             : array / Already used items ID: not to display in dropdown (default empty)
     *    - ldap_import
-    *    - on_change      : string / value to transmit to "onChange"
-    *    - display        : boolean / display or get string (default true)
-    *    - width          : specific width needed (default 80%)
-    *    - specific_tags  : array of HTML5 tags to add the the field
-    *    - url            : url of the ajax php code which should return the json data to show in
-    *                        the dropdown (default /ajax/getDropdownUsers.php)
+    *    - on_change        : string / value to transmit to "onChange"
+    *    - display          : boolean / display or get string (default true)
+    *    - width            : specific width needed (default 80%)
+    *    - specific_tags    : array of HTML5 tags to add to the field
+    *    - url              : url of the ajax php code which should return the json data to show in
+    *                         the dropdown (default /ajax/getDropdownUsers.php)
+    *    - inactive_deleted : retreive also inactive or deleted users
     *
     * @return rand value if displayed / string if not
    **/
@@ -3491,23 +3495,24 @@ class User extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // Default values
-      $p['name']           = 'users_id';
-      $p['value']          = '';
-      $p['right']          = 'id';
-      $p['all']            = 0;
-      $p['on_change']      = '';
-      $p['comments']       = 1;
-      $p['width']          = '80%';
-      $p['entity']         = -1;
-      $p['entity_sons']    = false;
-      $p['used']           = [];
-      $p['ldap_import']    = false;
-      $p['toupdate']       = '';
-      $p['rand']           = mt_rand();
-      $p['display']        = true;
-      $p['_user_index']   = 0;
-      $p['specific_tags']  = [];
-      $p['url']            = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php";
+      $p['name']             = 'users_id';
+      $p['value']            = '';
+      $p['right']            = 'id';
+      $p['all']              = 0;
+      $p['on_change']        = '';
+      $p['comments']         = 1;
+      $p['width']            = '80%';
+      $p['entity']           = -1;
+      $p['entity_sons']      = false;
+      $p['used']             = [];
+      $p['ldap_import']      = false;
+      $p['toupdate']         = '';
+      $p['rand']             = mt_rand();
+      $p['display']          = true;
+      $p['_user_index']      = 0;
+      $p['specific_tags']    = [];
+      $p['url']              = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php";
+      $p['inactive_deleted'] = 0;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3556,6 +3561,7 @@ class User extends CommonDBTM {
                         'right'               => $p['right'],
                         'on_change'           => $p['on_change'],
                         'used'                => $p['used'],
+                        'inactive_deleted'    => $p['inactive_deleted'],
                         'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
                         'specific_tags'       => $p['specific_tags']];
 
@@ -3574,9 +3580,9 @@ class User extends CommonDBTM {
          }
 
          if (empty($user['comment'])) {
-            $user['comment'] = sprintf(
-               __('Show %1$s'),
-               mb_strtolower(
+            $user['comment'] = Toolbox::ucfirst(
+               sprintf(
+                  __('Show %1$s'),
                   self::getTypeName(Session::getPluralNumber())
                )
             );

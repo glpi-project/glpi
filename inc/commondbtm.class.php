@@ -4573,9 +4573,6 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      // force template
-      $item->fields['is_template'] = true;
-
       $query = "SELECT *
                 FROM `".$item->getTable()."`
                 WHERE `is_template` = '1' ";
@@ -4903,10 +4900,14 @@ class CommonDBTM extends CommonGLPI {
                = Toolbox::convertTagToImage($input[$options['content_field']],
                                             $this,
                                             $docadded);
-            $input['_forcenotif'] = true;
          } else {
             $input[$options['content_field']]
                = Html::setSimpleTextContent($input[$options['content_field']]);
+         }
+
+         if (isset($this->input['_forcenotif'])) {
+            $input['_forcenotif'] = $this->input['_forcenotif'];
+            unset($input['_disablenotif']);
          }
 
          // force update of content on add process (we are in post_addItem function)

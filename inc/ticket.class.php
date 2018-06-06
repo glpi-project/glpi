@@ -569,6 +569,13 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
+      // if we don't have global UPDATE right, maybe we can own the current ticket
+      if (!Session::haveRight(self::$rightname, UPDATE)
+          && !$this->ownItem()) {
+         //we always return false, as ownItem() = true is managed by below self::canUpdate
+         return false;
+      }
+
       return self::canupdate();
    }
 
@@ -585,6 +592,16 @@ class Ticket extends CommonITILObject {
               && $this->fields['status'] != self::CLOSED
               && $this->numberOfFollowups() == 0
               && $this->numberOfTasks() == 0;
+   }
+
+   /**
+    * Is the current user have OWN right and is the assigned to the ticket
+    *
+    * @return boolean
+    */
+   function ownItem() {
+      return Session::haveRight(self::$rightname, self::OWN)
+             && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID());
    }
 
 
@@ -3914,7 +3931,7 @@ class Ticket extends CommonITILObject {
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "<tr><th>".__('Describe the incident or request')."</th><th>";
       if (Session::isMultiEntitiesMode()) {
@@ -4110,7 +4127,7 @@ class Ticket extends CommonITILObject {
 
          echo "</td></tr>";
       }
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
@@ -4565,7 +4582,9 @@ class Ticket extends CommonITILObject {
       $options['_tickettemplate'] = $tt;
 
       // check right used for this ticket
-      $canupdate     = !$ID || Session::haveRight(self::$rightname, UPDATE);
+      $canupdate     = !$ID
+                        || (Session::getCurrentInterface() == "central"
+                            && $this->canUpdateItem());
       $can_requester = $this->canRequesterUpdateItem();
       $canpriority   = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
       $canassign     = $this->canAssign();

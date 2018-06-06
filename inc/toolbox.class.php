@@ -1756,7 +1756,6 @@ class Toolbox {
                $forcetab = 'forcetab='.$data[2];
             }
             self::redirectAction($data, $forcetab);
-
          }
       }
    }

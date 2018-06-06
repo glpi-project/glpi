@@ -2750,7 +2750,7 @@ class Config extends CommonDBTM {
     * @return Zend\Cache\Storage\StorageInterface object or false
     */
    public static function getCache($optname, $context = 'core') {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       if (defined('TU_USER') && !defined('CACHED_TESTS')
          || !$DB || !$DB->tableExists(self::getTable())
@@ -2785,7 +2785,11 @@ class Config extends CommonDBTM {
          //Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
       if (!isset($opt['options']['namespace'])) {
-         $opt['options']['namespace'] = "glpi_${optname}_" . GLPI_VERSION;
+         $namespace = "glpi_${optname}_" . GLPI_VERSION;
+         if (isset($CFG_GLPI['instance_uuid'])) {
+            $namespace .= $CFG_GLPI['instance_uuid'];
+         }
+         $opt['options']['namespace'] = $namespace;
       }
       if (!isset($opt['adapter'])) {
          if (function_exists('apcu_fetch')) {

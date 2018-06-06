@@ -588,7 +588,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '32',
          'table'              => 'glpi_networks',
          'field'              => 'name',
-         'name'               => __('Network Device'),
+         'name'               => __('Network'),
          'datatype'           => 'dropdown'
       ];
 

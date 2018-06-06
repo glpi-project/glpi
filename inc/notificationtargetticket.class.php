@@ -119,7 +119,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    **/
    function getContentHeader() {
 
-      if (MailCollector::getNumberOfActiveMailCollectors()) {
+      if ($this->getMode() == \Notification_NotificationTemplate::MODE_MAIL
+         && MailCollector::getNumberOfActiveMailCollectors()
+      ) {
          return self::HEADERTAG.' '.__('To answer by email, write above this line').' '.
                 self::HEADERTAG;
       }
@@ -133,7 +135,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    **/
    function getContentFooter() {
 
-      if (MailCollector::getNumberOfActiveMailCollectors()) {
+      if ($this->getMode() == \Notification_NotificationTemplate::MODE_MAIL
+         && MailCollector::getNumberOfActiveMailCollectors()
+      ) {
          return self::FOOTERTAG.' '.__('To answer by email, write under this line').' '.
                 self::FOOTERTAG;
       }
