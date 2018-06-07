@@ -799,7 +799,7 @@ class Change extends CommonITILObject {
             Html::clean(Html::entity_decode_deep($this->fields["content"]))."</textarea>";
       echo "</td>";
       echo "</tr>";
-      $options['colspan'] = 3;
+      $options['colspan'] = 2;
       $this->showFormButtons($options);
 
       return true;
