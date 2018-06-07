@@ -124,15 +124,23 @@ table {
 
 
 /****** TABS ******/
-.ui-tabs .ui-tabs-nav {
+.ui-tabs .ui-tabs-nav,
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav {
    border-bottom: 1px solid #878787;
+   padding:0;
 }
 
-.ui-tabs .ui-tabs-nav li {
-   border: 1px solid #878787;
+.ui-tabs .ui-tabs-nav li,
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li {
+   border-color: #878787;
    border-bottom: 0;
    box-sizing: border-box;
    border-collapse: collapse;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li {
+   border-right-width: 1px !important;
+   margin: 0;
+   width: 100%;
 }
 
 .layout_classic.form .stNavMain li, .layout_vsplit.form .stNavMain li {
