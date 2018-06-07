@@ -57,8 +57,15 @@ table {
 .tab_cadre_postonly th, .tab_cadre_postonly td,
 .main_form tr.headerRow th {
    border-bottom: 1px solid #ADADAD;
+   border-top: 1px solid #ADADAD;
    box-sizing: border-box;
    border-collapse: collapse;
+}
+/* Removes border on tables that have no tab_cadre class but nested in table with this class. */
+/* A border was set by previous rule if nested in previous selector. */
+table[class^="tab_cadre"] table:not([class^="tab_cadre"]) th,
+table[class^="tab_cadre"] table:not([class^="tab_cadre"]) td {
+   border: 0;
 }
 
 #searchcriterias .tab_cadre_fixe {
