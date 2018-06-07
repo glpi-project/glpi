@@ -4704,7 +4704,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       if ($ID) {
          echo "<th width='$colsize3%'>".__('Last update')."</th>";
-         echo "<td width='$colsize4%' colspan='4'>";
+         echo "<td width='$colsize4%' colspan='3'>";
          if ($this->fields['users_id_lastupdater'] > 0) {
             //TRANS: %1$s is the update date, %2$s is the last updater name
             printf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date_mod"]),
