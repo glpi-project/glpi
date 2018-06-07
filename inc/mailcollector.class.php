@@ -798,7 +798,7 @@ class MailCollector  extends CommonDBTM {
           && !isset($tkt['tickets_id'])) {
          $is_html = true;
          $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
-                                                           array_merge($this->files, $this->altfiles),
+                                                           $this->files + $this->altfiles,
                                                            $this->tags);
       }
 
