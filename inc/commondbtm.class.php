@@ -4807,7 +4807,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          //retrieve entity
-         $entities_id = $_SESSION['glpiactive_entity'];
+         $entities_id = isset($_SESSION['glpiactive_entity']) ? $_SESSION['glpiactive_entity'] : 0;
          if (isset($this->fields["entities_id"])) {
             $entities_id = $this->fields["entities_id"];
          } else if (isset($input['entities_id'])) {
