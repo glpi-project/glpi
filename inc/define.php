@@ -35,7 +35,7 @@
 */
 
 // Current version of GLPI
-define('GLPI_VERSION', '9.2.3');
+define('GLPI_VERSION', '9.2.4');
 if (substr(GLPI_VERSION, -4) === '-dev') {
    //for dev version
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
