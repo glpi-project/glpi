@@ -686,11 +686,11 @@ class User extends CommonDBTM {
       } else {
          $newPicture = false;
          if (!isAPI()) {
-            if (isset($input["_picture"][0]) && !empty($input["_picture"][0]) == 1) {
+            if (isset($input["_picture"][0]) && !empty($input["_picture"][0])) {
                $input["_picture"] = $input["_picture"][0];
             }
          }
-         if (isset($input["_picture"]) && !empty($input["_picture"]) == 1) {
+         if (isset($input["_picture"]) && !empty($input["_picture"])) {
             $newPicture = true;
          }
          if ($newPicture) {
@@ -707,7 +707,7 @@ class User extends CommonDBTM {
                $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
                self::dropPictureFiles($filename.".".$extension);
 
-               if (Document::isImage($_FILES['picture']['name'])
+               if (Document::isImage($input["_picture"])
                    && Document::renameForce($fullpath, $picture_path)) {
                   Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                   // For display
@@ -2306,7 +2306,7 @@ class User extends CommonDBTM {
             $full_picture .= "</div>";
 
             Html::showTooltip($full_picture, ['applyto' => "picture$rand"]);
-            echo "<input type='file' name='picture' accept='image/*'>";
+            echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
 
             echo "&nbsp;";
             Html::showCheckbox(['name' => '_blank_picture', 'title' => __('Clear')]);
