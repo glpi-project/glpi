@@ -6486,10 +6486,12 @@ class Html {
       $requirements = [];
       foreach ($entries as $key => $values) {
          if ($key !== $current) {
-            $requirements = array_merge(
-               $requirements,
-               self::getJsRequirements($values, $current)
-            );
+            if (is_array($values)) {
+               $requirements = array_merge(
+                  $requirements,
+                  self::getJsRequirements($values, $current)
+               );
+            }
          } else {
             if (is_array(array_values($values)[0])) {
                $requirements =  array_merge(
