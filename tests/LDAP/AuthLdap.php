@@ -352,8 +352,8 @@ class AuthLDAP extends DbTestCase {
       );
       $this->array($import)
          ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED);
+      $this->integer((int)$import['id'])->isGreaterThan(0);
 
       //check created user
       $user = new \User();

@@ -670,25 +670,10 @@ class User extends CommonDBTM {
 
    function post_addItem() {
 
-      // add emails (use _useremails set from UI, not _emails set from LDAP)
-      if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
-         $useremail = new UserEmail();
-         foreach ($this->input['_useremails'] as $id => $email) {
-            $email = trim($email);
-            $email_input = ['email'    => $email,
-                                 'users_id' => $this->getID()];
-            if (isset($this->input['_default_email'])
-                && ($this->input['_default_email'] == $id)) {
-               $email_input['is_default'] = 1;
-            } else {
-               $email_input['is_default'] = 0;
-            }
-            $useremail->add($email_input);
-         }
-      }
-
+      $this->updateUserEmails();
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
+
       $rulesplayed = $this->applyRightRules();
       $picture     = $this->syncLdapPhoto();
 
@@ -913,51 +898,7 @@ class User extends CommonDBTM {
 
    function post_updateItem($history = 1) {
 
-      // Update emails  (use _useremails set from UI, not _emails set from LDAP)
-      if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
-         $useremail = new UserEmail();
-         foreach ($this->input['_useremails'] as $id => $email) {
-            $email = trim($email);
-
-            // existing email
-            if ($id > 0) {
-               $params = ['id' => $id];
-
-               // empty email : delete
-               if (strlen($email) == 0) {
-                  $useremail->delete($params);
-
-               } else { // Update email
-                  $params['email'] = $email;
-                  if ($this->input['_default_email'] == $id) {
-                     $params['is_default'] = 1;
-                  }
-                  $useremail->update($params);
-               }
-
-            } else { // New email
-               $email_input = ['email'    => $email,
-                                    'users_id' => $this->getID()];
-               if (isset($this->input['_default_email'])
-                   && ($this->input['_default_email'] == $id)) {
-                  $email_input['is_default'] = 1;
-               } else {
-                  $email_input['is_default'] = 0;
-               }
-               $useremail->add($email_input);
-            }
-         }
-      }
-
-      /*
-      //User was not present in LDAP, and it just comes back
-      if (in_array('is_deleted_ldap', $this->updates) && $this->fields['is_deleted_ldap'] == 0) {
-         $changes[0] = '0';
-         $changes[1] = '';
-         $changes[2] = __('User present in LDAP directory');
-         Log::history($this->getID(), 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
-      }*/
-
+      $this->updateUserEmails();
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
       $this->applyRightRules();
@@ -1238,12 +1179,75 @@ class User extends CommonDBTM {
 
 
    /**
+    * Update emails of the user
+    *
+    * Use _useremails set from UI, not _emails set from LDAP
+   **/
+   function updateUserEmails() {
+      // Update emails  (use _useremails set from UI, not _emails set from LDAP)
+
+      $userUpdated = false;
+
+      if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
+         $useremail = new UserEmail();
+         foreach ($this->input['_useremails'] as $id => $email) {
+            $email = trim($email);
+
+            // existing email
+            if ($id > 0) {
+               $params = ['id' => $id];
+
+               // empty email : delete
+               if (strlen($email) == 0) {
+                  $deleted = $useremail->delete($params);
+                  $userUpdated = $userUpdated || $deleted;
+
+               } else { // Update email
+                  $params['email'] = $email;
+                  $params['is_default'] = $this->input['_default_email'] == $id ? 1 : 0;
+
+                  $existingUserEmail = new UserEmail();
+                  $existingUserEmail->getFromDB($id);
+                  if ($params['email'] == $existingUserEmail->fields['email']
+                      && $params['is_default'] == $existingUserEmail->fields['is_default']) {
+                     // Do not update if email has not changed
+                     continue;
+                  }
+
+                  $updated = $useremail->update($params);
+                  $userUpdated = $userUpdated || $updated;
+               }
+
+            } else { // New email
+               $email_input = ['email'    => $email,
+                               'users_id' => $this->fields['id']];
+               if (isset($this->input['_default_email'])
+                   && ($this->input['_default_email'] == $id)) {
+                  $email_input['is_default'] = 1;
+               } else {
+                  $email_input['is_default'] = 0;
+               }
+               $added = $useremail->add($email_input);
+               $userUpdated = $userUpdated || $added;
+            }
+         }
+      }
+
+      if ($userUpdated) {
+         $this->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
+      }
+   }
+
+
+   /**
     * Synchronise Dynamics emails of the user
     *
     * Use _emails (set from getFromLDAP), not _usermails set from UI
    **/
    function syncDynamicEmails() {
       global $DB;
+
+      $userUpdated = false;
 
       // input["_emails"] not set when update from user.form or preference
       if (isset($this->fields["authtype"])
@@ -1278,7 +1282,8 @@ class User extends CommonDBTM {
                         unset($this->input["_emails"][$i]);
                      } else if ($data['is_dynamic']) {
                         // Delete not found email
-                        $useremail->delete(['id' => $data["id"]]);
+                        $deleted = $useremail->delete(['id' => $data["id"]]);
+                        $userUpdated = $userUpdated || $deleted;
                      }
                   }
                }
@@ -1286,14 +1291,19 @@ class User extends CommonDBTM {
                //If the email need to be added
                if (count($this->input["_emails"]) > 0) {
                   foreach ($this->input["_emails"] as $email) {
-                     $useremail->add(['users_id'   => $this->fields["id"],
-                                           'email'      => $email,
-                                           'is_dynamic' => 1]);
+                     $added = $useremail->add(['users_id'   => $this->fields["id"],
+                                               'email'      => $email,
+                                               'is_dynamic' => 1]);
+                     $userUpdated = $userUpdated || $added;
                   }
                   unset ($this->input["_emails"]);
                }
             }
          }
+      }
+
+      if ($userUpdated) {
+         $this->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
       }
    }
 
