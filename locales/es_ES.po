@@ -7394,7 +7394,7 @@ msgstr "Padre"
 msgid "Antivirus"
 msgid_plural "Antiviruses"
 msgstr[0] "Antivirus"
-msgstr[1] "Los antivirus"
+msgstr[1] "Antivirus"
 
 #: inc/computerantivirus.class.php:144
 #: inc/computer_softwareversion.class.php:334

@@ -1747,7 +1747,7 @@ msgstr "spustit skript pod účtem, pod kterým je provozován webový server"
 #: front/crontask.form.php:53
 #, php-format
 msgid "Task %s executed"
-msgstr "Úloha %s provedena"
+msgstr "Úloha %s spuštěna"
 
 #. TRANS: R for Recursive
 #. TRANS: %1$s is the name of the tab, $2$d is number of items in the tab
@@ -1812,7 +1812,7 @@ msgstr "%1$s %2$s"
 #: front/crontask.php:48 inc/crontask.class.php:592
 #: inc/transfer.class.php:3305
 msgid "Execute"
-msgstr "Provést"
+msgstr "Spustit"
 
 #: front/crontask.php:49 inc/crontask.class.php:543
 msgid "Next run"
@@ -1863,7 +1863,7 @@ msgstr "Číselníky"
 #: front/display.options.php:41 inc/commonglpi.class.php:1159
 #: inc/commonglpi.class.php:1217 inc/commonglpi.class.php:1219
 msgid "Display options"
-msgstr "Zobrazit možnosti"
+msgstr "Možnosti zobrazení"
 
 #: front/displaypreference.form.php:38 front/documenttype.list.php:37
 #: front/dropdown.php:37 front/plugin.php:89 front/rulesengine.test.php:61
@@ -2240,7 +2240,7 @@ msgstr "Popište svůj problém"
 #: inc/reminder.class.php:637 inc/ruleticket.class.php:332
 #: inc/ticket.class.php:4000 inc/ticket.class.php:5031 inc/user.class.php:3049
 msgid "Title"
-msgstr "Název"
+msgstr "Nadpis"
 
 #: front/helpdesk.php:109 inc/blacklistedmailcontent.class.php:70
 #: inc/blacklistedmailcontent.class.php:84 inc/knowbaseitem.class.php:794
@@ -2451,7 +2451,7 @@ msgstr "Operace provedena z části úspěšně"
 #: front/massiveaction.php:73 front/transfer.action.php:48
 #: front/transfer.action.php:55
 msgid "Operation successful"
-msgstr "Operace byla úspěšná"
+msgstr "Operace úspěšná"
 
 #. TRANS: %$1d and %$2d are numbers
 #: front/massiveaction.php:77
@@ -2496,7 +2496,7 @@ msgstr "%s přidal položku"
 #: front/networkname.form.php:96
 #, php-format
 msgid "%s associates a network name to an item"
-msgstr "%s přiřadil síťový název k položce"
+msgstr "%s přiřadil položce síťový název"
 
 #. TRANS: %s is the user login
 #: front/networkport.form.php:91
@@ -2938,7 +2938,7 @@ msgstr "Zjednodušené rozhraní"
 #: front/reservation.form.php:67
 #, php-format
 msgid "%1$s purges the reservation for item %2$s"
-msgstr "%1$s vymazal rezervaci položky %2$s"
+msgstr "%1$s odstranil rezervaci položky %2$s"
 
 #: front/reservation.form.php:120
 #, php-format
@@ -3096,7 +3096,7 @@ msgstr "%1$s smazal licenci %2$s"
 #: front/softwarelicense.form.php:84
 #, php-format
 msgid "%1$s purges the license %2$s"
-msgstr "%1$s vymazal licenci %2$s"
+msgstr "%1$s odstranil licenci %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:93
@@ -3176,7 +3176,7 @@ msgid_plural "Hours"
 msgstr[0] "Hodina"
 msgstr[1] "Hodiny"
 msgstr[2] "Hodin"
-msgstr[3] "Hodin"
+msgstr[3] "Hodiny"
 
 #: front/stat.global.php:136 front/stat.graph.php:392
 #: inc/commonitilobject.class.php:4685 inc/stat.class.php:469
@@ -9280,7 +9280,7 @@ msgstr "Země"
 
 #: inc/contact.class.php:229 inc/user.class.php:1985
 msgid "Vcard"
-msgstr "Vcard"
+msgstr "El. vizitka (Vcard)"
 
 #: inc/contact.class.php:249
 msgctxt "button"
@@ -10121,10 +10121,10 @@ msgstr[3] "Modely ovládání zařízení"
 #: inc/devicedrive.class.php:43
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] "Mechanika"
-msgstr[1] "Mechaniky"
-msgstr[2] "Mechanik"
-msgstr[3] "Mechaniky"
+msgstr[0] "Mechanika výměnných médií"
+msgstr[1] "Mechaniky výměnných médií"
+msgstr[2] "Mechanik výměnných médií"
+msgstr[3] "Mechaniky výměnných médií"
 
 #: inc/devicedrive.class.php:51 inc/devicedrive.class.php:72
 #: inc/devicedrive.class.php:122
@@ -17125,11 +17125,11 @@ msgstr "Výchozí pro příjemce doplňující e-mailové komunikace"
 
 #: inc/requesttype.class.php:64 inc/requesttype.class.php:124
 msgid "Request source visible for tickets"
-msgstr "Prostředek požadavku viditelný pro požadavky"
+msgstr "Zdroj žádosti viditelný pro požadavky"
 
 #: inc/requesttype.class.php:67 inc/requesttype.class.php:132
 msgid "Request source visible for followups"
-msgstr "Prostředek požadavku viditelný pro doplňující komunikaci"
+msgstr "Zdroj žádosti viditelný pro doplňující komunikaci"
 
 #: inc/requesttype.class.php:183 inc/requesttype.class.php:191
 #: inc/requesttype.class.php:199 inc/requesttype.class.php:207
@@ -17219,7 +17219,7 @@ msgid_plural "Reservable items"
 msgstr[0] "Položka, kterou je možné si zamluvit"
 msgstr[1] "Položky, které je možné si zamluvit"
 msgstr[2] "Položek, které je možné si zamluvit"
-msgstr[3] "Položek, které je možné si zamluvit"
+msgstr[3] "Položky, které je možné si zamluvit"
 
 #: inc/reservationitem.class.php:306
 msgid "Make unavailable"
@@ -17261,7 +17261,7 @@ msgstr "Najít volnou položku v zadaném období"
 
 #: inc/reservationitem.class.php:649
 msgid "Device reservations expiring today"
-msgstr "Zařízení na které dnes končí rezervace"
+msgstr "Zařízení na která dnes končí rezervace"
 
 #: inc/reservationitem.class.php:690
 msgid "Send reservation alert failed"
@@ -17355,7 +17355,7 @@ msgid_plural "Peripheral types"
 msgstr[0] "Typ periferie"
 msgstr[1] "Typy periferií"
 msgstr[2] "Typů periferií"
-msgstr[3] "Typů periferií"
+msgstr[3] "Typy periferií"
 
 #: inc/rule.class.php:529
 msgid "Rules management"
@@ -17675,7 +17675,7 @@ msgstr "Číselník operačních systémů"
 
 #: inc/ruledictionnaryoperatingsystemservicepackcollection.class.php:41
 msgid "Dictionnary of service packs"
-msgstr "Číselník balíků aktualizací"
+msgstr "Číselník balíčků oprav"
 
 #: inc/ruledictionnaryoperatingsystemversioncollection.class.php:41
 msgid "Dictionnary of operating system versions"
@@ -17802,15 +17802,15 @@ msgstr "Pokud je to možné propojit, jinak import odmítnout"
 
 #: inc/ruleimportcomputer.class.php:164
 msgid "Yes if equal"
-msgstr "Ano, pokud je roven"
+msgstr "Ano, pokud je rovno"
 
 #: inc/ruleimportcomputer.class.php:165
 msgid "Yes if empty"
-msgstr "Ano, pokud je prázdný"
+msgstr "Ano, pokud je prázdné"
 
 #: inc/ruleimportcomputer.class.php:178
 msgid "is already present in GLPI"
-msgstr "už je přítomen v GLPI"
+msgstr "už je přítomno v GLPI"
 
 #: inc/ruleimportcomputer.class.php:179
 msgid "is empty in GLPI"
@@ -17904,7 +17904,7 @@ msgstr "Importované skupiny z LDAP adresáře"
 
 #: inc/ruleright.class.php:292
 msgid "Entity based on LDAP information"
-msgstr "Entita založena na informaci z LDAP"
+msgstr "Entita založená na informaci z LDAP"
 
 #: inc/ruleright.class.php:302
 msgid "Entity from mail domain"
@@ -17978,7 +17978,7 @@ msgstr "Mateřská firma"
 
 #: inc/ruleticket.class.php:670
 msgid "Business rules for ticket (entity parent)"
-msgstr "Obchodní pravidla pro požadavek (rodičovskou entitu)"
+msgstr "Obchodní pravidla pro požadavek (nadřazená entita)"
 
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
@@ -17986,7 +17986,7 @@ msgid_plural "Saved searches alerts"
 msgstr[0] "Upozornění na uložené hledání"
 msgstr[1] "Upozornění na uložená hledání"
 msgstr[2] "Upozornění na uložených hledání"
-msgstr[3] "Upozornění na uložených hledání"
+msgstr[3] "Upozornění na uložená hledání"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
 #: inc/savedsearch.class.php:1387
@@ -18148,7 +18148,8 @@ msgstr "Počítání pro toto uložené hledání bylo vypnuto."
 #: inc/savedsearch.class.php:921
 msgid "Counting this saved search would take too long, it has been skipped."
 msgstr ""
-"Počítání tohoto uloženého hledání by zabralo příliš dlouho, bylo přeskočeno."
+"Počítání tohoto uloženého hledání by zabralo příliš dlouho, proto bylo "
+"přeskočeno."
 
 #: inc/savedsearch.class.php:942 inc/savedsearch.class.php:943
 msgid "Not default search"
@@ -18305,7 +18306,7 @@ msgid_plural "Service levels"
 msgstr[0] "Úroveň služby"
 msgstr[1] "Úrovně služeb"
 msgstr[2] "Úrovní služeb"
-msgstr[3] "Úrovní služeb"
+msgstr[3] "Úrovně služeb"
 
 #: inc/software.class.php:74 inc/software.class.php:1017
 msgid "Merging"
@@ -18340,7 +18341,7 @@ msgstr "Počet instalací"
 
 #: inc/software.class.php:968
 msgid "Merge"
-msgstr "Spojit"
+msgstr "Sloučit"
 
 #: inc/software.class.php:1108
 msgid "Software deleted after merging"
@@ -18610,7 +18611,7 @@ msgstr ""
 
 #: inc/telemetry.class.php:476
 msgid "the following form"
-msgstr "následující formulář"
+msgstr "následujícího formuláře"
 
 #: inc/ticket.class.php:206
 msgid "Create ticket"
@@ -18666,23 +18667,23 @@ msgstr "Lhůta na přidělení + stav"
 
 #: inc/ticket.class.php:2670
 msgid "Time to own exceedeed"
-msgstr "Lhůta na vyřešení překročena"
+msgstr "Lhůta na přidělení překročena"
 
 #: inc/ticket.class.php:2698
 msgid "Internal time to resolve + Progress"
-msgstr "Vnitřní lhůta pro vyřešení + postup"
+msgstr "Vnitřní lhůta na vyřešení + postup"
 
 #: inc/ticket.class.php:2708
 msgid "Internal time to resolve exceedeed"
-msgstr "Vnitřní lhůta pro vyřešení překročena"
+msgstr "Vnitřní lhůta na vyřešení překročena"
 
 #: inc/ticket.class.php:2734
 msgid "Internal time to own + Progress"
-msgstr "Vnitřní lhůta pro přidělení + postup"
+msgstr "Vnitřní lhůta na přidělení + postup"
 
 #: inc/ticket.class.php:2744
 msgid "Internal time to own exceedeed"
-msgstr "Vnitřní lhůta pro přidělení překročena"
+msgstr "Vnitřní lhůta na přidělení překročena"
 
 #: inc/ticket.class.php:2994
 msgid "Response date"
@@ -18818,7 +18819,7 @@ msgid_plural "%d new tickets"
 msgstr[0] "%d nový požadavek"
 msgstr[1] "%d nové požadavky"
 msgstr[2] "%d nových požadavků"
-msgstr[3] "%d nových požadavků"
+msgstr[3] "%d nové požadavky"
 
 #: inc/ticket.class.php:5881 inc/ticket.class.php:6085
 #: inc/ticket.class.php:6135
@@ -19243,7 +19244,7 @@ msgstr "V pořádku – sezení funguje (bez problému s trans_id) – výborně
 
 #: inc/toolbox.class.php:1061
 msgid "Testing DB engine version"
-msgstr "Verze testovacího databázového engine"
+msgstr "Testování verze databázového engine"
 
 #: inc/toolbox.class.php:1070
 msgid "Allocated memory test"
@@ -19360,13 +19361,13 @@ msgstr "NO-TLS (bez šifrování) "
 #. open.php
 #: inc/toolbox.class.php:2142
 msgid "NO-VALIDATE-CERT"
-msgstr "NEOVĚŘOVAT-CERTIFIKÁT"
+msgstr "NO-VALIDATE-CERT (neověřovat certifikát)"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2144
 msgid "VALIDATE-CERT"
-msgstr "OVĚŘOVAT-CERTIFIKÁT"
+msgstr "VALIDATE-CERT (ověřovat certifikát)"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -19424,8 +19425,8 @@ msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr ""
-"Žádné nebo neplatná cesta v HTTP_REFERER. Před opětovným provedením akce "
-"znovu načtěte předchozí stránku."
+"Žádný nebo neplatný popis umístění v HTTP_REFERER. Před opětovným provedením"
+" akce znovu načtěte předchozí stránku."
 
 #: inc/toolbox.class.php:2507
 msgid ""
@@ -19477,7 +19478,7 @@ msgstr "Vazby mezi typy spotřebního materiálu a spotřebním materiálem"
 
 #: inc/transfer.class.php:3409
 msgid "Links between computers and volumes"
-msgstr "Vazby mezi počítači a jednotkami"
+msgstr "Vazby mezi počítači a svazky"
 
 #: inc/transfer.class.php:3415
 msgid "Direct connections"

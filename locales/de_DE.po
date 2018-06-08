@@ -16101,7 +16101,7 @@ msgstr "Inkonsistentes reales Datum. Aktualisierung abgebrochen."
 
 #: inc/project.class.php:1017
 msgid "Create a sub project from this project"
-msgstr "Unterprojekt aus diesen Projekt herstellen"
+msgstr "Ein untergeordnetes Projekt erstellen"
 
 #: inc/project.class.php:1176
 msgid "Sum of planned durations of tasks"
@@ -16273,7 +16273,7 @@ msgstr "Ticket aus dieser Aufgabe erstellen"
 
 #: inc/projecttask_ticket.class.php:278
 msgid "Add a project task"
-msgstr ""
+msgstr "Eine Projektaufgabe zuordnen"
 
 #: inc/purgelogs.class.php:61
 msgid "Purge history"
@@ -18685,7 +18685,7 @@ msgstr "GB"
 
 #: inc/toolbox.class.php:1238
 msgid "Tio"
-msgstr "TeBiByte"
+msgstr "TB"
 
 #: inc/toolbox.class.php:1447 inc/toolbox.class.php:1449
 #: inc/toolbox.class.php:1454 inc/toolbox.class.php:1456
