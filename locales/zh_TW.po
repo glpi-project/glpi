@@ -935,11 +935,11 @@ msgstr[0] "實體"
 
 #: ajax/switchdebug.php:50
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "偵錯模式已開啟"
 
 #: ajax/switchdebug.php:51
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "偵錯模式已關閉"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -3651,7 +3651,7 @@ msgstr "技術員在作業"
 #: front/stat.tracking.php:240
 #, php-format
 msgid "Solved late %1$s (%2$s)"
-msgstr ""
+msgstr "延遲解決%1$s%2$s"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:51
@@ -4026,7 +4026,7 @@ msgstr "IPv6 位置範圍"
 
 #: inc/apiclient.class.php:143 inc/apiclient.class.php:235
 msgid "Application token"
-msgstr ""
+msgstr "應用程式token"
 
 #: inc/apiclient.class.php:213
 msgid "Leave these parameters empty to disable API access restriction"
@@ -4712,7 +4712,7 @@ msgstr "簡單模式"
 #: inc/authldap.class.php:3054 inc/authldap.class.php:3082
 msgctxt "button"
 msgid "Change"
-msgstr ""
+msgstr "變更"
 
 #: inc/authldap.class.php:3090 inc/entity.class.php:1100
 #: inc/html.class.php:3242 inc/rulecollection.class.php:1207
@@ -6979,7 +6979,7 @@ msgstr ""
 #: inc/commonitiltask.class.php:1972
 #, php-format
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #: inc/commonitiltask.class.php:1985
 msgid "No tasks do to."
@@ -7202,7 +7202,7 @@ msgstr "自動資產"
 
 #: inc/computerantivirus.class.php:273 inc/computerantivirus.class.php:353
 msgid "Up to date"
-msgstr ""
+msgstr "更新至最新"
 
 #: inc/computerantivirus.class.php:327
 msgid "Add an antivirus"
@@ -7287,7 +7287,7 @@ msgstr[0] "記憶體類型"
 #: inc/printer.class.php:672
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
+msgstr[0] "記憶體"
 
 #: inc/computer.class.php:877 inc/dropdown.class.php:986
 #: inc/networkinterface.class.php:48 inc/networkportmigration.class.php:299
@@ -7654,7 +7654,7 @@ msgstr ""
 
 #: inc/config.class.php:432
 msgid "Auto Login"
-msgstr ""
+msgstr "自動登入"
 
 #: inc/config.class.php:435
 msgid "Time to allow \"Remember Me\""
@@ -8057,7 +8057,7 @@ msgstr "生成於 %s"
 
 #: inc/config.class.php:1323
 msgid "API token"
-msgstr ""
+msgstr "API token"
 
 #: inc/config.class.php:1342
 msgid "Due date progression"
@@ -9274,7 +9274,7 @@ msgstr "最佳化"
 #: inc/devicebattery.class.php:42
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] ""
+msgstr[0] "電池組"
 
 #: inc/devicebattery.class.php:57 inc/devicebattery.class.php:79
 #: inc/devicebattery.class.php:115 inc/item_deviceharddrive.class.php:56
@@ -9304,7 +9304,7 @@ msgstr[0] ""
 #: inc/devicebatterytype.class.php:42
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] ""
+msgstr[0] "電池種類"
 
 #: inc/devicecase.class.php:47
 msgid "Case"

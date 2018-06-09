@@ -1858,8 +1858,8 @@ msgstr[1] "Programas"
 #: inc/ruleimportcomputer.class.php:112 inc/search.class.php:5468
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] "Manofacturador"
-msgstr[1] "Manofacturadores"
+msgstr[0] "Fabricante"
+msgstr[1] "Fabricantes"
 
 #: front/dictionnary.php:62 front/find_num.php:103
 #: inc/cartridge.class.php:1107 inc/lock.class.php:486
@@ -2156,7 +2156,7 @@ msgstr "Archivo no encontrado"
 
 #: front/document.send.php:57
 msgid "File is altered (bad checksum)"
-msgstr "Archivo alterado (checksum erróneo)"
+msgstr "Archivo alterado (suma de verificación errónea)"
 
 #: front/document.send.php:63 front/document.send.php:84
 #: front/graph.send.php:56
@@ -4955,7 +4955,7 @@ msgstr "UUID"
 
 #: inc/blacklistedmailcontent.class.php:57 inc/dropdown.class.php:783
 msgid "Blacklisted mail content"
-msgstr "Conteido de correo en listas negras"
+msgstr "Contenido de correo en la lista negra"
 
 #: inc/budget.class.php:56 inc/commonitilcost.class.php:179
 #: inc/commonitilcost.class.php:452 inc/commonitilcost.class.php:553
@@ -9144,8 +9144,8 @@ msgstr "Agregar un Contrato"
 #: inc/control.class.php:50
 msgid "Check"
 msgid_plural "Checks"
-msgstr[0] "Cheque"
-msgstr[1] "Cheques"
+msgstr[0] "Comprobación"
+msgstr[1] "Comprobaciones"
 
 #: inc/control.class.php:65 inc/dropdown.class.php:1029
 #: inc/fieldunicity.class.php:56
@@ -10716,7 +10716,7 @@ msgstr "Cierre administrativo de las incidencias después de resueltas"
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
 msgid "Immediately"
-msgstr ""
+msgstr "Inmediatamente"
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"

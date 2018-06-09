@@ -3589,7 +3589,7 @@ msgstr "Weiter"
 #: front/stat.graph.php:414 inc/commonitilobject.class.php:4598
 #: inc/stat.class.php:470 inc/ticket.class.php:7634
 msgid "Take into account"
-msgstr "Berücksichtigt"
+msgstr "Übernommen"
 
 #: front/stat.location.php:106 front/stat.tracking.php:134
 msgid "Show graphics"
@@ -15448,7 +15448,7 @@ msgstr "Inkonsistentes reales Datum. Aktualisierung abgebrochen."
 
 #: inc/project.class.php:1021
 msgid "Create a sub project from this project"
-msgstr "Unterprojekt aus diesen Projekt herstellen"
+msgstr "Ein untergeordnetes Projekt erstellen"
 
 #: inc/project.class.php:1180
 msgid "Sum of planned durations of tasks"
@@ -15620,7 +15620,7 @@ msgstr "Ticket aus dieser Aufgabe erstellen"
 
 #: inc/projecttask_ticket.class.php:282
 msgid "Add a project task"
-msgstr ""
+msgstr "Eine Projektaufgabe zuordnen"
 
 #: inc/queuednotification.class.php:84
 msgctxt "button"
@@ -17325,7 +17325,7 @@ msgstr "Private Anmerkung"
 
 #: inc/ticket.class.php:3201
 msgid "Take into account time"
-msgstr "Berücksichtigte Zeit"
+msgstr "Zeit bis zur Kenntnisnahme"
 
 #: inc/ticket.class.php:3218
 msgid "All linked tickets"
@@ -17927,7 +17927,7 @@ msgstr "GB"
 
 #: inc/toolbox.class.php:1145
 msgid "Tio"
-msgstr "TeBiByte"
+msgstr "TB"
 
 #: inc/toolbox.class.php:1354 inc/toolbox.class.php:1356
 #: inc/toolbox.class.php:1361 inc/toolbox.class.php:1363

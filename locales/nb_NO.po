@@ -15552,7 +15552,7 @@ msgstr "Maksimalt antall e-post å sende på en gang"
 
 #: inc/queuednotification.class.php:479
 msgid "Clean notification queue"
-msgstr ""
+msgstr "Tøm varslingskø"
 
 #: inc/queuednotification.class.php:480
 msgid "Days to keep sent emails"

@@ -10721,7 +10721,7 @@ msgstr "Cierre automático de las peticiones resueltas después de"
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
 msgid "Immediately"
-msgstr ""
+msgstr "Inmediatamente"
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"

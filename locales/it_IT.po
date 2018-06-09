@@ -6331,7 +6331,7 @@ msgstr "Elimina"
 #: inc/commondbtm.class.php:4734 inc/displaypreference.class.php:306
 #: inc/planning.class.php:1290
 msgid "Delete"
-msgstr "Elimina"
+msgstr "Cestina"
 
 #: inc/commondbtm.class.php:4738
 msgid "Read notes"
@@ -7750,7 +7750,7 @@ msgstr "Indirizzo URL dell'applicazione"
 
 #: inc/config.class.php:297
 msgid "Text in the login box (HTML tags supported)"
-msgstr ""
+msgstr "Testo sulla pagina di accesso (supporta tag HTML)"
 
 #: inc/config.class.php:303
 msgid "Allow FAQ anonymous access"
@@ -7856,7 +7856,7 @@ msgstr "Stato predefinito checkbox"
 #: inc/profile.class.php:101 inc/profile.class.php:824
 #: inc/profile.class.php:1562 inc/transfer.class.php:3314
 msgid "Assets"
-msgstr "Asset"
+msgstr "Inventario"
 
 #: inc/config.class.php:484
 msgid "Enable the financial and administrative information by default"
@@ -10699,7 +10699,7 @@ msgstr "Chiusura automatica delle chiamate risolte dopo"
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
 msgid "Immediately"
-msgstr ""
+msgstr "Immediatamente"
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"

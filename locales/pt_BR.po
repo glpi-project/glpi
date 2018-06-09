@@ -4213,14 +4213,14 @@ msgstr "Login automático desabilitado"
 #: inc/auth.class.php:654
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Conexão ao diretório LDAP sem sucesso"
+msgstr[1] "Conexão aos diretórios LDAP sem sucesso"
 
 #: inc/auth.class.php:662
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Usuário não encontrado nos diretório LDAP"
+msgstr[1] "Usuário não encontrado nos diretórios LDAP"
 
 #: inc/auth.class.php:673 inc/auth.class.php:683
 msgid "Empty login or password"
@@ -10693,7 +10693,7 @@ msgstr "Fechamento automático de chamados solucionados após"
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
 msgid "Immediately"
-msgstr ""
+msgstr "Imediatamente"
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"
@@ -13385,8 +13385,8 @@ msgstr "Ativar acompanhamento do navegador"
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Notificação de browser"
+msgstr[1] "Notificações de browser"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -16708,8 +16708,8 @@ msgstr "Lista de filtros"
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Privado %1$s"
+msgstr[1] "Privados %1$s"
 
 #: inc/savedsearch.class.php:771 inc/savedsearch.class.php:781
 msgid "Hide/Show elements"
@@ -16719,8 +16719,8 @@ msgstr "Ocultar / Mostrar elementos"
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Público %1$s"
+msgstr[1] "Públicos %1$s"
 
 #: inc/savedsearch.class.php:825
 msgid "Default bookmark has not been changed!"

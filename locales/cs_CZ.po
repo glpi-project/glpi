@@ -2126,8 +2126,8 @@ msgid "Phone type"
 msgid_plural "Phone types"
 msgstr[0] "Typ telefonu"
 msgstr[1] "Typy telefonů"
-msgstr[2] "Typů telefonů"
-msgstr[3] "Typů telefonů"
+msgstr[2] "Typy telefonů"
+msgstr[3] "Typy telefonů"
 
 #: front/dictionnary.php:119 front/dictionnary.php:122
 #: front/stat.location.php:89 inc/dropdown.class.php:954
@@ -9858,7 +9858,7 @@ msgid_plural "Cases"
 msgstr[0] "Skříň"
 msgstr[1] "Skříně"
 msgstr[2] "Skříní"
-msgstr[3] "Skříní"
+msgstr[3] "Skříně"
 
 #: inc/devicecasemodel.class.php:45 inc/dropdown.class.php:888
 msgid "Device case model"
@@ -11140,7 +11140,7 @@ msgstr "Automatické uzavírání vyřešených požadavků po"
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
 msgid "Immediately"
-msgstr ""
+msgstr "Okamžitě"
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"

@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-30 07:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Rivo Zängov <eraser@eraser.ee>, 2018\n"
+"Last-Translator: Diana Lõhmus <diana.lohmus@saaremaavald.ee>, 2018\n"
 "Language-Team: Estonian (Estonia) (https://www.transifex.com/glpi/teams/1637/et_EE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -163,7 +163,7 @@ msgstr "%1$s - port %2$s"
 #: ajax/dropdownConnectNetworkPort.php:104
 #, php-format
 msgid "%1$s - Network outlet %2$s"
-msgstr ""
+msgstr "%1$s - Võrguväljund %2$s"
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -691,7 +691,7 @@ msgstr "Hoiatus"
 #: ajax/dropdownShowIPNetwork.php:58
 #, php-format
 msgid "IP network: %1$s/%2$s"
-msgstr ""
+msgstr "IP võrk: %1$s/%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:59
 #, php-format
@@ -968,8 +968,8 @@ msgstr "Töötluses"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s pöördumine on töös või hiljuti lahendatud selle asja kohta"
+msgstr[1] "%s pöördumine on töös või hiljuti lahendatud selle asja kohta"
 
 #: ajax/ticketsatisfaction.php:64 inc/entity.class.php:1043
 msgid "Create survey after"
@@ -993,7 +993,7 @@ msgstr "Keelatud"
 
 #: ajax/ticketsatisfaction.php:86
 msgid "Duration of survey"
-msgstr ""
+msgstr "Uuringu kestus"
 
 #: ajax/ticketsatisfaction.php:93
 msgid "Unspecified"
@@ -1001,7 +1001,7 @@ msgstr "Määramata"
 
 #: ajax/ticketsatisfaction.php:98
 msgid "For tickets closed after"
-msgstr ""
+msgstr "Sulgemist ootavad teated"
 
 #: ajax/ticketsatisfaction.php:106 inc/link.class.php:142
 msgid "Valid tags"
@@ -1081,7 +1081,7 @@ msgstr "Kontroll ebaõnnestus: %s"
 #: front/authldap.form.php:95 front/authldap.form.php:100
 #, php-format
 msgid "Replicate %s"
-msgstr ""
+msgstr "Kopeerima %s"
 
 #: front/auth.others.php:50 front/auth.settings.php:43 front/setup.auth.php:41
 msgid "External authentication sources"
@@ -1112,13 +1112,13 @@ msgstr "%s - failile pole ligipääsuõigust"
 #: front/backup.php:246 front/backup.php:253
 #, php-format
 msgid "Unable to find the byte %s"
-msgstr ""
+msgstr "EI leia baiti %s"
 
 #. TRANS: %s is the SQL query which generates the error
 #: front/backup.php:314 front/backup.php:417 install/update_content.php:245
 #, php-format
 msgid "SQL error starting from %s"
-msgstr ""
+msgstr "SQL viga, algab %s"
 
 #: front/backup.php:434
 msgid "The file already exists"
@@ -1140,11 +1140,11 @@ msgstr "Kontrolli uue versiooni saadavust"
 
 #: front/backup.php:607
 msgid "GLPI internal backup system is a helper for very small instances."
-msgstr ""
+msgstr "GLPI sisemine varundussüsteem on abiks väga vähestel juhtudel"
 
 #: front/backup.php:608
 msgid "You should rather use a dedicated tool on your server."
-msgstr ""
+msgstr "Peaksite pigem spetsiaalset vahendit oma serveris"
 
 #: front/backup.php:611 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:760
@@ -1422,7 +1422,7 @@ msgstr "%s uuendas kassetti"
 #: front/cartridgeitem_printermodel.form.php:48
 #, php-format
 msgid "%s associates a type"
-msgstr ""
+msgstr "%s seostab tüübiga"
 
 #. TRANS: %s is the user login
 #: front/change.form.php:109 front/problem.form.php:113
@@ -1545,7 +1545,7 @@ msgstr "%s uuendas maksumust"
 #: front/commonitiltask.form.php:61 front/projecttask.form.php:61
 #, php-format
 msgid "%s adds a task"
-msgstr ""
+msgstr "%s lisab ülesande"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:70 front/projecttask.form.php:74
@@ -1557,7 +1557,7 @@ msgstr "%s kustutas jäädavalt tegevuse"
 #: front/commonitiltask.form.php:79 front/projecttask.form.php:83
 #, php-format
 msgid "%s updates a task"
-msgstr ""
+msgstr "%s uuendas ülesande"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:68
@@ -1575,25 +1575,25 @@ msgstr "%s uuendas kinnitust"
 #: front/commonitilvalidation.form.php:87
 #, php-format
 msgid "%s purges an approval"
-msgstr ""
+msgstr "%s kustutas jäädavalt kinnituse"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:57
 #, php-format
 msgid "%s adds an antivirus"
-msgstr ""
+msgstr "%s lisas antiviiruse"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:70
 #, php-format
 msgid "%s purges an antivirus"
-msgstr ""
+msgstr "%s kustutas antiviiruse"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:83
 #, php-format
 msgid "%s updates an antivirus"
-msgstr ""
+msgstr "%s uuendas antiviiruse"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:57
@@ -1605,7 +1605,7 @@ msgstr "%s lisas salvestusseadme"
 #: front/computerdisk.form.php:70
 #, php-format
 msgid "%s purges a volume"
-msgstr ""
+msgstr "%s eemaldas salvestusseadme"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:83
@@ -1617,19 +1617,19 @@ msgstr "%s uuendas salvestusseadet"
 #: front/computer_item.form.php:51
 #, php-format
 msgid "%s disconnects an item"
-msgstr ""
+msgstr "%s Ühendas asja lahti"
 
 #. TRANS: %s is the user login
 #: front/computer_item.form.php:61
 #, php-format
 msgid "%s connects an item"
-msgstr ""
+msgstr "%s ühendas asja"
 
 #. TRANS: %s is the user login
 #: front/computer_softwarelicense.form.php:50
 #, php-format
 msgid "%s associates a computer and a license"
-msgstr ""
+msgstr "%s seostab arvuti ja litsentsi"
 
 #. TRANS: %s is the user login
 #: front/computer_softwareversion.form.php:55
@@ -1657,7 +1657,7 @@ msgstr "%s uuendas virtuaalmasinat"
 
 #: front/config.form.php:54 front/config.form.php:61
 msgid "Cache reset successful"
-msgstr ""
+msgstr "Vahemälu tühjendamine oli edukas"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:55
@@ -1677,23 +1677,23 @@ msgstr[1] "Kulumaterjalid"
 #: front/contact_supplier.form.php:52 front/contract_supplier.form.php:52
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr ""
+msgstr "%s lisab lingi tarnijale"
 
 #. TRANS: %s is a directory
 #: front/cron.php:46
 #, php-format
 msgid "ERROR: %s is not writable"
-msgstr ""
+msgstr "VIGA: %s pole kirjutatav"
 
 #: front/cron.php:47
 msgid "run script as apache user"
-msgstr ""
+msgstr "käivitage skript apache kasutajana"
 
 #. TRANS: %s is a task name
 #: front/crontask.form.php:53
 #, php-format
 msgid "Task %s executed"
-msgstr ""
+msgstr "Tööülesanne %s on käivitatud"
 
 #. TRANS: R for Recursive
 #. TRANS: %1$s is the name of the tab, $2$d is number of items in the tab
@@ -1765,7 +1765,7 @@ msgstr "Järgmine käivitus"
 #: front/crontask.php:50
 #, php-format
 msgid "Next task to run: %s"
-msgstr ""
+msgstr "Järgmine tööülesanne käivitamiseks %s"
 
 #: front/crontask.php:52 front/crontask.php:53
 msgid "No action pending"
@@ -1776,6 +1776,8 @@ msgid ""
 "You have more automatic actions which need to run each minute than the "
 "number allow each run. Increase this config."
 msgstr ""
+"Teil on rohkem automaatseid toiminguid, mis peavad kord minutis käivituma, "
+"kui konfiguratsioonis on lubatud. Suurendage seda konfiguratsiooni."
 
 #: front/devices.php:41 front/devices.php:45 inc/commondevice.class.php:57
 #: inc/commondevice.class.php:266 inc/computer.class.php:802
@@ -2116,13 +2118,13 @@ msgstr[1] "Versioonid"
 #: inc/item_operatingsystem.class.php:612
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Arhidektuur"
+msgstr[1] "Arhidektuurid"
 
 #: front/display.options.php:42 inc/commonglpi.class.php:1158
 #: inc/commonglpi.class.php:1216 inc/commonglpi.class.php:1218
 msgid "Display options"
-msgstr ""
+msgstr "Kuva valikud"
 
 #: front/displaypreference.form.php:42 front/documenttype.list.php:42
 #: front/dropdown.php:41 front/plugin.php:93 front/rulesengine.test.php:65
@@ -2144,22 +2146,22 @@ msgstr "Faili ei leitud"
 
 #: front/document.send.php:57
 msgid "File is altered (bad checksum)"
-msgstr ""
+msgstr "Faili on muudetud (vigane kontrollsumma)"
 
 #: front/document.send.php:63 front/document.send.php:84
 #: front/graph.send.php:56
 msgid "Unauthorized access to this file"
-msgstr ""
+msgstr "Loata juurdepääs sellele failile"
 
 #: front/document.send.php:87
 msgid "Invalid filename"
-msgstr ""
+msgstr "Vigane failinimi"
 
 #. TRANS: %s is the user login
 #: front/dropdown.common.form.php:100 front/group.form.php:96
 #, php-format
 msgid "%s replaces an item"
-msgstr ""
+msgstr "%s asendas üksuse"
 
 #: front/dropdown.common.form.php:119 inc/profile_user.class.php:102
 #: inc/transfer.class.php:3552
@@ -2176,7 +2178,7 @@ msgstr[1] "Rippmenüüd"
 
 #: front/find_num.php:76
 msgid "Search the ID of your hardware"
-msgstr ""
+msgstr "Otsige riistvara ID-d"
 
 #: front/find_num.php:85 inc/authldap.class.php:3177 inc/knowbase.class.php:69
 #: inc/knowbaseitem.class.php:1004 inc/planning.class.php:372
@@ -2389,15 +2391,15 @@ msgstr "Kasutajatuvastus"
 
 #: front/helpdesk.php:88
 msgid "Helpdesk reporting form"
-msgstr ""
+msgstr "Kasutajatoe raporteerimise vorm"
 
 #: front/helpdesk.php:91
 msgid "The issue must be solved"
-msgstr ""
+msgstr "Probleem tuleb lahendada"
 
 #: front/helpdesk.php:94
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Vali prioriteet"
 
 #: front/helpdesk.php:97 inc/commonitilobject.class.php:1929
 msgctxt "urgency"
@@ -2426,7 +2428,7 @@ msgstr "Väga madal"
 
 #: front/helpdesk.php:106
 msgid "Describe your issue"
-msgstr ""
+msgstr "Kirjelda oma probleemi"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
@@ -2464,7 +2466,7 @@ msgstr "Sisu"
 #: front/helpdesk.php:117
 msgctxt "button"
 msgid "post"
-msgstr ""
+msgstr "Saada"
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
 #: inc/notificationtargetticket.class.php:228 inc/ticket.class.php:4634
@@ -2479,37 +2481,37 @@ msgstr "Avaleht"
 
 #: front/ipnetwork.form.php:45
 msgid "Successfully recreated network tree"
-msgstr ""
+msgstr "Võrgu puu on edukalt uuesti loodud"
 
 #. TRANS: %s is the user login
 #: front/ipnetwork_vlan.form.php:51 front/networkport_vlan.form.php:51
 #, php-format
 msgid "%s associates a VLAN to a network port"
-msgstr ""
+msgstr "%s seostas VLAN-i võrgupordiga"
 
 #: front/knowbaseitem_comment.form.php:43
 #: front/knowbaseitem_comment.form.php:55
 #: front/knowbaseitem_comment.form.php:74 front/knowbaseitem_item.form.php:45
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "Kohustuslik väli on täitmata!"
 
 #: front/knowbaseitem_comment.form.php:62
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%s sisestas kommentaari teadmusbaasi"
 
 #: front/knowbaseitem_comment.form.php:64
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Kommentaar on lisatud"
 
 #: front/knowbaseitem_comment.form.php:83
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%s muutis kommentaari teadmusbaasis"
 
 #: front/knowbaseitem_comment.form.php:85
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Sinu kommentaari on muudetud"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:119 front/reminder.form.php:111
@@ -2521,12 +2523,12 @@ msgstr "%s lisas sihtrühma"
 #: front/knowbaseitem.form.php:129
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Teadmiste kogu üksus on saadetud tagasi üle vaatamiseks %s"
 
 #: front/knowbaseitem.form.php:136
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Teadmiste kogu üksus ei ole tagasi saadetud üle vaatamiseks %s"
 
 #: front/knowbaseitem.form.php:146 inc/commondropdown.class.php:879
 #: inc/itilcategory.class.php:71 inc/itilcategory.class.php:235
@@ -2539,17 +2541,17 @@ msgstr "Teadmistekogu"
 #: front/knowbaseitem_item.form.php:54
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr ""
+msgstr "%s sisestas lingi teadmiste kogusse"
 
 #: front/knowbaseitemtranslation.form.php:54
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
-msgstr ""
+msgstr "Teadmistekogu üksuse tõlge on üle vaadatud %s"
 
 #: front/knowbaseitemtranslation.form.php:61
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
-msgstr ""
+msgstr "Teadmistekogu üksuse tõlge ei ole üle vaadatud %s"
 
 #: front/ldap.group.import.php:44 front/ldap.group.php:43
 #: front/ldap.import.php:50 front/ldap.php:41 inc/group.class.php:166
@@ -2560,7 +2562,7 @@ msgstr "LDAP andmebaas"
 #: front/ldap.group.import.php:76 inc/auth.class.php:255
 #: inc/authldap.class.php:3302
 msgid "Unable to connect to the LDAP directory"
-msgstr ""
+msgstr "Ei suuda ühenduda LDAP kataloogiga"
 
 #: front/ldap.group.import.php:77 front/rule.backup.php:81
 #: front/rule.common.php:104 front/tracking.injector.php:91
@@ -2610,7 +2612,7 @@ msgstr "PHP interpretaatoril puudub IMAP funktsionaalsus"
 
 #: front/massiveaction.php:49
 msgid "Bulk modification error"
-msgstr ""
+msgstr "Põhiosa muutmise viga"
 
 #: front/massiveaction.php:61
 msgid "Bulk modification"
@@ -2637,23 +2639,23 @@ msgstr "(%1$d autoriseerimise probleem1, %2$d tõrget)"
 
 #: front/migrationcleaner.php:44
 msgid "You don't need the \"migration cleaner\" tool anymore..."
-msgstr ""
+msgstr "Te ei vaja enam \"migration cleaner\" tööriista"
 
 #: front/migrationcleaner.php:48 inc/migrationcleaner.class.php:51
 msgid "Migration cleaner"
-msgstr ""
+msgstr "Andmete üleviimise puhastaja"
 
 #: front/migrationcleaner.php:53
 msgid "\"Migration cleaner\" tool"
-msgstr ""
+msgstr "\"Migration cleaner\" tööriist"
 
 #: front/migrationcleaner.php:60 inc/ipnetwork.class.php:1035
 msgid "Reinit the network topology"
-msgstr ""
+msgstr "Võrgu topoloogia uuendamine"
 
 #: front/migrationcleaner.php:66
 msgid "Clean the network port migration errors"
-msgstr ""
+msgstr "Puhasta võrgupordi üleviimise vead"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:106 front/peripheral.form.php:106
@@ -2666,33 +2668,33 @@ msgstr "%s määras tükikaupa halduse"
 #: front/networkname.form.php:49 front/networkport.form.php:66
 #, php-format
 msgid "%s adds an item"
-msgstr ""
+msgstr "%s sisestas kirje"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:100
 #, php-format
 msgid "%s associates a network name to an item"
-msgstr ""
+msgstr "%s sidus võrgunime asjaga"
 
 #. TRANS: %s is the user login
 #: front/networkport.form.php:92
 #, php-format
 msgid "%s adds several network ports"
-msgstr ""
+msgstr "%s lisas mitu võrguporti"
 
 #. TRANS: %s is the user login
 #: front/networkportmigration.form.php:72
 #, php-format
 msgid "%s deletes several network ports"
-msgstr ""
+msgstr "%s kustutas mitu võrguporti"
 
 #: front/networkportmigration.form.php:90
 msgid "Cannot change a migration network port to an unknown one"
-msgstr ""
+msgstr "Ei saa võrguporti tundmatuks pordiks muuta"
 
 #: front/networkportmigration.form.php:93
 msgid "Network port is not available..."
-msgstr ""
+msgstr "Võrgupordid ei ole saadaval"
 
 #: front/notification.tags.php:41
 msgid "List of available tags"
@@ -2702,13 +2704,13 @@ msgstr "Kasutatavate muutujate nimekiri"
 #: front/olalevel.form.php:52
 #, php-format
 msgid "%s updates an ola level"
-msgstr ""
+msgstr "%s uuendas OLA taset"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:76
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%s eemaldas OLA taseme"
 
 #: front/planning.php:141 inc/commonitiltask.class.php:1561
 #: inc/commonitiltask.class.php:1731 inc/event.class.php:152
@@ -2724,12 +2726,12 @@ msgstr "Planeerimine"
 #: front/pluginimage.send.php:50
 #, php-format
 msgid "%s makes a bad usage."
-msgstr ""
+msgstr "%s teeb halba kasutust"
 
 #: front/pluginimage.send.php:58
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr ""
+msgstr "%s püüab kasutada mittestandartset teed"
 
 #: front/plugin.php:59
 #, php-format
@@ -2738,7 +2740,7 @@ msgstr "Lisaprogramm %s ei ühildu praeguse GLPI versiooniga"
 
 #: front/plugin.php:61
 msgid "Delete or update it otherwise GLPI will not work correctly."
-msgstr ""
+msgstr "Kustuta või uuenda seda, vastasel korral GLPI ei tööta õigesti"
 
 #: front/problem_ticket.form.php:48 inc/notificationtargetchange.class.php:337
 #: inc/notificationtargetchange.class.php:351
@@ -2772,7 +2774,7 @@ msgstr "%s lisas kasutaja olemisse"
 #: front/projecttaskteam.form.php:52 front/projectteam.form.php:52
 #, php-format
 msgid "%s adds a team member"
-msgstr ""
+msgstr "%s sisestas grupi liikme"
 
 #: front/report.contract.list.php:49
 msgid "List of the hardware under contract"
@@ -2991,23 +2993,23 @@ msgstr "Vaata aruannet"
 #: front/report.infocom.conso.php:213 front/report.infocom.php:223
 #, php-format
 msgid "%1$s account net value"
-msgstr ""
+msgstr "%1$s konto võrguväärtus"
 
 #: front/report.infocom.conso.php:239 front/report.infocom.php:250
 #, php-format
 msgid "%1$s value"
-msgstr ""
+msgstr "%1$s väärtus"
 
 #. TRANS: %1$s and %2$s are values
 #: front/report.infocom.conso.php:284 front/report.infocom.php:204
 #: front/report.infocom.php:293
 #, php-format
 msgid "Total: Value=%1$s - Account net value=%2$s"
-msgstr ""
+msgstr "Kokku: Väärtus=%1$s - Konto võrguväärtus=%2$s"
 
 #: front/report.infocom.conso.php:292 front/report.infocom.php:302
 msgid "Total account net value"
-msgstr ""
+msgstr "Konto võrguväärtus kokku"
 
 #: front/report.infocom.conso.php:304 front/report.infocom.php:314
 msgid "Total value"
@@ -3059,7 +3061,7 @@ msgstr "Riistvara kaupa"
 
 #: front/report.networking.php:78
 msgid "By network outlet"
-msgstr ""
+msgstr "Võrgupunkti kaudu"
 
 #: front/report.switch.list.php:50
 #, php-format
@@ -3097,12 +3099,12 @@ msgstr "Tavakasutaja liides"
 #: front/reservation.form.php:71
 #, php-format
 msgid "%1$s purges the reservation for item %2$s"
-msgstr ""
+msgstr "%1$s võttis maha reserveeringu asjalt %2$s"
 
 #: front/reservation.form.php:124
 #, php-format
 msgid "%1$s adds the reservation %2$s for item %3$s"
-msgstr ""
+msgstr "%1$s reserveeris %2$s asjale %3$s"
 
 #: front/reservationitem.form.php:53
 #, php-format
@@ -3111,7 +3113,7 @@ msgstr "%1$s lisas asja %2$s (%3$d)"
 
 #: front/rule.common.php:77
 msgid "Replay the rules dictionary"
-msgstr ""
+msgstr "Reeglite sõnastik uuendada"
 
 #: front/rule.common.php:79 inc/migration.class.php:108
 #: inc/migration.class.php:112 inc/software.class.php:1024
@@ -3122,7 +3124,7 @@ msgstr "Töötlus käib..."
 #: front/rule.common.php:102
 #, php-format
 msgid "Task completed in %s"
-msgstr ""
+msgstr "Tööülesanne on lõpetatud %s"
 
 #: front/rule.php:46
 msgid "Rule type"
@@ -3144,19 +3146,19 @@ msgstr[1] "Mustad nimekirjad"
 #: front/savedsearch_alert.form.php:51
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s lisas hoiatuse"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:64
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s puhastas hoiatuse"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:76
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s uuendas hoiatust"
 
 #: front/savedsearch.php:41 inc/html.class.php:5929 inc/html.class.php:5938
 msgid "Saved searches"
@@ -3222,55 +3224,55 @@ msgstr "Halda malle..."
 #: front/slalevel.form.php:51
 #, php-format
 msgid "%s updates a sla level"
-msgstr ""
+msgstr "%s uuendas SLA taset"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:75
 #, php-format
 msgid "%s purges a sla level"
-msgstr ""
+msgstr "%s eemaldas SLA taseme"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:59
 #, php-format
 msgid "%1$s adds the license %2$s"
-msgstr ""
+msgstr "%1$s sisestas litsentsi %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:80
 #, php-format
 msgid "%1$s deletes the license %2$s"
-msgstr ""
+msgstr "%1$s kustutas litsentsi %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:88
 #, php-format
 msgid "%1$s purges the license %2$s"
-msgstr ""
+msgstr "%1$s puhastas litsentsi %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:97
 #, php-format
 msgid "%1$s updates the license %2$s"
-msgstr ""
+msgstr "%1$s uuendas litsentsi %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:58
 #, php-format
 msgid "%1$s adds the version %2$s"
-msgstr ""
+msgstr "%1$s lisas versiooni %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:69
 #, php-format
 msgid "%1$s purges the version %2$s"
-msgstr ""
+msgstr "%1$s puhastas versiooni %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:78
 #, php-format
 msgid "%1$s updates the version %2$s"
-msgstr ""
+msgstr "%1$s uuendas versiooni %2$s"
 
 #: front/stat.global.php:39 front/stat.graph.php:39 front/stat.item.php:39
 #: front/stat.location.php:39 front/stat.php:39 front/stat.tracking.php:39
@@ -3555,8 +3557,8 @@ msgstr[1] "Lahenduse liigid"
 #: inc/ticket.class.php:4888 inc/ticketfollowup.class.php:1172
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Pöördumiskanal"
+msgstr[1] "Pöördumiste kanalid"
 
 #: front/stat.graph.php:287 front/stat.graph.php:288
 #: inc/commonglpi.class.php:837 inc/commonglpi.class.php:838
@@ -3586,27 +3588,27 @@ msgstr "Näita graafiliselt"
 #: front/stat.location.php:180 front/stat.tracking.php:188
 #, php-format
 msgid "Opened %1$s (%2$s)"
-msgstr ""
+msgstr "Avatud %1$s (%2$s)"
 
 #: front/stat.location.php:206 front/stat.tracking.php:214
 #, php-format
 msgid "Solved %1$s (%2$s)"
-msgstr ""
+msgstr "Lahendatud %1$s (%2$s)"
 
 #: front/stat.location.php:231
 #, php-format
 msgid "Late solved %1$s (%2$s)"
-msgstr ""
+msgstr "Hilinenud lahendus %1$s (%2$s)"
 
 #: front/stat.location.php:256 front/stat.tracking.php:267
 #, php-format
 msgid "Closed %1$s (%2$s)"
-msgstr ""
+msgstr "Suletud %1$s (%2$s)"
 
 #: front/stat.location.php:281 front/stat.tracking.php:294
 #, php-format
 msgid "%1$s satisfaction survey (%2$s)"
-msgstr ""
+msgstr "%1$s rahulolu uuring (%2$s)"
 
 #: front/stat.tracking.php:81 front/stat.tracking.php:103
 #: inc/commonitilobject.class.php:2563 inc/commonitilobject.class.php:2981
@@ -3711,7 +3713,7 @@ msgstr "Vastutaja tegevustes"
 #: front/stat.tracking.php:240
 #, php-format
 msgid "Solved late %1$s (%2$s)"
-msgstr ""
+msgstr "Lahendatud hilinemisega %1$s (%2$s)"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:51
@@ -3790,11 +3792,11 @@ msgstr "Täname Teid, et kasutasite intsidendihalduse süsteemi."
 #: front/user.form.php:136
 #, php-format
 msgid "%s deletes users from a group"
-msgstr ""
+msgstr "%s kustutas kasutajad grupist"
 
 #: front/user.form.php:155
 msgid "Lang has been changed!"
-msgstr ""
+msgstr "Keel on muudetud! "
 
 #: inc/ajax.class.php:157
 msgid "Close"
@@ -3807,11 +3809,11 @@ msgstr "Palun oota..."
 
 #: inc/ajax.class.php:429
 msgid "An error occured loading contents!"
-msgstr ""
+msgstr "Sisu laadimisel ilmnes viga!"
 
 #: inc/ajax.class.php:430
 msgid "Please check GLPI logs or contact your administrator."
-msgstr ""
+msgstr "Palun kontrolli GLPI logisid ja võta ühendust administraatoriga"
 
 #: inc/ajax.class.php:431 inc/link.class.php:155
 #: inc/massiveaction.class.php:756 inc/rule.class.php:801
@@ -3821,7 +3823,7 @@ msgstr "või"
 
 #: inc/ajax.class.php:431
 msgid "try to reload"
-msgstr ""
+msgstr "Proovi värskendada"
 
 #: inc/alert.class.php:108 inc/alert.class.php:141 inc/alert.class.php:169
 #: inc/contract.class.php:1584 inc/entity.class.php:678
@@ -3917,18 +3919,20 @@ msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
 msgstr ""
+"Konfiguratsioonis ei ole aktiivset API-i klienti, mis vastab teie IP-"
+"aadressile"
 
 #: inc/api.class.php:200
 msgid "parameter(s) login, password or user_token are missing"
-msgstr ""
+msgstr "parameeter (parmaeetrid) login, salasõna või user_token on puudu"
 
 #: inc/api.class.php:220
 msgid "usage of initSession resource with credentials is disabled"
-msgstr ""
+msgstr "initSession - ressursi kasutamine sellele kasutajale on keelatud"
 
 #: inc/api.class.php:229
 msgid "parameter user_token seems invalid"
-msgstr ""
+msgstr "parameeter user_token näib olevat vigane"
 
 #: inc/api.class.php:948 inc/api.class.php:1600 inc/api.class.php:1714
 #: inc/api.class.php:1822 inc/api.class.php:2356 inc/html.class.php:539
@@ -3937,23 +3941,23 @@ msgstr "Sul pole piisavalt õigusi seda tegevust sooritada."
 
 #: inc/api.class.php:1040
 msgid "parent itemtype not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "Vanem asjatüüpi ei leitud või see ei ole CommonDBTM eksemplar"
 
 #: inc/api.class.php:1391
 msgid "Malformed search criteria"
-msgstr ""
+msgstr "Valesti formeeritud otsingukriteerium"
 
 #: inc/api.class.php:1396
 msgid "Bad field ID in search criteria"
-msgstr ""
+msgstr "Halb välja ID otsingukriteeriumis"
 
 #: inc/api.class.php:1401
 msgid "Forbidden field ID in search criteria"
-msgstr ""
+msgstr "Keelatud välja ID otsingukriteeriumis"
 
 #: inc/api.class.php:1418
 msgid "ID is forbidden along with 'forcedisplay' parameter."
-msgstr ""
+msgstr "ID on keelatud koos parameetriga 'forcedisplay'"
 
 #: inc/api.class.php:1706 inc/api.class.php:1797 inc/api.class.php:2305
 #: inc/html.class.php:527 inc/profile_user.class.php:425
@@ -3962,64 +3966,66 @@ msgstr "Asja ei leitud"
 
 #: inc/api.class.php:1862
 msgid "Email notifications are disabled"
-msgstr ""
+msgstr "E-posti teated on keelatud"
 
 #: inc/api.class.php:1866
 msgid "email parameter missing"
-msgstr ""
+msgstr "Puuduv eposti parameeter"
 
 #: inc/api.class.php:1870
 msgid "A session is active"
-msgstr ""
+msgstr "Aktiivne sessioon"
 
 #: inc/api.class.php:1882 inc/user.class.php:4268
 msgid ""
 "An email has been sent to your email address. The email contains information"
 " for reset your password."
 msgstr ""
+"E mail on saadetud teie e-posti aadressile. E-mail sisaldad informatsiooni "
+"salasõna taastamise kohta."
 
 #: inc/api.class.php:1894 inc/user.class.php:4233
 msgid "Reset password successful."
-msgstr ""
+msgstr "Salasõna lähtestamine oli edukas."
 
 #: inc/api.class.php:1947
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "Parameeter app_token näib olevat vale"
 
 #: inc/api.class.php:1950
 msgid "missing parameter app_token"
-msgstr ""
+msgstr "parameeter app_token puudub"
 
 #: inc/api.class.php:2123
 msgid "API Documentation"
-msgstr ""
+msgstr "API dokumentatsioon"
 
 #: inc/api.class.php:2322
 msgid "input parameter must be an array of objects"
-msgstr ""
+msgstr "sisendparameeter peab olema objektide hulk"
 
 #: inc/api.class.php:2339
 msgid "Method Not Allowed"
-msgstr ""
+msgstr "Meetod ei ole lubatud"
 
 #: inc/api.class.php:2372
 msgid "session_token seems invalid"
-msgstr ""
+msgstr "session_token näib olevat vigane"
 
 #: inc/api.class.php:2389
 msgid "parameter session_token is missing or empty"
-msgstr ""
+msgstr "Parameeter session_token on puuduv või tühi"
 
 #: inc/api.class.php:2425
 #, php-format
 msgid "view documentation in your browser at %s"
-msgstr ""
+msgstr "Vaata dokumentatsiooni oma veebilehitsejast %s"
 
 #: inc/apiclient.class.php:57
 msgid "API client"
 msgid_plural "API clients"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "API klient"
+msgstr[1] "API kliendid"
 
 #: inc/apiclient.class.php:98 inc/apiclient.class.php:193
 #: inc/authldap.class.php:349 inc/authldap.class.php:1104
@@ -4048,16 +4054,16 @@ msgstr "Aktiivne"
 
 #: inc/apiclient.class.php:106 inc/apiclient.class.php:199
 msgid "Log connections"
-msgstr ""
+msgstr "Logi ühendusi"
 
 #: inc/apiclient.class.php:112 inc/apiclient.class.php:208
 msgid "Filter access"
-msgstr ""
+msgstr "Filtreeri juurdepääse"
 
 #: inc/apiclient.class.php:119 inc/apiclient.class.php:127
 #: inc/apiclient.class.php:218
 msgid "IPv4 address range"
-msgstr ""
+msgstr "IPv4 aadressivahemik"
 
 #: inc/apiclient.class.php:119 inc/calendar_holiday.class.php:135
 #: inc/calendarsegment.class.php:347 inc/calendarsegment.class.php:375
@@ -4087,11 +4093,11 @@ msgstr "IPv6 aadress"
 
 #: inc/apiclient.class.php:143 inc/apiclient.class.php:235
 msgid "Application token"
-msgstr ""
+msgstr "Rakenduse tähis"
 
 #: inc/apiclient.class.php:213
 msgid "Leave these parameters empty to disable API access restriction"
-msgstr ""
+msgstr "Jätke parameetrid tühjaks või keelake API"
 
 #: inc/apiclient.class.php:239 inc/config.class.php:1318
 #: inc/config.class.php:1319 inc/config.class.php:1337
@@ -4134,35 +4140,35 @@ msgstr[1] "Logid"
 
 #: inc/apirest.class.php:55
 msgid "Rest API"
-msgstr ""
+msgstr "Rest API"
 
 #: inc/apirest.class.php:214
 msgid "Only HTTP verb PUT is allowed"
-msgstr ""
+msgstr "Lubatud on ainult HTTP verb PUT"
 
 #: inc/apirest.class.php:336
 msgid "resource not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "ressurssi ei leitud või see ei ole CommonDBTM-i osa"
 
 #: inc/apirest.class.php:341
 msgid "missing resource"
-msgstr ""
+msgstr "puuduv ressurss"
 
 #: inc/apixmlrpc.class.php:48
 msgid "XMLRPC API"
-msgstr ""
+msgstr "XMLRPC API"
 
 #: inc/apixmlrpc.class.php:151
 msgid "missing itemtype"
-msgstr ""
+msgstr "puuduv asja tüüp"
 
 #: inc/apixmlrpc.class.php:156
 msgid "itemtype not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "asja tüüpi ei leitud või see ei ole CommonDBTM osa"
 
 #: inc/apixmlrpc.class.php:162
 msgid "missing id"
-msgstr ""
+msgstr "Puuduv ID"
 
 #: inc/auth.class.php:119
 msgid "Others"
@@ -4182,27 +4188,27 @@ msgstr "Salasõna puudub"
 
 #: inc/auth.class.php:484
 msgid "Login with external token disabled"
-msgstr ""
+msgstr "Välise loaga sisselogimine on keelatud"
 
 #: inc/auth.class.php:504
 msgid "Invalid cookie data"
-msgstr ""
+msgstr "Vigased küsise andmed"
 
 #: inc/auth.class.php:508
 msgid "Auto login disabled"
-msgstr ""
+msgstr "Automaatne sisse logimine on keelatud"
 
 #: inc/auth.class.php:654
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ühendus LDAP kataloogiga ei õnnestunud"
+msgstr[1] "Ühendus LDAP kataloogiga ei õnnestunud"
 
 #: inc/auth.class.php:662
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kasutajat ei leitud LDAP kataloogist"
+msgstr[1] "Kasutajat ei leitud LDAP kataloogist"
 
 #: inc/auth.class.php:673 inc/auth.class.php:683
 msgid "Empty login or password"
@@ -4218,7 +4224,7 @@ msgstr "%1$s logis sisse aadresilt %2$s"
 #: inc/auth.class.php:818
 #, php-format
 msgid "Failed login for %1$s from IP %2$s"
-msgstr ""
+msgstr "Ebaõnnestunud sisselogimine kasutajalt %1$s IP-aadressilt %2$s"
 
 #: inc/auth.class.php:884
 msgid "Authentication on GLPI database"
@@ -4235,13 +4241,13 @@ msgstr "Kasutajatuvastus IMAP/POP serveri kaudu"
 #: inc/auth.class.php:935 inc/authmail.class.php:91
 #: inc/ruleright.class.php:249
 msgid "Email server"
-msgstr ""
+msgstr "E-posti server"
 
 #: inc/auth.class.php:942 inc/auth.class.php:954 inc/auth.class.php:967
 #: inc/commonglpi.class.php:871 inc/tickettemplatemandatoryfield.class.php:203
 #, php-format
 msgid "%1$s + %2$s"
-msgstr ""
+msgstr "%1$s + %2$s"
 
 #: inc/auth.class.php:943 inc/auth.class.php:947
 msgid "CAS"
@@ -4249,7 +4255,7 @@ msgstr "CAS"
 
 #: inc/auth.class.php:955 inc/auth.class.php:960 inc/auth.class.php:1328
 msgid "x509 certificate authentication"
-msgstr ""
+msgstr "x509 sertfikaadi autentimine"
 
 #: inc/auth.class.php:968 inc/auth.class.php:972 inc/profile.class.php:2331
 #: install/update_0723_078.php:3673
@@ -4262,7 +4268,7 @@ msgstr "GLPI sisemine andmebaas"
 
 #: inc/auth.class.php:978 inc/config.class.php:744 inc/config.class.php:2149
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: inc/auth.class.php:981
 msgid "Not yet authenticated"
@@ -4282,7 +4288,7 @@ msgstr "Sünkroniseerimine"
 
 #: inc/auth.class.php:1300
 msgid "CAS authentication"
-msgstr ""
+msgstr "CAS autentimine"
 
 #: inc/auth.class.php:1302 inc/auth.class.php:1330 inc/auth.class.php:1353
 msgctxt "authentication"
@@ -4292,7 +4298,7 @@ msgstr "Lubatud"
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1309
 msgid "CAS Host"
-msgstr ""
+msgstr "CAS host"
 
 #. TRANS: for CAS SSO system
 #. TRANS: Proxy port
@@ -4302,18 +4308,18 @@ msgstr ""
 #: inc/notificationmailingsetting.class.php:220 inc/printer.class.php:420
 msgid "Port"
 msgid_plural "Ports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Port"
+msgstr[1] "Pordid"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1315
 msgid "Root directory (optional)"
-msgstr ""
+msgstr "Juurkataloog (valikuline)"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1318
 msgid "Log out fallback URL"
-msgstr ""
+msgstr "Väljalogimise varu URL"
 
 #: inc/auth.class.php:1323
 msgid "The CURL extension for your PHP parser isn't installed"
@@ -4325,27 +4331,27 @@ msgstr "CAS servereid ei saa kasutajatuvastamiseks rakendada"
 
 #: inc/auth.class.php:1334
 msgid "Email attribute for x509 authentication"
-msgstr ""
+msgstr "Emaili atribut x509 autentimise jaoks"
 
 #: inc/auth.class.php:1338 inc/auth.class.php:1342 inc/auth.class.php:1346
 #, php-format
 msgid "Restrict %s field for x509 authentication (separator $)"
-msgstr ""
+msgstr "Piirab %s välja x509 autentimiseks (eraldaja $)"
 
 #: inc/auth.class.php:1351
 msgid "Other authentication sent in the HTTP request"
-msgstr ""
+msgstr "Muud HTTP autentimisse saadetud päringud"
 
 #: inc/auth.class.php:1357 inc/dropdown.class.php:1036
 #: inc/ssovariable.class.php:52
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Väli HTTP päringu kaudu sisselogimise salvestamiseks"
+msgstr[1] "Väljad HTTP päringu kaudu sisselogimise salvestamiseks"
 
 #: inc/auth.class.php:1365
 msgid "Remove the domain of logins like login@domain"
-msgstr ""
+msgstr "Eemalda domeenist kasutajad kujul kasutajanimi@domeen"
 
 #: inc/auth.class.php:1371 inc/authldap.class.php:729
 #: inc/authldap.class.php:925 inc/authldap.class.php:3127
@@ -4364,7 +4370,7 @@ msgstr "Eesnimi"
 #: inc/auth.class.php:1390 inc/authldap.class.php:739 inc/user.class.php:2105
 #: inc/user.class.php:2461 inc/user.class.php:2936
 msgid "Administrative number"
-msgstr ""
+msgstr "Administratiivnumber"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/auth.class.php:1421 inc/authldap.class.php:761
@@ -4429,11 +4435,11 @@ msgstr "Salvesta"
 
 #: inc/authldap.class.php:194 inc/authldap.class.php:394
 msgid "Synchronization field cannot be changed once in use."
-msgstr ""
+msgstr "Sünkroniseeritavat välja ei saa muuta kui see on kasutusel"
 
 #: inc/authldap.class.php:327
 msgid "Preconfiguration"
-msgstr ""
+msgstr "Eelkonfiguratsioon"
 
 #: inc/authldap.class.php:329
 msgid "Active Directory"
@@ -4499,11 +4505,11 @@ msgstr "Juur DN"
 
 #: inc/authldap.class.php:371
 msgid "RootDN (for non anonymous binds)"
-msgstr ""
+msgstr "RootDN (mitteanonüümsetele seostele)"
 
 #: inc/authldap.class.php:377
 msgid "Password (for non-anonymous binds)"
-msgstr ""
+msgstr "Salasõne (mitteanonüümsetele seostele)"
 
 #: inc/authldap.class.php:381 inc/config.class.php:583
 #: inc/config.class.php:1819 inc/html.class.php:2572 inc/html.class.php:2574
@@ -4523,7 +4529,7 @@ msgstr "Kasutajanime väli"
 #: inc/authldap.class.php:3119 inc/user.class.php:1966 inc/user.class.php:2343
 #: inc/user.class.php:2763
 msgid "Synchronization field"
-msgstr ""
+msgstr "Sünkroniseerimisväli"
 
 #: inc/authldap.class.php:449 inc/authldap.class.php:3459
 #: inc/entity.class.php:335 inc/entity.class.php:613
@@ -4536,7 +4542,7 @@ msgstr "Kasuta TLS"
 
 #: inc/authldap.class.php:456
 msgid "ldap_start_tls does not exist"
-msgstr ""
+msgstr "ldap_start_tls ei eksisteeri"
 
 #: inc/authldap.class.php:459
 msgid "LDAP directory time zone"
@@ -4544,15 +4550,15 @@ msgstr "LDAP serveri ajavöönd"
 
 #: inc/authldap.class.php:465
 msgid "Use paged results"
-msgstr ""
+msgstr "Kasutage otsingutulemusi"
 
 #: inc/authldap.class.php:468
 msgid "Page size"
-msgstr ""
+msgstr "Lehe suurus"
 
 #: inc/authldap.class.php:476
 msgid "Maximum number of results"
-msgstr ""
+msgstr "Tulemuste maksimumnumber"
 
 #: inc/authldap.class.php:481 inc/contract.class.php:289
 #: inc/search.class.php:4604 inc/softwarelicense.class.php:425
@@ -4562,33 +4568,33 @@ msgstr "Piiramatu"
 
 #: inc/authldap.class.php:491
 msgid "How LDAP aliases should be handled"
-msgstr ""
+msgstr "Kuidas LDAP aliaseid tuleks käidelda"
 
 #: inc/authldap.class.php:492
 msgid "Never dereferenced (default)"
-msgstr ""
+msgstr "Ei viidata (vaikimisi)"
 
 #: inc/authldap.class.php:493
 msgid "Always dereferenced"
-msgstr ""
+msgstr "Alati viidatud"
 
 #: inc/authldap.class.php:494
 msgid "Dereferenced during the search (but not when locating)"
-msgstr ""
+msgstr "Viidatud otsingutulemustes (mitte asukohale)"
 
 #: inc/authldap.class.php:495
 msgid "Dereferenced when locating (not during the search)"
-msgstr ""
+msgstr "Viidatud asukohale (mitte otsingutulemustele)"
 
 #: inc/authldap.class.php:544
 msgid "List of LDAP directory replicates"
-msgstr ""
+msgstr "Nimekiri LDAP kataloogide kopeerimisest"
 
 #: inc/authldap.class.php:556 inc/authldap.class.php:3460
 msgid "Replicate"
 msgid_plural "Replicates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kopeerima"
+msgstr[1] "Kopeerib"
 
 #: inc/authldap.class.php:570 inc/authldap.class.php:704
 #: inc/authldap.class.php:3454 inc/authmail.class.php:248
@@ -4608,7 +4614,7 @@ msgstr "Grupiobjekt"
 
 #: inc/authldap.class.php:623
 msgid "In users and groups"
-msgstr ""
+msgstr "Kasutajates ja gruppides"
 
 #: inc/authldap.class.php:649
 msgid "Belonging to groups"
@@ -4633,7 +4639,7 @@ msgstr "Kasutajaid sisaldav grupi atribuut"
 
 #: inc/authldap.class.php:666 inc/authldap.class.php:1032
 msgid "Use DN in the search"
-msgstr ""
+msgstr "Kasuta DN-i otsingus"
 
 #: inc/authldap.class.php:693
 msgid "Test of connection to LDAP directory"
@@ -4641,7 +4647,7 @@ msgstr "LDAP andmebaasi ühenduse kontroll"
 
 #: inc/authldap.class.php:727
 msgid "Binding to the LDAP directory"
-msgstr ""
+msgstr "LDAP kataloogiga sidumine"
 
 #: inc/authldap.class.php:782 inc/authldap.class.php:3134
 #: inc/notepad.class.php:328 inc/ticket.class.php:6996
@@ -4655,10 +4661,11 @@ msgstr "Pilt"
 #: inc/authldap.class.php:789
 msgid "You can use a field name or an expression using various %{fieldname}"
 msgstr ""
+"Võite kasutada välja nime või väljendeid kasutades erinevaid %{fieldname}"
 
 #: inc/authldap.class.php:790
 msgid "Example for location: %{city} > %{roomnumber}"
-msgstr ""
+msgstr "Asukoha näide: %{city} > %{roomnumber}"
 
 #: inc/authldap.class.php:814
 msgid "Import entities from LDAP directory"
@@ -4666,11 +4673,11 @@ msgstr "Olemite importimine LDAP andmebaasist"
 
 #: inc/authldap.class.php:817
 msgid "Attribute representing entity"
-msgstr ""
+msgstr "Üksust esindav atribuut"
 
 #: inc/authldap.class.php:822
 msgid "Search filter for entities"
-msgstr ""
+msgstr "Üksuste jaoks otsingufilter"
 
 #: inc/authldap.class.php:1050 inc/budget.class.php:227
 #: inc/certificate.class.php:279 inc/certificate_item.class.php:499
@@ -4707,6 +4714,7 @@ msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
 msgstr ""
+"Hoiatus: Pöördumine ületab kataloogi suuruse limiidi, Tulemused on osalised"
 
 #: inc/authldap.class.php:1468
 msgctxt "button"
@@ -4722,19 +4730,19 @@ msgstr "Impordi"
 
 #: inc/authldap.class.php:1496 inc/authldap.class.php:1545
 msgid "Last update in the LDAP directory"
-msgstr ""
+msgstr "Viimane LDAP kataloogi uuendus"
 
 #: inc/authldap.class.php:1498 inc/authldap.class.php:1547
 msgid "Last update in GLPI"
-msgstr ""
+msgstr "Viimane uuendus GLPI-s"
 
 #: inc/authldap.class.php:1559 inc/authldap.class.php:1564
 msgid "No user to be synchronized"
-msgstr ""
+msgstr "Kasutajaid ei ole sünkroniseeritud"
 
 #: inc/authldap.class.php:1560 inc/authldap.class.php:1565
 msgid "No user to be imported"
-msgstr ""
+msgstr "Kasutajaid ei ole sünkroniseeritud"
 
 #: inc/authldap.class.php:1924 inc/group.class.php:461 inc/group.class.php:600
 msgid "Group DN"
@@ -4746,20 +4754,20 @@ msgstr "Sihtkoha olem"
 
 #: inc/authldap.class.php:1978 inc/authldap.class.php:1981
 msgid "No group to be imported"
-msgstr ""
+msgstr "Gruppi ei ole imporditud"
 
 #: inc/authldap.class.php:2238
 msgid "Please choose LDAP directory to import users and groups from"
-msgstr ""
+msgstr "Palun vali LDAP kataloog, kust kasutajad ja grupid importida"
 
 #: inc/authldap.class.php:2240 inc/authldap.class.php:3046
 #: inc/authldap.class.php:3074
 msgid "LDAP directory choice"
-msgstr ""
+msgstr "LDAP kataloogi valik"
 
 #: inc/authldap.class.php:2259
 msgid "No LDAP directory defined in GLPI"
-msgstr ""
+msgstr "Ühteegi LDAP kataloogi ei ole GLPI-s defineeritud"
 
 #: inc/authldap.class.php:2627
 msgid "User not found or several users found"
@@ -4767,20 +4775,20 @@ msgstr "Kasutajat ei leitud või leiti mitu vastet"
 
 #: inc/authldap.class.php:2630
 msgid "Unable to add. The user already exist."
-msgstr ""
+msgstr "Ei ole võimalik lisada. Kasutaja on juba olemas"
 
 #: inc/authldap.class.php:3027
 msgid "Expert mode"
-msgstr ""
+msgstr "Eksperdi reziim"
 
 #: inc/authldap.class.php:3029
 msgid "Simple mode"
-msgstr ""
+msgstr "Lihtne reziim"
 
 #: inc/authldap.class.php:3054 inc/authldap.class.php:3082
 msgctxt "button"
 msgid "Change"
-msgstr ""
+msgstr "Muudatus"
 
 #: inc/authldap.class.php:3090 inc/entity.class.php:1100
 #: inc/html.class.php:3242 inc/rulecollection.class.php:1207
@@ -4793,11 +4801,11 @@ msgstr "Kasutaja otsingutingimused"
 
 #: inc/authldap.class.php:3181
 msgid "No directory selected"
-msgstr ""
+msgstr "Kataloogi ei ole valitud"
 
 #: inc/authldap.class.php:3186
 msgid "No directory associated to entity: impossible search"
-msgstr ""
+msgstr "Ükski kataloog ei ole üksusega seotud: võimatu otsing"
 
 #: inc/authldap.class.php:3368 inc/transfer.class.php:3297
 #: inc/transfer.class.php:3299
@@ -4810,7 +4818,7 @@ msgstr "Kustuta"
 
 #: inc/authldap.class.php:3370 inc/authldap.class.php:3372
 msgid "Withdraw dynamic authorizations and groups"
-msgstr ""
+msgstr "Tühista dünaamilised kasutajaload ja rühmad"
 
 #: inc/authldap.class.php:3371 inc/authldap.class.php:3372
 msgid "Disable"
@@ -4839,7 +4847,7 @@ msgstr "Keela aja järgi filtreerimine"
 
 #: inc/authldapreplicate.class.php:86
 msgid "Add a LDAP directory replica"
-msgstr ""
+msgstr "Lisa LDAP kataloogi koopia"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:124 inc/mailcollector.class.php:363
@@ -4850,6 +4858,8 @@ msgstr "Ühenduse string"
 #: inc/authmail.class.php:196
 msgid "Email domain Name (users email will be login@domain)"
 msgstr ""
+"Eposti domeeninimi (kasutajate emailid saavad olema kujul "
+"kasutajanimidomeeninimi)"
 
 #. TRANS: %s is the datetime of update
 #: inc/authmail.class.php:208 inc/commondbtm.class.php:2126
@@ -4862,7 +4872,7 @@ msgstr "Viimane muudatus %s"
 
 #: inc/authmail.class.php:217
 msgid "Email server configuration"
-msgstr ""
+msgstr "E-posti serveri konfiguratsioon"
 
 #: inc/authmail.class.php:238
 msgid "Test connection to email server"
@@ -4872,8 +4882,8 @@ msgstr "Kontrolli ühendust IMAP/POP serverisse"
 #: inc/computer.class.php:652
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Värskendage allikat"
+msgstr[1] "Värskendage allikaid"
 
 #: inc/backup.class.php:76 inc/commondbtm.class.php:4726 inc/log.class.php:726
 #: inc/profile.class.php:819 inc/profile.class.php:2539
@@ -4982,8 +4992,8 @@ msgstr "Pole seotud asju"
 #: inc/notificationtargetticket.class.php:865 inc/supplier.class.php:486
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Seonduv asi"
+msgstr[1] "Seonduvad asjad"
 
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
@@ -5081,15 +5091,15 @@ msgstr "Eelarve jääk"
 #: inc/budgettype.class.php:49 inc/dropdown.class.php:860
 msgid "Budget type"
 msgid_plural "Budget types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eelarve tüüp"
+msgstr[1] "Eelarve tüübid"
 
 #: inc/businesscriticity.class.php:49 inc/dropdown.class.php:936
 #: inc/infocom.class.php:1216 inc/infocom.class.php:1598
 msgid "Business criticity"
 msgid_plural "Business criticities"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ärikriitilisus"
+msgstr[1] "Ärikriitilisus"
 
 #: inc/calendar.class.php:67 inc/dropdown.class.php:947
 #: inc/dropdown.class.php:948 inc/entity.class.php:949
@@ -5110,7 +5120,7 @@ msgstr "Duplikaat"
 
 #: inc/calendar.class.php:91 inc/calendar_holiday.class.php:106
 msgid "Add a close time"
-msgstr ""
+msgstr "Sisesta sulgemisaeg"
 
 #: inc/calendar_holiday.class.php:137 inc/holiday.class.php:65
 #: inc/holiday.class.php:93
@@ -5121,14 +5131,14 @@ msgstr "Korduv"
 #: inc/holiday.class.php:52
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sulgemisaeg"
+msgstr[1] "Sulgemisajad"
 
 #: inc/calendarsegment.class.php:64
 msgid "Time range"
 msgid_plural "Time ranges"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ajavahemik"
+msgstr[1] "Ajavahemikud"
 
 #: inc/calendarsegment.class.php:73
 msgid "Can not add a range riding an existing period"
@@ -5145,8 +5155,8 @@ msgstr "Lisa ajavahemik"
 #: inc/reservation.class.php:1008
 msgid "Day"
 msgid_plural "Days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Päev"
+msgstr[1] "Päevad"
 
 #: inc/cartridge.class.php:103 inc/cartridgeitem.class.php:326
 #: inc/entity.class.php:1727 inc/printer.class.php:698
@@ -5172,31 +5182,31 @@ msgstr "Eemalda kassett"
 msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Uus"
+msgstr[1] "Uus"
 
 #: inc/cartridge.class.php:364 inc/cartridge.class.php:416
 #: inc/cartridge.class.php:591
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kasutatud"
+msgstr[1] "Kasutatud"
 
 #: inc/cartridge.class.php:366 inc/cartridge.class.php:418
 #: inc/cartridge.class.php:593
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kulunud"
+msgstr[1] "Kulunud"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
 #: inc/cartridge.class.php:372
 #, php-format
 msgid "Total: %1$d (%2$d new, %3$d used, %4$d worn)"
-msgstr ""
+msgstr "Kokku: %1$d (%2$d uus; %3$d kasutatud, %4$d kulunud)"
 
 #: inc/cartridge.class.php:378 inc/cartridge.class.php:380
 #: inc/cartridge.class.php:429 inc/cartridge.class.php:431
@@ -5208,7 +5218,7 @@ msgstr "Pole kassette"
 #: inc/cartridge.class.php:424
 #, php-format
 msgid "Total: %1$d (%2$d used, %3$d worn)"
-msgstr ""
+msgstr "Kokku: %1$d (%2$d kasutatud, %3$d kulunud)"
 
 #: inc/cartridge.class.php:660 inc/consumable.class.php:505
 #: inc/infocom.class.php:1037 inc/infocom.class.php:1958
@@ -5249,12 +5259,12 @@ msgstr "Kasutamise kuupäev"
 
 #: inc/cartridge.class.php:697
 msgid "Used on"
-msgstr ""
+msgstr "Kasutatakse"
 
 #: inc/cartridge.class.php:701 inc/cartridge.class.php:967
 #: inc/cartridge.class.php:1139
 msgid "Printer counter"
-msgstr ""
+msgstr "Printeri lugeja"
 
 #. TRANS: Always plural
 #: inc/cartridge.class.php:704 inc/consumable.class.php:553
@@ -5268,16 +5278,16 @@ msgstr "Raamatupidamislik ja haldusinformatsioon"
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d prinditud lehekülg"
+msgstr[1] "%d prinditud lehekülge"
 
 #: inc/cartridge.class.php:771
 msgid "Counter error"
-msgstr ""
+msgstr "Lugeja viga"
 
 #: inc/cartridge.class.php:786 inc/cartridge.class.php:1053
 msgid "Average time in stock"
-msgstr ""
+msgstr "Keskmine aeg laos"
 
 #: inc/cartridge.class.php:787 inc/cartridge.class.php:790
 #: inc/contract_item.class.php:504
@@ -5288,11 +5298,11 @@ msgstr[1] "Kuud"
 
 #: inc/cartridge.class.php:789 inc/cartridge.class.php:1056
 msgid "Average time in use"
-msgstr ""
+msgstr "Keskmine aeg kasutuses"
 
 #: inc/cartridge.class.php:791 inc/cartridge.class.php:1059
 msgid "Average number of printed pages"
-msgstr ""
+msgstr "Keskmine prinditud lehekülgede arv"
 
 #: inc/cartridge.class.php:833
 msgid "Add cartridges"
@@ -5301,7 +5311,7 @@ msgstr "Lisa kassette"
 #. TRANS : multiplier
 #: inc/cartridge.class.php:898
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: inc/cartridge.class.php:903 inc/computer.class.php:579
 #: inc/computer_softwareversion.class.php:718
@@ -5321,7 +5331,7 @@ msgstr "Kulunud"
 
 #: inc/cartridge.class.php:930
 msgid "Update printer counter"
-msgstr ""
+msgstr "Uuenda printeri ltöödelugejat"
 
 #: inc/cartridge.class.php:944
 msgid "Used cartridges"
@@ -5332,19 +5342,19 @@ msgstr "Kasutuses olnud kassetid"
 #: inc/notificationtargetcartridgeitem.class.php:86
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kasseti mudel"
+msgstr[1] "Kassetide mudelid"
 
 #: inc/cartridge.class.php:962 inc/cartridgeitemtype.class.php:46
 #: inc/dropdown.class.php:829
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kasseti tüüp"
+msgstr[1] "Kassettide tüübid"
 
 #: inc/cartridge.class.php:968
 msgid "Printed pages"
-msgstr ""
+msgstr "Prinditud leheküljed"
 
 #. TRANS: %d is a number of months
 #: inc/cartridge.class.php:1055 inc/cartridge.class.php:1058
@@ -5366,15 +5376,15 @@ msgstr ""
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d kuu"
+msgstr[1] "%d kuud"
 
 #: inc/cartridgeitem.class.php:202 inc/cartridgeitem.class.php:302
 #: inc/consumableitem.class.php:158 inc/consumableitem.class.php:259
 #: inc/notificationtargetcartridgeitem.class.php:85
 #: inc/notificationtargetconsumableitem.class.php:86
 msgid "Reference"
-msgstr ""
+msgstr "Viide"
 
 #: inc/cartridgeitem.class.php:212 inc/cartridgeitem.class.php:388
 #: inc/certificate.class.php:203 inc/certificate.class.php:396
@@ -5424,7 +5434,7 @@ msgstr "Kasutatud kassettide kogus"
 
 #: inc/cartridgeitem.class.php:354 inc/printer.class.php:725
 msgid "Number of worn cartridges"
-msgstr ""
+msgstr "Kulunud kassetide arv"
 
 #: inc/cartridgeitem.class.php:369
 msgid "Number of new cartridges"
@@ -5432,7 +5442,7 @@ msgstr "Uute kassettide kogus"
 
 #: inc/cartridgeitem.class.php:459 inc/cartridgeitem.class.php:604
 msgid "Send alarms on cartridges"
-msgstr ""
+msgstr "Saada häiret kassettid kohta"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -5441,13 +5451,13 @@ msgstr ""
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
-msgstr ""
+msgstr "Kasseti tüübi alarmi künnis: %1$s - Viide %2$s - alles jäänud %3$d"
 
 #. TRANS: %s is entity name
 #: inc/cartridgeitem.class.php:541
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr ""
+msgstr "%s: kasseti häireteate saatmine ebaõnnestus"
 
 #: inc/cartridgeitem_printermodel.class.php:147
 msgid "Add a compatible printer model"
@@ -5528,14 +5538,16 @@ msgstr "Palun kustutage turvalisuse eesmärgil fail: %s"
 #, php-format
 msgid "SQL strict mode is not fully enabled, recommended for development: %s"
 msgstr ""
+"SQL  range reziim ei ole täies ulatuses sisse lülitatud, arendamiseks "
+"soovitatav: %s"
 
 #: inc/central.class.php:193
 msgid "The following SQL tables are marked as crashed:"
-msgstr ""
+msgstr "Järgmised SQL tabelid on kokku jooksnud:"
 
 #: inc/central.class.php:201 inc/html.class.php:1518
 msgid "SQL replica: read only"
-msgstr ""
+msgstr "SQL koopia: ainult lugemisõigus"
 
 #: inc/certificate.class.php:55 inc/entity.class.php:1932
 #: inc/profile.class.php:886
@@ -5547,11 +5559,11 @@ msgstr[1] "Sertifikaadid"
 #: inc/certificate.class.php:119 inc/certificate.class.php:474
 #: inc/certificate_item.class.php:498
 msgid "DNS suffix"
-msgstr ""
+msgstr "DNS sufiks"
 
 #: inc/certificate.class.php:126 inc/certificate.class.php:458
 msgid "Self-signed"
-msgstr ""
+msgstr "Ise allkirjastatud"
 
 #: inc/certificate.class.php:134 inc/certificate.class.php:480
 #: inc/certificate_item.class.php:500 inc/computerantivirus.class.php:199
@@ -5560,15 +5572,15 @@ msgstr ""
 #: inc/notificationtargetinfocom.class.php:91
 #: inc/notificationtargetsoftwarelicense.class.php:85
 msgid "Expiration date"
-msgstr ""
+msgstr "Aegumiskuupäev"
 
 #: inc/certificate.class.php:142 inc/certificate.class.php:490
 msgid "Command used"
-msgstr ""
+msgstr "Kasutatud käsk"
 
 #: inc/certificate.class.php:150 inc/certificate.class.php:498
 msgid "Certificate request (CSR)"
-msgstr ""
+msgstr "Sertifikaadi taotlus (CSR)"
 
 #: inc/certificate.class.php:212 inc/certificate.class.php:373
 #: inc/certificate_item.class.php:501 inc/change.class.php:735
@@ -5604,8 +5616,8 @@ msgstr ""
 #: inc/ticket.class.php:4863 inc/user.class.php:3791 inc/user.class.php:3871
 msgid "Status"
 msgid_plural "Statuses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Staatus"
+msgstr[1] "Staatused"
 
 #: inc/certificate.class.php:249 inc/document.class.php:939
 msgctxt "quantity"
@@ -5652,7 +5664,7 @@ msgstr "%1$s%2$s"
 
 #: inc/certificate.class.php:403
 msgid "Root CA"
-msgstr ""
+msgstr "Root CA"
 
 #. TRANS: Number of the alternate username
 #: inc/certificate.class.php:448 inc/commondbtm.class.php:3119
@@ -5671,35 +5683,35 @@ msgstr "Alternatiivse kasutajanime number"
 
 #: inc/certificate.class.php:468 inc/certificate_item.class.php:497
 msgid "DNS name"
-msgstr ""
+msgstr "DNS nimi"
 
 #: inc/certificate.class.php:482
 msgid "Empty for infinite"
-msgstr ""
+msgstr "Lõpmata tühi"
 
 #: inc/certificate.class.php:529
 msgctxt "button"
 msgid "Associate certificate"
-msgstr ""
+msgstr "Seotud sertifikaat"
 
 #: inc/certificate.class.php:531
 msgctxt "button"
 msgid "Dissociate certificate"
-msgstr ""
+msgstr "Seostada sertifikat"
 
 #: inc/certificate.class.php:672
 msgid "Send alarms on expired certificate"
-msgstr ""
+msgstr "Saada teated aegunud sertifikaadi kohta"
 
 #. TRANS: %1$s the license name, %2$s is the expiration date
 #: inc/certificate.class.php:716
 #, php-format
 msgid "Certificate %1$s expired on %2$s"
-msgstr ""
+msgstr "Sertifikaat %1$s aegub %2$s"
 
 #: inc/certificate.class.php:750
 msgid "Send Certificates alert failed"
-msgstr ""
+msgstr "Sertifikaadi teate saatmine ebaõnnestus"
 
 #: inc/certificate_item.class.php:247 inc/change_item.class.php:129
 #: inc/contract_item.class.php:655 inc/document_item.class.php:377
@@ -5718,13 +5730,13 @@ msgstr "Liida"
 
 #: inc/certificate_item.class.php:548
 msgid "Does not expire"
-msgstr ""
+msgstr "Ei aegu"
 
 #: inc/certificatetype.class.php:49 inc/dropdown.class.php:858
 msgid "Certificate type"
 msgid_plural "Certificate types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sertifikaadi tüüp"
+msgstr[1] "Sertifikaadi tüübid"
 
 #: inc/change.class.php:182 inc/problem.class.php:409
 #: inc/ticket.class.php:2670
@@ -5734,7 +5746,7 @@ msgstr "Lisa osaleja"
 #: inc/change.class.php:184 inc/problem.class.php:411
 #: inc/ticket.class.php:2672
 msgid "Set notifications for all actors"
-msgstr ""
+msgstr "Määra kõigile osalejatele märguanded"
 
 #: inc/change.class.php:199 inc/problem.class.php:181
 #: inc/problem.class.php:194 inc/problem.class.php:478
@@ -5759,7 +5771,7 @@ msgstr[1] "Lahendused"
 #: inc/change.class.php:419 inc/change.class.php:435 inc/change.class.php:844
 #: inc/notificationtargetchange.class.php:272
 msgid "Control list"
-msgstr ""
+msgstr "Kontrollnimekiri"
 
 #: inc/change.class.php:444 inc/change.class.php:873
 #: inc/notificationtargetchange.class.php:273
@@ -5811,11 +5823,11 @@ msgstr "Ootel"
 #: inc/change.class.php:496
 msgctxt "change"
 msgid "Testing"
-msgstr ""
+msgstr "Testimine"
 
 #: inc/change.class.php:497
 msgid "Qualification"
-msgstr ""
+msgstr "Kvalifikatsioon"
 
 #: inc/change.class.php:498
 msgid "Applied"
@@ -5823,7 +5835,7 @@ msgstr "Rakendatud"
 
 #: inc/change.class.php:499
 msgid "Review"
-msgstr ""
+msgstr "Ülevaade"
 
 #: inc/change.class.php:500 inc/problem.class.php:558
 #: inc/ticket.class.php:3543
@@ -5860,7 +5872,7 @@ msgstr "Lahendatud + Suletud"
 #: inc/ticket.class.php:4622
 #, php-format
 msgid "%1$s - ID %2$d"
-msgstr ""
+msgstr "%1$s - ID %2$d"
 
 #: inc/change.class.php:665 inc/commonitilobject.class.php:2776
 #: inc/commonitilobject.class.php:4573
@@ -5885,7 +5897,7 @@ msgstr "Avatud"
 #: inc/ticket.class.php:2918 inc/ticket.class.php:4714
 #: inc/ticket.class.php:4716 inc/ticket.class.php:7663
 msgid "Time to resolve"
-msgstr ""
+msgstr "Lahendamisaeg"
 
 #: inc/change.class.php:694 inc/change.class.php:703
 #: inc/commonitiltask.class.php:1513 inc/problem.class.php:1128
@@ -5998,17 +6010,17 @@ msgstr[1] "Viimased %d muudatused"
 
 #: inc/change.class.php:1106 inc/change.class.php:1160
 msgid "No change found."
-msgstr ""
+msgstr "Muudatust ei leitud"
 
 #: inc/change.class.php:1148
 msgid "Changes on linked items"
-msgstr ""
+msgstr "Muudatused seotud üksustes"
 
 #: inc/change_problem.class.php:68
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Seotud Probleem/Muudatus"
+msgstr[1] "Seob Probleemi/Muudatuse"
 
 #: inc/change_problem.class.php:155 inc/change_project.class.php:177
 #: inc/change_ticket.class.php:371
@@ -6042,8 +6054,8 @@ msgstr[1] "Muuda tegevusi"
 #: inc/change_ticket.class.php:66
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Seotud Taotlus/Muudatus"
+msgstr[1] "Seob Taotluse/Muudatuse"
 
 #: inc/change_ticket.class.php:266 inc/problem_ticket.class.php:300
 #: inc/projecttask_ticket.class.php:176
@@ -6053,7 +6065,7 @@ msgstr "Lisa teade"
 #: inc/change_ticket.class.php:290 inc/commonitilobject.class.php:4327
 #: inc/problem_ticket.class.php:330
 msgid "Solve tickets"
-msgstr ""
+msgstr "Taotluste lahendamine"
 
 #: inc/change_ticket.class.php:292 inc/commonitiltask.class.php:1715
 #: inc/problem.class.php:406 inc/problem_ticket.class.php:332
@@ -6067,7 +6079,7 @@ msgstr "Loo muudatus selle teate alusel"
 
 #: inc/commondbchild.class.php:239 inc/networkportinstantiation.class.php:534
 msgid "Item not linked to an object"
-msgstr ""
+msgstr "Üksus ei ole objektiga seotud"
 
 #: inc/commondbchild.class.php:728 inc/commondbchild.class.php:733
 #: inc/commondevice.class.php:363 inc/commondevice.class.php:365
@@ -6090,6 +6102,8 @@ msgstr "Lisa"
 #: inc/commondbconnexity.class.php:243
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
 msgstr ""
+"Ei saa üksust uuendada: eio le piisavalt õigusi vanemobjektile ( "
+"objektidele)"
 
 #: inc/commondbconnexity.class.php:418 inc/commondbconnexity.class.php:535
 #: inc/networkname.class.php:121 inc/networkname.class.php:445
@@ -6100,24 +6114,24 @@ msgstr "Lahuta"
 
 #: inc/commondbconnexity.class.php:513
 msgid "First Item"
-msgstr ""
+msgstr "Esimene üksus"
 
 #: inc/commondbconnexity.class.php:520
 msgid "Second Item"
-msgstr ""
+msgstr "Teine üksus"
 
 #: inc/commondbconnexity.class.php:525
 #, php-format
 msgid "Select a peer for %s:"
-msgstr ""
+msgstr "Vali sisend %s"
 
 #: inc/commondbconnexity.class.php:561
 msgid "Unable to reaffect given elements !"
-msgstr ""
+msgstr "Antud elemente ei saa mõjutada!"
 
 #: inc/commondbrelation.class.php:1222
 msgid "Remove all at once"
-msgstr ""
+msgstr "Eemalda kõik korraga"
 
 #: inc/commondbtm.class.php:1077 inc/item_ticket.class.php:1346
 msgid "Item successfully added"
@@ -6184,7 +6198,7 @@ msgstr "Taasta"
 
 #: inc/commondbtm.class.php:2232
 msgid "Check to keep the devices while deleting this item"
-msgstr ""
+msgstr "Veenduge, et seadmeid ei kustutata selle üksuse kustutamisel"
 
 #: inc/commondbtm.class.php:2252 inc/notepad.class.php:371
 #: inc/ticket.class.php:5274 inc/ticketfollowup.class.php:815
@@ -6218,7 +6232,7 @@ msgstr "Sul pole õigusi piisavalt muuta nähtavust alamolemites."
 
 #: inc/commondbtm.class.php:2475
 msgid "Flag change forbidden. Linked items found."
-msgstr ""
+msgstr "Märgi muutmine keelatud. Leitud on ühendatud üksuseid."
 
 #: inc/commondbtm.class.php:2479
 msgid "Change visibility in child entities"
@@ -6235,7 +6249,7 @@ msgstr "Täis nimi"
 #: inc/commondbtm.class.php:3554
 msgctxt "button"
 msgid "Unlock items"
-msgstr ""
+msgstr "Lukusta üksused lahti"
 
 #: inc/commondbtm.class.php:3770
 msgid "At least one field has an incorrect value"
@@ -6244,26 +6258,26 @@ msgstr "Vähemalt ühel väljal on ebakorrektne väärtus"
 #: inc/commondbtm.class.php:3831
 #, php-format
 msgid "Impossible record for %s"
-msgstr ""
+msgstr "Võimatu salvestada %s"
 
 #: inc/commondbtm.class.php:3834
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
-msgstr ""
+msgstr "Üksus on edukalt lisatud aga duplikeerib kirjet %s"
 
 #: inc/commondbtm.class.php:3837
 msgid "Other item exist"
-msgstr ""
+msgstr "Teine üksus eksisteerib"
 
 #: inc/commondbtm.class.php:3876
 msgid "Item in the dustbin"
-msgstr ""
+msgstr "Üksus on prügikastis"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:4002
 #, php-format
 msgid "%1$s trying to add an item that already exists: %2$s"
-msgstr ""
+msgstr "%1$s püüab sisestada üksust, mis juba eksisteerib: %2$s"
 
 #: inc/commondbtm.class.php:4286 inc/entity.class.php:1823
 #: inc/entity.class.php:1868 inc/search.class.php:5050
@@ -6304,19 +6318,19 @@ msgstr "Kustuta"
 
 #: inc/commondbtm.class.php:4738
 msgid "Read notes"
-msgstr ""
+msgstr "Loe märkusi"
 
 #: inc/commondbtm.class.php:4739
 msgid "Read the item's notes"
-msgstr ""
+msgstr "Loe märkuseid üksuse kohta"
 
 #: inc/commondbtm.class.php:4740
 msgid "Update notes"
-msgstr ""
+msgstr "Uuenda märkmeid"
 
 #: inc/commondbtm.class.php:4741
 msgid "Update the item's notes"
-msgstr ""
+msgstr "Uuenda märkuseid üksuste kohta"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: inc/commondbtm.class.php:4839
@@ -6326,11 +6340,11 @@ msgstr "Fail %d"
 
 #: inc/commondbtm.class.php:4932
 msgid "You can define an autofill template"
-msgstr ""
+msgstr "Saate määrata automaatse täitmise vormi"
 
 #: inc/commondbtm.class.php:4943
 msgid "Autofilled from template"
-msgstr ""
+msgstr "Automaatselt mallist täidetud"
 
 #: inc/commondbvisible.class.php:154
 msgid "Add a target"
@@ -6349,8 +6363,8 @@ msgstr ""
 #: inc/notificationtarget.class.php:338
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Adressaat"
+msgstr[1] "Adressaadid"
 
 #. TRANS: %1$s is address, %2$s is netmask
 #: inc/commondbvisible.class.php:237 inc/commondbvisible.class.php:292
@@ -6398,16 +6412,20 @@ msgstr "Toote number"
 
 #: inc/commondropdown.class.php:578
 msgid "You can't delete that item, because it has sub-items"
-msgstr ""
+msgstr "Seda üksust ei saa kustutada, set sellega on seotud alamüksused"
 
 #: inc/commondropdown.class.php:585
 msgid "Caution: you're about to remove a heading used for one or more items."
 msgstr ""
+"Hoiatus: oled eemaldamas pealkirja, mida kasutatakse ühe või mitme üksuse "
+"jaoks"
 
 #: inc/commondropdown.class.php:590
 msgid ""
 "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr ""
+"Kui kinnitate kustutamise, tühjendatakse kõik selle rippmenüü "
+"kasutusvaldkonnad"
 
 #: inc/commondropdown.class.php:598 inc/html.class.php:5396
 msgctxt "button"
@@ -6422,7 +6440,7 @@ msgstr "Katkesta"
 
 #: inc/commondropdown.class.php:607
 msgid "You can also replace all uses of this dropdown by another."
-msgstr ""
+msgstr "Võite selle rippmenüü kõikides rakendustes asendada teisega."
 
 #: inc/commondropdown.class.php:630
 msgctxt "button"
@@ -6431,7 +6449,7 @@ msgstr "Asenda"
 
 #: inc/commondropdown.class.php:774 inc/tickettemplate.class.php:579
 msgid "Transfer and merge"
-msgstr ""
+msgstr "Ülekandmine ja ühendamine"
 
 #: inc/commondropdown.class.php:791 inc/tickettemplate.class.php:596
 msgctxt "button"
@@ -6470,7 +6488,7 @@ msgstr "Taasta vaikeseadistus"
 
 #: inc/commonglpi.class.php:1249
 msgid "Unable to get item"
-msgstr ""
+msgstr "Üksust ei õnnestunud leida"
 
 #: inc/commonglpi.class.php:1252
 msgid "Authorization error"
@@ -6478,15 +6496,15 @@ msgstr "Õiguste viga"
 
 #: inc/commonglpi.class.php:1255
 msgid "Incompatible items"
-msgstr ""
+msgstr "Sobimatud üksused"
 
 #: inc/commonglpi.class.php:1258
 msgid "Error on executing the action"
-msgstr ""
+msgstr "Viga tegevuse elluviimisel"
 
 #: inc/commonglpi.class.php:1261
 msgid "Item already defined"
-msgstr ""
+msgstr "Üksus on juba defineeritud"
 
 #: inc/commonitilactor.class.php:183 inc/commonitilactor.class.php:259
 msgid "Email Followup"
@@ -6764,16 +6782,16 @@ msgstr "Vähemalt väga kõrge"
 #: inc/ticket.class.php:4008
 msgid "Watcher"
 msgid_plural "Watchers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jälgija"
+msgstr[1] "Jälgijad"
 
 #: inc/commonitilobject.class.php:2805
 msgid "Time to resolve + Progress"
-msgstr ""
+msgstr "Lahendamise aeg + Progress"
 
 #: inc/commonitilobject.class.php:2815
 msgid "Time to resolve exceedeed"
-msgstr ""
+msgstr "Lahendamise aeg on ületatud"
 
 #: inc/commonitilobject.class.php:2830 inc/commonitilobject.class.php:4581
 #: inc/ticket.class.php:4757 inc/ticket.class.php:7671
@@ -6786,7 +6804,7 @@ msgstr "Viimane muutja"
 
 #: inc/commonitilobject.class.php:2946
 msgid "Resolution time"
-msgstr ""
+msgstr "Lahendamise aeg"
 
 #: inc/commonitilobject.class.php:2956
 msgid "Closing time"
@@ -6802,8 +6820,8 @@ msgstr "Ooteaeg"
 #: inc/ruleticket.class.php:394 inc/ruleticket.class.php:522
 msgid "Requester group"
 msgid_plural "Requester groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Taotlejate grupp"
+msgstr[1] "Taotlejate grupid"
 
 #: inc/commonitilobject.class.php:3082 inc/commonitilobject.class.php:3287
 #: inc/notificationtargetcommonitilobject.class.php:558
@@ -6811,8 +6829,8 @@ msgstr[1] ""
 #: inc/ruleticket.class.php:425 inc/ruleticket.class.php:562
 msgid "Watcher group"
 msgid_plural "Watcher groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Vaatlejate grupp"
+msgstr[1] "Vaatlejate grupid"
 
 #: inc/commonitilobject.class.php:3127
 #: inc/notificationtargetcommonitilobject.class.php:1216
@@ -6835,7 +6853,7 @@ msgstr "Nõudev kasutaja"
 
 #: inc/commonitilobject.class.php:3269
 msgid "Watcher user"
-msgstr ""
+msgstr "Kasutaja vaatleja rollis"
 
 #: inc/commonitilobject.class.php:3291
 #: inc/notificationtargetcommonitilobject.class.php:557
@@ -6855,6 +6873,8 @@ msgid ""
 "Warning: non closed children tickets depends on current ticket. Are you sure"
 " you want to close it?"
 msgstr ""
+"Hoiatus: sulgemata alamtaotlused on seotud selle taolusega. Kas soovite seda"
+" kindlasti sulgeda?"
 
 #: inc/commonitilobject.class.php:4239 inc/commonitilobject.class.php:4333
 #: inc/dropdown.class.php:798 inc/profile.class.php:1448
@@ -7833,7 +7853,7 @@ msgstr "Piira telefonide haldust"
 
 #: inc/config.class.php:521
 msgid "Automatic fields (marked by *)"
-msgstr ""
+msgstr "Automaatsed väljad (märgistatud *)"
 
 #: inc/config.class.php:523
 msgid "By entity"
@@ -10457,8 +10477,8 @@ msgstr "Tõlgete nimekiri"
 #: inc/rulecollection.class.php:1257
 msgid "Field"
 msgid_plural "Fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Väli"
+msgstr[1] "Väljad"
 
 #: inc/dropdowntranslation.class.php:409
 #: inc/knowbaseitemtranslation.class.php:260
@@ -13810,7 +13830,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:1256
 msgid "Category id"
-msgstr ""
+msgstr "Kategooria ID"
 
 #: inc/notificationtargetcommonitilobject.class.php:1258
 msgid "Category comment"
@@ -15498,7 +15518,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:284 inc/queuednotification.class.php:745
 msgid "Additional headers"
-msgstr ""
+msgstr "Täiendavad päised"
 
 #: inc/queuednotification.class.php:312 inc/queuednotification.class.php:743
 msgid "Message ID"
@@ -17512,6 +17532,8 @@ msgstr ""
 #: inc/ticketrecurrent.class.php:506
 msgid "Ticket creation failed (check mandatory fields)"
 msgstr ""
+"Pöördumise salvestamine ebaõnnestus (Kontrolli kas kohustuslikud väljad on "
+"täidetud)"
 
 #: inc/ticketrecurrent.class.php:509
 msgid "Ticket creation failed (no template)"
@@ -17534,8 +17556,8 @@ msgstr ""
 #: inc/tickettemplatehiddenfield.class.php:64
 msgid "Hidden field"
 msgid_plural "Hidden fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Peidetud väli"
+msgstr[1] "Peidetud väljad"
 
 #: inc/tickettemplatehiddenfield.class.php:226
 msgid "Add a hidden field"
@@ -17544,8 +17566,8 @@ msgstr "Lisa varjatud väli"
 #: inc/tickettemplatemandatoryfield.class.php:52
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kohustuslik väli"
+msgstr[1] "Kohustuslikud väljad"
 
 #: inc/tickettemplatemandatoryfield.class.php:227
 msgid "Add a mandatory field"
@@ -17554,8 +17576,8 @@ msgstr "Lisa kohustuslik väli"
 #: inc/tickettemplatepredefinedfield.class.php:69
 msgid "Predefined field"
 msgid_plural "Predefined fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eeldefineeritud väli"
+msgstr[1] "Eeldefineeritud väljad"
 
 #: inc/tickettemplatepredefinedfield.class.php:273
 msgid "Add a predefined field"
