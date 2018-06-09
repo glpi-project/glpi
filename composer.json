@@ -35,7 +35,7 @@
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
-        "glpi-project/coding-standard": "^0.7.0",
+        "glpi-project/coding-standard": "^0.7.1",
         "consolidation/robo": "^1.0",
         "natxet/CssMin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
