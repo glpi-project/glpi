@@ -4826,10 +4826,11 @@ class CommonDBTM extends CommonGLPI {
                 && ($docID > 0)
                 && isset($input[$options['content_field']])) {
 
-               $input[$options['content_field']]
-                  = preg_replace('/'.Document::getImageTag($input['_tag'][$key]).'/',
-                                 Document::getImageTag($doc->fields["tag"]),
-                                 $input[$options['content_field']]);
+               $input[$options['content_field']] = str_replace(
+                  $input['_tag'][$key],
+                  $doc->fields["tag"],
+                  $input[$options['content_field']]
+               );
                $docadded[$docID]['tag'] = $doc->fields["tag"];
             }
 
