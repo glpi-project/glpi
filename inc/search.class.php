@@ -3030,14 +3030,16 @@ class Search {
                $condition = "(";
 
                if (Session::haveRight("$right", $itemtype::READMY)) {
-                  $my_groups_keys = "'" . implode("','", $_SESSION['glpigroups']) . "'";
                   $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                                  OR $observer_table.users_id = '".Session::getLoginUserID()."'
                                  OR $assign_table.users_id = '".Session::getLoginUserID()."'
-                                 OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'
-                                 OR $requestergroup_table.groups_id IN ($my_groups_keys)
+                                 OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
+                  if (count($_SESSION['glpigroups'])) {
+                     $my_groups_keys = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+                     $condition .= " OR $requestergroup_table.groups_id IN ($my_groups_keys)
                                  OR $observergroup_table.groups_id IN ($my_groups_keys)
                                  OR $assigngroup_table.groups_id IN ($my_groups_keys)";
+                  }
                } else {
                   $condition .= "0=1";
                }
