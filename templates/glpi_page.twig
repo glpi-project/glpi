@@ -156,6 +156,7 @@
                $links = $menu[$sector]['content'][$item]['links'];
             }#}
 
+               {% if menu_item.links is defined %}
             <li>
                <span class="btn-group">
                   {# Add item #}
@@ -192,6 +193,7 @@
                   </span>
 
             </li>
+               {% endif %}
             {% endif %}
          {% endif %}
       {% endfor %}

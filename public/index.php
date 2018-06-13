@@ -627,6 +627,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       if (isset($get['items_id'])) {
          $display_options['items_id'] = $get['items_id'];
       }
+      if ($args['itemtype'] == Config::getType()) {
+         //hack for config...
+         $display_options['id'] = 1;
+      }
 
       //reload data from session on error
       if (isset($get['item_rand'])) {
