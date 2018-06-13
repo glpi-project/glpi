@@ -30,24 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-function displayUsage() {
-   die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> [ --pass=<dbpassword> ] [ --lang=xx_XX] [ --tests ] [ --force ]\n\n");
-}
-
-$args = [ 'host' => 'localhost', 'pass' => ''];
-
-if ($_SERVER['argc']>1) {
-   for ($i=1; $i<count($_SERVER['argv']); $i++) {
-      $it           = explode("=", $argv[$i], 2);
-      $it[0]        = preg_replace('/^--/', '', $it[0]);
-      $args[$it[0]] = (isset($it[1]) ? $it[1] : true);
-   }
-}
-
 define('GLPI_ROOT', dirname(__DIR__));
 chdir(GLPI_ROOT);
 
-if (isset($args['tests'])) {
+if (in_array('--tests', $_SERVER['argv'])) { // Uggly, but must be before any other GLPI include, so not from Getopt
    define("GLPI_CONFIG_DIR", GLPI_ROOT . "/tests");
    @mkdir(GLPI_CONFIG_DIR . '/files/_log', 0775, true);
 }
@@ -60,8 +46,33 @@ $GLPI->initLogger();
 
 Config::detectRootDoc();
 
+try {
+   $opts = new \Zend\Console\Getopt([
+      'help'     => 'Display usage',
+      'host|h=s' => 'Machine hosting the database',
+      'db|d=s'   => 'Database name (required)',
+      'user|u=s' => 'Database user (required)',
+      'pass|p-s' => 'Database password (default: no password) without value will be prompt',
+      'lang|l=s' => 'Locale (default: en_GB)',
+      'tests'    => 'Test configuration',
+      'force|f'  => 'Override existing configuration',
+   ]);
+   $opts->parse();
+} catch (Zend\Console\Exception\RuntimeException $e) {
+    echo $e->getUsageMessage();
+    exit;
+}
+$args = $opts->getArguments();
+if (!isset($args['host'])) {
+   $args['host'] = 'localhost';
+}
+if (!isset($args['pass'])) {
+   $args['pass'] = '';
+}
+
 if (isset($args['help']) || !(isset($args['db']) && isset($args['user']))) {
-   displayUsage();
+   echo $opts->getUsageMessage();
+   exit;
 }
 
 if (isset($args['lang']) && !isset($CFG_GLPI['languages'][$args['lang']])) {
@@ -77,6 +88,10 @@ if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !isset($args['force'])) {
 
 $_SESSION = ['glpilanguage' => (isset($args['lang']) ? $args['lang'] : 'en_GB')];
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+
+if ($args['pass'] === true) {
+   $args['pass'] = \Zend\Console\Prompt\Password::prompt('Password:');
+}
 
 echo "Connect to the DB...\n";
 
