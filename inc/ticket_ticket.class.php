@@ -375,13 +375,14 @@ class Ticket_Ticket extends CommonDBRelation {
 
       if ($ticket->getfromDB($ID)) {
          $solution = new ITILSolution();
-         $solution_data =$solution->fields;
+         $solution_data = $solution->fields;
          unset($solution_data['id']);
 
          $tickets = self::getLinkedTicketsTo($ID);
          if (count($tickets)) {
             foreach ($tickets as $data) {
                $solution_data['items_id'] = $data['tickets_id'];
+               $solution_data['itemtype'] = "Ticket";
                if ($ticket->can($solution_data['items_id'], UPDATE)
                    && ($data['link'] == self::DUPLICATE_WITH)
                    && ($ticket->fields['status'] != CommonITILObject::SOLVED)
