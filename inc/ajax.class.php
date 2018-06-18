@@ -195,13 +195,13 @@ class Ajax {
                beforeSend: function() {
                   var _loader = $('<div id=\'loadingslide\'><div class=\'loadingindicator\'>" . __s('Loading...') . "</div></div>');
                   $('#$name .contents').html(_loader);
-               },
-               always: function() {
-                  $('#loadingslide').remove();
-               },
-               done: function(res) {
-                  $('#$name .contents').html(res);
                }
+            })
+            .always( function() {
+               $('#loadingslide').remove();
+            })
+            .done(function(res) {
+               $('#$name .contents').html(res);
             });
          };\n";
       }
