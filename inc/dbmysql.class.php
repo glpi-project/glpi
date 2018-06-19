@@ -691,8 +691,8 @@ class DBmysql {
       global $DB;
 
       $msg = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER';
-      $req = $DB->request("SELECT @@sql_mode as mode");
-      if (($data = $req->next())) {
+      $result = $DB->query("SELECT @@sql_mode as mode");
+      if ($data = $DB->fetch_assoc($result)) {
          return (preg_match("/STRICT_TRANS/", $data['mode'])
                  && preg_match("/NO_ZERO_/", $data['mode'])
                  && preg_match("/ONLY_FULL_GROUP_BY/", $data['mode']));
