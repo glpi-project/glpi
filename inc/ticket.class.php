@@ -254,7 +254,7 @@ class Ticket extends CommonITILObject {
                            __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
 
-         $links[$pic_validate] = Ticket::getSearchURL() . '?'.Toolbox::append_params($opt, '&amp;');
+         $links[$pic_validate] = Ticket::getSearchURL(false) . '?'.Toolbox::append_params($opt, '&amp;');
       }
       if (count($links)) {
          return $links;
