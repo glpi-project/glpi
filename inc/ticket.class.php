@@ -2821,14 +2821,7 @@ class Ticket extends CommonITILObject {
          'datatype'           => 'dropdown'
       ];
 
-      // Can't use Location::getSearchOptionsToAdd because id conflicts
-      $tab[] = [
-         'id'                 => '83',
-         'table'              => 'glpi_locations',
-         'field'              => 'completename',
-         'name'               => __('Location'),
-         'datatype'           => 'dropdown'
-      ];
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       // For ticket template
       $tab[] = [
