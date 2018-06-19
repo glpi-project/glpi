@@ -136,4 +136,53 @@ class ITILSolution extends DbTestCase {
          )
       )->isIdenticalTo(2);
    }
+
+   public function testSolutionOnDuplicate() {
+      $this->login();
+      $this->setEntity('Root entity', true);
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $ticket = new \Ticket();
+      $duplicated = (int)$ticket->add([
+         'name'               => 'Duplicated ticket',
+         'description'        => 'A ticket that will be duplicated',
+         'content'            => '',
+         '_users_id_assign'   => $uid
+      ]);
+      $this->integer($duplicated)->isGreaterThan(0);
+
+      $duplicate = (int)$ticket->add([
+         'name'               => 'Duplicate ticket',
+         'description'        => 'A ticket that is a duplicate',
+         'content'            => '',
+         '_users_id_assign'   => $uid
+      ]);
+      $this->integer($duplicate)->isGreaterThan(0);
+
+      $link = new \Ticket_Ticket();
+      $this->integer(
+         (int)$link->add([
+            'tickets_id_1' => $duplicated,
+            'tickets_id_2' => $duplicate,
+            'link'         => \Ticket_Ticket::DUPLICATE_WITH
+         ])
+      )->isGreaterThan(0);
+
+      //we got one ticketg, and another that duplicates it.
+      //let's manage solutions on them
+      $solution = new \ITILSolution();
+      $this->integer(
+         (int)$solution->add([
+            'itemtype'  => $ticket::getType(),
+            'items_id'  => $duplicate,
+            'content'   => 'Solve from main ticket'
+         ])
+      );
+      //reload from DB
+      $this->boolean($ticket->getFromDB($duplicate))->isTrue();
+      $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
+
+      $this->boolean($ticket->getFromDB($duplicated))->isTrue();
+      $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
+   }
 }
