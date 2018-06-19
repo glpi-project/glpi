@@ -51,6 +51,10 @@ class DBmysqlIterator extends DbTestCase {
       $req = 'SELECT Something FROM Somewhere';
       $it = $this->it->execute($req);
       $this->string($it->getSql())->isIdenticalTo($req);
+
+      $req = 'SELECT @@sql_mode as mode';
+      $it = $this->it->execute($req);
+      $this->string($it->getSql())->isIdenticalTo($req);
    }
 
 

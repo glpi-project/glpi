@@ -98,7 +98,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
       if (is_string($table) && strpos($table, " ")) {
          $names = preg_split('/ AS /i', $table);
-         if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1])) {
+         if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
             $is_legacy = true;
          }
       }
