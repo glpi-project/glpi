@@ -321,7 +321,7 @@ class ITILSolution extends CommonDBTM {
          'id'     => $this->item->getID(),
          'status' => $status
       ]);
-      if ($this->item->getType() == 'Ticket') {
+      if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
          Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
       }
    }
