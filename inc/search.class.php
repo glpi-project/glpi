@@ -1766,11 +1766,21 @@ class Search {
             }
          }
       } else {
-         if ($item !== null && $item->maybeDeleted()) {
-            echo "<div class='center'>".
-                   self::isDeletedSwitch($data['search']['is_deleted']).
-                 "</div><br/>";
+         echo "<div class='center pager_controls'>".
+         $map_link = "<input type='checkbox' name='as_map' id='as_map' value='1'";
+         if ($data['search']['as_map'] == 1) {
+            $map_link .= " checked='checked'";
          }
+         $map_link .= "/>";
+         $map_link .= "<label for='as_map'><span title='".__s('Show as map')."' class='pointer fa fa-globe'
+            onClick=\"toogle('as_map','','','');
+                        document.forms['searchform".$data["itemtype"]."'].submit();\"></span></label>";
+         echo $map_link;
+
+         if ($item !== null && $item->maybeDeleted()) {
+            echo self::isDeletedSwitch($data['search']['is_deleted']);
+         }
+         echo "</div>";
          echo self::showError($data['display_type']);
       }
    }
