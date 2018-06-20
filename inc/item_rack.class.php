@@ -799,7 +799,10 @@ JAVASCRIPT;
                          ? self::getIcon("Reserved")
                          : self::getIcon(get_class($item));
          $bg_color    = $gs_item['bgcolor'];
-         $fg_color    = !empty($gs_item['bgcolor'])
+         if ($item->maybeDeleted() && $item->isDeleted()) {
+            $bg_color = '#ff0000'; //red for deleted items
+         }
+         $fg_color    = !empty($bg_color)
                          ? Html::getInvertedColor($gs_item['bgcolor'])
                          : "";
          $fg_color_s  = "color: $fg_color;";
