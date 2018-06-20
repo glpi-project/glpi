@@ -832,6 +832,23 @@ function update92to93() {
    );
    /** /Logs purge */
 
+   /** Clean item rack relation on deleted items */
+   $iterator = $DB->request(['FROM' => Item_Rack::getTable()]);
+   while ($row = $iterator->next()) {
+      $exists = $DB->request([
+         'FROM'   => getTableForItemType($row['itemtype']),
+         'WHERE'  => ['id' => $row['items_id']]
+      ]);
+      if (!count($exists)) {
+         $DB->delete(
+            Item_Rack::getTable(), [
+               'id' => $row['id']
+            ]
+         );
+      }
+   }
+   /** /Clean item rack relation on deleted items */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
