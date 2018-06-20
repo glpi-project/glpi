@@ -3566,7 +3566,10 @@ class Search {
                // ELSE standard search
                // Date format modification if needed
                $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
-               return self::makeTextCriteria($date_computation, $val, $nott, $link);
+               if ($date_computation) {
+                  return self::makeTextCriteria($date_computation, $val, $nott, $link);
+               }
+               return '';
 
             case "right" :
                if ($searchtype == 'notequals') {
