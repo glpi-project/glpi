@@ -5873,7 +5873,7 @@ class Html {
     *
     * @return string
     */
-   static private function getPrefixedUrl($url) {
+   static public final function getPrefixedUrl($url) {
       global $CFG_GLPI;
       $prefix = $CFG_GLPI['root_doc'];
       if (substr($url, 0, 1) != '/') {
