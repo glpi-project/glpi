@@ -636,8 +636,98 @@ class Search {
                                                        $data['item']->maybeRecursive());
          }
       }
-      $WHERE  = "";
-      $HAVING = "";
+      $WHERE     = "";
+      $HAVING    = "";
+      $METAWHERE = "";
+
+      //// 5 - META SEARCH
+      // Preprocessing
+      if (count($data['search']['metacriteria'])) {
+         // Already link meta table in order not to linked a table several times
+         $already_link_tables2 = [];
+         $metanum              = count($data['toview'])-1;
+
+         foreach ($data['search']['metacriteria'] as $key => $metacriteria) {
+            if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
+                && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
+
+               $metaopt = &self::getOptions($metacriteria['itemtype']);
+               $sopt    = $metaopt[$metacriteria['field']];
+               $metanum++;
+
+                // a - SELECT
+               $SELECT .= self::addSelect($metacriteria['itemtype'], $metacriteria['field'],
+                                          $metanum, 1, $metacriteria['itemtype']);
+
+               // b - ADD LEFT JOIN
+               // Link reference tables
+               if (!in_array(getTableForItemType($metacriteria['itemtype']),
+                                                 $already_link_tables2)
+                   && !in_array(getTableForItemType($metacriteria['itemtype']),
+                                                    $already_link_tables)) {
+                  $FROM .= self::addMetaLeftJoin($data['itemtype'], $metacriteria['itemtype'],
+                                                 $already_link_tables2,
+                                                 (($metacriteria['value'] == "NULL")
+                                                  || (strstr($metacriteria['link'], "NOT"))),
+                                                 $sopt["joinparams"]);
+               }
+
+               // Link items tables
+               if (!in_array($sopt["table"]."_".$metacriteria['itemtype'],
+                             $already_link_tables2)) {
+
+                  $FROM .= self::addLeftJoin($metacriteria['itemtype'],
+                                             getTableForItemType($metacriteria['itemtype']),
+                                             $already_link_tables2, $sopt["table"],
+                                             $sopt["linkfield"], 1, $metacriteria['itemtype'],
+                                             $sopt["joinparams"], $sopt["field"]);
+               }
+               // Where
+               $LINK = "";
+               // For AND NOT statement need to take into account all the group by items
+               if (strstr($metacriteria['link'], "AND NOT")
+                   || isset($sopt["usehaving"])) {
+
+                  $NOT = 0;
+                  if (strstr($metacriteria['link'], "NOT")) {
+                     $tmplink = " ".str_replace(" NOT", "", $metacriteria['link']);
+                     $NOT     = 1;
+                  } else {
+                     $tmplink = " ".$metacriteria['link'];
+                  }
+                  if (!empty($HAVING)) {
+                     $LINK = $tmplink;
+                  }
+                  $HAVING .= self::addHaving($LINK, $NOT, $metacriteria['itemtype'],
+                                             $metacriteria['field'], $metacriteria['searchtype'],
+                                             $metacriteria['value'], 1, $metanum);
+               } else { // Meta Where Search
+                  $LINK = " ";
+                  $NOT  = 0;
+                  // Manage Link if not first item
+                  if (isset($metacriteria['link'])
+                      && strstr($metacriteria['link'], "NOT")) {
+
+                     $tmplink = " ".str_replace(" NOT", "", $metacriteria['link']);
+                     $NOT     = 1;
+
+                  } else if (isset($metacriteria['link'])) {
+                     $tmplink = " ".$metacriteria['link'];
+
+                  } else {
+                     $tmplink = " AND ";
+                  }
+
+                  if (!empty($METAWHERE)) {
+                     $LINK = $tmplink;
+                  }
+                  $METAWHERE .= self::addWhere($LINK, $NOT, $metacriteria['itemtype'],
+                                           $metacriteria['field'], $metacriteria['searchtype'],
+                                           $metacriteria['value'], 1);
+               }
+            }
+         }
+      }
 
       // Add search conditions
       // If there is search items
@@ -676,14 +766,20 @@ class Search {
                      }
                   } else {
                      // Manage Link if not first item
+                     $new_where = ' ( ';
                      if (!empty($WHERE)) {
-                        $LINK = $tmplink;
+                        $new_where = $tmplink . ' ( ';
                      }
 
-                     $new_where = self::addWhere($LINK, $NOT, $data['itemtype'], $criteria['field'],
+                     $tmp_new_where = self::addWhere($LINK, $NOT, $data['itemtype'], $criteria['field'],
                                                  $criteria['searchtype'], $criteria['value']);
 
-                     if ($new_where !== false) {
+                     if ($tmp_new_where !== false) {
+                        $new_where .= $tmp_new_where;
+                        if (!empty($METAWHERE)) {
+                           $new_where .= ' AND ' . $METAWHERE;
+                        }
+                        $new_where .= ' ) ';
                         $WHERE .= $new_where;
                      }
                   }
@@ -772,95 +868,6 @@ class Search {
          if ($data['search']['sort'] == $val) {
             $ORDER = self::addOrderBy($data['itemtype'], $data['search']['sort'],
                                       $data['search']['order'], $key);
-         }
-      }
-
-      //// 5 - META SEARCH
-      // Preprocessing
-      if (count($data['search']['metacriteria'])) {
-         // Already link meta table in order not to linked a table several times
-         $already_link_tables2 = [];
-         $metanum              = count($data['toview'])-1;
-
-         foreach ($data['search']['metacriteria'] as $key => $metacriteria) {
-            if (isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
-                && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)) {
-
-               $metaopt = &self::getOptions($metacriteria['itemtype']);
-               $sopt    = $metaopt[$metacriteria['field']];
-               $metanum++;
-
-                // a - SELECT
-               $SELECT .= self::addSelect($metacriteria['itemtype'], $metacriteria['field'],
-                                          $metanum, 1, $metacriteria['itemtype']);
-
-               // b - ADD LEFT JOIN
-               // Link reference tables
-               if (!in_array(getTableForItemType($metacriteria['itemtype']),
-                                                 $already_link_tables2)
-                   && !in_array(getTableForItemType($metacriteria['itemtype']),
-                                                    $already_link_tables)) {
-                  $FROM .= self::addMetaLeftJoin($data['itemtype'], $metacriteria['itemtype'],
-                                                 $already_link_tables2,
-                                                 (($metacriteria['value'] == "NULL")
-                                                  || (strstr($metacriteria['link'], "NOT"))),
-                                                 $sopt["joinparams"]);
-               }
-
-               // Link items tables
-               if (!in_array($sopt["table"]."_".$metacriteria['itemtype'],
-                             $already_link_tables2)) {
-
-                  $FROM .= self::addLeftJoin($metacriteria['itemtype'],
-                                             getTableForItemType($metacriteria['itemtype']),
-                                             $already_link_tables2, $sopt["table"],
-                                             $sopt["linkfield"], 1, $metacriteria['itemtype'],
-                                             $sopt["joinparams"], $sopt["field"]);
-               }
-               // Where
-               $LINK = "";
-               // For AND NOT statement need to take into account all the group by items
-               if (strstr($metacriteria['link'], "AND NOT")
-                   || isset($sopt["usehaving"])) {
-
-                  $NOT = 0;
-                  if (strstr($metacriteria['link'], "NOT")) {
-                     $tmplink = " ".str_replace(" NOT", "", $metacriteria['link']);
-                     $NOT     = 1;
-                  } else {
-                     $tmplink = " ".$metacriteria['link'];
-                  }
-                  if (!empty($HAVING)) {
-                     $LINK = $tmplink;
-                  }
-                  $HAVING .= self::addHaving($LINK, $NOT, $metacriteria['itemtype'],
-                                             $metacriteria['field'], $metacriteria['searchtype'],
-                                             $metacriteria['value'], 1, $metanum);
-               } else { // Meta Where Search
-                  $LINK = " ";
-                  $NOT  = 0;
-                  // Manage Link if not first item
-                  if (isset($metacriteria['link'])
-                      && strstr($metacriteria['link'], "NOT")) {
-
-                     $tmplink = " ".str_replace(" NOT", "", $metacriteria['link']);
-                     $NOT     = 1;
-
-                  } else if (isset($metacriteria['link'])) {
-                     $tmplink = " ".$metacriteria['link'];
-
-                  } else {
-                     $tmplink = " AND ";
-                  }
-
-                  if (!empty($WHERE)) {
-                     $LINK = $tmplink;
-                  }
-                  $WHERE .= self::addWhere($LINK, $NOT, $metacriteria['itemtype'],
-                                           $metacriteria['field'], $metacriteria['searchtype'],
-                                           $metacriteria['value'], 1);
-               }
-            }
          }
       }
 
