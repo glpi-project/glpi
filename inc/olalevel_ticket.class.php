@@ -41,6 +41,10 @@ if (!defined('GLPI_ROOT')) {
 /// Class OLALevel
 class OlaLevel_Ticket extends CommonDBTM {
 
+   static function getTypeName($nb = 0) {
+      return __('OLA level for Ticket');
+   }
+
 
    /**
     * Retrieve an item from the database
