@@ -955,7 +955,9 @@ JAVASCRIPT;
       $filled = [];
       while ($row = $iterator->next()) {
          $item = new $row['itemtype'];
-         $item->getFromDB($row['items_id']);
+         if (!$item->getFromDB($row['items_id'])) {
+            continue;
+         }
          $units = 1;
          $width = 1;
          $depth = 1;

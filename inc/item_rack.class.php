@@ -210,7 +210,9 @@ class Item_Rack extends CommonDBRelation {
          $rel  = new self;
          $rel->getFromDB($row['id']);
          $item = new $row['itemtype'];
-         $item->getFromDB($row['items_id']);
+         if (!$item->getFromDB($row['items_id'])) {
+            continue;
+         }
 
          $position = $row['position'];
 
