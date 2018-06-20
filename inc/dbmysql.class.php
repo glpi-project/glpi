@@ -160,13 +160,12 @@ class DBmysql {
    function query($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
-      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-          && $CFG_GLPI["debug_sql"]) {
+      $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
+      if ($is_debug && $CFG_GLPI["debug_sql"]) {
          $SQL_TOTAL_REQUEST++;
          $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
       }
-      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-         && $CFG_GLPI["debug_sql"] || $this->execution_time === true) {
+      if ($is_debug && $CFG_GLPI["debug_sql"] || $this->execution_time === true) {
          $TIMER                                    = new Timer();
          $TIMER->start();
       }
@@ -180,15 +179,12 @@ class DBmysql {
 
          Toolbox::logSqlError($error);
 
-         if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
-                || isAPI())
-             && $CFG_GLPI["debug_sql"]) {
+         if (($is_debug || isAPI()) && $CFG_GLPI["debug_sql"]) {
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
          }
       }
 
-      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-          && $CFG_GLPI["debug_sql"]) {
+      if ($is_debug && $CFG_GLPI["debug_sql"]) {
          $TIME                                   = $TIMER->getTime();
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
       }
