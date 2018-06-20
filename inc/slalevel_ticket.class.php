@@ -37,6 +37,10 @@ if (!defined('GLPI_ROOT')) {
 /// Class SLALevel
 class SlaLevel_Ticket extends CommonDBTM {
 
+   static function getTypeName($nb = 0) {
+      return __('SLA level for Ticket');
+   }
+
 
    /**
     * Retrieve an item from the database
