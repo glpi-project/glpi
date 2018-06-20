@@ -634,6 +634,9 @@ class Rack extends CommonDBTM {
             list($x, $y) = $coord;
             $item['_x'] = $x - 1;
             $item['_y'] = $y - 1;
+         } else {
+            $item['_x'] = null;
+            $item['_y'] = null;
          }
 
          if ($x <= $cols && $y <= $rows && $x > 0 && $y > 0) {
