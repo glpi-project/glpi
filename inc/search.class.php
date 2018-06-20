@@ -449,7 +449,7 @@ class Search {
                   $LINK    = " ";
                   $NOT     = 0;
                   $tmplink = "";
-                  if (isset($criteria['link'])) {
+                  if (isset($criteria['link']) && in_array($criteria['link'], array_keys(self::getLogicalOperators()))) {
                      if (strstr($criteria['link'], "NOT")) {
                         $tmplink = " ".str_replace(" NOT", "", $criteria['link']);
                         $NOT     = 1;
