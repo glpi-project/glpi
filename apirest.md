@@ -31,8 +31,8 @@
 ## Glossary
 
 Endpoint
-:   Resource available though the api.
-    The endpoint is the URL where your api can be accessed by a client application
+:   Resource available though the API.
+    The endpoint is the URL where your API can be accessed by a client application
 
 Method
 :   HTTP verbs to indicate the desired action to be performed on the identified resource.
@@ -63,14 +63,14 @@ Session token
     Except initSession endpoint who provide this token, all others require this string to be used.
 
 App(lication) token
-:   An optional way to filter the access to the api.
-    On api call, it will try to find an api client matching your ip and the app toekn (if provided).
-    You can define an api client with an app token in general configuration for each of your external applications to identify them (each api client have its own history).
+:   An optional way to filter the access to the API.
+    On API call, it will try to find an API client matching your ip and the app toekn (if provided).
+    You can define an API client with an app token in general configuration for each of your external applications to identify them (each API client have its own history).
 
 ## Important
 
 * you should always precise a Content-Type header in your HTTP calls.
-   Currently, the api supports:
+   Currently, the API supports:
   * application/json
   * multipart/form-data (for files upload, see [Add item(s)](#add-item-s) endpoint.
 
@@ -91,17 +91,17 @@ App(lication) token
 * You can filter API access by enable the following parameters in GLPI General Configuration (API tab):
   * IPv4 range
   * IPv6 address
-  * *App-Token* parameter: if not empty, you should pass this parameter in all of your api calls
+  * *App-Token* parameter: if not empty, you should pass this parameter in all of your API calls
 
 * Session and App tokens could be provided in query string instead of header parameters.
 
 ## Init session
 
 * **URL**: apirest.php/initSession/
-* **Description**: Request a session token to uses other api endpoints.
+* **Description**: Request a session token to uses other API endpoints.
 * **Method**: GET
 * **Parameters**: (Headers)
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
   * a couple *login* & *password*: 2 parameters to login with user authentication.
      You should pass this 2 parameters in [http basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication).
      It consists in a Base64 string with login and password separated by ":"
@@ -153,7 +153,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Returns**:
   * 200 (OK).
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -229,7 +229,7 @@ $ curl -X PUT \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array of all profiles.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -265,7 +265,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing current profile.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -295,7 +295,7 @@ $ curl -X GET \
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
 * **Returns**:
@@ -323,7 +323,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *is_recursive* (default: false): Also display sub entities of the active entity. Optionnal
 * **Returns**:
@@ -358,7 +358,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array with 3 keys:
     * *active_entity*: current set entity.
@@ -395,7 +395,7 @@ $ curl -X POST \
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
   * *is_recursive*: (default false) Also display sub entities of the active entity.  Optional.
@@ -423,7 +423,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing the php session.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -455,7 +455,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing the php global variable $CFG_GLPI.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -487,7 +487,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype. Mandatory.
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
@@ -598,7 +598,7 @@ Note: To download a document see [Download a document file](#download-a-document
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
@@ -720,7 +720,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * id: unique identifier of the parent itemtype. Mandatory.
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
@@ -785,7 +785,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *items*: items to retrieve. Mandatory.
               Each line of this array should contains two keys:
@@ -843,7 +843,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *raw*: return searchoption uncleaned (as provided by core)
 * **Returns**:
@@ -898,7 +898,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *criteria*: array of criterion objects to filter search. Optional.
       Each criterion object must provide:
@@ -1038,7 +1038,7 @@ criteria\[0\]\[link\]\=AND\
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *input*: an object with fields of itemtype to be inserted.
               You can add several items in one action by passing an array of objects.
@@ -1095,7 +1095,7 @@ Note: To upload a document see [Upload a document file](#upload-a-document-file)
 * **Method**: PUT
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *id*: the unique identifier of the itemtype passed in URL. You **could skip** this parameter by passing it in the input payload.
   * *input*: Array of objects with fields of itemtype to be updated.
@@ -1150,7 +1150,7 @@ $ curl -X PUT \
 * **Method**: DELETE
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
       OR
@@ -1235,7 +1235,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
   * *Accept*: must be **application/octet-stream**. This header OR the parameter *alt* is mandatory
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
@@ -1400,7 +1400,7 @@ You'll find below some examples to configure your web server to redirect your <h
 
 ### Apache Httpd
 
-We provide in root .htaccess of GLPI an example to enable api url rewriting.
+We provide in root .htaccess of GLPI an example to enable API url rewriting.
 
 You need to uncomment (removing #) theses lines:
 
@@ -1413,7 +1413,7 @@ You need to uncomment (removing #) theses lines:
 #</IfModule>
 ```
 
-By enabling url rewriting, you could use api with this url : <http://path/to/glpi/api/>.
+By enabling url rewriting, you could use API with this url : <http://path/to/glpi/api/>.
 You need also to enable rewrite module in apache httpd and permit GLPI's .htaccess to override server configuration (see AllowOverride directive).
 
 ### Nginx
