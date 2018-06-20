@@ -110,6 +110,13 @@ if (!$link || mysqli_connect_error()) {
 
 $args['db'] = $link->real_escape_string($args['db']);
 
+$DB_ver = $link->query("SELECT version()");
+$row = $DB_ver->fetch_array();
+$checkdb = Config::displayCheckDbEngine(true, $row[0]);
+if ($checkdb > 0) {
+   return;
+}
+
 echo "Create the DB...\n";
 if (!$link->query("CREATE DATABASE IF NOT EXISTS `" . $args['db'] ."`")) {
    echo "Can't create the DB\n";
