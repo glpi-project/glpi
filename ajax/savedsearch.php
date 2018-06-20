@@ -73,6 +73,10 @@ if (isset($_GET['mark_default'])
    $_GET['action'] = 'show';
 }
 
+if (!isset($_GET['action'])) {
+   return;
+}
+
 if ($_GET['action'] == 'reorder') {
    $savedsearch->saveOrder($_GET['ids']);
    header("Content-Type: application/json; charset=UTF-8");
