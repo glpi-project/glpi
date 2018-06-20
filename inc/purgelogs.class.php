@@ -36,6 +36,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PurgeLogs extends CommonDBTM {
 
+   static function getTypeName($nb = 0) {
+      return __('Logs purge');
+   }
+
    static function cronPurgeLogs($task) {
       $logs_before = self::getLogsCount();
       if (self::canLaunchPurge() && $logs_before) {

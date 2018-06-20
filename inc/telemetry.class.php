@@ -36,6 +36,10 @@ if (!defined('GLPI_ROOT')) {
 
 class Telemetry extends CommonGLPI {
 
+   static function getTypeName($nb = 0) {
+      return __('Telemetry');
+   }
+
    /**
     * Grab telemetry informations
     *
