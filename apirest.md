@@ -39,7 +39,7 @@ Method
     See: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
 
 itemtype
-:   A GLPI type, could be an asset, an itil or a configuration object, etc.
+:   A GLPI type, could be an asset, an ITIL or a configuration object, etc.
     This type must be a class who inherits CommonDTBM GLPI class.
     See [List itemtypes](https://forge.glpi-project.org/apidoc/class-CommonDBTM.html).
 
@@ -48,7 +48,7 @@ searchOption
     See [List searchOptions](#list-searchoptions) endpoint.
 
 JSON Payload
-:   content of HTTP Request in json format (HTTP body)
+:   content of HTTP Request in JSON format (HTTP body)
 
 Query string
 :   URL parameters
@@ -64,12 +64,12 @@ Session token
 
 App(lication) token
 :   An optional way to filter the access to the API.
-    On API call, it will try to find an API client matching your ip and the app toekn (if provided).
+    On API call, it will try to find an API client matching your IP and the app token (if provided).
     You can define an API client with an app token in general configuration for each of your external applications to identify them (each API client have its own history).
 
 ## Important
 
-* you should always precise a Content-Type header in your HTTP calls.
+* You should always provide a Content-Type header in your HTTP calls.
    Currently, the API supports:
   * application/json
   * multipart/form-data (for files upload, see [Add item(s)](#add-item-s) endpoint.
@@ -78,7 +78,7 @@ App(lication) token
   Failing to do so will trigger an HTTP 400 response.
 
 * By default, sessions used in this API are read-only.
-  Only Some methods have write access to session:
+  Only some methods have write access to session:
   * [initSession](#init-session)
   * [killSession](#kill-session)
   * [changeActiveEntities](#change-active-entities)
@@ -501,9 +501,9 @@ $ curl -X GET \
   * *with_infocoms*: Retrieve financial and administrative informations. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
   * *with_documents*: Retrieve associated external documents. Optional.
-  * *with_tickets*: Retrieve associated itil tickets. Optional.
-  * *with_problems*: Retrieve associated itil problems. Optional.
-  * *with_changes*: Retrieve associated itil changes. Optional.
+  * *with_tickets*: Retrieve associated ITIL tickets. Optional.
+  * *with_problems*: Retrieve associated ITIL problems. Optional.
+  * *with_changes*: Retrieve associated ITIL changes. Optional.
   * *with_notes*: Retrieve Notes. Optional.
   * *with_logs*: Retrieve historical. Optional.
 * **Returns**:
@@ -781,7 +781,7 @@ $ curl -X GET \
 ## Get multiple items
 
 * **URL**: apirest.php/getMultipleItems
-* **Description**: Virtually call [Get an item](#get-an-item) for each line in input. So, you can have a ticket, an user in the same query.
+* **Description**: Virtually call [Get an item](#get-an-item) for each line in input. So, you can have a ticket, a user in the same query.
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
@@ -802,9 +802,9 @@ $ curl -X GET \
   * *with_infocoms*: Retrieve financial and administrative informations. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
   * *with_documents*: Retrieve associated external documents. Optional.
-  * *with_tickets*: Retrieve associated itil tickets. Optional.
-  * *with_problems*: Retrieve associated itil problems. Optional.
-  * *with_changes*: Retrieve associated itil changes. Optional.
+  * *with_tickets*: Retrieve associated ITIL tickets. Optional.
+  * *with_problems*: Retrieve associated ITIL problems. Optional.
+  * *with_changes*: Retrieve associated ITIL changes. Optional.
   * *with_notes*: Retrieve Notes. Optional.
   * *with_logs*: Retrieve historical. Optional.
 * **Returns**:
@@ -966,9 +966,9 @@ $ curl -X GET \
   * *forcedisplay*: array of columns to display (default empty = use display preferences and searched criteria).
                      Some columns will be always presents (1: id, 2: name, 80: Entity).
                      Optional.
-  * *rawdata* (default false): a boolean for displaying raws data of the Search engine of glpi (like SQL request, full searchoptions, etc)
+  * *rawdata* (default false): a boolean for displaying raws data of the Search engine of GLPI (like SQL request, full searchoptions, etc)
   * *withindexes* (default false): a boolean to retrieve rows indexed by items id.
-   By default this option is set to false, because order of json objects (which are identified by index) cannot be garrantued  (from <http://json.org/> : An object is an unordered set of name/value pairs).
+   By default this option is set to false, because order of JSON objects (which are identified by index) cannot be garrantued  (from <http://json.org/> : An object is an unordered set of name/value pairs).
    So, we provide arrays to guarantying sorted rows.
   * *uid_cols* (default false): a boolean to identify cols by the 'uniqid' of the searchoptions instead of a numeric value (see [List searchOptions](#list-searchoptions) and 'uid' field)
   * *giveItems* (default false): a boolean to retrieve the data with the html parsed from core, new data are provided in data_html key.
@@ -1047,7 +1047,7 @@ criteria\[0\]\[link\]\=AND\
    **Important:**
       In case of 'multipart/data' content_type (aka file upload), you should insert your parameters into
       a 'uploadManifest' parameter.
-      Theses serialized data should be a json string.
+      Theses serialized data should be a JSON string.
 
 * **Returns**:
   * 201 (OK) with id of added items.
@@ -1209,7 +1209,7 @@ $ curl -X DELETE \
 
 See [Add item(s)](#add-items) and apply specific instructions below.
 
-Uploading a file requires use of 'multipart/data' content_type. The input data must be send in a 'uploadManifest' parameter and use the json format.
+Uploading a file requires use of 'multipart/data' content_type. The input data must be send in a 'uploadManifest' parameter and use the JSON format.
 
 Examples usage (CURL):
 
@@ -1396,11 +1396,11 @@ You'll find with this error, a collection of results.
 
 By default, you can use <http://path/to/glpi/apirest.php> without any additional configuration.
 
-You'll find below some examples to configure your web server to redirect your <http://.../glpi/api/> url to the apirest.php file.
+You'll find below some examples to configure your web server to redirect your <http://.../glpi/api/> URL to the apirest.php file.
 
 ### Apache Httpd
 
-We provide in root .htaccess of GLPI an example to enable API url rewriting.
+We provide in root .htaccess of GLPI an example to enable API URL rewriting.
 
 You need to uncomment (removing #) theses lines:
 
@@ -1413,7 +1413,7 @@ You need to uncomment (removing #) theses lines:
 #</IfModule>
 ```
 
-By enabling url rewriting, you could use API with this url : <http://path/to/glpi/api/>.
+By enabling URL rewriting, you could use API with this URL : <http://path/to/glpi/api/>.
 You need also to enable rewrite module in apache httpd and permit GLPI's .htaccess to override server configuration (see AllowOverride directive).
 
 ### Nginx
