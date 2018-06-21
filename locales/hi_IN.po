@@ -7735,7 +7735,7 @@ msgstr "आवेदन का यूआरएल"
 
 #: inc/config.class.php:297
 msgid "Text in the login box (HTML tags supported)"
-msgstr ""
+msgstr "लॉगिन बॉक्स में टेक्स्ट (एचटीएमएल टैग समर्थित)"
 
 #: inc/config.class.php:303
 msgid "Allow FAQ anonymous access"
@@ -10664,7 +10664,7 @@ msgstr "हल किए गए टिकटों के स्वचालि�
 
 #: inc/entity.class.php:921 inc/entity.class.php:2221
 msgid "Immediately"
-msgstr ""
+msgstr "तुरंत"
 
 #: inc/entity.class.php:929
 msgid "Alerts on tickets which are not solved"

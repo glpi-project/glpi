@@ -11482,7 +11482,7 @@ msgstr "Allega il file tramite drag & drop o copia & incolla nell'editor o"
 
 #: inc/html.class.php:4778
 msgid "selecting them"
-msgstr "stai selezionando"
+msgstr "selezionandolo"
 
 #: inc/html.class.php:4856
 msgid "File(s)"
