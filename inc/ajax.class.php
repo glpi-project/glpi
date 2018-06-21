@@ -451,19 +451,20 @@ class Ajax {
          } else {
             $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
          }
+         $js .= '});';
 
-         $js .=  "// force reload
+         $js .=  "// force reload global function
             function reloadTab(add) {
                forceReload$rand = true;
                var current_index = $('#tabs$rand').tabs('option','active');
                // Save tab
-               currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
+               var currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
                $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
                $('#tabs$rand').tabs( 'load' , current_index);
                // Restore tab
                $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
             };";
-         $js .= '});';
+
          echo Html::scriptBlock($js);
       }
    }
