@@ -52,5 +52,7 @@ $tomigrate = $DB->getMyIsamTables();
 echo "Tables found: ".count($tomigrate)."\n";
 
 while ($table = $tomigrate->next()) {
+   echo "Migrating {$table['TABLE_NAME']}...";
    $DB->queryOrDie("ALTER TABLE {$table['TABLE_NAME']} ENGINE = InnoDB");
+   echo " Done.\n";
 }
