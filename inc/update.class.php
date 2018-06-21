@@ -437,9 +437,11 @@ class Update extends CommonGLPI {
                $current_version
             );
             if (isCommandLine()) {
-               die("$message\n");
+               echo "$message\n";
+               die(1);
             } else {
                $this->migration->displayWarning($message, true);
+               die(1);
             }
       }
 
