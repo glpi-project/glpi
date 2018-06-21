@@ -3,11 +3,19 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.3] Unreleased
+## [9.3] 2018-06-28
+
+### Added
+- Add DCIM management
+- Add OSM view to set locations and on Search
+- Add login source selection
+- Add logs purge
+- Filter in items logs
 
 ### Changed
 - Switch MySQL engine from MyIsam to Innodb
 - Rework solutions for Tickets, Problems and Changes to support history
+- Disks can be attached to network equipments and printers
 
 ### API changes
 
@@ -45,10 +53,14 @@ The following methods have been deprecated:
 
 - `CommonITILValidation::isAllValidationsHaveSameStatusForTicket`
 - `CommonITILValidation::getNumberValidationForTicket`
+- PHPCas library is no longer provided (for licensing issues)
 
+## [9.2.4] 2018-06-21
 
+## [9.2.3] 2018-04-27
 
-## [9.2.2]
+## [9.2.2] 2018-03-01
+
 
 ### Deprecated
 
@@ -56,7 +68,7 @@ The following methods have been deprecated:
 - `CommonITILValidation::getNumberValidationForTicket`
 - `DBMysql::optimize_tables()`
 
-## [9.2.1]
+## [9.2.1] 2017-11-16
 
 ### Added
 
