@@ -65,11 +65,6 @@ Config::detectRootDoc();
 $DB = new DB();
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
-$checkdb = Config::displayCheckDbEngine(true);
-if ($checkdb > 0) {
-   return;
-}
-
 $update = new Update($DB, $args);
 $update->initSession();
 
@@ -78,6 +73,12 @@ if (!$DB->connected) {
    echo "No DB connection\n";
    die(1);
 }
+
+$checkdb = Config::displayCheckDbEngine(true);
+if ($checkdb > 0) {
+   return;
+}
+
 
 //initialize entities
 $_SESSION["glpidefault_entity"] = 0;
