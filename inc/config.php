@@ -254,6 +254,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                         $newer = true;
                      }
                   }
+               } else if (strlen($CFG_GLPI['dbversion']) > 40) {
+                  //got a dev version in database, but current stable
+                  if (Toolbox::startsWith($CFG_GLPI['dbversion'], GLPI_SCHEMA_VERSION)) {
+                     $older = true;
+                  } else {
+                     $newer = true;
+                  }
                } else if (!isset($CFG_GLPI['dbversion']) || trim($CFG_GLPI["dbversion"]) < GLPI_SCHEMA_VERSION) {
                   $older = true;
                } else if (trim($CFG_GLPI["dbversion"]) > GLPI_SCHEMA_VERSION) {
