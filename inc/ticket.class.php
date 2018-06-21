@@ -5032,13 +5032,17 @@ class Ticket extends CommonITILObject {
          }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
+      } else {
+         echo "<th></th>";
+         echo "<td></td>";
       }
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      // Need comment right to add a followup with the actiontime
       if (!$ID
           && Session::haveRight('followup', TicketFollowup::ADDALLTICKET)) {
+
+         echo "<tr class='tab_bg_1'>";
+         // Need comment right to add a followup with the actiontime
          echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
          printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
          echo $tt->getEndHiddenFieldText('actiontime')."</th>";
@@ -5048,9 +5052,8 @@ class Ticket extends CommonITILObject {
                                                 'addfirstminutes' => true]);
          echo $tt->getEndHiddenFieldValue('actiontime', $this);
          echo "</td>";
+         echo "</tr>";
       }
-
-      echo "</tr>";
 
       echo "</table>";
       if ($ID) {
