@@ -58,7 +58,7 @@ if (isset($_POST["itemtype"])
       $options  = Search::getCleanedOptions($_POST["itemtype"]);
 
       foreach ($options as $key => $val) {
-         if (is_array($val)) {
+         if (is_array($val) && isset($val['table'])) {
             $metacriteria['field'] = $key;
             break;
          }
