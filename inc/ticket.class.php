@@ -1898,7 +1898,9 @@ class Ticket extends CommonITILObject {
       if (!isset($input['_auto_import'])
           && isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
           && Session::getCurrentInterface() == 'central'
-          && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)) {
+          && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)
+          && Session::haveRight("ticket", Ticket::OWN)
+      ) {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
 
