@@ -67,6 +67,12 @@ class ITILSolution extends CommonDBTM {
       $sol->showSummary($item);
    }
 
+   static function canView() {
+      return Session::haveRight('ticket', READ)
+             || Session::haveRight('change', READ)
+             || Session::haveRight('problem', READ);
+   }
+
    public static function canUpdate() {
       //always true, will rely on ITILSolution::canUpdateItem
       return true;
