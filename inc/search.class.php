@@ -539,7 +539,7 @@ class Search {
 
       //// 1 - SELECT
       // request currentuser for SQL supervision, not displayed
-      $SELECT = "SELECT '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser,
+      $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser,
                         ".self::addDefaultSelect($data['itemtype']);
 
       // Add select for all toview item
@@ -864,11 +864,7 @@ class Search {
          }
       }
 
-      //// 6 - Add item ID
-      // Add ID to the select
-      if (!empty($itemtable)) {
-         $SELECT .= "`$itemtable`.`id` AS id ";
-      }
+      $SELECT = rtrim(trim($SELECT), ',');
 
       //// 7 - Manage GROUP BY
       $GROUPBY = "";
