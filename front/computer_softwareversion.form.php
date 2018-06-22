@@ -49,6 +49,15 @@ if (isset($_POST["add"])) {
                     //TRANS: %s is the user login
                     sprintf(__('%s installs software'), $_SESSION["glpiname"]));
       }
+   } else {
+      $message = null;
+      if (!isset($_POST['softwares_id']) || !$_POST['softwares_id']) {
+         $message = __('Please select a software!');
+      } else if (!isset($_POST['softwareversions_id']) || !$_POST['softwareversions_id']) {
+         $message = __('Please select a version!');
+      }
+
+      Session::addMessageAfterRedirect($message, true, ERROR);
    }
    Html::back();
 
