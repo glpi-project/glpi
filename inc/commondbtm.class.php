@@ -5348,6 +5348,15 @@ class CommonDBTM extends CommonGLPI {
          if ($column['Field'] == 'default_requesttypes_id') {
             $column['Field'] = 'requesttypes_id';
          }
+         if ($column['Field'] == 'slas_ttr_id' || $column['Field'] == 'slas_tto_id') {
+            $column['Field'] = 'slas_id';
+         }
+         if ($column['Field'] == 'olas_ttr_id' || $column['Field'] == 'olas_tto_id') {
+            $column['Field'] = 'olas_id';
+         }
+         if ($column['Field'] == 'ttr_slalevels_id' || $column['Field'] == 'ttr_olalevels_id') {
+            $column['Field'] = 'slalevels_id';
+         }
 
          $table = getTableNameForForeignKeyField($column['Field']);
          $itemtype = getItemTypeForTable($table);
@@ -5356,7 +5365,7 @@ class CommonDBTM extends CommonGLPI {
          $element['values'] = [];
       } else if (strstr($column['Field'], 'date')) {
          $element['type'] = 'date';
-      } else if ($column['Field'] == 'comment') {
+      } else if ($column['Field'] == 'comment' || $column['Field'] == 'content') {
          $element['type'] = 'textarea';
       } else {
          switch ($column['Type']) {
