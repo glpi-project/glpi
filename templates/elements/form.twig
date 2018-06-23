@@ -59,16 +59,18 @@
    </header>
    {% endif %}
 
+   {% block form_content %}
    <fieldset class="row">
-   {% for element in glpi_form.elements %}
-      {% set tpl = element.type|default('input') %}
-      {#% set tpl = 'input' %}
-      {% if element.type == 'password' %}
-         {% set tpl = 'password' %}
-      {% endif %#}
-      {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': glpi_form} %}
-   {% endfor %}
+      {% for element in glpi_form.elements %}
+         {% set tpl = element.type|default('input') %}
+         {#% set tpl = 'input' %}
+         {% if element.type == 'password' %}
+            {% set tpl = 'password' %}
+         {% endif %#}
+         {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': glpi_form} %}
+      {% endfor %}
    </fieldset>
+   {% endblock %}
 
    {% if glpi_form.extra_header is defined  %}{{ glpi_form.extra_header|raw  }}{% endif %}
    {% if glpi_form.extra_footer is defined  %}{{ glpi_form.extra_footer|raw  }}{% endif %}

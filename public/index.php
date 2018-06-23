@@ -654,6 +654,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $params['contents'] = ob_get_contents();
          ob_end_clean();
       } else {
+         if ($item instanceof CommonITILObject) {
+            $tpl = 'itil_add_page';
+         }
          $params['glpi_form'] = $item->getAddForm();
          if (!isset($form['action'])) {
             $form['action'] = $this->router->pathFor(

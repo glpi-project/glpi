@@ -5661,4 +5661,126 @@ abstract class CommonITILObject extends CommonDBTM {
       return self::TIMELINE_NOTSET;
    }
 
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'date'         => [
+            'label'  => __('Opening date'),
+            'fieldset'  => 'head'
+         ],
+         'status'        => [
+            'label'  => __('Status'),
+            'fieldset'  => 'head'
+         ],
+         'urgency'      => [
+            'label'  => __('Urgency'),
+            'fieldset'  => 'head'
+         ],
+         'itilcategories_id' => [
+            'label' => __('Category'),
+            'fieldset'  => 'head'
+         ],
+         'impact'    => [
+            'label' => __('Impact'),
+            'fieldset'  => 'head'
+         ],
+         'priority'    => [
+            'label' => __('Priority'),
+            'fieldset'  => 'head'
+         ],
+         'name'        => [
+            'label' => __('Title'),
+            'fieldset'  => 'main'
+         ],
+         'content' => [
+             'label'    => __('Description'),
+             'fieldset' => 'main',
+             'type'     => 'textarea'
+         ],
+         'time_to_resolve' => [
+            'label'     => __('Time to resolve'),
+            'fieldset'  => 'sla'
+         ]
+      ];
+      $fields = $this->getDbFormFields($fields);
+      return $fields;
+   }
+
+   /**
+    * Get field to be dropped building form
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormFieldsToDrop($add = false) {
+       $fields = array_merge(
+         parent::getFormFieldsToDrop($add), [
+            'impactcontent',
+            'causecontent', //problems
+            'symptomcontent', //problems
+            'actiontime',
+            'begin_waiting_date',
+            'waiting_duration',
+            'close_delay_stat',
+            'solve_delay_stat',
+            'users_id_lastupdater',
+            'controlistcontent', //changes
+            'rolloutplancontent', //changes
+            'backoutplancontent', //changes
+            'checklistcontent', //changes
+            'global_validation',
+            'validation_percent'
+         ]
+      );
+      if ($add === true) {
+         $fields = array_merge(
+            $fields, [
+               'solvedate',
+               'closedate',
+               'users_id_recipient'
+            ]
+         );
+      }
+      return $fields;
+   }
+
+   /**
+    * Get form
+    * Specific for itil objects, which uses several parts
+    *
+    * @param boolean $add Add or edit
+    *
+    * @return array
+    */
+   public function getForm($add = false) {
+      $form = parent::getForm($add);
+      $elements = $form['elements'];
+
+      $parts = [
+        'head'      => ['elements' => []],
+        'sla'       => ['elements' => []],
+        'actors'    => ['elements' => []],
+        'specific'  => ['elements' => []],
+        'main'      => ['elements' => []]
+     ];
+
+     foreach ($elements as $element) {
+         $fieldset = isset($element['fieldset']) ? $element['fieldset'] : 'main';
+         $parts[$fieldset]['elements'][] = $element;
+     }
+
+     $form['parts'] = $parts;
+     return $form;
+   }
 }
