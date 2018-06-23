@@ -179,7 +179,12 @@
                      </a>
 
                   {# Search Item #}
-                  {% if menu_links.search is not defined %}
+                  {% if menu_links.search is defined %}
+                     {% set menu_btn = {
+                        'url': path_for('list', {'itemtype': menu_itemtype}),
+                        'text': __('Search'),
+                     } %}
+                  {% else %}
                      {% set menu_btn = {
                         'url': '#',
                         'text': __('Search is disabled'),
