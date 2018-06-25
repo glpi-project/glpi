@@ -2701,8 +2701,8 @@ class Toolbox {
                                                Html::entities_deep($img), $content_text);
 
                   // 2 - Replace img with tag in id attribute by the image
-                  preg_match_all("/<img.*".$image['tag'].".*>/Uim",
-                                 Html::entity_decode_deep($content_text), $matches);
+                  $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
+                  preg_match_all($regex, Html::entity_decode_deep($content_text), $matches);
                   foreach ($matches[0] as $match_img) {
                      //retrieve dimensions
                      $width = $height = null;
@@ -2710,7 +2710,7 @@ class Toolbox {
                      if (isset($attributes[1][0])) {
                         ${$attributes[1][0]} = $attributes[2][0];
                      }
-                     if (isset($attributes[1][0])) {
+                     if (isset($attributes[1][1])) {
                         ${$attributes[1][1]} = $attributes[2][1];
                      }
 
@@ -2725,9 +2725,11 @@ class Toolbox {
                      $new_image =  Html::convertTagFromRichTextToImageTag($image['tag'],
                                                                           $width, $height,
                                                                           true, $ticket_url_param);
-                     $content_text = preg_replace("/<img([^>]*?)(".$image['tag'].")([^<]*?)>/Uim",
-                                                  $new_image,
-                                                  Html::entity_decode_deep($content_text));
+                     $content_text = preg_replace(
+                        $regex,
+                        $new_image,
+                        Html::entity_decode_deep($content_text)
+                     );
                      $content_text = Html::entities_deep($content_text);
                   }
 
