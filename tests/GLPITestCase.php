@@ -43,8 +43,7 @@ class GLPITestCase extends atoum {
       $_SESSION = [
          'glpi_use_mode'         => Session::NORMAL_MODE,
          'glpi_currenttime'      => date("Y-m-d H:i:s"),
-         'glpiis_ids_visible'    => 0,
-         'glpiticket_timeline'   => 1
+         'glpiis_ids_visible'    => 0
       ];
    }
 

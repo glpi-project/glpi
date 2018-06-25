@@ -404,8 +404,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
-                                     'use_flat_dropdowntree', 'layout', 'ticket_timeline',
-                                     'ticket_timeline_keep_replaced_tabs', 'palette',
+                                     'use_flat_dropdowntree', 'layout', 'palette',
                                      'highcontrast_css'];
 
 $CFG_GLPI['layout_excluded_pages'] = ["profile.form.php",

@@ -790,11 +790,9 @@ class Ticket extends CommonITILObject {
          case __CLASS__ :
             $ong    = [];
 
-            if ($_SESSION['glpiticket_timeline']) {
-               $timeline    = $item->getTimelineItems();
-               $nb_elements = count($timeline);
-               $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
-            }
+            $timeline    = $item->getTimelineItems();
+            $nb_elements = count($timeline);
+            $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
 
             // enquete si statut clos
             $satisfaction = new TicketSatisfaction();
@@ -880,18 +878,7 @@ class Ticket extends CommonITILObject {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
-      if (!$_SESSION['glpiticket_timeline']
-          || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
-         $this->addStandardTab('TicketFollowup', $ong, $options);
-         $this->addStandardTab('TicketTask', $ong, $options);
-         $this->addStandardTab('Document_Item', $ong, $options);
-      }
       $this->addStandardTab(__CLASS__, $ong, $options);
-      if (!$_SESSION['glpiticket_timeline']
-         || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
-         $this->addStandardTab('ITILSolution', $ong, $options);
-      }
-
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
@@ -4833,12 +4820,7 @@ class Ticket extends CommonITILObject {
          echo self::getStatus($this->fields["status"]);
          if ($this->canReopen()) {
             $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
-            if (!$_SESSION['glpiticket_timeline']
-                || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
-               $link .= "TicketFollowup$1";
-            } else {
-               $link .= "Ticket$1";
-            }
+            $link .= "Ticket$1";
             echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
          }
       }
