@@ -1577,11 +1577,16 @@ class Html {
          echo "</span></td>";
       }
 
-      if (!empty($CFG_GLPI["founded_new_version"])) {
+      $currentVersion = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+      $foundedNewVersion = array_key_exists('founded_new_version', $CFG_GLPI)
+         ? $CFG_GLPI['founded_new_version']
+         : '';
+      if (!empty($foundedNewVersion) && version_compare($currentVersion, $foundedNewVersion, '<')) {
          echo "<td class='copyright'>";
-         $latest_version = "<a href='http://www.glpi-project.org' target='_blank' title=\"".
-                              __s('You will find it on the GLPI-PROJECT.org site.')."\"> ".
-                           preg_replace('/0$/', '', $CFG_GLPI["founded_new_version"])."</a>";
+         $latest_version = "<a href='http://www.glpi-project.org' target='_blank' title=\""
+             . __s('You will find it on the GLPI-PROJECT.org site.')."\"> "
+             . $foundedNewVersion
+             . "</a>";
          printf(__('A new version is available: %s.'), $latest_version);
 
          echo "</td>";

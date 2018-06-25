@@ -1415,10 +1415,7 @@ class Toolbox {
 
       } else {
          if (version_compare($CFG_GLPI["version"], $latest_version, '<')) {
-            $config_object                = new Config();
-            $input["id"]                  = 1;
-            $input["founded_new_version"] = $latest_version;
-            $config_object->update($input);
+            Config::setConfigurationValues('core', ['founded_new_version' => $latest_version]);
 
             if (!$auto) {
                if ($messageafterredirect) {
