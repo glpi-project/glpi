@@ -598,17 +598,6 @@ class Session {
          }
       }
 
-      // TRANSLATION_MODE deleted : maybe find another solution ?
-      // Debug display lang element with item
-      // if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
-      //    foreach ($LANG as $module => $tab) {
-      //       foreach ($tab as $num => $val) {
-      //          $LANG[$module][$num] = "".$LANG[$module][$num].
-      //                                 "/<span style='font-size:12px; color:red;'>$module/$num</span>";
-      //       }
-      //    }
-      // }
-
       $TRANSLATE->setLocale($trytoload);
 
       return $trytoload;
