@@ -846,16 +846,14 @@ class Document extends CommonDBTM {
          'datatype'           => 'string'
       ];
 
-      if ($CFG_GLPI['use_rich_text']) {
-         $tab[] = [
-            'id'                 => '6',
-            'table'              => $this->getTable(),
-            'field'              => 'tag',
-            'name'               => __('Tag'),
-            'datatype'           => 'text',
-            'massiveaction'      => false
-         ];
-      }
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'tag',
+         'name'               => __('Tag'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
       $tab[] = [
          'id'                 => '7',

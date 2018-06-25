@@ -2772,8 +2772,8 @@ abstract class CommonITILObject extends CommonDBTM {
          'massiveaction'      => false,
          'datatype'           => 'text'
       ];
-      if ($this->getType() == 'Ticket'
-          && $CFG_GLPI["use_rich_text"]) {
+      if ($this->getType() == 'Ticket') {
+         //why for Ticket only?
          $newtab['htmltext'] = true;
       }
       $tab[] = $newtab;

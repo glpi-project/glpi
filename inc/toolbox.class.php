@@ -2799,20 +2799,11 @@ class Toolbox {
     * @return html content
    **/
    static function cleanTagOrImage($content, array $tags) {
-      global $CFG_GLPI;
-
       // RICH TEXT : delete img tag
-      if ($CFG_GLPI["use_rich_text"]) {
-         $content = Html::entity_decode_deep($content);
+      $content = Html::entity_decode_deep($content);
 
-         foreach ($tags as $tag) {
-            $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
-         }
-
-      } else { // SIMPLE TEXT : delete tag
-         foreach ($tags as $tag) {
-            $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
-         }
+      foreach ($tags as $tag) {
+         $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
       }
 
       return $content;

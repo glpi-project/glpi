@@ -989,7 +989,7 @@ class Ticket extends CommonITILObject {
       $this->getFromDB($input['id']);
 
       // Clean new lines before passing to rules
-      if ($CFG_GLPI["use_rich_text"] && isset($input["content"])) {
+      if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/', "\n", $input['content']);
          $input["content"] = preg_replace('/\\\\n/', "\n", $input['content']);
       }
@@ -1331,10 +1331,8 @@ class Ticket extends CommonITILObject {
          if (isset($input['_filename'])) {
             $input['content']       = $input['content'];
             $input['_disablenotif'] = true;
-         } else if ($CFG_GLPI["use_rich_text"]) {
-            if (!isset($input['_filename'])) {
-               $input['_donotadddocs'] = true;
-            }
+         } else {
+            $input['_donotadddocs'] = true;
          }
       }
 
@@ -1873,11 +1871,6 @@ class Ticket extends CommonITILObject {
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
          $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
-         if (!$CFG_GLPI['use_rich_text']) {
-            $input["content"] = Html::entity_decode_deep($input["content"]);
-            $input["content"] = Html::entity_decode_deep($input["content"]);
-            $input["content"] = Html::clean($input["content"]);
-         }
       }
 
       $input = $rules->processAllRules($input,
@@ -3078,8 +3071,8 @@ class Ticket extends CommonITILObject {
          ],
          'datatype'           => 'text'
       ];
-      if ($this->getType() == 'Ticket'
-          && $CFG_GLPI["use_rich_text"]) {
+      if ($this->getType() == 'Ticket') {
+         //Why for Ticket only?
          $newtab['htmltext'] = true;
       }
       $tab[] = $newtab;
@@ -4054,8 +4047,8 @@ class Ticket extends CommonITILObject {
          $rand       = mt_rand();
          $rand_text  = mt_rand();
 
-         $cols       = 90;
-         $rows       = 6;
+         $cols       = 100;
+         $rows       = 10;
          $content_id = "content$rand";
          echo "<td class='center middle'>";
 
@@ -4063,23 +4056,12 @@ class Ticket extends CommonITILObject {
          if (!$ticket_template) {
             $content = Html::cleanPostForTextArea($options['content']);
          }
-
-         if ($CFG_GLPI["use_rich_text"]) {
-            $content = Html::setRichTextContent($content_id, $content, $rand);
-            $cols    = 100;
-            $rows    = 10;
-         } else {
-            $content = $content;
-         }
+         $content = Html::setRichTextContent($content_id, $content, $rand);
 
          echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'
                " . ($tt->isMandatoryField('content') ? " required='required'" : '') .">".
                 $content."</textarea></div>";
-
-         if (!$CFG_GLPI["use_rich_text"]) {
-            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
-         }
 
          Html::file(['editor_id' => $content_id,
                           'showtitle' => false,
@@ -5095,7 +5077,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getBeginHiddenFieldValue('content');
       $rand       = mt_rand();
       $rand_text  = mt_rand();
-      $rows       = 6;
+      $rows       = 10;
       $content_id = "content$rand";
 
       $content = $this->fields['content'];
@@ -5103,24 +5085,18 @@ class Ticket extends CommonITILObject {
          $content = Html::cleanPostForTextArea($content);
       }
 
-      if ($CFG_GLPI["use_rich_text"]) {
-            $content = Html::setRichTextContent($content_id,
-                                                $content,
-                                                $rand,
-                                                !$canupdate);
-         $rows = 10;
-      } else {
-         $content = Html::setSimpleTextContent($this->fields["content"]);
-      }
+      $content = Html::setRichTextContent(
+         $content_id,
+         $content,
+         $rand,
+         !$canupdate
+      );
 
       echo "<div id='content$rand_text'>";
-      if ($CFG_GLPI['use_rich_text'] || $canupdate || $can_requester) {
+      if ($canupdate || $can_requester) {
          echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
                ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
                $content."</textarea></div>";
-         if (!$CFG_GLPI["use_rich_text"]) {
-            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
-         }
       } else {
          echo Toolbox::getHtmlToDisplay($content);
       }
@@ -6960,13 +6936,9 @@ class Ticket extends CommonITILObject {
             }
             echo "</p>";
 
-            if ($CFG_GLPI["use_rich_text"]) {
-               echo "<div class='rich_text_container'>";
-               echo html_entity_decode($content);
-               echo "</div>";
-            } else {
-               echo "<p>$content</p>";
-            }
+            echo "<div class='rich_text_container'>";
+            echo html_entity_decode($content);
+            echo "</div>";
 
             if (!empty($long_text)) {
                echo "<p class='read_more'>";
@@ -7162,15 +7134,9 @@ class Ticket extends CommonITILObject {
          echo Html::setSimpleTextContent($this->fields['name']);
          echo "</div>";
 
-         if ($CFG_GLPI["use_rich_text"]) {
-            echo "<div class='rich_text_container'>";
-            echo Html::setRichTextContent('', $this->fields['content'], '', true);
-            echo "</div>";
-         } else {
-            echo "<div>";
-            echo Toolbox::getHtmlToDisplay(Html::setSimpleTextContent($this->fields['content']));
-            echo "</div>";
-         }
+         echo "<div class='rich_text_container'>";
+         echo Html::setRichTextContent('', $this->fields['content'], '', true);
+         echo "</div>";
 
          echo "</div>"; // h_content TicketContent
 

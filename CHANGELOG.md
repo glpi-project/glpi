@@ -7,6 +7,10 @@ The present file will list all changes made to the project; according to the
 
 ### API changes
 
+#### Deprecated
+
+- Remove `$CFG_GLPI['use_rich_text']` parameter. Will now be `true` per default.
+
 #### Removed
 
 - Drop ability to use `JOIN` in `DBmysqlIterator::buildQuery()`
