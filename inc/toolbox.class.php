@@ -1881,12 +1881,10 @@ class Toolbox {
                                  }
                               }
                            }
-                           if ($_SESSION['glpiticket_timeline'] == 1) {
-                              // force redirect to timeline when timeline is enabled and viewing
-                              // Tasks or Followups
-                              $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
-                              $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
-                           }
+                           // force redirect to timeline when timeline is enabled and viewing
+                           // Tasks or Followups
+                           $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                           $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                            Html::redirect(Ticket::getFormURLWithID($data[1])."&$forcetab");
 
                         } else if (!empty($data[0])) { // redirect to list
@@ -1941,11 +1939,9 @@ class Toolbox {
                                     }
                                  }
                               }
-                              if ($_SESSION['glpiticket_timeline'] == 1 && $item->getType() == 'Ticket') {
-                                 // force redirect to timeline when timeline is enabled
-                                 $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
-                                 $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
-                              }
+                              // force redirect to timeline when timeline is enabled
+                              $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                              $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                               Html::redirect($item->getFormURLWithID($data[1])."&$forcetab");
                            }
 

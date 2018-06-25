@@ -42,6 +42,7 @@ function update93to94() {
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
+   $config_to_drop = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.4'));
@@ -116,8 +117,17 @@ function update93to94() {
    /** /Add business rules on assets */
 
    /** Drop use_rich_text parameter */
-   Config::deleteConfigurationValues('core', ['use_rich_text']);
+   $config_to_drop[] = 'use_rich_text';
    /** /Drop use_rich_text parameter */
+
+   /** Drop ticket_timeline* parameters */
+   $config_to_drop[] = 'ticket_timeline';
+   $config_to_drop[] = 'ticket_timeline_keep_replaced_tabs';
+   $migration->dropField('glpi_users', 'ticket_timeline');
+   $migration->dropField('glpi_users', 'ticket_timeline_keep_replaced_tabs');
+   /** /Drop ticket_timeline* parameters */
+
+   Config::deleteConfigurationValues('core', $config_to_drop);
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

@@ -1267,15 +1267,6 @@ class Config extends CommonDBTM {
          echo "</tr></table>";
 
          echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'><td><label for='dropdown_ticket_timeline$rand'>".__('Enable ticket timeline')."</label></td>";
-         echo "<td>";
-         Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline'], -1, ['rand' => $rand]);
-         echo "</td>";
-         echo "<td><label for='dropdown_ticket_timeline_keep_replaced_tabs$rand'>" . __('Keep tabs replaced by the ticket timeline')."</label></td><td>";
-         Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
-                             $data['ticket_timeline_keep_replaced_tabs'], -1, ['rand' => $rand]);
-         echo "</td></tr>";
       }
 
       // Only for user

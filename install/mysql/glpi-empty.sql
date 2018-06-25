@@ -1332,8 +1332,6 @@ INSERT INTO `glpi_configs` VALUES ('152','core','attach_ticket_documents_to_mail
 INSERT INTO `glpi_configs` VALUES ('153','core','backcreated','0');
 INSERT INTO `glpi_configs` VALUES ('154','core','task_state','1');
 INSERT INTO `glpi_configs` VALUES ('155','core','layout','lefttab');
-INSERT INTO `glpi_configs` VALUES ('156','core','ticket_timeline','1');
-INSERT INTO `glpi_configs` VALUES ('157','core','ticket_timeline_keep_replaced_tabs','0');
 INSERT INTO `glpi_configs` VALUES ('158','core','palette','auror');
 INSERT INTO `glpi_configs` VALUES ('159','core','lock_use_lock_item','0');
 INSERT INTO `glpi_configs` VALUES ('160','core','lock_autolock_mode','1');
@@ -8882,8 +8880,6 @@ CREATE TABLE `glpi_users` (
   `task_state` int(11) DEFAULT NULL,
   `layout` char(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `palette` char(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ticket_timeline` tinyint(1) DEFAULT NULL,
-  `ticket_timeline_keep_replaced_tabs` tinyint(1) DEFAULT NULL,
   `set_default_requester` tinyint(1) DEFAULT NULL,
   `lock_autolock_mode` tinyint(1) DEFAULT NULL,
   `lock_directunlock_notification` tinyint(1) DEFAULT NULL,

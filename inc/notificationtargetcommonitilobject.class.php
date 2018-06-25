@@ -768,10 +768,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                         = $this->formatURL($options['additionnaloption']['usertype'],
                                            $objettype."_".$item->getField("id"));
 
-      $tab = '$2';
-      if ($_SESSION['glpiticket_timeline'] == 1) {
-         $tab = '$1';
-      }
+      $tab = '$1';
       $data["##$objettype.urlapprove##"]
                            = $this->formatURL($options['additionnaloption']['usertype'],
                                               $objettype."_".$item->getField("id")."_".
