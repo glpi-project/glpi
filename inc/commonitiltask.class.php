@@ -1375,19 +1375,15 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $rand_text  = mt_rand();
       $content_id = "content$rand_text";
-      $cols       = 90;
-      $rows       = 6;
-      if ($CFG_GLPI["use_rich_text"]) {
-         $cols              = 100;
-         $rows              = 10;
-      }
+      $cols       = 100;
+      $rows       = 10;
 
       Html::textarea(['name'              => 'content',
                       'value'             => $this->fields["content"],
                       'rand'              => $rand_text,
                       'editor_id'         => $content_id,
                       'enable_fileupload' => true,
-                      'enable_richtext'   => $CFG_GLPI["use_rich_text"],
+                      'enable_richtext'   => true,
                       'cols'              => $cols,
                       'rows'              => $rows]);
 

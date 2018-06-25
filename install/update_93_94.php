@@ -115,6 +115,10 @@ function update93to94() {
    }
    /** /Add business rules on assets */
 
+   /** Drop use_rich_text parameter */
+   Config::deleteConfigurationValues('core', ['use_rich_text']);
+   /** /Drop use_rich_text parameter */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

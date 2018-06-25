@@ -657,10 +657,8 @@ class TicketFollowup  extends CommonDBTM {
          }
       }
 
-      $width = '100%';
-      if ($CFG_GLPI['use_rich_text']) {
-         $width = '50%';
-      }
+      $cols    = 100;
+      $rows    = 10;
 
       if ($tech) {
          $this->showFormHeader($options);
@@ -669,23 +667,16 @@ class TicketFollowup  extends CommonDBTM {
          $rand_text = mt_rand();
          $content_id = "content$rand";
 
-         $cols       = 90;
-         $rows       = 6;
-
          echo "<tr class='tab_bg_1'>";
          echo "<td rowspan='3'>".__('Description')."</td>";
          echo "<td rowspan='3' style='width:65%'>";
 
-         if ($CFG_GLPI["use_rich_text"]) {
-            $cols              = 100;
-            $rows              = 10;
-         }
          Html::textarea(['name'              => 'content',
                          'value'             => $this->fields["content"],
                          'rand'              => $rand_text,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => true,
-                         'enable_richtext'   => $CFG_GLPI["use_rich_text"],
+                         'enable_richtext'   => true,
                          'cols'              => $cols,
                          'rows'              => $rows]);
 
@@ -728,16 +719,12 @@ class TicketFollowup  extends CommonDBTM {
          echo "<td class='middle right'>".__('Description')."</td>";
          echo "<td class='center middle'>";
 
-         if ($CFG_GLPI["use_rich_text"]) {
-            $cols              = 100;
-            $rows              = 10;
-         }
          Html::textarea(['name'              => 'content',
                          'value'             => $this->fields["content"],
                          'rand'              => $rand_text,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => true,
-                         'enable_richtext'   => $CFG_GLPI["use_rich_text"],
+                         'enable_richtext'   => true,
                          'cols'              => $cols,
                          'rows'              => $rows]);
 
@@ -1017,13 +1004,9 @@ class TicketFollowup  extends CommonDBTM {
                $content = NOT_AVAILABLE;
             }
 
-            if ($CFG_GLPI["use_rich_text"]) {
-               echo "<div class='rich_text_container'>";
-               echo html_entity_decode($content);
-               echo "</div>";
-            } else {
-               echo autolink($content);;
-            }
+            echo "<div class='rich_text_container'>";
+            echo html_entity_decode($content);
+            echo "</div>";
             echo "</div>"; // boxnotetext
 
             echo "</div>"; // boxnotecontent

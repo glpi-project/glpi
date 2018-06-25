@@ -4848,10 +4848,6 @@ class Html {
    static function fileForRichText($options = []) {
       global $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_rich_text"]) {
-         return '';
-      }
-
       $p['editor_id']     = '';
       $p['name']          = 'filename';
       $p['filecontainer'] = 'fileupload_info';

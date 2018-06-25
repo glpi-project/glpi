@@ -38,15 +38,6 @@ use \DbTestCase;
 
 class Ticket extends DbTestCase {
 
-   public function afterTestMethod($method) {
-      global $CFG_GLPI;
-
-      //make sure rich text has been reset to false
-      $CFG_GLPI['use_rich_text'] = 0;
-
-      parent::afterTestMethod($method);
-   }
-
    public function ticketProvider() {
       return [
          'single requester' => [
@@ -1554,28 +1545,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a title',
                'content' => 'This is a content'
-            ],
-            'rich'      => false
-         ], [
-            'input'     => [
-               'name'     => '',
-               'content'   => "This is a content\nwith a carriage return"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => false
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => "This is a content\r\nwith a carriage return"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => false
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1584,8 +1554,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content',
                'content' => 'This is a content'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1594,8 +1563,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1604,8 +1572,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1614,8 +1581,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => '<p>This is a content\nwith a carriage return</p>',
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1624,8 +1590,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1634,8 +1599,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name'      => 'Test for buggy \\\' character',
                'content'   => 'Test for buggy \\\' character',
-            ],
-            'rich'      => false
+            ]
          ]
       ];
    }
@@ -1643,10 +1607,9 @@ class Ticket extends DbTestCase {
    /**
     * @dataProvider inputProvider
     */
-   public function testPrepareInputForAdd($input, $expected, $rich) {
+   public function testPrepareInputForAdd($input, $expected) {
       global $CFG_GLPI;
 
-      $CFG_GLPI['use_rich_text'] = $rich;
       $this
          ->if($this->newTestedInstance)
          ->then

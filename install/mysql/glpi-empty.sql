@@ -1328,7 +1328,6 @@ INSERT INTO `glpi_configs` VALUES ('147','core','pdffont','helvetica');
 INSERT INTO `glpi_configs` VALUES ('148','core','keep_devices_when_purging_item','0');
 INSERT INTO `glpi_configs` VALUES ('149','core','maintenance_mode','0');
 INSERT INTO `glpi_configs` VALUES ('150','core','maintenance_text','');
-INSERT INTO `glpi_configs` VALUES ('151','core','use_rich_text','0');
 INSERT INTO `glpi_configs` VALUES ('152','core','attach_ticket_documents_to_mail','0');
 INSERT INTO `glpi_configs` VALUES ('153','core','backcreated','0');
 INSERT INTO `glpi_configs` VALUES ('154','core','task_state','1');

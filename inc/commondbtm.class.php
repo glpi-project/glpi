@@ -4785,7 +4785,6 @@ class CommonDBTM extends CommonGLPI {
     *                        - force_update (default false) update the content field of the object
     *                        - content_field (default content) the field who receive the main text
     *                                                          (with images)
-    *                        - use_rich_text (default false) to force the use of rich text
     *
     * @return array the input param transformed
    **/
@@ -4794,8 +4793,7 @@ class CommonDBTM extends CommonGLPI {
 
       $default_options = [
          'force_update'  => false,
-         'content_field' => 'content',
-         'use_rich_text' => false
+         'content_field' => 'content'
       ];
       $options = array_merge($default_options, $options);
 
@@ -4910,15 +4908,11 @@ class CommonDBTM extends CommonGLPI {
 
       // manage content transformation
       if (isset($input[$options['content_field']])) {
-         if ($CFG_GLPI["use_rich_text"] or $options['use_rich_text']) {
-            $input[$options['content_field']]
-               = Toolbox::convertTagToImage($input[$options['content_field']],
-                                            $this,
-                                            $docadded);
-         } else {
-            $input[$options['content_field']]
-               = Html::setSimpleTextContent($input[$options['content_field']]);
-         }
+         $input[$options['content_field']] = Toolbox::convertTagToImage(
+            $input[$options['content_field']],
+            $this,
+            $docadded
+         );
 
          if (isset($this->input['_forcenotif'])) {
             $input['_forcenotif'] = $this->input['_forcenotif'];

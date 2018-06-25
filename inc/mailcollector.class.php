@@ -804,12 +804,12 @@ class MailCollector  extends CommonDBTM {
 
       // Clean mail content
       $striptags = true;
-      if ($CFG_GLPI["use_rich_text"] && !isset($tkt['tickets_id'])) {
+      if (!isset($tkt['tickets_id'])) {
          $striptags = false;
       }
       $tkt['content'] = $this->cleanMailContent(Html::entities_deep($tkt['content']), $striptags);
 
-      if ($is_html && !isset($tkt['tickets_id']) && $CFG_GLPI["use_rich_text"]) {
+      if ($is_html && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
       }
 
