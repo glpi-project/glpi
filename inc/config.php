@@ -174,6 +174,19 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    Toolbox::setDebugMode();
 
+   //deprecated configuration options
+   //@deprecated 9.4
+   if ($_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
+      $_SESSION['glpiticket_timeline'] = 1;
+      $_SESSION['glpiticket_timeline_keep_replaced_tabs'] = 0;
+   } else {
+      unset($_SESSION['glpiticket_timeline']);
+      unset($_SESSION['glpiticket_timeline_keep_replaced_tabs']);
+      unset($CFG_GLPI['use_rich_text']);
+      unset($CFG_GLPI['ticket_timeline']);
+      unset($CFG_GLPI['ticket_timeline_keep_replaced_tabs']);
+   }
+
    if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
       Html::redirect($_SESSION["glpiroot"]);
    }
