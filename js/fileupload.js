@@ -347,7 +347,6 @@ var insertImageInTinyMCE = function(editor, image) {
  * to check if a file upload can be proceeded
  * @param  {[Object]} editor TinyMCE editor
  */
-var uploaded = false;
 if (typeof tinymce != 'undefined') {
    tinymce.PluginManager.add('glpi_upload_doc', function(editor) {
       editor.on('drop', function(event) {
@@ -357,15 +356,14 @@ if (typeof tinymce != 'undefined') {
 
             // for each dropped files
             $.each(event.dataTransfer.files, function(index, element) {
-               uploaded = insertImageInTinyMCE(editor, element);
+               insertImageInTinyMCE(editor, element);
             });
          }
       });
 
       editor.on('PastePreProcess', function(event) {
          //Check if data is an image
-         if (uploaded === false
-             && isImageFromPaste(event.content)) {
+         if (isImageFromPaste(event.content)) {
             stopEvent(event);
 
             //extract base64 data
@@ -379,11 +377,10 @@ if (typeof tinymce != 'undefined') {
                   // fill missing file properties
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
                }
-               uploaded = insertImageInTinyMCE(editor, file);
+               insertImageInTinyMCE(editor, file);
             }
 
-         } else if (uploaded === false
-                    && isImageBlobFromPaste(event.content)) {
+         } else if (isImageBlobFromPaste(event.content)) {
             stopEvent(event);
 
             var src = extractSrcFromBlobImgTag(event.content);
@@ -396,9 +393,9 @@ if (typeof tinymce != 'undefined') {
                   var file  = new Blob([this.response], {type: 'image/png'});
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
 
-                  uploaded = insertImageInTinyMCE(editor, file);
+                  insertImageInTinyMCE(editor, file);
                } else {
-                  console.log("paste error");
+                  console.error("paste error");
                }
             };
             xhr.send();
@@ -456,7 +453,6 @@ $(function() {
             if (input_file.length) {
                input_name = input_file.attr('name').replace('[]', '');
             }
-            console.log(element);
             uploadFile(element,
                        {targetElm: $(event.target).find('.fileupload_info')},
                        input_name
