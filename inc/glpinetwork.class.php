@@ -36,8 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class GLPINetwork {
 
-   public static function showInstallMessage()
-   {
+   public static function showInstallMessage() {
       return nl2br(sprintf(__("You need help to integrate GLPI in your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n\n".
          "We provide the %s space for you.\n".
          "GLPI-Network is a commercial product that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n\n".
@@ -46,15 +45,13 @@ class GLPINetwork {
          "<a href='".GLPI_NETWORK_SERVICES."' target='_blank'>".GLPI_NETWORK_SERVICES."</a>"));
    }
 
-   public static function getErrorMessage()
-   {
+   public static function getErrorMessage() {
       return nl2br(sprintf("Having troubles setting up an advanced GLPI module?\n".
          "We can help you solve them. Sign up for support on %s.",
          "<a href='".GLPI_NETWORK_SERVICES."' target='_blank'>".GLPI_NETWORK_SERVICES."</a>"));
    }
 
-   public static function addErrorMessageAfterRedirect()
-   {
+   public static function addErrorMessageAfterRedirect() {
       Session::addMessageAfterRedirect(self::getErrorMessage(), false, ERROR);
    }
 }
