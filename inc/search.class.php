@@ -604,7 +604,7 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = '".$data['search']['is_deleted']."' ";
+         $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = ".(int)$data['search']['is_deleted']." ";
       }
 
       // Remove template items
@@ -4177,7 +4177,7 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_printers`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`) ";
 
@@ -4188,7 +4188,7 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_monitors`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
 
@@ -4199,7 +4199,7 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_peripherals`
                               ON (`glpi_computers_items_$to_type`.`items_id`
                                        = `glpi_peripherals`.`id`) ";
@@ -4211,7 +4211,7 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_phones`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
 
@@ -4247,7 +4247,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`) ";
@@ -4262,7 +4262,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id` ".
@@ -4279,7 +4279,7 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`items_id`
                                        = `glpi_peripherals`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`) ";
@@ -4294,7 +4294,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type'
-                                  AND NOT `glpi_computers_items_$to_type`.`is_deleted`)
+                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers.id`) ";
