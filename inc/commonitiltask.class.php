@@ -980,7 +980,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $addrestrict = '';
       if ($parentitem->maybeDeleted()) {
-         $addrestrict = 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
+         $addrestrict = 'AND `'.$parentitem->getTable().'`.`is_deleted` = 0';
       }
 
       $addrestrict .= "AND NOT `" . $parentitem->getTable() . "`.`status` IN 

@@ -4725,7 +4725,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::REQUESTER."')
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -4766,7 +4766,7 @@ abstract class CommonITILObject extends CommonDBTM {
                 FROM `".$this->getTable()."`
                 LEFT JOIN `glpi_users`
                      ON (`glpi_users`.`id` = `".$this->getTable()."`.`users_id_recipient`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -4810,7 +4810,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::REQUESTER."')
                 LEFT JOIN `glpi_groups` ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -4862,7 +4862,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`".$this->getTable()."`.`id` = `$linktable`.`".$this->getForeignKeyField()."`)
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
                 LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1)||!empty($date2)) {
@@ -4898,7 +4898,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $query = "SELECT DISTINCT `priority`
                 FROM `".$this->getTable()."`
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -4935,7 +4935,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $query = "SELECT DISTINCT `urgency`
                 FROM `".$this->getTable()."`
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -4973,7 +4973,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $query = "SELECT DISTINCT `impact`
                 FROM `".$this->getTable()."`
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -5010,7 +5010,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $query = "SELECT DISTINCT `requesttypes_id`
                 FROM `".$this->getTable()."`
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -5051,7 +5051,7 @@ abstract class CommonITILObject extends CommonDBTM {
                 INNER JOIN `".$this->getTable()."`
                   ON `".$this->getTable().".`id` = `".ITILSolution::getTable()."`.`items_id`
                 WHERE `".ITILSolution::getTable()."`.`itemtype`='".$this->getType()."'
-                  AND NOT `".$this->getTable()."`.`is_deleted` ".
+                  AND `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -5098,7 +5098,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."')
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                 getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1)||!empty($date2)) {
@@ -5152,7 +5152,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
                 LEFT JOIN `glpi_profilerights`
                   ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -5204,7 +5204,7 @@ abstract class CommonITILObject extends CommonDBTM {
                       AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."')
                 LEFT JOIN `glpi_suppliers`
                      ON (`glpi_suppliers`.`id` = `$linktable`.`suppliers_id`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
@@ -5247,7 +5247,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."')
                 LEFT JOIN `glpi_groups` ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                WHERE `".$this->getTable()."`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
