@@ -3905,7 +3905,7 @@ msgstr "Riviä ei löydy"
 
 #: inc/api.class.php:1865
 msgid "Email notifications are disabled"
-msgstr ""
+msgstr "Sähköposti-ilmoitukset on poistettu käytöstä"
 
 #: inc/api.class.php:1869
 msgid "email parameter missing"
@@ -9023,7 +9023,7 @@ msgstr "Toimittajan lisäys"
 
 #: inc/contact.class.php:285 inc/user.class.php:2791
 msgid "Last name"
-msgstr ""
+msgstr "Sukunimi"
 
 #: inc/contact.class.php:406 inc/contract.class.php:892
 msgid "Associated supplier"
@@ -9723,17 +9723,17 @@ msgstr "Kapasiteetti"
 
 #: inc/devicebattery.class.php:59 inc/devicebattery.class.php:115
 msgid "mWh"
-msgstr ""
+msgstr "mWh"
 
 #: inc/devicebattery.class.php:63 inc/devicebattery.class.php:87
 #: inc/devicebattery.class.php:114 inc/devicesimcard.class.php:57
 #: inc/devicesimcard.class.php:77
 msgid "Voltage"
-msgstr ""
+msgstr "Jännite"
 
 #: inc/devicebattery.class.php:65 inc/devicebattery.class.php:114
 msgid "mV"
-msgstr ""
+msgstr "mV"
 
 #: inc/devicebatterymodel.class.php:44
 msgid "Device battery model"
@@ -10006,7 +10006,7 @@ msgstr[1] ""
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:93
 msgid "Allow VOIP"
-msgstr ""
+msgstr "Salli VOIP"
 
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:858
 msgid "Simcard type"
@@ -11564,7 +11564,7 @@ msgstr "Omat asetukset"
 
 #: inc/html.class.php:1526
 msgid "Back to top of the page"
-msgstr ""
+msgstr "Takaisin sivun yläreunaan"
 
 #: inc/html.class.php:1583 inc/toolbox.class.php:1427
 #: inc/toolbox.class.php:1431
@@ -11784,11 +11784,11 @@ msgstr "Kirjaudu ulos"
 
 #: inc/html.class.php:6024
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Virheenkorjaustila käytössä!"
 
 #: inc/html.class.php:6025
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Virheenkorjaustila poistettu käytöstä!"
 
 #: inc/html.class.php:6029
 msgid "Change mode"
@@ -11809,11 +11809,11 @@ msgstr "Tiketin luonti"
 
 #: inc/html.class.php:6344 inc/html.class.php:6346
 msgid "Add is disabled"
-msgstr ""
+msgstr "Lisääminen poistettu käytöstä"
 
 #: inc/html.class.php:6357 inc/html.class.php:6359
 msgid "Search is disabled"
-msgstr ""
+msgstr "Haku poistettu käytöstä"
 
 #: inc/html.class.php:6431 inc/html.class.php:6432 inc/ticket.class.php:253
 #: inc/ticket.class.php:254 inc/ticket.class.php:3627
@@ -12049,7 +12049,7 @@ msgstr "ID TAG"
 
 #: inc/item_devicebattery.class.php:58
 msgid "Manufacturing date"
-msgstr ""
+msgstr "Valmistuspäivä"
 
 #: inc/item_deviceprocessor.class.php:63
 msgid "Cores"
@@ -12113,11 +12113,11 @@ msgstr[1] "Näkymät"
 
 #: inc/item_devices.class.php:926
 msgid "Please select a device type"
-msgstr ""
+msgstr "Valitse laitetyyppi"
 
 #: inc/item_devices.class.php:933
 msgid "Please select a device"
-msgstr ""
+msgstr "Valitse laite"
 
 #: inc/item_devices.class.php:947
 msgid "You must choose any unaffected device or ask to add new."
@@ -12125,7 +12125,7 @@ msgstr ""
 
 #: inc/item_devices.class.php:1204
 msgid "Copy to clipboard failed"
-msgstr ""
+msgstr "Kopiointi leikepöydälle epäonnistui"
 
 #: inc/item_devices.class.php:1362
 msgid "Update of "
@@ -12133,19 +12133,19 @@ msgstr ""
 
 #: inc/item_devicesimcard.class.php:62 inc/item_devicesimcard.class.php:63
 msgid "PIN code"
-msgstr ""
+msgstr "PIN-koodi"
 
 #: inc/item_devicesimcard.class.php:71 inc/item_devicesimcard.class.php:72
 msgid "PIN2 code"
-msgstr ""
+msgstr "PIN2-koodi"
 
 #: inc/item_devicesimcard.class.php:80 inc/item_devicesimcard.class.php:81
 msgid "PUK code"
-msgstr ""
+msgstr "PUK-koodi"
 
 #: inc/item_devicesimcard.class.php:89 inc/item_devicesimcard.class.php:90
 msgid "PUK2 code"
-msgstr ""
+msgstr "PUK2-koodi"
 
 #: inc/item_devicesimcard.class.php:98 inc/item_devicesimcard.class.php:99
 #: inc/line.class.php:50 inc/profile.class.php:885
@@ -12880,15 +12880,15 @@ msgstr[1] "- %d minuuttia"
 
 #: inc/line.class.php:127 inc/line.class.php:224
 msgid "Caller number"
-msgstr ""
+msgstr "Soittajan numero"
 
 #: inc/line.class.php:132 inc/line.class.php:232
 msgid "Caller name"
-msgstr ""
+msgstr "Soittajan nimi"
 
 #: inc/lineoperator.class.php:53 inc/lineoperator.class.php:70
 msgid "Mobile Country Code"
-msgstr ""
+msgstr "Kansainvälinen suuntanumero"
 
 #: inc/lineoperator.class.php:57 inc/lineoperator.class.php:78
 msgid "Mobile Network Code"

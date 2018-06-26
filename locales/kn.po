@@ -39,7 +39,7 @@ msgstr " ಕೀಲಿಪದ"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "ಭಾಷೆ (ಬಳಕೆದಾರರ ಪ್ರೊಫೈಲ್ನಿಂದ)"
 
 #: index.php:153
 msgid "Remember me"
@@ -92,7 +92,7 @@ msgstr "ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳ
 
 #: ajax/dcroom_size.php:61 inc/rack.class.php:255
 msgid "No room found or selected"
-msgstr ""
+msgstr "ಯಾವುದೇ ಕೊಠಡಿ ಕಂಡುಬಂದಿಲ್ಲ ಅಥವಾ ಆಯ್ಕೆ ಮಾಡಿಲ್ಲ"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #. TRANS: %1$s is Contract, %2$s is field name
@@ -726,11 +726,11 @@ msgstr ""
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
-msgstr ""
+msgstr "ಅಗತ್ಯವಿರುವ ವಾದವು ಕಾಣೆಯಾಗಿದೆ!"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "ಎಲಿಮೆಂಟ್ ಭೂಲೋಕೀಕರಣಗೊಂಡಿದೆ ಅಥವಾ ಕಂಡುಬಂದಿಲ್ಲ"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
@@ -738,7 +738,7 @@ msgstr ""
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "ಈ ಸ್ಥಳದ ಮೇಲೆ ಅಕ್ಷಾಂಶ ಮತ್ತು ರೇಖಾಂಶವನ್ನು ಭರ್ತಿ ಮಾಡಿಕೊಳ್ಳಿ"
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2422
 #: inc/mailcollector.class.php:204 inc/ruleaction.class.php:88

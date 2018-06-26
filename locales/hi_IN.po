@@ -39,7 +39,7 @@ msgstr "पारण शब्द"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr ""
+msgstr "भाषा (उपयोगकर्ता प्रोफ़ाइल से)"
 
 #: index.php:153
 msgid "Remember me"
@@ -6471,7 +6471,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$sवस्तु"
 
 #: inc/commondropdown.class.php:497
 msgid "Product number"
@@ -7805,7 +7805,7 @@ msgstr "आवेदन का यूआरएल"
 
 #: inc/config.class.php:295
 msgid "Text in the login box (HTML tags supported)"
-msgstr ""
+msgstr "लॉगिन बॉक्स में टेक्स्ट (एचटीएमएल टैग समर्थित)"
 
 #: inc/config.class.php:301
 msgid "Allow FAQ anonymous access"
@@ -10428,8 +10428,8 @@ msgstr[1] "उपकरण प्रकार"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "फोन के प्रकार"
+msgstr[1] "फोन के प्रकार"
 
 #: inc/dropdown.class.php:823 inc/softwarelicensetype.class.php:43
 msgid "License type"

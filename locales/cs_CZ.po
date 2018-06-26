@@ -2457,7 +2457,7 @@ msgstr "Operace úspěšná"
 #: front/massiveaction.php:77
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr "(%1$d problémů s oprávněním, %2$d nezdarů)"
+msgstr "(%1$d problémů s oprávněním, %2$d chyb)"
 
 #: front/migrationcleaner.php:44
 msgid "You don't need the \"migration cleaner\" tool anymore..."
@@ -2864,7 +2864,7 @@ msgstr "Hodnota"
 
 #: front/report.infocom.php:130
 msgid "ANV"
-msgstr "ANV"
+msgstr "Odpis pohledávky"
 
 #: front/report.infocom.php:131
 msgid "TCO"
@@ -4318,7 +4318,7 @@ msgstr "Synchronizace"
 
 #: inc/auth.class.php:1304
 msgid "CAS authentication"
-msgstr "CAS ověření"
+msgstr "CAS ověřování"
 
 #: inc/auth.class.php:1306 inc/auth.class.php:1341 inc/auth.class.php:1364
 msgctxt "authentication"
@@ -4389,7 +4389,7 @@ msgid_plural "Fields storage of the login in the HTTP request"
 msgstr[0] "Úložiště kolonky přihlášení v HTTP požadavku"
 msgstr[1] "Úložiště kolonek přihlášení v HTTP požadavku"
 msgstr[2] "Úložišť kolonek přihlášení v HTTP požadavku"
-msgstr[3] "Úložiště kolonek přihlášení v HTTP požadavku"
+msgstr[3] "Kolonka uložení uživatelského jména v HTTP požadavku"
 
 #: inc/auth.class.php:1376
 msgid "Remove the domain of logins like login@domain"
@@ -4943,7 +4943,7 @@ msgid_plural "Update Sources"
 msgstr[0] "Zdroj aktualizací"
 msgstr[1] "Zdroje aktualizací"
 msgstr[2] "Zdrojů aktualizací"
-msgstr[3] "Zdrojů aktualizací"
+msgstr[3] "Zdroje aktualizací"
 
 #: inc/backup.class.php:72 inc/commondbtm.class.php:4787
 #: inc/log.class.php:1238 inc/profile.class.php:821 inc/profile.class.php:2545
@@ -7079,7 +7079,7 @@ msgid_plural "Requester groups"
 msgstr[0] "Skupina žadatele"
 msgstr[1] "Skupiny žadatelů"
 msgstr[2] "Skupin žadatelů"
-msgstr[3] "Skupin žadatelů"
+msgstr[3] "Skupiny žadatelů"
 
 #: inc/commonitilobject.class.php:3149 inc/commonitilobject.class.php:3473
 #: inc/notificationtargetcommonitilobject.class.php:554
@@ -7550,7 +7550,7 @@ msgstr "Přesunout"
 #: inc/projecttask.class.php:745 inc/projecttask.class.php:938
 #: inc/projecttask_ticket.class.php:332 inc/softwarelicense.class.php:577
 msgid "Father"
-msgstr "Nadřízená položka"
+msgstr "Nadřazená položka"
 
 #: inc/computerantivirus.class.php:51 inc/computerantivirus.class.php:120
 msgid "Antivirus"
@@ -7737,10 +7737,10 @@ msgstr "MAC adresa"
 #: inc/computer.class.php:903 inc/devicesoundcard.class.php:45
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] "Zvukové rozhraní"
-msgstr[1] "Zvuková rozhraní"
-msgstr[2] "Zvukových rozhraní"
-msgstr[3] "Zvuková rozhraní"
+msgstr[0] "Zvuková karta"
+msgstr[1] "Zvukové karty"
+msgstr[2] "Zvukových karet"
+msgstr[3] "Zvukové karty"
 
 #: inc/computer.class.php:919 inc/devicegraphiccard.class.php:43
 msgid "Graphics card"
@@ -7944,7 +7944,7 @@ msgid_plural "Installations"
 msgstr[0] "Instalace"
 msgstr[1] "Instalace"
 msgstr[2] "Instalací"
-msgstr[3] "Instalací"
+msgstr[3] "Instalace"
 
 #: inc/computer_softwareversion.class.php:344
 #: inc/computer_softwareversion.class.php:775
@@ -8036,7 +8036,7 @@ msgstr "Aktivován režim údržby. Používají se zadní vrátka: %s"
 #: inc/config.class.php:2139 inc/profile.class.php:1420
 #: inc/profile.class.php:1914
 msgid "General setup"
-msgstr "Obecné nastavení"
+msgstr "Obecná nastavení"
 
 #: inc/config.class.php:290 inc/notificationtarget.class.php:1151
 msgid "URL of the application"
@@ -8323,7 +8323,7 @@ msgstr ""
 
 #: inc/config.class.php:774
 msgid "Enable login with external token"
-msgstr "Povolit přihlášení s externím tokenem"
+msgstr "Umožnit přihlášení s externím tokenem"
 
 #: inc/config.class.php:775
 msgid ""
@@ -8495,7 +8495,7 @@ msgstr "Ve výchozím nastavení doplňující zprávy nezveřejňovat"
 
 #: inc/config.class.php:1213
 msgid "Show new tickets on the home page"
-msgstr "Zobrazit nové požadavky na domovské stránce"
+msgstr "Zobrazovat nové požadavky na domovské stránce"
 
 #: inc/config.class.php:1222
 msgid "Private tasks by default"
@@ -9129,7 +9129,7 @@ msgid_plural "New"
 msgstr[0] "Nové"
 msgstr[1] "Nové"
 msgstr[2] "Nových"
-msgstr[3] "Nových"
+msgstr[3] "Nové"
 
 #: inc/consumable.class.php:411
 msgctxt "consumable"
@@ -9138,7 +9138,7 @@ msgid_plural "Used"
 msgstr[0] "Použité"
 msgstr[1] "Použité"
 msgstr[2] "Použitých"
-msgstr[3] "Použitých"
+msgstr[3] "Použité"
 
 #: inc/consumable.class.php:441
 msgctxt "button"
@@ -9172,7 +9172,7 @@ msgid_plural "Consumable models"
 msgstr[0] "Model spotřebního materiálu"
 msgstr[1] "Modely spotřebního materiálu"
 msgstr[2] "Modelů spotřebního materiálu"
-msgstr[3] "Modelů spotřebního materiálu"
+msgstr[3] "Modely spotřebního materiálu"
 
 #: inc/consumableitem.class.php:279
 msgid "Number of used consumables"
@@ -9370,7 +9370,7 @@ msgstr "Počet"
 #: inc/contract.class.php:216 inc/contract_item.class.php:459
 #: inc/contract_supplier.class.php:220
 msgid "Initial contract period"
-msgstr "Původní doba trvání smlouvy"
+msgstr "Počáteční doba trvání smlouvy"
 
 #: inc/contract.class.php:230 inc/contract.class.php:516
 #: inc/contract.class.php:743 inc/contract.class.php:1601
@@ -9722,7 +9722,7 @@ msgid_plural "%s seconds"
 msgstr[0] "%s sekunda"
 msgstr[1] "%s sekundy"
 msgstr[2] "%s sekund"
-msgstr[3] "%s sekund"
+msgstr[3] "%s sekundy"
 
 #: inc/crontask.class.php:1011
 msgid "Maximal time"
@@ -9741,7 +9741,7 @@ msgid_plural "%s items"
 msgstr[0] "%s položka"
 msgstr[1] "%s položky"
 msgstr[2] "%s položek"
-msgstr[3] "%s položek"
+msgstr[3] "%s položky"
 
 #: inc/crontask.class.php:1033
 msgid "Maximal count"
@@ -9794,45 +9794,46 @@ msgstr "Konečná hodina období běhu"
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
-msgstr[0] "Vyčistit soubor sezení %1$d vytvořený před více než %2$s sekundami"
+msgstr[0] "Vyčistit %1$d soubor sezení vytvořený před více než %2$s sekundami"
 msgstr[1] ""
-"Vyčistit soubory sezení %1$d vytvořené před více než %2$s sekundami"
+"Vyčistit %1$d soubory sezení vytvořené před více než %2$s sekundami"
 msgstr[2] ""
 "Vyčistit %1$d souborů sezení vytvořených před více než %2$s sekundami"
 msgstr[3] ""
-"Vyčistit %1$d souborů sezení vytvořených před více než %2$s sekundami"
+"Vyčistit %1$d soubory sezení vytvořené před více než %2$s sekundami"
 
 #: inc/crontask.class.php:1522
 #, php-format
 msgid "Deletion of archived log file: %s"
-msgstr "Smazání archivních souborů záznamů: %s"
+msgstr "Smazání soubor s archivem záznamu událostí: %s"
 
 #: inc/crontask.class.php:1525
 #, php-format
 msgid "Unable to delete archived log file: %s"
-msgstr "Není možné smazat archivní soubor záznamů: %s"
+msgstr "Není možné smazat soubor s archivem záznamu událostí: %s"
 
 #: inc/crontask.class.php:1543
 #, php-format
 msgid "Archiving log file: %1$s to %2$s"
-msgstr "Archivování souborů záznamů: %1$s do %2$s"
+msgstr "Archivování souboru se záznamem událostí: %1$s do %2$s"
 
 #: inc/crontask.class.php:1546
 #, php-format
 msgid ""
 "Unable to archive log file: %1$s. %2$s already exists. Wait till next day."
 msgstr ""
-"Není možné archivovat soubor záznamů: %1$s. %2$s už existuje. Počkejte do "
-"dalšího dne."
+"Není možné archivovat soubor se záznamem událostí: %1$s. %2$s už existuje. "
+"Počkejte do dalšího dne."
 
 #: inc/crontask.class.php:1583
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
-msgstr[0] "Vyčistit soubor grafu %1$d vytvořený před více než %2$s sekundami"
-msgstr[1] "Vyčistit %1$d souborů grafu vytvořené před více než %2$s sekundami"
-msgstr[2] "Vyčistit %1$d souborů grafu vytvořené před více než %2$s sekundami"
-msgstr[3] "Vyčistit %1$d souborů grafu vytvořené před více než %2$s sekundami"
+msgstr[0] "Vyčistit %1$d soubor grafu vytvořený před více než %2$s sekundami"
+msgstr[1] "Vyčistit %1$d soubory grafu vytvořené před více než %2$s sekundami"
+msgstr[2] ""
+"Vyčistit %1$d souborů grafu vytvořených před více než %2$s sekundami"
+msgstr[3] "Vyčistit %1$d soubory grafu vytvořené před více než %2$s sekundami"
 
 #: inc/crontask.class.php:1617
 #, php-format
@@ -9845,7 +9846,7 @@ msgstr[1] ""
 msgstr[2] ""
 "Vyčistit %1$d dočasných souborů vytvořených před více než %2$s sekundami"
 msgstr[3] ""
-"Vyčistit %1$d dočasných souborů vytvořených před více než %2$s sekundami"
+"Vyčistit %1$d dočasné soubory vytvořené před více než %2$s sekundami"
 
 #: inc/crontask.class.php:1712
 msgid "Check for new updates"
@@ -9895,7 +9896,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d minuta"
 msgstr[1] "%d minuty"
 msgstr[2] "%d minut"
-msgstr[3] "%d minut"
+msgstr[3] "%d minuty"
 
 #. TRANS: %d is a number of hours
 #: inc/crontask.class.php:1757 inc/dropdown.class.php:1535
@@ -9907,7 +9908,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d hodina"
 msgstr[1] "%d hodiny"
 msgstr[2] "%d hodin"
-msgstr[3] "%d hodin"
+msgstr[3] "%d hodiny"
 
 #. TRANS: %d is a number of days
 #: inc/crontask.class.php:1763 inc/dropdown.class.php:1531
@@ -9921,7 +9922,7 @@ msgid_plural "%d days"
 msgstr[0] "%d den"
 msgstr[1] "%d dny"
 msgstr[2] "%d dnů"
-msgstr[3] "%d dnů"
+msgstr[3] "%d dny"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/datacenter.class.php:48 inc/dcroom.class.php:92
@@ -9963,7 +9964,7 @@ msgstr "Nepodařilo se připojit do databáze"
 #: inc/dbconnection.class.php:449 inc/dbconnection.class.php:452
 #: inc/notificationtargetdbconnection.class.php:80
 msgid "Difference between master and slave"
-msgstr "Rozdíl mezi master a slave"
+msgstr "Rozdíl mezi hlavním a podřízeným"
 
 #: inc/dbmysql.class.php:217 inc/dbmysql.class.php:944
 #: inc/dbmysql.class.php:1025 inc/dbmysql.class.php:1099
@@ -10113,10 +10114,10 @@ msgstr "Rozhraní"
 #: inc/devicecontrolmodel.class.php:44 inc/dropdown.class.php:887
 msgid "Device control model"
 msgid_plural "Device control models"
-msgstr[0] "Model ovládání zařízení"
-msgstr[1] "Modely ovládání zařízení"
-msgstr[2] "Modelů ovládání zařízení"
-msgstr[3] "Modely ovládání zařízení"
+msgstr[0] "Model řadiče"
+msgstr[1] "Modely řadiče"
+msgstr[2] "Modelů řadičů"
+msgstr[3] "Modely řadičů"
 
 #: inc/devicedrive.class.php:43
 msgid "Drive"
@@ -10392,10 +10393,10 @@ msgstr[3] "Typy sim karet"
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:909
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] "Model zvukového rozhraní"
-msgstr[1] "Modely zvukových rozhraní"
-msgstr[2] "Modelů zvukových rozhraní"
-msgstr[3] "Modely zvukových rozhraní"
+msgstr[0] "Model zvukové karty"
+msgstr[1] "Modely zvukových karet"
+msgstr[2] "Modelů zvukových karet"
+msgstr[3] "Modely zvukových karet"
 
 #: inc/displaypreference.class.php:289
 msgid "No personal criteria. Create personal parameters?"
@@ -11016,7 +11017,7 @@ msgstr[3] "Zdroje aktualizací"
 
 #: inc/dropdown.class.php:985 inc/networkport.class.php:918
 msgid "Networking"
-msgstr "Síť"
+msgstr "Sítě"
 
 #: inc/dropdown.class.php:989 inc/netpoint.class.php:60
 #: inc/netpoint.class.php:271 inc/netpoint.class.php:285
@@ -11040,10 +11041,10 @@ msgstr "VLAN"
 #: inc/lineoperator.class.php:48 inc/profile.class.php:1472
 msgid "Line operator"
 msgid_plural "Line operators"
-msgstr[0] "Operátor linky"
-msgstr[1] "Operátoři linek"
-msgstr[2] "Operátorů linek"
-msgstr[3] "Operátoři linek"
+msgstr[0] "Telefonní operátor"
+msgstr[1] "Telefonní operátoři"
+msgstr[2] "Telefonních operátorů"
+msgstr[3] "Telefonní operátoři"
 
 #: inc/dropdown.class.php:1000 inc/profile.class.php:816
 #: inc/profile.class.php:1701
@@ -11184,7 +11185,7 @@ msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] "%1$d den %2$dh %3$sm"
 msgstr[1] "%1$d dny %2$dh %3$sm"
 msgstr[2] "%1$d dnů %2$dh %3$sm"
-msgstr[3] "%1$d dnů %2$dh %3$sm"
+msgstr[3] "%1$d dny %2$dh %3$sm"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: inc/dropdown.class.php:1678
@@ -11206,11 +11207,11 @@ msgstr "Globání správa"
 
 #: inc/dropdown.class.php:2043
 msgid "Use unitary management"
-msgstr "Spravovat jednoznačnost"
+msgstr "Spravovat jednotně"
 
 #: inc/dropdown.class.php:2045
 msgid "Do you really want to use unitary management for this item?"
-msgstr "Opravdu chcete spravovat jednoznačnost této položky?"
+msgstr "Opravdu chcete jednotně spravovat tuto položku?"
 
 #: inc/dropdown.class.php:2046 inc/dropdown.class.php:2050
 #: inc/dropdown.class.php:2051
@@ -12421,7 +12422,7 @@ msgstr "Číslo objednávky"
 #: inc/infocom.class.php:1126 inc/infocom.class.php:1357
 #: inc/infocom.class.php:1750
 msgid "Immobilization number"
-msgstr "Číslo vinkulace"
+msgstr "Inventární číslo"
 
 #: inc/infocom.class.php:1135 inc/infocom.class.php:1387
 #: inc/infocom.class.php:1801
@@ -14265,7 +14266,7 @@ msgstr "Rychlost Fiber channel portu"
 
 #: inc/networkportfiberchannel.class.php:339
 msgid "Network fiber outlet"
-msgstr "Network fiber zásuvka"
+msgstr "Optická síťová zásuvka"
 
 #: inc/networkportinstantiation.class.php:84
 msgid "No options available for this port type."
@@ -17195,7 +17196,7 @@ msgstr "Smazat všechna opakování"
 #: inc/reservation.class.php:1073 inc/reservation.class.php:1075
 #: inc/reservation.class.php:1191
 msgid "Current and future reservations"
-msgstr "Současné a budoucí rezervace"
+msgstr "Současné a nadcházející rezervace"
 
 #: inc/reservation.class.php:1081 inc/reservation.class.php:1128
 #: inc/reservation.class.php:1195 inc/reservation.class.php:1258
@@ -17211,7 +17212,7 @@ msgstr "Zobrazit plánování"
 #: inc/reservation.class.php:1120 inc/reservation.class.php:1122
 #: inc/reservation.class.php:1254
 msgid "Past reservations"
-msgstr "Minulé rezervace"
+msgstr "Předchozí rezervace"
 
 #: inc/reservationitem.class.php:67
 msgid "Reservable item"
@@ -17235,8 +17236,7 @@ msgstr "Neumožnit rezervace"
 
 #: inc/reservationitem.class.php:318
 msgid "Are you sure you want to return this non-reservable item?"
-msgstr ""
-"Opravdu chcete vrátit tuto položku, kterou není možné si zarezervovat?"
+msgstr "Opravdu chcete tuto položku změnit zpět na nezarezervovatelnou?"
 
 #: inc/reservationitem.class.php:319
 msgid "That will remove all the reservations in progress."
@@ -17244,7 +17244,7 @@ msgstr "Toto odstraní všechny probíhající rezervace."
 
 #: inc/reservationitem.class.php:324
 msgid "Authorize reservations"
-msgstr "Schválit rezervace"
+msgstr "Umožnit rezervace"
 
 #: inc/reservationitem.class.php:357 inc/search.class.php:4868
 #: inc/search.class.php:4871
@@ -18541,7 +18541,7 @@ msgid_plural "Associated contacts"
 msgstr[0] "Přiřazený kontakt"
 msgstr[1] "Přiřazené kontakty"
 msgstr[2] "Přiřazených kontaktů"
-msgstr[3] "Přiřazených kontaktů"
+msgstr[3] "Přiřazené kontakty"
 
 #: inc/supplier.class.php:396
 msgid "Associated contract"
@@ -18549,7 +18549,7 @@ msgid_plural "Associated contracts"
 msgstr[0] "Přiřazená smlouva"
 msgstr[1] "Přiřazené smlouvy"
 msgstr[2] "Přiřazených smluv"
-msgstr[3] "Přiřazených smluv"
+msgstr[3] "Přiřazené smlouvy"
 
 #: inc/telemetry.class.php:257
 msgid "Send telemetry informations"
@@ -18853,7 +18853,7 @@ msgid_plural "Tickets on linked items"
 msgstr[0] "Požadavek na připojených položkách"
 msgstr[1] "Požadavky na připojených položkách"
 msgstr[2] "Požadavků na připojených položkách"
-msgstr[3] "Požadavků na připojených položkách"
+msgstr[3] "Požadavky na připojených položkách"
 
 #: inc/ticket.class.php:6235
 msgid "No ticket in progress."
@@ -19244,7 +19244,7 @@ msgstr "V pořádku – sezení funguje (bez problému s trans_id) – výborně
 
 #: inc/toolbox.class.php:1061
 msgid "Testing DB engine version"
-msgstr "Testování verze databázového engine"
+msgstr "Testování verze databázového enginu"
 
 #: inc/toolbox.class.php:1070
 msgid "Allocated memory test"

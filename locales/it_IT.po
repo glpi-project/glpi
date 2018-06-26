@@ -2387,7 +2387,7 @@ msgstr "Ripeti l'accesso"
 msgid "Receiver"
 msgid_plural "Receivers"
 msgstr[0] "Destinatario"
-msgstr[1] "Destinatari"
+msgstr[1] "Posta in ingresso"
 
 #: front/mailcollector.php:44 front/setup.auth.php:57
 #: inc/authldap.class.php:424 inc/authmail.class.php:215
@@ -3099,7 +3099,7 @@ msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
 msgstr[0] "Risolto"
-msgstr[1] "Risolti"
+msgstr[1] "Risolta"
 
 #: front/stat.global.php:93 front/stat.graph.php:355 inc/stat.class.php:434
 msgid "Late"
@@ -6544,7 +6544,7 @@ msgstr "Consolidare"
 #: inc/item_ticket.class.php:729 inc/rule.class.php:2198
 #: inc/ticket.class.php:6209
 msgid "General"
-msgstr "Generico"
+msgstr "Generale"
 
 #. TRANSLATION_MODE] = __('Translation');
 #: inc/commonglpi.class.php:176 inc/user.class.php:2548
@@ -7802,7 +7802,7 @@ msgstr "Nessun ambiente virtualizzato associato al computer"
 #: inc/config.class.php:77
 msgctxt "setup"
 msgid "General"
-msgstr "Generico"
+msgstr "Generale"
 
 #: inc/config.class.php:246
 #, php-format
@@ -11799,7 +11799,7 @@ msgstr "Allega il file tramite drag & drop o copia & incolla nell'editor o"
 
 #: inc/html.class.php:4868
 msgid "selecting them"
-msgstr "stai selezionando"
+msgstr "selezionandolo"
 
 #: inc/html.class.php:4946
 msgid "File(s)"
@@ -13077,7 +13077,7 @@ msgstr "Mostra i filtri"
 
 #: inc/log.class.php:374
 msgid "No historical matching your filters"
-msgstr ""
+msgstr "Nessun evento storico corrisponde al filtro"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:470 inc/projecttask.class.php:503
@@ -17553,7 +17553,7 @@ msgstr "La notifica è stata creata!"
 
 #: inc/search.class.php:157
 msgid "assets"
-msgstr "assets"
+msgstr "Inventario"
 
 #: inc/search.class.php:159
 msgid "Search results for localized items only"

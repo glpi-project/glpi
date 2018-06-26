@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-30 07:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: liAnGjiA <liangjia@qq.com>, 2018\n"
+"Last-Translator: Smartree <smartree@gmail.com>, 2017\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +43,7 @@ msgstr ""
 
 #: index.php:153
 msgid "Remember me"
-msgstr "记住我"
+msgstr "自动登录"
 
 #: index.php:157 ajax/dropdownMassiveActionAuthMethods.php:65
 #: ajax/dropdownMassiveActionField.php:53 inc/authldap.class.php:1268
@@ -536,7 +536,7 @@ msgstr "%1$s: %2$s"
 #: install/update_0681_07.php:573 install/update_0723_078.php:3661
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] "Email"
+msgstr[0] "电子邮箱"
 
 #: ajax/dropdownMassiveActionAddActor.php:46
 #: ajax/dropdownMassiveActionAddValidator.php:54
@@ -757,12 +757,12 @@ msgstr "个人"
 
 #: ajax/private_public.php:50
 msgid "Set public"
-msgstr "设定位公开"
+msgstr "设为公共"
 
 #: ajax/private_public.php:64 inc/savedsearch.class.php:400
 #: inc/savedsearch.class.php:417
 msgid "Public"
-msgstr "公开"
+msgstr "公共"
 
 #: ajax/private_public.php:67 ajax/subvisibility.php:66 ajax/visibility.php:91
 #: inc/authldap.class.php:1939 inc/budget.class.php:286
@@ -828,15 +828,15 @@ msgstr "每周的同一天（每月）"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
-msgstr "搜索已经被保存。"
+msgstr "筛选已经被保存。"
 
 #: ajax/savedsearch.php:54
 msgid "Search has not been saved"
-msgstr "搜索没有被保存。"
+msgstr "筛选没有被保存。"
 
 #: ajax/searchmetarow.php:76
 msgid "Delete a global search criterion"
-msgstr "删除全局搜索标准"
+msgstr "删除全局筛选标准"
 
 #: ajax/searchoptionvalue.php:77
 msgid "My groups"
@@ -844,15 +844,15 @@ msgstr "我的组"
 
 #: ajax/searchrow.php:64
 msgid "Add a search criterion"
-msgstr "添加搜索标准"
+msgstr "添加筛选标准"
 
 #: ajax/searchrow.php:79
 msgid "Add a global search criterion"
-msgstr "添加全局搜索标准"
+msgstr "添加全局筛选标准"
 
 #: ajax/searchrow.php:104
 msgid "Delete a search criterion"
-msgstr "删除搜索标准"
+msgstr "删除筛选标准"
 
 #: ajax/searchrow.php:137 ajax/searchrow.php:156 inc/config.class.php:384
 #: inc/search.class.php:1869
@@ -996,7 +996,7 @@ msgstr "处理中"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] "项目的%s 工作单正在处理或近期已经解决。"
+msgstr[0] "项目的%s 工单正在处理或近期已经解决。"
 
 #: ajax/ticketsatisfaction.php:60 inc/entity.class.php:1039
 msgid "Create survey after"
@@ -1028,7 +1028,7 @@ msgstr "未指明的"
 
 #: ajax/ticketsatisfaction.php:94
 msgid "For tickets closed after"
-msgstr "让工作单关闭，于"
+msgstr "让工单关闭，于"
 
 #: ajax/ticketsatisfaction.php:102 inc/link.class.php:140
 msgid "Valid tags"
@@ -1064,7 +1064,7 @@ msgstr "有效标签"
 #: inc/notificationtargetuser.class.php:111 inc/rssfeed.class.php:352
 #: inc/rssfeed.class.php:607
 msgid "URL"
-msgstr "URL"
+msgstr "网址URL"
 
 #: ajax/timeline.php:112 ajax/viewsubitem.php:54 inc/html.class.php:517
 #: inc/html.class.php:520 inc/html.class.php:523 inc/html.class.php:882
@@ -1152,7 +1152,7 @@ msgstr "文件已经存在"
 
 #: front/backup.php:492 front/backup.php:559 install/update_content.php:359
 msgid "Automatic redirection, else click"
-msgstr "自动重定向，否则请点击"
+msgstr "自动跳转中，如长期无响应请点击此处手动跳转"
 
 #. TRANS: %s is a file name
 #: front/backup.php:585
@@ -1285,7 +1285,7 @@ msgstr "警告，您正式的数据库将会被要恢复的数据库覆盖"
 
 #: front/backup.php:667
 msgid "Restore"
-msgstr "回复"
+msgstr "恢复"
 
 #: front/backup.php:671 front/backup.php:709
 msgid "Download"
@@ -1434,7 +1434,7 @@ msgstr "%s 添加一个连接到一个项目"
 #: front/cartridge.form.php:51
 #, php-format
 msgid "%s adds cartridges"
-msgstr "%s 添加 打印机弹药"
+msgstr "%s 添加 打印耗材"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:60
@@ -1446,13 +1446,13 @@ msgstr "%s 清除一个墨盒"
 #: front/cartridge.form.php:71
 #, php-format
 msgid "%s installs a cartridge"
-msgstr "%s 安装 打印机弹药"
+msgstr "%s 安装 打印耗材"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:83
 #, php-format
 msgid "%s updates a cartridge"
-msgstr "%s 更新 打印机弹药"
+msgstr "%s 更新 打印耗材"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:47
@@ -1552,7 +1552,7 @@ msgstr[0] "更改"
 #: inc/ticket_ticket.class.php:66 inc/transfer.class.php:3355
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "工作单"
+msgstr[0] "工单"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:61 front/contractcost.form.php:57
@@ -1872,14 +1872,14 @@ msgstr[0] "下拉列表"
 
 #: front/find_num.php:72
 msgid "Search the ID of your hardware"
-msgstr "搜索硬件的ID"
+msgstr "筛选硬件的ID"
 
 #: front/find_num.php:81 inc/authldap.class.php:3198 inc/knowbase.class.php:65
 #: inc/knowbaseitem.class.php:1014 inc/planning.class.php:367
 #: inc/reservationitem.class.php:425 inc/search.class.php:2127
 msgctxt "button"
 msgid "Search"
-msgstr "搜索"
+msgstr "筛选"
 
 #: front/find_num.php:89 inc/certificate.class.php:457
 #: inc/commondbtm.class.php:3152 inc/computer.class.php:448
@@ -1915,7 +1915,7 @@ msgstr "硬件类型"
 #: inc/ticket.class.php:5689
 msgid "Associated element"
 msgid_plural "Associated elements"
-msgstr[0] "相关元件"
+msgstr[0] "相关元素"
 
 #: front/find_num.php:92 inc/apiclient.class.php:89 inc/authldap.class.php:870
 #: inc/authmail.class.php:103 inc/budget.class.php:210
@@ -2194,7 +2194,7 @@ msgstr "发送"
 #: front/helpdesk.public.php:92 front/ticket.form.php:229
 #: inc/notificationtargetticket.class.php:228 inc/ticket.class.php:4581
 msgid "New ticket"
-msgstr "新增工作单"
+msgstr "新增工单"
 
 #: front/helpdesk.public.php:97 inc/html.class.php:1504
 #: inc/html.class.php:1661 inc/html.class.php:1735 inc/html.class.php:6161
@@ -2237,7 +2237,7 @@ msgstr ""
 #: front/itilsolution.form.php:101 front/ticket.form.php:105
 msgid ""
 "You have been redirected because you no longer have access to this ticket"
-msgstr "您已被重定向，因为您已不能访问此工作单"
+msgstr "您已被重定向，因为您已不能访问此工单"
 
 #: front/knowbaseitem_comment.form.php:39
 #: front/knowbaseitem_comment.form.php:51
@@ -2359,7 +2359,7 @@ msgstr[0] "收件人"
 #: inc/config.class.php:2463
 #, php-format
 msgid "%s extension is missing"
-msgstr ""
+msgstr "%s 依赖环境有缺失补一下就好了"
 
 #: front/massiveaction.php:45
 msgid "Bulk modification error"
@@ -2920,13 +2920,13 @@ msgstr "%s 更新一个提醒"
 
 #: front/savedsearch.php:37 inc/html.class.php:6039 inc/html.class.php:6048
 msgid "Saved searches"
-msgstr "保存搜索"
+msgstr "保存筛选项"
 
 #: front/search.php:36 inc/entity.class.php:1105 inc/html.class.php:6075
 #: inc/html.class.php:6354 inc/html.class.php:6355 inc/location.class.php:466
 #: inc/location.class.php:467
 msgid "Search"
-msgstr "搜索"
+msgstr "筛选"
 
 #: front/setup.auth.php:40 inc/auth.class.php:894 inc/dropdown.class.php:1035
 msgid "External authentications"
@@ -3099,7 +3099,7 @@ msgstr "满意度调查"
 
 #: front/stat.global.php:161 front/stat.graph.php:439 inc/stat.class.php:1210
 msgid "Tickets"
-msgstr "工作单"
+msgstr "工单"
 
 #: front/stat.global.php:164 front/stat.graph.php:442 inc/stat.class.php:449
 msgctxt "survey"
@@ -3658,11 +3658,11 @@ msgstr "%s 添加预定义栏目"
 #: front/ticket_ticket.form.php:52
 #, php-format
 msgid "%s purges link between tickets"
-msgstr "%s 清除票单之间的链接"
+msgstr "%s 清除工单之间的关联"
 
 #: front/tracking.injector.php:68 inc/ticket.class.php:2158
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "您的工作单已登记，正在进行处理。"
+msgstr "您的工单已登记，正在进行处理。"
 
 #: front/tracking.injector.php:73 inc/config.class.php:2544
 #: inc/config.class.php:2564 inc/html.class.php:5399 inc/html.class.php:5558
@@ -3933,7 +3933,7 @@ msgstr[0] "API客户端"
 #: inc/ticketrecurrent.class.php:136 inc/ticketrecurrent.class.php:236
 #: inc/user.class.php:2085 inc/user.class.php:2841
 msgid "Active"
-msgstr "激活"
+msgstr "启用"
 
 #: inc/apiclient.class.php:106 inc/apiclient.class.php:199
 msgid "Log connections"
@@ -4195,7 +4195,7 @@ msgstr "根目录(可选)"
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1323
 msgid "Log out fallback URL"
-msgstr "退出后备URL"
+msgstr "退出后备网址URL"
 
 #: inc/auth.class.php:1329
 msgid "The CURL extension for your PHP parser isn't installed"
@@ -4238,7 +4238,7 @@ msgstr "从login@domain.com中删除登陆domain"
 #: inc/authldap.class.php:929 inc/authldap.class.php:3148
 #: inc/contact.class.php:155 inc/user.class.php:2050 inc/user.class.php:2360
 msgid "Surname"
-msgstr "姓"
+msgstr "姓氏"
 
 #: inc/auth.class.php:1388 inc/authldap.class.php:736
 #: inc/authldap.class.php:938 inc/authldap.class.php:3149
@@ -4292,7 +4292,7 @@ msgstr "电话2"
 #: inc/user.class.php:2153 inc/user.class.php:2291 inc/user.class.php:2476
 #: inc/user.class.php:2865
 msgid "Mobile phone"
-msgstr "移动电话"
+msgstr "手机"
 
 #: inc/auth.class.php:1462 inc/authldap.class.php:782
 #: inc/authldap.class.php:1063 inc/config.class.php:1013
@@ -4464,11 +4464,11 @@ msgstr "始终解除引用"
 
 #: inc/authldap.class.php:490
 msgid "Dereferenced during the search (but not when locating)"
-msgstr "在搜索过程中解除引用（定位时除外）"
+msgstr "在筛选过程中解除引用（定位时除外）"
 
 #: inc/authldap.class.php:491
 msgid "Dereferenced when locating (not during the search)"
-msgstr "定位时解除引用（搜索过程除外）"
+msgstr "定位时解除引用（筛选过程除外）"
 
 #: inc/authldap.class.php:497
 msgid "Domain name used by inventory tool for link the user"
@@ -4509,7 +4509,7 @@ msgstr "属于该群组"
 
 #: inc/authldap.class.php:655 inc/authldap.class.php:1100
 msgid "Search type"
-msgstr "搜索方式"
+msgstr "筛选方式"
 
 #: inc/authldap.class.php:658 inc/authldap.class.php:1072
 msgid "User attribute containing its groups"
@@ -4526,7 +4526,7 @@ msgstr "包含自身用户的群组属性"
 
 #: inc/authldap.class.php:670 inc/authldap.class.php:1036
 msgid "Use DN in the search"
-msgstr "使用DN 做搜索"
+msgstr "使用DN 做筛选"
 
 #: inc/authldap.class.php:697
 msgid "Test of connection to LDAP directory"
@@ -4544,7 +4544,7 @@ msgstr "绑定到LDAP目录"
 #: inc/user.class.php:2376 inc/user.class.php:2380 inc/user.class.php:2820
 #: inc/user.class.php:3178
 msgid "Picture"
-msgstr "图片"
+msgstr "头像"
 
 #: inc/authldap.class.php:793
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -4685,7 +4685,7 @@ msgstr "选择所需的实体"
 
 #: inc/authldap.class.php:3162
 msgid "Search criteria for users"
-msgstr "用户的搜索条件"
+msgstr "用户的筛选条件"
 
 #: inc/authldap.class.php:3202
 msgid "No directory selected"
@@ -4693,7 +4693,7 @@ msgstr "没有已选择的目录"
 
 #: inc/authldap.class.php:3207
 msgid "No directory associated to entity: impossible search"
-msgstr "没有目录关联的实体：不能搜索"
+msgstr "没有目录关联的实体：不能筛选"
 
 #: inc/authldap.class.php:3391 inc/transfer.class.php:3328
 #: inc/transfer.class.php:3330
@@ -5047,19 +5047,19 @@ msgstr[0] "日"
 #: inc/profile.class.php:804 inc/profile.class.php:1659
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] "打印机弹药"
+msgstr[0] "打印耗材"
 
 #: inc/cartridge.class.php:287
 msgid "Installing a cartridge"
-msgstr "安装 打印机弹药"
+msgstr "安装 打印耗材"
 
 #: inc/cartridge.class.php:293
 msgid "No free cartridge"
-msgstr "无可用打印机弹药"
+msgstr "没有可用的打印耗材"
 
 #: inc/cartridge.class.php:327
 msgid "Uninstalling a cartridge"
-msgstr "卸载打印机弹药"
+msgstr "卸载打印耗材"
 
 #: inc/cartridge.class.php:366 inc/cartridge.class.php:601
 msgctxt "cartridge"
@@ -5091,7 +5091,7 @@ msgstr "共: %1$d (%2$d 新的, %3$d 用过的, %4$d 旧的)"
 #: inc/cartridge.class.php:383 inc/cartridge.class.php:385
 #: inc/cartridge.class.php:434 inc/cartridge.class.php:436
 msgid "No cartridge"
-msgstr "没有打印机弹药"
+msgstr "没有打印耗材"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the used one, %3$d the worn one
@@ -5112,7 +5112,7 @@ msgstr "返回库存"
 
 #: inc/cartridge.class.php:691 inc/cartridge.class.php:958
 msgid "Worn cartridges"
-msgstr "旧打印机弹药"
+msgstr "旧打印耗材"
 
 #: inc/cartridge.class.php:708 inc/commonitiltask.class.php:1292
 #: inc/commonitilvalidation.class.php:742
@@ -5185,7 +5185,7 @@ msgstr "平均打印页数"
 
 #: inc/cartridge.class.php:845
 msgid "Add cartridges"
-msgstr "添加打印机弹药"
+msgstr "添加打印耗材"
 
 #. TRANS : multiplier
 #: inc/cartridge.class.php:910
@@ -5202,7 +5202,7 @@ msgstr "安装"
 
 #: inc/cartridge.class.php:919
 msgid "No cartridge available"
-msgstr "没有可用的打印机弹药"
+msgstr "没有可用的打印耗材"
 
 #: inc/cartridge.class.php:936
 msgid "End of life"
@@ -5214,20 +5214,20 @@ msgstr "更新打印机计数器"
 
 #: inc/cartridge.class.php:956
 msgid "Used cartridges"
-msgstr "用过的打印机弹药"
+msgstr "用过的打印耗材"
 
 #: inc/cartridge.class.php:973 inc/cartridge.class.php:1125
 #: inc/cartridgeitem.class.php:53
 #: inc/notificationtargetcartridgeitem.class.php:82
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] "打印机弹药型号"
+msgstr[0] "打印耗材型号"
 
 #: inc/cartridge.class.php:974 inc/cartridgeitemtype.class.php:42
 #: inc/dropdown.class.php:825
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "打印机弹药类型"
+msgstr[0] "打印耗材类型"
 
 #: inc/cartridge.class.php:980
 msgid "Printed pages"
@@ -5361,7 +5361,7 @@ msgstr[0] "打印机型号"
 
 #: inc/cartridgeitem.class.php:440 inc/cartridgeitem.class.php:585
 msgid "Send alarms on cartridges"
-msgstr "发送打印机弹药警报"
+msgstr "发送打印耗材警报"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -5370,13 +5370,13 @@ msgstr "发送打印机弹药警报"
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
-msgstr "此类打印机弹药的报警阀值：%1$s - 参考值 %2$s - 剩余 %3$d"
+msgstr "此类打印耗材的报警阀值：%1$s - 参考值 %2$s - 剩余 %3$d"
 
 #. TRANS: %s is entity name
 #: inc/cartridgeitem.class.php:522
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr "%s: 发送打印机弹药警报失败"
+msgstr "%s: 发送打印耗材警报失败"
 
 #: inc/cartridgeitem_printermodel.class.php:143
 msgid "Add a compatible printer model"
@@ -5444,12 +5444,12 @@ msgstr[0] "订阅RSS"
 #, php-format
 msgid ""
 "For security reasons, please change the password for the default users: %s"
-msgstr "为了安全，请更改默认用户%s 的密码"
+msgstr "安全起见，请您务必改掉默认用户%s 的默认密码"
 
 #: inc/central.class.php:171
 #, php-format
 msgid "For security reasons, please remove file: %s"
-msgstr "为了安全，请删除文件：%s"
+msgstr "安全起见，请您务必删除此文件：%s"
 
 #: inc/central.class.php:178
 #, php-format
@@ -5818,7 +5818,7 @@ msgstr "解决时间"
 #: inc/rssfeed.class.php:613 inc/tasktemplate.class.php:76
 #: inc/ticket.class.php:4614
 msgid "By"
-msgstr "依"
+msgstr "由"
 
 #: inc/change.class.php:703
 #: inc/notificationtargetcommonitilobject.class.php:1183
@@ -5946,7 +5946,7 @@ msgstr "添加问题"
 #: inc/change_project.class.php:64
 msgid "Link Project/Change"
 msgid_plural "Links Project/Change"
-msgstr[0] "链接 项目/变更"
+msgstr[0] "关联 项目/变更"
 
 #: inc/change_project.class.php:269
 msgid "Add a project"
@@ -5960,17 +5960,17 @@ msgstr[0] "改变任务"
 #: inc/change_ticket.class.php:62
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "连接工作单/改变"
+msgstr[0] "连接工单/改变"
 
 #: inc/change_ticket.class.php:265 inc/problem_ticket.class.php:299
 #: inc/projecttask_ticket.class.php:172
 msgid "Add a ticket"
-msgstr "添加工作单"
+msgstr "添加工单"
 
 #: inc/change_ticket.class.php:289 inc/commonitilobject.class.php:4411
 #: inc/problem_ticket.class.php:329
 msgid "Solve tickets"
-msgstr "解决工作单"
+msgstr "解决工单"
 
 #: inc/change_ticket.class.php:291 inc/commonitiltask.class.php:1710
 #: inc/problem.class.php:390 inc/problem_ticket.class.php:331
@@ -5980,7 +5980,7 @@ msgstr "添加新任务"
 
 #: inc/change_ticket.class.php:380
 msgid "Create a change from this ticket"
-msgstr "建立这个工作单的变更"
+msgstr "建立这个工单的变更"
 
 #: inc/commondbchild.class.php:235 inc/networkportinstantiation.class.php:530
 msgid "Item not linked to an object"
@@ -6030,7 +6030,7 @@ msgstr "选择一个匹配的为  %s:"
 
 #: inc/commondbconnexity.class.php:557
 msgid "Unable to reaffect given elements !"
-msgstr "无法影响给定的元件！"
+msgstr "无法影响给定的元素！"
 
 #: inc/commondbrelation.class.php:1218
 msgid "Remove all at once"
@@ -6238,7 +6238,7 @@ msgstr "更新条目的笔记"
 #: inc/commondbtm.class.php:4900
 #, php-format
 msgid "Document Ticket %d"
-msgstr "工作单文档 %d"
+msgstr "工单文档 %d"
 
 #: inc/commondbtm.class.php:4993
 msgid "You can define an autofill template"
@@ -6572,7 +6572,7 @@ msgstr "添加新成本"
 #: inc/profile.class.php:2237
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] "工作单成本"
+msgstr[0] "工单成本"
 
 #: inc/commonitilcost.class.php:535
 msgid "Item duration"
@@ -6819,7 +6819,7 @@ msgstr "监督者"
 #: inc/commonitilobject.class.php:3477
 #: inc/notificationtargetcommonitilobject.class.php:553
 msgid "Group in charge of the ticket"
-msgstr "工作单管理群组"
+msgstr "工单管理群组"
 
 #: inc/commonitilobject.class.php:3975 inc/planning.class.php:1350
 msgid "Actor"
@@ -6922,7 +6922,7 @@ msgstr[0] "任务类别"
 
 #: inc/commonitiltask.class.php:593
 msgid "Public followup"
-msgstr "公开的后续追踪"
+msgstr "公共的后续追踪"
 
 #: inc/commonitiltask.class.php:628
 #: inc/notificationtargetcommonitilobject.class.php:568
@@ -7160,7 +7160,7 @@ msgstr "审批评论"
 
 #: inc/commonitilvalidation.class.php:803
 msgid "Approvals for the ticket"
-msgstr "审批工作单"
+msgstr "审批工单"
 
 #: inc/commonitilvalidation.class.php:811 inc/ruleticket.class.php:617
 #: inc/ruleticket.class.php:623 inc/ruleticket.class.php:629
@@ -7639,11 +7639,11 @@ msgstr ""
 #: inc/config.class.php:2139 inc/profile.class.php:1420
 #: inc/profile.class.php:1914
 msgid "General setup"
-msgstr "一般设定"
+msgstr "常规设置"
 
 #: inc/config.class.php:290 inc/notificationtarget.class.php:1151
 msgid "URL of the application"
-msgstr "应用程序的URL"
+msgstr "应用程序的URL地址"
 
 #: inc/config.class.php:295
 msgid "Text in the login box (HTML tags supported)"
@@ -7651,7 +7651,7 @@ msgstr ""
 
 #: inc/config.class.php:301
 msgid "Allow FAQ anonymous access"
-msgstr "允许匿名访问FAQ"
+msgstr "是否允许匿名访问FAQ"
 
 #: inc/config.class.php:303
 msgid "Simplified interface help link"
@@ -7659,7 +7659,7 @@ msgstr "简化界面的帮助链接"
 
 #: inc/config.class.php:309
 msgid "Default search results limit (page)"
-msgstr "默认搜索结果限制(页)"
+msgstr "默认筛选结果限制(页)"
 
 #: inc/config.class.php:315
 msgid "Standard interface help link"
@@ -7671,7 +7671,7 @@ msgstr "默认字符限制(文本框摘要)"
 
 #: inc/config.class.php:327
 msgid "Default url length limit"
-msgstr "默认URL长度限制"
+msgstr "默认URL地址的长度限制"
 
 #: inc/config.class.php:336
 msgid "Default decimals limit"
@@ -7679,7 +7679,7 @@ msgstr "默认小数位数限制"
 
 #: inc/config.class.php:346
 msgid "Translation of dropdowns"
-msgstr ""
+msgstr "翻译下拉列表"
 
 #: inc/config.class.php:349
 msgid "Knowledge base translation"
@@ -7691,7 +7691,7 @@ msgstr "动态显示"
 
 #: inc/config.class.php:358
 msgid "Page size for dropdown (paging using scroll)"
-msgstr ""
+msgstr "页面滚动级数（使用滚动页）"
 
 #: inc/config.class.php:365
 msgid "Autocompletion of text fields"
@@ -7700,7 +7700,7 @@ msgstr "自动完成文本字段"
 #: inc/config.class.php:371
 msgid ""
 "Don't show search engine in dropdowns if the number of items is less than"
-msgstr ""
+msgstr "如条目的数量少于某数则不使用搜索"
 
 #: inc/config.class.php:382
 msgid "Search engine"
@@ -7803,7 +7803,7 @@ msgstr "没有自动传输"
 
 #: inc/config.class.php:551
 msgid "Automatically update of the elements related to the computers"
-msgstr "自动更新此电脑的相关元件"
+msgstr "自动更新此电脑的相关元素"
 
 #: inc/config.class.php:552 inc/dropdown.class.php:2057
 #: inc/dropdown.class.php:2065 inc/dropdown.class.php:2067
@@ -7938,7 +7938,7 @@ msgstr ""
 #: inc/profile.class.php:660 inc/profile.class.php:997
 #: inc/profile.class.php:2160 inc/search.class.php:5742
 msgid "Assistance"
-msgstr "协助"
+msgstr "工单协作"
 
 #: inc/config.class.php:828
 msgid "Step for the hours (minutes)"
@@ -7962,23 +7962,23 @@ msgstr ""
 
 #: inc/config.class.php:867
 msgid "Default heading when adding a document to a ticket"
-msgstr "添加文档到工作单时的默认标题"
+msgstr "添加文档到工单时的默认标题"
 
 #: inc/config.class.php:872
 msgid "By default, a software may be linked to a ticket"
-msgstr "默认情况下，软件可以链接到工作单。"
+msgstr "默认情况下，软件可以关联到工单。"
 
 #: inc/config.class.php:880
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr "从资产中移除硬件后依然保留工作单"
+msgstr "从资产中移除硬件后依然保留工单"
 
 #: inc/config.class.php:882
 msgid "Show personnal information in new ticket form (simplified interface)"
-msgstr "在新工作单表格中显示个人信息（简单界面）"
+msgstr "在新工单表格中显示个人信息（简单界面）"
 
 #: inc/config.class.php:888
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
-msgstr "允许匿名用户创建工作单(服务台.收件人)"
+msgstr "允许匿名用户创建工单(服务台.收件人)"
 
 #: inc/config.class.php:890
 msgid "Allow anonymous followups (receiver)"
@@ -8002,15 +8002,15 @@ msgstr "日期格式"
 
 #: inc/config.class.php:1028
 msgid "Display order of surnames firstnames"
-msgstr "以姓、名顺序显示"
+msgstr "以姓氏、名字顺序显示"
 
 #: inc/config.class.php:1029
 msgid "Surname, First name"
-msgstr "姓,名"
+msgstr "姓氏，名字"
 
 #: inc/config.class.php:1030
 msgid "First name, Surname"
-msgstr "名，姓"
+msgstr "名字，姓氏"
 
 #: inc/config.class.php:1033
 msgid "Number format"
@@ -8042,15 +8042,15 @@ msgstr ""
 
 #: inc/config.class.php:1106
 msgid "Notifications for my changes"
-msgstr "通知我的变更"
+msgstr "变更提醒"
 
 #: inc/config.class.php:1110
 msgid "Results to display on home page"
-msgstr "显示结果在首页"
+msgstr "首页呈现笔数"
 
 #: inc/config.class.php:1123
 msgid "PDF export font"
-msgstr "PDF 导出字体"
+msgstr "PDF导出字体(中文乱码请改字体为STSong)"
 
 #: inc/config.class.php:1130
 msgid "CSV delimiter"
@@ -8086,7 +8086,7 @@ msgstr "默认的私人追踪"
 
 #: inc/config.class.php:1213
 msgid "Show new tickets on the home page"
-msgstr "在首页显示新工作单"
+msgstr "在首页显示新工单"
 
 #: inc/config.class.php:1222
 msgid "Private tasks by default"
@@ -8102,11 +8102,11 @@ msgstr ""
 
 #: inc/config.class.php:1233
 msgid "Automatically refresh the list of tickets (minutes)"
-msgstr "自动刷新工作单列表(分钟)"
+msgstr "自动刷新工单列表(分钟)"
 
 #: inc/config.class.php:1242
 msgid "Pre-select me as a technician when creating a ticket"
-msgstr "创建工作单时，预先选择我作为技术人员"
+msgstr "创建工单时，预先选择本人作为技术人员"
 
 #: inc/config.class.php:1249
 msgid "Pre-select me as a requester when creating a ticket"
@@ -8225,13 +8225,13 @@ msgstr ""
 #: inc/config.class.php:1579 inc/config.class.php:2456
 #, php-format
 msgid "%s extension is installed"
-msgstr ""
+msgstr "%s 依赖环境已安装"
 
 #: inc/config.class.php:1580 inc/config.class.php:1651
 #: inc/config.class.php:1652
 #, php-format
 msgid "The \"%s\" extension is installed"
-msgstr ""
+msgstr "此 \"%s\" 依赖已安装好了"
 
 #: inc/config.class.php:1597 inc/config.class.php:1670
 #, php-format
@@ -8279,7 +8279,7 @@ msgstr "重置"
 #: inc/config.class.php:2469
 #, php-format
 msgid "%s extension is not present"
-msgstr ""
+msgstr "%s 依赖环境没备好"
 
 #: inc/config.class.php:1643
 #, php-format
@@ -8667,7 +8667,7 @@ msgid ""
 "You are trying to use GLPI with outdated files compared to the version of "
 "the database. Please install the correct GLPI files corresponding to the "
 "version of your database."
-msgstr "您正在用旧版本的GLPI链接高版本数据库。请安装域目前数据库版本相匹配的版本。."
+msgstr "您正在用旧版本的GLPI连接高版本数据库。请安装域目前数据库版本相匹配的版本。."
 
 #: inc/config.php:279
 msgid ""
@@ -8825,7 +8825,7 @@ msgstr "城市"
 #: inc/supplier.class.php:183 inc/supplier.class.php:277
 msgctxt "location"
 msgid "State"
-msgstr "状态"
+msgstr "州省"
 
 #: inc/contact.class.php:219 inc/contact.class.php:382
 #: inc/entity.class.php:571 inc/entity.class.php:1356
@@ -9091,7 +9091,7 @@ msgstr "删除合同"
 #: inc/contract_item.class.php:91
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "链接 合同/项目"
+msgstr[0] "关联 合同/项目"
 
 #: inc/contract_item.class.php:161 inc/queuednotification.class.php:335
 msgid "Associated item ID"
@@ -9800,7 +9800,7 @@ msgstr "没有个人标准。创建个人参数吗？"
 #: inc/search.class.php:1497 inc/search.class.php:1498
 #: inc/search.class.php:1509 inc/search.class.php:1520
 msgid "Select default items to show"
-msgstr "选择显示出来的缺省项目"
+msgstr "选择显示出来的默认项目"
 
 #: inc/displaypreference.class.php:370 inc/displaypreference.class.php:525
 msgid "Bring up"
@@ -10118,7 +10118,7 @@ msgstr[0] "项目的状态"
 #: inc/profile.class.php:1439
 msgid "Ticket category"
 msgid_plural "Ticket categories"
-msgstr[0] "工作单类别"
+msgstr[0] "工类别"
 
 #: inc/dropdown.class.php:794 inc/itilsolution.class.php:161
 #: inc/profile.class.php:1454 inc/solutiontemplate.class.php:51
@@ -10199,7 +10199,7 @@ msgstr[0] "电话的电源适配器类型"
 #: inc/dropdown.class.php:860 inc/line.class.php:120 inc/linetype.class.php:42
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] ""
+msgstr[0] "线路类别"
 
 #: inc/dropdown.class.php:869 inc/networkequipmentmodel.class.php:41
 #: inc/rule.class.php:324
@@ -10326,7 +10326,7 @@ msgstr "VLAN"
 #: inc/lineoperator.class.php:48 inc/profile.class.php:1472
 msgid "Line operator"
 msgid_plural "Line operators"
-msgstr[0] ""
+msgstr[0] "线路作业员"
 
 #: inc/dropdown.class.php:1000 inc/profile.class.php:816
 #: inc/profile.class.php:1701
@@ -10616,7 +10616,7 @@ msgstr "邮件署名"
 
 #: inc/entity.class.php:741
 msgid "Alarms on cartridges"
-msgstr "打印机弹药警报"
+msgstr "打印耗材警报"
 
 #: inc/entity.class.php:751
 msgid "Alarms on consumables"
@@ -10664,7 +10664,7 @@ msgstr "财务和管理信息报警的默认值"
 
 #: inc/entity.class.php:851 inc/entity.class.php:1739
 msgid "Default threshold for cartridges count"
-msgstr "打印机弹药数量的默认阀值"
+msgstr "打印耗材数量的默认阀值"
 
 #: inc/entity.class.php:861 inc/entity.class.php:1779
 msgid "Default threshold for consumables count"
@@ -10685,12 +10685,12 @@ msgstr ""
 #: inc/tickettemplate.class.php:136
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] "工作单模板"
+msgstr[0] "工单模板"
 
 #: inc/entity.class.php:906 inc/entity.class.php:2213
 #: inc/notificationtargetticket.class.php:771
 msgid "Automatic closing of solved tickets after"
-msgstr "自动关闭解决的工作单，自"
+msgstr "自动关闭解决的工单，自"
 
 #: inc/entity.class.php:917 inc/entity.class.php:2217
 msgid "Immediatly"
@@ -10698,15 +10698,15 @@ msgstr "立即"
 
 #: inc/entity.class.php:925
 msgid "Alerts on tickets which are not solved"
-msgstr "未解决工作单的警报"
+msgstr "未解决工单的警报"
 
 #: inc/entity.class.php:935 inc/entity.class.php:2190
 msgid "Automatic assignment of tickets"
-msgstr "自动分配工作单"
+msgstr "自动分配工单"
 
 #: inc/entity.class.php:955 inc/entity.class.php:2172
 msgid "Tickets default type"
-msgstr "工作单默认类型"
+msgstr "工单默认类型"
 
 #: inc/entity.class.php:980 inc/entity.class.php:1510
 #: inc/infocom.class.php:1055 inc/infocom.class.php:1427
@@ -10840,7 +10840,7 @@ msgstr "警报选项"
 
 #: inc/entity.class.php:1725
 msgid "Reminders frequency for alarms on cartridges"
-msgstr "打印机弹药报警的提醒频率"
+msgstr "打印耗材报警的提醒频率"
 
 #: inc/entity.class.php:1766
 msgid "Reminders frequency for alarms on consumables"
@@ -10861,7 +10861,7 @@ msgstr[0] "预订"
 
 #: inc/entity.class.php:1981
 msgid "Alerts on tickets which are not solved since"
-msgstr "尚未解决工作单的警报信息，自从"
+msgstr "尚未解决工单的警报信息，自从"
 
 #: inc/entity.class.php:2151 inc/entity.class.php:2164
 #: inc/entity.class.php:2717 inc/levelagreement.class.php:486
@@ -10935,7 +10935,7 @@ msgstr "没有事件"
 #: inc/event.class.php:267
 #, php-format
 msgid "Last %d events"
-msgstr "最近的 %d 事件"
+msgstr "最新的 %d 事件"
 
 #: inc/event.class.php:270 inc/event.class.php:324
 #: inc/ruleimportentity.class.php:109
@@ -11083,7 +11083,7 @@ msgstr "管理的项目"
 
 #: inc/group.class.php:261
 msgid "Visible in a ticket"
-msgstr "工作单中可见"
+msgstr "工单中可见"
 
 #: inc/group.class.php:281 inc/group.class.php:489
 msgid "Can be notified"
@@ -11484,7 +11484,7 @@ msgstr ""
 
 #: inc/html.class.php:6043
 msgid "Manage saved searches"
-msgstr ""
+msgstr "管理筛选项"
 
 #: inc/html.class.php:6047 inc/search.class.php:2200
 msgid "Load a saved search"
@@ -11493,7 +11493,7 @@ msgstr ""
 #: inc/html.class.php:6113 inc/profile.class.php:2167
 #: inc/ticket.class.php:5789
 msgid "Create a ticket"
-msgstr "创建工作单"
+msgstr "创建工单"
 
 #: inc/html.class.php:6344 inc/html.class.php:6346
 msgid "Add is disabled"
@@ -11507,7 +11507,7 @@ msgstr ""
 #: inc/ticket.class.php:254 inc/ticket.class.php:3627
 #: inc/ticket.class.php:3628 inc/ticket.class.php:5814
 msgid "Ticket waiting for your approval"
-msgstr "待您审批的工作单"
+msgstr "待您审批的工单"
 
 #: inc/infocom.class.php:420
 #, php-format
@@ -11831,7 +11831,7 @@ msgstr ""
 #: inc/line.class.php:50 inc/profile.class.php:885
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] ""
+msgstr[0] "线路"
 
 #: inc/item_devicesimcard.class.php:103
 msgid "Mobile Subscriber Identification Number"
@@ -12035,7 +12035,7 @@ msgstr ""
 
 #: inc/item_ticket.class.php:641
 msgid "Or complete search"
-msgstr "或完成搜索"
+msgstr "或完成筛选"
 
 #: inc/item_ticket.class.php:790 inc/profile.class.php:2643
 #: inc/profile.class.php:2648
@@ -12096,7 +12096,7 @@ msgstr "事件模板"
 #: inc/search.class.php:5747
 msgctxt "quantity"
 msgid "Number of tickets"
-msgstr "工作单数量"
+msgstr "工单数量"
 
 #: inc/itilcategory.class.php:205 inc/notificationtargetchange.class.php:266
 #: inc/notificationtargetticket.class.php:768 inc/search.class.php:5764
@@ -12271,7 +12271,7 @@ msgstr "以之为解决方案"
 
 #: inc/knowbaseitem.class.php:1560
 msgid "Recent entries"
-msgstr "最近的录入"
+msgstr "最新的录入"
 
 #: inc/knowbaseitem.class.php:1563
 msgid "Last updated entries"
@@ -12506,7 +12506,7 @@ msgstr ""
 
 #: inc/levelagreement.class.php:488 inc/slm.class.php:123
 msgid "Calendar of the ticket"
-msgstr "工作单的日历"
+msgstr "工单的日历"
 
 #: inc/levelagreement.class.php:928 inc/levelagreementlevel.class.php:280
 #: inc/notificationtargetticket.class.php:719 inc/olalevel.class.php:177
@@ -12754,7 +12754,7 @@ msgstr ""
 
 #: inc/log.class.php:1102
 msgid "Add a link with an item"
-msgstr "添加项目链接"
+msgstr "添加项目关联"
 
 #: inc/log.class.php:1106
 msgid "Update a link with an item"
@@ -12762,15 +12762,15 @@ msgstr ""
 
 #: inc/log.class.php:1110
 msgid "Delete a link with an item"
-msgstr "删除项目链接"
+msgstr "删除项目关联"
 
 #: inc/log.class.php:1114
 msgid "Lock a link with an item"
-msgstr "锁定项目链接"
+msgstr "锁定项目关联"
 
 #: inc/log.class.php:1118
 msgid "Unlock a link with an item"
-msgstr "解锁项目链接"
+msgstr "解锁项目关联"
 
 #: inc/log.class.php:1126
 msgid "Update an item"
@@ -12820,7 +12820,7 @@ msgstr "使用邮件日期代替收集日期"
 #: inc/mailcollector.class.php:320
 msgctxt "button"
 msgid "Get email tickets now"
-msgstr "现在获取邮件工作单"
+msgstr "现在获取邮件工单"
 
 #: inc/mailcollector.class.php:484
 #, php-format
@@ -13372,7 +13372,7 @@ msgstr "没有网卡的设备"
 
 #: inc/networkportinstantiation.class.php:570
 msgid "item not linked to an object"
-msgstr "项目没有链接到物件"
+msgstr "项目没有关联到项目"
 
 #. TRANS: %1$s and %2$s are links
 #: inc/networkportinstantiation.class.php:776
@@ -13697,7 +13697,7 @@ msgstr[0] ""
 
 #: inc/notificationmailingsetting.class.php:87
 msgid "From email"
-msgstr ""
+msgstr "寄件人"
 
 #: inc/notificationmailingsetting.class.php:88
 msgid "Address to use in from for sent emails."
@@ -13771,7 +13771,7 @@ msgstr "SMTP+TLS"
 
 #: inc/notificationmailingsetting.class.php:147
 msgid "The PHP mail function is unknown or is not activated on your system."
-msgstr "PHP邮件功能未知或在系统中没有激活."
+msgstr "PHP邮件功能未知或在系统中没有启用。"
 
 #: inc/notificationmailingsetting.class.php:148
 msgid "The use of a SMTP is needed."
@@ -13803,7 +13803,7 @@ msgstr "SMTP密码（可选）"
 
 #: inc/notificationmailingsetting.class.php:233
 msgid "Email sender"
-msgstr ""
+msgstr "发件人"
 
 #: inc/notificationmailingsetting.class.php:234
 msgid "May be required for some mails providers."
@@ -13851,7 +13851,7 @@ msgstr ""
 
 #: inc/notificationtargetcartridgeitem.class.php:47
 msgid "Cartridges alarm"
-msgstr "打印机弹药警报"
+msgstr "打印耗材警报"
 
 #: inc/notificationtargetcartridgeitem.class.php:83
 #: inc/notificationtargetconsumableitem.class.php:84
@@ -13998,11 +13998,11 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:529
 msgid "Former technician in charge of the ticket"
-msgstr "之前负责此工作单的技术员"
+msgstr "之前负责此工单的技术员"
 
 #: inc/notificationtargetcommonitilobject.class.php:539
 msgid "Manager of the group in charge of the ticket"
-msgstr "负责此工作单的群组管理员"
+msgstr "负责此工单的群组管理员"
 
 #: inc/notificationtargetcommonitilobject.class.php:541
 msgid "Group in charge of the ticket except manager users"
@@ -14018,7 +14018,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:549
 msgid "Technician in charge of the ticket"
-msgstr "负责工作单的技术员"
+msgstr "负责工单的技术员"
 
 #: inc/notificationtargetcommonitilobject.class.php:552
 #: inc/notificationtargetreservation.class.php:58
@@ -14499,11 +14499,11 @@ msgstr ""
 
 #: inc/notificationtargetticket.class.php:229
 msgid "Update of a ticket"
-msgstr "工作单更新"
+msgstr "工单更新"
 
 #: inc/notificationtargetticket.class.php:230
 msgid "Ticket solved"
-msgstr "已解决工作单"
+msgstr "已解决工单"
 
 #: inc/notificationtargetticket.class.php:231
 msgid "Solution rejected"
@@ -14523,16 +14523,16 @@ msgstr "删除后续追踪"
 
 #: inc/notificationtargetticket.class.php:240
 msgid "Closing of the ticket"
-msgstr "关闭工作单"
+msgstr "关闭工单"
 
 #: inc/notificationtargetticket.class.php:241
 msgid "Deletion of a ticket"
-msgstr "删除工作单"
+msgstr "删除工单"
 
 #: inc/notificationtargetticket.class.php:242
 #: inc/notificationtargetticket.class.php:894 inc/ticket.class.php:6321
 msgid "Not solved tickets"
-msgstr "未解决工作单"
+msgstr "未解决工单"
 
 #: inc/notificationtargetticket.class.php:243
 msgid "Automatic reminders of SLAs"
@@ -14553,7 +14553,7 @@ msgstr ""
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] "没有回复的工作单将会在  %s 天后自动关闭"
+msgstr[0] "没有回复的工单将会在  %s 天后自动关闭"
 
 #: inc/notificationtargetticket.class.php:716
 #: inc/notificationtargetticket.class.php:718
@@ -14598,7 +14598,7 @@ msgstr "后续追踪的数量"
 #: inc/notificationtargetticket.class.php:767
 msgctxt "quantity"
 msgid "Number of linked tickets"
-msgstr "链接工作单的数量"
+msgstr "关联的工单数"
 
 #: inc/notificationtargetticket.class.php:780
 msgid "Solution rejection comment"
@@ -14648,7 +14648,7 @@ msgstr[0] "后续追踪"
 #: inc/ticket.class.php:5098
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "链接的工作单"
+msgstr[0] "关联工单"
 
 #: inc/notificationtargetticket.class.php:909
 msgid "Link"
@@ -14816,7 +14816,7 @@ msgstr ""
 
 #: inc/objectlock.class.php:283
 msgid "Warning: read-only!"
-msgstr ""
+msgstr "警告: 只读!"
 
 #: inc/objectlock.class.php:285
 msgid "Request write on "
@@ -14997,7 +14997,7 @@ msgstr "所选时间段内用户忙。"
 
 #: inc/planning.class.php:503 inc/profile.class.php:541
 msgid "Caption"
-msgstr "标题"
+msgstr "头衔"
 
 #: inc/planning.class.php:504
 msgid "Available"
@@ -15055,7 +15055,7 @@ msgstr "您的计划"
 #: inc/planning.class.php:2175
 #, php-format
 msgid "Ticket #%1$s %2$s"
-msgstr "工作单 #%1$s %2$s"
+msgstr "工单 #%1$s %2$s"
 
 #: inc/planning.class.php:2222
 msgid "See personnal planning"
@@ -15212,7 +15212,7 @@ msgstr ""
 #: inc/plugin.class.php:1532
 #, php-format
 msgid "This plugin requires PHP extension %1$s"
-msgstr ""
+msgstr "该插件需要 PHP 依赖 %1$s"
 
 #: inc/plugin.class.php:1538
 #, php-format
@@ -15339,7 +15339,7 @@ msgstr[0] "%d 相关文档"
 
 #: inc/problem.class.php:1378
 msgid "Last problems"
-msgstr "最近的问题"
+msgstr "最新问题"
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1439
@@ -15364,11 +15364,11 @@ msgstr[0] "问题式任务"
 #: inc/problem_ticket.class.php:59
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] "链接 工作单/问题"
+msgstr[0] "关联 工单/问题"
 
 #: inc/problem_ticket.class.php:425
 msgid "Create a problem from this ticket"
-msgstr "从这个工作单中创建问题"
+msgstr "从这个工单中创建问题"
 
 #: inc/profile.class.php:94 inc/profile.class.php:99
 msgid "Life cycles"
@@ -15376,7 +15376,7 @@ msgstr "生命周期"
 
 #: inc/profile.class.php:326 inc/profile.class.php:348
 msgid "This profile is the last with write rights on profiles"
-msgstr "此配置文件是最近正确写入的配置"
+msgstr "此配置文件是最新正确写入的配置"
 
 #: inc/profile.class.php:328 inc/profile.class.php:350
 msgid "Deletion refused"
@@ -15393,7 +15393,7 @@ msgstr "实体权利"
 #: inc/profile.class.php:600 inc/profile.class.php:1542
 #: inc/user.class.php:2221 inc/user.class.php:2488 inc/user.class.php:3065
 msgid "Default profile"
-msgstr "缺省配置文件"
+msgstr "默认配置文件"
 
 #: inc/profile.class.php:605 inc/profile.class.php:1532
 #: inc/tickettemplatemandatoryfield.class.php:270
@@ -15406,7 +15406,7 @@ msgstr "更改密码"
 
 #: inc/profile.class.php:616 inc/profile.class.php:1551
 msgid "Ticket creation form on login"
-msgstr "登录后创建工作单"
+msgstr "登录后创建工单"
 
 #: inc/profile.class.php:664 inc/profile.class.php:1052
 msgid "Association"
@@ -15420,31 +15420,31 @@ msgstr "查看我的群组的硬件"
 #: inc/profile.class.php:673 inc/profile.class.php:1062
 #: inc/profile.class.php:2251
 msgid "Link with items for the creation of tickets"
-msgstr "建立工作单时就连接到项目"
+msgstr "建立工单时就连接到项目"
 
 #: inc/profile.class.php:681 inc/profile.class.php:1070
 #: inc/profile.class.php:2260
 msgid "Associable items to a ticket"
-msgstr "工作单可链接的项目"
+msgstr "工单可关联的项目"
 
 #: inc/profile.class.php:689 inc/profile.class.php:1000
 #: inc/profile.class.php:2181
 msgid "Default ticket template"
-msgstr "缺省工作单模板"
+msgstr "默认工单模板"
 
 #: inc/profile.class.php:746 inc/profile.class.php:935
 #: inc/profile.class.php:2356 inc/reminder.class.php:1085
 #: inc/reminder.class.php:1087
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] "公开提醒"
+msgstr[0] "公共提醒"
 
 #: inc/profile.class.php:749 inc/profile.class.php:938
 #: inc/profile.class.php:2384 inc/rssfeed.class.php:880
 #: inc/rssfeed.class.php:882
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] "公开RSS订阅"
+msgstr[0] "公共RSS订阅"
 
 #: inc/profile.class.php:819
 msgid "Simcard PIN/PUK"
@@ -15457,7 +15457,7 @@ msgstr "财务和管理信息"
 #: inc/profile.class.php:941 inc/profile.class.php:2370
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] ""
+msgstr[0] "公共筛选项"
 
 #: inc/profile.class.php:944 inc/profile.class.php:1823
 #: inc/report.class.php:58
@@ -15471,7 +15471,7 @@ msgstr "预订管理"
 
 #: inc/profile.class.php:1027 inc/ticketrecurrent.class.php:60
 msgid "Recurrent tickets"
-msgstr "循环工作单"
+msgstr "循环工单"
 
 #: inc/profile.class.php:1094 inc/reminder.class.php:659
 #: inc/savedsearch.class.php:394 inc/state.class.php:72
@@ -15489,7 +15489,7 @@ msgstr "从 \\ 到"
 #: inc/profile.class.php:1186 inc/profile.class.php:1287
 #: inc/profile.class.php:2281
 msgid "Life cycle of tickets"
-msgstr "工作单生命周期"
+msgstr "工单生命周期"
 
 #: inc/profile.class.php:1189 inc/profile.class.php:2291
 msgid "Life cycle of problems"
@@ -15501,7 +15501,7 @@ msgstr ""
 
 #: inc/profile.class.php:1339 inc/queuednotification.class.php:48
 msgid "Notification queue"
-msgstr ""
+msgstr "温馨提醒"
 
 #: inc/profile.class.php:1354 inc/profile.class.php:1992
 msgid "Rules for assigning a computer to an entity"
@@ -15511,7 +15511,7 @@ msgstr "分配电脑到实体的规则"
 #: inc/rulemailcollector.class.php:58
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr "通过邮件收件人创建的工作单的分配规则"
+msgstr "通过邮件收件人创建的工单的分配规则"
 
 #: inc/profile.class.php:1360 inc/profile.class.php:2020
 msgid "Rules for assigning a category to a software"
@@ -15519,12 +15519,12 @@ msgstr "分配类别给软件的规则"
 
 #: inc/profile.class.php:1363
 msgid "Business rules for tickets (entity)"
-msgstr "工作单的商业规则（实体）"
+msgstr "工单的商业规则（实体）"
 
 #: inc/profile.class.php:1373 inc/profile.class.php:1381
 #: inc/profile.class.php:2048
 msgid "Dropdowns dictionary"
-msgstr "下拉列表辞典"
+msgstr "下拉列表词典"
 
 #: inc/profile.class.php:1376 inc/profile.class.php:2034
 msgid "Software dictionary"
@@ -15532,7 +15532,7 @@ msgstr "软件词典"
 
 #: inc/profile.class.php:1379
 msgid "Printers dictionnary"
-msgstr "打印机辞典"
+msgstr "打印机词典"
 
 #: inc/profile.class.php:1423
 msgid "Search result display"
@@ -15550,7 +15550,7 @@ msgstr "实体下拉列表"
 #: inc/profile.class.php:1963 inc/ruleticket.class.php:51
 #: inc/ruleticketcollection.class.php:67
 msgid "Business rules for tickets"
-msgstr "工作单的商业规则"
+msgstr "工单的商业规则"
 
 #: inc/profile.class.php:2542
 msgid "No access"
@@ -15831,7 +15831,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:262 inc/queuednotification.class.php:732
 msgid "Reply-to email"
-msgstr ""
+msgstr "回复"
 
 #: inc/queuednotification.class.php:280 inc/queuednotification.class.php:741
 msgid "Additional headers"
@@ -15855,7 +15855,7 @@ msgstr ""
 
 #: inc/queuednotification.class.php:475
 msgid "Clean notification queue"
-msgstr ""
+msgstr "清除提醒"
 
 #: inc/queuednotification.class.php:476
 msgid "Days to keep sent emails"
@@ -15986,7 +15986,7 @@ msgstr "添加到日程表"
 
 #: inc/report.class.php:80
 msgid "Default report"
-msgstr "缺省报告"
+msgstr "默认报告"
 
 #: inc/report.class.php:85
 msgid "By contract"
@@ -16004,7 +16004,7 @@ msgstr "硬件财务和管理信息"
 msgid ""
 "Other financial and administrative information (licenses, cartridges, "
 "consumables)"
-msgstr "其他财务和管理信息(许可证、打印机弹药，耗材)"
+msgstr "其他财务和管理信息(许可证，打印机，耗材)"
 
 #: inc/report.class.php:101 install/update_051_06.php:144
 msgid "Loan"
@@ -16038,7 +16038,7 @@ msgstr ""
 
 #: inc/requesttype.class.php:52 inc/requesttype.class.php:80
 msgid "Default for tickets"
-msgstr "工作单缺省值"
+msgstr "工单默认值"
 
 #: inc/requesttype.class.php:55 inc/requesttype.class.php:89
 msgid "Default for followups"
@@ -16046,7 +16046,7 @@ msgstr ""
 
 #: inc/requesttype.class.php:58 inc/requesttype.class.php:98
 msgid "Default for mail recipients"
-msgstr "邮件接收人缺省值"
+msgstr "邮件接收人默认值"
 
 #: inc/requesttype.class.php:61 inc/requesttype.class.php:107
 msgid "Default for followup mail recipients"
@@ -16178,11 +16178,11 @@ msgstr "修改批注"
 
 #: inc/reservationitem.class.php:402
 msgid "See all reservable items"
-msgstr ""
+msgstr "查看所有可保留项目"
 
 #: inc/reservationitem.class.php:408 inc/reservationitem.class.php:419
 msgid "Find a free item in a specific period"
-msgstr ""
+msgstr "按特定时间查找免费项目"
 
 #: inc/reservationitem.class.php:649
 msgid "Device reservations expiring today"
@@ -16377,7 +16377,7 @@ msgstr "测试规则引擎"
 
 #: inc/rulecollection.class.php:556 inc/software.class.php:352
 msgid "Replay the dictionary rules"
-msgstr "重新执行辞典规则"
+msgstr "重新执行词典规则"
 
 #: inc/rulecollection.class.php:834
 #, php-format
@@ -16521,11 +16521,11 @@ msgstr "添加标准"
 #: inc/ruledictionnarycomputermodelcollection.class.php:45
 #: inc/ruledictionnarymonitormodelcollection.class.php:41
 msgid "Dictionnary of computer models"
-msgstr "计算机型号辞典"
+msgstr "计算机型号词典"
 
 #: inc/ruledictionnarycomputertypecollection.class.php:45
 msgid "Dictionnary of computer types"
-msgstr "计算机类型辞典"
+msgstr "计算机类型词典"
 
 #: inc/ruledictionnarydropdowncollection.class.php:60
 #: inc/ruledictionnarydropdowncollection.class.php:115
@@ -16565,11 +16565,11 @@ msgstr "显示器类型字典"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:41
 msgid "Dictionnary of networking equipment models"
-msgstr "网络设备型号辞典"
+msgstr "网络设备型号词典"
 
 #: inc/ruledictionnarynetworkequipmenttypecollection.class.php:41
 msgid "Dictionnary of network equipment types"
-msgstr "网络设备类型辞典"
+msgstr "网络设备类型词典"
 
 #: inc/ruledictionnaryoperatingsystemarchitecturecollection.class.php:41
 msgid "Dictionnary of operating system architectures"
@@ -16581,7 +16581,7 @@ msgstr "操作系统词典"
 
 #: inc/ruledictionnaryoperatingsystemservicepackcollection.class.php:41
 msgid "Dictionnary of service packs"
-msgstr "补丁服务包辞典"
+msgstr "补丁服务包词典"
 
 #: inc/ruledictionnaryoperatingsystemversioncollection.class.php:41
 msgid "Dictionnary of operating system versions"
@@ -16652,7 +16652,7 @@ msgstr ""
 #: inc/ruledictionnarysoftware.class.php:120 inc/software.class.php:281
 #: inc/software.class.php:563
 msgid "Associable to a ticket"
-msgstr "可关联到工作单"
+msgstr "可关联到工单"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:82
 msgid "Warning before running rename based on the dictionary rules"
@@ -16670,7 +16670,7 @@ msgstr "制造商选择"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:90
 msgid "Replay dictionary rules for manufacturers (----- = All)"
-msgstr "为制造商重新执行辞典规则(-----=所有)"
+msgstr "为制造商重新执行词典规则(-----=所有)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:284
 #: inc/ruledictionnarysoftwarecollection.class.php:387
@@ -16680,7 +16680,7 @@ msgstr "被GLPI词典规则删除的软件"
 #: inc/ruleimportcomputer.class.php:52
 #: inc/ruleimportcomputercollection.class.php:62
 msgid "Rules for import and link computers"
-msgstr "导入和链接电脑的规则"
+msgstr "导入和关联电脑的规则"
 
 #: inc/ruleimportcomputer.class.php:75
 msgid "Target entity for the computer"
@@ -16696,11 +16696,11 @@ msgstr "子网"
 
 #: inc/ruleimportcomputer.class.php:129
 msgid "Link if possible"
-msgstr "如果可能就链接"
+msgstr "如果可能就关联"
 
 #: inc/ruleimportcomputer.class.php:131
 msgid "Link if possible, otherwise imports declined"
-msgstr "如果可能就链接，否则拒绝导入"
+msgstr "如果可能就关联，否则拒绝导入"
 
 #: inc/ruleimportcomputer.class.php:164
 msgid "Yes if equal"
@@ -16860,7 +16860,7 @@ msgstr ""
 
 #: inc/ruleticket.class.php:385
 msgid "Ticket location"
-msgstr "工作单地点"
+msgstr "工单地点"
 
 #: inc/ruleticket.class.php:634
 msgid "Approval request to requester group manager"
@@ -16882,13 +16882,13 @@ msgstr ""
 #: inc/savedsearch_alert.class.php:56
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] ""
+msgstr[0] "保存筛选项提示"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
 #: inc/savedsearch.class.php:1387
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
+msgstr[0] "保存筛选"
 
 #: inc/savedsearch_alert.class.php:148 inc/savedsearch_alert.class.php:253
 msgid "Operator"
@@ -16919,7 +16919,7 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:301
 msgid "Saved searches alerts"
-msgstr ""
+msgstr "保存筛选项提示"
 
 #: inc/savedsearch_alert.class.php:355
 msgid "less than"
@@ -17033,11 +17033,11 @@ msgstr ""
 
 #: inc/savedsearch.class.php:942 inc/savedsearch.class.php:943
 msgid "Not default search"
-msgstr "不是默认搜索"
+msgstr "不是默认筛选"
 
 #: inc/savedsearch.class.php:947 inc/savedsearch.class.php:948
 msgid "Default search"
-msgstr "默认的搜索"
+msgstr "默认筛选"
 
 #: inc/savedsearch.class.php:954
 msgid "Click to load or drag and drop to reorder"
@@ -17049,7 +17049,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:992
 msgid "Saved searches order cannot be saved!"
-msgstr ""
+msgstr "无法保存筛选项！"
 
 #: inc/savedsearch.class.php:1006
 #, php-format
@@ -17177,7 +17177,7 @@ msgstr "SLA自动操作"
 #: inc/slm.class.php:57
 msgid "Service level"
 msgid_plural "Service levels"
-msgstr[0] ""
+msgstr[0] "服务级别"
 
 #: inc/software.class.php:74 inc/software.class.php:1017
 msgid "Merging"
@@ -17185,11 +17185,11 @@ msgstr "合并中"
 
 #: inc/software.class.php:275 inc/software.class.php:526
 msgid "Technician in charge of the software"
-msgstr ""
+msgstr "软件技术员 "
 
 #: inc/software.class.php:286 inc/software.class.php:536
 msgid "Group in charge of the software"
-msgstr ""
+msgstr "软件组"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
 #: inc/software.class.php:316 install/update.php:525
@@ -17224,11 +17224,11 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:344 inc/softwarelicense.class.php:596
 msgid "Technician in charge of the license"
-msgstr ""
+msgstr "许可证技术员"
 
 #: inc/softwarelicense.class.php:357 inc/softwarelicense.class.php:615
 msgid "Group in charge of the license"
-msgstr ""
+msgstr "许可证组"
 
 #: inc/softwarelicense.class.php:399 inc/softwarelicense.class.php:542
 #: inc/softwarelicense.class.php:979
@@ -17293,23 +17293,23 @@ msgstr "添加版本"
 
 #: inc/stat.class.php:414
 msgid "Real duration of treatment of the ticket"
-msgstr "工作单实际处理时间"
+msgstr "工单实际处理时间"
 
 #: inc/stat.class.php:426
 msgid "Number of opened tickets"
-msgstr "已开启的工作单数量"
+msgstr "已开启的工单数量"
 
 #: inc/stat.class.php:427
 msgid "Number of solved tickets"
-msgstr "已解决的工作单数量"
+msgstr "已解决的工单数量"
 
 #: inc/stat.class.php:428
 msgid "Number of late tickets"
-msgstr "延误的工作单数量"
+msgstr "延误的工单数量"
 
 #: inc/stat.class.php:429
 msgid "Number of closed tickets"
-msgstr "已结案的的工作单数量"
+msgstr "已结案的的工单数量"
 
 #: inc/stat.class.php:440
 msgid "Number of opened satisfaction survey"
@@ -17341,11 +17341,11 @@ msgstr "平均结案时间"
 
 #: inc/stat.class.php:474
 msgid "Average real duration of treatment of the ticket"
-msgstr "工作单的真实平均处理时间"
+msgstr "工单的真实平均处理时间"
 
 #: inc/stat.class.php:477
 msgid "Total real duration of treatment of the ticket"
-msgstr "工作单的真实总处理时间"
+msgstr "工单的真实总处理时间"
 
 #: inc/stat.class.php:672
 msgid "No statistics are available"
@@ -17353,11 +17353,11 @@ msgstr "没有可用的统计"
 
 #: inc/stat.class.php:1159
 msgid "Number of tickets"
-msgstr "工作单数量"
+msgstr "工单数量"
 
 #: inc/stat.class.php:1214
 msgid "By ticket"
-msgstr "根据工作单"
+msgstr "根据工单"
 
 #: inc/stat.class.php:1216
 msgid "By hardware characteristics"
@@ -17420,7 +17420,7 @@ msgstr ""
 
 #: inc/telemetry.class.php:371
 msgid "See what would be sent..."
-msgstr ""
+msgstr "看看会送什么..."
 
 #: inc/telemetry.class.php:384
 msgid "Telemetry data"
@@ -17473,7 +17473,7 @@ msgstr ""
 
 #: inc/ticket.class.php:683 inc/ticket.class.php:710
 msgid "Created tickets"
-msgstr "已创建的工作单"
+msgstr "已创建的工单"
 
 #: inc/ticket.class.php:779
 msgid "Processing ticket"
@@ -17489,7 +17489,7 @@ msgstr "没有生成的调查"
 
 #: inc/ticket.class.php:1300 inc/ticket.class.php:2069
 msgid "Unknown ticket"
-msgstr "未知的工作单"
+msgstr "未知的工单"
 
 #: inc/ticket.class.php:1885
 #, php-format
@@ -17513,7 +17513,7 @@ msgstr "审批申请"
 #: inc/ticket.class.php:2623
 msgctxt "button"
 msgid "Link tickets"
-msgstr "链接工作单"
+msgstr "关联工单"
 
 #: inc/ticket.class.php:2660
 msgid "Time to own + Progress"
@@ -17553,19 +17553,19 @@ msgstr "考虑到的时间"
 
 #: inc/ticket.class.php:3165
 msgid "All linked tickets"
-msgstr "所有链接的工作单"
+msgstr "所有关联的工单"
 
 #: inc/ticket.class.php:3179
 msgid "Duplicated tickets"
-msgstr "重复的工作单"
+msgstr "重复的工单"
 
 #: inc/ticket.class.php:3194
 msgid "Number of all linked tickets"
-msgstr "所有链接工作单的数量"
+msgstr "所有关联工单的数量"
 
 #: inc/ticket.class.php:3207
 msgid "Number of duplicated tickets"
-msgstr "重复工作单的数量"
+msgstr "重复工单的数量"
 
 #: inc/ticket.class.php:3222
 msgid "Parent tickets"
@@ -17589,11 +17589,11 @@ msgstr "问题"
 
 #: inc/ticket.class.php:3629
 msgid "Tickets awaiting approval"
-msgstr "待审批工作单"
+msgstr "待审批工单"
 
 #: inc/ticket.class.php:3723
 msgid "This ticket concerns me"
-msgstr "与我有关的工作单"
+msgstr "与我有关的工单"
 
 #: inc/ticket.class.php:3745 inc/ticket.class.php:3775
 msgid "Check your personnal information"
@@ -17614,7 +17614,7 @@ msgstr "发送消息"
 #: inc/ticket.class.php:4578
 #, php-format
 msgid "The ticket will be added in the entity %s"
-msgstr "工作单将被添加到实体 %s"
+msgstr "工单将被添加到实体 %s"
 
 #: inc/ticket.class.php:4712
 msgid "Close date"
@@ -17635,61 +17635,61 @@ msgstr ""
 
 #: inc/ticket.class.php:5442 inc/ticket.class.php:5614
 msgid "Your tickets to close"
-msgstr "您待结案的工作单"
+msgstr "您待结案的工单"
 
 #: inc/ticket.class.php:5458 inc/ticket.class.php:5525
 msgid "Tickets on pending status"
-msgstr "待定状态中的工作单"
+msgstr "待定状态中的工单"
 
 #: inc/ticket.class.php:5474 inc/ticket.class.php:5541
 msgid "Tickets to be processed"
-msgstr "需处理的工作单"
+msgstr "需处理的工单"
 
 #: inc/ticket.class.php:5490 inc/ticket.class.php:5630
 msgid "Your observed tickets"
-msgstr "您关注的票单"
+msgstr "您关注的工单"
 
 #: inc/ticket.class.php:5507 inc/ticket.class.php:5681
 msgid "Your tickets in progress"
-msgstr "您进行中的工作单"
+msgstr "您进行中的工单"
 
 #: inc/ticket.class.php:5568
 msgid "Your tickets to validate"
-msgstr "您待确认的工作单"
+msgstr "您待确认的工单"
 
 #: inc/ticket.class.php:5585
 msgid "Your rejected tickets"
-msgstr "您被拒绝的工作单"
+msgstr "您被拒绝的工单"
 
 #: inc/ticket.class.php:5792
 msgid "Ticket followup"
-msgstr "工作单后续追踪"
+msgstr "工单后续追踪"
 
 #. TRANS: %d is the number of new tickets
 #: inc/ticket.class.php:5865
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] "%d 新工作单"
+msgstr[0] "%d 新的工单"
 
 #: inc/ticket.class.php:5881 inc/ticket.class.php:6085
 #: inc/ticket.class.php:6135
 msgid "No ticket found."
-msgstr "找不到工作单"
+msgstr "找不到工单"
 
 #: inc/ticket.class.php:5965
 msgid "Last tickets"
-msgstr "最近的工作单"
+msgstr "最新工单"
 
 #: inc/ticket.class.php:6046 inc/ticket.class.php:6058
 msgid "New ticket for this item..."
-msgstr "为此项目新建工作单"
+msgstr "为此项目新建工单"
 
 #: inc/ticket.class.php:6074
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
-msgstr[0] "最近 %d 工作单"
+msgstr[0] "最新 %d 笔工单"
 
 #: inc/ticket.class.php:6080
 msgid "You don't have right to see all tickets"
@@ -17698,11 +17698,11 @@ msgstr "您无权访问所有案例。"
 #: inc/ticket.class.php:6125
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "链接到项目的工作单"
+msgstr[0] "关联到项目的工单"
 
 #: inc/ticket.class.php:6235
 msgid "No ticket in progress."
-msgstr "没有正在处理的工作单"
+msgstr "没有正在处理的工单"
 
 #: inc/ticket.class.php:6292
 msgid "Assign equipment"
@@ -17710,7 +17710,7 @@ msgstr "分配装备"
 
 #: inc/ticket.class.php:6318
 msgid "Automatic tickets closing"
-msgstr "工作单自动结案"
+msgstr "工单自动结案"
 
 #: inc/ticket.class.php:6324
 msgid "Generation of satisfaction surveys"
@@ -17727,11 +17727,11 @@ msgstr ""
 
 #: inc/ticket.class.php:6541
 msgid "See tickets created by my groups"
-msgstr "查看我的群组创建的工作单"
+msgstr "查看我的群组创建的工单"
 
 #: inc/ticket.class.php:6543
 msgid "See all tickets"
-msgstr "查看所有工作单"
+msgstr "查看所有工单"
 
 #. TRANS: short for : See assigned tickets (group associated)
 #: inc/ticket.class.php:6545
@@ -17744,7 +17744,7 @@ msgstr ""
 
 #: inc/ticket.class.php:6549
 msgid "Assign a ticket"
-msgstr "分配工作单"
+msgstr "分配工单"
 
 #. TRANS: short for : Steal a ticket
 #: inc/ticket.class.php:6551
@@ -17753,7 +17753,7 @@ msgstr ""
 
 #: inc/ticket.class.php:6552
 msgid "Steal a ticket"
-msgstr "窃取工作单"
+msgstr "窃取工单"
 
 #. TRANS: short for : To be in charge of a ticket
 #: inc/ticket.class.php:6554
@@ -17762,7 +17762,7 @@ msgstr ""
 
 #: inc/ticket.class.php:6555
 msgid "To be in charge of a ticket"
-msgstr "接手负责工作单"
+msgstr "接手负责工单"
 
 #: inc/ticket.class.php:6556
 msgid "Change the priority"
@@ -17815,7 +17815,7 @@ msgstr ""
 
 #: inc/ticketfollowup.class.php:918
 msgid "No followup for this ticket."
-msgstr "这个工作单没有后续追踪"
+msgstr "这个工单没有后续追踪"
 
 #: inc/ticketfollowup.class.php:932
 msgid "This week"
@@ -17884,7 +17884,7 @@ msgstr ""
 
 #: inc/ticketfollowup.class.php:1225
 msgid "Add a followup to tickets (requester)"
-msgstr "添加后续追踪到工作单（请求者）"
+msgstr "添加后续追踪到工单（请求者）"
 
 #: inc/ticketfollowup.class.php:1226 inc/tickettask.class.php:245
 msgid "See public ones"
@@ -17908,29 +17908,29 @@ msgstr "无效的频率，必须大于初建值。"
 #: inc/ticketrecurrent.class.php:439
 #, php-format
 msgid "Failed to create recurrent ticket %s"
-msgstr "创建循环工作单 %s 失败"
+msgstr "创建循环工单 %s 失败"
 
 #: inc/ticketrecurrent.class.php:499
 #, php-format
 msgid "Ticket %d successfully created"
-msgstr "工作单 %d 成功创建"
+msgstr "工单 %d 成功创建"
 
 #: inc/ticketrecurrent.class.php:502
 msgid "Ticket creation failed (check mandatory fields)"
-msgstr "工作单创建失败（检查必填字段）"
+msgstr "工单创建失败（检查必填字段）"
 
 #: inc/ticketrecurrent.class.php:505
 msgid "Ticket creation failed (no template)"
-msgstr "工作单创建失败（没有模板）"
+msgstr "工单创建失败（没有模板）"
 
 #: inc/ticketsatisfaction.class.php:119
 msgid "Satisfaction with the resolution of the ticket"
-msgstr "工作单解决的满意度"
+msgstr "工单解决的满意度"
 
 #: inc/tickettask.class.php:47
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] "工作单任务"
+msgstr[0] "工单任务"
 
 #: inc/tickettask.class.php:241
 msgid "Add to all items"
@@ -17966,7 +17966,7 @@ msgstr "添加预定义字段"
 #: inc/ticket_ticket.class.php:207 inc/ticket_ticket.class.php:227
 #: inc/ticket_ticket.class.php:232
 msgid "Linked to"
-msgstr "链接到"
+msgstr "关联到"
 
 #: inc/ticket_ticket.class.php:209 inc/ticket_ticket.class.php:229
 #: inc/ticket_ticket.class.php:235
@@ -18280,15 +18280,15 @@ msgstr "如果软件不再使用"
 
 #: inc/transfer.class.php:3384
 msgid "Links between printers and cartridge types and cartridges"
-msgstr "关联打印机、打印机弹药类型"
+msgstr "关联打印机、打印耗材类型"
 
 #: inc/transfer.class.php:3389
 msgid "If the cartridge types are no longer used"
-msgstr "如果打印机弹药类型不再使用"
+msgstr "如果打印耗材类型不再使用"
 
 #: inc/transfer.class.php:3395
 msgid "Links between cartridge types and cartridges"
-msgstr "关连打印机弹药类型与打印机弹药"
+msgstr "关连打印耗材类型与打印耗材"
 
 #: inc/transfer.class.php:3405
 msgid "Links between consumable types and consumables"
@@ -18342,7 +18342,7 @@ msgstr "如果合同不再使用"
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
-msgstr "您可以继续添加需要转移的元件或者现在就转移"
+msgstr "您可以继续添加需要转移的元素或者现在就转移"
 
 #: inc/transfer.class.php:3516
 msgid "Think of making a backup before transferring items."
@@ -18358,7 +18358,7 @@ msgstr "转移模式"
 
 #: inc/transfer.class.php:3577
 msgid "To empty the list of elements to be transferred"
-msgstr "清空元件列表以便转移"
+msgstr "清空元素列表以便转移"
 
 #: inc/update.class.php:180
 msgid ""
@@ -18493,11 +18493,11 @@ msgstr "上次同步"
 
 #: inc/user.class.php:3098
 msgid "Number of tickets as requester"
-msgstr "请求的工作单数量"
+msgstr "请求的工单数量"
 
 #: inc/user.class.php:3118
 msgid "Number of written tickets"
-msgstr "提交的工作单数量"
+msgstr "提交的工单数量"
 
 #: inc/user.class.php:3133
 msgid "Number of assigned tickets"
@@ -18586,7 +18586,7 @@ msgstr ""
 
 #: inc/useremail.class.php:131 inc/useremail.class.php:154
 msgid "Default email"
-msgstr "默认Email"
+msgstr "默认电子邮箱"
 
 #: inc/vlan.class.php:158
 msgid "Untagged"
@@ -18748,7 +18748,7 @@ msgstr "安装完成"
 
 #: install/install.php:503
 msgid "Default logins / passwords are:"
-msgstr "缺省 登录名/密码是："
+msgstr "默认 登录名/密码是："
 
 #: install/install.php:504
 msgid "glpi/glpi for the administrator account"
