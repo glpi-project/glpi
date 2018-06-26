@@ -452,6 +452,12 @@ class Update extends CommonGLPI {
          $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
          $DB->queryOrDie($query);
       }
+
+      // reset telemetry
+      $crontask_telemetry = new CronTask;
+      $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
+      $crontask_telemetry->resetDate();
+      $crontask_telemetry->resetState();
    }
 
    /**
