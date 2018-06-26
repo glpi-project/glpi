@@ -41,7 +41,8 @@ define('TU_PASS', 'PhpUnit_4');
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: php scripts/cliinstall.php --tests ...\n\n");
 }
-global $CFG_GLPI;
+global $CFG_GLPI, $IS_TWIG;
+$IS_TWIG = false;
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
