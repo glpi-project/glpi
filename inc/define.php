@@ -150,6 +150,11 @@ if (!defined('GLPI_TELEMETRY_URI')) {
    define('GLPI_TELEMETRY_URI', 'http://glpi-project.org/telemetry');
 }
 
+// GLPI Network
+if (!defined('GLPI_NETWORK_SERVICES')) {
+   define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
+}
+
 // TIMES
 define("MINUTE_TIMESTAMP", 60);
 define("HOUR_TIMESTAMP", 3600);

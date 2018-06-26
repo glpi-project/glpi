@@ -1333,7 +1333,10 @@ class Auth extends CommonGLPI {
             echo "<p class='red'>".__("The CAS lib isn't available, GLPI doesn't package it anymore for license compatibility issue.");
             echo "</p>";
          }
-         echo "<p>" .__('Impossible to use CAS as external source of connection')."</p></td></tr>\n";
+         echo "<p>" .__('Impossible to use CAS as external source of connection')."</p>";
+         echo "<p><strong>".GLPINetwork::getErrorMessage()."</strong></p>";
+
+         echo "</td></tr>\n";
       }
       // X509 config
       echo "<tr><th>" . __('x509 certificate authentication')."</th><th>";

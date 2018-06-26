@@ -423,7 +423,11 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<p class='red'>".sprintf(__('%s extension is missing'), 'LDAP')."</p>";
          echo "<p>".__('Impossible to use LDAP as external source of connection')."</p>".
-              "</td></tr></table></div>";
+              "</td></tr></table>";
+
+         echo "<p><strong>".GLPINetwork::getErrorMessage()."</strong></p>";
+         echo "</div>";
+
       }
    }
 

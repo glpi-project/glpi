@@ -42,7 +42,12 @@ if (!Toolbox::canUseImapPop()) {
    echo "<tr><th colspan='2'>" . _n('Receiver', 'Receivers', 2)."</th></tr>";
    echo "<tr class='tab_bg_2'>";
    echo "<td class='center red'>" . sprintf(__('%s extension is missing'), 'IMAP');
-   echo "</td></tr></table>";
+   echo "</td></tr>";
+   echo "<tr class='tab_bg_2'>";
+   echo "<td class='center'><strong>".GLPINetwork::getErrorMessage()."</strong>";
+   echo "</td></tr>";
+   echo "</table>";
+
    echo "</div>";
    Html::footer();
    exit();
