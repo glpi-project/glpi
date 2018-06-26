@@ -31,6 +31,7 @@
 {% extends "elements/form.twig" %}
 
 {% block form_content %}
+   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
    {% for fieldset, part in glpi_form.parts %}
       {% if part.elements|length %}
          {% if fieldset == 'main' %}
@@ -40,8 +41,14 @@
          {% else %}
             {% set part_form = glpi_form %}
          {% endif %}
-   <fieldset class="row">
-      <legend>another fieldset</legend>
+   <fieldset class="panel panel-default">
+      <div class="panel-heading" role="tab">
+         <h4 class="panel-title">
+            <a role="button" data-toggle="collapse{#% if not part.show %}d{% endif %#}" href="#{{ fieldset }}">{{ part.title }}</a>
+         </h4>
+      </div>
+      <div id="{{ fieldset }}" class="panel-collapse collapse{% if part.show %} in{% endif %}">
+         <div class="panel-body">
       {% for element in part.elements %}
          {% set tpl = element.type|default('input') %}
          {#% set tpl = 'input' %}
@@ -50,7 +57,9 @@
          {% endif %#}
          {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': part_form} %}
       {% endfor %}
+         </div>
    </fieldset>
       {% endif %}
    {% endfor %}
+   </div>
 {% endblock %}
