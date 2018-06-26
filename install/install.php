@@ -464,8 +464,25 @@ function step6() {
    Html::closeForm();
 }
 
-// finish installation
 function step7() {
+   echo "<h3>".__('One last thing before starting')."</h3>";
+
+   echo "<form action='install.php' method='post'>";
+   echo "<input type='hidden' name='install' value='Etape_6'>";
+
+   echo GlpiNetwork::showInstallMessage();
+
+   echo "<p class='submit'>";
+   echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
+            __('Donate')."</a>&nbsp;";
+   echo "<input type='submit' name='submit' class='submit' value='".
+            __('Continue')."'>";
+   echo "</p>";
+   Html::closeForm();
+}
+
+// finish installation
+function step8() {
    global $CFG_GLPI;
 
    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
@@ -638,8 +655,13 @@ if (!isset($_POST["install"])) {
          break;
 
       case "Etape_5" : // finish installation
-         header_html(sprintf(__('Step %d'), 4));
+         header_html(sprintf(__('Step %d'), 5));
          step7();
+         break;
+
+      case "Etape_6" : // finish installation
+         header_html(sprintf(__('Step %d'), 6));
+         step8();
          break;
 
       case "update_1" :
