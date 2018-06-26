@@ -1081,6 +1081,7 @@ class Ticket extends CommonITILObject {
                 $allowed_fields[] = '_filename';
                 $allowed_fields[] = '_tag_filename';
                 $allowed_fields[] = '_prefix_filename';
+                $allowed_fields[] = 'takeintoaccount_delay_stat';
             }
          }
 
