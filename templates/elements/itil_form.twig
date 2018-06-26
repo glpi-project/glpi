@@ -49,14 +49,18 @@
       </div>
       <div id="{{ fieldset }}" class="panel-collapse collapse{% if part.show %} in{% endif %}">
          <div class="panel-body">
-      {% for element in part.elements %}
-         {% set tpl = element.type|default('input') %}
-         {#% set tpl = 'input' %}
-         {% if element.type == 'password' %}
-            {% set tpl = 'password' %}
-         {% endif %#}
-         {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': part_form} %}
-      {% endfor %}
+      {% if fieldset == 'actors' %}
+         {% include "elements/itil_actors.twig" with {'glpi_form': part_form} %}
+      {% else %}
+         {% for element in part.elements %}
+            {% set tpl = element.type|default('input') %}
+            {#% set tpl = 'input' %}
+            {% if element.type == 'password' %}
+               {% set tpl = 'password' %}
+            {% endif %#}
+            {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': part_form} %}
+         {% endfor %}
+      {% endif %}
          </div>
    </fieldset>
       {% endif %}
