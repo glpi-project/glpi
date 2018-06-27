@@ -1469,7 +1469,7 @@ class Planning extends CommonGLPI {
                              'type'    => 'group_users'];
       $users = Group_User::getGroupUsers($params['groups_id'],
                                          "`glpi_users`.`is_active` = 1
-                                          AND NOT `glpi_users`.`is_deleted`
+                                          AND `glpi_users`.`is_deleted` = 0
                                           AND (`glpi_users`.`begin_date` IS NULL
                                              OR `glpi_users`.`begin_date` < NOW())
                                           AND (`glpi_users`.`end_date` IS NULL

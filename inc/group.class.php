@@ -680,7 +680,7 @@ class Group extends CommonTreeDropdown {
             $restrict[$itemtype] .= " AND `is_template` = 0";
          }
          if ($item->maybeDeleted()) {
-            $restrict[$itemtype] .= " AND NOT `is_deleted`";
+            $restrict[$itemtype] .= " AND `is_deleted` = 0";
          }
          $tot += $nb[$itemtype] = countElementsInTable($item->getTable(), $restrict[$itemtype]);
       }
