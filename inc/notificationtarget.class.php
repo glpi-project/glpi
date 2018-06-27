@@ -680,9 +680,9 @@ class NotificationTarget extends CommonDBChild {
                      AND `glpi_groups`.`is_notify`";
 
       if ($manager == 1) {
-         $query .= " AND `glpi_groups_users`.`is_manager` ";
+         $query .= " AND `glpi_groups_users`.`is_manager` = 1 ";
       } else if ($manager == 2) {
-         $query .= " AND NOT `glpi_groups_users`.`is_manager` ";
+         $query .= " AND `glpi_groups_users`.`is_manager` = 0 ";
       }
 
       foreach ($DB->request($query) as $data) {
