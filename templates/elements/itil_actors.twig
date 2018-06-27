@@ -47,7 +47,9 @@
             'name': 'users_id_' ~ actortype,
             'itemtype': 'User',
             'itemtype_name': call_static('User', 'getTypeName'),
-            'values': {}
+            'values': {},
+            'change_func': 'onDdActorChange',
+            'extra_end': '<div class="user_infos" style="display:none"><a target="_blank" href="URL">' ~ __('Processing') ~ ' <span class="label label-primary"></span></a></div>'
          } %}
          {% include "elements/select.twig" with {'element':  element, 'glpi_form': glpi_form} %}
       </div>

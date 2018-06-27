@@ -96,6 +96,7 @@
    {% if notag is not defined or not notag or element.label is defined%}
    </div>
    {% endif %}
+   {% if element.extra_end is defined %}{{ element.extra_end|raw }}{% endif %}
    {% if notag is not defined or not notag %}
    </div>
    {% endif %}
