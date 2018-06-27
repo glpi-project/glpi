@@ -134,7 +134,7 @@ class Search {
          array_pop($criteria);
          $criteria[] = [
             'link'         => 'AND',
-            'field'        => ($itemtype == 'Location') ? 1 : 3,
+            'field'        => ($itemtype == 'Location') ? 1 : ($itemtype == 'Ticket') ? 83 : 3,
             'searchtype'   => 'equals',
             'value'        => 'CURLOCATION'
          ];
@@ -2497,7 +2497,7 @@ class Search {
 
       if (isset($params['as_map']) && $params['as_map'] == 1) {
          // Add location name when map mode
-         array_push($toview, ($itemtype == 'Location' ? 1 : 3));
+         array_push($toview, ($itemtype == 'Location' ? 1 : ($itemtype == 'Ticket' ? 83 : 3)));
       }
 
       // Add entity view :
