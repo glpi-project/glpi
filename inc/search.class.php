@@ -154,7 +154,7 @@ class Search {
             $fulltarget = $target."&".$parameters;
          }
          $typename = class_exists($itemtype) ? $itemtype::getTypeName() :
-                        $itemtype == 'AllAssets' ? __('assets') : $itemtype;
+                        ($itemtype == 'AllAssets' ? __('assets') : $itemtype);
 
          echo "<div class='center'><p>".__('Search results for localized items only')."</p>";
          $js = "$(function() {
