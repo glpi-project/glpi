@@ -850,7 +850,7 @@ class RSSFeed extends CommonDBVisible {
          $query = "SELECT `glpi_rssfeeds`.*
                    FROM `glpi_rssfeeds`
                    WHERE `glpi_rssfeeds`.`users_id` = '$users_id'
-                         AND `glpi_rssfeeds`.`is_active` = '1'
+                         AND `glpi_rssfeeds`.`is_active` = 1
                    ORDER BY `glpi_rssfeeds`.`name`";
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.php'>".

@@ -272,7 +272,7 @@ class Item_Disk extends CommonDBChild {
                           ON (`glpi_items_disks`.`filesystems_id` = `glpi_filesystems`.`id`)
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '$itemtype'
-                      AND `is_deleted` = '0'";
+                      AND `is_deleted` = 0";
 
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";

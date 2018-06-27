@@ -170,7 +170,7 @@ function display_new_locations() {
                     $SELECT_ALL
              FROM `glpi_dropdown_locations_new` AS location0
              $FROM_ALL
-             WHERE location0.`parentID` = '0'
+             WHERE location0.`parentID` = 0
              ORDER BY NAME0 $ORDER_ALL";
    $result = $DB->query($query);
 

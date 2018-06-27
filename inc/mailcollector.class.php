@@ -1642,7 +1642,7 @@ class MailCollector  extends CommonDBTM {
       NotImportedEmail::deleteLog();
       $query = "SELECT *
                 FROM `glpi_mailcollectors`
-                WHERE `is_active` = '1'";
+                WHERE `is_active` = 1";
 
       if ($result = $DB->query($query)) {
          $max = $task->fields['param'];

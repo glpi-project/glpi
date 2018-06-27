@@ -65,13 +65,13 @@ class UserEmail  extends CommonDBChild {
 
       // Get default one
       foreach ($DB->request("glpi_useremails",
-                            "`users_id` = '$users_id' AND `is_default` = '1'") as $data) {
+                            "`users_id` = '$users_id' AND `is_default` = 1") as $data) {
          return $data['email'];
       }
 
       // Get first if not default set
       foreach ($DB->request("glpi_useremails",
-                            "`users_id` = '$users_id' AND `is_default` = '0'") as $data) {
+                            "`users_id` = '$users_id' AND `is_default` = 0") as $data) {
          return $data['email'];
       }
       return '';
@@ -283,7 +283,7 @@ class UserEmail  extends CommonDBChild {
       if ($this->fields["is_default"] == 1) {
          //needs DB::update() to support limit to get migrated
          $query = "UPDATE `". $this->getTable()."`
-                   SET `is_default` = '1'
+                   SET `is_default` = 1
                    WHERE `id` <> '".$this->fields['id']."'
                          AND `users_id` = '".$this->fields['users_id']."'
                    LIMIT 1";

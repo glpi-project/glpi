@@ -1063,7 +1063,7 @@ class IPAddress extends CommonDBChild {
                            FROM `glpi_ipaddresses_ipnetworks` AS LINK
                            JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                                AND ADDR.`itemtype` = 'NetworkName'
-                                                               AND ADDR.`is_deleted` = '0')
+                                                               AND ADDR.`is_deleted` = 0)
                            LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                            JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                                 AND NAME.`itemtype` = 'NetworkPort')
@@ -1089,7 +1089,7 @@ class IPAddress extends CommonDBChild {
                         FROM `glpi_ipaddresses_ipnetworks` AS LINK
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                             AND ADDR.`itemtype` = 'NetworkName'
-                                                            AND ADDR.`is_deleted` = '0')
+                                                            AND ADDR.`is_deleted` = 0)
                         LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                         JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                              AND NAME.`itemtype` = 'NetworkPort')
@@ -1115,7 +1115,7 @@ class IPAddress extends CommonDBChild {
                         FROM `glpi_ipaddresses_ipnetworks` AS LINK
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                             AND ADDR.`itemtype` = 'NetworkName'
-                                                            AND ADDR.`is_deleted` = '0')
+                                                            AND ADDR.`is_deleted` = 0)
                         LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                         JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
                                                              AND NAME.`itemtype` != 'NetworkPort')
@@ -1137,7 +1137,7 @@ class IPAddress extends CommonDBChild {
                         FROM `glpi_ipaddresses_ipnetworks` AS LINK
                         JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
                                                             AND ADDR.`itemtype` != 'NetworkName'
-                                                            AND ADDR.`is_deleted` = '0')
+                                                            AND ADDR.`is_deleted` = 0)
                         LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
                         WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
 
@@ -1238,7 +1238,7 @@ class IPAddress extends CommonDBChild {
                                   FROM `glpi_ipaddresses`
                                   WHERE `items_id` = '" . $item->getID() . "'
                                         AND `itemtype` = '" . $item->getType() . "'
-                                        AND `is_deleted` = '0'";
+                                        AND `is_deleted` = 0";
 
          $canedit              = (isset($options['canedit']) && $options['canedit']);
          $createRow            = (isset($options['createRow']) && $options['createRow']);

@@ -2677,11 +2677,11 @@ class Config extends CommonDBTM {
       if (!$DB->tableExists('glpi_configs')) {
          $query = "SELECT `version`
                    FROM `glpi_config`
-                   WHERE `id` = '1'";
+                   WHERE `id` = 1";
       } else if ($DB->fieldExists('glpi_configs', 'version')) {
          $query = "SELECT `version`
                    FROM `glpi_configs`
-                   WHERE `id` = '1'";
+                   WHERE `id` = 1";
       } else {
          $query = "SELECT `value` as version
                    FROM `glpi_configs`

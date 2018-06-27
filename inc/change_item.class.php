@@ -194,7 +194,7 @@ class Change_Item extends CommonDBRelation{
                               AND `glpi_changes_items`.`changes_id` = '$instID'";
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = '0'";
+               $query .= " AND `$itemtable`.`is_template` = 0";
             }
 
             $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',

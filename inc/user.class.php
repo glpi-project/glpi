@@ -3234,7 +3234,7 @@ class User extends CommonDBTM {
                 INNER JOIN `glpi_groups`
                         ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                 WHERE `glpi_groups_users`.`users_id` = '".Session::getLoginUserID()."'
-                      AND `glpi_groups_users`.`is_userdelegate` = '1' ".
+                      AND `glpi_groups_users`.`is_userdelegate` = 1 ".
                       getEntitiesRestrictRequest("AND", "glpi_groups", '', $entities_id, 1);
 
       $groups = [];
@@ -3447,8 +3447,8 @@ class User extends CommonDBTM {
       }
 
       if (!$inactive_deleted) {
-         $where .= " AND `glpi_users`.`is_deleted` = '0'
-                     AND `glpi_users`.`is_active` = '1'
+         $where .= " AND `glpi_users`.`is_deleted` = 0
+                     AND `glpi_users`.`is_active` = 1
                      AND (`glpi_users`.`begin_date` IS NULL
                           OR `glpi_users`.`begin_date` < NOW())
                      AND (`glpi_users`.`end_date` IS NULL
@@ -3890,10 +3890,10 @@ class User extends CommonDBTM {
                       WHERE `".$field_user."` = '$ID'";
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `is_template` = '0' ";
+               $query .= " AND `is_template` = 0 ";
             }
             if ($item->maybeDeleted()) {
-               $query .= " AND `is_deleted` = '0' ";
+               $query .= " AND `is_deleted` = 0 ";
             }
             $result    = $DB->query($query);
 
@@ -3970,10 +3970,10 @@ class User extends CommonDBTM {
                          WHERE $group_where";
 
                if ($item->maybeTemplate()) {
-                  $query .= " AND `is_template` = '0' ";
+                  $query .= " AND `is_template` = 0 ";
                }
                if ($item->maybeDeleted()) {
-                  $query .= " AND `is_deleted` = '0' ";
+                  $query .= " AND `is_deleted` = 0 ";
                }
                $result    = $DB->query($query);
 

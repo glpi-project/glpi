@@ -129,8 +129,8 @@ class State extends CommonTreeDropdown {
                $query = "SELECT `states_id`, COUNT(*) AS cpt
                          FROM `$table` ".
                          getEntitiesRestrictRequest("WHERE", $table)."
-                              AND `is_deleted` = '0'
-                              AND `is_template` = '0'
+                              AND `is_deleted` = 0
+                              AND `is_template` = 0
                          GROUP BY `states_id`";
 
                if ($result = $DB->query($query)) {

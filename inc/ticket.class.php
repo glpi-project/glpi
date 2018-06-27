@@ -2351,7 +2351,7 @@ class Ticket extends CommonITILObject {
 
       $RESTRICT = "";
       if ($with_private!=1) {
-         $RESTRICT = " AND `is_private` = '0'";
+         $RESTRICT = " AND `is_private` = 0";
       }
 
       // Set number of followups
@@ -2377,7 +2377,7 @@ class Ticket extends CommonITILObject {
 
       $RESTRICT = "";
       if ($with_private!=1) {
-         $RESTRICT = " AND `is_private` = '0'";
+         $RESTRICT = " AND `is_private` = 0";
       }
 
       // Set number of followups
@@ -3061,7 +3061,7 @@ class Ticket extends CommonITILObject {
 
       $followup_condition = '';
       if (!Session::haveRight('followup', TicketFollowup::SEEPRIVATE)) {
-         $followup_condition = "AND (`NEWTABLE`.`is_private` = '0'
+         $followup_condition = "AND (`NEWTABLE`.`is_private` = 0
                                      OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
 
@@ -6757,11 +6757,11 @@ class Ticket extends CommonITILObject {
                                                            TicketTask::SEEPRIVATE]);
       $restrict_fup = $restrict_task = "";
       if (!Session::haveRight("followup", TicketFollowup::SEEPRIVATE)) {
-         $restrict_fup = " AND (`is_private` = '0'
+         $restrict_fup = " AND (`is_private` = 0
                                 OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
       if (!Session::haveRight("task", TicketTask::SEEPRIVATE)) {
-         $restrict_task = " AND (`is_private` = '0'
+         $restrict_task = " AND (`is_private` = 0
                                  OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
 

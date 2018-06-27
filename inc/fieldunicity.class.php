@@ -547,7 +547,7 @@ class FieldUnicity extends CommonDropdown {
          $fields_string = implode(',', $fields);
 
          if ($item->maybeTemplate()) {
-            $where_template = " AND `".$item->getTable()."`.`is_template` = '0'";
+            $where_template = " AND `".$item->getTable()."`.`is_template` = 0";
          } else {
             $where_template = "";
          }

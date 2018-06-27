@@ -612,7 +612,7 @@ class Document extends CommonDBTM {
                                AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
                       ".KnowbaseItem::addVisibilityJoins()."
                       WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'
+                            AND `glpi_knowbaseitems`.`is_faq` = 1
                             AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
             if ($DB->numrows($result) > 0) {
@@ -668,7 +668,7 @@ class Document extends CommonDBTM {
                       ".KnowbaseItem::addVisibilityJoins()."
                       WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                             AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'
+                            AND `glpi_knowbaseitems`.`is_faq` = 1
                             AND ".KnowbaseItem::addVisibilityRestrict();
 
             $result = $DB->query($query);
@@ -729,9 +729,9 @@ class Document extends CommonDBTM {
                    WHERE (`glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                           AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                           OR `glpi_knowbaseitems`.`answer` LIKE '%document.send.php?docid=".$this->fields["id"]."%')
-                         AND `glpi_knowbaseitems`.`is_faq` = '1'
-                         AND `glpi_entities_knowbaseitems`.`entities_id` = '0'
-                         AND `glpi_entities_knowbaseitems`.`is_recursive` = '1'";
+                         AND `glpi_knowbaseitems`.`is_faq` = 1
+                         AND `glpi_entities_knowbaseitems`.`entities_id` = 0
+                         AND `glpi_entities_knowbaseitems`.`is_recursive` = 1";
 
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
@@ -1322,7 +1322,7 @@ class Document extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_documenttypes`
                 WHERE `ext` LIKE '/%/'
-                      AND `is_uploadable` = '1'";
+                      AND `is_uploadable` = 1";
 
       foreach ($DB->request($query) as $data) {
          if (preg_match(Toolbox::unclean_cross_side_scripting_deep($data['ext'])."i",
@@ -1361,7 +1361,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      $where = " WHERE `glpi_documents`.`is_deleted` = '0' ".
+      $where = " WHERE `glpi_documents`.`is_deleted` = 0 ".
                        getEntitiesRestrictRequest("AND", "glpi_documents", '', $p['entity'], true);
 
       if (count($p['used'])) {

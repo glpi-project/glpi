@@ -834,8 +834,8 @@ class SoftwareLicense extends CommonTreeDropdown {
                          AND `glpi_softwarelicenses`.`expire` IS NOT NULL
                          AND DATEDIFF(`glpi_softwarelicenses`.`expire`,
                                       CURDATE()) < '$before'
-                         AND `glpi_softwares`.`is_template` = '0'
-                         AND `glpi_softwares`.`is_deleted` = '0'
+                         AND `glpi_softwares`.`is_template` = 0
+                         AND `glpi_softwares`.`is_deleted` = 0
                          AND `glpi_softwares`.`entities_id` = '".$entity."'";
 
          $message = "";

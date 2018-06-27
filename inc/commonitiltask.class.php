@@ -183,7 +183,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
             if ($this->maybePrivate()
                 && !$this->canViewPrivates()) {
-               $restrict .= " AND (`is_private` = '0'
+               $restrict .= " AND (`is_private` = 0
                                    OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
             $nb = countElementsInTable($this->getTable(), $restrict);
@@ -1466,7 +1466,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       TaskCategory::dropdown(['value'     => $this->fields["taskcategories_id"],
                               'rand'      => $rand_type,
                               'entity'    => $item->fields["entities_id"],
-                              'condition' => "`is_active` = '1'"]);
+                              'condition' => "`is_active` = 1"]);
 
       echo "</td></tr>\n";
 
@@ -1668,7 +1668,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $RESTRICT = "";
       if ($this->maybePrivate() && !$showprivate) {
-         $RESTRICT = " AND (`is_private` = '0'
+         $RESTRICT = " AND (`is_private` = 0
                             OR `users_id` ='" . Session::getLoginUserID() . "'
                             OR `users_id_tech` ='" . Session::getLoginUserID()."'";
          if (is_array($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {

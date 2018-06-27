@@ -1349,11 +1349,11 @@ final class DbUtils {
       }
 
       if ($item->maybeDeleted()) {
-         $query .= " AND `$table`.`is_deleted` = '0' ";
+         $query .= " AND `$table`.`is_deleted` = 0 ";
       }
 
       if ($item->maybeTemplate()) {
-         $query .= " AND `$table`.`is_template` = '0' ";
+         $query .= " AND `$table`.`is_template` = 0 ";
       }
 
       // Restrict to active entities
@@ -1438,11 +1438,11 @@ final class DbUtils {
       }
 
       if ($item->maybeDeleted()) {
-         $query .= "AND `$table`.`is_deleted` = '0'";
+         $query .= "AND `$table`.`is_deleted` = 0";
       }
 
       if ($item->maybeTemplate()) {
-         $query .= "AND `$table`.`is_template` = '0'";
+         $query .= "AND `$table`.`is_template` = 0";
       }
 
       // Restrict to active entities
@@ -1704,8 +1704,8 @@ final class DbUtils {
                   $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
                            FROM `$table`
                            WHERE `$field` LIKE '$like'
-                                 AND `is_deleted` = '0'
-                                 AND `is_template` = '0'";
+                                 AND `is_deleted` = 0
+                                 AND `is_template` = 0";
 
                   if ($CFG_GLPI["use_autoname_by_entity"]
                      && ($entities_id >= 0)) {
@@ -1725,8 +1725,8 @@ final class DbUtils {
                         WHERE `$field` LIKE '$like' ";
 
                if ($itemtype != 'Infocom') {
-                  $query .= " AND `is_deleted` = '0'
-                              AND `is_template` = '0'";
+                  $query .= " AND `is_deleted` = 0
+                              AND `is_template` = 0";
 
                   if ($CFG_GLPI["use_autoname_by_entity"]
                      && ($entities_id >= 0)) {
