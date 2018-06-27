@@ -151,5 +151,9 @@
          <script type="text/javascript">{{ script|raw }}</script>
       {% endfor %#}
    {% endblock %}
+        {# cron call #}
+    {% if not constant('GLPI_DEMO_MODE') %}
+        <div style="background-image: url('{{ path_for('cron') }}');"></div>
+    {% endif %}
     </body>
 </html>
