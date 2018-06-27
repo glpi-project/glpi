@@ -861,9 +861,9 @@ class Problem extends CommonITILObject {
       }
       $query_deleted = $query;
 
-      $query         .= " AND NOT `glpi_problems`.`is_deleted`
+      $query         .= " AND `glpi_problems`.`is_deleted` = 0
                          GROUP BY `status`";
-      $query_deleted .= " AND `glpi_problems`.`is_deleted`
+      $query_deleted .= " AND `glpi_problems`.`is_deleted` = 1
                          GROUP BY `status`";
 
       $result         = $DB->query($query);
