@@ -379,7 +379,7 @@ class Computer_Item extends CommonDBRelation{
                             AND `itemtype` = '".$itemtype."'
                             AND `glpi_computers_items`.`is_deleted` = '0'";
             if ($item->maybetemplate()) {
-               $query.= " AND NOT `".getTableForItemType($itemtype)."`.`is_template` ";
+               $query.= " AND `".getTableForItemType($itemtype)."`.`is_template` = 0 ";
             }
 
             if ($result = $DB->query($query)) {

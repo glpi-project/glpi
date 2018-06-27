@@ -1471,7 +1471,7 @@ class Project extends CommonDBTM {
                    FROM `glpi_projects`
                    WHERE `projects_id` = '0'
                         AND `show_on_global_gantt` = '1'
-                        AND NOT `is_template`
+                        AND `is_template` = 0
                          ".getEntitiesRestrictRequest("AND", 'glpi_projects', "", '', true);
          foreach ($DB->request($query) as $data) {
             $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
