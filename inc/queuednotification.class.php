@@ -151,7 +151,7 @@ class QueuedNotification extends CommonDBTM {
           && isset($input['items_id']) && ($input['items_id'] >= 0)
           && isset($input['notificationtemplates_id']) && !empty($input['notificationtemplates_id'])
           && isset($input['recipient'])) {
-         $query = "NOT `is_deleted`
+         $query = "`is_deleted` = 0
                    AND `itemtype` = '".$input['itemtype']."'
                    AND `items_id` = '".$input['items_id']."'
                    AND `entities_id` = '".$input['entities_id']."'
