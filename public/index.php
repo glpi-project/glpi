@@ -1093,9 +1093,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ]
       ];
 
-
-
-
       return $this->view->render(
          $response,
          'stats.twig', [

@@ -60,10 +60,9 @@ class KnowbaseItem_Item extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $IS_TWIG;
 
-
       if (static::canView()) {
          $nb = 0;
-      if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
+         if ($_SESSION['glpishow_count_on_tabs'] && $IS_TWIG === false) {
             if ($item->getType() == KnowbaseItem::getType()) {
                $nb = countElementsInTable(
                   'glpi_knowbaseitems_items',
