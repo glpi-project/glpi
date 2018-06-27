@@ -370,7 +370,7 @@ class Budget extends CommonDropdown{
                                  ON (`".$item->getTable()."`.`id` = `glpi_contractcosts`.`contracts_id`)
                             WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
-                                  AND NOT `".$item->getTable()."`.`is_template`
+                                  AND `".$item->getTable()."`.`is_template` = 0
                             GROUP BY `".$item->getTable()."`.`id`, `".$item->getTable()."`.`entities_id`
                             ORDER BY `".$item->getTable()."`.`entities_id`,
                                      `".$item->getTable()."`.`name`";
@@ -452,7 +452,7 @@ class Budget extends CommonDropdown{
                             WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
                                   AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
-                                  ".($item->maybeTemplate()?" AND NOT `".$item->getTable()."`.`is_template`":'')."
+                                  ".($item->maybeTemplate()?" AND `".$item->getTable()."`.`is_template` = 0":'')."
                             ORDER BY `".$item->getTable()."`.`entities_id`,";
                   if ($item instanceof Item_Devices) {
                      $query .= " `".$item->getTable()."`.`itemtype`";

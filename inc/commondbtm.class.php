@@ -3976,7 +3976,7 @@ class CommonDBTM extends CommonGLPI {
 
                   $tmp = clone $this;
                   if ($tmp->maybeTemplate()) {
-                     $where_global .= " AND NOT `is_template`";
+                     $where_global .= " AND `is_template` = 0";
                   }
 
                   //If update, exclude ID of the current object
