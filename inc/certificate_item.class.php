@@ -120,8 +120,8 @@ class Certificate_Item extends CommonDBRelation {
     */
    static function countForCertificate(Certificate $item) {
 
-      $types = implode("','", $item->getTypes());
-      if (empty($types)) {
+      $types = $item->getTypes();
+      if (!count($types)) {
          return 0;
       }
       return countElementsInTable('glpi_certificates_items',
