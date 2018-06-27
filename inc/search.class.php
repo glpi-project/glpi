@@ -153,7 +153,7 @@ class Search {
          } else {
             $fulltarget = $target."&".$parameters;
          }
-         $typename = class_exists($itemtype) ? $itemtype::getTypeName() :
+         $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) :
                         ($itemtype == 'AllAssets' ? __('assets') : $itemtype);
 
          echo "<div class='center'><p>".__('Search results for localized items only')."</p>";
@@ -1451,7 +1451,7 @@ class Search {
                   = "<div class='pager_controls'>";
 
                $map_link = '';
-               if ($item->maybeLocated()) {
+               if (null == $item || $item->maybeLocated()) {
                   $map_link = "<input type='checkbox' name='as_map' id='as_map' value='1'";
                   if ($data['search']['as_map'] == 1) {
                      $map_link .= " checked='checked'";
