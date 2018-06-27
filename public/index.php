@@ -38,17 +38,24 @@ if (version_compare(PHP_VERSION, '5.6') < 0) {
 
 
 use Glpi\Event;
+use Tracy\Debugger;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__ . '/..');
-include (GLPI_ROOT . "/inc/based_config.php");
-include_once (GLPI_ROOT . "/inc/define.php");
+include_once GLPI_ROOT . "/inc/based_config.php";
+include_once GLPI_ROOT . "/inc/define.php";
+include_once GLPI_ROOT . "/inc/autoload.function.php";
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
+RunTracy\Helpers\Profiler\Profiler::enable();
+/*defined('DS') || define('DS', DIRECTORY_SEPARATOR);
+define('DIR', realpath(__DIR__ . '/../../') . DS);*/
+Debugger::enable(Debugger::DEVELOPMENT, GLPI_LOG_DIR);
+Debugger::timer();
+
 // If config_db doesn't exist -> start installation
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   include_once (GLPI_ROOT . "/inc/autoload.function.php");
    Html::redirect("install/install.php");
    die();
 } else {
@@ -59,7 +66,31 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app_settings = [
       'settings' => [
          'displayErrorDetails'               => true,
-         'determineRouteBeforeAppMiddleware' => true
+         'determineRouteBeforeAppMiddleware' => true,
+         'addContentLengthHeader'            => false,
+         'tracy'                             => [
+            'showPhpInfoPanel'          => 1,
+            'showSlimRouterPanel'       => 1,
+            'showSlimEnvironmentPanel'  => 1,
+            'showSlimRequestPanel'      => 1,
+            'showSlimResponsePanel'     => 1,
+            'showSlimContainer'         => 1,
+            'showTwigPanel'             => 1,
+            'showProfilerPanel'         => 0,
+            'showVendorVersionsPanel'   => 0,
+            'showIncludedFiles'         => 0,
+            'configs' => [
+               'ProfilerPanel' => [
+                  // Memory usage 'primaryValue' set as Profiler::enable() or Profiler::enable(1)
+                  // 'primaryValue' =>                   'effective',    // or 'absolute'
+                  'show' => [
+                     'memoryUsageChart' => 1, // or false
+                     'shortProfiles' => true, // or false
+                     'timeLines' => true // or false
+                  ]
+               ]
+            ]
+         ]
       ],
       'logger' => [
          'name'   => 'GLPI',
@@ -67,7 +98,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          'path'   => GLPI_LOG_DIR . '/php-errors.log',
       ],
    ];
+   RunTracy\Helpers\Profiler\Profiler::start('initApp');
    $app = new \Slim\App($app_settings);
+   RunTracy\Helpers\Profiler\Profiler::finish('initApp');
 
    // Get container
    $container = $app->getContainer();
@@ -163,6 +196,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
       $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
       $view->addExtension(new \Twig_Extensions_Extension_I18n());
+      $view->addExtension(new Twig_Extension_Profiler($container['twig_profile']));
       $view->addExtension(new \Twig_Extension_Debug());
       include_once __DIR__ . '/../twig_extensions/Reflection.php';
       $view->addExtension(new \Twig\Glpi\Extensions\Reflection());
@@ -176,6 +210,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       return $view;
    };
+
+   $container['twig_profile'] = function () {
+      return new Twig_Profiler_Profile();
+   };
+
+   RunTracy\Helpers\Profiler\Profiler::start('Register Middlewares');
 
    /**
     * Switch middleware (to get UI reloaded after switching
@@ -313,7 +353,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       return $next($request, $response);
    });
 
+   $app->add(new RunTracy\Middlewares\TracyMiddleware($app));
 
+   RunTracy\Helpers\Profiler\Profiler::finish('Register Middlewares');
+
+   RunTracy\Helpers\Profiler\Profiler::start('Register routes');
    // Render Twig template in route
    $app->get('/', function ($request, $response, $args) {
       //TODO: do some checks and redirect the the right URL
@@ -1155,9 +1199,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          []
       );
    })->setName('dictionnary');
+   RunTracy\Helpers\Profiler\Profiler::finish('Register routes');
 
    // Run app
+   RunTracy\Helpers\Profiler\Profiler::start('runApp');
    $app->run();
+   RunTracy\Helpers\Profiler\Profiler::finish('runApp');
 
    /*$_SESSION["glpicookietest"] = 'testcookie';
 
