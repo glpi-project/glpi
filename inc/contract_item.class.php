@@ -212,7 +212,7 @@ class Contract_Item extends CommonDBRelation{
                          AND `".$itemt->getTable()."`.`id` = `glpi_contracts_items`.`items_id`";
 
          if ($itemt->maybeTemplate()) {
-            $query .= " AND NOT `".$itemt->getTable()."`.`is_template`";
+            $query .= " AND `".$itemt->getTable()."`.`is_template` = 0";
          }
 
          foreach ($DB->request($query) as $row) {

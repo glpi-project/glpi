@@ -677,7 +677,7 @@ class Group extends CommonTreeDropdown {
             }
          }
          if ($item->maybeTemplate()) {
-            $restrict[$itemtype] .= " AND NOT `is_template`";
+            $restrict[$itemtype] .= " AND `is_template` = 0";
          }
          if ($item->maybeDeleted()) {
             $restrict[$itemtype] .= " AND NOT `is_deleted`";
