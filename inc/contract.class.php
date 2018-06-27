@@ -1201,13 +1201,13 @@ class Contract extends CommonDBTM {
                                   AND `glpi_alerts`.`itemtype` = 'Contract'
                                   AND `glpi_alerts`.`type`='".Alert::NOTICE."')
                           WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::NOTICE).") >'0'
-                                AND `glpi_contracts`.`is_deleted` = '0'
+                                AND `glpi_contracts`.`is_deleted` = 0
                                 AND `glpi_contracts`.`begin_date` IS NOT NULL
-                                AND `glpi_contracts`.`duration` <> '0'
-                                AND `glpi_contracts`.`notice` <> '0'
+                                AND `glpi_contracts`.`duration` <> 0
+                                AND `glpi_contracts`.`notice` <> 0
                                 AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
                                                      INTERVAL `glpi_contracts`.`duration` MONTH),
-                                             CURDATE()) > '0'
+                                             CURDATE()) > 0
                                 AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
                                                      INTERVAL (`glpi_contracts`.`duration`
                                                                 -`glpi_contracts`.`notice`) MONTH),
@@ -1222,7 +1222,7 @@ class Contract extends CommonDBTM {
                                AND `glpi_alerts`.`itemtype` = 'Contract'
                                AND `glpi_alerts`.`type`='".Alert::END."')
                        WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::END).") > '0'
-                             AND `glpi_contracts`.`is_deleted` = '0'
+                             AND `glpi_contracts`.`is_deleted` = 0
                              AND `glpi_contracts`.`begin_date` IS NOT NULL
                              AND `glpi_contracts`.`duration` <> '0'
                              AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
@@ -1454,7 +1454,7 @@ class Contract extends CommonDBTM {
       $query = "SELECT `glpi_contracts`.*
                 FROM `glpi_contracts`
                 LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
-                WHERE `glpi_contracts`.`is_deleted` = '0' AND `glpi_contracts`.`is_template` = '0'
+                WHERE `glpi_contracts`.`is_deleted` = 0 AND `glpi_contracts`.`is_template` = 0
                 $entrest $idrest $expired
                 ORDER BY `glpi_entities`.`completename`,
                          `glpi_contracts`.`name` ASC,

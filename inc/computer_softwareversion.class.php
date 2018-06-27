@@ -423,9 +423,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)
                 WHERE (`glpi_softwareversions`.`$crit` = '$searchID') " .
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                       AND `glpi_computers`.`is_deleted` = '0'
-                       AND `glpi_computers`.`is_template` = '0'
-                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
+                       AND `glpi_computers`.`is_deleted` = 0
+                       AND `glpi_computers`.`is_template` = 0
+                       AND `glpi_computers_softwareversions`.`is_deleted` = 0
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -686,7 +686,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_softwares`
                      ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
-                      AND `glpi_computers_softwareversions`.`is_deleted` = '0'
+                      AND `glpi_computers_softwareversions`.`is_deleted` = 0
                       $where
                 ORDER BY `softname`, `version`";
       $result = $DB->query($query);
@@ -842,13 +842,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_softwareversions`
                       ON (`glpi_softwarelicenses`.`softwareversions_id_use`
                               = `glpi_softwareversions`.`id`
-                           OR (`glpi_softwarelicenses`.`softwareversions_id_use` = '0'
+                           OR (`glpi_softwarelicenses`.`softwareversions_id_use` = 0
                                AND `glpi_softwarelicenses`.`softwareversions_id_buy`
                                        = `glpi_softwareversions`.`id`))
                 LEFT JOIN `glpi_states`
                      ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
                 WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'
+                      AND `glpi_computers_softwarelicenses`.`is_deleted` = 0
                       $where";
 
       if (count($installed)) {
@@ -965,7 +965,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                               =`glpi_softwarelicensetypes`.`id`)
                 WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
                       AND (`glpi_softwarelicenses`.`softwareversions_id_use` = '$verid'
-                           OR (`glpi_softwarelicenses`.`softwareversions_id_use` = '0'
+                           OR (`glpi_softwarelicenses`.`softwareversions_id_use` = 0
                                AND `glpi_softwarelicenses`.`softwareversions_id_buy` = '$verid'))";
 
       $licids = [];

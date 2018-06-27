@@ -377,7 +377,7 @@ class Computer_Item extends CommonDBRelation{
                               = `glpi_computers_items`.`items_id`)
                       WHERE `computers_id` = '$ID'
                             AND `itemtype` = '".$itemtype."'
-                            AND `glpi_computers_items`.`is_deleted` = '0'";
+                            AND `glpi_computers_items`.`is_deleted` = 0";
             if ($item->maybetemplate()) {
                $query.= " AND `".getTableForItemType($itemtype)."`.`is_template` = 0 ";
             }
@@ -715,7 +715,7 @@ class Computer_Item extends CommonDBRelation{
                          'used'            => $used];
 
          if ($onlyglobal) {
-            $params['condition'] = "`is_global` = '1'";
+            $params['condition'] = "`is_global` = 1";
          }
          Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_$myname$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownConnect.php", $params);

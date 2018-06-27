@@ -701,7 +701,7 @@ class NetworkPort extends CommonDBChild {
                       WHERE `items_id` = '$items_id'
                             AND `itemtype` = '$itemtype'
                             AND `instantiation_type` = '$portType'
-                            AND `is_deleted` = '0'
+                            AND `is_deleted` = 0
                       ORDER BY `name`,
                                `logical_number`";
          }

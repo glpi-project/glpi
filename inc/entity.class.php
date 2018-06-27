@@ -1435,7 +1435,7 @@ class Entity extends CommonTreeDropdown {
          echo "<td>";
          AuthLDAP::dropdown(['value'      => $entity->fields['authldaps_id'],
                                   'emptylabel' => __('Default server'),
-                                  'condition'  => "`is_active` = '1'"]);
+                                  'condition'  => "`is_active` = 1"]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";

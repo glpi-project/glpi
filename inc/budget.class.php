@@ -596,7 +596,7 @@ class Budget extends CommonDropdown{
                                     ON (`glpi_contractcosts`.`contracts_id` = `$table`.`id`)
                                 WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
                                       getEntitiesRestrictRequest(" AND", $table, "entities_id")."
-                                      AND `$table`.`is_template` = '0'
+                                      AND `$table`.`is_template` = 0
                                 GROUP BY `$table`.`entities_id`";
                break;
 
@@ -639,7 +639,7 @@ class Budget extends CommonDropdown{
                                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
 
                if ($item->maybeTemplate()) {
-                  $query_infos .= " AND `$table`.`is_template` = '0' ";
+                  $query_infos .= " AND `$table`.`is_template` = 0 ";
                }
                $query_infos .= "GROUP BY `$table`.`entities_id`";
             break;

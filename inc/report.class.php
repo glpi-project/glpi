@@ -187,8 +187,8 @@ class Report extends CommonGLPI{
 
       foreach ($items as $itemtype) {
          $table_item = getTableForItemType($itemtype);
-         $where      = "WHERE `".$table_item."`.`is_deleted` = '0'
-                              AND `".$table_item."`.`is_template` = '0' ";
+         $where      = "WHERE `".$table_item."`.`is_deleted` = 0
+                              AND `".$table_item."`.`is_template` = 0 ";
 
          $join       = "";
          if (in_array($itemtype, $linkitems)) {
@@ -213,7 +213,7 @@ class Report extends CommonGLPI{
 
       // 2. Get some more number data (operating systems per computer)
 
-      $where = "WHERE `is_deleted` = '0' ";
+      $where = "WHERE `is_deleted` = 0 ";
 
       $query = "SELECT COUNT(*) AS count, `glpi_operatingsystems`.`name` AS name
                 FROM `glpi_items_operatingsystems`
@@ -246,8 +246,8 @@ class Report extends CommonGLPI{
          $type_table = getTableForItemType($typeclass);
          $typefield  = getForeignKeyFieldForTable(getTableForItemType($typeclass));
 
-         $where = "WHERE `".$table_item."`.`is_deleted` = '0'
-                          AND `".$table_item."`.`is_template` = '0' ";
+         $where = "WHERE `".$table_item."`.`is_deleted` = 0
+                          AND `".$table_item."`.`is_template` = 0 ";
 
          $join = "";
          if (in_array($itemtype, $linkitems)) {

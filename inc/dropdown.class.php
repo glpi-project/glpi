@@ -2231,10 +2231,10 @@ class Dropdown {
       $where = "WHERE 1 ";
 
       if ($item->maybeDeleted()) {
-         $where .= " AND `$table`.`is_deleted` = '0' ";
+         $where .= " AND `$table`.`is_deleted` = 0 ";
       }
       if ($item->maybeTemplate()) {
-         $where .= " AND `$table`.`is_template` = '0' ";
+         $where .= " AND `$table`.`is_template` = 0 ";
       }
 
       if (!isset($post['page'])) {
@@ -2819,10 +2819,10 @@ class Dropdown {
       $where = "";
 
       if ($item->maybeDeleted()) {
-         $where .= " AND `$table`.`is_deleted` = '0' ";
+         $where .= " AND `$table`.`is_deleted` = 0 ";
       }
       if ($item->maybeTemplate()) {
-         $where .= " AND `$table`.`is_template` = '0' ";
+         $where .= " AND `$table`.`is_template` = 0 ";
       }
 
       if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
@@ -2867,7 +2867,7 @@ class Dropdown {
 
       if ($post["onlyglobal"]
          && ($post["itemtype"] != 'Computer')) {
-         $CONNECT_SEARCH = " WHERE `$table`.`is_global` = '1' ";
+         $CONNECT_SEARCH = " WHERE `$table`.`is_global` = 1 ";
       } else {
          if ($post["itemtype"] == 'Computer') {
             $CONNECT_SEARCH = " WHERE 1
@@ -2875,7 +2875,7 @@ class Dropdown {
          } else {
             $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL
                                        $where_used)
-                                       OR `$table`.`is_global` = '1') ";
+                                       OR `$table`.`is_global` = 1) ";
          }
       }
 
@@ -2998,11 +2998,11 @@ class Dropdown {
       }
 
       if ($item->maybeDeleted()) {
-         $where .= " AND `is_deleted` = '0' ";
+         $where .= " AND `is_deleted` = 0 ";
       }
 
       if ($item->maybeTemplate()) {
-         $where .= " AND `is_template` = '0' ";
+         $where .= " AND `is_template` = 0 ";
       }
 
       if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
@@ -3025,7 +3025,7 @@ class Dropdown {
 
       //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
       if (in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"])) {
-         $where .= " AND `is_helpdesk_visible` = '1' ";
+         $where .= " AND `is_helpdesk_visible` = 1 ";
       }
 
       if (!isset($post['page'])) {

@@ -312,7 +312,7 @@ class Profile_User extends CommonDBRelation {
                      ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 WHERE `glpi_profiles_users`.`entities_id` = '$ID'
-                     AND `glpi_users`.`is_deleted` = '0'";
+                     AND `glpi_users`.`is_deleted` = 0";
 
       $result = $DB->query($query);
       $nb = $DB->numrows($result);
@@ -362,7 +362,7 @@ class Profile_User extends CommonDBRelation {
                       LEFT JOIN `glpi_users`
                            ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                       WHERE `glpi_profiles_users`.`entities_id` = '$ID'
-                            AND `glpi_users`.`is_deleted` = '0'
+                            AND `glpi_users`.`is_deleted` = 0
                             AND `glpi_profiles_users`.`profiles_id` = '".$data['id']."'
                       ORDER BY `glpi_profiles_users`.`profiles_id`,
                                `glpi_users`.`name`,
@@ -459,7 +459,7 @@ class Profile_User extends CommonDBRelation {
                 LEFT JOIN `glpi_users`
                      ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 WHERE `glpi_profiles_users`.`profiles_id` = '$ID'
-                      AND `glpi_users`.`is_deleted` = '0' ".
+                      AND `glpi_users`.`is_deleted` = 0 ".
                       getEntitiesRestrictRequest("AND", "glpi_profiles_users", 'entities_id',
                                                  $_SESSION['glpiactiveentities'], true)."
                 ORDER BY `glpi_entities`.`completename`";
@@ -947,7 +947,7 @@ class Profile_User extends CommonDBRelation {
                       FROM `".$this->getTable()."`
                       LEFT JOIN glpi_users
                         ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
-                      WHERE `glpi_users`.`is_deleted` = '0' ";
+                      WHERE `glpi_users`.`is_deleted` = 0 ";
          switch ($item->getType()) {
             case 'Entity' :
                if (Session::haveRight('user', READ)) {

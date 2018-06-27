@@ -848,7 +848,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $RESTRICT = "";
       if (!$showprivate) {
-         $RESTRICT = " AND (`is_private` = '0'
+         $RESTRICT = " AND (`is_private` = 0
                             OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
 
@@ -1053,7 +1053,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $RESTRICT = "";
       if (!$showprivate) {
-         $RESTRICT = " AND (`is_private` = '0'
+         $RESTRICT = " AND (`is_private` = 0
                             OR `users_id` ='".Session::getLoginUserID()."') ";
       }
 

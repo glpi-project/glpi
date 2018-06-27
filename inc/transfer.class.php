@@ -2155,7 +2155,7 @@ class Transfer extends CommonDBTM {
                               // Is existing global item in the destination entity ?
                               $query = "SELECT *
                                         FROM `".getTableForItemType($link_type)."`
-                                        WHERE `is_global` = '1'
+                                        WHERE `is_global` = 1
                                               AND `entities_id` = '".$this->to."'
                                               AND `name`
                                                    = '".addslashes($link_item->getField('name'))."'";

@@ -77,8 +77,8 @@ if (class_exists($_POST["itemtype"])
              WHERE `glpi_networkports_networkports`.`id` IS NULL
                    AND `glpi_networkports`.`id` IS NOT NULL
                    AND `glpi_networkports`.`id` <> '".$_POST['networkports_id']."'
-                   AND `$table`.`is_deleted` = '0'
-                   AND `$table`.`is_template` = '0'
+                   AND `$table`.`is_deleted` = 0
+                   AND `$table`.`is_template` = 0
              ORDER BY `glpi_networkports`.`id`";
 
    $result = $DB->query($query);

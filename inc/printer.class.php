@@ -826,7 +826,7 @@ class Printer  extends CommonDBTM {
       $query_search = "SELECT `glpi_printers`.`id`, `glpi_printers`.`is_deleted`
                        FROM `glpi_printers`
                        WHERE `name` = '$name'
-                             AND `is_template` = '0'
+                             AND `is_template` = 0
                              AND `entities_id` = '$entity'";
 
       $result_search = $DB->query($query_search);

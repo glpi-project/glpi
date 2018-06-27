@@ -266,7 +266,7 @@ class Contract_Item extends CommonDBRelation{
                            AND `glpi_contracts_items`.`contracts_id` = '$contract_id'";
 
          if ($item->maybeTemplate()) {
-            $query .= " AND `$itemtable`.`is_template` = '0'";
+            $query .= " AND `$itemtable`.`is_template` = 0";
          }
          $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', $entities_id,
                                                 $item->maybeRecursive())."
@@ -599,7 +599,7 @@ class Contract_Item extends CommonDBRelation{
                               AND `glpi_contracts_items`.`contracts_id` = '$instID'";
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = '0'";
+               $query .= " AND `$itemtable`.`is_template` = 0";
             }
             $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
                                                  $item->maybeRecursive()) ."

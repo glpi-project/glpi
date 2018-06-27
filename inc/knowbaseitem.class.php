@@ -1159,8 +1159,8 @@ class KnowbaseItem extends CommonDBVisible {
             } else {
                // Anonymous access
                if (Session::isMultiEntitiesMode()) {
-                  $where = " (`glpi_entities_knowbaseitems`.`entities_id` = '0'
-                              AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')";
+                  $where = " (`glpi_entities_knowbaseitems`.`entities_id` = 0
+                              AND `glpi_entities_knowbaseitems`.`is_recursive` = 1)";
                }
             }
             break;
@@ -1171,7 +1171,7 @@ class KnowbaseItem extends CommonDBVisible {
       }
 
       if ($params['faq']) { // helpdesk
-         $where .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
+         $where .= " AND (`glpi_knowbaseitems`.`is_faq` = 1)";
       }
 
       if (KnowbaseItemTranslation::isKbTranslationActive()
@@ -1598,8 +1598,8 @@ class KnowbaseItem extends CommonDBVisible {
       } else {
          // Anonymous access
          if (Session::isMultiEntitiesMode()) {
-            $faq_limit .= " WHERE (`glpi_entities_knowbaseitems`.`entities_id` = '0'
-                                   AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')";
+            $faq_limit .= " WHERE (`glpi_entities_knowbaseitems`.`entities_id` = 0
+                                   AND `glpi_entities_knowbaseitems`.`is_recursive` = 1)";
          } else {
             $faq_limit .= " WHERE 1";
          }
@@ -1618,7 +1618,7 @@ class KnowbaseItem extends CommonDBVisible {
                            OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
 
       if ($faq) { // FAQ
-         $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
+         $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = 1)";
       }
 
       if (KnowbaseItemTranslation::isKbTranslationActive()

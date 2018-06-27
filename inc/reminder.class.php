@@ -889,7 +889,7 @@ class Reminder extends CommonDBVisible {
          $query2 = "SELECT DISTINCT `glpi_reminders`.*
                     FROM `glpi_reminders`
                     $joinstoadd
-                    WHERE `glpi_reminders`.`is_planned` = '1'
+                    WHERE `glpi_reminders`.`is_planned` = 1
                           AND $ASSIGN
                           $PLANNED
                           $DONE_EVENTS
@@ -1053,7 +1053,7 @@ class Reminder extends CommonDBVisible {
                    FROM `glpi_reminders`
                    WHERE `glpi_reminders`.`users_id` = '$users_id'
                          AND (`glpi_reminders`.`end` >= '$today'
-                              OR `glpi_reminders`.`is_planned` = '0')
+                              OR `glpi_reminders`.`is_planned` = 0)
                          $restrict_visibility
                    ORDER BY `glpi_reminders`.`name`";
 

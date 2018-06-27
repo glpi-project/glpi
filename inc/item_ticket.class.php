@@ -499,7 +499,7 @@ class Item_Ticket extends CommonDBRelation{
                               AND `glpi_items_tickets`.`tickets_id` = '$instID'";
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = '0'";
+               $query .= " AND `$itemtable`.`is_template` = 0";
             }
 
             $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
@@ -742,13 +742,13 @@ class Item_Ticket extends CommonDBRelation{
                              FROM `$itemtable`
                              WHERE `users_id` = '$userID'";
                if ($item->maybeDeleted()) {
-                  $query .= " AND `$itemtable`.`is_deleted` = '0' ";
+                  $query .= " AND `$itemtable`.`is_deleted` = 0 ";
                }
                if ($item->maybeTemplate()) {
-                  $query .= " AND `$itemtable`.`is_template` = '0' ";
+                  $query .= " AND `$itemtable`.`is_template` = 0 ";
                }
                if (in_array($itemtype, $CFG_GLPI["helpdesk_visible_types"])) {
-                  $query .= " AND `is_helpdesk_visible` = '1' ";
+                  $query .= " AND `is_helpdesk_visible` = 1 ";
                }
 
                $query .= getEntitiesRestrictRequest("AND", $itemtable, "", $entity_restrict,
@@ -827,10 +827,10 @@ class Item_Ticket extends CommonDBRelation{
                                                                      $item->maybeRecursive());
 
                      if ($item->maybeDeleted()) {
-                        $query .= " AND `is_deleted` = '0' ";
+                        $query .= " AND `is_deleted` = 0 ";
                      }
                      if ($item->maybeTemplate()) {
-                        $query .= " AND `is_template` = '0' ";
+                        $query .= " AND `is_template` = 0 ";
                      }
                      $query .= ' ORDER BY `name`';
 
@@ -891,10 +891,10 @@ class Item_Ticket extends CommonDBRelation{
                                   AND  ".str_replace("XXXX", "`glpi_computers_items`.`computers_id`",
                                                      $search_computer);
                   if ($item->maybeDeleted()) {
-                     $query .= " AND `$itemtable`.`is_deleted` = '0' ";
+                     $query .= " AND `$itemtable`.`is_deleted` = 0 ";
                   }
                   if ($item->maybeTemplate()) {
-                     $query .= " AND `$itemtable`.`is_template` = '0' ";
+                     $query .= " AND `$itemtable`.`is_template` = 0 ";
                   }
                   $query .= getEntitiesRestrictRequest("AND", $itemtable, "", $entity_restrict)."
                             ORDER BY `$itemtable`.`name`";
@@ -936,7 +936,7 @@ class Item_Ticket extends CommonDBRelation{
                                AND ".str_replace("XXXX",
                                                  "`glpi_computers_softwareversions`.`computers_id`",
                                                  $search_computer)."
-                               AND `glpi_softwares`.`is_helpdesk_visible` = '1' ".
+                               AND `glpi_softwares`.`is_helpdesk_visible` = 1 ".
                                getEntitiesRestrictRequest("AND", "glpi_softwares", "",
                                                           $entity_restrict)."
                          ORDER BY `glpi_softwares`.`name`";
@@ -1037,7 +1037,7 @@ class Item_Ticket extends CommonDBRelation{
          }
          $query .= " SELECT `$table`.`id` AS id , '$type' AS itemtype , `$table`.`name` AS name
                      FROM `$table`
-                     WHERE `$table`.`id` IS NOT NULL AND `$table`.`is_deleted` = '0' AND `$table`.`is_template` = '0' ";
+                     WHERE `$table`.`id` IS NOT NULL AND `$table`.`is_deleted` = 0 AND `$table`.`is_template` = 0 ";
       }
 
       $result = $DB->query($query);

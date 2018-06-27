@@ -419,8 +419,8 @@ class ConsumableItem extends CommonDBTM {
                             LEFT JOIN `glpi_alerts`
                                  ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
                                      AND `glpi_alerts`.`itemtype`='ConsumableItem')
-                            WHERE `glpi_consumableitems`.`is_deleted` = '0'
-                                  AND `glpi_consumableitems`.`alarm_threshold` >= '0'
+                            WHERE `glpi_consumableitems`.`is_deleted` = 0
+                                  AND `glpi_consumableitems`.`alarm_threshold` >= 0
                                   AND `glpi_consumableitems`.`entities_id` = '".$entity."'
                                   AND (`glpi_alerts`.`date` IS NULL
                                        OR (`glpi_alerts`.date+ INTERVAL $repeat second) < CURRENT_TIMESTAMP());";

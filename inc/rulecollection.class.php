@@ -124,7 +124,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       if ($p['active']) {
-         $sql_active = " `is_active` = '1'";
+         $sql_active = " `is_active` = 1";
       } else {
          $sql_active = "1";
       }
@@ -1650,7 +1650,7 @@ class RuleCollection extends CommonDBTM {
       $input = [];
       $res   = $DB->query("SELECT DISTINCT `glpi_rulecriterias`.`criteria`
                            FROM `glpi_rulecriterias`, `glpi_rules`
-                           WHERE `glpi_rules`.`is_active` = '1'
+                           WHERE `glpi_rules`.`is_active` = 1
                                  AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
                                  $limit
                                  AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
@@ -1865,7 +1865,7 @@ class RuleCollection extends CommonDBTM {
                      `glpi_rulecriterias`
                 WHERE `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'
                       AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
-                      AND `glpi_rules`.`is_active` = '1'";
+                      AND `glpi_rules`.`is_active` = 1";
 
       foreach ($DB->request($query) as $param) {
              $params[] = Toolbox::strtolower($param["criteria"]);

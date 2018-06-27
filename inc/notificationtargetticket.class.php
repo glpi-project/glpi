@@ -574,7 +574,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          if (!isset($options['additionnaloption']['show_private'])
              || !$options['additionnaloption']['show_private']) {
-            $restrict .= " AND `is_private` = '0'";
+            $restrict .= " AND `is_private` = 0";
          }
 
          $restrict .= " ORDER BY `date_mod` DESC, `id` ASC";

@@ -436,9 +436,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)
                 WHERE (`glpi_softwarelicenses`.`id` = '$searchID') " .
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                       AND `glpi_computers`.`is_deleted` = '0'
-                       AND `glpi_computers`.`is_template` = '0'
-                       AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'
+                       AND `glpi_computers`.`is_deleted` = 0
+                       AND `glpi_computers`.`is_template` = 0
+                       AND `glpi_computers_softwarelicenses`.`is_deleted` = 0
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 

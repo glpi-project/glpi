@@ -1019,7 +1019,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                )";
 
          if ($item->maybeDeleted()) {
-            $restrict .= " AND `".$item->getTable()."`.`is_deleted` = '0' ";
+            $restrict .= " AND `".$item->getTable()."`.`is_deleted` = 0 ";
          }
 
          $data["##$objettype.numberofunresolved##"]
@@ -1113,7 +1113,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          if ($taskobj->maybePrivate()
              && (!isset($options['additionnaloption']['show_private'])
                  || !$options['additionnaloption']['show_private'])) {
-            $restrict .= " AND `is_private` = '0'";
+            $restrict .= " AND `is_private` = 0";
          }
          $restrict .= " ORDER BY `date_mod` DESC, `id` ASC";
 
