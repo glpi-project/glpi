@@ -912,7 +912,7 @@ class Reservation extends CommonDBChild {
                    FROM `glpi_reservationitems`
                    INNER JOIN `glpi_reservations`
                      ON (`glpi_reservationitems`.`id` = `glpi_reservations`.`reservationitems_id`)
-                   WHERE `is_active` = '1'
+                   WHERE `is_active` = 1
                          AND '".$debut."' < `end`
                          AND '".$fin."' > `begin`
                    ORDER BY `begin`";

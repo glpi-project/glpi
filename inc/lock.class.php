@@ -168,8 +168,8 @@ class Lock {
                        ON (`csv`.`softwareversions_id` = `sv`.`id`)
                     LEFT JOIN `glpi_softwares` AS s
                        ON (`sv`.`softwares_id` = `s`.`id`)
-                    WHERE `csv`.`is_deleted` = '1'
-                          AND `csv`.`is_dynamic` = '1'
+                    WHERE `csv`.`is_deleted` = 1
+                          AND `csv`.`is_dynamic` = 1
                           AND `csv`.`computers_id` = '$ID'";
          foreach ($DB->request($query) as $line) {
             $header = true;
@@ -198,8 +198,8 @@ class Lock {
                        ON (`csv`.`softwarelicenses_id` = `sv`.`id`)
                     LEFT JOIN `glpi_softwares` AS s
                        ON (`sv`.`softwares_id` = `s`.`id`)
-                    WHERE `csv`.`is_deleted` = '1'
-                          AND `csv`.`is_dynamic` = '1'
+                    WHERE `csv`.`is_deleted` = 1
+                          AND `csv`.`is_dynamic` = 1
                           AND `csv`.`computers_id` = '$ID'";
          foreach ($DB->request($query) as $line) {
             $header = true;
@@ -314,8 +314,8 @@ class Lock {
                          ON (`t`.`id` = `i`.`$fk`)
                       WHERE `itemtype` = '$itemtype'
                             AND `items_id` = '$ID'
-                            AND `is_dynamic` = '1'
-                            AND `is_deleted` = '1'";
+                            AND `is_dynamic` = 1
+                            AND `is_deleted` = 1";
             foreach ($DB->request($query) as $data) {
                echo "<tr class='tab_bg_1'><td class='center' width='10'>";
                echo "<input type='checkbox' name='".$type."[" . $data['id'] . "]'></td>";

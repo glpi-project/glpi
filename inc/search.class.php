@@ -614,7 +614,7 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK."`$itemtable`.`is_template` = '0' ";
+         $COMMONWHERE .= $LINK."`$itemtable`.`is_template` = 0 ";
       }
 
       // Add Restrict to current entities
@@ -936,12 +936,12 @@ class Search {
 
                      // Add deleted if item have it
                      if ($citem && $citem->maybeDeleted()) {
-                        $query_num .= " AND `$ctable`.`is_deleted` = '0' ";
+                        $query_num .= " AND `$ctable`.`is_deleted` = 0 ";
                      }
 
                      // Remove template items
                      if ($citem && $citem->maybeTemplate()) {
-                        $query_num .= " AND `$ctable`.`is_template` = '0' ";
+                        $query_num .= " AND `$ctable`.`is_template` = 0 ";
                      }
 
                   } else {// Ref table case
@@ -1018,12 +1018,12 @@ class Search {
 
                   // Add deleted if item have it
                   if ($citem && $citem->maybeDeleted()) {
-                     $tmpquery .= " AND `$ctable`.`is_deleted` = '0' ";
+                     $tmpquery .= " AND `$ctable`.`is_deleted` = 0 ";
                   }
 
                   // Remove template items
                   if ($citem && $citem->maybeTemplate()) {
-                     $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
+                     $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
                   }
 
                   $tmpquery.= $GROUPBY.
@@ -4256,7 +4256,7 @@ class Search {
                                     AS `glpi_computers_softwareversions_$complexjoin$to_type`
                               ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
-                                  AND `glpi_computers_softwareversions_$complexjoin$to_type`.`is_deleted` = '0')
+                                  AND `glpi_computers_softwareversions_$complexjoin$to_type`.`is_deleted` = 0)
                            $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
                               ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$complexjoin$to_type`.`id`)
@@ -4347,7 +4347,7 @@ class Search {
                                     AS `glpi_computers_softwareversions_$to_type`
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`
-                                  AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = '0')
+                                  AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = 0)
                            $LINK `glpi_computers`
                               ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
                                        = `glpi_computers`.`id` ".

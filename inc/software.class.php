@@ -598,9 +598,9 @@ class Software extends CommonDBTM {
 
       if (Session::getLoginUserID()) {
          $newtab['joinparams']  = ['jointype'   => 'child',
-                                         'condition'  => "AND NEWTABLE.`is_deleted_computer` = '0'
-                                                          AND NEWTABLE.`is_deleted` = '0'
-                                                          AND NEWTABLE.`is_template_computer` = '0'
+                                         'condition'  => "AND NEWTABLE.`is_deleted_computer` = 0
+                                                          AND NEWTABLE.`is_deleted` = 0
+                                                          AND NEWTABLE.`is_template_computer` = 0
                                                           ".getEntitiesRestrictRequest('AND', 'NEWTABLE'),
                                          'beforejoin' => ['table' => 'glpi_softwareversions',
                                                                'joinparams'
@@ -745,8 +745,8 @@ class Software extends CommonDBTM {
                 FROM `glpi_softwares`
                 INNER JOIN `glpi_softwarelicenses`
                      ON (`glpi_softwares`.`id` = `glpi_softwarelicenses`.`softwares_id`)
-                WHERE `glpi_softwares`.`is_deleted` = '0'
-                      AND `glpi_softwares`.`is_template` = '0'
+                WHERE `glpi_softwares`.`is_deleted` = 0
+                      AND `glpi_softwares`.`is_template` = 0
                       $where
                 ORDER BY `glpi_softwares`.`name`";
       $result = $DB->query($query);
@@ -846,7 +846,7 @@ class Software extends CommonDBTM {
                        FROM `glpi_softwares`
                        WHERE `name` = '$name'
                              AND `manufacturers_id` = '$manufacturer_id'
-                             AND `is_template` = '0' ".
+                             AND `is_template` = 0 ".
                              getEntitiesRestrictRequest('AND', 'glpi_softwares',
                                                         'entities_id', $entity, true);
 
@@ -948,8 +948,8 @@ class Software extends CommonDBTM {
               LEFT JOIN `glpi_entities` ON (`glpi_softwares`.`entities_id` = `glpi_entities`.`id`)
               WHERE (`glpi_softwares`.`id` != '$ID'
                      AND `glpi_softwares`.`name` = '".addslashes($this->fields["name"])."'
-                     AND `glpi_softwares`.`is_deleted` = '0'
-                     AND `glpi_softwares`.`is_template` = '0' " .
+                     AND `glpi_softwares`.`is_deleted` = 0
+                     AND `glpi_softwares`.`is_template` = 0 " .
                          getEntitiesRestrictRequest('AND', 'glpi_softwares', 'entities_id',
                                                     getSonsOf("glpi_entities",
                                                               $this->fields["entities_id"]),

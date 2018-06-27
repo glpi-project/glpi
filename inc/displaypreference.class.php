@@ -120,7 +120,7 @@ class DisplayPreference extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$itemtype'
-                      AND (`users_id` = '$user_id' OR `users_id` = '0')
+                      AND (`users_id` = '$user_id' OR `users_id` = 0)
                 ORDER BY `users_id`, `rank`";
       $result = $DB->query($query);
 
@@ -154,7 +154,7 @@ class DisplayPreference extends CommonDBTM {
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `itemtype` = '".$input["itemtype"]."'
-                      AND `users_id` = '0'";
+                      AND `users_id` = 0";
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {

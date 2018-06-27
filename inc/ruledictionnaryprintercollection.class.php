@@ -89,8 +89,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
                   ON (`glpi_manufacturers`.`id` = `glpi_printers`.`manufacturers_id`) ";
 
       // Do not replay on dustbin and templates
-      $sql .= "WHERE `glpi_printers`.`is_deleted` = '0'
-                     AND `glpi_printers`.`is_template` = '0' ";
+      $sql .= "WHERE `glpi_printers`.`is_deleted` = 0
+                     AND `glpi_printers`.`is_template` = 0 ";
 
       if ($offset) {
          $sql .= " LIMIT " . intval($offset) . ",999999999";
@@ -202,7 +202,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
                  FROM `glpi_printers`
                  LEFT JOIN `glpi_manufacturers`
                     ON (`glpi_printers`.`manufacturers_id` = `glpi_manufacturers`.`id`)
-                 WHERE `glpi_printers`.`is_template` = '0'
+                 WHERE `glpi_printers`.`is_template` = 0
                        AND `glpi_printers`.`id` = '$ID'";
 
          $res_printer = $DB->query($sql);

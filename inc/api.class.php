@@ -134,7 +134,7 @@ abstract class API extends CommonGLPI {
          $where_ip .= " AND (`ipv6` IS NULL
                              OR `ipv6` = '".$DB->escape($this->iptxt)."')";
       }
-      $found_clients = $apiclient->find("`is_active` = '1' $where_ip");
+      $found_clients = $apiclient->find("`is_active` = 1 $where_ip");
       if (count($found_clients) <= 0) {
          $this->returnError(__("There isn't an active API client matching your IP address in the configuration").
                             " (".$this->iptxt.")",
@@ -546,7 +546,7 @@ abstract class API extends CommonGLPI {
             $found_devices = getAllDatasFromTable($device_type::getTable(),
                                                   "`items_id` = '".$item->getID()."'
                                                    AND `itemtype` = '".$item->getType()."'
-                                                   AND `is_deleted` = '0'", true);
+                                                   AND `is_deleted` = 0", true);
 
             foreach ($found_devices as $devices_id => &$device) {
                unset($device['items_id']);
@@ -573,7 +573,7 @@ abstract class API extends CommonGLPI {
                              ON (`glpi_items_disks`.`filesystems_id` = `glpi_filesystems`.`id`)
                    WHERE `items_id` = '$id'
                          AND `itemtype` = '$itemtype'
-                         AND `is_deleted` = '0'";
+                         AND `is_deleted` = 0";
          $fields['_disks'] = [];
          if ($result = $DB->query($query)) {
             while ($data = $DB->fetch_assoc($result)) {
@@ -605,7 +605,7 @@ abstract class API extends CommonGLPI {
                       LEFT JOIN `glpi_softwares`
                            ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                       WHERE `glpi_computers_softwareversions`.`computers_id` = '$id'
-                            AND `glpi_computers_softwareversions`.`is_deleted` = '0'
+                            AND `glpi_computers_softwareversions`.`is_deleted` = 0
                       ORDER BY `glpi_softwares`.`name`, `glpi_softwareversions`.`name`";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -635,7 +635,7 @@ abstract class API extends CommonGLPI {
                                  = `glpi_computers_items`.`items_id`)
                          WHERE `computers_id` = '$id'
                                AND `itemtype` = '".$connect_type."'
-                               AND `glpi_computers_items`.`is_deleted` = '0'";
+                               AND `glpi_computers_items`.`is_deleted` = 0";
                if ($result = $DB->query($query)) {
                   while ($data = $DB->fetch_assoc($result)) {
                      $fields['_connections'][$connect_type][] = $data;
@@ -670,7 +670,7 @@ abstract class API extends CommonGLPI {
                          WHERE netp.`instantiation_type` = '$networkport_type'
                            AND netp.`items_id` = '$id'
                            AND netp.`itemtype` = '$itemtype'
-                           AND netp.`is_deleted` = '0'";
+                           AND netp.`is_deleted` = 0";
                if ($result = $DB->query($query)) {
                   while ($data = $DB->fetch_assoc($result)) {
                      if (isset($data['netport_id'])) {

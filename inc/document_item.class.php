@@ -219,7 +219,7 @@ class Document_Item extends CommonDBRelation{
          $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
       } else {
          // Anonymous access from FAQ
-         $restrict .= " AND `glpi_documents_items`.`entities_id` = '0' ";
+         $restrict .= " AND `glpi_documents_items`.`entities_id` = 0 ";
       }
 
       $nb = countElementsInTable(['glpi_documents_items'], $restrict);
@@ -233,7 +233,7 @@ class Document_Item extends CommonDBRelation{
             $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
          } else {
             // Anonymous access from FAQ
-            $restrict .= " AND `glpi_documents_items`.`entities_id` = '0' ";
+            $restrict .= " AND `glpi_documents_items`.`entities_id` = 0 ";
          }
          $nb += countElementsInTable(['glpi_documents_items'], $restrict);
       }
@@ -468,8 +468,8 @@ class Document_Item extends CommonDBRelation{
                } else {
                   // Anonymous access
                   if (Session::isMultiEntitiesMode()) {
-                     $where = " AND (`glpi_entities_knowbaseitems`.`entities_id` = '0'
-                                     AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')";
+                     $where = " AND (`glpi_entities_knowbaseitems`.`entities_id` = 0
+                                     AND `glpi_entities_knowbaseitems`.`is_recursive` = 1)";
                   }
                }
             } else {
@@ -478,7 +478,7 @@ class Document_Item extends CommonDBRelation{
             }
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = '0'";
+               $query .= " AND `$itemtable`.`is_template` = 0";
             }
 
             if ($itemtype == 'KnowbaseItem') {
@@ -683,7 +683,7 @@ class Document_Item extends CommonDBRelation{
 
          $q = "SELECT COUNT(*)
                FROM `glpi_documents`
-               WHERE `is_deleted` = '0'
+               WHERE `is_deleted` = 0
                $limit";
 
          $result = $DB->query($q);

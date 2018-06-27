@@ -738,7 +738,7 @@ class Item_Devices extends CommonDBRelation {
                    $leftjoin
                    WHERE `".$this->getDeviceForeignKey()."` = '".$item->getID()."'
                          AND `".$this->getTable()."`.`itemtype` = '$peer_type'
-                         AND `".$this->getTable()."`.`is_deleted` = '0'
+                         AND `".$this->getTable()."`.`is_deleted` = 0
                          $where
                    ORDER BY `".$this->getTable()."`.`itemtype`, `".$this->getTable()."`.`$fk`";
 
@@ -749,7 +749,7 @@ class Item_Devices extends CommonDBRelation {
                    FROM `".$this->getTable()."`
                    WHERE `itemtype` = '".$item->getType()."'
                          AND `items_id` = '".$item->getID()."'
-                         AND `is_deleted` = '0'
+                         AND `is_deleted` = 0
                    ORDER BY $fk";
 
       }

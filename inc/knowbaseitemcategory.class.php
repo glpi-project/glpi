@@ -94,8 +94,8 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          } else {
             // Anonymous access
             if (Session::isMultiEntitiesMode()) {
-               $faq_limit = " AND (`glpi_knowbaseitemcategories`.`entities_id` = '0'
-                                   AND `glpi_knowbaseitemcategories`.`is_recursive` = '1')";
+               $faq_limit = " AND (`glpi_knowbaseitemcategories`.`entities_id` = 0
+                                   AND `glpi_knowbaseitemcategories`.`is_recursive` = 1)";
             }
          }
 
@@ -110,7 +110,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                       LEFT JOIN `glpi_knowbaseitemcategories`
                            ON (`glpi_knowbaseitemcategories`.`id`
                                  = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
-                      WHERE `glpi_knowbaseitems`.`is_faq` = '1'
+                      WHERE `glpi_knowbaseitems`.`is_faq` = 1
                             AND ".KnowbaseItem::addVisibilityRestrict()."
                             $faq_limit";
 

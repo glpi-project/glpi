@@ -469,7 +469,7 @@ class CartridgeItem extends CommonDBTM {
                             LEFT JOIN `glpi_alerts`
                                  ON (`glpi_cartridgeitems`.`id` = `glpi_alerts`.`items_id`
                                      AND `glpi_alerts`.`itemtype` = 'CartridgeItem')
-                            WHERE `glpi_cartridgeitems`.`is_deleted` = '0'
+                            WHERE `glpi_cartridgeitems`.`is_deleted` = 0
                                   AND `glpi_cartridgeitems`.`alarm_threshold` >= '0'
                                   AND `glpi_cartridgeitems`.`entities_id` = '".$entity."'
                                   AND (`glpi_alerts`.`date` IS NULL

@@ -1469,8 +1469,8 @@ class Project extends CommonDBTM {
          // Get all root projects
          $query = "SELECT *
                    FROM `glpi_projects`
-                   WHERE `projects_id` = '0'
-                        AND `show_on_global_gantt` = '1'
+                   WHERE `projects_id` = 0
+                        AND `show_on_global_gantt` = 1
                         AND `is_template` = 0
                          ".getEntitiesRestrictRequest("AND", 'glpi_projects', "", '', true);
          foreach ($DB->request($query) as $data) {

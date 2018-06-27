@@ -128,8 +128,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                      ON (`glpi_manufacturers`.`id` = `glpi_softwares`.`manufacturers_id`)";
 
          // Do not replay on dustbin and templates
-         $sql .= "WHERE `glpi_softwares`.`is_deleted` = '0'
-                        AND `glpi_softwares`.`is_template` = '0' ";
+         $sql .= "WHERE `glpi_softwares`.`is_deleted` = 0
+                        AND `glpi_softwares`.`is_template` = 0 ";
 
          if (isset($params['manufacturer']) && $params['manufacturer']) {
             $sql .= " AND `glpi_softwares`.`manufacturers_id` = '" . $params['manufacturer'] . "'";
@@ -236,7 +236,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                                  FROM `glpi_softwares` AS gs
                                  LEFT JOIN `glpi_manufacturers` AS gm
                                        ON (`gs`.`manufacturers_id` = `gm`.`id`)
-                                 WHERE `gs`.`is_template` = '0'
+                                 WHERE `gs`.`is_template` = 0
                                        AND `gs`.`id` = '$ID'");
 
          if ($DB->numrows($res_soft)) {
@@ -377,9 +377,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                           LEFT JOIN `glpi_softwareversions`
                               ON `glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`
                           WHERE `glpi_softwares`.`id` IN (".implode(",", $soft_ids).")
-                                AND `is_deleted` = '0'
+                                AND `is_deleted` = 0
                           GROUP BY `glpi_softwares`.`id`
-                          HAVING `cpt` = '0'
+                          HAVING `cpt` = 0
                           ORDER BY `cpt`");
 
          $software = new Software();

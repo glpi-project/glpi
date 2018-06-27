@@ -535,9 +535,9 @@ class ReservationItem extends CommonDBChild {
                    $left
                    LEFT JOIN `glpi_locations`
                         ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
-                   WHERE `glpi_reservationitems`.`is_active` = '1'
-                         AND `glpi_reservationitems`.`is_deleted` = '0'
-                         AND `$itemtable`.`is_deleted` = '0'
+                   WHERE `glpi_reservationitems`.`is_active` = 1
+                         AND `glpi_reservationitems`.`is_deleted` = 0
+                         AND `$itemtable`.`is_deleted` = 0
                          $where ".
                          getEntitiesRestrictRequest(" AND", $itemtable, '',
                                                     $_SESSION['glpiactiveentities'],
