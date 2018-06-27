@@ -1095,7 +1095,7 @@ class RuleCollection extends CommonDBTM {
                if (self::isCriteraADropdown($available_criteria,
                                             $criteria['condition'], $crit)) {
                   //escape pattern
-                  $criteria['pattern'] = $DB->escape($criteria['pattern']);
+                  $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
                   $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
@@ -1136,7 +1136,7 @@ class RuleCollection extends CommonDBTM {
                   }
 
                   //escape value
-                  $action['value'] = $DB->escape($action['value']);
+                  $action['value'] = $DB->escape(Html::entity_decode_deep($action['value']));
                   $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
