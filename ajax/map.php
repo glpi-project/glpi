@@ -60,6 +60,10 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
       $lng_field = array_search(999, $data['toview']);
       $name_field = array_search(3, $data['toview']);
    }
+   if ($itemtype == 'Ticket') {
+      //duplicate search options... again!
+      $name_field = array_search(83, $data['toview']);
+   }
 
    $rows = $data['data']['rows'];
    $points = [];
