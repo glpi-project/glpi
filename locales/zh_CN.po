@@ -69,7 +69,7 @@ msgstr "添加"
 
 #: index.php:76
 msgid "GLPI - Authentication"
-msgstr "GLPI - 验证"
+msgstr "GLPI - 登陆入口"
 
 #: index.php:125 inc/authldap.class.php:3143 inc/authmail.class.php:236
 #: inc/config.class.php:1810 inc/dbutils.class.php:1584
@@ -121,11 +121,11 @@ msgstr "忘记密码？"
 
 #: index.php:180
 msgid "You must activate the JavaScript function of your browser"
-msgstr "您必须启用浏览器的JavaScript"
+msgstr "您必须启用浏览器的JavaScript功能"
 
 #: index.php:186
 msgid "You must accept cookies to reach this application"
-msgstr "您必须同意本网站使用cookies"
+msgstr "访问本站您必须同意本站启用cookies"
 
 #: index.php:190 inc/config.class.php:2494
 msgid "Checking write permissions for session files"
@@ -310,7 +310,7 @@ msgstr "%1$s (%2$s)"
 #: front/ticket_user.form.php:43 inc/commonitilobject.class.php:2485
 #: inc/commonitilobject.class.php:3237 inc/commonitilobject.class.php:3554
 msgid "Email followup"
-msgstr "邮件后续追踪"
+msgstr "邮件跟进"
 
 #. TRANS: %1$s is the auth method type, %2$s the auth method name or link
 #. TRANS: %1$s is a name, %2$s is a number
@@ -709,7 +709,7 @@ msgstr "警告"
 #: ajax/dropdownShowIPNetwork.php:54
 #, php-format
 msgid "IP network: %1$s/%2$s"
-msgstr "IP 网络: %1$s/%2$s"
+msgstr "网络IP : %1$s/%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:55
 #, php-format
@@ -723,7 +723,7 @@ msgstr "网关: %s"
 
 #: ajax/dropdownTrackingDeviceType.php:51 front/find_num.php:76
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr "输入第一个字母(用户名、项目名、序列号或资产编号)"
+msgstr "输入首字母(用户名、项目名、序列号或资产编号)"
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
