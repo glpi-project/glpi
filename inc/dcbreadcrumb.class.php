@@ -92,7 +92,7 @@ trait DCBreadcrumb {
 
       if (count($breadcrumb)) {
          echo "<tr class='tab_bg_1'>
-                  <td>" . __('Datacenter position') . "</td>
+                  <td>" . __('Data center position') . "</td>
                   <td colspan='3'>" . implode(' > ', array_reverse($breadcrumb)) . "</td>
                </tr>";
       }

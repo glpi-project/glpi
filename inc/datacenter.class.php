@@ -45,7 +45,7 @@ class Datacenter extends CommonDBTM {
 
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
-      return _n('Datacenter', 'Datacenters', $nb);
+      return _n('Data center', 'Data centers', $nb);
    }
 
    function defineTabs($options = []) {
