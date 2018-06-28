@@ -171,11 +171,13 @@ class Central extends CommonGLPI {
             $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
                                "install/install.php");
          }
-      }
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         if (!DBMysql::isMySQLStrictMode($comment)) {
-            $warnings[] = sprintf(__('SQL strict mode is not fully enabled, recommended for development: %s'), $comment);
+         $myisam_tables = $DB->getMyIsamTables();
+         if (count($myisam_tables)) {
+            $warnings[] = sprintf(
+               __('%1$s tables not migrated to InnoDB engine.'),
+               count($myisam_tables)
+            );
          }
       }
 
@@ -195,14 +197,6 @@ class Central extends CommonGLPI {
       if ($DB->isSlave()
           && !$DB->first_connection) {
          $warnings[] = __('SQL replica: read only');
-      }
-
-      $myisam_tables = $DB->getMyIsamTables();
-      if (count($myisam_tables)) {
-         $warnings[] = sprintf(
-            __('%1$s tables not migrated to InnoDB engine.'),
-            count($myisam_tables)
-         );
       }
 
       if (count($warnings)) {

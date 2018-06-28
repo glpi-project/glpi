@@ -59,7 +59,9 @@ define("GLPI_CSRF_MAX_TOKENS", "100");
 
 // for compatibility with mysql 5.7
 // TODO: this var need to be set to 0 after review of all sql queries)
-define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
+if (!defined('GLPI_FORCE_EMPTY_SQL_MODE')) {
+   define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
+}
 
 // rights
 define("READ", 1);
