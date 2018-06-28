@@ -2251,7 +2251,7 @@ class Dropdown {
          if (is_array($post['displaywith']) && count($post['displaywith'])) {
             $table = getTableForItemType($post['itemtype']);
             foreach ($post['displaywith'] as $key => $value) {
-               if (!$DB->FieldExists($table, $value)) {
+               if (!$DB->fieldExists($table, $value)) {
                   unset($post['displaywith'][$key]);
                }
             }
