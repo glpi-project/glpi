@@ -574,7 +574,7 @@ itemlink
                   plugin: 'select2',
                   plugin_config: Object.assign({}, _select2_builder_ajax, {
                      ajax: Object.assign({}, _select2_ajax.ajax, {
-url: '{{ path_for('dropdown-getvalue', {'itemtype': 'PLACEBO'}) }}'.replace(/PLACEBO/, 'none')
+                        url: '{{ path_for('dropdown-getvalue', {'itemtype': 'PLACEBO'}) }}'.replace(/PLACEBO/, 'none')
                      })
                   }),
       {% endif %}
