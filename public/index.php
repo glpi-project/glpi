@@ -1213,8 +1213,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ->withHeader('Connection', 'close');
    })->setName('cron');
 
-   $app->get('/user/tickets/{id:\d+}', function ($request, $response, $args) {
-      $ticket = new Ticket();
+   $app->get('/user/{itemtype:Problem|Change|Ticket}/{id:\d+}', function ($request, $response, $args) {
+      $object = new $args['itemtype'];
 
       $options = [
          'criteria'  => [
@@ -1232,13 +1232,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ],
          'reset'     => 'reset'
       ];
-      $url = $ticket->getSearchURL()."?".Toolbox::append_params($options, '&amp;');
+      $url = $object->getSearchURL()."?".Toolbox::append_params($options, '&amp;');
 
       return $response->withJson([
-         'count'        => $ticket->countActiveObjectsForTech((int)$args['id']),
+         'count'        => $object->countActiveObjectsForTech((int)$args['id']),
          'search_url'   => $url
       ]);
-   })->setName('user_tickets');
+   })->setName('user_itilobjects_active');
 
    RunTracy\Helpers\Profiler\Profiler::finish('Register routes');
 
