@@ -2583,7 +2583,9 @@ class Config extends CommonDBTM {
                  "<p class='red'>".__('The file could not be created.')."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }
-         $error = 1;
+         if ($error == 0) {
+            $error = 1;
+         }
       }
 
       $check_access = false;
