@@ -397,6 +397,19 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ]
       ];
 
+      if (GLPI_DEMO_MODE) {
+         //lang selector
+         $glpi_form['elements']['language'] = [
+            'empty_value'  => true,
+            'empty_text'   => __('Default (from user profile)'),
+            'type'         => 'select',
+            'name'         => 'language',
+            'values'       => Dropdown::getLanguages(),
+            'listicon'     => false,
+            'addicon'      => false
+         ];
+      }
+
       $auth_methods = \Auth::getLoginAuthMethods();
       $default = $auth_methods['_default'];
       unset($auth_methods['_default']);
