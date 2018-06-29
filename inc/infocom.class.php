@@ -70,7 +70,7 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI;
 
       // All devices are subjects to infocom !
-      if (Toolbox::is_a($item, 'Item_Devices')) {
+      if (is_a($item, 'Item_Devices', true)) {
          return true;
       }
 

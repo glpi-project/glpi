@@ -2085,7 +2085,7 @@ class Search {
       $types = ['Computer', 'Problem', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
                      'Software', 'Phone'];
       foreach ($types as $type) {
-         if (Toolbox::is_a($itemtype, $type)) {
+         if (is_a($itemtype, $type, true)) {
             return $type;
          }
       }
