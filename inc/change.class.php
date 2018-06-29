@@ -917,19 +917,19 @@ class Change extends CommonITILObject {
 
 
    /**
-    * Number of tasks of the problem
+    * Number of tasks of the change
     *
-    * @return followup count
+    * @return integer
    **/
    function numberOfTasks() {
       global $DB;
       // Set number of followups
-      $query = "SELECT COUNT(*)
-                FROM `glpi_changetasks`
-                WHERE `changes_id` = '".$this->fields["id"]."'";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 0);
+      $row = $DB->request([
+         'FROM'   => 'glpi_changetasks',
+         'COUNT'  => 'cpt',
+         'WHERE'  => ['changes_id' => $this->fields['id']]
+      ])->next();
+      return (int)$row['cpt'];
    }
 
    static function getCommonSelect() {

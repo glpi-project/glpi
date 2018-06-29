@@ -785,14 +785,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
          echo "</script>\n";
       }
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `".static::$items_id."` = '".$item->getField('id')."'";
-
-      $query .= " ORDER BY submission_date DESC";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $iterator = $DB->Request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [static::$items_id => $item->getField('id')],
+         'ORDER'  => 'submission_date DESC'
+      ]);
 
       $colonnes = [_x('item', 'State'), __('Request date'), __('Approval requester'),
                      __('Request comments'), __('Approval status'),
@@ -811,7 +808,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo __('Send an approval request')."</a></td></tr>\n";
          }
       }
-      if ($number) {
+      if (count($iterator)) {
          $header = "<tr>";
          foreach ($colonnes as $colonne) {
             $header .= "<th>".$colonne."</th>";
@@ -824,7 +821,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->fields["name"]));
 
-         while ($row = $DB->fetch_assoc($result)) {
+         while ($row = $iterator->next()) {
             $canedit = $this->canEdit($row["id"]);
             Session::addToNavigateListItems($this->getType(), $row["id"]);
             $bgcolor = self::getStatusColor($row['status']);

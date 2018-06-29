@@ -1666,23 +1666,27 @@ abstract class CommonITILTask  extends CommonDBTM {
       $canpurge    = $this->canPurgeItem();
       $canview     = $this->canViewItem();
 
-      $RESTRICT = "";
+      $RESTRICT = [];
       if ($this->maybePrivate() && !$showprivate) {
-         $RESTRICT = " AND (`is_private` = 0
-                            OR `users_id` ='" . Session::getLoginUserID() . "'
-                            OR `users_id_tech` ='" . Session::getLoginUserID()."'";
+         $crits = [
+            'is_private'      => 0,
+            'users_id'        => Session::getLoginUserID(),
+            'users_id_tech'   => Session::getLoginUserID(),
+         ];
          if (is_array($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
-            $RESTRICT .= " OR `groups_id_tech` IN ('".implode("','", $_SESSION["glpigroups"])."')";
+            $crits['groups_id_tech'] = $_SESSION['glpigroups'];
          }
-         $RESTRICT .= ") ";
+         $RESTRICT[] = ['OR' => $crits];
       }
 
-      $query = "SELECT `id`, `date`
-                FROM `".$this->getTable()."`
-                WHERE `".$item->getForeignKeyField()."` = '$tID'
-                      $RESTRICT
-                ORDER BY `date` DESC";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'date'],
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            $item->getForeignKeyField() => $tID
+         ] + $RESTRICT,
+         'ORDER'  => 'date DESC'
+      ]);
 
       $rand = mt_rand();
 
@@ -1711,7 +1715,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
-      if ($DB->numrows($result) == 0) {
+      if (count($iterator) == 0) {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th>" . __('No task found.');
          echo "</th></tr></table>";
       } else {
@@ -1726,7 +1730,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $header .= "<th>" . __('Planning') . "</th></tr>\n";
          echo $header;
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             if ($this->getFromDB($data['id'])) {
                $options = [ 'parent' => $item,
                                  'rand' => $rand,
