@@ -2510,31 +2510,6 @@ class Toolbox {
 
 
    /**
-    * Check if the given object is of the type $class_name. Can be identical or a subclass.
-    * This method emulates PHP 5.3.9: is_a with allow_string == true
-    *
-    * @todo: remove when prerequisite > 5.3.9 !
-    *
-    * @since 0.85
-    * @deprecated 9.3.1
-    *
-    * @param $object        can be an object or a string contining the class name
-    * @param $class_name    the name of the class to compare
-    *
-    * @return true if $object is an instance of $class_name
-    *
-   **/
-   static function is_a($object, $class_name) {
-      Toolbox::deprecated();
-      if (is_object($object)) {
-         return is_a($object, $class_name);
-      } else {
-         return is_a($object, $class_name, true);
-      }
-   }
-
-
-   /**
     * Retrieve the mime type of a file
     *
     * @since 0.85.5
