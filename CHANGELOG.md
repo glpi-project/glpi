@@ -82,6 +82,16 @@ The present file will list all changes made to the project; according to the
   - `Search::displayDatas()`
   - `Transfer::transferComputerDisks()`
 
+## [9.3.1] unreleased
+
+### API changes
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Toolbox::is_a()`
+
 ## [9.3] 2018-06-28
 
 ### Added

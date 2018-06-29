@@ -2516,6 +2516,7 @@ class Toolbox {
     * @todo: remove when prerequisite > 5.3.9 !
     *
     * @since 0.85
+    * @deprecated 9.3.1
     *
     * @param $object        can be an object or a string contining the class name
     * @param $class_name    the name of the class to compare
@@ -2524,17 +2525,12 @@ class Toolbox {
     *
    **/
    static function is_a($object, $class_name) {
-
+      Toolbox::deprecated();
       if (is_object($object)) {
          return is_a($object, $class_name);
+      } else {
+         return is_a($object, $class_name, true);
       }
-      if (is_string($object)) {
-         if ($object == $class_name) {
-            return true;
-         }
-         return is_subclass_of($object, $class_name);
-      }
-      return false;
    }
 
 

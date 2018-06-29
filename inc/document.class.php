@@ -69,8 +69,8 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       // All devices are subjects to infocom !
-      if (Toolbox::is_a($item, 'Item_Devices')
-          || Toolbox::is_a($item, 'CommonDevice')) {
+      if (is_a($item, 'Item_Devices', true)
+          || is_a($item, 'CommonDevice', true)) {
          return true;
       }
 
@@ -1427,7 +1427,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if ((Toolbox::is_a($itemtype, __CLASS__)) && (static::canUpdate())) {
+      if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
          $actions[$action_prefix.'add_item']    = _x('button', 'Add an item');
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
