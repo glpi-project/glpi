@@ -54,7 +54,7 @@
         {% if element.noajax is not defined or element.noajax == false %} data-ajax_url="{{ element.ajax_url|default(path_for('dropdown-getvalue', {'itemtype': element.itemtype})) }}"{% endif %}{% endif %}
         {% if element.change_func is defined %} data-change_func="{{ element.change_func }}"{% endif %}
       >
-         {% if element.empty_value is defined and element.empty_value == true %}<option value="0">{{ constant('\Dropdown::EMPTY_VALUE') }}</option>{% endif %}
+         {% if element.empty_value is defined and element.empty_value == true %}<option value="0">{{ element.empty_text|default(constant('\Dropdown::EMPTY_VALUE')) }}</option>{% endif %}
          {% import _self as glpi_select %}
          {{ glpi_select.html_options(element.values, element.value|default('')) }}
     </select>
