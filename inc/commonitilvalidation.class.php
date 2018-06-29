@@ -1350,14 +1350,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       $list       = [];
-      $restrict   = "";
+      $restrict   = [];
 
       $res = User::getSqlSearchResult (false, $params['right'], $params['entity']);
       while ($data = $DB->fetch_assoc($res)) {
          $list[] = $data['id'];
       }
       if (count($list) > 0) {
-         $restrict = "`glpi_users`.`id` IN ('".implode("', '", $list)."') ";
+         $restrict = ['glpi_users.id' => $list];
       }
       $users = Group_user::getGroupUsers($params['groups_id'], $restrict);
 

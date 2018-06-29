@@ -89,6 +89,9 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 
+- Usage of string `$condition` parameter in `Group_User::getUserGroups()` has been deprecated
+- Usage of string `$condition` parameter in `Group_User::getGroupUsers()` has been deprecated
+
 The following methods have been deprecated:
 
 - `Toolbox::is_a()`
