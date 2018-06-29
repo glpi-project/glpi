@@ -81,6 +81,7 @@ The present file will list all changes made to the project; according to the
   - `Search::constructDatas()`
   - `Search::displayDatas()`
   - `Transfer::transferComputerDisks()`
+  - `Toolbox::is_a()`
 
 ## [9.3.1] unreleased
 
