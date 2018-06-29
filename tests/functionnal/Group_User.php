@@ -65,7 +65,17 @@ class Group_User extends \GLPITestCase {
       $group_users = \Group_User::getGroupUsers($gid);
       $this->array($group_users)->hasSize(2);
 
-      $group_users = \Group_User::getGroupUsers($gid, 'is_manager = 1');
+      $this->exception(
+         function() use ($gid, $uid2) {
+            $group_users = \Group_User::getGroupUsers($gid, 'is_manager = 1');
+            $this->array($group_users)->hasSize(1);
+            $this->integer((int)$group_users[0]['id'])->isIdenticalTo($uid2);
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('getGroupUsers condition must be an array!');
+
+      $group_users = \Group_User::getGroupUsers($gid, ['is_manager' => 1]);
       $this->array($group_users)->hasSize(1);
       $this->integer((int)$group_users[0]['id'])->isIdenticalTo($uid2);
 
@@ -109,7 +119,15 @@ class Group_User extends \GLPITestCase {
       $group_users = \Group_User::getUserGroups($uid);
       $this->array($group_users)->hasSize(2);
 
-      $group_users = \Group_User::getUserGroups($uid, 'glpi_groups_users.is_manager = 1');
+      $this->exception(
+         function() use ($uid, $gid2) {
+            $group_users = \Group_User::getUserGroups($uid, 'glpi_groups_users.is_manager = 1');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('getUserGroups condition must be an array!');
+
+      $group_users = \Group_User::getUserGroups($uid, ['glpi_groups_users.is_manager' => 1]);
       $this->array($group_users)->hasSize(1);
       $this->integer((int)$group_users[0]['id'])->isIdenticalTo($gid2);
 

@@ -2215,15 +2215,20 @@ class Ticket extends CommonITILObject {
                case 'requester_supervisor' :
                   if (isset($input['_groups_id_requester'])
                       && $input['_groups_id_requester']) {
-                     $users = Group_User::getGroupUsers($input['_groups_id_requester'],
-                                                        "is_manager='1'");
+                     $users = Group_User::getGroupUsers(
+                        $input['_groups_id_requester'],
+                        ['is_manager' => 1]
+                     );
                      foreach ($users as $data) {
                         $validations_to_send[] = $data['id'];
                      }
                   }
                   // Add to already set groups
                   foreach ($this->getGroups(CommonITILActor::REQUESTER) as $d) {
-                     $users = Group_User::getGroupUsers($d['groups_id'], "is_manager='1'");
+                     $users = Group_User::getGroupUsers(
+                        $d['groups_id'],
+                        ['is_manager' => 1]
+                     );
                      foreach ($users as $data) {
                         $validations_to_send[] = $data['id'];
                      }
@@ -2233,14 +2238,19 @@ class Ticket extends CommonITILObject {
                case 'assign_supervisor' :
                   if (isset($input['_groups_id_assign'])
                       && $input['_groups_id_assign']) {
-                     $users = Group_User::getGroupUsers($input['_groups_id_assign'],
-                                                        "is_manager='1'");
+                     $users = Group_User::getGroupUsers(
+                        $input['_groups_id_assign'],
+                        ['is_manager' => 1]
+                     );
                      foreach ($users as $data) {
                         $validations_to_send[] = $data['id'];
                      }
                   }
                   foreach ($this->getGroups(CommonITILActor::ASSIGN) as $d) {
-                     $users = Group_User::getGroupUsers($d['groups_id'], "is_manager='1'");
+                     $users = Group_User::getGroupUsers(
+                        $d['groups_id'],
+                        ['is_manager' => 1]
+                     );
                      foreach ($users as $data) {
                         $validations_to_send[] = $data['id'];
                      }
