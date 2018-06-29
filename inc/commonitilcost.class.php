@@ -469,7 +469,7 @@ abstract class CommonITILCost extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $forproject = false;
-      if (Toolbox::is_a($item, 'Project')) {
+      if (is_a($item, 'Project', true)) {
          $forproject = true;
       }
 

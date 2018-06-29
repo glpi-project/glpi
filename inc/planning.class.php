@@ -301,7 +301,7 @@ class Planning extends CommonGLPI {
             break;
 
          default :
-            if (Toolbox::is_a($item, 'CommonITILObject')) {
+            if (is_a($item, 'CommonITILObject', true)) {
                foreach ($item->getUsers(CommonITILActor::ASSIGN) as $data) {
                   $users[$data['users_id']] = getUserName($data['users_id']);
                }

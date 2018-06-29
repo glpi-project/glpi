@@ -425,7 +425,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       $unaffect = false;
       $affect   = false;
-      if (Toolbox::is_a($itemtype, 'CommonDBChild')) {
+      if (is_a($itemtype, 'CommonDBChild', true)) {
          $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
          if (!$itemtype::$mustBeAttached) {
             $unaffect = true;
@@ -433,7 +433,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
          } else if ($specificities['reaffect']) {
             $affect = true;
          }
-      } else if (Toolbox::is_a($itemtype, 'CommonDBRelation')) {
+      } else if (is_a($itemtype, 'CommonDBRelation', true)) {
          $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
          if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
             $unaffect = true;
@@ -472,7 +472,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       $itemtypes_affect   = [];
       $itemtypes_unaffect = [];
       foreach (array_keys($items) as $itemtype) {
-         if (!Toolbox::is_a($itemtype, __CLASS__)) {
+         if (!is_a($itemtype, __CLASS__, true)) {
             continue;
          }
          $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
@@ -499,7 +499,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       switch ($normalized_action) {
          case 'unaffect' :
             foreach ($itemtypes as $itemtype => $specificities) {
-               if (Toolbox::is_a($itemtype, 'CommonDBRelation')) {
+               if (is_a($itemtype, 'CommonDBRelation', true)) {
                   $peer_field = "peer[$itemtype]";
                   if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {
                      // Should never occur ... But we must care !
@@ -537,7 +537,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                if (!$specificities['reaffect']) {
                   continue;
                }
-               if (Toolbox::is_a($itemtype, 'CommonDBRelation')) {
+               if (is_a($itemtype, 'CommonDBRelation', true)) {
                   if ($specificities['reaffect'] == 1) {
                      $peertype = $itemtype::$itemtype_1;
                   } else {
@@ -607,7 +607,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
-      if (!is_a($item, __CLASS__)) {
+      if (!is_a($item, __CLASS__, true)) {
          parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
          return;
       }
@@ -666,7 +666,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                return;
             }
-            if (is_a($item, 'CommonDBRelation')) {
+            if (is_a($item, 'CommonDBRelation', true)) {
                if ($specificities['reaffect'] == 1) {
                   $peertype = $itemtype::$itemtype_1;
                   $peers_id = $itemtype::$items_id_1;
