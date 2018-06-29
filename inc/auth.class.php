@@ -41,8 +41,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Auth extends CommonGLPI {
 
-   //! Error string
-   public $err ='';
+   //Errors
+   private $errors = [];
    /** User class variable
     * @see User
     */
@@ -522,7 +522,18 @@ class Auth extends CommonGLPI {
     * @return string current identification error
     */
    function getErr() {
-      return $this->err;
+      return implode("<br>\n", $this->getErrors());
+   }
+
+   /**
+    * Get errors
+    *
+    * @since 9.4
+    *
+    * @return array
+    */
+   public function getErrors() {
+      return $this->errors;
    }
 
    /**
@@ -555,9 +566,8 @@ class Auth extends CommonGLPI {
     * @return void
     */
    function addToError($message) {
-
-      if (!strstr($this->err, $message)) {
-         $this->err .= $message."<br>\n";
+      if (!in_array($message, $this->errors)) {
+         $this->errors[] = $message;
       }
    }
 
@@ -695,10 +705,7 @@ class Auth extends CommonGLPI {
       if (!$this->auth_succeded) {
          if (empty($login_name) || strstr($login_name, "\0")
              || empty($login_password) || strstr($login_password, "\0")) {
-            // only if we don't have previous errors
-            if (strlen($this->err) == 0) {
-               $this->addToError(__('Empty login or password'));
-            }
+            $this->addToError(__('Empty login or password'));
          } else {
 
             // Try connect local user if not yet authenticated
