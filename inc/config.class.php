@@ -2654,24 +2654,30 @@ class Config extends CommonDBTM {
    static function getCurrentDBVersion() {
       global $DB;
 
+      //Default current case
+      $select  = 'value AS version';
+      $table   = 'glpi_configs';
+      $where   = [
+         'context'   => 'core',
+         'name'      => 'version'
+      ];
+
       if (!$DB->tableExists('glpi_configs')) {
-         $query = "SELECT `version`
-                   FROM `glpi_config`
-                   WHERE `id` = 1";
+         $select  = 'version';
+         $table   = 'glpi_config';
+         $where   = ['id' => 1];
       } else if ($DB->fieldExists('glpi_configs', 'version')) {
-         $query = "SELECT `version`
-                   FROM `glpi_configs`
-                   WHERE `id` = 1";
-      } else {
-         $query = "SELECT `value` as version
-                   FROM `glpi_configs`
-                   WHERE 'context' = 'core'
-                         AND 'name' = 'version'";
+         $select  = 'version';
+         $where   = ['id' => 1];
       }
 
-      $result = $DB->query($query);
-      $config = $DB->fetch_assoc($result);
-      return trim($config['version']);
+      $row = $DB->request([
+         'SELECT' => [$select],
+         'FROM'   => $table,
+         'WHERE'  => $where
+      ])->next();
+
+      return trim($row['version']);
    }
 
 

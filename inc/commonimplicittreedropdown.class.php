@@ -182,12 +182,16 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
       if ($step != "add") { // Because there is no old sons of new node
          // First, get all my current direct sons (old ones) that are not new potential sons
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `".$this->getForeignKeyField()."` = '".$this->getID()."'
-                         AND `id` NOT IN ('".implode("', '", $potentialSons)."')";
+         $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               $this->getForeignKeyField()   => $this->getID(),
+               'NOT'                         => ['id' => $potentialSons]
+            ]
+         ]);
          $oldSons = [];
-         foreach ($DB->request($query) as $oldSon) {
+         while($oldSon = $iterator->next()) {
             $oldSons[] = $oldSon["id"];
          }
          if (count($oldSons) > 0) { // Then make them pointing to old parent
@@ -207,12 +211,16 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       if ($step != "delete") { // Because ther is no new sons for deleted nodes
          // And, get all direct sons of my new Father that must be attached to me (ie : that are
          // potential sons
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `".$this->getForeignKeyField()."` = '$newParent'
-                         AND `id` IN ('".implode("', '", $potentialSons)."')";
+         $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               $this->getForeignKeyField()   => $newParent,
+               'id'                          => $potentialSons
+            ]
+         ]);
          $newSons = [];
-         foreach ($DB->request($query) as $newSon) {
+         while ($newSon = $iterator->next()) {
             $newSons[] = $newSon["id"];
          }
          if (count($newSons) > 0) { // Then make them pointing to me
