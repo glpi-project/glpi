@@ -46,11 +46,9 @@ include_once GLPI_ROOT . "/inc/based_config.php";
 include_once GLPI_ROOT . "/inc/define.php";
 include_once GLPI_ROOT . "/inc/autoload.function.php";
 
-define('DO_NOT_CHECK_HTTP_REFERER', 1);
+//define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
 RunTracy\Helpers\Profiler\Profiler::enable();
-/*defined('DS') || define('DS', DIRECTORY_SEPARATOR);
-define('DIR', realpath(__DIR__ . '/../../') . DS);*/
 Debugger::enable(Debugger::DEVELOPMENT, GLPI_LOG_DIR);
 Debugger::timer();
 
@@ -470,8 +468,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $noauto = isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false;
 
       if (empty($login) || empty($password) || empty($login_auth)) {
-         //TODO: error.
-         throw new \RuntimeException('Required info missing');
+         $this->flash->addMessage(
+            'error',
+            __('Missing authentication information.')
+         );
+         return $response
+            ->withStatus(301)
+            ->withHeader('Location', $this->router->pathFor('login'));
       }
 
       /*
@@ -493,7 +496,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             ->withHeader('Location', $this->router->pathFor('central'));
          Auth::redirectIfAuthenticated();
       } else {
-         //TODO: flash message
+         foreach ($auth->getErrors() as $error) {
+            $this->flash->addMessage(
+               'error',
+               $error
+            );
+         }
          return $response
             ->withStatus(301)
             ->withHeader('Location', $this->router->pathFor('login'));
