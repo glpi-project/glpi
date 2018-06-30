@@ -54,6 +54,16 @@ class AuthLDAP extends DbTestCase {
 
    public function afterTestMethod($method) {
       unset($_SESSION['ldap_import']);
+
+      //make sure bootstrapped ldap is not active and is default
+      $this->boolean(
+         $this->ldap->update([
+            'id'           => $this->ldap->getID(),
+            'is_active'    => 1,
+            'is_default'   => 1
+         ])
+      )->isTrue();
+
       parent::afterTestMethod($method);
    }
 

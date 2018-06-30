@@ -467,4 +467,21 @@ class Config extends DbTestCase {
       $result = \Config::checkDbEngine();
       $this->array($result)->isIdenticalTo([$version => $compat]);
    }
+
+   public function testGetLanguage() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->getLanguage('fr'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('fr_FR'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('Français'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('french'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('notalang'))
+               ->isIdenticalTo('');
+
+   }
 }
