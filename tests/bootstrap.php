@@ -475,7 +475,7 @@ function loadDataset() {
             'login_field'     => 'uid',
             'rootdn_passwd'   => 'insecure',
             'is_default'      => 1,
-            'is_active'       => 1,
+            'is_active'       => 0,
             'use_tls'         => 0,
             'email1_field'    => 'mail',
             'realname_field'  => 'cn',

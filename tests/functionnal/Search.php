@@ -869,6 +869,48 @@ class Search extends DbTestCase {
       $CFG_GLPI['translate_dropdowns'] = 0;
       unset($_SESSION['glpi_dropdowntranslations']);
    }
+
+   public function dataInfocomOptions() {
+      return [
+         [1, false],
+         [2, false],
+         [4, false],
+         [40, false],
+         [31, false],
+         [80, false],
+         [25, true],
+         [26, true],
+         [27, true],
+         [28, true],
+         [37, true],
+         [38, true],
+         [50, true],
+         [51, true],
+         [52, true],
+         [53, true],
+         [54, true],
+         [55, true],
+         [56, true],
+         [57, true],
+         [58, true],
+         [59, true],
+         [120, true],
+         [122, true],
+         [123, true],
+         [124, true],
+         [125, true],
+         [142, true],
+         [159, true],
+         [173, true],
+      ];
+   }
+
+   /**
+    * @dataProvider dataInfocomOptions
+    */
+   public function testIsInfocomOption($index, $expected) {
+      $this->boolean(\Search::isInfocomOption('Computer', $index))->isIdenticalTo($expected);
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
