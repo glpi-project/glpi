@@ -993,10 +993,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $data["##$objettype.solution.description##"] = '';
 
       $itilsolution = new ITILSolution();
-      $solution = $itilsolution->getFromDBByCrit([
-         'itemtype'  => $objettype,
-         'items_id'  => $item->fields['id'],
-         'status'    => CommonITILValidation::ACCEPTED
+      $solution = $itilsolution->getFromDBByRequest([
+         'WHERE'  => [
+            'itemtype'  => $objettype,
+            'items_id'  => $item->fields['id']
+         ],
+         'ORDER'  => 'date_creation DESC',
+         'LIMIT'  => 1
       ]);
 
       if ($solution) {
