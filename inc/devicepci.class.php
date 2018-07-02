@@ -59,7 +59,7 @@ class DevicePci extends CommonDevice {
                                                                                     '_registeredID',
                                                                                     null, false),
                                      'type'  => 'registeredIDChooser'],
-                         ['name'  => 'devicenetworkcardmodels_id',
+                         ['name'  => 'devicepcimodels_id',
                                      'label' => __('Model'),
                                      'type'  => 'dropdownValue']]);
    }
