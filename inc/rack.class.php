@@ -895,9 +895,6 @@ JAVASCRIPT;
          if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
          }
-         if (isset($input["size"]) && ($input["size"] == '')) {
-            unset($input["size"]);
-         }
          unset($input['id']);
          unset($input['withtemplate']);
 
