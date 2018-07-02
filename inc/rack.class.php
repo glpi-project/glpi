@@ -891,7 +891,7 @@ JAVASCRIPT;
    }
 
    function prepareInputForAdd($input) {
-      if (prepareInput($input) {
+      if ($this->prepareInput($input)) {
          if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
          }
