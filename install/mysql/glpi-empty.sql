@@ -4919,7 +4919,7 @@ INSERT INTO `glpi_notifications` VALUES(67, 'Certificates', 0, 'Certificate', 'a
 DROP TABLE IF EXISTS `glpi_notifications_notificationtemplates`;
 CREATE TABLE `glpi_notifications_notificationtemplates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `notifications_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `notifications_id` int(11) NOT NULL DEFAULT '0',
   `mode` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
   `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
