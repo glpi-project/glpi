@@ -989,15 +989,28 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $data["##$objettype.assigntogroups##"] = implode(', ', $groups);
       }
 
-      $data["##$objettype.solution.type##"]='';
-      if ($item->getField('solutiontypes_id')) {
-         $data["##$objettype.solution.type##"]
-                              = Dropdown::getDropdownName('glpi_solutiontypes',
-                                                          $item->getField('solutiontypes_id'));
-      }
+      $data["##$objettype.solution.type##"] = '';
+      $data["##$objettype.solution.description##"] = '';
 
-      $data["##$objettype.solution.description##"]
-                     = Toolbox::unclean_cross_side_scripting_deep($item->getField('solution'));
+      $itilsolution = new ITILSolution();
+      $solution = $itilsolution->getFromDBByCrit([
+         'itemtype'  => $objettype,
+         'items_id'  => $item->fields['id'],
+         'status'    => CommonITILValidation::ACCEPTED
+      ]);
+
+      if ($solution) {
+         if ($solution->getField('solutiontypes_id')) {
+            $data["##$objettype.solution.type##"] = Dropdown::getDropdownName(
+               'glpi_solutiontypes',
+               $solution->getField('solutiontypes_id')
+            );
+         }
+
+         $data["##$objettype.solution.description##"] = Toolbox::unclean_cross_side_scripting_deep(
+            $solution->getField('content')
+         );
+      }
 
       // Complex mode
       if (!$simple) {
