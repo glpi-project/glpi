@@ -299,6 +299,11 @@ function update92to921() {
    $migration->addPreQuery("UPDATE `glpi_crontasks`
                              SET `name` = 'queuednotificationclean'
                              WHERE `name` = 'queuedmailclean'");
+   $migration->addPreQuery("DELETE `duplicated` FROM `glpi_profilerights` AS `duplicated`
+                            INNER JOIN `glpi_profilerights` AS `original`
+                            WHERE `duplicated`.`profiles_id` = `original`.`profiles_id`
+                            AND `original`.`name` = 'queuednotification'
+                            AND `duplicated`.`name` = 'queuedmail'");
    $migration->addPreQuery("UPDATE `glpi_profilerights`
                              SET `name` = 'queuednotification'
                              WHERE `name` = 'queuedmail'");
