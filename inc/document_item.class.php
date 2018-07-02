@@ -197,8 +197,12 @@ class Document_Item extends CommonDBRelation{
          $doc->getFromDB($this->fields['documents_id']);
          if (!empty($doc->fields['tag'])) {
             $ticket->getFromDB($this->fields['items_id']);
-            $input['content'] = Toolbox::cleanTagOrImage($ticket->fields['content'],
-                                                         [$doc->fields['tag']]);
+            $input['content'] = Toolbox::addslashes_deep(
+               Toolbox::cleanTagOrImage(
+                  $ticket->fields['content'],
+                  [$doc->fields['tag']]
+               )
+            );
          }
 
          $ticket->update($input);
