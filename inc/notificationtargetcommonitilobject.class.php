@@ -1003,15 +1003,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       ]);
 
       if ($solution) {
-         if ($solution->getField('solutiontypes_id')) {
+         if ($itilsolution->getField('solutiontypes_id')) {
             $data["##$objettype.solution.type##"] = Dropdown::getDropdownName(
                'glpi_solutiontypes',
-               $solution->getField('solutiontypes_id')
+               $itilsolution->getField('solutiontypes_id')
             );
          }
 
          $data["##$objettype.solution.description##"] = Toolbox::unclean_cross_side_scripting_deep(
-            $solution->getField('content')
+            $itilsolution->getField('content')
          );
       }
 
