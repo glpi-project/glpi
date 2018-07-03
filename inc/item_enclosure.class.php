@@ -202,13 +202,14 @@ class Item_Enclosure extends CommonDBRelation {
       echo "<td><label for='dropdown_itemtype$rand'>".__('Item type')."</label></td>";
       echo "<td>";
       $types = $CFG_GLPI['rackable_types'];
+      $translated_types = [];
       unset($types[array_search('Enclosure', $types)]);
-      foreach ($types as &$type) {
-         $type = $type::getTypeName(1);
+      foreach ($types as $type) {
+         $translated_types[$type] = $type::getTypeName(1);
       }
       Dropdown::showFromArray(
          'itemtype',
-         array_combine($types, $types), [
+         $translated_types, [
             'display_emptychoice'   => true,
             'value'                 => $this->fields["itemtype"],
             'rand'                  => $rand
