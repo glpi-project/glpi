@@ -891,7 +891,16 @@ JAVASCRIPT;
    }
 
    function prepareInputForAdd($input) {
-      return $this->prepareInput($input);
+      if ($this->prepareInput($input)) {
+         if (isset($input["id"]) && ($input["id"] > 0)) {
+            $input["_oldID"] = $input["id"];
+         }
+         unset($input['id']);
+         unset($input['withtemplate']);
+
+         return $input;
+      }
+      return false;
    }
 
    function prepareInputForUpdate($input) {
