@@ -82,8 +82,8 @@ See :
 Here is a [pdf version](https://forge.glpi-project.org/attachments/download/1901/glpidoc-0.85-en-partial.pdf).
 We are working on a [markdown version](https://github.com/glpi-project/doc)
 
-* [Installation](http://glpi-project.org/spip.php?article61)
-* [Update](http://glpi-project.org/spip.php?article172)
+* [Installation](https://readthedocs.org/projects/glpi-install/)
+* [Update](https://glpi-install.readthedocs.io/en/latest/update.html)
 
 
 ## Additional resources
