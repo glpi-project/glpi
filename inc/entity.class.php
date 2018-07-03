@@ -1107,7 +1107,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<script type='text/javascript'>";
       echo "   $(function() {
-                  $.getScript('{$CFG_GLPI["root_doc"]}/lib/jqueryplugins/jstree/jstree.min.js', function(data, textStatus, jqxhr) {
+                  $.getScript('{$CFG_GLPI["root_doc"]}/lib/jqueryplugins/jstree/jstree.min.js').done(function(data, textStatus, jqxhr) {
                      $('#tree_projectcategory$rand')
                      // call `.jstree` with the options object
                      .jstree({
