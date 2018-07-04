@@ -658,40 +658,6 @@ class DBmysql {
       return $lock_ok;
    }
 
-   /**
-   * Check for crashed MySQL Tables
-   *
-   * @since 0.90.2
-   *
-   * @deprecated 9.3.1
-   *
-   * @var DB $DB
-    *
-   * @return string[] array with supposed crashed table and check message
-   */
-   static public function checkForCrashedTables() {
-      global $DB;
-
-      Toolbox::deprecated();
-
-      $crashed_tables = [];
-
-      $result_tables = $DB->listTables();
-
-      while ($line = $result_tables->next()) {
-         $query  = "CHECK TABLE `".$line['TABLE_NAME']."` FAST";
-         $result  = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            $row = $DB->fetch_array($result);
-            if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
-               $crashed_tables[] = ['table'    => $row[0],
-                                    'Msg_type' => $row['Msg_type'],
-                                    'Msg_text' => $row['Msg_text']];
-            }
-         }
-      }
-      return $crashed_tables;
-   }
 
    /**
     * Check if a table exists
