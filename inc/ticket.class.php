@@ -1071,6 +1071,7 @@ class Ticket extends CommonITILObject {
                 || $this->canAssignToMe()
                 || isset($input['_from_assignment'])) {
                 $allowed_fields[] = 'status';
+                $allowed_fields[] = '_accepted';
             }
             // for post-only with validate right or validation created by rules
             if (TicketValidation::canValidate($this->fields['id'])
