@@ -129,6 +129,9 @@ function update93to94() {
 
    Config::deleteConfigurationValues('core', $config_to_drop);
 
+   // Add a config entry for the CAS version
+   $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
