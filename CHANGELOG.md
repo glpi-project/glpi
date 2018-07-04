@@ -73,6 +73,7 @@ The present file will list all changes made to the project; according to the
   - `CommonDBTM::getSearchOptionsNew()`
   - `CommonITILObject::getStatusIconURL()`
   - `DBMysql::list_tables()`
+  - `DBMysql::checkForCrashedTables()`
   - `Dropdown::showPrivatePublicSwitch()`
   - `NotificationTargetProjectTask::getTeamContacts()`
   - `NotificationTargetProjectTask::getTeamGroups()`
