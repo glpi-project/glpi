@@ -2517,54 +2517,23 @@ class Config extends CommonDBTM {
    static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
 
-      $dir_to_check = self::getDataDirectories();
-      //log dir is tested differently below
-      unset($dir_to_check[GLPI_LOG_DIR]);
-      $error = 0;
-      foreach ($dir_to_check as $dir => $message) {
-         if (!$fordebug) {
-            echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
-         }
-         $tmperror = Toolbox::testWriteAccessToDirectory($dir);
-
-         $errors = [4 => __('The directory could not be created.'),
-                         3 => __('The directory was created but could not be removed.'),
-                         2 => __('The file could not be created.'),
-                         1 => __("The file was created but can't be deleted.")];
-
-         if ($tmperror > 0) {
-            if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'> ".
-                     sprintf(__('Check permissions to the directory: %s'), $dir).
-                     " ".$errors[$tmperror]."\n";
-            } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
-                    $errors[$tmperror]."</p> ".
-                    sprintf(__('Check permissions to the directory: %s'), $dir).
-                    "'</td></tr>";
-            }
-            $error = 2;
-         } else {
-            if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK').
-                    "\">$dir : OK\n";
-            } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                          __s('A file and a directory have be created and deleted - Perfect!')."\"
-                          title=\"".
-                          __s('A file and a directory have be created and deleted - Perfect!')."\">".
-                    "</td></tr>";
-            }
-         }
-      }
-
       // Only write test for GLPI_LOG as SElinux prevent removing log file.
       if (!$fordebug) {
          echo "<tr class='tab_bg_1'><td class='b left'>".
                __('Checking write permissions for log files')."</td>";
       }
 
-      if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
+      $can_write_logs = false;
+
+      try {
+         global $PHPLOGGER;
+         $PHPLOGGER->addRecord(Monolog\Logger::WARNING, "Test logger");
+         $can_write_logs = true;
+      } catch (\UnexpectedValueException $e) {
+         //empty catch
+      }
+
+      if ($can_write_logs) {
          if ($fordebug) {
             echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK')."\">".
                    GLPI_LOG_DIR." : OK\n";
@@ -2583,9 +2552,53 @@ class Config extends CommonDBTM {
                  "<p class='red'>".__('The file could not be created.')."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }
-         if ($error == 0) {
-            $error = 1;
+      }
+
+      if ($can_write_logs) {
+         $dir_to_check = self::getDataDirectories();
+         //log dir is tested differently below
+         unset($dir_to_check[GLPI_LOG_DIR]);
+         $error = 0;
+         foreach ($dir_to_check as $dir => $message) {
+            if (!$fordebug) {
+               echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
+            }
+            $tmperror = Toolbox::testWriteAccessToDirectory($dir);
+
+            $errors = [
+               4 => __('The directory could not be created.'),
+               3 => __('The directory was created but could not be removed.'),
+               2 => __('The file could not be created.'),
+               1 => __("The file was created but can't be deleted.")
+            ];
+
+            if ($tmperror > 0) {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'> ".
+                        sprintf(__('Check permissions to the directory: %s'), $dir).
+                        " ".$errors[$tmperror]."\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
+                     $errors[$tmperror]."</p> ".
+                     sprintf(__('Check permissions to the directory: %s'), $dir).
+                     "'</td></tr>";
+               }
+               $error = 2;
+            } else {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK').
+                     "\">$dir : OK\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                           __s('A file and a directory have be created and deleted - Perfect!')."\"
+                           title=\"".
+                           __s('A file and a directory have be created and deleted - Perfect!')."\">".
+                     "</td></tr>";
+               }
+            }
          }
+      } else {
+         $error = 2;
       }
 
       $check_access = false;
@@ -2593,7 +2606,7 @@ class Config extends CommonDBTM {
 
       foreach ($directories as $dir) {
          if (Toolbox::startsWith($dir, GLPI_ROOT)) {
-            //only check access if on of the data directories is under GLPI document root.
+            //only check access if one of the data directories is under GLPI document root.
             $check_access = true;
             break;
          }
