@@ -663,12 +663,17 @@ class DBmysql {
    *
    * @since 0.90.2
    *
+   * @deprecated 9.3.1
+   *
    * @var DB $DB
     *
    * @return string[] array with supposed crashed table and check message
    */
    static public function checkForCrashedTables() {
       global $DB;
+
+      Toolbox::deprecated();
+
       $crashed_tables = [];
 
       $result_tables = $DB->listTables();
