@@ -160,7 +160,7 @@ class Pdu_Plug extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
          }
 
-         echo "<table class='tab_cadre_fixehov'>";
+         echo "<table class='tab_cadre_fixehov' id='mass".__CLASS__.$rand."'>";
          $header = "<tr>";
          if ($canedit) {
             $header .= "<th width='10'>";
