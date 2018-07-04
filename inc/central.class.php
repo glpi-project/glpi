@@ -181,19 +181,6 @@ class Central extends CommonGLPI {
          }
       }
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         $crashedtables = DBMysql::checkForCrashedTables();
-         if (!empty($crashedtables)) {
-            $tables = [];
-            foreach ($crashedtables as $crashedtable) {
-               $tables[] = $crashedtable['table'];
-            }
-            $message = __('The following SQL tables are marked as crashed:');
-            $message.= implode(',', $tables);
-            $warnings[] = $message;
-         }
-      }
-
       if ($DB->isSlave()
           && !$DB->first_connection) {
          $warnings[] = __('SQL replica: read only');
