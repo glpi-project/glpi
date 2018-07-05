@@ -262,7 +262,10 @@ var dataURItoBlob = function(dataURI) {
       ia[i] = byteString.charCodeAt(i);
    }
 
-   return new Blob([ia], {type:mimeString});
+   var file = new Blob([ia], {type:mimeString});
+   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
+
+   return file;
 };
 
 /**
@@ -372,11 +375,7 @@ if (typeof tinymce != 'undefined') {
             //transform to blob and insert into editor
             if (base64.length) {
                var file = dataURItoBlob(base64);
-               // Fix #3866 - undefined file name
-               if (typeof file.name != "string") {
-                  // fill missing file properties
-                  file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
-               }
+
                insertImageInTinyMCE(editor, file);
             }
 
