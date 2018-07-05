@@ -41,5 +41,8 @@ ini_set('session.use_cookies', 0);
 
 include_once (GLPI_ROOT . "/inc/based_config.php");
 
+//init cache
+$GLPI_CACHE = Config::getCache('cache_db');
+
 $api = new APIRest;
 $api->call();

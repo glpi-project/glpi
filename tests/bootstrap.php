@@ -37,11 +37,17 @@ define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
+define('GLPI_ROOT', __DIR__ . '/../');
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: php scripts/cliinstall.php --tests ...\n\n");
 }
-global $CFG_GLPI;
+global $CFG_GLPI, $GLPI_CACHE;
+
+include __DIR__ . '/../inc/autoload.function.php';
+
+//init cache
+$GLPI_CACHE = Config::getCache('cache_db');
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
