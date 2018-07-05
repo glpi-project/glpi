@@ -198,6 +198,7 @@ class ITILSolution extends CommonDBTM {
 
       echo Html::hidden('itemtype', ['value' => $item->getType()]);
       echo Html::hidden('items_id', ['value' => $item->getID()]);
+      echo html::hidden('_no_message_link', ['value' => 1]);
 
       // Settings a solution will set status to solved
       if ($canedit) {
