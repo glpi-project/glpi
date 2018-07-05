@@ -105,15 +105,14 @@ if (!isset($PLUGINS_INCLUDED)) {
    $PLUGINS_INCLUDED = 1;
    $LOADED_PLUGINS   = [];
    $plugin           = new Plugin();
-   if (!isset($_SESSION["glpi_plugins"])) {
+   if ($plugin->getPlugins() === null) {
       $plugin->init();
    }
-   if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-      //Plugin::doHook("config");
-      if (count($_SESSION["glpi_plugins"])) {
-         foreach ($_SESSION["glpi_plugins"] as $name) {
-            Plugin::load($name);
-         }
+
+   $plugins_list = $plugin->getPlugins();
+   if (count($plugins_list)) {
+      foreach ($plugin->getPlugins() as $name) {
+         Plugin::load($name);
       }
       // For plugins which require action after all plugin init
       Plugin::doHook("post_init");

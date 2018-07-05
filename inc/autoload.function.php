@@ -292,7 +292,7 @@ function glpi_autoload($classname) {
          }
       } else {
          // Standard use of GLPI
-         if (!isset($_SESSION['glpi_plugins']) || !in_array($plugname, $_SESSION['glpi_plugins'])) {
+         if (!Plugin::isPluginLoaded($plugname)) {
             // Plugin not activated
             return false;
          }

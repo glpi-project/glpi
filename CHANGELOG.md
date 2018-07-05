@@ -149,6 +149,7 @@ The following methods have been deprecated:
 
 - `ITILSolution::removeForItem()`
 - `Session::isViewAllEntities()`
+- `Plugin::removeFromSession()`
 
 ## [9.3.1] 2018-09-12
 

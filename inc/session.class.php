@@ -600,12 +600,8 @@ class Session {
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
       // Load plugin dicts
-      if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
-         if (count($_SESSION['glpi_plugins'])) {
-            foreach ($_SESSION['glpi_plugins'] as $plug) {
-               Plugin::loadLang($plug, $forcelang, $trytoload);
-            }
-         }
+      foreach (Plugin::getPlugins() as $plug) {
+         Plugin::loadLang($plug, $forcelang, $trytoload);
       }
 
       $TRANSLATE->setLocale($trytoload);

@@ -3066,7 +3066,7 @@ class Search {
             break;
 
          case 'Config':
-            $availableContexts = ['core'] + $_SESSION['glpi_plugins'];
+            $availableContexts = ['core'] + Plugin::getPlugins();
             $availableContexts = implode("', '", $availableContexts);
             $condition = "`context` IN ('$availableContexts')";
             break;
