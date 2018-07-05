@@ -61,6 +61,7 @@ include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
+global $PHPLOGGER, $SQLLOGGER; //globals...
 $GLPI = new GLPI();
 $GLPI->initLogger();
 
@@ -71,6 +72,9 @@ $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old 
 
 $update = new Update($DB, $args);
 $update->initSession();
+
+//init cache
+$GLPI_CACHE = Config::getCache('cache_db');
 
 Session::loadLanguage();
 if (!$DB->connected) {

@@ -38,11 +38,11 @@ include_once (GLPI_ROOT."/inc/based_config.php");
 include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/dbconnection.class.php");
 
+//init cache
+$GLPI_CACHE = Config::getCache('cache_db');
+
 Session::setPath();
 Session::start();
-
-//init cache
-$GLPI_CACHE = false;
 
 Config::detectRootDoc();
 

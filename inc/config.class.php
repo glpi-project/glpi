@@ -2842,20 +2842,13 @@ class Config extends CommonDBTM {
     * @param string  $context name of the configuration context (default 'core')
     * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
-    * @return Zend\Cache\Storage\StorageInterface object or false
+    * @return Zend\Cache\Storage\StorageInterface object
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB, $CFG_GLPI;
 
-      if (defined('TU_USER') && !defined('CACHED_TESTS')
-         || !$DB || !$DB->tableExists(self::getTable())
-         || !$DB->fieldExists(self::getTable(), 'context')) {
-         return false;
-      }
-
       /* Tested configuration values
        *
-       * - (empty = no cache)
        * - {"adapter":"apcu"}
        * - {"adapter":"redis","options":{"server":{"host":"127.0.0.1"}},"plugins":["serializer"]}
        * - {"adapter":"filesystem"}
@@ -2868,17 +2861,30 @@ class Config extends CommonDBTM {
        *
        */
       // Read configuration
-      $conf = self::getConfigurationValues($context, [$optname]);
+      $conf = [];
+      if ($DB
+         && $DB->tableExists(self::getTable())
+         && $DB->fieldExists(self::getTable(), 'context')
+      ) {
+         $conf = self::getConfigurationValues($context, [$optname]);
+      }
 
       // Adapter default options
       $opt = [];
       if (isset($conf[$optname])) {
-         if (empty($conf[$optname])) { // to disable cache
-            return false;
-         }
          $opt = json_decode($conf[$optname], true);
          Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
+
+      //use memory adapter when called from tests
+      if (defined('TU_USER') && !defined('CACHED_TESTS')) {
+         $opt['adapter'] = 'memory';
+      }
+      //force FS adapter for translations for tests
+      if (defined('TU_USER') && $optname == 'cache_trans') {
+         $opt['adapter'] = 'filesystem';
+      }
+
       if (!isset($opt['options']['namespace'])) {
          $namespace = "glpi_${optname}_" . GLPI_VERSION;
          if (isset($CFG_GLPI['instance_uuid'])) {
@@ -2892,7 +2898,7 @@ class Config extends CommonDBTM {
          } else if (function_exists('wincache_ucache_add')) {
             $opt['adapter'] = 'wincache';
          } else {
-            return false;
+            $opt['adapter'] = 'filesystem';
          }
       }
       // Adapter specific options
@@ -2937,14 +2943,39 @@ class Config extends CommonDBTM {
          } else {
             $cache = $storage;
          }
-         $cache_class = get_class($storage);
       } catch (Exception $e) {
-         $cache_class = 'no class';
+         //fallback to another cache system
+         $fallback = false;
+         if ($opt['adapter'] != 'filesystem') {
+            $opt = [
+               'adapter'   => 'filesystem',
+               'options'   => [
+                  'cache_dir' => GLPI_CACHE_DIR . '/' . $optname
+               ],
+               'plugins'   => 'serializer'
+            ];
+
+            if (!is_dir($opt['options']['cache_dir'])) {
+               mkdir($opt['options']['cache_dir']);
+            }
+            try {
+               $cache = Zend\Cache\StorageFactory::factory($opt);
+               $fallback = true;
+            } catch (Exception $e1) {
+               if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+                  Toolbox::logDebug($e1->getMessage());
+               }
+            }
+         }
+
+         if ($fallback === false) {
+            $opt = ['adapter' => 'memory'];
+            $cache = Zend\Cache\StorageFactory::factory($opt);
+         }
          if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-            Toolbox::logError($e->getMessage());
+            Toolbox::logDebug($e->getMessage());
          }
       }
-      Toolbox::logDebug("CACHE $optname", $cache_class);
       return $cache;
    }
 

@@ -109,11 +109,12 @@ class Plugin extends CommonDBTM {
     * @return nothing
    **/
    function init() {
+      global $GLPI_CACHE;
 
       $this->checkStates();
       $plugins                  = $this->find('state='.self::ACTIVATED);
 
-      $_SESSION["glpi_plugins"] = [];
+      $GLPI_CACHE->set('plugins', []);
 
       if (count($plugins)) {
          foreach ($plugins as $ID => $plug) {
@@ -842,7 +843,7 @@ class Plugin extends CommonDBTM {
     * unactivate all activated plugins for update process
    **/
    function unactivateAll() {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
       $DB->update(
          $this->getTable(), [
@@ -851,7 +852,9 @@ class Plugin extends CommonDBTM {
             'state' => self::ACTIVATED
          ]
       );
-      $_SESSION['glpi_plugins'] = [];
+
+      $GLPI_CACHE->set('plugins', []);
+
       // reset menu
       if (isset($_SESSION['glpimenu'])) {
          unset($_SESSION['glpimenu']);
@@ -1855,8 +1858,9 @@ class Plugin extends CommonDBTM {
     * @return array
     */
    public static function getPlugins() {
-      if (isset($_SESSION['glpi_plugins'])) {
-         return $_SESSION['glpi_plugins'];
+      global $GLPI_CACHE;
+      if ($GLPI_CACHE->has('plugins')) {
+         return $GLPI_CACHE->get('plugins');
       }
       return [];
    }
@@ -1885,8 +1889,10 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setLoaded($id, $name) {
-      $plugins = self::getPlugins();
-      $_SESSION['glpi_plugins'][$id] = $name;
+      global $GLPI_CACHE;
+      $plugins = $GLPI_CACHE->get('plugins');
+      $plugins[$id] = $name;
+      $GLPI_CACHE->set('plugins', $plugins);
    }
 
    /**
@@ -1899,10 +1905,10 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setUnloaded($id) {
-      $plugins = self::getPlugins();
-      if (isset($plugins[$id])) {
-         unset($_SESSION['glpi_plugins'][$id]);
-      }
+      global $GLPI_CACHE;
+      $plugins = $GLPI_CACHE->get('plugins');
+      unset($plugins[$id]);
+      $GLPI_CACHE->set('plugins', $plugins);
    }
 
    /**
