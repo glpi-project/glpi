@@ -363,11 +363,9 @@ class CronTask extends CommonDBTM{
                 FROM `".$this->getTable()."`
                 WHERE (`itemtype` NOT LIKE 'Plugin%'";
 
-      if (count($_SESSION['glpi_plugins'])) {
-         // Only activated plugins
-         foreach ($_SESSION['glpi_plugins'] as $plug) {
-            $query .= " OR `itemtype` LIKE 'Plugin$plug%'";
-         }
+      // Only activated plugins
+      foreach (Plugin::getPlugins() as $plug) {
+         $query .= " OR `itemtype` LIKE 'Plugin$plug%'";
       }
       $query .= ')';
 
