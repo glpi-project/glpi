@@ -392,7 +392,7 @@ class Auth extends CommonGLPI {
 
             // extract e-mail information
             if (phpCAS::hasAttribute("mail")) {
-                $this->user->fields['_useremails'] = array(phpCAS::getAttribute("mail"));
+                $this->user->fields['_useremails'] = [phpCAS::getAttribute("mail")];
             }
 
             return true;
@@ -626,7 +626,7 @@ class Auth extends CommonGLPI {
             $this->extauth                     = 1;
             $user_dn                           = false;
 
-            if (array_key_exists('_useremails',$this->user->fields)) {
+            if (array_key_exists('_useremails', $this->user->fields)) {
                 $email = $this->user->fields['_useremails'];
             }
 
@@ -925,19 +925,18 @@ class Auth extends CommonGLPI {
       return Dropdown::showFromArray($p['name'], $methods, $p);
    }
 
-    /**
-    * Builds CAS versions dropdown
-    * @param string $value (default 'CAS_VERSION_2_0')
-    *
-    * @return string
-    */
-    static function dropdownCasVersion($value = 'CAS_VERSION_2_0') {
-        $options['CAS_VERSION_1_0'] = __('Version 1');
-        $options['CAS_VERSION_2_0'] = __('Version 2');
-        $options['CAS_VERSION_3_0'] = __('Version 3+');
-  
-        return Dropdown::showFromArray('cas_version',$options, ['value' => $value]);
-    }
+   /**
+   * Builds CAS versions dropdown
+   * @param string $value (default 'CAS_VERSION_2_0')
+   *
+   * @return string
+   */
+   static function dropdownCasVersion($value = 'CAS_VERSION_2_0') {
+      $options['CAS_VERSION_1_0'] = __('Version 1');
+      $options['CAS_VERSION_2_0'] = __('Version 2');
+      $options['CAS_VERSION_3_0'] = __('Version 3+');
+      return Dropdown::showFromArray('cas_version', $options, ['value' => $value]);
+   }
 
    /**
     * Get name of an authentication method
