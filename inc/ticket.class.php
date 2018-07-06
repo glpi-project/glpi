@@ -7092,11 +7092,6 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_user'>";
 
          $user->getFromDB($this->fields['users_id_recipient']);
-         if (isset($item_i['users_id_recipient'])
-               && ($item_i['users_id_recipient'] != 0)) {
-            $user->getFromDB($item_i['users_id_recipient']);
-         }
-
          echo "<div class='tooltip_picture_border'>";
          $picture = "";
          if (isset($user->fields['picture'])) {
