@@ -321,6 +321,7 @@ class MailCollector  extends CommonDBTM {
             .dialog(options = {
                autoOpen: false,
                autoResize:true,
+               width: 'auto',
                modal: true,
             });
 
