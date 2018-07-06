@@ -44,8 +44,26 @@ $mailcollector = new MailCollector;
 if (isset($_REQUEST['action'])) {
    switch ($_REQUEST['action']) {
       case "getFoldersList":
-         $mailcollector->getFromDB((int) $_REQUEST['id']);
-         echo $mailcollector->getFoldersList($_REQUEST['input']);
+         $input = $_REQUEST;
+
+         if (isset($input["passwd"])) {
+            if (empty($input["passwd"])) {
+               unset($input["passwd"]);
+            } else {
+               $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]), GLPIKEY);
+            }
+         }
+
+         if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+            $input["host"] = Toolbox::constructMailServerConfig($input);
+         }
+
+         if (!isset($input['errors'])) {
+            $input['errors'] = 0;
+         }
+
+         $mailcollector->fields = $input;
+         echo $mailcollector->displayFoldersList($_REQUEST['input_id']);
          break;
    }
 }

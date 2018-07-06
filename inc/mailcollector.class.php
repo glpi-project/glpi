@@ -239,8 +239,6 @@ class MailCollector  extends CommonDBTM {
       $options['colspan'] = 1;
       $this->showFormHeader($options);
 
-      $new = ($ID <= 0);
-
       echo "<tr class='tab_bg_1'><td>".sprintf(__('%1$s (%2$s)'), __('Name'), __('Email address')).
            "</td><td>";
       Html::autocompletionTextField($this, "name");
@@ -256,7 +254,7 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo "</td></tr>";
 
-      $type = Toolbox::showMailServerConfig($this->fields["host"], $new);
+      $type = Toolbox::showMailServerConfig($this->fields["host"]);
 
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
       Html::autocompletionTextField($this, "login");
@@ -278,17 +276,13 @@ class MailCollector  extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
          echo "<td>";
          echo "<input size='30' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
-         if (!$new) {
-            echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         }
+         echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
          echo "<td>";
          echo "<input size='30' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
-         if (!$new) {
-            echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         }
+         echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
       }
 
@@ -326,13 +320,16 @@ class MailCollector  extends CommonDBTM {
             });
 
          $(document).on('click', '.get-imap-folder', function() {
-            var input = $(this).prev('input').attr('id');
+            var input = $(this).prev('input');
+
+            var data = 'action=getFoldersList';
+            data += '&input_id=' + input.attr('id');
+            // Remove current input value to prevent filtering
+            data += '&' + $(this).closest('form').find(':not([name=\"' + input.attr('name') + '\"])').serialize();
+
             $('#imap-folder')
-               .load('".$CFG_GLPI['root_doc']."/ajax/mailcollector.php', {
-                  'action': 'getFoldersList',
-                  'id': '$ID',
-                  'input': input
-               })
+               .html('')
+               .load('".$CFG_GLPI['root_doc']."/ajax/mailcollector.php', data)
                .dialog('open');
          });
 
@@ -356,7 +353,7 @@ class MailCollector  extends CommonDBTM {
     * @param  string $input_id dom id where to insert folder name
     * @return nothing (display)
     */
-   function getFoldersList($input_id = "") {
+   function displayFoldersList($input_id = "") {
       $this->connect();
 
       if (!is_resource($this->marubox)) {
@@ -378,7 +375,7 @@ class MailCollector  extends CommonDBTM {
             $folder = trim(stripslashes($arr[1]));
             echo "<li class='pointer' data-input-id='$input_id'>
                      <i class='fa fa-folder'></i>&nbsp;
-                     <span class='folder-name'>".imap_utf7_decode($folder)."</span>
+                     <span class='folder-name'>".imap_mutf7_to_utf8($folder)."</span>
                   </li>";
          }
          echo "</ul>";
