@@ -330,7 +330,7 @@ class MailCollector  extends CommonDBTM {
             $('#imap-folder')
                .load('".$CFG_GLPI['root_doc']."/ajax/mailcollector.php', {
                   'action': 'getFoldersList',
-                  'id': $ID,
+                  'id': '$ID',
                   'input': input
                })
                .dialog('open');
