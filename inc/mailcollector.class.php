@@ -324,8 +324,10 @@ class MailCollector  extends CommonDBTM {
 
             var data = 'action=getFoldersList';
             data += '&input_id=' + input.attr('id');
-            // Remove current input value to prevent filtering
+            // Get form values without current input value to prevent filtering
             data += '&' + $(this).closest('form').find(':not([name=\"' + input.attr('name') + '\"])').serialize();
+            // Force empty value for current input
+            data += '&' + input.attr('name') + '=';
 
             $('#imap-folder')
                .html('')
@@ -378,6 +380,15 @@ class MailCollector  extends CommonDBTM {
                      <span class='folder-name'>".imap_mutf7_to_utf8($folder)."</span>
                   </li>";
          }
+         echo "</ul>";
+      } else if (!empty($this->fields['server_mailbox'])) {
+         echo "<ul class='select_folder'>";
+         echo "<li>";
+         echo sprintf(
+            __("No child found for folder '%s'."),
+            Html::entities_deep($this->fields['server_mailbox'])
+         );
+         echo "</li>";
          echo "</ul>";
       }
    }

@@ -44,6 +44,13 @@ $mailcollector = new MailCollector;
 if (isset($_REQUEST['action'])) {
    switch ($_REQUEST['action']) {
       case "getFoldersList":
+         // Load config if already exists
+         // Necessary if password is not updated
+         if (array_key_exists('id', $_REQUEST)) {
+            $mailcollector->getFromDB($_REQUEST['id']);
+         }
+
+         // Update fields with input values
          $input = $_REQUEST;
 
          if (isset($input["passwd"])) {
@@ -62,7 +69,7 @@ if (isset($_REQUEST['action'])) {
             $input['errors'] = 0;
          }
 
-         $mailcollector->fields = $input;
+         $mailcollector->fields = array_merge($mailcollector->fields, $input);
          echo $mailcollector->displayFoldersList($_REQUEST['input_id']);
          break;
    }
