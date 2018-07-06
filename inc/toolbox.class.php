@@ -2088,10 +2088,11 @@ class Toolbox {
     *
     * @param $value String host connect string ex
     *                      {localhost:993/imap/ssl}INBOX
+    * @param $new boolean (@since 9.3.1) is the parent form is for a new item
     *
     * @return String type of the server (imap/pop)
    **/
-   static function showMailServerConfig($value) {
+   static function showMailServerConfig($value, $new = false) {
 
       if (!Config::canUpdate()) {
          return false;
@@ -2190,7 +2191,11 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
-      echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+      echo "<td>";
+      echo "<input size='30' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+      if (!$new) {
+         echo "<i class='fa fa-list pointer get-imap-folder'></i>";
+      }
       echo "</td></tr>\n";
 
       //TRANS: for mail connection system
