@@ -1214,7 +1214,9 @@ class User extends CommonDBTM {
       }
 
       if ($userUpdated) {
-         $this->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
+         // calling $this->update() here leads to loss in $this->input
+         $user = new User();
+         $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
       }
    }
 
@@ -1283,7 +1285,9 @@ class User extends CommonDBTM {
       }
 
       if ($userUpdated) {
-         $this->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
+         // calling $this->update() here leads to loss in $this->input
+         $user = new User();
+         $user->update(['id' => $this->fields['id'], 'date_mod' => $_SESSION['glpi_currenttime']]);
       }
    }
 
