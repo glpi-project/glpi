@@ -86,6 +86,9 @@ The present file will list all changes made to the project; according to the
 
 ## [9.3.1] unreleased
 
+### Added
+- List receivers folders to choose imported/refused folders
+
 ### API changes
 
 #### Deprecated
