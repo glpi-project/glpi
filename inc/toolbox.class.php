@@ -2186,7 +2186,9 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
-      echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+      echo "<td>";
+      echo "<input size='30' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+      echo "<i class='fa fa-list pointer get-imap-folder'></i>";
       echo "</td></tr>\n";
 
       //TRANS: for mail connection system

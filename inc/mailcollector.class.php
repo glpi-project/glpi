@@ -274,11 +274,15 @@ class MailCollector  extends CommonDBTM {
 
       if ($type != "pop") {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
-         echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
+         echo "<td>";
+         echo "<input size='30' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
+         echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
-         echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
+         echo "<td>";
+         echo "<input size='30' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
+         echo "<i class='fa fa-list pointer get-imap-folder'></i>";
          echo "</td></tr>\n";
       }
 
@@ -304,7 +308,89 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
+
+      echo "<div id='imap-folder'></div>";
+      echo Html::scriptBlock("$(function() {
+         $('#imap-folder')
+            .dialog(options = {
+               autoOpen: false,
+               autoResize:true,
+               width: 'auto',
+               modal: true,
+            });
+
+         $(document).on('click', '.get-imap-folder', function() {
+            var input = $(this).prev('input');
+
+            var data = 'action=getFoldersList';
+            data += '&input_id=' + input.attr('id');
+            // Get form values without current input value to prevent filtering
+            data += '&' + $(this).closest('form').find(':not([name=\"' + input.attr('name') + '\"])').serialize();
+            // Force empty value for current input
+            data += '&' + input.attr('name') + '=';
+
+            $('#imap-folder')
+               .html('')
+               .load('".$CFG_GLPI['root_doc']."/ajax/mailcollector.php', data)
+               .dialog('open');
+         });
+
+         $(document).on('click', '.select_folder li', function() {
+            var li       = $(this);
+            var input_id = li.data('input-id');
+            var folder   = li.children('.folder-name').html();
+
+            $('#'+input_id).val(folder);
+            $('#imap-folder').dialog('close');
+         })
+      });");
       return true;
+   }
+
+   /**
+    * Display the list of folder for current connections
+    *
+    * @since  9.3.1
+    *
+    * @param  string $input_id dom id where to insert folder name
+    * @return nothing (display)
+    */
+   function displayFoldersList($input_id = "") {
+      $this->connect();
+
+      if (!is_resource($this->marubox)) {
+         echo __('Connection errors');
+
+         return false;
+      }
+
+      $folders = imap_list($this->marubox, $this->fields['host'], '*');
+      if (is_array($folders)) {
+         echo "<ul class='select_folder'>";
+         foreach ($folders as $folder) {
+            if (preg_match("/}/i", $folder)) {
+               $arr = explode('}', $folder);
+            }
+            if (preg_match("/]/i", $folder)) {
+               $arr = explode(']/', $folder);
+            }
+            $folder = trim(stripslashes($arr[1]));
+            echo "<li class='pointer' data-input-id='$input_id'>
+                     <i class='fa fa-folder'></i>&nbsp;
+                     <span class='folder-name'>".imap_mutf7_to_utf8($folder)."</span>
+                  </li>";
+         }
+         echo "</ul>";
+      } else if (!empty($this->fields['server_mailbox'])) {
+         echo "<ul class='select_folder'>";
+         echo "<li>";
+         echo sprintf(
+            __("No child found for folder '%s'."),
+            Html::entities_deep($this->fields['server_mailbox'])
+         );
+         echo "</li>";
+         echo "</ul>";
+      }
    }
 
 
