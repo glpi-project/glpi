@@ -679,7 +679,7 @@ class Cartridge extends CommonDBChild {
                         'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
                                  => __('Enable the financial and administrative information')
                              ];
-            if ($show_old) {
+            if (!$show_old) {
                $actions['Cartridge'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock']
                      = __('Back to stock');
             }
