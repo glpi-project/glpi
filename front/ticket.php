@@ -44,6 +44,13 @@ echo Html::manageRefreshPage();
 
 Search::show('Ticket');
 
+echo'
+<script type="text/javascript">
+   $(document).ready(function() {
+   $("#filterToHide img").trigger("click");
+});
+</script>';
+
 if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpFooter();
 } else {
