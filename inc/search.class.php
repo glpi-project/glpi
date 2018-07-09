@@ -2154,7 +2154,7 @@ class Search {
 
       if ((count($p['criteria']) + count($p['metacriteria'])) > 1) {
          echo "<td width='10' class='center'>";
-         echo "<a href=\"javascript:toggleTableDisplay('$searchcriteriatableid','searchcriteriasimg',
+         echo "<a id='filterToHide' href=\"javascript:toggleTableDisplay('$searchcriteriatableid','searchcriteriasimg',
                                                        '".$CFG_GLPI["root_doc"].
                                                           "/pics/deplier_down.png',
                                                        '".$CFG_GLPI["root_doc"].
