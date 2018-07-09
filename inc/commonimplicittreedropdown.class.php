@@ -180,7 +180,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
        *                update them. (See getPotentialSons())
       **/
 
-      if ($step != "add") { // Because there is no old sons of new node
+      if ($step != "add" && count($potentialSons)) { // Because there is no old sons of new node
          // First, get all my current direct sons (old ones) that are not new potential sons
          $iterator = $DB->request([
             'SELECT' => ['id'],
@@ -191,7 +191,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             ]
          ]);
          $oldSons = [];
-         while($oldSon = $iterator->next()) {
+         while ($oldSon = $iterator->next()) {
             $oldSons[] = $oldSon["id"];
          }
          if (count($oldSons) > 0) { // Then make them pointing to old parent
@@ -208,7 +208,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
          }
       }
 
-      if ($step != "delete") { // Because ther is no new sons for deleted nodes
+      if ($step != "delete" && count($potentialSons)) { // Because ther is no new sons for deleted nodes
          // And, get all direct sons of my new Father that must be attached to me (ie : that are
          // potential sons
          $iterator = $DB->request([
