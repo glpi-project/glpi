@@ -1162,22 +1162,24 @@ class Config extends CommonDBTM {
          });
          $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
       ");
-      echo "</select>";
       echo "</td>";
       echo "<td><label for='layout-selector'>" . __('Layout')."</label></td><td>";
-      $layout_options = ['lefttab' => __("Tabs on left"),
-                         'classic' => __("Classic view"),
-                         'vsplit'  => __("Vertical split")];
 
-      echo "<select name='layout' id='layout-selector'>";
-      foreach ($layout_options as $key => $name) {
-         $selected = "";
-         if ($data["layout"] == $key) {
-            $selected = "selected='selected'";
-         }
-         echo "<option value='$key' $selected>".ucfirst($name)."</option>";
+      $layout_options = [
+         'lefttab' => __("Tabs on left"),
+         'classic' => __("Classic view"),
+         'vsplit'  => __("Vertical split")
+      ];
 
-      }
+      echo Html::select(
+         'layout',
+         $layout_options,
+         [
+            'id'        => 'layout-selector',
+            'selected'  => $data['layout']
+         ]
+      );
+
       echo Html::scriptBlock("
          function formatLayout(layout) {
              if (!layout.id) {
