@@ -37,7 +37,6 @@ shared: &shared
           mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
           php scripts/cliinstall.php --db=glpitest --host=127.0.0.1 --user=root --tests
           php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
-          ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
     - run:
         name: Database tests
         command: composer testdb
