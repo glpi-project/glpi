@@ -700,7 +700,7 @@ class Document extends CommonDBTM {
                            ON fup.tickets_id = tic.id
                          LEFT JOIN glpi_tickettasks AS task
                            ON task.tickets_id = tic.id
-                         LEFT JOIN glpi_solutions AS sol
+                         LEFT JOIN glpi_itil_solutions AS sol
                            ON sol.items_id = tic.id
                            AND sol.itemtype = 'Ticket'
                          WHERE tic.id = {$options["tickets_id"]}
