@@ -57,13 +57,13 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * Check if given object can have InfoCom
+    * Check if given object can have Infocom
     *
     * @since 0.85
     *
     * @param $item  an object or a string
     *
-    * @return true if $object is an object that can have InfoCom
+    * @return true if $object is an object that can have Infocom
     *
    **/
    static function canApplyOn($item) {
@@ -1950,7 +1950,7 @@ class Infocom extends CommonDBChild {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
 
-      if (InfoCom::canApplyOn($itemtype)
+      if (Infocom::canApplyOn($itemtype)
           && static::canCreate()) {
          $actions[$action_name] = __('Enable the financial and administrative information');
       }
@@ -2023,4 +2023,27 @@ class Infocom extends CommonDBChild {
       return Session::haveRight(static::$rightname, CREATE);
    }
 
+   /**
+    * Get item types
+    *
+    * @since 9.3.1
+    *
+    * @param array $where Where clause
+    *
+    * @return DBMysqlIterator
+    */
+   public static function getTypes($where) {
+      global $DB;
+
+      $types_iterator = $DB->request([
+         'SELECT DISTINCT' => 'itemtype',
+         'FROM'            => 'glpi_infocoms',
+         'WHERE'           => [
+            'NOT'          => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
+         ] + $where,
+         'ORDER'           => 'itemtype',
+         'GROUPBY'         => 'itemtype'
+      ]);
+      return $types_iterator;
+   }
 }
