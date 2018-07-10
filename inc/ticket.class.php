@@ -1703,6 +1703,8 @@ class Ticket extends CommonITILObject {
                              'entities_id'   => $this->fields['entities_id'],
                              'type'          => $type,
                              'max_closedate' => $max_closedate]);
+         // Redirect to created survey
+         HTML::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$this->fields['id']."&forcetab=Ticket$3");
       }
    }
 
