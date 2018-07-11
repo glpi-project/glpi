@@ -836,6 +836,10 @@ class DBmysql {
     * @return string
     */
    public static function quoteName($name) {
+      //handle verbatim names
+      if ($name instanceof QueryExpression) {
+         return $name->getValue();
+      }
       //handle aliases
       $names = preg_split('/ AS /i', $name);
       if (count($names) > 2) {
