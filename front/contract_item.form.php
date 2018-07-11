@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
       Session::addMessageAfterRedirect($message, false, ERROR);
       Html::back();
    }
-   
+
    $contract_item->check(-1, CREATE, $_POST);
    if ($contract_item->add($_POST)) {
       Event::log($_POST["contracts_id"], "contracts", 4, "financial",
