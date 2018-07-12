@@ -359,14 +359,9 @@ class Document_Item extends CommonDBRelation{
       // for a document,
       // don't show here others documents associated to this one,
       // it's done for both directions in self::showAssociated
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_documents_items`
-                WHERE `glpi_documents_items`.`documents_id` = '$instID'
-                      AND `glpi_documents_items`.`itemtype` != 'Document'
-                ORDER BY `itemtype`";
+      $types_iterator = self::getDistinctTypes($instID, ['NOT' => ['itemtype' => 'Document']]);
+      $number = count($types_iterator);
 
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
       $rand   = mt_rand();
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -423,8 +418,8 @@ class Document_Item extends CommonDBRelation{
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      for ($i=0; $i < $number; $i++) {
-         $itemtype=$DB->result($result, $i, "itemtype");
+      while ($type_row = $types_iterator->next()) {
+         $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
