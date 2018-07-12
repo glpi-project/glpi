@@ -397,12 +397,14 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
+               $computers = [];
                while ($data = $DB->fetch_assoc($result)) {
-                  $query = "DELETE
-                            FROM `glpi_computers_softwareversions`
-                            WHERE `computers_id` = '".$data['computers_id']."'";
-                  $DB->query($query);
+                  $computers[] = $data['computers_id'];
                }
+               $DB->delete(
+                  'glpi_computers_softwareversions',
+                  ['computers_id' => $computers]
+               );
             }
          }
 
@@ -414,12 +416,11 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
+               $softwareversions = [];
                while ($data = $DB->fetch_assoc($result)) {
-                  $query = "DELETE
-                            FROM `glpi_computers_softwareversions`
-                            WHERE `softwareversions_id` = '".$data['softwareversions_id']."'";
-                  $DB->query($query);
+                  $softwareversions[] = $data['softwareversions_id'];
                }
+               $DB->delete('glpi_computers_softwareversions', ['softwareversions_id' => $softwareversions]);
             }
          }
 
@@ -432,12 +433,11 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
+               $softwareversions = [];
                while ($data = $DB->fetch_assoc($result)) {
-                  $query = "DELETE
-                            FROM `glpi_softwareversions`
-                            WHERE `id` = '".$data['id']."'";
-                  $DB->query($query);
+                  $softwareversions[] = $data['id'];
                }
+               $DB->delete('glpi_softwareversions', ['id' => $softwareversions]);
             }
          }
 
@@ -598,6 +598,7 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_contract']) {
          foreach ($CFG_GLPI["contract_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
+               $contracts_items = [];
                $itemtable = getTableForItemType($itemtype);
                $this->item_search[$itemtype]
                      = $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
@@ -613,10 +614,7 @@ class Transfer extends CommonDBTM {
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) > 0) {
                      while ($data = $DB->fetch_assoc($result)) {
-                        $query = "DELETE
-                                  FROM `glpi_contracts_items`
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $contracts_items[] = $data['id'];
                      }
                   }
                }
@@ -630,12 +628,13 @@ class Transfer extends CommonDBTM {
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) > 0) {
                      while ($data = $DB->fetch_assoc($result)) {
-                        $query = "DELETE
-                                  FROM `glpi_contracts_items`
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $contracts_items[] = $data['id'];
                      }
                   }
+               }
+
+               if (count($contracts_items)) {
+                  $DB->delete('glpi_contracts_items', ['id' => $contracts_items]);
                }
 
                $iterator = $DB->request([
@@ -677,6 +676,7 @@ class Transfer extends CommonDBTM {
       // Supplier (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
 
       if ($this->options['keep_supplier']) {
+         $contracts_suppliers = [];
          // Clean DB
          $query = "SELECT `glpi_contracts_suppliers`.`id`
                    FROM `glpi_contracts_suppliers`
@@ -687,10 +687,7 @@ class Transfer extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $query = "DELETE
-                            FROM `glpi_contracts_suppliers`
-                            WHERE `id` = '".$data['id']."'";
-                  $DB->query($query);
+                  $contracts_suppliers[] = $data['id'];
                }
             }
          }
@@ -704,13 +701,15 @@ class Transfer extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $query = "DELETE
-                            FROM `glpi_contracts_suppliers`
-                            WHERE `id` = '".$data['id']."'";
-                  $DB->query($query);
+                  $contracts_suppliers[] = $data['id'];
                }
             }
          }
+
+         if (count($contracts_suppliers)) {
+            $DB->delete('glpi_contracts_suppliers', ['id' => $contracts_suppliers]);
+         }
+
          // Supplier Contract
          $query = "SELECT DISTINCT `suppliers_id`,
                                    `glpi_suppliers`.`is_recursive`,
@@ -824,12 +823,11 @@ class Transfer extends CommonDBTM {
                                   AND `$itemtable`.`id` IS NULL";
                   if ($result = $DB->query($query)) {
                      if ($DB->numrows($result) > 0) {
+                        $infocoms = [];
                         while ($data = $DB->fetch_assoc($result)) {
-                           $query = "DELETE
-                                     FROM `glpi_infocoms`
-                                     WHERE `id` = '".$data['id']."'";
-                           $DB->query($query);
+                           $infocoms[] = $data['id'];
                         }
+                        $DB->delete('glpi_infocoms', ['id' => $infocoms]);
                      }
                   }
                   $query = "SELECT DISTINCT `suppliers_id`,
@@ -867,6 +865,7 @@ class Transfer extends CommonDBTM {
 
       // Contact / Supplier : keep / delete + clean unused / keep unused
       if ($this->options['keep_contact']) {
+         $contact_suppliers = [];
          // Clean DB
          $query = "SELECT `glpi_contacts_suppliers`.`id`
                    FROM `glpi_contacts_suppliers`
@@ -877,10 +876,7 @@ class Transfer extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $query = "DELETE
-                            FROM `glpi_contacts_suppliers`
-                            WHERE `id` = '".$data['id']."'";
-                  $DB->query($query);
+                  $contact_suppliers[] = $data['id'];
                }
             }
          }
@@ -895,12 +891,13 @@ class Transfer extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $query = "DELETE
-                            FROM `glpi_contacts_suppliers`
-                            WHERE `id` = '".$data['id']."'";
-                  $DB->query($query);
+                  $contact_suppliers[] = $data['id'];
                }
             }
+         }
+
+         if (count($contact_suppliers)) {
+            $DB->delete('glpi_contacts_suppliers', ['id' => $contact_suppliers]);
          }
 
          // Supplier Contact
@@ -946,12 +943,11 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) > 0) {
+                     $documents_items = [];
                      while ($data = $DB->fetch_assoc($result)) {
-                        $query = "DELETE
-                                  FROM `glpi_documents_items`
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $documents_items[] = $data['id'];
                      }
+                     $DB->delete('glpi_documents_items', ['id' => $documents_items]);
                   }
                }
 
@@ -1572,10 +1568,7 @@ class Transfer extends CommonDBTM {
 
          } else { // Do not keep
             // Delete inst software for computer
-            $del_query = "DELETE
-                          FROM `glpi_computers_softwareversions`
-                          WHERE `id` = ".$data['id'];
-            $DB->query($del_query);
+            $DB->delete('glpi_computers_softwareversions', ['id' => $data['id']]);
          }
       } // each installed version
 
@@ -1590,10 +1583,7 @@ class Transfer extends CommonDBTM {
             $this->transferAffectedLicense($data['id']);
          }
       } else {
-         $query = "DELETE
-                   FROM `glpi_computers_softwarelicenses`
-                   WHERE `computers_id` = '$ID'";
-         $DB->query($query);
+         $DB->delete('glpi_computers_softwarelicenses', ['computers_id' => $ID]);
       }
    }
 
@@ -1918,11 +1908,12 @@ class Transfer extends CommonDBTM {
          }
 
       } else {// else unlink
-         $query = "DELETE
-                   FROM `glpi_contracts_items`
-                   WHERE `items_id` = '$ID'
-                         AND `itemtype` = '$itemtype'";
-         $DB->query($query);
+         $DB->delete(
+            'glpi_contracts_items', [
+               'items_id'  => $ID,
+               'itemtype'  => $itemtype
+            ]
+         );
       }
    }
 
@@ -2097,11 +2088,12 @@ class Transfer extends CommonDBTM {
          }
 
       } else {// else unlink
-         $query = "DELETE
-                   FROM `glpi_documents_items`
-                   WHERE `items_id` = '$ID'
-                         AND `itemtype` = '$itemtype'";
-         $DB->query($query);
+         $DB->delete(
+            'glpi_documents_items', [
+               'items_id'  => $ID,
+               'itemtype'  => $itemtype
+            ]
+         );
       }
    }
 
@@ -2633,11 +2625,12 @@ class Transfer extends CommonDBTM {
          case 0 :
             // Same item -> delete
             if ($ID == $newID) {
-               $query = "DELETE
-                         FROM `glpi_logs`
-                         WHERE `itemtype` = '$itemtype'
-                               AND `items_id` = '$ID'";
-               $result = $DB->query($query);
+               $DB->delete(
+                  'glpi_logs', [
+                     'items_id'  => $ID,
+                     'itemtype'  => $itemtype
+                  ]
+               );
             }
             // Copy -> nothing to do
             break;
@@ -2724,11 +2717,12 @@ class Transfer extends CommonDBTM {
             case 0 :
                // Same item -> delete
                if ($ID == $newID) {
-                  $query = "DELETE
-                            FROM `glpi_infocoms`
-                            WHERE `itemtype` = '$itemtype'
-                                  AND `items_id` = '$ID'";
-                  $result = $DB->query($query);
+                  $DB->delete(
+                     'glpi_infocoms', [
+                        'items_id'  => $ID,
+                        'itemtype'  => $itemtype
+                     ]
+                  );
                }
                // Copy : nothing to do
                break;
@@ -3006,10 +3000,11 @@ class Transfer extends CommonDBTM {
          }
 
       } else {// else unlink
-         $query = "DELETE
-                   FROM `glpi_contacts_suppliers`
-                   WHERE `suppliers_id` = '$ID'";
-         $DB->query($query);
+         $DB->delete(
+            'glpi_contacts_suppliers', [
+               'suppliers_id' => $ID
+            ]
+         );
       }
    }
 
@@ -3070,11 +3065,12 @@ class Transfer extends CommonDBTM {
          case 0 :
             foreach (Item_Devices::getItemAffinities($itemtype) as $type) {
                $table = getTableForItemType($type);
-               $query = "DELETE
-                         FROM `$table`
-                         WHERE `itemtype` = '$itemtype'
-                               AND `items_id` = '$ID'";
-               $result = $DB->query($query);
+               $DB->delete(
+                  $table, [
+                     'items_id'  => $ID,
+                     'itemtype'  => $itemtype
+                  ]
+               );
             }
 
          default : // Keep devices
