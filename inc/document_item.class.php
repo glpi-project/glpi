@@ -685,13 +685,14 @@ class Document_Item extends CommonDBRelation{
          }
          $limit = getEntitiesRestrictRequest(" AND ", "glpi_documents", '', $entities, true);
 
-         $q = "SELECT COUNT(*)
-               FROM `glpi_documents`
-               WHERE `is_deleted` = 0
-               $limit";
-
-         $result = $DB->query($q);
-         $nb     = $DB->result($result, 0, 0);
+         $count = $DB->request([
+            'COUNT'     => 'cpt',
+            'FROM'      => 'glpi_documents',
+            'WHERE'     => [
+               'is_deleted' => 0
+            ] + getEntitiesRestrictCriteria('glpi_documents', '', $entities, true)
+         ])->next();
+         $nb = $count['cpt'];
 
          if ($item->getType() == 'Document') {
             $used[$item->getID()] = $item->getID();
