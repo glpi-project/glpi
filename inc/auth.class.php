@@ -376,7 +376,7 @@ class Auth extends CommonGLPI {
       switch ($authtype) {
          case self::CAS :
             if (!Toolbox::canUseCAS()) {
-               Toolbox::logDebug("CAS lib not installed");
+               Toolbox::logError("CAS lib not installed");
                return false;
             }
 
