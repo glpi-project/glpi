@@ -94,17 +94,7 @@ class RuleRight extends Rule {
    }
 
 
-   /**
-    * Execute the actions as defined in the rule
-    *
-    * @see Rule::executeActions()
-    *
-    * @param $output the result of the actions
-    * @param $params the parameters
-    *
-    * @return the fields modified
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
       global $CFG_GLPI;
 
       $entity       = '';

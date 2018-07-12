@@ -123,6 +123,10 @@ The present file will list all changes made to the project; according to the
 
 ### API changes
 
+#### Changed
+
+- `Rule::executePluginsActions()` signature has changed
+
 #### Deprecated
 
 The following methods have been deprecated:

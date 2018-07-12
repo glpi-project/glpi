@@ -55,10 +55,7 @@ class RuleImportEntity extends Rule {
       return 4;
    }
 
-   /**
-    * @see Rule::executeActions()
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
