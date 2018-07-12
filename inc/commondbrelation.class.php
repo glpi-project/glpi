@@ -1520,6 +1520,70 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
    /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item    Item instance
+    * @param boolean    $inverse Get the inverse relation
+    *
+    * @return DBmysqlIterator
+    */
+   public static function getListForItem(CommonDBTM $item, $inverse = false) {
+      global $DB;
+
+      $link_type  = static::$itemtype_1;
+      $link_id    = static::$items_id_1;
+      $where_id   = static::$items_id_2;
+
+      if ($inverse === true) {
+         $link_type  = static::$itemtype_2;
+         $link_id    = static::$items_id_2;
+         $where_id   = static::$items_id_1;
+      }
+
+      $link = new $link_type;
+      $link_table = getTableForItemtype($link_type);
+
+      $params = [
+         'SELECT'    => [static::getTable() . '.id AS linkid', $link_table . '.*'],
+         'FROM'      => static::getTable(),
+         'LEFT JOIN' => [
+            $link_table  => [
+               'FKEY'   => [
+                  static::getTable()   => $link_id,
+                  $link_table          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            static::getTable() . '.' . $where_id => $item->fields['id']
+         ],
+         'ORDER'     => $link_table . '.name'
+      ];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype')) {
+         $params['WHERE'][static::getTable() . '.itemtype'] = $item->getType();
+      }
+
+      if ($link->isEntityAssign() && $link_type != Entity::getType()) {
+         $params['SELECT'][] = 'glpi_entities.id AS entity';
+         $params['INNER JOIN']['glpi_entities'] = [
+            'FKEY'   => [
+               $link_table       => 'entities_id',
+               'glpi_entities'   => 'id'
+            ]
+         ];
+         $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', true);
+         $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
+      }
+
+      $iterator = $DB->request($params);
+
+      return $iterator;
+   }
+
+   /**
     * Get distinct item types
     *
     * @since 9.3.1
