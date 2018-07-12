@@ -205,17 +205,28 @@ class Contract_Item extends CommonDBRelation{
             continue;
          }
 
-         $query = "SELECT COUNT(*) AS cpt
-                   FROM `glpi_contracts_items`, `".$itemt->getTable()."`
-                   WHERE `glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'
-                         AND `glpi_contracts_items`.`itemtype` = '".$data['itemtype']."'
-                         AND `".$itemt->getTable()."`.`id` = `glpi_contracts_items`.`items_id`";
+         $params = [
+            'COUNT'     => 'cpt',
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+               $itemt->getTable() => [
+                  self::getTable()     => 'items_id',
+                  $itemt->getTable()   => 'id'
+               ]
+            ],
+            'WHERE'     => [
+               self::getTable() . 'contracts_id' => $item->fields['id'],
+               self::getTable() . 'itemtype'     => $data['itemtype']
+            ]
+         ];
 
          if ($itemt->maybeTemplate()) {
-            $query .= " AND `".$itemt->getTable()."`.`is_template` = 0";
+            $params['WHERE'][$itemt->getTable() . '.is_template'] = 0;
          }
 
-         foreach ($DB->request($query) as $row) {
+         $iterator = $DB->request($params);
+
+         while ($row = $iterator->next()) {
             $nb += $row['cpt'];
          }
       }
@@ -565,48 +576,64 @@ class Contract_Item extends CommonDBRelation{
             $itemtype_2 = null;
             $itemtable_2 = null;
 
-            $query     = "SELECT `$itemtable`.*,
-                                 `glpi_contracts_items`.`id` AS IDD,
-                                 `glpi_entities`.`id` AS entity";
+            $params = [
+               'SELECT' => [
+                  $itemtable . '.*',
+                  self::getTable() . '.id AS linkid',
+                  'glpi_entities.id AS entity'
+               ],
+               'FROM'   => 'glpi_contracts_items',
+               'WHERE'  => [
+                  'glpi_contracts_items.itemtype'     => $itemtype,
+                  'glpi_contracts_items.contracts_id' => $instID
+               ]
+            ];
 
             if ($item instanceof Item_Devices) {
                $itemtype_2 = $itemtype::$itemtype_2;
                $itemtable_2 = $itemtype_2::getTable();
                $namefield = 'name_device';
-               $query .= ", `$itemtable_2`.`designation` AS $namefield";
+               $params['SELECT'][] = $itemtable_2 . '.designation AS ' . $namefield;
             } else {
                $namefield = $item->getNameField();
-               $namefield = "`$itemtable`.`$namefield`";
+               $namefield = "$itemtable.$namefield";
             }
 
-            $query .= " FROM `glpi_contracts_items`,
-                               `$itemtable`";
+            $params['LEFT JOIN'][$itemtable] = [
+               'FKEY' => [
+                  $itemtable        => 'id',
+                  self::getTable()  => 'items_id'
+               ]
+            ];
             if ($itemtype != 'Entity') {
-               $query .= " LEFT JOIN `glpi_entities`
-                                 ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
+               $params['LEFT JOIN']['glpi_entities'] = [
+                  'FKEY' => [
+                     $itemtable        => 'entities_id',
+                     'glpi_entities'   => 'id'
+                  ]
+               ];
             }
 
             if ($item instanceof Item_Devices) {
                $id_2 = $itemtype_2::getIndexName();
                $fid_2 = $itemtype::$items_id_2;
 
-               $query .= " LEFT JOIN `$itemtable_2`
-                           ON (`$itemtable`.`$fid_2` = `$itemtable_2`.`$id_2`)";
+               $params['LEFT JOIN'][$itemtable_2] = [
+                  'FKEY' => [
+                     $itemtable     => $fid_2,
+                     $itemtable_2   => $id_2
+                  ]
+               ];
             }
-
-            $query .= " WHERE `$itemtable`.`id` = `glpi_contracts_items`.`items_id`
-                              AND `glpi_contracts_items`.`itemtype` = '$itemtype'
-                              AND `glpi_contracts_items`.`contracts_id` = '$instID'";
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = 0";
+               $params['WHERE'][] = [$itemtable . '.is_template' => 0];
             }
-            $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
-                                                 $item->maybeRecursive()) ."
-                      ORDER BY `glpi_entities`.`completename`, $namefield";
+            $params['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', '', $item->maybeRecursive());
+            $params['ORDER'] = "glpi_entities.completename, $namefield";
 
-            $result_linked = $DB->query($query);
-            $nb            = $DB->numrows($result_linked);
+            $iterator = $DB->request($params);
+            $nb = count($iterator);
 
             if ($nb > $_SESSION['glpilist_limit']) {
 
@@ -630,7 +657,7 @@ class Contract_Item extends CommonDBRelation{
                                         'link'     => $link];
             } else if ($nb > 0) {
                $data[$itemtype] = [];
-               while ($objdata = $DB->fetch_assoc($result_linked)) {
+               while ($objdata = $iterator->next()) {
                   $data[$itemtype][$objdata['id']] = $objdata;
                   $used[$itemtype][$objdata['id']] = $objdata['id'];
                }
@@ -730,7 +757,7 @@ class Contract_Item extends CommonDBRelation{
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td width='10'>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $objdata["IDD"]);
+                  Html::showMassiveActionCheckBox(__CLASS__, $objdata["linkid"]);
                   echo "</td>";
                }
                if ($prem) {
@@ -786,5 +813,4 @@ class Contract_Item extends CommonDBRelation{
 
       return $specificities;
    }
-
 }
