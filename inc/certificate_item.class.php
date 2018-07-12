@@ -313,7 +313,10 @@ class Certificate_Item extends CommonDBRelation {
                   echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
                      ">" . $name . "</td>";
                   if (Session::isMultiEntitiesMode()) {
-                     echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
+                     $entity = ($item->isEntityAssign() ?
+                        Dropdown::getDropdownName("glpi_entities", $data['entity']) :
+                        '-');
+                     echo "<td class='center'>" . $entity . "</td>";
                   }
                   echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
                   echo "<td class='center'>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
@@ -364,20 +367,7 @@ class Certificate_Item extends CommonDBRelation {
       $rand         = mt_rand();
       $is_recursive = $item->isRecursive();
 
-      $query = "SELECT `glpi_certificates_items`.`id` AS assocID,
-                       `glpi_entities`.`id` AS entity,
-                       `glpi_certificates`.`name` AS assocName,
-                       `glpi_certificates`.*
-                FROM `glpi_certificates_items`
-                LEFT JOIN `glpi_certificates`
-                 ON (`glpi_certificates_items`.`certificates_id`=`glpi_certificates`.`id`)
-                LEFT JOIN `glpi_entities` ON (`glpi_certificates`.`entities_id`=`glpi_entities`.`id`)
-                WHERE `glpi_certificates_items`.`items_id` = '$ID'
-                      AND `glpi_certificates_items`.`itemtype` = '" . $item->getType() . "' ";
-
-      $query   .= getEntitiesRestrictRequest(" AND", "glpi_certificates", '', '', true);
-      $query   .= " ORDER BY `assocName`";
-      $iterator = $DB->request($query);
+      $iterator = self::getListForItem($item);
       $number   = $iterator->numrows();
       $i        = 0;
 
@@ -385,7 +375,7 @@ class Certificate_Item extends CommonDBRelation {
       $used         = [];
 
       foreach ($iterator as $data) {
-         $certificates[$data['assocID']] = $data;
+         $certificates[$data['linkid']] = $data;
          $used[$data['id']] = $data['id'];
       }
 
@@ -492,7 +482,7 @@ class Certificate_Item extends CommonDBRelation {
             echo "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";
             if ($canedit && ($withtemplate < 2)) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
             echo "<td class='center'>$link</td>";

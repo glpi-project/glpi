@@ -360,25 +360,14 @@ class Contract_Item extends CommonDBRelation{
       $canedit = $item->can($ID, UPDATE);
       $rand = mt_rand();
 
-      $query = "SELECT `glpi_contracts_items`.*
-                FROM `glpi_contracts_items`,
-                     `glpi_contracts`
-                LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id`=`glpi_entities`.`id`)
-                WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
-                      AND `glpi_contracts_items`.`items_id` = '$ID'
-                      AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
-                      getEntitiesRestrictRequest(" AND", "glpi_contracts", '', '', true)."
-                ORDER BY `glpi_contracts`.`name`";
-
-      $result = $DB->query($query);
+      $iterator = self::getListForItem($item);
+      $number = count($iterator);
 
       $contracts = [];
       $used      = [];
-      if ($number = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $contracts[$data['id']]      = $data;
-            $used[$data['contracts_id']] = $data['contracts_id'];
-         }
+      while ($data = $iterator->next()) {
+         $contracts[$data['id']] = $data;
+         $used[$data['id']]      = $data['id'];
       }
       if ($canedit && ($withtemplate != 2)) {
          echo "<div class='firstbloc'>";
@@ -442,16 +431,16 @@ class Contract_Item extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
          foreach ($contracts as $data) {
-            $cID         = $data["contracts_id"];
+            $cID         = $data["id"];
             Session::addToNavigateListItems(__CLASS__, $cID);
             $contracts[] = $cID;
-            $assocID     = $data["id"];
+            $assocID     = $data["linkid"];
             $con         = new Contract();
-            $con->getFromDB($cID);
+            $con->getFromResultSet($data);
             echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
             if ($canedit && ($withtemplate != 2)) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $assocID);
                echo "</td>";
             }
             echo "<td class='center b'>";
