@@ -1519,4 +1519,28 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
+   /**
+    * Get distinct item types
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id    Object id to restrict on
+    * @param array   $extra_where Extra where clause
+    *
+    * @return DBMysqlIterator
+    */
+   public static function getDistinctTypes($items_id, $extra_where = []) {
+      global $DB;
+
+      $types_iterator = $DB->request([
+         'SELECT DISTINCT' => 'itemtype',
+         'FROM'            => static::getTable(),
+         'WHERE'           => [
+            static::$items_id_1 => $items_id
+         ] + $extra_where,
+         'ORDER'           => 'itemtype'
+      ]);
+
+      return $types_iterator;
+   }
 }

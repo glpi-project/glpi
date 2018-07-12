@@ -1768,36 +1768,30 @@ class Transfer extends CommonDBTM {
                      // No
                      // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
                      $canbetransfer = true;
-                     $query = "SELECT DISTINCT `itemtype`
-                               FROM `glpi_contracts_items`
-                               WHERE `contracts_id` = '$item_ID'";
+                     $types_iterator = Contract_Item::getDistinctTypes($item_ID);
 
-                     if ($result_type = $DB->query($query)) {
-                        if ($DB->numrows($result_type) > 0) {
-                           while (($data_type = $DB->fetch_assoc($result_type))
-                                  && $canbetransfer) {
-                              $dtype = $data_type['itemtype'];
+                     while (($data_type = $types_iterator->next())
+                              && $canbetransfer) {
+                        $dtype = $data_type['itemtype'];
 
-                              if (isset($this->item_search[$dtype])) {
-                                 // No items to transfer -> exists links
-                                 $query_search = "SELECT COUNT(*) AS cpt
-                                                  FROM `glpi_contracts_items`
-                                                  WHERE `contracts_id` = '$item_ID'
-                                                        AND `itemtype` = '$dtype'
-                                                        AND `items_id`
-                                                             NOT IN ".$this->item_search[$dtype];
-                                 $result_search = $DB->query($query_search);
+                        if (isset($this->item_search[$dtype])) {
+                           // No items to transfer -> exists links
+                           $query_search = "SELECT COUNT(*) AS cpt
+                                             FROM `glpi_contracts_items`
+                                             WHERE `contracts_id` = '$item_ID'
+                                                   AND `itemtype` = '$dtype'
+                                                   AND `items_id`
+                                                         NOT IN ".$this->item_search[$dtype];
+                           $result_search = $DB->query($query_search);
 
-                                 if ($DB->result($result_search, 0, 'cpt') > 0) {
-                                    $canbetransfer = false;
-                                 }
-
-                              } else {
-                                 $canbetransfer = false;
-                              }
-
+                           if ($DB->result($result_search, 0, 'cpt') > 0) {
+                              $canbetransfer = false;
                            }
+
+                        } else {
+                           $canbetransfer = false;
                         }
+
                      }
 
                      // Yes : transfer
@@ -1945,37 +1939,31 @@ class Transfer extends CommonDBTM {
                      // No
                      // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
                      $canbetransfer = true;
-                     $query = "SELECT DISTINCT `itemtype`
-                               FROM `glpi_documents_items`
-                               WHERE `documents_id` = '$item_ID'";
+                     $types_iterator = Document_Item::getDistinctTypes($item_ID);
 
-                     if ($result_type = $DB->query($query)) {
-                        if ($DB->numrows($result_type) >0) {
-                           while (($data_type = $DB->fetch_assoc($result_type))
-                                  && $canbetransfer) {
-                              $dtype = $data_type['itemtype'];
-                              if (isset($this->item_search[$dtype])) {
-                                 // No items to transfer -> exists links
-                                 $query_search = "SELECT COUNT(*) AS cpt
-                                                  FROM `glpi_documents_items`
-                                                  WHERE `documents_id` = '$item_ID'
-                                                        AND `itemtype` = '$dtype'
-                                                        AND `items_id`
-                                                             NOT IN ".$this->item_search[$dtype];
+                     while (($data_type = $types_iterator->next())
+                              && $canbetransfer) {
+                        $dtype = $data_type['itemtype'];
+                        if (isset($this->item_search[$dtype])) {
+                           // No items to transfer -> exists links
+                           $query_search = "SELECT COUNT(*) AS cpt
+                                             FROM `glpi_documents_items`
+                                             WHERE `documents_id` = '$item_ID'
+                                                   AND `itemtype` = '$dtype'
+                                                   AND `items_id`
+                                                         NOT IN ".$this->item_search[$dtype];
 
-                                 // contacts, contracts, and enterprises are linked as device.
-                                 if (isset($this->item_recurs[$dtype])) {
-                                    $query_search .= " AND `items_id`
-                                                            NOT IN ".$this->item_recurs[$dtype];
-                                 }
-
-                                 $result_search = $DB->query($query_search);
-                                 if ($DB->result($result_search, 0, 'cpt') > 0) {
-                                    $canbetransfer = false;
-                                 }
-
-                              }
+                           // contacts, contracts, and enterprises are linked as device.
+                           if (isset($this->item_recurs[$dtype])) {
+                              $query_search .= " AND `items_id`
+                                                      NOT IN ".$this->item_recurs[$dtype];
                            }
+
+                           $result_search = $DB->query($query_search);
+                           if ($DB->result($result_search, 0, 'cpt') > 0) {
+                              $canbetransfer = false;
+                           }
+
                         }
                      }
 
