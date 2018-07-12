@@ -108,13 +108,8 @@ class Change_Item extends CommonDBRelation{
       $canedit = $change->canEdit($instID);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_changes_items`
-                WHERE `glpi_changes_items`.`changes_id` = '$instID'
-                ORDER BY `itemtype`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = self::getDistinctTypes($instID);
+      $number = count($types_iterator);
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -171,8 +166,8 @@ class Change_Item extends CommonDBRelation{
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      for ($i=0; $i<$number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($type_row = $types_iterator->next()) {
+         $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }

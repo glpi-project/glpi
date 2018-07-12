@@ -197,10 +197,8 @@ class Contract_Item extends CommonDBRelation{
 
       $nb = 0;
 
-      foreach ($DB->request('glpi_contracts_items',
-                            ['DISTINCT FIELDS' => "itemtype",
-                                  'WHERE'           => "`glpi_contracts_items`.`contracts_id`
-                                                         = '".$item->getField('id')."'"]) as $data) {
+      $types_iterator = self::getDistinctTypes($item->fields['id']);
+      while ($data = $types_iterator->next()) {
          if (!$itemt = getItemForItemtype($data['itemtype'])) {
             continue;
          }
@@ -236,18 +234,13 @@ class Contract_Item extends CommonDBRelation{
 
       $items = [];
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_contracts_items`
-                WHERE `glpi_contracts_items`.`contracts_id` = '$contract_id'
-                ORDER BY `itemtype`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = self::getDistinctTypes($contract_id);
+      $number = count($iterator);
 
       $data    = [];
       $totalnb = 0;
-      for ($i=0; $i<$number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($type_row = $types_iterator->next()) {
+         $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
@@ -279,6 +272,7 @@ class Contract_Item extends CommonDBRelation{
             $items[$itemtype][$objdata['id']] = $objdata;
          }
       }
+
       return $items;
    }
 
@@ -544,19 +538,14 @@ class Contract_Item extends CommonDBRelation{
       $canedit = $contract->can($instID, UPDATE);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_contracts_items`
-                WHERE `glpi_contracts_items`.`contracts_id` = '$instID'
-                ORDER BY `itemtype`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = self::getDistinctTypes($instID);
+      $number = count($types_iterator);
 
       $data    = [];
       $totalnb = 0;
       $used    = [];
-      for ($i=0; $i<$number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($type_row = $types_iterator->next()) {
+         $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }

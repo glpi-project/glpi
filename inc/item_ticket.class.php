@@ -398,13 +398,8 @@ class Item_Ticket extends CommonDBRelation{
       $canedit = $ticket->canAddItem($instID);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_items_tickets`
-                WHERE `glpi_items_tickets`.`tickets_id` = '$instID'
-                ORDER BY `itemtype`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = self::getDistinctTypes($instID);
+      $number = count($types_iterator);
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -475,8 +470,8 @@ class Item_Ticket extends CommonDBRelation{
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      for ($i=0; $i<$number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($row = $types_iterator->next()) {
+         $itemtype = $row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }

@@ -216,14 +216,8 @@ class Certificate_Item extends CommonDBRelation {
       $canedit = $certificate->can($instID, UPDATE);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `itemtype`
-            FROM `glpi_certificates_items`
-            WHERE `certificates_id` = '" . $instID . "'
-            ORDER BY `itemtype`
-            LIMIT " . count(Certificate::getTypes(true));
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = self::getDistinctTypes($instID, ['itemtype' => Certificate::getTypes(true)]);
+      $number = count($types_iterator);
 
       if (Session::isMultiEntitiesMode()) {
          $colsup = 1;
@@ -284,8 +278,8 @@ class Certificate_Item extends CommonDBRelation {
       echo "<th>" . __('Inventory number') . "</th>";
       echo "</tr>";
 
-      for ($i = 0; $i < $number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($type_row = $types_iterator->next()) {
+         $itemtype = $type_row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
