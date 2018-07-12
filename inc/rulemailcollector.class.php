@@ -206,10 +206,7 @@ class RuleMailCollector extends Rule {
    }
 
 
-   /**
-    * @see Rule::executeActions()
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
 
@@ -318,7 +315,7 @@ class RuleMailCollector extends Rule {
                default:
                   //Allow plugins actions
                   $executeaction = clone $this;
-                  $output = $executeaction->executePluginsActions($action, $output, $params);
+                  $output = $executeaction->executePluginsActions($action, $output, $params, $input);
                break;
             }
          }

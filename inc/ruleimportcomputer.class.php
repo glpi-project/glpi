@@ -390,22 +390,12 @@ class RuleImportComputer extends Rule {
 
    }
 
-   /**
-    * Execute the actions as defined in the rule
-    *
-    * @see Rule::executeActions()
-    *
-    * @param $output the fields to manipulate
-    * @param $params parameters
-    *
-    * @return the $output array modified
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             $executeaction = clone $this;
-            $ruleoutput    = $executeaction->executePluginsActions($action, $output, $params);
+            $ruleoutput    = $executeaction->executePluginsActions($action, $output, $params, $input);
             foreach ($ruleoutput as $key => $value) {
                $output[$key] = $value;
             }

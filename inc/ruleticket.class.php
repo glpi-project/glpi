@@ -144,11 +144,7 @@ class RuleTicket extends Rule {
    }
 
 
-   /**
-    * @param $output
-    * @param $params
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
