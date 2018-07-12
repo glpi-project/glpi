@@ -1762,7 +1762,7 @@ class Toolbox {
          $msgerr = __('No data available on the web site');
       }
       if (!empty($msgerr)) {
-         Toolbox::logDebug($msgerr);
+         Toolbox::logError($msgerr);
       }
       return $content;
    }

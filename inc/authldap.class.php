@@ -2547,7 +2547,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function tryToConnectToServer($ldap_method, $login, $password) {
       if (!function_exists('ldap_connect')) {
-         Toolbox::logDebug("ldap_connect function is missing. Did you miss install php-ldap extension?");
+         Toolbox::logError("ldap_connect function is missing. Did you miss install php-ldap extension?");
          return false;
       }
       $ds = self::connectToServer($ldap_method['host'], $ldap_method['port'],
