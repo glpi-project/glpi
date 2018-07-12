@@ -211,50 +211,6 @@ class Document_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @param $item   CommonDBTM object
-   **/
-   static function countForItem(CommonDBTM $item) {
-
-      $restrict = "`glpi_documents_items`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
-
-      if (Session::getLoginUserID()) {
-         $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
-      } else {
-         // Anonymous access from FAQ
-         $restrict .= " AND `glpi_documents_items`.`entities_id` = 0 ";
-      }
-
-      $nb = countElementsInTable(['glpi_documents_items'], $restrict);
-
-      // Document case : search in both
-      if ($item->getType() == 'Document') {
-         $restrict = "`glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
-                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
-
-         if (Session::getLoginUserID()) {
-            $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
-         } else {
-            // Anonymous access from FAQ
-            $restrict .= " AND `glpi_documents_items`.`entities_id` = 0 ";
-         }
-         $nb += countElementsInTable(['glpi_documents_items'], $restrict);
-      }
-      return $nb;
-   }
-
-
-   /**
-    * @param $item   Document object
-   **/
-   static function countForDocument(Document $item) {
-      return countElementsInTable(['glpi_documents_items'],
-                                 ['glpi_documents_items.documents_id' => $item->getField('id'),
-                                  'NOT' => ['glpi_documents_items.itemtype' => $item->getType()]]);
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nbdoc = $nbitem = 0;
@@ -262,8 +218,8 @@ class Document_Item extends CommonDBRelation{
          case 'Document' :
             $ong = [];
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $nbdoc  = self::countForDocument($item);
-               $nbitem = self::countForItem($item);
+               $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
+               $nbitem = self::countForMainItem($item, ['itemtype' => 'Document']);
             }
             $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
                                               Session::getPluralNumber()), $nbdoc);
@@ -963,15 +919,24 @@ class Document_Item extends CommonDBRelation{
     * @param integer $items_id Object id to restrict on
     * @param string  $itemtype Type for items to retrieve
     * @param boolean $noent    Flag to not compute enitty informations (see Document_Item::getTypeItemsQueryParams)
+    * @param array   $where    Inital WHERE clause. Defaults to []
     *
     * @return DBMysqlIterator
     */
-   protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false) {
+   protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = []) {
+      $commonwhere = ['OR'  => [
+         static::getTable() . '.' . static::$items_id_1  => $items_id,
+         'AND' => [
+            static::getTable() . '.itemtype'                => static::$itemtype_1,
+            static::getTable() . '.' . static::$items_id_2  => $items_id
+         ]
+      ]];
+
       if ($itemtype != 'KnowbaseItem') {
-         $params = parent::getTypeItemsQueryParams($items_id, $itemtype);
+         $params = parent::getTypeItemsQueryParams($items_id, $itemtype, $noent, $commonwhere);
       } else {
          //KnowbaseItem case: no entity restriction, we'll manage it here
-         $params = parent::getTypeItemsQueryParams($items_id, $itemtype, true);
+         $params = parent::getTypeItemsQueryParams($items_id, $itemtype, true, $commonwhere);
          $params['SELECT'][] = new QueryExpression('-1 AS entity');
          $kb_params = KnowbaseItem::getVisibilityCriteria();
 
@@ -985,6 +950,55 @@ class Document_Item extends CommonDBRelation{
 
          $params = array_merge_recursive($params, $kb_params);
       }
+
+      return $params;
+   }
+
+   /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item    Item instance
+    * @param boolean    $inverse Get the inverse relation
+    * @param boolean    $noent   Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    *
+    * @return array
+    */
+   protected static function getListForItemParams(CommonDBTM $item, $inverse = false, $noent = false) {
+
+      if (Session::getLoginUserID()) {
+         $params = parent::getListForItemParams($item, $inverse);
+      } else {
+         $params = parent::getListForItemParams($item, $inverse, true);
+         // Anonymous access from FAQ
+         $params['WHERE'][self::getTable() . '.entities_id'] = 0;
+      }
+
+      return $params;
+   }
+
+   /**
+    * Get distinct item types query parameters
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id    Object id to restrict on
+    * @param array   $extra_where Extra where clause
+    *
+    * @return array
+    */
+   public static function getDistinctTypesParams($items_id, $extra_where = []) {
+      $commonwhere = ['OR'  => [
+         static::getTable() . '.' . static::$items_id_1  => $items_id,
+         'AND' => [
+            static::getTable() . '.itemtype'                => static::$itemtype_1,
+            static::getTable() . '.' . static::$items_id_2  => $items_id
+         ]
+      ]];
+
+      $params = parent::getDistinctTypesParams($items_id, $extra_where);
+      $params['WHERE'] = $commonwhere + $extra_where;
 
       return $params;
    }

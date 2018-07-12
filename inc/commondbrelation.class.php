@@ -1526,10 +1526,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @param CommonDBTM $item    Item instance
     * @param boolean    $inverse Get the inverse relation
+    * @param boolean    $noent   Flag to not compute entity informations (see Document_Item::getListForItemParams)
     *
-    * @return DBmysqlIterator
+    * @return array
     */
-   public static function getListForItem(CommonDBTM $item, $inverse = false) {
+   protected static function getListForItemParams(CommonDBTM $item, $inverse = false, $noent = false) {
       global $DB;
 
       $link_type  = static::$itemtype_1;
@@ -1566,7 +1567,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $params['WHERE'][static::getTable() . '.itemtype'] = $item->getType();
       }
 
-      if ($link->isEntityAssign() && $link_type != Entity::getType()) {
+      if ($noent === false && $link->isEntityAssign() && $link_type != Entity::getType()) {
          $params['SELECT'][] = 'glpi_entities.id AS entity';
          $params['INNER JOIN']['glpi_entities'] = [
             'FKEY'   => [
@@ -1578,9 +1579,48 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
       }
 
+      return $params;
+   }
+
+   /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item    Item instance
+    * @param boolean    $inverse Get the inverse relation
+    *
+    * @return DBmysqlIterator
+    */
+   public static function getListForItem(CommonDBTM $item, $inverse = false) {
+      global $DB;
+
+      $params = static::getListForItemParams($item, $inverse);
       $iterator = $DB->request($params);
 
       return $iterator;
+   }
+
+   /**
+    * Get distinct item types query parameters
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id    Object id to restrict on
+    * @param array   $extra_where Extra where clause
+    *
+    * @return array
+    */
+   protected static function getDistinctTypesParams($items_id, $extra_where = []) {
+      $params = [
+         'SELECT DISTINCT' => 'itemtype',
+         'FROM'            => static::getTable(),
+         'WHERE'           => [
+            static::$items_id_1  => $items_id,
+         ] + $extra_where,
+         'ORDER'           => 'itemtype'
+      ];
+      return $params;
    }
 
    /**
@@ -1596,15 +1636,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    public static function getDistinctTypes($items_id, $extra_where = []) {
       global $DB;
 
-      $types_iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
-         'FROM'            => static::getTable(),
-         'WHERE'           => [
-            static::$items_id_1 => $items_id
-         ] + $extra_where,
-         'ORDER'           => 'itemtype'
-      ]);
-
+      $params = static::getDistinctTypesParams($items_id, $extra_where);
+      $types_iterator = $DB->request($params);
       return $types_iterator;
    }
 
@@ -1615,11 +1648,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @param integer $items_id Object id to restrict on
     * @param string  $itemtype Type for items to retrieve
-    * @param boolean $noent    Flag to not compute enitty informations (see Document_Item::getTypeItemsQueryParams)
+    * @param boolean $noent    Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param array   $where    Inital WHERE clause. Defaults to []
     *
-    * @return DBMysqlIterator
+    * @return array
     */
-   protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false) {
+   protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = []) {
       global $DB;
 
       $item = getItemForItemtype($itemtype);
@@ -1633,15 +1667,17 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $order_col = 'id';
       }
 
+      if (!count($where)) {
+         $where = [static::getTable() . '.' . static::$items_id_1  => $items_id];
+      }
+
       $params = [
          'SELECT' => [
             $item->getTable() . '.*',
             static::getTable() . '.id AS linkid'
          ],
          'FROM'   => $item->getTable(),
-         'WHERE'  => [
-            static::getTable() . '.' . static::$items_id_1  => $items_id
-         ],
+         'WHERE'  => $where,
          'LEFT JOIN' => [
             static::getTable() => [
                'FKEY' => [
@@ -1693,5 +1729,61 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $iterator = $DB->request($params);
 
       return $iterator;
+   }
+
+   /**
+    * Count for item
+    *
+    * @param CommonDBTM $item CommonDBTM object
+    *
+    * @return integer
+    */
+   static function countForItem(CommonDBTM $item) {
+      global $DB;
+
+      $inverse = $item->getType() == static::$itemtype_1;
+
+      $params = static::getListForItemParams($item, $inverse);
+      unset($params['SELECT']);
+      $params['COUNT'] = 'cpt';
+      $iterator = $DB->request($params);
+
+      $cpt = 0;
+      while ($row = $iterator->next()) {
+         $cpt += $row['cpt'];
+      }
+
+      return $cpt;
+   }
+
+   /**
+    * Count items for main itemtype
+    *
+    * @param CommonDBTM $item              Item instance
+    * @param array      $extra_types_where Extra WHERE clause on types
+    *
+    * @return integer
+   **/
+   static function countForMainItem(CommonDBTM $item, $extra_types_where = []) {
+      global $DB;
+
+      $nb = 0;
+
+      $types_iterator = static::getDistinctTypes($item->fields['id'], $extra_types_where);
+      while ($data = $types_iterator->next()) {
+         if (!$itemt = getItemForItemtype($data['itemtype'])) {
+            continue;
+         }
+
+         $params = static::getTypeItemsQueryParams($item->fields['id'], $data['itemtype']);
+         unset($params['SELECT']);
+         $params['COUNT'] = 'cpt';
+         $iterator = $DB->request($params);
+
+         while ($row = $iterator->next()) {
+            $nb += $row['cpt'];
+         }
+      }
+      return $nb;
    }
 }

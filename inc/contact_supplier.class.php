@@ -64,13 +64,13 @@ class Contact_Supplier extends CommonDBRelation{
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb =  self::countForSupplier($item);
+                  $nb =  self::countForItem($item);
                }
                return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Contact' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = self::countForContact($item);
+                  $nb = self::countForItem($item);
                }
                return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb);
          }
@@ -91,34 +91,6 @@ class Contact_Supplier extends CommonDBRelation{
             break;
       }
       return true;
-   }
-
-
-   /**
-    * @param $item   string   Supplier object
-   **/
-   static function countForSupplier(Supplier $item) {
-
-      $restrict = "`glpi_contacts_suppliers`.`suppliers_id` = '".$item->getField('id') ."'
-                    AND `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_contacts", '',
-                                               $_SESSION['glpiactiveentities'], true);
-
-      return countElementsInTable(['glpi_contacts_suppliers', 'glpi_contacts'], $restrict);
-   }
-
-
-   /**
-    * @param $item   string   Contact object
-   **/
-   static function countForContact(Contact $item) {
-
-      $restrict = "`glpi_contacts_suppliers`.`contacts_id` = '".$item->getField('id') ."'
-                    AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id` ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_suppliers", '',
-                                               $_SESSION['glpiactiveentities'], true);
-
-      return countElementsInTable(['glpi_contacts_suppliers', 'glpi_suppliers'], $restrict);
    }
 
 

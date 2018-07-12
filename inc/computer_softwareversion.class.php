@@ -1148,9 +1148,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             // Installation allowed for template
             if (Software::canView()) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_computers_softwareversions',
-                                            ['computers_id' => $item->getID(),
-                                             'is_deleted'   => 0 ]);
+                  $nb = self::countForItem($item);
                }
                return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);
             }
@@ -1187,4 +1185,20 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return true;
    }
 
+   /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item    Item instance
+    * @param boolean    $inverse Get the inverse relation
+    * @param boolean    $noent   Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    *
+    * @return array
+    */
+   protected static function getListForItemParams(CommonDBTM $item, $inverse = false, $noent = false) {
+      $params = parent::getListForItemParams($item, $inverse);
+      $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
+      return $params;
+   }
 }

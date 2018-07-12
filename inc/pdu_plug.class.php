@@ -49,17 +49,6 @@ class Pdu_Plug extends CommonDBRelation {
       return _n('PDU plug', 'PDU plugs', $nb);
    }
 
-   /**
-    * Count connection for an operating system
-    *
-    * @param Rack $rack Rack object instance
-    *
-    * @return integer
-   **/
-   /*static function countForRack(Rack $rack) {
-      return countElementsInTable(self::getTable(),
-                                  ['racks_id' => $rack->getID()]);
-   }*/
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
