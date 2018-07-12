@@ -460,23 +460,17 @@ class Supplier extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_infocoms`
-                WHERE `suppliers_id` = '$instID'
-                      AND `itemtype` NOT IN ('ConsumableItem', 'CartridgeItem', 'Software')
-                ORDER BY `itemtype`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = InfoCom::getTypes(['suppliers_id' => $instID]);
+      $number = count($types_iterator);
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       Html::printPagerForm();
       echo "</th><th colspan='3'>";
-      if ($DB->numrows($result) == 0) {
+      if ($number == 0) {
          echo __('No associated item');
       } else {
-         echo _n('Associated item', 'Associated items', $DB->numrows($result));
+         echo _n('Associated item', 'Associated items', $number);
       }
       echo "</th></tr>";
       echo "<tr><th>".__('Type')."</th>";
@@ -487,8 +481,8 @@ class Supplier extends CommonDBTM {
       echo "</tr>";
 
       $num = 0;
-      for ($i=0; $i < $number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($row = $iterator->next()) {
+         $itemtype = $row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
             continue;

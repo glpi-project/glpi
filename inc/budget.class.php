@@ -548,17 +548,12 @@ class Budget extends CommonDropdown{
          return false;
       }
 
-      // Type for which infocom are only template
-      $ignore = ['CartridgeItem', 'ConsumableItem', 'Software'];
-
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_infocoms`
-                WHERE `budgets_id` = '$budgets_id'
-                      AND `itemtype` NOT IN ('".implode("','", $ignore)."')".
-                      getEntitiesRestrictRequest(" AND", 'glpi_infocoms', "entities_id")."
-                GROUP BY `itemtype`";
-
-      $result = $DB->query($query);
+      $types_iterator = InfoCom::getTypes(
+         [
+            'budgets_id' => $budgets_id
+         ] + getEntitiesRestrictCriteria('glpi_infocoms', 'entities_id')
+      );
+      $number = count($types_iterator);
 
       $total               = 0;
       $totalbytypes        = [];
@@ -569,10 +564,8 @@ class Budget extends CommonDropdown{
       $entitiestype_values = [];
       $found_types         = [];
 
-      if ($DB->numrows($result)) {
-         while ($types = $DB->fetch_assoc($result)) {
-            $itemtypes[] = $types['itemtype'];
-         }
+      while ($types = $types_iterator->next()) {
+         $itemtypes[] = $types['itemtype'];
       }
 
       $itemtypes[] = 'Contract';
