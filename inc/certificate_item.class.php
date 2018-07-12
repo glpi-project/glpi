@@ -286,59 +286,38 @@ class Certificate_Item extends CommonDBRelation {
          }
 
          if ($item->canView()) {
-            $column = "name";
+            $iterator = self::getTypeItems($instID, $itemtype);
 
-            $itemTable = getTableForItemType($itemtype);
-            $query = " SELECT `" . $itemTable . "`.*,
-                              `glpi_certificates_items`.`id` AS items_id,
-                              `glpi_entities`.id AS entity "
-               . " FROM `glpi_certificates_items`, `" . $itemTable
-               . "` LEFT JOIN `glpi_entities`
-                     ON (`glpi_entities`.`id` = `" . $itemTable . "`.`entities_id`) "
-               . " WHERE `" . $itemTable . "`.`id` = `glpi_certificates_items`.`items_id`
-                     AND `glpi_certificates_items`.`itemtype` = '$itemtype'
-                     AND `glpi_certificates_items`.`certificates_id` = '$instID' "
-               . getEntitiesRestrictRequest(" AND ", $itemTable, '', '', $item->maybeRecursive());
-
-            if ($item->maybeTemplate()) {
-               $query .= " AND " . $itemTable . ".is_template='0'";
-            }
-
-            $query .= " ORDER BY `glpi_entities`.`completename`, `" . $itemTable . "`.`$column` ";
-
-            if ($result_linked = $DB->query($query)) {
-               if ($DB->numrows($result_linked)) {
-
-                  Session::initNavigateListItems($itemtype, Certificate::getTypeName(2) . " = " . $certificate->fields['name']);
-                  while ($data = $DB->fetch_assoc($result_linked)) {
-                     $item->getFromDB($data["id"]);
-                     Session::addToNavigateListItems($itemtype, $data["id"]);
-                     $ID = "";
-                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                        $ID = " (" . $data["id"] . ")";
-                     }
-
-                     $link = Toolbox::getItemTypeFormURL($itemtype);
-                     $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
-                        . $data["name"] . "$ID</a>";
-
-                     echo "<tr class='tab_bg_1'>";
-
-                     if ($canedit) {
-                        echo "<td width='10'>";
-                        Html::showMassiveActionCheckBox(__CLASS__, $data["items_id"]);
-                        echo "</td>";
-                     }
-                     echo "<td class='center'>" . $item->getTypeName(1) . "</td>";
-                     echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
-                        ">" . $name . "</td>";
-                     if (Session::isMultiEntitiesMode()) {
-                        echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
-                     }
-                     echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
-                     echo "<td class='center'>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
-                     echo "</tr>";
+            if (count($iterator)) {
+               Session::initNavigateListItems($itemtype, Certificate::getTypeName(2) . " = " . $certificate->fields['name']);
+               while ($data = $iterator->next()) {
+                  $item->getFromDB($data["id"]);
+                  Session::addToNavigateListItems($itemtype, $data["id"]);
+                  $ID = "";
+                  if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                     $ID = " (" . $data["id"] . ")";
                   }
+
+                  $link = Toolbox::getItemTypeFormURL($itemtype);
+                  $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
+                     . $data["name"] . "$ID</a>";
+
+                  echo "<tr class='tab_bg_1'>";
+
+                  if ($canedit) {
+                     echo "<td width='10'>";
+                     Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                     echo "</td>";
+                  }
+                  echo "<td class='center'>" . $item->getTypeName(1) . "</td>";
+                  echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
+                     ">" . $name . "</td>";
+                  if (Session::isMultiEntitiesMode()) {
+                     echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
+                  }
+                  echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
+                  echo "<td class='center'>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                  echo "</tr>";
                }
             }
          }

@@ -425,126 +425,61 @@ class Document_Item extends CommonDBRelation{
          }
 
          if ($item->canView()) {
-            if ($item instanceof CommonDevice) {
-               $column = "designation";
-            } else if ($item instanceof Item_Devices) {
-               $column = "itemtype";
-            } else {
-               $column = "name";
-            }
-
-            if ($itemtype == 'Ticket') {
-               $column = "id";
-            }
-
-            $itemtable = getTableForItemType($itemtype);
-            $query     = "SELECT `$itemtable`.*,
-                                 `glpi_documents_items`.`id` AS IDD, ";
-
-            if ($itemtype == 'KnowbaseItem') {
-               $query .= "-1 AS entity
-                          FROM `glpi_documents_items`, `$itemtable`
-                          ".KnowbaseItem::addVisibilityJoins()."
-                          WHERE `$itemtable`.`id` = `glpi_documents_items`.`items_id`
-                                AND ";
-            } else {
-               $query .= "`glpi_entities`.`id` AS entity
-                          FROM `glpi_documents_items`, `$itemtable`";
-
-               if ($itemtype != 'Entity') {
-                  $query .= " LEFT JOIN `glpi_entities`
-                                 ON (`glpi_entities`.`id` = `$itemtable`.`entities_id`)";
-               }
-               $query .= " WHERE `$itemtable`.`id` = `glpi_documents_items`.`items_id`
-                                 AND ";
-            }
-            $query .= "`glpi_documents_items`.`itemtype` = '$itemtype'
-                       AND `glpi_documents_items`.`documents_id` = '$instID' ";
-
-            if ($itemtype =='KnowbaseItem') {
-               if (Session::getLoginUserID()) {
-                  $where = "AND ".KnowbaseItem::addVisibilityRestrict();
-               } else {
-                  // Anonymous access
-                  if (Session::isMultiEntitiesMode()) {
-                     $where = " AND (`glpi_entities_knowbaseitems`.`entities_id` = 0
-                                     AND `glpi_entities_knowbaseitems`.`is_recursive` = 1)";
-                  }
-               }
-            } else {
-               $query .= getEntitiesRestrictRequest(" AND ", $itemtable, '', '',
-                                                   $item->maybeRecursive());
-            }
-
-            if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = 0";
-            }
-
-            if ($itemtype == 'KnowbaseItem') {
-               $query .= " ORDER BY `$itemtable`.`$column`";
-            } else {
-               $query .= " ORDER BY `glpi_entities`.`completename`, `$itemtable`.`$column`";
-            }
+            $iterator = self::getTypeItems($instID, $itemtype);
 
             if ($itemtype == 'SoftwareLicense') {
                $soft = new Software();
             }
 
-            if ($result_linked = $DB->query($query)) {
-               if ($DB->numrows($result_linked)) {
+            while ($data = $iterator->next()) {
+               if ($itemtype == 'Ticket') {
+                  $data["name"] = sprintf(__('%1$s: %2$s'), __('Ticket'), $data["id"]);
+               }
 
-                  while ($data = $DB->fetch_assoc($result_linked)) {
-
-                     if ($itemtype == 'Ticket') {
-                        $data["name"] = sprintf(__('%1$s: %2$s'), __('Ticket'), $data["id"]);
-                     }
-
-                     if ($itemtype == 'SoftwareLicense') {
-                        $soft->getFromDB($data['softwares_id']);
-                        $data["name"] = sprintf(__('%1$s - %2$s'), $data["name"],
-                                                $soft->fields['name']);
-                     }
-                     if ($item instanceof CommonDevice) {
-                        $linkname = $data["designation"];
-                     } else if ($item instanceof Item_Devices) {
-                        $linkname = $data["itemtype"];
-                     } else {
-                        $linkname = $data["name"];
-                     }
-                     if ($_SESSION["glpiis_ids_visible"]
-                         || empty($data["name"])) {
-                        $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
-                     }
-                     if ($item instanceof Item_Devices) {
-                        $tmpitem = new $item::$itemtype_2();
-                        if ($tmpitem->getFromDB($data[$item::$items_id_2])) {
-                           $linkname = $tmpitem->getLink();
-                        }
-                     }
-                     $link     = $itemtype::getFormURLWithID($data['id']);
-                     $name = "<a href=\"".$link."\">".$linkname."</a>";
-
-                     echo "<tr class='tab_bg_1'>";
-
-                     if ($canedit) {
-                        echo "<td width='10'>";
-                        Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
-                        echo "</td>";
-                     }
-                     echo "<td class='center'>".$item->getTypeName(1)."</td>";
-                     echo "<td ".
-                           (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
-                          ">".$name."</td>";
-                     echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                          $data['entity']);
-                     echo "</td>";
-                     echo "<td class='center'>".
-                            (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
-                     echo "<td class='center'>".
-                            (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-                     echo "</tr>";
+               if ($itemtype == 'SoftwareLicense') {
+                  $soft->getFromDB($data['softwares_id']);
+                  $data["name"] = sprintf(__('%1$s - %2$s'), $data["name"],
+                                          $soft->fields['name']);
+               }
+               if ($item instanceof CommonDevice) {
+                  $linkname = $data["designation"];
+               } else if ($item instanceof Item_Devices) {
+                  $linkname = $data["itemtype"];
+               } else {
+                  $linkname = $data["name"];
+               }
+               if ($_SESSION["glpiis_ids_visible"]
+                     || empty($data["name"])) {
+                  $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
+               }
+               if ($item instanceof Item_Devices) {
+                  $tmpitem = new $item::$itemtype_2();
+                  if ($tmpitem->getFromDB($data[$item::$items_id_2])) {
+                     $linkname = $tmpitem->getLink();
                   }
                }
+               $link     = $itemtype::getFormURLWithID($data['id']);
+               $name = "<a href=\"".$link."\">".$linkname."</a>";
+
+               echo "<tr class='tab_bg_1'>";
+
+               if ($canedit) {
+                  echo "<td width='10'>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                  echo "</td>";
+               }
+               echo "<td class='center'>".$item->getTypeName(1)."</td>";
+               echo "<td ".
+                     (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
+                     ">".$name."</td>";
+               echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                     $data['entity']);
+               echo "</td>";
+               echo "<td class='center'>".
+                        (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
+               echo "<td class='center'>".
+                        (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+               echo "</tr>";
             }
          }
       }
@@ -1022,4 +957,37 @@ class Document_Item extends CommonDBRelation{
       return $specificities;
    }
 
+   /**
+    * Get items for an itemtype
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id Object id to restrict on
+    * @param string  $itemtype Type for items to retrieve
+    * @param boolean $noent    Flag to not compute enitty informations (see Document_Item::getTypeItemsQueryParams)
+    *
+    * @return DBMysqlIterator
+    */
+   protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false) {
+      if ($itemtype != 'KnowbaseItem') {
+         $params = parent::getTypeItemsQueryParams($items_id, $itemtype);
+      } else {
+         //KnowbaseItem case: no entity restriction, we'll manage it here
+         $params = parent::getTypeItemsQueryParams($items_id, $itemtype, true);
+         $params['SELECT'][] = new QueryExpression('-1 AS entity');
+         $kb_params = KnowbaseItem::getVisibilityCriteria();
+
+         if (!Session::getLoginUserID()) {
+            // Anonymous access
+            $kb_params['WHERE'] = [
+               'glpi_entities_knowbaseitems.entities_id'    => 0,
+               'glpi_entities_knowbaseitems.is_recursive'   => 1
+            ];
+         }
+
+         $params = array_merge_recursive($params, $kb_params);
+      }
+
+      return $params;
+   }
 }

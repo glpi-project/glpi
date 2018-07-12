@@ -256,30 +256,11 @@ class Contract_Item extends CommonDBRelation{
             continue;
          }
          $itemtable = getTableForItemType($itemtype);
-         $query     = "SELECT `$itemtable`.*,
-                              `glpi_contracts_items`.`id` AS IDD,
-                              `glpi_entities`.`id` AS entity
-                        FROM `glpi_contracts_items`,
-                              `$itemtable`";
-         if ($itemtype != 'Entity') {
-            $query .= " LEFT JOIN `glpi_entities`
-                              ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
-         }
-         $query .= " WHERE `$itemtable`.`id` = `glpi_contracts_items`.`items_id`
-                           AND `glpi_contracts_items`.`itemtype` = '$itemtype'
-                           AND `glpi_contracts_items`.`contracts_id` = '$contract_id'";
 
-         if ($item->maybeTemplate()) {
-            $query .= " AND `$itemtable`.`is_template` = 0";
-         }
-         $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', $entities_id,
-                                                $item->maybeRecursive())."
-                     ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
+         $iterator = self::getTypeItems($contract_id, $itemtype);
+         $nb = count($iterator);
 
-         $result_linked = $DB->query($query);
-         $nb            = $DB->numrows($result_linked);
-
-         while ($objdata = $DB->fetch_assoc($result_linked)) {
+         while ($objdata = $iterator->next()) {
             $items[$itemtype][$objdata['id']] = $objdata;
          }
       }
