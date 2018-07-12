@@ -79,22 +79,6 @@ class Item_Project extends CommonDBRelation{
 
 
    /**
-    * @param $item   CommonDBTM object
-   **/
-   static function countForItem(CommonDBTM $item) {
-
-      $restrict = "`glpi_items_projects`.`projects_id` = `glpi_projects`.`id`
-                   AND `glpi_items_projects`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_items_projects`.`itemtype` = '".$item->getType()."'".
-                   getEntitiesRestrictRequest(" AND ", "glpi_projects", '', '', true);
-
-      $nb = countElementsInTable(['glpi_items_projects', 'glpi_projects'], $restrict);
-
-      return $nb;
-   }
-
-
-   /**
     * Print the HTML array for Items linked to a project
     *
     * @param $project Project object
@@ -234,8 +218,7 @@ class Item_Project extends CommonDBRelation{
          switch ($item->getType()) {
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_items_projects',
-                                             ['projects_id' => $item->getID()]);
+                  $nb = self::countForMainItem($item);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
@@ -244,18 +227,17 @@ class Item_Project extends CommonDBRelation{
                if (Session::haveRight("project", Project::READALL)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
-                     $nb = countElementsInTable('glpi_items_projects',
-                                                ['itemtype' => $item->getType(),
-                                                 'items_id' => $item->getID()]);
+                     $nb = self::countForItem($item);
+
                      // Linked items
                      $linkeditems = $item->getLinkedItems();
 
                      if (count($linkeditems)) {
                         foreach ($linkeditems as $type => $tab) {
+                           $typeitem = new $type;
                            foreach ($tab as $ID) {
-                              $nb += countElementsInTable('glpi_items_projects',
-                                                          ['itemtype' => $type,
-                                                           'items_id' => $ID]);
+                              $typeitem->getFromDB($ID);
+                              $nb += self::countForItem($typeitem);
                            }
                         }
                      }

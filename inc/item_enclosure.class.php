@@ -62,18 +62,10 @@ class Item_Enclosure extends CommonDBRelation {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
-      switch ($item->getType()) {
-         default:
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable(
-                  self::getTable(),
-                  [
-                     'enclosures_id'  => $item->getID()
-                  ]);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+      if ($_SESSION['glpishow_count_on_tabs']) {
+         $nb = self::countForMainItem($item);
       }
-      return '';
+      return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {

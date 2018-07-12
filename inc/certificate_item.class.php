@@ -80,7 +80,7 @@ class Certificate_Item extends CommonDBRelation {
             && count(Certificate::getTypes(false))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(_n('Associated item', 'Associated items', 2),
-                                           self::countForCertificate($item));
+                                           self::countForMainItem($item));
             }
             return _n('Associated item', 'Associated items', 2);
 
@@ -114,34 +114,6 @@ class Certificate_Item extends CommonDBRelation {
       return true;
    }
 
-   /**
-    * @param Certificate $item
-    * @return int
-    */
-   static function countForCertificate(Certificate $item) {
-
-      $types = $item->getTypes();
-      if (!count($types)) {
-         return 0;
-      }
-      return countElementsInTable('glpi_certificates_items',
-                                  ['itemtype'         => $types,
-                                   'certificates_id'  => $item->getID()]);
-   }
-
-   /**
-    * Get the number of certificates for an item
-    *
-    * @since 9.2
-    * @param CommonDBTM $item
-    * @return int the number of certificates
-    */
-   static function countForItem(CommonDBTM $item) {
-      return countElementsInTable('glpi_certificates_items',
-                                  [ 'itemtype' => $item->getType(),
-                                    'items_id' => $item->getID()
-                                  ]);
-   }
 
    /**
     * @param $certificates_id

@@ -48,50 +48,12 @@ class Item_OperatingSystem extends CommonDBRelation {
    }
 
 
-   /**
-    * Count operating systems associated to an item
-    *
-    * @param CommonDBTM $item Item instance
-    *
-    * @return integer
-    */
-   static function countForItem(CommonDBTM $item) {
-
-      $restrict = "`glpi_items_operatingsystems`.`operatingsystems_id` = `glpi_operatingsystems`.`id`
-                   AND `glpi_items_operatingsystems`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_items_operatingsystems`.`itemtype` = '".$item->getType()."'".
-                   getEntitiesRestrictRequest(" AND ", self::getTable(), '', '', true);
-
-      $nb = countElementsInTable(['glpi_items_operatingsystems', 'glpi_operatingsystems'], $restrict);
-
-      return $nb;
-   }
-
-
-   /**
-    * Count connection for an operating system
-    *
-    * @param OperatingSystem $os Operating system object instance
-    *
-    * @return integer
-   **/
-   static function countForOS(OperatingSystem $os) {
-      return countElementsInTable('glpi_items_operatingsystems',
-                                  ['operatingsystems_id' => $os->getID()]);
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
       switch ($item->getType()) {
          default:
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable(
-                  'glpi_items_operatingsystems',
-                  [
-                     'itemtype'  => $item->getType(),
-                     'items_id'  => $item->getID()
-                  ]);
+               $nb = self::countForItem($item);
             }
             return self::createTabEntry(_n('Operating system', 'Operating systems', Session::getPluralNumber()), $nb);
       }
