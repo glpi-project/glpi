@@ -57,34 +57,6 @@ class Contract_Supplier extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $item   string   Supplier object
-   **/
-   static function countForSupplier(Supplier $item) {
-
-      $restrict = "`glpi_contracts_suppliers`.`suppliers_id` = '".$item->getField('id') ."'
-                    AND `glpi_contracts_suppliers`.`contracts_id` = `glpi_contracts`.`id` ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_contracts", '',
-                                               $_SESSION['glpiactiveentities']);
-
-      return countElementsInTable(['glpi_contracts_suppliers', 'glpi_contracts'], $restrict);
-   }
-
-
-   /**
-    * @param $item   string   Contract object
-   **/
-   static function countForContract(Contract $item) {
-
-      $restrict = "`glpi_contracts_suppliers`.`contracts_id` = '".$item->getField('id') ."'
-                    AND `glpi_contracts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id` ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_suppliers", '',
-                                               $_SESSION['glpiactiveentities'], true);
-
-      return countElementsInTable(['glpi_contracts_suppliers', 'glpi_suppliers'], $restrict);
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
@@ -93,7 +65,7 @@ class Contract_Supplier extends CommonDBRelation {
             case 'Supplier' :
                if (Contract::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb =  self::countForSupplier($item);
+                     $nb =  self::countForItem($item);
                   }
                   return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()),
                                               $nb);
@@ -103,7 +75,7 @@ class Contract_Supplier extends CommonDBRelation {
             case 'Contract' :
                if (Session::haveRight("contact_enterprise", READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = self::countForContract($item);
+                     $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb);
                }

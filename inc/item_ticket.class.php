@@ -160,20 +160,6 @@ class Item_Ticket extends CommonDBRelation{
       return parent::prepareInputForAdd($input);
    }
 
-   /**
-    * @param $item   CommonDBTM object
-   **/
-   static function countForItem(CommonDBTM $item) {
-
-      $restrict = "`glpi_items_tickets`.`tickets_id` = `glpi_tickets`.`id`
-                   AND `glpi_items_tickets`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."'".
-                   getEntitiesRestrictRequest(" AND ", "glpi_tickets", '', '', true);
-
-      $nb = countElementsInTable(['glpi_items_tickets', 'glpi_tickets'], $restrict);
-
-      return $nb;
-   }
 
    /**
     * Print the HTML ajax associated item add
@@ -544,6 +530,7 @@ class Item_Ticket extends CommonDBRelation{
                if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
                    && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
+                     //$nb = self::countForMainItem($item);
                      $nb = countElementsInTable('glpi_items_tickets',
                                                 ['AND' => ['tickets_id' => $item->getID() ],
                                                    ['itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]]

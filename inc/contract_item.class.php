@@ -179,62 +179,6 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * @param $item    CommonDBTM object
-   **/
-   static function countForItem(CommonDBTM $item) {
-
-      return countElementsInTable('glpi_contracts_items',
-                                  ['itemtype' => $item->getType(),
-                                   'items_id' => $item->getField('id')]);
-   }
-
-
-   /**
-    * @param $item   Contract object
-   **/
-   static function countForContract(Contract $item) {
-      global $DB;
-
-      $nb = 0;
-
-      $types_iterator = self::getDistinctTypes($item->fields['id']);
-      while ($data = $types_iterator->next()) {
-         if (!$itemt = getItemForItemtype($data['itemtype'])) {
-            continue;
-         }
-
-         $params = [
-            'COUNT'     => 'cpt',
-            'FROM'      => self::getTable(),
-            'LEFT JOIN' => [
-               $itemt->getTable() => [
-                  'FKEY' => [
-                     self::getTable()     => 'items_id',
-                     $itemt->getTable()   => 'id'
-                  ]
-               ]
-            ],
-            'WHERE'     => [
-               self::getTable() . 'contracts_id' => $item->fields['id'],
-               self::getTable() . 'itemtype'     => $data['itemtype']
-            ]
-         ];
-
-         if ($itemt->maybeTemplate()) {
-            $params['WHERE'][$itemt->getTable() . '.is_template'] = 0;
-         }
-
-         $iterator = $DB->request($params);
-
-         while ($row = $iterator->next()) {
-            $nb += $row['cpt'];
-         }
-      }
-      return $nb;
-   }
-
-
-   /**
     * @since 0.84
     *
     * @param $contract_id   contract ID
@@ -283,7 +227,7 @@ class Contract_Item extends CommonDBRelation{
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = self::countForContract($item);
+                  $nb = self::countForMainItem($item);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 

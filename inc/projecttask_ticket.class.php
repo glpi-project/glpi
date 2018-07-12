@@ -72,15 +72,13 @@ class ProjectTask_Ticket extends CommonDBRelation{
          switch ($item->getType()) {
             case 'ProjectTask' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_projecttasks_tickets',
-                                            ['projecttasks_id' => $item->getID()]);
+                  $nb = self::countForItem($item);
                }
                return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Ticket' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_projecttasks_tickets',
-                                            ['tickets_id' => $item->getID()]);
+                  $nb = self::countForItem($item);
                }
                return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb);
          }
@@ -152,22 +150,14 @@ class ProjectTask_Ticket extends CommonDBRelation{
       $canedit = $projecttask->canEdit($ID);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_projecttasks_tickets`.`id` AS linkID,
-                                `glpi_tickets`.*
-                FROM `glpi_projecttasks_tickets`
-                LEFT JOIN `glpi_tickets`
-                     ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                WHERE `glpi_projecttasks_tickets`.`projecttasks_id` = '$ID'
-                ORDER BY `glpi_tickets`.`name`";
-      $result = $DB->query($query);
+      $iterator = self::getListForItem($projecttask, true);
+      $numrows = count($iterator);
 
       $tickets = [];
       $used    = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $tickets[$data['id']] = $data;
-            $used[$data['id']]    = $data['id'];
-         }
+      while ($data = $iterator->next()) {
+         $tickets[$data['id']] = $data;
+         $used[$data['id']]    = $data['id'];
       }
 
       if ($canedit) {
@@ -228,7 +218,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
             Ticket::showShort($data['id'], ['followups'              => false,
                                                  'row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']]);
+                                                 'id_for_massiveaction'   => $data['linkid']]);
             $i++;
          }
       }
@@ -258,22 +248,14 @@ class ProjectTask_Ticket extends CommonDBRelation{
       $canedit = $ticket->canEdit($ID);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_projecttasks_tickets`.`id` AS linkID,
-                                `glpi_projecttasks`.*
-                FROM `glpi_projecttasks`
-                LEFT JOIN `glpi_projecttasks_tickets`
-                   ON (`glpi_projecttasks_tickets`.`projecttasks_id` = `glpi_projecttasks`.`id`)
-                WHERE `glpi_projecttasks_tickets`.`tickets_id` = '$ID'
-                ORDER BY `glpi_projecttasks`.`name`";
-      $result = $DB->query($query);
+      $iterator = self::getListForItem($ticket);
+      $numrows = count($iterator);
 
       $pjtasks = [];
       $used    = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $pjtasks[$data['id']] = $data;
-            $used[$data['id']]    = $data['id'];
-         }
+      while ($data = $iterator->next()) {
+         $pjtasks[$data['id']] = $data;
+         $used[$data['id']]    = $data['id'];
       }
 
       if ($canedit) {

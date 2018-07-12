@@ -63,36 +63,6 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * Count connection for an item
-    *
-    * @param $item   CommonDBTM object
-    *
-    * @return integer: count
-   **/
-   static function countForItem(CommonDBTM $item) {
-
-      return countElementsInTable('glpi_computers_items',
-                                  ['itemtype'   => $item->getType(),
-                                   'items_id'   => $item->getField('id'),
-                                   'is_deleted' => 0 ]);
-   }
-
-
-   /**
-    * Count connection for a Computer
-    *
-    * @param $comp   Computer object
-    *
-    * @return integer: count
-   **/
-   static function countForComputer(Computer $comp) {
-
-      return countElementsInTable('glpi_computers_items',
-                                  ['computers_id' => $comp->getField('id'),
-                                   'is_deleted'   => 0 ]);
-   }
-
 
    /**
     * Count connection for a Computer and an itemtype
@@ -119,7 +89,7 @@ class Computer_Item extends CommonDBRelation{
     * Overloaded to check is Disconnect needed (during OCS sync)
     * and to manage autoupdate feature
     *
-    * @param $input array of datas used to add the item
+    * @param $input array of data used to add the item
     *
     * @return the modified $input array
     *
@@ -365,28 +335,12 @@ class Computer_Item extends CommonDBRelation{
       foreach ($CFG_GLPI["directconnect_types"] as $itemtype) {
          $item = new $itemtype();
          if ($item->canView()) {
-            $query = "SELECT `glpi_computers_items`.`id` AS assoc_id,
-                      `glpi_computers_items`.`computers_id` AS assoc_computers_id,
-                      `glpi_computers_items`.`itemtype` AS assoc_itemtype,
-                      `glpi_computers_items`.`items_id` AS assoc_items_id,
-                      `glpi_computers_items`.`is_dynamic` AS assoc_is_dynamic,
-                      ".getTableForItemType($itemtype).".*
-                      FROM `glpi_computers_items`
-                      LEFT JOIN `".getTableForItemType($itemtype)."`
-                        ON (`".getTableForItemType($itemtype)."`.`id`
-                              = `glpi_computers_items`.`items_id`)
-                      WHERE `computers_id` = '$ID'
-                            AND `itemtype` = '".$itemtype."'
-                            AND `glpi_computers_items`.`is_deleted` = 0";
-            if ($item->maybetemplate()) {
-               $query.= " AND `".getTableForItemType($itemtype)."`.`is_template` = 0 ";
-            }
+            $iterator = self::getTypeItems($ID, $itemtype);
 
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $datas[]           = $data;
-                  $used[$itemtype][] = $data['assoc_items_id'];
-               }
+            while ($data = $iterator->next()) {
+               $data['assoc_itemtype'] = $itemtype;
+               $datas[]           = $data;
+               $used[$itemtype][] = $data['id'];
             }
          }
       }
@@ -466,7 +420,7 @@ class Computer_Item extends CommonDBRelation{
 
             if ($canedit) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["assoc_id"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
             echo "<td class='center'>".$data['assoc_itemtype']::getTypeName(1)."</td>";
@@ -788,7 +742,7 @@ class Computer_Item extends CommonDBRelation{
                    || Peripheral::canView()
                    || Monitor::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = self::countForComputer($item);
+                     $nb = self::countForMainItem($item);
                   }
                   return self::createTabEntry(_n('Connection', 'Connections', Session::getPluralNumber()),
                                               $nb);
@@ -907,4 +861,20 @@ class Computer_Item extends CommonDBRelation{
       return true;
    }
 
+   /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item    Item instance
+    * @param boolean    $inverse Get the inverse relation
+    * @param boolean    $noent   Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    *
+    * @return array
+    */
+   protected static function getListForItemParams(CommonDBTM $item, $inverse = false, $noent = false) {
+      $params = parent::getListForItemParams($item, $inverse);
+      $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
+      return $params;
+   }
 }

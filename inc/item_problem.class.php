@@ -79,22 +79,6 @@ class Item_Problem extends CommonDBRelation{
 
 
    /**
-    * @param $item   CommonDBTM object
-   **/
-   static function countForItem(CommonDBTM $item) {
-
-      $restrict = "`glpi_items_problems`.`problems_id` = `glpi_problems`.`id`
-                   AND `glpi_items_problems`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_items_problems`.`itemtype` = '".$item->getType()."'".
-                   getEntitiesRestrictRequest(" AND ", "glpi_problems", '', '', true);
-
-      $nb = countElementsInTable(['glpi_items_problems', 'glpi_problems'], $restrict);
-
-      return $nb;
-   }
-
-
-   /**
     * Print the HTML array for Items linked to a problem
     *
     * @param $problem Problem object
@@ -237,29 +221,15 @@ class Item_Problem extends CommonDBRelation{
          switch ($item->getType()) {
             case 'Problem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_items_problems',
-                                             ['problems_id' => $item->getID()]);
+                  $nb = self::countForMainItem($item);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             case 'User' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countDistinctElementsInTable('glpi_problems_users', 'problems_id',
-                                             "`users_id` = '".$item->getID()."'");
-               }
-               return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
-
             case 'Group' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countDistinctElementsInTable('glpi_groups_problems', 'problems_id',
-                                             "`groups_id` = '".$item->getID()."'");
-               }
-               return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
-
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countDistinctElementsInTable('glpi_problems_suppliers', 'problems_id',
-                                             "`suppliers_id` = '".$item->getID()."'");
+                  $nb = self::countForItem($item);
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
@@ -267,18 +237,16 @@ class Item_Problem extends CommonDBRelation{
                if (Session::haveRight("problem", Problem::READALL)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
-                     $nb = countElementsInTable('glpi_items_problems',
-                                               ['itemtype' => $item->getType(),
-                                                'items_id' => $item->getID()]);
+                     $nb = self::countForItem($item);
                      // Linked items
                      $linkeditems = $item->getLinkedItems();
 
                      if (count($linkeditems)) {
                         foreach ($linkeditems as $type => $tab) {
+                           $typeitem = new $type;
                            foreach ($tab as $ID) {
-                              $nb += countElementsInTable('glpi_items_problems',
-                                                         ['itemtype' => $type,
-                                                          'items_id' => $ID]);
+                              $typeitem->getFromDB($ID);
+                              $nb += self::countForItem($typeitem);
                            }
                         }
                      }
