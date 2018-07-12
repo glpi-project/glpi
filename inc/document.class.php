@@ -61,14 +61,14 @@ class Document extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @param $item  an object or a string
+    * @param string|object $item An object or a string
     *
-    * @return true if $object is an object that can have InfoCom
+    * @return boolean
    **/
    static function canApplyOn($item) {
       global $CFG_GLPI;
 
-      // All devices are subjects to infocom !
+      // All devices can have documents!
       if (is_a($item, 'Item_Devices', true)
           || is_a($item, 'CommonDevice', true)) {
          return true;
@@ -971,7 +971,7 @@ class Document extends CommonDBTM {
     *
     * @return boolean for success / $input array is updated
    **/
-   static function moveUploadedDocument(array &$input, $filename) {
+   public function moveUploadedDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
       $prefix = '';
