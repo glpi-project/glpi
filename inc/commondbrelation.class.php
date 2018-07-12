@@ -1543,4 +1543,91 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       return $types_iterator;
    }
+
+   /**
+    * Get items for an itemtype
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id Object id to restrict on
+    * @param string  $itemtype Type for items to retrieve
+    * @param boolean $noent    Flag to not compute enitty informations (see Document_Item::getTypeItemsQueryParams)
+    *
+    * @return DBMysqlIterator
+    */
+   protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false) {
+      global $DB;
+
+      $item = getItemForItemtype($itemtype);
+      $order_col = $item->getNameField();
+
+      if ($item instanceof CommonDevice) {
+         $order_col = "designation";
+      } else if ($item instanceof Item_Devices) {
+         $order_col = "itemtype";
+      } else if ($itemtype == 'Ticket') {
+         $order_col = 'id';
+      }
+
+      $params = [
+         'SELECT' => [
+            $item->getTable() . '.*',
+            static::getTable() . '.id AS linkid'
+         ],
+         'FROM'   => $item->getTable(),
+         'WHERE'  => [
+            static::getTable() . '.' . static::$items_id_1  => $items_id
+         ],
+         'LEFT JOIN' => [
+            static::getTable() => [
+               'FKEY' => [
+                  static::getTable()   => 'items_id',
+                  $item->getTable()    => 'id'
+               ]
+            ]
+         ],
+         'ORDER'     => $item->getTable() . '.' . $order_col
+      ];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype')) {
+         $params['WHERE'][static::getTable() . '.itemtype'] = $itemtype;
+      }
+
+      if ($item->maybeTemplate()) {
+         $params['WHERE'][$item->getTable() . '.is_template'] = 0;
+      }
+
+      if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::getType()) {
+         $params['SELECT'][] = 'glpi_entities.id AS entity';
+         $params['LEFT JOIN']['glpi_entities'] = [
+            'FKEY'   => [
+               $item->getTable() => 'entities_id',
+               'glpi_entities'   => 'id'
+            ]
+         ];
+         $params['WHERE'] += getEntitiesRestrictCriteria($item->getTable(), '', '', true);
+         $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
+      }
+
+      return $params;
+   }
+
+   /**
+    * Get items for an itemtype
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id Object id to restrict on
+    * @param string  $itemtype Type for items to retrieve
+    *
+    * @return DBMysqlIterator
+    */
+   public static function getTypeItems($items_id, $itemtype) {
+      global $DB;
+
+      $params = static::getTypeItemsQueryParams($items_id, $itemtype);
+      $iterator = $DB->request($params);
+
+      return $iterator;
+   }
 }
