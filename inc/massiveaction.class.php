@@ -1113,8 +1113,10 @@ class MassiveAction {
                                 && in_array($link_entity_type,
                                             getAncestorsOf("glpi_entities",
                                                            $item->getEntityID())))) {
-                           $input2["items_id"] = $key;
-                           $input2["itemtype"] = $item->getType();
+                           $input2 = [
+                              'items_id'  => $key,
+                              'itemtype'  => $item->getType()
+                           ];
 
                            if ($ic->can(-1, CREATE, $input2)) {
                               // Add infocom if not exists
