@@ -302,11 +302,12 @@ class User extends CommonDBTM {
       foreach ($entities as $ent) {
          if (Session::haveAccessToEntity($ent)) {
             $all   = false;
-            $query = "DELETE
-                      FROM `glpi_profiles_users`
-                      WHERE `users_id` = '".$this->fields["id"]."'
-                            AND `entities_id` = '$ent'";
-            $DB->query($query);
+            $DB->delete(
+               'glpi_profiles_users', [
+                  'users_id'     => $this->fields['id'],
+                  'entities_id'  => $ent
+               ]
+            );
          }
          return false;
       }
@@ -609,14 +610,17 @@ class User extends CommonDBTM {
       }
 
       // Check if user does not exists
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `name` = '".$input['name']."'
-                   AND `authtype` = '".$input['authtype']."'
-                   AND `auths_id` = '".$input['auths_id']."'";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            'name'      => $input['name'],
+            'authtype'  => $input['authtype'],
+            'auths_id'  => $input['auths_id']
+         ],
+         'LIMIT'  => 1
+      ]);
 
-      if ($DB->numrows($result) > 0) {
+      if (count($iterator)) {
          Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'),
                                           false, ERROR);
          return false;
@@ -1064,27 +1068,36 @@ class User extends CommonDBTM {
                $this->input["_groups"] = array_unique ($this->input["_groups"]);
 
                // Delete not available groups like to LDAP
-               $query = "SELECT `glpi_groups_users`.`id`,
-                                `glpi_groups_users`.`groups_id`,
-                                `glpi_groups_users`.`is_dynamic`
-                         FROM `glpi_groups_users`
-                         LEFT JOIN `glpi_groups`
-                              ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                         WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'";
+               $iterator = $DB->request([
+                  'SELECT'    => [
+                     'glpi_groups_users.id',
+                     'glpi_groups_users.groups_id',
+                     'glpi_groups_users.is_dynamic'
+                  ],
+                  'FROM'      => 'glpi_groups_users',
+                  'LEFT JOIN' => [
+                     'glpi_groups'  => [
+                        'FKEY'   => [
+                           'glpi_groups_users'  => 'groups_id',
+                           'glpi_groups'        => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'glpi_groups_users.users_id' => $this->fields['id']
+                  ]
+               ]);
 
-               $result    = $DB->query($query);
                $groupuser = new Group_User();
-               if ($DB->numrows($result) > 0) {
-                  while ($data = $DB->fetch_assoc($result)) {
+               while ($data =  $iterator->next()) {
 
-                     if (in_array($data["groups_id"], $this->input["_groups"])) {
-                        // Delete found item in order not to add it again
-                        unset($this->input["_groups"][array_search($data["groups_id"],
-                              $this->input["_groups"])]);
+                  if (in_array($data["groups_id"], $this->input["_groups"])) {
+                     // Delete found item in order not to add it again
+                     unset($this->input["_groups"][array_search($data["groups_id"],
+                           $this->input["_groups"])]);
 
-                     } else if ($data['is_dynamic']) {
-                        $groupuser->delete(['id' => $data["id"]]);
-                     }
+                  } else if ($data['is_dynamic']) {
+                     $groupuser->delete(['id' => $data["id"]]);
                   }
                }
 
@@ -1265,26 +1278,27 @@ class User extends CommonDBTM {
                $this->input["_emails"] = array_unique ($this->input["_emails"]);
 
                // Delete not available groups like to LDAP
-               $query = "SELECT `glpi_useremails`.`id`,
-                                `glpi_useremails`.`users_id`,
-                                `glpi_useremails`.`email`,
-                                `glpi_useremails`.`is_dynamic`
-                         FROM `glpi_useremails`
-                         WHERE `glpi_useremails`.`users_id` = '" . $this->fields["id"] . "'";
+               $iterator = $DB->request([
+                  'SELECT' => [
+                     'id',
+                     'users_id',
+                     'email',
+                     'is_dynamic'
+                  ],
+                  'FROM'   => 'glpi_useremails',
+                  'WHERE'  => ['users_id' => $this->fields['id']]
+               ]);
 
-               $result    = $DB->query($query);
                $useremail = new UserEmail();
-               if ($DB->numrows($result) > 0) {
-                  while ($data = $DB->fetch_assoc($result)) {
-                     $i = array_search($data["email"], $this->input["_emails"]);
-                     if ($i !== false) {
-                        // Delete found item in order not to add it again
-                        unset($this->input["_emails"][$i]);
-                     } else if ($data['is_dynamic']) {
-                        // Delete not found email
-                        $deleted = $useremail->delete(['id' => $data["id"]]);
-                        $userUpdated = $userUpdated || $deleted;
-                     }
+               while ($data = $iterator->next()) {
+                  $i = array_search($data["email"], $this->input["_emails"]);
+                  if ($i !== false) {
+                     // Delete found item in order not to add it again
+                     unset($this->input["_emails"][$i]);
+                  } else if ($data['is_dynamic']) {
+                     // Delete not found email
+                     $deleted = $useremail->delete(['id' => $data["id"]]);
+                     $userUpdated = $userUpdated || $deleted;
                   }
                }
 
@@ -1348,13 +1362,15 @@ class User extends CommonDBTM {
       global $DB;
 
       // Search in DB the ldap_field we need to search for in LDAP
-      $query = "SELECT DISTINCT `ldap_field`
-                FROM `glpi_groups`
-                WHERE `ldap_field` != ''
-                ORDER BY `ldap_field`";
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'ldap_field',
+         'FROM'            => 'glpi_groups',
+         'WHERE'           => ['NOT' => ['ldap_field' => '']],
+         'ORDER'           => 'ldap_field'
+      ]);
       $group_fields = [];
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $group_fields[] = Toolbox::strtolower($data["ldap_field"]);
       }
       if (count($group_fields)) {
@@ -1378,13 +1394,13 @@ class User extends CommonDBTM {
                // Search in DB for group with ldap_group_dn
                if (($ldap_method["group_field"] == 'dn')
                    && (count($v[$i]['ou']) > 0)) {
-                  $query = "SELECT `id`
-                            FROM `glpi_groups`
-                            WHERE `ldap_group_dn`
-                                       IN ('".implode("', '",
-                                                      Toolbox::addslashes_deep($v[$i]['ou']))."')";
+                  $group_iterator = $DB->request([
+                     'SELECT' => 'id',
+                     'FROM'   => 'glpi_groups',
+                     'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
+                  ]);
 
-                  foreach ($DB->request($query) as $group) {
+                  while ($group = $iterator->next()) {
                      $this->fields["_groups"][] = $group['id'];
                   }
                }
@@ -1401,14 +1417,18 @@ class User extends CommonDBTM {
 
                   unset($v[$i][$field]['count']);
                   foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
-                     $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)";
+                     $lgroups[] = ['LIKE', new QueryExpression($DB::quoteField('ldap_value'))];
                   }
-                  $query = "SELECT `id`
-                            FROM `glpi_groups`
-                            WHERE `ldap_field` = '$field'
-                                  AND (".implode(" OR ", $lgroups).")";
+                  $group_iterator = $DB->request([
+                     'SELECT' => 'id',
+                     'FROM'   => 'glpi_groups',
+                     'WHERE'  => [
+                        'ldap_field'   => $field,
+                        'OR'           => $lgroups
+                     ]
+                  ]);
 
-                  foreach ($DB->request($query) as $group) {
+                  while ($group = $iterator->next()) {
                      $this->fields["_groups"][] = $group['id'];
                   }
                }
@@ -1455,13 +1475,13 @@ class User extends CommonDBTM {
              && is_array($result[$ldap_method["group_member_field"]])
              && (count($result[$ldap_method["group_member_field"]]) > 0)) {
 
-            $query = "SELECT `id`
-                      FROM `glpi_groups`
-                      WHERE `ldap_group_dn`
-                        IN ('".implode("', '",
-                                       Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]]))."')";
+             $iterator = $DB->request([
+               'SELECT' => 'id',
+               'FROM'   => 'glpi_groups',
+               'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]])]
+             ]);
 
-            foreach ($DB->request($query) as $group) {
+            while ($group = $iterator->next()) {
                $this->fields["_groups"][] = $group['id'];
             }
          }
@@ -2590,13 +2610,15 @@ class User extends CommonDBTM {
 
       if (($key = array_search('name', $this->updates)) !== false) {
          /// Check if user does not exists
-         $query = "SELECT *
-                   FROM `".$this->getTable()."`
-                   WHERE `name` = '".$this->input['name']."'
-                         AND `id` <> '".$this->input['id']."';";
-         $result = $DB->query($query);
+         $iterator = $DB->request([
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'name'   => $this->input['name'],
+               'id'     => ['<>', $this->input['id']]
+            ]
+         ]);
 
-         if ($DB->numrows($result) > 0) {
+         if (count($iterator)) {
             //To display a message
             $this->fields['name'] = $this->oldvalues['name'];
             unset($this->updates[$key]);
@@ -3229,16 +3251,25 @@ class User extends CommonDBTM {
    static function getDelegateGroupsForUser($entities_id = '') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_groups_users`.`groups_id`
-                FROM `glpi_groups_users`
-                INNER JOIN `glpi_groups`
-                        ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                WHERE `glpi_groups_users`.`users_id` = '".Session::getLoginUserID()."'
-                      AND `glpi_groups_users`.`is_userdelegate` = 1 ".
-                      getEntitiesRestrictRequest("AND", "glpi_groups", '', $entities_id, 1);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'glpi_groups_users.groups_id',
+         'FROM'            => 'glpi_groups_users',
+         'INNER JOIN'      => [
+            'glpi_groups'  => [
+               'FKEY'   => [
+                  'glpi_groups_users'  => 'groups_id',
+                  'glpi_groups'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_groups_users.users_id'        => Session::getLoginUserID(),
+            'glpi_groups_users.is_userdelegate' => 1
+         ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, 1)
+      ]);
 
       $groups = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $groups[$data['groups_id']] = $data['groups_id'];
       }
       return $groups;
@@ -3846,27 +3877,29 @@ class User extends CommonDBTM {
 
       $group_where = "";
       $groups      = [];
-      $query = "SELECT `glpi_groups_users`.`groups_id`,
-                       `glpi_groups`.`name`
-                FROM `glpi_groups_users`
-                LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                WHERE `glpi_groups_users`.`users_id` = '$ID'";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
 
-      if ($number > 0) {
-         $first = true;
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_groups_users.groups_id',
+            'glpi_groups_users.name'
+         ],
+         'FROM'      => 'glpi_groups_users',
+         'LEFT JOIN' => [
+            'glpi_groups' => [
+               'FKEY' => [
+                  'glpi_groups_users'  => 'groups_id',
+                  'glpi_groups'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => ['glpi_groups_users.users_id' => $ID]
+      ]);
+      $number = count($iterator);
 
-         while ($data = $DB->fetch_assoc($result)) {
-            if ($first) {
-               $first = false;
-            } else {
-               $group_where .= " OR ";
-            }
-
-            $group_where               .= " `".$field_group."` = '".$data["groups_id"]."' ";
-            $groups[$data["groups_id"]] = $data["name"];
-         }
+      $group_where = [];
+      while ($data = $iterator->next()) {
+         $group_where[$field_group] = $data['groups_id'];
+         $groups[$data["groups_id"]] = $data["name"];
       }
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
@@ -3885,22 +3918,104 @@ class User extends CommonDBTM {
          }
          if ($item->canView()) {
             $itemtable = getTableForItemType($itemtype);
-            $query = "SELECT *
-                      FROM `$itemtable`
-                      WHERE `".$field_user."` = '$ID'";
+            $iterator_params = [
+               'FROM'   => $itemtable,
+               'WHERE'  => [$field_user => $ID]
+            ];
 
             if ($item->maybeTemplate()) {
-               $query .= " AND `is_template` = 0 ";
+               $iterator_params['WHERE']['is_template'] = 0;
             }
             if ($item->maybeDeleted()) {
-               $query .= " AND `is_deleted` = 0 ";
+               $iterator_params['WHERE']['is_deleted'] = 0;
             }
-            $result    = $DB->query($query);
+
+            $item_iterator = $DB->request($iterator_params);
 
             $type_name = $item->getTypeName();
 
-            if ($DB->numrows($result) > 0) {
-               while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $item_iterator->next()) {
+               $cansee = $item->can($data["id"], READ);
+               $link   = $data["name"];
+               if ($cansee) {
+                  $link_item = $item::getFormURLWithID($data['id']);
+                  if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
+                     $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
+                  }
+                  $link = "<a href='".$link_item."'>".$link."</a>";
+               }
+               $linktype = "";
+               if ($data[$field_user] == $ID) {
+                  $linktype = self::getTypeName(1);
+               }
+               echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
+               echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                     $data["entities_id"])."</td>";
+               echo "<td class='center'>$link</td>";
+               echo "<td class='center'>";
+               if (isset($data["serial"]) && !empty($data["serial"])) {
+                  echo $data["serial"];
+               } else {
+                  echo '&nbsp;';
+               }
+               echo "</td><td class='center'>";
+               if (isset($data["otherserial"]) && !empty($data["otherserial"])) {
+                  echo $data["otherserial"];
+               } else {
+                  echo '&nbsp;';
+               }
+               echo "</td><td class='center'>";
+               if (isset($data["states_id"])) {
+                  echo Dropdown::getDropdownName("glpi_states", $data['states_id']);
+               } else {
+                  echo '&nbsp;';
+               }
+
+               echo "</td><td class='center'>$linktype</td></tr>";
+            }
+         }
+      }
+      if ($number) {
+         echo $header;
+      }
+      echo "</table></div>";
+
+      if (count($group_where)) {
+         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+         $header = "<tr>".
+               "<th>".__('Type')."</th>".
+               "<th>".__('Entity')."</th>".
+               "<th>".__('Name')."</th>".
+               "<th>".__('Serial number')."</th>".
+               "<th>".__('Inventory number')."</th>".
+               "<th>".__('Status')."</th>".
+               "<th>&nbsp;</th></tr>";
+         echo $header;
+         $nb = 0;
+         foreach ($type_group as $itemtype) {
+            if (!($item = getItemForItemtype($itemtype))) {
+               continue;
+            }
+            if ($item->canView() && $item->isField($field_group)) {
+               $itemtable = getTableForItemType($itemtype);
+               $iterator_params = [
+                  'FROM'   => $itemtable,
+                  'WHERE'  => ['OR' => $group_where]
+               ];
+
+               if ($item->maybeTemplate()) {
+                  $iterator_params['WHERE']['is_template'] = 0;
+               }
+               if ($item->maybeDeleted()) {
+                  $iterator_params['WHERE']['is_deleted'] = 0;
+               }
+
+               $group_iterator = $DB->request([$iterator_params]);
+
+               $type_name = $item->getTypeName();
+
+               while ($data = $iterator->next()) {
+                  $nb++;
                   $cansee = $item->can($data["id"], READ);
                   $link   = $data["name"];
                   if ($cansee) {
@@ -3911,13 +4026,14 @@ class User extends CommonDBTM {
                      $link = "<a href='".$link_item."'>".$link."</a>";
                   }
                   $linktype = "";
-                  if ($data[$field_user] == $ID) {
-                     $linktype = self::getTypeName(1);
+                  if (isset($groups[$data[$field_group]])) {
+                     $linktype = sprintf(__('%1$s = %2$s'), _n('Group', 'Groups', 1),
+                                          $groups[$data[$field_group]]);
                   }
                   echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
                   echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                       $data["entities_id"])."</td>";
-                  echo "<td class='center'>$link</td>";
+                                                                        $data["entities_id"]);
+                  echo "</td><td class='center'>$link</td>";
                   echo "<td class='center'>";
                   if (isset($data["serial"]) && !empty($data["serial"])) {
                      echo $data["serial"];
@@ -3941,89 +4057,6 @@ class User extends CommonDBTM {
                }
             }
          }
-      }
-      if ($number) {
-         echo $header;
-      }
-      echo "</table></div>";
-
-      if (!empty($group_where)) {
-         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-         $header = "<tr>".
-               "<th>".__('Type')."</th>".
-               "<th>".__('Entity')."</th>".
-               "<th>".__('Name')."</th>".
-               "<th>".__('Serial number')."</th>".
-               "<th>".__('Inventory number')."</th>".
-               "<th>".__('Status')."</th>".
-               "<th>&nbsp;</th></tr>";
-         echo $header;
-         $nb = 0;
-         foreach ($type_group as $itemtype) {
-            if (!($item = getItemForItemtype($itemtype))) {
-               continue;
-            }
-            if ($item->canView() && $item->isField($field_group)) {
-               $itemtable = getTableForItemType($itemtype);
-               $query = "SELECT *
-                         FROM `$itemtable`
-                         WHERE $group_where";
-
-               if ($item->maybeTemplate()) {
-                  $query .= " AND `is_template` = 0 ";
-               }
-               if ($item->maybeDeleted()) {
-                  $query .= " AND `is_deleted` = 0 ";
-               }
-               $result    = $DB->query($query);
-
-               $type_name = $item->getTypeName();
-
-               if ($DB->numrows($result) > 0) {
-                  while ($data = $DB->fetch_assoc($result)) {
-                     $nb++;
-                     $cansee = $item->can($data["id"], READ);
-                     $link   = $data["name"];
-                     if ($cansee) {
-                        $link_item = $item::getFormURLWithID($data['id']);
-                        if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
-                           $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
-                        }
-                        $link = "<a href='".$link_item."'>".$link."</a>";
-                     }
-                     $linktype = "";
-                     if (isset($groups[$data[$field_group]])) {
-                        $linktype = sprintf(__('%1$s = %2$s'), _n('Group', 'Groups', 1),
-                                            $groups[$data[$field_group]]);
-                     }
-                     echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
-                     echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                          $data["entities_id"]);
-                     echo "</td><td class='center'>$link</td>";
-                     echo "<td class='center'>";
-                     if (isset($data["serial"]) && !empty($data["serial"])) {
-                        echo $data["serial"];
-                     } else {
-                        echo '&nbsp;';
-                     }
-                     echo "</td><td class='center'>";
-                     if (isset($data["otherserial"]) && !empty($data["otherserial"])) {
-                        echo $data["otherserial"];
-                     } else {
-                        echo '&nbsp;';
-                     }
-                     echo "</td><td class='center'>";
-                     if (isset($data["states_id"])) {
-                        echo Dropdown::getDropdownName("glpi_states", $data['states_id']);
-                     } else {
-                        echo '&nbsp;';
-                     }
-
-                     echo "</td><td class='center'>$linktype</td></tr>";
-                  }
-               }
-            }
-         }
          if ($nb) {
             echo $header;
          }
@@ -4038,17 +4071,26 @@ class User extends CommonDBTM {
    static function getOrImportByEmail($email = '') {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `users_id` as id
-                FROM `glpi_useremails`
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
-                WHERE `glpi_useremails`.`email` = '".$DB->escape(stripslashes($email))."'
-                ORDER BY `glpi_users`.`is_active`  DESC, is_deleted ASC";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'    => 'users_id AS id',
+         'FROM'      => 'glpi_useremails',
+         'LEFT JOIN' => [
+            'glpi_users' => [
+               'FKEY' => [
+                  'glpi_useremails' => 'users_id',
+                  'glpi_users'      => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_useremails.email' => $DB->escape(stripslashes($email))
+         ],
+         'ORDER'     => ['glpi_users.is_active DESC', 'is_deleted ASC']
+      ]);
 
       //User still exists in DB
-      if ($result && $DB->numrows($result)) {
-         return $DB->result($result, 0, "id");
-
+      if (count($iterator)) {
+         return $iterator->next();
       } else {
          if ($CFG_GLPI["is_users_auto_add"]) {
             //Get all ldap servers with email field configured
@@ -4154,13 +4196,15 @@ class User extends CommonDBTM {
    static function getIdByField($field, $login) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_users`
-                WHERE `$field` = '".addslashes($login)."'";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [$field => addslashes($login)]
+      ]);
 
-      if ($DB->numrows($result) == 1) {
-         return $DB->result($result, 0, 'id');
+      if (count($iterator) == 1) {
+         $row = $iterator->next();
+         return $row['id'];
       }
       return false;
    }
@@ -4504,12 +4548,13 @@ class User extends CommonDBTM {
       $ok = false;
       do {
          $key    = Toolbox::getRandomString(40);
-         $query  = "SELECT COUNT(*)
-                    FROM `glpi_users`
-                    WHERE `$field` = '$key'";
-         $result = $DB->query($query);
+         $row = $DB->request([
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [$field => $key]
+         ])->next();
 
-         if ($DB->result($result, 0, 0) == 0) {
+         if ($row['cpt'] == 0) {
             return $key;
          }
       } while (!$ok);
