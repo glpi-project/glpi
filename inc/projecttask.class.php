@@ -654,18 +654,29 @@ class ProjectTask extends CommonDBChild {
       if ($item->getFromDB($projecttasks_id)) {
          $time += $item->fields['effective_duration'];
       }
-      $query = "SELECT SUM(`glpi_tickets`.`actiontime`)
-                FROM `glpi_projecttasks`
-                LEFT JOIN `glpi_projecttasks_tickets`
-                   ON (`glpi_projecttasks`.`id` = `glpi_projecttasks_tickets`.`projecttasks_id`)
-                LEFT JOIN `glpi_tickets`
-                   ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                WHERE `glpi_projecttasks`.`id` = '$projecttasks_id';";
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            $time += $DB->result($result, 0, 0);
-         }
+      $iterator = $DB->request([
+         'SELECT'    => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            'glpi_projecttasks_tickets'   => [
+               'FKEY'   => [
+                  'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                  self::getTable()              => 'id'
+               ]
+            ],
+            'glpi_tickets'                => [
+               'FKEY'   => [
+                  'glpi_projecttasks_tickets'   => 'tickets_id',
+                  'glpi_tickets'                => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [self::getTable() . '.id' => $projecttasks_id]
+      ]);
+
+      if ($row = $iterator->next()) {
+         $time += $row['duration'];
       }
       return $time;
    }
@@ -681,11 +692,13 @@ class ProjectTask extends CommonDBChild {
    static function getTotalEffectiveDurationForProject($projects_id) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_projecttasks`
-                WHERE `glpi_projecttasks`.`projects_id` = '$projects_id';";
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['projects_id' => $projects_id]
+      ]);
       $time = 0;
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $time += static::getTotalEffectiveDuration($data['id']);
       }
       return $time;
@@ -702,11 +715,14 @@ class ProjectTask extends CommonDBChild {
    static function getTotalPlannedDurationForProject($projects_id) {
       global $DB;
 
-      $query = "SELECT SUM(`planned_duration`) as SUM
-                FROM `glpi_projecttasks`
-                WHERE `glpi_projecttasks`.`projects_id` = '$projects_id';";
-      foreach ($DB->request($query) as $data) {
-         return $data['SUM'];
+      $iterator = $DB->request([
+         'SELECT' => new QueryExpression('SUM(planned_duration) AS duration'),
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['projects_id' => $projects_id]
+      ]);
+
+      while ($data = $iterator->next()) {
+         return $data['duration'];
       }
       return 0;
    }
@@ -927,15 +943,17 @@ class ProjectTask extends CommonDBChild {
          return false;
       }
 
-      $columns = ['name'             => self::getTypeName(Session::getPluralNumber()),
-                       'tname'            => __('Type'),
-                       'sname'            => __('Status'),
-                       'percent_done'     => __('Percent done'),
-                       'plan_start_date'  => __('Planned start date'),
-                       'plan_end_date'    => __('Planned end date'),
-                       'planned_duration' => __('Planned duration'),
-                       '_effect_duration' => __('Effective duration'),
-                       'fname'            => __('Father'),];
+      $columns = [
+         'name'             => self::getTypeName(Session::getPluralNumber()),
+         'tname'            => __('Type'),
+         'sname'            => __('Status'),
+         'percent_done'     => __('Percent done'),
+         'plan_start_date'  => __('Planned start date'),
+         'plan_end_date'    => __('Planned end date'),
+         'planned_duration' => __('Planned duration'),
+         '_effect_duration' => __('Effective duration'),
+         'fname'            => __('Father')
+      ];
 
       if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";

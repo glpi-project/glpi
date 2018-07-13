@@ -125,11 +125,13 @@ class ProjectTaskTeam extends CommonDBRelation {
       global $DB;
 
       $team = [];
-      $query = "SELECT `glpi_projecttaskteams`.*
-                FROM `glpi_projecttaskteams`
-                WHERE `projecttasks_id` = '$projects_id'";
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['projecttasks_id' => $projects_id]
+      ]);
+
+      while ($data = $iterator->next()) {
          if (!isset($team[$data['itemtype']])) {
             $team[$data['itemtype']] = [];
          }

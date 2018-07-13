@@ -115,15 +115,22 @@ class ProjectTask_Ticket extends CommonDBRelation{
    static function getTicketsTotalActionTime($projecttasks_id) {
       global $DB;
 
-      $query = "SELECT SUM(`glpi_tickets`.`actiontime`)
-                FROM `glpi_projecttasks_tickets`
-                INNER JOIN `glpi_tickets`
-                   ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                WHERE `glpi_projecttasks_tickets`.`projecttasks_id` = '$projecttasks_id';";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return $DB->result($result, 0, 0);
-         }
+      $iterator = $DB->request([
+         'SELECT'       => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            'glpi_tickets' => [
+               'FKEY'   => [
+                  self::getTable()  => 'tickets_id',
+                  'glpi_tickets'    => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => ['projecttasks_id' => $projecttasks_id]
+      ]);
+
+      if ($row = $iterator->next()) {
+         return $row['duration'];
       }
       return 0;
    }
