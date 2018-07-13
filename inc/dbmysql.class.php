@@ -1215,4 +1215,31 @@ class DBmysql {
       $raw = $req['version()'];
       return $raw;
    }
+
+   /**
+    * Starts a transaction
+    *
+    * @return boolean
+    */
+   public function beginTransaction() {
+      return $this->dbh->begin_transaction();
+   }
+
+   /**
+    * Commits a transaction
+    *
+    * @return boolean
+    */
+   public function commit() {
+      return $this->dbh->commit();
+   }
+
+   /**
+    * Roolbacks a transaction
+    *
+    * @return boolean
+    */
+   public function rollBack() {
+      return $this->dbh->rollback();
+   }
 }
