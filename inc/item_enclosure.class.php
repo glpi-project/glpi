@@ -48,17 +48,6 @@ class Item_Enclosure extends CommonDBRelation {
       return _n('Item', 'Item', $nb);
    }
 
-   /**
-    * Count connection for a enclosure
-    *
-    * @param Enclosure $enclosure Enclosure object instance
-    *
-    * @return integer
-   **/
-   static function countForEnclosure(Enclosure $enclosure) {
-      return countElementsInTable(self::getTable(),
-                                  ['enclosures_id' => $enclosure->getID()]);
-   }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;

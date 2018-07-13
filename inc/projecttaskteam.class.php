@@ -95,17 +95,6 @@ class ProjectTaskTeam extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $item      Project object
-    *
-    * @return number
-   **/
-   static function countForProject(Project $item) {
-
-      return countElementsInTable(['glpi_projecttaskteams'], ['glpi_projecttaskteams.projecttasks_id' => $item->getField('id')]);
-   }
-
-
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
