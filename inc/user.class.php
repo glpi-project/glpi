@@ -314,10 +314,6 @@ class User extends CommonDBTM {
    }
 
 
-   function cleanDBonMarkDeleted() {
-   }
-
-
    function cleanDBonPurge() {
       global $DB;
 
@@ -548,7 +544,7 @@ class User extends CommonDBTM {
    function getAllEmails() {
 
       if (!isset($this->fields['id'])) {
-         return '';
+         return [];
       }
       return UserEmail::getAllForUser($this->fields['id']);
    }
@@ -579,8 +575,9 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyToken($token, $field = 'personal_token') {
-      if (!in_array($field, ['personal_token', 'api_token'])) {
-         Toolbox::logWarning('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'personal_token\', \'api_token\'');
+      $fields = ['personal_token', 'api_token'];
+      if (!in_array($field, $fields)) {
+         Toolbox::logWarning('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'' . implode('\', \'', $fields) . '\'');
          return false;
       }
 
@@ -4180,31 +4177,39 @@ class User extends CommonDBTM {
    }
 
    /**
-    * @param $login
+    * Get user ID from its name
+    *
+    * @param string $name User name
+    *
+    * @return integer
    **/
-   static function getIdByName($login) {
-      return self::getIdByField('name', $login);
+   static function getIdByName($name) {
+      return self::getIdByField('name', $name);
    }
 
 
    /**
+    * Get user ID from a field
+    *
     * @since 0.84
     *
-    * @param $field
-    * @param $login
+    * @param string $field Field name
+    * @param string $value Field value
+    *
+    * @return integer
    **/
-   static function getIdByField($field, $login) {
+   static function getIdByField($field, $value) {
       global $DB;
 
       $iterator = $DB->request([
          'SELECT' => 'id',
          'FROM'   => self::getTable(),
-         'WHERE'  => [$field => addslashes($login)]
+         'WHERE'  => [$field => addslashes($value)]
       ]);
 
       if (count($iterator) == 1) {
          $row = $iterator->next();
-         return $row['id'];
+         return (int)$row['id'];
       }
       return false;
    }
