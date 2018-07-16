@@ -3772,6 +3772,7 @@ class CommonDBTM extends CommonGLPI {
                   case 'email' :
                   case 'string' :
                      if (strlen($value) > 255) {
+                        Toolbox::logWarning("$value exceed 255 characters long (".strlen($value)."), it will be truncated.");
                         $this->input[$key] = substr($value, 0, 254);
                      }
                      break;
