@@ -40,6 +40,7 @@ class AuthLDAP extends DbTestCase {
    private $ldap;
 
    public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
       $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
 
       //make sure bootstrapped ldap is active and is default
