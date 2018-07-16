@@ -764,21 +764,9 @@ class Toolbox {
 
       // if $mime is defined, ignore mime type by extension
       if ($mime === null && preg_match('/\.(...)$/', $file, $regs)) {
-         $mimeTypeMap = [
-            'sql' => 'text/x-sql',
-            'xml' => 'text/xml',
-            'csv' => 'text/csv',
-            'svg' => 'image/svg+xml',
-            'png' => 'image/png',
-         ];
-
-         $ext = strtolower($regs[1]);
-
-         if (isset($mimeTypeMap[$ext])) {
-            $mime = $mimeTypeMap[$ext];
-         } else {
-            $mime = 'application/octet-stream';
-         }
+         $finfo = finfo_open(FILEINFO_MIME_TYPE);
+         $mime = finfo_file($finfo, $file);
+         finfo_close($finfo);
       }
 
       // don't download picture files, see them inline
