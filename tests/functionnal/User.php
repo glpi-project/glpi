@@ -36,18 +36,6 @@ namespace tests\units;
 
 class User extends \DbTestCase {
 
-   public function beforeTestMethod($method) {
-      global $DB;
-      $DB->beginTransaction();
-      parent::beforeTestMethod($method);
-   }
-
-   public function afterTestMethod($method) {
-      global $DB;
-      $DB->rollback();
-      parent::afterTestMethod($method);
-   }
-
    public function testGenerateUserToken() {
       $user = getItemByTypeName('User', TU_USER);
       $this->variable($user->fields['personal_token_date'])->isNull();

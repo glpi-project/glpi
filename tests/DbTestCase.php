@@ -42,18 +42,16 @@ class DbTestCase extends \GLPITestCase {
       parent::setUp();
    }
 
+   public function beforeTestMethod($method) {
+      global $DB;
+      $DB->beginTransaction();
+      parent::beforeTestMethod($method);
+   }
+
    public function afterTestMethod($method) {
       global $DB;
-
+      $DB->rollback();
       parent::afterTestMethod($method);
-
-      // Need Innodb -- $DB->rollback()  -- workaround:
-      foreach ($DB->objcreated as $table => $ids) {
-         foreach ($ids as $id) {
-            $DB->delete($table, ['id' => $id]);
-         }
-      }
-      unset($DB->objcreated);
    }
 
 

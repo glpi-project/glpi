@@ -65,9 +65,6 @@ class DBmysql {
    //to calculate execution time
    public $execution_time          = false;
 
-   //to simulate transactions (for tests)
-   public $objcreated = [];
-
    private $cache_disabled = false;
 
    /**
