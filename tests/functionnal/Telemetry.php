@@ -55,7 +55,7 @@ class Telemetry extends DbTestCase {
             'avg_projects'          => '0-500',
             'avg_users'             => '0-500',
             'avg_groups'            => '0-500',
-            'ldap_enabled'          => true,
+            'ldap_enabled'          => false,
             'mailcollector_enabled' => false,
             'notifications_modes'   => [],
          ]
@@ -82,25 +82,15 @@ class Telemetry extends DbTestCase {
       ];
       $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
+      //enable ldap server
       $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
-
-      $expected['usage']['ldap_enabled'] = true;
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
-
-      $this->boolean($ldap->update([
-         'id'        => $ldap->getID(),
-         'is_active' => false
-      ]))->isTrue();
-
-      $expected['usage']['ldap_enabled'] = false;
-      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
-
-      //re-enable ldap server
       $this->boolean($ldap->update([
          'id'        => $ldap->getID(),
          'is_active' => true
       ]))->isTrue();
+
       $expected['usage']['ldap_enabled'] = true;
+      $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
 
       $groups = new \Group();
       for ($i = 0; $i < 501; $i++) {
