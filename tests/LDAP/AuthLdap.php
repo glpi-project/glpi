@@ -844,4 +844,229 @@ class AuthLDAP extends DbTestCase {
          'ssovariables_id' => $config_values['ssovariables_id']
       ]);
    }
+
+   public function testSyncLongDN() {
+      $ldap = $this->ldap;
+
+      $ldap_con = $ldap->connect();
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'ou'          => 'andyetanotheronetogetaveryhugednidentifier',
+               'objectClass'  => [
+                  'organizationalUnit'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'ou'          => 'andyetanotherlongstring',
+               'objectClass'  => [
+                  'organizationalUnit'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'ou'          => 'anotherlongstringtocheckforsynchronization',
+               'objectClass'  => [
+                  'organizationalUnit'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'ou'          => 'averylongstring',
+               'objectClass'  => [
+                  'organizationalUnit'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      //add a new user in directory
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'uid'          => 'verylongdn',
+               'sn'           => 'A SN',
+               'cn'           => 'A CN',
+               'userpassword' => 'password',
+               'objectClass'  => [
+                  'top',
+                  'inetOrgPerson'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      $import = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'verylongdn'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('verylongdn')
+         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org');
+
+      $this->boolean(
+         ldap_modify(
+            $ldap->connect(),
+            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['telephoneNumber' => '+33102020202']
+         )
+      )->isTrue();
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
+         ->variable['id']->isEqualTo($user->getID());
+
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('verylongdn')
+         ->string['phone']->isIdenticalTo('+33102020202')
+         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org');
+
+      //drop test user
+      $this->boolean(
+         ldap_delete(
+            $ldap->connect(),
+            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=ldap3,dc=glpi,dc=org'
+         )
+      )->isTrue();
+   }
+
+   public function testSyncLongDNiCyrillic() {
+      $ldap = $this->ldap;
+
+      $ldap_con = $ldap->connect();
+
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org',
+            [
+               'ou'          => 'Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123',
+               'objectClass'  => [
+                  'organizationalUnit'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org',
+            [
+               'ou'          => 'Отдел Тест',
+               'objectClass'  => [
+                  'organizationalUnit'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      //add a new user in directory
+      $this->boolean(
+         ldap_add(
+            $ldap_con,
+            'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org',
+            [
+               'uid'          => 'Тестов Тест Тестович',
+               'sn'           => 'A SN',
+               'cn'           => 'A CN',
+               'userpassword' => 'password',
+               'objectClass'  => [
+                  'top',
+                  'inetOrgPerson'
+               ]
+            ]
+         )
+      )->isTrue(ldap_error($ldap_con));
+
+      $import = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'Тестов Тест Тестович'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('Тестов Тест Тестович')
+         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,dc=glpi,dc=org');
+
+      $this->boolean(
+         ldap_modify(
+            $ldap->connect(),
+            'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,dc=glpi,dc=org',
+            ['telephoneNumber' => '+33103030303']
+         )
+      )->isTrue();
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
+         ->variable['id']->isEqualTo($user->getID());
+
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('Тестов Тест Тестович')
+         ->string['phone']->isIdenticalTo('+33103030303')
+         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,dc=glpi,dc=org');
+
+      //drop test user
+      $this->boolean(
+         ldap_delete(
+            $ldap->connect(),
+            'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=ldap3,DC=glpi,DC=org'
+         )
+      )->isTrue();
+   }
 }

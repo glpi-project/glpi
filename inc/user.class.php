@@ -3027,7 +3027,7 @@ class User extends CommonDBTM {
          'field'              => 'user_dn',
          'name'               => __('User DN'),
          'massiveaction'      => false,
-         'datatype'           => 'string'
+         'datatype'           => 'text'
       ];
 
       $tab[] = [
