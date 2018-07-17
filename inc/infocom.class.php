@@ -1014,7 +1014,7 @@ class Infocom extends CommonDBChild {
          }
 
          if (!strpos($_SERVER['PHP_SELF'], "infocoms-show")
-             && in_array($item->getType(), ['CartridgeItem', 'ConsumableItem', 'Software'])) {
+             && in_array($item->getType(), self::getExcludedTypes())) {
             echo "<div class='firstbloc center'>".
                   __('For this type of item, the financial and administrative information are only a model for the items which you should add.').
                  "</div>";
@@ -1120,7 +1120,7 @@ class Infocom extends CommonDBChild {
             $tplmark = '';
             if ($item->isTemplate()
                 || in_array($item->getType(),
-                            ['CartridgeItem', 'ConsumableItem', 'Software'])) {
+                            self::getExcludedTypes())) {
                $tplmark = $item->getAutofillMark('immo_number', ['withtemplate' => $withtemplate], $ic->getField('immo_number'));
             }
             echo "<td>".sprintf(__('%1$s%2$s'), __('Immobilization number'), $tplmark)."</td>";
@@ -1189,8 +1189,8 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            if (!in_array($item->getType(), ['Cartridge', 'CartridgeItem', 'Consumable',
-                                                  'ConsumableItem', 'Software',
+            if (!in_array($item->getType(), self::getExcludedTypes() + [
+                                                  'Cartridge', 'Consumable',
                                                   'SoftwareLicense'])) {
                echo "<td>".__('TCO (value + tracking cost)')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
@@ -1198,8 +1198,8 @@ class Infocom extends CommonDBChild {
                 echo "<td colspan='2'>";
             }
             echo "</td>";
-            if (!in_array($item->getType(), ['Cartridge', 'CartridgeItem', 'Consumable',
-                                                  'ConsumableItem', 'Software',
+            if (!in_array($item->getType(), self::getExcludedTypes() + [
+                                                  'Cartridge', 'Consumable',
                                                   'SoftwareLicense'])) {
                echo "<td>".__('Monthly TCO')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"],
