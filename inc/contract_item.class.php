@@ -208,8 +208,10 @@ class Contract_Item extends CommonDBRelation{
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                $itemt->getTable() => [
-                  self::getTable()     => 'items_id',
-                  $itemt->getTable()   => 'id'
+                  'FKEY' => [
+                     self::getTable()     => 'items_id',
+                     $itemt->getTable()   => 'id'
+                  ]
                ]
             ],
             'WHERE'     => [
