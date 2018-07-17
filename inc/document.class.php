@@ -625,14 +625,15 @@ class Document extends CommonDBTM {
             $job = new Ticket();
 
             if ($job->can($options["tickets_id"], READ)) {
-               $query = "SELECT *
-                         FROM `glpi_documents_items`
-                         WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
-                               AND `glpi_documents_items`.`itemtype` = 'Ticket'
-                               AND `documents_id`='".$this->fields["id"]."'";
-
-               $result = $DB->query($query);
-               if ($DB->numrows($result) > 0) {
+               $iterator = $DB->request([
+                  'FROM'   => 'glpi_documents_items',
+                  'WHERE'  => [
+                     'items_id'        => $options["tickets_id"],
+                     'itemtype'        => 'Ticket',
+                     'documents_id'   => $this->fields["id"]
+                  ]
+               ]);
+               if (count($iterator)) {
                   return true;
                }
             }
@@ -682,14 +683,16 @@ class Document extends CommonDBTM {
             $job = new Ticket();
 
             if ($job->can($options["tickets_id"], READ)) {
-               $query = "SELECT *
-                         FROM `glpi_documents_items`
-                         WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
-                               AND `glpi_documents_items`.`itemtype` = 'Ticket'
-                               AND `documents_id` = '".$this->fields["id"]."'";
+               $iterator = $DB->request([
+                  'FROM'   => 'glpi_documents_items',
+                  'WHERE'  => [
+                     'items_id'        => $options["tickets_id"],
+                     'itemtype'        => 'Ticket',
+                     'documents_id'   => $this->fields["id"]
+                  ]
+               ]);
 
-               $result = $DB->query($query);
-               if ($DB->numrows($result) > 0) {
+               if (count($iterator)) {
                   return true;
                }
 
@@ -1308,23 +1311,28 @@ class Document extends CommonDBTM {
       $splitter = explode(".", $filename);
       $ext      = end($splitter);
 
-      $query="SELECT *
-              FROM `glpi_documenttypes`
-              WHERE `ext` LIKE '$ext'
-                    AND `is_uploadable`='1'";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_documenttypes',
+         'WHERE'  => [
+            'ext'             => ['LIKE', $ext],
+            'is_uploadable'   => 1
+         ]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            return Toolbox::strtoupper($ext);
-         }
+      if (count($iterator)) {
+         return Toolbox::strtoupper($ext);
       }
-      // Not found try with regex one
-      $query = "SELECT *
-                FROM `glpi_documenttypes`
-                WHERE `ext` LIKE '/%/'
-                      AND `is_uploadable` = 1";
 
-      foreach ($DB->request($query) as $data) {
+      // Not found try with regex one
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_documenttypes',
+         'WHERE'  => [
+            'ext'             => ['LIKE', '/%/'],
+            'is_uploadable'   => 1
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          if (preg_match(Toolbox::unclean_cross_side_scripting_deep($data['ext'])."i",
                         $ext, $results) > 0) {
             return Toolbox::strtoupper($ext);

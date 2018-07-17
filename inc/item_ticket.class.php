@@ -398,13 +398,8 @@ class Item_Ticket extends CommonDBRelation{
       $canedit = $ticket->canAddItem($instID);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_items_tickets`
-                WHERE `glpi_items_tickets`.`tickets_id` = '$instID'
-                ORDER BY `itemtype`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = self::getDistinctTypes($instID);
+      $number = count($types_iterator);
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -475,41 +470,18 @@ class Item_Ticket extends CommonDBRelation{
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      for ($i=0; $i<$number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($row = $types_iterator->next()) {
+         $itemtype = $row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
 
          if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-            $itemtable = getTableForItemType($itemtype);
-            $query = "SELECT `$itemtable`.*,
-                             `glpi_items_tickets`.`id` AS IDD,
-                             `glpi_entities`.`id` AS entity
-                      FROM `glpi_items_tickets`,
-                           `$itemtable`";
+            $iterator = self::getTypeItems($instID, $itemtype);
+            $nb = count($iterator);
 
-            if ($itemtype != 'Entity') {
-               $query .= " LEFT JOIN `glpi_entities`
-                                 ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
-            }
-
-            $query .= " WHERE `$itemtable`.`id` = `glpi_items_tickets`.`items_id`
-                              AND `glpi_items_tickets`.`itemtype` = '$itemtype'
-                              AND `glpi_items_tickets`.`tickets_id` = '$instID'";
-
-            if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = 0";
-            }
-
-            $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
-                                                 $item->maybeRecursive())."
-                      ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
-
-            $result_linked = $DB->query($query);
-            $nb            = $DB->numrows($result_linked);
-
-            for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
+            $prem = true;
+            while ($data = $iterator->next()) {
                $name = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
@@ -525,13 +497,14 @@ class Item_Ticket extends CommonDBRelation{
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td width='10'>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                   echo "</td>";
                }
                if ($prem) {
                   $typename = $item->getTypeName($nb);
                   echo "<td class='center top' rowspan='$nb'>".
                          (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename)."</td>";
+                  $prem = false;
                }
                echo "<td class='center'>";
                echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
