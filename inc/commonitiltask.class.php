@@ -983,9 +983,11 @@ abstract class CommonITILTask  extends CommonDBTM {
          $addrestrict = 'AND `'.$parentitem->getTable().'`.`is_deleted` = 0 ';
       }
 
-      $addrestrict .= "AND NOT `" . $parentitem->getTable() . "`.`status` IN 
-                     ('" . implode("', '", array_merge($parentitem->getSolvedStatusArray(),
-                                                       $parentitem->getClosedStatusArray())) . "')";
+      if (!$options['display_done_events']) {
+         $addrestrict .= "AND NOT `" . $parentitem->getTable() . "`.`status` IN
+                        ('" . implode("', '", array_merge($parentitem->getSolvedStatusArray(),
+                                                          $parentitem->getClosedStatusArray())) . "')";
+      }
 
       $query = "SELECT `".$item->getTable()."`.*
                 FROM `".$item->getTable()."`
