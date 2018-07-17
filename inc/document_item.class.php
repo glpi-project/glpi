@@ -217,7 +217,7 @@ class Document_Item extends CommonDBRelation{
       switch ($item->getType()) {
          case 'Document' :
             $ong = [];
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
                $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
                $nbitem = self::countForMainItem($item, ['itemtype' => 'Document']);
             }
