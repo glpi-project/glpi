@@ -1524,14 +1524,15 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item    Item instance
-    * @param boolean    $inverse Get the inverse relation
-    * @param boolean    $noent   Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param CommonDBTM $item  Item instance
+    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
     *
     * @return array
     */
-   protected static function getListForItemParams(CommonDBTM $item, $inverse = false, $noent = false) {
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
       global $DB;
+
+      $inverse = $item->getType() == static::$itemtype_1;
 
       $link_type  = static::$itemtype_1;
       $link_id    = static::$items_id_1;
@@ -1587,15 +1588,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item    Item instance
-    * @param boolean    $inverse Get the inverse relation
+    * @param CommonDBTM $item Item instance
     *
     * @return DBmysqlIterator
     */
-   public static function getListForItem(CommonDBTM $item, $inverse = false) {
+   public static function getListForItem(CommonDBTM $item) {
       global $DB;
 
-      $params = static::getListForItemParams($item, $inverse);
+      $params = static::getListForItemParams($item);
       $iterator = $DB->request($params);
 
       return $iterator;
@@ -1741,9 +1741,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static function countForItem(CommonDBTM $item) {
       global $DB;
 
-      $inverse = $item->getType() == static::$itemtype_1;
-
-      $params = static::getListForItemParams($item, $inverse);
+      $params = static::getListForItemParams($item);
       unset($params['SELECT']);
       $params['COUNT'] = 'cpt';
       $iterator = $DB->request($params);
