@@ -276,7 +276,12 @@ abstract class CommonDBVisible extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  Html::showMassiveActionCheckBox('Profile_' . $this::getType(), $data["id"]);
+                  //Knowledgebase-specific case
+                  if ($this::getType() === "KnowbaseItem") {
+                     Html::showMassiveActionCheckBox($this::getType() . '_Profile', $data["id"]);
+                  } else {
+                     Html::showMassiveActionCheckBox('Profile_' . $this::getType(), $data["id"]);
+                  }
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
