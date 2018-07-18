@@ -216,12 +216,13 @@ class Group_User extends CommonDBRelation{
 
       $rand    = mt_rand();
 
-      $groups  = self::getUserGroups($ID);
+      $iterator = self::getListForItem($user);
+      $groups = [];
+      //$groups  = self::getUserGroups($ID);
       $used    = [];
-      if (!empty($groups)) {
-         foreach ($groups as $data) {
-            $used[$data["id"]] = $data["id"];
-         }
+      while ($data = $iterator->next()) {
+         $used[$data["id"]] = $data["id"];
+         $groups[] = $data;
       }
 
       if ($canedit) {
@@ -300,7 +301,7 @@ class Group_User extends CommonDBRelation{
 
             if ($canedit && count($used)) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
             echo "<td>".$group->getLink()."</td>";
@@ -484,6 +485,7 @@ class Group_User extends CommonDBRelation{
       $ids     = [];
 
       // Retrieve member list
+      // TODO: migrate to use CommonDBRelation::getListForItem()
       $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree);
 
       if ($canedit) {
@@ -758,8 +760,7 @@ class Group_User extends CommonDBRelation{
             case 'User' :
                if (Group::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = countElementsInTable($this->getTable(),
-                                               ['users_id' => $item->getID()]);
+                     $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -768,8 +769,7 @@ class Group_User extends CommonDBRelation{
             case 'Group' :
                if (User::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = countElementsInTable("glpi_groups_users",
-                                               ['groups_id' => $item->getID()]);
+                     $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -794,5 +794,20 @@ class Group_User extends CommonDBRelation{
       return true;
    }
 
-
+   /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item  Item instance
+    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    *
+    * @return array
+    */
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
+      $params = parent::getListForItemParams($item, $noent);
+      $params['SELECT'][] = self::getTable() . '.is_manager';
+      $params['SELECT'][] = self::getTable() . '.is_userdelegate';
+      return $params;
+   }
 }
