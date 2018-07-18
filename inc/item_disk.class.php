@@ -281,8 +281,7 @@ class Item_Disk extends CommonDBChild {
          ],
          'WHERE'     => [
             'itemtype'     => $itemtype,
-            'items_id'     => $ID,
-            'is_deleted'   => 0
+            'items_id'     => $ID
          ]
       ]);
 
@@ -318,7 +317,7 @@ class Item_Disk extends CommonDBChild {
          $disk = new self();
          while ($data = $iterator->next()) {
             $disk->getFromResultSet($data);
-            echo "<tr class='tab_bg_2'>";
+            echo "<tr class='tab_bg_2" .(isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'")."'>";
             echo "<td>".$disk->getLink()."</td>";
             if (Plugin::haveImport()) {
                echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
