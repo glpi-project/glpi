@@ -1564,6 +1564,16 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          'ORDER'     => $link_table . '.name'
       ];
 
+      $rel_class = static::class;
+      $rel = new $rel_class();
+      if ($rel->maybeDynamic()) {
+         $params['SELECT'][] = static::getTable() . '.is_dynamic';
+      }
+
+      if ($rel->maybeRecursive()) {
+         $params['SELECT'][] = static::getTable() . '.is_recursive';
+      }
+
       if ($DB->fieldExists(static::getTable(), 'itemtype')) {
          $params['WHERE'][static::getTable() . '.itemtype'] = $item->getType();
       }
