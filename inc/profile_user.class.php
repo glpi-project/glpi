@@ -150,22 +150,8 @@ class Profile_User extends CommonDBRelation {
          echo "</div>";
       }
 
-      $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,
-                       `glpi_profiles`.`id`,
-                       `glpi_profiles`.`name`,
-                       `glpi_profiles_users`.`is_recursive`,
-                       `glpi_profiles_users`.`is_dynamic`,
-                       `glpi_entities`.`completename`,
-                       `glpi_profiles_users`.`entities_id`
-                FROM `glpi_profiles_users`
-                LEFT JOIN `glpi_profiles`
-                     ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
-                LEFT JOIN `glpi_entities`
-                     ON (`glpi_profiles_users`.`entities_id` = `glpi_entities`.`id`)
-                WHERE `glpi_profiles_users`.`users_id` = '$ID'
-                ORDER BY `glpi_profiles`.`name`, `glpi_entities`.`completename`";
-      $result = $DB->query($query);
-      $num    = $DB->numrows($result);
+      $iterator = self::getListForItem($user);
+      $num = count($iterator);
 
       echo "<div class='spaced'>";
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -194,12 +180,12 @@ class Profile_User extends CommonDBRelation {
          $header_end .= "</th></tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
                if (in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                } else {
                   echo "&nbsp;";
                }
@@ -967,10 +953,23 @@ class Profile_User extends CommonDBRelation {
             case 'Entity' :
                if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $query_nb.= "AND `glpi_profiles_users`.`entities_id` = '".$item->getID()."'";
-                     $result_nb = $DB->query($query_nb);
-                     $data_nb   = $DB->fetch_assoc($result_nb);
-                     $nb        = $data_nb['cpt'];
+                     $count = $DB->request([
+                        'COUNT'     => 'cpt',
+                        'FROM'      => $this->getTable(),
+                        'LEFT JOIN' => [
+                           User::getTable() => [
+                              'FKEY' => [
+                                 $this->getTable() => 'users_id',
+                                 User::getTable()  => 'id'
+                              ]
+                           ]
+                        ],
+                        'WHERE'     => [
+                           User::getTable() . '.is_deleted'    => 0,
+                           $this->getTable() . '.entities_id'  => $item->getID()
+                        ]
+                     ])->next();
+                     $nb        = $count['cpt'];
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -979,15 +978,7 @@ class Profile_User extends CommonDBRelation {
             case 'Profile' :
                if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $query_nb.= "AND `glpi_profiles_users`.`profiles_id` = '".$item->getID()."'".
-                                       getEntitiesRestrictRequest('AND',
-                                                                  'glpi_profiles_users',
-                                                                  'entities_id',
-                                                                  $_SESSION['glpiactiveentities'],
-                                                                  true);
-                     $result_nb = $DB->query($query_nb);
-                     $data_nb   = $DB->fetch_assoc($result_nb);
-                     $nb        = $data_nb['cpt'];
+                     $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -995,8 +986,7 @@ class Profile_User extends CommonDBRelation {
 
             case 'User' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                             ['users_id' => $item->getID()]);
+                  $nb = self::countForItem($item);
                }
                return self::createTabEntry(_n('Authorization', 'Authorizations',
                                            Session::getPluralNumber()), $nb);
@@ -1077,4 +1067,27 @@ class Profile_User extends CommonDBRelation {
       return $result;
    }
 
+   /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item  Item instance
+    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    *
+    * @return array
+    */
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
+      $params = parent::getListForItemParams($item, $noent);
+      $params['SELECT'][] = self::getTable() . '.entities_id';
+      $params['SELECT'][] = self::getTable() . '.is_recursive';
+      $params['SELECT'][] = 'glpi_entities.completename AS completename';
+      $params['LEFT JOIN']['glpi_entities'] = [
+         'FKEY'   => [
+            self::getTable()  => 'entities_id',
+            'glpi_entities'   => 'id'
+         ]
+      ];
+      return $params;
+   }
 }

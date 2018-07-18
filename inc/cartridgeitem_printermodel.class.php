@@ -101,25 +101,16 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       $canedit = $item->canEdit($instID);
       $rand    = mt_rand();
 
-      $query = "SELECT `".static::getTable()."`.`id`,
-                       `glpi_printermodels`.`name` AS `type`,
-                       `glpi_printermodels`.`id` AS `pmid`
-                FROM `".static::getTable()."`,
-                     `glpi_printermodels`
-                WHERE `".static::getTable()."`.`printermodels_id` = `glpi_printermodels`.`id`
-                      AND `".static::getTable()."`.`cartridgeitems_id` = '$instID'
-                ORDER BY `glpi_printermodels`.`name`";
+      $iterator = self::getListForItem($item);
+      $number = count($iterator);
 
-      $result = $DB->query($query);
       $i      = 0;
 
       $used  = [];
       $datas = [];
-      if ($number = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $used[$data["pmid"]] = $data["pmid"];
-            $datas[$data["id"]]  = $data;
-         }
+      while ($data = $iterator->next()) {
+         $used[$data["id"]] = $data["id"];
+         $datas[$data["linkid"]]  = $data;
       }
 
       if ($canedit) {
@@ -170,7 +161,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
             $opt = [
@@ -179,12 +170,12 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                   [
                      'field'      => 40, // printer model
                      'searchtype' => 'equals',
-                     'value'      => $data["pmid"],
+                     'value'      => $data["id"],
                   ]
                ]
             ];
             $url = Printer::getSearchURL()."?".Toolbox::append_params($opt, '&amp;');
-            echo "<td class='center'><a href='".$url."'>".$data["type"]."</a></td>";
+            echo "<td class='center'><a href='".$url."'>".$data["name"]."</a></td>";
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
