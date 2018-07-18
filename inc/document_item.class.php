@@ -959,18 +959,17 @@ class Document_Item extends CommonDBRelation{
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item    Item instance
-    * @param boolean    $inverse Get the inverse relation
-    * @param boolean    $noent   Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param CommonDBTM $item  Item instance
+    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
     *
     * @return array
     */
-   protected static function getListForItemParams(CommonDBTM $item, $inverse = false, $noent = false) {
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
 
       if (Session::getLoginUserID()) {
-         $params = parent::getListForItemParams($item, $inverse);
+         $params = parent::getListForItemParams($item);
       } else {
-         $params = parent::getListForItemParams($item, $inverse, true);
+         $params = parent::getListForItemParams($item, true);
          // Anonymous access from FAQ
          $params['WHERE'][self::getTable() . '.entities_id'] = 0;
       }

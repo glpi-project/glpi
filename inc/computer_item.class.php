@@ -866,14 +866,13 @@ class Computer_Item extends CommonDBRelation{
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item    Item instance
-    * @param boolean    $inverse Get the inverse relation
-    * @param boolean    $noent   Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param CommonDBTM $item  Item instance
+    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
     *
     * @return array
     */
-   protected static function getListForItemParams(CommonDBTM $item, $inverse = false, $noent = false) {
-      $params = parent::getListForItemParams($item, $inverse);
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
+      $params = parent::getListForItemParams($item, $noent);
       $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
       return $params;
    }

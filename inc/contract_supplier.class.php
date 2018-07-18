@@ -248,7 +248,7 @@ class Contract_Supplier extends CommonDBRelation {
       $canedit = $contract->can($instID, UPDATE);
       $rand    = mt_rand();
 
-      $iterator = self::getListForItem($contract, true);
+      $iterator = self::getListForItem($contract);
       $number = count($iterator);
 
       $suppliers = [];
