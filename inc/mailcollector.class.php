@@ -761,7 +761,7 @@ class MailCollector  extends CommonDBTM {
       $tkt['_mailgate']    = $options['mailgates_id'];
 
       // Use mail date if it's defined
-      if ($this->fields['use_mail_date']) {
+      if ($this->fields['use_mail_date'] && isset($head['date'])) {
          $tkt['date'] = $head['date'];
       }
       // Detect if it is a mail reply
