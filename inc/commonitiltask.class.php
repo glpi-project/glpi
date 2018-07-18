@@ -1821,6 +1821,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       } else {
          $prep_req['WHERE'][self::getTable() . '.users_id_tech'] = $_SESSION['glpiID'];
       }
+
+      $prep_req['WHERE'] += getEntitiesRestrictCriteria($fk_table);
+
       $prep_req['ORDER'] = [self::getTable() . '.date_mod DESC'];
 
       if ($start !== null) {
