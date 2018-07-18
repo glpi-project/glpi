@@ -150,7 +150,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
       $canedit = $projecttask->canEdit($ID);
       $rand    = mt_rand();
 
-      $iterator = self::getListForItem($projecttask, true);
+      $iterator = self::getListForItem($projecttask);
       $numrows = count($iterator);
 
       $tickets = [];

@@ -111,7 +111,7 @@ class Contact_Supplier extends CommonDBRelation{
       $canedit = $contact->can($instID, UPDATE);
       $rand = mt_rand();
 
-      $iterator = self::getListForItem($contact, true);
+      $iterator = self::getListForItem($contact);
       $number = count($iterator);
 
       $suppliers = [];
