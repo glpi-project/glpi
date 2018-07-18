@@ -175,9 +175,22 @@ class DBmysqlIterator implements Iterator, Countable {
                      break;
 
                   case 'LEFT JOIN' :
+                  case 'RIGHT JOIN' :
                   case 'INNER JOIN' :
                      if (is_array($val)) {
-                        $jointype = ($key == 'INNER JOIN' ? 'INNER' : 'LEFT');
+                        $jointype = null;
+                        switch ($key) {
+                           case 'JOIN':
+                           case 'LEFT JOIN':
+                              $jointype = 'LEFT';
+                              break;
+                           case 'INNER JOIN':
+                              $jointype = 'INNER';
+                              break;
+                           case 'RIGHT JOIN':
+                              $jointype = 'RIGHT';
+                              break;
+                        }
                         foreach ($val as $jointable => $joincrit) {
                            $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
                         }
@@ -198,17 +211,8 @@ class DBmysqlIterator implements Iterator, Countable {
 
          if (is_array($field)) {
             foreach ($field as $t => $f) {
-               if (is_numeric($t)) {
-                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . DBmysql::quoteName($f);
-               } else if (is_array($f)) {
-                  $t = DBmysql::quoteName($t);
-                  $f = array_map([DBmysql::class, 'quoteName'], $f);
-                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.", $f);
-               } else {
-                  $t = DBmysql::quoteName($t);
-                  $f = ($f == '*' ? $f : DBmysql::quoteName($f));
-                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
-               }
+               $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ');
+               $this->sql .= $this->handleFields($t, $f);
             }
          } else if (empty($field) && !$count) {
             $this->sql = "SELECT *";
@@ -312,6 +316,45 @@ class DBmysqlIterator implements Iterator, Countable {
 
 
    /**
+    * Handle fields
+    *
+    * @param array $field Fields to process
+    *
+    * @return void
+    */
+   private function handleFields($t, $f) {
+      if (is_numeric($t)) {
+         return DBmysql::quoteName($f);
+      } else {
+         switch ($t) {
+            case 'COUNT':
+            case 'SUM':
+            case 'AVG':
+            case 'MAX':
+            case 'MIN':
+               $names = preg_split('/ AS /i', $f);
+               $expr = "$t(".$this->handleFields(0, $names[0]).")";
+               if (isset($names[1])) {
+                  $expr .= " AS {$names[1]}";
+               }
+               return $expr;
+               break;
+            default:
+               if (is_array($f)) {
+                  $t = DBmysql::quoteName($t);
+                  $f = array_map([DBmysql::class, 'quoteName'], $f);
+                  return "$t." . implode(", $t.", $f);
+               } else {
+                  $t = DBmysql::quoteName($t);
+                  $f = ($f == '*' ? $f : DBmysql::quoteName($f));
+                  return "$t.$f";
+               }
+               break;
+         }
+      }
+   }
+
+   /**
     * Retrieve the SQL statement
     *
     * @since 9.1
@@ -367,7 +410,7 @@ class DBmysqlIterator implements Iterator, Countable {
             // Uninary logicial operator
             $ret .= " NOT (" . $this->analyseCrit($value, "AND") . ")";
 
-         } else if ($name === "FKEY") {
+         } else if ($name === "FKEY" || $name === 'ON') {
             // Foreign Key condition
             if (is_array($value) && (count($value) == 2)) {
                $keys = array_keys($value);
