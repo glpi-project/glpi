@@ -265,80 +265,90 @@ class Item_Disk extends CommonDBChild {
 
       echo "<div class='center'>";
 
-      $query = "SELECT `glpi_filesystems`.`name` AS fsname,
-                       `glpi_items_disks`.*
-                FROM `glpi_items_disks`
-                LEFT JOIN `glpi_filesystems`
-                          ON (`glpi_items_disks`.`filesystems_id` = `glpi_filesystems`.`id`)
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '$itemtype'
-                      AND `is_deleted` = 0";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            FileSystem::getTable() . '.name AS fsname',
+            self::getTable() . '.*'
+         ],
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            FileSystem::getTable() => [
+               'FKEY' => [
+                  self::getTable()        => 'filesystems_id',
+                  FileSystem::getTable()  => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'itemtype'     => $itemtype,
+            'items_id'     => $ID,
+            'is_deleted'   => 0
+         ]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         echo "<table class='tab_cadre_fixehov'>";
-         $colspan = 7;
-         if (Plugin::haveImport()) {
-            $colspan++;
-         }
-         echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($DB->numrows($result)).
-              "</th></tr>";
-
-         if ($DB->numrows($result)) {
-
-            $header = "<tr><th>".__('Name')."</th>";
-            if (Plugin::haveImport()) {
-               $header .= "<th>".__('Automatic inventory')."</th>";
-            }
-            $header .= "<th>".__('Partition')."</th>";
-            $header .= "<th>".__('Mount point')."</th>";
-            $header .= "<th>".__('File system')."</th>";
-            $header .= "<th>".__('Global size')."</th>";
-            $header .= "<th>".__('Free size')."</th>";
-            $header .= "<th>".__('Free percentage')."</th>";
-            $header .= "</tr>";
-            echo $header;
-
-            Session::initNavigateListItems(__CLASS__,
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'),
-                                                   $item::getTypeName(1), $item->getName()));
-
-            $disk = new self();
-            while ($data = $DB->fetch_assoc($result)) {
-               $disk->getFromDB($data['id']);
-               echo "<tr class='tab_bg_2'>";
-               echo "<td>".$disk->getLink()."</td>";
-               if (Plugin::haveImport()) {
-                  echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-               }
-               echo "<td>".$data['device']."</td>";
-               echo "<td>".$data['mountpoint']."</td>";
-               echo "<td>".$data['fsname']."</td>";
-               //TRANS: %s is a size
-               $tmp = Toolbox::getSize($data['totalsize'] * 1024 * 1024);
-               echo "<td class='right'>$tmp<span class='small_space'></span></td>";
-               $tmp = Toolbox::getSize($data['freesize'] * 1024 * 1024);
-               echo "<td class='right'>$tmp<span class='small_space'></span></td>";
-               echo "<td>";
-               $percent = 0;
-               if ($data['totalsize'] > 0) {
-                  $percent = round(100*$data['freesize']/$data['totalsize']);
-               }
-               Html::displayProgressBar('100', $percent, ['simple'       => true,
-                                                               'forcepadding' => false]);
-               echo "</td>";
-               echo "</tr>";
-               Session::addToNavigateListItems(__CLASS__, $data['id']);
-            }
-            echo $header;
-         } else {
-            echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
-         }
-
-         echo "</table>";
+      echo "<table class='tab_cadre_fixehov'>";
+      $colspan = 7;
+      if (Plugin::haveImport()) {
+         $colspan++;
       }
-      echo "</div><br>";
+      echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName(count($iterator)).
+            "</th></tr>";
+
+      if (count($iterator)) {
+
+         $header = "<tr><th>".__('Name')."</th>";
+         if (Plugin::haveImport()) {
+            $header .= "<th>".__('Automatic inventory')."</th>";
+         }
+         $header .= "<th>".__('Partition')."</th>";
+         $header .= "<th>".__('Mount point')."</th>";
+         $header .= "<th>".__('File system')."</th>";
+         $header .= "<th>".__('Global size')."</th>";
+         $header .= "<th>".__('Free size')."</th>";
+         $header .= "<th>".__('Free percentage')."</th>";
+         $header .= "</tr>";
+         echo $header;
+
+         Session::initNavigateListItems(__CLASS__,
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
+                                          sprintf(__('%1$s = %2$s'),
+                                                $item::getTypeName(1), $item->getName()));
+
+         $disk = new self();
+         while ($data = $iterator->next()) {
+            $disk->getFromResultSet($data);
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>".$disk->getLink()."</td>";
+            if (Plugin::haveImport()) {
+               echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
+            }
+            echo "<td>".$data['device']."</td>";
+            echo "<td>".$data['mountpoint']."</td>";
+            echo "<td>".$data['fsname']."</td>";
+            //TRANS: %s is a size
+            $tmp = Toolbox::getSize($data['totalsize'] * 1024 * 1024);
+            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            $tmp = Toolbox::getSize($data['freesize'] * 1024 * 1024);
+            echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+            echo "<td>";
+            $percent = 0;
+            if ($data['totalsize'] > 0) {
+               $percent = round(100*$data['freesize']/$data['totalsize']);
+            }
+            Html::displayProgressBar('100', $percent, ['simple'       => true,
+                                                            'forcepadding' => false]);
+            echo "</td>";
+            echo "</tr>";
+            Session::addToNavigateListItems(__CLASS__, $data['id']);
+         }
+         echo $header;
+      } else {
+         echo "<tr class='tab_bg_2'><th colspan='$colspan'>".__('No item found')."</th></tr>";
+      }
+
+      echo "</table>";
+      echo "</div>";
    }
 
 }
