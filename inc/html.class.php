@@ -3524,6 +3524,10 @@ class Html {
 
       // init tinymce
       $js = "$(function() {
+         // additional plugins
+         tinymce.PluginManager.load('stickytoolbar','".$CFG_GLPI['root_doc'].
+                                    "/lib/tiny_mce/custom_plugins/stickytoolbar/plugin.js');
+         // init editor
          tinyMCE.init({
             language: '$language',
             browser_spellcheck: true,
@@ -3573,7 +3577,7 @@ class Html {
             plugins: [
                'table directionality searchreplace',
                'tabfocus autoresize link image paste',
-               'code fullscreen',
+               'code fullscreen stickytoolbar',
                'textcolor colorpicker',
                // load glpi_upload_doc specific plugin if we need to upload files
                typeof tinymce.AddOnManager.PluginManager.lookup.glpi_upload_doc != 'undefined'
@@ -3581,9 +3585,15 @@ class Html {
                   : '',
                'lists'
             ],
-            autoresize_max_height: 500,
             toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
             $readonlyjs
+         });
+
+         // set sticky for split view
+         $('.layout_vsplit .main_form, .layout_vsplit .ui-tabs-panel').scroll(function(event) {
+            var editor = tinyMCE.get('$name');
+            editor.settings.sticky_offset = $(event.target).offset().top;
+            editor.setSticky();
          });
       });";
 
@@ -5664,7 +5674,7 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
             break;
          case 'tinymce':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/lib/tinymce.js';
             break;
          case 'fullcalendar':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/moment.min.js';
