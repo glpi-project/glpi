@@ -1398,7 +1398,11 @@ class User extends CommonDBTM {
 
                   unset($v[$i][$field]['count']);
                   foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
-                     $lgroups[] = ['ldap_value' => $lgroup];
+                     $lgroups[] = [
+                        new \QueryExpression($DB::quoteValue($lgroup).
+                                             " LIKE ".
+                                             $DB::quoteName('ldap_value'))
+                     ];
                   }
                   $group_iterator = $DB->request([
                      'SELECT' => 'id',

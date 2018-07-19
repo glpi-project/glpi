@@ -434,8 +434,13 @@ class DBmysqlIterator implements Iterator, Countable {
             $ret .= " $bool ";
          }
          if (is_numeric($name)) {
-            // No Key case => recurse.
-            $ret .= "(" . $this->analyseCrit($value, $bool) . ")";
+            // no key and direct expression
+            if ($value instanceof QueryExpression) {
+               $ret .= $value->getValue();
+            } else {
+               // No Key case => recurse.
+               $ret .= "(" . $this->analyseCrit($value, $bool) . ")";
+            }
 
          } else if (($name === "OR") || ($name === "AND")) {
             // Binary logical operator
