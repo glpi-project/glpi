@@ -318,7 +318,8 @@ class DBmysqlIterator implements Iterator, Countable {
    /**
     * Handle fields
     *
-    * @param array $field Fields to process
+    * @param integer|string $t Table name or function
+    * @param array|string   $f Field(s) name(s)
     *
     * @return void
     */
@@ -327,6 +328,18 @@ class DBmysqlIterator implements Iterator, Countable {
          return DBmysql::quoteName($f);
       } else {
          switch ($t) {
+            case 'COUNT DISTINCT':
+            case 'DISTINCT COUNT':
+               if (is_array($f)) {
+                  $sub_count = [];
+                  foreach ($f as $sub_f) {
+                     $sub_count[] = $this->handleFieldsAlias("COUNT(DISTINCT", $sub_f, ')');
+                  }
+                  return implode(", ", $sub_count);
+               } else {
+                  return $this->handleFieldsAlias("COUNT(DISTINCT", $f, ')');
+               }
+               break;
             case 'COUNT':
             case 'SUM':
             case 'AVG':
@@ -338,13 +351,8 @@ class DBmysqlIterator implements Iterator, Countable {
                      $sub_aggr[] = $this->handleFields($t, $sub_f);
                   }
                   return implode(", ", $sub_aggr);
-               } else  {
-                  $names = preg_split('/ AS /i', $f);
-                  $expr = "$t(".$this->handleFields(0, $names[0]).")";
-                  if (isset($names[1])) {
-                     $expr .= " AS {$names[1]}";
-                  }
-                  return $expr;
+               } else {
+                  return $this->handleFieldsAlias($t, $f);
                }
                break;
             default:
@@ -360,6 +368,25 @@ class DBmysqlIterator implements Iterator, Countable {
                break;
          }
       }
+   }
+
+   /**
+    * Handle alias on fields
+    *
+    * @param string $t      Function name
+    * @param string $f      Field name (with alias if any)
+    * @param string $suffix Suffix to append, defaults to ''
+    *
+    * @return string
+    */
+   private function handleFieldsAlias($t, $f, $suffix = '') {
+      $names = preg_split('/ AS /i', $f);
+      $expr  = "$t(".$this->handleFields(0, $names[0])."$suffix)";
+      if (isset($names[1])) {
+         $expr .= " AS {$names[1]}";
+      }
+
+      return $expr;
    }
 
    /**
