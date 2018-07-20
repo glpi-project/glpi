@@ -27,4 +27,7 @@ The GLPI team.
 
 
 * Your GLPI setup (you can find it in Setup > General menu, System tab) :
+```
+paste here
+```
 
