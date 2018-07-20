@@ -336,12 +336,20 @@ class DBmysqlIterator implements Iterator, Countable {
             case 'AVG':
             case 'MAX':
             case 'MIN':
-               $names = preg_split('/ AS /i', $f);
-               $expr = "$t(".$this->handleFields(0, $names[0]).")";
-               if (isset($names[1])) {
-                  $expr .= " AS {$names[1]}";
+               if (is_array($f)) {
+                  $sub_aggr = [];
+                  foreach ($f as $sub_f) {
+                     $sub_aggr[] = $this->handleFields($t, $sub_f);
+                  }
+                  return implode(", ", $sub_aggr);
+               } else  {
+                  $names = preg_split('/ AS /i', $f);
+                  $expr = "$t(".$this->handleFields(0, $names[0]).")";
+                  if (isset($names[1])) {
+                     $expr .= " AS {$names[1]}";
+                  }
+                  return $expr;
                }
-               return $expr;
                break;
             default:
                if (is_array($f)) {
