@@ -976,6 +976,15 @@ var templateResult = function(result) {
    return _elt;
 };
 
+// delay function who reinit timer on each call
+var typewatch = (function(){
+   var timer = 0;
+   return function(callback, ms){
+      clearTimeout (timer);
+      timer = setTimeout(callback, ms);
+   };
+})();
+
 /**
  * Function that renders select2 selections.
  */

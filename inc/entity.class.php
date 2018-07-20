@@ -1168,15 +1168,6 @@ class Entity extends CommonTreeDropdown {
                         searchTree();
                      });
 
-                     // delay function who reinit timer on each call
-                     var typewatch = (function(){
-                        var timer = 0;
-                        return function(callback, ms){
-                           clearTimeout (timer);
-                           timer = setTimeout(callback, ms);
-                        };
-                     })();
-
                      // autosearch on keypress (delayed and with min length)
                      $('#entsearchtext').keyup(function () {
                         var inputsearch = $(this);
@@ -1192,7 +1183,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "</script>";
 
-      echo "<div id='tree_projectcategory$rand' ></div>";
+      echo "<div id='tree_projectcategory$rand' class='entity_tree' ></div>";
       echo "</div>";
    }
 

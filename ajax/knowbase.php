@@ -31,44 +31,29 @@
  */
 
 include ('../inc/includes.php');
+Html::header_nocache();
 
-// Redirect management
-if (isset($_GET["redirect"])) {
-   Toolbox::manageRedirect($_GET["redirect"]);
+if (!$CFG_GLPI["use_public_faq"]
+    && !Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
+   exit;
 }
 
-//*******************
-// Affichage Module FAQ
-//******************
+switch ($_REQUEST['action']) {
+   case "getCategoryNode";
+      header("Content-Type: application/json; charset=UTF-8");
+      echo Knowbase::getJstreeCategoryNode((int) $_REQUEST['id']);
+      break;
 
-Session::checkFaqAccess();
-Html::requireJs('jstree');
+   case "searchNode";
+      header("Content-Type: application/json; charset=UTF-8");
+      echo json_encode(KnowbaseItemCategory::jstreeSearchNode($_REQUEST['str']));
+      break;
 
-if (Session::getLoginUserID()) {
-   Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
-} else {
-   $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
-   // Anonymous FAQ
-   Html::simpleHeader(__('FAQ'),
-                      [__('Authentication') => $CFG_GLPI['root_doc'].'/',
-                            __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php']);
+   case "getItemslist";
+      header("Content-Type: application/json; charset=UTF-8");
+      KnowbaseItem::showList([
+         'knowbaseitemcategories_id' => (int) $_REQUEST['cat_id'],
+         'start'                     => (int) $_REQUEST['start'],
+      ], 'browse');
+      break;
 }
-
-if (isset($_GET["id"])) {
-   $kb = new KnowbaseItem();
-   if ($kb->getFromDB($_GET["id"])) {
-      $kb->showFull();
-   }
-
-} else {
-   // Manage forcetab : non standard system (file name <> class name)
-   if (isset($_GET['forcetab'])) {
-      Session::setActiveTab('Knowbase', $_GET['forcetab']);
-      unset($_GET['forcetab']);
-   }
-
-   $kb = new Knowbase();
-   $kb->display($_GET);
-}
-
-Html::helpFooter();

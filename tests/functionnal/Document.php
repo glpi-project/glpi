@@ -408,6 +408,15 @@ class Document extends DbTestCase {
          )
       )->isTrue();
 
+      // faq items in mulitple entity mode need to be set in root enity +recursive to be viewed
+      $entity_kbitems = new \Entity_KnowbaseItem;
+      $ent_kb_id = $entity_kbitems->add([
+         'knowbaseitems_id' => $kbItem->getID(),
+         'entities_id'      => 0,
+         'is_recursive'     => 1,
+      ]);
+      $this->integer($ent_kb_id)->isGreaterThan(0);
+
       $this->boolean($basicDocument->canViewFile())->isFalse();
       $this->boolean($inlinedDocument->canViewFile())->isFalse();
 
@@ -433,6 +442,11 @@ class Document extends DbTestCase {
                'is_faq' => false,
             ]
          )
+      )->isTrue();
+      $this->boolean(
+         $entity_kbitems->delete([
+            'id' => $ent_kb_id
+         ])
       )->isTrue();
 
       $this->boolean($basicDocument->canViewFile())->isFalse();
