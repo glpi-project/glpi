@@ -1246,6 +1246,10 @@ class Html {
             Html::requireJs('clipboard');
          }
 
+         if (in_array('jstree', $jslibs)) {
+            Html::requireJs('jstree');
+         }
+
          if (in_array('charts', $jslibs)) {
             echo Html::css('lib/chartist-js-0.10.1/chartist.css');
             echo Html::css('css/chartists-glpi.css');
