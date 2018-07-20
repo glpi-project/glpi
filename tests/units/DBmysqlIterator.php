@@ -188,15 +188,6 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute(['foo', 'bar'], ['FIELDS' => ['foo.*']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.* FROM `foo`, `bar`');
 
-      $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => 'bar']]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) FROM `foo`');
-
-      $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => 'bar AS cpt']]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) AS cpt FROM `foo`');
-
-      $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => 'foo.baz']]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`) FROM `foo`');
-
       $it = $this->it->execute('foo', ['FIELDS' => ['SUM' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT SUM(`bar`) AS cpt FROM `foo`');
 
@@ -244,6 +235,24 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt, `name`, `version` FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => 'bar']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => 'bar AS cpt']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) AS cpt FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => 'foo.baz']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`) FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => ['bar', 'baz']]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`), COUNT(`baz`) FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['COUNT' => ['bar AS cpt', 'baz AS cpt2']]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(`bar`) AS cpt, COUNT(`baz`) AS cpt2 FROM `foo`');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => ['foo.baz', 'foo.qux']]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`), COUNT(`foo`.`qux`) FROM `foo`');
    }
 
 
