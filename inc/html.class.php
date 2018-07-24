@@ -2088,6 +2088,7 @@ class Html {
     * Display "check All as" checkbox
     *
     * @since 0.84
+    * @deprecated 9.3.1
     *
     * @param $container_id  string html of the container of checkboxes link to this check all checkbox
     * @param $rand          string rand value to use (default is auto generated) (default ''))
@@ -2095,6 +2096,9 @@ class Html {
     * @return nothing / display item
    **/
    static function checkAllAsCheckbox($container_id, $rand = '') {
+
+      Toolbox::deprecated();
+
       echo Html::getCheckAllAsCheckbox($container_id, $rand);
    }
 

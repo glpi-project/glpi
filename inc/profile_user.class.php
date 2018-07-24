@@ -331,7 +331,7 @@ class Profile_User extends CommonDBRelation {
             $reduce_header = 0;
             if ($canedit && $nb) {
                echo "<th width='10'>";
-               echo Html::checkAllAsCheckbox("profile".$data['id']."_$rand");
+               echo Html::getCheckAllAsCheckbox("profile".$data['id']."_$rand");
                echo "</th>";
                $reduce_header++;
             }
@@ -512,7 +512,7 @@ class Profile_User extends CommonDBRelation {
 
                echo "<tr class='tab_bg_2'><td>";
                echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
-               echo Html::checkAllAsCheckbox("entity$temp$rand").__('All');
+               echo Html::getCheckAllAsCheckbox("entity$temp$rand").__('All');
 
                echo "<table class='tab_cadre_fixe'>\n";
             }

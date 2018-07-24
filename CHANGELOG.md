@@ -98,6 +98,7 @@ The present file will list all changes made to the project; according to the
 
 The following methods have been deprecated:
 
+- `Html::checkAllAsCheckbox()`
 - `Html::scriptEnd()`
 - `Html::scriptStart()`
 - `Toolbox::is_a()`

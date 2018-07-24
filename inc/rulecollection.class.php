@@ -471,7 +471,7 @@ class RuleCollection extends CommonDBTM {
       echo "<tr>";
       echo "<th>";
       if ($canedit) {
-         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
       }
       echo "</th>";
       echo "<th>".__('Name')."</th>";
@@ -502,7 +502,7 @@ class RuleCollection extends CommonDBTM {
          echo "<tr>";
          echo "<th>";
          if ($canedit) {
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          }
          echo "</th>";
          echo "<th>".__('Name')."</th>";
