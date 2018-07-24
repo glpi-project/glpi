@@ -604,7 +604,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
          echo "<th width='10'>";
-         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
          echo "<th colspan='2'>".__('Type')."</th></tr>";
          foreach ($req as $data) {
