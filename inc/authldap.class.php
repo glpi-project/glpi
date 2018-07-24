@@ -1490,7 +1490,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
             echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
             $num = 0;
             if ($config_ldap->isSyncFieldEnabled()) {
@@ -1538,7 +1538,7 @@ class AuthLDAP extends CommonDBTM {
             }
             echo "<tr>";
             echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
             $num = 0;
 

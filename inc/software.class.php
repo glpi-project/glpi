@@ -971,7 +971,7 @@ class Software extends CommonDBTM {
 
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th width='10'>";
-         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Entity')."</th>";

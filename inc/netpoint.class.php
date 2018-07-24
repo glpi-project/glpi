@@ -332,7 +332,7 @@ class Netpoint extends CommonDropdown {
 
          if ($canedit) {
             echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
          }
 
