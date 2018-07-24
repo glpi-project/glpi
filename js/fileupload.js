@@ -294,7 +294,7 @@ var isImageBlobFromPaste = function(content) {
 * @param      {string}  content  The img tag
 */
 var extractSrcFromImgTag = function(content) {
-   var match = content.match(/<img[^>]*?src=['"](.*)['"]/);
+   var match = content.match(/<img[^>]*?src=['"](.*?)['"]/);
    if (match !== null) {
       return match[1];
    }
