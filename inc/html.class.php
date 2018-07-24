@@ -1960,14 +1960,18 @@ class Html {
       echo "</div>";
 
       // init menu in jquery dialog
-      Html::scriptStart();
-      echo self::jsGetElementbyID('show_all_menu').".dialog({
-         height: 'auto',
-         width: 'auto',
-         modal: true,
-         autoOpen: false
-         });";
-      echo Html::scriptEnd();
+      echo Html::scriptBlock("
+         $(document).ready(
+            function() {
+               $('#show_all_menu').dialog({
+                  height: 'auto',
+                  width: 'auto',
+                  modal: true,
+                  autoOpen: false
+               });
+            }
+         );
+      ");
 
       /// Button to toggle responsive menu
       echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open'); return false;\"
@@ -4757,8 +4761,12 @@ class Html {
     * and create a scriptBlock from it.
     *
     * @since 0.85
+    * @deprecated 9.3.1
    **/
    static function scriptStart() {
+
+      Toolbox::deprecated();
+
       ob_start();
       return null;
    }
@@ -4769,10 +4777,13 @@ class Html {
     * Generates a script tag inline
     *
     * @since 0.85
+    * @deprecated 9.3.1
     *
     * @return mixed depending on the settings of scriptStart() either a script tag or null
    **/
    static function scriptEnd() {
+
+      Toolbox::deprecated();
 
       $buffer = ob_get_clean();
       $buffer = "$( document ).ready(function() {\n".$buffer."\n});";

@@ -98,6 +98,8 @@ The present file will list all changes made to the project; according to the
 
 The following methods have been deprecated:
 
+- `Html::scriptEnd()`
+- `Html::scriptStart()`
 - `Toolbox::is_a()`
 
 ## [9.3] 2018-06-28
