@@ -1461,31 +1461,35 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       switch ($type) {
          case 'status' :
-            Html::scriptStart();
-            echo "$('[name=\"status\"]').change(function() {
-                     var status_ko = 0;
-                     var input_status = $(this).val();
-                     if (input_status != undefined) {
-                        if ((";
+            $jsScript = "
+               $(document).ready(
+                  function() {
+                     $('[name=\"status\"]').change(function() {
+                        var status_ko = 0;
+                        var input_status = $(this).val();
+                        if (input_status != undefined) {
+                           if ((";
             $first = true;
             foreach ($status as $val) {
                if (!$first) {
-                  echo "||";
+                  $jsScript .= "||";
                }
-               echo "input_status == $val";
+               $jsScript .= "input_status == $val";
                $first = false;
             }
-            echo "           )
+            $jsScript .= "           )
                                  && input_status != ".$item->fields['status']."){
-                           status_ko = 1;
+                              status_ko = 1;
+                           }
                         }
-                     }
-                     if ((status_ko == 1)
-                         && ('".$item->fields['global_validation']."' == '".self::WAITING."')) {
-                        alert('".$message."');
-                     }
-                  });";
-            echo Html::scriptEnd();
+                        if ((status_ko == 1)
+                            && ('".$item->fields['global_validation']."' == '".self::WAITING."')) {
+                           alert('".$message."');
+                        }
+                     });
+                  }
+               );";
+            echo Html::scriptBlock($jsScript);
             break;
 
          case 'solution' :
