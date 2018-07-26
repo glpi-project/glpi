@@ -36,56 +36,124 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-
-
-
 /**
 *  Common DataBase Table Manager Class - Persistent Object
 **/
 class CommonDBTM extends CommonGLPI {
 
-   /// Data of the Item
-   public $fields                              = [];
-   /// Make an history of the changes
-   public $dohistory                           = false;
-   /// Black list fields for history log or date mod update
-   public $history_blacklist                   = [];
-   /// Set false to desactivate automatic message on action
-   public $auto_message_on_action              = true;
+   /**
+    * Data fields of the Item.
+    *
+    * @var mixed[]
+    */
+   public $fields = [];
 
-   /// Set true to desactivate link generation because form page do not permit show/edit item
-   public $no_form_page                        = false;
+   /**
+    * Flag to determine whether or not changes must be logged into history.
+    *
+    * @var boolean
+    */
+   public $dohistory = false;
 
-   /// Set true to desactivate auto compute table name
-   static protected $notable                   = false;
+   /**
+    * List of fields that must not be taken into account when logging history or computating last
+    * modification date.
+    *
+    * @var string[]
+    */
+   public $history_blacklist = [];
 
-   ///Additional fiedls for dictionnary processing
-   public $additional_fields_for_dictionnary   = [];
+   /**
+    * Flag to determine whether or not automatic messages must be generated on actions.
+    *
+    * @var boolean
+    */
+   public $auto_message_on_action = true;
 
-   /// Forward entity datas to linked items
-   static protected $forward_entity_to         = [];
-   /// Foreign key field cache : set dynamically calling getForeignKeyField
-   protected $fkfield                          = "";
+   /**
+    * Flag to determine whether or not a link to item form can be automatically generated via
+    * self::getLink() method.
+    *
+    * @var boolean
+    */
+   public $no_form_page = false;
 
-   /// Search options of the item : to avoid multiple load
-   protected $searchopt                        = false;
+   /**
+    * Flag to determine whether or not table name of item can be automatically generated via
+    * self::getTable() method.
+    *
+    * @var boolean
+    */
+   static protected $notable = false;
 
-   /// Tab orientation : horizontal or vertical
-   public $taborientation                      = 'vertical';
-   /// Need to get item to show tab
-   public $get_item_to_display_tab             = true;
+   /**
+    * List of fields that must not be taken into account for dictionnary processing.
+    *
+    * @var string[]
+    */
+   public $additional_fields_for_dictionnary = [];
 
-   /// Forward entity to plugins itemtypes
-   static protected $plugins_forward_entity    = [];
+   /**
+    * List of linked item types on which entities informations should be forwarded on update.
+    *
+    * @var string[]
+    */
+   static protected $forward_entity_to = [];
 
-   /// Profile name
-   static $rightname                           = '';
+   /**
+    * Foreign key field cache : set dynamically calling getForeignKeyField
+    *
+    * @TODO Remove this variable as it is not used ?
+    */
+   protected $fkfield = "";
 
-   /// Is this item use notepad ?
-   protected $usenotepad                       = false;
+   /**
+    * Search option of item. Initialized on first call to `self::getOptions()` and used as cache.
+    *
+    * @var array
+    *
+    * @TODO Should be removed and replaced by real cache usage.
+    */
+   protected $searchopt = false;
 
-   /// FLush notification queue for
-   public $notificationqueueonaction            = false;
+   /**
+    * {@inheritDoc}
+    */
+   public $taborientation = 'vertical';
+
+   /**
+    * {@inheritDoc}
+    */
+   public $get_item_to_display_tab = true;
+
+   /**
+    * List of linked item types from plugins on which entities informations should be forwarded on update.
+    *
+    * @var array
+    */
+   static protected $plugins_forward_entity = [];
+
+   /**
+    * Rightname used to check rights to do actions on item.
+    *
+    * @var string
+    */
+   static $rightname = '';
+
+   /**
+    * Flag to determine whether or not table name of item has a notepad.
+    *
+    * @var boolean
+    */
+   protected $usenotepad = false;
+
+   /**
+    * Flag to determine whether or not notification queu should be flushed immediately when an
+    * action is performed on item.
+    *
+    * @var boolean
+    */
+   public $notificationqueueonaction = false;
 
    /**
     * @deprecated 9.3.1 No longer used.
