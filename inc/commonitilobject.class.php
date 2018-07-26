@@ -2976,6 +2976,9 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsSolution() {
+
+      $tab = [];
+
       $tab[] = [
          'id'                 => 'solution',
          'name'               => _n('Solution', 'Solutions', 1)
@@ -3011,6 +3014,51 @@ abstract class CommonITILObject extends CommonDBTM {
             'jointype'           => 'itemtype_item'
          ]
       ];
+
+      if (Ticket::class === static::getType()) {
+         // Following options are useless for Problems and Changes as for now (GLPI 9.3.0),
+         // only tickets solutions can use the validation process.
+         // Options should be activated when validation process will be available on other types.
+
+         $tab[] = [
+            'id'                  => '38',
+            'table'               => ITILSolution::getTable(),
+            'field'               => 'status',
+            'name'                => __('Any solution status'),
+            'datatype'            => 'specific',
+            'searchtype'          => ['equals', 'notequals'],
+            'searchequalsonfield' => true,
+            'massiveaction'       => false,
+            'forcegroupby'        => true,
+            'joinparams'          => [
+               'jointype' => 'itemtype_item'
+            ]
+         ];
+
+         $tab[] = [
+            'id'                  => '39',
+            'table'               => ITILSolution::getTable(),
+            'field'               => 'status',
+            'name'                => __('Last solution status'),
+            'datatype'            => 'specific',
+            'searchtype'          => ['equals', 'notequals'],
+            'searchequalsonfield' => true,
+            'massiveaction'       => false,
+            'forcegroupby'        => true,
+            'joinparams'          => [
+               'jointype'  => 'itemtype_item',
+               // Get only last created solution
+               'condition' => '
+                  AND NEWTABLE.`id` = (
+                     SELECT `id` FROM `' . ITILSolution::getTable() . '`
+                     WHERE `' . ITILSolution::getTable() . '`.`items_id` = REFTABLE.`id`
+                        AND `' . ITILSolution::getTable() . '`.`itemtype` = \'' . static::getType() . '\'
+                     ORDER BY `' . ITILSolution::getTable() . '`.`id` DESC
+                     LIMIT 1
+                  )'
+            ]
+         ];
+      }
 
       return $tab;
    }
