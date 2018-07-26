@@ -48,10 +48,18 @@ class CommonGLPI {
    /// Show Debug
    public $showdebug               = false;
 
-   /// Tab orientation : horizontal or vertical
+   /**
+    * Tab orientation : horizontal or vertical.
+    *
+    * @var string
+    */
    public $taborientation          = 'horizontal';
 
-   /// Need to get item to show tab
+   /**
+    * Need to get item to show tab
+    *
+    * @var boolean
+    */
    public $get_item_to_display_tab = false;
    static protected $othertabs     = [];
 
