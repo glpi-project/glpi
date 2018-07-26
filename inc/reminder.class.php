@@ -136,7 +136,7 @@ class Reminder extends CommonDBVisible {
       $this->users    = Reminder_User::getUsers($this->fields['id']);
 
       // Entities
-      $this->entities = Entity_Reminder::getEntities($this->fields['id']);
+      $this->entities = Entity_Reminder::getEntities($this);
 
       // Group / entities
       $this->groups   = Group_Reminder::getGroups($this->fields['id']);

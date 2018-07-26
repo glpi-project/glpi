@@ -51,19 +51,17 @@ class Entity_Reminder extends CommonDBRelation {
    /**
     * Get entities for a reminder
     *
-    * @param $reminders_id ID of the reminder
+    * @param Reminder $reminder Reminder instance
     *
     * @return array of entities linked to a reminder
    **/
-   static function getEntities($reminders_id) {
+   static function getEntities($reminder) {
       global $DB;
 
       $ent   = [];
-      $query = "SELECT `glpi_entities_reminders`.*
-                FROM `glpi_entities_reminders`
-                WHERE `reminders_id` = '$reminders_id'";
+      $iterator = self::getListForItem($reminder);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $ent[$data['entities_id']][] = $data;
       }
       return $ent;
