@@ -170,12 +170,13 @@ class CommonDBTM extends CommonGLPI {
     * @return string
    **/
    static function getTable($classname = null) {
-      if (static::$notable) {
-         return '';
-      }
 
       if ($classname === null) {
          $classname = get_called_class();
+      }
+
+      if (!class_exists($classname) || $classname::$notable) {
+         return '';
       }
 
       if (empty($_SESSION['glpi_table_of'][$classname])) {
