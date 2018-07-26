@@ -605,4 +605,61 @@ class ITILSolution extends CommonDBTM {
          echo Html::scriptBlock($js);
       }
    }
+
+   /**
+    * {@inheritDoc}
+    * @see CommonDBTM::getSpecificValueToDisplay()
+    */
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'status':
+            $value = $values[$field];
+            $statuses = self::getStatuses();
+
+            return (isset($statuses[$value]) ? $statuses[$value] : $value);
+            break;
+      }
+
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   /**
+    * {@inheritDoc}
+    * @see CommonDBTM::getSpecificValueToSelect()
+    */
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'status':
+            $options['display'] = false;
+            $options['value'] = $values[$field];
+            return Dropdown::showFromArray($name, self::getStatuses(), $options);
+            break;
+      }
+
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+   /**
+    * Return list of statuses.
+    * Key as status values, values as labels.
+    *
+    * @return string[]
+    */
+   static function getStatuses() {
+      return [
+         CommonITILValidation::WAITING  => __('Waiting for approval'),
+         CommonITILValidation::REFUSED  => __('Refused'),
+         CommonITILValidation::ACCEPTED => __('Accepted'),
+      ];
+   }
 }
