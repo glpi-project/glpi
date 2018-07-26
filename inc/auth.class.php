@@ -380,7 +380,7 @@ class Auth extends CommonGLPI {
                return false;
             }
 
-            phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
+            phpCAS::client(constant($CFG_GLPI["cas_version"]), $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
                            $CFG_GLPI["cas_uri"], false);
 
             // no SSL validation for the CAS server
@@ -389,6 +389,12 @@ class Auth extends CommonGLPI {
             // force CAS authentication
             phpCAS::forceAuthentication();
             $this->user->fields['name'] = phpCAS::getUser();
+
+            // extract e-mail information
+            if (phpCAS::hasAttribute("mail")) {
+                $this->user->fields['_useremails'] = [phpCAS::getAttribute("mail")];
+            }
+
             return true;
 
          case self::EXTERNAL :
@@ -620,6 +626,10 @@ class Auth extends CommonGLPI {
             $this->extauth                     = 1;
             $user_dn                           = false;
 
+            if (array_key_exists('_useremails', $this->user->fields)) {
+                $email = $this->user->fields['_useremails'];
+            }
+
             $ldapservers = [];
             //if LDAP enabled too, get user's infos from LDAP
             if (Toolbox::canUseLdap()) {
@@ -782,6 +792,10 @@ class Auth extends CommonGLPI {
                // Then ensure addslashes
                $input = Toolbox::addslashes_deep($input);
 
+               // Add the user e-mail if present
+               if (isset($email)) {
+                   $this->user->fields['_useremails'] = $email;
+               }
                $this->user->update($input);
             } else if ($CFG_GLPI["is_users_auto_add"]) {
                // Auto add user
@@ -909,6 +923,19 @@ class Auth extends CommonGLPI {
       }
 
       return Dropdown::showFromArray($p['name'], $methods, $p);
+   }
+
+   /**
+   * Builds CAS versions dropdown
+   * @param string $value (default 'CAS_VERSION_2_0')
+   *
+   * @return string
+   */
+   static function dropdownCasVersion($value = 'CAS_VERSION_2_0') {
+      $options['CAS_VERSION_1_0'] = __('Version 1');
+      $options['CAS_VERSION_2_0'] = __('Version 2');
+      $options['CAS_VERSION_3_0'] = __('Version 3+');
+      return Dropdown::showFromArray('cas_version', $options, ['value' => $value]);
    }
 
    /**
@@ -1315,6 +1342,12 @@ class Auth extends CommonGLPI {
          //TRANS: for CAS SSO system
          echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Host') . "</td>";
          echo "<td><input type='text' name='cas_host' value=\"".$CFG_GLPI["cas_host"]."\"></td></tr>\n";
+         //TRANS: for CAS SSO system
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Version') . "</td>";
+         echo "<td>";
+         Auth::dropdownCasVersion($CFG_GLPI["cas_version"]);
+         echo "</td>";
+         echo "</tr>\n";
          //TRANS: for CAS SSO system
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Port') . "</td>";
          echo "<td><input type='text' name='cas_port' value=\"".$CFG_GLPI["cas_port"]."\"></td></tr>\n";
