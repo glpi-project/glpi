@@ -83,6 +83,10 @@ The present file will list all changes made to the project; according to the
   - `Search::displayDatas()`
   - `Transfer::transferComputerDisks()`
   - `Toolbox::is_a()`
+  - `Html::checkAllAsCheckbox()`
+  - `Html::scriptEnd()`
+  - `Html::scriptStart()`
+
 
 ## [9.3.1] unreleased
 

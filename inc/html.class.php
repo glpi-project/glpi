@@ -2085,25 +2085,6 @@ class Html {
 
 
    /**
-    * Display "check All as" checkbox
-    *
-    * @since 0.84
-    * @deprecated 9.3.1
-    *
-    * @param $container_id  string html of the container of checkboxes link to this check all checkbox
-    * @param $rand          string rand value to use (default is auto generated) (default ''))
-    *
-    * @return nothing / display item
-   **/
-   static function checkAllAsCheckbox($container_id, $rand = '') {
-
-      Toolbox::deprecated();
-
-      echo Html::getCheckAllAsCheckbox($container_id, $rand);
-   }
-
-
-   /**
     * Get "check All as" checkbox
     *
     * @since 0.84
@@ -4756,42 +4737,6 @@ class Html {
       $script = "\n" . '//<![CDATA[' . "\n\n" . $script . "\n\n" . '//]]>' . "\n";
 
       return sprintf('<script type="text/javascript">%s</script>', $script);
-   }
-
-
-   /**
-    * Begin a script block that captures output until HtmlHelper::scriptEnd()
-    * is called. This capturing block will capture all output between the methods
-    * and create a scriptBlock from it.
-    *
-    * @since 0.85
-    * @deprecated 9.3.1
-   **/
-   static function scriptStart() {
-
-      Toolbox::deprecated();
-
-      ob_start();
-      return null;
-   }
-
-
-   /**
-    * End a Buffered section of Javascript capturing.
-    * Generates a script tag inline
-    *
-    * @since 0.85
-    * @deprecated 9.3.1
-    *
-    * @return mixed depending on the settings of scriptStart() either a script tag or null
-   **/
-   static function scriptEnd() {
-
-      Toolbox::deprecated();
-
-      $buffer = ob_get_clean();
-      $buffer = "$( document ).ready(function() {\n".$buffer."\n});";
-      return Html::scriptBlock($buffer);
    }
 
 
