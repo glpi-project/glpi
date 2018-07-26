@@ -289,34 +289,18 @@ var isImageBlobFromPaste = function(content) {
 };
 
 /**
-* Function to extract src tag from img tag process bu TinyMCE
+* Function to extract src tag from img tag process by TinyMCE
 *
-* @param      {string}  content  The img tag
+* @param  {string}  content  The img tag
+* @return {string}  Source of image or empty string.
 */
 var extractSrcFromImgTag = function(content) {
-   var match = content.match(/<img[^>]*?src=['"](.*)['"]/);
-   if (match !== null) {
-      return match[1];
+   var foundImage = $('<div/>').append(content).find('img');
+   if (foundImage.length > 0) {
+      return foundImage.attr('src');
    }
+
    return '';
-};
-
-/**
-* Function to extract src tag from img tag process bu TinyMCE
-*
-* @param      {string}  content  The img tag
-*/
-var extractSrcFromBlobImgTag = function(content) {
-   var match = content.match(/\<img[^>]+src="(blob:http%3A\/\/[^">]+)/);
-   if (match === null) {
-      match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
-
-      if (match === null) {
-         match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
-      }
-   }
-
-   return match[1];
 };
 
 /**
@@ -382,7 +366,7 @@ if (typeof tinymce != 'undefined') {
          } else if (isImageBlobFromPaste(event.content)) {
             stopEvent(event);
 
-            var src = extractSrcFromBlobImgTag(event.content);
+            var src = extractSrcFromImgTag(event.content);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
             xhr.responseType = 'blob';
