@@ -1199,6 +1199,10 @@ class Search {
          $data['data']['begin'] = $data['search']['start'];
          $data['data']['end']   = min($data['data']['totalcount'],
                                       $data['search']['start']+$data['search']['list_limit'])-1;
+         //map case
+         if (isset($data['search']['as_map'])  && $data['search']['as_map'] == 1) {
+            $data['data']['end'] = $data['data']['totalcount']-1;
+         }
 
          // No search Case
          if ($data['search']['no_search']) {
