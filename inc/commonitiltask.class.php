@@ -179,12 +179,14 @@ abstract class CommonITILTask  extends CommonDBTM {
           && $this->canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $restrict = "`".$item->getForeignKeyField()."` = '".$item->getID()."'";
+            $restrict = [$item->getForeignKeyField() => $item->getID()];
 
             if ($this->maybePrivate()
                 && !$this->canViewPrivates()) {
-               $restrict .= " AND (`is_private` = 0
-                                   OR `users_id` = '" . Session::getLoginUserID() . "') ";
+               $restrict['OR'] = [
+                  'is_private'   => 0,
+                  'users_id'     => Session::getLoginUserID()
+               ];
             }
             $nb = countElementsInTable($this->getTable(), $restrict);
          }

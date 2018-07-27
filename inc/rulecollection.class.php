@@ -96,12 +96,12 @@ class RuleCollection extends CommonDBTM {
    **/
    function getCollectionSize($recursive = true, $condition = 0) {
 
-      $restrict = "`sub_type` = '".$this->getRuleClassName()."'".
-                  getEntitiesRestrictRequest(" AND", "glpi_rules", "entities_id",
-                                             $this->entity, $recursive);
+      $restrict = [
+         'sub_type'  => $this->getRuleClassName()
+      ] + getEntitiesRestrictCriteria('glpi_rules', 'entities_id', $this->entity, $recursive);
 
       if ($condition > 0) {
-         $restrict .= ' AND `condition` & '. (int) $condition;
+         $restrict['condition'] = ['&', (int)$condition];
       }
       return countElementsInTable("glpi_rules", $restrict);
    }

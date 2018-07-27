@@ -201,15 +201,15 @@ function countElementsInTable($table, $condition = "") {
 /**
  * Count the number of elements in a table.
  *
- * @param $table        string/array   table names
- * @param $field        string         field name
- * @param $condition    string         condition to use (default '')
+ * @param string|array $table     table names
+ * @param string       $field     field name
+ * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countDistinctElementsInTable()
 **/
-function countDistinctElementsInTable($table, $field, $condition = "") {
+function countDistinctElementsInTable($table, $field, $condition = []) {
    $dbu = new DbUtils();
    return $dbu->countDistinctElementsInTable($table, $field, $condition);
 }
@@ -217,14 +217,14 @@ function countDistinctElementsInTable($table, $field, $condition = "") {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table        string         table name
- * @param $condition    string/array   additional condition (default '') or criteria
+ * @param string $table     table name
+ * @param array  $condition additional criteria, defaults to []
  *
  * @return int nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countElementsInTableForMyEntities()
 **/
-function countElementsInTableForMyEntities($table, $condition = '') {
+function countElementsInTableForMyEntities($table, $condition = []) {
    $dbu = new DbUtils();
    return $dbu->countElementsInTableForMyEntities($table, $condition);
 }
@@ -235,14 +235,14 @@ function countElementsInTableForMyEntities($table, $condition = '') {
  *
  * @param string  $table     table name
  * @param integer $entity    the entity ID
- * @param string  $condition additional condition (default '')
+ * @param string  $condition additional condition (default [])
  * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countElementsInTableForEntity()
 **/
-function countElementsInTableForEntity($table, $entity, $condition = '', $recursive = true) {
+function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true) {
    $dbu = new DbUtils();
    return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
 }
@@ -252,16 +252,16 @@ function countElementsInTableForEntity($table, $entity, $condition = '', $recurs
  * Get datas from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
- * @param $table        string   table name
- * @param $condition    string   condition to use (default '')
- * @param $usecache     boolean  (false by default)
- * @param $order        string   result order (default '')
+ * @param string  $table     table name
+ * @param array   $condition condition to use (default [])
+ * @param boolean $usecache  Use cache (false by default)
+ * @param string  $order     result order (default '')
  *
  * @return array containing all the datas
  *
  * @deprecated 9.2 see DbUtils::getAllDataFromTable()
 **/
-function getAllDatasFromTable($table, $condition = '', $usecache = false, $order = '') {
+function getAllDatasFromTable($table, $condition = [], $usecache = false, $order = '') {
    $dbu = new DbUtils();
    return $dbu->getAllDataFromTable($table, $condition, $usecache, $order);
 }

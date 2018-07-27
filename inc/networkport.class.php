@@ -1158,9 +1158,10 @@ class NetworkPort extends CommonDBChild {
          } else {
             $aliases = '';
          }
-         $nbAggregates = countElementsInTable('glpi_networkportaggregates',
-                                              "`networkports_id_list`
-                                                   LIKE '%\"".$item->getField('id')."\"%'");
+         $nbAggregates = countElementsInTable(
+            'glpi_networkportaggregates',
+            ['networkports_id_list'   => ['LIKE', '%"'.$item->getField('id').'"%']]
+         );
          if ($nbAggregates > 0) {
             $aggregates = self::createTabEntry(NetworkPortAggregate::getTypeName(Session::getPluralNumber()),
                                                $nbAggregates);

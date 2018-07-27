@@ -543,10 +543,14 @@ abstract class API extends CommonGLPI {
           && in_array($itemtype, Item_Devices::getConcernedItems())) {
          $all_devices = [];
          foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
-            $found_devices = getAllDatasFromTable($device_type::getTable(),
-                                                  "`items_id` = '".$item->getID()."'
-                                                   AND `itemtype` = '".$item->getType()."'
-                                                   AND `is_deleted` = 0", true);
+            $found_devices = getAllDatasFromTable(
+               $device_type::getTable(), [
+                  'items_id'     => $item->getID(),
+                  'itemtype'     => $item->getType(),
+                  'is_deleted'   => 0
+               ],
+               true
+            );
 
             foreach ($found_devices as $devices_id => &$device) {
                unset($device['items_id']);
@@ -910,9 +914,12 @@ abstract class API extends CommonGLPI {
          if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
             $fields['_logs'] = self::arrayRightError();
          } else {
-            $fields['_logs'] = getAllDatasFromTable("glpi_logs",
-                                                    "`items_id` = '".$item->getID()."'
-                                                    AND `itemtype` = '".$item->getType()."'");
+            $fields['_logs'] = getAllDatasFromTable(
+               "glpi_logs", [
+                  'items_id'  => $item->getID(),
+                  'itemtype'  => $item->getType()
+               ]
+            );
          }
       }
 

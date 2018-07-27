@@ -319,9 +319,11 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
       $computeritem = new Computer_Item();
       //For each direct connection of this printer
-      foreach (getAllDatasFromTable("glpi_computers_items",
-                                    "`itemtype` = 'Printer'
-                                        AND `items_id` = '$ID'") as $connection) {
+      foreach (getAllDatasFromTable(
+         'glpi_computers_items', [
+            'itemtype'  => 'Printer',
+            'items_id'  => $ID]
+         ) as $connection) {
 
          //Direct connection exists in the target printer ?
          if (!countElementsInTable("glpi_computers_items",

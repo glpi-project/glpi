@@ -1020,7 +1020,7 @@ class Item_Ticket extends CommonDBRelation{
     */
    static function getUsedItems($tickets_id) {
 
-      $data = getAllDatasFromTable('glpi_items_tickets', " `tickets_id` = ".$tickets_id);
+      $data = getAllDatasFromTable('glpi_items_tickets', ['tickets_id' => $tickets_id]);
       $used = [];
       if (!empty($data)) {
          foreach ($data as $val) {

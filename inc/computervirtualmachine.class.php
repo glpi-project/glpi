@@ -260,8 +260,13 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='center'>";
 
       if (isset($comp->fields['uuid']) && ($comp->fields['uuid'] != '')) {
-         $where = "LOWER(`uuid`)".self::getUUIDRestrictRequest($comp->fields['uuid']);
-         $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
+         $hosts = getAllDatasFromTable(
+            self::getTable(), [
+               'RAW' => [
+                  'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid'])
+               ]
+            ]
+         );
 
          if (!empty($hosts)) {
             echo "<table class='tab_cadre_fixehov'>";
@@ -335,8 +340,14 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       echo "<div class='center'>";
 
-      $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
-                                              "`computers_id` = '$ID' AND `is_deleted` = 0", false, 'name');
+      $virtualmachines = getAllDatasFromTable(
+         self::getTable(), [
+            'computers_id' => $ID,
+            'is_deleted'   => 0
+         ],
+         false,
+         'name'
+      );
 
       echo "<table class='tab_cadre_fixehov'>";
 
@@ -422,12 +433,31 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Get correct uuid sql search for virtualmachines
     *
+    * @deprecated 9.3.1
+    *
     * @param $uuid the uuid given
     *
     * @return the restrict which contains uuid, uuid with first block flipped,
     * uuid with 3 first block flipped
    **/
    static function getUUIDRestrictRequest($uuid) {
+      $uuids = self::getUUIDRestrictCriteria($uuid);
+      $in = " IN('" . implode("', '", $uuids) . "')";
+      return $in;
+   }
+
+
+   /**
+    * Get correct uuid sql search for virtualmachines
+    *
+    * @since 9.3.1
+    *
+    * @param $uuid the uuid given
+    *
+    * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
+    * uuid with 3 first block flipped
+   **/
+   static function getUUIDRestrictCriteria($uuid) {
 
       //More infos about uuid, please see wikipedia :
       //http://en.wikipedia.org/wiki/Universally_unique_identifier
@@ -446,17 +476,17 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
       //On unix is flips first block of uuid and on windows flips 3 first blocks...
-      $in      = " IN ('".strtolower($uuid)."'";
-      $regexes = ["/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
-                       "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"
-                                                                    => "$4$3$2$1-$6$5-$8$7$9"];
+      $in      = [strtolower($uuid)];
+      $regexes = [
+         "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/"                                        => "$4$3$2$1$5",
+         "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"  => "$4$3$2$1-$6$5-$8$7$9"
+      ];
       foreach ($regexes as $pattern => $replace) {
          $reverse_uuid = preg_replace($pattern, $replace, $uuid);
          if ($reverse_uuid) {
-            $in .= " ,'".strtolower($reverse_uuid)."'";
+            $in[] = strtolower($reverse_uuid);
          }
       }
-      $in .= ")";
 
       return $in;
    }
@@ -476,14 +506,20 @@ class ComputerVirtualMachine extends CommonDBChild {
          return false;
       }
 
-      $query = "SELECT `id`
-                FROM `glpi_computers`
-                WHERE LOWER(`uuid`) ".self::getUUIDRestrictRequest($fields['uuid']);
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => 'glpi_computers',
+         'WHERE'  => [
+            'RAW' => [
+               'LOWER(uuid)'  => self::getUUIDRestrictCriteria($fields['uuid'])
+            ]
+         ]
+      ]);
 
       //Virtual machine found, return ID
-      if ($DB->numrows($result)) {
-         return $DB->result($result, 0, 'id');
+      if (count($iterator)) {
+         $result = $iterator->next();
+         return $result['id'];
       }
 
       return false;

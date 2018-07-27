@@ -288,7 +288,8 @@ class NotificationTargetProjectTask extends NotificationTarget {
       }
 
       // Team infos
-      $restrict = "`projecttasks_id` = '".$item->getField('id')."'";
+      $restrict = ['projecttasks_id' => $item->getField('id')];
+      $order    = ['date DESC', 'id ASC'];
       $items    = getAllDatasFromTable('glpi_projecttaskteams', $restrict);
 
       $this->data['teammembers'] = [];
@@ -308,10 +309,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->data['##projecttask.numberofteammembers##'] = count($this->data['teammembers']);
 
       // Task infos
-      $restrict             = "`projecttasks_id`='".$item->getField('id')."'";
-      $restrict            .= " ORDER BY `date` DESC, `id` ASC";
-
-      $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict);
+      $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict, false, $order);
       $this->data['tasks'] = [];
       foreach ($tasks as $task) {
          $tmp                            = [];
@@ -365,7 +363,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->data["##projecttask.numberoflogs##"] = count($this->data['log']);
 
       // Tickets infos
-      $restrict = "`projecttasks_id`='".$item->getField('id')."'";
       $tickets  = getAllDatasFromTable('glpi_projecttasks_tickets', $restrict);
 
       $this->data['tickets'] = [];
@@ -434,7 +431,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
                      = count($this->data['documents']);
 
       // Items infos
-      $restrict = "`projects_id` = '".$item->getField('id')."'";
       $items    = getAllDatasFromTable('glpi_items_projects', $restrict);
 
       $this->getTags();
