@@ -176,9 +176,6 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz` FROM `foo`');
 
-      $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \QueryExpression('1 AS `myfield`')]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz`, 1 AS `myfield` FROM `foo`');
-
       $it = $this->it->execute('foo', ['FIELDS' => ['a' => ['`bar`', 'baz']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `a`.`bar`, `a`.`baz` FROM `foo`');
 
@@ -573,5 +570,13 @@ class DBmysqlIterator extends DbTestCase {
          ]
       ]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)');
+   }
+
+   public function testExpression() {
+      $it = $this->it->execute('foo', [new \QueryExpression('a LIKE b')]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE a LIKE b');
+
+      $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \QueryExpression('1 AS `myfield`')]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz`, 1 AS `myfield` FROM `foo`');
    }
 }
