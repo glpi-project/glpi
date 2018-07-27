@@ -341,8 +341,11 @@ class NotificationTarget extends CommonDBChild {
             list($type,$id) = explode('_', $key);
             $values[$key]   = $this->notification_targets_labels[$type][$id];
          }
-         $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                         'notifications_id = '.$notifications_id);
+         $targets = getAllDatasFromTable(
+            self::getTable(), [
+               'notifications_id' => $notifications_id
+            ]
+         );
          $actives = [];
          if (count($targets)) {
             foreach ($targets as $data) {
@@ -384,8 +387,11 @@ class NotificationTarget extends CommonDBChild {
       if (!isset($input['notifications_id'])) {
          return;
       }
-      $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                      'notifications_id = '.$input['notifications_id']);
+      $targets = getAllDatasFromTable(
+         self::getTable(), [
+            'notifications_id' => $input['notifications_id']
+         ]
+      );
       $actives = [];
       if (count($targets)) {
          foreach ($targets as $data) {

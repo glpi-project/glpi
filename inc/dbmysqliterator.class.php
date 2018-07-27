@@ -439,7 +439,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    public function analyseCrit ($crit, $bool = "AND") {
-      static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&'];
+      static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&', '|'];
 
       if (!is_array($crit)) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -490,7 +490,6 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if (is_array($value)) {
             if (count($value) == 2
                   && isset($value[0]) && in_array($value[0], $operators, true)) {
-
                $ret .= DBmysql::quoteName($name) . " {$value[0]} " . DBmysql::quoteValue($value[1]);
             } else {
                // Array of Values

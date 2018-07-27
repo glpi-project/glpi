@@ -486,17 +486,20 @@ abstract class CommonITILObject extends CommonDBTM {
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
 
-      return countElementsInTable([$itemtable,$linktable],
-                                  getEntitiesRestrictRequest("", $itemtable)."
-                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
-                                    AND `$linktable`.`users_id` = '$users_id'
-                                    AND `$linktable`.`type` = '".CommonITILActor::REQUESTER."'
-                                    AND `$itemtable`.`is_deleted` = 0
-                                    AND `$itemtable`.`status`
-                                       NOT IN ('".implode("', '",
-                                                          array_merge($this->getSolvedStatusArray(),
-                                                                      $this->getClosedStatusArray())
-                                                          )."')");
+      return countElementsInTable(
+         [$itemtable, $linktable], [
+            "$linktable.$itemfk"    => new \QueryExpression("`$itemtable`.`id`"),
+            "$linktable.users_id"   => $users_id,
+            "$linktable.type"       => CommonITILActor::REQUESTER,
+            "$itemtable.is_deleted" => 0,
+            "NOT"                   => [
+               "$itemtable.status" => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+               )
+            ]
+         ] + getEntitiesRestrictCriteria($itemtable)
+      );
    }
 
 
@@ -517,17 +520,20 @@ abstract class CommonITILObject extends CommonDBTM {
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
 
-      return countElementsInTable([$itemtable,$linktable],
-                                  getEntitiesRestrictRequest("", $itemtable)."
-                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
-                                    AND `$linktable`.`users_id` = '$users_id'
-                                    AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
-                                    AND `$itemtable`.`is_deleted` = 0
-                                    AND `$itemtable`.`status`
-                                       NOT IN ('".implode("', '",
-                                                          array_merge($this->getSolvedStatusArray(),
-                                                                      $this->getClosedStatusArray())
-                                                          )."')");
+      return countElementsInTable(
+         [$itemtable, $linktable], [
+            "$linktable.$itemfk"    => new \QueryExpression("`$itemtable`.`id`"),
+            "$linktable.users_id"   => $users_id,
+            "$linktable.type"       => CommonITILActor::ASSIGN,
+            "$itemtable.is_deleted" => 0,
+            "NOT"                   => [
+               "$itemtable.status" => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+               )
+            ]
+         ] + getEntitiesRestrictCriteria($itemtable)
+      );
    }
 
 
@@ -548,17 +554,20 @@ abstract class CommonITILObject extends CommonDBTM {
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
 
-      return countElementsInTable([$itemtable,$linktable],
-                                  getEntitiesRestrictRequest("", $itemtable)."
-                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
-                                    AND `$linktable`.`groups_id` = '$groups_id'
-                                    AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
-                                    AND `$itemtable`.`is_deleted` = 0
-                                    AND `$itemtable`.`status`
-                                       NOT IN ('".implode("', '",
-                                                          array_merge($this->getSolvedStatusArray(),
-                                                                      $this->getClosedStatusArray())
-                                                          )."')");
+      return countElementsInTable(
+         [$itemtable, $linktable], [
+            "$linktable.$itemfk"    => new \QueryExpression("`$itemtable`.`id`"),
+            "$linktable.groups_id"  => $groups_id,
+            "$linktable.type"       => CommonITILActor::ASSIGN,
+            "$itemtable.is_deleted" => 0,
+            "NOT"                   => [
+               "$itemtable.status" => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+               )
+            ]
+         ] + getEntitiesRestrictCriteria($itemtable)
+      );
    }
 
 
@@ -579,17 +588,20 @@ abstract class CommonITILObject extends CommonDBTM {
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
 
-      return countElementsInTable([$itemtable,$linktable],
-                                  getEntitiesRestrictRequest("", $itemtable)."
-                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
-                                    AND `$linktable`.`suppliers_id` = '$suppliers_id'
-                                    AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
-                                    AND `$itemtable`.`is_deleted` = 0
-                                    AND `$itemtable`.`status`
-                                    NOT IN ('".implode("', '",
-                                                       array_merge($this->getSolvedStatusArray(),
-                                                                   $this->getClosedStatusArray())
-                                                      )."')");
+      return countElementsInTable(
+         [$itemtable, $linktable], [
+            "$linktable.$itemfk"       => new \QueryExpression("`$itemtable`.`id`"),
+            "$linktable.suppliers_id"  => $suppliers_id,
+            "$linktable.type"          => CommonITILActor::ASSIGN,
+            "$itemtable.is_deleted"    => 0,
+            "NOT"                      => [
+               "$itemtable.status" => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+               )
+            ]
+         ] + getEntitiesRestrictCriteria($itemtable)
+      );
    }
 
 
@@ -3791,7 +3803,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                         ? $options['entities_id']: $options['entity_restrict'])];
 
       //only for active ldap and corresponding right
-      $ldap_methods = getAllDatasFromTable('glpi_authldaps', '`is_active`=1');
+      $ldap_methods = getAllDatasFromTable('glpi_authldaps', ['is_active' => 1]);
       if (count($ldap_methods)
             && Session::haveRight('user', User::IMPORTEXTAUTHUSERS)) {
          $params['ldap_import'] = true;

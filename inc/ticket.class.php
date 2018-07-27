@@ -692,38 +692,54 @@ class Ticket extends CommonITILObject {
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case 'User' :
-                  $nb = countElementsInTable(['glpi_tickets', 'glpi_tickets_users'],
-                                             getEntitiesRestrictRequest("", 'glpi_tickets').
-                                               "AND `glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
-                                                AND `glpi_tickets_users`.`users_id` = '".$item->getID()."'
-                                                AND `glpi_tickets_users`.`type` = ".CommonITILActor::REQUESTER);
+                  $nb = countElementsInTable(
+                     ['glpi_tickets', 'glpi_tickets_users'], [
+                        'glpi_tickets_users.tickets_id'  => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_tickets_users.users_id'    => $item->getID(),
+                        'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
+                     ] + getEntitiesRestrictCriteria(self::getTable())
+                  );
                   $title = __('Created tickets');
                   break;
 
                case 'Supplier' :
-                  $nb = countElementsInTable(['glpi_tickets', 'glpi_suppliers_tickets'],
-                                             getEntitiesRestrictRequest("", 'glpi_tickets').
-                                               "AND `glpi_suppliers_tickets`.`tickets_id` = `glpi_tickets`.`id`
-                                                AND `glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."'");
+                  $nb = countElementsInTable(
+                     ['glpi_tickets', 'glpi_suppliers_tickets'], [
+                        'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
+                     ] + getEntitiesRestrictCriteria(self::getTable())
+                  );
                   break;
 
                case 'SLA' :
-                  $nb = countElementsInTable('glpi_tickets',
-                                             "`slas_tto_id` = ".$item->getID()."
-                                             OR `slas_ttr_id` = ".$item->getID());
+                  $nb = countElementsInTable(
+                     'glpi_tickets', [
+                        'OR'  => [
+                           'slas_tto_id'  => $item->getID(),
+                           'slas_ttr_id'  => $item->getID()
+                        ]
+                     ]
+                  );
                   break;
                case 'OLA' :
-                  $nb = countElementsInTable('glpi_tickets',
-                                             "`olas_tto_id` = ".$item->getID()."
-                                             OR `olas_ttr_id` = ".$item->getID());
+                  $nb = countElementsInTable(
+                     'glpi_tickets', [
+                        'OR'  => [
+                           'olas_tto_id'  => $item->getID(),
+                           'olas_ttr_id'  => $item->getID()
+                        ]
+                     ]
+                  );
                   break;
 
                case 'Group' :
-                  $nb = countElementsInTable(['glpi_tickets', 'glpi_groups_tickets'],
-                                             getEntitiesRestrictRequest("", 'glpi_tickets').
-                                               "AND `glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
-                                                AND `glpi_groups_tickets`.`groups_id` = '".$item->getID()."'
-                                                AND `glpi_groups_tickets`.`type` = ".CommonITILActor::REQUESTER);
+                  $nb = countElementsInTable(
+                     ['glpi_tickets', 'glpi_groups_tickets'], [
+                        'glpi_groups_tickets.tickets_id' => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_groups_tickets.groups_id'  => $item->getID(),
+                        'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
+                     ] + getEntitiesRestrictCriteria(self::getTable())
+                  );
                   $title = __('Created tickets');
                   break;
 

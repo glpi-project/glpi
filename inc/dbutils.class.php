@@ -320,7 +320,7 @@ final class DbUtils {
          if (empty($condition)) {
             $condition = [];
          } else {
-            //TODO throw a warning?
+            Toolbox::Deprecated('Condition should be an array!');
             $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
@@ -346,6 +346,7 @@ final class DbUtils {
          if (empty($condition)) {
             $condition = [];
          } else {
+            Toolbox::Deprecated('Condition should be an array!');
             $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
@@ -419,7 +420,7 @@ final class DbUtils {
     *
     * @return array containing all the datas
     */
-   public function getAllDataFromTable($table, $condition = '', $usecache = false, $order = '') {
+   public function getAllDataFromTable($table, $condition = [], $usecache = false, $order = '') {
       global $DB;
 
       static $cache = [];
@@ -434,11 +435,13 @@ final class DbUtils {
          if (empty($condition)) {
             $condition = [];
          } else {
+            Toolbox::Deprecated('Condition should be an array!');
             $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
 
       if (!empty($order)) {
+         //Toolbox::Deprecated('Order should be defined in condition!');
          $condition['ORDER'] = $order; // Deprecated use case
       }
 

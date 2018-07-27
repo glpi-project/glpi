@@ -3003,13 +3003,13 @@ class Rule extends CommonDBTM {
                      $types[] = 'RuleMailCollector';
                   }
                   if (count($types)) {
-                     $nb = countElementsInTable(['glpi_rules', 'glpi_ruleactions'],
-                                                "`glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
-                                                  AND `glpi_rules`.`sub_type`
-                                                         IN ('".implode("','", $types)."')
-                                                  AND `glpi_ruleactions`.`field` = 'entities_id'
-                                                  AND `glpi_ruleactions`.`value`
-                                                            = '".$item->getID()."'");
+                     $nb = countElementsInTable(
+                        ['glpi_rules', 'glpi_ruleactions'], [
+                           'glpi_ruleactions.rules_id'   => new \QueryExpression(Db::quoteName('glpi_rules.id')),
+                           'glpi_rules.sub_type'         => $types,
+                           'glpi_ruleactions.field'      => 'entities_id',
+                           'glpi_ruleactions.value'      => $item->getID()
+                        ]);
                   }
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

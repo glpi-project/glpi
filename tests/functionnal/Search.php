@@ -276,8 +276,12 @@ class Search extends DbTestCase {
                $number++;
             }
          }
-         $this->integer((int)countElementsInTable($displaypref->getTable(),
-                 "`itemtype`='".$itemtype."' AND `users_id`=0"))->isIdenticalTo($number);
+         $this->integer(
+            (int)countElementsInTable(
+               $displaypref->getTable(),
+               ['itemtype' => $itemtype, 'users_id' => 0]
+            )
+         )->isIdenticalTo($number);
 
          // do a search query
          $search_params = ['is_deleted'   => 0,

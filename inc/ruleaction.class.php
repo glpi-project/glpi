@@ -572,11 +572,13 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_users_validate" :
                      $used = [];
                      if ($item = getItemForItemtype($options["sub_type"])) {
-                        $rule_data = getAllDatasFromTable('glpi_ruleactions',
-                                                          "`action_type` = 'add_validation'
-                                                           AND `field` = 'users_id_validate'
-                                                           AND `".$item->getRuleIdField()."`
-                                                            = '".$options[$item->getRuleIdField()]."'");
+                        $rule_data = getAllDatasFromTable(
+                           self::getTable(), [
+                              'action_type'           => 'add_validation',
+                              'field'                 => 'users_id_validate',
+                              $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                           ]
+                        );
 
                         foreach ($rule_data as $data) {
                            $used[] = $data['value'];
@@ -592,12 +594,13 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_groups_validate" :
                      $used = [];
                      if ($item = getItemForItemtype($options["sub_type"])) {
-                        $rule_data = getAllDatasFromTable('glpi_ruleactions',
-                                                          "`action_type` = 'add_validation'
-                                                           AND `field` = 'groups_id_validate'
-                                                           AND `".$item->getRuleIdField()."`
-                                                            = '".$options[$item->getRuleIdField()]."'");
-
+                        $rule_data = getAllDatasFromTable(
+                           self::getTable, [
+                              'action_type'           => 'add_validation',
+                              'field'                 => 'groups_id_validate',
+                              $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                           ]
+                        );
                         foreach ($rule_data as $data) {
                            $used[] = $data['value'];
                         }

@@ -473,25 +473,24 @@ class Consumable extends CommonDBChild {
 
       $canedit = $consitem->can($tID, UPDATE);
       $rand = mt_rand();
-      $where = "";
+      $where = ['consumableitems_id' => $tID];
+      $order = ['date_in', 'id'];
       if (!$show_old) { // NEW
-         $where = " AND `date_out` IS NULL
-                  ORDER BY `date_in`, `id`";
+         $where += ['date_out' => 'NULL'];
       } else { //OLD
-         $where = " AND `date_out` IS NOT NULL
-                  ORDER BY `date_out` DESC,
-                           `date_in`,
-                           `id`";
+         $where += ['NOT'   => ['date_out' => 'NULL']];
+         $order = ['date_out DESC'] + $order;
       }
 
-      $number = countElementsInTable("glpi_consumables", "`consumableitems_id` = '$tID' $where");
+      $number = countElementsInTable("glpi_consumables", $where);
 
-      $query = "SELECT `glpi_consumables`.*
-                FROM `glpi_consumables`
-                WHERE `consumableitems_id` = '$tID'
-                      $where
-                LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => $where,
+         'ORDER'  => $order,
+         'START'  => (int)$start,
+         'LIMIT'  => (int)$_SESSION['glpilist_limit']
+      ]);
 
       echo "<div class='spaced'>";
 
@@ -557,7 +556,7 @@ class Consumable extends CommonDBChild {
          $header_end .= "</tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
 

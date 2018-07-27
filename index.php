@@ -158,10 +158,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          </p>';
 
    if ($CFG_GLPI["notifications_mailing"]
-       && countElementsInTable('glpi_notifications',
-                               "`itemtype`='User'
-                                AND `event`='passwordforget'
-                                AND `is_active`=1")) {
+      && countElementsInTable(
+         'glpi_notifications', [
+            'itemtype'  => 'User',
+            'event'     => 'passwordforget',
+            'is_active' => 1
+         ])
+      ) {
       echo '<a id="forget" href="front/lostpassword.php?lostpassword=1">'.
              __('Forgotten password?').'</a>';
    }

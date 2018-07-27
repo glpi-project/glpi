@@ -800,10 +800,10 @@ class Profile_User extends CommonDBRelation {
    static function getForUser($user_ID, $only_dynamic = false) {
       global $DB;
 
-      $condition = "`users_id` = '$user_ID'";
+      $condition = ['users_id' => $user_ID];
 
       if ($only_dynamic) {
-         $condition .= " AND `is_dynamic` = 1";
+         $condition['is_dynamic'] = 1;
       }
 
       return getAllDatasFromTable('glpi_profiles_users', $condition);

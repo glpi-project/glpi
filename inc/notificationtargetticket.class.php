@@ -201,15 +201,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          return ['show_private' => 0];
       }
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_profiles_users`
-                WHERE `users_id`='".$data['users_id']."' ".
-                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
-                                                 $this->getEntity(), true)."
-                      AND profiles_id IN (".implode(',', $this->private_profiles).")";
-      $result = $DB->query($query);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_profiles_users',
+         'WHERE'  => [
+            'users_id'     => $data['users_id'],
+            'profiles_id'  => $this->private_profiles
+         ] + getEntitiesRestrictCriteria('glpi_profiles_users', 'entities_id', $this->getEntity(), true)
+      ])->next();
 
-      if ($DB->result($result, 0, 'cpt')) {
+      if ($result['cpt']) {
          return ['show_private' => 1];
       }
       return ['show_private' => 0];
@@ -512,7 +513,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $data['##ticket.numberoflinkedtickets##'] = count($data['linkedtickets']);
 
-         $restrict          = "`tickets_id`='".$item->getField('id')."'";
+         $restrict          = ['tickets_id' => $item->getField('id')];
          $problems          = getAllDatasFromTable('glpi_problems_tickets', $restrict);
          $data['problems'] = [];
          if (count($problems)) {
@@ -540,7 +541,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $data['##ticket.numberofproblems##'] = count($data['problems']);
 
-         $restrict         = "`tickets_id`='".$item->getField('id')."'";
          $changes          = getAllDatasFromTable('glpi_changes_tickets', $restrict);
          $data['changes'] = [];
          if (count($changes)) {
@@ -568,15 +568,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $data['##ticket.numberofchanges##'] = count($data['changes']);
 
+         $followup_restrict = $restrict;
          if (!isset($options['additionnaloption']['show_private'])
              || !$options['additionnaloption']['show_private']) {
-            $restrict .= " AND `is_private` = 0";
+            $followup_restrict['is_private'] = 0;
          }
 
-         $restrict .= " ORDER BY `date_mod` DESC, `id` ASC";
-
          //Followup infos
-         $followups          = getAllDatasFromTable('glpi_ticketfollowups', $restrict);
+         $followups          = getAllDatasFromTable('glpi_ticketfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
          $data['followups'] = [];
          foreach ($followups as $followup) {
             $tmp                             = [];
@@ -593,23 +592,20 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $data['##ticket.numberoffollowups##'] = count($data['followups']);
 
          // Approbation of solution
-         $restrict .= " LIMIT 1";
-         $replysolved = getAllDatasFromTable('glpi_ticketfollowups', $restrict);
+         $replysolved = getAllDatasFromTable('glpi_ticketfollowups', $restrict, false, ['date_mod DESC', 'id ASC']);
          $current = current($replysolved);
          $data['##ticket.solution.approval.description##'] = $current['content'];
          $data['##ticket.solution.approval.date##']        = Html::convDateTime($current['date']);
          $data['##ticket.solution.approval.author##']      = Html::clean(getUserName($current['users_id']));
 
          //Validation infos
-         $restrict = "`tickets_id`='".$item->getField('id')."'";
+         $restrict = ['tickets_id' => $item->getField('id')];
 
          if (isset($options['validation_id']) && $options['validation_id']) {
-            $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
+            $restrict['glpi_ticketvalidations.id'] = $options['validation_id'];
          }
 
-         $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
-
-         $validations = getAllDatasFromTable('glpi_ticketvalidations', $restrict);
+         $validations = getAllDatasFromTable('glpi_ticketvalidations', $restrict, false, ['submission_date DESC', 'id ASC']);
          $data['validations'] = [];
          foreach ($validations as $validation) {
             $tmp = [];

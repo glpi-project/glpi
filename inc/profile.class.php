@@ -322,7 +322,7 @@ class Profile extends CommonDBTM {
       if (($this->fields['profile'] & UPDATE)
           && isset($input['profile']) && !($input['profile'] & UPDATE)
           && (countElementsInTable("glpi_profilerights",
-                                   "`name` = 'profile' AND `rights` & ".UPDATE))) {
+                                   ['name' => 'profile', 'rights' => ['&',  UPDATE]]))) {
          Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
          false, ERROR);
          Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
@@ -344,7 +344,7 @@ class Profile extends CommonDBTM {
 
       if (($this->fields['profile'] & DELETE)
           && (countElementsInTable("glpi_profilerights",
-                                   "`name` = 'profile' AND `rights` & ".DELETE))) {
+                                   ['name' => 'profile', 'rights' => ['&', DELETE]]))) {
           Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
                                            false, ERROR);
           Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
@@ -417,12 +417,14 @@ class Profile extends CommonDBTM {
    /**
     * Get SQL restrict request to determine profiles with less rights than the active one
     *
+    * @deprecated 9.3.1
+    *
     * @param $separator string   Separator used at the beginning of the request (default 'AND')
     *
     * @return SQL restrict string
    **/
    static function getUnderActiveProfileRestrictRequest($separator = "AND") {
-
+      Toolboox::deprecated();
       // I don't understand usefull of this code (yllen)
       /*
       if (in_array('reservation', self::$helpdesk_rights)
@@ -494,6 +496,70 @@ class Profile extends CommonDBTM {
       return $query;
    }
 
+   /**
+    * Get SQL restrict criteria to determine profiles with less rights than the active one
+    *
+    * @since 9.3.1
+    *
+    * @return array
+   **/
+   static function getUnderActiveProfileRestrictCriteria() {
+
+      // Not logged -> no profile to see
+      if (!isset($_SESSION['glpiactiveprofile'])) {
+         return [0];
+      }
+
+      // Profile right : may modify profile so can attach all profile
+      if (Profile::canCreate()) {
+         return [1];
+      }
+
+      $criteria = ['glpi_profiles.interface' => Session::getCurrentInterface()];
+
+      // First, get all possible rights
+      $right_subqueries = [];
+      foreach (ProfileRight::getAllPossibleRights() as $key => $default) {
+         $val = isset($_SESSION['glpiactiveprofile'][$key])?$_SESSION['glpiactiveprofile'][$key]:0;
+
+         if (!is_array($val) // Do not include entities field added by login
+             && (Session::getCurrentInterface() == 'central'
+                 || in_array($key, self::$helpdesk_rights))) {
+            $right_subqueries[] = [
+               'glpi_profilerights.name'     => $key,
+               'RAW'                         => [
+                  '(' . DBmysql::quoteName('glpi_profilerights.rights') . ' | ' . DBmysql::quoteValue($val) . ')' => $val
+               ]
+            ];
+         }
+      }
+
+      $dbiterator = new DBmysqlIterator(null);
+      $dbiterator->buildQuery(
+         'glpi_profilerights', [
+            'COUNT'  => 'cpt',
+            'WHERE'  => [
+               'glpi_profilerights.profiles_id' => new \QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
+               'OR'                             => $right_subqueries
+            ]
+         ]
+      );
+      $sub_query = $dbiterator->getSql();
+      $criteria['RAW'] = [
+         $sub_query => count($right_subqueries)
+      ];
+
+      if (Session::getCurrentInterface() == 'central') {
+         return [
+            'OR'  => [
+               $criteria,
+               'glpi_profiles.interface' => 'helpdesk'
+            ]
+         ];
+      }
+      return $criteria;
+   }
+
 
    /**
     * Is the current user have more right than all profiles in parameters
@@ -512,15 +578,16 @@ class Profile extends CommonDBTM {
          // Check all profiles (means more right than all possible profiles)
          return (countElementsInTable('glpi_profiles')
                      == countElementsInTable('glpi_profiles',
-                                             self::getUnderActiveProfileRestrictRequest('')));
+                                             self::getUnderActiveProfileRestrictCriteria()));
       }
       $under_profiles = [];
-      $query          = "SELECT *
-                         FROM `glpi_profiles` ".
-                         self::getUnderActiveProfileRestrictRequest("WHERE");
-      $result         = $DB->query($query);
 
-      while ($data = $DB->fetch_assoc($result)) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => self::getUnderActiveProfileRestrictCriteria()
+      ]);
+
+      while ($data = $iterator->next()) {
          $under_profiles[$data['id']] = $data['id'];
       }
 
@@ -2575,17 +2642,15 @@ class Profile extends CommonDBTM {
          }
       }
 
-      $query = "SELECT *
-                FROM `glpi_profiles` ".
-                self::getUnderActiveProfileRestrictRequest("WHERE")."
-                ORDER BY `name`";
-      $res = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => self::getUnderActiveProfileRestrictCriteria(),
+         'ORDER'  => 'name'
+      ]);
 
       //New rule -> get the next free ranking
-      if ($DB->numrows($res)) {
-         while ($data = $DB->fetch_assoc($res)) {
-            $profiles[$data['id']] = $data['name'];
-         }
+      while ($data = $iterator->next()) {
+         $profiles[$data['id']] = $data['name'];
       }
       Dropdown::showFromArray($p['name'], $profiles,
                               ['value'               => $p['value'],
