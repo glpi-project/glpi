@@ -152,7 +152,10 @@ class KnowbaseItem_Revision extends CommonDBTM {
 
       $is_checked = true;
       foreach ($revisions as $revision) {
-         $user->getFromDB($revision['users_id']);
+         // Before GLPI 9.3.1, author was not stored in revision.
+         // See https://github.com/glpi-project/glpi/issues/4377.
+         $hasRevUser = $user->getFromDB($revision['users_id']);
+
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $revision['revision']  . "</td>" .
                  "<td><input type='radio' name='oldid' value='{$revision['id']}'";
@@ -164,7 +167,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
 
          echo "/> <input type='radio' name='diff' value='{$revision['id']}'/></td>";
 
-         echo "<td>" . $user->getLink() . "</td>".
+         echo "<td>" . ($hasRevUser ? $user->getLink() : __('Unknown user')) . "</td>".
              "<td class='tab_date'>". $revision['date_creation'] . "</td>";
 
          $form = null;
@@ -296,6 +299,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
       );
       $this->fields['date_creation'] = date('Y-m-d H:i:s');
       $this->fields['revision'] = $this->getNewRevision();
+      $this->fields['users_id'] = $item->fields['users_id'];
       $this->addToDB();
    }
 
