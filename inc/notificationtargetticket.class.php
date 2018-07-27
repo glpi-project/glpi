@@ -41,7 +41,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    public $private_profiles = [];
 
-   public $html_tags        = ['##ticket.solution.description##'];
+   public $html_tags        = ['##ticket.content##', '##ticket.description##', '##ticket.solution.description##'];
 
    const HEADERTAG = '=-=-=-=';
    const FOOTERTAG = '=_=_=_=';

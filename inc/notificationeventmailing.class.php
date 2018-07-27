@@ -139,7 +139,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
          if (empty($current->fields['body_html'])) {
             $mmail->isHTML(false);
-            $mmail->Body = $current->fields['body_text'];
+            $mmail->Body = GLPIMailer::normalizeBreaks($current->fields['body_text']);
          } else {
             $mmail->isHTML(true);
             $mmail->Body = '';
@@ -236,14 +236,14 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                      '/src=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
                      '/href=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
                   ], [
-                     "src=\"cid:$tag\"",
-                     "href='".$CFG_GLPI['url_base']."/front/document.send.php?docid=$docID'",
+                     'src="cid:' . $tag . '"',
+                     'href="' . $CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID . '"',
                   ],
                   $current->fields['body_html']);
             }
 
-            $mmail->Body   .= $current->fields['body_html'];
-            $mmail->AltBody = $current->fields['body_text'];
+            $mmail->Body    = GLPIMailer::normalizeBreaks($current->fields['body_html']);
+            $mmail->AltBody = GLPIMailer::normalizeBreaks($current->fields['body_text']);
          }
 
          $recipient = $current->getField('recipient');

@@ -5633,17 +5633,18 @@ class Html {
                   }
                   // Replace tags by image in textarea
                   if ($addLink) {
-                     $out .= '<a href="'.$glpi_root.
-                             '/front/document.send.php?docid='.$id.$more_link.
-                             '" target="_blank"><img alt="'.$image['tag'].
-                             '" width="'.$width.
-                             '" src="'.$glpi_root.
-                        '/front/document.send.php?docid='.$id.$more_link.'" /></a>';
-                  } else {
-                     $out .= '<img alt="'.$image['tag'].
-                             '" width="'.$width.
-                             '" src="'.$glpi_root.
-                             '/front/document.send.php?docid='.$id.$more_link.'" />';
+                     $out .= '<a '
+                             . 'href="' . $glpi_root . '/front/document.send.php?docid=' . $id . $more_link . '" '
+                             . 'target="_blank" '
+                             . '>';
+                  }
+                  $out .= '<img '
+                          . 'alt="' . $image['tag'] . '" '
+                          . 'width="' . $width . '" '
+                          . 'src="' . $glpi_root . '/front/document.send.php?docid=' . $id.$more_link . '" '
+                          . '/>';
+                  if ($addLink) {
+                     $out .= '</a>';
                   }
                }
             }

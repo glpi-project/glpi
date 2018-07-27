@@ -272,8 +272,8 @@ class NotificationTemplate extends CommonDBTM {
             // Decode html chars to have clean text
             $template_datas['content_text']
                                        = Html::entity_decode_deep($template_datas['content_text']);
-            $save_data                 = $data;
             $data                      = Html::entity_decode_deep($data);
+            $save_data                 = $data;
 
             $template_datas['subject'] = Html::entity_decode_deep($template_datas['subject']);
             $this->signature           = Html::entity_decode_deep($this->signature);
