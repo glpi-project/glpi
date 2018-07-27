@@ -91,7 +91,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
       // Complex mode
       if (!$simple) {
-         $restrict = "`changes_id`='".$item->getField('id')."'";
+         $restrict = ['changes_id' => $item->getField('id')];
          $tickets  = getAllDatasFromTable('glpi_changes_tickets', $restrict);
 
          $data['tickets'] = [];
@@ -114,7 +114,6 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
          $data['##change.numberoftickets##'] = count($data['tickets']);
 
-         $restrict = "`changes_id`='".$item->getField('id')."'";
          $problems = getAllDatasFromTable('glpi_changes_problems', $restrict);
 
          $data['problems'] = [];
@@ -142,7 +141,6 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
          $data['##change.numberofproblems##'] = count($data['problems']);
 
-         $restrict = "`changes_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_changes_items', $restrict);
 
          $data['items'] = [];
@@ -200,15 +198,16 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          $data['##change.numberofitems##'] = count($data['items']);
 
          //Validation infos
-         $restrict = "`changes_id`='".$item->getField('id')."'";
-
          if (isset($options['validation_id']) && $options['validation_id']) {
-            $restrict .= " AND `glpi_changevalidations`.`id` = '".$options['validation_id']."'";
+            $restrict['glpi_changevalidations.id'] = $options['validation_id'];
          }
 
-         $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
-
-         $validations = getAllDatasFromTable('glpi_changevalidations', $restrict);
+         $validations = getAllDatasFromTable(
+            'glpi_changevalidations',
+            $restrict,
+            false,
+            ['submission_date DESC', 'id ASC']
+         );
          $data['validations'] = [];
          foreach ($validations as $validation) {
             $tmp = [];

@@ -1005,10 +1005,11 @@ class SoftwareLicense extends CommonTreeDropdown {
       $showmassiveactions  = $canedit;
 
       // Total Number of events
-      $number = countElementsInTable("glpi_softwarelicenses",
-                                     "glpi_softwarelicenses.softwares_id = $softwares_id " .
-                                          getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses',
-                                                                     '', '', true));
+      $number = countElementsInTable(
+         "glpi_softwarelicenses", [
+            'glpi_softwarelicenses.softwares_id'   => $softwares_id
+         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
+      );
       echo "<div class='spaced'>";
 
       Session::initNavigateListItems('SoftwareLicense',
@@ -1214,8 +1215,10 @@ class SoftwareLicense extends CommonTreeDropdown {
                   return '';
                }
                if ($_SESSION['glpishow_count_on_tabs']) {
-                   $nb = countElementsInTable($this->getTable(),
-                                             "`softwarelicenses_id` = '".$item->getID()."'");
+                  $nb = countElementsInTable(
+                     $this->getTable(),
+                     ['softwarelicenses_id' => $item->getID()]
+                  );
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                            (($nb >= 0) ? $nb : '&infin;'));

@@ -560,8 +560,10 @@ class Auth extends CommonGLPI {
    function getAuthMethods() {
 
       //Return all the authentication methods in an array
-      $this->authtypes = ['ldap' => getAllDatasFromTable('glpi_authldaps'),
-                               'mail' => getAllDatasFromTable('glpi_authmails')];
+      $this->authtypes = [
+         'ldap' => getAllDatasFromTable('glpi_authldaps'),
+         'mail' => getAllDatasFromTable('glpi_authmails')
+      ];
    }
 
    /**
@@ -643,7 +645,7 @@ class Auth extends CommonGLPI {
                      $ldapservers[] = $authldap->fields;
                   }
                } else { // User has never beeen authenticated : try all active ldap server to find the right one
-                  foreach (getAllDatasFromTable('glpi_authldaps', "`is_active`='1'") as $ldap_config) {
+                  foreach (getAllDatasFromTable('glpi_authldaps', ['is_active' => 1]) as $ldap_config) {
                      $ldapservers[] = $ldap_config;
                   }
                }

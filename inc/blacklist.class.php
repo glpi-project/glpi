@@ -243,7 +243,7 @@ class Blacklist extends CommonDropdown {
    **/
    static function getBlacklistedItems($type) {
 
-      $datas = getAllDatasFromTable('glpi_blacklists', "type = '$type'");
+      $datas = getAllDatasFromTable('glpi_blacklists', ['type' => $type]);
       $items = [];
       if (count($datas)) {
          foreach ($datas as $val) {

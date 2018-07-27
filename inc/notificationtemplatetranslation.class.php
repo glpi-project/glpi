@@ -324,8 +324,11 @@ class NotificationTemplateTranslation extends CommonDBChild {
    **/
    static function getAllUsedLanguages($language_id) {
 
-      $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',
-                                             'notificationtemplates_id='.$language_id);
+      $used_languages = getAllDatasFromTable(
+         'glpi_notificationtemplatetranslations', [
+            'notificationtemplates_id' => $language_id
+         ]
+      );
       $used           = [];
 
       foreach ($used_languages as $used_language) {

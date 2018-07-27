@@ -269,26 +269,14 @@ class DbUtils extends DbTestCase {
          ->then
             ->integer($this->testedInstance->countElementsInTable('glpi_configs'))->isGreaterThan(100)
             ->integer($this->testedInstance->countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100)
-            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100)
             ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'core']))->isGreaterThan(100)
-            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'core' AND name = 'version'"))->isIdenticalTo(1)
             ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->isIdenticalTo(1)
-            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'fakecontext'"))->isIdenticalTo(0)
             ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
       //keep testing old method from db.function
       //the case of using an element that is not a table is not handle in the function :
-      //testCountElementsInTable($table, $condition="")
       $this->integer(countElementsInTable('glpi_configs'))->isGreaterThan(100);
       $this->integer(countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100);
-      $this->integer(countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100);
-      $this->integer(
-         countElementsInTable(
-            'glpi_configs', "context = 'core' AND `name` = 'version'"
-         )
-      )->isIdenticalTo(1);
-      $this->integer(countElementsInTable('glpi_configs', "context = 'fakecontext'"))->isIdenticalTo(0);
-      // Using iterator
       $this->integer(countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->isIdenticalTo(1);
       $this->integer(countElementsInTable('glpi_configs', ['context' => 'core']))->isGreaterThan(100);
       $this->integer(countElementsInTable('glpi_configs', ['context' => 'fakecontext']))->isIdenticalTo(0);
@@ -304,20 +292,8 @@ class DbUtils extends DbTestCase {
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_tickets', 'entities_id'))->isIdenticalTo(2)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(12)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(15)
-            ->integer(
-               countDistinctElementsInTable(
-                  'glpi_configs',
-                  'context',
-                  "name = 'version'"
-               )
-            )->isIdenticalTo(1)
-            ->integer(
-               countDistinctElementsInTable(
-                  'glpi_configs',
-                  'id',
-                  "context ='fakecontext'"
-               )
-            )->isIdenticalTo(0);
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']))->isIdenticalTo(1)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
       //keep testing old method from db.function
       //the case of using an element that is not a table is not handle in the function :
@@ -328,14 +304,14 @@ class DbUtils extends DbTestCase {
          countDistinctElementsInTable(
             'glpi_configs',
             'context',
-            "name = 'version'"
+            ['name' => 'version']
          )
       )->isIdenticalTo(1);
       $this->integer(
          countDistinctElementsInTable(
             'glpi_configs',
             'id',
-            "context ='fakecontext'"
+            ['context' => 'fakecontext']
          )
       )->isIdenticalTo(0);
    }
@@ -430,9 +406,8 @@ class DbUtils extends DbTestCase {
       $this
          ->if($this->newTestedInstance)
          ->then
-            ->array($this->testedInstance->getAllDataFromTable('glpi_configs', "context = 'core' AND `name` = 'version'"))->hasSize(1)
             ->array($this->testedInstance->getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->hasSize(1)
-            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', "", false, 'name'))->isNotEmpty();
+            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', [], false, 'name'))->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {
          $this->boolean($previousArrayName <= $previousArrayName = $array['name'])->isTrue();
@@ -449,10 +424,10 @@ class DbUtils extends DbTestCase {
             ->variable['id']->isEqualTo($key);
       }
 
-      $data = getAllDatasFromTable('glpi_configs', "context = 'core' AND `name` = 'version'");
+      $data = getAllDatasFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->array($data)->hasSize(1);
 
-      $data = getAllDatasFromTable('glpi_configs', "", false, 'name');
+      $data = getAllDatasFromTable('glpi_configs', [], false, 'name');
       $this->array($data)->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {

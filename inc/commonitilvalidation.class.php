@@ -200,10 +200,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if (!$hidetab) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $restrict = "`".static::$items_id."` = '".$item->getID()."'";
+            $restrict = [static::$items_id => $item->getID()];
             // No rights for create only count asign ones
             if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
-               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
+               $restrict['users_id_validate'] = Session::getLoginUserID();
             }
             $nb = countElementsInTable(static::getTable(), $restrict);
          }
@@ -1382,8 +1382,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $statuses           = [self::ACCEPTED => 0,
                                   self::WAITING  => 0,
                                   self::REFUSED  => 0];
-      $restrict           = "`".static::$items_id."` = '".$item->getID()."'";
-      $validations        = getAllDatasFromTable(static::getTable(), $restrict);
+      $validations        = getAllDatasFromTable(
+         static::getTable(), [
+            static::$items_id => $item->getID()
+         ]
+      );
 
       if ($total = count($validations)) {
          foreach ($validations as $validation) {

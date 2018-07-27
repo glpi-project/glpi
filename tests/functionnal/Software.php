@@ -193,7 +193,7 @@ class Software extends DbTestCase {
       $this->variable($software->fields['is_template'])->isEqualTo(0);
       $this->string($software->fields['name'])->isIdenticalTo('MySoft');
 
-      $query = "`itemtype`='Software' AND `items_id`='$softwares_id'";
+      $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
       $this->integer((int)countElementsInTable('glpi_infocoms', $query))->isIdenticalTo(0);
       $this->integer((int)countElementsInTable('glpi_contracts_items', $query))->isIdenticalTo(0);
 
@@ -207,7 +207,7 @@ class Software extends DbTestCase {
       ]);
       $this->integer((int)$softwares_id)->isGreaterThan(0);
 
-      $query = "`itemtype`='Software' AND `items_id`='$softwares_id'";
+      $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
       $this->integer((int)countElementsInTable('glpi_infocoms', $query))->isIdenticalTo(1);
    }
 
@@ -258,7 +258,7 @@ class Software extends DbTestCase {
       $this->variable($software->fields['is_template'])->isEqualTo(0);
       $this->string($software->fields['name'])->isIdenticalTo('MySoft');
 
-      $query = "`itemtype`='Software' AND `items_id`='$softwares_id_2'";
+      $query = ['itemtype' => 'Software', 'items_id' => $softwares_id_2];
       $this->integer((int)countElementsInTable('glpi_infocoms', $query))->isIdenticalTo(1);
       $this->integer((int)countElementsInTable('glpi_contracts_items', $query))->isIdenticalTo(1);
    }
@@ -295,7 +295,7 @@ class Software extends DbTestCase {
       )->isGreaterThan(0);
 
       $this->boolean($software->delete(['id' => $softwares_id], true))->isTrue();
-      $query = "`itemtype`='Software' AND `items_id`='$softwares_id'";
+      $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
       $this->integer((int)countElementsInTable('glpi_infocoms', $query))->isIdenticalTo(0);
       $this->integer((int)countElementsInTable('glpi_contracts_items', $query))->isIdenticalTo(0);
 

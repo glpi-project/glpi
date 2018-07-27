@@ -3954,7 +3954,7 @@ class CommonDBTM extends CommonGLPI {
 
             //If there's fields to check
             if (!empty($fields) && !empty($fields['fields'])) {
-               $where    = "";
+               $where    = [];
                $continue = true;
                foreach (explode(',', $fields['fields']) as $field) {
                   if (isset($this->input[$field]) //Field is set
@@ -3966,32 +3966,31 @@ class CommonDBTM extends CommonGLPI {
                               && ($this->input[$field] > 0)))
                       && !Fieldblacklist::isFieldBlacklisted(get_class($this), $entities_id, $field,
                                                              $this->input[$field])) {
-                     $where .= " AND `".$this->getTable()."`.`$field` = '".$this->input[$field]."'";
+                     $where[$this->getTable() . '.' . $field] = $this->input[$field];
                   } else {
                      $continue = false;
                   }
                }
 
                if ($continue
-                   && ($where != '')) {
+                   && count($where)) {
                   $entities = $fields['entities_id'];
                   if ($fields['is_recursive']) {
                      $entities = getSonsOf('glpi_entities', $fields['entities_id']);
                   }
-                  $where_global = getEntitiesRestrictRequest(" AND", $this->getTable(), '',
-                                                             $entities);
+                  $where[] = getEntitiesRestrictCriteria($this->getTable(), '', $entities);
 
                   $tmp = clone $this;
                   if ($tmp->maybeTemplate()) {
-                     $where_global .= " AND `is_template` = 0";
+                     $where['is_template'] = 0;
                   }
 
                   //If update, exclude ID of the current object
                   if (!$add) {
-                     $where .= " AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
+                     $where['NOT'] = [$this->getTable() . '.id' => $this->input['id']];
                   }
 
-                  if (countElementsInTable($this->getTable(), "1 $where $where_global") > 0) {
+                  if (countElementsInTable($this->getTable(), $where) > 0) {
                      if ($p['unicity_error_message']
                          || $p['add_event_on_duplicate']) {
                         $message = [];
@@ -3999,8 +3998,7 @@ class CommonDBTM extends CommonGLPI {
                            $message[$field] = $this->input[$field];
                         }
 
-                        $doubles      = getAllDatasFromTable($this->gettable(),
-                                                             "1 $where $where_global");
+                        $doubles      = getAllDatasFromTable($this->getTable(), $where);
                         $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {
@@ -4024,15 +4022,16 @@ class CommonDBTM extends CommonGLPI {
                         $result = false;
                      }
                      if ($fields['action_notify']) {
-                        $params = ['action_type' => $add,
-                                        'action_user' => getUserName(Session::getLoginUserID()),
-                                        'entities_id' => $entities_id,
-                                        'itemtype'    => get_class($this),
-                                        'date'        => $_SESSION['glpi_currenttime'],
-                                        'refuse'      => $fields['action_refuse'],
-                                        'label'       => $message,
-                                        'field'       => $fields,
-                                        'double'      => $doubles];
+                        $params = [
+                           'action_type' => $add,
+                           'action_user' => getUserName(Session::getLoginUserID()),
+                           'entities_id' => $entities_id,
+                           'itemtype'    => get_class($this),
+                           'date'        => $_SESSION['glpi_currenttime'],
+                           'refuse'      => $fields['action_refuse'],
+                           'label'       => $message,
+                           'field'       => $fields,
+                           'double'      => $doubles];
                         NotificationEvent::raiseEvent('refuse', new FieldUnicity(), $params);
                      }
                   }

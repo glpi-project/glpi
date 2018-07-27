@@ -1104,11 +1104,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $data["##$objettype.costtime##"]     = $costs['costtime'];
          $data["##$objettype.totalcost##"]    = $costs['totalcost'];
 
-         $restrict  = "`".$item->getForeignKeyField()."`='".$item->getField('id')."'";
+         $costs          = getAllDatasFromTable(
+            getTableForItemType($costtype),
+            [$item->getForeignKeyField() => $item->getField('id')],
+            false,
+            ['begin_date DESC', 'id ASC']
 
-         $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
-
-         $costs          = getAllDatasFromTable(getTableForItemType($costtype), $restrict);
+         );
          $data['costs'] = [];
          foreach ($costs as $cost) {
             $tmp = [];
@@ -1133,15 +1135,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          //Task infos
          $tasktype = $item->getType().'Task';
          $taskobj  = new $tasktype();
-         $restrict = "`".$item->getForeignKeyField()."`='".$item->getField('id')."'";
+         $restrict = [$item->getForeignKeyField() => $item->getField('id')];
          if ($taskobj->maybePrivate()
              && (!isset($options['additionnaloption']['show_private'])
-                 || !$options['additionnaloption']['show_private'])) {
-            $restrict .= " AND `is_private` = 0";
+             || !$options['additionnaloption']['show_private'])) {
+            $restrict['is_private'] = 0;
          }
-         $restrict .= " ORDER BY `date_mod` DESC, `id` ASC";
 
-         $tasks          = getAllDatasFromTable($taskobj->getTable(), $restrict);
+         $tasks          = getAllDatasFromTable(
+            $taskobj->getTable(),
+            $restrict,
+            false,
+            ['date_mod DESC', 'id ASC']
+         );
          $data['tasks'] = [];
          foreach ($tasks as $task) {
             $tmp                          = [];

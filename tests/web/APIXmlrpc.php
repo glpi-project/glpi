@@ -45,7 +45,7 @@ class APIXmlrpc extends APIBaseClass {
 
    public function setUp() {
       parent::setUp();
-      $this->boolean(extension_loaded('xmlrpc'))->isTrue();
+      $this->boolean(extension_loaded('xmlrpc'))->isTrue('xmlrpc extension is missing');
    }
 
    public function beforeTestMethod($method) {

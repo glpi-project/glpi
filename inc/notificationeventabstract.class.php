@@ -67,7 +67,7 @@ abstract class NotificationEventAbstract {
 
          $targets = getAllDatasFromTable(
             'glpi_notificationtargets',
-            "notifications_id = {$data['id']}"
+            ['notifications_id' => $data['id']]
          );
 
          static::extraRaise([

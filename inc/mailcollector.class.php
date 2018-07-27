@@ -1879,7 +1879,7 @@ class MailCollector  extends CommonDBTM {
          $buttons["notimportedemail.php"] = __('List of not imported emails');
       }
 
-      $errors  = getAllDatasFromTable($this->getTable(), '`errors` > 0');
+      $errors  = getAllDatasFromTable($this->getTable(), ['errors' => ['>', 0]]);
       $message = '';
       if (count($errors)) {
          $servers = [];

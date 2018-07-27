@@ -131,12 +131,21 @@ class CalendarSegment extends CommonDBChild {
       global $DB;
 
       // Do not check hour if day before the end day of after the begin day
-      return getAllDatasFromTable('glpi_calendarsegments',
-                                  "`calendars_id` = '$calendars_id'
-                                    AND `day` >= '$begin_day'
-                                    AND `day` <= '$end_day'
-                                    AND (`begin` < '$end_time' OR `day` < '$end_day')
-                                    AND ('$begin_time' < `end` OR `day` > '$begin_day')");
+      return getAllDatasFromTable(
+         'glpi_calendarsegments', [
+            'calendars_id' => $calendars_id,
+            ['day'          => ['>=', $begin_day]],
+            ['day'          => ['<=', $end_day]],
+            ['OR'          => [
+               'begin'  => ['<', $end_time],
+               'day'    => ['<', $end_day]
+            ]],
+            ['OR'          => [
+               'end'    => ['>=', $begin_time],
+               'day'    => ['>', $begin_day]
+            ]]
+         ]
+      );
    }
 
 
