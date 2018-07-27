@@ -1010,9 +1010,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             );
          }
 
-         $data["##$objettype.solution.description##"] = Toolbox::unclean_cross_side_scripting_deep(
-            $itilsolution->getField('content')
-         );
+         $data["##$objettype.solution.description##"] = $itilsolution->getField('content');
       }
 
       // Complex mode
