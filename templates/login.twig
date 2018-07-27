@@ -53,6 +53,9 @@
 
       <div id='boxlogin'>
          {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
+   {% if show_lostpass %}
+         <a id="forget" href="{{ path_for('lostPassword') }}">{{ __('Forgotten password?') }}</a>';
+   {%endif %}
       </div>
    </div>
    {#

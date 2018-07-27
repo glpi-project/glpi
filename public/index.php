@@ -445,7 +445,27 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ];
       }
 
-      return $this->view->render($response, 'login.twig', ['glpi_form' => $glpi_form]);
+      $show_lostpass = false;
+      if ($CFG_GLPI["notifications_mailing"]) {
+         $active = countElementsInTable(
+            'glpi_notifications', [
+               'itemtype'  => 'User',
+               'event'     => 'passwordforget',
+               'is_active' => 1
+            ]
+         );
+         if ($active > 0) {
+            $show_lostpass = true;
+         }
+      }
+
+      return $this->view->render(
+         $response,
+         'login.twig', [
+            'glpi_form'       => $glpi_form,
+            'show_lostpass'   => $show_lostpass
+         ]
+      );
    })->setName('login');
 
    $app->post('/login', function ($request, $response) use ($CFG_GLPI) {
@@ -564,6 +584,38 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ->withStatus(301)
          ->withHeader('Location', $this->router->pathFor('login'));
    })->setName('logout');
+
+   $app->get('/lost-password', function ($request, $response, $args) use ($CFG_GLPI) {
+      $go = true;
+      if ($CFG_GLPI["notifications_mailing"]) {
+         $active = countElementsInTable(
+            'glpi_notifications', [
+               'itemtype'  => 'User',
+               'event'     => 'passwordforget',
+               'is_active' => 1
+            ]
+         );
+         if ($active == 0) {
+            $go = false;
+         }
+      } else {
+         $go = false;
+      }
+
+      if (!$go) {
+         $this->flash->addMessage(
+            'error',
+            __('Password recovering is not enabled.')
+         );
+
+         return $response
+            ->withStatus(301)
+            ->withHeader('Location', $this->router->pathFor('login'));
+      }
+
+      //TODO: display password recovering page
+   })->setName('lostPassword');
+
 
    $app->get('/central', function ($request, $response, $args) {
       $central = new Central();
