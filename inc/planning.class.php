@@ -2188,8 +2188,15 @@ class Planning extends CommonGLPI {
             }
 
             $vevent['UID']     = $uid;
-            $vevent['DTSTART'] = new \DateTime($val["begin"]);
-            $vevent['DTEND']   = new \DateTime($val["end"]);
+
+            $dateBegin = new DateTime($val["begin"]);
+            $dateBegin->setTimeZone(new DateTimeZone('UTC'));
+
+            $dateEnd = new DateTime($val["end"]);
+            $dateEnd->setTimeZone(new DateTimeZone('UTC'));
+
+            $vevent['DTSTART'] = $dateBegin;
+            $vevent['DTEND']   = $dateEnd;
 
             if (isset($val["tickets_id"])) {
                $summary = sprintf(__('Ticket #%1$s %2$s'), $val["tickets_id"], $val["name"]);
