@@ -479,6 +479,10 @@ class DBmysqlIterator implements Iterator, Countable {
                trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
             }
 
+         } else if ($name === 'RAW') {
+            $key = key($value);
+            $value = current($value);
+            $ret .= '((' . $key . ') = ' . $this->analyseCrit($value) . ')';
          } else if (is_array($value)) {
             if (count($value) == 2
                   && isset($value[0]) && in_array($value[0], $operators, true)) {
