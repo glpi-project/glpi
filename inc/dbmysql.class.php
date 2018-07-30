@@ -738,9 +738,7 @@ class DBmysql {
       }
       if (count($names) == 2) {
          $name = self::quoteName($names[0]);
-         if (count($names) == 2) {
-            $name .= ' AS ' . self::quoteName($names[1]);
-         }
+         $name .= ' AS ' . self::quoteName($names[1]);
          return $name;
       } else {
          if (strpos($name, '.')) {
