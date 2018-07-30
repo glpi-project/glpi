@@ -132,6 +132,95 @@ function update93to94() {
    // Add a config entry for the CAS version
    $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
+   /** Update validation (ticket / change) */
+   if (!$DB->fieldExists('glpi_ticketvalidations', 'groups_id')) {
+      $migration->addField(
+         'glpi_ticketvalidations',
+         'groups_id',
+         'integer',
+         ['after' => 'users_id']
+      );
+   }
+   if ($DB->fieldExists('glpi_tickets', 'validation_percent')) {
+      $migration->changeField(
+         'glpi_tickets',
+         'validation_percent',
+         'validation',
+         'integer'
+      );
+   }
+   if (!$DB->fieldExists('glpi_tickets', 'validation_unit')) {
+      $migration->addField(
+         'glpi_tickets',
+         'validation_unit',
+         'char',
+         ['after' => 'validation', 'value' => '%']
+      );
+   }
+   if (!$DB->fieldExists('glpi_tickets', 'validation_user')) {
+      $migration->addField(
+         'glpi_tickets',
+         'validation_user',
+         'integer',
+         ['after' => 'validation_unit']
+      );
+   }
+   if (!$DB->fieldExists('glpi_tickets', 'validation_user_unit')) {
+      $migration->addField(
+         'glpi_tickets',
+         'validation_user_unit',
+         'char',
+         ['after' => 'validation_user', 'value' => '%']
+      );
+   }
+   $migration->addPostQuery("UPDATE `glpi_tickets`
+                          SET `glpi_tickets`.`validation_unit` = '%'
+                          WHERE `glpi_tickets`.`validation_unit` = ''");
+   $migration->addPostQuery("UPDATE `glpi_tickets`
+                          SET `glpi_tickets`.`validation_user_unit` = '%'
+                          WHERE `glpi_tickets`.`validation_user_unit` = ''");
+
+   if (!$DB->fieldExists('glpi_changevalidations', 'groups_id')) {
+      $migration->addField(
+         'glpi_changevalidations',
+         'groups_id',
+         'integer',
+         ['after' => 'users_id']
+      );
+   }
+   if ($DB->fieldExists('glpi_changes', 'validation_percent')) {
+      $migration->changeField(
+         'glpi_changes',
+         'validation_percent',
+         'validation',
+         'integer'
+      );
+   }
+   if (!$DB->fieldExists('glpi_changes', 'validation_unit')) {
+      $migration->addField(
+         'glpi_changes',
+         'validation_unit',
+         'char',
+         ['after' => 'validation', 'value' => '%']
+      );
+   }
+   if (!$DB->fieldExists('glpi_changes', 'validation_user')) {
+      $migration->addField(
+         'glpi_changes',
+         'validation_user',
+         'integer',
+         ['after' => 'validation_unit']
+      );
+   }
+   if (!$DB->fieldExists('glpi_changes', 'validation_user_unit')) {
+      $migration->addField(
+         'glpi_changes',
+         'validation_user_unit',
+         'char',
+         ['after' => 'validation_user', 'value' => '%']
+      );
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

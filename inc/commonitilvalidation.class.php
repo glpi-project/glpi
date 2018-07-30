@@ -731,6 +731,31 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $tmp    = [static::$items_id => $tID];
       $canadd = $this->can(-1, CREATE, $tmp);
       $rand   = mt_rand();
+      $group = new Group();
+
+      echo "<div id='viewvalidation" . $tID . "$rand'>\n";
+      echo "<table class='tab_cadre_fixe'>";
+      if ($canadd) {
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddValidation" . $tID . "$rand() {\n";
+         $paramsu = ['type'             => $this->getType(),
+                     'parenttype'       => static::$itemtype,
+                     static::$items_id  => $tID,
+                     'id'               => -1,
+                     'typetarget'       => 'users'];
+         Ajax::updateItemJsCode("viewvalidation" . $tID . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
+                                $paramsu);
+         echo "};";
+         echo "</script>\n";
+         if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
+            $item->getClosedStatusArray()))) {
+               echo "<tr class='tab_bg_1 noHover'><td class='center'>";
+               echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
+               echo __('Send an approval request')."</a></td>\n";
+         }
+      }
+      echo "</table></div>";
 
       if ($canadd) {
          echo "<form method='post' name=form action='".
@@ -738,90 +763,95 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th colspan='3'>".self::getTypeName(Session::getPluralNumber())."</th>";
+      echo "<th colspan='4'>".__('Configuration')."</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global approval status')."</td>";
-      echo "<td colspan='2'>";
+      echo "<td colspan='3'>";
       if (Session::haveRightsOr(static::$rightname, TicketValidation::getValidateRights())) {
          self::dropdownStatus("global_validation",
                               ['value'    => $item->fields["global_validation"]]);
       } else {
          echo TicketValidation::getStatus($item->fields["global_validation"]);
       }
-      echo "</td></tr>";
-
-      echo "<tr>";
-      echo "<th colspan='2'>"._x('item', 'State')."</th>";
-      echo "<th colspan='2'>";
-      echo self::getValidationStats($tID);
-      echo "</th>";
+      echo "</td>";
       echo "</tr>";
+
+      $units = [
+         '%' => __('Percentage'),
+         'c' => __('counter')
+      ];
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Minimum validation required')."</td>";
       if ($canadd) {
          echo "<td>";
-         echo $item->getValueToSelect('validation_percent', 'validation_percent',
-                                      $item->fields["validation_percent"]);
-         echo "</td>";
-         echo "<td><input type='submit' name='update' class='submit' value='".
-                    _sx('button', 'Save')."'>";
-         if (!empty($tID)) {
-            echo "<input type='hidden' name='id' value='$tID'>";
-         }
+         echo $item->getValueToSelect('validation', 'validation',
+                                      $item->fields["validation"]);
+         Dropdown::showFromArray('validation_unit', $units, ['value' => $item->fields['validation_unit']]);
          echo "</td>";
       } else {
-         echo "<td colspan='2'>";
-         echo Dropdown::getValueWithUnit($item->fields["validation_percent"], "%");
+         echo "<td>";
+         echo Dropdown::getValueWithUnit($item->fields["validation"], $item->fields['validation_unit']);
+         echo "</td>";
+      }
+      echo "<td>".__('Minimum validation required of users per group')."</td>";
+      if ($canadd) {
+         echo "<td>";
+         echo $item->getValueToSelect('validation_user', 'validation_user',
+                                      $item->fields["validation_user"]);
+         Dropdown::showFromArray('validation_user_unit', $units, ['value' => $item->fields['validation_user_unit']]);
+         echo "</td>";
+      } else {
+         echo "<td>";
+         echo Dropdown::getValueWithUnit($item->fields["validation_user"], $item->fields['validation_user_unit']);
          echo "</td>";
       }
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' class='center'><input type='submit' name='update' class='submit' value='".
+                 _sx('button', 'Save')."'>";
+      if (!empty($tID)) {
+         echo "<input type='hidden' name='id' value='$tID'>";
+      }
+      echo "</td>";
+      echo "</tr>";
+
       echo "</table>";
       if ($canadd) {
          Html::closeForm();
       }
 
-      echo "<div id='viewvalidation" . $tID . "$rand'></div>\n";
-
-      if ($canadd) {
-         echo "<script type='text/javascript' >\n";
-         echo "function viewAddValidation" . $tID . "$rand() {\n";
-         $params = ['type'             => $this->getType(),
-                         'parenttype'       => static::$itemtype,
-                         static::$items_id  => $tID,
-                         'id'               => -1];
-         Ajax::updateItemJsCode("viewvalidation" . $tID . "$rand",
-                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
-                                $params);
-         echo "};";
-         echo "</script>\n";
-      }
-
-      $iterator = $DB->Request([
+      $request = [
          'FROM'   => $this->getTable(),
          'WHERE'  => [static::$items_id => $item->getField('id')],
-         'ORDER'  => 'submission_date DESC'
-      ]);
+         'ORDER'  => ['groups_id ASC', 'submission_date DESC']
+      ];
+      $iterator = $DB->Request($request);
 
-      $colonnes = [_x('item', 'State'), __('Request date'), __('Approval requester'),
-                     __('Request comments'), __('Approval status'),
+      $colonnes = [_n('Group', 'Groups', 1), _x('item', 'State'), __('Request date'),
+                     __('Approval requester'), __('Request comments'), __('Approval status'),
                      __('Approver'), __('Approval comments')];
       $nb_colonnes = count($colonnes);
 
       echo "<table class='tab_cadre_fixehov'>";
+
+
       echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket').
            "</th></tr>";
 
-      if ($canadd) {
-         if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
-            $item->getClosedStatusArray()))) {
-               echo "<tr class='tab_bg_1 noHover'><td class='center' colspan='" . $nb_colonnes . "'>";
-               echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
-               echo __('Send an approval request')."</a></td></tr>\n";
-         }
-      }
+      echo "<tr>";
+      $compute_status = $this->computeValidationStatus($item);
+      echo "<td colspan='".$nb_colonnes."' class='center' style='background-color:".self::getStatusColor($compute_status).";'>";
+      echo __('Global validation calculation').": ";
+      echo self::getStatus($compute_status);
+      echo "<br>";
+      echo self::getValidationStats($tID);
+      echo "</td>";
+      echo "<tr>";
+
       if (count($iterator)) {
          $header = "<tr>";
          foreach ($colonnes as $colonne) {
@@ -834,8 +864,55 @@ abstract class CommonITILValidation  extends CommonDBChild {
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->fields["name"]));
-
+         // get group states
+         $groups_state = [];
          while ($row = $iterator->next()) {
+            if (!isset($groups_state[$row['groups_id']])) {
+               $groups_state[$row['groups_id']] = [
+                  self::WAITING  => 0,
+                  self::REFUSED  => 0,
+                  self::ACCEPTED => 0,
+                  '_total'       => 0,
+               ];
+            }
+            $groups_state[$row['groups_id']][$row['status']]++;
+            $groups_state[$row['groups_id']]['_total']++;
+         }
+         $iterator = $DB->Request($request);
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='".$nb_colonnes."'></td>";
+         echo "</tr>";
+
+         $groups_id = 0;
+         while ($row = $iterator->next()) {
+            if ($row['groups_id'] != $groups_id) {
+               if ($row['groups_id'] > 0) {
+                  echo "<tr class='tab_bg_1'>";
+                  echo "<td colspan='".$nb_colonnes."'></td>";
+                  echo "</tr>";
+
+                  $status = self::pureCompute(
+                        $item->fields['validation_user'],
+                        $item->fields['validation_user_unit'],
+                        array_sum($groups_state[$row['groups_id']]),
+                        $groups_state[$row['groups_id']]);
+
+                  // Manage the group state
+                  $bgcolor = self::getStatusColor($status);
+                  $status  = self::getStatus($status);
+
+                  echo "<tr class='tab_bg_1'>";
+                  echo "<th style='background-color:".$bgcolor.";'>";
+                  $group->getFromDB($row['groups_id']);
+                  echo $group->getName();
+                  echo "</th>";
+                  echo "<th style='background-color:".$bgcolor.";text-align: left;'>".$status."</th>";
+                  echo "<th colspan='".($nb_colonnes - 2)."'></th>";
+                  echo "</tr>";
+               }
+               $groups_id = $row['groups_id'];
+            }
             $canedit = $this->canEdit($row["id"]);
             Session::addToNavigateListItems($this->getType(), $row["id"]);
             $bgcolor = self::getStatusColor($row['status']);
@@ -846,7 +923,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                $item->fields['id'].$row["id"]."$rand();\""
                              : '') .
                   " id='viewvalidation" . $this->fields[static::$items_id] . $row["id"] . "$rand'>";
-            echo "<td>";
+            if ($groups_id > 0) {
+               echo "<td></td>";
+            } else {
+               echo "<td style='background-color:".$bgcolor.";'></td>";
+            }
+            echo "<td style='background-color:".$bgcolor.";'>";
             if ($canedit) {
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditValidation" .$item->fields['id']. $row["id"]. "$rand() {\n";
@@ -860,20 +942,29 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo "};";
                echo "</script>\n";
             }
-
-            echo "<div style='background-color:".$bgcolor.";'>".$status."</div></td>";
+            echo $status."</td>";
 
             echo "<td>".Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
             echo "<td>".$row["comment_submission"]."</td>";
-            echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
+            echo "<td>".Html::convDateTime($row["validation_date"]);
+            if ($row["validation_date"] == ''
+                  && $_SESSION['glpiID'] == $row["users_id_validate"]) {
+               echo "<i class='fa fa-edit fa-2x' title='".__('Add your approval')."'></i>";
+            }
+
+            echo "</td>";
             echo "<td>".getUserName($row["users_id_validate"])."</td>";
             echo "<td>".$row["comment_validation"]."</td>";
             echo "</tr>";
          }
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='".$nb_colonnes."'></td>";
+         echo "</tr>";
          echo $header;
       } else {
          //echo "<div class='center b'>".__('No item found')."</div>";
+
          echo "<tr class='tab_bg_1 noHover'><th colspan='" . $nb_colonnes . "'>";
          echo __('No item found')."</th></tr>\n";
       }
@@ -938,9 +1029,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
          } else {
             $users_id_validate  = [];
             $params             = ['id'                 => $this->fields["id"],
-                                        'entity'             => $this->getEntityID(),
-                                        'right'              => $validation_right,
-                                        'users_id_validate'  => $users_id_validate];
+                                   'entity'             => $this->getEntityID(),
+                                   'right'              => $validation_right,
+                                   'users_id_validate'  => $users_id_validate];
             self::dropdownValidator($params);
          }
          echo "</td></tr>";
@@ -1093,13 +1184,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $tab[] = [
          'id'                 => '51',
          'table'              => getTableForItemtype(static::$itemtype),
-         'field'              => 'validation_percent',
+         'field'              => 'validation',
          'name'               => __('Minimum validation required'),
          'datatype'           => 'number',
-         'unit'               => '%',
          'min'                => 0,
          'max'                => 100,
-         'step'               => 50
+         'step'               => 1
       ];
 
       $tab[] = [
@@ -1219,6 +1309,33 @@ abstract class CommonITILValidation  extends CommonDBChild {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => '460',
+         'table'              => getTableForItemtype(static::$itemtype),
+         'field'              => 'validation_user',
+         'name'               => __('Minimum validation required of users per group'),
+         'datatype'           => 'number',
+         'min'                => 0,
+         'max'                => 100,
+         'step'               => 1
+      ];
+
+      $tab[] = [
+         'id'                 => '461',
+         'table'              => getTableForItemtype(static::$itemtype),
+         'field'              => 'validation_unit',
+         'name'               => __('Validation unit'),
+         'datatype'           => 'string',
+      ];
+
+      $tab[] = [
+         'id'                 => '462',
+         'table'              => getTableForItemtype(static::$itemtype),
+         'field'              => 'validation_user_unit',
+         'name'               => __('Validation user unit'),
+         'datatype'           => 'string',
+      ];
+
       return $tab;
    }
 
@@ -1295,21 +1412,23 @@ abstract class CommonITILValidation  extends CommonDBChild {
       global $CFG_GLPI;
 
       $params = [
-        'name'              => '' ,
-        'id'                => 0,
-        'entity'            => $_SESSION['glpiactive_entity'],
-        'right'             => ['validate_request', 'validate_incident'],
-        'groups_id'         => 0,
-        'users_id_validate' => [],
-        'applyto'           => 'show_validator_field',
+        'name'               => '' ,
+        'id'                 => 0,
+        'entity'             => $_SESSION['glpiactive_entity'],
+        'right'              => ['validate_request', 'validate_incident'],
+        'groups_id'          => 0,
+        'users_id_validate'  => [],
+        'groups_id_validate' => [],
+        'applyto'            => 'show_validator_field',
       ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
 
-      $types = ['user'  => __('User'),
-                     'group' => __('Group')];
+      $types = ['user'        => __('User'),
+                'group'       => __('Users of group'),
+                'list_groups' => __('Group')];
 
       $type  = '';
       if (isset($params['users_id_validate']['groups_id'])) {
@@ -1317,10 +1436,13 @@ abstract class CommonITILValidation  extends CommonDBChild {
       } else if (!empty($params['users_id_validate'])) {
          $type = 'user';
       }
+      if (isset($options['validatortype'])) {
+         $type = $options['validatortype'];
+      }
 
       $rand = Dropdown::showFromArray("validatortype", $types,
                                       ['value'               => $type,
-                                            'display_emptychoice' => true]);
+                                       'display_emptychoice' => true]);
 
       if ($type) {
          $params['validatortype'] = $type;
@@ -1394,39 +1516,83 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $accepted           = 0;
       $rejected           = 0;
 
-      // Percent of validation
-      $validation_percent = $item->fields['validation_percent'];
+      $statuses = [self::ACCEPTED => 0,
+                   self::WAITING  => 0,
+                   self::REFUSED  => 0];
 
-      $statuses           = [self::ACCEPTED => 0,
-                                  self::WAITING  => 0,
-                                  self::REFUSED  => 0];
-      $validations        = getAllDatasFromTable(
-         static::getTable(), [
-            static::$items_id => $item->getID()
-         ]
-      );
+      // get configuration of validation
+      $validation_total = $item->fields['validation'];
+      $validation_total_unit = $item->fields['validation_unit'];
+      $validation_user = $item->fields['validation_user'];
+      $validation_user_unit = $item->fields['validation_user_unit'];
 
+      // Count validations of users (so not group)
+      $validations = getAllDatasFromTable(
+            static::getTable(), [
+               static::$items_id => $item->getID(),
+               'groups_id' => 0
+            ]);
       if ($total = count($validations)) {
          foreach ($validations as $validation) {
-            $statuses[$validation['status']] ++;
+            $statuses[$validation['status']]++;
          }
       }
 
-      if ($validation_percent > 0) {
-         if (($statuses[self::ACCEPTED]*100/$total) >= $validation_percent) {
-            $validation_status = self::ACCEPTED;
-         } else if (($statuses[self::REFUSED]*100/$total) >= $validation_percent) {
-            $validation_status = self::REFUSED;
-         }
-      } else {
-         if ($statuses[self::ACCEPTED]) {
-            $validation_status = self::ACCEPTED;
-         } else if ($statuses[self::REFUSED]) {
-            $validation_status = self::REFUSED;
+      // Count validations of groups
+      $validations = getAllDatasFromTable(
+            static::getTable(), [
+               static::$items_id => $item->getID(),
+               'groups_id' => ['>', 0]
+            ]);
+      $groups_validations = [];
+      if (count($validations)) {
+         foreach ($validations as $validation) {
+            if (!isset($groups_validations[$validation['groups_id']])) {
+               $groups_validations[$validation['groups_id']] = [self::ACCEPTED => 0,
+                                                                self::WAITING  => 0,
+                                                                self::REFUSED  => 0];
+            }
+            $groups_validations[$validation['groups_id']][$validation['status']]++;
          }
       }
-
+      foreach ($groups_validations as $validation) {
+         $status = self::pureCompute($validation_user, $validation_user_unit, array_sum($validation), $validation);
+         $statuses[$status]++;
+         $total++;
+      }
+      $validation_status = self::pureCompute($validation_total, $validation_total_unit, $total, $statuses);
       return $validation_status;
+   }
+
+
+   /**
+    * Do the calculation of validation, accept or refuse
+    *
+    * @param integer $number it's the number required to validate
+    * @param string $type it's the type : % (percent) or c (counter)
+    * @param integer $total it's the total number of validation requested
+    * @param array $count it's an array with all status count
+    */
+   static function pureCompute($number, $type, $total, $count) {
+      if ($number == 0
+            && $count[self::ACCEPTED] == 0) {
+         return self::WAITING;
+      }
+
+      if ($type == '%') {
+         if (($count[self::ACCEPTED]*100/$total) >= $number) {
+            return self::ACCEPTED;
+         } else if (($count[self::REFUSED]*100/$total) > (100 - $number)) {
+            return self::REFUSED;
+         }
+      } if ($type == 'c') { // it's counter
+         if ($count[self::ACCEPTED] >= $number) {
+            return self::ACCEPTED;
+         } else if ($count[self::REFUSED] > ($total - $number)) {
+            return self::REFUSED;
+         }
+      }
+      return self::WAITING;
    }
 
 

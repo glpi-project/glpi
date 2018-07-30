@@ -138,5 +138,67 @@ if (isset($_POST["validatortype"])) {
                                     $param_button, ['click']);
          }
          break;
+
+      case 'list_groups' :
+         if (isset($_POST['groups_id_validate']['groups_id'])) {
+            $_POST['groups_id_validate'] = [];
+         }
+         // Get all groups have at least 1 user with validation right
+         $group = new Group();
+         $iterator_g = $DB->request([
+            'FROM'   => 'glpi_groups',
+            'WHERE'  => [
+               'is_usergroup' => 1,
+            ] + getEntitiesRestrictCriteria('glpi_groups', '', $_POST["entity"]),
+            'ORDER'  => ['name']
+         ]);
+         $groups          = [];
+         $param['values'] = [];
+         $values          = [];
+         while ($data = $iterator_g->next()) {
+            $opt = ['groups_id' => $data["id"],
+                    'right'     => $_POST['right'],
+                    'entity'    => $_POST["entity"]];
+            $data_users = TicketValidation::getGroupUserHaveRights($opt);
+            if (count($data_users) > 0) {
+               $groups[$data['id']] = $data['completename'];
+            }
+         }
+
+         // Display all groups
+         if (isset($_POST['all_groups'])
+             && $_POST['all_groups']) {
+            $param['values'] =  array_keys($groups);
+         }
+         $param['multiple']= true;
+         $param['display'] = true;
+         $param['size']    = count($groups);
+
+         $groups = Toolbox::stripslashes_deep($groups);
+         $rand  = Dropdown::showFromArray(!empty($_POST['name']) ? $_POST['name']:'groups_id_validate',
+                                          $groups, $param);
+
+         // Display all/none buttons to select all or no groups
+         if (!empty($_POST['groups_id'])) {
+            echo "<br><br><a id='all_groups' class='vsubmit'>".__('All')."</a>";
+            $param_button['validatortype']      = 'list_groups';
+            $param_button['name']               = !empty($_POST['name']) ? $_POST['name']:'';
+            $param_button['groups_id_validate']  = '';
+            $param_button['all_groups']          = 1;
+            $param_button['groups_id']          = $_POST['groups_id'];
+            $param_button['entity']             = $_POST['entity'];
+            $param_button['right']              = $_POST['right'];
+            Ajax::updateItemOnEvent('all_groups', 'show_list_groups',
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                                    $param_button, ['click']);
+
+            echo "&nbsp;<a id='no_groups' class='vsubmit'>".__('None')."</a>";
+            $param_button['all_groups'] = 0;
+            Ajax::updateItemOnEvent('no_groups', 'show_list_groups',
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                                    $param_button, ['click']);
+         }
+         break;
+
    }
 }

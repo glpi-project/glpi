@@ -66,6 +66,21 @@ if (isset($_POST["add"])) {
                     //TRANS: %s is the user login
                     sprintf(__('%s adds an approval'), $_SESSION["glpiname"]));
       }
+   } else if(isset($_POST['groups_id_validate'])
+       && (count($_POST['groups_id_validate']) > 0)) {
+
+      $groups = $_POST['groups_id_validate'];
+      foreach ($groups as $group) {
+         $_POST['groups_id'] = $group;
+         $data_users = TicketValidation::getGroupUserHaveRights(['groups_id' => $group]);
+         foreach ($data_users as $user) {
+            $_POST['users_id_validate'] = $user['id'];
+            $validation->add($_POST);
+            Event::log($validation->getField($fk), strtolower($itemtype), 4, "tracking",
+                       //TRANS: %s is the user login
+                       sprintf(__('%s adds an approval'), $_SESSION["glpiname"]));
+         }
+      }
    }
    Html::back();
 
