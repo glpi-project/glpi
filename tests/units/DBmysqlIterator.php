@@ -488,6 +488,16 @@ class DBmysqlIterator extends DbTestCase {
       $crit['FROM'] = 'foo';
       $it = $this->it->execute($crit);
       $this->string($it->getSql())->isIdenticalTo($sql);
+
+      $crit = [
+         'FROM'   => 'foo',
+         'WHERE'  => [
+            'bar' => 'baz',
+            'RAW' => ['SELECT COUNT(*) FROM xyz' => 5]
+         ]
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) = 5)");
    }
 
 
