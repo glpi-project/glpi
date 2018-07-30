@@ -3886,7 +3886,7 @@ class User extends CommonDBTM {
       $iterator = $DB->request([
          'SELECT'    => [
             'glpi_groups_users.groups_id',
-            'glpi_groups_users.name'
+            'glpi_groups.name'
          ],
          'FROM'      => 'glpi_groups_users',
          'LEFT JOIN' => [
