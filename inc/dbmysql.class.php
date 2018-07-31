@@ -855,15 +855,32 @@ class DBmysql {
     *
     * @since 9.3
     *
-    * @param string $table  Table name
-    * @param array  $params Query parameters ([field name => field value)
-    * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
+    * @param string $table   Table name
+    * @param array  $params  Query parameters ([field name => field value)
+    * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
     *
     * @return string
     */
-   public function buildUpdate($table, $params, $where) {
+   public function buildUpdate($table, $params, $clauses) {
+      //when no explicit "WHERE", we only have a WHEre clause.
+      if (!isset($clauses['WHERE'])) {
+         $clauses  = ['WHERE' => $clauses];
+      } else {
+         $known_clauses = ['WHERE', 'ORDER', 'LIMIT', 'START'];
+         foreach (array_keys($clauses) as $key) {
+            if (!in_array($key, $known_clauses)) {
+               throw new \RuntimeException(
+                  str_replace(
+                     '%clause',
+                     $key,
+                     'Trying to use an unknonw clause (%clause) building update query!'
+                  )
+               );
+            }
+         }
+      }
 
-      if (!count($where)) {
+      if (!count($clauses['WHERE'])) {
          throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
       }
 
@@ -875,7 +892,17 @@ class DBmysql {
       $query = rtrim($query, ', ');
 
       $it = new DBmysqlIterator($this);
-      $query .= " WHERE " . $it->analyseCrit($where);
+      $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
+
+      // ORDER BY
+      if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
+         $query .= $it->handleOrderClause($clauses['ORDER']);
+      }
+
+      if (isset($clauses['LIMIT']) && !empty($clauses['LIMIT'])) {
+         $offset = (isset($clauses['START']) && !empty($clauses['START'])) ? $clauses['START'] : null;
+         $query .= $it->handleLimits($clauses['LIMIT'], $offset);
+      }
 
       return $query;
    }
