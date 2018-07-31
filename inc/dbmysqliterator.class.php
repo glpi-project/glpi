@@ -120,7 +120,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
          // Check field, orderby, limit, start in criterias
          $field    = "";
-         $orderby  = "";
+         $orderby  = null;
          $limit    = 0;
          $start    = 0;
          $distinct = '';
@@ -271,46 +271,12 @@ class DBmysqlIterator implements Iterator, Countable {
          }
 
          // ORDER BY
-         if (is_array($orderby)) {
-            $cleanorderby = [];
-            foreach ($orderby as $o) {
-               $new = '';
-               $tmp = explode(' ', $o);
-               $new .= DBmysql::quoteName($tmp[0]);
-               // ASC OR DESC added
-               if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
-                  $new .= ' '.$tmp[1];
-               }
-               $cleanorderby[] = $new;
-            }
-
-            $this->sql .= " ORDER BY ".implode(", ", $cleanorderby);
-         } else if (!empty($orderby)) {
-            $this->sql .= " ORDER BY ";
-            $fields = explode(',', $orderby);
-            $first = true;
-            foreach ($fields as $field) {
-               if ($first) {
-                  $first = false;
-               } else {
-                  $this->sql .= ', ';
-               }
-               $field = trim($field);
-               $tmp = explode(' ', $field);
-               $this->sql .= DBmysql::quoteName($tmp[0]);
-               // ASC OR DESC added
-               if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
-                  $this->sql .= ' '.$tmp[1];
-               }
-            }
+         if ($orderby !== null) {
+            $this->sql .= $this->handleOrderClause($orderby);
          }
 
-         if (is_numeric($limit) && ($limit > 0)) {
-            $this->sql .= " LIMIT $limit";
-            if (is_numeric($start) && ($start > 0)) {
-               $this->sql .= " OFFSET $start";
-            }
-         }
+         //LIMIT & OFFSET
+         $this->sql .= $this->handleLimits($limit, $start);
       }
 
       if ($log == true || defined('GLPI_SQL_DEBUG') && GLPI_SQL_DEBUG == true) {
@@ -318,6 +284,55 @@ class DBmysqlIterator implements Iterator, Countable {
       }
    }
 
+   /**
+    * Handle "ORDER BY" SQL clause
+    *
+    * @param string|array $clause Clause parameters
+    *
+    * @reutn string
+    */
+   public function handleOrderClause($clause) {
+      if (!is_array($clause)) {
+         $clause = [$clause];
+      }
+
+      $cleanorderby = [];
+      foreach ($clause as $o) {
+         $fields = explode(',', $o);
+         foreach ($fields as $field) {
+            $new = '';
+            $tmp = explode(' ', trim($field));
+            $new .= DBmysql::quoteName($tmp[0]);
+            // ASC OR DESC added
+            if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
+               $new .= ' '.$tmp[1];
+            }
+            $cleanorderby[] = $new;
+         }
+      }
+
+      return " ORDER BY ".implode(", ", $cleanorderby);
+   }
+
+
+   /**
+    * Handle LIMIT and OFFSET
+    *
+    * @param integer $limit  SQL LIMIT
+    * @param integer $offset Start OFFSET (defaults to null)
+    *
+    * @return string
+    */
+   public function handleLimits($limit, $offset = null) {
+      $limits = '';
+      if (is_numeric($limit) && ($limit > 0)) {
+         $limits = " LIMIT $limit";
+         if (is_numeric($offset) && ($offset > 0)) {
+            $limits .= " OFFSET $offset";
+         }
+      }
+      return $limits;
+   }
 
    /**
     * Handle fields

@@ -299,13 +299,17 @@ class UserEmail  extends CommonDBChild {
 
       // if default is set : set default to another one
       if ($this->fields["is_default"] == 1) {
-         //needs DB::update() to support limit to get migrated
-         $query = "UPDATE `". $this->getTable()."`
-                   SET `is_default` = 1
-                   WHERE `id` <> '".$this->fields['id']."'
-                         AND `users_id` = '".$this->fields['users_id']."'
-                   LIMIT 1";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'is_default'   => 1
+            ], [
+               'WHERE'  => [
+                  'id'        => ['<>', $this->fields['id']],
+                  'users_id'  => $this->fields['users_id']
+               ],
+               'LIMIT'  => 1
+            ]
+         );
       }
 
       parent::post_deleteFromDB();
