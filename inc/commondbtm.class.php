@@ -987,7 +987,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
       }
-      $this->last_status = self::NOTHING_TO_DO;
+
       return false;
    }
 
