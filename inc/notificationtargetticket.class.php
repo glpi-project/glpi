@@ -41,12 +41,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    public $private_profiles = [];
 
-   public $html_tags        = ['##ticket.content##', '##ticket.description##', '##ticket.solution.description##'];
-
    const HEADERTAG = '=-=-=-=';
    const FOOTERTAG = '=_=_=_=';
-
-
 
    /**
     * @param $entity          (default '')
@@ -522,7 +518,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          if (count($problems)) {
             $problem = new Problem();
             foreach ($problems as $row) {
-               if ($problem->getFromDB($data['problems_id'])) {
+               if ($problem->getFromDB($row['problems_id'])) {
                   $tmp = [];
 
                   $tmp['##problem.id##']

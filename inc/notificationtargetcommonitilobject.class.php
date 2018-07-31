@@ -36,6 +36,16 @@ if (!defined('GLPI_ROOT')) {
 
 abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
+   public $html_tags        = [
+      '##change.solution.description##',
+      '##followup.description##',
+      '##linkedticket.content##',
+      '##problem.solution.description##',
+      '##ticket.content##',
+      '##ticket.description##',
+      '##ticket.solution.description##'
+   ];
+
    /**
     * @param $entity          (default '')
     * @param $event           (default '')

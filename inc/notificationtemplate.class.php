@@ -273,7 +273,6 @@ class NotificationTemplate extends CommonDBTM {
             $template_datas['content_text']
                                        = Html::entity_decode_deep($template_datas['content_text']);
             $data                      = Html::entity_decode_deep($data);
-            $save_data                 = $data;
 
             $template_datas['subject'] = Html::entity_decode_deep($template_datas['subject']);
             $this->signature           = Html::entity_decode_deep($this->signature);
@@ -284,23 +283,13 @@ class NotificationTemplate extends CommonDBTM {
 
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
-               // Encode in HTML all chars
-               $data_html = Html::entities_deep($data);
-               $data_html = Html::nl2br_deep($data_html);
-               // Restore HTML tags
-               if (count($target->html_tags)) {
-                  foreach ($target->html_tags as $tag) {
-                     if (isset($save_data[$tag])) {
-                        $data_html[$tag] = $save_data[$tag];
-                     }
-                  }
-               }
-
                $signature_html = Html::entities_deep($this->signature);
                $signature_html = Html::nl2br_deep($signature_html);
 
-               $template_datas['content_html'] = self::process($template_datas['content_html'],
-                                                               $data_html);
+               $template_datas['content_html'] = self::process(
+                  $template_datas['content_html'],
+                  self::getDataForHtml($target, $data)
+               );
 
                $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
@@ -467,6 +456,29 @@ class NotificationTemplate extends CommonDBTM {
          }
       }
       return $string;
+   }
+
+   /**
+    * Convert notification data to HTML format.
+    *
+    * @param NotificationTarget $target
+    * @param array $data
+    * @return array
+    */
+   private static function getDataForHtml(NotificationTarget $target, array $data) {
+      $dataForHtml = [];
+
+      foreach ($data as $tag => $value) {
+         if (is_array($value)) {
+            $dataForHtml[$tag] = self::getDataForHtml($target, $value);
+         } elseif (!in_array($tag, $target->html_tags)) {
+            $dataForHtml[$tag] = Html::nl2br_deep(Html::entities_deep($value));
+         } else {
+            $dataForHtml[$tag] = $value;
+         }
+      }
+
+      return $dataForHtml;
    }
 
 
