@@ -474,21 +474,25 @@ class Transfer extends CommonDBTM {
       $this->item_recurs['Software']
             = $this->createSearchConditionUsingArray($this->noneedtobe_transfer['Software']);
 
-      // Move license of software
-      // TODO : should we transfer "affected license" ?
-      $query = "SELECT `id`, `softwareversions_id_buy`, `softwareversions_id_use`
-                FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` IN ".$this->item_search['Software'];
+      if (count($this->needtobe_transfer['Software'])) {
+         // Move license of software
+         // TODO : should we transfer "affected license" ?
+         $iterator = $DB->request([
+            'SELECT' => ['id', 'softwareversions_id_buy', 'softwareversions_id_use'],
+            'FROM'   => 'glpi_softwarelicenses',
+            'WHERE'  => ['softwares_id' => $this->needtobe_transfer['Software']]
+         ]);
 
-      foreach ($DB->request($query) AS $lic) {
-         $this->addToBeTransfer('SoftwareLicense', $lic['id']);
+         while ($lic = $iterator->next()) {
+            $this->addToBeTransfer('SoftwareLicense', $lic['id']);
 
-         // Force version transfer (remove from item_recurs)
-         if ($lic['softwareversions_id_buy'] > 0) {
-            $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_buy']);
-         }
-         if ($lic['softwareversions_id_use'] > 0) {
-            $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_use']);
+            // Force version transfer (remove from item_recurs)
+            if ($lic['softwareversions_id_buy'] > 0) {
+               $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_buy']);
+            }
+            if ($lic['softwareversions_id_use'] > 0) {
+               $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_use']);
+            }
          }
       }
 

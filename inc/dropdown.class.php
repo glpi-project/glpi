@@ -472,14 +472,14 @@ class Dropdown {
                $field = 'completename';
             }
 
-            $query = "SELECT `id`, `$field`
-                      FROM `$table`
-                      WHERE `id` IN (".implode(',', $ids).")";
+            $iterator = $DB->request([
+               'SELECT' => ['id', $field],
+               'FROM'   => $table,
+               'WHERE'  => ['id' => $ids]
+            ]);
 
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $tabs[$data['id']] = $data[$field];
-               }
+            while ($data = $iterator->next()) {
+               $tabs[$data['id']] = $data[$field];
             }
          }
       }
@@ -556,14 +556,14 @@ class Dropdown {
          }
       }
 
-      $query = "SELECT DISTINCT `".$p['field']."`
-                FROM `".getTableForItemType($itemtype_ref)."`";
+      $iterator = $DB->Request([
+         'SELECT DISTINCT' => $p['field'],
+         'FROM'            => getTableForItemType($itemtype_ref)
+      ]);
 
       $tabs = [];
-      if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $tabs[$data[$p['field']]] = $data[$p['field']];
-         }
+      while ($data = $iterator->next()) {
+         $tabs[$data[$p['field']]] = $data[$p['field']];
       }
       return self::showItemTypes($name, $tabs, ['value' => $p['value']]);
    }

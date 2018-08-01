@@ -2376,9 +2376,14 @@ class Toolbox {
 
          if (defined('GLPI_SYSTEM_CRON')) {
             // Downstream packages may provide a good system cron
-            //needs DB::update() to support fields names to get migrated
-            $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
-            $DB->queryOrDie($query, "4203");
+            $DB->updateOrDie(
+               'glpi_crontasks', [
+                  'mode'   => 2
+               ], [
+                  'name'      => ['!=', 'watcher'],
+                  'allowmode' => ['&', 2]
+               ]
+            );
          }
       }
    }

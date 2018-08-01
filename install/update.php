@@ -412,14 +412,18 @@ function changeVarcharToID($table1, $table2, $chps) {
              ADD `temp` INT";
    $DB->queryOrDie($query);
 
-   //needs DB::request to support aliases to get migrated
-   $query = "SELECT `$table1`.`ID` AS row1,
-                    `$table2`.`ID` AS row2
-             FROM `$table1`, `$table2`
-             WHERE `$table2`.`name` = `$table1`.`$chps`";
-   $result = $DB->queryOrDie($query);
+   $iterator = $DB->request([
+      'SELECT' => [
+         "$table1.ID AS row1",
+         "$table2.ID AS row2",
+      ],
+      'FROM'   => [$table1, $table2],
+      'WHERE'  => [
+         "$table2.name" => new \QueryExpression(DBmysql::quoteName("$table1.$chps"))
+      ]
+   ]);
 
-   while ($line = $DB->fetch_assoc($result)) {
+   while ($line = $iterator->next()) {
       $DB->updateOrDie(
          $table1,
          ['temp' => $line['row2']],

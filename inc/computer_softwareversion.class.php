@@ -391,193 +391,231 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       // Display the pager
       Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
-      //needs DB::request() to support aliases to get migrated
-      $query = "SELECT DISTINCT `glpi_computers_softwareversions`.*,
-                       `glpi_computers`.`name` AS compname,
-                       `glpi_computers`.`id` AS cID,
-                       `glpi_computers`.`serial`,
-                       `glpi_computers`.`otherserial`,
-                       `glpi_users`.`name` AS username,
-                       `glpi_users`.`id` AS userid,
-                       `glpi_users`.`realname` AS userrealname,
-                       `glpi_users`.`firstname` AS userfirstname,
-                       `glpi_softwareversions`.`name` AS version,
-                       `glpi_softwareversions`.`id` AS vID,
-                       `glpi_softwareversions`.`softwares_id` AS sID,
-                       `glpi_softwareversions`.`name` AS vername,
-                       `glpi_entities`.`completename` AS entity,
-                       `glpi_locations`.`completename` AS location,
-                       `glpi_states`.`name` AS state,
-                       `glpi_groups`.`name` AS groupe
-                FROM `glpi_computers_softwareversions`
-                INNER JOIN `glpi_softwareversions`
-                     ON (`glpi_computers_softwareversions`.`softwareversions_id`
-                           = `glpi_softwareversions`.`id`)
-                INNER JOIN `glpi_computers`
-                     ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-                LEFT JOIN `glpi_entities` ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
-                LEFT JOIN `glpi_locations`
-                     ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)
-                LEFT JOIN `glpi_states` ON (`glpi_computers`.`states_id` = `glpi_states`.`id`)
-                LEFT JOIN `glpi_groups` ON (`glpi_computers`.`groups_id` = `glpi_groups`.`id`)
-                LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)
-                WHERE (`glpi_softwareversions`.`$crit` = '$searchID') " .
-                       getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                       AND `glpi_computers`.`is_deleted` = 0
-                       AND `glpi_computers`.`is_template` = 0
-                       AND `glpi_computers_softwareversions`.`is_deleted` = 0
-                ORDER BY $sort $order
-                LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+      $iterator = $DB->request([
+         'SELECT'    => [
+            self::getTable() . '.*',
+            'glpi_computers.name AS compname',
+            'glpi_computers.id AS cID',
+            'glpi_computers.serial',
+            'glpi_computers.otherserial',
+            'glpi_users.name AS username',
+            'glpi_users.id AS userid',
+            'glpi_users.realname AS userrealname',
+            'glpi_users.firstname AS userfirstname',
+            'glpi_softwareversions.name AS version',
+            'glpi_softwareversions.id AS vID',
+            'glpi_softwareversions.softwares_id AS sID',
+            'glpi_entities.completename AS entity',
+            'glpi_locations.completename AS location',
+            'glpi_states.name AS state',
+            'glpi_groups.name AS groupe',
+         ],
+         'FROM'      => self::getTable(),
+         'INNER JOIN'   => [
+            'glpi_softwareversions' => [
+               'FKEY'   => [
+                  self::getTable()        => 'softwareversions_id',
+                  'glpi_softwareversions' => 'id'
+               ]
+            ],
+            'glpi_computers'  => [
+               'FKEY'   => [
+                  'glpi_computers_softwareversions'   => 'computers_id',
+                  'glpi_computers'                    => 'id'
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_entities'   => [
+               'FKEY'   => [
+                  'glpi_computers'  => 'entities_id',
+                  'glpi_entities'   => 'id'
+               ]
+            ],
+            'glpi_locations'  => [
+               'FKEY'   => [
+                  'glpi_computers'  => 'locations_id',
+                  'glpi_locations'  => 'id'
+               ]
+            ],
+            'glpi_states'  => [
+               'FKEY'   => [
+                  'glpi_computers'  => 'states_id',
+                  'glpi_states'     => 'id'
+               ]
+            ],
+            'glpi_groups'  => [
+               'FKEY'   => [
+                  'glpi_computers'  => 'groups_id',
+                  'glpi_groups'     => 'id'
+               ]
+            ],
+            'glpi_users'   => [
+               'FKEY'   => [
+                  'glpi_computers'  => 'users_id',
+                  'glpi_users'      => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            "glpi_softwareversions.$crit"                => $searchID,
+            'glpi_computers.is_deleted'                  => 0,
+            'glpi_computers.is_template'                 => 0,
+            'glpi_computers_softwareversions.is_deleted' => 0
+
+         ] + getEntitiesRestrictCriteria('glpi_computers'),
+         'ORDER'        => "$sort $order",
+         'LIMIT'        => $_SESSION['glpilist_limit'],
+         'START'        => $start
+      ]);
 
       $rand = mt_rand();
 
-      if ($result = $DB->query($query)) {
-         if ($data = $DB->fetch_assoc($result)) {
-            $softwares_id  = $data['sID'];
-            $soft          = new Software();
-            $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser      = User::canView();
-            $title         = $soft->fields["name"];
+      if ($data = $iterator->next()) {
+         $softwares_id  = $data['sID'];
+         $soft          = new Software();
+         $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
+         $linkUser      = User::canView();
+         $title         = $soft->fields["name"];
 
-            if ($crit == "id") {
-               $title = sprintf(__('%1$s - %2$s'), $title, $data["vername"]);
-            }
-
-            Session::initNavigateListItems('Computer',
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'),
-                                                  Software::getTypeName(1), $title));
-
-            if ($canedit) {
-               $rand = mt_rand();
-               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams
-                  = ['num_displayed'
-                           => min($_SESSION['glpilist_limit'], $number),
-                          'container'
-                           => 'mass'.__CLASS__.$rand,
-                          'specific_actions'
-                           => [__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_version'
-                                          => _x('button', 'Move'),
-                                    'purge' => _x('button', 'Delete permanently')]];
-               // Options to update version
-               $massiveactionparams['extraparams']['options']['move']['softwares_id'] = $softwares_id;
-               if ($crit=='softwares_id') {
-                  $massiveactionparams['extraparams']['options']['move']['used'] = [];
-               } else {
-                  $massiveactionparams['extraparams']['options']['move']['used'] = [$searchID];
-               }
-
-               Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov'>";
-
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-               $header_begin  .= "<th width='10'>";
-               $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-               $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-               $header_end    .= "</th>";
-            }
-            $columns = $refcolumns;
-            if (!$showEntity) {
-               unset($columns['entity']);
-            }
-
-            foreach ($columns as $key => $val) {
-               // Non order column
-               if ($key[0] == '_') {
-                  $header_end .= "<th>$val</th>";
-               } else {
-                  $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
-                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
-                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
-               }
-            }
-
-            $header_end .= "</tr>\n";
-            echo $header_begin.$header_top.$header_end;
-
-            do {
-               Session::addToNavigateListItems('Computer', $data["cID"]);
-
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                  echo "</td>";
-               }
-
-               if ($crit == "softwares_id") {
-                  echo "<td><a href='".SoftwareVersion::getFormURLWithID($data['vID'])."'>".
-                        $data['version']."</a></td>";
-               }
-
-               $compname = $data['compname'];
-               if (empty($compname) || $_SESSION['glpiis_ids_visible']) {
-                  $compname = sprintf(__('%1$s (%2$s)'), $compname, $data['cID']);
-               }
-
-               if ($canshowcomputer) {
-                  echo "<td><a href='".Computer::getFormURLWithID($data['cID'])."'>$compname</a></td>";
-               } else {
-                  echo "<td>".$compname."</td>";
-               }
-
-               if ($showEntity) {
-                  echo "<td>".$data['entity']."</td>";
-               }
-               echo "<td>".$data['serial']."</td>";
-               echo "<td>".$data['otherserial']."</td>";
-               echo "<td>".$data['location']."</td>";
-               echo "<td>".$data['state']."</td>";
-               echo "<td>".$data['groupe']."</td>";
-               echo "<td>".formatUserName($data['userid'], $data['username'], $data['userrealname'],
-                                          $data['userfirstname'], $linkUser)."</td>";
-
-               $lics = Computer_SoftwareLicense::getLicenseForInstallation($data['cID'],
-                                                                           $data['vID']);
-               echo "<td>";
-
-               if (count($lics)) {
-                  foreach ($lics as $lic) {
-                     $serial = $lic['serial'];
-
-                     if (!empty($lic['type'])) {
-                        $serial = sprintf(__('%1$s (%2$s)'), $serial, $lic['type']);
-                     }
-
-                     echo "<a href='".SoftwareLicense::getFormURLWithID($lic['id'])."'>".$lic['name'];
-                     echo "</a> - ".$serial;
-
-                     echo "<br>";
-                  }
-               }
-               echo "</td>";
-
-               echo "<td>".Html::convDate($data['date_install'])."</td>";
-               echo "</tr>\n";
-
-            } while ($data = $DB->fetch_assoc($result));
-
-            echo $header_begin.$header_bottom.$header_end;
-
-            echo "</table>\n";
-            if ($canedit) {
-               $massiveactionparams['ontop'] =false;
-               Html::showMassiveActions($massiveactionparams);
-               Html::closeForm();
-            }
-
-         } else { // Not found
-            echo __('No item found');
+         if ($crit == "id") {
+            $title = sprintf(__('%1$s - %2$s'), $title, $data["version"]);
          }
-      } // Query
+
+         Session::initNavigateListItems('Computer',
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
+                                          sprintf(__('%1$s = %2$s'),
+                                                Software::getTypeName(1), $title));
+
+         if ($canedit) {
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams
+               = ['num_displayed'
+                        => min($_SESSION['glpilist_limit'], $number),
+                        'container'
+                        => 'mass'.__CLASS__.$rand,
+                        'specific_actions'
+                        => [__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_version'
+                                       => _x('button', 'Move'),
+                                 'purge' => _x('button', 'Delete permanently')]];
+            // Options to update version
+            $massiveactionparams['extraparams']['options']['move']['softwares_id'] = $softwares_id;
+            if ($crit=='softwares_id') {
+               $massiveactionparams['extraparams']['options']['move']['used'] = [];
+            } else {
+               $massiveactionparams['extraparams']['options']['move']['used'] = [$searchID];
+            }
+
+            Html::showMassiveActions($massiveactionparams);
+         }
+
+         echo "<table class='tab_cadre_fixehov'>";
+
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end    .= "</th>";
+         }
+         $columns = $refcolumns;
+         if (!$showEntity) {
+            unset($columns['entity']);
+         }
+
+         foreach ($columns as $key => $val) {
+            // Non order column
+            if ($key[0] == '_') {
+               $header_end .= "<th>$val</th>";
+            } else {
+               $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
+                     "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
+                        (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
+            }
+         }
+
+         $header_end .= "</tr>\n";
+         echo $header_begin.$header_top.$header_end;
+
+         do {
+            Session::addToNavigateListItems('Computer', $data["cID"]);
+
+            echo "<tr class='tab_bg_2'>";
+            if ($canedit) {
+               echo "<td>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               echo "</td>";
+            }
+
+            if ($crit == "softwares_id") {
+               echo "<td><a href='".SoftwareVersion::getFormURLWithID($data['vID'])."'>".
+                     $data['version']."</a></td>";
+            }
+
+            $compname = $data['compname'];
+            if (empty($compname) || $_SESSION['glpiis_ids_visible']) {
+               $compname = sprintf(__('%1$s (%2$s)'), $compname, $data['cID']);
+            }
+
+            if ($canshowcomputer) {
+               echo "<td><a href='".Computer::getFormURLWithID($data['cID'])."'>$compname</a></td>";
+            } else {
+               echo "<td>".$compname."</td>";
+            }
+
+            if ($showEntity) {
+               echo "<td>".$data['entity']."</td>";
+            }
+            echo "<td>".$data['serial']."</td>";
+            echo "<td>".$data['otherserial']."</td>";
+            echo "<td>".$data['location']."</td>";
+            echo "<td>".$data['state']."</td>";
+            echo "<td>".$data['groupe']."</td>";
+            echo "<td>".formatUserName($data['userid'], $data['username'], $data['userrealname'],
+                                       $data['userfirstname'], $linkUser)."</td>";
+
+            $lics = Computer_SoftwareLicense::getLicenseForInstallation($data['cID'],
+                                                                        $data['vID']);
+            echo "<td>";
+
+            if (count($lics)) {
+               foreach ($lics as $lic) {
+                  $serial = $lic['serial'];
+
+                  if (!empty($lic['type'])) {
+                     $serial = sprintf(__('%1$s (%2$s)'), $serial, $lic['type']);
+                  }
+
+                  echo "<a href='".SoftwareLicense::getFormURLWithID($lic['id'])."'>".$lic['name'];
+                  echo "</a> - ".$serial;
+
+                  echo "<br>";
+               }
+            }
+            echo "</td>";
+
+            echo "<td>".Html::convDate($data['date_install'])."</td>";
+            echo "</tr>\n";
+
+         } while ($data = $iterator->next());
+
+         echo $header_begin.$header_bottom.$header_end;
+
+         echo "</table>\n";
+         if ($canedit) {
+            $massiveactionparams['ontop'] =false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+
+      } else { // Not found
+         echo __('No item found');
+      }
       Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
       echo "</div>\n";
@@ -656,42 +694,59 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
 
-      $where        = '';
+      $where        = [];
+      $where_str    = '';
       if ($crit > -1) {
-         $where = " AND `glpi_softwares`.`softwarecategories_id` = ". (int) $crit;
+         $where['glpi_softwares.softwarecategories_id'] = (int) $crit;
+         $where_str = "`glpi_softwares`.`softwarecategories_id` = " . (int)$crit;
       }
 
-      $add_dynamic  = '';
+      $add_dynamic  = [];
       if (Plugin::haveImport()) {
-         $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
+         $add_dynamic[] = self::getTable() . '.is_dynamic';
       }
 
-      //needs DB::request() to support aliases to get migrated
-      $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
-                       `glpi_softwares`.`name` AS softname,
-                       `glpi_computers_softwareversions`.`id`,
-                       $add_dynamic
-                       `glpi_states`.`name` AS state,
-                       `glpi_softwareversions`.`id` AS verid,
-                       `glpi_softwareversions`.`softwares_id`,
-                       `glpi_softwareversions`.`name` AS version,
-                       `glpi_softwares`.`is_valid` AS softvalid,
-                       `glpi_computers_softwareversions`.`date_install` AS dateinstall
-                FROM `glpi_computers_softwareversions`
-                LEFT JOIN `glpi_softwareversions`
-                     ON (`glpi_computers_softwareversions`.`softwareversions_id`
-                           = `glpi_softwareversions`.`id`)
-                LEFT JOIN `glpi_states`
-                     ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
-                LEFT JOIN `glpi_softwares`
-                     ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
-                WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
-                      AND `glpi_computers_softwareversions`.`is_deleted` = 0
-                      $where
-                ORDER BY `softname`, `version`";
-      $result = $DB->query($query);
-      $i      = 0;
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_softwares.softwarecategories_id',
+            'glpi_softwares.name AS softname',
+            self::getTable() . '.id',
+            'glpi_states.name as state',
+            'glpi_softwareversions.id AS verid',
+            'glpi_softwareversions.softwares_id',
+            'glpi_softwareversions.name AS version',
+            'glpi_softwares.is_valid AS softvalid',
+            'glpi_computers_softwareversions.date_install AS dateinstall'
+         ] + $add_dynamic,
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            'glpi_softwareversions' => [
+               'FKEY'   => [
+                  self::getTable()        => 'softwareversions_id',
+                  'glpi_softwareversions' => 'id'
+               ]
+            ],
+            'glpi_states'  => [
+               'FKEY'   => [
+                  'glpi_softwareversions' => 'states_id',
+                  'glpi_states'           => 'id'
+               ]
+            ],
+            'glpi_softwares'  => [
+               'FKEY'   => [
+                  'glpi_softwareversions' => 'softwares_id',
+                  'glpi_softwares'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            self::getTable() . '.computers_id'  => $computers_id,
+            self::getTable() . 'is_deleted'     => 0,
+         ] + $where,
+         'ORDER'     => ['softname', 'version']
+      ]);
 
+      $i      = 0;
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
          echo "<form method='post' action='".Computer_SoftwareVersion::getFormURL()."'>";
@@ -733,7 +788,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                        'emptylabel' => __('Uncategorized software'),
                                        'on_change'  => 'reloadTab("start=0&criterion="+this.value)']);
       echo "</td></tr></table></div>";
-      $number = $DB->numrows($result);
+      $number = count($iterator);
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
       if ($start >= $number) {
          $start = 0;
@@ -781,7 +836,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
-         for ($row=0; $data=$DB->fetch_assoc($result); $row++) {
+         for ($row=0; $data = $iterator->next(); $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
                $licids = self::softsByCategory($data, $computers_id, $withtemplate,
@@ -827,7 +882,62 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       echo "<div class='spaced'>";
       // Affected licenses NOT installed
-      //needs DB::request() to support aliases to get migrated
+      /*
+       * Won't work: multiple tables in FROM seems to breaks joins...
+       * And iterator does not support OR in joins...
+       */
+      /*
+      $lic_where = [];
+      if (count($installed)) {
+         $lic_where['NOT'] = ['glpi_softwarelicenses.id' => $installed];
+      }
+
+      $lic_iterator = $DB->request([
+         'SELECT'       => [
+            'glpi_softwarelicenses.*',
+            'glpi_computers_softwarelicenses.id AS linkID',
+            'glpi_softwares.name AS softname',
+            'glpi_softwareversions.name AS version',
+            'glpi_states.name AS state'
+         ],
+         'FROM'         => ['glpi_softwarelicenses', 'glpi_softwareversions'],
+         'INNER JOIN'   => [
+            'glpi_softwares'  => [
+               'FKEY'   => [
+                  'glpi_softwarelicenses' => 'softwares_id',
+                  'glpi_softwares'        => 'id'
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_computers_softwarelicenses'   => [
+               'FKEY'   => [
+                  'glpi_computers_softwarelicenses'   => 'softwarelicenses_id',
+                  'glpi_softwarelicenses'             => 'id'
+               ]
+            ],
+            'glpi_states'  => [
+               'FKEY'   => [
+                  'glpi_softwareversions' => 'states_id',
+                  'glpi_states'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
+            'glpi_computers_softwarelicenses.is_deleted'    => 0,
+            'OR'                                            => [
+               'glpi_softwarelicenses.softwareversions_id_use' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
+               'AND' => [
+                  'glpi_softwarelicenses.softwareversions_id_use' => 0,
+                  'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id'))
+               ]
+            ]
+         ] + $lic_where,
+         'ORDER'     => ['softname', 'version']
+      ]);*/
+
+      //needs DB::request() to support OR in joins to get migrated
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_computers_softwarelicenses`.`id` AS linkID,
                        `glpi_softwares`.`name` AS softname,
@@ -849,7 +959,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
                 WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
                       AND `glpi_computers_softwarelicenses`.`is_deleted` = 0
-                      $where";
+                      $where_str";
 
       if (count($installed)) {
          $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',', $installed).")";
@@ -953,23 +1063,42 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</td><td>";
       }
 
-      //needs DB::request() to support aliases to get migrated
-      $query = "SELECT `glpi_softwarelicenses`.*,
-                       `glpi_softwarelicensetypes`.`name` AS type
-                FROM `glpi_computers_softwarelicenses`
-                INNER JOIN `glpi_softwarelicenses`
-                     ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`
-                              = `glpi_softwarelicenses`.`id`)
-                LEFT JOIN `glpi_softwarelicensetypes`
-                     ON (`glpi_softwarelicenses`.`softwarelicensetypes_id`
-                              =`glpi_softwarelicensetypes`.`id`)
-                WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
-                      AND (`glpi_softwarelicenses`.`softwareversions_id_use` = '$verid'
-                           OR (`glpi_softwarelicenses`.`softwareversions_id_use` = 0
-                               AND `glpi_softwarelicenses`.`softwareversions_id_buy` = '$verid'))";
+      $iterator = $DB->request([
+         'SELECT'       => [
+            'glpi_softwarelicenses.*',
+            'glpi_softwarelicensetypes.name AS type'
+         ],
+         'FROM'         => 'glpi_computers_softwarelicenses',
+         'INNER JOIN'   => [
+            'glpi_softwarelicenses' => [
+               'FKEY'   => [
+                  'glpi_computers_softwarelicenses'   => 'softwarelicenses_id',
+                  'glpi_softwarelicenses'             => 'id'
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_softwarelicensetypes'   => [
+               'FKEY'   => [
+                  'glpi_softwarelicenses'       => 'softwarelicensetypes_id',
+                  'glpi_softwarelicensetypes'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
+            'OR'                                            => [
+               'glpi_softwarelicenses.softwareversions_id_use' => $verid,
+               'AND'                                           => [
+                  'glpi_softwarelicenses.softwareversions_id_use' => 0,
+                  'glpi_softwarelicenses.softwareversions_id_buy' => $verid
+               ]
+            ]
+         ]
+      ]);
 
       $licids = [];
-      foreach ($DB->request($query) as $licdata) {
+      while ($licdata = $iterator->next()) {
          $licids[]  = $licdata['id'];
          $licserial = $licdata['serial'];
 
