@@ -2696,18 +2696,26 @@ class Rule extends CommonDBTM {
       /// TODO : not working for SLALevels : no sub_type
 
       //Get all the rules whose sub_type is $sub_type and entity is $ID
-      $query = "SELECT `".$this->getTable()."`.`id`
-                FROM `".getTableForItemType($this->ruleactionclass)."`,
-                     `".$this->getTable()."`
-                WHERE `".getTableForItemType($this->ruleactionclass)."`.".$this->rules_id_field."
-                           = `".$this->getTable()."`.`id`
-                      AND `".$this->getTable()."`.`sub_type` = '".get_class($this)."'";
+      $crit = [
+         'SELECT' => $this->getTable() . '.id',
+         'FROM'   => [
+            getTableForItemType($this->ruleactionclass),
+            $this->getTable()
+         ],
+         'WHERE'  => [
+            getTableForItemType($this->ruleactionclass).".".$this->rules_id_field   => new \QueryExpression(DBmysql::quoteName($this->getTable().'.id')),
+            $this->getTable().'.sub_type'                                           => get_class($this)
+
+         ]
+      ];
 
       foreach ($crit as $field => $value) {
-         $query .= " AND `".getTableForItemType($this->ruleactionclass)."`.`$field` = '$value'";
+         $crit['WHERE'][getTableForItemType($this->ruleactionclass).'.'.$field] = $value;
       }
 
-      foreach ($DB->request($query) as $rule) {
+      $iterator = $DB->request($crit);
+
+      while ($rule = $iterator->next()) {
          $affect_rule = new Rule();
          $affect_rule->getRuleWithCriteriasAndActions($rule["id"], 0, 1);
          $rules[]     = $affect_rule;

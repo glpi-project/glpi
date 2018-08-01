@@ -299,14 +299,14 @@ class RuleAction extends CommonDBChild {
    function getRuleActions($ID) {
       global $DB;
 
-      $sql = "SELECT *
-              FROM `".$this->getTable()."`
-              WHERE `".static::$items_id."` = '$ID'
-              ORDER BY `id`";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [static::$items_id => $ID],
+         'ORDER'  => 'id'
+      ]);
 
       $rules_actions = [];
-      while ($rule = $DB->fetch_assoc($result)) {
+      while ($rule = $iterator->next()) {
          $tmp             = new self();
          $tmp->fields     = $rule;
          $rules_actions[] = $tmp;
@@ -449,11 +449,13 @@ class RuleAction extends CommonDBChild {
          $actions_options = $rule->getAllActions();
 
          $actions = [];
-         $res     = $DB->query("SELECT `field`
-                                FROM `".$this->getTable()."`
-                                WHERE `".static::$items_id."` = '".$rules_id."'");
+         $iterator = $DB->request([
+            'SELECT' => 'field',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $rules_id],
+         ]);
 
-         while ($action = $DB->fetch_assoc($res)) {
+         while ($action = $iterator->next()) {
             if (isset($actions_options[$action["field"]])
                  && ($action["field"] != 'groups_id_validate')
                  && ($action["field"] != 'users_id_validate')

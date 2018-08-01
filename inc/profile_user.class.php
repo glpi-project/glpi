@@ -734,13 +734,17 @@ class Profile_User extends CommonDBRelation {
    static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false) {
       global $DB;
 
-      $query = "SELECT `entities_id`, `is_recursive`
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '$users_id'
-                      AND `profiles_id` = '$profiles_id'";
+      $iterator = $DB->request([
+         'SELECT' => ['entities_id', 'is_recursive'],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'     => $users_id,
+            'profiles_id'  => $profiles_id
+         ]
+      ]);
 
       $entities = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($child
              && $data['is_recursive']) {
             foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
@@ -817,13 +821,15 @@ class Profile_User extends CommonDBRelation {
    static function haveUniqueRight($user_ID, $profile_id) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '$user_ID'
-                      AND `profiles_id` = '$profile_id'";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 'cpt');
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'     => $user_ID,
+            'profiles_id'  => $profile_id
+         ]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -944,11 +950,6 @@ class Profile_User extends CommonDBRelation {
 
       if (!$withtemplate) {
          $nb = 0;
-         $query_nb = "SELECT COUNT(*) as cpt
-                      FROM `".$this->getTable()."`
-                      LEFT JOIN glpi_users
-                        ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
-                      WHERE `glpi_users`.`is_deleted` = 0 ";
          switch ($item->getType()) {
             case 'Entity' :
                if (Session::haveRight('user', READ)) {

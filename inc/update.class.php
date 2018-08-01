@@ -102,23 +102,25 @@ class Update extends CommonGLPI {
       } else if (!$DB->tableExists("glpi_configs")) {
          // < 0.78
          // Get current version
-         $query = "SELECT `version`, 'language'
-                  FROM `glpi_config`";
-         $result = $DB->queryOrDie($query, "get current version");
+         $result = $DB->request([
+            'SELECT' => ['version', 'language'],
+            'FROM'   => 'glpi_config'
+         ])->next();
 
-         $currents['version']    = trim($DB->result($result, 0, 0));
+         $currents['version']    = trim($result['version']);
          $currents['dbversion']  = $currents['version'];
-         $currents['language']   = trim($DB->result($result, 0, 1));
+         $currents['language']   = trim($result['language']);
       } else if ($DB->fieldExists('glpi_configs', 'version')) {
          // < 0.85
          // Get current version and language
-         $query = "SELECT `version`, `language`
-                  FROM `glpi_configs`";
-         $result = $DB->queryOrDie($query, "get current version");
+         $result = $DB->request([
+            'SELECT' => ['version', 'language'],
+            'FROM'   => 'glpi_configs'
+         ])->next();
 
-         $currents['version']    = trim($DB->result($result, 0, 0));
+         $currents['version']    = trim($result['version']);
          $currents['dbversion']  = $currents['version'];
-         $currents['language']   = trim($DB->result($result, 0, 1));
+         $currents['language']   = trim($result['language']);
       } else {
          $currents = Config::getConfigurationValues(
             'core',
@@ -453,9 +455,14 @@ class Update extends CommonGLPI {
 
       if (defined('GLPI_SYSTEM_CRON')) {
          // Downstream packages may provide a good system cron
-         //needs DB::update() to support fields names to get migrated
-         $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
-         $DB->queryOrDie($query);
+         $DB->updateOrDie(
+            'glpi_crontasks', [
+               'mode'   => 2
+            ], [
+               'name'      => ['!=', 'watcher'],
+               'allowmode' => ['&', 2]
+            ]
+         );
       }
 
       // reset telemetry

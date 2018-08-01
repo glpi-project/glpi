@@ -125,15 +125,18 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
             $IDs = [];
             //Find all the printers in the database with the same name and manufacturer
-            $sql = "SELECT `id`
-                    FROM `glpi_printers`
-                    WHERE `name` = '" . $input["name"] . "'
-                          AND `manufacturers_id` = '" . $input["manufacturers_id"] . "'";
-            $res_printer = $DB->query($sql);
+            $print_iterator = $DB->request([
+               'SELECT' => 'id',
+               'FROM'   => 'glpi_printers',
+               'WHERE'  => [
+                  'name'               => $input['name'],
+                  'manufacturers_id'   => $input['manufacturers_id']
+               ]
+            ]);
 
-            if ($DB->numrows($res_printer) > 0) {
+            if (count($iterator)) {
                //Store all the printer's IDs in an array
-               while ($result = $DB->fetch_assoc($res_printer)) {
+               while ($result = $iterator->next()) {
                   $IDs[] = $result["id"];
                }
                //Replay dictionnary on all the printers
@@ -193,25 +196,34 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
       $new_printers  = [];
       $delete_ids    = [];
 
-      foreach ($IDs as $ID) {
-         $sql = "SELECT `glpi_printers`.`id`,
-                        `glpi_printers`.`name` AS name,
-                        `glpi_printers`.`entities_id` AS entities_id,
-                        `glpi_printers`.`is_global` AS is_global,
-                        `glpi_manufacturers`.`name` AS manufacturer
-                 FROM `glpi_printers`
-                 LEFT JOIN `glpi_manufacturers`
-                    ON (`glpi_printers`.`manufacturers_id` = `glpi_manufacturers`.`id`)
-                 WHERE `glpi_printers`.`is_template` = 0
-                       AND `glpi_printers`.`id` = '$ID'";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_printers.id',
+            'glpi_printers.name',
+            'glpi_printers.entities_id AS entities_id',
+            'glpi_printers.is_global AS is_global',
+            'glpi_manufacturers.name AS manufacturer'
+         ],
+         'FROM'      => 'glpi_printers',
+         'LEFT JOIN' => [
+            'glpi_manufacturers'  => [
+               'FKEY'   => [
+                  'glpi_printers'      => 'manufacturers_id',
+                  'glpi_manufacturers' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_printers.is_template'   => 0,
+            'glpi_printers.id'            => $IDs
+         ]
+      ]);
 
-         $res_printer = $DB->query($sql);
-         if ($DB->numrows($res_printer)) {
-            $printer = $DB->fetch_assoc($res_printer);
-            //For each printer
-            $this->replayDictionnaryOnOnePrinter($new_printers, $res_rule, $printer, $delete_ids);
-         }
+      while ($printer = $iterator->next()) {
+         //For each printer
+         $this->replayDictionnaryOnOnePrinter($new_printers, $res_rule, $printer, $delete_ids);
       }
+
       //Delete printer if needed
       $this->putOldPrintersInTrash($delete_ids);
    }

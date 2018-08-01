@@ -597,22 +597,28 @@ class SavedSearch extends CommonDBTM {
           && ($this->fields['type'] != self::URI)) {
          $dd = new SavedSearch_User();
          // Is default view for this itemtype already exists ?
-         $query = "SELECT `id`
-                   FROM `glpi_savedsearches_users`
-                   WHERE `users_id` = '".Session::getLoginUserID()."'
-                         AND `itemtype` = '".$this->fields['itemtype']."'";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_savedsearches_users',
+            'WHERE'  => [
+               'users_id'  => Session::getLoginUserID(),
+               'itemtype'  => $this->fields['itemtype']
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               // already exists update it
-               $updateID = $DB->result($result, 0, 0);
-               $dd->update(['id'                 => $updateID,
-                            'savedsearches_id'   => $ID]);
-            } else {
-               $dd->add(['savedsearches_id'   => $ID,
-                         'users_id'           => Session::getLoginUserID(),
-                         'itemtype'           => $this->fields['itemtype']]);
-            }
+         if ($result = $iterator->next()) {
+            // already exists update it
+            $updateID = $result['id'];
+            $dd->update([
+               'id'                 => $updateID,
+               'savedsearches_id'   => $ID
+            ]);
+         } else {
+            $dd->add([
+               'savedsearches_id'   => $ID,
+               'users_id'           => Session::getLoginUserID(),
+               'itemtype'           => $this->fields['itemtype']
+            ]);
          }
       }
    }
@@ -632,18 +638,20 @@ class SavedSearch extends CommonDBTM {
           && ($this->fields['type'] != self::URI)) {
          $dd = new SavedSearch_User();
          // Is default view for this itemtype already exists ?
-         $query = "SELECT `id`
-                   FROM `glpi_savedsearches_users`
-                   WHERE `users_id` = '".Session::getLoginUserID()."'
-                         AND `savedsearches_id` = '$ID'
-                         AND `itemtype` = '".$this->fields['itemtype']."'";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_savedsearches_users',
+            'WHERE'  => [
+               'users_id'           => Session::getLoginUserID(),
+               'savedsearches_id'   => $ID,
+               'itemtype'           => $this->fields['itemtype']
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               // already exists delete it
-               $deleteID = $DB->result($result, 0, 0);
-               $dd->delete(['id' => $deleteID]);
-            }
+         if ($result = $iterator->next()) {
+            // already exists delete it
+            $deleteID = $result['id'];
+            $dd->delete(['id' => $deleteID]);
          }
       }
    }
@@ -660,10 +668,11 @@ class SavedSearch extends CommonDBTM {
       global $DB;
 
       if (Session::haveRight('config', UPDATE)) {
-         $query = "DELETE
-                   FROM `glpi_savedsearches_users`
-                   WHERE `savedsearches_id` IN('" . implode("', '", $ids)  . "')";
-         return $DB->query($query);
+         return $DB->delete(
+            'glpi_savedsearches_users', [
+               'savedsearches_id'   => $ids
+            ]
+         );
       }
    }
 
