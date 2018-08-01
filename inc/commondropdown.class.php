@@ -694,21 +694,30 @@ abstract class CommonDropdown extends CommonDBTM {
       global $DB;
 
       if (!empty($input["name"])) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `name` = '".$input["name"]."'";
+         $crit = [
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'name'   => $input['name']
+            ],
+            'LIMIT'  => 1
+         ];
 
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                 $input['entities_id'], $this->maybeRecursive());
+            $crit['WHERE'] += getEntitiesRestrictCriteria(
+               $this->getTable(),
+               '',
+               $input['entities_id'],
+               $this->maybeRecursive()
+            );
          }
-         $query .= " LIMIT 1";
+
+         $iterator = $DB->request($crit);
 
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         if (count($iterator) > 0) {
+            $result = $iterator->next();
+            return $result['id'];
          }
       }
       return -1;

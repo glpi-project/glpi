@@ -1031,40 +1031,70 @@ class Plugin extends CommonDBTM {
             foreach ($entities as $entID => $val) {
                if ($do_recursive) {
                   // Non recursive ones
-                  // needs DB::update to support subqueries to be migrated
-                  $query3 = "UPDATE `glpi_infocoms`
-                             SET `entities_id` = '$entID',
-                                 `is_recursive` = 0
-                             WHERE `itemtype` = '$name'
-                                   AND `items_id` IN (SELECT `id`
-                                                      FROM `$itemtable`
-                                                      WHERE `entities_id` = '$entID'
-                                                            AND `is_recursive` = 0)";
-                  $DB->queryOrDie($query3, "update entities_id and is_recursive=0
-                                  in glpi_infocoms for $name");
+                  $dbiterator = new DBmysqliterator();
+                  $dbiterator->buildQuery([
+                     'SELECT' => 'id',
+                     'FROM'   => $itemtable,
+                     'WHERE'  => [
+                        'entities_id'  => $entID,
+                        'is_recursive' => 0
+                     ]
+                  ]);
+                  $sub_query = $dbiterator->getSql();
+
+                  $DB->updateOrDie(
+                     'glpi_infocoms', [
+                        'entities_id'  => $entID,
+                        'is_recursive' => 0
+                     ], [
+                        'itemtype'  => $name,
+                        'items_id'  => new \QueryExpression('('.$sub_query.')')
+                     ],
+                     "update entities_id and is_recursive=0 in glpi_infocoms for $name"
+                  );
 
                   // Recursive ones
-                  // needs DB::update to support subqueries to be migrated
-                  $query3 = "UPDATE `glpi_infocoms`
-                             SET `entities_id` = '$entID',
-                                 `is_recursive` = 1
-                             WHERE `itemtype` = '$name'
-                                   AND `items_id` IN (SELECT `id`
-                                                      FROM `$itemtable`
-                                                      WHERE `entities_id` = '$entID'
-                                                            AND `is_recursive` = 1)";
-                  $DB->queryOrDie($query3, "update entities_id and is_recursive=1
-                                  in glpi_infocoms for $name");
+                  $dbiterator = new DBmysqliterator();
+                  $dbiterator->buildQuery([
+                     'SELECT' => 'id',
+                     'FROM'   => $itemtable,
+                     'WHERE'  => [
+                        'entities_id'  => $entID,
+                        'is_recursive' => 1
+                     ]
+                  ]);
+                  $sub_query = $dbiterator->getSql();
+
+                  $DB->updateOrDie(
+                     'glpi_infocoms', [
+                        'entities_id'  => $entID,
+                        'is_recursive' => 1
+                     ], [
+                        'itemtype'  => $name,
+                        'items_id'  => new \QueryExpression('('.$sub_query.')')
+                     ],
+                     "update entities_id and is_recursive=1 in glpi_infocoms for $name"
+                  );
                } else {
-                  // needs DB::update to support subqueries to be migrated
-                  $query3 = "UPDATE `glpi_infocoms`
-                             SET `entities_id` = '$entID'
-                             WHERE `itemtype` = '$name'
-                                   AND `items_id` IN (SELECT `id`
-                                                      FROM `$itemtable`
-                                                      WHERE `entities_id` = '$entID')";
-                  $DB->queryOrDie($query3, "update entities_id in glpi_infocoms
-                                  for $name");
+                  $dbiterator = new DBmysqliterator();
+                  $dbiterator->buildQuery([
+                     'SELECT' => 'id',
+                     'FROM'   => $itemtable,
+                     'WHERE'  => [
+                        'entities_id'  => $entID,
+                     ]
+                  ]);
+                  $sub_query = $dbiterator->getSql();
+
+                  $DB->updateOrDie(
+                     'glpi_infocoms', [
+                        'entities_id'  => $entID
+                     ], [
+                        'itemtype'  => $name,
+                        'items_id'  => new \QueryExpression('('.$sub_query.')')
+                     ],
+                     "update entities_id in glpi_infocoms for $name"
+                  );
                }
             } // each entity
          } // each plugin type

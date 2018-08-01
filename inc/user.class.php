@@ -3326,18 +3326,24 @@ class User extends CommonDBTM {
             $groups = self::getDelegateGroupsForUser($entity_restrict);
             $users  = [];
             if (count($groups)) {
-               $query = "SELECT `glpi_users`.`id`
-                         FROM `glpi_groups_users`
-                         LEFT JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
-                         WHERE `glpi_groups_users`.`groups_id` IN (".implode(",", $groups).")
-                               AND `glpi_groups_users`.`users_id` <> '".Session::getLoginUserID()."'";
-               $result = $DB->query($query);
-
-               if ($DB->numrows($result)) {
-                  while ($data = $DB->fetch_assoc($result)) {
-                        $users[$data["id"]] = $data["id"];
-                  }
+               $iterator = $DB->request([
+                  'SELECT'    => 'glpi_users.id',
+                  'FROM'      => 'glpi_groups_users',
+                  'LEFT JOIN' => [
+                     'glpi_users'   => [
+                        'FKEY'   => [
+                           'glpi_groups_users'  => 'users_id',
+                           'glpi_users'         => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'glpi_groups_users.groups_id' => $groups,
+                     'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()]
+                  ]
+               ]);
+               while ($data = $iterator->next()) {
+                     $users[$data["id"]] = $data["id"];
                }
             }
             // Add me to users list for central
@@ -3359,18 +3365,24 @@ class User extends CommonDBTM {
             }
             $users  = [];
             if (count($groups)) {
-               $query = "SELECT `glpi_users`.`id`
-                         FROM `glpi_groups_users`
-                         LEFT JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
-                         WHERE `glpi_groups_users`.`groups_id` IN (".implode(",", $groups).")
-                               AND `glpi_groups_users`.`users_id` <> '".Session::getLoginUserID()."'";
-               $result = $DB->query($query);
-
-               if ($DB->numrows($result)) {
-                  while ($data = $DB->fetch_assoc($result)) {
-                     $users[$data["id"]] = $data["id"];
-                  }
+               $iterator = $DB->request([
+                  'SELECT'    => 'glpi_users.id',
+                  'FROM'      => 'glpi_groups_users',
+                  'LEFT JOIN' => [
+                     'glpi_users'   => [
+                        'FKEY'   => [
+                           'glpi_groups_users'  => 'users_id',
+                           'glpi_users'         => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'glpi_groups_users.groups_id' => $groups,
+                     'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()]
+                  ]
+               ]);
+               while ($data = $iterator->next()) {
+                  $users[$data["id"]] = $data["id"];
                }
             }
             // Add me to users list for central

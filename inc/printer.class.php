@@ -464,12 +464,16 @@ class Printer  extends CommonDBTM {
    function getLinkedItems() {
       global $DB;
 
-      $query = "SELECT 'Computer', `computers_id`
-                FROM `glpi_computers_items`
-                WHERE `itemtype` = '".$this->getType()."'
-                      AND `items_id` = '" . $this->fields['id']."'";
+      $iterator = $DB->request([
+         'SELECT' => 'computers_id',
+         'FROM'   => 'glpi_computers_items',
+         'WHERE'  => [
+            'itemtype'  => $this->getType(),
+            'items_id'  => $this->fields['id']
+         ]
+      ]);
       $tab = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $tab['Computer'][$data['computers_id']] = $data['computers_id'];
       }
       return $tab;
@@ -823,17 +827,19 @@ class Printer  extends CommonDBTM {
       global $DB;
 
       //Look for the software by his name in GLPI for a specific entity
-      $query_search = "SELECT `glpi_printers`.`id`, `glpi_printers`.`is_deleted`
-                       FROM `glpi_printers`
-                       WHERE `name` = '$name'
-                             AND `is_template` = 0
-                             AND `entities_id` = '$entity'";
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'is_deleted'],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'name'         => $name,
+            'is_template'  => 0,
+            'entities_id'  => $entity
+         ]
+      ]);
 
-      $result_search = $DB->query($query_search);
-
-      if ($DB->numrows($result_search) > 0) {
-         //Printer already exists for this entity, get his ID
-         $data = $DB->fetch_assoc($result_search);
+      if (count($iterator) > 0) {
+         //Printer already exists for this entity, get its ID
+         $data = $iterator->next();
          $ID   = $data["id"];
 
          // restore software
@@ -871,15 +877,16 @@ class Printer  extends CommonDBTM {
       }
 
       //If there's a printer in a parent entity with the same name and manufacturer
-      $sql = "SELECT `id`
-              FROM `glpi_printers`
-              WHERE `manufacturers_id` = '$manufacturer_id'
-                    AND `name` = '$name' " .
-                    getEntitiesRestrictRequest('AND', 'glpi_printers', 'entities_id', $entity,
-                                               true);
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'manufacturers_id'   => $manufacturer_id,
+            'name'               => $name,
+         ] + getEntitiesRestrictCriteria(self::getTable, 'entities_id', $entity, true)
+      ]);
 
-      $res_printer = $DB->query($sql);
-      if ($printer = $DB->fetch_assoc($res_printer)) {
+      if ($printer = $iterator->next()) {
          $id = $printer["id"];
       } else {
          $input["name"]             = $name;
