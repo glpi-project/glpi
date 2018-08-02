@@ -168,7 +168,7 @@ class Toolbox {
     *
     * @param $str string
     *
-    * @return mixed|string
+    * @return string
     */
    static function strtolower($str) {
       return mb_strtolower($str, "UTF-8");
@@ -180,7 +180,7 @@ class Toolbox {
     *
     * @param $str string
     *
-    * @return mixed|string
+    * @return string
     */
    static function strtoupper($str) {
       return mb_strtoupper($str, "UTF-8");
@@ -697,7 +697,7 @@ class Toolbox {
     * @param $debug_vars   Boolean  (default NULL)
     * @param $log_in_files Boolean  (default NULL)
     *
-    * @since version 0.84
+    * @since 0.84
     */
    static function setDebugMode($mode = null, $debug_sql = null, $debug_vars = null, $log_in_files = null) {
       global $CFG_GLPI;
@@ -931,7 +931,7 @@ class Toolbox {
     *    2 insufficient memory for GLPI
     *    3 enough memory for GLPI
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return integer
     */
@@ -1119,8 +1119,9 @@ class Toolbox {
     *    1: Warning
     *    2: Error
     *
-    * @since version 0.84
+    * @since 0.84
     *
+    * @param boolean $fordebug true is displayed in system information
     * @return integer
     */
    static function checkSELinux($fordebug = false) {
@@ -2476,7 +2477,7 @@ class Toolbox {
    /**
     * Check valid referer accessing GLPI, display error if not permit
     *
-    * @since version 0.84.2
+    * @since 0.84.2
     */
    static function checkValidReferer() {
       global $CFG_GLPI;
@@ -2532,8 +2533,6 @@ class Toolbox {
     *
     * @param $file   string      path of the file
     * @param boolean|string $type string      check if $file is the correct type (false by default)
-    * @return string|boolean
-    *
     * @return string|boolean
     */
    static function getMime($file, $type = false) {
@@ -2752,7 +2751,7 @@ class Toolbox {
     * @param string    $content_html    html content of input
     * @param boolean   $force_update    force update of content in item (false by default)
     *
-    * @return mixed|string
+    * @return mixed
     */
    static function convertImageToTag($content_html, $force_update = false) {
 
@@ -2778,7 +2777,7 @@ class Toolbox {
     * @param string $content   html content of input
     * @param array $tags       list of tags to clean
     *
-    * @return array|mixed|string
+    * @return mixed
     */
    static function cleanTagOrImage($content, array $tags) {
       // RICH TEXT : delete img tag

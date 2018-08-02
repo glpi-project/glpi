@@ -133,7 +133,7 @@ class Html {
     * @param mixed $time datetime to convert
     * @param string|null $format (default null)
     *
-    * @return string
+    * @return string|null
     */
    static function convDate($time, $format = null) {
 
@@ -275,7 +275,7 @@ class Html {
     *
     * @param $value string: string value
     *
-    * @return array|mixed
+    * @return mixed
     */
    static function cleanPostForTextArea($value) {
 
@@ -428,7 +428,7 @@ class Html {
     *
     * @param $value string value
     *
-    * @return mixed|string
+    * @return mixed
     */
    static function weblink_extract($value) {
 
@@ -450,7 +450,6 @@ class Html {
     *
     * @param string  $dest               Redirection destination
     * @param integer $http_response_code Forces the HTTP response code to the specified value
-    * @return void
     */
    static function redirect($dest, $http_response_code = 302) {
 
@@ -484,7 +483,7 @@ class Html {
     *
     * @param string $params to add to URL (default '')
     *
-    * @since version 0.85
+    * @since 0.85
     */
    static function redirectToLogin($params = '') {
       global $CFG_GLPI;
@@ -684,11 +683,11 @@ class Html {
    /**
     * Clean Display of Request
     *
-    * @since version 0.83.1
+    * @since 0.83.1
     *
     * @param string $request SQL
     *
-    * @return mixed|string
+    * @return mixed
     */
    static function cleanSQLDisplay($request) {
 
@@ -949,8 +948,8 @@ class Html {
     *
     * @since 0.85
     *
-    * @param integer $id        HTML ID of the progress bar
-    * @param array   $options   progress status
+    * @param string $id        HTML ID of the progress bar
+    * @param array  $options   progress status
     *                           - create    do we have to create it ?
     *                           - message   add or change the message
     *                           - percent   current level
@@ -1302,7 +1301,7 @@ class Html {
    /**
     * @since 0.90
     *
-    * @return string
+    * @return array
     */
    static function getMenuInfos() {
 
@@ -1351,7 +1350,7 @@ class Html {
     *
     * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
     *
-    * @return array|string
+    * @return array
     */
    static function generateMenuSession($force = false) {
       global $PLUGIN_HOOKS;
@@ -3577,7 +3576,7 @@ class Html {
     *
     * @since 9.2
     *
-    * @param mixed $content to convert in html
+    * @param string $content to convert in html
     *
     * @return mixed
     */
@@ -3633,7 +3632,7 @@ class Html {
     *
     * @return void|string
    **/
-   static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true) {
+   static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -3992,7 +3991,7 @@ class Html {
     * @param string       $btoption   optional button option        (default '')
     * @param string       $confirm    optional confirm message      (default '')
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return string
     */
@@ -4068,7 +4067,7 @@ class Html {
     * @param string       $btoption   optional button option (default '')
     * @param string       $confirm    optional confirm message (default '')
     *
-    * @since version 0.83.3
+    * @since 0.83.3
     */
    static function showSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
                                   $btoption = '', $confirm = '') {
@@ -5295,7 +5294,7 @@ class Html {
    /**
     * This function provides a mecanism to send html form by ajax
     *
-    * @since version 9.1
+    * @since 9.1
     */
    static function ajaxForm($selector, $success = "console.log(html);") {
       echo Html::scriptBlock("
@@ -5333,7 +5332,7 @@ class Html {
     * In this function, we redefine 'window.alert' javascript function
     * by a jquery-ui dialog equivalent (but prettier).
     *
-    * @since version 9.1
+    * @since 9.1
     */
    static function redefineAlert() {
 

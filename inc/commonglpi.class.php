@@ -1093,7 +1093,7 @@ class CommonGLPI {
     *
     * @param string $sub_itemtype sub itemtype if needed (default '')
     *
-    * @return mixed
+    * @return array
     */
    static function getDisplayOptions($sub_itemtype = '') {
 

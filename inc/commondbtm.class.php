@@ -3135,7 +3135,7 @@ class CommonDBTM extends CommonGLPI {
     * Return the linked items (in computers_items)
     *
     * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-    * @since version 0.84.4
+    * @since 0.84.4
     */
    function getLinkedItems() {
       return [];
@@ -3146,7 +3146,7 @@ class CommonDBTM extends CommonGLPI {
     * Return the count of linked items (in computers_items)
     *
     * @return integer number of linked items
-    * @since version 0.84.4
+    * @since 0.84.4
     */
    function getLinkedItemsCount() {
 
@@ -3781,7 +3781,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 0.85
     *
-    * @return mixed
+    * @return array
     */
    function getOptions() {
 
@@ -4715,7 +4715,7 @@ class CommonDBTM extends CommonGLPI {
     * @param string  $target   Target
     * @param boolean $add      (default 0)
     *
-    * @return boolean
+    * @return boolean|void
     */
    static function listTemplates($itemtype, $target, $add = 0) {
       global $DB;
