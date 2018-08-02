@@ -190,10 +190,11 @@ class Link_Itemtype extends CommonDBChild {
    static function deleteForItemtype($itemtype) {
       global $DB;
 
-      $query = "DELETE
-                FROM `".self::getTable()."`
-                WHERE `itemtype` LIKE '%Plugin$itemtype%'";
-      $DB->query($query);
+      $DB->delete(
+         self::getTable(), [
+            'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
+         ]
+      );
    }
 
 }

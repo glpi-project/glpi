@@ -238,10 +238,11 @@ class Problem extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-      $query1 = "DELETE
-                 FROM `glpi_problemtasks`
-                 WHERE `problems_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_problemtasks', [
+            'problems_id'  => $this->fields['id']
+         ]
+      );
 
       $pt = new Problem_Ticket();
       $pt->cleanDBonItemDelete('Problem', $this->fields['id']);

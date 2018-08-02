@@ -586,6 +586,7 @@ class QueuedNotification extends CommonDBTM {
       if ($task->fields['param'] > 0) {
          $secs      = $task->fields['param'] * DAY_TIMESTAMP;
          $send_time = date("U") - $secs;
+         //TODO: migrate to DB::delete()
          $query_exp = "DELETE
                        FROM `glpi_queuednotifications`
                        WHERE `glpi_queuednotifications`.`is_deleted`

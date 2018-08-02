@@ -2617,28 +2617,22 @@ class Transfer extends CommonDBTM {
          default :
             // Copy -> Copy datas
             if ($ID != $newID) {
-               $query = "SELECT *
-                         FROM `glpi_logs`
-                         WHERE `itemtype` = '$itemtype'
-                               AND `items_id` = '$ID'";
-               $result = $DB->query($query);
+               $iterator = $DB->request([
+                  'FROM'   => 'glpi_logs',
+                  'WHERE'  => [
+                     'itemtype'  => $itemtype,
+                     'items_id'  => $ID
+                  ]
+               ]);
 
-               if ($result = $DB->query($query)) {
-                  if ($DB->numrows($result) != 0) {
-                     while ($data = $DB->fetch_assoc($result)) {
-                        $data = Toolbox::addslashes_deep($data);
-                        $query = "INSERT
-                                  INTO `glpi_logs`
-                                  (`items_id`, `itemtype`, `itemtype_link`, `linked_action`,
-                                   `user_name`, `date_mod`, `id_search_option`, `old_value`,
-                                   `new_value`)
-                                  VALUES ('$newID', '$itemtype', '".$data['itemtype_link']."',
-                                          '".$data['linked_action']."', '". $data['user_name']."',
-                                          '".$data['date_mod']."', '".$data['id_search_option']."',
-                                          '".$data['old_value']."', '".$data['new_value']."')";
-                        $DB->query($query);
-                     }
-                  }
+               while ($data = $iterator->next()) {
+                  unset($data['id']);
+                  $data = Toolbox::addslashes_deep($data);
+                  $data = [
+                     'items_id'  => $newID,
+                     'itemtype'  => $itemtype
+                  ] + $data;
+                  $DB->insert('glpi_logs', $data);
                }
 
             }
