@@ -36,6 +36,16 @@ if (!defined('GLPI_ROOT')) {
 
 abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
+   public $html_tags        = [
+      '##change.solution.description##',
+      '##followup.description##',
+      '##linkedticket.content##',
+      '##problem.solution.description##',
+      '##ticket.content##',
+      '##ticket.description##',
+      '##ticket.solution.description##'
+   ];
+
    /**
     * @param $entity          (default '')
     * @param $event           (default '')
@@ -1007,9 +1017,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             );
          }
 
-         $data["##$objettype.solution.description##"] = Toolbox::unclean_cross_side_scripting_deep(
-            $itilsolution->getField('content')
-         );
+         $data["##$objettype.solution.description##"] = $itilsolution->getField('content');
       }
 
       // Complex mode

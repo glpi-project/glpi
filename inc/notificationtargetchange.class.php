@@ -44,9 +44,6 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
    public $private_profiles = [];
 
-   public $html_tags        = ['##change.solution.description##'];
-
-
    /**
     * Get events related to tickets
    **/

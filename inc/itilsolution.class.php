@@ -234,6 +234,14 @@ class ITILSolution extends CommonDBTM {
          echo "<textarea id='content$rand' name='content' rows='12' cols='80'>".
                 $this->getField('content')."</textarea></div>";
 
+         // Hide file input to handle only images pasted in text editor
+         echo '<div style="display:none;">';
+         Html::file(['editor_id' => "content$rand",
+                     'filecontainer' => "filecontainer$rand",
+                     'onlyimages' => true,
+                     'showtitle' => false,
+                     'multiple' => true]);
+         echo '</div>';
       } else {
          echo Toolbox::unclean_cross_side_scripting_deep($this->getField('content'));
       }
@@ -302,6 +310,10 @@ class ITILSolution extends CommonDBTM {
    }
 
    function post_addItem() {
+
+      // Replace inline pictures
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+
       //adding a solution mean the ITIL object is now solved
       //and maybe closed (according to entitiy configuration)
       if ($this->item == null) {
@@ -331,6 +343,18 @@ class ITILSolution extends CommonDBTM {
       if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
          Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
       }
+   }
+
+
+   /**
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
+   function prepareInputForUpdate($input) {
+
+      // Replace inline pictures
+      $input = $this->addFiles($input);
+
+      return $input;
    }
 
    /**
