@@ -266,7 +266,8 @@ class IPAddress extends CommonDBChild {
          self::getHTMLTableCellsForItem(null, $item, null, $table_options);
 
          if ($table->getNumberOfRows() > 0) {
-            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
+            $count = self::countForItem($item);
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $count);
 
             Session::initNavigateListItems(__CLASS__,
                                            //TRANS : %1$s is the itemtype name,
@@ -277,7 +278,7 @@ class IPAddress extends CommonDBChild {
                                   'display_super_for_each_group' => false,
                                   'display_tfoot'                => false]);
 
-            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $count);
          } else {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".__('No IP address found')."</th></tr>";
