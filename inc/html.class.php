@@ -3542,6 +3542,7 @@ class Html {
             remove_script_host: false,
             entity_encoding: 'raw',
             paste_data_images: $('.fileupload').length,
+            paste_word_valid_elements: 'b,strong,i,em,h1,h2',
             paste_block_drop: true,
             menubar: false,
             statusbar: false,
