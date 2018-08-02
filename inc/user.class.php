@@ -4092,7 +4092,8 @@ class User extends CommonDBTM {
 
       //User still exists in DB
       if (count($iterator)) {
-         return $iterator->next();
+         $result = $iterator->next();
+         return $result['id'];
       } else {
          if ($CFG_GLPI["is_users_auto_add"]) {
             //Get all ldap servers with email field configured
