@@ -57,10 +57,11 @@ class SlaLevel extends LevelAgreementLevel {
 
       parent::cleanDBOnPurge();
 
-      $sql = "DELETE
-              FROM `glpi_slalevels_tickets`
-              WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-      $DB->query($sql);
+      $DB->delete(
+         'glpi_slalevels_tickets', [
+            $this->rules_id_field   => $this->fields['id']
+         ]
+      );
    }
 
 

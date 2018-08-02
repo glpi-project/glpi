@@ -1822,17 +1822,19 @@ class Rule extends CommonDBTM {
 
       // Delete a rule and all associated criterias and actions
       if (!empty($this->ruleactionclass)) {
-         $sql = "DELETE
-                 FROM `".getTableForItemType($this->ruleactionclass)."`
-                 WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-         $DB->query($sql);
+         $DB->delete(
+            getTableForItemType($this->ruleactionclass), [
+               $this->rules_id_field   => $this->fields['id']
+            ]
+         );
       }
 
       if (!empty($this->rulecriteriaclass)) {
-         $sql = "DELETE
-                 FROM `".getTableForItemType($this->rulecriteriaclass)."`
-                 WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-         $DB->query($sql);
+         $DB->delete(
+            getTableForItemType($this->rulecriteriaclass), [
+               $this->rules_id_field   => $this->fields['id']
+            ]
+         );
       }
    }
 

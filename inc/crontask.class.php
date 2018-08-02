@@ -108,10 +108,11 @@ class CronTask extends CommonDBTM{
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_crontasklogs`
-                WHERE `crontasks_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $DB->delete(
+         'glpi_crontasklogs', [
+            'crontasks_id' => $this->fields['id']
+         ]
+      );
    }
 
 

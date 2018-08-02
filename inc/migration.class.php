@@ -841,11 +841,12 @@ class Migration {
          // delete display preferences
          foreach ($todel as $type => $tab) {
             if (count($tab)) {
-               $query = "DELETE
-                         FROM `glpi_displaypreferences`
-                         WHERE `itemtype` = '$type'
-                               AND `num` IN (".implode(',', $tab).")";
-               $DB->query($query);
+               $DB->delete(
+                  'glpi_displaypreferences', [
+                     'itemtype'  => $type,
+                     'num'       => $tab
+                  ]
+               );
             }
          }
       }

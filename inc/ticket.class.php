@@ -949,23 +949,26 @@ class Ticket extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-      $query1 = "DELETE
-                 FROM `glpi_tickettasks`
-                 WHERE `tickets_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_tickettasks', [
+            'tickets_id'   => $this->fields['id']
+         ]
+      );
 
-      $query1 = "DELETE
-                 FROM `glpi_ticketfollowups`
-                 WHERE `tickets_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_ticketfollowups', [
+            'tickets_id'   => $this->fields['id']
+         ]
+      );
 
       $ts = new TicketValidation();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-      $query1 = "DELETE
-                 FROM `glpi_ticketsatisfactions`
-                 WHERE `tickets_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_ticketsatisfactions', [
+            'tickets_id'   => $this->fields['id']
+         ]
+      );
 
       $pt = new Problem_Ticket();
       $pt->cleanDBonItemDelete('Ticket', $this->fields['id']);
@@ -981,11 +984,14 @@ class Ticket extends CommonITILObject {
       $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTO);
       $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTR);
 
-      $query1 = "DELETE
-                 FROM `glpi_tickets_tickets`
-                 WHERE `tickets_id_1` = '".$this->fields['id']."'
-                       OR `tickets_id_2` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_tickets_tickets', [
+            'OR'  => [
+               'tickets_id_1' => $this->fields['id'],
+               'tickets_id_2' => $this->fields['id']
+            ]
+         ]
+      );
 
       $ct = new Change_Ticket();
       $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);

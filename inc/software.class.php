@@ -1063,10 +1063,11 @@ class Software extends CommonDBTM {
 
             if ($found) {
                // Installation has be moved, delete the source version
-               $sql = "DELETE
-                       FROM `glpi_softwareversions`
-                       WHERE `id` = '".$from["id"]."'";
-
+               $DB->delete(
+                  'glpi_softwareversions', [
+                     'id'  => $from['id']
+                  ]
+               );
             } else {
                // Move version to destination software
                $result = $DB->update(

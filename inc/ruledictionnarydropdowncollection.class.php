@@ -230,10 +230,11 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
             // No item left : delete old item
             if ($result
                 && ($DB->result($result, 0, 0) == 0)) {
-               $Sql              = "DELETE
-                                    FROM `".$this->item_table."`
-                                    WHERE `id` = '$ID'";
-               $resdel           = $DB->query($Sql);
+               $DB->delete(
+                  $this->item_table, [
+                     'id'  => $ID
+                  ]
+               );
                $deletecartmodel  = true;
             }
 
@@ -252,10 +253,11 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                      }
                      // Delete cartrodges_assoc
                      if ($deletecartmodel) {
-                        $sql = "DELETE
-                                FROM `glpi_cartridgeitems_printermodels`
-                                WHERE `printermodels_id` = 'id'";
-                        $DB->query($sql);
+                        $DB->delete(
+                           'glpi_cartridgeitems_printermodels', [
+                              'printermodels_id'   => $ID
+                           ]
+                        );
                      }
                      // Add new assoc
                      $ct = new CartridgeItem();

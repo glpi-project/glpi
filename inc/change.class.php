@@ -254,10 +254,11 @@ class Change extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-      $query1 = "DELETE
-                 FROM `glpi_changetasks`
-                 WHERE `changes_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_changetasks', [
+            'changes_id'   => $this->fields['id']
+         ]
+      );
 
       $cp = new Change_Problem();
       $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);

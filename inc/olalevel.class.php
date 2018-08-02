@@ -61,10 +61,11 @@ class OlaLevel extends LevelAgreementLevel {
 
       parent::cleanDBOnPurge();
 
-      $sql = "DELETE
-              FROM `glpi_olalevels_tickets`
-              WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-      $DB->query($sql);
+      $DB->delete(
+         'glpi_olalevels_tickets', [
+            $this->rules_id_field   => $this->fields['id']
+         ]
+      );
    }
 
 
