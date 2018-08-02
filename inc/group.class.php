@@ -103,17 +103,19 @@ class Group extends CommonTreeDropdown {
       $cg = new Change_Group();
       $cg->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-      $query1 = "DELETE
-                 FROM `glpi_projecttaskteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_projecttaskteams', [
+            'items_id'  => $this->fields['id'],
+            'itemtype'  => __CLASS__
+         ]
+      );
 
-      $query1 = "DELETE
-                 FROM `glpi_projectteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
+      $DB->delete(
+         'glpi_projectteams', [
+            'items_id'  => $this->fields['id'],
+            'itemtype'  => __CLASS__
+         ]
+      );
 
       $gki = new Group_KnowbaseItem();
       $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);

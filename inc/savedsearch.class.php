@@ -322,10 +322,11 @@ class SavedSearch extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query="DELETE
-              FROM `glpi_savedsearches_users`
-              WHERE `savedsearches_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $DB->delete(
+         'glpi_savedsearches_users', [
+            'savedsearches_id'   => $this->fields['id']
+         ]
+      );
    }
 
 

@@ -312,17 +312,20 @@ class Cartridge extends CommonDBChild {
 
       if ($this->getFromDB($ID)) {
          $printer = new Printer();
-         $toadd   = '';
+         $toadd   = [];
          if ($printer->getFromDB($this->getField("printers_id"))) {
-            $toadd .= ", `pages` = '".$printer->fields['last_pages_counter']."' ";
+            $toadd['pages'] = $printer->fields['last_pages_counter'];
          }
 
-         $query = "UPDATE`".$this->getTable()."`
-                   SET `date_out` = '".date("Y-m-d")."'
-                       $toadd
-                   WHERE `id`='$ID'";
+         $result = $DB->update(
+            $this->getTable(), [
+               'date_out'  => date('Y-m-d')
+            ] + $toadd, [
+               'id'  => $ID
+            ]
+         );
 
-         if ($result = $DB->query($query)
+         if ($result
              && ($DB->affected_rows() > 0)) {
             $changes = [
                '0',

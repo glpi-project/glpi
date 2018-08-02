@@ -2386,7 +2386,8 @@ class Toolbox {
                ], [
                   'name'      => ['!=', 'watcher'],
                   'allowmode' => ['&', 2]
-               ]
+               ],
+               '4203'
             );
          }
       }
