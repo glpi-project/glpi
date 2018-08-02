@@ -107,6 +107,13 @@ The following methods have been deprecated:
 - `Html::scriptStart()`
 - `Toolbox::is_a()`
 
+The following constants have been deprecated:
+- `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
+- `CommonDBTM::HAS_DUPLICATE`
+- `CommonDBTM::NOTHING_TO_DO`
+- `CommonDBTM::SUCCESS`
+- `CommonDBTM::TYPE_MISMATCH`
+
 ## [9.3] 2018-06-28
 
 ### Added
