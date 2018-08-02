@@ -1031,8 +1031,7 @@ class Plugin extends CommonDBTM {
             foreach ($entities as $entID => $val) {
                if ($do_recursive) {
                   // Non recursive ones
-                  $dbiterator = new DBmysqliterator();
-                  $dbiterator->buildQuery([
+                  $sub_query = new \QuerySubQuery([
                      'SELECT' => 'id',
                      'FROM'   => $itemtable,
                      'WHERE'  => [
@@ -1040,7 +1039,6 @@ class Plugin extends CommonDBTM {
                         'is_recursive' => 0
                      ]
                   ]);
-                  $sub_query = $dbiterator->getSql();
 
                   $DB->updateOrDie(
                      'glpi_infocoms', [
@@ -1048,14 +1046,13 @@ class Plugin extends CommonDBTM {
                         'is_recursive' => 0
                      ], [
                         'itemtype'  => $name,
-                        'items_id'  => new \QueryExpression('('.$sub_query.')')
+                        'items_id'  => $sub_query
                      ],
                      "update entities_id and is_recursive=0 in glpi_infocoms for $name"
                   );
 
                   // Recursive ones
-                  $dbiterator = new DBmysqliterator();
-                  $dbiterator->buildQuery([
+                  $sub_query = new \QuerySubQuery([
                      'SELECT' => 'id',
                      'FROM'   => $itemtable,
                      'WHERE'  => [
@@ -1063,7 +1060,6 @@ class Plugin extends CommonDBTM {
                         'is_recursive' => 1
                      ]
                   ]);
-                  $sub_query = $dbiterator->getSql();
 
                   $DB->updateOrDie(
                      'glpi_infocoms', [
@@ -1071,27 +1067,25 @@ class Plugin extends CommonDBTM {
                         'is_recursive' => 1
                      ], [
                         'itemtype'  => $name,
-                        'items_id'  => new \QueryExpression('('.$sub_query.')')
+                        'items_id'  => $sub_query
                      ],
                      "update entities_id and is_recursive=1 in glpi_infocoms for $name"
                   );
                } else {
-                  $dbiterator = new DBmysqliterator();
-                  $dbiterator->buildQuery([
+                  $sub_query = new \QuerySubQuery([
                      'SELECT' => 'id',
                      'FROM'   => $itemtable,
                      'WHERE'  => [
                         'entities_id'  => $entID,
                      ]
                   ]);
-                  $sub_query = $dbiterator->getSql();
 
                   $DB->updateOrDie(
                      'glpi_infocoms', [
                         'entities_id'  => $entID
                      ], [
                         'itemtype'  => $name,
-                        'items_id'  => new \QueryExpression('('.$sub_query.')')
+                        'items_id'  => $sub_query
                      ],
                      "update entities_id in glpi_infocoms for $name"
                   );

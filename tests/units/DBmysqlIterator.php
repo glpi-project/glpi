@@ -592,4 +592,40 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \QueryExpression('1 AS `myfield`')]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz`, 1 AS `myfield` FROM `foo`');
    }
+
+   public function testSubQuery() {
+      $crit = ['SELECT' => 'id', 'FROM' => 'baz', 'WHERE' => ['z' => 'f']];
+      $raw_subq = "SELECT `id` FROM `baz` WHERE `z` = 'f'";
+      $sub_query =new \QuerySubQuery($crit);
+      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
+      $this->string($sub_query->getOperator())->isIdenticalTo('IN');
+
+      $it = $this->it->execute('foo', ['bar' => $sub_query]);
+      $this->string($it->getSql())
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ($raw_subq)");
+
+      $sub_query =new \QuerySubQuery($crit, '<>');
+      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
+      $this->string($sub_query->getOperator())->isIdenticalTo('<>');
+
+      $it = $this->it->execute('foo', ['bar' => $sub_query]);
+      $this->string($it->getSql())
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` <> ($raw_subq)");
+
+      $sub_query =new \QuerySubQuery($crit, 'NOT IN');
+      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
+      $this->string($sub_query->getOperator())->isIdenticalTo('NOT IN');
+
+      $it = $this->it->execute('foo', ['bar' => $sub_query]);
+      $this->string($it->getSql())
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` NOT IN ($raw_subq)");
+
+      $this->exception(
+         function() use($crit) {
+            $sub_query =new \QuerySubQuery($crit, 'NOONE');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->hasMessage('Unknown query operator NOONE');
+   }
 }

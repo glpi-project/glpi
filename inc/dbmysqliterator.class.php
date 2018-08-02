@@ -53,6 +53,23 @@ class DBmysqlIterator implements Iterator, Countable {
    // Current position
    private $position = 0;
 
+   //Known query operators
+   private $allowed_operators = [
+      '=',
+      '!=',
+      '<',
+      '<=',
+      '>',
+      '>=',
+      '<>',
+      'LIKE',
+      'REGEXP',
+      'NOT LIKE',
+      'NOT REGEX',
+      '&',
+      '|'
+   ];
+
    /**
     * Constructor
     *
@@ -439,7 +456,6 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    public function analyseCrit ($crit, $bool = "AND") {
-      static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&', '|'];
 
       if (!is_array($crit)) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -488,8 +504,7 @@ class DBmysqlIterator implements Iterator, Countable {
             $value = current($value);
             $ret .= '((' . $key . ') = ' . $this->analyseCrit($value) . ')';
          } else if (is_array($value)) {
-            if (count($value) == 2
-                  && isset($value[0]) && in_array($value[0], $operators, true)) {
+            if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
                $ret .= DBmysql::quoteName($name) . " {$value[0]} " . DBmysql::quoteValue($value[1]);
             } else {
                // Array of Values
@@ -501,6 +516,8 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if (is_null($value)) {
             // NULL condition
             $ret .= DBmysql::quoteName($name) . " IS NULL";
+         } else if ($value instanceof QuerySubQuery) {
+            $ret .= DBmysql::quoteName($name) . ' ' . $value->getOperator() . ' (' . $value->getSubQuery() . ')';
          } else {
             $ret .= DBmysql::quoteName($name) . " = " . DBmysql::quoteValue($value);
          }
@@ -580,5 +597,25 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function count() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
+   }
+
+   /**
+    * Get known query operators
+    *
+    * @return array
+    */
+   public function getOperators() {
+      return $this->operators;
+   }
+
+   /**
+    * Do we have an operator?
+    *
+    * @param string $value Value to check
+    *
+    * @return boolean
+    */
+   public function isOperator($value) {
+      return in_array($value, $this->allowed_operators, true);
    }
 }
