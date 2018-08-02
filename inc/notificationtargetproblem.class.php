@@ -42,9 +42,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
    public $private_profiles = [];
 
-   public $html_tags        = ['##problem.solution.description##'];
-
-
    /**
     * Get events related to tickets
    **/
