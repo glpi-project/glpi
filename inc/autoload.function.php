@@ -126,7 +126,7 @@ function __($str, $domain = 'glpi') {
  * @param string $str    String to translate
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
- * @return protected string (with htmlentities)
+ * @return string
  */
 function __s($str, $domain = 'glpi') {
    return htmlentities(__($str, $domain), ENT_QUOTES, 'UTF-8');

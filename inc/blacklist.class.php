@@ -184,8 +184,8 @@ class Blacklist extends CommonDropdown {
    /**
     * Dropdown of blacklist types
     *
-    * @param $name            select name
-    * @param $options   array of possible options:
+    * @param string $name   select name
+    * @param array $options possible options:
     *    - value       : integer / preselected value (default 0)
     *    - toadd       : array / array of specific values to add at the begining
     *    - on_change   : string / value to transmit to "onChange"
@@ -241,7 +241,7 @@ class Blacklist extends CommonDropdown {
    /**
     * Get blacklisted items for a specific type
     *
-    * @param $type type to get (see constants)
+    * @param string $type type to get (see constants)
     *
     * @return array of blacklisted items
    **/

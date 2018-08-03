@@ -47,10 +47,6 @@ class Certificate extends CommonDBTM {
    static $rightname           = "certificate";
    protected $usenotepad       = true;
 
-   /**
-    * @param int $nb
-    * @return string|translated
-    */
    static function getTypeName($nb = 0) {
       return _n('Certificate', 'Certificates', $nb);
    }
@@ -524,7 +520,7 @@ class Certificate extends CommonDBTM {
     *
     * @see CommonDBTM::getSpecificMassiveActions()
     * @param null $checkitem
-    * @return an
+    * @return array
     */
    function getSpecificMassiveActions($checkitem = null) {
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -581,7 +577,7 @@ class Certificate extends CommonDBTM {
     * @param MassiveAction $ma
     * @param CommonDBTM $item
     * @param array $ids
-    * @return nothing|void
+    * @return void
     */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma,
                                                        CommonDBTM $item,
@@ -672,7 +668,7 @@ class Certificate extends CommonDBTM {
     *
     * @param $name : task's name
     *
-    * @return arrray of information
+    * @return array
    **/
    static function cronInfo($name) {
       return ['description' => __('Send alarms on expired certificate')];
@@ -681,9 +677,9 @@ class Certificate extends CommonDBTM {
    /**
     * Cron action on certificates : alert on expired certificates
     *
-    * @param $task to log, if NULL display (default NULL)
+    * @param CronTask $task to log, if NULL display (default NULL)
     *
-    * @return 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
    **/
    static function cronCertificate($task = null) {
       global $DB, $CFG_GLPI;

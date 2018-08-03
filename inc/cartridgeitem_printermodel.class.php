@@ -89,7 +89,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
     *
     * @param $item   CartridgeItem object
     *
-    * @return nothing (display)
+    * @return boolean|void
    **/
    static function showForCartridgeItem(CartridgeItem $item) {
       global $DB, $CFG_GLPI;

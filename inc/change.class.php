@@ -475,7 +475,7 @@ class Change extends CommonITILObject {
     *
     * @param $withmetaforsearch boolean (default false)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -508,7 +508,7 @@ class Change extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
 
@@ -524,7 +524,7 @@ class Change extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
       // To be overridden by class
@@ -537,7 +537,7 @@ class Change extends CommonITILObject {
     *
     * @since 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL];
@@ -549,7 +549,7 @@ class Change extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
 
@@ -972,7 +972,7 @@ class Change extends CommonITILObject {
     *
     * @param $item CommonDBTM object
     *
-    * @return nothing (display a table)
+    * @return boolean|void
    **/
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;

@@ -71,7 +71,7 @@ class Certificate_Item extends CommonDBRelation {
    /**
     * @param CommonGLPI $item
     * @param int $withtemplate
-    * @return array|string|translated
+    * @return string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
@@ -157,9 +157,9 @@ class Certificate_Item extends CommonDBRelation {
    *
    * @since 9.2
    *
-   * @param $certificates_id the certificate ID
-   * @param $items_id the item's id
-   * @param $itemtype the itemtype
+   * @param integer $certificates_id the certificate ID
+   * @param integer $items_id the item's id
+   * @param string $itemtype the itemtype
    */
    function deleteItemByCertificatesAndItem($certificates_id, $items_id, $itemtype) {
 
@@ -176,7 +176,7 @@ class Certificate_Item extends CommonDBRelation {
     *
     * @param $certificate Certificate object
     *
-    * @return nothing (HTML display)
+    * @return void (HTML display)
     **/
    public static function showForCertificate(Certificate $certificate) {
       global $DB;

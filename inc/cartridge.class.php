@@ -597,8 +597,8 @@ class Cartridge extends CommonDBChild {
    /**
     * Get the dict value for the status of a cartridge
     *
-    * @param $date_use  date : date of use
-    * @param $date_out  date : date of delete
+    * @param string $date_use  date : date of use
+    * @param string $date_out  date : date of delete
     *
     * @return string : dict value for the cartridge status.
    **/
@@ -620,7 +620,7 @@ class Cartridge extends CommonDBChild {
     * @param $cartitem  object   of CartridgeItem class
     * @param $show_old  boolean  show old cartridges or not (default 0)
     *
-    * @return Nothing (displays)
+    * @return boolean|void
    **/
    static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
@@ -830,7 +830,7 @@ class Cartridge extends CommonDBChild {
     *
     * @param $cartitem  CartridgeItem object
     *
-    * @return Nothing (displays)
+    * @return boolean|void
    **/
    static function showAddForm(CartridgeItem $cartitem) {
       global $CFG_GLPI;
@@ -867,7 +867,7 @@ class Cartridge extends CommonDBChild {
     * @param $printer            Printer object
     * @param $old       boolean  old cartridges or not ? (default 0)
     *
-    * @return nothing (display)
+    * @return boolean|void
    **/
    static function showForPrinter(Printer $printer, $old = 0) {
       global $DB, $CFG_GLPI;

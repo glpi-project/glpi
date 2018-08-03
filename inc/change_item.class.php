@@ -82,7 +82,7 @@ class Change_Item extends CommonDBRelation{
     *
     * @param $change Change object
     *
-    * @return Nothing (display)
+    * @return boolean|void
    **/
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI;

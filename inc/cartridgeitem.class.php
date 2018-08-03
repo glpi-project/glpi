@@ -177,7 +177,7 @@ class CartridgeItem extends CommonDBTM {
     *     - target for the Form
     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
     *
-    * @return Nothing (display)
+    * @return boolean
    **/
    function showForm($ID, $options = []) {
 
@@ -444,9 +444,9 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Cron action on cartridges : alert if a stock is behind the threshold
     *
-    * @param $task for log, display information if NULL? (default NULL)
+    * @param CronTask $task for log, display information if NULL? (default NULL)
     *
-    * @return 0 : nothing to do 1 : done with success
+    * @return void
    **/
    static function cronCartridge($task = null) {
       global $DB, $CFG_GLPI;
@@ -542,7 +542,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @param $printer Printer object
     *
-    * @return nothing (display)
+    * @return string|boolean
    **/
    static function dropdownForPrinter(Printer $printer) {
       global $DB;
