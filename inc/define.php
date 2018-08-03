@@ -149,7 +149,7 @@ define("GLPIKEY", "GLPI£i'snarss'ç");
 
 //Telemetry
 if (!defined('GLPI_TELEMETRY_URI')) {
-   define('GLPI_TELEMETRY_URI', 'http://glpi-project.org/telemetry');
+   define('GLPI_TELEMETRY_URI', 'https://telemetry.glpi-project.org');
 }
 
 // GLPI Network
