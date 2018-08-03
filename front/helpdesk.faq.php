@@ -41,7 +41,6 @@ if (isset($_GET["redirect"])) {
 // Affichage Module FAQ
 //******************
 
-$name = "";
 Session::checkFaqAccess();
 
 if (Session::getLoginUserID()) {

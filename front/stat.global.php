@@ -99,11 +99,6 @@ $stat->displayLineGraph(
    ]
 );
 
-$show_all = false;
-if (!isset($_GET['graph']) || (count($_GET['graph']) == 0)) {
-   $show_all = true;
-}
-
 $values = [];
 //Temps moyen de resolution d'intervention
 $values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",

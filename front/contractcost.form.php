@@ -51,7 +51,7 @@ $cost = new ContractCost();
 if (isset($_POST["add"])) {
    $cost->check(-1, CREATE, $_POST);
 
-   if ($newID = $cost->add($_POST)) {
+   if ($cost->add($_POST)) {
       Event::log($_POST['contracts_id'], "contracts", 4, "financial",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a cost'), $_SESSION["glpiname"]));

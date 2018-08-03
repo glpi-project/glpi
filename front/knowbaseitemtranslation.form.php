@@ -84,13 +84,6 @@ if (isset($_POST['add'])) {
                                __('FAQ') => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php']);
    }
 
-   /*$available_options = array('item_itemtype', 'item_items_id', 'id');
-   $options           = array();
-   foreach ($available_options as $key) {
-      if (isset($_GET[$key])) {
-         $options[$key] = $_GET[$key];
-      }
-   }*/
    $translation->display([]);
 
    if (Session::getLoginUserID()) {

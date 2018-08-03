@@ -135,7 +135,6 @@ if (!($item instanceof CommonDevice)) {
 } else {
    //   echo "Device";
    $type  = "device";
-   $field = $_GET["dropdown"];
 
    $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
    $params = ['type'     => $type,
@@ -185,7 +184,6 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['solved']) && is_array($data['solved'])) {
       $count = 0;
-      $cleandata = [];
       $labels = [];
       $series = [];
       foreach ($data['solved'] as $key => $val) {

@@ -34,7 +34,6 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
-$config      = new Config();
 $config_ldap = new AuthLDAP();
 
 if (!isset($_GET['id'])) {
