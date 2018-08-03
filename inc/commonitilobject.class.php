@@ -1212,11 +1212,17 @@ abstract class CommonITILObject extends CommonDBTM {
          && in_array($this->oldvalues['status'], $statuses)
          && !in_array($this->fields['status'], $statuses)
       ) {
+         $users_id_reject = 0;
+         // set last updater if interactive user
+         if (!Session::isCron()) {
+            $users_id_reject = Session::getLoginUserID();
+         }
+
          //Mark existing solutions as refused
          $DB->update(
             ITILSolution::getTable(), [
                'status'             => CommonITILValidation::REFUSED,
-               'users_id_approval'  => Session::getLoginUserID(),
+               'users_id_approval'  => $users_id_reject,
                'date_approval'      => date('Y-m-d H:i:s')
             ], [
                'WHERE'  => [
