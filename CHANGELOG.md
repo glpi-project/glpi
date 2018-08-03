@@ -86,6 +86,12 @@ The present file will list all changes made to the project; according to the
   - `Html::checkAllAsCheckbox()`
   - `Html::scriptEnd()`
   - `Html::scriptStart()`
+- Drop all constants that have been deprecated in GLPI 9.3
+  - `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
+  - `CommonDBTM::HAS_DUPLICATE`
+  - `CommonDBTM::NOTHING_TO_DO`
+  - `CommonDBTM::SUCCESS`
+  - `CommonDBTM::TYPE_MISMATCH`
 
 
 ## [9.3.1] unreleased
