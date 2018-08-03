@@ -84,7 +84,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
       }
    }
 
-   $rand = Dropdown::showYesNo($_POST['field'].'[use_notification][]', $default_notif);
+   Dropdown::showYesNo($_POST['field'].'[use_notification][]', $default_notif);
 
    $email_string = '';
    // Only one email
