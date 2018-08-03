@@ -60,17 +60,6 @@ if (in_array($table.'.'.$_GET['field'],
    exit();
 }
 
-$request = [
-   'FROM'   => $table,
-   'COUNT'  => 'cpt',
-   'WHERE'  => [
-      'AND' => [
-         [$_GET['field'] => ['LIKE', $_GET['term'] . '%']],
-         [$_GET['field'] => ['<>', $_GET['term']]]
-      ]
-   ]
-];
-
 $entity = [];
 if (isset($_GET['entity_restrict']) && $_GET['entity_restrict']>=0) {
    if ($item->isEntityAssign()) {
@@ -81,10 +70,6 @@ if (isset($_GET['entity_restrict']) && $_GET['entity_restrict']>=0) {
 if (isset($_GET['user_restrict']) && $_GET['user_restrict']>0) {
    $entity['users_id'] = $_GET['user_restrict'];
 }
-
-$request['WHERE'] = $request['WHERE'] + $entity;
-$result = $DB->request($request)->next();
-$totnum = $result['cpt'];
 
 $iterator = $DB->request([
    'SELECT DISTINCT' => $_GET['field'],
