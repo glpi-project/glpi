@@ -53,7 +53,7 @@ $task = new ProjectTask();
 
 if (isset($_POST["add"])) {
    $task->check(-1, CREATE, $_POST);
-   $newID = $task->add($_POST);
+   $task->add($_POST);
 
    Event::log($task->fields['projects_id'], 'project', 4, "maintain",
               //TRANS: %s is the user login

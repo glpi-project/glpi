@@ -40,7 +40,7 @@ $item = new Change_Problem();
 if (isset($_POST["add"])) {
    $item->check(-1, CREATE, $_POST);
 
-   if ($newID = $item->add($_POST)) {
+   if ($item->add($_POST)) {
       Event::log($_POST["changes_id"], "change", 4, "maintain",
                   //TRANS: %s is the user login
                   sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));

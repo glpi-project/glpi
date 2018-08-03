@@ -60,7 +60,7 @@ foreach ($date_fields as $date_field) {
 if (isset($_POST["add"])) {
    $track->check(-1, CREATE, $_POST);
 
-   if ($id = $track->add($_POST)) {
+   if ($track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($track->getLinkURL());
       }

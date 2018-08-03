@@ -42,7 +42,6 @@ $rulecollection->checkGlobal(READ);
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-$rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction   = new RuleAction(get_class($rule));
 
 if (isset($_POST["add_action"])) {
