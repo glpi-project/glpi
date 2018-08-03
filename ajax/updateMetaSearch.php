@@ -48,7 +48,6 @@ echo "<table width='100%'><tr><td width='40%'>";
 foreach ($searchopt as $key => $val) {
 
    // print groups
-   $str_limit   = 28;
    if (!is_array($val)) {
       $group = $val;
    } else if (is_array($val) && !isset($val['table'])) {

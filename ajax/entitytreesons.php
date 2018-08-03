@@ -47,8 +47,6 @@ if (isset($_GET['node'])) {
 
    // Root node
    if ($_GET['node'] == -1) {
-      $pos = 0;
-
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
          $ID                           = $entity['id'];
          $is_recursive                 = $entity['is_recursive'];

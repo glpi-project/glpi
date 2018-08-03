@@ -75,7 +75,7 @@ if (isset($_POST["itemtype"])
       echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 
       if (is_array($linked) && (count($linked) > 0)) {
-         echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" 
+         echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\"
                 alt='+' title=\"". __s('Add a global search criterion').
                 "\" id='addmetasearchcriteria$randrow'>";
 
@@ -130,7 +130,6 @@ if (isset($_POST["itemtype"])
                               ['value' => $value]);
    }
 
-   $selected = $first = '';
    $values   = [];
    // display select box to define search item
    if ($CFG_GLPI['allow_search_view'] == 2) {
