@@ -33,7 +33,6 @@
 include ('../inc/includes.php');
 
 
-$group = new Group();
 Session::checkRightsOr('group', [CREATE, UPDATE]);
 Session::checkRight('user', User::UPDATEAUTHENT);
 

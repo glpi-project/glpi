@@ -44,8 +44,8 @@ if (!Session::haveRight("config", READ)
 
 $settingconfig = new NotificationSettingConfig();
 
-$modes = Notification_NotificationTemplate::getModes();
-$classes = [];
+// Init $CFG_GLPI['notifications_modes']
+Notification_NotificationTemplate::getModes();
 
 if (count($_POST)) {
    $settingconfig->update($_POST);

@@ -57,8 +57,6 @@ if (!$rule = getItemForItemtype($sub_type)) {
 }
 $rule->checkGlobal(READ);
 
-$test_rule_output = null;
-
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
 $rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'], $rules_id);

@@ -44,10 +44,7 @@ $notiftpl = new Notification_NotificationTemplate();
 if (isset($_POST["add"])) {
    $notiftpl->check(-1, CREATE, $_POST);
 
-   if ($newID = $notiftpl->add($_POST)) {
-      /*Event::log($newID, "notifications_notificationtemplates", 4, "notification",
-         sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));*/
-
+   if ($notiftpl->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($notiftpl->getLinkURL());
       }
@@ -56,18 +53,11 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $notiftpl->check($_POST["id"], PURGE);
    $notiftpl->delete($_POST, 1);
-
-   /*Event::log($_POST["id"], "notifications_notificationtemplates", 4, "notification",
-              //TRANS: %s is the user login
-      sprintf(__('%s purges an item'), $_SESSION["glpiname"]));*/
    $notiftpl->redirectToList();
 } else if (isset($_POST["update"])) {
    $notiftpl->check($_POST["id"], UPDATE);
 
    $notiftpl->update($_POST);
-   /*Event::log($_POST["id"], "notifications_notificationtemplates", 4, "notification",
-              //TRANS: %s is the user login
-      sprintf(__('%s updates an item'), $_SESSION["glpiname"]));*/
    Html::back();
 } else {
    Html::header(

@@ -48,7 +48,7 @@ $disk = new ComputerVirtualMachine();
 if (isset($_POST["add"])) {
    $disk->check(-1, CREATE, $_POST);
 
-   if ($newID = $disk->add($_POST)) {
+   if ($disk->add($_POST)) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a virtual machine'), $_SESSION["glpiname"]));

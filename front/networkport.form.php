@@ -41,7 +41,6 @@ include ('../inc/includes.php');
 
 $np  = new NetworkPort();
 $nn  = new NetworkPort_NetworkPort();
-$npv = new NetworkPort_Vlan();
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";

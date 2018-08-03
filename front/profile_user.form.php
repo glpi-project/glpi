@@ -36,9 +36,7 @@ include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 
-$profile = new Profile();
 $right   = new Profile_User();
-$user    = new User();
 
 if (isset($_POST["add"])) {
 
