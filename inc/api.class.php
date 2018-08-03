@@ -1975,6 +1975,7 @@ abstract class API extends CommonGLPI {
 
       $apiclient = new APIClient;
       if ($apiclient->getFromDB($this->apiclients_id)) {
+         $changes = [];
          $changes[0] = 0;
          $changes[1] = "";
          $changes[2] = "Enpoint '$endpoint' called by ".$this->iptxt." $username";

@@ -195,6 +195,7 @@ class Blacklist extends CommonDropdown {
    **/
    static function dropdownType($name, $options = []) {
 
+      $params = [];
       $params['value']       = 0;
       $params['toadd']       = [];
       $params['on_change']   = '';
@@ -224,6 +225,7 @@ class Blacklist extends CommonDropdown {
    **/
    static function getTypes() {
 
+      $options = [];
       $options[self::IP]     = __('IP');
       $options[self::MAC]    = __('MAC');
       $options[self::SERIAL] = __('Serial number');

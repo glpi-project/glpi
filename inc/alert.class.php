@@ -100,6 +100,8 @@ class Alert extends CommonDBTM {
          }
       }
 
+      $times = [];
+
       if ($p['inherit_parent']) {
          $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
@@ -122,6 +124,7 @@ class Alert extends CommonDBTM {
     */
    static function dropdownYesNo($options = []) {
 
+      $p = [];
       $p['name']           = 'alert';
       $p['value']          = 0;
       $p['display']        = true;
@@ -132,6 +135,8 @@ class Alert extends CommonDBTM {
             $p[$key] = $val;
          }
       }
+
+      $times = [];
 
       if ($p['inherit_parent']) {
          $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
@@ -155,6 +160,7 @@ class Alert extends CommonDBTM {
     */
    static function dropdownIntegerNever($name, $value, $options = []) {
 
+      $p = [];
       $p['min']      = 1;
       $p['max']      = 100;
       $p['step']     = 1;

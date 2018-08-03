@@ -494,6 +494,7 @@ class CartridgeItem extends CommonDBTM {
             }
 
             if (!empty($items)) {
+               $options = [];
                $options['entities_id'] = $entity;
                $options['items']       = $items;
 
@@ -507,6 +508,7 @@ class CartridgeItem extends CommonDBTM {
                                                                $entityname, $message));
                   }
 
+                  $input = [];
                   $input["type"]     = Alert::THRESHOLD;
                   $input["itemtype"] = 'CartridgeItem';
 

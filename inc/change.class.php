@@ -986,6 +986,8 @@ class Change extends CommonITILObject {
 
       $restrict         = '';
       $order            = '';
+
+      $options          = [];
       $options['reset'] = 'reset';
 
       switch ($item->getType()) {

@@ -212,6 +212,7 @@ class Auth extends CommonGLPI {
       $this->user_deleted_ldap = false;
 
       if ($this->ldap_connection) {
+         $params = [];
          $params['method']                             = AuthLDAP::IDENTIFIER_LOGIN;
          $params['fields'][AuthLDAP::IDENTIFIER_LOGIN] = $ldap_method['login_field'];
          if (!empty($ldap_method['sync_field'])) {
@@ -343,6 +344,7 @@ class Auth extends CommonGLPI {
          if (self::checkPassword($password, $password_db)) {
             // Update password if needed
             if (self::needRehash($password_db)) {
+               $input = [];
                $input['id'] = $row['id'];
                // Set glpiID to allow password update
                $_SESSION['glpiID'] = $input['id'];
@@ -429,6 +431,7 @@ class Auth extends CommonGLPI {
             // an X.509 subject looks like:
             // CN=john.doe/OU=Department/O=Company/C=xx/Email=john@comapy.tld/L=City/
             $sslattribs = explode('/', $_SERVER['SSL_CLIENT_S_DN']);
+            $sslattributes = [];
             while ($sslattrib = next($sslattribs)) {
                list($key,$val)      = explode('=', $sslattrib);
                $sslattributes[$key] = $val;
@@ -640,6 +643,7 @@ class Auth extends CommonGLPI {
 
                   if ($ds) {
                      $ldapservers_status = true;
+                     $params = [];
                      $params['method']                             = AuthLdap::IDENTIFIER_LOGIN;
                      $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
                      $user_dn
@@ -868,6 +872,7 @@ class Auth extends CommonGLPI {
    static function dropdown($options = []) {
       global $DB;
 
+      $p = [];
       $p['name']                = 'auths_id';
       $p['value']               = 0;
       $p['display']             = true;
@@ -879,6 +884,7 @@ class Auth extends CommonGLPI {
          }
       }
 
+      $methods = [];
       $methods[self::DB_GLPI] = __('Authentication on GLPI database');
 
       $result = $DB->request([

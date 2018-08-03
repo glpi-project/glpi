@@ -463,6 +463,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (($item !== false)
           && $item->dohistory) {
+         $changes = [];
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = $this->getHistoryNameForItem($item, 'add');
@@ -549,6 +550,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (($item !== false)
           && $item->dohistory) {
+         $changes = [];
          $changes[0] = '0';
 
          if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
@@ -584,6 +586,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          if (($item !== false)
              && $item->dohistory) {
+            $changes = [];
             $changes[0] = '0';
             $changes[1] = addslashes($this->getHistoryNameForItem($item, 'lock'));
             $changes[2] = '';
@@ -614,6 +617,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          if (($item !== false)
              && $item->dohistory) {
+            $changes = [];
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = addslashes($this->getHistoryNameForItem($item, 'unlock'));

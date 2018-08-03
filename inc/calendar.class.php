@@ -604,6 +604,7 @@ class Calendar extends CommonDropdown {
    function updateDurationCache($calendars_id) {
 
       if ($this->getFromDB($calendars_id)) {
+         $input = [];
          $input['id']             = $calendars_id;
          $input['cache_duration'] = exportArrayToDB($this->getDaysDurations());
          return $this->update($input);

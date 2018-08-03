@@ -723,6 +723,7 @@ class Certificate extends CommonDBTM {
 
          if (!empty($items)) {
             $alert                   = new Alert();
+            $options = [];
             $options['entities_id']  = $entity;
             $options['certificates'] = $items;
 
@@ -737,6 +738,7 @@ class Certificate extends CommonDBTM {
                                                            $entityname, $message));
                }
 
+               $input = [];
                $input["type"]     = Alert::END;
                $input["itemtype"] = __CLASS__;
 

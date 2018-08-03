@@ -489,6 +489,7 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('How LDAP aliases should be handled') . "</td><td colspan='4'>";
+      $alias_options = [];
       $alias_options[LDAP_DEREF_NEVER]     = __('Never dereferenced (default)');
       $alias_options[LDAP_DEREF_ALWAYS]    = __('Always dereferenced');
       $alias_options[LDAP_DEREF_SEARCHING] = __('Dereferenced during the search (but not when locating)');
@@ -601,6 +602,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function dropdownGroupSearchType(array $options) {
 
+      $p = [];
       $p['name']    = 'group_search_type';
       $p['value']   = self::GROUP_SEARCH_USER;
       $p['display'] = true;
@@ -1440,6 +1442,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function showLdapUsers() {
 
+      $values = [];
       $values['order'] = 'DESC';
       $values['start'] = 0;
 
@@ -1692,6 +1695,7 @@ class AuthLDAP extends CommonDBTM {
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($options['authldaps_id']);
 
+      $values = [];
       $values['order']        = 'DESC';
       $values['mode']         = self::ACTION_SYNCHRONIZE;
       $values['ldap_filter']  = '';
@@ -2759,6 +2763,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function searchUserDn($ds, $options = []) {
 
+      $values = [];
       $values['basedn']            = '';
       $values['login_field']       = '';
       $values['search_parameters'] = [];
@@ -3392,6 +3397,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function dropdownUserDeletedActions($value = 0) {
 
+      $options = [];
       $options[0] = __('Preserve');
       $options[1] = __('Put in dustbin');
       $options[2] = __('Withdraw dynamic authorizations and groups');

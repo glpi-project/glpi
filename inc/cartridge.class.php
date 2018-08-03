@@ -282,6 +282,7 @@ class Cartridge extends CommonDBChild {
             ]
          );
          if ($result && ($DB->affected_rows() > 0)) {
+            $changes = [];
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = __('Installing a cartridge');
@@ -322,6 +323,7 @@ class Cartridge extends CommonDBChild {
 
          if ($result = $DB->query($query)
              && ($DB->affected_rows() > 0)) {
+            $changes = [];
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = __('Uninstalling a cartridge');
