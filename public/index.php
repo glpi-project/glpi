@@ -357,7 +357,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    RunTracy\Helpers\Profiler\Profiler::finish('Register Middlewares');
 
    RunTracy\Helpers\Profiler\Profiler::start('Register routes');
-   // Render Twig template in route
+
    $app->get('/', function ($request, $response, $args) {
       //TODO: do some checks and redirect the the right URL
       $redirect_uri = $this->router->pathFor('login');
@@ -367,9 +367,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       return $response->withRedirect($redirect_uri, 301);
    })->setName('slash');
 
-   // Render Twig template in route
    $app->get('/login', function ($request, $response, $args) use ($CFG_GLPI) {
       //if user is logged in, redirect to /central
+      if (Session::getLoginUserID()) {
+         $redirect_uri = $this->router->pathFor('central');
+         return $response->withRedirect($redirect_uri, 301);
+      }
 
       $glpi_form = [
          'header'       => false,
