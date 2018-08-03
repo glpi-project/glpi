@@ -42,7 +42,6 @@ if (isset($_GET["lID"])) {
          'id' => $_GET['lID']
       ]
    ]);
-   $result = $DB->query($query);
 
    if (count($iterator) == 1) {
       $current = $iterator->next();
