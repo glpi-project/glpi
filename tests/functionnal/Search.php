@@ -81,10 +81,11 @@ class Search extends DbTestCase {
     * Get all classes in folder inc/
     *
     * @param boolean $function Whether to look for a function
+    * @param array   $excludes List of classes to exclude
     *
     * @return array
     */
-   private function getClasses($function = false) {
+   private function getClasses($function = false, array $excludes = []) {
       $classes = [];
       foreach (new \DirectoryIterator('inc/') as $fileInfo) {
          if ($fileInfo->isDot()) {
@@ -99,14 +100,23 @@ class Search extends DbTestCase {
                if ($token[0] == T_CLASS) {
                   $class_token = true;
                } else if ($class_token && $token[0] == T_STRING) {
+                  $classname = $token[1];
+
+                  foreach ($excludes as $exclude) {
+                     if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
+                        break 2; // Class is excluded from results, go to next file
+                     }
+                  }
+
                   if ($function) {
-                     if (method_exists($token[1], $function)) {
-                        $classes[] = $token[1];
+                     if (method_exists($classname, $function)) {
+                        $classes[] = $classname;
                      }
                   } else {
-                     $classes[] = $token[1];
+                     $classes[] = $classname;
                   }
-                  $class_token = false;
+
+                  break; // Assume there is only one class by file
                }
             }
          }
@@ -233,20 +243,24 @@ class Search extends DbTestCase {
          $displaypref->delete($line, true);
       }
 
-      $itemtypeslist = $this->getClasses('searchOptions');
+      $itemtypeslist = $this->getClasses(
+         'searchOptions',
+         [
+            '/^Rule.*/',
+            '/^Common.*/',
+            '/^DB.*/',
+            'SlaLevel',
+            'OlaLevel',
+            'Reservation',
+            'Event',
+            'Glpi\\Event',
+            'KnowbaseItem',
+            'NetworkPortMigration',
+         ]
+      );
       foreach ($itemtypeslist as $itemtype) {
          $number = 0;
-         if (!file_exists('front/'.strtolower($itemtype).'.php')
-                 || substr($itemtype, 0, 4) === "Rule"
-                 || substr($itemtype, 0, 6) === "Common"
-                 || substr($itemtype, 0, 2) === "DB"
-                 || $itemtype == 'SlaLevel'
-                 || $itemtype == 'OlaLevel'
-                 || $itemtype == 'Reservation'
-                 || $itemtype == 'Event'
-                 || $itemtype == 'Glpi\\Event'
-                 || $itemtype == 'KnowbaseItem'
-                 || $itemtype == 'NetworkPortMigration') {
+         if (!file_exists('front/'.strtolower($itemtype).'.php')) {
             // it's the case where not have search possible in this itemtype
             continue;
          }
