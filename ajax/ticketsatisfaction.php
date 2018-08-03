@@ -42,13 +42,11 @@ $entity = new Entity();
 
 if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
    if ($entity->getFromDB($_POST['entities_id'])) {
-      $inquest_config    = $entity->getfield('inquest_config');
       $inquest_delay     = $entity->getfield('inquest_delay');
       $inquest_rate      = $entity->getfield('inquest_rate');
       $inquest_duration  = $entity->getfield('inquest_duration');
       $max_closedate     = $entity->getfield('max_closedate');
    } else {
-      $inquest_config    = $_POST['inquest_config'];
       $inquest_delay     = -1;
       $inquest_rate      = -1;
       $inquest_duration  = -1;

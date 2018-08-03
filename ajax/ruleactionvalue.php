@@ -40,7 +40,6 @@ if (strpos($_SERVER['PHP_SELF'], "ruleactionvalue.php")) {
 }
 
 Session::checkLoginUser();
-$display = false;
 
 $ra = new RuleAction();
 
