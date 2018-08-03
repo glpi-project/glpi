@@ -2411,19 +2411,23 @@ a.icon_nav_move:hover img {
    text-decoration: underline;
 }
 
-#footer-login {
+#footer-login,
+.loginpage #footer {
    position: absolute;
    right: 10px;
    bottom: 0px;
    font-size : 10px;
    font-family: Verdana,Arial,Helvetica,sans-serif;
    font-weight: bold;
+   background-color: transparent;
 }
 
-#footer-login.home {
+#footer-login.home,
+.loginpage #footer {
    bottom: 15px;
 }
-#footer-login.home a {
+#footer-login.home a,
+.loginpage #footer a {
    color: #FFF;
 }
 
@@ -4113,7 +4117,8 @@ tr.log_history_filter_row .select2-container--default .select2-selection--multip
       padding: 1px 2%;
    }
 
-   #footer-login {
+   #footer-login,
+   .loginpage #footer {
       display: none;
    }
 

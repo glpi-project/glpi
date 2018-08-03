@@ -1,0 +1,62 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+<!DOCTYPE html>
+<html lang="" class="{% block html_class  %}{% endblock %}">
+    <head>
+
+         <meta charset="utf-8"/>
+         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+         <link rel="shortcut icon" type="images/x-icon" href="{{ CFG_GLPI.root_doc }}/pics/favicon.ico" />
+
+         {# auto desktop / mobile viewport #}
+         <meta name='viewport' content='width=device-width, initial-scale=1'/>
+
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/styles.css" type="text/css" media="screen" />
+         <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/palettes/{{ CFG_GLPI.palette }}.css" type="text/css" media="screen" />
+
+        {% block head %}
+            <title>{% block title %}{% endblock %} - GLPI</title>
+        {% endblock %}
+    </head>
+    <body>
+        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="footer">
+            {% block footer %}{% endblock %}
+
+            <a href="http://glpi-project.org/"
+               title="Powered by Teclib and contributors"
+               class="copyright"
+            >
+               GLPI {{ constant('GLPI_VERSION') }} Copyright (C) 2015-{{ "now"|date("Y") }} Teclib' and contributors
+            </a>
+        </div>
+    </body>
+</html>

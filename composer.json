@@ -32,7 +32,12 @@
         "paragonie/random_compat": "^2.0",
         "monolog/monolog": "^1.23",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
-        "zendframework/zend-console": "^2.7"
+        "zendframework/zend-console": "^2.7",
+        "slim/slim": "^3.9",
+        "slim/php-view": "^2.2",
+        "slim/twig-view": "^2.3",
+        "twig/extensions": "^1.5",
+        "kanellov/slim-twig-flash": "^0.2.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
