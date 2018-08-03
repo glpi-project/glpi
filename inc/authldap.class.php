@@ -1687,7 +1687,7 @@ class AuthLDAP extends CommonDBTM {
     *          - begin_date begin date to time limit
     *          - end_date end date to time limit
     *          - script true if called by an external script
-    * @param type    $results       result stats
+    * @param array   $results       result stats
     * @param boolean $limitexceeded limit exceeded exception
     *
     * @return array of the user
@@ -3647,8 +3647,8 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get a LDAP field value
     *
-    * @param $infos LDAP entry infos
-    * @param $field Field name to retrieve
+    * @param array  $infos LDAP entry infos
+    * @param string $field Field name to retrieve
     *
     * @return string
     */
@@ -3761,7 +3761,7 @@ class AuthLDAP extends CommonDBTM {
     *          - begin_date begin date to time limit
     *          - end_date end date to time limit
     *          - script true if called by an external script
-    * @param type    $results       result stats
+    * @param array   $results       result stats
     * @param boolean $limitexceeded limit exceeded exception
     *
     * @return array
