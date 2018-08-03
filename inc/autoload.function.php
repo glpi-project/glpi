@@ -276,6 +276,15 @@ function glpi_autoload($classname) {
 
    $dir = GLPI_ROOT . "/inc/";
 
+   //hack for \Event
+   //@since 9.3.1 -- WILL BE REMOVED IN FUTURE RELEASE
+   if ($classname === 'Event') {
+      Toolbox::deprecated('Event has been replaced by Glpi\\Event.');
+      include_once($dir . 'event.class.php');
+      class_alias('Glpi\\Event', 'Event');
+      return true;
+   }
+
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";

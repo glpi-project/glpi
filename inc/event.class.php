@@ -409,8 +409,3 @@ class Event extends CommonDBTM {
       echo "</table></div><br>";
    }
 }
-
-// For compatibility
-if (!class_exists('Event', false)) {
-   class_alias('Glpi\\Event', 'Event');
-}
