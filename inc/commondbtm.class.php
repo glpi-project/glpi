@@ -88,29 +88,6 @@ class CommonDBTM extends CommonGLPI {
    public $notificationqueueonaction            = false;
 
    /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const SUCCESS                    = 0; //Process is OK
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const ERROR_FIELDSIZE_EXCEEDED   = 2; //Value is bigger than the field's size
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const HAS_DUPLICATE              = 3; //Can insert or update because it's duplicating another item
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const NOTHING_TO_DO              = 4; //Nothing to insert or update
-
-
-
-   /**
     * Constructor
    **/
    function __construct () {
