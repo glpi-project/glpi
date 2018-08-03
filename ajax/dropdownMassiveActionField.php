@@ -66,7 +66,6 @@ if (isset($_POST["itemtype"])
    $search            = $search[$_POST["id_field"]];
 
    $FIELDNAME_PRINTED = false;
-   $USE_TABLE         = false;
 
    echo "<table class='tab_glpi' width='100%'><tr><td>";
 
