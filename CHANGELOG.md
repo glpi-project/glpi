@@ -19,6 +19,15 @@ The present file will list all changes made to the project; according to the
 - Drop `NotificationTarget::datas` property
 - Drop support of string `$filter` parameter in `Profileuser::getUserProfiles()`
 - Drop support of string `$condition` parameter in `User::getFromDBbyEmail()`
+- Drop support of string `$condition` parameter in `Group_User::getUserGroups()`
+- Drop support of string `$condition` parameter in `Group_User::getGroupUsers()`
+- Drop support of string `$condition` parameter in `countElementsInTable` (`DbUtils::countElementsInTable()`)
+- Drop support of string `$condition` parameter in `countDistinctElementsInTable` (`DbUtils::countDistinctElementsInTable()`)
+- Drop support of string `$condition` parameter in `countElementsInTableForMyEntities` (`DbUtils::countElementsInTableForMyEntities()`)
+- Drop support of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`)
+- Drop support of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`)
+
+
 - Drop `Zend\Loader\SplAutoloader` interface
 - Drop all methods that have been deprecated in GLPI 9.2
   - `_e()`
@@ -86,6 +95,9 @@ The present file will list all changes made to the project; according to the
   - `Html::checkAllAsCheckbox()`
   - `Html::scriptEnd()`
   - `Html::scriptStart()`
+  - `CommonDBTM::getSearchOptionsToAddNew()`
+  - `ComputerVirtualMachine::getUUIDRestrictRequest()`
+  - `Profile::getUnderActiveProfileRestrictRequest()`
 - Drop all constants that have been deprecated in GLPI 9.3
   - `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
   - `CommonDBTM::HAS_DUPLICATE`

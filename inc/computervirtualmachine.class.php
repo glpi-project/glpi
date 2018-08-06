@@ -433,23 +433,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Get correct uuid sql search for virtualmachines
     *
-    * @deprecated 9.3.1
-    *
-    * @param $uuid the uuid given
-    *
-    * @return the restrict which contains uuid, uuid with first block flipped,
-    * uuid with 3 first block flipped
-   **/
-   static function getUUIDRestrictRequest($uuid) {
-      $uuids = self::getUUIDRestrictCriteria($uuid);
-      $in = " IN('" . implode("', '", $uuids) . "')";
-      return $in;
-   }
-
-
-   /**
-    * Get correct uuid sql search for virtualmachines
-    *
     * @since 9.3.1
     *
     * @param $uuid the uuid given

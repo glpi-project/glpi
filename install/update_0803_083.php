@@ -1030,7 +1030,7 @@ function update0803to083() {
       $ADDTODISPLAYPREF['TicketRecurrent'] = [11, 12, 13, 15, 14];
    }
 
-   if (!countElementsInTable('glpi_crontasks', "`itemtype`='TicketRecurrent' AND `name`='ticketrecurrent'")) {
+   if (!countElementsInTable('glpi_crontasks', ['itemtype' => 'TicketRecurrent', 'name' => 'ticketrecurrent'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1453,7 +1453,7 @@ function update0803to083() {
    $migration->migrationOneTable('glpi_entitydatas');
    $restore_root_entity_value = false;
    // create root entity if not exist with old default values
-   if (countElementsInTable('glpi_entitydatas', 'entities_id=0') == 0) {
+   if (countElementsInTable('glpi_entitydatas', ['entities_id' => 0]) == 0) {
       $query = "INSERT INTO `glpi_entitydatas`
                        (`entities_id`, `entities_id_software`,
                         `autofill_order_date`, `autofill_delivery_date`, `autofill_buy_date`,

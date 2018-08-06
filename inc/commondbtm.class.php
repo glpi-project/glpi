@@ -3537,10 +3537,7 @@ class CommonDBTM extends CommonGLPI {
 
       $classname = get_called_class();
       $method_name = 'rawSearchOptionsToAdd';
-      if (method_exists($classname, 'getSearchOptionsToAddNew')) {
-         Toolbox::deprecated('getSearchOptionsToAddNew must be replaced with rawSearchOptionsToAdd');
-         $method_name = 'getSearchOptionsToAddNew';
-      } else if (!method_exists($classname, $method_name)) {
+      if (!method_exists($classname, $method_name)) {
          return $options;
       }
 

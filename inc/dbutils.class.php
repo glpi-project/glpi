@@ -319,9 +319,6 @@ final class DbUtils {
       if (!is_array($condition)) {
          if (empty($condition)) {
             $condition = [];
-         } else {
-            Toolbox::Deprecated('Condition should be an array!');
-            $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
       $condition['COUNT'] = 'cpt';
@@ -345,9 +342,6 @@ final class DbUtils {
       if (!is_array($condition)) {
          if (empty($condition)) {
             $condition = [];
-         } else {
-            Toolbox::Deprecated('Condition should be an array!');
-            $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
       $condition['COUNT'] = 'cpt';
@@ -371,12 +365,7 @@ final class DbUtils {
       $item     = new $itemtype();
 
       $criteria = $this->getEntitiesRestrictCriteria($table, '', '', $item->maybeRecursive());
-      if (is_array($condition)) {
-         $criteria = array_merge($condition, $criteria);
-      } else if ($condition) {
-         Toolbox::Deprecated('Condition should be an array!');
-         $criteria[] = $condition;
-      }
+      $criteria = array_merge($condition, $criteria);
       return $this->countElementsInTable($table, $criteria);
    }
 
@@ -402,12 +391,7 @@ final class DbUtils {
       }
 
       $criteria = $this->getEntitiesRestrictCriteria($table, '', $entity, $recursive);
-      if (is_array($condition)) {
-         $criteria = array_merge($condition, $criteria);
-      } else if ($condition) {
-         Toolbox::Deprecated('Condition should be an array!');
-         $criteria[] = $condition;
-      }
+      $criteria = array_merge($condition, $criteria);
       return $this->countElementsInTable($table, $criteria);
    }
 
@@ -436,9 +420,6 @@ final class DbUtils {
       if (!is_array($condition)) {
          if (empty($condition)) {
             $condition = [];
-         } else {
-            Toolbox::Deprecated('Condition should be an array!');
-            $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
 
