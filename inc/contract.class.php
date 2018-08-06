@@ -1090,19 +1090,25 @@ class Contract extends CommonDBTM {
              self::getTypeName(1)."</a></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      $options['reset'] = 'reset';
-      $options['sort']  = 12;
-      $options['order'] = 'DESC';
-      $options['start'] = 0;
-
-      $options['criteria'][0] = ['field'      => 12,
-                                      'value'      => '<0',
-                                      'searchtype' => 'contains'];
-      $options['criteria'][1] = ['field'      => 12,
-                                      'link'       => 'AND',
-                                      'value'      => '>-30',
-                                      'searchtype' => 'contains'];
-
+      $options = [
+         'reset' => 'reset',
+         'sort'  => 12,
+         'order' => 'DESC',
+         'start' => 0,
+         'criteria' => [
+            [
+               'field'      => 12,
+               'value'      => '<0',
+               'searchtype' => 'contains',
+            ],
+            [
+               'field'      => 12,
+               'link'       => 'AND',
+               'value'      => '>-30',
+               'searchtype' => 'contains',
+            ]
+         ]
+      ];
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
                  Toolbox::append_params($options, '&amp;')."\">".
                  __('Contracts expired in the last 30 days')."</a> </td>";
@@ -1188,9 +1194,11 @@ class Contract extends CommonDBTM {
       $message       = [];
       $cron_status   = 0;
 
-      $contract_infos[Alert::END]    = [];
-      $contract_infos[Alert::NOTICE] = [];
-      $contract_messages             = [];
+      $contract_infos    = [
+         Alert::END    => [],
+         Alert::NOTICE => [],
+      ];
+      $contract_messages = [];
 
       foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
          $before       = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
@@ -1286,7 +1294,9 @@ class Contract extends CommonDBTM {
                    * Previous alert
                    */
                   // Get previous alerts from DB
-                  $previous_alert[$type] = Alert::getAlertDate(__CLASS__, $data['id'], $event);
+                  $previous_alert = [
+                     $type => Alert::getAlertDate(__CLASS__, $data['id'], $event),
+                  ];
                   // If alert never occurs...
                   if (empty($previous_alert[$type])) {
                      // We define it a long time ago [in a galaxy far, far away... ;-)]
@@ -1297,7 +1307,9 @@ class Contract extends CommonDBTM {
                    * Next alert
                    */
                   // Computation of first alert : Contract [begin date + periodicity] - Config [alert xxx days before]
-                  $next_alert[$type] = date('Y-m-d', strtotime($data['begin_date'] . " +" . $data['periodicity'] . " month -" . ($before) . " day"));
+                  $next_alert = [
+                     $type => date('Y-m-d', strtotime($data['begin_date'] . " +" . $data['periodicity'] . " month -" . ($before) . " day")),
+                  ];
                   // If a notice is defined
                   if ($event == Alert::NOTICE) {
                      // Will decrease of the Contract notice duration
@@ -1355,9 +1367,11 @@ class Contract extends CommonDBTM {
                                                               $entityname, $message));
                   }
 
-                  $alert               = new Alert();
-                  $input["itemtype"]   = __CLASS__;
-                  $input["type"]       = $type;
+                  $alert = new Alert();
+                  $input = [
+                     'itemtype' => __CLASS__,
+                     'type'     => $type,
+                  ];
                   foreach ($contracts as $id => $contract) {
                      $input["items_id"] = $id;
 
@@ -1406,16 +1420,18 @@ class Contract extends CommonDBTM {
       global $DB;
 
       //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false
-      $p['name']           = 'contracts_id';
-      $p['value']          = '';
-      $p['entity']         = '';
-      $p['rand']           = mt_rand();
-      $p['entity_sons']    = false;
-      $p['used']           = [];
-      $p['nochecklimit']   = false;
-      $p['on_change']      = '';
-      $p['display']        = true;
-      $p['expired']        = false;
+      $p = [
+         'name'           => 'contracts_id',
+         'value'          => '',
+         'entity'         => '',
+         'rand'           => mt_rand(),
+         'entity_sons'    => false,
+         'used'           => [],
+         'nochecklimit'   => false,
+         'on_change'      => '',
+         'display'        => true,
+         'expired'        => false,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1506,10 +1522,12 @@ class Contract extends CommonDBTM {
    **/
    static function dropdownContractRenewal($name, $value = 0, $display = true) {
 
-      $tmp[0] = __('Never');
-      $tmp[1] = __('Tacit');
-      $tmp[2] = __('Express');
-      return Dropdown::showFromArray($name, $tmp, ['value'   => $value,
+      $values = [
+         __('Never'),
+         __('Tacit'),
+         __('Express'),
+      ];
+      return Dropdown::showFromArray($name, $values, ['value'   => $value,
                                                         'display' => $display]);
    }
 
@@ -1563,10 +1581,12 @@ class Contract extends CommonDBTM {
    **/
    static function dropdownAlert(array $options) {
 
-      $p['name']           = 'alert';
-      $p['value']          = 0;
-      $p['display']        = true;
-      $p['inherit_parent'] = false;
+      $p = [
+         'name'           => 'alert',
+         'value'          => 0,
+         'display'        => true,
+         'inherit_parent' => false,
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -1596,21 +1616,23 @@ class Contract extends CommonDBTM {
    **/
    static function getAlertName($val = null) {
 
-      $tmp[0]                                                  = Dropdown::EMPTY_VALUE;
-      $tmp[pow(2, Alert::END)]                                 = __('End');
-      $tmp[pow(2, Alert::NOTICE)]                              = __('Notice');
-      $tmp[(pow(2, Alert::END) + pow(2, Alert::NOTICE))]       = __('End + Notice');
-      $tmp[pow(2, Alert::PERIODICITY)]                         = __('Period end');
-      $tmp[pow(2, Alert::PERIODICITY) + pow(2, Alert::NOTICE)] = __('Period end + Notice');
+      $names = [
+         0                                                  => Dropdown::EMPTY_VALUE,
+         pow(2, Alert::END)                                 => __('End'),
+         pow(2, Alert::NOTICE)                              => __('Notice'),
+         (pow(2, Alert::END) + pow(2, Alert::NOTICE))       => __('End + Notice'),
+         pow(2, Alert::PERIODICITY)                         => __('Period end'),
+         pow(2, Alert::PERIODICITY) + pow(2, Alert::NOTICE) => __('Period end + Notice'),
+      ];
 
       if (is_null($val)) {
-         return $tmp;
+         return $names;
       }
       // Default value for display
-      $tmp[0] = ' ';
+      $names[0] = ' ';
 
-      if (isset($tmp[$val])) {
-         return $tmp[$val];
+      if (isset($names[$val])) {
+         return $names[$val];
       }
       // If not set and is a string return value
       if (is_string($val)) {
@@ -1625,9 +1647,11 @@ class Contract extends CommonDBTM {
    **/
    function showDebug() {
 
-      $options['entities_id'] = $this->getEntityID();
-      $options['contracts']   = [];
-      $options['items']       = [];
+      $options = [
+         'entities_id' => $this->getEntityID(),
+         'contracts'   => [],
+         'items'       => [],
+      ];
       NotificationEvent::debugEvent($this, $options);
    }
 

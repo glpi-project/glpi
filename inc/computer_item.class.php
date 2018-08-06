@@ -478,6 +478,7 @@ class Computer_Item extends CommonDBRelation{
 
       $used    = [];
       $compids = [];
+      $dynamic = [];
       $crit    = ['FIELDS'     => ['id', 'computers_id', 'is_dynamic'],
                        'itemtype'   => $item->getType(),
                        'items_id'   => $ID,

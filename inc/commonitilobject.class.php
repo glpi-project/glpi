@@ -1856,11 +1856,13 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function dropdownPriority(array $options = []) {
 
-      $p['name']      = 'priority';
-      $p['value']     = 0;
-      $p['showtype']  = 'normal';
-      $p['display']   = true;
-      $p['withmajor'] = false;
+      $p = [
+         'name'      => 'priority',
+         'value'     => 0,
+         'showtype'  => 'normal',
+         'display'   => true,
+         'withmajor' => false,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1957,10 +1959,12 @@ abstract class CommonITILObject extends CommonDBTM {
    static function dropdownUrgency(array $options = []) {
       global $CFG_GLPI;
 
-      $p['name']     = 'urgency';
-      $p['value']    = 0;
-      $p['showtype'] = 'normal';
-      $p['display']  = true;
+      $p = [
+         'name'     => 'urgency',
+         'value'    => 0,
+         'showtype' => 'normal',
+         'display'  => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2069,10 +2073,12 @@ abstract class CommonITILObject extends CommonDBTM {
    static function dropdownImpact(array $options = []) {
       global $CFG_GLPI;
 
-      $p['name']      = 'impact';
-      $p['value']     = 0;
-      $p['showtype']  = 'normal';
-      $p['display']   = true;
+      $p = [
+         'name'     => 'impact',
+         'value'    => 0,
+         'showtype' => 'normal',
+         'display'  => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2344,9 +2350,11 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function dropdownStatus(array $options = []) {
 
-      $p['name']      = 'status';
-      $p['showtype']  = 'normal';
-      $p['display']   = true;
+      $p = [
+         'name'     => 'status',
+         'showtype' => 'normal',
+         'display'  => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3867,17 +3875,23 @@ abstract class CommonITILObject extends CommonDBTM {
              && ($options["_users_id_".$typename] > 0)
              && (Session::getCurrentInterface() != "helpdesk")) {
 
-            $options2['criteria'][0]['field']      = 4; // users_id
-            $options2['criteria'][0]['searchtype'] = 'equals';
-            $options2['criteria'][0]['value']      = $options["_users_id_".$typename];
-            $options2['criteria'][0]['link']       = 'AND';
-
-            $options2['criteria'][1]['field']      = 12; // status
-            $options2['criteria'][1]['searchtype'] = 'equals';
-            $options2['criteria'][1]['value']      = 'notold';
-            $options2['criteria'][1]['link']       = 'AND';
-
-            $options2['reset'] = 'reset';
+            $options2 = [
+               'criteria' => [
+                  [
+                     'field'      => 4, // users_id
+                     'searchtype' => 'equals',
+                     'value'      => $options["_users_id_".$typename],
+                     'link'       => 'AND',
+                  ],
+                  [
+                     'field'      => 12, // status
+                     'searchtype' => 'equals',
+                     'value'      => 'notold',
+                     'link'       => 'AND',
+                  ],
+               ],
+               'reset'    => 'reset',
+            ];
 
             $url = $this->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
@@ -4029,6 +4043,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // check is_hidden fields
+      $is_hidden = [];
       foreach (['_users_id_requester', '_groups_id_requester',
                      '_users_id_observer', '_groups_id_observer',
                      '_users_id_assign', '_groups_id_assign',
@@ -4823,10 +4838,10 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab    = [];
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["users_id"];
-            $tmp['link'] = formatUserName($line["users_id"], $line["name"], $line["realname"],
-                                          $line["firstname"], 1);
-            $tab[] = $tmp;
+            $tab[] = [
+               'id'   => $line['users_id'],
+               'link' => formatUserName($line['users_id'], $line['name'], $line['realname'], $line['firstname'], 1),
+            ];
          }
       }
       return $tab;
@@ -4865,10 +4880,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["user_id"];
-            $tmp['link'] = formatUserName($line["user_id"], $line["name"], $line["realname"],
-                                          $line["firstname"], 1);
-            $tab[] = $tmp;
+            $tab[] = [
+               'id'   => $line['user_id'],
+               'link' => formatUserName($line['user_id'], $line['name'], $line['realname'], $line['firstname'], 1),
+            ];
          }
       }
       return $tab;
@@ -4909,9 +4924,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["id"];
-            $tmp['link'] = $line["completename"];
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line['id'],
+               'link' => $line['completename'],
+            ];
          }
       }
       return $tab;
@@ -4960,9 +4976,10 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab    = [];
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line[$field];
-            $tmp['link'] = Dropdown::getDropdownName($table, $line[$field]);
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line[$field],
+               'link' => Dropdown::getDropdownName($table, $line[$field]),
+            ];
          }
       }
       return $tab;
@@ -4997,9 +5014,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($DB->numrows($result) >= 1) {
          $i = 0;
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["priority"];
-            $tmp['link'] = self::getPriorityName($line["priority"]);
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line['priority'],
+               'link' => self::getPriorityName($line['priority']),
+            ];
          }
       }
       return $tab;
@@ -5035,9 +5053,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($DB->numrows($result) >= 1) {
          $i = 0;
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["urgency"];
-            $tmp['link'] = self::getUrgencyName($line["urgency"]);
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line['urgency'],
+               'link' => self::getUrgencyName($line['urgency']),
+            ];
          }
       }
       return $tab;
@@ -5072,9 +5091,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($DB->numrows($result) >= 1) {
          $i = 0;
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["impact"];
-            $tmp['link'] = self::getImpactName($line["impact"]);
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line['impact'],
+               'link' => self::getImpactName($line['impact']),
+            ];
          }
       }
       return $tab;
@@ -5109,10 +5129,10 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab    = [];
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["requesttypes_id"];
-            $tmp['link'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                     $line["requesttypes_id"]);
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line['requesttypes_id'],
+               'link' => Dropdown::getDropdownName('glpi_requesttypes', $line['requesttypes_id']),
+            ];
          }
       }
       return $tab;
@@ -5149,10 +5169,10 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab    = [];
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["solutiontypes_id"];
-            $tmp['link'] = Dropdown::getDropdownName('glpi_solutiontypes',
-                                                     $line["solutiontypes_id"]);
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line['solutiontypes_id'],
+               'link' => Dropdown::getDropdownName('glpi_solutiontypes', $line['solutiontypes_id']),
+            ];
          }
       }
       return $tab;
@@ -5198,11 +5218,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["users_id"];
-            $tmp['link'] = formatUserName($line["users_id"], $line["name"],
-                                          $line["realname"],
-                                          $line["firstname"], $showlink);
-            $tab[] = $tmp;
+            $tab[] = [
+               'id'   => $line['users_id'],
+               'link' => formatUserName($line['users_id'], $line['name'], $line['realname'], $line['firstname'], $showlink),
+            ];
          }
       }
       return $tab;
@@ -5256,11 +5275,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["users_id"];
-            $tmp['link'] = formatUserName($line["users_id"], $line["name"],
-                                          $line["realname"],
-                                          $line["firstname"], $showlink);
-            $tab[] = $tmp;
+            $tab[] = [
+               'id'   => $line['users_id'],
+               'link' => formatUserName($line['users_id'], $line['name'], $line['realname'], $line['firstname'], $showlink),
+            ];
          }
       }
       return $tab;
@@ -5303,9 +5321,10 @@ abstract class CommonITILObject extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp["id"]   = $line["suppliers_id_assign"];
-            $tmp["link"] = "<a href='".Supplier::getFormURLWithID($line["suppliers_id_assign"])."'>".$line["name"]."</a>";
-            $tab[] = $tmp;
+            $tab[] = [
+               'id'   => $line['suppliers_id_assign'],
+               'link' => '<a href="' . Supplier::getFormURLWithID($line['suppliers_id_assign']) . '">' . $line['name'] . '</a>',
+            ];
          }
       }
       return $tab;
@@ -5345,9 +5364,10 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab    = [];
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["id"];
-            $tmp['link'] = $line["completename"];
-            $tab[]       = $tmp;
+            $tab[] = [
+               'id'   => $line['id'],
+               'link' => $line['completename'],
+            ];
          }
       }
       return $tab;
@@ -5370,11 +5390,13 @@ abstract class CommonITILObject extends CommonDBTM {
    static function showShort($id, $options = []) {
       global $CFG_GLPI, $DB;
 
-      $p['output_type']            = Search::HTML_OUTPUT;
-      $p['row_num']                = 0;
-      $p['type_for_massiveaction'] = 0;
-      $p['id_for_massiveaction']   = 0;
-      $p['followups']              = false;
+      $p = [
+         'output_type'            => Search::HTML_OUTPUT,
+         'row_num'                => 0,
+         'type_for_massiveaction' => 0,
+         'id_for_massiveaction'   => 0,
+         'followups'              => false,
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {

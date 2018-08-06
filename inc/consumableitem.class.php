@@ -423,8 +423,10 @@ class ConsumableItem extends CommonDBTM {
             }
 
             if (!empty($items)) {
-               $options['entities_id'] = $entity;
-               $options['items']       = $items;
+               $options = [
+                  'entities_id' => $entity,
+                  'items'       => $items,
+               ];
 
                if (NotificationEvent::raiseEvent('alert', new ConsumableItem(), $options)) {
                   if ($task) {
@@ -437,8 +439,10 @@ class ConsumableItem extends CommonDBTM {
                                                       " :  $message");
                   }
 
-                  $input["type"]     = Alert::THRESHOLD;
-                  $input["itemtype"] = 'ConsumableItem';
+                  $input = [
+                     'type'     => Alert::THRESHOLD,
+                     'itemtype' => 'ConsumableItem',
+                  ];
 
                   // add alerts
                   foreach ($items as $ID=>$consumable) {
