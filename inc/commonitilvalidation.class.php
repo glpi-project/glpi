@@ -290,10 +290,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $user->getFromDB($this->fields["users_id_validate"]);
             $email   = $user->getDefaultEmail();
             if (!empty($email)) {
-               $message[] = sprintf(__('Approval request send to %s'), $user->getName());
+               Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'), $user->getName()));
             } else {
-               $error[] = sprintf(__('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
-                                  $user->getName());
+               Session::addMessageAfterRedirect(
+                  sprintf(
+                     __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
+                     $user->getName()
+                  ),
+                  false,
+                  ERROR
+               );
             }
          }
       }
