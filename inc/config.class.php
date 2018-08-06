@@ -562,8 +562,10 @@ class Config extends CommonDBTM {
       $fields = ["contact", "user", "group", "location"];
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('When connecting or updating') . "</td>";
-      $values[0] = __('Do not copy');
-      $values[1] = __('Copy');
+      $values = [
+         __('Do not copy'),
+         __('Copy'),
+      ];
 
       foreach ($fields as $field) {
          echo "<td>";
@@ -579,8 +581,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('When disconnecting') . "</td>";
-      $values[0] = __('Do not delete');
-      $values[1] = __('Clear');
+      $values = [
+         __('Do not delete'),
+         __('Clear'),
+      ];
 
       foreach ($fields as $field) {
          echo "<td>";
@@ -790,7 +794,9 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><td>";
       echo "<hr>";
-      $buttons["apiclient.form.php"] = __('Add API client');
+      $buttons = [
+         'apiclient.form.php' => __('Add API client'),
+      ];
       $title = "";
       Html::displayTitle("",
                          self::getTypeName(Session::getPluralNumber()),
@@ -853,12 +859,14 @@ class Config extends CommonDBTM {
       echo "</td>";
 
       echo "<td><label for='dropdown_use_rich_text$rand'>" . __('Use rich text for helpdesk') . "</label></td><td>";
-      $id                 = 'alert'.mt_rand();
-      $param['on_change'] = '$("#'.$id.'").html("");
+      $id    = 'alert'.mt_rand();
+      $param = [
+         'on_change' => '$("#'.$id.'").html("");
             if ($(this).val() == 0) {
                $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
-            }';
-      $param['rand'] = $rand;
+            }',
+         'rand' => $rand,
+      ];
       Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
       echo "<span class='red' id='".$id."'></span>";
       echo "</td></tr>";
@@ -900,6 +908,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='b right' colspan='2'>".__('Impact')."</td>";
 
+      $isimpact = [];
       for ($impact=5; $impact>=1; $impact--) {
          echo "<td class='center'>".Ticket::getImpactName($impact).'<br>';
 
@@ -923,6 +932,7 @@ class Config extends CommonDBTM {
       }
       echo "</tr>";
 
+      $isurgency = [];
       for ($urgency=5; $urgency>=1; $urgency--) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".Ticket::getUrgencyName($urgency)."&nbsp;</td>";
@@ -1717,11 +1727,14 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_event_loglevel$rand'>" . __('Log Level') . "</label></td><td>";
-      $values[1] = __('1- Critical (login error only)');
-      $values[2] = __('2- Severe (not used)');
-      $values[3] = __('3- Important (successful logins)');
-      $values[4] = __('4- Notices (add, delete, tracking)');
-      $values[5] = __('5- Complete (all)');
+
+      $values = [
+         1 => __('1- Critical (login error only)'),
+         2 => __('2- Severe (not used)'),
+         3 => __('3- Important (successful logins)'),
+         4 => __('4- Notices (add, delete, tracking)'),
+         5 => __('5- Complete (all)'),
+      ];
 
       Dropdown::showFromArray('event_loglevel', $values,
                               ['value' => $CFG_GLPI["event_loglevel"], 'rand' => $rand]);
@@ -1843,6 +1856,7 @@ class Config extends CommonDBTM {
          $dir = getcwd();
          chdir(GLPI_ROOT);
          $returnCode = 1;
+         /** @var array $output */
          $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
          $gitbranch = '';
          if (!$returnCode) {
@@ -2028,9 +2042,11 @@ class Config extends CommonDBTM {
    **/
    static function dropdownGlobalManagement($name, $value, $rand = null) {
 
-      $choices[0] = __('Yes - Restrict to unit management for manual add');
-      $choices[1] = __('Yes - Restrict to global management for manual add');
-      $choices[2] = __('No');
+      $choices = [
+         __('Yes - Restrict to unit management for manual add'),
+         __('Yes - Restrict to global management for manual add'),
+         __('No'),
+      ];
       Dropdown::showFromArray($name, $choices, ['value'=>$value, 'rand' => $rand]);
    }
 
@@ -2109,8 +2125,10 @@ class Config extends CommonDBTM {
    **/
    function showDebug() {
 
-      $options['diff'] = 0;
-      $options['name'] = '';
+      $options = [
+         'diff' => 0,
+         'name' => '',
+      ];
       NotificationEvent::debugEvent(new DBConnection(), $options);
    }
 
@@ -2143,10 +2161,12 @@ class Config extends CommonDBTM {
             break;
 
          case __CLASS__ :
-            $tabs[1] = __('General setup');   // Display
-            $tabs[2] = __('Default values');   // Prefs
-            $tabs[3] = __('Assets');
-            $tabs[4] = __('Assistance');
+            $tabs = [
+               1 => __('General setup'),  // Display
+               2 => __('Default values'), // Prefs
+               3 => __('Assets'),
+               4 => __('Assistance'),
+            ];
             if (Config::canUpdate()) {
                $tabs[9] = __('Logs purge');
                $tabs[5] = __('System');
@@ -2342,6 +2362,7 @@ class Config extends CommonDBTM {
          $raw = $DB->getVersion();
       }
 
+      /** @var array $found */
       preg_match('/(\d+(\.)?)+/', $raw, $found);
       $version = $found[0];
 
@@ -3154,8 +3175,11 @@ class Config extends CommonDBTM {
     * @return void
     */
    static function showLogsInterval($name, $value, $options = []) {
-      $values[self::DELETE_ALL] = __("Delete all");
-      $values[self::KEEP_ALL]   = __("Keep all");
+
+      $values = [
+         self::DELETE_ALL => __("Delete all"),
+         self::KEEP_ALL   => __("Keep all"),
+      ];
       for ($i = 1; $i < 121; $i++) {
          $values[$i] = sprintf(
             _n(

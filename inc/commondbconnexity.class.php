@@ -369,7 +369,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
    **/
    function getItemsForLog($itemtype, $items_id) {
 
-      $newItemArray[$items_id] = $this->fields[$items_id];
+      $newItemArray = [
+         $items_id => $this->fields[$items_id],
+      ];
+      $previousItemArray = [];
+
       if (isset($this->oldvalues[$items_id])) {
          $previousItemArray[$items_id] = $this->oldvalues[$items_id];
       } else {
