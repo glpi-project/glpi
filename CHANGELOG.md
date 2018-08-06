@@ -17,6 +17,7 @@ The present file will list all changes made to the project; according to the
 
 The following methods have been deprecated:
 
+- `Config::getSQLMode()`
 - `Html::checkAllAsCheckbox()`
 - `Html::scriptEnd()`
 - `Html::scriptStart()`
