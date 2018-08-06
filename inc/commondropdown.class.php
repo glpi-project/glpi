@@ -798,9 +798,11 @@ abstract class CommonDropdown extends CommonDBTM {
             break;
       }*/
 
-      $input["name"]        = $value;
-      $input["comment"]     = $comment;
-      $input["entities_id"] = $entities_id;
+      $input = [
+         'name'        => $value,
+         'comment'     => $comment,
+         'entities_id' => $entities_id,
+      ];
 
       if ($rulecollection) {
          $res_rule = $rulecollection->processAllRules(Toolbox::stripslashes_deep($ruleinput), [], []);

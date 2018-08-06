@@ -351,9 +351,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $this->cleanParentsSons(null, false);
       $this->addSonInParents();
       if ($parent && $this->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = '';
-         $changes[2] = addslashes($this->getNameID());
+         $changes = [
+            0,
+            '',
+            addslashes($this->getNameID()),
+         ];
          Log::history($parent, $this->getType(), $changes, $this->getType(),
                       Log::HISTORY_ADD_SUBITEM);
       }
@@ -379,9 +381,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                if ($parent->getFromDB($oldParentID)) {
                   $oldParentNameID = $parent->getNameID();
                }
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getNameID());
-               $changes[2] = '';
+               $changes = [
+                  '0',
+                  addslashes($this->getNameID()),
+                  '',
+               ];
                Log::history($oldParentID, $this->getType(), $changes, $this->getType(),
                             Log::HISTORY_DELETE_SUBITEM);
             }
@@ -394,18 +398,22 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                if ($parent->getFromDB($newParentID)) {
                   $newParentNameID = $parent->getNameID();
                }
-               $changes[0] = '0';
-               $changes[1] = '';
-               $changes[2] = addslashes($this->getNameID());
+               $changes = [
+                  '0',
+                  '',
+                  addslashes($this->getNameID()),
+               ];
                Log::history($newParentID, $this->getType(), $changes, $this->getType(),
                             Log::HISTORY_ADD_SUBITEM);
             }
          }
 
          if ($history) {
-            $changes[0] = '0';
-            $changes[1] = $oldParentNameID;
-            $changes[2] = $newParentNameID;
+            $changes = [
+               '0',
+               $oldParentNameID,
+               $newParentNameID,
+            ];
             Log::history($ID, $this->getType(), $changes, $this->getType(),
                          Log::HISTORY_UPDATE_SUBITEM);
          }
@@ -418,9 +426,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $parent = $this->fields[$this->getForeignKeyField()];
       if ($parent && $this->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = addslashes($this->getNameID());
-         $changes[2] = '';
+         $changes = [
+            '0',
+            addslashes($this->getNameID()),
+            '',
+         ];
          Log::history($parent, $this->getType(), $changes, $this->getType(),
                       Log::HISTORY_DELETE_SUBITEM);
       }
@@ -878,8 +888,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             // Skip empty name (completename starting/endind with >, double >, ...)
             continue;
          }
-         $tmp['name'] = $name;
-         $tmp[$fk]    = $parent;
+
+         $tmp = [
+            'name' => $name,
+            $fk    => $parent,
+         ];
 
          if (isset($input['is_recursive'])) {
             $tmp['is_recursive'] = $input['is_recursive'];

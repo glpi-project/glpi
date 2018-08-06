@@ -216,9 +216,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       $item->updateDateMod($this->fields[$item->getForeignKeyField()]);
 
       // Add log entry in the ITIL object
-      $changes[0] = 0;
-      $changes[1] = '';
-      $changes[2] = $this->fields['id'];
+      $changes = [
+         0,
+         '',
+         $this->fields['id'],
+      ];
       Log::history($this->getField($item->getForeignKeyField()), $this->getItilObjectItemType(),
                    $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
 
@@ -339,9 +341,11 @@ abstract class CommonITILTask  extends CommonDBTM {
             }
             if (isset($this->input['_status'])
                 && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
-                $update['status']        = $this->input['_status'];
-                $update['id']            = $this->input['_job']->fields['id'];
-                $update['_disablenotif'] = true;
+                $update = [
+                   'status'        => $this->input['_status'],
+                   'id'            => $this->input['_job']->fields['id'],
+                   '_disablenotif' => true,
+                ];
                 $this->input['_job']->update($update);
             }
 
@@ -350,9 +354,11 @@ abstract class CommonITILTask  extends CommonDBTM {
                 && (($item->fields["status"] == CommonITILObject::INCOMING)
                      || ($item->fields["status"] == CommonITILObject::ASSIGNED))) {
 
-               $input2['id']            = $item->getID();
-               $input2['status']        = CommonITILObject::PLANNED;
-               $input2['_disablenotif'] = true;
+               $input2 = [
+                  'id'            => $item->getID(),
+                  'status'        => CommonITILObject::PLANNED,
+                  '_disablenotif' => true,
+               ];
                $item->update($input2);
             }
 
@@ -367,9 +373,11 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if ($update_done) {
          // Add log entry in the ITIL object
-         $changes[0] = 0;
-         $changes[1] = '';
-         $changes[2] = $this->fields['id'];
+         $changes = [
+            0,
+            '',
+            $this->fields['id'],
+         ];
          Log::history($this->getField($item->getForeignKeyField()), $itemtype, $changes,
                       $this->getType(), Log::HISTORY_UPDATE_SUBITEM);
       }
@@ -473,9 +481,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       //change status only if input change
       if (isset($this->input['_status'])
          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
-         $update['status']        = $this->input['_status'];
-         $update['id']            = $this->input['_job']->fields['id'];
-         $update['_disablenotif'] = true;
+         $update = [
+            'status'        => $this->input['_status'],
+            'id'            => $this->input['_job']->fields['id'],
+            '_disablenotif' => true
+         ];
          $this->input['_job']->update($update);
       }
 
@@ -484,9 +494,11 @@ abstract class CommonITILTask  extends CommonDBTM {
           && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
               || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED))) {
 
-         $input2['id']            = $this->input["_job"]->getID();
-         $input2['status']        = CommonITILObject::PLANNED;
-         $input2['_disablenotif'] = true;
+         $input2 = [
+            'id'            => $this->input["_job"]->getID(),
+            'status'        => CommonITILObject::PLANNED,
+            '_disablenotif' => true,
+         ];
          $this->input["_job"]->update($input2);
       }
 
@@ -497,9 +509,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       // Add log entry in the ITIL object
-      $changes[0] = 0;
-      $changes[1] = '';
-      $changes[2] = $this->fields['id'];
+      $changes = [
+         0,
+         '',
+         $this->fields['id'],
+      ];
       Log::history($this->getField($this->input["_job"]->getForeignKeyField()),
                    $this->input["_job"]->getTYpe(), $changes, $this->getType(),
                    Log::HISTORY_ADD_SUBITEM);
@@ -1868,32 +1882,44 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='4'>";
 
-         $options['reset'] = 'reset';
-         $forcetab         = '';
-         $num              = 0;
+         $forcetab = '';
+         $num      = 0;
          $itemtype = get_called_class();
          $item = new $itemtype;
          switch ($status) {
             case "todo" :
-               $options['criteria'][0]['field']      = 12; // status
-               $options['criteria'][0]['searchtype'] = 'equals';
-               $options['criteria'][0]['value']      = "notold";
-               $options['criteria'][0]['link']       = 'AND';
+               $options  = [
+                  'reset'    => 'reset',
+                  'criteria' => [
+                     [
+                        'field'      => 12, // status
+                        'searchtype' => 'equals',
+                        'value'      => 'notold',
+                        'link'       => 'AND',
+                     ]
+                  ],
+               ];
                if ($showgrouptickets) {
-                  $options['criteria'][1]['field']      = 112; // tech in charge of task
-                  $options['criteria'][1]['searchtype'] = 'equals';
-                  $options['criteria'][1]['value']      = 'mygroups';
-                  $options['criteria'][1]['link']       = 'AND';
+                  $options['criteria'][] = [
+                     'field'      => 112, // tech in charge of task
+                     'searchtype' => 'equals',
+                     'value'      => 'mygroups',
+                     'link'       => 'AND',
+                  ];
                } else {
-                  $options['criteria'][1]['field']      = 95; // tech in charge of task
-                  $options['criteria'][1]['searchtype'] = 'equals';
-                  $options['criteria'][1]['value']      = $_SESSION['glpiID'];
-                  $options['criteria'][1]['link']       = 'AND';
+                  $options['criteria'][] = [
+                     'field'      => 95, // tech in charge of task
+                     'searchtype' => 'equals',
+                     'value'      => $_SESSION['glpiID'],
+                     'link'       => 'AND',
+                  ];
                }
-               $options['criteria'][2]['field']      = 33; // task status
-               $options['criteria'][2]['searchtype'] = 'equals';
-               $options['criteria'][2]['value']      = Planning::TODO;
-               $options['criteria'][2]['link']       = 'AND';
+               $options['criteria'][] = [
+                  'field'      => 33, // task status
+                  'searchtype' => 'equals',
+                  'value'      =>  Planning::TODO,
+                  'link'       => 'AND',
+               ];
 
                if ($itemtype == "TicketTask") {
                   $forcetab                 = 'Ticket$1';

@@ -1001,9 +1001,11 @@ class CommonDBTM extends CommonGLPI {
                $this->addMessageOnAddAction();
 
                if ($this->dohistory && $history) {
-                  $changes[0] = 0;
-                  $changes[1] = $changes[2] = "";
-
+                  $changes = [
+                     0,
+                     '',
+                     '',
+                  ];
                   Log::history($this->fields["id"], $this->getType(), $changes, 0,
                                Log::HISTORY_CREATE_ITEM);
                }
@@ -1065,7 +1067,9 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getLink($options = []) {
 
-      $p['linkoption'] = '';
+      $p = [
+         'linkoption' => '',
+      ];
 
       if (isset($options['linkoption'])) {
          $p['linkoption'] = $options['linkoption'];
@@ -1537,8 +1541,11 @@ class CommonDBTM extends CommonGLPI {
                $this->addMessageOnDeleteAction();
 
                if ($this->dohistory && $history) {
-                  $changes[0] = 0;
-                  $changes[1] = $changes[2] = "";
+                  $changes = [
+                     0,
+                     '',
+                     '',
+                  ];
                   $logaction  = Log::HISTORY_DELETE_ITEM;
                   if ($this->useDeletedToLockIfDynamic()
                       && $this->isDynamic()) {
@@ -1701,8 +1708,11 @@ class CommonDBTM extends CommonGLPI {
          $this->addMessageOnRestoreAction();
 
          if ($this->dohistory && $history) {
-            $changes[0] = 0;
-            $changes[1] = $changes[2] = "";
+            $changes = [
+               0,
+               '',
+               '',
+            ];
             $logaction  = Log::HISTORY_RESTORE_ITEM;
             if ($this->useDeletedToLockIfDynamic()
                 && $this->isDynamic()) {
@@ -2238,12 +2248,14 @@ class CommonDBTM extends CommonGLPI {
          $ID = 1;
       }
 
-      $params['colspan']      = 2;
-      $params['withtemplate'] = '';
-      $params['candel']       = true;
-      $params['canedit']      = true;
-      $params['addbuttons']   = [];
-      $params['formfooter']   = null;
+      $params = [
+         'colspan'      => 2,
+         'withtemplate' => '',
+         'candel'       => true,
+         'canedit'      => true,
+         'addbuttons'   => [],
+         'formfooter'   => null,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2428,14 +2440,17 @@ class CommonDBTM extends CommonGLPI {
    function showFormHeader($options = []) {
       global $CFG_GLPI;
 
-      $ID                     = $this->fields['id'];
-      $params['target']       = $this->getFormURL();
-      $params['colspan']      = 2;
-      $params['withtemplate'] = '';
-      $params['formoptions']  = '';
-      $params['canedit']      = true;
-      $params['formtitle']    = null;
-      $params['noid']         = false;
+      $ID     = $this->fields['id'];
+
+      $params = [
+         'target'       => $this->getFormURL(),
+         'colspan'      => 2,
+         'withtemplate' => '',
+         'formoptions'  => '',
+         'canedit'      => true,
+         'formtitle'    => null,
+         'noid'         => false
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3316,9 +3331,11 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getName($options = []) {
 
-      $p['comments']   = false;
-      $p['complete']   = false;
-      $p['additional'] = false;
+      $p = [
+         'comments'   => false,
+         'complete'   => false,
+         'additional' => false,
+      ];
 
       if (is_array($options)) {
          foreach ($options as $key => $val) {
@@ -3397,8 +3414,10 @@ class CommonDBTM extends CommonGLPI {
    function getNameID($options = []) {
       global $CFG_GLPI;
 
-      $p['forceid'] = false;
-      $p['comments'] = false;
+      $p = [
+         'forceid'  => false,
+         'comments' => false,
+      ];
 
       if (is_array($options)) {
          foreach ($options as $key => $val) {
@@ -3983,9 +4002,11 @@ class CommonDBTM extends CommonGLPI {
    function checkUnicity($add = false, $options = []) {
       global $DB, $CFG_GLPI;
 
-      $p['unicity_error_message']  = true;
-      $p['add_event_on_duplicate'] = true;
-      $p['disable_unicity_check']  = false;
+      $p = [
+         'unicity_error_message'  => true,
+         'add_event_on_duplicate' => true,
+         'disable_unicity_check'  => false,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $value) {
@@ -4197,8 +4218,10 @@ class CommonDBTM extends CommonGLPI {
    function getValueToDisplay($field_id_or_search_options, $values, $options = []) {
       global $CFG_GLPI;
 
-      $param['comments'] = false;
-      $param['html']     = false;
+      $param = [
+         'comments' => false,
+         'html'     => false,
+      ];
       foreach ($param as $key => $val) {
          if (!isset($options[$key])) {
             $options[$key] = $val;
@@ -4424,8 +4447,10 @@ class CommonDBTM extends CommonGLPI {
    function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = []) {
       global $CFG_GLPI;
 
-      $param['comments'] = false;
-      $param['html']     = false;
+      $param = [
+         'comments' => false,
+         'html'     => false,
+      ];
       foreach ($param as $key => $val) {
          if (!isset($options[$key])) {
             $options[$key] = $val;

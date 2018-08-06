@@ -710,17 +710,21 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          if ($item1->dohistory
              && static::$logs_for_item_1) {
-            $changes[0] = (isset($this->_force_log_option) ? $this->_force_log_option : 0);
-            $changes[1] = "";
-            $changes[2] = addslashes($this->getHistoryNameForItem1($item2, 'add'));
+            $changes = [
+               (isset($this->_force_log_option) ? $this->_force_log_option : 0),
+               '',
+               addslashes($this->getHistoryNameForItem1($item2, 'add')),
+            ];
             Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
                          static::$log_history_1_add);
          }
 
          if ($item2->dohistory && static::$logs_for_item_2) {
-            $changes[0] = '0';
-            $changes[1] = "";
-            $changes[2] = addslashes($this->getHistoryNameForItem2($item1, 'add'));
+            $changes = [
+               '0',
+               '',
+               addslashes($this->getHistoryNameForItem2($item1, 'add')),
+            ];
             Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
                          static::$log_history_2_add);
          }
@@ -857,9 +861,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
              && ($item2 !== false)) {
             if ($item1->dohistory
                 && static::$logs_for_item_1) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getHistoryNameForItem1($item2, 'lock'));
-               $changes[2] = "";
+               $changes = [
+                  '0',
+                  addslashes($this->getHistoryNameForItem1($item2, 'lock')),
+                  '',
+               ];
 
                Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
                             static::$log_history_1_lock);
@@ -867,9 +873,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
             if ($item2->dohistory
                && static::$logs_for_item_2) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getHistoryNameForItem2($item1, 'lock'));
-               $changes[2] = "";
+               $changes = [
+                  '0',
+                  addslashes($this->getHistoryNameForItem2($item1, 'lock')),
+                  '',
+               ];
                Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
                             static::$log_history_2_lock);
             }
@@ -903,19 +911,22 @@ abstract class CommonDBRelation extends CommonDBConnexity {
              && ($item2 !== false)) {
             if ($item1->dohistory
                 && static::$logs_for_item_1) {
-               $changes[0] = '0';
-               $changes[1] = '';
-               $changes[2] = addslashes($this->getHistoryNameForItem1($item2, 'unlock'));
-
+               $changes = [
+                  '0',
+                  '',
+                  addslashes($this->getHistoryNameForItem1($item2, 'unlock')),
+               ];
                Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
                             static::$log_history_1_unlock);
             }
 
             if ($item2->dohistory
                 && static::$logs_for_item_2) {
-               $changes[0] = '0';
-               $changes[1] = '';
-               $changes[2] = addslashes($this->getHistoryNameForItem2($item1, 'unlock'));
+               $changes = [
+                  '0',
+                  '',
+                  addslashes($this->getHistoryNameForItem2($item1, 'unlock')),
+               ];
                Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
                             static::$log_history_2_unlock);
             }
@@ -948,19 +959,22 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          if ($item1->dohistory
              && static::$logs_for_item_1) {
-            $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem1($item2, 'delete'));
-            $changes[2] = "";
-
+            $changes = [
+               '0',
+               addslashes($this->getHistoryNameForItem1($item2, 'delete')),
+               '',
+            ];
             Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),
                          static::$log_history_1_delete);
          }
 
          if ($item2->dohistory
              && static::$logs_for_item_2) {
-            $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem2($item1, 'delete'));
-            $changes[2] = "";
+            $changes = [
+               '0',
+               addslashes($this->getHistoryNameForItem2($item1, 'delete')),
+               '',
+            ];
             Log::history($item2->getID(), $item2->getType(), $changes, $item1->getType(),
                          static::$log_history_2_delete);
          }

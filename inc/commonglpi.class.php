@@ -302,7 +302,9 @@ class CommonGLPI {
          $menu['options'] = $data;
       }
       if ($data = static::getAdditionalMenuContent()) {
-         $newmenu[strtolower($type)]  = $menu;
+         $newmenu = [
+            strtolower($type) => $menu,
+         ];
          // Force overwrite existing menu
          foreach ($data as $key => $val) {
             $newmenu[$key] = $val;

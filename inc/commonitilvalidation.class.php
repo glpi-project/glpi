@@ -262,8 +262,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
          // Set global validation to waiting
          if (($item->fields['global_validation'] == self::ACCEPTED)
              || ($item->fields['global_validation'] == self::NONE)) {
-            $input['id']                = $this->fields[static::$items_id];
-            $input['global_validation'] = self::WAITING;
+            $input = [
+               'id'                => $this->fields[static::$items_id],
+               'global_validation' => self::WAITING,
+            ];
 
             // to fix lastupdater
             if (isset($this->input['_auto_update'])) {
@@ -365,8 +367,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
          if (($item->fields['global_validation'] == self::WAITING)
              && in_array("status", $this->updates)) {
 
-            $input['id']                = $this->fields[static::$items_id];
-            $input['global_validation'] = self::computeValidationStatus($item);
+            $input = [
+               'id'                => $this->fields[static::$items_id],
+               'global_validation' => self::computeValidationStatus($item),
+            ];
             $item->update($input);
          }
       }
@@ -379,8 +383,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if ($item->getFromDB($this->fields[static::$items_id])) {
          if (($item->fields['global_validation'] == self::WAITING)) {
 
-            $input['id']                = $this->fields[static::$items_id];
-            $input['global_validation'] = self::NONE;
+            $input = [
+               'id'                => $this->fields[static::$items_id],
+               'global_validation' => self::NONE,
+            ];
             $item->update($input);
          }
       }
@@ -471,10 +477,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function dropdownStatus($name, $options = []) {
 
-      $p['value']    = self::WAITING;
-      $p['global']   = false;
-      $p['all']      = false;
-      $p['display']  = true;
+      $p = [
+         'value'    => self::WAITING,
+         'global'   => false,
+         'all'      => false,
+         'display'  => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1286,13 +1294,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function dropdownValidator(array $options = []) {
       global $CFG_GLPI;
 
-      $params['name']               = '';
-      $params['id']                 = 0;
-      $params['entity']             = $_SESSION['glpiactive_entity'];
-      $params['right']              = ['validate_request', 'validate_incident'];
-      $params['groups_id']          = 0;
-      $params['users_id_validate']  = [];
-      $params['applyto']            = 'show_validator_field';
+      $params = [
+        'name'              => '' ,
+        'id'                => 0,
+        'entity'            => $_SESSION['glpiactive_entity'],
+        'right'             => ['validate_request', 'validate_incident'],
+        'groups_id'         => 0,
+        'users_id_validate' => [],
+        'applyto'           => 'show_validator_field',
+      ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
@@ -1340,7 +1350,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getGroupUserHaveRights(array $options = []) {
       global $DB;
 
-      $params['entity']    = $_SESSION['glpiactive_entity'];
+      $params = [
+         'entity' => $_SESSION['glpiactive_entity'],
+      ];
       if (static::$itemtype == 'Ticket') {
          $params['right']  = ['validate_request', 'validate_incident'];
       } else {
