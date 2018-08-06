@@ -5397,3 +5397,16 @@ input[name=as_map]:checked + label {
       margin-left: 200px;
    }
 }
+
+/** Responsive for search field */
+@media screen and (max-width: 454px) {
+   #c_recherche form #champRecherche input{
+      width:140px;
+   }
+
+   #c_recherche {
+      position:relative;
+      top:14px;
+      left:-47px;
+   }
+}
