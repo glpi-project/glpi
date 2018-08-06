@@ -489,10 +489,12 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('How LDAP aliases should be handled') . "</td><td colspan='4'>";
-      $alias_options[LDAP_DEREF_NEVER]     = __('Never dereferenced (default)');
-      $alias_options[LDAP_DEREF_ALWAYS]    = __('Always dereferenced');
-      $alias_options[LDAP_DEREF_SEARCHING] = __('Dereferenced during the search (but not when locating)');
-      $alias_options[LDAP_DEREF_FINDING]   = __('Dereferenced when locating (not during the search)');
+      $alias_options = [
+         LDAP_DEREF_NEVER     => __('Never dereferenced (default)'),
+         LDAP_DEREF_ALWAYS    => __('Always dereferenced'),
+         LDAP_DEREF_SEARCHING => __('Dereferenced during the search (but not when locating)'),
+         LDAP_DEREF_FINDING   => __('Dereferenced when locating (not during the search)'),
+      ];
       Dropdown::showFromArray("deref_option", $alias_options,
                               ['value' => $this->fields["deref_option"]]);
       echo"</td></tr>";
@@ -601,9 +603,11 @@ class AuthLDAP extends CommonDBTM {
     */
    static function dropdownGroupSearchType(array $options) {
 
-      $p['name']    = 'group_search_type';
-      $p['value']   = self::GROUP_SEARCH_USER;
-      $p['display'] = true;
+      $p = [
+         'name'    => 'group_search_type',
+         'value'   => self::GROUP_SEARCH_USER,
+         'display' => true,
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -1440,8 +1444,10 @@ class AuthLDAP extends CommonDBTM {
     */
    static function showLdapUsers() {
 
-      $values['order'] = 'DESC';
-      $values['start'] = 0;
+      $values = [
+         'order' => 'DESC',
+         'start' => 0,
+      ];
 
       foreach ($_SESSION['ldap_import'] as $option => $value) {
          $values[$option] = $value;
@@ -1692,14 +1698,16 @@ class AuthLDAP extends CommonDBTM {
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($options['authldaps_id']);
 
-      $values['order']        = 'DESC';
-      $values['mode']         = self::ACTION_SYNCHRONIZE;
-      $values['ldap_filter']  = '';
-      $values['basedn']       = $config_ldap->fields['basedn'];
-      $values['begin_date']   = null;
-      $values['end_date']     = date('Y-m-d H:i:s', time()-DAY_TIMESTAMP);
-      //Called by an external script or not
-      $values['script']       = 0;
+      $values = [
+              'order'       => 'DESC',
+              'mode'        => self::ACTION_SYNCHRONIZE,
+              'ldap_filter' => '',
+              'basedn'      => $config_ldap->fields['basedn'],
+              'begin_date'  => null,
+              'end_date'    => date('Y-m-d H:i:s', time()-DAY_TIMESTAMP),
+              'script'      => 0, //Called by an external script or not
+      ];
+
       foreach ($options as $option => $value) {
          // this test break mode detection - if ($value != '') {
          $values[$option] = $value;
@@ -2759,12 +2767,14 @@ class AuthLDAP extends CommonDBTM {
     */
    static function searchUserDn($ds, $options = []) {
 
-      $values['basedn']            = '';
-      $values['login_field']       = '';
-      $values['search_parameters'] = [];
-      $values['user_params']       = '';
-      $values['condition']         = '';
-      $values['user_dn']           = false;
+      $values = [
+         'basedn'            => '',
+         'login_field'       => '',
+         'search_parameters' => [],
+         'user_params'       => '',
+         'condition'         => '',
+         'user_dn'           => false,
+      ];
 
       foreach ($options as $key => $value) {
          $values[$key] = $value;
@@ -3392,11 +3402,13 @@ class AuthLDAP extends CommonDBTM {
     */
    static function dropdownUserDeletedActions($value = 0) {
 
-      $options[0] = __('Preserve');
-      $options[1] = __('Put in dustbin');
-      $options[2] = __('Withdraw dynamic authorizations and groups');
-      $options[3] = __('Disable');
-      $options[4] = __('Disable').' + '.__('Withdraw dynamic authorizations and groups');
+      $options = [
+         __('Preserve'),
+         __('Put in dustbin'),
+         __('Withdraw dynamic authorizations and groups'),
+         __('Disable'),
+         __('Disable').' + '.__('Withdraw dynamic authorizations and groups'),
+      ];
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, ['value' => $value]);
    }

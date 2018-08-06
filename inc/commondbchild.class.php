@@ -463,9 +463,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (($item !== false)
           && $item->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = "";
-         $changes[2] = $this->getHistoryNameForItem($item, 'add');
+         $changes = [
+            '0',
+            '',
+            $this->getHistoryNameForItem($item, 'add'),
+         ];
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                       static::$log_history_add);
       }
@@ -549,7 +551,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       if (($item !== false)
           && $item->dohistory) {
-         $changes[0] = '0';
+         $changes = [
+            '0',
+         ];
 
          if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
             $changes[1] = '';
@@ -584,9 +588,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          if (($item !== false)
              && $item->dohistory) {
-            $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem($item, 'lock'));
-            $changes[2] = '';
+            $changes = [
+               '0',
+               addslashes($this->getHistoryNameForItem($item, 'lock')),
+               '',
+            ];
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                          static::$log_history_lock);
          }
@@ -614,9 +620,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          if (($item !== false)
              && $item->dohistory) {
-            $changes[0] = '0';
-            $changes[1] = '';
-            $changes[2] = addslashes($this->getHistoryNameForItem($item, 'unlock'));
+            $changes = [
+               '0',
+               '',
+               addslashes($this->getHistoryNameForItem($item, 'unlock')),
+            ];
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                          static::$log_history_unlock);
          }

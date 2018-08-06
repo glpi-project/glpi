@@ -88,17 +88,20 @@ class Alert extends CommonDBTM {
 
    static function dropdown($options = []) {
 
-      $p = [];
-      $p['name']           = 'alert';
-      $p['value']          = 0;
-      $p['display']        = true;
-      $p['inherit_parent'] = false;
+      $p = [
+         'name'           => 'alert',
+         'value'          => 0,
+         'display'        => true,
+         'inherit_parent' => false,
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
       }
+
+      $times = [];
 
       if ($p['inherit_parent']) {
          $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
@@ -122,16 +125,20 @@ class Alert extends CommonDBTM {
     */
    static function dropdownYesNo($options = []) {
 
-      $p['name']           = 'alert';
-      $p['value']          = 0;
-      $p['display']        = true;
-      $p['inherit_parent'] = false;
+      $p = [
+         'name'           => 'alert',
+         'value'          => 0,
+         'display'        => true,
+         'inherit_parent' => false,
+      ];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
       }
+
+      $times = [];
 
       if ($p['inherit_parent']) {
          $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
@@ -155,11 +162,13 @@ class Alert extends CommonDBTM {
     */
    static function dropdownIntegerNever($name, $value, $options = []) {
 
-      $p['min']      = 1;
-      $p['max']      = 100;
-      $p['step']     = 1;
-      $p['toadd']    = [];
-      $p['display']  = true;
+      $p = [
+         'min'     => 1,
+         'max'     => 100,
+         'step'    => 1,
+         'toadd'   => [],
+         'display' => true,
+      ];
 
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
          $p['toadd'][-2] = __('Inheritance of the parent entity');
