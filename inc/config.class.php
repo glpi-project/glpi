@@ -1932,17 +1932,18 @@ class Config extends CommonDBTM {
 
 
    /**
-    * @since 0.90
-    *
     * @return string
-   **/
+    *
+    * @since 0.90
+    * @deprecated 9.3.1 No longer used.
+    **/
    static function getSQLMode() {
       global $DB;
 
       $query   = "SELECT @@GLOBAL.sql_mode;";
       $results = $DB->query($query);
       if ($DB->numrows($results) > 0) {
-         return $DB->results($result, 0);
+         return $DB->result($results, 0);
       }
       return '';
    }
