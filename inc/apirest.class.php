@@ -440,6 +440,7 @@ class APIRest extends API {
          $parameters['input']->_prefix_filename = [];
 
       } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
+         /** @var array $postvars */
          parse_str($body, $postvars);
          foreach ($postvars as $field => $value) {
             $parameters[$field] = $value;

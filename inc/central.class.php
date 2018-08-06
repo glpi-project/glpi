@@ -61,10 +61,12 @@ class Central extends CommonGLPI {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
-         $tabs[1] = __('Personal View');
-         $tabs[2] = __('Group View');
-         $tabs[3] = __('Global View');
-         $tabs[4] = _n('RSS feed', 'RSS feeds', Session::getPluralNumber());
+         $tabs = [
+            1 => __('Personal View'),
+            2 => __('Group View'),
+            3 => __('Global View'),
+            4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
+         ];
 
          return $tabs;
       }

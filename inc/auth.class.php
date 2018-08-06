@@ -212,8 +212,12 @@ class Auth extends CommonGLPI {
       $this->user_deleted_ldap = false;
 
       if ($this->ldap_connection) {
-         $params['method']                             = AuthLDAP::IDENTIFIER_LOGIN;
-         $params['fields'][AuthLDAP::IDENTIFIER_LOGIN] = $ldap_method['login_field'];
+         $params = [
+            'method' => AuthLDAP::IDENTIFIER_LOGIN,
+            'fields' => [
+               AuthLDAP::IDENTIFIER_LOGIN => $ldap_method['login_field'],
+            ],
+         ];
          if (!empty($ldap_method['sync_field'])) {
             $params['fields']['sync_field'] = $ldap_method['sync_field'];
          }
@@ -343,7 +347,9 @@ class Auth extends CommonGLPI {
          if (self::checkPassword($password, $password_db)) {
             // Update password if needed
             if (self::needRehash($password_db)) {
-               $input['id'] = $row['id'];
+               $input = [
+                  'id' => $row['id'],
+               ];
                // Set glpiID to allow password update
                $_SESSION['glpiID'] = $input['id'];
                $input['password'] = $password;
@@ -435,6 +441,7 @@ class Auth extends CommonGLPI {
             // an X.509 subject looks like:
             // CN=john.doe/OU=Department/O=Company/C=xx/Email=john@comapy.tld/L=City/
             $sslattribs = explode('/', $_SERVER['SSL_CLIENT_S_DN']);
+            $sslattributes = [];
             while ($sslattrib = next($sslattribs)) {
                list($key,$val)      = explode('=', $sslattrib);
                $sslattributes[$key] = $val;
@@ -662,8 +669,12 @@ class Auth extends CommonGLPI {
 
                   if ($ds) {
                      $ldapservers_status = true;
-                     $params['method']                             = AuthLdap::IDENTIFIER_LOGIN;
-                     $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
+                     $params = [
+                        'method' => AuthLdap::IDENTIFIER_LOGIN,
+                        'fields' => [
+                           AuthLdap::IDENTIFIER_LOGIN => $ldap_method["login_field"],
+                        ],
+                     ];
                      $user_dn
                         = AuthLdap::searchUserDn($ds,
                                                  ['basedn'      => $ldap_method["basedn"],
@@ -886,10 +897,12 @@ class Auth extends CommonGLPI {
    static function dropdown($options = []) {
       global $DB;
 
-      $p['name']                = 'auths_id';
-      $p['value']               = 0;
-      $p['display']             = true;
-      $p['display_emptychoice'] = true;
+      $p = [
+         'name'                => 'auths_id',
+         'value'               => 0,
+         'display'             => true,
+         'display_emptychoice' => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -897,7 +910,9 @@ class Auth extends CommonGLPI {
          }
       }
 
-      $methods[self::DB_GLPI] = __('Authentication on GLPI database');
+      $methods = [
+         self::DB_GLPI => __('Authentication on GLPI database'),
+      ];
 
       $result = $DB->request([
          'FROM'   => 'glpi_authldaps',

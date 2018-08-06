@@ -195,10 +195,12 @@ class Blacklist extends CommonDropdown {
    **/
    static function dropdownType($name, $options = []) {
 
-      $params['value']       = 0;
-      $params['toadd']       = [];
-      $params['on_change']   = '';
-      $params['display']     = true;
+      $params = [
+         'value'     => 0,
+         'toadd'     => [],
+         'on_change' => '',
+         'display'   => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -224,11 +226,13 @@ class Blacklist extends CommonDropdown {
    **/
    static function getTypes() {
 
-      $options[self::IP]     = __('IP');
-      $options[self::MAC]    = __('MAC');
-      $options[self::SERIAL] = __('Serial number');
-      $options[self::UUID]   = __('UUID');
-      $options[self::EMAIL]  = _n('Email', 'Emails', 1);
+      $options = [
+         self::IP     => __('IP'),
+         self::MAC    => __('MAC'),
+         self::SERIAL => __('Serial number'),
+         self::UUID   => __('UUID'),
+         self::EMAIL  => _n('Email', 'Emails', 1),
+      ];
 
       return $options;
    }
