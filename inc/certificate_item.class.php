@@ -300,8 +300,9 @@ class Certificate_Item extends CommonDBRelation {
       echo "</table>";
 
       if ($canedit && $number) {
-         $paramsma = [];
-         $paramsma['ontop'] = false;
+         $paramsma = [
+            'ontop' => false,
+         ];
          Html::showMassiveActions($paramsma);
          Html::closeForm();
       }

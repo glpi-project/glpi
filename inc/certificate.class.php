@@ -722,10 +722,11 @@ class Certificate extends CommonDBTM {
          }
 
          if (!empty($items)) {
-            $alert                   = new Alert();
-            $options = [];
-            $options['entities_id']  = $entity;
-            $options['certificates'] = $items;
+            $alert   = new Alert();
+            $options = [
+               'entities_id'  => $entity,
+               'certificates' => $items,
+            ];
 
             if (NotificationEvent::raiseEvent('alert', new self(), $options)) {
                $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
@@ -738,9 +739,10 @@ class Certificate extends CommonDBTM {
                                                            $entityname, $message));
                }
 
-               $input = [];
-               $input["type"]     = Alert::END;
-               $input["itemtype"] = __CLASS__;
+               $input = [
+                  'type'     => Alert::END,
+                  'itemtype' => __CLASS__,
+               ];
 
                // add alerts
                foreach ($items as $ID => $certificate) {

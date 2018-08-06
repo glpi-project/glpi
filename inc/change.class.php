@@ -984,11 +984,12 @@ class Change extends CommonITILObject {
          return false;
       }
 
-      $restrict         = '';
-      $order            = '';
+      $restrict = '';
+      $order    = '';
 
-      $options          = [];
-      $options['reset'] = 'reset';
+      $options  = [
+         'reset' => 'reset',
+      ];
 
       switch ($item->getType()) {
          case 'User' :

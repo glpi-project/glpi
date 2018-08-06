@@ -494,9 +494,10 @@ class CartridgeItem extends CommonDBTM {
             }
 
             if (!empty($items)) {
-               $options = [];
-               $options['entities_id'] = $entity;
-               $options['items']       = $items;
+               $options = [
+                  'entities_id' => $entity,
+                  'items'       => $items,
+               ];
 
                $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
                if (NotificationEvent::raiseEvent('alert', new CartridgeItem(), $options)) {
@@ -508,9 +509,10 @@ class CartridgeItem extends CommonDBTM {
                                                                $entityname, $message));
                   }
 
-                  $input = [];
-                  $input["type"]     = Alert::THRESHOLD;
-                  $input["itemtype"] = 'CartridgeItem';
+                  $input = [
+                     'type'     => Alert::THRESHOLD,
+                     'itemtype' => 'CartridgeItem',
+                  ];
 
                   // add alerts
                   foreach ($items as $ID => $consumable) {
