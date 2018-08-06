@@ -72,13 +72,6 @@ class GLPITestCase extends atoum {
          }
          $GLPI_CACHE = false;
       }
-
-      // Cleanup log directory
-      foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
-         if (file_exists($file)) {
-            unlink($file);
-         }
-      }
    }
 
    /**
