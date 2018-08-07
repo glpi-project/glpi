@@ -40,12 +40,7 @@ include_once GLPI_ROOT . '/inc/based_config.php';
 $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
 
-//TODO: remove, should be replaced with cache
-foreach (['glpi_table_of', 'glpi_foreign_key_field_of'] as $session_array_fields) {
-   if (!isset($_SESSION[$session_array_fields])) {
-      $_SESSION[$session_array_fields] = [];
-   }
-}
+
 /// TODO try to remove them if possible
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
@@ -103,7 +98,7 @@ if (!isset($PLUGINS_INCLUDED)) {
    $PLUGINS_INCLUDED = 1;
    $LOADED_PLUGINS   = [];
    $plugin           = new Plugin();
-   if ($plugin->getPlugins() === []) {
+   if (!$plugin->hasBeenInit()) {
       $plugin->init();
    }
 

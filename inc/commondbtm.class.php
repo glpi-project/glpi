@@ -169,7 +169,7 @@ class CommonDBTM extends CommonGLPI {
     */
    public static function getTablesOf() {
       global $GLPI_CACHE;
-      if ($GLPI_CACHE->has('table_of')) {
+      if ($GLPI_CACHE != null && $GLPI_CACHE->has('table_of')) {
          return $GLPI_CACHE->get('table_of');
       }
       return [];
@@ -197,7 +197,9 @@ class CommonDBTM extends CommonGLPI {
       $glpi_tables = self::getTablesOf();
       if (!isset($glpi_tables[$classname]) || empty($glpi_tables[$classname])) {
          $glpi_tables[$classname] = getTableForItemType($classname);
-         $GLPI_CACHE->set('table_of', $glpi_tables);
+         if ($GLPI_CACHE != null) {
+            $GLPI_CACHE->set('table_of', $glpi_tables);
+         }
       }
 
       return $glpi_tables[$classname];
@@ -219,14 +221,31 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-   static function getForeignKeyField() {
+   /**
+    * Get known foreign keys
+    *
+    * @return array
+    */
+   public static function getForeignKeyFieldsOf() {
+      global $GLPI_CACHE;
+      if ($GLPI_CACHE->has('foreign_key_field_of')) {
+         return $GLPI_CACHE->get('foreign_key_field_of');
+      }
+      return [];
+   }
 
-      if (empty($_SESSION['glpi_foreign_key_field_of'][get_called_class()])) {
-         $_SESSION['glpi_foreign_key_field_of'][get_called_class()]
-            = getForeignKeyFieldForTable(static::getTable());
+
+   static function getForeignKeyField() {
+      global $GLPI_CACHE;
+
+      $fkeys = self::getForeignKeyFieldsOf();
+      $classname = get_called_class();
+      if (!isset($fkeys[$classname]) || empty($fkeys[$classname])) {
+         $fkeys[$classname] = getForeignKeyFieldForTable(static::getTable());
+         $GLPI_CACHE->set('foreign_key_field_of', $fkeys);
       }
 
-      return $_SESSION['glpi_foreign_key_field_of'][get_called_class()];
+      return $fkeys[$classname];
    }
 
    /**
