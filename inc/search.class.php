@@ -2929,7 +2929,8 @@ class Search {
          case 'ProjectTask' :
             $condition  = '';
             $teamtable  = 'glpi_projecttaskteams';
-            $condition .= "((`$teamtable`.`itemtype` = 'User'
+            $condition .= "`glpi_projects`.`is_template` = 0";
+            $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
                              AND `$teamtable`.`items_id` = '".Session::getLoginUserID()."')";
             if (count($_SESSION['glpigroups'])) {
                $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
@@ -3730,6 +3731,8 @@ class Search {
          case 'ProjectTask' :
             // Same structure in addDefaultWhere
             $out  = '';
+            $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                      "glpi_projects", "projects_id");
             $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                       "glpi_projecttaskteams", "projecttaskteams_id", 0, 0,
                                       ['jointype' => 'child']);
