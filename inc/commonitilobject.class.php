@@ -470,27 +470,28 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Count active ITIL Objects requested by a user
+    * Count active ITIL Objects
     *
-    * @since 0.83
+    * @since 9.3.1
     *
-    * @param $users_id integer ID of the User
+    * @param CommonDBTM $linkclass Link class instance
+    * @param integer    $id        Item ID
+    * @param integer    $role      ITIL role
     *
     * @return integer
    **/
-   function countActiveObjectsForUser($users_id) {
+   private function countActiveObjectsFor(CommonDBTM $linkclass, $id, $role) {
 
-      $linkclass = new $this->userlinkclass();
       $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
+      $field     = $linkclass->getForeignKeyField();
 
       return countElementsInTable(
          [$itemtable, $linktable], [
-            "$linktable.$itemfk"    => new \QueryExpression("`$itemtable`.`id`"),
-            "$linktable.users_id"   => $users_id,
-            "$linktable.type"       => CommonITILActor::REQUESTER,
+            "$linktable.$itemfk"    => new \QueryExpression(DBmysql::quoteName("$itemtable.id")),
+            "$linktable.$field"     => $id,
+            "$linktable.type"       => $role,
             "$itemtable.is_deleted" => 0,
             "NOT"                   => [
                "$itemtable.status" => array_merge(
@@ -499,6 +500,27 @@ abstract class CommonITILObject extends CommonDBTM {
                )
             ]
          ] + getEntitiesRestrictCriteria($itemtable)
+      );
+   }
+
+
+
+
+   /**
+    * Count active ITIL Objects requested by a user
+    *
+    * @since 0.83
+    *
+    * @param integer $users_id ID of the User
+    *
+    * @return integer
+   **/
+   function countActiveObjectsForUser($users_id) {
+      $linkclass = new $this->userlinkclass();
+      return $this->countActiveObjectsFor(
+         $linkclass,
+         $users_id,
+         CommonITILActor::REQUESTER
       );
    }
 
@@ -508,31 +530,16 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since 0.83
     *
-    * @param $users_id integer ID of the User
+    * @param integer $users_id ID of the User
     *
     * @return integer
    **/
    function countActiveObjectsForTech($users_id) {
-
       $linkclass = new $this->userlinkclass();
-      $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
-      $itemfk    = $this->getForeignKeyField();
-      $linktable = $linkclass->getTable();
-
-      return countElementsInTable(
-         [$itemtable, $linktable], [
-            "$linktable.$itemfk"    => new \QueryExpression("`$itemtable`.`id`"),
-            "$linktable.users_id"   => $users_id,
-            "$linktable.type"       => CommonITILActor::ASSIGN,
-            "$itemtable.is_deleted" => 0,
-            "NOT"                   => [
-               "$itemtable.status" => array_merge(
-                  $this->getSolvedStatusArray(),
-                  $this->getClosedStatusArray()
-               )
-            ]
-         ] + getEntitiesRestrictCriteria($itemtable)
+      return $this->countActiveObjectsFor(
+         $linkclass,
+         $users_id,
+         CommonITILActor::ASSIGN
       );
    }
 
@@ -542,31 +549,16 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since 0.84
     *
-    * @param $groups_id integer ID of the User
+    * @param integer $groups_id ID of the User
     *
     * @return integer
    **/
    function countActiveObjectsForTechGroup($groups_id) {
-
       $linkclass = new $this->grouplinkclass();
-      $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
-      $itemfk    = $this->getForeignKeyField();
-      $linktable = $linkclass->getTable();
-
-      return countElementsInTable(
-         [$itemtable, $linktable], [
-            "$linktable.$itemfk"    => new \QueryExpression("`$itemtable`.`id`"),
-            "$linktable.groups_id"  => $groups_id,
-            "$linktable.type"       => CommonITILActor::ASSIGN,
-            "$itemtable.is_deleted" => 0,
-            "NOT"                   => [
-               "$itemtable.status" => array_merge(
-                  $this->getSolvedStatusArray(),
-                  $this->getClosedStatusArray()
-               )
-            ]
-         ] + getEntitiesRestrictCriteria($itemtable)
+      return $this->countActiveObjectsFor(
+         $linkclass,
+         $groups_id,
+         CommonITILActor::ASSIGN
       );
    }
 
@@ -576,31 +568,16 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @param $suppliers_id integer ID of the Supplier
+    * @param integer $suppliers_id ID of the Supplier
     *
     * @return integer
     **/
    function countActiveObjectsForSupplier($suppliers_id) {
-
       $linkclass = new $this->supplierlinkclass();
-      $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
-      $itemfk    = $this->getForeignKeyField();
-      $linktable = $linkclass->getTable();
-
-      return countElementsInTable(
-         [$itemtable, $linktable], [
-            "$linktable.$itemfk"       => new \QueryExpression("`$itemtable`.`id`"),
-            "$linktable.suppliers_id"  => $suppliers_id,
-            "$linktable.type"          => CommonITILActor::ASSIGN,
-            "$itemtable.is_deleted"    => 0,
-            "NOT"                      => [
-               "$itemtable.status" => array_merge(
-                  $this->getSolvedStatusArray(),
-                  $this->getClosedStatusArray()
-               )
-            ]
-         ] + getEntitiesRestrictCriteria($itemtable)
+      return $this->countActiveObjectsFor(
+         $linkclass,
+         $suppliers_id,
+         CommonITILActor::ASSIGN
       );
    }
 
