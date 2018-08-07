@@ -1039,14 +1039,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $data["##$objettype.numberoflogs##"] = count($data['log']);
 
          // Get unresolved items
-         $restrict = "`".$item->getTable()."`.`status`
-                        NOT IN ('".implode("', '", array_merge($item->getSolvedStatusArray(),
-                                                               $item->getClosedStatusArray())
-                                          )."'
-                               )";
+         $restrict = [
+            'NOT' => [
+               $item->getTable() . '.status' => array_merge(
+                  $item->getSolvedStatusArray(),
+                  $item->getClosedStatusArray()
+               )
+            ]
+         ];
 
          if ($item->maybeDeleted()) {
-            $restrict .= " AND `".$item->getTable()."`.`is_deleted` = 0 ";
+            $restrict[$item->getTable() . '.is_deleted'] = 0;
          }
 
          $data["##$objettype.numberofunresolved##"]
