@@ -299,11 +299,11 @@ final class DbUtils {
     * Count the number of elements in a table.
     *
     * @param string|array $table     table name(s)
-    * @param string|array $condition condition to use (default '') or array of criteria
+    * @param array        $condition array of criteria
     *
     * @return integer Number of elements in table
     */
-   public function countElementsInTable($table, $condition = "") {
+   public function countElementsInTable($table, $condition = []) {
       global $DB;
 
       if (!is_array($table)) {
@@ -333,13 +333,13 @@ final class DbUtils {
    /**
     * Count the number of elements in a table.
     *
-    * @param string|array $table        table name(s)
-    * @param string       $field        field name
-    * @param string|array $condition condition to use (default '') or array of criteria
+    * @param string|array $table     table name(s)
+    * @param string       $field     field name
+    * @param array        $condition array of criteria
     *
     * @return int nb of elements in table
     */
-   public function countDistinctElementsInTable($table, $field, $condition = "") {
+   public function countDistinctElementsInTable($table, $field, $condition = []) {
       global $DB;
 
       if (!is_array($condition)) {
@@ -359,12 +359,12 @@ final class DbUtils {
    /**
     * Count the number of elements in a table for a specific entity
     *
-    * @param string|array $table        table name(s)
-    * @param string|array $condition condition to use (default '') or array of criteria
+    * @param string|array $table     table name(s)
+    * @param array        $condition array of criteria
     *
     * @return integer Number of elements in table
     */
-   public function countElementsInTableForMyEntities($table, $condition = '') {
+   public function countElementsInTableForMyEntities($table, $condition = []) {
 
       /// TODO clean it / maybe include when review of SQL requests
       $itemtype = $this->getItemTypeForTable($table);
@@ -374,6 +374,7 @@ final class DbUtils {
       if (is_array($condition)) {
          $criteria = array_merge($condition, $criteria);
       } else if ($condition) {
+         Toolbox::Deprecated('Condition should be an array!');
          $criteria[] = $condition;
       }
       return $this->countElementsInTable($table, $criteria);
@@ -385,12 +386,12 @@ final class DbUtils {
     *
     * @param string|array $table     table name(s)
     * @param integer      $entity    the entity ID
-    * @param string|array $condition condition to use (default '') or array of criteria
+    * @param array        $condition condition to use (default '') or array of criteria
     * @param boolean      $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
     *
     * @return integer number of elements in table
     */
-   public function countElementsInTableForEntity($table, $entity, $condition = '', $recursive = true) {
+   public function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true) {
 
       /// TODO clean it / maybe include when review of SQL requests
       $itemtype = $this->getItemTypeForTable($table);
@@ -404,6 +405,7 @@ final class DbUtils {
       if (is_array($condition)) {
          $criteria = array_merge($condition, $criteria);
       } else if ($condition) {
+         Toolbox::Deprecated('Condition should be an array!');
          $criteria[] = $condition;
       }
       return $this->countElementsInTable($table, $criteria);
@@ -413,10 +415,10 @@ final class DbUtils {
     * Get datas from a table in an array :
     * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
     *
-    * @param string       $table     Table name
-    * @param string|array $condition Condition to use (default '') or array of criteria
-    * @param boolean      $usecache  Use cache (false by default)
-    * @param string       $order     Result order (default '')
+    * @param string  $table     Table name
+    * @param array   $condition Condition to use (default '') or array of criteria
+    * @param boolean $usecache  Use cache (false by default)
+    * @param string  $order     Result order (default '')
     *
     * @return array containing all the datas
     */

@@ -14,6 +14,11 @@ The present file will list all changes made to the project; according to the
 
 - Usage of string `$condition` parameter in `Group_User::getUserGroups()` has been deprecated
 - Usage of string `$condition` parameter in `Group_User::getGroupUsers()` has been deprecated
+- Usage of string `$condition` parameter in `countElementsInTable` (`DbUtils::countElementsInTable()`) has been deprecated
+- Usage of string `$condition` parameter in `countDistinctElementsInTable` (`DbUtils::countDistinctElementsInTable()`) has been deprecated
+- Usage of string `$condition` parameter in `countElementsInTableForMyEntities` (`DbUtils::countElementsInTableForMyEntities()`) has been deprecated
+- Usage of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`) has been deprecated
+- Usage of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`) has been deprecated
 
 The following methods have been deprecated:
 
@@ -21,6 +26,7 @@ The following methods have been deprecated:
 - `Html::scriptEnd()`
 - `Html::scriptStart()`
 - `Toolbox::is_a()`
+- `ComputerVirtualMachine::getUUIDRestrictRequest()`
 
 The following constants have been deprecated:
 - `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
