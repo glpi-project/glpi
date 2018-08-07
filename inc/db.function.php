@@ -187,13 +187,13 @@ function getSingular($string) {
  * Count the number of elements in a table.
  *
  * @param string|array $table     table name(s)
- * @param string|array $condition condition to use (default '') or array of criteria
+ * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
  *
  * @deprecated 9.2 see DbUtils::countElementsInTable()
 **/
-function countElementsInTable($table, $condition = "") {
+function countElementsInTable($table, $condition = []) {
    $dbu = new DbUtils();
    return $dbu->countElementsInTable($table, $condition);
 }
