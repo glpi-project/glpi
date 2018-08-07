@@ -114,6 +114,7 @@ class Plugin extends CommonDBTM {
       $this->checkStates();
       $plugins                  = $this->find('state='.self::ACTIVATED);
 
+      $GLPI_CACHE->set('plugins_init', true);
       $GLPI_CACHE->set('plugins', []);
 
       if (count($plugins)) {
@@ -121,6 +122,17 @@ class Plugin extends CommonDBTM {
             $this->setLoaded($ID, $plug['directory']);
          }
       }
+   }
+
+
+   /**
+    * Are plugin initialized (Plugin::Init() called)
+    *
+    * @return boolean
+    */
+   public static function hasBeenInit() {
+      global $GLPI_CACHE;
+      return $GLPI_CACHE->has('plugins_init');
    }
 
 
