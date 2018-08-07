@@ -163,6 +163,20 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Get known tables
+    *
+    * @return array
+    */
+   public static function getTablesOf() {
+      global $GLPI_CACHE;
+      if ($GLPI_CACHE->has('table_of')) {
+         return $GLPI_CACHE->get('table_of');
+      }
+      return [];
+   }
+
+
+   /**
     * Return the table used to store this object
     *
     * @param string $classname Force class (to avoid late_binding on inheritance)
@@ -170,6 +184,7 @@ class CommonDBTM extends CommonGLPI {
     * @return string
    **/
    static function getTable($classname = null) {
+      global $GLPI_CACHE;
 
       if ($classname === null) {
          $classname = get_called_class();
@@ -179,11 +194,13 @@ class CommonDBTM extends CommonGLPI {
          return '';
       }
 
-      if (empty($_SESSION['glpi_table_of'][$classname])) {
-         $_SESSION['glpi_table_of'][$classname] = getTableForItemType($classname);
+      $glpi_tables = self::getTablesOf();
+      if (!isset($glpi_tables[$classname]) || empty($glpi_tables[$classname])) {
+         $glpi_tables[$classname] = getTableForItemType($classname);
+         $GLPI_CACHE->set('table_of', $glpi_tables);
       }
 
-      return $_SESSION['glpi_table_of'][$classname];
+      return $glpi_tables[$classname];
    }
 
 
@@ -195,7 +212,10 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    static function forceTable($table) {
-      $_SESSION['glpi_table_of'][get_called_class()] = $table;
+      global $GLPI_CACHE;
+      $glpi_tables = self::getTablesOf();
+      $glpi_tables[get_called_class()] = $table;
+      $GLPI_CACHE->set('table_of', $glpi_tables);
    }
 
 

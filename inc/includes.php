@@ -40,24 +40,22 @@ include_once GLPI_ROOT . '/inc/based_config.php';
 $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
 
+//TODO: remove, should be replaced with cache
 foreach (['glpi_table_of', 'glpi_foreign_key_field_of'] as $session_array_fields) {
    if (!isset($_SESSION[$session_array_fields])) {
       $_SESSION[$session_array_fields] = [];
    }
 }
-
 /// TODO try to remove them if possible
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
 // Standard includes
 include_once (GLPI_ROOT . "/inc/config.php");
 
+$GLPI_CACHE->deleteMultiple(['table_of', 'foreign_key_field_of']);
 
 // Security of PHP_SELF
 $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
-
-
-
 
 // Load Language file
 Session::loadLanguage();
