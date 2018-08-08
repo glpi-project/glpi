@@ -1486,11 +1486,11 @@ class Planning extends CommonGLPI {
       foreach ($users as $user_data) {
          // do not add an already set user
          if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
-            $current_group['users']['user_'.$user_data['id']]
-               = ['color'   => self::getPaletteColor('bg',
-                                                          $_SESSION['glpi_plannings_color_index']),
-                       'display' => true,
-                       'type'    => 'user'];
+            $current_group['users']['user_'.$user_data['id']] = [
+               'color'   => self::getPaletteColor('bg',$_SESSION['glpi_plannings_color_index']),
+               'display' => true,
+               'type'    => 'user'
+            ];
             $_SESSION['glpi_plannings_color_index']++;
          }
       }
