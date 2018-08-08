@@ -530,10 +530,11 @@ class Profile extends CommonDBTM {
 
 
    function post_getEmpty() {
+      global $GLPI_CACHE;
 
       $this->fields["interface"] = "helpdesk";
       $this->fields["name"]      = __('Without name');
-      unset($_SESSION['glpi_all_possible_rights']);
+      ProfileRight::cleanAllPossibleRights();
       $this->fields = array_merge($this->fields, ProfileRight::getAllPossibleRights());
    }
 
