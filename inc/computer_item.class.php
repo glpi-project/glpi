@@ -428,7 +428,7 @@ class Computer_Item extends CommonDBRelation{
                   ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
                  ">".$name."</td>";
             if (Plugin::haveImport()) {
-               echo "<td>".Dropdown::getYesNo($data['assoc_is_dynamic'])."</td>";
+               echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
             }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $data['entities_id']);
