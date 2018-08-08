@@ -409,22 +409,25 @@ class Item_Devices extends CommonDBRelation {
     * @return array of Item_Device*
    **/
    static function getItemAffinities($itemtype) {
+      global $GLPI_CACHE;
 
-      if (!isset($_SESSION['glpi_item_device_affinities'])) {
-         $_SESSION['glpi_item_device_affinities'] = ['' => static ::getDeviceTypes()];
+      if (!$GLPI_CACHE->has('item_device_affinities')) {
+         $GLPI_CACHE->set('item_device_affinities', ['' => static::getDeviceTypes()]);
       }
+      $items_affinities = $GLPI_CACHE->get('item_device_affinities');
 
-      if (!isset($_SESSION['glpi_item_device_affinities'][$itemtype])) {
+      if (!isset($items_affinities[$itemtype])) {
          $afffinities = [];
-         foreach ($_SESSION['glpi_item_device_affinities'][''] as $item_id => $item_device) {
+         foreach ($items_affinities[''] as $item_id => $item_device) {
             if (in_array($itemtype, $item_device::itemAffinity()) || in_array('*', $item_device::itemAffinity())) {
                $afffinities[$item_id] = $item_device;
             }
          }
-         $_SESSION['glpi_item_device_affinities'][$itemtype] = $afffinities;
+         $items_affinities[$itemtype] = $afffinities;
+         $GLPI_CACHE->set('item_device_affinities', $items_affinities);
       }
 
-      return $_SESSION['glpi_item_device_affinities'][$itemtype];
+      return $items_affinities[$itemtype];
    }
 
 

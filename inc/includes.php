@@ -47,8 +47,6 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 // Standard includes
 include_once (GLPI_ROOT . "/inc/config.php");
 
-$GLPI_CACHE->deleteMultiple(['table_of', 'foreign_key_field_of']);
-
 // Security of PHP_SELF
 $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
 
