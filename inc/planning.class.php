@@ -1072,7 +1072,8 @@ class Planning extends CommonGLPI {
       echo "</div>";
       echo "</div>";
 
-      echo Html::scriptBlock("
+      $ajax_url = $CFG_GLPI['root_doc']."/ajax/planning.php";
+      $JS = <<<JAVASCRIPT
       $(function() {
          $('#planning_filter a.planning_add_filter' ).on( 'click', function( e ) {
             e.preventDefault(); // to prevent change of url on anchor
@@ -1104,7 +1105,7 @@ class Planning extends CommonGLPI {
             var deleted = $(this);
             var li = deleted.closest('ul.filters > li');
             $.ajax({
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
+               url:  '{$ajax_url}',
                type: 'POST',
                data: {
                   action: 'delete_filter',
@@ -1128,7 +1129,7 @@ class Planning extends CommonGLPI {
                                  .attr('event_name');
             }
             $.ajax({
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
+               url:  '{$ajax_url}',
                type: 'POST',
                data: {
                   action:  'toggle_filter',
@@ -1146,18 +1147,18 @@ class Planning extends CommonGLPI {
             });
          }
 
-         $('#planning_filter li:not(li.group_users) input[type=\"checkbox\"]')
+         $('#planning_filter li:not(li.group_users) input[type="checkbox"]')
             .on( 'click', function( e ) {
                sendDisplayEvent($(this), true);
             }
          );
 
-         $('#planning_filter li.group_users > span > input[type=\"checkbox\"]')
+         $('#planning_filter li.group_users > span > input[type="checkbox"]')
             .on('change', function( e ) {
                var parent_checkbox = $(this);
                var chidren_checkboxes = parent_checkbox
                   .parents('li.group_users')
-                  .find('ul.group_listofusers input[type=\"checkbox\"]');
+                  .find('ul.group_listofusers input[type="checkbox"]');
                chidren_checkboxes.prop('checked', parent_checkbox.prop('checked'));
                chidren_checkboxes.each(function(index) {
                   sendDisplayEvent($(this), false);
@@ -1176,7 +1177,7 @@ class Planning extends CommonGLPI {
                current_li = current_li.eq(0)
             }
             $.ajax({
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
+               url:  '{$ajax_url}',
                type: 'POST',
                data: {
                   action: 'color_filter',
@@ -1201,8 +1202,9 @@ class Planning extends CommonGLPI {
                $('#planning_container').toggleClass('folded');
             });
          });
-      });"
-      );
+      });
+JAVASCRIPT;
+      echo Html::scriptBlock($JS);
    }
 
 
