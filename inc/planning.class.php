@@ -1464,7 +1464,8 @@ class Planning extends CommonGLPI {
    static function sendAddGroupUsersForm($params = []) {
       $current_group = &$_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']."_users"];
       $current_group = ['display' => true,
-                             'type'    => 'group_users'];
+                        'type'    => 'group_users',
+                        'users'   => []];
       $users = Group_User::getGroupUsers($params['groups_id'], [
          'glpi_users.is_active'  => 1,
          'glpi_users.is_deleted' => 0,
