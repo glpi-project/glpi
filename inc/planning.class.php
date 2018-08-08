@@ -1465,13 +1465,22 @@ class Planning extends CommonGLPI {
       $current_group = &$_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']."_users"];
       $current_group = ['display' => true,
                              'type'    => 'group_users'];
-      $users = Group_User::getGroupUsers($params['groups_id'],
-                                         "`glpi_users`.`is_active` = 1
-                                          AND `glpi_users`.`is_deleted` = 0
-                                          AND (`glpi_users`.`begin_date` IS NULL
-                                             OR `glpi_users`.`begin_date` < NOW())
-                                          AND (`glpi_users`.`end_date` IS NULL
-                                             OR `glpi_users`.`end_date` > NOW())");
+      $users = Group_User::getGroupUsers($params['groups_id'], [
+         'glpi_users.is_active'  => 1,
+         'glpi_users.is_deleted' => 0,
+         [
+            'OR' => [
+               'glpi_users.begin_date' => null,
+               'glpi_users.begin_date' => ['<', new QueryExpression('NOW()')],
+            ],
+         ],
+         [
+            'OR' => [
+               'glpi_users.end_date' => null,
+               'glpi_users.end_date' => ['>', new QueryExpression('NOW()')],
+            ]
+         ]
+      ]);
       $index_color = count($_SESSION['glpi_plannings']['plannings']);
       $group_user_index = 0;
       foreach ($users as $user_data) {
