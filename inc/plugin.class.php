@@ -343,9 +343,13 @@ class Plugin extends CommonDBTM {
     * Check if all plugins are CSRF compliant
     *
     * @since 0.83.3
+    *
+    * @deprecated 9.3.1
    **/
    static function isAllPluginsCSRFCompliant() {
       global $PLUGIN_HOOKS;
+
+      Toolbox::deprecated();
 
       if (isset($_SESSION['glpi_plugins'])
           && is_array($_SESSION['glpi_plugins'])

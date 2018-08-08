@@ -27,6 +27,8 @@ The following methods have been deprecated:
 - `Html::scriptStart()`
 - `Toolbox::is_a()`
 - `ComputerVirtualMachine::getUUIDRestrictRequest()`
+- `Plugin::isAllPluginsCSRFCompliant()`
+- `Profile::getUnderActiveProfileRestrictRequest()`
 
 The following constants have been deprecated:
 - `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
