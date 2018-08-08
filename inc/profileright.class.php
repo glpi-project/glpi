@@ -47,27 +47,39 @@ class ProfileRight extends CommonDBChild {
    public $dohistory       = true;
 
 
-
+   /**
+    * Get possible rights
+    *
+    * @return array
+    */
    static function getAllPossibleRights() {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
-      if (!isset($_SESSION['glpi_all_possible_rights'])
-          ||(count($_SESSION['glpi_all_possible_rights']) == 0)) {
+      $rights = [];
 
-         $_SESSION['glpi_all_possible_rights'] = [];
-         $rights = [];
+      if (!$GLPI_CACHE->has('all_possible_rights')
+          || count($GLPI_CACHE->get('all_possible_rights')) == 0) {
+
          $iterator = $DB->request([
             'SELECT DISTINCT' => ['name'],
             'FROM'            => self::getTable()
          ]);
          while ($right = $iterator->next()) {
             // By default, all rights are NULL ...
-            $_SESSION['glpi_all_possible_rights'][$right['name']] = '';
+            $rights[$right['name']] = '';
          }
+         $GLPI_CACHE->set('all_possible_rights', $rights);
+      } else {
+         $rights = $GLPI_CACHE->get('all_possible_rights');
       }
-      return $_SESSION['glpi_all_possible_rights'];
+      return $rights;
    }
 
+
+   static function cleanAllPossibleRights() {
+      global $GLPI_CACHE;
+      $GLPI_CACHE->delete('all_possible_rights');
+   }
 
    /**
     * @param $profiles_id
@@ -98,10 +110,10 @@ class ProfileRight extends CommonDBChild {
     * @return boolean
    **/
    static function addProfileRights(array $rights) {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
       $ok = true;
-      $_SESSION['glpi_all_possible_rights'] = [];
+      $GLPI_CACHE->set('all_possible_rights', []);
 
       $iterator = $DB->request([
           'SELECT'   => ['id'],
@@ -132,10 +144,10 @@ class ProfileRight extends CommonDBChild {
     * @return boolean
    **/
    static function deleteProfileRights(array $rights) {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
-      $_SESSION['glpi_all_possible_rights'] = [];
-      $ok                                   = true;
+      $GLPI_CACHE->set('all_possible_rights', []);
+      $ok = true;
       foreach ($rights as $name) {
          $result = $DB->delete(
             self::getTable(), [
