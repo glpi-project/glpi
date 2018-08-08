@@ -1062,7 +1062,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                   $interv[$key]["editable"] = $item->canUpdateITILItem();
 
                   /// Specific for tickets
-                  $interv[$key]["device"] = '';
+                  $interv[$key]["device"] = [];
                   if (isset($parentitem->hardwaredatas) && !empty($parentitem->hardwaredatas)) {
                      foreach ($parentitem->hardwaredatas as $hardwaredata) {
                         $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
