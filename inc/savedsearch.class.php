@@ -1314,7 +1314,7 @@ class SavedSearch extends CommonDBTM {
                $_SESSION['glpigroups'] = [];
             }
 
-            $DB->dbh->begin_transaction();
+            $DB->beginTransaction();
             while ($row = $iterator->next()) {
                try {
                   $self->fields = $row;
@@ -1329,7 +1329,7 @@ class SavedSearch extends CommonDBTM {
                }
             }
 
-            $DB->dbh->commit();
+            $DB->commit();
             $stmt->close();
          }
       } else {
