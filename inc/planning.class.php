@@ -1471,14 +1471,14 @@ class Planning extends CommonGLPI {
          'glpi_users.is_deleted' => 0,
          [
             'OR' => [
-               'glpi_users.begin_date' => null,
-               'glpi_users.begin_date' => ['<', new QueryExpression('NOW()')],
+               ['glpi_users.begin_date' => null],
+               ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]],
             ],
          ],
          [
             'OR' => [
-               'glpi_users.end_date' => null,
-               'glpi_users.end_date' => ['>', new QueryExpression('NOW()')],
+               ['glpi_users.end_date' => null],
+               ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]],
             ]
          ]
       ]);
