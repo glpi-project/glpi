@@ -5061,9 +5061,11 @@ class CommonDBTM extends CommonGLPI {
             }
 
             // if doc is an image and already inserted in content, do not attach in docitem
+            // (except if not using rich text as image will be stripped in this case)
             if (isset($input[$options['content_field']])
                 && strpos($input[$options['content_field']], $doc->fields["tag"]) !== false
-                && strpos($doc->fields['mime'], 'image/') !== false) {
+                && strpos($doc->fields['mime'], 'image/') !== false
+                && ($CFG_GLPI["use_rich_text"] || $options['use_rich_text'])) {
                $skip_docitem = true;
             }
 
