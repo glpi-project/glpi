@@ -585,7 +585,7 @@ class Transfer extends CommonDBTM {
                   ],
                   'WHERE'           => [
                      'itemtype'  => $itemtype,
-                     'items_id'  => $this->needtobe_transfer[$itemtype]
+                     'items_id'  => $this->item_search[$itemtype]
                   ]
                ]);
 
