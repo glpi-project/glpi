@@ -67,7 +67,6 @@ $RELATION = ["glpi_authldaps"
                         => ['glpi_changes_groups'    => 'changes_id',
                                  'glpi_changes_items'     => 'changes_id',
                                  'glpi_changes_problems'  => 'changes_id',
-                                 'glpi_changes_projects'  => 'changes_id',
                                  'glpi_changes_suppliers' => 'changes_id',
                                  'glpi_changes_tickets'   => 'changes_id',
                                  'glpi_changes_users'     => 'changes_id',
@@ -474,8 +473,8 @@ $RELATION = ["glpi_authldaps"
                         => ['glpi_projects'         => 'projects_id',
                                  'glpi_projecttasks'     => 'projects_id',
                                  'glpi_projectteams'     => 'projects_id',
-                                 'glpi_changes_projects' => 'projects_id',
-                                 'glpi_items_projects'   => 'projects_id'],
+                                 'glpi_items_projects'   => 'projects_id',
+                                 'glpi_itils_projects'   => 'projects_id'],
 
                         "glpi_projectstates"
                         => ['glpi_projects'        => 'projectstates_id',

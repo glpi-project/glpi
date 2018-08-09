@@ -172,7 +172,7 @@ class Project extends CommonDBTM {
       $this->addStandardTab('ProjectTeam', $ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('ProjectCost', $ong, $options);
-      $this->addStandardTab('Change_Project', $ong, $options);
+      $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('Item_Project', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
@@ -261,8 +261,8 @@ class Project extends CommonDBTM {
          // ADD Team
          ProjectTeam::cloneProjectTeam($this->input["_oldID"], $this->fields['id']);
 
-         // ADD Change
-         Change_Project::cloneChangeProject($this->input["_oldID"], $this->fields['id']);
+         // ADD Itil
+         Itil_Project::cloneItilProject($this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          Contract::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
@@ -311,13 +311,12 @@ class Project extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
       $pt = new ProjectTask();
       $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
-      $cp = new Change_Project();
-      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $itil_project = new Itil_Project();
+      $itil_project->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
       $ip = new Item_Project();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);

@@ -707,19 +707,6 @@ CREATE TABLE `glpi_changes_problems` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_changes_projects
-
-DROP TABLE IF EXISTS `glpi_changes_projects`;
-CREATE TABLE `glpi_changes_projects` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `changes_id` int(11) NOT NULL DEFAULT '0',
-  `projects_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`changes_id`,`projects_id`),
-  KEY `projects_id` (`projects_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_changes_suppliers
 
 DROP TABLE IF EXISTS `glpi_changes_suppliers`;
@@ -4011,6 +3998,20 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `is_change` (`is_change`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_itils_projects
+
+DROP TABLE IF EXISTS `glpi_itils_projects`;
+CREATE TABLE `glpi_itils_projects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `projects_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`projects_id`),
+  KEY `projects_id` (`projects_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

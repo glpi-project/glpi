@@ -31,7 +31,7 @@
  */
 
 /**
- * @since 0.85
+ * @since 9.4.0
  */
 
 use Glpi\Event;
@@ -40,17 +40,22 @@ include ('../inc/includes.php');
 
 Session::checkLoginUser();
 
-$item = new Change_Project();
-if (isset($_POST["add"])) {
+$item = new Itil_Project();
+
+if (isset($_POST['add'])) {
    $item->check(-1, CREATE, $_POST);
 
    if ($item->add($_POST)) {
-      Event::log($_POST["projects_id"], "project", 4, "maintain",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+      Event::log(
+         $_POST['projects_id'],
+         'project',
+         4,
+         'maintain',
+         //TRANS: %s is the user login
+         sprintf(__('%s adds a link with an item'), $_SESSION['glpiname'])
+      );
    }
    Html::back();
-
 }
 
-Html::displayErrorAndDie("lost");
+Html::displayErrorAndDie('lost');

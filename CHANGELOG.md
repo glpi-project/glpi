@@ -5,6 +5,9 @@ The present file will list all changes made to the project; according to the
 
 ## [9.4] unreleased
 
+### Added
+- Ability to link project with problems and tickets.
+
 ### API changes
 
 #### Deprecated

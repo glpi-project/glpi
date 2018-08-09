@@ -127,6 +127,40 @@ function update93to94() {
    $migration->dropField('glpi_users', 'ticket_timeline_keep_replaced_tabs');
    /** /Drop ticket_timeline* parameters */
 
+   /** Replacing changes_projects by itils_projects */
+   if ($DB->tableExists('glpi_changes_projects')) {
+      $migration->renameTable('glpi_changes_projects', 'glpi_itils_projects');
+
+      $migration->dropKey('glpi_itils_projects', 'unicity');
+      // Key have to be dropped now to be able to create a new one having same name
+      $migration->migrationOneTable('glpi_itils_projects');
+
+      $migration->addField(
+         'glpi_itils_projects',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
+         ['after' => 'id']
+      );
+
+      $migration->changeField(
+         'glpi_itils_projects',
+         'changes_id',
+         'items_id',
+         "int(11) NOT NULL DEFAULT '0'"
+      );
+
+      $migration->addKey(
+         'glpi_itils_projects',
+         ['itemtype', 'items_id', 'projects_id'],
+         'unicity',
+         'UNIQUE'
+      );
+      $migration->migrationOneTable('glpi_itils_projects');
+
+      $DB->queryOrDie('UPDATE `glpi_itils_projects` SET `itemtype` = \'Change\'');
+   }
+   /** /Replacing changes_projects by itils_projects */
+
    Config::deleteConfigurationValues('core', $config_to_drop);
 
    // Add a config entry for the CAS version

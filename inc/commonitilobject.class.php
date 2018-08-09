@@ -601,6 +601,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $solution = new ITILSolution();
       $solution->removeForItem($this->getType(), $this->getID());
+
+      $itil_project = new Itil_Project();
+      $itil_project->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
