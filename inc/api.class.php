@@ -2287,7 +2287,7 @@ abstract class API extends CommonGLPI {
          case 'Change' :
             $hclasses[] = "ChangeTask";
             $hclasses[] = "ChangeCost";
-            $hclasses[] = "Change_Project";
+            $hclasses[] = "Itil_Project";
             $hclasses[] = "Change_Problem";
             $hclasses[] = "Change_Ticket";
             $hclasses[] = "Change_Item";
@@ -2296,7 +2296,7 @@ abstract class API extends CommonGLPI {
          case 'Project' :
             $hclasses[] = "ProjectTask";
             $hclasses[] = "ProjectCost";
-            $hclasses[] = "Change_Project";
+            $hclasses[] = "Itil_Project";
             $hclasses[] = "Item_Project";
             break;
       }
