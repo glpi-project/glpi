@@ -572,7 +572,7 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_ticket']) {
          foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
-               $iterator = $DB->request([
+               $request = [
                   'SELECT DISTINCT' => 'glpi_tickets.id',
                   'FROM'            => 'glpi_tickets',
                   'LEFT JOIN'       => [
@@ -587,7 +587,11 @@ class Transfer extends CommonDBTM {
                      'itemtype'  => $itemtype,
                      'items_id'  => $this->needtobe_transfer[$itemtype]
                   ]
-               ]);
+               ];
+               if (count($this->needtobe_transfer[$itemtype]) === 0) {
+                  $request['WHERE']['items_id'] = [-1];
+               }
+               $iterator = $DB->request($request);
 
                while ($data = $iterator->next()) {
                   $this->addToBeTransfer('Ticket', $data['id']);
@@ -641,7 +645,7 @@ class Transfer extends CommonDBTM {
                   $DB->delete('glpi_contracts_items', ['id' => $contracts_items]);
                }
 
-               $iterator = $DB->request([
+               $request = [
                   'SELECT'       => [
                      'contracts_id',
                      'glpi_contracts.entities_id',
@@ -660,7 +664,11 @@ class Transfer extends CommonDBTM {
                      'itemtype'  => $itemtype,
                      'items_id'  => $this->needtobe_transfer[$itemtype]
                   ]
-               ]);
+               ];
+               if (count($this->needtobe_transfer[$itemtype]) === 0) {
+                  $request['WHERE']['items_id'] = [-1];
+               }
+               $iterator = $DB->request($request);
 
                while ($data = $iterator->next()) {
                   if ($data['is_recursive']
