@@ -129,6 +129,7 @@ The present file will list all changes made to the project; according to the
 The following methods have been deprecated:
 
 - `Config::getSQLMode()`
+- `DBMysql::checkForCrashedTables()`
 - `Html::checkAllAsCheckbox()`
 - `Html::scriptEnd()`
 - `Html::scriptStart()`
@@ -144,7 +145,7 @@ The following constants have been deprecated:
 - `CommonDBTM::SUCCESS`
 - `CommonDBTM::TYPE_MISMATCH`
 
-## [9.3] 2018-06-28
+## [9.3.0] 2018-06-28
 
 ### Added
 - Add DCIM management
