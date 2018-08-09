@@ -338,33 +338,6 @@ class Plugin extends CommonDBTM {
       }
    }
 
-
-   /**
-    * Check if all plugins are CSRF compliant
-    *
-    * @since 0.83.3
-    *
-    * @deprecated 9.3.1
-   **/
-   static function isAllPluginsCSRFCompliant() {
-      global $PLUGIN_HOOKS;
-
-      Toolbox::deprecated();
-
-      if (isset($_SESSION['glpi_plugins'])
-          && is_array($_SESSION['glpi_plugins'])
-          && count($_SESSION['glpi_plugins'])) {
-         foreach ($_SESSION['glpi_plugins'] as $plug) {
-            if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug])
-                || !$PLUGIN_HOOKS['csrf_compliant'][$plug]) {
-               return false;
-            }
-         }
-      }
-
-      return true;
-   }
-
    /**
     * Get list of all plugins
     *

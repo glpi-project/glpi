@@ -76,13 +76,13 @@ The present file will list all changes made to the project; according to the
   - `Ticket::convertContentForNotification()`
   - `User::getPersonalToken()`
   - `User::getUniquePersonalToken()`
-- Drop all methods that have been deprecated in GLPI 9.3
+- Drop all methods that have been deprecated in GLPI 9.3.0
   - `CommonDBTM::getFromDBByQuery()`
   - `CommonDBTM::getSearchOptions()`
   - `CommonDBTM::getSearchOptionsNew()`
+  - `CommonDBTM::getSearchOptionsToAddNew()`
   - `CommonITILObject::getStatusIconURL()`
   - `DBMysql::list_tables()`
-  - `DBMysql::checkForCrashedTables()`
   - `Dropdown::showPrivatePublicSwitch()`
   - `NotificationTargetProjectTask::getTeamContacts()`
   - `NotificationTargetProjectTask::getTeamGroups()`
@@ -91,14 +91,17 @@ The present file will list all changes made to the project; according to the
   - `Search::constructDatas()`
   - `Search::displayDatas()`
   - `Transfer::transferComputerDisks()`
-  - `Toolbox::is_a()`
+- Drop all methods that have been deprecated in GLPI 9.3.1
+  - `ComputerVirtualMachine::getUUIDRestrictRequest()`
+  - `Config::getSQLMode()`
+  - `DBMysql::checkForCrashedTables()`
   - `Html::checkAllAsCheckbox()`
   - `Html::scriptEnd()`
   - `Html::scriptStart()`
-  - `CommonDBTM::getSearchOptionsToAddNew()`
-  - `ComputerVirtualMachine::getUUIDRestrictRequest()`
+  - `Plugin::isAllPluginsCSRFCompliant()`
   - `Profile::getUnderActiveProfileRestrictRequest()`
-- Drop all constants that have been deprecated in GLPI 9.3
+  - `Toolbox::is_a()`
+- Drop all constants that have been deprecated in GLPI 9.3.1
   - `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
   - `CommonDBTM::HAS_DUPLICATE`
   - `CommonDBTM::NOTHING_TO_DO`
