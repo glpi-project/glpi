@@ -502,25 +502,42 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if ($name === 'RAW') {
             $key = key($value);
             $value = current($value);
-            $ret .= '((' . $key . ') = ' . $this->analyseCrit($value) . ')';
-         } else if (is_array($value)) {
-            if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
-               $ret .= DBmysql::quoteName($name) . " {$value[0]} " . DBmysql::quoteValue($value[1]);
-            } else {
-               // Array of Values
-               foreach ($value as $k => $v) {
-                  $value[$k] = DBmysql::quoteValue($v);
-               }
-               $ret .= DBmysql::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
-            }
-         } else if (is_null($value)) {
-            // NULL condition
-            $ret .= DBmysql::quoteName($name) . " IS NULL";
-         } else if ($value instanceof QuerySubQuery) {
-            $ret .= DBmysql::quoteName($name) . ' ' . $value->getOperator() . ' (' . $value->getSubQuery() . ')';
+            $ret .= '((' . $key . ') ' . $this->analyzeCriterion($value) . ')';
          } else {
-            $ret .= DBmysql::quoteName($name) . " = " . DBmysql::quoteValue($value);
+            $ret .= DBmysql::quoteName($name) . ' ' . $this->analyzeCriterion($value);
          }
+      }
+      return $ret;
+   }
+
+   /**
+    * Analyze a criterion
+    *
+    * @since 9.3.1
+    *
+    * @param mixed $value Value to analyze
+    *
+    * @return string
+    */
+   private function analyzeCriterion($value) {
+      $ret = null;
+      if (is_array($value)) {
+         if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
+            $ret = $value[0] . ' ' . DBmysql::quoteValue($value[1]);
+         } else {
+            // Array of Values
+            foreach ($value as $k => $v) {
+               $value[$k] = DBmysql::quoteValue($v);
+            }
+            $ret = 'IN (' . implode(', ', $value) . ')';
+         }
+      } else if (is_null($value)) {
+         // NULL condition
+         $ret = 'IS NULL';
+      } else if ($value instanceof QuerySubQuery) {
+         $ret = $value->getOperator() . ' (' . $value->getSubQuery() . ')';
+      } else {
+         $ret = "= " . DBmysql::quoteValue($value);
       }
       return $ret;
    }
