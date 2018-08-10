@@ -116,10 +116,9 @@ class KnowbaseItem_Comment extends DbTestCase {
       $this->boolean($kbcom111 > $kbcom12)->isTrue();
    }
 
-   public function testGetTabNameForItemNotLooged() {
+   public function testGetTabNameForItemNotLogged() {
       //we are not logged, we should not see comment tab
       $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
-      $this->addComments($kb1);
       $kbcom = new \KnowbaseItem_Comment();
 
       $name = $kbcom->getTabNameForItem($kb1, true);

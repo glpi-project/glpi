@@ -130,7 +130,6 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    function canUpdateItem() {
-
       // Personal knowbase or visibility and write access
       return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
               || (Session::getCurrentInterface() == "central"
