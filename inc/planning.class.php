@@ -1072,7 +1072,8 @@ class Planning extends CommonGLPI {
       echo "</div>";
       echo "</div>";
 
-      echo Html::scriptBlock("
+      $ajax_url = $CFG_GLPI['root_doc']."/ajax/planning.php";
+      $JS = <<<JAVASCRIPT
       $(function() {
          $('#planning_filter a.planning_add_filter' ).on( 'click', function( e ) {
             e.preventDefault(); // to prevent change of url on anchor
@@ -1104,7 +1105,7 @@ class Planning extends CommonGLPI {
             var deleted = $(this);
             var li = deleted.closest('ul.filters > li');
             $.ajax({
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
+               url:  '{$ajax_url}',
                type: 'POST',
                data: {
                   action: 'delete_filter',
@@ -1128,7 +1129,7 @@ class Planning extends CommonGLPI {
                                  .attr('event_name');
             }
             $.ajax({
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
+               url:  '{$ajax_url}',
                type: 'POST',
                data: {
                   action:  'toggle_filter',
@@ -1146,18 +1147,18 @@ class Planning extends CommonGLPI {
             });
          }
 
-         $('#planning_filter li:not(li.group_users) input[type=\"checkbox\"]')
+         $('#planning_filter li:not(li.group_users) input[type="checkbox"]')
             .on( 'click', function( e ) {
                sendDisplayEvent($(this), true);
             }
          );
 
-         $('#planning_filter li.group_users > span > input[type=\"checkbox\"]')
+         $('#planning_filter li.group_users > span > input[type="checkbox"]')
             .on('change', function( e ) {
                var parent_checkbox = $(this);
                var chidren_checkboxes = parent_checkbox
                   .parents('li.group_users')
-                  .find('ul.group_listofusers input[type=\"checkbox\"]');
+                  .find('ul.group_listofusers input[type="checkbox"]');
                chidren_checkboxes.prop('checked', parent_checkbox.prop('checked'));
                chidren_checkboxes.each(function(index) {
                   sendDisplayEvent($(this), false);
@@ -1176,7 +1177,7 @@ class Planning extends CommonGLPI {
                current_li = current_li.eq(0)
             }
             $.ajax({
-               url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
+               url:  '{$ajax_url}',
                type: 'POST',
                data: {
                   action: 'color_filter',
@@ -1201,8 +1202,9 @@ class Planning extends CommonGLPI {
                $('#planning_container').toggleClass('folded');
             });
          });
-      });"
-      );
+      });
+JAVASCRIPT;
+      echo Html::scriptBlock($JS);
    }
 
 
@@ -1466,24 +1468,34 @@ class Planning extends CommonGLPI {
    static function sendAddGroupUsersForm($params = []) {
       $current_group = &$_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']."_users"];
       $current_group = ['display' => true,
-                             'type'    => 'group_users'];
-      $users = Group_User::getGroupUsers($params['groups_id'],
-                                         "`glpi_users`.`is_active` = 1
-                                          AND `glpi_users`.`is_deleted` = 0
-                                          AND (`glpi_users`.`begin_date` IS NULL
-                                             OR `glpi_users`.`begin_date` < NOW())
-                                          AND (`glpi_users`.`end_date` IS NULL
-                                             OR `glpi_users`.`end_date` > NOW())");
+                        'type'    => 'group_users',
+                        'users'   => []];
+      $users = Group_User::getGroupUsers($params['groups_id'], [
+         'glpi_users.is_active'  => 1,
+         'glpi_users.is_deleted' => 0,
+         [
+            'OR' => [
+               ['glpi_users.begin_date' => null],
+               ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]],
+            ],
+         ],
+         [
+            'OR' => [
+               ['glpi_users.end_date' => null],
+               ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]],
+            ]
+         ]
+      ]);
       $index_color = count($_SESSION['glpi_plannings']['plannings']);
       $group_user_index = 0;
       foreach ($users as $user_data) {
          // do not add an already set user
          if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
-            $current_group['users']['user_'.$user_data['id']]
-               = ['color'   => self::getPaletteColor('bg',
-                                                          $_SESSION['glpi_plannings_color_index']),
-                       'display' => true,
-                       'type'    => 'user'];
+            $current_group['users']['user_'.$user_data['id']] = [
+               'color'   => self::getPaletteColor('bg',$_SESSION['glpi_plannings_color_index']),
+               'display' => true,
+               'type'    => 'user'
+            ];
             $_SESSION['glpi_plannings_color_index']++;
          }
       }

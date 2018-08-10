@@ -47,8 +47,8 @@ $(function() {
          }
       });
 
-      $('[name^="filters\["]').on('input', handleFilterChange);
-      $('select[name^="filters\["]').on('change', handleFilterChange);
+      $('.log_history_filter_row [name^="filters\["]').on('input', handleFilterChange);
+      $('.log_history_filter_row select[name^="filters\["]').on('change', handleFilterChange);
    };
 
    var handleFilterChange = function (event) {
