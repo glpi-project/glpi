@@ -5353,7 +5353,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $item_num = 1;
          $bgcolor  = $_SESSION["glpipriority_".$item->fields["priority"]];
 
-         echo Search::showNewLine($p['output_type'], $p['row_num']%2);
+         echo Search::showNewLine($p['output_type'], $p['row_num']%2, $item->isDeleted());
 
          $check_col = '';
          if (($candelete || $canupdate)
