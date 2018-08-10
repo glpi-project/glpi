@@ -339,8 +339,27 @@ class DBmysqlIterator extends DbTestCase {
          }
       )->error()
          ->withType(E_USER_ERROR)
-         ->withMessage('BAD FOREIGN KEY, should be [ key1, key2 ]')
+         ->withMessage('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]]')
          ->exists();
+
+      //test conditions
+      $it = $this->it->execute(
+         'foo', [
+            'LEFT JOIN' => [
+               'bar' => [
+                  'FKEY' => [
+                     'bar' => 'id',
+                     'foo' => 'fk', [
+                        'OR'  => ['field' => ['>', 20]]
+                     ]
+                  ]
+               ]
+            ]
+         ]
+      );
+      $this->string($it->getSql())->isIdenticalTo(
+         'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` OR `field` > \'20\')'
+      );
    }
 
 
