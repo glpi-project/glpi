@@ -527,7 +527,7 @@ class DBmysqlIterator implements Iterator, Countable {
             }
             $ret = 'IN (' . implode(', ', $value) . ')';
          }
-      } else if (is_null($value)) {
+      } else if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
          // NULL condition
          $ret = 'IS NULL';
       } else if ($value instanceof QuerySubQuery) {
