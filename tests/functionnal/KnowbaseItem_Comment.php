@@ -116,21 +116,33 @@ class KnowbaseItem_Comment extends DbTestCase {
       $this->boolean($kbcom111 > $kbcom12)->isTrue();
    }
 
-   public function testGetTabNameForItem() {
-       $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
-       $this->addComments($kb1);
-       $kbcom = new \KnowbaseItem_Comment();
+   public function testGetTabNameForItemNotLooged() {
+      //we are not logged, we should not see comment tab
+      $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+      $this->addComments($kb1);
+      $kbcom = new \KnowbaseItem_Comment();
 
-       $name = $kbcom->getTabNameForItem($kb1, true);
-       $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+      $name = $kbcom->getTabNameForItem($kb1, true);
+      $this->string($name)->isIdenticalTo('');
+   }
 
-       $_SESSION['glpishow_count_on_tabs'] = 1;
-       $name = $kbcom->getTabNameForItem($kb1);
-       $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+   public function testGetTabNameForItemLogged() {
+      $this->login();
 
-       $_SESSION['glpishow_count_on_tabs'] = 0;
-       $name = $kbcom->getTabNameForItem($kb1);
-       $this->string($name)->isIdenticalTo('Comments');
+      $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+      $this->addComments($kb1);
+      $kbcom = new \KnowbaseItem_Comment();
+
+      $name = $kbcom->getTabNameForItem($kb1, true);
+      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+
+      $_SESSION['glpishow_count_on_tabs'] = 1;
+      $name = $kbcom->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+
+      $_SESSION['glpishow_count_on_tabs'] = 0;
+      $name = $kbcom->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('Comments');
    }
 
    public function testDisplayComments() {
