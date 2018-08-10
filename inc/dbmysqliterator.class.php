@@ -483,18 +483,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
          } else if ($name === "FKEY" || $name === 'ON') {
             // Foreign Key condition
-            if (is_array($value) && (count($value) == 2)) {
-               $keys = array_keys($value);
-               $t1 = $keys[0];
-               $f1 = $value[$t1];
-               $t2 = $keys[1];
-               $f2 = $value[$t2];
-               $ret .= (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                       (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
-            } else {
-               trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
-            }
-
+            $ret .= $this->analyseFkey($value);
          } else if ($name === 'RAW') {
             $key = key($value);
             $value = current($value);
@@ -536,6 +525,32 @@ class DBmysqlIterator implements Iterator, Countable {
          $ret = "= " . DBmysql::quoteValue($value);
       }
       return $ret;
+   }
+
+   /**
+    * Analyse foreign keys
+    *
+    * @param mixed $values Values for Foreign keys
+    *
+    * @return string
+    */
+   private function analyseFkey($values) {
+      if (is_array($values)) {
+         $keys = array_keys($values);
+         if (count($values) == 2) {
+            $t1 = $keys[0];
+            $f1 = $values[$t1];
+            $t2 = $keys[1];
+            $f2 = $values[$t2];
+            return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
+                     (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+         } else if (count($values) == 3) {
+            $condition = array_pop($values);
+            $fkey = $this->analyseFkey($values);
+            return $fkey . ' ' . key($condition) . ' ' . $this->analyseCrit(current($condition));
+         }
+      }
+      trigger_error("BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]]", E_USER_ERROR);
    }
 
    /**
