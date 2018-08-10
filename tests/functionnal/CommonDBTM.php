@@ -148,4 +148,48 @@ class CommonDBTM extends DbTestCase {
       // the instance must not be populated
       $this->boolean($instance->isNewItem())->isTrue();
    }
+
+   public function testGetFromResultSet() {
+      global $DB;
+      $result = $DB->request([
+         'FROM'   => \Computer::getTable(),
+         'LIMIT'  =>1
+      ])->next();
+
+      $this->array($result)->hasKeys(['name', 'uuid']);
+
+      $computer = new \Computer();
+      $computer->getFromResultSet($result);
+      $this->array($computer->fields)->isIdenticalTo($result);
+   }
+
+   public function testGetId() {
+      $comp = new \Computer();
+
+      $this->integer($comp->getID())->isIdenticalTo(-1);
+
+      $this->boolean($comp->getFromDBByCrit(['name' => '_test_pc01']))->isTrue();
+      $this->integer((int)$comp->getID())->isGreaterThan(0);
+   }
+
+   public function testGetEmpty() {
+      $comp = new \Computer();
+
+      $this->array($comp->fields)->isEmpty();
+
+      $this->boolean($comp->getEmpty())->isTrue();
+      $this->array($comp->fields)
+         ->string['entities_id']->isIdenticalTo('');
+
+      $_SESSION["glpiactive_entity"] = 12;
+      $this->boolean($comp->getEmpty())->isTrue();
+      unset($_SESSION['glpiactive_entity']);
+      $this->array($comp->fields)
+         ->integer['entities_id']->isIdenticalTo(12);
+
+      /* do not work
+      $_SESSION['glpi_table_of']['Computer'] = '';
+      $this->boolean($comp->getEmpty())->isFalse();
+      unset($_SESSION['glpi_table_of']);*/
+   }
 }
