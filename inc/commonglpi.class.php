@@ -859,7 +859,7 @@ class CommonGLPI {
             $glpilisttitle = __s('List');
          }
          echo "<td><a href=\"".$glpilisturl."\" title='$glpilisttitle'>";
-         echo "<i class='fa fa-list-alt fa-2x pointer'><span class='sr-only'>";
+         echo "<i class='far fa-list-alt fa-2x pointer'><span class='sr-only'>";
          echo Toolbox::substr($glpilisttitle, 0, 100)."...";
          echo "</span></i>";
          echo "</a></td>";

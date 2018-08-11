@@ -1812,7 +1812,7 @@ class Search {
                   ($is_deleted?"checked='checked'":"").
                   " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
-                "<span class='fa fa-trash-o pointer'></span>".
+                "<span class='fa fa-trash-alt pointer'></span>".
                 "<span class='lever'></span>" .
                 "</label>".
              "</div>";

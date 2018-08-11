@@ -180,11 +180,14 @@ a, a:link {
    font-size : 11px;
 }
 
-a.fa, a.fa:link {
+a.fa, a.fa:link, a.far, a.far:link,
+a.fas, a.fas:link {
    font-size: inherit;
-   font-weight: normal;
+   font-weight: 900;
 }
-#page a.fa, #page a.fa:link, a .fa {
+
+#page a.fa, #page a.fa:link, a .fa,
+#page a.far, #page a.far:link, a .far {
    color: #222;
 }
 
@@ -2331,7 +2334,7 @@ a.icon_nav_move:hover img {
 }
 
 #boxlogin .login_input:before {
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    left:8px;
    position:absolute;
    top:3px;
@@ -2340,11 +2343,12 @@ a.icon_nav_move:hover img {
 }
 
 #boxlogin #login_input_name:before {
-   content: "\f2be";
+   content: "\f2bd";
 }
 #boxlogin #login_input_password:before {
    content: "\f023";
    left: 11px;
+   font-weight: 900;
 }
 #boxlogin #login_input_src:before {
    content: "\f2ba";
@@ -2444,6 +2448,7 @@ a.icon_nav_move:hover img {
    font-size: 1.8em;
    color: white;
 }
+
 #c_preference a.fa:hover {
    text-decoration: none;
    color: #ccc;
@@ -3642,7 +3647,7 @@ a.copyright {
 }
 
 .x-button-drop:after        {
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
 }
 .x-button.x-button-drop.new:after      { content: '\f111'; color: #49bf4d; }
 .x-button.x-button-drop.assigned:after { content: '\f10c'; color: #49bf4d; }
@@ -3738,7 +3743,7 @@ a.copyright {
 }
 .dates_timelines .dot:before {
    color: #929292;
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
    padding-left: 2px;
 }
 
@@ -4019,7 +4024,7 @@ input[type=checkbox].toggle_comments:checked ~ ul {
 }
 
 .copy_to_clipboard_wrapper:after {
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
    position: relative;
    left: -15px;
    top: 1px;
@@ -4423,10 +4428,12 @@ td.diff del {
    color: #ccc;
 }
 
-.fa.bookmark_record, .fa.bookmark_record:link {
+.fa.bookmark_record, .fa.bookmark_record:link,
+   .fa.reset-search,  .fa.reset-search:link{
    font-size: 1.5em;
    color: #ccc!important;
 }
+
 .fa.bookmark_default, .fa.bookmark_default:link {
    font-size: 1.5em;
    color: #f3b51f!important;
@@ -4738,7 +4745,7 @@ div#viewgraph .mini_toggle:before {
    left: 0;
    top: 0;
    font-size: 15px;
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    position: absolute;
 }
 div#viewgraph .mini_toggle.active:before {
@@ -4935,7 +4942,7 @@ ul.indexes {
    font-size: 1em;
    color: grey;
    top: 5px;
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    position: absolute;
 }
 
