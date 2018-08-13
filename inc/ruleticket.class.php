@@ -546,6 +546,8 @@ class RuleTicket extends Rule {
       $actions['_suppliers_id_assign']['force_actions']     = ['assign', 'append'];
       $actions['_suppliers_id_assign']['permitseveral']     = ['append'];
       $actions['_suppliers_id_assign']['appendto']          = '_additional_suppliers_assigns';
+      $actions['_suppliers_id_assign']['appendtoarray']     = ['use_notification' => 1];
+      $actions['_suppliers_id_assign']['appendtoarrayfield']  = 'suppliers_id';
 
       $actions['_users_id_observer']['name']                = __('Watcher');
       $actions['_users_id_observer']['type']                = 'dropdown_users';
