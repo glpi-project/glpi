@@ -8319,7 +8319,7 @@ CREATE TABLE `glpi_suppliers_tickets` (
   `tickets_id` int(11) NOT NULL DEFAULT '0',
   `suppliers_id` int(11) NOT NULL DEFAULT '0',
   `type` int(11) NOT NULL DEFAULT '1',
-  `use_notification` tinyint(1) NOT NULL DEFAULT '0',
+  `use_notification` tinyint(1) NOT NULL DEFAULT '1',
   `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`suppliers_id`),
