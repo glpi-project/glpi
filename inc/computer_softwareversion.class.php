@@ -701,23 +701,24 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $where_str = "`glpi_softwares`.`softwarecategories_id` = " . (int)$crit;
       }
 
-      $add_dynamic  = [];
+      $select = [
+         'glpi_softwares.softwarecategories_id',
+         'glpi_softwares.name AS softname',
+         self::getTable() . '.id',
+         'glpi_states.name as state',
+         'glpi_softwareversions.id AS verid',
+         'glpi_softwareversions.softwares_id',
+         'glpi_softwareversions.name AS version',
+         'glpi_softwares.is_valid AS softvalid',
+         'glpi_computers_softwareversions.date_install AS dateinstall'
+      ];
+
       if (Plugin::haveImport()) {
-         $add_dynamic[] = self::getTable() . '.is_dynamic';
+         $select[] = self::getTable() . '.is_dynamic';
       }
 
       $iterator = $DB->request([
-         'SELECT'    => [
-            'glpi_softwares.softwarecategories_id',
-            'glpi_softwares.name AS softname',
-            self::getTable() . '.id',
-            'glpi_states.name as state',
-            'glpi_softwareversions.id AS verid',
-            'glpi_softwareversions.softwares_id',
-            'glpi_softwareversions.name AS version',
-            'glpi_softwares.is_valid AS softvalid',
-            'glpi_computers_softwareversions.date_install AS dateinstall'
-         ] + $add_dynamic,
+         'SELECT'    => $select,
          'FROM'      => self::getTable(),
          'LEFT JOIN' => [
             'glpi_softwareversions' => [
@@ -741,7 +742,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          ],
          'WHERE'     => [
             self::getTable() . '.computers_id'  => $computers_id,
-            self::getTable() . 'is_deleted'     => 0,
+            self::getTable() . '.is_deleted'     => 0,
          ] + $where,
          'ORDER'     => ['softname', 'version']
       ]);

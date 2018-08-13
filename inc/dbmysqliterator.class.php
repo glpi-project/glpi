@@ -487,42 +487,74 @@ class DBmysqlIterator implements Iterator, Countable {
 
          } else if ($name === "FKEY" || $name === 'ON') {
             // Foreign Key condition
-            if (is_array($value) && (count($value) == 2)) {
-               $keys = array_keys($value);
-               $t1 = $keys[0];
-               $f1 = $value[$t1];
-               $t2 = $keys[1];
-               $f2 = $value[$t2];
-               $ret .= (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                       (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
-            } else {
-               trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
-            }
-
+            $ret .= $this->analyseFkey($value);
          } else if ($name === 'RAW') {
             $key = key($value);
             $value = current($value);
-            $ret .= '((' . $key . ') = ' . $this->analyseCrit($value) . ')';
-         } else if (is_array($value)) {
-            if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
-               $ret .= DBmysql::quoteName($name) . " {$value[0]} " . DBmysql::quoteValue($value[1]);
-            } else {
-               // Array of Values
-               foreach ($value as $k => $v) {
-                  $value[$k] = DBmysql::quoteValue($v);
-               }
-               $ret .= DBmysql::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
-            }
-         } else if (is_null($value)) {
-            // NULL condition
-            $ret .= DBmysql::quoteName($name) . " IS NULL";
-         } else if ($value instanceof QuerySubQuery) {
-            $ret .= DBmysql::quoteName($name) . ' ' . $value->getOperator() . ' (' . $value->getSubQuery() . ')';
+            $ret .= '((' . $key . ') ' . $this->analyzeCriterion($value) . ')';
          } else {
-            $ret .= DBmysql::quoteName($name) . " = " . DBmysql::quoteValue($value);
+            $ret .= DBmysql::quoteName($name) . ' ' . $this->analyzeCriterion($value);
          }
       }
       return $ret;
+   }
+
+   /**
+    * Analyze a criterion
+    *
+    * @since 9.3.1
+    *
+    * @param mixed $value Value to analyze
+    *
+    * @return string
+    */
+   private function analyzeCriterion($value) {
+      $ret = null;
+      if (is_array($value)) {
+         if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
+            $ret = $value[0] . ' ' . DBmysql::quoteValue($value[1]);
+         } else {
+            // Array of Values
+            foreach ($value as $k => $v) {
+               $value[$k] = DBmysql::quoteValue($v);
+            }
+            $ret = 'IN (' . implode(', ', $value) . ')';
+         }
+      } else if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
+         // NULL condition
+         $ret = 'IS NULL';
+      } else if ($value instanceof QuerySubQuery) {
+         $ret = $value->getOperator() . ' (' . $value->getSubQuery() . ')';
+      } else {
+         $ret = "= " . DBmysql::quoteValue($value);
+      }
+      return $ret;
+   }
+
+   /**
+    * Analyse foreign keys
+    *
+    * @param mixed $values Values for Foreign keys
+    *
+    * @return string
+    */
+   private function analyseFkey($values) {
+      if (is_array($values)) {
+         $keys = array_keys($values);
+         if (count($values) == 2) {
+            $t1 = $keys[0];
+            $f1 = $values[$t1];
+            $t2 = $keys[1];
+            $f2 = $values[$t2];
+            return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
+                     (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+         } else if (count($values) == 3) {
+            $condition = array_pop($values);
+            $fkey = $this->analyseFkey($values);
+            return $fkey . ' ' . key($condition) . ' ' . $this->analyseCrit(current($condition));
+         }
+      }
+      trigger_error("BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]]", E_USER_ERROR);
    }
 
    /**

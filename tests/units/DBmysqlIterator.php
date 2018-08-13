@@ -339,8 +339,27 @@ class DBmysqlIterator extends DbTestCase {
          }
       )->error()
          ->withType(E_USER_ERROR)
-         ->withMessage('BAD FOREIGN KEY, should be [ key1, key2 ]')
+         ->withMessage('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]]')
          ->exists();
+
+      //test conditions
+      $it = $this->it->execute(
+         'foo', [
+            'LEFT JOIN' => [
+               'bar' => [
+                  'FKEY' => [
+                     'bar' => 'id',
+                     'foo' => 'fk', [
+                        'OR'  => ['field' => ['>', 20]]
+                     ]
+                  ]
+               ]
+            ]
+         ]
+      );
+      $this->string($it->getSql())->isIdenticalTo(
+         'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` OR `field` > \'20\')'
+      );
    }
 
 
@@ -500,7 +519,27 @@ class DBmysqlIterator extends DbTestCase {
          ]
       ];
       $it = $this->it->execute($crit);
-      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) = 5)");
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) = '5')");
+
+      $crit = [
+         'FROM'   => 'foo',
+         'WHERE'  => [
+            'bar' => 'baz',
+            'RAW' => ['SELECT COUNT(*) FROM xyz' => ['>', 2]]
+         ]
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) > '2')");
+
+      $crit = [
+         'FROM'   => 'foo',
+         'WHERE'  => [
+            'bar' => 'baz',
+            'RAW' => ['SELECT COUNT(*) FROM xyz' => [3, 4]]
+         ]
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) IN ('3', '4'))");
    }
 
 

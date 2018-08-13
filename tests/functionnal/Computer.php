@@ -341,5 +341,11 @@ class Computer extends DbTestCase {
       $comp = new \Computer();
       $this->boolean($comp->getFromDBByCrit(['name' => '_test_pc01']))->isTrue();
       $this->string($comp->getField('name'))->isIdenticalTo('_test_pc01');
+
+      $this->exception(
+         function () use ($comp) {
+            $this->boolean($comp->getFromDBByCrit(['name' => ['LIKE', '_test%']]))->isFalse();
+         }
+      )->message->contains('getFromDBByCrit expects to get one result, 8 found!');
    }
 }
