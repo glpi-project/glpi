@@ -559,11 +559,11 @@ class Document extends CommonDBTM {
    /**
     * Check is the curent user is allowed to see the file
     *
-    * @param $options array of options (only 'tickets_id' used)
+    * @param array $options Options (only 'tickets_id' used)
     *
     * @return boolean
    **/
-   function canViewFile($options) {
+   function canViewFile(array $options = []) {
 
       // Check if it is my doc
       if (Session::getLoginUserID()
@@ -671,15 +671,10 @@ class Document extends CommonDBTM {
          ]
       ];
 
-      if (!Session::haveRight(KnowbaseItem::$rightname, READ)) {
-         // Limit to FAQ only
-         $request['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
-      }
-
-      if (count($visibilityCriteria['LEFT JOIN']) > 0) {
+      if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
          $request['LEFT JOIN'] += $visibilityCriteria['LEFT JOIN'];
       }
-      if (count($visibilityCriteria['WHERE']) > 0) {
+      if (array_key_exists('WHERE', $visibilityCriteria) && count($visibilityCriteria['WHERE']) > 0) {
          $request['WHERE'] += $visibilityCriteria['WHERE'];
       }
 
@@ -707,15 +702,10 @@ class Document extends CommonDBTM {
          ]
       ];
 
-      if (!Session::haveRight(KnowbaseItem::$rightname, READ)) {
-         // Limit to FAQ only
-         $request['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
-      }
-
-      if (count($visibilityCriteria['LEFT JOIN']) > 0) {
+      if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
          $request['LEFT JOIN'] += $visibilityCriteria['LEFT JOIN'];
       }
-      if (count($visibilityCriteria['WHERE']) > 0) {
+      if (array_key_exists('WHERE', $visibilityCriteria) && count($visibilityCriteria['WHERE']) > 0) {
          $request['WHERE'] += $visibilityCriteria['WHERE'];
       }
 
@@ -807,7 +797,7 @@ class Document extends CommonDBTM {
     * @return string
     */
    private function getSelfUrlRegexPattern() {
-      return 'document\\.send\\.php\\?docid=' . $this->fields['id'] . '[^\\d]+';
+      return 'document\\\.send\\\.php\\\?docid=' . $this->fields['id'] . '[^\\\d]+';
    }
 
    static function rawSearchOptionsToAdd($itemtype = null) {

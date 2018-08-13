@@ -514,6 +514,10 @@ class KnowbaseItem extends CommonDBVisible {
 
       if (Session::getLoginUserID()) {
          $where['`glpi_knowbaseitems_users`.`users_id`'] = Session::getLoginUserID();
+
+         if (!Session::haveRight(self::$rightname, READ)) {
+            $where['OR']['glpi_knowbaseitems.is_faq'] = 1;
+         }
       }
 
       // Groups
