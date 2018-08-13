@@ -691,7 +691,7 @@ class Document extends CommonDBTM {
          ],
          'WHERE'     => [
             'glpi_knowbaseitems.answer' => [
-               'LIKE', '%document.send.php?docid=' . $this->fields['id'] . '%'
+               'REGEXP', 'document\\.send\\.php\\?docid=' . $this->fields['id'] . '[^\\d]+'
             ],
          ]
       ];
@@ -750,6 +750,7 @@ class Document extends CommonDBTM {
       }
 
       // Check ticket and child items (followups, tasks, solutions) contents
+      $regexPattern = 'document\\.send\\.php\\?docid=' . $this->fields['id'] . '[^\\d]+';
       $result = $DB->request([
          'FROM'      => 'glpi_tickets',
          'COUNT'     => 'cpt',
@@ -777,18 +778,10 @@ class Document extends CommonDBTM {
          'WHERE'     => [
             'glpi_tickets.id' => $tickets_id,
             'OR' => [
-               'glpi_tickets.content' => [
-                  'LIKE', '%document.send.php?docid=' . $this->fields['id'] . '%'
-               ],
-               'glpi_ticketfollowups.content' => [
-                  'LIKE', '%document.send.php?docid=' . $this->fields['id'] . '%'
-               ],
-               'glpi_tickettasks.content' => [
-                  'LIKE', '%document.send.php?docid=' . $this->fields['id'] . '%'
-               ],
-               'glpi_itilsolutions.content' => [
-                  'LIKE', '%document.send.php?docid=' . $this->fields['id'] . '%'
-               ]
+               'glpi_tickets.content'         => ['REGEXP', $regexPattern],
+               'glpi_ticketfollowups.content' => ['REGEXP', $regexPattern],
+               'glpi_tickettasks.content'     => ['REGEXP', $regexPattern],
+               'glpi_itilsolutions.content'   => ['REGEXP', $regexPattern]
             ]
          ]
       ])->next();
