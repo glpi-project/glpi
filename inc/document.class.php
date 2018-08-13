@@ -614,6 +614,19 @@ class Document extends CommonDBTM {
                       AND ".Reminder::addVisibilityRestrict();
       $result = $DB->query($query);
 
+      if ($DB->numrows($result) > 0) {
+         return true;
+      }
+
+      // Inlined images do not have entries in glpi_documents_items table.
+      // Check in Reminder content
+      $query = "SELECT *
+                FROM `glpi_reminders`
+                ".Reminder::addVisibilityJoins()."
+                WHERE `glpi_reminders`.`text` REGEXP '". $this->getSelfUrlRegexPattern() . "'
+                      AND ".Reminder::addVisibilityRestrict();
+      $result = $DB->query($query);
+
       return $DB->numrows($result) > 0;
    }
 
@@ -690,9 +703,7 @@ class Document extends CommonDBTM {
             ]
          ],
          'WHERE'     => [
-            'glpi_knowbaseitems.answer' => [
-               'REGEXP', 'document\\.send\\.php\\?docid=' . $this->fields['id'] . '[^\\d]+'
-            ],
+            'glpi_knowbaseitems.answer' => ['REGEXP', $this->getSelfUrlRegexPattern()],
          ]
       ];
 
@@ -750,7 +761,7 @@ class Document extends CommonDBTM {
       }
 
       // Check ticket and child items (followups, tasks, solutions) contents
-      $regexPattern = 'document\\.send\\.php\\?docid=' . $this->fields['id'] . '[^\\d]+';
+      $regexPattern = $this->getSelfUrlRegexPattern();
       $result = $DB->request([
          'FROM'      => 'glpi_tickets',
          'COUNT'     => 'cpt',
@@ -789,6 +800,15 @@ class Document extends CommonDBTM {
       return $result['cpt'] > 0;
    }
 
+   /**
+    * Gives URL regex pattern for current document.
+    * This pattern can be use to find link to document into rich text contents.
+    *
+    * @return string
+    */
+   private function getSelfUrlRegexPattern() {
+      return 'document\\.send\\.php\\?docid=' . $this->fields['id'] . '[^\\d]+';
+   }
 
    static function rawSearchOptionsToAdd($itemtype = null) {
       $tab = [];
