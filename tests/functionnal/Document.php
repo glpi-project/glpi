@@ -439,4 +439,142 @@ class Document extends DbTestCase {
       $this->boolean($basicDocument->canViewFile())->isFalse();
       $this->boolean($inlinedDocument->canViewFile())->isFalse();
    }
+
+   /**
+    * Check visibility of document attached to tickets.
+    */
+   public function testCanViewTicketFile() {
+
+      global $CFG_GLPI;
+
+      $CFG_GLPI['use_rich_text'] = 1;
+
+      $basicDocument = new \Document();
+      $this->integer(
+         (int)$basicDocument->add([
+            'name'     => 'basic document',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $inlinedDocument = new \Document();
+      $this->integer(
+         (int)$inlinedDocument->add([
+            'name'     => 'inlined document',
+            'filename' => 'inlined.png',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'     => 'New ticket',
+            'content'  => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+         ])
+      )->isGreaterThan(0);
+
+      $document_item = new \Document_Item();
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $basicDocument->getID(),
+            'items_id'     => $ticket->getID(),
+            'itemtype'     => \Ticket::class,
+         ])
+      )->isGreaterThan(0);
+
+      // post-only cannot see documents if not able to view ticket (ticket content)
+      $this->login('post-only', 'postonly');
+      $this->boolean($basicDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+
+      // post-only can see documents linked to its own tickets (ticket content)
+      $ticket_user = new \Ticket_User();
+      $this->integer(
+         (int)$ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'type'       => \CommonITILActor::OBSERVER,
+            'users_id'   => \Session::getLoginUserID(),
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($basicDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+   }
+
+   /**
+    * Data provider for self::testCanViewTicketChildFile().
+    */
+   protected function ticketChildClassProvider() {
+      return [
+         [
+            'class' => \ITILSolution::class,
+         ],
+         [
+            'class' => \TicketTask::class,
+         ],
+         [
+            'class' => \TicketFollowup::class,
+         ],
+      ];
+   }
+
+   /**
+    * Check visibility of document inlined in tickets followup.
+    *
+    * @dataProvider ticketChildClassProvider
+    */
+   public function testCanViewTicketChildFile($childClass) {
+
+      global $CFG_GLPI;
+
+      $CFG_GLPI['use_rich_text'] = 1;
+
+      $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
+      $inlinedDocument = new \Document();
+      $this->integer(
+         (int)$inlinedDocument->add([
+            'name'     => 'inlined document',
+            'filename' => 'inlined.png',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'     => 'New ticket',
+            'content'  => 'No image in content',
+         ])
+      )->isGreaterThan(0);
+
+      $child = new $childClass();
+      $this->integer(
+         (int)$child->add([
+            'content'    => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+            'tickets_id' => $ticket->getID(),
+            'items_id'   => $ticket->getID(),
+            'itemtype'   => \Ticket::class,
+            'users_id'   => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      // post-only cannot see documents if not able to view ticket
+      $this->login('post-only', 'postonly');
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+
+      // post-only can see documents linked to its own tickets
+      $ticket_user = new \Ticket_User();
+      $this->integer(
+         (int)$ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'type'       => \CommonITILActor::OBSERVER,
+            'users_id'   => \Session::getLoginUserID(),
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+   }
 }
