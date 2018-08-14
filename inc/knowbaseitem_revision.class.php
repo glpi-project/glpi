@@ -43,6 +43,10 @@ class KnowbaseItem_Revision extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      if (!$item->canUpdateItem()) {
+         return '';
+      }
+
       $nb = 0;
       if ($_SESSION['glpishow_count_on_tabs']) {
          $where = [];

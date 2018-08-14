@@ -6447,7 +6447,7 @@ INSERT INTO `glpi_profilerights` VALUES ('12','1','contact_enterprise','0');
 INSERT INTO `glpi_profilerights` VALUES ('13','1','document','0');
 INSERT INTO `glpi_profilerights` VALUES ('14','1','contract','0');
 INSERT INTO `glpi_profilerights` VALUES ('15','1','infocom','0');
-INSERT INTO `glpi_profilerights` VALUES ('16','1','knowbase','10240');
+INSERT INTO `glpi_profilerights` VALUES ('16','1','knowbase','2048');
 INSERT INTO `glpi_profilerights` VALUES ('20','1','reservation','1024');
 INSERT INTO `glpi_profilerights` VALUES ('21','1','reports','0');
 INSERT INTO `glpi_profilerights` VALUES ('22','1','dropdown','0');
