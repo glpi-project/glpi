@@ -3459,9 +3459,26 @@ class CommonDBTM extends CommonGLPI {
       $options = [];
 
       foreach ($this->rawSearchOptions() as $opt) {
+         $missingFields = [];
          if (!isset($opt['id'])) {
-            throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
+            $missingFields[] = 'id';
          }
+         if (!isset($opt['name'])) {
+            $missingFields[] = 'name';
+         }
+         if (count($missingFields) > 0) {
+            throw new \Exception(
+               vsprintf(
+                  'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
+                  [
+                     get_called_class(),
+                     implode('", "', $missingFields),
+                     print_r($opt, true)
+                  ]
+               )
+            );
+         }
+
          $optid = $opt['id'];
          unset($opt['id']);
 
