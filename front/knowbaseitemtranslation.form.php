@@ -84,7 +84,7 @@ if (isset($_POST['add'])) {
                                __('FAQ') => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php']);
    }
 
-   $translation->display([]);
+   $translation->display(['id' => $_GET['id']]);
 
    if (Session::getLoginUserID()) {
       if (Session::getCurrentInterface() == "central") {
