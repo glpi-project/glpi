@@ -168,7 +168,6 @@ class RuleImportEntity extends Rule {
 
       $actions['_ignore_import']['name']   = __('To be unaware of import');
       $actions['_ignore_import']['type']   = 'yesonly';
-      $actions['_ignore_import']['type']   = 'yesonly';
 
       $actions['is_recursive']['name']     = __('Child entities');
       $actions['is_recursive']['type']     = 'yesno';
