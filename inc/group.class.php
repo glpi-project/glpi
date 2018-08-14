@@ -128,16 +128,6 @@ class Group extends CommonTreeDropdown {
       Rule::cleanForItemCriteria($this, '_groups_id%');
       // GROUPS for RuleMailcollector
       Rule::cleanForItemCriteria($this, 'GROUPS');
-
-      // Set no group to consumables
-      $DB->update(
-         'glpi_consumables', [
-            'items_id' => 0
-         ], [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => 'Group'
-         ]
-      );
    }
 
 
