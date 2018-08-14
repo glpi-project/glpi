@@ -102,7 +102,8 @@ class Item_Rack extends CommonDBRelation {
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'racks_id' => $rack->getID()
-         ]
+         ],
+         'ORDER' => 'position DESC'
       ]);
       $link = new self();
 

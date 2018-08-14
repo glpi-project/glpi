@@ -568,6 +568,7 @@ class Rack extends CommonDBTM {
          echo "</table>";
       } else {
          if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = [
                'num_displayed'   => min($_SESSION['glpilist_limit'], count($racks)),
                'container'       => 'mass'.__CLASS__.$rand
