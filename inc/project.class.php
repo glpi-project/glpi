@@ -515,7 +515,8 @@ class Project extends CommonDBTM {
          'table'              => 'glpi_projectstates',
          'field'              => 'name',
          'name'               => __('State'),
-         'datatype'           => 'dropdown'
+         'datatype'           => 'dropdown',
+         'additionalfields'   => ['color'],
       ];
 
       $tab[] = [
