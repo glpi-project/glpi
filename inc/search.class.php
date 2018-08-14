@@ -4378,7 +4378,6 @@ class Search {
 
       $searchopt  = &self::getOptions($itemtype);
 
-      $NAME       = "ITEM_";
       $table      = $searchopt[$ID]["table"];
       $field      = $searchopt[$ID]["field"];
 
@@ -4393,12 +4392,15 @@ class Search {
          }
       }
 
+      $out = "";
+
       switch ($table.".".$field) {
          case "glpi_tickets.priority" :
          case "glpi_problems.priority" :
          case "glpi_changes.priority" :
          case "glpi_projects.priority" :
-            return " style=\"background-color:".$_SESSION["glpipriority_".$data[$num][0]['name']].";\" ";
+            $out = " style=\"background-color:".$_SESSION["glpipriority_".$data[$num][0]['name']].";\" ";
+            break;
 
          case "glpi_tickets.time_to_resolve" :
          case "glpi_tickets.internal_time_to_resolve" :
@@ -4411,15 +4413,23 @@ class Search {
                 && !empty($data[$num][0]['name'])
                 && ($data[$num][0]['status'] != CommonITILObject::WAITING)
                 && ($data[$num][0]['name'] < $_SESSION['glpi_currenttime'])) {
-               return " style=\"background-color: #cf9b9b\" ";
+               $out = " style=\"background-color: #cf9b9b\" ";
             }
+            break;
 
          case "glpi_projectstates.color" :
-            return " style=\"background-color:".$data[$num][0]['name'].";\" ";
+            $out = " style=\"background-color:".$data[$num][0]['name'].";\" ";
+            break;
 
-         default :
-            return "";
+         case "glpi_projectstates.name" :
+            if (array_key_exists('color', $data[$num][0])) {
+               $out = " style=\"background-color:".$data[$num][0]['color'].";\" ";
+            }
+            break;
+
       }
+
+      return $out;
    }
 
 
@@ -4913,23 +4923,14 @@ class Search {
 
             case 'glpi_projectstates.name':
                $out = '';
-               $color_iterator = $DB->request([
-                  'SELECT' => ['color'],
-                  'FROM'   => 'glpi_projectstates',
-                  'WHERE'  => ['name' => $DB->escape($data[$num][0]['name'])]
-               ]);
-               while ($color = $color_iterator->next()) {
-                  $color = $color['color'];
-                  $out   = "<div style=\"background-color:".$color.";\">";
-                  $name = $data[$num][0]['name'];
-                  if (isset($data[$num][0]['trans'])) {
-                     $name = $data[$num][0]['trans'];
-                  }
-                  if ($itemtype == 'ProjectState') {
-                     $out .=   "<a href='".ProjectState::getFormURLWithID($data[$num][0]["id"])."'>". $name."</a></div>";
-                  } else {
-                     $out .= $name."</div>";
-                  }
+               $name = $data[$num][0]['name'];
+               if (isset($data[$num][0]['trans'])) {
+                  $name = $data[$num][0]['trans'];
+               }
+               if ($itemtype == 'ProjectState') {
+                  $out =   "<a href='".ProjectState::getFormURLWithID($data[$num][0]["id"])."'>". $name."</a></div>";
+               } else {
+                  $out = $name;
                }
                return $out;
 
