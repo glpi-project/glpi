@@ -297,7 +297,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
       $this->fields['answer'] = Toolbox::clean_cross_side_scripting_deep(
          Toolbox::addslashes_deep($item->fields['answer'])
       );
-      $this->fields['date_creation'] = date('Y-m-d H:i:s');
+      $this->fields['date_creation'] = $item->fields['date_mod'];
       $this->fields['revision'] = $this->getNewRevision();
       $this->fields['users_id'] = $item->fields['users_id'];
       $this->addToDB();
@@ -315,9 +315,10 @@ class KnowbaseItem_Revision extends CommonDBTM {
       $this->fields['knowbaseitems_id'] = $item->fields['knowbaseitems_id'];
       $this->fields['name'] = $item->fields['name'];
       $this->fields['answer'] = $item->fields['answer'];
-      $this->fields['date_creation'] = date('Y-m-d H:i:s');
+      $this->fields['date_creation'] = $item->fields['date_mod'];
       $this->fields['language'] = $item->fields['language'];
       $this->fields['revision'] = $this->getNewRevision();
+      $this->fields['users_id'] = $item->fields['users_id'];
       $this->addToDB();
    }
 
