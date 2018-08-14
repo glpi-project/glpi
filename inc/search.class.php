@@ -275,7 +275,7 @@ class Search {
                var fail_info = L.control();
                fail_info.onAdd = function (map) {
                   this._div = L.DomUtil.create('div', 'fail_info');
-                  this._div.innerHTML = _message + '<br/><span id=\'reload_data\'><i class=\'fa fa-refresh\'></i> ".__s('Reload')."</span>';
+                  this._div.innerHTML = _message + '<br/><span id=\'reload_data\'><i class=\'fa fa-sync\'></i> ".__s('Reload')."</span>';
                   return this._div;
                };
                fail_info.addTo(map_elt);

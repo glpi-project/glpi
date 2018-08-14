@@ -180,7 +180,7 @@ a, a:link {
    font-size : 11px;
 }
 
-a.fa, a.fa:link, a.far, a.far:link,
+a.fa, a.fa:link,
 a.fas, a.fas:link {
    font-size: inherit;
    font-weight: 900;
@@ -2340,6 +2340,7 @@ a.icon_nav_move:hover img {
    top:3px;
    color: #9B9B9B;
    font-size: 24px;
+   font-weight: 900;
 }
 
 #boxlogin #login_input_name:before {
@@ -3764,6 +3765,7 @@ a.copyright {
 }
 .dates_timelines .creation .dot:before {
    content: '\f069';
+   font-weight: 900;
 }
 
 .dates_timelines .passed time,
@@ -3776,11 +3778,13 @@ a.copyright {
    content: '\f12a';
    padding-left: 6px;
    color: #E54E5A;
+   font-weight: 900;
 }
 
 .dates_timelines .checked .dot:before {
    content: '\f00c';
    padding-left: 2px;
+   font-weight: 900;
 }
 
 .dates_timelines .end .dot {
@@ -3789,6 +3793,7 @@ a.copyright {
 }
 .dates_timelines .end .dot:before {
    content: '\f024';
+   font-weight: 900;
 }
 
 .dates_timelines label {
@@ -4031,14 +4036,17 @@ input[type=checkbox].toggle_comments:checked ~ ul {
    content: "\f0ea";
    color: #7F7F7F;
    transition: color 0.3s ease-in-out;
+   font-weight: 900;
 }
 .copy_to_clipboard_wrapper.copied:after {
    content: "\f00c";
    color: green;
+   font-weight: 900;
 }
 .copy_to_clipboard_wrapper.copyfail:after {
    content: "\f071";
    color: red;
+   font-weight: 900;
 }
 
 
@@ -4747,9 +4755,11 @@ div#viewgraph .mini_toggle:before {
    font-size: 15px;
    font-family: 'Font Awesome\ 5 Free';
    position: absolute;
+   font-weight: 900;
 }
 div#viewgraph .mini_toggle.active:before {
    content: "\f205";
+   font-weight: 900;
 }
 
 div#viewgraph .mini_toggle:hover {
@@ -5413,4 +5423,14 @@ input[name=as_map]:checked + label {
    .documentation {
       margin-left: 200px;
    }
+}
+
+/** Fixes for Font Awesome 5 icons not showing at all or
+with incorrect shading in some cases */
+.fa:before, .fas:before, .fa:after, .fas:after {
+   font-weight: 900;
+}
+
+.far:before, .far:after {
+   font-weight: 400;
 }

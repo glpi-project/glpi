@@ -6856,7 +6856,7 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='h_info'>";
 
-         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($date)."</div>";
+         echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($date)."</div>";
          if ($item_i['users_id'] !== false) {
             echo "<div class='h_user'>";
             if (isset($item_i['users_id']) && ($item_i['users_id'] != 0)) {
@@ -6919,7 +6919,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='displayed_content'>";
          if (!in_array($item['type'], ['Document_Item', 'Assign'])
              && $item_i['can_edit']) {
-            echo "<span class='fa fa-pencil-square-o edit_item' ";
+            echo "<span class='far fa-edit edit_item' ";
             echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$domid\")'";
             echo "></span>";
          }
@@ -7084,7 +7084,7 @@ class Ticket extends CommonITILObject {
             if ($doc->can($item_i['id'], UPDATE)) {
                echo "<a href='".Ticket::getFormURL().
                      "?delete_document&documents_id=".$item_i['id'].
-                     "&tickets_id=".$this->getID()."' class='delete_document fa fa-trash-o pointer' title='".
+                     "&tickets_id=".$this->getID()."' class='delete_document fas fa-trash-alt pointer' title='".
                      _sx("button", "Delete permanently")."'>";
                echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
             }
@@ -7110,7 +7110,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_item middle'>";
 
          echo "<div class='h_info'>";
-         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($this->fields['date'])."</div>";
+         echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
 
          $user->getFromDB($this->fields['users_id_recipient']);
@@ -7216,13 +7216,13 @@ class Ticket extends CommonITILObject {
       echo "<div class='filter_timeline'>";
       echo "<h3>".__("Timeline filter")." : </h3>";
       echo "<ul>";
-      echo "<li><a href='#' class='fa fa-comment-o pointer' data-type='TicketFollowup' title='".__s("Followup").
+      echo "<li><a href='#' class='far fa-comment pointer' data-type='TicketFollowup' title='".__s("Followup").
          "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-check-square-o pointer' data-type='TicketTask' title='".__s("Task").
+      echo "<li><a href='#' class='far fa-check-square pointer' data-type='TicketTask' title='".__s("Task").
          "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__s("Document").
          "'><span class='sr-only'>" . __('Document') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-thumbs-o-up pointer' data-type='TicketValidation' title='".__s("Validation").
+      echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='TicketValidation' title='".__s("Validation").
          "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
       echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='".__s("Solution").
          "'><span class='sr-only'>" . __('Solution')  . "</span></a></li>";
@@ -7345,13 +7345,13 @@ class Ticket extends CommonITILObject {
       if ($canadd_fup) {
          echo "<li class='followup' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketFollowup\");'>"
-              . "<i class='fa fa-comment-o'></i>".__("Followup")."</li>";
+              . "<i class='far fa-comment'></i>".__("Followup")."</li>";
       }
 
       if ($canadd_task) {
          echo "<li class='task' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketTask\");'>"
-              ."<i class='fa fa-check-square-o'></i>".__("Task")."</li>";
+              ."<i class='far fa-check-square'></i>".__("Task")."</li>";
       }
       if ($canadd_document) {
          echo "<li class='document' onclick='".
@@ -7507,19 +7507,19 @@ class Ticket extends CommonITILObject {
 
       if ($sla->getFromDB($this->fields['slas_tto_id'])) {
          $sla_tto_link = "<a href='".$sla->getLinkURL()."'>
-                          <i class='fa fa-clock-o slt' title='".$sla->getName()."'></i></a>";
+                          <i class='far fa-clock slt' title='".$sla->getName()."'></i></a>";
       }
       if ($sla->getFromDB($this->fields['slas_ttr_id'])) {
          $sla_ttr_link = "<a href='".$sla->getLinkURL()."'>
-                          <i class='fa fa-clock-o slt' title='".$sla->getName()."'></i></a>";
+                          <i class='far fa-clock slt' title='".$sla->getName()."'></i></a>";
       }
       if ($ola->getFromDB($this->fields['olas_tto_id'])) {
          $ola_tto_link = "<a href='".$ola->getLinkURL()."'>
-                          <i class='fa fa-clock-o slt' title='".$ola->getName()."'></i></a>";
+                          <i class='far fa-clock slt' title='".$ola->getName()."'></i></a>";
       }
       if ($ola->getFromDB($this->fields['olas_ttr_id'])) {
          $ola_ttr_link = "<a href='".$ola->getLinkURL()."'>
-                          <i class='fa fa-clock-o slt' title='".$ola->getName()."'></i></a>";
+                          <i class='far fa-clock slt' title='".$ola->getName()."'></i></a>";
       }
 
       $dates = [

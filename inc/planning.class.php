@@ -925,7 +925,7 @@ class Planning extends CommonGLPI {
          // attach button (planning and refresh) in planning header
          $('#planning$rand .fc-toolbar .fc-center h2')
             .after(
-               $('<i id=\"refresh_planning\" class=\"fa fa-refresh pointer\"></i>')
+               $('<i id=\"refresh_planning\" class=\"fa fa-sync pointer\"></i>')
             ).after(
                $('<input type=\"hidden\" id=\"planning_datepicker\">')
             );

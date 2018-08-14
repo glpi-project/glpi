@@ -454,7 +454,7 @@ class ITILSolution extends CommonDBTM {
          echo "<div class='h_item left'>";
 
          echo "<div class='h_info'>";
-         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($solution['date_creation'])."</div>";
+         echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($solution['date_creation'])."</div>";
          echo "<div class='h_user'>";
          echo "<div class='tooltip_picture_border'>";
          echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
@@ -499,7 +499,7 @@ class ITILSolution extends CommonDBTM {
          }
          echo "<div class='displayed_content'>";
          if ($can_edit) {
-            echo "<span class='fa fa-pencil-square-o edit_item' ";
+            echo "<span class='far fa-edit edit_item' ";
             echo "onclick='javascript:viewEditSubitem".$item->getID()."$rand(event, \"Solution\", ".$solution['id'].", this, \"viewitemSolution".$solution['id'].$rand."\")'";
             echo "></span>";
          }
