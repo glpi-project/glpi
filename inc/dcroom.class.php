@@ -364,6 +364,7 @@ class DCRoom extends CommonDBTM {
       echo "</div>";
 
       if ($canedit) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = [
             'num_displayed'   => min($_SESSION['glpilist_limit'], count($rooms)),
             'container'       => 'mass'.__CLASS__.$rand
