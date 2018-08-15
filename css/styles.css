@@ -308,7 +308,7 @@ hr {
    display: block;
 }
 
-#fuzzysearch .fa-close {
+#fuzzysearch .fa-times {
    position: absolute;
    top: 0;
    right: -30px;
@@ -2345,6 +2345,7 @@ a.icon_nav_move:hover img {
 
 #boxlogin #login_input_name:before {
    content: "\f2bd";
+   font-weight: 900;
 }
 #boxlogin #login_input_password:before {
    content: "\f023";
@@ -2353,6 +2354,7 @@ a.icon_nav_move:hover img {
 }
 #boxlogin #login_input_src:before {
    content: "\f2ba";
+   font-weight: 900;
 }
 
 #boxlogin #dropdown_auth1:before {
@@ -3649,6 +3651,7 @@ a.copyright {
 
 .x-button-drop:after        {
    font-family: 'Font Awesome\ 5 Free';
+   font-weight: 900;
 }
 .x-button.x-button-drop.new:after      { content: '\f111'; color: #49bf4d; }
 .x-button.x-button-drop.assigned:after { content: '\f10c'; color: #49bf4d; }
@@ -4954,6 +4957,7 @@ ul.indexes {
    top: 5px;
    font-family: 'Font Awesome\ 5 Free';
    position: absolute;
+   font-weight: 900;
 }
 
 .racks_add .cell_add:hover {

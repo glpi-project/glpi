@@ -861,7 +861,7 @@ JAVASCRIPT;
                   ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>"
                   : "<span class='itemrack_name'>".$gs_item['name']."</span>")."
                <a href='{$gs_item['rel_url']}'>
-                  <i class='fa fa-pencil rel-link'
+                  <i class='fa fa-pencil-alt rel-link'
                      style='$fg_color_s'
                      title='".__("Edit rack relation")."'></i>
                </a>
@@ -883,22 +883,22 @@ JAVASCRIPT;
       $icon = "";
       switch ($itemtype) {
          case "Computer":
-            $icon = "fa-server";
+            $icon = "fa fa-server";
             break;
          case "Monitor":
-            $icon = "fa-television";
+            $icon = "fa fa-tv";
             break;
          case "NetworkEquipment":
-            $icon = "fa-sitemap";
+            $icon = "fa fa-sitemap";
             break;
          case "Peripheral":
-            $icon = "fa-usb";
+            $icon = "fab fa-usb";
             break;
          case "Enclosure":
-            $icon = "fa-th";
+            $icon = "fa fa-th";
             break;
          case "PDU":
-            $icon = "fa-plug";
+            $icon = "fa fa-plug";
             break;
          case "Reserved":
             $icon = "fa-lock";
@@ -906,7 +906,7 @@ JAVASCRIPT;
       }
 
       if (!empty($icon)) {
-         $icon = "<i class='item_rack_icon fa $icon'></i>";
+         $icon = "<i class='item_rack_icon $icon'></i>";
       }
 
       return $icon;
