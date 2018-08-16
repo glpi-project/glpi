@@ -230,13 +230,13 @@ abstract class CommonDBVisible extends CommonDBTM {
                $entname = sprintf(__('%1$s %2$s'), $names["name"],
                                   Html::showToolTip($names["comment"], ['display' => false]));
                if ($data['entities_id'] >= 0) {
-                  $entname .= sprintf(__('%1$s / %2$s'), $entname,
-                                      Dropdown::getDropdownName('glpi_entities',
+                  $entname = sprintf(__('%1$s / %2$s'), $entname,
+                                     Dropdown::getDropdownName('glpi_entities',
                                                                $data['entities_id']));
                   if ($data['is_recursive']) {
                      //TRANS: R for Recursive
-                     $entname .= sprintf(__('%1$s %2$s'),
-                                         $entname, "<span class='b'>(".__('R').")</span>");
+                     $entname = sprintf(__('%1$s %2$s'),
+                                        $entname, "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo "<td>".$entname."</td>";
@@ -260,8 +260,8 @@ abstract class CommonDBVisible extends CommonDBTM {
                $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['is_recursive']) {
-                  $entname .= sprintf(__('%1$s %2$s'), $entname,
-                                      "<span class='b'>(".__('R').")</span>");
+                  $entname = sprintf(__('%1$s %2$s'), $entname,
+                                     "<span class='b'>(".__('R').")</span>");
                }
                echo "<td>".$entname."</td>";
                echo "</tr>";
@@ -290,12 +290,12 @@ abstract class CommonDBVisible extends CommonDBTM {
                $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['entities_id'] >= 0) {
-                  $entname .= sprintf(__('%1$s / %2$s'), $entname,
-                                      Dropdown::getDropdownName('glpi_entities',
+                  $entname = sprintf(__('%1$s / %2$s'), $entname,
+                                     Dropdown::getDropdownName('glpi_entities',
                                                                 $data['entities_id']));
                   if ($data['is_recursive']) {
-                     $entname .= sprintf(__('%1$s %2$s'), $entname,
-                                         "<span class='b'>(".__('R').")</span>");
+                     $entname = sprintf(__('%1$s %2$s'), $entname,
+                                        "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo "<td>".$entname."</td>";
