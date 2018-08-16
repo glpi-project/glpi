@@ -483,7 +483,7 @@ class Supplier extends CommonDBTM {
       echo "</tr>";
 
       $num = 0;
-      while ($row = $iterator->next()) {
+      while ($row = $types_iterator->next()) {
          $itemtype = $row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
