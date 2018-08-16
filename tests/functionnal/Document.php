@@ -235,4 +235,346 @@ class Document extends DbTestCase {
    public function testIsImage($ext, $expected) {
       $this->variable(\Document::isImage('myfile.' . $ext))->isIdenticalTo($expected);
    }
+
+   /**
+    * Check visibility of documents files that are not attached to anything.
+    */
+   public function testCanViewDocumentFile() {
+
+      $document = new \Document();
+      $this->integer(
+         (int)$document->add([
+            'name'     => 'basic document',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      // glpi can see all documents
+      $this->login('glpi', 'glpi');
+      $this->boolean($document->canViewFile())->isTrue();
+
+      // tech can see all documents
+      $this->login('tech', 'tech');
+      $this->boolean($document->canViewFile())->isTrue();
+
+      // normal can see all documents
+      $this->login('normal', 'normal');
+      $this->boolean($document->canViewFile())->isTrue();
+
+      // post-only cannot see all documents
+      $this->login('post-only', 'postonly');
+      $this->boolean($document->canViewFile())->isFalse();
+
+      // post-only can see its own documents
+      $this->login('post-only', 'postonly');
+      $this->boolean(
+         $document->update(
+            [
+               'id'       => $document->getID(),
+               'users_id' => \Session::getLoginUserID(),
+            ]
+         )
+      )->isTrue();
+      $this->boolean($document->canViewFile())->isTrue();
+   }
+
+   /**
+    * Check visibility of document attached to reminders.
+    */
+   public function testCanViewReminderFile() {
+
+      $basicDocument = new \Document();
+      $this->integer(
+         (int)$basicDocument->add([
+            'name'     => 'basic document',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $inlinedDocument = new \Document();
+      $this->integer(
+         (int)$inlinedDocument->add([
+            'name'     => 'inlined document',
+            'filename' => 'inlined.png',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $this->login('post-only', 'postonly');
+
+      // post-only cannot see documents only linked to someone else reminders
+      $glpiReminder = new \Reminder();
+      $this->integer(
+         (int)$glpiReminder->add([
+            'name'     => 'Glpi reminder',
+            'text'     => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $document_item = new \Document_Item();
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $basicDocument->getID(),
+            'items_id'     => $glpiReminder->getID(),
+            'itemtype'     => \Reminder::class,
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($basicDocument->canViewFile())->isFalse();
+      $this->boolean($inlinedDocument->canViewFile())->isFalse();
+
+      // post-only can see documents linked to its own reminders
+      $myReminder = new \Reminder();
+      $this->integer(
+         (int)$myReminder->add([
+            'name'     => 'My reminder',
+            'text'     => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+            'users_id' => \Session::getLoginUserID(),
+         ])
+      )->isGreaterThan(0);
+
+      $document_item = new \Document_Item();
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $basicDocument->getID(),
+            'items_id'     => $myReminder->getID(),
+            'itemtype'     => \Reminder::class,
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($basicDocument->canViewFile())->isTrue();
+      $this->boolean($inlinedDocument->canViewFile())->isTrue();
+   }
+
+   /**
+    * Check visibility of document attached to KB items.
+    */
+   public function testCanViewKnowbaseItemFile() {
+
+      global $CFG_GLPI;
+
+      $basicDocument = new \Document();
+      $this->integer(
+         (int)$basicDocument->add([
+            'name'     => 'basic document',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $inlinedDocument = new \Document();
+      $this->integer(
+         (int)$inlinedDocument->add([
+            'name'     => 'inlined document',
+            'filename' => 'inlined.png',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+
+      $kbItem = new \KnowbaseItem();
+      $this->integer(
+         (int)$kbItem->add([
+            'name'     => 'Generic KB item',
+            'answer'   => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $document_item = new \Document_Item();
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $basicDocument->getID(),
+            'items_id'     => $kbItem->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+         ])
+      )->isGreaterThan(0);
+
+      // anonymous cannot see documents if not linked to FAQ items
+      $this->boolean($basicDocument->canViewFile())->isFalse();
+      $this->boolean($inlinedDocument->canViewFile())->isFalse();
+
+      // anonymous cannot see documents linked to FAQ items if public FAQ is not active
+      $CFG_GLPI['use_public_faq'] = 0;
+
+      $this->boolean(
+         $kbItem->update(
+            [
+               'id'     => $kbItem->getID(),
+               'is_faq' => true,
+            ]
+         )
+      )->isTrue();
+
+      $this->boolean($basicDocument->canViewFile())->isFalse();
+      $this->boolean($inlinedDocument->canViewFile())->isFalse();
+
+      // anonymous can see documents linked to FAQ items when public FAQ is active
+      $CFG_GLPI['use_public_faq'] = 1;
+
+      $this->boolean($basicDocument->canViewFile())->isTrue();
+      $this->boolean($inlinedDocument->canViewFile())->isTrue();
+
+      $CFG_GLPI['use_public_faq'] = 0;
+
+      // post-only can see documents linked to FAQ items
+      $this->login('post-only', 'postonly');
+
+      $this->boolean($basicDocument->canViewFile())->isTrue();
+      $this->boolean($inlinedDocument->canViewFile())->isTrue();
+
+      // post-only cannot see documents if not linked to FAQ items
+      $this->boolean(
+         $kbItem->update(
+            [
+               'id'     => $kbItem->getID(),
+               'is_faq' => false,
+            ]
+         )
+      )->isTrue();
+
+      $this->boolean($basicDocument->canViewFile())->isFalse();
+      $this->boolean($inlinedDocument->canViewFile())->isFalse();
+   }
+
+   /**
+    * Check visibility of document attached to tickets.
+    */
+   public function testCanViewTicketFile() {
+
+      global $CFG_GLPI;
+
+      $CFG_GLPI['use_rich_text'] = 1;
+
+      $basicDocument = new \Document();
+      $this->integer(
+         (int)$basicDocument->add([
+            'name'     => 'basic document',
+            'filename' => 'doc.xls',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $inlinedDocument = new \Document();
+      $this->integer(
+         (int)$inlinedDocument->add([
+            'name'     => 'inlined document',
+            'filename' => 'inlined.png',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'     => 'New ticket',
+            'content'  => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+         ])
+      )->isGreaterThan(0);
+
+      $document_item = new \Document_Item();
+      $this->integer(
+         (int)$document_item->add([
+            'documents_id' => $basicDocument->getID(),
+            'items_id'     => $ticket->getID(),
+            'itemtype'     => \Ticket::class,
+         ])
+      )->isGreaterThan(0);
+
+      // post-only cannot see documents if not able to view ticket (ticket content)
+      $this->login('post-only', 'postonly');
+      $this->boolean($basicDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+
+      // post-only can see documents linked to its own tickets (ticket content)
+      $ticket_user = new \Ticket_User();
+      $this->integer(
+         (int)$ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'type'       => \CommonITILActor::OBSERVER,
+            'users_id'   => \Session::getLoginUserID(),
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($basicDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+   }
+
+   /**
+    * Data provider for self::testCanViewTicketChildFile().
+    */
+   protected function ticketChildClassProvider() {
+      return [
+         [
+            'class' => \ITILSolution::class,
+         ],
+         [
+            'class' => \TicketTask::class,
+         ],
+         [
+            'class' => \TicketFollowup::class,
+         ],
+      ];
+   }
+
+   /**
+    * Check visibility of document inlined in tickets followup.
+    *
+    * @dataProvider ticketChildClassProvider
+    */
+   public function testCanViewTicketChildFile($childClass) {
+
+      global $CFG_GLPI;
+
+      $CFG_GLPI['use_rich_text'] = 1;
+
+      $this->login('glpi', 'glpi'); // Login with glpi to prevent link to post-only
+      $inlinedDocument = new \Document();
+      $this->integer(
+         (int)$inlinedDocument->add([
+            'name'     => 'inlined document',
+            'filename' => 'inlined.png',
+            'users_id' => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'     => 'New ticket',
+            'content'  => 'No image in content',
+         ])
+      )->isGreaterThan(0);
+
+      $child = new $childClass();
+      $this->integer(
+         (int)$child->add([
+            'content'    => '<img src="/front/document.send.php?docid=' . $inlinedDocument->getID() . '" />',
+            'tickets_id' => $ticket->getID(),
+            'items_id'   => $ticket->getID(),
+            'itemtype'   => \Ticket::class,
+            'users_id'   => '2', // user "glpi"
+         ])
+      )->isGreaterThan(0);
+
+      // post-only cannot see documents if not able to view ticket
+      $this->login('post-only', 'postonly');
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isFalse();
+
+      // post-only can see documents linked to its own tickets
+      $ticket_user = new \Ticket_User();
+      $this->integer(
+         (int)$ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'type'       => \CommonITILActor::OBSERVER,
+            'users_id'   => \Session::getLoginUserID(),
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($inlinedDocument->canViewFile(['tickets_id' => $ticket->getID()]))->isTrue();
+   }
 }
