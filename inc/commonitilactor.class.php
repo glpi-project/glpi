@@ -72,10 +72,14 @@ abstract class CommonITILActor extends CommonDBRelation {
    **/
    function isAttach2Valid(Array &$input) {
 
-      // Anonymous user (only email) as requester or observer
+      // Anonymous user is valid if 'alternative_email' field is not empty
       if (isset($input['users_id']) && ($input['users_id'] == 0)
-          && isset($input['alternative_email']) && !empty($input['alternative_email'])
-          && isset($input['type']) && ($input['type'] != CommonITILActor::ASSIGN)) {
+          && isset($input['alternative_email']) && !empty($input['alternative_email'])) {
+         return true;
+      }
+      // Anonymous supplier is valid if 'alternative_email' field is not empty
+      if (isset($input['suppliers_id']) && ($input['suppliers_id'] == 0)
+          && isset($input['alternative_email']) && !empty($input['alternative_email'])) {
          return true;
       }
       return false;
@@ -254,7 +258,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          $default_email = $supplier->fields['email'];
       }
 
-      echo "<tr class='tab_bg_2'><td>".__('User')."</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Supplier')."</td>";
       echo "<td>".$supplier->getName()."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Email Followup')."</td>";
