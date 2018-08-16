@@ -1283,6 +1283,12 @@ class KnowbaseItem extends CommonDBVisible {
                } else {
                   $where = $where_1;
                }
+
+               // Add visibility date
+               $where .= " AND (`glpi_knowbaseitems`.`begin_date` IS NULL
+                                OR `glpi_knowbaseitems`.`begin_date` < NOW())
+                           AND (`glpi_knowbaseitems`.`end_date` IS NULL
+                                OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
             }
             break;
 
