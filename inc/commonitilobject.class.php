@@ -770,7 +770,9 @@ abstract class CommonITILObject extends CommonDBTM {
             switch ($input['_itil_assign']['_type']) {
                case "user" :
                   if (!empty($this->userlinkclass)
-                      && ($input['_itil_assign']['users_id'] > 0)) {
+                      && ((isset($input['_itil_assign']['alternative_email'])
+                           && $input['_itil_assign']['alternative_email'])
+                          || $input['_itil_assign']['users_id'] > 0)) {
                      $useractors = new $this->userlinkclass();
                      if (isset($input['_auto_update'])
                          || $useractors->can(-1, CREATE, $input['_itil_assign'])) {
@@ -813,7 +815,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
                case "supplier" :
                   if (!empty($this->supplierlinkclass)
-                      && ($input['_itil_assign']['suppliers_id'] > 0)) {
+                      && ((isset($input['_itil_assign']['alternative_email'])
+                           && $input['_itil_assign']['alternative_email'])
+                          || $input['_itil_assign']['suppliers_id'] > 0)) {
                      $supplieractors = new $this->supplierlinkclass();
                      if (isset($input['_auto_update'])
                          || $supplieractors->can(-1, CREATE, $input['_itil_assign'])) {
@@ -2494,40 +2498,49 @@ abstract class CommonITILObject extends CommonDBTM {
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
             echo "<div class='actor_row'>";
-            $k = $d['suppliers_id'];
+            $suppliers_id = $d['suppliers_id'];
+
             echo "$mandatory$suppliericon&nbsp;";
-            if ($supplier->getFromDB($k)) {
-               echo $supplier->getLink(['comments' => $showsupplierlink]);
-               echo "&nbsp;";
-               $tmpname = Dropdown::getDropdownName($supplier->getTable(), $k, 1);
-               Html::showToolTip($tmpname['comment']);
 
-               if ($CFG_GLPI['notifications_mailing']) {
-                  $text = __('Email followup')."&nbsp;".Dropdown::getYesNo($d['use_notification']).
-                  '<br>';
+            $email = $d['alternative_email'];
+            if ($suppliers_id) {
+               if ($supplier->getFromDB($suppliers_id)) {
+                  echo $supplier->getLink(['comments' => $showsupplierlink]);
+                  echo "&nbsp;";
 
-                  if ($d['use_notification']) {
-                     $supemail = $d['alternative_email'];
-                     if (empty($supemail)) {
-                        $supemail = $supplier->fields['email'];
-                     }
-                     $text .= sprintf(__('%1$s: %2$s'), __('Email'), $supemail);
+                  $tmpname = Dropdown::getDropdownName($supplier->getTable(), $suppliers_id, 1);
+                  Html::showToolTip($tmpname['comment']);
+
+                  if (empty($email)) {
+                     $email = $supplier->fields['email'];
                   }
-                  if ($canedit) {
-                     $opt = ['awesome-class' => 'fa-envelope',
-                                  'popup' => $linksupplier->getFormURLWithID($d['id'])];
-                     Html::showToolTip($text, $opt);
-                  }
-
                }
-
+            } else {
+               echo "<a href='mailto:$email'>$email</a>";
             }
+
+            if ($CFG_GLPI['notifications_mailing']) {
+               $text = __('Email followup')
+                  . "&nbsp;" . Dropdown::getYesNo($d['use_notification'])
+                  . '<br />';
+
+               if ($d['use_notification']) {
+                  $text .= sprintf(__('%1$s: %2$s'), __('Email'), $email);
+               }
+               if ($canedit) {
+                  $opt = ['awesome-class' => 'fa-envelope',
+                          'popup' => $linksupplier->getFormURLWithID($d['id'])];
+                  Html::showToolTip($text, $opt);
+               }
+            }
+
             if ($canedit && $candelete) {
                Html::showSimpleForm($linksupplier->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     ['id' => $d['id']],
                                     'fa-times-circle');
             }
+
             echo '</div>';
          }
       }
