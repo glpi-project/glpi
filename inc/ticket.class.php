@@ -5279,7 +5279,7 @@ class Ticket extends CommonITILObject {
             } else {
                if ($this->canDeleteItem()) {
                   echo "<input type='submit' class='submit' name='delete' value='".
-                         _sx('button', 'Put in dustbin')."'>";
+                         _sx('button', 'Put in trashbin')."'>";
                }
             }
             echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";

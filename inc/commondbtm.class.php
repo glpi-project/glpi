@@ -1733,7 +1733,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Restore an item put in the dustbin in the database.
+    * Restore an item put in the trashbin in the database.
     *
     * @param array   $input   the _POST vars returned by the item form when press restore
     * @param boolean $history do history log ? (default 1)
@@ -2395,7 +2395,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                } else if (!$this->isDeleted()
                           && $this->can($ID, DELETE)) {
-                  echo Html::submit(_x('button', 'Put in dustbin'), ['name' => 'delete']);
+                  echo Html::submit(_x('button', 'Put in trashbin'), ['name' => 'delete']);
                }
             }
 
@@ -4076,9 +4076,9 @@ class CommonDBTM extends CommonGLPI {
                }
             }
          }
-         // Add information on item in dustbin
+         // Add information on item in trashbin
          if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
-            $double_text = sprintf(__('%1$s - %2$s'), $double_text, __('Item in the dustbin'));
+            $double_text = sprintf(__('%1$s - %2$s'), $double_text, __('Item in the trashbin'));
          }
 
          $message_text .= "<br>[$double_text]";
@@ -4234,7 +4234,7 @@ class CommonDBTM extends CommonGLPI {
     * Clean all infos which match some criteria
     *
     * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-    * @param boolean $force   force purge not on put in dustbin (default 0)
+    * @param boolean $force   force purge not on put in trashbin (default 0)
     * @param boolean $history do history log ? (true by default)
     *
     * @return boolean
@@ -4941,7 +4941,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->maybeDeleted()) {
          $values[DELETE] = ['short' => __('Delete'),
-                                 'long'  => _x('button', 'Put in dustbin')];
+                                 'long'  => _x('button', 'Put in trashbin')];
       }
       if ($this->usenotepad) {
          $values[READNOTE] = ['short' => __('Read notes'),

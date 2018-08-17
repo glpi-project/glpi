@@ -551,7 +551,7 @@ class MassiveAction {
          if ($item->maybeDeleted()
              && !$item->useDeletedToLockIfDynamic()) {
             if ($candelete) {
-               $actions[$self_pref.'delete'] = _x('button', 'Put in dustbin');
+               $actions[$self_pref.'delete'] = _x('button', 'Put in trashbin');
             }
          } else if ($canpurge) {
             if ($item instanceof CommonDBRelation) {

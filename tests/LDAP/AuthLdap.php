@@ -720,7 +720,7 @@ class AuthLDAP extends DbTestCase {
 
       $ldap = $this->ldap;
 
-      //put deleted LDAP users in dustbin
+      //put deleted LDAP users in trashbin
       $CFG_GLPI['user_deleted_ldap'] = 1;
 
       //add a new user in directory
