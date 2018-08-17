@@ -63,6 +63,7 @@ if ($max_time == 0) {
  * @global DB $DB
  */
 function xmlbackup() {
+<<<<<<< HEAD
    global $DB;
 
    // Will contain the select * from $table
@@ -72,6 +73,21 @@ function xmlbackup() {
    foreach ($tables as $id => $row) {
       // Save the query...
       $query[$id] = "SELECT * FROM `" . $row['TABLE_NAME'] . "`";
+=======
+   global $CFG_GLPI, $DB;
+
+   //on parcoure la DB et on liste tous les noms des tables dans $table
+   //on incremente $query[] de "select * from $table"  pour chaque occurence de $table
+
+   $result = $DB->listTables();
+   $i      = 0;
+   while ($line = $result->next()) {
+      $table = $line[0];
+
+      $query[$i] = "SELECT *
+                    FROM `$table`";
+      $i++;
+>>>>>>> 9721834baa... Fix deprecated usages (#4510)
    }
 
    // Filename
@@ -334,9 +350,9 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
       gzwrite ($fileHandle, $todump);
    }
 
-   $result = $DB->list_tables();
+   $result = $DB->listTables();
    $numtab = 0;
-   while ($t = $DB->fetch_row($result)) {
+   while ($t = $result->next()) {
       $tables[$numtab] = $t[0];
       $numtab++;
    }
@@ -448,8 +464,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
          $fichier = $_GET["fichier"];
       }
 
-      $tab = $DB->list_tables();
-      $tot = $DB->numrows($tab);
+      $tot = $DB->listTables()->count();
       if (isset($offsettable)) {
          if ($offsettable >= 0) {
             $percent = min(100, round(100*$offsettable/$tot, 0));
