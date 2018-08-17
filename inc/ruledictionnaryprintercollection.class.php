@@ -247,7 +247,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @param &$new_printers   array containing new printers already computed
     * @param $res_rule        array of rule results
     * @param $params          array
-    * @param &$printers_ids   array containing replay printer need to be trashbined
+    * @param &$printers_ids   array containing replay printer need to be trashbin
    **/
    function replayDictionnaryOnOnePrinter(array &$new_printers, array $res_rule,
                                           array $params, array &$printers_ids) {
