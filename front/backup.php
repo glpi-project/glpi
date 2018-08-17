@@ -82,7 +82,7 @@ function xmlbackup() {
    $result = $DB->listTables();
    $i      = 0;
    while ($line = $result->next()) {
-      $table = $line[0];
+      $table = $line['TABLE_NAME'];
 
       $query[$i] = "SELECT *
                     FROM `$table`";
@@ -353,7 +353,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    $result = $DB->listTables();
    $numtab = 0;
    while ($t = $result->next()) {
-      $tables[$numtab] = $t[0];
+      $tables[$numtab] = $t['TABLE_NAME'];
       $numtab++;
    }
 
