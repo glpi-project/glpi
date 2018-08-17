@@ -159,8 +159,8 @@ if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
    $migration->displayWarning("\nMigration Done.");
 } else if (isset($args['force']) || $current_db_version != GLPI_SCHEMA_VERSION && isset($args['dev'])) {
 
-   include_once("../install/update_92_93.php");
-   update92to93();
+   include_once("../install/update_930_931.php");
+   update930to931();
 
    $migration->displayWarning((isset($args['force']) ? "\nForced" : "\nDevelopment") . " migration Done.");
 } else {
