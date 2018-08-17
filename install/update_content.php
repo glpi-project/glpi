@@ -146,7 +146,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
    $result = $DB->listTables();
    $numtab = 0;
    while ($t = $result->next()) {
-      $tables[$numtab] = $t[0];
+      $tables[$numtab] = $t['TABLE_NAME'];
       $numtab++;
    }
 

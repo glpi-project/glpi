@@ -1185,11 +1185,11 @@ function update06to065() {
 
    $result = $DB->listTables();
    while ($line = $result->next()) {
-      if (strstr($line[0], "glpi_dropdown") || strstr($line[0], "glpi_type")) {
-         if (!isIndex($line[0], "name")) {
-            $query = "ALTER TABLE `".$line[0]."`
+      if (strstr($line['TABLE_NAME'], "glpi_dropdown") || strstr($line['TABLE_NAME'], "glpi_type")) {
+         if (!isIndex($line['TABLE_NAME'], "name")) {
+            $query = "ALTER TABLE `".$line['TABLE_NAME']."`
                       ADD INDEX (`name`) ";
-            $DB->queryOrDie($query, "0.65 add index in name field ".$line[0]."");
+            $DB->queryOrDie($query, "0.65 add index in name field ".$line['TABLE_NAME']."");
          }
       }
    }
@@ -1197,7 +1197,7 @@ function update06to065() {
    if (!isIndex("glpi_reservation_item", "device_type_2")) {
       $query = "ALTER TABLE `glpi_reservation_item`
                 ADD INDEX  `device_type_2` (`device_type`, `id_device`) ";
-      $DB->queryOrDie($query, "0.65 add index in reservation_item ".$line[0]."");
+      $DB->queryOrDie($query, "0.65 add index in reservation_item ");
    }
 
    if (!$DB->tableExists("glpi_dropdown_model_phones")) {
@@ -1296,12 +1296,12 @@ function update06to065() {
 
    $result = $DB->listTables();
    while ($line = $result->next()) {
-      if (strstr($line[0], "glpi_dropdown") || strstr($line[0], "glpi_type")) {
-         if ($line[0] != "glpi_type_docs") {
-            if (!$DB->fieldExists($line[0], "comments", false)) {
-               $query = "ALTER TABLE `".$line[0]."`
+      if (strstr($line['TABLE_NAME'], "glpi_dropdown") || strstr($line['TABLE_NAME'], "glpi_type")) {
+         if ($line['TABLE_NAME'] != "glpi_type_docs") {
+            if (!$DB->fieldExists($line['TABLE_NAME'], "comments", false)) {
+               $query = "ALTER TABLE `".$line['TABLE_NAME']."`
                          ADD `comments` TEXT NULL ";
-               $DB->queryOrDie($query, "0.65 add comments field in ".$line[0]."");
+               $DB->queryOrDie($query, "0.65 add comments field in ".$line['TABLE_NAME']."");
             }
          }
       }
