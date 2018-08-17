@@ -614,10 +614,10 @@ class Group extends CommonTreeDropdown {
       global $DB;
 
       // include item of child groups ?
-      $groups_ids = [$this->getID()];
       if ($tree) {
          $groups_ids = getSonsOf('glpi_groups', $this->getID());
       } else {
+         $groups_ids = [$this->getID()];
       }
       // include items of members
       $groups_criteria = [];
