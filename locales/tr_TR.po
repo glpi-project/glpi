@@ -4774,7 +4774,7 @@ msgid "Preserve"
 msgstr "Korunsun"
 
 #: inc/authldap.class.php:3396
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "Çöpe at"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6221,7 +6221,7 @@ msgstr "Son silme işlemini onaylıyor musunuz?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "Çöpe at"
 
 #: inc/commondbtm.class.php:2473
@@ -6281,7 +6281,7 @@ msgid "Other item exist"
 msgstr "Başka bir öge var"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the trashbin"
+msgid "Item in the dustbin"
 msgstr "Çöpteki öge"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17099,7 +17099,7 @@ msgstr "Sözlük kurallarına göre yeniden adlandırmadan önceki uyarı"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the trashbin.<br>Sure to "
+"Warning! This operation can put merged software in the dustbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "Dikkat! Bu işlem çöp kıutusuna aktarılmış yazılım "
@@ -17546,7 +17546,7 @@ msgid "Show as map"
 msgstr "Harita olarak görüntüle"
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the trashbin"
+msgid "Show the dustbin"
 msgstr "Çöp kutusunu görüntüle"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

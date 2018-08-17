@@ -4788,7 +4788,7 @@ msgid "Preserve"
 msgstr "Beibehalten"
 
 #: inc/authldap.class.php:3396
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "In Papierkorb legen"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6243,7 +6243,7 @@ msgstr "Löschen bestätigen?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "In Papierkorb legen"
 
 #: inc/commondbtm.class.php:2473
@@ -6308,7 +6308,7 @@ msgid "Other item exist"
 msgstr "Es existieren weitere Elemente"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the trashbin"
+msgid "Item in the dustbin"
 msgstr "Element im Papierkorb"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17168,7 +17168,7 @@ msgstr "Warnung vor Umbenennungen basierend auf Verzeichnisregeln"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the trashbin.<br>Sure to "
+"Warning! This operation can put merged software in the dustbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "Warnung! Dieser Vorgang könnte zusammengeführte Software in den Papierkorb "
@@ -17624,7 +17624,7 @@ msgid "Show as map"
 msgstr "Als Karte anzeigen"
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the trashbin"
+msgid "Show the dustbin"
 msgstr "Papierkorb anzeigen"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

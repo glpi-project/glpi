@@ -4771,7 +4771,7 @@ msgid "Preserve"
 msgstr "रक्षित"
 
 #: inc/authldap.class.php:3396
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "कचरे में रखो"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6217,7 +6217,7 @@ msgstr "अंतिम हटाने की पुष्टि करें?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "कचरे में रखो"
 
 #: inc/commondbtm.class.php:2473
@@ -6278,7 +6278,7 @@ msgid "Other item exist"
 msgstr "अन्य वस्तु मौजूद है"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the trashbin"
+msgid "Item in the dustbin"
 msgstr "कचरे में आइटम"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17091,10 +17091,10 @@ msgstr "शब्दकोश नियमों के आधार पर न�
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the trashbin.<br>Sure to "
+"Warning! This operation can put merged software in the dustbin.<br>Sure to "
 "notify your users."
 msgstr ""
-"चेतावनी! यह ऑपरेशन मर्ज किए गए सॉफ़्टवेयर को trashbin में डाल सकता है। अपने "
+"चेतावनी! यह ऑपरेशन मर्ज किए गए सॉफ़्टवेयर को dustbin में डाल सकता है। अपने "
 "उपयोगकर्ताओं को सूचित करने के लिए।"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
@@ -17541,7 +17541,7 @@ msgid "Show as map"
 msgstr "मानचित्र के रूप में दिखाएं"
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the trashbin"
+msgid "Show the dustbin"
 msgstr "कचरा-टोकनी"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

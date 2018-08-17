@@ -4773,7 +4773,7 @@ msgid "Preserve"
 msgstr "Preservar"
 
 #: inc/authldap.class.php:3396
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "Coloca na reciclagem"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6225,7 +6225,7 @@ msgstr "Confirma a eliminação ?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "Coloca na reciclagem"
 
 #: inc/commondbtm.class.php:2473
@@ -6287,7 +6287,7 @@ msgid "Other item exist"
 msgstr "Existe outro item"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the trashbin"
+msgid "Item in the dustbin"
 msgstr "Item na reciclagem"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17121,7 +17121,7 @@ msgstr "Avisar  antes de correr a alteração baseada nas regras do dicionário"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the trashbin.<br>Sure to "
+"Warning! This operation can put merged software in the dustbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "Atenção! Esta operação pode colocar software na reciclagem. Sugiro avisar os"
@@ -17569,7 +17569,7 @@ msgid "Show as map"
 msgstr ""
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the trashbin"
+msgid "Show the dustbin"
 msgstr "Mostrar a reciclagem"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

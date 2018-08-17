@@ -4770,7 +4770,7 @@ msgid "Preserve"
 msgstr "Säilytä"
 
 #: inc/authldap.class.php:3396
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "Siirrä roskakoriin"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6219,7 +6219,7 @@ msgstr "Vahvista pysyvä poisto?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in trashbin"
+msgid "Put in dustbin"
 msgstr "Siirrä roskakoriin"
 
 #: inc/commondbtm.class.php:2473
@@ -6279,7 +6279,7 @@ msgid "Other item exist"
 msgstr "Toinen kohde olemassa"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the trashbin"
+msgid "Item in the dustbin"
 msgstr "Kohde roskakorissa"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17087,7 +17087,7 @@ msgstr "Varoitus! Olet tekemässä uudelleen nimeämistä säännöstön avulla.
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the trashbin.<br>Sure to "
+"Warning! This operation can put merged software in the dustbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "Varoitus! Tämä toiminto voi poistaa yhdistetyt ohjelmistot. <br>Ilmoita "
@@ -17530,7 +17530,7 @@ msgid "Show as map"
 msgstr ""
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the trashbin"
+msgid "Show the dustbin"
 msgstr "Näytä roskakori"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914
