@@ -1386,6 +1386,7 @@ INSERT INTO `glpi_configs` VALUES ('205','core','purge_datemod','0');
 INSERT INTO `glpi_configs` VALUES ('206','core','purge_all','0');
 INSERT INTO `glpi_configs` VALUES ('207','core','purge_user_auth_changes','0');
 INSERT INTO `glpi_configs` VALUES ('208','core','purge_plugins','0');
+INSERT INTO `glpi_configs` VALUES ('209','core','display_login_source','1');
 
 ### Dump table glpi_consumableitems
 
