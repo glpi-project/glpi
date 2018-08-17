@@ -5349,13 +5349,6 @@ class Search {
          }
       }
       return $out;
-
-      // Trans in group concat
-      if (count($split) == 3 && !empty($split[1])) {
-         return Dropdown::getValueWithUnit($split[1], $unit);
-      }
-
-      return Dropdown::getValueWithUnit($split[0], $unit);
    }
 
 
