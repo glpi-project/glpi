@@ -173,14 +173,14 @@ class Infocom extends CommonDBChild {
    **/
    static function countForSupplier(Supplier $item) {
 
-      $restrict = "`glpi_infocoms`.`suppliers_id` = '".$item->getField('id') ."'
-                    AND `itemtype` NOT IN ('ConsumableItem', 'CartridgeItem', 'Software') ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_infocoms", '',
-                                               $_SESSION['glpiactiveentities']);
-
-      return countElementsInTable(['glpi_infocoms'], $restrict);
+      return countElementsInTable(
+         'glpi_infocoms',
+         [
+            'suppliers_id' => $item->getField('id'),
+            'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
+         ] + getEntitiesRestrictCriteria('glpi_infocoms', '', $_SESSION['glpiactiveentities'])
+      );
    }
-
 
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
