@@ -143,7 +143,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    // Add dropdown for auth (local, LDAPxxx, LDAPyyy, imap...)
-   Auth::dropdownLogin();
+   if ($CFG_GLPI['display_login_source']) {
+      Auth::dropdownLogin();
+   }
 
    if ($CFG_GLPI["login_remember_time"]) {
       echo '<p class="login_input">
