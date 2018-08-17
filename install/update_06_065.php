@@ -1183,8 +1183,8 @@ function update06to065() {
       }
    }
 
-   $result = $DB->list_tables();
-   while ($line = $DB->fetch_array($result)) {
+   $result = $DB->listTables();
+   while ($line = $result->next()) {
       if (strstr($line[0], "glpi_dropdown") || strstr($line[0], "glpi_type")) {
          if (!isIndex($line[0], "name")) {
             $query = "ALTER TABLE `".$line[0]."`
@@ -1294,8 +1294,8 @@ function update06to065() {
       $DB->queryOrDie($query, "0.65 add reminder");
    }
 
-   $result = $DB->list_tables();
-   while ($line = $DB->fetch_array($result)) {
+   $result = $DB->listTables();
+   while ($line = $result->next()) {
       if (strstr($line[0], "glpi_dropdown") || strstr($line[0], "glpi_type")) {
          if ($line[0] != "glpi_type_docs") {
             if (!$DB->fieldExists($line[0], "comments", false)) {
