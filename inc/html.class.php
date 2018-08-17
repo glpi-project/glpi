@@ -2608,7 +2608,7 @@ class Html {
                   changeYear: true,
                   showOn: 'button',
                   showWeek: true,
-                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
+                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
 
       if (!$p['canedit']) {
          $js .= ",disabled: true";
@@ -2816,7 +2816,7 @@ class Html {
                   showOn: 'button',
                   showWeek: true,
                   controlType: 'select',
-                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
+                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
       if (!$p['canedit']) {
          $js .= ",disabled: true";
       }

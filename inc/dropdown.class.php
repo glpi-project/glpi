@@ -226,7 +226,7 @@ class Dropdown {
          }
 
          if ($itemtype == 'Location') {
-            $output .= "<span class='fa fa-globe pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
+            $output .= "<span class='fa fa-globe-americas pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
          }
 
          $paramscomment = ['value' => '__VALUE__',

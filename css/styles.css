@@ -210,7 +210,7 @@ hr {
 }
 
 .pager_controls .fa.pointer {
-   font-size: 1.7em;
+   font-size: 1.5em;
 }
 .pager_controls label span.fa {
    margin-right: 1em;
@@ -1440,7 +1440,7 @@ img.picture_square {
    border:none;
    background:none;
    padding: 0;
-   font-size: 1.3em!important;
+   font-size: 1.2em!important;
 }
 .fc button.ui-datepicker-trigger {
    height: auto;
@@ -2448,7 +2448,7 @@ a.icon_nav_move:hover img {
 }
 
 #c_preference a.fa {
-   font-size: 1.8em;
+   font-size: 1.6em;
    color: white;
 }
 
@@ -5437,4 +5437,8 @@ with incorrect shading in some cases */
 
 .far:before, .far:after {
    font-weight: 400;
+}
+
+.fa-lg {
+   font-size: 1.2em;
 }

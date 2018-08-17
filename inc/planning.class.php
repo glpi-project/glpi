@@ -603,7 +603,7 @@ class Planning extends CommonGLPI {
                changeYear:      true,
                numberOfMonths:  3,
                showOn:          'button',
-               buttonText:      '<i class=\'fa fa-calendar\'></i>',
+               buttonText:      '<i class=\'far fa-calendar-alt\'></i>',
                dateFormat:      'DD, d MM, yy',
                onSelect: function(dateText, inst) {
                   var selected_date = $(this).datepicker('getDate');
