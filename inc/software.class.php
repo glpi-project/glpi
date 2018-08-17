@@ -823,7 +823,7 @@ class Software extends CommonDBTM {
 
 
    /**
-    * Add a software. If already exist in dustbin restore it
+    * Add a software. If already exist in trashbin restore it
     *
     * @param name                            the software's name
     * @param manufacturer                    the software's manufacturer
@@ -875,9 +875,9 @@ class Software extends CommonDBTM {
 
 
    /**
-    * Put software in dustbin because it's been removed by GLPI software dictionnary
+    * Put software in trashbin because it's been removed by GLPI software dictionnary
     *
-    * @param $ID        the ID of the software to put in dustbin
+    * @param $ID        the ID of the software to put in trashbin
     * @param $comment   the comment to add to the already existing software's comment (default '')
     *
     * @return boolean (success)
@@ -904,9 +904,9 @@ class Software extends CommonDBTM {
 
 
    /**
-    * Restore a software from dustbin
+    * Restore a software from trashbin
     *
-    * @param $ID  the ID of the software to put in dustbin
+    * @param $ID  the ID of the software to put in trashbin
     *
     * @return boolean (success)
    **/

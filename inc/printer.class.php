@@ -816,7 +816,7 @@ class Printer  extends CommonDBTM {
 
 
    /**
-    * Add a printer. If already exist in dustbin restore it
+    * Add a printer. If already exist in trashbin restore it
     *
     * @param $name          the printer's name (need to be addslashes)
     * @param $manufacturer  the software's manufacturer (need to be addslashes)
@@ -900,9 +900,9 @@ class Printer  extends CommonDBTM {
 
 
    /**
-    * Restore a software from dustbin
+    * Restore a software from trashbin
     *
-    * @param $ID  the ID of the software to put in dustbin
+    * @param $ID  the ID of the software to put in trashbin
     *
     * @return boolean (success)
    **/

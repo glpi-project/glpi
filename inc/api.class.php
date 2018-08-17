@@ -1774,7 +1774,7 @@ abstract class API extends CommonGLPI {
     *    - 'input' : Array of objects with fields of itemtype to be updated.
     *                Mandatory.
     *                You must provide in each object a key named 'id' to identify item to delete.*
-    *    - 'force_purge' : boolean, if itemtype have a dustbin, you can force purge (delete finally).
+    *    - 'force_purge' : boolean, if itemtype have a trashbin, you can force purge (delete finally).
     *                      Optionnal.
     *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
     *                  Optionnal.

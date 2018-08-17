@@ -720,7 +720,7 @@ class Reservation extends CommonDBChild {
       echo "</td></tr>\n";
 
       if (empty($ID)) {
-         echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
+         echo "<tr class='tab_bg_2'><td>".__('Repetition')."</td>";
          echo "<td>";
          $values   = [''      => _x('periodicity', 'None'),
                            'day'   => _x('periodicity', 'Daily'),
@@ -760,7 +760,7 @@ class Reservation extends CommonDBChild {
                       class='submit'>";
                if ($resa->fields["group"] > 0) {
                   echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".
-                             __s('Delete all rehearsals');
+                             __s('Delete all repetition');
                }
                echo "</td>";
             }

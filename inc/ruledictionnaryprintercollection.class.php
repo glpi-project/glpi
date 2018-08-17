@@ -88,7 +88,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
               LEFT JOIN `glpi_manufacturers`
                   ON (`glpi_manufacturers`.`id` = `glpi_printers`.`manufacturers_id`) ";
 
-      // Do not replay on dustbin and templates
+      // Do not replay on trashbin and templates
       $sql .= "WHERE `glpi_printers`.`is_deleted` = 0
                      AND `glpi_printers`.`is_template` = 0 ";
 
@@ -247,7 +247,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @param &$new_printers   array containing new printers already computed
     * @param $res_rule        array of rule results
     * @param $params          array
-    * @param &$printers_ids   array containing replay printer need to be dustbined
+    * @param &$printers_ids   array containing replay printer need to be put in trashbin
    **/
    function replayDictionnaryOnOnePrinter(array &$new_printers, array $res_rule,
                                           array $params, array &$printers_ids) {
@@ -286,7 +286,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
          //New printer not already present in this entity
          if (!isset($new_printers[$p['entity']][$res_rule["name"]])) {
-            // create new printer or restore it from dustbin
+            // create new printer or restore it from trashbin
             $new_printer_id = $printer->addOrRestoreFromTrash($res_rule["name"], $manufacturer,
                                                               $p['entity']);
             $new_printers[$p['entity']][$res_rule["name"]] = $new_printer_id;

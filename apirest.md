@@ -1158,7 +1158,7 @@ $ curl -X PUT \
 
    id parameter has precedence over input payload.
 
-  * *force_purge* (default false): boolean, if the itemtype have a dustbin, you can force purge (delete finally).
+  * *force_purge* (default false): boolean, if the itemtype have a trashbin, you can force purge (delete finally).
                      Optional.
   * *history* (default true): boolean, set to false to disable saving of deletion in global history.
                  Optional.

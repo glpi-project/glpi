@@ -289,7 +289,7 @@ class TicketTask  extends CommonITILTask {
          echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'add');
       } else {
          if ($params['candel']
-               // no dustbin in tickettask
+               // no trashbin in tickettask
           //   && !$this->can($ID, DELETE)
              && !$this->can($ID, PURGE)) {
             $params['candel'] = false;

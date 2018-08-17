@@ -1805,8 +1805,8 @@ class Search {
 
       $rand = mt_rand();
       return "<div class='switch grey_border pager_controls'>".
-             "<label for='is_deletedswitch$rand' title='".__s('Show the dustbin')."' >".
-                "<span class='sr-only'>" . __s('Show the dustbin') . "</span>" .
+             "<label for='is_deletedswitch$rand' title='".__s('Show the trashbin')."' >".
+                "<span class='sr-only'>" . __s('Show the trashbin') . "</span>" .
                 "<input type='hidden' name='is_deleted' value='0' /> ".
                 "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
                   ($is_deleted?"checked='checked'":"").
