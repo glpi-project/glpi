@@ -266,7 +266,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
     * @param $entity                working entity ID
     * @param $name                  softwrae name
     * @param $manufacturer          manufacturer name
-    * @param &$soft_ids       array containing replay software need to be trashbined
+    * @param &$soft_ids       array containing replay software need to be trashbin
    **/
    function replayDictionnaryOnOneSoftware(array &$new_softs, array $res_rule, $ID, $entity, $name,
                                            $manufacturer, array &$soft_ids) {
@@ -361,7 +361,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * Delete a list of softwares
     *
-    * @param $soft_ids array containing replay software need to be trashbined
+    * @param $soft_ids array containing replay software need to be trashbin
    **/
    function putOldSoftsInTrash(array $soft_ids) {
       global $DB;
