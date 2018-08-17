@@ -613,7 +613,7 @@ class DBmysql {
       $nb     = 0;
 
       while ($line = $result->next()) {
-         $table = $line[0];
+         $table = $line['TABLE_NAME'];
 
          // For big database to reduce delay of migration
          if ($cron
