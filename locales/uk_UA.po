@@ -4862,7 +4862,7 @@ msgid "Preserve"
 msgstr "Зберегти"
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Покласти в кошик"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6371,7 +6371,7 @@ msgstr "Підтвердити остаточне знищення?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Покласти в кошик"
 
 #: inc/commondbtm.class.php:2473
@@ -6431,7 +6431,7 @@ msgid "Other item exist"
 msgstr "Існує інший елемент"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the dustbin"
+msgid "Item in the trashbin"
 msgstr "Елемент у кошику"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17734,7 +17734,7 @@ msgstr "Попередження перед виконанням перейме�
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "Увага! Ця операція може викинути в кошик об’єднане ПЗ.<br>Попередьте "
@@ -18192,7 +18192,7 @@ msgid "Show as map"
 msgstr ""
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the dustbin"
+msgid "Show the trashbin"
 msgstr "Показати кошик"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

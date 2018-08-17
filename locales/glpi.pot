@@ -4733,7 +4733,7 @@ msgid "Preserve"
 msgstr ""
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr ""
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6148,7 +6148,7 @@ msgstr ""
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5249
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr ""
 
 #: inc/commondbtm.class.php:2473
@@ -6208,7 +6208,7 @@ msgid "Other item exist"
 msgstr ""
 
 #: inc/commondbtm.class.php:3961
-msgid "Item in the dustbin"
+msgid "Item in the trashbin"
 msgstr ""
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -16925,7 +16925,7 @@ msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
 
@@ -17366,7 +17366,7 @@ msgid "Show as map"
 msgstr ""
 
 #: inc/search.class.php:1837 inc/search.class.php:1838
-msgid "Show the dustbin"
+msgid "Show the trashbin"
 msgstr ""
 
 #: inc/search.class.php:1911 inc/search.class.php:1913

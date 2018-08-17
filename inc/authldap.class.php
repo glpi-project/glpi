@@ -3404,7 +3404,7 @@ class AuthLDAP extends CommonDBTM {
 
       $options = [
          __('Preserve'),
-         __('Put in dustbin'),
+         __('Put in trashbin'),
          __('Withdraw dynamic authorizations and groups'),
          __('Disable'),
          __('Disable').' + '.__('Withdraw dynamic authorizations and groups'),

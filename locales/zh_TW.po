@@ -4703,7 +4703,7 @@ msgid "Preserve"
 msgstr "保存"
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "放入垃圾桶"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6115,7 +6115,7 @@ msgstr "最終確認刪除嗎？"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "放入垃圾桶"
 
 #: inc/commondbtm.class.php:2473
@@ -6175,7 +6175,7 @@ msgid "Other item exist"
 msgstr "其它項目已存在"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the dustbin"
+msgid "Item in the trashbin"
 msgstr "在垃圾桶的項目"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -16670,7 +16670,7 @@ msgstr "在依字典執行重新名稱前顯示警告訊息"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr "警告！此操作可以把合併後的軟體放到垃圾桶.<br>請務必通知使用者."
 
@@ -17106,7 +17106,7 @@ msgid "Show as map"
 msgstr ""
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the dustbin"
+msgid "Show the trashbin"
 msgstr "顯示垃圾箱"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

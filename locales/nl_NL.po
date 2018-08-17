@@ -4767,7 +4767,7 @@ msgid "Preserve"
 msgstr "Bewaren"
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Verwijderen"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6216,7 +6216,7 @@ msgstr "Bevestig onomkeerbare verwijdering?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Verwijderen"
 
 #: inc/commondbtm.class.php:2473
@@ -6282,7 +6282,7 @@ msgid "Other item exist"
 msgstr "Ander item bestaat"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the dustbin"
+msgid "Item in the trashbin"
 msgstr "Item in prullenbak"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17116,7 +17116,7 @@ msgstr "Waarschuwing voor de dictionary-regels opnieuw worden toegepast"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "Waarschuwing! Deze actie kan samengevoegde software in de prullenbak doen "
@@ -17559,7 +17559,7 @@ msgid "Show as map"
 msgstr ""
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the dustbin"
+msgid "Show the trashbin"
 msgstr "Toon de prullenbak"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

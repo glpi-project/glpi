@@ -4749,8 +4749,8 @@ msgid "Preserve"
 msgstr "Preserve"
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
-msgstr "Put in dustbin"
+msgid "Put in trashbin"
+msgstr "Put in trashbin"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
 msgid "Withdraw dynamic authorizations and groups"
@@ -6167,8 +6167,8 @@ msgstr "Confirm the final deletion?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5249
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
-msgstr "Put in dustbin"
+msgid "Put in trashbin"
+msgstr "Put in trashbin"
 
 #: inc/commondbtm.class.php:2473
 msgid "Template name"
@@ -6227,8 +6227,8 @@ msgid "Other item exist"
 msgstr "Other item exist"
 
 #: inc/commondbtm.class.php:3961
-msgid "Item in the dustbin"
-msgstr "Item in the dustbin"
+msgid "Item in the trashbin"
+msgstr "Item in the trashbin"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:4082
@@ -17023,10 +17023,10 @@ msgstr "Warning before running rename based on the dictionary rules"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
@@ -17472,8 +17472,8 @@ msgid "Show as map"
 msgstr "Show as map"
 
 #: inc/search.class.php:1837 inc/search.class.php:1838
-msgid "Show the dustbin"
-msgstr "Show the dustbin"
+msgid "Show the trashbin"
+msgstr "Show the trashbin"
 
 #: inc/search.class.php:1911 inc/search.class.php:1913
 #: inc/search.class.php:1988 inc/search.class.php:1991

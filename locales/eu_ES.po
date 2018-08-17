@@ -4765,7 +4765,7 @@ msgid "Preserve"
 msgstr "Mantendu"
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Jarri zakarrontzian"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6216,7 +6216,7 @@ msgstr "Ezabaketa definitiboa konfirmatu?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Zakarrontzira bota"
 
 #: inc/commondbtm.class.php:2473
@@ -6276,7 +6276,7 @@ msgid "Other item exist"
 msgstr "Beste elementu bat existitzen da"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the dustbin"
+msgid "Item in the trashbin"
 msgstr "Elementua zakarrontzian"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17108,7 +17108,7 @@ msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "Kontuz! Operazio honek elkarutako softwarea zakarrontzira eraman ahal "
@@ -17551,7 +17551,7 @@ msgid "Show as map"
 msgstr ""
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the dustbin"
+msgid "Show the trashbin"
 msgstr "Erakutsi zakarrontzia"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

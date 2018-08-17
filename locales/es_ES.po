@@ -4788,7 +4788,7 @@ msgid "Preserve"
 msgstr "Conservar"
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Tirar a la papelera"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6241,7 +6241,7 @@ msgstr "¿Confirmar la eliminación definitiva?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "Tirar a la papelera"
 
 #: inc/commondbtm.class.php:2473
@@ -6302,7 +6302,7 @@ msgid "Other item exist"
 msgstr "Existe otro elemento"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the dustbin"
+msgid "Item in the trashbin"
 msgstr "Elemento en la papelera"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -17173,7 +17173,7 @@ msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
 "¡Advertencia! esta operación puede colocar en la papelera el software "
@@ -17626,7 +17626,7 @@ msgid "Show as map"
 msgstr "Mostrar como mapa"
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the dustbin"
+msgid "Show the trashbin"
 msgstr "Mostrar la papelera"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914

@@ -4704,7 +4704,7 @@ msgid "Preserve"
 msgstr "보존"
 
 #: inc/authldap.class.php:3396
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "휴지통에 버리기"
 
 #: inc/authldap.class.php:3397 inc/authldap.class.php:3399
@@ -6116,7 +6116,7 @@ msgstr "최종 삭제에서 확인하시겠습니까?"
 #: inc/massiveaction.class.php:554 inc/ticket.class.php:5248
 #: inc/transfer.class.php:3331
 msgctxt "button"
-msgid "Put in dustbin"
+msgid "Put in trashbin"
 msgstr "휴지통에 버리기"
 
 #: inc/commondbtm.class.php:2473
@@ -6176,7 +6176,7 @@ msgid "Other item exist"
 msgstr "다른 품목 존재"
 
 #: inc/commondbtm.class.php:3947
-msgid "Item in the dustbin"
+msgid "Item in the trashbin"
 msgstr "휴지통의 품목"
 
 #. TRANS: %1$s is the user login, %2$s the message
@@ -16675,7 +16675,7 @@ msgstr "사전 규칙에 기반한 이름 변경 실행 전에 주의하세요"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
+"Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr "주의 이 동작은 휴지통의 소프트웨어를 합칠 수 있습니다.<br>사용자에게 통지했는지 확인하세요."
 
@@ -17113,7 +17113,7 @@ msgid "Show as map"
 msgstr "지도로 보기"
 
 #: inc/search.class.php:1838 inc/search.class.php:1839
-msgid "Show the dustbin"
+msgid "Show the trashbin"
 msgstr "휴지통 보기"
 
 #: inc/search.class.php:1912 inc/search.class.php:1914
