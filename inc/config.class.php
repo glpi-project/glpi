@@ -446,6 +446,13 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='dropdown_display_login_source$rand'>".
+         __('Display source dropdown on login page"').
+         "</label></td><td>";
+      Dropdown::showYesNo("display_login_source", $CFG_GLPI["display_login_source"], -1, ['rand' => $rand]);
+      echo "</td></tr>";
+
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
