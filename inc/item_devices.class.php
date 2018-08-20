@@ -1283,11 +1283,11 @@ class Item_Devices extends CommonDBRelation {
                $out.= '&nbsp;'.Html::showToolTip($tooltip, $options_tooltip);
             }
             if ($protected) {
-               $out.= '<span><i class="fa fa-eye pointer disclose" ';
+               $out.= '<span><i class="far fa-eye pointer disclose" ';
                $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
                $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')" ';
                $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
-               $out.= '<i class="fa fa-clipboard pointer disclose" ';
+               $out.= '<i class="fa fa-paste pointer disclose" ';
                $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
                $out.= '</span>';
             }

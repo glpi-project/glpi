@@ -226,7 +226,7 @@ class Dropdown {
          }
 
          if ($itemtype == 'Location') {
-            $output .= "<span class='fa fa-globe pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
+            $output .= "<span class='fa fa-globe-americas pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
          }
 
          $paramscomment = ['value' => '__VALUE__',
@@ -2109,7 +2109,7 @@ class Dropdown {
       Dropdown::showFromArray('display_type', $values);
       echo "<button type='submit' name='export' class='unstyled pointer' ".
              " title=\"" . _sx('button', 'Export') . "\">" .
-             "<i class='fa fa-floppy-o'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
+             "<i class='far fa-save'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
    }
 
 

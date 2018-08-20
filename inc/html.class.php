@@ -1166,7 +1166,7 @@ class Html {
       echo Html::css('css/jstree-glpi.css');
       echo Html::css('lib/jqueryplugins/select2/css/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
-      echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
+      echo Html::css('lib/font-awesome-5.2.0/css/all.min.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
@@ -2608,7 +2608,7 @@ class Html {
                   changeYear: true,
                   showOn: 'button',
                   showWeek: true,
-                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
+                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
 
       if (!$p['canedit']) {
          $js .= ",disabled: true";
@@ -2816,7 +2816,7 @@ class Html {
                   showOn: 'button',
                   showWeek: true,
                   controlType: 'select',
-                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
+                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
       if (!$p['canedit']) {
          $js .= ",disabled: true";
       }
@@ -5902,7 +5902,7 @@ class Html {
             return "<div id='fuzzysearch'>
                     <input type='text' placeholder='".__("Start typing to find a menu")."'>
                     <ul class='results'></ul>
-                    <i class='fa fa-2x fa-close'></i>
+                    <i class='fa fa-2x fa-times'></i>
                     </div>
                     <div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'>
                     </div>";
@@ -5973,7 +5973,7 @@ class Html {
       if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
          echo "?noAUTO=1";
       }
-      echo "' title=\"".__s('Logout')."\" class='fa fa-sign-out'>";
+      echo "' title=\"".__s('Logout')."\" class='fa fa-sign-out-alt'>";
       // check user id : header used for display messages when session logout
       echo "<span class='sr-only'>" . __s('Logout') . "></span>";
       echo "</a>";

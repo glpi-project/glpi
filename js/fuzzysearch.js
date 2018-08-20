@@ -97,7 +97,7 @@ $(document).ready(function() {
             });
 
          // event for close icon
-         $("#fuzzysearch .fa-close").click(function() {
+         $("#fuzzysearch .fa-times").click(function() {
             removeFuzzy();
          });
 

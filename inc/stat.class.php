@@ -1349,7 +1349,7 @@ class Stat extends CommonGLPI {
          $csvfilename = $this->generateCsvFile($labels, $series, $options);
          $out .= " <a href='".$CFG_GLPI['root_doc'].
             "/front/graph.send.php?file=$csvfilename' title='".__s('CSV').
-            "' class='pointer fa fa-file-text'><span class='sr-only'>".__('CSV').
+            "' class='pointer fa fa-file-alt'><span class='sr-only'>".__('CSV').
             "</span></a>";
       }
       $out .= "</h2>";
@@ -1469,7 +1469,7 @@ class Stat extends CommonGLPI {
          $csvfilename = $this->generateCsvFile($labels, $series, $options);
          $out .= " <a href='".$CFG_GLPI['root_doc'].
             "/front/graph.send.php?file=$csvfilename' title='".__s('CSV').
-            "' class='pointer fa fa-file-text'><span class='sr-only'>".__('CSV').
+            "' class='pointer fa fa-file-alt'><span class='sr-only'>".__('CSV').
             "</span></a>";
       }
       $out .= "</h2>";

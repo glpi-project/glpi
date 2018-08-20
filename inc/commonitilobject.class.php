@@ -3363,12 +3363,15 @@ abstract class CommonITILObject extends CommonDBTM {
     */
    public static function getStatusClass($status) {
       $class = null;
+      $solid = true;
+      
       switch ($status) {
          case self::INCOMING :
             $class = 'circle';
             break;
          case self::ASSIGNED :
-            $class = 'circle-o';
+            $class = 'circle';
+            $solid = false;
             break;
          case self::PLANNED :
             $class = 'calendar';
@@ -3377,7 +3380,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $class = 'circle';
             break;
          case self::SOLVED :
-            $class = 'circle-o';
+            $class = 'circle';
+            $solid = false;
             break;
          case self::CLOSED :
             $class = 'circle';
@@ -3389,7 +3393,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $class = 'eye';
             break;
          case self::EVALUATION :
-            $class = 'circle-o';
+            $class = 'circle';
+            $solid = false;
             break;
          case self::APPROVAL :
             $class = 'question-circle';
@@ -3398,13 +3403,15 @@ abstract class CommonITILObject extends CommonDBTM {
             $class = 'question-circle';
             break;
          case self::QUALIFICATION :
-            $class = 'circle-o';
+            $class = 'circle';
+            $solid = false;
             break;
       }
 
       return $class == null
          ? ''
-         : 'itilstatus fa fa-' . $class." ".self::getStatusKey($status);
+         : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class.
+         " ".self::getStatusKey($status);
    }
 
    /**
