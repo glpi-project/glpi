@@ -607,6 +607,9 @@ class Auth extends CommonGLPI {
          } else if ($auths[0] == 'mail') {
             $authtype = self::MAIL;
             $this->user->fields["authtype"] = self::MAIL;
+         } else if ($auths[0] == 'external') {
+            $authtype = self::EXTERNAL;
+            $this->user->fields["authtype"] = self::EXTERNAL;
          }
       }
       if (!$noauto && ($authtype = self::checkAlternateAuthSystems())) {
