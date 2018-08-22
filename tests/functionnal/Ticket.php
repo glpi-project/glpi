@@ -1600,6 +1600,15 @@ class Ticket extends DbTestCase {
                'name'      => 'Test for buggy \\\' character',
                'content'   => 'Test for buggy \\\' character',
             ]
+         ], [
+            'input'     => [
+               'name'      => '',
+               'content'   => 'Test for buggy &#39; character'
+            ],
+            'expected'  => [
+               'name'      => 'Test for buggy \\\' character',
+               'content'   => 'Test for buggy \\\' character',
+            ]
          ]
       ];
    }
