@@ -171,7 +171,6 @@ class RuleImportEntity extends Rule {
 
       $actions['is_recursive']['name']     = __('Child entities');
       $actions['is_recursive']['type']     = 'yesno';
-      $actions['is_recursive']['table']    = '';
 
       $actions['groups_id_tech']['name']     = __('Group in charge of the hardware');
       $actions['groups_id_tech']['type']     = 'dropdown';
