@@ -185,4 +185,43 @@ class ITILSolution extends DbTestCase {
       $this->boolean($ticket->getFromDB($duplicated))->isTrue();
       $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
    }
+
+   public function testMultipleSolution() {
+      $this->login();
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $ticket = new \Ticket();
+      $this->integer((int)$ticket->add([
+         'name'               => 'ticket title',
+         'description'        => 'a description',
+         'content'            => '',
+         '_users_id_assign'   => $uid
+      ]))->isGreaterThan(0);
+
+      $this->boolean($ticket->isNewItem())->isFalse();
+      $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
+
+      $solution = new \ITILSolution();
+
+      // 1st solution, it should be accepted
+      $this->integer(
+         (int)$solution->add([
+            'itemtype'  => $ticket::getType(),
+            'items_id'  => $ticket->getID(),
+            'content'   => '1st solution, should be accepted!'
+         ])
+      );
+
+      $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
+      $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::WAITING);
+
+      // try to add directly another solution, it should be refused
+      $this->boolean(
+         $solution->add([
+            'itemtype'  => $ticket::getType(),
+            'items_id'  => $ticket->getID(),
+            'content'   => '2nd solution, should be refused!'
+         ])
+      )->isFalse();
+   }
 }
