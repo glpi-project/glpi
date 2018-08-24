@@ -181,7 +181,7 @@ Reset password request:
 
 * **URL**: apirest.php/lostPassword/
 * **Description**: Sends a notification to the user to reset his password
-* **Method**: PUT
+* **Method**: PUT or PATCH
 * **Parameters**: (JSON Payload)
   * *email*: email address of the user to recover. Mandatory.
 * **Returns**:
@@ -201,7 +201,7 @@ Password reset :
 
 * **URL**: apirest.php/lostPassword/
 * **Description**: Sends a notification to the user to reset his password
-* **Method**: PUT
+* **Method**: PUT or PATCH
 * **Parameters**: (JSON Payload)
   * *email*: email address of the user to recover. Mandatory.
   * *password_forget_token*: reset token
@@ -333,7 +333,7 @@ $ curl -X POST \
 Example usage (CURL):
 
 ```bash
-$ curl -X POST \
+$ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
@@ -369,7 +369,7 @@ $ curl -X POST \
 Example usage (CURL):
 
 ```bash
-$ curl -X POST \
+$ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
@@ -431,7 +431,7 @@ $ curl -X POST \
 Example usage (CURL):
 
 ```bash
-$ curl -X POST \
+$ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
@@ -1092,7 +1092,7 @@ Note: To upload a document see [Upload a document file](#upload-a-document-file)
 
 * **URL**: apirest.php/:itemtype/:id
 * **Description**: Update an object (or multiple objects) existing in GLPI.
-* **Method**: PUT
+* **Method**: PUT or PATCH
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
   * *App-Token*: authorization string provided by the GLPI api configuration. Optional.

@@ -209,8 +209,8 @@ class APIRest extends API {
          return $this->returnResponse($response, $code, $additionalheaders);
 
       } else if ($resource === "lostPassword") {
-         if ($this->verb != 'PUT') {
-            // forbid password reset when HTTP verb is not PUT
+         if ($this->verb != 'PUT' && $this->verb != 'PATCH') {
+            // forbid password reset when HTTP verb is not PUT or PATCH
             return $this->returnError(__("Only HTTP verb PUT is allowed"));
          }
          return $this->returnResponse($this->lostPassword($this->parameters));
@@ -276,6 +276,7 @@ class APIRest extends API {
                break;
 
             case "PUT" : // update item(s)
+            case "PATCH" : // update item(s)
                if (!isset($this->parameters['input'])) {
                   $this->messageBadArrayError();
                }
