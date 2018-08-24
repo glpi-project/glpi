@@ -58,7 +58,8 @@ trait DCBreadcrumb {
       if (in_array($item->getType(), $enclosure_types)) {
          //check if asset is part of an enclosure
          if ($enclosure = $this->isEnclosurePart($item->getType(), $item->getID(), true)) {
-            $breadcrumb[] = $enclosure->getLink();
+            $options = ['linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : ''];
+            $breadcrumb[] = $enclosure->getLink($options);
             $item = $enclosure;
          }
       }
@@ -66,7 +67,8 @@ trait DCBreadcrumb {
       if (in_array($item->getType(), $types)) {
          //check if asset (or its enclosure) is part of a rack
          if ($rack = $this->isRackPart($item->getType(), $item->getID(), true)) {
-            $breadcrumb[] = $rack->getLink();
+            $options = ['linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : ''];
+            $breadcrumb[] = $rack->getLink($options);
             $item = $rack;
          }
       }
@@ -75,7 +77,8 @@ trait DCBreadcrumb {
          if ($item->fields['dcrooms_id'] > 0) {
             $dcroom = new DCRoom();
             if ($dcroom->getFromDB($item->fields['dcrooms_id'])) {
-               $breadcrumb[] = $dcroom->getLink();
+               $options = ['linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : ''];
+               $breadcrumb[] = $dcroom->getLink($options);
                $item = $dcroom;
             }
          }
@@ -85,7 +88,8 @@ trait DCBreadcrumb {
          if ($item->fields['datacenters_id'] > 0) {
             $datacenter = new Datacenter();
             if ($datacenter->getFromDB($item->fields['datacenters_id'])) {
-               $breadcrumb[] = $datacenter->getLink();
+               $options = ['linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : ''];
+               $breadcrumb[] = $datacenter->getLink($options);
             }
          }
       }
