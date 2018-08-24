@@ -399,7 +399,7 @@ class Toolbox {
       $msg = "";
       if (function_exists('debug_backtrace')) {
          $bt  = debug_backtrace();
-         if (count($bt) > 1) {
+         if (count($bt) > 2) {
             if (isset($bt[2]['class'])) {
                $msg .= $bt[2]['class'].'::';
             }
