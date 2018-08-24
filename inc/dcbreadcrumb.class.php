@@ -122,6 +122,9 @@ trait DCBreadcrumb {
          $enclosure = new Enclosure();
          if ($enclosure->getFromDB($ien->fields['enclosures_id'])) {
             return $enclosure;
+         } else {
+            // Association to unexisting enclosure is possible due to a bug in 9.3.0.
+            return false;
          }
       }
 
@@ -147,6 +150,9 @@ trait DCBreadcrumb {
          $rack = new \Rack();
          if ($rack->getFromDb($ira->fields['racks_id'])) {
             return $rack;
+         } else {
+            // Association to unexisting rack is possible due to a bug in 9.3.0.
+            return false;
          }
       }
 
