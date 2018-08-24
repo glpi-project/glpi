@@ -4811,9 +4811,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $iterator = $DB->request($request);
-      $blank_params =
-         (strpos($target, '?') ? '&amp;' : '?')
-         . "id=-1&amp;withtemplate=2";
+      $blank_params = (strpos($target, '?') ? '&' : '?') . "id=-1&withtemplate=2";
       $target_blank = $target . $blank_params;
 
       if ($add && count($iterator) == 0) {
@@ -4826,7 +4824,7 @@ class CommonDBTM extends CommonGLPI {
          echo "<tr><th>" . $item->getTypeName(1)."</th>";
          echo "<th>".__('Choose a template')."</th></tr>";
          echo "<tr><td class='tab_bg_1 center' colspan='$colspan'>";
-         echo "<a href=\"$target_blank\">".__('Blank Template')."</a></td>";
+         echo "<a href=\"" . Html::entities_deep($target_blank) . "\">".__('Blank Template')."</a></td>";
          echo "</tr>";
       } else {
          echo "<tr><th>".$item->getTypeName(1)."</th>";
