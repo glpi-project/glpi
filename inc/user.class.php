@@ -155,7 +155,7 @@ class User extends CommonDBTM {
 
       if (isset($this->fields['id'])) {
          foreach ($CFG_GLPI['user_pref_field'] as $f) {
-            if (is_null($this->fields[$f])) {
+            if (is_null($this->fields[$f]) || !Session::haveRight('personalization', UPDATE)) {
                $this->fields[$f] = $CFG_GLPI[$f];
             }
          }
@@ -2569,6 +2569,47 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
+
+         echo "<tr class='tab_bg_1'><td>";
+         echo __("Personal token");
+         echo "</td><td colspan='2'>";
+
+         if (!empty($this->fields["personal_token"])) {
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_personal_token', [
+                                 'value'    => $this->fields["personal_token"],
+                                 'style'    => 'width:90%'
+                             ]);
+            echo "</div>";
+            echo "(".sprintf(__('generated on %s'),
+                                Html::convDateTime($this->fields["personal_token_date"])).")";
+         }
+         echo "</td><td>";
+         Html::showCheckbox(['name'  => '_reset_personal_token',
+                             'title' => __('Regenerate')]);
+         echo "&nbsp;&nbsp;".__('Regenerate');
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>";
+         echo __("API token");
+         echo "</td><td colspan='2'>";
+         if (!empty($this->fields["api_token"])) {
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_api_token', [
+                                 'value'    => $this->fields["api_token"],
+                                 'style'    => 'width:90%'
+                             ]);
+            echo "</div>";
+            echo "(".sprintf(__('generated on %s'),
+                                Html::convDateTime($this->fields["api_token_date"])).")";
+         }
+         echo "</td><td>";
+         Html::showCheckbox(['name'  => '_reset_api_token',
+                             'title' => __('Regenerate')]);
+         echo "&nbsp;&nbsp;".__('Regenerate');
          echo "</td></tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
