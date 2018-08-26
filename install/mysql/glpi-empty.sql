@@ -7086,6 +7086,14 @@ INSERT INTO `glpi_profilerights` VALUES ('866','6','datacenter','255');
 INSERT INTO `glpi_profilerights` VALUES ('867','7','datacenter','255');
 INSERT INTO `glpi_profilerights` VALUES ('868','8','datacenter','0');
 INSERT INTO `glpi_profilerights` VALUES ('870','4','rule_asset','1055');
+INSERT INTO `glpi_profilerights` VALUES ('871','1','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('872','2','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('873','3','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('874','4','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('875','5','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('876','6','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('877','7','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('878','8','personalization','3');
 
 ### Dump table glpi_profiles
 
