@@ -846,10 +846,19 @@ class CommonDBTM extends CommonGLPI {
 
       if (in_array($this->getType(), $CFG_GLPI['rackable_types'])) {
          //delete relation beetween rackable type and its rack
-         $DB->delete(
-            Item_Rack::getTable(), [
-               'itemtype'  => $this->getType(),
-               'items_id'  => $this->fields['id']
+         $item_rack = new Item_Rack();
+         $item_rack->deleteByCriteria(
+            [
+               'itemtype' => $this->getType(),
+               'items_id' => $this->fields['id']
+            ]
+         );
+
+         $item_enclosure = new Item_Enclosure();
+         $item_enclosure->deleteByCriteria(
+            [
+               'itemtype' => $this->getType(),
+               'items_id' => $this->fields['id']
             ]
          );
       }
