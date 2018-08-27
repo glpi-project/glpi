@@ -920,6 +920,22 @@ JAVASCRIPT;
     * @return array
     */
    private function prepareInput($input) {
+
+      if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
+         // Position is not set if room not selected
+         return $input;
+      }
+
+      if ($input['position'] == 0) {
+         return $input;
+         Session::addMessageAfterRedirect(
+            __('Position must be set'),
+            true,
+            ERROR
+         );
+         return false;
+      }
+
       $where = [
          'dcrooms_id'   => $input['dcrooms_id'],
          'position'     => $input['position'],
