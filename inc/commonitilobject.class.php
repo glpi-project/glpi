@@ -147,6 +147,15 @@ abstract class CommonITILObject extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Is the current user have right to add followups to the current ITIL Object ?
+    *
+    * @return boolean
+   **/
+   function canAddFollowups() {
+      return Session::haveRight(static::$rightname, UPDATE) and Session::haveRight('followup', CREATE);
+   }
+
 
    /**
     * Does current user have right to solve the current item?
@@ -178,6 +187,17 @@ abstract class CommonITILObject extends CommonDBTM {
               && self::isAllowedStatus($this->fields['status'], self::SOLVED));
    }
 
+
+   /**
+    * Get the ITIL object closed, solved or waiting status list
+    *
+    * @since 0.90.1
+    *
+    * @return an array
+   **/
+   static function getReopenableStatusArray() {
+      return [self::CLOSED, self::SOLVED, self::WAITING];
+   }
 
 
    /**
@@ -2805,19 +2825,15 @@ abstract class CommonITILObject extends CommonDBTM {
          'additionalfields'   => ['id', 'content', 'status']
       ];
 
-      $newtab = [
+      $tab[] = [
          'id'                 => '21',
          'table'              => $this->getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'massiveaction'      => false,
-         'datatype'           => 'text'
+         'datatype'           => 'text',
+         'htmltext'           => true
       ];
-      if ($this->getType() == 'Ticket') {
-         //why for Ticket only?
-         $newtab['htmltext'] = true;
-      }
-      $tab[] = $newtab;
 
       $tab[] = [
          'id'                 => '2',
@@ -3038,50 +3054,44 @@ abstract class CommonITILObject extends CommonDBTM {
          ]
       ];
 
-      if (Ticket::class === static::getType()) {
-         // Following options are useless for Problems and Changes as for now (GLPI 9.3.0),
-         // only tickets solutions can use the validation process.
-         // Options should be activated when validation process will be available on other types.
+      $tab[] = [
+         'id'                  => '38',
+         'table'               => ITILSolution::getTable(),
+         'field'               => 'status',
+         'name'                => __('Any solution status'),
+         'datatype'            => 'specific',
+         'searchtype'          => ['equals', 'notequals'],
+         'searchequalsonfield' => true,
+         'massiveaction'       => false,
+         'forcegroupby'        => true,
+         'joinparams'          => [
+            'jointype' => 'itemtype_item'
+         ]
+      ];
 
-         $tab[] = [
-            'id'                  => '38',
-            'table'               => ITILSolution::getTable(),
-            'field'               => 'status',
-            'name'                => __('Any solution status'),
-            'datatype'            => 'specific',
-            'searchtype'          => ['equals', 'notequals'],
-            'searchequalsonfield' => true,
-            'massiveaction'       => false,
-            'forcegroupby'        => true,
-            'joinparams'          => [
-               'jointype' => 'itemtype_item'
-            ]
-         ];
-
-         $tab[] = [
-            'id'                  => '39',
-            'table'               => ITILSolution::getTable(),
-            'field'               => 'status',
-            'name'                => __('Last solution status'),
-            'datatype'            => 'specific',
-            'searchtype'          => ['equals', 'notequals'],
-            'searchequalsonfield' => true,
-            'massiveaction'       => false,
-            'forcegroupby'        => true,
-            'joinparams'          => [
-               'jointype'  => 'itemtype_item',
-               // Get only last created solution
-               'condition' => '
-                  AND NEWTABLE.`id` = (
-                     SELECT `id` FROM `' . ITILSolution::getTable() . '`
-                     WHERE `' . ITILSolution::getTable() . '`.`items_id` = REFTABLE.`id`
-                        AND `' . ITILSolution::getTable() . '`.`itemtype` = \'' . static::getType() . '\'
-                     ORDER BY `' . ITILSolution::getTable() . '`.`id` DESC
-                     LIMIT 1
-                  )'
-            ]
-         ];
-      }
+      $tab[] = [
+         'id'                  => '39',
+         'table'               => ITILSolution::getTable(),
+         'field'               => 'status',
+         'name'                => __('Last solution status'),
+         'datatype'            => 'specific',
+         'searchtype'          => ['equals', 'notequals'],
+         'searchequalsonfield' => true,
+         'massiveaction'       => false,
+         'forcegroupby'        => true,
+         'joinparams'          => [
+            'jointype'  => 'itemtype_item',
+            // Get only last created solution
+            'condition' => '
+               AND NEWTABLE.`id` = (
+                  SELECT `id` FROM `' . ITILSolution::getTable() . '`
+                  WHERE `' . ITILSolution::getTable() . '`.`items_id` = REFTABLE.`id`
+                     AND `' . ITILSolution::getTable() . '`.`itemtype` = \'' . static::getType() . '\'
+                  ORDER BY `' . ITILSolution::getTable() . '`.`id` DESC
+                  LIMIT 1
+               )'
+         ]
+      ];
 
       return $tab;
    }
@@ -5305,7 +5315,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *      row_num                : row num used for display
     *      type_for_massiveaction : itemtype for massive action
     *      id_for_massaction      : default 0 means no massive action
-    *      followups              : only for Tickets : show followup columns
+    *      followups              : show followup columns
     */
    static function showShort($id, $options = []) {
       global $DB;
@@ -5336,7 +5346,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $candelete   = static::canDelete();
       $canupdate   = Session::haveRight(static::$rightname, UPDATE);
-      $showprivate = Session::haveRight('followup', TicketFollowup::SEEPRIVATE);
+      $showprivate = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
       $align       = "class='center";
       $align_desc  = "class='left";
 
@@ -5513,7 +5523,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($p['followups']
                 && ($p['output_type'] == Search::HTML_OUTPUT)) {
-               $eigth_column .= TicketFollowup::showShortForTicket($item->fields["id"]);
+               $eigth_column .= ITILFollowup::showShortForITILObject($item->fields["id"], static::class);
             } else {
                if (method_exists($item, 'numberOfFollowups')) {
                   $eigth_column  = sprintf(__('%1$s (%2$s)'), $eigth_column,
@@ -5652,14 +5662,935 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * Summary of getTimelinePosition
-    * Returns the position of the $sub_type for the $user_id
-    * @param int $items_id is the id of the item (tickets_id, problems_id, ...)
-    * @param string $sub_type is TicketFollowup, Document_Item, TicketTask, TicketValidation or Solution
+    * Returns the position of the $sub_type for the $user_id in the timeline
+    * @param int $items_id is the id of the ticket
+    * @param string $sub_type is ITILFollowup, Document_Item, TicketTask, TicketValidation or Solution
     * @param int $users_id
     * @since 9.2
     */
    static function getTimelinePosition($items_id, $sub_type, $users_id) {
-      return self::TIMELINE_NOTSET;
+      $itilobject = new static;
+      $itilobject->fields['id'] = $items_id;
+      $actors = $itilobject->getITILActors();
+
+      // 1) rule for followups, documents, tasks and validations:
+      //    Matrix for position of timeline objects
+      //    R O A (R=Requester, O=Observer, A=AssignedTo)
+      //    0 0 1 -> Right
+      //    0 1 0 -> Left
+      //    0 1 1 -> R
+      //    1 0 0 -> L
+      //    1 0 1 -> L
+      //    1 1 0 -> L
+      //    1 1 1 -> L
+      //    if users_id is not in the actor list, then pos is left
+      // 2) rule for solutions: always on the right side
+
+      // default position is left
+      $pos = self::TIMELINE_LEFT;
+
+      $pos_matrix = [];
+      $pos_matrix[0][0][1] = self::TIMELINE_RIGHT;
+      $pos_matrix[0][1][1] = self::TIMELINE_RIGHT;
+
+      switch ($sub_type) {
+         case 'ITILFollowup':
+         case 'Document_Item':
+         case static::class.'Task':
+         case static::class.'Validation':
+            if (isset($actors[$users_id])) {
+               $r = in_array(CommonItilActor::REQUESTER, $actors[$users_id]) ? 1 : 0;
+               $o = in_array(CommonItilActor::OBSERVER, $actors[$users_id]) ? 1 : 0;
+               $a = in_array(CommonItilActor::ASSIGN, $actors[$users_id]) ? 1 : 0;
+               if (isset($pos_matrix[$r][$o][$a])) {
+                  $pos = $pos_matrix[$r][$o][$a];
+               }
+            }
+            break;
+         case 'Solution':
+            $pos = self::TIMELINE_RIGHT;
+            break;
+      }
+
+      return $pos;
    }
 
+
+   /**
+    * Gets submit button with a status dropdown
+    * @since 9.4.0
+    *
+    * @param integer $items_id
+    * @param string $action         (default 'add')
+    * @return string HTML code for splitted submit button
+   **/
+   static function getSplittedSubmitButtonHtml($items_id, $action = "add") {
+      $locale = _sx('button', 'Add');
+      if ($action == 'update') {
+         $locale = _x('button', 'Save');
+      }
+      $item       = new static();
+      $item->getFromDB($items_id);
+      $all_status   = self::getAllowedStatusArray($item->fields['status']);
+      $rand = mt_rand();
+      $html = "<div class='x-split-button' id='x-split-button'>
+               <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
+               <span class='x-button x-button-drop'>&nbsp;</span>
+               <ul class='x-button-drop-menu'>";
+      foreach ($all_status as $status_key => $status_label) {
+         $checked = "";
+         if ($status_key == $item->fields['status']) {
+            $checked = "checked='checked'";
+         }
+         $html .= "<li data-status='".self::getStatusKey($status_key)."'>";
+         $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
+                    $checked value='$status_key'>";
+         $html .= "<label for='status_radio_$status_key$rand'>";
+         $html .= self::getStatusIcon($status_key) . "&nbsp;";
+         $html .= $status_label;
+         $html .= "</label>";
+         $html .= "</li>";
+      }
+      $html .= "</ul></div>";
+      $html.= "<script type='text/javascript'>$(function() {split_button();});</script>";
+      return $html;
+   }
+
+   /**
+    * Displays the timeline filter buttons
+    * @return void
+    * @since 9.4.0
+   **/
+   function filterTimeline() {
+      global $CFG_GLPI;
+
+      $pics_url = $CFG_GLPI['root_doc']."/pics/timeline";
+      echo "<div class='filter_timeline'>";
+      echo "<h3>".__("Timeline filter")." : </h3>";
+      echo "<ul>";
+
+      $objType = self::getType();
+
+      echo "<li><a href='#' class='far fa-comment pointer' data-type='ITILFollowup' title='".__s("Followup").
+         "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
+      echo "<li><a href='#' class='far fa-check-square pointer' data-type='ITILTask' title='".__s("Task").
+         "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__s("Document").
+         "'><span class='sr-only'>" . __('Document') . "</span></a></li>";
+      if (($objType === "Ticket") or ($objType === "Change")) {
+         echo "<li><a href='#' class='far fa-thumbs-up pointer' data-type='ITILValidation' title='".__s("Validation").
+            "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
+      }
+      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='".__s("Solution").
+         "'><span class='sr-only'>" . __('Solution')  . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-ban pointer' data-type='reset' title=\"".__s("Reset display options").
+         "\"><span class='sr-only'>" . __('Reset display options')  . "</span></a></li>";
+      echo "</ul>";
+      echo "</div>";
+
+      echo "<script type='text/javascript'>$(function() {filter_timeline();});</script>";
+   }
+
+
+   /**
+    * Displays the timeline header (filters)
+    * @return void
+    * @since 9.4.0
+   **/
+   function showTimelineHeader() {
+      echo "<h2>".__("Actions historical")." : </h2>";
+      $this->filterTimeline();
+   }
+
+
+   /**
+    * Displays the form at the top of the timeline.
+    * Includes buttons to add items to the timeline, new item form, and approbation form.
+    * @param integer $rand random value used by JavaScript function names
+    * @return void
+    * @since 9.4.0
+   **/
+   function showTimelineForm($rand) {
+      global $CFG_GLPI;
+
+      $objType = self::getType();
+      $foreignKey = self::getForeignKeyField();
+
+      //check global rights
+      if (!Session::haveRight(strtolower($objType), $objType::READMY)) {
+         return false;
+      }
+
+      $supportsValidation = $objType === "Ticket" || $objType === "Change";
+
+      // javascript function for add and edit items
+      echo "<script type='text/javascript' >\n";
+      echo "function viewAddSubitem" . $this->fields['id'] . "$rand(itemtype) {\n";
+      $params = ['action'     => 'viewsubitem',
+                      'type'       => 'itemtype',
+                      'parenttype' => $objType,
+                      $foreignKey => $this->fields['id'],
+                      'id'         => -1];
+      if (isset($_GET['load_kb_sol'])) {
+         $params['load_kb_sol'] = $_GET['load_kb_sol'];
+      }
+      $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/timeline.php",
+                                    $params, "", false);
+      echo str_replace("\"itemtype\"", "itemtype", $out);
+      echo "$('#approbation_form$rand').remove()";
+      echo "};";
+
+      echo "
+
+      function change_task_state(tasks_id, target) {
+         $.post('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
+                {'action':     'change_task_state',
+                  'tasks_id':   tasks_id,
+                  'parenttype': '$objType',
+                  '$foreignKey': ".$this->fields['id']."
+                })
+                .done(function(response) {
+                  $(target).removeClass('state_1 state_2')
+                           .addClass('state_'+response.state)
+                           .attr('title', response.label);
+                });
+      }
+
+      function viewEditSubitem" . $this->fields['id'] . "$rand(e, itemtype, items_id, o, domid) {
+               domid = (typeof domid === 'undefined')
+                         ? 'viewitem".$this->fields['id'].$rand."'
+                         : domid;
+               var target = e.target || window.event.srcElement;
+               if (target.nodeName == 'a') return;
+               if (target.className == 'read_more_button') return;
+               $('#'+domid).addClass('edited');
+               $('#'+domid+' .displayed_content').hide();
+               $('#'+domid+' .cancel_edit_item_content').show()
+                                                        .click(function() {
+                                                            $(this).hide();
+                                                            $('#'+domid).removeClass('edited');
+                                                            $('#'+domid+' .edit_item_content').empty().hide();
+                                                            $('#'+domid+' .displayed_content').show();
+                                                        });
+               $('#'+domid+' .edit_item_content').show()
+                                                 .load('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
+                                                       {'action'    : 'viewsubitem',
+                                                        'type'      : itemtype,
+                                                        'parenttype': '$objType',
+                                                        '$foreignKey': ".$this->fields['id'].",
+                                                        'id'        : items_id
+                                                       });
+
+
+      };";
+
+      if (isset($_GET['load_kb_sol'])) {
+         echo "viewAddSubitem" . $this->fields['id'] . "$rand('Solution');";
+      }
+
+      if (isset($_GET['_openfollowup'])) {
+         echo "viewAddSubitem" . $this->fields['id'] . "$rand('ITILFollowup')";
+      }
+      echo "</script>\n";
+
+      //check sub-items rights
+      $tmp = [$foreignKey => $this->getID()];
+      $fupClass = "ITILFollowup";
+      $fup = new $fupClass;
+      $fup->getEmpty();
+      $fup->fields['itemtype'] = $objType;
+      $fup->fields['items_id'] = $this->getID();
+
+      $taskClass = $objType."Task";
+      $task = new $taskClass;
+
+      $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+                        array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
+                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
+
+      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
+         return false;
+      }
+
+      //show choices
+      echo "<div class='timeline_form'>";
+      echo "<ul class='timeline_choices'>";
+
+      if ($canadd_fup || $canadd_task || $canadd_document || $canadd_solution) {
+         echo "<h2>"._sx('button', 'Add')." : </h2>";
+      }
+      if ($canadd_fup) {
+         echo "<li class='followup' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"ITILFollowup\");'>"
+              . "<i class='far fa-comment'></i>".__("Followup")."</li>";
+      }
+
+      if ($canadd_task) {
+         echo "<li class='task' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"$taskClass\");'>"
+              ."<i class='far fa-check-square'></i>".__("Task")."</li>";
+      }
+      if ($canadd_document) {
+         echo "<li class='document' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
+              ."<i class='fa fa-paperclip'></i>".__("Document")."</li>";
+      }
+      if ($canadd_solution) {
+         echo "<li class='solution' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
+              ."<i class='fa fa-check'></i>".__("Solution")."</li>";
+      }
+
+      echo "</ul>"; // timeline_choices
+      echo "<div class='clear'>&nbsp;</div>";
+
+      echo "</div>"; //end timeline_form
+
+      echo "<div class='ajax_box' id='viewitem" . $this->fields['id'] . "$rand'></div>\n";
+   }
+
+
+   /**
+    * Retrieves all timeline items for this ITILObject
+    * @return mixed[] Timeline items
+    * @since 9.4.0
+    *
+   **/
+   function getTimelineItems() {
+      global $DB, $CFG_GLPI;
+
+      $objType = self::getType();
+      $foreignKey = self::getForeignKeyField();
+      $supportsValidation = $objType === "Ticket" || $objType === "Change";
+
+      $timeline = [];
+
+      $user                  = new User();
+      $group                 = new Group();
+
+      $fupClass           = 'ITILFollowup';
+      $followup_obj       = new $fupClass;
+      $taskClass             = $objType."Task";
+      $task_obj              = new $taskClass;
+      $document_item_obj     = new Document_Item();
+      if ($supportsValidation) {
+         $validationClass    = $objType."Validation";
+         $valitation_obj     = new $validationClass;
+      }
+
+      //checks rights
+      $showpublic = Session::haveRightsOr("followup", [ITILFollowup::SEEPUBLIC,
+                                                         ITILFollowup::SEEPRIVATE])
+                 || Session::haveRightsOr("task", [CommonITILTask::SEEPUBLIC,
+                                                        CommonITILTask::SEEPRIVATE]);
+      $restrict_fup = $restrict_task = "";
+      if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
+         $restrict_fup = " AND (`is_private` = 0
+                                OR `users_id` ='" . Session::getLoginUserID() . "') ";
+      }
+
+      $restrict_fup .= " AND `itemtype`='" . self::getType() . "' AND `items_id`='" . $this->getID() . "'";
+
+      $restrict_task = "";
+      if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
+         $restrict_task = " AND (`is_private` = 0
+                                 OR `users_id` ='" . Session::getLoginUserID() . "') ";
+      }
+
+      if (!$showpublic) {
+         $restrict = " AND 1 = 0";
+      }
+
+      //add followups to timeline
+      if ($followup_obj->canview()) {
+         $followups = $followup_obj->find("items_id = ".$this->getID()." $restrict_fup", 'date DESC');
+         foreach ($followups as $followups_id => $followup) {
+            $followup_obj->getFromDB($followups_id);
+            $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
+            $timeline[$followup['date']."_followup_".$followups_id] = ['type' => $fupClass,
+                                                                            'item' => $followup,
+                                                                            'itiltype' => 'Followup'];
+         }
+      }
+
+      //add tasks to timeline
+      if ($task_obj->canview()) {
+         $tasks = $task_obj->find("$foreignKey = ".$this->getID()." $restrict_task", 'date DESC');
+         foreach ($tasks as $tasks_id => $task) {
+            $task_obj->getFromDB($tasks_id);
+            $task['can_edit']                           = $task_obj->canUpdateItem();
+            $timeline[$task['date']."_task_".$tasks_id] = ['type' => $taskClass,
+                                                                'item' => $task,
+                                                                'itiltype' => 'Task'];
+         }
+      }
+
+      //add documents to timeline
+      $document_obj   = new Document();
+      $document_items = $document_item_obj->find("itemtype = '$objType' AND items_id = ".$this->getID());
+      foreach ($document_items as $document_item) {
+         $document_obj->getFromDB($document_item['documents_id']);
+
+         $item = $document_obj->fields;
+         // #1476 - set date_mod and owner to attachment ones
+         $item['date_mod'] = $document_item['date_mod'];
+         $item['users_id'] = $document_item['users_id'];
+
+         $item['timeline_position'] = $document_item['timeline_position'];
+
+         $timeline[$document_item['date_mod']."_document_".$document_item['documents_id']]
+            = ['type' => 'Document_Item', 'item' => $item];
+      }
+
+      $solution_obj = new ITILSolution();
+      $solution_items = $solution_obj->find(
+         "`itemtype`='" . self::getType() . "' AND `items_id`='" . $this->getID() . "'"
+      );
+      foreach ($solution_items as $solution_item) {
+         // fix trouble with html_entity_decode who skip accented characters (on windows browser)
+         $solution_content = preg_replace_callback("/(&#[0-9]+;)/", function($m) {
+            return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
+         }, $solution_item['content']);
+
+         $timeline[$solution_item['date_creation']."_solution_" . $solution_item['id'] ] = [
+            'type' => 'Solution',
+            'item' => [
+               'id'                 => $solution_item['id'],
+               'content'            => Toolbox::unclean_cross_side_scripting_deep($solution_content),
+               'date'               => $solution_item['date_creation'],
+               'users_id'           => $solution_item['users_id'],
+               'solutiontypes_id'   => $solution_item['solutiontypes_id'],
+               'can_edit'           => $objType::canUpdate() && $this->canSolve(),
+               'timeline_position'  => self::TIMELINE_RIGHT,
+               'users_id_editor'    => $solution_item['users_id_editor'],
+               'date_mod'           => $solution_item['date_mod'],
+               'users_id_approval'  => $solution_item['users_id_editor'],
+               'date_approval'      => $solution_item['date_approval'],
+               'status'             => $solution_item['status']
+            ]
+         ];
+      }
+
+      if ($supportsValidation and $validationClass::canCreate()) {
+         $validations = $valitation_obj->find($foreignKey.' = '.$this->getID());
+         foreach ($validations as $validations_id => $validation) {
+            $canedit = $valitation_obj->can($validations_id, UPDATE);
+            $user->getFromDB($validation['users_id_validate']);
+            $timeline[$validation['submission_date']."_validation_".$validations_id] = [
+               'type' => $validationClass,
+               'item' => [
+                  'id'        => $validations_id,
+                  'date'      => $validation['submission_date'],
+                  'content'   => __('Validation request')." => ".$user->getlink().
+                                                 "<br>".$validation['comment_submission'],
+                  'users_id'  => $validation['users_id'],
+                  'can_edit'  => $canedit,
+                  'timeline_position' => $validation['timeline_position']
+               ],
+               'itiltype' => 'Validation'
+            ];
+
+            if (!empty($validation['validation_date'])) {
+               $timeline[$validation['validation_date']."_validation_".$validations_id] = [
+                  'type' => $validationClass,
+                  'item' => [
+                     'id'        => $validations_id,
+                     'date'      => $validation['validation_date'],
+                     'content'   => __('Validation request answer')." : ". _sx('status',
+                                                 ucfirst($validationClass::getStatus($validation['status'])))
+                                                   ."<br>".$validation['comment_validation'],
+                     'users_id'  => $validation['users_id_validate'],
+                     'status'    => "status_".$validation['status'],
+                     'can_edit'  => $canedit,
+                     'timeline_position' => $validation['timeline_position']
+                  ],
+                  'itiltype' => 'Validation'
+               ];
+            }
+         }
+      }
+
+      //reverse sort timeline items by key (date)
+      krsort($timeline);
+
+      return $timeline;
+   }
+
+
+   /**
+    * Displays the timeline of items for this ITILObject
+    *
+    * @param integer $rand random value used by div
+    * @return void
+    * @since 9.4.0
+   **/
+   function showTimeline($rand) {
+      global $CFG_GLPI, $DB, $autolink_options;
+
+      $user              = new User();
+      $group             = new Group();
+      $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
+      $timeline          = $this->getTimelineItems();
+
+      $autolink_options['strip_protocols'] = false;
+
+      $objType = self::getType();
+      $foreignKey = self::getForeignKeyField();
+
+      //display timeline
+      echo "<div class='timeline_history'>";
+
+      $followup_class    = 'ITILFollowup';
+      $followup_obj      = new $followup_class();
+      $followup_obj->getEmpty();
+      $followup_obj->fields['itemtype'] = $objType;
+
+      // show approbation form on top when ticket/change is solved
+      if ($this->fields["status"] == CommonITILObject::SOLVED) {
+         echo "<div class='approbation_form' id='approbation_form$rand'>";
+         $followup_obj->showApprobationForm($this);
+         echo "</div>";
+      }
+
+      // show title for timeline
+      self::showTimelineHeader();
+
+      $timeline_index = 0;
+      foreach ($timeline as $item) {
+         $options = [ 'parent' => $this,
+                           'rand' => $rand
+                           ];
+         if ($obj = getItemForItemtype($item['type'])) {
+            $obj->fields = $item['item'];
+         } else {
+            $obj = $item;
+         }
+         Plugin::doHook('pre_show_item', ['item' => $obj, 'options' => &$options]);
+
+         if (is_array($obj)) {
+            $item_i = $obj['item'];
+         } else {
+            $item_i = $obj->fields;
+         }
+
+         $date = "";
+         if (isset($item_i['date'])) {
+            $date = $item_i['date'];
+         } else if (isset($item_i['date_mod'])) {
+            $date = $item_i['date_mod'];
+         }
+
+         // set item position depending on field timeline_position
+         $user_position = 'left'; // default position
+         if (isset($item_i['timeline_position'])) {
+            switch ($item_i['timeline_position']) {
+               case self::TIMELINE_LEFT:
+                  $user_position = 'left';
+                  break;
+               case self::TIMELINE_MIDLEFT:
+                  $user_position = 'left middle';
+                  break;
+               case self::TIMELINE_MIDRIGHT:
+                  $user_position = 'right middle';
+                  break;
+               case self::TIMELINE_RIGHT:
+                  $user_position = 'right';
+                  break;
+            }
+         }
+
+         //display solution in middle
+         if (($item['type'] == "Solution") && $item_i['status'] != CommonITILValidation::REFUSED
+              && in_array($this->fields["status"], [CommonITILObject::SOLVED, CommonITILObject::CLOSED])) {
+            $user_position.= ' middle';
+         }
+
+         echo "<div class='h_item $user_position'>";
+
+         echo "<div class='h_info'>";
+
+         echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($date)."</div>";
+         if ($item_i['users_id'] !== false) {
+            echo "<div class='h_user'>";
+            if (isset($item_i['users_id']) && ($item_i['users_id'] != 0)) {
+               $user->getFromDB($item_i['users_id']);
+
+               echo "<div class='tooltip_picture_border'>";
+               echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+                      User::getThumbnailURLForPicture($user->fields['picture'])."'>";
+               echo "</div>";
+
+               echo "<span class='h_user_name'>";
+               $userdata = getUserName($item_i['users_id'], 2);
+               echo $user->getLink()."&nbsp;";
+               echo Html::showToolTip($userdata["comment"],
+                                      ['link' => $userdata['link']]);
+               echo "</span>";
+            } else {
+               echo __("Requester");
+            }
+            echo "</div>"; // h_user
+         }
+
+         echo "</div>"; //h_info
+
+         $domid = "viewitem{$item['type']}{$item_i['id']}";
+         if ($item['type'] == $objType.'Validation' && isset($item_i['status'])) {
+            $domid .= $item_i['status'];
+         }
+         $domid .= $rand;
+
+         $fa = null;
+         $class = "h_content";
+         if (isset($item['itiltype'])) {
+            $class .= " ITIL{$item['itiltype']}";
+         } else {
+            $class .= " {$item['type']}";
+         }
+         if ($item['type'] == 'Solution') {
+            switch ($item_i['status']) {
+               case CommonITILValidation::WAITING:
+                  $fa = 'question';
+                  $class .= ' waiting';
+                  break;
+               case CommonITILValidation::ACCEPTED:
+                  $fa = 'thumbs-up';
+                  $class .= ' accepted';
+                  break;
+               case CommonITILValidation::REFUSED:
+                  $fa = 'thumbs-down';
+                  $class .= ' refused';
+                  break;
+            }
+         } else if (isset($item_i['status'])) {
+            $class .= " {$item_i['status']}";
+         }
+
+         echo "<div class='$class' id='$domid'>";
+         if ($fa !== null) {
+            echo "<i class='solimg fa fa-$fa fa-5x'></i>";
+         }
+         if (isset($item_i['can_edit']) && $item_i['can_edit']) {
+            echo "<div class='edit_item_content'></div>";
+            echo "<span class='cancel_edit_item_content'></span>";
+         }
+         echo "<div class='displayed_content'>";
+         if (!in_array($item['type'], ['Document_Item', 'Assign'])
+             && $item_i['can_edit']) {
+            echo "<span class='far fa-edit edit_item' ";
+            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$domid\")'";
+            echo "></span>";
+         }
+         if (isset($item_i['requesttypes_id'])
+             && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
+            echo "<img src='$pics_url/".$item_i['requesttypes_id'].".png' class='h_requesttype' />";
+         }
+
+         if (isset($item_i['content'])) {
+            $content = $item_i['content'];
+            $content = Toolbox::getHtmlToDisplay($content);
+            $content = autolink($content, false);
+
+            $long_text = "";
+            if ((substr_count($content, "<br") > 30) || (strlen($content) > 2000)) {
+               $long_text = "long_text";
+            }
+
+            echo "<div class='item_content $long_text'>";
+            echo "<p>";
+            if (isset($item_i['state'])) {
+               $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
+               if (!$item_i['can_edit']) {
+                  $onClick = "style='cursor: not-allowed;'";
+               }
+               echo "<span class='state state_".$item_i['state']."'
+                           $onClick
+                           title='".Planning::getState($item_i['state'])."'>";
+               echo "</span>";
+            }
+            echo "</p>";
+
+            echo "<div class='rich_text_container'>";
+            echo html_entity_decode($content);
+            echo "</div>";
+
+            if (!empty($long_text)) {
+               echo "<p class='read_more'>";
+               echo "<a class='read_more_button'>.....</a>";
+               echo "</p>";
+            }
+            echo "</div>";
+         }
+
+         echo "<div class='b_right'>";
+         if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
+         }
+         if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
+            echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
+         }
+         if (isset($item_i['requesttypes_id']) && !empty($item_i['requesttypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_requesttypes", $item_i['requesttypes_id'])."<br>";
+         }
+
+         if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
+            echo "<span class='actiontime'>";
+            echo Html::timestampToString($item_i['actiontime'], false);
+            echo "</span>";
+         }
+         if (isset($item_i['begin'])) {
+            echo "<span class='planification'>";
+            echo Html::convDateTime($item_i["begin"]);
+            echo " &rArr; ";
+            echo Html::convDateTime($item_i["end"]);
+            echo "</span>";
+         }
+         if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
+            echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
+            $user->getFromDB($item_i['users_id_tech']);
+            echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+            $userdata = getUserName($item_i['users_id_tech'], 2);
+            echo $user->getLink()."&nbsp;";
+            echo Html::showToolTip($userdata["comment"],
+                                   ['link' => $userdata['link']]);
+            echo "</div>";
+         }
+         if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
+            echo "<div class='groups_id_tech'>";
+            $group->getFromDB($item_i['groups_id_tech']);
+            echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+            echo $group->getLink()."&nbsp;";
+            echo Html::showToolTip($group->getComments(),
+                                   ['link' => $group->getLinkURL()]);
+            echo "</div>";
+         }
+         if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
+            echo "<div class='users_id_editor' id='users_id_editor_".$item_i['users_id_editor']."'>";
+            $user->getFromDB($item_i['users_id_editor']);
+            $userdata = getUserName($item_i['users_id_editor'], 2);
+            echo sprintf(
+               __('Last edited on %1$s by %2$s'),
+               Html::convDateTime($item_i['date_mod']),
+               $user->getLink()
+            );
+            echo Html::showToolTip($userdata["comment"],
+                                   ['link' => $userdata['link']]);
+            echo "</div>";
+         }
+         if ($item['type'] == 'Solution' && $item_i['status'] != CommonITILValidation::WAITING && $item_i['status'] != CommonITILValidation::NONE) {
+            echo "<div class='users_id_approval' id='users_id_approval_".$item_i['users_id_approval']."'>";
+            $user->getFromDB($item_i['users_id_approval']);
+            $userdata = getUserName($item_i['users_id_editor'], 2);
+            $message = __('%1$s on %2$s by %3$s');
+            $action = $item_i['status'] == CommonITILValidation::ACCEPTED ? __('Accepted') : __('Refused');
+            echo sprintf(
+               $message,
+               $action,
+               Html::convDateTime($item_i['date_approval']),
+               $user->getLink()
+            );
+            echo Html::showToolTip($userdata["comment"],
+                                   ['link' => $userdata['link']]);
+            echo "</div>";
+         }
+
+         // show "is_private" icon
+         if (isset($item_i['is_private']) && $item_i['is_private']) {
+            echo "<div class='private'>".__('Private')."</div>";
+         }
+
+         echo "</div>"; // b_right
+
+         if ($item['type'] == 'Document_Item') {
+            if ($item_i['filename']) {
+               $filename = $item_i['filename'];
+               $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+               echo "<img src='";
+               if (empty($filename)) {
+                  $filename = $item_i['name'];
+               }
+               if (file_exists(GLPI_ROOT."/pics/icones/$ext-dist.png")) {
+                  echo $CFG_GLPI['root_doc']."/pics/icones/$ext-dist.png";
+               } else {
+                  echo "$pics_url/file.png";
+               }
+               echo "'/>&nbsp;";
+
+               echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
+                      ."&$foreignKey=".$this->getID()."' target='_blank'>$filename";
+               if (Document::isImage($filename)) {
+                  echo "<div class='timeline_img_preview'>";
+                  echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
+                        ."&$foreignKey=".$this->getID()."&context=timeline'/>";
+                  echo "</div>";
+               }
+               echo "</a>";
+            }
+            if ($item_i['link']) {
+               echo "<a href='{$item_i['link']}' target='_blank'><i class='fa fa-external-link'></i>{$item_i['name']}</a>";
+            }
+            if (!empty($item_i['mime'])) {
+               echo "&nbsp;(".$item_i['mime'].")";
+            }
+            echo "<span class='buttons'>";
+            echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
+                   _sx("button", "Show")."'>";
+            echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
+
+            $doc = new Document();
+            $doc->getFromDB($item_i['id']);
+            if ($doc->can($item_i['id'], UPDATE)) {
+               echo "<a href='".static::getFormURL().
+                     "?delete_document&documents_id=".$item_i['id'].
+                     "&$foreignKey=".$this->getID()."' class='delete_document fas fa-trash-alt pointer' title='".
+                     _sx("button", "Delete permanently")."'>";
+               echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
+            }
+            echo "</span>";
+         }
+
+         echo "</div>"; // displayed_content
+         echo "</div>"; //end h_content
+
+         echo "</div>"; //end  h_info
+
+         $timeline_index++;
+
+         Plugin::doHook('post_show_item', ['item' => $obj, 'options' => $options]);
+
+      } // end foreach timeline
+
+      echo "<div class='break'></div>";
+
+      // recall content (not needed in classic and splitted layout)
+      if (!CommonGLPI::isLayoutWithMain()) {
+
+         echo "<div class='h_item middle'>";
+
+         echo "<div class='h_info'>";
+         echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($this->fields['date'])."</div>";
+         echo "<div class='h_user'>";
+
+         $user->getFromDB($this->fields['users_id_recipient']);
+         echo "<div class='tooltip_picture_border'>";
+         $picture = "";
+         if (isset($user->fields['picture'])) {
+            $picture = $user->fields['picture'];
+         }
+         echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+         User::getThumbnailURLForPicture($picture)."'>";
+         echo "</div>";
+
+         if (isset($user->fields['id']) && $user->fields['id']) {
+            echo $user->getLink()."&nbsp;";
+            $reqdata = getUserName($user->getID(), 2);
+            echo Html::showToolTip(
+               $reqdata["comment"],
+               ['link' => $reqdata['link']]
+            );
+         } else {
+            echo __('Requester');
+         }
+
+         echo "</div>"; // h_user
+         echo "</div>"; //h_info
+
+         echo "<div class='h_content ITILContent'>";
+
+         echo "<div class='b_right'>".sprintf(__($objType."# %s description"), $this->getID())."</div>";
+
+         echo "<div class='title'>";
+         echo Html::setSimpleTextContent($this->fields['name']);
+         echo "</div>";
+
+         echo "<div class='rich_text_container'>";
+         echo Html::setRichTextContent('', $this->fields['content'], '', true);
+         echo "</div>";
+
+         echo "</div>"; // h_content ITILContent
+
+         echo "</div>"; // h_item middle
+
+         echo "<div class='break'></div>";
+      }
+
+      // end timeline
+      echo "</div>"; // h_item $user_position
+      echo "<script type='text/javascript'>$(function() {read_more();});</script>";
+   }
+
+
+   /**
+    * @since 9.4.0
+    *
+    * @param CommonDBTM $item The item whose form should be shown
+    * @param integer $id ID of the item
+    * @param mixed[] $params Array of extra parameters
+    * @return void
+   **/
+   static function showSubForm(CommonDBTM $item, $id, $params) {
+
+      if ($item instanceof Document_Item) {
+         Document_Item::showAddFormForItem($params['parent'], '');
+
+      } else if (method_exists($item, "showForm")
+                 && $item->can(-1, CREATE, $params)) {
+         $item->showForm($id, $params);
+      }
+   }
+
+   /**
+    * Summary of getITILActors
+    * Get the list of actors for the current Change
+    * will return an assoc array of users_id => array of roles.
+    *
+    * @since 9.4.0
+    *
+    * @return array[] of array[] of users and roles
+    *
+   **/
+   public function getITILActors() {
+      global $DB;
+
+      $users_table = $this->getTable() . '_users';
+      switch ($this->getType()) {
+         case 'Ticket':
+            $groups_table = 'glpi_groups_tickets';
+            break;
+         case 'Problem':
+            $groups_table = 'glpi_groups_problems';
+            break;
+         default:
+            $groups_table = $this->getTable() . '_groups';
+            break;
+      }
+      $fk = $this->getForeignKeyField();
+
+      $query = "SELECT DISTINCT `users_id`, `type`
+                FROM (SELECT usr.`id` AS users_id, tu.`type` AS type
+                      FROM `$users_table` tu
+                      LEFT JOIN `glpi_users` usr ON tu.`users_id` = usr.`id`
+                      WHERE tu.`$fk` = ".$this->getId()."
+                      UNION
+                      SELECT usr.`id` AS users_id, gt.`type` AS type
+                      FROM `$groups_table` gt
+                      LEFT JOIN `glpi_groups_users` gu ON gu.`groups_id` = gt.`groups_id`
+                      LEFT JOIN `glpi_users` usr ON gu.`users_id` = usr.`id`
+                      WHERE gt.`$fk` = ".$this->getId()."
+                     ) AS allactors
+                ";
+
+      $res        = $DB->query($query);
+      $users_keys = [];
+      while ($current_tu = $DB->fetch_assoc($res)) {
+         $users_keys[$current_tu['users_id']][] = $current_tu['type'];
+      }
+
+      return $users_keys;
+   }
 }

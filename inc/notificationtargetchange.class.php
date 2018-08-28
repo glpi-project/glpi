@@ -197,6 +197,32 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
          $data['##change.numberofitems##'] = count($data['items']);
 
+         //Get followups
+         $followup_restrict = [];
+         $followup_restrict['items_id'] = $item->getField('id');
+         if (!isset($options['additionnaloption']['show_private'])
+             || !$options['additionnaloption']['show_private']) {
+            $followup_restrict['is_private'] = 0;
+         }
+         $followup_restrict['itemtype'] = 'Change';
+
+         //Followup infos
+         $followups          = getAllDatasFromTable('glpi_itilfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
+         $data['followups'] = [];
+         foreach ($followups as $followup) {
+            $tmp                             = [];
+            $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
+            $tmp['##followup.author##']      = Html::clean(getUserName($followup['users_id']));
+            $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                                         $followup['requesttypes_id']);
+            $tmp['##followup.date##']        = Html::convDateTime($followup['date']);
+            $tmp['##followup.description##'] = $followup['content'];
+
+            $data['followups'][] = $tmp;
+         }
+
+         $data['##change.numberoffollowups##'] = count($data['followups']);
+
          //Validation infos
          if (isset($options['validation_id']) && $options['validation_id']) {
             $restrict['glpi_changevalidations.id'] = $options['validation_id'];

@@ -392,10 +392,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -485,10 +486,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -929,10 +931,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1076,10 +1079,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1347,10 +1351,11 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => $ticket::getType(),
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1375,11 +1380,12 @@ class Ticket extends DbTestCase {
          $this->login($users_name, $user['pass']);
          $uid = getItemByTypeName('User', $users_name, true);
 
-         // TicketFollowup
-         $fup = new \TicketFollowup();
+         // ITILFollowup
+         $fup = new \ITILFollowup();
          $this->integer(
             (int)$fup->add([
-               'tickets_id'   => $tickets_id,
+               'itemtype'  => 'Ticket',
+               'items_id'   => $tickets_id,
                'users_id'     => $uid,
                'content'      => 'A simple followup'
             ])
@@ -1518,7 +1524,7 @@ class Ticket extends DbTestCase {
 
       foreach ($timeline_items as $item) {
          switch ($item['type']) {
-            case 'TicketFollowup':
+            case 'ITILFollowup':
             case 'TicketTask':
             case 'TicketValidation':
             case 'Document_Item':
@@ -1944,7 +1950,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDALLTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDALLTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -1958,7 +1964,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDMYTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDMYTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -1972,7 +1978,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDGROUPTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -2005,7 +2011,6 @@ class Ticket extends DbTestCase {
          */
       ];
    }
-
    /**
     * Tests ability to take a ticket into account.
     *
@@ -2017,7 +2022,6 @@ class Ticket extends DbTestCase {
     * @dataProvider canTakeIntoAccountProvider
     */
    public function testCanTakeIntoAccount(array $input, array $user, $expected) {
-
       // Create a ticket
       $this->login();
       $_SESSION['glpiset_default_tech'] = false;
@@ -2028,26 +2032,21 @@ class Ticket extends DbTestCase {
             'content' => 'A ticket to check canTakeIntoAccount() results',
          ] + $input)
       )->isGreaterThan(0);
-
       // Reload ticket to get all default fields values
       $this->boolean($ticket->getFromDB($ticketId))->isTrue();
-
       // Check if "takeintoaccount_delay_stat" is not automatically defined
       $expectedStat = array_key_exists('takeintoaccount_delay_stat', $input)
          ? $input['takeintoaccount_delay_stat']
          : 0;
       $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo($expectedStat);
-
       // Login with tested user
       $this->login($user['login'], $user['password']);
-
       // Apply specific rights if defined
       if (array_key_exists('rights', $user)) {
          foreach ($user['rights'] as $rightname => $rightvalue) {
             $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
          }
       }
-
       // Verify result
       $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
    }

@@ -104,6 +104,19 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect(Change::getFormURLWithID($_POST['changes_id']));
+} else if (isset($_REQUEST['delete_document'])) {
+   $doc = new Document();
+   $doc->getFromDB(intval($_REQUEST['documents_id']));
+   if ($doc->can($doc->getID(), UPDATE)) {
+      $document_item = new Document_Item;
+      $found_document_items = $document_item->find("itemtype = 'Change' ".
+                                                   " AND items_id = ".intval($_REQUEST['changes_id']).
+                                                   " AND documents_id = ".$doc->getID());
+      foreach ($found_document_items  as $item) {
+         $document_item->delete(Toolbox::addslashes_deep($item), true);
+      }
+   }
+   Html::back();
 } else {
    Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
    $change->display($_GET);

@@ -71,10 +71,11 @@ class ITILSolution extends DbTestCase {
       $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::WAITING);
 
       //approve solution
-      $follow = new \TicketFollowup();
+      $follow = new \ITILFollowup();
       $this->integer(
          (int)$follow->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => $ticket::getType(),
+            'items_id'   => $ticket->getID(),
             'add_close'    => '1'
          ])
       )->isGreaterThan(0);
@@ -87,7 +88,8 @@ class ITILSolution extends DbTestCase {
       //reopen ticket
       $this->integer(
          (int)$follow->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => $ticket::getType(),
+            'items_id'  => $ticket->getID(),
             'add_reopen'   => '1',
             'content'      => 'This is required'
          ])
@@ -113,10 +115,11 @@ class ITILSolution extends DbTestCase {
       $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::WAITING);
 
       //refuse
-      $follow = new \TicketFollowup();
+      $follow = new \ITILFollowup();
       $this->integer(
          (int)$follow->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'   => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'add_reopen'   => '1',
             'content'      => 'This is required'
          ])

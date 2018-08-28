@@ -772,6 +772,7 @@ CREATE TABLE `glpi_changetasks` (
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
+  `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `changes_id` (`changes_id`),
   KEY `state` (`state`),
@@ -804,6 +805,7 @@ CREATE TABLE `glpi_changevalidations` (
   `status` int(11) NOT NULL DEFAULT '2',
   `submission_date` datetime DEFAULT NULL,
   `validation_date` datetime DEFAULT NULL,
+  `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
@@ -6407,6 +6409,7 @@ CREATE TABLE `glpi_problemtasks` (
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
+  `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `problems_id` (`problems_id`),
   KEY `users_id` (`users_id`),
@@ -7538,7 +7541,7 @@ CREATE TABLE `glpi_requesttypes` (
   `is_mailfollowup_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` TINYINT(1) NOT NULL DEFAULT '1',
   `is_ticketheader` TINYINT(1) NOT NULL DEFAULT '1',
-  `is_ticketfollowup` TINYINT(1) NOT NULL DEFAULT '1',
+  `is_itilfollowup` TINYINT(1) NOT NULL DEFAULT '1',
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
@@ -7552,7 +7555,7 @@ CREATE TABLE `glpi_requesttypes` (
   KEY `date_creation` (`date_creation`),
   KEY `is_active` (`is_active`),
   KEY `is_ticketheader` (`is_ticketheader`),
-  KEY `is_ticketfollowup` (`is_ticketfollowup`)
+  KEY `is_itilfollowup` (`is_itilfollowup`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','1','0','0','1','1','1',NULL,NULL,NULL);
@@ -8203,7 +8206,7 @@ CREATE TABLE `glpi_itilsolutions` (
   `users_id_approval` int(11) NOT NULL DEFAULT '0',
   `user_name_approval` varchar(255) NULL DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '1',
-  `ticketfollowups_id` int(11) DEFAULT NULL  COMMENT 'Followup reference on reject or approve a ticket solution',
+  `itilfollowups_id` int(11) DEFAULT NULL  COMMENT 'Followup reference on reject or approve a solution',
   PRIMARY KEY (`id`),
   KEY `itemtype` (`itemtype`),
   KEY `item_id` (`items_id`),
@@ -8213,7 +8216,7 @@ CREATE TABLE `glpi_itilsolutions` (
   KEY `users_id_editor` (`users_id_editor`),
   KEY `users_id_approval` (`users_id_approval`),
   KEY `status` (`status`),
-  KEY `ticketfollowups_id` (`ticketfollowups_id`)
+  KEY `itilfollowups_id` (`itilfollowups_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -8434,33 +8437,6 @@ CREATE TABLE `glpi_ticketcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_ticketfollowups
-
-DROP TABLE IF EXISTS `glpi_ticketfollowups`;
-CREATE TABLE `glpi_ticketfollowups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tickets_id` int(11) NOT NULL DEFAULT '0',
-  `date` datetime DEFAULT NULL,
-  `users_id` int(11) NOT NULL DEFAULT '0',
-  `users_id_editor` int(11) NOT NULL DEFAULT '0',
-  `content` longtext COLLATE utf8_unicode_ci,
-  `is_private` tinyint(1) NOT NULL DEFAULT '0',
-  `requesttypes_id` int(11) NOT NULL DEFAULT '0',
-  `date_mod` datetime DEFAULT NULL,
-  `date_creation` datetime DEFAULT NULL,
-  `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `date` (`date`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`),
-  KEY `users_id` (`users_id`),
-  KEY `users_id_editor` (`users_id_editor`),
-  KEY `tickets_id` (`tickets_id`),
-  KEY `is_private` (`is_private`),
-  KEY `requesttypes_id` (`requesttypes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -9563,3 +9539,30 @@ CREATE TABLE `glpi_pdus_racks` (
   KEY `pdus_id` (`pdus_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- /Datacenters
+
+DROP TABLE IF EXISTS `glpi_itilfollowups`;
+CREATE TABLE `glpi_itilfollowups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `date` datetime DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_editor` int(11) NOT NULL DEFAULT '0',
+  `content` longtext COLLATE utf8_unicode_ci,
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
+  `requesttypes_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `item_id` (`items_id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_editor` (`users_id_editor`),
+  KEY `is_private` (`is_private`),
+  KEY `requesttypes_id` (`requesttypes_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

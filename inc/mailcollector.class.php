@@ -675,7 +675,7 @@ class MailCollector  extends CommonDBTM {
 
                      // Is a mail responding of an already existing ticket ?
                      if (isset($tkt['tickets_id'])) {
-                        $fup = new TicketFollowup();
+                        $fup = new ITILFollowup();
                         if ($fup->add($tkt)) {
                            $delete_mail = self::ACCEPTED_FOLDER;
                         } else {

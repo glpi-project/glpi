@@ -213,6 +213,74 @@ function update93to94() {
    }
    /** /Factorize components search options on Computers, Printers and NetworkEquipments */
 
+   /** Add followup tables for new ITILFollowup class */
+   if (!$DB->tableExists('glpi_itilfollowups')) {
+      //Migrate ticket followups
+      $migration->renameTable('glpi_ticketfollowups', 'glpi_itilfollowups');
+      $migration->addField(
+         'glpi_itilfollowups',
+         'itemtype',
+         "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
+         ['after' => 'id']
+      );
+      $query = "ALTER TABLE `glpi_itilfollowups` CHANGE `tickets_id` `items_id` 
+         INT(11) NOT NULL DEFAULT '0'";
+      $DB->queryOrDie($query, "9.4 change glpi_itilfollowups tickets_id to items_id");
+      $migration->addKey(
+         'glpi_itilfollowups',
+         'itemtype'
+      );
+      $migration->dropKey(
+         'glpi_itilfollowups',
+         'tickets_id'
+      );
+      $migration->addKey(
+         'glpi_itilfollowups',
+         'items_id',
+         'item_id'
+      );
+      $migration->addKey(
+         'glpi_itilfollowups',
+         ['itemtype','items_id'],
+         'item'
+      );
+   }
+
+   if ($DB->tableExists('glpi_requesttypes')) {
+      $migration->changeField(
+         'glpi_requesttypes', 'is_ticketfollowup', 'is_itilfollowup', 'bool', ['value' => '1']
+      );
+      $migration->dropKey(
+         'glpi_requesttypes',
+         'is_ticketfollowup'
+      );
+      $migration->addKey(
+         'glpi_requesttypes',
+         'is_itilfollowup'
+      );
+   }
+
+   if ($DB->tableExists('glpi_itilsolutions')) {
+      $migration->changeField(
+         'glpi_itilsolutions',
+         'ticketfollowups_id',
+         'itilfollowups_id',
+         "int(11) DEFAULT NULL"
+      );
+      $migration->dropKey(
+         'glpi_itilsolutions',
+         'ticketfollowups_id'
+      );
+      $migration->addKey(
+         'glpi_itilsolutions',
+         'itilfollowups_id'
+      );
+   }
+   /** Add timeline_position to Change and Problem items */
+   $migration->addField("glpi_changetasks", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
+   $migration->addField("glpi_changevalidations", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
+   $migration->addField("glpi_problemtasks", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
