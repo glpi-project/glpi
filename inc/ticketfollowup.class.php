@@ -34,11 +34,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// TODO extends it from CommonDBChild
 /**
  * TicketFollowup Class
 **/
-class TicketFollowup  extends CommonDBTM {
+class TicketFollowup  extends CommonITILFollowup {
 
 
    // From CommonDBTM
@@ -46,24 +45,11 @@ class TicketFollowup  extends CommonDBTM {
 
    static $rightname              = 'followup';
 
-   const SEEPUBLIC       =    1;
-   const UPDATEMY        =    2;
-   const ADDMYTICKET     =    4;
-   const UPDATEALL       = 1024;
-   const ADDGROUPTICKET  = 2048;
-   const ADDALLTICKET    = 4096;
-   const SEEPRIVATE      = 8192;
 
 
-
-   /**
-    * Name of the type
-    *
-    * @param $nb : number of item in the type
-   **/
-   static function getTypeName($nb = 0) {
-      return _n('Followup', 'Followups', $nb);
-   }
+   // From CommonDBChild
+   static public $itemtype           = 'Ticket';
+   static public $items_id           = 'tickets_id';
 
 
    static function canCreate() {

@@ -5677,5 +5677,4 @@ abstract class CommonITILObject extends CommonDBTM {
    static function getTimelinePosition($items_id, $sub_type, $users_id) {
       return self::TIMELINE_NOTSET;
    }
-
 }
