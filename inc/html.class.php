@@ -6144,7 +6144,7 @@ class Html {
          //  Tickets
          if (Session::haveRight("ticket", CREATE)
             || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
+            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)) {
             $menu['tickets'] = [
                'default'   => '/front/ticket.php',
                'title'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),

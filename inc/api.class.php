@@ -2280,7 +2280,6 @@ abstract class API extends CommonGLPI {
       //specific case
       switch ($itemtype) {
          case 'Ticket' :
-            $hclasses[] = "TicketFollowup";
             $hclasses[] = "TicketTask";
             $hclasses[] = "TicketValidation";
             $hclasses[] = "TicketCost";

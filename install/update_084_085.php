@@ -492,7 +492,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 rename global_add_followups to followup");
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". TicketFollowup::ADDALLTICKET ."
+                 SET `rights` = ". ITILFollowup::ADDALLTICKET ."
                  WHERE `name` = 'followup'
                        AND `rights` = '1'";
       $DB->queryOrDie($query, "0.85 update followup with global_add_followups right");
@@ -503,7 +503,7 @@ function update084to085() {
                          "`name` = 'add_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::ADDMYTICKET  ."
+                 SET `rights` = `rights` | " . ITILFollowup::ADDMYTICKET  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
          $DB->queryOrDie($query, "0.85 update followup with add_followups right");
@@ -518,7 +518,7 @@ function update084to085() {
                          "`name` = 'group_add_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::ADDGROUPTICKET  ."
+                 SET `rights` = `rights` | " . ITILFollowup::ADDGROUPTICKET  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with group_add_followups right");
@@ -533,7 +533,7 @@ function update084to085() {
                          "`name` = 'observe_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::SEEPUBLIC  ."
+                 SET `rights` = `rights` | " . ITILFollowup::SEEPUBLIC  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with observe_ticket right");
@@ -545,8 +545,8 @@ function update084to085() {
                          "`name` = 'show_full_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " .TicketFollowup::SEEPUBLIC ." | ".
-                                              TicketFollowup::SEEPRIVATE ."
+                 SET `rights` = `rights` | " .ITILFollowup::SEEPUBLIC ." | ".
+                                              ITILFollowup::SEEPRIVATE ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
          $DB->queryOrDie($query, "0.85 update followup with show_full_ticket right");
@@ -558,7 +558,7 @@ function update084to085() {
                          "`name` = 'update_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEALL  ."
+                 SET `rights` = `rights` | " . READ  ." | ". ITILFollowup::UPDATEALL  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with update_followups right");
@@ -573,7 +573,7 @@ function update084to085() {
                          "`name` = 'update_own_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEMY  ."
+                 SET `rights` = `rights` | " . READ  ." | ". ITILFollowup::UPDATEMY  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with update_own_followups right");

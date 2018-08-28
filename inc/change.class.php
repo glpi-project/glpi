@@ -159,6 +159,19 @@ class Change extends CommonITILObject {
    }
 
 
+   /**
+    * is the current user could reopen the current change
+    * @since  9.2
+    * @return boolean
+    */
+   function canReopen() {
+      return Session::haveRight('followup', CREATE)
+             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
+                 || $this->isAllowedStatus($this->fields['status'], self::EVALUATION));
+   }
+
+
    function pre_deleteItem() {
 
       NotificationEvent::raiseEvent('delete', $this);
@@ -187,11 +200,19 @@ class Change extends CommonITILObject {
       if (static::canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
-               $ong = [1 => __('Analysis'),
-                       3 => __('Plans')];
+               $timeline    = $item->getTimelineItems();
+               $nb_elements = count($timeline);
+
+               $ong = [
+                  5 => __("Processing change")." <sup class='tab_nb'>$nb_elements</sup>",
+                  1 => __('Analysis'),
+                  3 => __('Plans')
+               ];
+
                if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
                }
+
                return $ong;
          }
       }
@@ -222,6 +243,13 @@ class Change extends CommonITILObject {
                case 4 :
                   $item->showStats();
                   break;
+               case 5 :
+                  echo "<div class='timeline_box'>";
+                  $rand = mt_rand();
+                  $item->showTimelineForm($rand);
+                  $item->showTimeline($rand);
+                  echo "</div>";
+                  break;
             }
             break;
       }
@@ -234,14 +262,11 @@ class Change extends CommonITILObject {
       // show related tickets and changes
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('ITILSolution', $ong, $options);
       $this->addStandardTab('ChangeValidation', $ong, $options);
-      $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
@@ -253,6 +278,13 @@ class Change extends CommonITILObject {
 
    function cleanDBonPurge() {
       global $DB;
+
+      $DB->delete(
+         'glpi_itilfollowups', [
+            'items_id'   => $this->fields['id'],
+            'itemtype'   => 'Change'
+         ]
+      );
 
       $DB->delete(
          'glpi_changetasks', [
@@ -455,6 +487,8 @@ class Change extends CommonITILObject {
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, ChangeValidation::rawSearchOptionsToAdd());
+
+      $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, ChangeTask::rawSearchOptionsToAdd());
 
@@ -921,7 +955,7 @@ class Change extends CommonITILObject {
    **/
    function numberOfTasks() {
       global $DB;
-      // Set number of followups
+      // Set number of tasks
       $row = $DB->request([
          'FROM'   => 'glpi_changetasks',
          'COUNT'  => 'cpt',

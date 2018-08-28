@@ -515,7 +515,7 @@ class Document extends DbTestCase {
             'class' => \TicketTask::class,
          ],
          [
-            'class' => \TicketFollowup::class,
+            'class' => \ITILFollowup::class,
          ],
       ];
    }

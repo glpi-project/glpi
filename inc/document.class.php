@@ -117,7 +117,7 @@ class Document extends CommonDBTM {
 
       // Have right to add document OR ticket followup
       return (Session::haveRight('document', CREATE)
-              || Session::haveRight('followup', TicketFollowup::ADDMYTICKET));
+              || Session::haveRight('followup', ITILFollowup::ADDMYTICKET));
    }
 
 
@@ -755,10 +755,11 @@ class Document extends CommonDBTM {
          'FROM'      => 'glpi_tickets',
          'COUNT'     => 'cpt',
          'LEFT JOIN' => [
-            'glpi_ticketfollowups' => [
+            'glpi_itilfollowups' => [
                'FKEY' => [
                   'glpi_tickets'         => 'id',
-                  'glpi_ticketfollowups' => 'tickets_id'
+                  'glpi_itilfollowups' => 'items_id',
+                  ['AND' => ['glpi_itilfollowups.itemtype' => 'Ticket']]
                ]
             ],
             'glpi_tickettasks'     => [
@@ -779,7 +780,7 @@ class Document extends CommonDBTM {
             'glpi_tickets.id' => $tickets_id,
             'OR' => [
                'glpi_tickets.content'         => ['REGEXP', $regexPattern],
-               'glpi_ticketfollowups.content' => ['REGEXP', $regexPattern],
+               'glpi_itilfollowups.content' => ['REGEXP', $regexPattern],
                'glpi_tickettasks.content'     => ['REGEXP', $regexPattern],
                'glpi_itilsolutions.content'   => ['REGEXP', $regexPattern]
             ]

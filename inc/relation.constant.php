@@ -520,7 +520,7 @@ $RELATION = ["glpi_authldaps"
                                  'glpi_reminders_users'     => 'reminders_id',],
 
                         "glpi_requesttypes"
-                        => ['glpi_ticketfollowups'  => 'requesttypes_id',
+                        => ['glpi_itilfollowups'  => 'requesttypes_id',
                                  'glpi_tickets'          => 'requesttypes_id',
                                  'glpi_users'            => 'default_requesttypes_id',
                                  'glpi_configs'          => 'default_requesttypes_id'],
@@ -637,7 +637,7 @@ $RELATION = ["glpi_authldaps"
                             'glpi_projecttasks_tickets'=> 'tickets_id',
                             'glpi_slalevels_tickets'   => 'tickets_id',
                             'glpi_suppliers_tickets'   => 'tickets_id',
-                            'glpi_ticketfollowups'     => 'tickets_id',
+                            'glpi_itilfollowups'     => 'items_id',
                             'glpi_ticketsatisfactions' => 'tickets_id',
                             'glpi_tickettasks'         => 'tickets_id',
                             'glpi_ticketvalidations'   => 'tickets_id',
@@ -697,7 +697,7 @@ $RELATION = ["glpi_authldaps"
                                  'glpi_reservations'              => 'users_id',
                                  'glpi_softwarelicenses'          => ['users_id_tech', 'users_id'],
                                  'glpi_softwares'                 => ['users_id_tech', 'users_id'],
-                                 'glpi_ticketfollowups'           => 'users_id',
+                                 'glpi_itilfollowups'           => 'users_id',
                                  'glpi_tickets'                   => ['users_id_recipient',
                                                                            'users_id_lastupdater'],
                                  'glpi_tickets_users'             => 'users_id',

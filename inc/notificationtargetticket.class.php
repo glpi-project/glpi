@@ -156,7 +156,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          'FROM'   => 'glpi_profilerights',
          'WHERE'  => [
             'name'   => 'followup',
-            'rights' => ['&', TicketFollowup::SEEPRIVATE]
+            'rights' => ['&', ITILFollowup::SEEPRIVATE]
          ]
       ]);
 
@@ -267,7 +267,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                      ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`
                          AND `glpi_profilerights`.`name` = 'followup'
                          AND `glpi_profilerights`.`rights` & ".
-                            TicketFollowup::SEEPRIVATE.") ";
+                            ITILFollowup::SEEPRIVATE.") ";
 
       }
       return $query;
@@ -568,14 +568,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $data['##ticket.numberofchanges##'] = count($data['changes']);
 
-         $followup_restrict = $restrict;
+         $followup_restrict = [];
+         $followup_restrict['items_id'] = $item->getField('id');
          if (!isset($options['additionnaloption']['show_private'])
              || !$options['additionnaloption']['show_private']) {
             $followup_restrict['is_private'] = 0;
          }
+         $followup_restrict['itemtype'] = 'Ticket';
 
          //Followup infos
-         $followups          = getAllDatasFromTable('glpi_ticketfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
+         $followups          = getAllDatasFromTable('glpi_itilfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
          $data['followups'] = [];
          foreach ($followups as $followup) {
             $tmp                             = [];
@@ -592,7 +594,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $data['##ticket.numberoffollowups##'] = count($data['followups']);
 
          // Approbation of solution
-         $replysolved = getAllDatasFromTable('glpi_ticketfollowups', $restrict, false, ['date_mod DESC', 'id ASC']);
+         $solution_restrict = [
+            'itemtype' => 'Ticket',
+            'items_id' => $item->getField('id')
+         ];
+         $replysolved = getAllDatasFromTable('glpi_itilfollowups', '', false, ['date_mod DESC', 'id ASC']);
          $current = current($replysolved);
          $data['##ticket.solution.approval.description##'] = $current['content'];
          $data['##ticket.solution.approval.date##']        = Html::convDateTime($current['date']);

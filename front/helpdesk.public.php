@@ -71,7 +71,7 @@ if (!Session::haveRight('ticket', CREATE)
     && !Session::haveRight('reminder_public', READ)
     && !Session::haveRight("rssfeed_public", READ)) {
 
-   if (Session::haveRight('followup', TicketFollowup::SEEPUBLIC)
+   if (Session::haveRight('followup', ITILFollowup::SEEPUBLIC)
        || Session::haveRight('task', TicketTask::SEEPUBLIC)
        || Session::haveRightsOr('ticketvalidation', [TicketValidation::VALIDATEREQUEST,
                                                           TicketValidation::VALIDATEINCIDENT])) {
