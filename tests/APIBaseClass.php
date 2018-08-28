@@ -1395,7 +1395,7 @@ abstract class APIBaseClass extends \atoum {
 
       // Test a valid email is accepted
       $res = $this->query('lostPassword',
-                          ['verb'    => 'PUT',
+                          ['verb'    => 'PATCH',
                            'json'    => [
                             'email'  => $email
                            ]
@@ -1420,7 +1420,7 @@ abstract class APIBaseClass extends \atoum {
 
       // Test reset password with the good token
       $res = $this->query('lostPassword',
-                        ['verb'    => 'PUT',
+                        ['verb'    => 'PATCH',
                          'json'    => [
                           'email'                 => $email,
                           'password_forget_token' => $token,
