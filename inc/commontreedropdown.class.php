@@ -630,7 +630,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             echo __('As child of');
             Dropdown::show($itemtype, ['name'     => 'parent',
                                             'comments' => 0,
-                                            'entity'   => $_SESSION['glpiactive_entity']]);
+                                            'entity'   => $_SESSION['glpiactive_entity'],
+                                            'entity_sons' => $_SESSION['glpiactive_entity_recursive']]);
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
