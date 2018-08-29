@@ -484,6 +484,118 @@ class Change extends CommonITILObject {
 
       $tab = array_merge($tab, ChangeValidation::rawSearchOptionsToAdd());
 
+      $tab[] = [
+         'id'                 => 'followup',
+         'name'               => _n('Followup', 'Followups', Session::getPluralNumber())
+      ];
+
+      $followup_condition = '';
+      if (!Session::haveRight('followup', ChangeFollowup::SEEPRIVATE)) {
+         $followup_condition = "AND (`NEWTABLE`.`is_private` = 0
+                                     OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+      }
+
+      $newtab = [
+         'id'                 => '25',
+         'table'              => 'glpi_changefollowups',
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'htmltext'           => true,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ],
+         'datatype'           => 'text'
+      ];
+
+      $tab[] = $newtab;
+
+      $tab[] = [
+         'id'                 => '36',
+         'table'              => 'glpi_changefollowups',
+         'field'              => 'date',
+         'name'               => __('Date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '27',
+         'table'              => 'glpi_changefollowups',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of followups'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          =>$followup_condition
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '29',
+         'table'              => 'glpi_requesttypes',
+         'field'              => 'name',
+         'name'               => __('Request source'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_changefollowups',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => $followup_condition
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '91',
+         'table'              => 'glpi_changefollowups',
+         'field'              => 'is_private',
+         'name'               => __('Private followup'),
+         'datatype'           => 'bool',
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '93',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Writer'),
+         'datatype'           => 'itemlink',
+         'right'              => 'all',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_changefollowups',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => $followup_condition
+               ]
+            ]
+         ]
+      ];
+
       $tab = array_merge($tab, ChangeTask::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, $this->getSearchOptionsSolution());
