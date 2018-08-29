@@ -508,7 +508,9 @@ class Migration {
          }
       }
 
-      if (!isIndex($table, $indexname)) {
+      $dbu = new DBUtils();
+
+      if (!$dbu::isIndex($table, $indexname)) {
          if (is_array($fields)) {
             if ($len) {
                $fields = "`".implode($fields, "`($len), `")."`($len)";
