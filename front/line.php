@@ -36,6 +36,6 @@ Session::checkRight("line", READ);
 
 Html::header(Line::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "line");
 
-Search::show('line');
+Search::show('Line');
 
 Html::footer();
