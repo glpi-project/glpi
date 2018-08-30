@@ -180,7 +180,7 @@ class Change extends CommonITILObject {
       return Session::haveRight('followup', CREATE)
              && in_array($this->fields["status"], $this->getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
-                 || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
+                 || $this->isAllowedStatus($this->fields['status'], self::EVALUATION));
    }
 
 

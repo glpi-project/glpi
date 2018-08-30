@@ -49,8 +49,8 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['add_close'])
            ||isset($_POST['add_reopen'])) {
-   $ticket = new Ticket();
-   if ($ticket->getFromDB($_POST["changes_id"]) && $ticket->canApprove()) {
+   $change = new Change();
+   if ($change->getFromDB($_POST["changes_id"]) && $change->canApprove()) {
       $fup->add($_POST);
 
       Event::log($fup->getField('changes_id'), "change", 4, "tracking",

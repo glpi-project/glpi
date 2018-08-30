@@ -354,7 +354,7 @@ class ChangeFollowup  extends CommonITILFollowup {
          if (($this->input["_job"]->countUsers(CommonITILActor::ASSIGN) > 0)
              || ($this->input["_job"]->countGroups(CommonITILActor::ASSIGN) > 0)
              || ($this->input["_job"]->countSuppliers(CommonITILActor::ASSIGN) > 0)) {
-            $update['status'] = CommonITILObject::ASSIGNED;
+            $update['status'] = CommonITILObject::EVALUATION;
          } else {
             $update['status'] = CommonITILObject::INCOMING;
          }
@@ -588,5 +588,46 @@ class ChangeFollowup  extends CommonITILFollowup {
 
       echo "</td></tr></table></div>";
       Html::closeForm();
+   }
+
+
+   /** form for soluce's approbation
+    *
+    * @param $change Object : the change
+   **/
+   function showApprobationForm($change) {
+      global $DB, $CFG_GLPI;
+
+      $input = ['changes_id' => $change->getField('id')];
+
+      if (($change->fields["status"] == CommonITILObject::SOLVED)
+          && $change->canApprove()
+          && $change->isAllowedStatus($change->fields['status'], Change::CLOSED)) {
+         echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='4'>". __('Approval of the solution')."</th></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>".__('Comments')."<br>(".__('Optional when approved').")</td>";
+         echo "<td class='center middle' colspan='2'>";
+         echo "<textarea name='content' cols='70' rows='6'></textarea>";
+         echo "<input type='hidden' name='changes_id' value='".$change->getField('id')."'>";
+         echo "<input type='hidden' name='requesttypes_id' value='".
+                RequestType::getDefault('followup')."'>";
+         echo "</td></tr>\n";
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='tab_bg_2 center' colspan='2' width='200'>\n";
+         echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
+                class='submit'>";
+         echo "</td>\n";
+         echo "<td class='tab_bg_2 center' colspan='2'>\n";
+         echo "<input type='submit' name='add_close' value=\"".__('Approve the solution')."\"
+                class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table>";
+         Html::closeForm();
+      }
+      return true;
    }
 }

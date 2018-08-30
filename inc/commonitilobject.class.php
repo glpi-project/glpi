@@ -2285,7 +2285,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return an array
    **/
    static function getAllowedStatusArray($current) {
-
+error_log("getAllowedStatusArray");
       $tab = static::getAllStatusArray();
       if (!isset($current)) {
          $current = self::INCOMING;

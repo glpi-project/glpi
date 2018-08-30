@@ -589,4 +589,45 @@ class ProblemFollowup  extends CommonITILFollowup {
       echo "</td></tr></table></div>";
       Html::closeForm();
    }
+
+
+   /** form for soluce's approbation
+    *
+    * @param $problem Object : the problem
+   **/
+   function showApprobationForm($problem) {
+      global $DB, $CFG_GLPI;
+
+      $input = ['problems_id' => $problem->getField('id')];
+
+      if (($problem->fields["status"] == CommonITILObject::SOLVED)
+          && $problem->canApprove()
+          && $problem->isAllowedStatus($problem->fields['status'], Problem::CLOSED)) {
+         echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='4'>". __('Approval of the solution')."</th></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>".__('Comments')."<br>(".__('Optional when approved').")</td>";
+         echo "<td class='center middle' colspan='2'>";
+         echo "<textarea name='content' cols='70' rows='6'></textarea>";
+         echo "<input type='hidden' name='problems_id' value='".$problem->getField('id')."'>";
+         echo "<input type='hidden' name='requesttypes_id' value='".
+                RequestType::getDefault('followup')."'>";
+         echo "</td></tr>\n";
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='tab_bg_2 center' colspan='2' width='200'>\n";
+         echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
+                class='submit'>";
+         echo "</td>\n";
+         echo "<td class='tab_bg_2 center' colspan='2'>\n";
+         echo "<input type='submit' name='add_close' value=\"".__('Approve the solution')."\"
+                class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table>";
+         Html::closeForm();
+      }
+      return true;
+   }
 }

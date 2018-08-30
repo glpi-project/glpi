@@ -292,18 +292,16 @@ class ITILSolution extends CommonDBTM {
 
       //default status for global solutions
       $status = CommonITILValidation::ACCEPTED;
-      if ($input['itemtype'] == Ticket::getType()) {
-         $autoclosedelay =  Entity::getUsedConfig(
-            'autoclose_delay',
-            $this->item->getEntityID(),
-            '',
-            Entity::CONFIG_NEVER
-         );
+      $autoclosedelay =  Entity::getUsedConfig(
+         'autoclose_delay',
+         $this->item->getEntityID(),
+         '',
+         Entity::CONFIG_NEVER
+      );
 
-         // 0 = immediatly
-         if ($autoclosedelay != 0) {
-            $status = CommonITILValidation::WAITING;
-         }
+      // 0 = immediatly
+      if ($autoclosedelay != 0) {
+         $status = CommonITILValidation::WAITING;
       }
 
       //Auto approval; store user and date
@@ -331,19 +329,18 @@ class ITILSolution extends CommonDBTM {
 
       $item = $this->item;
       $status = $item::CLOSED;
-      if ($this->item->getType() == 'Ticket') {
-         $autoclosedelay =  Entity::getUsedConfig(
-            'autoclose_delay',
-            $this->item->getEntityID(),
-            '',
-            Entity::CONFIG_NEVER
-         );
+      $autoclosedelay =  Entity::getUsedConfig(
+         'autoclose_delay',
+         $this->item->getEntityID(),
+         '',
+         Entity::CONFIG_NEVER
+      );
 
          // 0 = immediatly
          if ($autoclosedelay != 0) {
             $status = $item::SOLVED;
          }
-      }
+
       $this->item->update([
          'id'     => $this->item->getID(),
          'status' => $status
