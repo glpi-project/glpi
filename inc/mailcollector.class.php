@@ -297,6 +297,14 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("use_mail_date", $this->fields["use_mail_date"]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'><td>" . __('Caller\'s email location') . "</td>";
+      echo "<td>";
+      Dropdown::showFromArray("caller_location", [
+         "from" => __('From'),
+         "reply-to" => __('Reply-To')
+      ], ["value" => $this->fields['caller_location']]);
+      echo "</td></tr>\n";
+
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
@@ -634,7 +642,7 @@ class MailCollector  extends CommonDBTM {
                $rejinput                      = [];
                $rejinput['mailcollectors_id'] = $mailgateID;
                if (!$tkt['_blacklisted']) {
-                  $rejinput['from']              = $tkt['_head']['from'];
+                  $rejinput['from']              = $tkt['_head'][$this->fields['caller_location']];
                   $rejinput['to']                = $tkt['_head']['to'];
                   $rejinput['users_id']          = $tkt['_users_id_requester'];
                   $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
@@ -653,7 +661,7 @@ class MailCollector  extends CommonDBTM {
 
                   // entities_id set when new ticket / tickets_id when new followup
                   if (isset($tkt['_refuse_email_with_response'])) {
-                     $this->sendMailRefusedResponse($tkt['_head']['from'], $tkt['name']);
+                     $this->sendMailRefusedResponse($tkt['_head'][$this->fields['caller_location']], $tkt['name']);
                      $delete_mail = self::REFUSED_FOLDER;
                      $refused++;
                   } else if (isset($tkt['_refuse_email_no_response'])) {
@@ -792,12 +800,13 @@ class MailCollector  extends CommonDBTM {
             Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR."/"));
          }
       }
+
       //  Who is the user ?
-      $tkt['_users_id_requester']                              = User::getOrImportByEmail($head['from']);
+      $tkt['_users_id_requester']                              = User::getOrImportByEmail($head[$this->fields['caller_location']]);
       $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
       // Set alternative email if user not found / used if anonymous mail creation is enable
       if (!$tkt['_users_id_requester']) {
-         $tkt["_users_id_requester_notif"]['alternative_email'][0] = $head['from'];
+         $tkt["_users_id_requester_notif"]['alternative_email'][0] = $head[$this->fields['caller_location']];
       }
 
       // Fix author of attachment
@@ -807,7 +816,7 @@ class MailCollector  extends CommonDBTM {
       // Add to and cc as additional observer if user found
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
-            if (($cc != $head['from'])
+            if (($cc != $head[$this->fields['caller_location']])
                 && !Toolbox::inArrayCaseCompare($cc, $blacklisted_emails) // not blacklisted emails
                 && (($tmp = User::getOrImportByEmail($cc)) > 0)) {
                $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
@@ -820,7 +829,7 @@ class MailCollector  extends CommonDBTM {
 
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
-            if (($to != $head['from'])
+            if (($to != $head[$this->fields['caller_location']])
                 && !Toolbox::inArrayCaseCompare($to, $blacklisted_emails) // not blacklisted emails
                 && (($tmp = User::getOrImportByEmail($to)) > 0)) {
                    $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
@@ -915,12 +924,12 @@ class MailCollector  extends CommonDBTM {
              && ($job->fields['status'] != CommonITILObject::CLOSED)
              && ($CFG_GLPI['use_anonymous_followups']
                  || ($tkt['_users_id_requester'] > 0)
-                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from'])
+                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head[$this->fields['caller_location']])
                  || ($tkt['_supplier_email'] = $st->isSupplierEmail($tkt['tickets_id'],
-                                                                    $head['from'])))) {
+                                                                    $head[$this->fields['caller_location']])))) {
 
             if ($tkt['_supplier_email']) {
-               $tkt['content'] = sprintf(__('From %s'), $head['from'])."\n\n".$tkt['content'];
+               $tkt['content'] = sprintf(__('From %s'), $head[$this->fields['caller_location']])."\n\n".$tkt['content'];
             }
 
             $content        = explode("\n", $tkt['content']);
@@ -1286,6 +1295,7 @@ class MailCollector  extends CommonDBTM {
 
       $sender       = $mail_header->from[0];
       $to           = $mail_header->to[0];
+      $reply_to     = $mail_header->reply_to[0];
       $date         = date("Y-m-d H:i:s", strtotime($mail_header->date));
 
       $mail_details = [];
@@ -1318,7 +1328,8 @@ class MailCollector  extends CommonDBTM {
 
          $mail_details = ['from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
-                               'to'         =>  Toolbox::strtolower($to->mailbox).'@'.$to->host,
+                               'reply-to'   => Toolbox::strtolower($reply_to->mailbox).'@'.$reply_to->host,
+                               'to'         => Toolbox::strtolower($to->mailbox).'@'.$to->host,
                                'message_id' => $mail_header->message_id,
                                'tos'        => $tos,
                                'ccs'        => $ccs,

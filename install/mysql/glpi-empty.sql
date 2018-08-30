@@ -4292,6 +4292,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `errors` int(11) NOT NULL DEFAULT '0',
   `use_mail_date` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `caller_location` enum('from', 'reply-to') NOT NULL DEFAULT 'from',
   PRIMARY KEY (`id`),
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),

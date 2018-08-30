@@ -61,6 +61,12 @@ function update93to94() {
    }
    /** /Add default group for a user */
 
+   /** Add caller location on glpi_mailcollectors */
+   if (!$DB->fieldExists('glpi_mailcollectors', 'caller_location')) {
+      $migration->addField("glpi_mailcollectors", "caller_location", "enum('from', 'reply-to') NOT NULL DEFAULT 'from'");
+   }
+   /** /Add caller location on glpi_mailcollectors */
+
    /** Add business rules on assets */
    $rule = ['name'         => 'Domain user assignation',
             'is_active'    => 1,
