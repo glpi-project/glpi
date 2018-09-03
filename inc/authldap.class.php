@@ -2920,6 +2920,7 @@ class AuthLDAP extends CommonDBTM {
             $_SESSION['ldap_import']['mode']           = self::ACTION_IMPORT;
          } else {
             $_SESSION['ldap_import']['_in_modal']      = 0;
+            $_SESSION['ldap_import']['no_expert_mode'] = 0;
          }
       }
 
@@ -3053,7 +3054,8 @@ class AuthLDAP extends CommonDBTM {
       // If not coming from the ticket form, then give expert/simple link
       if ((Config::canUpdate()
            || Entity::canUpdate())
-          && !isset($_SESSION['ldap_import']['no_expert_mode'])) {
+          && (!isset($_SESSION['ldap_import']['no_expert_mode'])
+              || $_SESSION['ldap_import']['no_expert_mode'] != 1)) {
 
          echo "</span>&nbsp;<span class='floatright'><a href='".$_SERVER['PHP_SELF']."?action=".
               $_SESSION['ldap_import']['action']."&amp;mode=".$_SESSION['ldap_import']['mode'];
