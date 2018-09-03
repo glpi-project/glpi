@@ -39,14 +39,6 @@ if (!defined('GLPI_ROOT')) {
 **/
 class TicketFollowup  extends CommonITILFollowup {
 
-
-   // From CommonDBTM
-   public $auto_message_on_action = false;
-
-   static $rightname              = 'followup';
-
-
-
    // From CommonDBChild
    static public $itemtype           = 'Ticket';
    static public $items_id           = 'tickets_id';
@@ -194,116 +186,6 @@ class TicketFollowup  extends CommonITILFollowup {
       $fup = new self();
       $fup->showSummary($item);
       return true;
-   }
-
-
-   function post_getEmpty() {
-
-      if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
-         $this->fields['is_private'] = 1;
-      }
-
-      if (isset($_SESSION["glpiname"])) {
-         $this->fields['requesttypes_id'] = RequestType::getDefault('followup');
-      }
-   }
-
-
-   function post_deleteFromDB() {
-      global $CFG_GLPI;
-
-      $donotif = $CFG_GLPI["use_notifications"];
-      if (isset($this->input['_disablenotif'])) {
-         $donotif = false;
-      }
-
-      $job = new Ticket();
-      $job->getFromDB($this->fields["tickets_id"]);
-      $job->updateDateMod($this->fields["tickets_id"]);
-
-      // Add log entry in the ticket
-      $changes[0] = 0;
-      $changes[1] = '';
-      $changes[2] = $this->fields['id'];
-      Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                   Log::HISTORY_DELETE_SUBITEM);
-
-      if ($donotif) {
-         $options = ['followup_id' => $this->fields["id"],
-                           // Force is_private with data / not available
-                          'is_private'  => $this->fields['is_private']];
-         NotificationEvent::raiseEvent('delete_followup', $job, $options);
-      }
-   }
-
-
-   function prepareInputForUpdate($input) {
-      $input["_job"] = new Ticket();
-      $job_field = $input["_job"]->getForeignKeyField();
-      $job_id = (isset($input[$job_field]) ? $input[$job_field] : $this->fields[$job_field]);
-      if (!$input["_job"]->getFromDB($job_id)) {
-         return false;
-      }
-
-      $input = $this->addFiles($input);
-
-      // update last editor if content change
-      if (($uid = Session::getLoginUserID())
-          && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
-         $input["users_id_editor"] = $uid;
-      }
-
-      return $input;
-   }
-
-
-   function post_updateItem($history = 1) {
-      global $CFG_GLPI;
-
-      $job      = new Ticket();
-
-      if ($job->getFromDB($this->fields["tickets_id"])) {
-         //Get user_id when not logged (from mailgate)
-         $uid = Session::getLoginUserID();
-         if ($uid === false) {
-            if (isset($this->fields['users_id_editor'])) {
-               $uid = $this->fields['users_id_editor'];
-            } else {
-               $uid = $this->fields['users_id'];
-            }
-         }
-         $job->updateDateMod($this->fields["tickets_id"], false, $uid);
-
-         if (count($this->updates)) {
-            if (!isset($this->input['_disablenotif'])
-                && $CFG_GLPI["use_notifications"]
-                && (in_array("content", $this->updates)
-                    || isset($this->input['_need_send_mail']))) {
-               //FIXME: _need_send_mail does not seems to be used
-
-               $options = ['followup_id' => $this->fields["id"],
-                                'is_private'  => $this->fields['is_private']];
-
-               NotificationEvent::raiseEvent("update_followup", $job, $options);
-            }
-         }
-
-         // change ticket status (from splitted button)
-         if (isset($this->input['_status'])
-             && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
-             $update['status']        = $this->input['_status'];
-             $update['id']            = $this->input['_job']->fields['id'];
-             $update['_disablenotif'] = true;
-             $this->input['_job']->update($update);
-         }
-
-         // Add log entry in the ticket
-         $changes[0] = 0;
-         $changes[1] = '';
-         $changes[2] = $this->fields['id'];
-         Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                      Log::HISTORY_UPDATE_SUBITEM);
-      }
    }
 
 
