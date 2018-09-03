@@ -142,7 +142,7 @@ abstract class CommonITILFollowup  extends CommonDBChild {
 
 
    function prepareInputForUpdate($input) {
-      $input["_job"] = new self::$itemtype();
+      $input["_job"] = new static::$itemtype();
       $job_field = $input["_job"]->getForeignKeyField();
       $job_id = (isset($input[$job_field]) ? $input[$job_field] : $this->fields[$job_field]);
       if (!$input["_job"]->getFromDB($job_id)) {
@@ -166,7 +166,7 @@ abstract class CommonITILFollowup  extends CommonDBChild {
 
       $job      = new static::$itemtype();
 
-      if ($job->getFromDB($this->fields[self::$items_id])) {
+      if ($job->getFromDB($this->fields[static::$items_id])) {
          //Get user_id when not logged (from mailgate)
          $uid = Session::getLoginUserID();
          if ($uid === false) {
@@ -205,7 +205,7 @@ abstract class CommonITILFollowup  extends CommonDBChild {
          $changes[0] = 0;
          $changes[1] = '';
          $changes[2] = $this->fields['id'];
-         Log::history($this->getField(self::$items_id), static::$itemtype, $changes, $this->getType(),
+         Log::history($this->getField(static::$items_id), static::$itemtype, $changes, $this->getType(),
                       Log::HISTORY_UPDATE_SUBITEM);
       }
    }

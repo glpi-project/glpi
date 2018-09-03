@@ -136,7 +136,8 @@ class ProblemFollowup  extends CommonITILFollowup {
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
-      $input["_job"] = new self::$itemtype();
+      $itemtype = self::$itemtype;
+      $input["_job"] = new $itemtype();
 
       if (empty($input['content'])
           && !isset($input['add_close'])
@@ -190,7 +191,7 @@ class ProblemFollowup  extends CommonITILFollowup {
       // }
       unset($input["add"]);
 
-      $input['timeline_position'] = self::$itemtype::getTimelinePosition($input[self::$items_id], $this->getType(), $input["users_id"]);
+      $input['timeline_position'] = $itemtype::getTimelinePosition($input[self::$items_id], $this->getType(), $input["users_id"]);
 
       $input["date"] = $_SESSION["glpi_currenttime"];
       return $input;
@@ -227,11 +228,12 @@ class ProblemFollowup  extends CommonITILFollowup {
       if (!isset($this->input['_status'])) {
          $this->input['_status'] = $this->input["_job"]->fields["status"];
       }
+      $itemtype = self::$itemtype;
       // if reopen set (from followup form or mailcollector)
       // and status is reopenable and not changed in form
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
-          && in_array($this->input["_job"]->fields["status"], self::$itemtype::getReopenableStatusArray())
+          && in_array($this->input["_job"]->fields["status"], $itemtype::getReopenableStatusArray())
           && $this->input['_status'] == $this->input["_job"]->fields["status"]) {
 
          if (($this->input["_job"]->countUsers(CommonITILActor::ASSIGN) > 0)
@@ -273,7 +275,7 @@ class ProblemFollowup  extends CommonITILFollowup {
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
-      Log::history($this->getField(self::$items_id), self::$itemtype, $changes, $this->getType(),
+      Log::history($this->getField(self::$items_id), $itemtype, $changes, $this->getType(),
                    Log::HISTORY_ADD_SUBITEM);
    }
 
@@ -441,8 +443,9 @@ class ProblemFollowup  extends CommonITILFollowup {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
+      $itemtype = self::$itemtype;
       if ($this->isNewID($ID)) {
-         echo self::$itemtype::getSplittedSubmitButtonHtml($this->fields[self::$items_id], 'add');
+         echo $itemtype::getSplittedSubmitButtonHtml($this->fields[self::$items_id], 'add');
       } else {
          if ($params['candel']
              && !$this->can($ID, DELETE)
@@ -451,7 +454,7 @@ class ProblemFollowup  extends CommonITILFollowup {
          }
 
          if ($params['canedit'] && $this->can($ID, UPDATE)) {
-            echo self::$itemtype::getSplittedSubmitButtonHtml($this->fields[self::$items_id], 'update');
+            echo $itemtype::getSplittedSubmitButtonHtml($this->fields[self::$items_id], 'update');
             echo "</td></tr><tr class='tab_bg_2'>\n";
          }
 
