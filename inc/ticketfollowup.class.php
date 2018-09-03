@@ -682,15 +682,19 @@ class TicketFollowup  extends CommonITILFollowup {
     * Show the current ticketfollowup summary
     *
     * @param $ticket Ticket object
+    * @deprecated 9.4.0
    **/
-   function showSummary($ticket) {
+   function showSummary(CommonITILObject $item) {
       global $DB, $CFG_GLPI;
+
+      Toolbox::deprecated();
 
       if (!Session::haveRightsOr(self::$rightname,
                                  [self::SEEPUBLIC, self::SEEPRIVATE, self::ADDMYTICKET])) {
          return false;
       }
 
+      $ticket = $item;
       $tID = $ticket->fields['id'];
 
       // Display existing Followups
@@ -908,7 +912,6 @@ class TicketFollowup  extends CommonITILFollowup {
          }
       }
    }
-
 
    /**
     * @param $ID  integer  ID of the ticket
