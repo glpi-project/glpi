@@ -192,4 +192,33 @@ class CommonDBTM extends DbTestCase {
       $this->boolean($comp->getEmpty())->isFalse();
       unset($_SESSION['glpi_table_of']);*/
    }
+
+   /**
+    * Provider for self::testGetTable().
+    *
+    * @return array
+    */
+   protected function getTableProvider() {
+
+      return [
+         [\DBConnection::class, ''], // "static protected $notable = true;" case
+         [\Item_Devices::class, ''], // "static protected $notable = true;" case
+         [\Config::class, 'glpi_configs'],
+         [\Computer::class, 'glpi_computers'],
+         [\User::class, 'glpi_users'],
+      ];
+   }
+
+   /**
+    * Test CommonDBTM::getTable() method.
+    *
+    * @dataProvider getTableProvider
+    * @return void
+    */
+   public function testGetTable($classname, $tablename) {
+
+      $this->string($classname::getTable())
+         ->isEqualTo(\CommonDBTM::getTable($classname))
+         ->isEqualTo($tablename);
+   }
 }
