@@ -222,7 +222,7 @@ function migratePlugin() {
          if (in_array($answer, ['c', 'computer'])) {
             $new_model_itemtype = "ComputerModel";
          } else if (in_array($answer, ['n', 'networkequipment'])) {
-            $new_model_itemtype = "NetworkEpuipmentModel";
+            $new_model_itemtype = "NetworkEquipmentModel";
          } else if (in_array($answer, ['p', 'peripheral'])) {
             $new_model_itemtype = "PeripheralModel";
          } else if (in_array($answer, ['u', 'pdu'])) {
