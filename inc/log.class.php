@@ -869,8 +869,7 @@ class Log extends CommonDBTM {
                   $key = 'linked_action::' . implode(',', $linked_action_values) . ';'
                      . 'itemtype_link::' . $data['itemtype_link'] . ';';
 
-                  $dbu = new DbUtils();
-                  if ($linked_item = $dbu->getItemForItemtype($data["itemtype_link"])) {
+                  if ($linked_item = getItemForItemtype($data["itemtype_link"])) {
                      $value = $linked_item->getTypeName(1);
                   }
                   break;
