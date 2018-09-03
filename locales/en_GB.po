@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-03 11:29+0200\n"
-"PO-Revision-Date: 2018-09-03 11:29+0200\n"
+"POT-Creation-Date: 2018-09-03 11:50+0200\n"
+"PO-Revision-Date: 2018-09-03 11:50+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en_GB\n"
@@ -7867,8 +7867,8 @@ msgid "Default state of checkbox"
 msgstr "Default state of checkbox"
 
 #: inc/config.class.php:451
-msgid "Display source dropdown on login page\""
-msgstr "Display source dropdown on login page\""
+msgid "Display source dropdown on login page"
+msgstr "Display source dropdown on login page"
 
 #: inc/config.class.php:488 inc/config.class.php:2175 inc/entity.class.php:339
 #: inc/entity.class.php:963 inc/event.class.php:154 inc/html.class.php:1332

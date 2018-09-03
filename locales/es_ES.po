@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-03 11:29+0200\n"
+"POT-Creation-Date: 2018-09-03 11:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Roberto Flores <robertocarlos.floresh@gmail.com>, 2018\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/glpi/teams/1637/es_ES/)\n"
@@ -7963,7 +7963,7 @@ msgid "Default state of checkbox"
 msgstr "Estado por defecto de la casilla de verificación"
 
 #: inc/config.class.php:451
-msgid "Display source dropdown on login page\""
+msgid "Display source dropdown on login page"
 msgstr ""
 
 #: inc/config.class.php:488 inc/config.class.php:2175 inc/entity.class.php:339
