@@ -707,19 +707,6 @@ CREATE TABLE `glpi_changes_problems` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_changes_projects
-
-DROP TABLE IF EXISTS `glpi_changes_projects`;
-CREATE TABLE `glpi_changes_projects` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `changes_id` int(11) NOT NULL DEFAULT '0',
-  `projects_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`changes_id`,`projects_id`),
-  KEY `projects_id` (`projects_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_changes_suppliers
 
 DROP TABLE IF EXISTS `glpi_changes_suppliers`;
@@ -1383,6 +1370,7 @@ INSERT INTO `glpi_configs` VALUES ('205','core','purge_datemod','0');
 INSERT INTO `glpi_configs` VALUES ('206','core','purge_all','0');
 INSERT INTO `glpi_configs` VALUES ('207','core','purge_user_auth_changes','0');
 INSERT INTO `glpi_configs` VALUES ('208','core','purge_plugins','0');
+INSERT INTO `glpi_configs` VALUES ('209','core','display_login_source','1');
 
 ### Dump table glpi_consumableitems
 
@@ -4010,6 +3998,20 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `is_change` (`is_change`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_itils_projects
+
+DROP TABLE IF EXISTS `glpi_itils_projects`;
+CREATE TABLE `glpi_itils_projects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `projects_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`projects_id`),
+  KEY `projects_id` (`projects_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -8319,7 +8321,7 @@ CREATE TABLE `glpi_suppliers_tickets` (
   `tickets_id` int(11) NOT NULL DEFAULT '0',
   `suppliers_id` int(11) NOT NULL DEFAULT '0',
   `type` int(11) NOT NULL DEFAULT '1',
-  `use_notification` tinyint(1) NOT NULL DEFAULT '0',
+  `use_notification` tinyint(1) NOT NULL DEFAULT '1',
   `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`suppliers_id`),

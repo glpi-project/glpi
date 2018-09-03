@@ -195,6 +195,10 @@ a:hover {
    color: black;
 }
 
+a.target-deleted {
+   text-decoration:line-through;
+}
+
 hr {
    border: 1px solid #cccccc;
 }

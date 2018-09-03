@@ -182,6 +182,14 @@ class Line extends CommonDropdown {
       $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
+            'id'                 => '4',
+            'table'              => 'glpi_linetypes',
+            'field'              => 'name',
+            'name'               => __('Line type'),
+            'datatype'           => 'dropdown',
+      ];
+
+      $tab[] = [
             'id'                 => '31',
             'table'              => 'glpi_states',
             'field'              => 'completename',

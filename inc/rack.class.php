@@ -920,6 +920,22 @@ JAVASCRIPT;
     * @return array
     */
    private function prepareInput($input) {
+
+      if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
+         // Position is not set if room not selected
+         return $input;
+      }
+
+      if ($input['position'] == 0) {
+         return $input;
+         Session::addMessageAfterRedirect(
+            __('Position must be set'),
+            true,
+            ERROR
+         );
+         return false;
+      }
+
       $where = [
          'dcrooms_id'   => $input['dcrooms_id'],
          'position'     => $input['position'],
@@ -1037,6 +1053,15 @@ JAVASCRIPT;
       }
       $this->fields['number_units'] = 42;
       return true;
+   }
+
+   function cleanDBonPurge() {
+
+      $item_rack = new Item_Rack();
+      $item_rack->deleteByCriteria(['racks_id' => $this->fields['id']]);
+
+      $pdu_rack = new PDU_Rack();
+      $pdu_rack->deleteByCriteria(['racks_id' => $this->fields['id']]);
    }
 
    /**

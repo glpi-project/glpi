@@ -59,6 +59,19 @@ function update930to931() {
    );
    /** /Change field type */
 
+   // add option to hide/show source on login page
+   $migration->addConfig(['display_login_source' => 1]);
+
+   // supplier now have use_notification = 1 by default
+   $migration->changeField(
+      'glpi_suppliers_tickets',
+      'use_notification',
+      'use_notification',
+      'bool', [
+         'value' => 1
+      ]
+   );
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

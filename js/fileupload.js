@@ -116,7 +116,7 @@ var getFileTag = function(data) {
 var fileindex = 0;
 var displayUploadedFile = function(file, tag, editor, input_name) {
    // default argument(s)
-   input_name = (typeof input_name === 'undefined') ? 'filename' : input_name;
+   input_name = (typeof input_name === 'undefined' || input_name == null) ? 'filename' : input_name;
 
    // find the nearest fileupload_info where to append file list
    var current_dom_point = $(editor.targetElm);

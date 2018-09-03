@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 - Add followups to Changes and Problems
+- Ability to link project with problems and tickets.
 
 ### API changes
 

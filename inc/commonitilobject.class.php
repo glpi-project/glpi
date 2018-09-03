@@ -601,6 +601,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $solution = new ITILSolution();
       $solution->removeForItem($this->getType(), $this->getID());
+
+      $itil_project = new Itil_Project();
+      $itil_project->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
@@ -1729,13 +1732,17 @@ abstract class CommonITILObject extends CommonDBTM {
              && is_array($input['_additional_suppliers_assigns'])
              && count($input['_additional_suppliers_assigns'])) {
 
-            $input2 = [$supplieractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                     => CommonITILActor::ASSIGN];
+            $input2 = [
+               $supplieractors->getItilObjectForeignKey() => $this->fields['id'],
+               'type'                                     => CommonITILActor::ASSIGN,
+               '_from_object'                             => true
+            ];
 
-            foreach ($input['_additional_suppliers_assigns'] as $tmp) {
-               if ($tmp > 0) {
-                  $input2['suppliers_id'] = $tmp;
-                  $input2['_from_object'] = true;
+            foreach ($input["_additional_suppliers_assigns"] as $tmp) {
+               if (isset($tmp['suppliers_id'])) {
+                  foreach ($tmp as $key => $val) {
+                     $input2[$key] = $val;
+                  }
                   $supplieractors->add($input2);
                }
             }

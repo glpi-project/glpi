@@ -899,6 +899,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
+      $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
@@ -7113,6 +7114,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
 
+         $user = new User();
          $user->getFromDB($this->fields['users_id_recipient']);
          echo "<div class='tooltip_picture_border'>";
          $picture = "";

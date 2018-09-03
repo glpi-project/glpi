@@ -313,4 +313,13 @@ class PDU extends CommonDBTM {
 
       return $tab;
    }
+
+   function cleanDBonPurge() {
+
+      $pdu_plug = new Pdu_Plug();
+      $pdu_plug->deleteByCriteria(['pdus_id' => $this->fields['id']]);
+
+      $pdu_rack = new PDU_Rack();
+      $pdu_rack->deleteByCriteria(['pdus_id' => $this->fields['id']]);
+   }
 }

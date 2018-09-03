@@ -5318,15 +5318,17 @@ class Search {
             }
             $count_display++;
             // Get specific display if available
-            $itemtype = getItemTypeForTable($table);
-            if ($item = getItemForItemtype($itemtype)) {
-               $tmpdata  = $data[$num][$k];
-               // Copy name to real field
-               $tmpdata[$field] = $data[$num][$k]['name'];
+            if (isset($table)) {
+               $itemtype = getItemTypeForTable($table);
+               if ($item = getItemForItemtype($itemtype)) {
+                  $tmpdata  = $data[$num][$k];
+                  // Copy name to real field
+                  $tmpdata[$field] = $data[$num][$k]['name'];
 
-               $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
-                                                            ['html'      => true,
-                                                                  'searchopt' => $searchopt[$ID]]);
+                  $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
+                                                               ['html'      => true,
+                                                                     'searchopt' => $searchopt[$ID]]);
+               }
             }
             if (!empty($specific)) {
                $out .= $specific;

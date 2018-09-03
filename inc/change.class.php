@@ -264,7 +264,7 @@ class Change extends CommonITILObject {
       $this->addStandardTab('ChangeFollowup', $ong, $options);
       $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
-      $this->addStandardTab('Change_Project', $ong, $options);
+      $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -297,9 +297,6 @@ class Change extends CommonITILObject {
 
       $ct = new Change_Ticket();
       $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $cp = new Change_Project();
-      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
       $ci = new Change_Item();
       $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
