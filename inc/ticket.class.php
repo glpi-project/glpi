@@ -7260,6 +7260,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
 
+         $user = new User();
          $user->getFromDB($this->fields['users_id_recipient']);
          echo "<div class='tooltip_picture_border'>";
          $picture = "";
