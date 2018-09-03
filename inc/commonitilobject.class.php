@@ -5677,4 +5677,43 @@ error_log("getAllowedStatusArray");
    static function getTimelinePosition($items_id, $sub_type, $users_id) {
       return self::TIMELINE_NOTSET;
    }
+
+
+   /**
+    * @since 9.4.0
+    *
+    * @param $items_id
+    * @param $action         (default 'add')
+   **/
+   static function getSplittedSubmitButtonHtml($items_id, $action = "add") {
+      $locale = _sx('button', 'Add');
+      if ($action == 'update') {
+         $locale = _x('button', 'Save');
+      }
+      $item       = new static();
+      $item->getFromDB($items_id);
+      $all_status   = self::getAllowedStatusArray($item->fields['status']);
+      $rand = mt_rand();
+      $html = "<div class='x-split-button' id='x-split-button'>
+               <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
+               <span class='x-button x-button-drop'>&nbsp;</span>
+               <ul class='x-button-drop-menu'>";
+      foreach ($all_status as $status_key => $status_label) {
+         $checked = "";
+         if ($status_key == $item->fields['status']) {
+            $checked = "checked='checked'";
+         }
+         $html .= "<li data-status='".self::getStatusKey($status_key)."'>";
+         $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
+                    $checked value='$status_key'>";
+         $html .= "<label for='status_radio_$status_key$rand'>";
+         $html .= self::getStatusIcon($status_key) . "&nbsp;";
+         $html .= $status_label;
+         $html .= "</label>";
+         $html .= "</li>";
+      }
+      $html .= "</ul></div>";
+      $html.= "<script type='text/javascript'>$(function() {split_button();});</script>";
+      return $html;
+   }
 }

@@ -261,6 +261,7 @@ class Change extends CommonITILObject {
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('ITILSolution', $ong, $options);
       $this->addStandardTab('ChangeValidation', $ong, $options);
+      $this->addStandardTab('ChangeFollowup', $ong, $options);
       $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
       $this->addStandardTab('Change_Project', $ong, $options);
@@ -278,6 +279,12 @@ class Change extends CommonITILObject {
 
    function cleanDBonPurge() {
       global $DB;
+
+      $DB->delete(
+         'glpi_changefollowups', [
+            'changes_id'   => $this->fields['id']
+         ]
+      );
 
       $DB->delete(
          'glpi_changetasks', [
