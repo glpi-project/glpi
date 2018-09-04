@@ -599,7 +599,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
             echo "</td>";
 
-            echo "<td>".Html::convDate($data['date_install'])."</td>";
+            echo "<td>".$data['date_install']."</td>";
             echo "</tr>\n";
 
          } while ($data = $iterator->next());
@@ -1129,7 +1129,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo "</td>";
 
-         echo "<td>".Html::convDate($data['dateinstall'])."</td>";
+         echo "<td>".$data['dateinstall']."</td>";
 
          if (isset($data['is_dynamic'])) {
             echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
