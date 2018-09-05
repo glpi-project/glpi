@@ -1637,7 +1637,7 @@ class Transfer extends CommonDBTM {
                $newlicID = -1;
                //// If exists : increment number by 1
                if (count($iterator)) {
-                  $data     = $DB->fetch_assoc($result);
+                  $data     = $iterator->next();
                   $newlicID = $data['id'];
                   $license->update(['id'     => $data['id'],
                                           'number' => $data['number']+1]);
