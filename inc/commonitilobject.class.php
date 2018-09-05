@@ -474,18 +474,18 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $linkclass Link class instance
-    * @param integer    $id        Item ID
-    * @param integer    $role      ITIL role
+    * @param CommonITILActor $linkclass Link class instance
+    * @param integer         $id        Item ID
+    * @param integer         $role      ITIL role
     *
     * @return integer
    **/
-   private function countActiveObjectsFor(CommonDBTM $linkclass, $id, $role) {
+   private function countActiveObjectsFor(CommonITILActor $linkclass, $id, $role) {
 
       $itemtable = $this->getTable();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
-      $field     = $linkclass->getForeignKeyField();
+      $field     = $linkclass::$items_id_2;
 
       return countElementsInTable(
          [$itemtable, $linktable], [
