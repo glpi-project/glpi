@@ -108,7 +108,7 @@ class Problem_Ticket extends CommonDBRelation{
    function post_addItem() {
       global $CFG_GLPI;
 
-      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notification"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
       if ($donotif) {
          $problem = new Problem();
