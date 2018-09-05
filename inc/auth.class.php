@@ -832,7 +832,9 @@ class Auth extends CommonGLPI {
       // Log Event (if possible)
       if (!$DB->isSlave()) {
          // GET THE IP OF THE CLIENT
-         $ip = (getenv("HTTP_X_FORWARDED_FOR")?getenv("HTTP_X_FORWARDED_FOR"):getenv("REMOTE_ADDR"));
+         $ip = getenv("HTTP_X_FORWARDED_FOR")?
+            Toolbox::clean_cross_side_scripting_deep(getenv("HTTP_X_FORWARDED_FOR")):
+            getenv("REMOTE_ADDR");
 
          if ($this->auth_succeded) {
             if (GLPI_DEMO_MODE) {
