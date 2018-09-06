@@ -1,7 +1,7 @@
 /** "slide panel" component */
 
 .slidepanel {
-   z-index: 100;
+   z-index: 1050;
    position: absolute;
    width: 30em;
    max-width: 40%;
@@ -18,10 +18,12 @@
    color: #ccc;
 }
 
-.fa.bookmark_record, .fa.bookmark_record:link {
+.fa.bookmark_record, .fa.bookmark_record:link,
+   .fa.reset-search,  .fa.reset-search:link{
    font-size: 1.5em;
    color: #ccc!important;
 }
+
 .fa.bookmark_default, .fa.bookmark_default:link {
    font-size: 1.5em;
    color: #f3b51f!important;

@@ -187,16 +187,23 @@ body.iframed {
    font-size : 11px;
 }
 
-.legacy a.fa, .legacy a.fa:link {
+.legacy a.fa, .legacy a.fa:link,
+.legacy a.fas, .legacy a.fas:link {
    font-size: inherit;
-   font-weight: normal;
+   font-weight: 900;
 }
-.legacy #page a.fa, .legacy #page a.fa:link, .legacy a .fa {
+
+.legacy #page a.fa, .legacy #page a.fa:link, .legacy a .fa,
+.legacy #page a.far, .legacy #page a.far:link, .legacy a.far {
    color: #222;
 }
 
 .legacy a:hover {
    color: black;
+}
+
+.legacy a.target-deleted {
+   text-decoration:line-through;
 }
 
 .legacy hr {
@@ -285,7 +292,7 @@ body.iframed {
    display: block;
 }
 
-#fuzzysearch .fa-close {
+#fuzzysearch .fa-times {
    position: absolute;
    top: 0;
    right: -30px;
@@ -2316,23 +2323,27 @@ body.iframed {
    left: .8em;
 }
 .legacy #boxlogin .login_input:before {
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    left:8px;
    position:absolute;
    top:3px;
    color: #9B9B9B;
    font-size: 24px;
+   font-weight: 900;
 }
 
 .legacy #boxlogin #login_input_name:before {
-   content: "\f2be";
+   content: "\f2bd";
+   font-weight: 900;
 }
 .legacy #boxlogin #login_input_password:before {
    content: "\f023";
    left: 11px;
+   font-weight: 900;
 }
 .legacy #boxlogin #login_input_src:before {
    content: "\f2ba";
+   font-weight: 900;
 }
 
 .legacy #boxlogin #dropdown_auth1:before {
@@ -3260,7 +3271,6 @@ body.iframed {
    margin-right: 0;
    margin-left: 160px;
    word-wrap: break-word;
-   white-space: pre-wrap;
 }
 
 .legacy .timeline_history .right .h_content {
@@ -3740,7 +3750,7 @@ body.iframed {
 }
 .legacy .dates_timelines .dot:before {
    color: #929292;
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
    padding-left: 2px;
 }
 
@@ -3761,6 +3771,7 @@ body.iframed {
 }
 .legacy .dates_timelines .creation .dot:before {
    content: '\f069';
+   font-weight: 900;
 }
 
 .legacy .dates_timelines .passed time,
@@ -3773,11 +3784,13 @@ body.iframed {
    content: '\f12a';
    padding-left: 6px;
    color: #E54E5A;
+   font-weight: 900;
 }
 
 .legacy .dates_timelines .checked .dot:before {
    content: '\f00c';
    padding-left: 2px;
+   font-weight: 900;
 }
 
 .legacy .dates_timelines .end .dot {
@@ -3786,6 +3799,7 @@ body.iframed {
 }
 .legacy .dates_timelines .end .dot:before {
    content: '\f024';
+   font-weight: 900;
 }
 
 .legacy .dates_timelines label {
@@ -4021,21 +4035,42 @@ input[type=checkbox].toggle_comments:checked ~ ul {
 }
 
 .legacy .copy_to_clipboard_wrapper:after {
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
    position: relative;
    left: -15px;
    top: 1px;
    content: "\f0ea";
    color: #7F7F7F;
    transition: color 0.3s ease-in-out;
+   font-weight: 900;
 }
 .legacy .copy_to_clipboard_wrapper.copied:after {
    content: "\f00c";
    color: green;
+   font-weight: 900;
 }
 .legacy .copy_to_clipboard_wrapper.copyfail:after {
    content: "\f071";
    color: red;
+   font-weight: 900;
+}
+
+
+/* ################--------------- Log history filters ---------------#################### */
+
+.legacy tr.log_history_filter_row > th {
+   vertical-align: top;
+}
+.legacy tr.log_history_filter_row .select2-container {
+   min-width: 125px;
+}
+.legacy tr.log_history_filter_row > th > input,
+.legacy tr.log_history_filter_row .select2-container .select2-selection--multiple {
+   box-sizing: border-box;
+   min-height: 28px;
+}
+.legacy tr.log_history_filter_row .select2-container--default .select2-selection--multiple .select2-selection__choice {
+   padding: 1px;
 }
 
 /* ################--------------- Responsive  ---------------#################### */
@@ -4729,11 +4764,13 @@ input[type=checkbox].toggle_comments:checked ~ ul {
    left: 0;
    top: 0;
    font-size: 15px;
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    position: absolute;
+   font-weight: 900;
 }
 .legacy div#viewgraph .mini_toggle.active:before {
    content: "\f205";
+   font-weight: 900;
 }
 
 .legacy div#viewgraph .mini_toggle:hover {
@@ -4926,8 +4963,9 @@ div#viewgraph table.outbound td div .grid-stack-item-content {
    font-size: 1em;
    color: grey;
    top: 5px;
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    position: absolute;
+   font-weight: 900;
 }
 
 .legacy .racks_add .cell_add:hover {
@@ -4955,11 +4993,13 @@ div#viewgraph table.outbound td div .grid-stack-item-content {
 
 .legacy .grid-room .grid-stack {
    border: 1px solid #EEEEEE;
-   float: left;
    border-width: 0 1px 1px 0;
    background-size: 40px 39px;
    background-image: linear-gradient(to right, #EEEEEE 1px, transparent 1px),
                      linear-gradient(to bottom, #EEEEEE 1px, transparent 1px);
+}
+.legacy .grid-room .grid-stack {
+   float: left;
 }
 
 .legacy .clear_grid .grid-room .grid-stack {
@@ -5405,4 +5445,18 @@ div.add header {
    .legacy .documentation {
       margin-left: 200px;
    }
+}
+
+/** Fixes for Font Awesome 5 icons not showing at all or
+with incorrect shading in some cases */
+.legacy .fa:before, .legacy .fas:before, .legacy .fa:after, .legacy .fas:after {
+   font-weight: 900;
+}
+
+.legacy .far:before, .legacy .far:after {
+   font-weight: 400;
+}
+
+.legacy .fa-lg {
+   font-size: 1.2em;
 }

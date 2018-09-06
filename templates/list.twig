@@ -37,7 +37,7 @@
          <h3 class="box-title">{{ __('Search %1$s')|format(item.getTypeName()|lower)}}</h3>
          <div class="box-tools pull-right">
             <a href="#" id="as_map" class="btn btn-sm btn-default" title="{{ __('Show as map') }}">
-               <i class="fa fa-globe"></i>
+               <i class="fa fa-globe-americas"></i>
                <span class="sr-only">{{ __s('Show as map') }}</span>
             </a>
    {% if item.maybeDeleted() %}
@@ -367,7 +367,7 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
 #}
    {% else %}
                   <tr>
-                     <td colspan="{{ search_data.data.cols|length }}">{{ __('No result found') }}</td>
+                     <td colspan="{{ search_data.data.cols|length + 1}}">{{ __('No result found') }}</td>
                   </tr>
    {% endfor %}
                </tbody>
