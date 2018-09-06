@@ -122,7 +122,7 @@ class Item_Disk extends CommonDBChild {
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
-            'itemtype'  => $itemtype,
+            'itemtype'  => $type,
             'items_id'  => $oldid
          ]
       ]);
