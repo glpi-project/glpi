@@ -61,6 +61,12 @@ function update93to94() {
    }
    /** /Add default group for a user */
 
+   /** Add requester field on glpi_mailcollectors */
+   $migration->addField("glpi_mailcollectors", "requester_field", "integer", [
+      'value' => '0'
+   ]);
+   /** /Add requester field on glpi_mailcollectors */
+
    /** Add business rules on assets */
    $rule = ['name'         => 'Domain user assignation',
             'is_active'    => 1,
