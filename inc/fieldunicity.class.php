@@ -66,6 +66,10 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
+   function displayHeader() {
+      Html::header(FieldUnicity::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "fieldunicity");
+   }
+
    function getAdditionalFields() {
 
       return [['name'  => 'is_active',
