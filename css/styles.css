@@ -2587,9 +2587,6 @@ ul#menu ul li {
    line-height: 20px;
    font-size: 0.9em;
 }
-.pure-menu-item ul {
-   text-align: left;
-}
 
 ul#menu ul li:last-child {
    border-bottom: 0px;
@@ -2642,11 +2639,8 @@ ul#menu > li {
    min-width: 135px;
    height: 30px;
 }
-#c_menu .pure-menu-list > li {
-   min-width: 135px;
-}
 
-ul#menu ul.ssmenu, #c_menu .pure-menu-list ul.ssmenu {
+ul#menu ul.ssmenu {
    position: absolute;
    min-width: 135px;
    z-index: 500;
@@ -5331,7 +5325,7 @@ div#viewgraph .rack_side_block .pdu_list td {
    color: rgba(0, 0, 0, .6);
 }
 
-ul#menu ul, #c_menu .pure-menu-list ul {
+ul#menu ul {
    -webkit-column-count: 2;
    -webkit-column-gap: 10px;
    -moz-column-count: 2;
@@ -5340,7 +5334,7 @@ ul#menu ul, #c_menu .pure-menu-list ul {
    column-gap:10px;
 }
 
-ul#menu ul li, #c_menu .pure-menu-list ul li {
+ul#menu ul li {
    break-inside: avoid;
 }
 
@@ -5402,10 +5396,6 @@ div.add header {
 
 div.simpleform fieldset {
    padding: .5em; /** purecss */
-}
-
-div.simpleform .pure-control-group {
-   margin-bottom: 0; /** purecss */
 }
 
 .leaflet-control-geocoder-form {
