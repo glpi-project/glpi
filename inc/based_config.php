@@ -42,11 +42,6 @@ if (!empty($tz)) {
    date_default_timezone_set(@date_default_timezone_get());
 }
 
-// If this file exists, it is load
-if (file_exists(GLPI_ROOT. '/config/local_define.php') && !defined('TU_USER')) {
-   require_once GLPI_ROOT. '/config/local_define.php';
-}
-
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
    include_once (GLPI_ROOT . '/inc/downstream.php');
@@ -55,6 +50,11 @@ if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
 // Default location for database configuration : config_db.php
 if (!defined("GLPI_CONFIG_DIR")) {
    define("GLPI_CONFIG_DIR", GLPI_ROOT . "/config");
+}
+
+// If this file exists, it is load
+if (file_exists(GLPI_CONFIG_DIR. '/local_define.php') && !defined('TU_USER')) {
+   require_once GLPI_CONFIG_DIR. '/local_define.php';
 }
 
 // Default location for all files
