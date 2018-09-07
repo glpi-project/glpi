@@ -2698,8 +2698,11 @@ class Dropdown {
                break;
 
             case KnowbaseItem::getType():
-               $addjoin   .= KnowbaseItem::addVisibilityJoins();
-               //no break to reach default case.
+               $query = "SELECT DISTINCT `$table`.* $addselect
+                        FROM `$table`
+                        $addjoin ".KnowbaseItem::addVisibilityJoins()."
+                        $where";
+               break;
 
             case Project::getType():
                $addjoin .= Project::addVisibilityJoins();
