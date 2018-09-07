@@ -30,7 +30,7 @@ The present file will list all changes made to the project; according to the
 - Drop support of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`)
 - Drop support of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`)
 
-
+- Drop class alias `Event` for `Glpi\Event`
 - Drop `Zend\Loader\SplAutoloader` interface
 - Drop all methods that have been deprecated in GLPI 9.2
   - `_e()`
