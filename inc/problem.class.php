@@ -158,6 +158,31 @@ class Problem extends CommonITILObject {
    }
 
 
+   /**
+    * Get the ITIL object closed, solved or waiting status list
+    *
+    * @since 9.4.0
+    *
+    * @return an array
+   **/
+   static function getReopenableStatusArray() {
+      return [self::CLOSED, self::SOLVED, self::WAITING];
+   }
+
+
+   /**
+    * is the current user could reopen the current ticket
+    * @since  9.2
+    * @return boolean
+    */
+   function canReopen() {
+      return Session::haveRight('followup', CREATE)
+             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
+                 || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
+   }
+
+
    function pre_deleteItem() {
       global $CFG_GLPI;
 
@@ -220,6 +245,7 @@ class Problem extends CommonITILObject {
       $this->addStandardTab('ITILSolution', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
+      $this->addStandardTab('ProblemFollowup', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);
       $this->addStandardTab('ProblemCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
@@ -488,6 +514,118 @@ class Problem extends CommonITILObject {
       ];
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+
+      $tab[] = [
+         'id'                 => 'followup',
+         'name'               => _n('Followup', 'Followups', Session::getPluralNumber())
+      ];
+
+      $followup_condition = '';
+      if (!Session::haveRight('followup', ProblemFollowup::SEEPRIVATE)) {
+         $followup_condition = "AND (`NEWTABLE`.`is_private` = 0
+                                     OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+      }
+
+      $newtab = [
+         'id'                 => '25',
+         'table'              => 'glpi_problemfollowups',
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'htmltext'           => true,
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ],
+         'datatype'           => 'text'
+      ];
+
+      $tab[] = $newtab;
+
+      $tab[] = [
+         'id'                 => '36',
+         'table'              => 'glpi_problemfollowups',
+         'field'              => 'date',
+         'name'               => __('Date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '27',
+         'table'              => 'glpi_problemfollowups',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of followups'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          =>$followup_condition
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '29',
+         'table'              => 'glpi_requesttypes',
+         'field'              => 'name',
+         'name'               => __('Request source'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_problemfollowups',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => $followup_condition
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '91',
+         'table'              => 'glpi_problemfollowups',
+         'field'              => 'is_private',
+         'name'               => __('Private followup'),
+         'datatype'           => 'bool',
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '93',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Writer'),
+         'datatype'           => 'itemlink',
+         'right'              => 'all',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_problemfollowups',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => $followup_condition
+               ]
+            ]
+         ]
+      ];
 
       $tab = array_merge($tab, ProblemTask::rawSearchOptionsToAdd());
 
@@ -1281,6 +1419,7 @@ class Problem extends CommonITILObject {
       $this->showFormButtons($options);
 
    }
+
 
 
    static function getCommonSelect() {

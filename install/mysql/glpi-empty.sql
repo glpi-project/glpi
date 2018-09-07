@@ -9560,4 +9560,52 @@ CREATE TABLE `glpi_pdus_racks` (
   KEY `racks_id` (`racks_id`),
   KEY `pdus_id` (`pdus_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_changefollowups`;
+CREATE TABLE `glpi_changefollowups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `changes_id` int(11) NOT NULL DEFAULT '0',
+  `date` datetime DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_editor` int(11) NOT NULL DEFAULT '0',
+  `content` longtext COLLATE utf8_unicode_ci,
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
+  `requesttypes_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_editor` (`users_id_editor`),
+  KEY `changes_id` (`changes_id`),
+  KEY `is_private` (`is_private`),
+  KEY `requesttypes_id` (`requesttypes_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_problemfollowups`;
+CREATE TABLE `glpi_problemfollowups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `problems_id` int(11) NOT NULL DEFAULT '0',
+  `date` datetime DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_editor` int(11) NOT NULL DEFAULT '0',
+  `content` longtext COLLATE utf8_unicode_ci,
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
+  `requesttypes_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_editor` (`users_id_editor`),
+  KEY `problems_id` (`problems_id`),
+  KEY `is_private` (`is_private`),
+  KEY `requesttypes_id` (`requesttypes_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- /Datacenters

@@ -6,6 +6,8 @@ The present file will list all changes made to the project; according to the
 ## [9.4] unreleased
 
 ### Added
+
+- Add followups to Changes and Problems
 - Ability to link project with problems and tickets.
 
 ### API changes
@@ -15,6 +17,10 @@ The present file will list all changes made to the project; according to the
 - Remove `$CFG_GLPI['use_rich_text']` parameter. Will now be `true` per default.
 - Remove `$CFG_GLPI['ticket_timeline']` parameter. Will now be `true` per default.
 - Remove `$CFG_GLPI['ticket_timeline_keep_replaced_tabs']` parameter. Will now be `false` per default.
+
+The following methods have been deprecated:
+
+- `TicketFollowup::showSummary()`
 
 #### Removed
 
