@@ -268,10 +268,26 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
          $rand = mt_rand();
 
+         $finished_states_it = $DB->request(
+            [
+               'SELECT' => ['id'],
+               'FROM'   => ProjectState::getTable(),
+               'WHERE'  => [
+                  'is_finished' => 1
+               ],
+            ]
+         );
+         $finished_states_ids = [];
+         foreach ($finished_states_it as $finished_state) {
+            $finished_states_ids[] = $finished_state['id'];
+         }
+
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo Html::hidden('tickets_id', ['value' => $ID]);
          Project::dropdown(['entity'      => $ticket->getEntityID(),
                             'entity_sons' => $ticket->isRecursive(),
+                            'condition'   => '`glpi_projects`.`projectstates_id`
+                                                 NOT IN(' . implode($finished_states_ids, ", ") . ')',
                             'rand'        => $rand]);
 
          $p = ['projects_id'     => '__VALUE__',
@@ -286,13 +302,32 @@ class ProjectTask_Ticket extends CommonDBRelation{
                                        $p);
 
          echo "</td>";
+
+         $excluded_projects_it = $DB->request(
+            [
+               'SELECT' => ['id'],
+               'FROM'   => Project::getTable(),
+               'WHERE'  => [
+                  'OR' => [
+                     'projectstates_id' => $finished_states_ids,
+                     'is_template'      => 1
+                  ]
+               ],
+            ]
+         );
+         $ecluded_projects_ids = [];
+         foreach ($excluded_projects_it as $ecluded_project) {
+            $ecluded_projects_ids[] = $ecluded_project['id'];
+         }
          echo "<td class='right'>";
          echo "<span id='results_projects$rand'>";
-         $condition = "`glpi_projecttasks`.`projectstates_id` <> 3";
          ProjectTask::dropdown(['used'        => $used,
                                 'entity'      => $ticket->getEntityID(),
                                 'entity_sons' => $ticket->isRecursive(),
-                                'condition'       => $condition,
+                                'condition'   => '`glpi_projecttasks`.`projectstates_id`
+                                                     NOT IN(' . implode($finished_states_ids, ", ") . ')
+                                                  AND `glpi_projecttasks`.`projects_id`
+                                                     NOT IN(' . implode($ecluded_projects_ids, ", ") . ')',
                                 'displaywith' => ['id']]);
          echo "</span>";
 
