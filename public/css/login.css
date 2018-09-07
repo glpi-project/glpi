@@ -73,17 +73,6 @@
    box-shadow: 0 0 0px 1000px white inset;
 }
 
-html.legacy #content .content .input-img {
-   /*left:8px;
-   position:absolute;
-   top:3px;*/
-   color: #9B9B9B;
-   font-size: 1.5em!important;
-   position: absolute;
-   top: .3em;
-   left: .8em;
-}
-
 #boxlogin input.submit {
    margin-top: 20px;
    width: 100%;

@@ -2292,8 +2292,7 @@ a.icon_nav_move:hover img {
 #boxlogin {
    padding-top: 10px;
    bottom: 0;
-   width: 20em;
-   margin: 0 auto;
+   width: 100%;
 }
 
 
@@ -2338,16 +2337,6 @@ a.icon_nav_move:hover img {
    box-shadow: 0 0 0px 1000px white inset;
 }
 
-.input-img {
-   /*left:8px;
-   position:absolute;
-   top:3px;*/
-   color: #9B9B9B;
-   font-size: 1.5em!important;
-   position: absolute;
-   top: .3em;
-   left: .8em;
-}
 #boxlogin .login_input:before {
    font-family: 'Font Awesome\ 5 Free';
    left:8px;
@@ -2422,23 +2411,19 @@ a.icon_nav_move:hover img {
    text-decoration: underline;
 }
 
-#footer-login,
-.loginpage #footer {
+#footer-login {
    position: absolute;
    right: 10px;
    bottom: 0px;
    font-size : 10px;
    font-family: Verdana,Arial,Helvetica,sans-serif;
    font-weight: bold;
-   background-color: transparent;
 }
 
-#footer-login.home,
-.loginpage #footer {
+#footer-login.home {
    bottom: 15px;
 }
-#footer-login.home a,
-.loginpage #footer a {
+#footer-login.home a {
    color: #FFF;
 }
 
@@ -2447,7 +2432,7 @@ a.icon_nav_move:hover img {
 /* ################--------------- Header / menu  ---------------#################### */
 
 #header {
-   /*height: 96px;*/
+   height: 96px;
 }
 
 #header_top {
@@ -2552,7 +2537,7 @@ a.icon_nav_move:hover img {
 }
 
 #c_menu {
-   /*height: 30px;*/
+   height: 30px;
    text-align: center;
    padding-left: 95px;
 }
@@ -2695,7 +2680,6 @@ ul#menu ul.ssmenu {
    padding: 3px 0;
    box-sizing: border-box;
    background-color: #FFF;
-   margin-bottom: 1.5em;
 }
 
 #c_ssmenu2 ul {
@@ -2798,10 +2782,6 @@ ul#menu ul.ssmenu {
    display: inline-block;
    line-height: 23px;
 }
-.profile-selector a {
-   display: inline-block;
-   line-height: 23px;
-}
 
 .icons_block a > img,
 .icons_block i.fa {
@@ -2863,7 +2843,6 @@ ul#menu ul.ssmenu {
    padding: 6px;
    height: 18px;
    padding: 5px;
-   margin-top: 1.5em;
 }
 
 #footer > table {
@@ -4106,10 +4085,6 @@ tr.log_history_filter_row .select2-container--default .select2-selection--multip
       z-index: 1000;
    }
 
-   #content {
-      margin-top: 7em;
-   }
-
    #c_ssmenu2 {
       overflow: auto;
       border-bottom: 1px solid #DDD;
@@ -4138,8 +4113,7 @@ tr.log_history_filter_row .select2-container--default .select2-selection--multip
       padding: 1px 2%;
    }
 
-   #footer-login,
-   .loginpage #footer {
+   #footer-login {
       display: none;
    }
 
@@ -5366,38 +5340,6 @@ input[name=as_map]:checked + label {
    color:blue;
 }
 
-div.dropdowns_list,
-div.simpleform,
-div.add {
-   margin: 0 auto;
-}
-
-div.simpleform,
-div.add {
-   border: 1px solid #dadada;
-   background: #fff url("images/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x
-}
-
-div.dropdowns_list {
-   text-align: center;
-}
-
-div.add {
-   padding: 1.5em;
-}
-
-div.add header {
-   background-color: #F1F1F1;
-   font-size: 1.1em;
-   text-align: center;
-   padding: .6em;
-   font-weight: bold;
-}
-
-div.simpleform fieldset {
-   padding: .5em; /** purecss */
-}
-
 .leaflet-control-geocoder-form {
    margin: .2em!important;
 }
@@ -5407,38 +5349,6 @@ div.simpleform fieldset {
 }
 .leaflet-control-geocoder-form input[type=submit] {
    border: 1px transparent solid;
-}
-
-.dropdowns_list dl {
-   margin: .5em 1em;
-   border: 1px solid #dadada;
-   background: #fff;
-}
-
-.dropdowns_list dt {
-   font-weight: bold;
-   padding: .5em;
-   background: #F1F1F1;
-}
-
-.dropdowns_list dd {
-   text-align: left;
-}
-
-.dropdowns_list dd a {
-   display: block;
-   padding: .2em .5em;
-}
-.dropdowns_list dd a:hover {
-   background: #8BAADA;
-}
-
-.dropdowns_list .fa {
-   color: #ccc;
-}
-
-.dropdowns_list .fa.wentity {
-   color: #3A5693;
 }
 
 /** ITIL statuses */
