@@ -56,7 +56,16 @@
    {% if show_lostpass %}
          <a id="forget" href="{{ path_for('lostPassword') }}">{{ __('Forgotten password?') }}</a>';
    {%endif %}
+   {% if show_faq %}
+         <a href="front/helpdesk.faq.php">[ {{ __('Access to the Frequently Asked Questions') }} ]';
+   {% endif %}
       </div>
+      <div class='error'>";
+      <noscript>
+         <p class="error">
+            {{ __('You must activate the JavaScript function of your browser') }}
+         </p>
+      </noscript>
    </div>
    {#
    //TODO: delegate redirects to routing
@@ -66,27 +75,8 @@
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
    }#}
 {#
-   if ($CFG_GLPI["notifications_mailing"]
-       && countElementsInTable('glpi_notifications',
-                               "`itemtype`='User'
-                                AND `event`='passwordforget'
-                                AND `is_active`=1")) {
-      echo '<a id="forget" href="front/lostpassword.php?lostpassword=1">'.
-             __('Forgotten password?').'</a>';
-   }
-   Html::closeForm();
-
-   echo "<script type='text/javascript' >\n";
-   echo "document.getElementById('login_name').focus();";
-   echo "</script>";
-
-   echo "</div>";  // end login box
-
 
    echo "<div class='error'>";
-   echo "<noscript><p>";
-   echo __('You must activate the JavaScript function of your browser');
-   echo "</p></noscript>";
 
    if (isset($_GET['error']) && isset($_GET['redirect'])) {
       switch ($_GET['error']) {
@@ -105,25 +95,8 @@
    }
    echo "</div>";
 
-   // Display FAQ is enable
-   if ($CFG_GLPI["use_public_faq"]) {
-      echo '<div id="box-faq">'.
-            '<a href="front/helpdesk.faq.php">[ '.__('Access to the Frequently Asked Questions').' ]';
-      echo '</a></div>';
-   }
-
    echo "<div id='display-login'>";
    Plugin::doHook('display_login');
    echo "</div>";
-
-
-   echo "</div>"; // end contenu login
 #}
-
-   {#if (GLPI_DEMO_MODE) {
-      echo "<div class='center'>";
-      Event::getCountLogin();
-      echo "</div>";
-   }#}
-
 {% endblock %}

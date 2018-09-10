@@ -36,7 +36,6 @@ if (version_compare(PHP_VERSION, '5.6') < 0) {
    die('PHP >= 5.6 required');
 }
 
-
 use Glpi\Event;
 use Tracy\Debugger;
 
@@ -462,11 +461,17 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          }
       }
 
+      $show_faq = false;
+      if ($CFG_GLPI["use_public_faq"]) {
+         $show_faq = true;
+      }
+
       return $this->view->render(
          $response,
          'login.twig', [
             'glpi_form'       => $glpi_form,
-            'show_lostpass'   => $show_lostpass
+            'show_lostpass'   => $show_lostpass,
+            'show_faq'        => $show_faq
          ]
       );
    })->setName('login');
