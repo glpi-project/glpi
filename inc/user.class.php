@@ -1381,7 +1381,7 @@ class User extends CommonDBTM {
                      'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
                   ]);
 
-                  while ($group = $iterator->next()) {
+                  while ($group = $group_iterator->next()) {
                      $this->fields["_groups"][] = $group['id'];
                   }
                }
@@ -1397,6 +1397,7 @@ class User extends CommonDBTM {
                    && ($v[$i][$field]['count'] > 0)) {
 
                   unset($v[$i][$field]['count']);
+                  $lgroups = [];
                   foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
                      $lgroups[] = [
                         new \QueryExpression($DB::quoteValue($lgroup).
@@ -1413,7 +1414,7 @@ class User extends CommonDBTM {
                      ]
                   ]);
 
-                  while ($group = $iterator->next()) {
+                  while ($group = $group_iterator->next()) {
                      $this->fields["_groups"][] = $group['id'];
                   }
                }
