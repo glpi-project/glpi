@@ -295,18 +295,17 @@ class Html extends \GLPITestCase {
 
    public function testGetMenuInfos() {
       $menu = \Html::getMenuInfos();
-      $this->integer(count($menu))->isIdenticalTo(8);
 
       $expected = [
          'assets',
          'helpdesk',
          'management',
          'tools',
-         'plugins',
          'admin',
-         'config',
-         'preference'
+         'config'
       ];
+
+      $this->integer(count($menu))->isIdenticalTo(count($expected));
       $this->array($menu)
          ->hasSize(count($expected))
          ->hasKeys($expected);
@@ -366,10 +365,6 @@ class Html extends \GLPITestCase {
       $this->string($menu['tools']['title'])->isIdenticalTo('Tools');
       $this->array($menu['tools']['types'])->isIdenticalTo($expected);
 
-      $expected = [];
-      $this->string($menu['plugins']['title'])->isIdenticalTo('Plugins');
-      $this->array($menu['plugins']['types'])->isIdenticalTo($expected);
-
       $expected = [
          'User',
          'Group',
@@ -398,10 +393,6 @@ class Html extends \GLPITestCase {
       ];
       $this->string($menu['config']['title'])->isIdenticalTo('Setup');
       $this->array($menu['config']['types'])->isIdenticalTo($expected);
-
-      $this->string($menu['preference']['title'])->isIdenticalTo('My settings');
-      $this->array($menu['preference'])->notHasKey('types');
-      $this->string($menu['preference']['default'])->isIdenticalTo('/front/preference.php');
    }
 
    public function testGetCopyrightMessage() {

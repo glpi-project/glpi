@@ -1348,9 +1348,6 @@ class Html {
                                              'ReservationItem', 'Report', 'MigrationCleaner',
                                              'SavedSearch'];
 
-      $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
-      $menu['plugins']['types']      = [];
-
       $menu['admin']['title']        = __('Administration');
       $menu['admin']['types']        = ['User', 'Group', 'Entity', 'Rule',
                                              'Profile', 'QueuedNotification', 'Backup', 'Glpi\\Event'];
@@ -1359,10 +1356,6 @@ class Html {
       $menu['config']['types']       = ['CommonDropdown', 'CommonDevice', 'Notification',
                                         'SLM', 'Config', 'FieldUnicity', 'Crontask', 'Auth',
                                         'MailCollector', 'Link', 'Plugin'];
-
-      // Special items
-      $menu['preference']['title']   = __('My settings');
-      $menu['preference']['default'] = '/front/preference.php';
 
       return $menu;
    }
