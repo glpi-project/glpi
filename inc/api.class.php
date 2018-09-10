@@ -1614,6 +1614,10 @@ abstract class API extends CommonGLPI {
                   $object['entities_id'] = $_SESSION['glpiactive_entity'];
                }
 
+               // add an entry to match gui post (which contains submit button)
+               // to force having messages after redirect
+               $object["_add"] = true;
+
                //add current item
                $object = Toolbox::sanitize($object);
                $new_id = $item->add($object);
