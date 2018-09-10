@@ -4031,7 +4031,7 @@ class User extends CommonDBTM {
 
                $type_name = $item->getTypeName();
 
-               while ($data = $iterator->next()) {
+               while ($data = $group_iterator->next()) {
                   $nb++;
                   $cansee = $item->can($data["id"], READ);
                   $link   = $data["name"];
