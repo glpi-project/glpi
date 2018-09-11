@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
       $fic = $_POST['_filename'];
       $tag = $_POST['_tag_filename'];
       $prefix = $_POST['_prefix_filename'];
-      foreach ($fic as $key => $val) {
+      foreach (array_keys($fic) as $key) {
          $_POST['_filename']        = [$fic[$key]];
          $_POST['_tag_filename']    = [$tag[$key]];
          $_POST['_prefix_filename'] = [$prefix[$key]];

@@ -96,7 +96,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                $query[$val] .= " AND ( ";
                $first = true;
-               foreach ($_POST["year"] as $key2 => $val2) {
+               foreach ($_POST["year"] as $val2) {
                   if (!$first) {
                      $query[$val] .= " OR ";
                   } else {
@@ -145,7 +145,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                $query[$val] .= " AND ( ";
                $first = true;
-               foreach ($_POST["year"] as $key2 => $val2) {
+               foreach ($_POST["year"] as $val2) {
                   if (!$first) {
                      $query[$val] .= " OR ";
                   } else {

@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var CommonDropdown $dropdown
+ */
+
 if (!($dropdown instanceof CommonDropdown)) {
    Html::displayErrorAndDie('');
 }
