@@ -118,5 +118,17 @@ class Certificate_Item extends DbTestCase {
             $this->boolean($this->testedInstance->getListForItem($cert))->isFalse();
          }
       )->message->contains('Cannot use getListForItem() for a Certificate; you must use getDistinctTypes() and getItemForItemtype().');
+
+      $list_types = iterator_to_array($this->testedInstance->getDistinctTypes($cid1));
+      $expected = [
+         ['itemtype' => 'Computer'],
+         ['itemtype' => 'Printer']
+      ];
+      $this->array($list_types)->isIdenticalTo($expected);
+
+      foreach ($list_types as $type) {
+         $list_items = iterator_to_array($this->testedInstance->getTypeItems($cid1, $type['itemtype']));
+         $this->array($list_items)->hasSize(1);
+      }
    }
 }
