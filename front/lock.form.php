@@ -51,7 +51,7 @@ if (isset($_POST['itemtype'])) {
          foreach ($actions as $type) {
             if (isset($_POST[$type]) && count($_POST[$type])) {
                $item = new $type();
-               foreach ($_POST[$type] as $key => $val) {
+               foreach (array_keys($_POST[$type]) as $key) {
                   //Force unlock
                   $item->restore(['id' => $key]);
                }
@@ -67,7 +67,7 @@ if (isset($_POST['itemtype'])) {
          foreach ($actions as $type) {
             if (isset($_POST[$type]) && count($_POST[$type])) {
                $item = new $type();
-               foreach ($_POST[$type] as $key => $val) {
+               foreach (array_keys($_POST[$type]) as $key) {
                   //Force unlock
                   $item->delete(['id' => $key], 1);
                }

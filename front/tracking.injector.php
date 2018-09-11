@@ -59,7 +59,7 @@ if (isset($_POST['add'])) {
    } else {
       $track->getEmpty();
    }
-   if ($newID = $track->add($_POST)) {
+   if ($track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($track->getLinkURL());
       }

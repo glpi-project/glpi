@@ -34,6 +34,11 @@
  * @since 0.85
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var Item_Devices $item_device
+ */
+
 use Glpi\Event;
 
 if (!($item_device instanceof Item_Devices)) {

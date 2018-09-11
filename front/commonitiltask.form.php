@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var CommonITILTask $task
+ */
+
 use Glpi\Event;
 
 // autoload include in objecttask.form (tickettask, problemtask,...)
