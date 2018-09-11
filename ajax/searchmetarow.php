@@ -88,13 +88,6 @@ if (isset($_POST["itemtype"])
                                  'width' => '40%']);
 
    // Display select of the linked item type available
-   foreach ($linked as $key) {
-      if (!isset($metanames[$key])) {
-         if ($linkitem = getItemForItemtype($key)) {
-            $metanames[$key] = $linkitem->getTypeName();
-         }
-      }
-   }
    $value = '';
    if (isset($metacriteria['itemtype'])
        && !empty($metacriteria['itemtype'])) {

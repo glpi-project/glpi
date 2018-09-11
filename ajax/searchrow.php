@@ -34,6 +34,14 @@
  * @since 0.85
  */
 
+/**
+ * Following variables are defined in Search::showGenericSearch() before inclusion of this file:
+ * @var array  $p
+ * @var string $nbsearchcountvar
+ * @var string $nbmetasearchcountvar
+ * @var string $searchcriteriatableid
+ */
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "searchrow.php")) {
    include ('../inc/includes.php');

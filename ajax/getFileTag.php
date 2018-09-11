@@ -44,7 +44,9 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['data'])) {
-   foreach ($_POST['data'] as $key =>  $values) {
+   $response = [];
+
+   foreach (array_keys($_POST['data']) as $key) {
       $unique_name = Rule::getUuid();
       $response[$key] = ['tag' => Document::getImageTag($unique_name), 'name' => $unique_name];
    }

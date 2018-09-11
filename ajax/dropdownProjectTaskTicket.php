@@ -42,11 +42,6 @@ Session::checkLoginUser();
 
 if (isset($_POST["projects_id"])) {
 
-   $rand = mt_rand();
-   if (isset($_POST["rand"])) {
-      $rand = $_POST["rand"];
-   }
-
    if ($_POST["projects_id"] > 0) {
 
       $condition = "`glpi_projecttasks`.`projectstates_id` <> 3

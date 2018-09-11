@@ -49,8 +49,10 @@ if (isset($_POST["table"])
    switch ($_POST["table"]) {
       case "glpi_users" :
          if ($_POST['value'] == 0) {
-            $tmpname['link']    = $CFG_GLPI['root_doc']."/front/user.php";
-            $tmpname['comment'] = "";
+            $tmpname = [
+               'link'    => $CFG_GLPI['root_doc']."/front/user.php",
+               'comment' => "",
+            ];
          } else {
             $tmpname = getUserName($_POST["value"], 2);
          }
