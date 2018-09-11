@@ -39,6 +39,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 class CommonGLPI {
 
+   const SUBITEM_SHOW_LIST = 0;
+   const SUBITEM_SHOW_FORM = 1;
+   const SUBITEM_SHOW_SPEC = 2;
+
    /// GLPI Item type cache : set dynamically calling getType
    protected $type                 = -1;
 
@@ -250,7 +254,7 @@ class CommonGLPI {
          foreach ($titles as $key => $val) {
             if (!empty($val)) {
                $tabid = $itemtype . '__' . $key;
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && method_exists($item, 'countForTab')) {
                   $count = $item->countForTab($this, $tabid);
                   if ($count !== false) {
                      $val = [
@@ -1441,4 +1445,12 @@ class CommonGLPI {
       }
    }
 
+   /**
+    * Get display type for sub item
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_LIST;
+   }
 }

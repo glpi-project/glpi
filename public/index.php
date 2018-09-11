@@ -848,17 +848,69 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ObjectLock::setReadOnlyProfile();
       }
 
-      ob_start();
-      CommonGLPI::displayStandardTab(
-         $item,
-         str_replace('__', '$', $args['tab']),
-         $get["withtemplate"],
-         $options
-      );
-      $contents = ob_get_contents();
-      ob_end_clean();
+      $tab = explode('__', $args['tab']);
+      $legacy = true;
+      if (count($tab) == 2) {
+         $sub_itemtype = $tab[0];
+         $sub_item = new $sub_itemtype;
+         $sub_item_display = $sub_item->getSubItemDisplay();
+         switch ($sub_item_display) {
+            case CommonGLPI::SUBITEM_SHOW_LIST:
+               if ($sub_item instanceof CommonDBRelation) {
+                  $sub_item->getListForItem($item);
+                  //$sub_item->getTypeItems($item->getID(), $item->getType());
+                  //$legacy = false;
+                  $params = [];
+                  /*$params = $request->getQueryParams() + $args;
+                  if (isset($args['reset'])) {
+                     $params = $args;
+                     unset($params['reset']);
+                     $this->flash->addMessage('info', __('Search params has been reset'));
+                  }
+                  if (isset($args['page'])) {
+                     $params['start'] = ($args['page'] - 1) * $_SESSION['glpilist_limit'];
+                  }*/
+                  /*$search = new Search($sub_item, $params);
+                  if (isset($args['page'])) {
+                     $search->setPage((int)$args['page']);
+                  }
+                  $data = $search->getData();
 
-      $contents = "<div class='legacy container box'>$contents</div>";
+                  var_dump($data);
+                  return $this->view->render(
+                     $response,
+                     'list_contents.twig', [
+                        'search_data'     => $data,
+                        'item'            => $sub_item
+                     ]
+                  );*/
+               } else {
+                  $legacy = true;
+               }
+               break;
+            case CommonGLPI::SUBITEM_SHOW_FORM:
+               break;
+            case CommonDBTM::SUBITEM_SHOW_SPEC:
+               break;
+            default:
+               $legacy = true;
+               break;
+         }
+      }
+
+      if ($legacy) {
+         ob_start();
+         CommonGLPI::displayStandardTab(
+            $item,
+            str_replace('__', '$', $args['tab']),
+            $get["withtemplate"],
+            $options
+         );
+         $contents = ob_get_contents();
+         ob_end_clean();
+
+         $contents = "<div class='legacy container box'>$contents</div>";
+      }
       return $this->view->render(
          $response,
          'ajax.twig',
