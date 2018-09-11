@@ -44,17 +44,23 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 
-   $options2['criteria'][0]['field']      = 5; // users_id assign
-   $options2['criteria'][0]['searchtype'] = 'equals';
-   $options2['criteria'][0]['value']      = $_POST['users_id_assign'];
-   $options2['criteria'][0]['link']       = 'AND';
-
-   $options2['criteria'][1]['field']      = 12; // status
-   $options2['criteria'][1]['searchtype'] = 'equals';
-   $options2['criteria'][1]['value']      = 'notold';
-   $options2['criteria'][1]['link']       = 'AND';
-
-   $options2['reset'] = 'reset';
+   $options2 = [
+      'criteria' => [
+         [
+            'field'      => 5, // users_id assign
+            'searchtype' => 'equals',
+            'value'      => $_POST['users_id_assign'],
+            'link'       => 'AND',
+         ],
+         [
+            'field'      => 12, // status
+            'searchtype' => 'equals',
+            'value'      => 'notold',
+            'link'       => 'AND',
+         ],
+      ],
+      'reset' => 'reset',
+   ];
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
@@ -67,17 +73,23 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 } else if (isset($_POST['groups_id_assign']) && ($_POST['groups_id_assign'] > 0)) {
    $ticket = new Ticket();
 
-   $options2['criteria'][0]['field']      = 8; // groups_id assign
-   $options2['criteria'][0]['searchtype'] = 'equals';
-   $options2['criteria'][0]['value']      = $_POST['groups_id_assign'];
-   $options2['criteria'][0]['link']       = 'AND';
-
-   $options2['criteria'][1]['field']      = 12; // status
-   $options2['criteria'][1]['searchtype'] = 'equals';
-   $options2['criteria'][1]['value']      = 'notold';
-   $options2['criteria'][1]['link']       = 'AND';
-
-   $options2['reset']         = 'reset';
+   $options2 = [
+      'criteria' => [
+         [
+            'field'      => 8, // groups_id assign
+            'searchtype' => 'equals',
+            'value'      => $_POST['groups_id_assign'],
+            'link'       => 'AND',
+         ],
+         [
+            'field'      => 12, // status
+            'searchtype' => 'equals',
+            'value'      => 'notold',
+            'link'       => 'AND',
+         ],
+      ],
+      'reset' => 'reset',
+   ];
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
@@ -90,17 +102,23 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 
-   $options2['criteria'][0]['field']      = 6; // suppliers_id assign
-   $options2['criteria'][0]['searchtype'] = 'equals';
-   $options2['criteria'][0]['value']      = $_POST['suppliers_id_assign'];
-   $options2['criteria'][0]['link']       = 'AND';
-
-   $options2['criteria'][1]['field']      = 12; // status
-   $options2['criteria'][1]['searchtype'] = 'equals';
-   $options2['criteria'][1]['value']      = 'notold';
-   $options2['criteria'][1]['link']       = 'AND';
-
-   $options2['reset'] = 'reset';
+   $options2 = [
+      'criteria' => [
+         [
+            'field'      => 6, // suppliers_id assign
+            'searchtype' => 'equals',
+            'value'      => $_POST['suppliers_id_assign'],
+            'link'       => 'AND',
+         ],
+         [
+            'field'      => 12, // status
+            'searchtype' => 'equals',
+            'value'      => 'notold',
+            'link'       => 'AND',
+         ],
+      ],
+      'reset' => 'reset',
+   ];
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
