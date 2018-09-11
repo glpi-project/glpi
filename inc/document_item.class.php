@@ -85,14 +85,31 @@ class Document_Item extends CommonDBRelation{
 
    function prepareInputForAdd($input) {
 
-      if ((empty($input['items_id']) || ($input['items_id'] == 0))
+      if (empty($input['itemtype'])) {
+         Toolbox::logError('Item type is mandatory');
+         return false;
+      }
+
+      if (!class_exists($input['itemtype'])) {
+         Toolbox::logError(sprintf('No class found for type %s', $input['itemtype']));
+         return false;
+      }
+
+      if ((empty($input['items_id']))
           && ($input['itemtype'] != 'Entity')) {
+         Toolbox::logError('Item ID is mandatory');
+         return false;
+      }
+
+      if (empty($input['documents_id'])) {
+         Toolbox::logError('Document ID is mandatory');
          return false;
       }
 
       // Do not insert circular link for document
       if (($input['itemtype'] == 'Document')
           && ($input['items_id'] == $input['documents_id'])) {
+         Toolbox::logError('Cannot link document to itself');
          return false;
       }
 
@@ -101,6 +118,7 @@ class Document_Item extends CommonDBRelation{
                               ['documents_id' => $input['documents_id'],
                                'itemtype'     => $input['itemtype'],
                                'items_id'     => $input['items_id']]) > 0) {
+         Toolbox::logError('Duplicated document item relation');
          return false;
       }
 
@@ -110,6 +128,7 @@ class Document_Item extends CommonDBRelation{
          $input['users_id'] = Session::getLoginUserID();
       }
 
+      /** FIXME: should not this be handled on CommonITILObject side? */
       if (is_subclass_of($input['itemtype'], 'CommonITILObject')) {
          $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
          if (isset($input["users_id"])) {
@@ -158,9 +177,10 @@ class Document_Item extends CommonDBRelation{
 
       if ($this->fields['itemtype'] == 'Ticket') {
          $ticket = new Ticket();
-         $input  = ['id'            => $this->fields['items_id'],
-                         'date_mod'      => $_SESSION["glpi_currenttime"],
-                         '_donotadddocs' => true];
+         $input  = [
+            'id'              => $this->fields['items_id'],
+            'date_mod'        => $_SESSION["glpi_currenttime"],
+            '_donotadddocs'   => true];
 
          if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
             $input['_forcenotif'] = true;
@@ -184,9 +204,10 @@ class Document_Item extends CommonDBRelation{
 
       if ($this->fields['itemtype'] == 'Ticket') {
          $ticket = new Ticket();
-         $input = ['id'            => $this->fields['items_id'],
-                        'date_mod'      => $_SESSION["glpi_currenttime"],
-                        '_donotadddocs' => true];
+         $input = [
+            'id'              => $this->fields['items_id'],
+            'date_mod'        => $_SESSION["glpi_currenttime"],
+            '_donotadddocs'   => true];
 
          if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
             $input['_forcenotif'] = true;
@@ -283,14 +304,21 @@ class Document_Item extends CommonDBRelation{
          $newitemtype = $itemtype;
       }
 
-      foreach ($DB->request('glpi_documents_items',
-                            ['FIELDS' => 'documents_id',
-                                  'WHERE'  => "`items_id` = '$oldid'
-                                                AND `itemtype` = '$itemtype'"]) as $data) {
+      $iterator = $DB->request([
+         'FIELDS' => ['documents_id'],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'items_id'  => $oldid,
+            'itemtype'  => $itemtype
+         ]
+      ]);
+      while ($data = $iterator->next()) {
          $docitem = new self();
-         $docitem->add(['documents_id' => $data["documents_id"],
-                             'itemtype'     => $newitemtype,
-                             'items_id'     => $newid]);
+         $docitem->add([
+            'documents_id' => $data["documents_id"],
+            'itemtype'     => $newitemtype,
+            'items_id'     => $newid]
+         );
       }
    }
 
@@ -999,7 +1027,10 @@ class Document_Item extends CommonDBRelation{
       ]];
 
       $params = parent::getDistinctTypesParams($items_id, $extra_where);
-      $params['WHERE'] = $commonwhere + $extra_where;
+      $params['WHERE'] = $commonwhere;
+      if (count($extra_where)) {
+         $params['WHERE'] += ['AND' => $extra_where];
+      }
 
       return $params;
    }
