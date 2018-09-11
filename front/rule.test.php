@@ -71,7 +71,7 @@ if (isset($_POST["test_rule"])) {
 
    // Need for RuleEngines
    foreach ($_POST as $key => $val) {
-      $_POST[$key] = stripslashes($_POST[$key]);
+      $_POST[$key] = stripslashes($val);
    }
    //Add rules specific POST fields to the param array
    $params = $rule->addSpecificParamsForPreview($params);

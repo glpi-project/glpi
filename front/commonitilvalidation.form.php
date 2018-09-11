@@ -34,6 +34,11 @@
  * @since 0.85
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var CommonITILValidation $validation
+ */
+
 use Glpi\Event;
 
 // autoload include in objecttask.form (ticketvalidation, changevalidation,...)

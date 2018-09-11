@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var RuleCollection $rulecollection
+ */
+
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
