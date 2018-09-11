@@ -647,4 +647,13 @@ class Item_OperatingSystem extends CommonDBRelation {
       $input['is_recursive'] = $item->fields['is_recursive'];
       return $input;
    }
+
+   /**
+    * Get display type for sub item
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_FORM;
+   }
 }
