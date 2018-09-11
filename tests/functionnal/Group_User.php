@@ -195,5 +195,8 @@ class Group_User extends \DbTestCase {
       $this->array($list_items[$user->getID()])
          ->hasKeys(['linkid', 'is_manager', 'is_userdelegate'])
          ->string['name']->isIdenticalTo('_test_user');
+
+      $this->integer($this->testedInstance->countForItem($user))->isIdenticalTo(2);
+      $this->integer($this->testedInstance->countForItem($group))->isIdenticalTo(1);
    }
 }

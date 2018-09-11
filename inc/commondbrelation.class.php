@@ -1557,7 +1557,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          if ($link_type == 'itemtype') {
             throw new \RuntimeException(
                sprintf(
-                  'Cannot use getListForItem() for a %s; you must use getDistinctTypes() and getItemForItemtype().',
+                  'Cannot use getListForItemParams() for a %s',
                   $item->getType()
                )
             );
