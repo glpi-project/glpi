@@ -33,4 +33,4 @@
 include ('../inc/includes.php');
 
 $dropdown = new VirtualMachineSystem();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown->displaySearchPage();

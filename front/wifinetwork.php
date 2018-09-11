@@ -33,4 +33,4 @@
 include ('../inc/includes.php');
 
 $dropdown = new WifiNetwork();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown->displaySearchPage();

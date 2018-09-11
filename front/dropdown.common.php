@@ -30,19 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
+Toolbox::deprecated('Inclusion of dropdown.common.php file has been deprecated. Please use CommonDropdown::displaySearchPage().');
+
 if (!($dropdown instanceof CommonDropdown)) {
    Html::displayErrorAndDie('');
 }
-if (!$dropdown->canView()) {
-   // Gestion timeout session
-   Session::redirectIfNotLoggedIn();
-   Html::displayRightError();
-}
 
-$dropdown->displayHeader();
-
-$dropdown->title();
-
-Search::show(get_class($dropdown));
-
-Html::footer();
+$dropdown->displaySearchPage();

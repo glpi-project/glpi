@@ -37,4 +37,4 @@
 include ('../inc/includes.php');
 
 $dropdown = new ProjecttaskTemplate();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown->displaySearchPage();

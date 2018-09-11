@@ -3,6 +3,14 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [9.3.2] unreleased
+
+### API changes
+
+#### Deprecated
+
+- Inclusion of `/front/dropdown.common.php` file has been deprecated
+
 ## [9.3.1] unreleased
 
 ### Added
