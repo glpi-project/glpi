@@ -562,16 +562,27 @@ class Lock {
                   $action_valid = false;
                   foreach ($links as $infos) {
                      $infos['condition'][$infos['field']] = $id;
-                     foreach ($DB->request($infos['table'], $infos['condition']) as $data) {
+                     $locked_items = $DB->request($infos['table'], $infos['condition']);
+
+                     if ($locked_items->count() === 0) {
+                        $action_valid = true;
+                        continue;
+                     }
+                     foreach ($locked_items as $data) {
                         // Restore without history
                         $action_valid = $infos['item']->restore(['id' => $data['id']]);
                      }
                   }
+
+                  $baseItemType = $baseitem->getType();
                   if ($action_valid) {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     $ma->itemDone($baseItemType, $id, MassiveAction::ACTION_OK);
                   } else {
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($infos['item']->getErrorMessage(ERROR_ON_ACTION));
+                     $ma->itemDone($baseItemType, $id, MassiveAction::ACTION_KO);
+
+                     $erroredItem = new $baseItemType();
+                     $erroredItem->getFromDB($id);
+                     $ma->addMessage($erroredItem->getErrorMessage(ERROR_ON_ACTION));
                   }
                }
             }
