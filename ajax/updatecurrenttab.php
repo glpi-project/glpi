@@ -51,7 +51,7 @@ if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
       $tabs[-1]     = 'All';
       $selected_tab = '';
       $current      = 0;
-      foreach ($tabs as $key => $val) {
+      foreach (array_keys($tabs) as $key) {
          if ($current == $_GET['tab']) {
             $selected_tab = $key;
          }

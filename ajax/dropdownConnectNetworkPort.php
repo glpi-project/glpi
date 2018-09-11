@@ -85,6 +85,7 @@ if (class_exists($_POST["itemtype"])
 
    echo "<br>";
 
+   $values = [];
    if ($DB->numrows($result)) {
       while ($data = $DB->fetch_assoc($result)) {
          // Device name + port name
