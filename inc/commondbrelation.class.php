@@ -1554,6 +1554,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       if ($inverse === true) {
          $link_type  = static::$itemtype_2;
+         if ($link_type == 'itemtype') {
+            throw new \RuntimeException(
+               sprintf(
+                  'Cannot use getListForItem() for a %s; you must use getDistinctTypes() and getItemForItemtype().',
+                  $item->getType()
+               )
+            );
+         }
          $link_id    = static::$items_id_2;
          $where_id   = static::$items_id_1;
       }

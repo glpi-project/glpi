@@ -113,11 +113,10 @@ class Certificate_Item extends DbTestCase {
          ->hasKeys([$cid1, $cid4]);
 
       $this->boolean($cert->getFromDB($cid1))->isTrue();
-      $it = $this->testedInstance->getListForItem($cert);
-      echo $it->getSQL();
-      /*$list_items = iterator_to_array($this->testedInstance->getListForItem($cert));
-      $this->array($list_items)
-         ->hasSize(2)
-         ->hasKeys([$computer->getID(), $printer->getID()]);*/
+      $this->exception(
+         function () use ($cert) {
+            $this->boolean($this->testedInstance->getListForItem($cert))->isFalse();
+         }
+      )->message->contains('Cannot use getListForItem() for a Certificate; you must use getDistinctTypes() and getItemForItemtype().');
    }
 }
