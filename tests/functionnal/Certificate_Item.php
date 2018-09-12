@@ -113,11 +113,11 @@ class Certificate_Item extends DbTestCase {
          ->hasKeys([$cid1, $cid4]);
 
       $this->boolean($cert->getFromDB($cid1))->isTrue();
-      $this->exception(
+      /*$this->exception(
          function () use ($cert) {
             $this->boolean($this->testedInstance->getListForItem($cert))->isFalse();
          }
-      )->message->contains('Cannot use getListForItemParams() for a Certificate');
+      )->message->contains('Cannot use getListForItemParams() for a Certificate');*/
 
       $list_types = iterator_to_array($this->testedInstance->getDistinctTypes($cid1));
       $expected = [
@@ -127,7 +127,14 @@ class Certificate_Item extends DbTestCase {
       $this->array($list_types)->isIdenticalTo($expected);
 
       foreach ($list_types as $type) {
-         $list_items = iterator_to_array($this->testedInstance->getTypeItems($cid1, $type['itemtype']));
+         /** TODO: remove. */
+         $it = $this->testedInstance->getTypeItems($cid1, $type['itemtype']);
+         $list_items = iterator_to_array($it);
+         $this->array($list_items)->hasSize(1);
+         /** END TODO */
+
+         $it = $this->testedInstance->getListForItem($cert, $type['itemtype']);
+         $list_items = iterator_to_array($it);
          $this->array($list_items)->hasSize(1);
       }
 
@@ -137,11 +144,11 @@ class Certificate_Item extends DbTestCase {
       $computer = getItemByTypeName('Computer', '_test_pc02');
       $this->integer($this->testedInstance->countForItem($computer))->isIdenticalTo(0);
 
-      $this->exception(
+      /*$this->exception(
          function () use ($cert) {
             $this->testedInstance->countForItem($cert);
          }
-      )->message->contains('Cannot use getListForItemParams() for a Certificate');
+      )->message->contains('Cannot use getListForItemParams() for a Certificate');*/
 
       $this->integer($this->testedInstance->countForMainItem($cert))->isIdenticalTo(2);
    }

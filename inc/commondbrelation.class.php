@@ -1538,12 +1538,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param CommonDBTM $item     Item instance
+    * @param boolean    $noent    Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    * @param array      $where    Inital WHERE clause. Defaults to []
     *
     * @return array
     */
-   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false, $itemtype = null, $where = []) {
       global $DB;
 
       $inverse = $item->getType() == static::$itemtype_1;
@@ -1551,16 +1553,17 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $link_type  = static::$itemtype_1;
       $link_id    = static::$items_id_1;
       $where_id   = static::$items_id_2;
+      $item_type  = $item->getType();
 
       if ($inverse === true) {
          $link_type  = static::$itemtype_2;
          if ($link_type == 'itemtype') {
-            throw new \RuntimeException(
-               sprintf(
-                  'Cannot use getListForItemParams() for a %s',
-                  $item->getType()
-               )
-            );
+            if ($itemtype != null) {
+               $link_type  = $itemtype;
+               $item_type  = $itemtype;
+            } else {
+               $link_type = $item->getType();
+            }
          }
          $link_id    = static::$items_id_2;
          $where_id   = static::$items_id_1;
@@ -1569,8 +1572,25 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $link = new $link_type;
       $link_table = getTableForItemtype($link_type);
 
+      $order_col = $link->getNameField();
+
+      if ($link instanceof CommonDevice) {
+         $order_col = "designation";
+      } else if ($item instanceof Item_Devices) {
+         $order_col = "itemtype";
+      } else if ($link instanceof Ticket) {
+         $order_col = 'id';
+      }
+
+      if (!count($where)) {
+         $where = [static::getTable() . '.' . $where_id  => $item->fields['id']];
+      }
+
       $params = [
-         'SELECT'    => [static::getTable() . '.id AS linkid', $link_table . '.*'],
+         'SELECT'    => [
+            static::getTable() . '.id AS linkid',
+            $link_table . '.*'
+         ],
          'FROM'      => static::getTable(),
          'LEFT JOIN' => [
             $link_table  => [
@@ -1580,10 +1600,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                ]
             ]
          ],
-         'WHERE'     => [
-            static::getTable() . '.' . $where_id => $item->fields['id']
-         ],
-         'ORDER'     => $link_table . '.name'
+         'WHERE'     => $where,
+         'ORDER'     => $link_table . '.' . $order_col
       ];
 
       $rel_class = static::class;
@@ -1597,7 +1615,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       if ($DB->fieldExists(static::getTable(), 'itemtype')) {
-         $params['WHERE'][static::getTable() . '.itemtype'] = $item->getType();
+         $params['WHERE'][static::getTable() . '.itemtype'] = $item_type;
+      }
+
+      if ($link->maybeTemplate()) {
+         $params['WHERE'][$link_table . '.is_template'] = 0;
       }
 
       if ($noent === false && $link->isEntityAssign() && $link_type != Entity::getType()) {
@@ -1621,13 +1643,15 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since 9.3.1
     *
     * @param CommonDBTM $item Item instance
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    * @param array      $where    Inital WHERE clause. Defaults to []
     *
     * @return DBmysqlIterator
     */
-   public static function getListForItem(CommonDBTM $item) {
+   public static function getListForItem(CommonDBTM $item, $itemtype = null, $where = []) {
       global $DB;
 
-      $params = static::getListForItemParams($item);
+      $params = static::getListForItemParams($item, false, $itemtype, $where);
       $iterator = $DB->request($params);
 
       return $iterator;
@@ -1703,41 +1727,54 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $where = [static::getTable() . '.' . static::$items_id_1  => $items_id];
       }
 
+      $link_table = $item->getTable();
+      $link_id    = 'items_id';
+
       $params = [
-         'SELECT' => [
-            $item->getTable() . '.*',
-            static::getTable() . '.id AS linkid'
+         'SELECT'    => [
+            static::getTable() . '.id AS linkid',
+            $link_table . '.*'
          ],
-         'FROM'   => $item->getTable(),
-         'WHERE'  => $where,
+         'FROM'      => static::getTable(),
          'LEFT JOIN' => [
-            static::getTable() => [
+            $link_table => [
                'FKEY' => [
-                  static::getTable()   => 'items_id',
-                  $item->getTable()    => 'id'
+                  static::getTable()   => $link_id,
+                  $link_table          => 'id'
                ]
             ]
          ],
-         'ORDER'     => $item->getTable() . '.' . $order_col
+         'WHERE'     => $where,
+         'ORDER'     => $link_table . '.' . $order_col
       ];
+
+      $rel_class = static::class;
+      $rel = new $rel_class();
+      if ($rel->maybeDynamic()) {
+         $params['SELECT'][] = static::getTable() . '.is_dynamic';
+      }
+
+      if ($rel->maybeRecursive()) {
+         $params['SELECT'][] = static::getTable() . '.is_recursive';
+      }
 
       if ($DB->fieldExists(static::getTable(), 'itemtype')) {
          $params['WHERE'][static::getTable() . '.itemtype'] = $itemtype;
       }
 
       if ($item->maybeTemplate()) {
-         $params['WHERE'][$item->getTable() . '.is_template'] = 0;
+         $params['WHERE'][$link_table . '.is_template'] = 0;
       }
 
       if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::getType()) {
          $params['SELECT'][] = 'glpi_entities.id AS entity';
          $params['LEFT JOIN']['glpi_entities'] = [
             'FKEY'   => [
-               $item->getTable() => 'entities_id',
+               $link_table       => 'entities_id',
                'glpi_entities'   => 'id'
             ]
          ];
-         $params['WHERE'] += getEntitiesRestrictCriteria($item->getTable(), '', '', true);
+         $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', true);
          $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
       }
 
@@ -1805,7 +1842,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             continue;
          }
 
-         $params = static::getTypeItemsQueryParams($item->fields['id'], $data['itemtype']);
+         $params = static::getListForItemParams($item, false, $data['itemtype']);
          unset($params['SELECT']);
          $params['COUNT'] = 'cpt';
          $iterator = $DB->request($params);

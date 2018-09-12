@@ -989,17 +989,18 @@ class Document_Item extends CommonDBRelation{
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param CommonDBTM $item     Item instance
+    * @param boolean    $noent    Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    * @param array      $where    Inital WHERE clause. Defaults to []
     *
     * @return array
     */
-   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
-
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false, $itemtype = null, $where = []) {
       if (Session::getLoginUserID()) {
-         $params = parent::getListForItemParams($item);
+         $params = parent::getListForItemParams($item, false, $itemtype, $where);
       } else {
-         $params = parent::getListForItemParams($item, true);
+         $params = parent::getListForItemParams($item, true, $itemtype, $where);
          // Anonymous access from FAQ
          $params['WHERE'][self::getTable() . '.entities_id'] = 0;
       }
