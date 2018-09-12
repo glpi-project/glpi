@@ -33,4 +33,4 @@
 include ('../inc/includes.php');
 
 $dropdown = new Fieldblacklist();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown->displaySearchPage();

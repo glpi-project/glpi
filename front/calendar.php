@@ -34,4 +34,4 @@ include ('../inc/includes.php');
 
 $dropdown = new Calendar();
 
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown->displaySearchPage();

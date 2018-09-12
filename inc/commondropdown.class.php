@@ -985,4 +985,24 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       return $ret;
    }
+
+   /**
+    * Display list page for current item type.
+    *
+    * @since 9.3.2
+    *
+    * @return void
+    */
+   public function displaySearchPage() {
+
+      if (!$this->canView()) {
+         Session::redirectIfNotLoggedIn();
+         Html::displayRightError();
+      }
+
+      $this->displayHeader();
+      $this->title();
+      Search::show(get_class($this));
+      Html::footer();
+   }
 }
