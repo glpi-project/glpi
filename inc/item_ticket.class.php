@@ -463,7 +463,7 @@ class Item_Ticket extends CommonDBRelation{
          }
 
          if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-            $iterator = self::getTypeItems($instID, $itemtype);
+            $iterator = self::getListForItem($ticket, $itemtype);
             $nb = count($iterator);
 
             $prem = true;

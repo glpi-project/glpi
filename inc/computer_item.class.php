@@ -335,7 +335,7 @@ class Computer_Item extends CommonDBRelation{
       foreach ($CFG_GLPI["directconnect_types"] as $itemtype) {
          $item = new $itemtype();
          if ($item->canView()) {
-            $iterator = self::getTypeItems($ID, $itemtype);
+            $iterator = self::getListForItem($comp, $itemtype);
 
             while ($data = $iterator->next()) {
                $data['assoc_itemtype'] = $itemtype;

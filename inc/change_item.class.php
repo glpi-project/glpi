@@ -159,7 +159,7 @@ class Change_Item extends CommonDBRelation{
             continue;
          }
          if ($item->canView()) {
-            $iterator = self::getTypeItems($instID, $itemtype);
+            $iterator = self::getListForItem($change, $itemtype);
             $nb = count($iterator);
 
             $prem = true;
