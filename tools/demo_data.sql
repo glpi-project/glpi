@@ -1,4 +1,4 @@
-UPDATE glpi_configs SET value = 'http://demo.glpi-project.org' WHERE name = 'url_base';
+UPDATE glpi_configs SET value = 'https://demo.glpi-project.org' WHERE name = 'url_base';
 UPDATE glpi_configs SET value = 'Pick an account, choose a language and try GLPI!
 
 Following accounts are available:
