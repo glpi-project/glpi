@@ -6936,11 +6936,11 @@ msgstr[1] "Solutions"
 
 #: inc/commonitilobject.class.php:3047
 msgid "Any solution status"
-msgstr ""
+msgstr "N'importe quel statut de solution"
 
 #: inc/commonitilobject.class.php:3062
 msgid "Last solution status"
-msgstr ""
+msgstr "Dernier statut de solution"
 
 #: inc/commonitilobject.class.php:3099
 msgid "Resolution time"
@@ -7969,7 +7969,7 @@ msgstr "État par défaut de la case à cocher"
 
 #: inc/config.class.php:451
 msgid "Display source dropdown on login page"
-msgstr ""
+msgstr "Afficher la liste des sources d'authentification sur la page de login"
 
 #: inc/config.class.php:488 inc/config.class.php:2175 inc/entity.class.php:339
 #: inc/entity.class.php:963 inc/event.class.php:154 inc/html.class.php:1332
@@ -9305,7 +9305,7 @@ msgstr "Contrat en fin de période"
 
 #: inc/contract.class.php:1384
 msgid "send contract alert failed"
-msgstr "échec d'envoi de l'alerte concernant les contrats"
+msgstr "échec d'envoi de l'alerte sur les contrats"
 
 #: inc/contract.class.php:1527 inc/contract.class.php:1549
 #: inc/contract.class.php:1569
@@ -10124,7 +10124,7 @@ msgstr "Affichage utilisateur"
 
 #: inc/displaypreference.class.php:725 inc/profile.class.php:1996
 msgid "Search result user display"
-msgstr "Affichage recherche pour l'utilisateur"
+msgstr "Affichage des résultats de recherche pour l'utilisateur"
 
 #. TRANS: short for : Search result default display
 #: inc/displaypreference.class.php:727
@@ -10133,7 +10133,7 @@ msgstr "Affichage par défaut"
 
 #: inc/displaypreference.class.php:728
 msgid "Search result default display"
-msgstr "Affichage recherche par défaut"
+msgstr "Affichage des résultats de recherche par défaut"
 
 #: inc/documentcategory.class.php:44 inc/dropdown.class.php:931
 msgid "Document heading"
@@ -12575,6 +12575,8 @@ msgstr "Enregistrer et ajouter à la base de connaissances"
 #: inc/itilsolution.class.php:287
 msgid "The item is already solved, did anyone pushed a solution before you ?"
 msgstr ""
+"Cet élément a déjà été résolu, quelqu'un n'aurait-il pas écrit une solution "
+"avant vous ?   "
 
 #: inc/itilsolution.class.php:421
 msgid "Add a new solution"
@@ -12583,7 +12585,7 @@ msgstr "Ajouter une nouvelle solution"
 #: inc/itilsolution.class.php:435
 #, php-format
 msgid "No solutions for this %1$s"
-msgstr "Pas de solutions pour cet %1$s"
+msgstr "Pas de solutions pour ce %1$s"
 
 #: inc/itilsolution.class.php:550 inc/ticket.class.php:7161
 #, php-format
@@ -13011,6 +13013,8 @@ msgstr "Code Mobile Réseau"
 #: inc/lineoperator.class.php:109
 msgid "Mobile country code and network code combination must be unique!"
 msgstr ""
+"La combinaison \"Code Mobile du Pays\" et \"Code Mobile Réseau\" doit être "
+"unique !"
 
 #: inc/link.class.php:51 inc/link.class.php:583 inc/profile.class.php:1530
 #: inc/profile.class.php:1967 inc/search.class.php:5821
@@ -13277,7 +13281,7 @@ msgstr "Utiliser la date du courriel au lieu de celle de la collecte"
 #: inc/mailcollector.class.php:388
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr ""
+msgstr "Pas de sous élément pour '%s'."
 
 #: inc/mailcollector.class.php:406
 msgctxt "button"

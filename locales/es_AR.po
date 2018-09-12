@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-03 11:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Pablo Nazar <pablo.e.nazar@gmail.com>, 2017\n"
+"Last-Translator: Emiliano Cagliari <thelordbat@gmail.com>, 2018\n"
 "Language-Team: Spanish (Argentina) (https://www.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: format.php:34
 msgid "Add a computer"
-msgstr ""
+msgstr "Agregar una computadora"
 
 #: format.php:43 ajax/dropdownMassiveActionAddActor.php:46
 #: ajax/dropdownMassiveActionAddValidator.php:54
@@ -1739,8 +1739,8 @@ msgstr "%s agrega un enlace a un proveedor"
 #: inc/profile.class.php:1815 inc/transfer.class.php:3507
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Contrato"
+msgstr[1] "Contrato"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -4814,7 +4814,7 @@ msgstr "Preservar"
 
 #: inc/authldap.class.php:3407
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Poner en el basurero"
 
 #: inc/authldap.class.php:3408 inc/authldap.class.php:3410
 msgid "Withdraw dynamic authorizations and groups"
@@ -6256,7 +6256,7 @@ msgstr "Confirma el borrado definitivo?"
 #: inc/transfer.class.php:3347
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Poner en el basurero"
 
 #: inc/commondbtm.class.php:2580
 msgid "Template name"
@@ -6318,7 +6318,7 @@ msgstr "Otro elemento existe"
 
 #: inc/commondbtm.class.php:4090
 msgid "Item in the trashbin"
-msgstr ""
+msgstr "Artículo en el basurero"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:4211
@@ -6512,7 +6512,7 @@ msgstr "1/4"
 #: inc/commondevice.class.php:119
 #, php-format
 msgid "%1$s items"
-msgstr ""
+msgstr "%1$s Articulos"
 
 #: inc/commondropdown.class.php:502
 msgid "Product number"
@@ -6922,11 +6922,11 @@ msgstr[1] "Soluciones"
 
 #: inc/commonitilobject.class.php:3047
 msgid "Any solution status"
-msgstr ""
+msgstr "Cualquier estado de solución"
 
 #: inc/commonitilobject.class.php:3062
 msgid "Last solution status"
-msgstr ""
+msgstr "Último estado de la solución"
 
 #: inc/commonitilobject.class.php:3099
 msgid "Resolution time"
@@ -7958,7 +7958,7 @@ msgstr "Estado predeterminado de la casilla de verificación"
 
 #: inc/config.class.php:451
 msgid "Display source dropdown on login page"
-msgstr ""
+msgstr "Mostrar desplegable en Inicio de sesión"
 
 #: inc/config.class.php:488 inc/config.class.php:2175 inc/entity.class.php:339
 #: inc/entity.class.php:963 inc/event.class.php:154 inc/html.class.php:1332
@@ -8146,6 +8146,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
 msgstr ""
+"Permitir que inicie sesión en la API y obtener un token de sesión con el "
+"token externo del usuario. Ver clave de acceso remoto en la pestaña de "
+"Configuración del usuario"
 
 #: inc/config.class.php:805
 msgid "Add API client"

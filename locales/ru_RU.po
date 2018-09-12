@@ -4186,7 +4186,7 @@ msgid_plural "Logs"
 msgstr[0] "Лог"
 msgstr[1] "Логи"
 msgstr[2] "Логи"
-msgstr[3] "Логи"
+msgstr[3] "Лог"
 
 #: inc/apirest.class.php:55
 msgid "Rest API"

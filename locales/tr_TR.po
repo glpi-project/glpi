@@ -20,7 +20,7 @@ msgstr ""
 
 #: format.php:34
 msgid "Add a computer"
-msgstr ""
+msgstr "Bilgisayar ekleyin"
 
 #: format.php:43 ajax/dropdownMassiveActionAddActor.php:46
 #: ajax/dropdownMassiveActionAddValidator.php:54
@@ -1678,11 +1678,11 @@ msgstr "%s yazılım yükledi"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "Lütfen bir yazılım seçin!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "Lütfen bir sürüm seçin!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -1737,8 +1737,8 @@ msgstr "%s sağlayıcıyla bir bağlantı ekledi"
 #: inc/profile.class.php:1815 inc/transfer.class.php:3507
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sözleşme"
+msgstr[1] "Sözleşme"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -4799,7 +4799,7 @@ msgstr "Korunsun"
 
 #: inc/authldap.class.php:3407
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Çöp kutusuna at"
 
 #: inc/authldap.class.php:3408 inc/authldap.class.php:3410
 msgid "Withdraw dynamic authorizations and groups"
@@ -6237,7 +6237,7 @@ msgstr "Son silme işlemini onaylıyor musunuz?"
 #: inc/transfer.class.php:3347
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Çöp kutusuna at"
 
 #: inc/commondbtm.class.php:2580
 msgid "Template name"
@@ -6297,7 +6297,7 @@ msgstr "Başka bir öge var"
 
 #: inc/commondbtm.class.php:4090
 msgid "Item in the trashbin"
-msgstr ""
+msgstr "Çöp kutusundaki öge"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:4211
@@ -6903,11 +6903,11 @@ msgstr[1] "Çözüm"
 
 #: inc/commonitilobject.class.php:3047
 msgid "Any solution status"
-msgstr ""
+msgstr "Herhangi bir çözüm durumu"
 
 #: inc/commonitilobject.class.php:3062
 msgid "Last solution status"
-msgstr ""
+msgstr "Son çözüm durumu"
 
 #: inc/commonitilobject.class.php:3099
 msgid "Resolution time"
@@ -7930,7 +7930,7 @@ msgstr "İşaret kutusunun varsayılan durumu"
 
 #: inc/config.class.php:451
 msgid "Display source dropdown on login page"
-msgstr ""
+msgstr "Oturum açma sayfasında kaynak açılan listesi görüntülensin"
 
 #: inc/config.class.php:488 inc/config.class.php:2175 inc/entity.class.php:339
 #: inc/entity.class.php:963 inc/event.class.php:154 inc/html.class.php:1332
@@ -9648,8 +9648,8 @@ msgstr[1] "%d gün"
 #: inc/dcroom.class.php:258
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Veri merkezi"
+msgstr[1] "Veri merkezi"
 
 #: inc/dbconnection.class.php:375
 msgid "Check the SQL replica"
@@ -9704,7 +9704,7 @@ msgstr "Adres:"
 
 #: inc/dcbreadcrumb.class.php:99
 msgid "Data center position"
-msgstr ""
+msgstr "Veri merkezi konumu"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/dcroom.class.php:50 inc/rack.class.php:200 inc/rack.class.php:411
@@ -11338,6 +11338,14 @@ msgid ""
 "\n"
 "Or, support the GLPI development effort by <b>donating</b>."
 msgstr ""
+"GLPI uygulamasını BT uygulamalarınız ile birleştirmek, hata düzeltmesi ya da hazır kural ve sözlükleri kullanmak gibi istekleriniz mi var?\n"
+"\n"
+"Sizin için %s alanı sunuyoruz.\n"
+"GLPI-Network, tier 3 destek aboneliği bulunan ticari bir üründür. Hataların belirli bir sürede düzeltileceğinden emin olmanızı sağlar.\n"
+"\n"
+"Aynı alanda GLPI bütünleştirmesi için size yardımcı olacak <b>resmi bir iş ortağı ile iletişim kurabilirsiniz</b>.\n"
+"\n"
+"Ya da <b>bağış yaparak</b> GLPI geliştirme çalışmalarına destek olabilirsiniz."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -12504,6 +12512,7 @@ msgstr "Kaydedip bilgi bankasına ekle"
 #: inc/itilsolution.class.php:287
 msgid "The item is already solved, did anyone pushed a solution before you ?"
 msgstr ""
+"Bu öge zaten çözümlenmiş, başka biri sizden önce bir çözüm mü uyguladı?"
 
 #: inc/itilsolution.class.php:421
 msgid "Add a new solution"
@@ -12790,7 +12799,7 @@ msgstr "geçerli"
 
 #: inc/knowbaseitem_revision.class.php:174
 msgid "Unknown user"
-msgstr ""
+msgstr "Bilinmeyen kullanıcı"
 
 #: inc/knowbaseitem_revision.class.php:185
 msgid "show"
@@ -12939,7 +12948,7 @@ msgstr "Mobil Ağ Kodu"
 
 #: inc/lineoperator.class.php:109
 msgid "Mobile country code and network code combination must be unique!"
-msgstr ""
+msgstr "Mobil ülke kodu ve ağ kodu kombinasyonu eşsiz olmalıdır!"
 
 #: inc/link.class.php:51 inc/link.class.php:583 inc/profile.class.php:1530
 #: inc/profile.class.php:1967 inc/search.class.php:5821
@@ -13206,7 +13215,7 @@ msgstr "Toplama tarihi yerine e-posta tarihi kullanılsın"
 #: inc/mailcollector.class.php:388
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr ""
+msgstr "'%s' klasörünün altında bir öge bulunamadı."
 
 #: inc/mailcollector.class.php:406
 msgctxt "button"
@@ -15090,7 +15099,7 @@ msgstr "CSS"
 #: inc/notificationtemplate.class.php:252
 #: inc/notificationtemplate.class.php:316
 msgid "Automatically generated by GLPI"
-msgstr ""
+msgstr "GLPI tarafından otomatik olarak oluşturuldu"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -15292,7 +15301,7 @@ msgstr "Otomatik işletme sözleşmesi anımsatıcıları"
 
 #: inc/olalevel_ticket.class.php:45
 msgid "OLA level for Ticket"
-msgstr ""
+msgstr "Destek Kaydının İşletme Sözleşmesi Düzeyi"
 
 #: inc/olalevel_ticket.class.php:131
 msgid "Automatic actions of OLA"
@@ -16393,7 +16402,7 @@ msgstr "Buraya bir kabin ekleyin"
 
 #: inc/rack.class.php:932
 msgid "Position must be set"
-msgstr ""
+msgstr "Konum ayarlanmalıdır"
 
 #: inc/rack.class.php:953
 #, php-format
@@ -16567,7 +16576,7 @@ msgstr "Öge ayırt"
 
 #: inc/reservation.class.php:723
 msgid "Repetition"
-msgstr ""
+msgstr "Yinelenme"
 
 #: inc/reservation.class.php:725
 msgctxt "periodicity"
@@ -16591,7 +16600,7 @@ msgstr "Aylık"
 
 #: inc/reservation.class.php:763
 msgid "Delete all repetition"
-msgstr ""
+msgstr "Tüm yinelenmeleri sil"
 
 #: inc/reservation.class.php:1073 inc/reservation.class.php:1075
 #: inc/reservation.class.php:1191
@@ -17147,6 +17156,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
+"Uyarı! Bu işlem aktarılan yazılımın çöp kutusuna atılmasına neden olabilir. "
+"<br>Kullanıcılarınızı bilgilendirdiğinizden emin olun."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
 msgid "Manufacturer choice"
@@ -17590,7 +17601,7 @@ msgstr "Harita olarak görüntüle"
 
 #: inc/search.class.php:1843 inc/search.class.php:1844
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Çöp kutusunu görüntüle"
 
 #: inc/search.class.php:1917 inc/search.class.php:1919
 #: inc/search.class.php:1994 inc/search.class.php:1997
@@ -17669,7 +17680,7 @@ msgstr "Otomatik hizmet sözleşmesi anımsatıcıları"
 
 #: inc/slalevel_ticket.class.php:41
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "Destek Kaydının Hizmet Sözleşmesi Düzeyi"
 
 #: inc/slalevel_ticket.class.php:127
 msgid "Automatic actions of SLA"
@@ -17922,7 +17933,7 @@ msgstr[1] "İlgili sözleşme"
 
 #: inc/telemetry.class.php:40
 msgid "Telemetry"
-msgstr ""
+msgstr "Uzaktan algılama"
 
 #: inc/telemetry.class.php:261
 msgid "Send telemetry informations"
@@ -19298,11 +19309,11 @@ msgstr "Verileri topla"
 
 #: install/install.php:468 install/update.php:602
 msgid "One last thing before starting"
-msgstr ""
+msgstr "Başlamadan önce son bir şey"
 
 #: install/install.php:477 install/update.php:607
 msgid "Donate"
-msgstr ""
+msgstr "Bağış yapın"
 
 #: install/install.php:519
 msgid "The installation is finished"

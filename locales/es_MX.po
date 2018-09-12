@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-03 11:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: José Luis Mondragón <trainee.sistemas@mielmex.com>, 2017\n"
+"Last-Translator: Francisco Javier Sanchez <panchosaga@gmail.com>, 2018\n"
 "Language-Team: Spanish (Mexico) (https://www.transifex.com/glpi/teams/1637/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -220,7 +220,7 @@ msgstr "%1$s - Al puerto %2$s"
 #: ajax/dropdownConnectNetworkPort.php:103
 #, php-format
 msgid "%1$s - Network outlet %2$s"
-msgstr ""
+msgstr "%1$s - Roseta de red %2$s"
 
 #. TRANS: %1$s is a name, %2$s is ID
 #. TRANS: %1$s is the name, %2$s the ID
@@ -2093,8 +2093,8 @@ msgstr[1] ""
 #: front/find_num.php:98 inc/networkequipment.class.php:60
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dispositivo de red"
+msgstr[1] "Dispositivos de red"
 
 #: front/find_num.php:99 inc/cartridge.class.php:1126 inc/lock.class.php:511
 #: inc/printer.class.php:60 inc/profile.class.php:868
@@ -2102,24 +2102,24 @@ msgstr[1] ""
 #: inc/rulecollection.class.php:1984 inc/transfer.class.php:3444
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Impresora"
+msgstr[1] "Impresoras"
 
 #: front/find_num.php:100 inc/lock.class.php:509 inc/monitor.class.php:57
 #: inc/profile.class.php:859 inc/profile.class.php:1656
 #: inc/transfer.class.php:3434 inc/wifinetwork.class.php:71
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Monitor"
+msgstr[1] "Monitores"
 
 #: front/find_num.php:101 inc/lock.class.php:510 inc/peripheral.class.php:60
 #: inc/profile.class.php:880 inc/profile.class.php:1712
 #: inc/transfer.class.php:3454
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dispositivos"
+msgstr[1] "Dispositivos"
 
 #: front/find_num.php:153 inc/computer_softwareversion.class.php:756
 #: inc/config.class.php:3084 inc/dropdown.class.php:1011
@@ -2172,7 +2172,7 @@ msgstr ""
 
 #: front/helpdesk.php:91
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Seleccione un nivel de urgencia"
 
 #: front/helpdesk.php:94 inc/commonitilobject.class.php:2008
 msgctxt "urgency"
@@ -2201,7 +2201,7 @@ msgstr "Muy baja"
 
 #: front/helpdesk.php:103
 msgid "Describe your issue"
-msgstr ""
+msgstr "Describa su problema"
 
 #: front/helpdesk.php:105 inc/change.class.php:788
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:2798
@@ -2293,7 +2293,7 @@ msgstr "Ha sido redirigido pues ya no cuenta con acceso a este incidente"
 #: front/knowbaseitem_comment.form.php:51
 #: front/knowbaseitem_comment.form.php:70 front/knowbaseitem_item.form.php:41
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "No se han llenado los campos obligatorios!"
 
 #: front/knowbaseitem_comment.form.php:58
 #, php-format
@@ -2302,7 +2302,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:60
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Su comentario ha sido agregado"
 
 #: front/knowbaseitem_comment.form.php:79
 #, php-format
@@ -3705,7 +3705,7 @@ msgstr ""
 
 #: front/ticket.form.php:223
 msgid "Save solution to the knowledge base"
-msgstr ""
+msgstr "Guardar solucion en la base de conocimientos"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatehiddenfield.form.php:47

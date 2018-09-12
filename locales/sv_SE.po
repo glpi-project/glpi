@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-03 11:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: nalle303 <nalle303@gmail.com>, 2017\n"
+"Last-Translator: Jan Friberg, 2018\n"
 "Language-Team: Swedish (Sweden) (https://www.transifex.com/glpi/teams/1637/sv_SE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: format.php:34
 msgid "Add a computer"
-msgstr ""
+msgstr "Lägg till dator"
 
 #: format.php:43 ajax/dropdownMassiveActionAddActor.php:46
 #: ajax/dropdownMassiveActionAddValidator.php:54
@@ -92,7 +92,7 @@ msgstr ""
 
 #: index.php:155
 msgid "Remember me"
-msgstr ""
+msgstr "Kom ihåg mig"
 
 #: index.php:159 ajax/dropdownMassiveActionAuthMethods.php:65
 #: ajax/dropdownMassiveActionField.php:53 inc/authldap.class.php:1276
@@ -1672,11 +1672,11 @@ msgstr "%s installerar mjukvara"
 
 #: front/computer_softwareversion.form.php:55
 msgid "Please select a software!"
-msgstr ""
+msgstr "Välj en programvara!"
 
 #: front/computer_softwareversion.form.php:57
 msgid "Please select a version!"
-msgstr ""
+msgstr "Välj en version!"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:54
@@ -2314,7 +2314,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:81
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Din kommentar har redigerats"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:115 front/reminder.form.php:107
@@ -2977,7 +2977,7 @@ msgstr ""
 
 #: front/savedsearch.php:37 inc/html.class.php:6070 inc/html.class.php:6079
 msgid "Saved searches"
-msgstr ""
+msgstr "Sparade sökningar"
 
 #: front/search.php:36 inc/entity.class.php:1105 inc/html.class.php:6106
 #: inc/html.class.php:6385 inc/html.class.php:6386 inc/location.class.php:466
@@ -3017,7 +3017,7 @@ msgstr ""
 
 #: front/setup.auth.php:62
 msgid "Others authentication methods"
-msgstr "Andras autenticeringsmetoder"
+msgstr "Alternativa autenticeringsmetoder"
 
 #: front/setup.notification.php:38 inc/commonitilobject.class.php:3316
 #: inc/entity.class.php:333 inc/event.class.php:166
@@ -4133,7 +4133,7 @@ msgstr ""
 #: inc/auth.class.php:115 inc/log.class.php:930 inc/log.class.php:953
 #: inc/log.class.php:1004 inc/log.class.php:1018
 msgid "Others"
-msgstr "Andras"
+msgstr "Övrigt"
 
 #: inc/auth.class.php:146 inc/auth.class.php:246 inc/auth.class.php:368
 msgid "Incorrect username or password"
@@ -5576,8 +5576,8 @@ msgstr ""
 #: inc/profile.class.php:955
 msgid "Certificate"
 msgid_plural "Certificates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Certifikat"
+msgstr[1] "Certifikat"
 
 #: inc/certificate.class.php:120 inc/certificate.class.php:476
 #: inc/certificate_item.class.php:431
@@ -5586,7 +5586,7 @@ msgstr ""
 
 #: inc/certificate.class.php:127 inc/certificate.class.php:460
 msgid "Self-signed"
-msgstr ""
+msgstr "Självsignerad"
 
 #: inc/certificate.class.php:135 inc/certificate.class.php:482
 #: inc/certificate_item.class.php:433 inc/computerantivirus.class.php:200
@@ -9699,8 +9699,8 @@ msgstr ""
 #: inc/devicebattery.class.php:42
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Batteri"
+msgstr[1] "Batterier"
 
 #: inc/devicebattery.class.php:57 inc/devicebattery.class.php:79
 #: inc/devicebattery.class.php:115 inc/item_deviceharddrive.class.php:52
@@ -9716,7 +9716,7 @@ msgstr ""
 #: inc/devicebattery.class.php:114 inc/devicesimcard.class.php:57
 #: inc/devicesimcard.class.php:77
 msgid "Voltage"
-msgstr ""
+msgstr "Spänning"
 
 #: inc/devicebattery.class.php:65 inc/devicebattery.class.php:114
 msgid "mV"
@@ -9725,14 +9725,14 @@ msgstr ""
 #: inc/devicebatterymodel.class.php:44
 msgid "Device battery model"
 msgid_plural "Device batteries models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Enhetens batterityp"
+msgstr[1] "Enhetens batterityp"
 
 #: inc/devicebatterytype.class.php:41
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Batterityp"
+msgstr[1] "Batterityper"
 
 #: inc/devicecase.class.php:43
 msgid "Case"
@@ -9802,8 +9802,8 @@ msgstr[1] ""
 #: inc/phone.class.php:527
 msgid "Firmware"
 msgid_plural "Firmware"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fast programvara"
+msgstr[1] "Fast programvara"
 
 #: inc/devicefirmwaremodel.class.php:43
 msgid "Device firmware model"
@@ -9988,8 +9988,8 @@ msgstr[1] ""
 #: inc/devicesimcard.class.php:42
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "SIM-kort"
+msgstr[1] "SIM-kort"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:93
 msgid "Allow VOIP"
@@ -9998,8 +9998,8 @@ msgstr ""
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:858
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Typ av SIM-kort"
+msgstr[1] "Typ av SIM-kort"
 
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:909
 msgid "Device sound card model"
@@ -10804,8 +10804,8 @@ msgstr "Ingen översättning hittades"
 #: inc/enclosure.class.php:48 inc/item_enclosure.class.php:251
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Rackskåp"
+msgstr[1] "Rackskåp"
 
 #: inc/enclosure.class.php:95
 msgid "Power supplies"
@@ -10939,7 +10939,7 @@ msgstr ""
 #: inc/entity.class.php:871 inc/entity.class.php:1930
 #: inc/notificationtargetcertificate.class.php:49
 msgid "Alarms on expired certificates"
-msgstr ""
+msgstr "Varna när certifikatet upphört att gälla"
 
 #: inc/entity.class.php:881
 msgid "Send Certificate alarms before"
@@ -11383,7 +11383,7 @@ msgstr "Kan inte notifieras"
 
 #: inc/group.class.php:279
 msgid "Visible in a project"
-msgstr ""
+msgstr "Synlig i ett projekt"
 
 #: inc/group.class.php:283 inc/group.class.php:473
 msgid "Can be manager"
@@ -12133,8 +12133,8 @@ msgstr ""
 #: inc/line.class.php:50 inc/profile.class.php:952
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefonlinje"
+msgstr[1] "Telefonlinjer"
 
 #: inc/item_devicesimcard.class.php:103
 msgid "Mobile Subscriber Identification Number"
@@ -12184,7 +12184,7 @@ msgstr ""
 #: inc/item_operatingsystem.class.php:504
 #: inc/item_operatingsystem.class.php:522
 msgid "Operating System"
-msgstr ""
+msgstr "Operativsystem"
 
 #: inc/item_rack.class.php:124 inc/rack.class.php:558
 msgid "View as list"
@@ -12241,8 +12241,8 @@ msgstr ""
 #: inc/rack.class.php:62
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Rackkabinett"
+msgstr[1] "Rackkabinetter"
 
 #: inc/item_rack.class.php:666
 msgid "Orientation (front rack point of view)"
@@ -12350,7 +12350,7 @@ msgstr "Mina objekt"
 
 #: inc/item_ticket.class.php:828
 msgid "Devices own by my groups"
-msgstr ""
+msgstr "Enheter som ägs av min grupp"
 
 #: inc/item_ticket.class.php:884
 msgid "Connected devices"
@@ -14032,7 +14032,7 @@ msgstr "Konfigurering av uppföljningar via email"
 
 #: inc/notificationmailingsetting.class.php:48
 msgid "Enable followups via email"
-msgstr ""
+msgstr "Aktivera uppföljningar via e-post"
 
 #: inc/notificationmailingsetting.class.php:68
 msgid "Email notification"
@@ -14167,7 +14167,7 @@ msgstr[1] ""
 
 #: inc/notification_notificationtemplate.class.php:108
 msgid "Add a template"
-msgstr ""
+msgstr "Ny mall"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
@@ -14794,8 +14794,8 @@ msgstr ""
 #: inc/projecttask.class.php:475 inc/projecttask.class.php:752
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Projekt"
+msgstr[1] "Projekt"
 
 #: inc/notificationtargetprojecttask.class.php:466
 #: inc/projecttask.class.php:612
@@ -15250,8 +15250,8 @@ msgstr[1] ""
 #: inc/pdu.class.php:48 inc/pdu_rack.class.php:236
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "PDU"
+msgstr[1] "PDUs"
 
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
@@ -15884,7 +15884,7 @@ msgstr "Livscykel för ändringsärenden"
 
 #: inc/profile.class.php:1406 inc/queuednotification.class.php:48
 msgid "Notification queue"
-msgstr ""
+msgstr "Meddelandekö"
 
 #: inc/profile.class.php:1421 inc/profile.class.php:2059
 msgid "Rules for assigning a computer to an entity"
@@ -17437,8 +17437,8 @@ msgstr ""
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Publik %1$s"
+msgstr[1] "Publika %1$s"
 
 #: inc/savedsearch.class.php:835
 msgid "Default bookmark has not been changed!"
@@ -17480,7 +17480,7 @@ msgstr ""
 #: inc/savedsearch.class.php:1056 inc/savedsearch.class.php:1057
 #: inc/savedsearch.class.php:1064
 msgid "Save current search"
-msgstr ""
+msgstr "Spara aktuellt sökkriterium"
 
 #: inc/savedsearch.class.php:1269
 msgid "Update all bookmarks execution time"
@@ -17504,7 +17504,7 @@ msgstr ""
 
 #: inc/search.class.php:278
 msgid "Reload"
-msgstr ""
+msgstr "Ladda om"
 
 #: inc/search.class.php:1159
 msgid ""
@@ -17514,11 +17514,11 @@ msgstr ""
 
 #: inc/search.class.php:1493 inc/search.class.php:1812
 msgid "Show as map"
-msgstr ""
+msgstr "Visa som karta"
 
 #: inc/search.class.php:1843 inc/search.class.php:1844
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Visa papperskorgen"
 
 #: inc/search.class.php:1917 inc/search.class.php:1919
 #: inc/search.class.php:1994 inc/search.class.php:1997
@@ -17593,7 +17593,7 @@ msgstr ""
 
 #: inc/slalevel_ticket.class.php:41
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "SLA nivå för Ärende"
 
 #: inc/slalevel_ticket.class.php:127
 msgid "Automatic actions of SLA"
@@ -17602,8 +17602,8 @@ msgstr ""
 #: inc/slm.class.php:57
 msgid "Service level"
 msgid_plural "Service levels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Servicenivå"
+msgstr[1] "Servicenivåer"
 
 #: inc/software.class.php:74 inc/software.class.php:1017
 msgid "Merging"
@@ -17646,7 +17646,7 @@ msgstr "Programvaror raderade efter sammanfogning"
 
 #: inc/softwarelicense.class.php:78
 msgid "Please select a software for this license"
-msgstr ""
+msgstr "Välj en programvara för denna licens"
 
 #: inc/softwarelicense.class.php:344 inc/softwarelicense.class.php:596
 msgid "Technician in charge of the license"
@@ -17818,7 +17818,7 @@ msgstr "Ange status: %s"
 #: inc/state.class.php:265
 #, php-format
 msgid "%1$s must be unique!"
-msgstr ""
+msgstr "%1$s måste vara unik!"
 
 #: inc/state.class.php:381
 #, php-format
@@ -17926,7 +17926,7 @@ msgstr "Okänt ärende"
 #: inc/ticket.class.php:1928
 #, php-format
 msgid "Invalid email address %s"
-msgstr ""
+msgstr "Ogiltig e-postadress 1%s"
 
 #: inc/ticket.class.php:2365
 #, php-format
@@ -18254,7 +18254,7 @@ msgstr "Inga uppföljningar registrerade för detta ärende"
 
 #: inc/ticketfollowup.class.php:932
 msgid "This week"
-msgstr ""
+msgstr "Denna vecka"
 
 #: inc/ticketfollowup.class.php:934
 msgid "Last week"
@@ -18262,7 +18262,7 @@ msgstr "Förra veckan"
 
 #: inc/ticketfollowup.class.php:936
 msgid "This month"
-msgstr ""
+msgstr "Denna månad"
 
 #: inc/ticketfollowup.class.php:938
 msgid "Last month"
@@ -18380,7 +18380,7 @@ msgstr[1] "Dolda fält"
 
 #: inc/tickettemplatehiddenfield.class.php:222
 msgid "Add a hidden field"
-msgstr ""
+msgstr "Lägg till ett dolt fält"
 
 #: inc/tickettemplatemandatoryfield.class.php:48
 msgid "Mandatory field"
@@ -18390,7 +18390,7 @@ msgstr[1] "Obligatoriska fält"
 
 #: inc/tickettemplatemandatoryfield.class.php:223
 msgid "Add a mandatory field"
-msgstr ""
+msgstr "Lägg till ett obligatoriskt fält"
 
 #: inc/tickettemplatepredefinedfield.class.php:65
 msgid "Predefined field"
@@ -18466,12 +18466,12 @@ msgstr ""
 #: inc/toolbox.class.php:978 inc/toolbox.class.php:979
 #, php-format
 msgid "PHP version is at least %s - Perfect!"
-msgstr ""
+msgstr "PHP versionen är minst 1%s - Perfekt!"
 
 #: inc/toolbox.class.php:986
 #, php-format
 msgid "You must install at least PHP %s."
-msgstr ""
+msgstr "Du måste installera PHP 1%s."
 
 #: inc/toolbox.class.php:991
 msgid "Sessions test"
@@ -18747,11 +18747,11 @@ msgstr "Direkta anslutningar"
 
 #: inc/transfer.class.php:3438
 msgid "If monitors are no longer used"
-msgstr ""
+msgstr "Om skärmar inte längre används"
 
 #: inc/transfer.class.php:3448
 msgid "If printers are no longer used"
-msgstr ""
+msgstr "Om skrivare inte längre används"
 
 #: inc/transfer.class.php:3458
 msgid "If devices are no longer used"
@@ -18759,11 +18759,11 @@ msgstr ""
 
 #: inc/transfer.class.php:3468
 msgid "If phones are no longer used"
-msgstr ""
+msgstr "Om telefoner inte längre används"
 
 #: inc/transfer.class.php:3481
 msgid "If suppliers are no longer used"
-msgstr ""
+msgstr "Om inte leverantörer inte längre används"
 
 #: inc/transfer.class.php:3487
 msgid "Links between suppliers and contacts"
@@ -18984,6 +18984,8 @@ msgid ""
 "Please enter your email address. An email will be sent to you and you will "
 "be able to choose a new password."
 msgstr ""
+"Ange din registrerade e-postadress. Ett e-postmeddelande kommer att skickas "
+"till dig och du kommer kunna välja ett nytt lösenord."
 
 #: inc/user.class.php:4378 inc/user.class.php:4481
 msgid ""
@@ -19339,17 +19341,17 @@ msgstr ""
 
 #: install/update_0905_91.php:400
 msgid "date_mod and date_creation"
-msgstr ""
+msgstr "date_mod och date_creation"
 
 #: install/update_0905_91.php:428
 #, php-format
 msgid "Add date_mod to %s"
-msgstr ""
+msgstr "Lägg till date_mod till 1%s"
 
 #: install/update_0905_91.php:438
 #, php-format
 msgid "Add date_creation to %s"
-msgstr ""
+msgstr "Lägg till date_creation till 1%s"
 
 #: install/update.php:130
 msgid "Update successful, your database is up to date"
