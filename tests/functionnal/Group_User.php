@@ -34,7 +34,7 @@ namespace tests\units;
 
 /* Test for inc/group_user.class.php */
 
-class Group_User extends \GLPITestCase {
+class Group_User extends \DbTestCase {
 
    public function testGetGroupUsers() {
       $group = new \Group();
@@ -118,5 +118,67 @@ class Group_User extends \GLPITestCase {
 
       $group_users = \Group_User::getUserGroups($uid);
       $this->array($group_users)->hasSize(0);
+   }
+
+   public function testgetListForItemParams() {
+      $this->newTestedInstance();
+      $user = getItemByTypeName('User', TU_USER);
+
+      $expected = [];
+      $this->array(iterator_to_array($this->testedInstance->getListForItem($user)))->isIdenticalTo($expected);
+
+      //Now, add groups to user
+      $group = new \Group();
+      $gid1 = (int)$group->add([
+         'name' => 'Test group'
+      ]);
+      $this->integer($gid1)->isGreaterThan(0);
+
+      $gid2 = (int)$group->add([
+         'name' => 'Test group 2'
+      ]);
+      $this->integer($gid2)->isGreaterThan(0);
+
+      $group_user = $this->newTestedInstance();
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $gid1,
+            'users_id'  => $user->getID()
+         ])
+      );
+
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id'    => $gid2,
+            'users_id'     => $user->getID(),
+            'is_manager'   => 1
+         ])
+      );
+
+      $list_items = iterator_to_array($this->testedInstance->getListForItem($user));
+      $this->array($list_items)
+         ->hasSize(2)
+         ->hasKeys([$gid1, $gid2]);
+
+      $this->array($list_items[$gid1])
+         ->hasKey('linkid')
+         ->string['name']->isIdenticalTo('Test group');
+
+      $this->array($list_items[$gid2])
+         ->hasKey('linkid')
+         ->string['name']->isIdenticalTo('Test group 2');
+
+      $group->getFromDB($gid2);
+      $list_items = iterator_to_array($this->testedInstance->getListForItem($group));
+      $this->array($list_items)
+         ->hasSize(1)
+         ->hasKey($user->getID());
+
+      $this->array($list_items[$user->getID()])
+         ->hasKeys(['linkid', 'is_manager', 'is_userdelegate'])
+         ->string['name']->isIdenticalTo('_test_user');
+
+      $this->integer($this->testedInstance->countForItem($user))->isIdenticalTo(2);
+      $this->integer($this->testedInstance->countForItem($group))->isIdenticalTo(1);
    }
 }
