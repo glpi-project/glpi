@@ -105,7 +105,7 @@ class Computer_Item extends CommonDBRelation{
       }
 
       $comp = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
-      if (!($item instanceof CommonDBTM)
+      if (!($comp instanceof Computer)
           || (self::countForAll($comp, $item) >0)) {
          // no duplicates
          return false;

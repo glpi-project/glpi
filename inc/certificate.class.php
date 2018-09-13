@@ -60,7 +60,6 @@ class Certificate extends CommonDBTM {
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
 
       $tab = [];
 
@@ -329,7 +328,6 @@ class Certificate extends CommonDBTM {
    }
 
    function post_addItem() {
-      global $DB;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
@@ -354,7 +352,6 @@ class Certificate extends CommonDBTM {
     * @return bool
     */
    function showForm($ID, $options = []) {
-      global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -691,7 +688,7 @@ class Certificate extends CommonDBTM {
       }
 
       $message      = [];
-      foreach (Entity::getEntitiesToNotify('use_certificates_alert') as $entity => $value) {
+      foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
          $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
          // Check licenses
          $query = "SELECT `glpi_certificates`.*

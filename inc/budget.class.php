@@ -176,7 +176,6 @@ class Budget extends CommonDropdown{
 
 
    function post_addItem() {
-      global $DB;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
@@ -553,7 +552,6 @@ class Budget extends CommonDropdown{
             'budgets_id' => $budgets_id
          ] + getEntitiesRestrictCriteria('glpi_infocoms', 'entities_id')
       );
-      $number = count($types_iterator);
 
       $total               = 0;
       $totalbytypes        = [];
@@ -679,7 +677,7 @@ class Budget extends CommonDropdown{
       // get all entities ordered by names
       $allentities = getAllDatasFromTable('glpi_entities', [], true, 'completename');
 
-      foreach ($allentities as $entity => $data) {
+      foreach (array_keys($allentities) as $entity) {
          if (isset($entities_values[$entity])) {
             echo "<tr class='tab_bg_1'>";
             echo "<td class='b'>".Dropdown::getDropdownName('glpi_entities', $entity)."</td>";

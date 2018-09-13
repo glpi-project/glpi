@@ -238,7 +238,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param integer $ID ID of the item to get
     *
-    * @return bololean true if succeed else false
+    * @return boolean true if succeed else false
    **/
    function getFromDB($ID) {
       global $DB;
@@ -1869,7 +1869,7 @@ class CommonDBTM extends CommonGLPI {
     * Have I the global right to "create" the Object
     * May be overloaded if needed (ex KnowbaseItem)
     *
-    * @return booleen
+    * @return boolean
    **/
    static function canCreate() {
 
@@ -1885,7 +1885,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
    **/
    static function canDelete() {
 
@@ -1901,7 +1901,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
     **/
    static function canPurge() {
 
@@ -1918,7 +1918,7 @@ class CommonDBTM extends CommonGLPI {
     * Default is calling canCreate
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
    **/
    static function canUpdate() {
 
@@ -1935,7 +1935,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
     **/
    function canCreateItem() {
 
@@ -1953,7 +1953,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUpdateItem() {
 
@@ -1971,7 +1971,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
    **/
    function canDeleteItem() {
 
@@ -1989,7 +1989,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 0.85
     *
-    * @return booleen
+    * @return boolean
    **/
    function canPurgeItem() {
 
@@ -2016,7 +2016,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
    **/
    static function canView() {
 
@@ -2031,7 +2031,7 @@ class CommonDBTM extends CommonGLPI {
     * Have I the right to "view" the Object
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
    **/
    function canViewItem() {
 
@@ -2051,7 +2051,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 0.85
     *
-    * @return booleen
+    * @return boolean
    **/
    function canEdit($ID) {
 
@@ -2073,7 +2073,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB, $CFG_GLPI;
@@ -2839,7 +2839,7 @@ class CommonDBTM extends CommonGLPI {
     *                           of active entities (View case for example) (default false)
     * @since 0.85
     *
-    * @return booleen
+    * @return boolean
    **/
    function checkEntity($recursive = false) {
 

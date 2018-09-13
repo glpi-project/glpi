@@ -85,7 +85,6 @@ class Change_Item extends CommonDBRelation{
     * @return boolean|void
    **/
    static function showForChange(Change $change) {
-      global $DB, $CFG_GLPI;
 
       $instID = $change->fields['id'];
 
@@ -108,7 +107,7 @@ class Change_Item extends CommonDBRelation{
 
          echo "<tr class='tab_bg_1'><td>";
          $types = [];
-         foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
+         foreach (array_keys($change->getAllTypesForHelpdesk()) as $key) {
             $types[] = $key;
          }
          Dropdown::showSelectItemFromItemtypes(['itemtypes'
@@ -152,7 +151,6 @@ class Change_Item extends CommonDBRelation{
       $header_end .= "<th>".__('Inventory number')."</th></tr>";
       echo $header_begin.$header_top.$header_end;
 
-      $totalnb = 0;
       while ($type_row = $types_iterator->next()) {
          $itemtype = $type_row['itemtype'];
          if (!($item = getItemForItemtype($itemtype))) {
@@ -195,7 +193,6 @@ class Change_Item extends CommonDBRelation{
                       (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                echo "</tr>";
             }
-            $totalnb += $nb;
          }
       }
 

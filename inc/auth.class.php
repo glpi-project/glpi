@@ -599,7 +599,6 @@ class Auth extends CommonGLPI {
          $this->user->fields["authtype"] = self::DB_GLPI;
       } else if (strstr($login_auth, '-')) {
          $auths = explode('-', $login_auth);
-         $auths_id = $auths[1];
          $this->user->fields["auths_id"] = $auths[1];
          if ($auths[0] == 'ldap') {
             $authtype = self::LDAP;

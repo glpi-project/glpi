@@ -113,16 +113,15 @@ class Change_Problem extends CommonDBRelation{
     * @param $problem Problem object
    **/
    static function showForProblem(Problem $problem) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $problem->getField('id');
       if (!$problem->can($ID, READ)) {
          return false;
       }
 
-      $canedit       = $problem->canEdit($ID);
-      $rand          = mt_rand();
-      $showentities  = Session::isMultiEntitiesMode();
+      $canedit = $problem->canEdit($ID);
+      $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_changes`.*
@@ -215,16 +214,15 @@ class Change_Problem extends CommonDBRelation{
     * @param $change Change object
    **/
    static function showForChange(Change $change) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $change->getField('id');
       if (!$change->can($ID, READ)) {
          return false;
       }
 
-      $canedit      = $change->canEdit($ID);
-      $rand         = mt_rand();
-      $showentities = Session::isMultiEntitiesMode();
+      $canedit = $change->canEdit($ID);
+      $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_problems`.*

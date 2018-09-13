@@ -269,7 +269,7 @@ class APIXmlrpc extends API {
       }
 
       // check boolean parameters
-      foreach ($this->parameters as $key => &$parameter) {
+      foreach ($this->parameters as &$parameter) {
          if ($parameter === "true") {
             $parameter = true;
          }
