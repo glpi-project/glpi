@@ -1871,4 +1871,184 @@ class Ticket extends DbTestCase {
       $this->array($input['_filename'])->size->isEqualTo(0);
       $this->array($input['_tag_filename'])->size->isEqualTo(0);
    }
+
+   /**
+    * @see self::testCanTakeIntoAccount()
+    */
+   public function canTakeIntoAccountProvider() {
+      return [
+         [
+            'input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'user'     => [
+               'login'    => 'post-only',
+               'password' => 'postonly',
+            ],
+            'expected' => false, // is requester, so cannot take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => ['3', '4'], // "post-only" and "tech"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+            ],
+            'expected' => false, // is requester, so cannot take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+            ],
+            'expected' => true, // has enough rights so can take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+               'rights'   => [
+                  'task' => \READ,
+                  'followup' => \READ,
+               ],
+            ],
+            'expected' => false, // has not enough rights so cannot take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+               'rights'   => [
+                  'task' => \READ + \CommonITILTask::ADDALLITEM,
+                  'followup' => \READ,
+               ],
+            ],
+            'expected' => true, // has not enough rights so cannot take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+               'rights'   => [
+                  'task' => \READ,
+                  'followup' => \READ + \TicketFollowup::ADDALLTICKET,
+               ],
+            ],
+            'expected' => true, // has not enough rights so cannot take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+               'rights'   => [
+                  'task' => \READ,
+                  'followup' => \READ + \TicketFollowup::ADDMYTICKET,
+               ],
+            ],
+            'expected' => true, // has not enough rights so cannot take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester' => ['3'], // "post-only"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+               'rights'   => [
+                  'task' => \READ,
+                  'followup' => \READ + \TicketFollowup::ADDGROUPTICKET,
+               ],
+            ],
+            'expected' => true, // has not enough rights so cannot take into account
+         ],
+         [
+            'input'    => [
+               '_users_id_requester'        => ['3'], // "post-only"
+               'takeintoaccount_delay_stat' => '10',
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+            ],
+            'expected' => false, // ticket is already taken into account
+         ],
+         /* Cannot test that requester user can take ticket into account if also assigned
+          * because assigning a user makes the ticket automatically taken into account.
+          * We decided with @orthagh to keep this rule even if it cannot be tested yet.
+         [
+            'input'    => [
+               '_users_id_requester' => ['4'], // "tech"
+               '_users_id_assign'    => ['4'], // "tech"
+            ],
+            'user'     => [
+               'login'    => 'tech',
+               'password' => 'tech',
+            ],
+            'expected' => true, // is requester but also assigned, so can take into account
+         ],
+         */
+      ];
+   }
+
+   /**
+    * Tests ability to take a ticket into account.
+    *
+    * @param array   $input    Input used to create the ticket
+    * @param array   $user     Array containing 'login' and 'password' fields of tested user,
+    *                          and a 'rights' array if rights have to be forced
+    * @param boolean $expected Expected result of "Ticket::canTakeIntoAccount()" method
+    *
+    * @dataProvider canTakeIntoAccountProvider
+    */
+   public function testCanTakeIntoAccount(array $input, array $user, $expected) {
+
+      // Create a ticket
+      $this->login();
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticketId = $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check canTakeIntoAccount() results',
+         ] + $input)
+      )->isGreaterThan(0);
+
+      // Reload ticket to get all default fields values
+      $ticket->getFromDB($ticketId);
+
+      // Check if "takeintoaccount_delay_stat" is not automatically defined
+      $expectedStat = array_key_exists('takeintoaccount_delay_stat', $input)
+         ? $input['takeintoaccount_delay_stat']
+         : 0;
+      $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo($expectedStat);
+
+      // Login with tested user
+      $this->login($user['login'], $user['password']);
+
+      // Apply specific rights if defined
+      if (array_key_exists('rights', $user)) {
+         foreach ($user['rights'] as $rightname => $rightvalue) {
+            $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
+         }
+      }
+
+      // Verify result
+      $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
+   }
 }
