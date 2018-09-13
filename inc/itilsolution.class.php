@@ -517,7 +517,7 @@ class ITILSolution extends CommonDBChild {
          }
 
          $content = $solution['content'];
-         $content = autolink($content, 40);
+         $content = autolink($content, false);
 
          $long_text = "";
          if ((substr_count($content, "<br") > 30) || (strlen($content) > 2000)) {
