@@ -1048,6 +1048,8 @@ class Auth extends CommonGLPI {
     */
    static function useAuthExt() {
 
+      global $CFG_GLPI;
+
       //Get all the ldap directories
       if (AuthLdap::useAuthLdap()) {
          return true;
