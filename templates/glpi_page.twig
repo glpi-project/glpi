@@ -36,7 +36,7 @@
    {% set css_paths = css_paths|default([])|merge([
       js_libs ~ '/jquery-ui/themes/base/jquery-ui.min.css',
       'css/jstree-glpi.css',
-      'lib/jqueryplugins/select2/css/select2.css',
+      js_libs ~ '/select2/dist/css/select2.min.css',
       'lib/jqueryplugins/qtip2/jquery.qtip.css',
       'lib/leaflet/leaflet.css',
       'lib/leaflet/plugins/Leaflet.markercluster/MarkerCluster.css',
@@ -369,7 +369,7 @@
 {% block javascripts %}
    {% set js_paths = js_paths|default([])|merge([
          js_libs ~ '/jquery-ui/jquery-ui.min.js',
-         'lib/jqueryplugins/select2/js/select2.js',
+         js_libs ~ '/select2/dist/js/select2.min.js',
          'lib/jqueryplugins/qtip2/jquery.qtip.js',
          'lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js',
          'lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js',
