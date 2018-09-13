@@ -59,14 +59,15 @@ class DisplayPreference extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $DB;
 
-      $query = "SELECT MAX(`rank`)
-                FROM `".$this->getTable()."`
-                WHERE `itemtype` = '".$input["itemtype"]."'
-                      AND `users_id` = '".$input["users_id"]."'";
-      $result = $DB->query($query);
-
-      $input["rank"] = $DB->result($result, 0, 0)+1;
-
+      $result = $DB->request([
+         'SELECT' => ['MAX' => 'rank AS maxrank'],
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            'itemtype'  => $input['itemtype'],
+            'users_id'  => $input['users_id']
+         ]
+      ])->next();
+      $input['rank'] = $result['maxrank'] + 1;
       return $input;
    }
 
@@ -596,14 +597,16 @@ class DisplayPreference extends CommonDBTM {
 
       $url = Toolbox::getItemTypeFormURL(__CLASS__);
 
-      $query = "SELECT `itemtype`,
-                       COUNT(*) AS nb
-                FROM `glpi_displaypreferences`
-                WHERE `users_id` = '$users_id'
-                GROUP BY `itemtype`";
+      $iterator = $DB->request([
+         'SELECT' => ['itemtype', ['COUNT' => '* AS nb']],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'  => $users_id
+         ],
+         'GROUP'  => 'itemtype'
+      ]);
 
-      $req = $DB->request($query);
-      if ($req->numrows() > 0) {
+      if (count($iterator) > 0) {
          $rand = mt_rand();
          echo "<div class='spaced'>";
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -624,7 +627,7 @@ class DisplayPreference extends CommonDBTM {
          echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
          echo "<th colspan='2'>".__('Type')."</th></tr>";
-         foreach ($req as $data) {
+         while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_1'><td width='10'>";
             Html::showMassiveActionCheckBox(__CLASS__, $data["itemtype"]);
             echo "</td>";
