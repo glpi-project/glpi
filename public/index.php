@@ -323,7 +323,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       if (in_array('tinymce', $requirements)) {
          //$js_paths[] = 'lib/tiny_mce/tinymce.js';
-         $js_paths[] = 'lib/tiny_mce/tinymce.min.js';
+         $js_paths[] = 'lib/tiny_mce/lib/tinymce.min.js';
       }
 
       if (in_array('clipboard', $requirements)) {
