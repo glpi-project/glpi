@@ -61,7 +61,7 @@ class APIRest extends API {
     * @return void
     */
    public function manageUploadedFiles() {
-      foreach ($_FILES as $filename => $files) {
+      foreach (array_keys($_FILES) as $filename) {
          $upload_result
             = GLPIUploadHandler::uploadFiles(['name'           => $filename,
                                               'print_response' => false]);

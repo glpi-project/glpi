@@ -552,7 +552,7 @@ abstract class API extends CommonGLPI {
                true
             );
 
-            foreach ($found_devices as $devices_id => &$device) {
+            foreach ($found_devices as &$device) {
                unset($device['items_id']);
                unset($device['itemtype']);
                unset($device['is_deleted']);
@@ -1151,7 +1151,7 @@ abstract class API extends CommonGLPI {
                             "ERROR_RANGE_EXCEED_TOTAL");
       }
 
-      foreach ($found as $key => &$fields) {
+      foreach ($found as &$fields) {
          // only keep id in field list
          if ($params['only_id']) {
             $fields = ['id' => $fields['id']];
@@ -1674,7 +1674,7 @@ abstract class API extends CommonGLPI {
       }
 
       if (is_array($input)) {
-         foreach ($input as $key => &$sub_input) {
+         foreach ($input as &$sub_input) {
             $sub_input = self::inputObjectToArray($sub_input);
          }
       }
@@ -2071,7 +2071,7 @@ abstract class API extends CommonGLPI {
       };
 
       // clean html
-      foreach ($messages_after_redirect as $type => $messages) {
+      foreach ($messages_after_redirect as $messages) {
          foreach ($messages as $message) {
             $all_messages[] = Html::clean($message);
          }

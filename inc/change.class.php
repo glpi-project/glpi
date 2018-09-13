@@ -560,7 +560,7 @@ class Change extends CommonITILObject {
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI;
 
       if (!static::canView()) {
          return false;
@@ -975,7 +975,7 @@ class Change extends CommonITILObject {
     * @return boolean|void
    **/
    static function showListForItem(CommonDBTM $item) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
@@ -1091,8 +1091,6 @@ class Change extends CommonITILObject {
 
          //TRANS : %d is the number of problems
          echo sprintf(_n('Last %d change', 'Last %d changes', $number), $number);
-         // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-         //            Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 
          echo "</th></tr>";
 

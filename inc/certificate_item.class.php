@@ -122,7 +122,6 @@ class Certificate_Item extends CommonDBRelation {
     * @return bool
     */
    function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype) {
-      global $DB;
 
       $certificate  = new self();
       $certificates = $certificate->find(['certificates_id' => $certificates_id,
@@ -179,7 +178,6 @@ class Certificate_Item extends CommonDBRelation {
     * @return void (HTML display)
     **/
    public static function showForCertificate(Certificate $certificate) {
-      global $DB;
 
       $instID = $certificate->fields['id'];
       if (!$certificate->can($instID, READ)) {
@@ -321,7 +319,6 @@ class Certificate_Item extends CommonDBRelation {
     * @return bool
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB;
 
       $ID = $item->getField('id');
 

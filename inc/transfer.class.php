@@ -1534,8 +1534,8 @@ class Transfer extends CommonDBTM {
    /**
     * Transfer disks of an item
     *
-    * @param string $itemtype Item type
-    * @param intger $ID       ID of the item
+    * @param string  $itemtype Item type
+    * @param integer $ID       ID of the item
     */
    function transferItem_Disks($itemtype, $ID) {
       if (!$this->options['keep_disk']) {

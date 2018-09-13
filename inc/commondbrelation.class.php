@@ -157,9 +157,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @since 0.84
     *
-    * @param $itemtype        Type of the item to search for its opposite
-    * @param $items_id        ID of the item to search for its opposite
-    * @param $relations_id    (default NULL)
+    * @param string       $itemtype        Type of the item to search for its opposite
+    * @param integer      $items_id        ID of the item to search for its opposite
+    * @param integer|null $relations_id
     **/
    static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null) {
       global $DB;
@@ -673,14 +673,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 0.84
     *
-    * @param $item the other item (ie. : $item1)
-    * @param $case : can be overwrite by object
-    *              - 'add' when this CommonDBRelation is added (to and item)
-    *              - 'update item previous' transfert : this is removed from the old item
-    *              - 'update item next' transfert : this is added to the new item
-    *              - 'delete' when this CommonDBRelation is remove (from an item)
+    * @param CommonDBTM $item the other item (ie. : $item1)
+    * @param string     $case : can be overwrite by object
+    *                            - 'add' when this CommonDBRelation is added (to and item)
+    *                            - 'update item previous' transfert : this is removed from the old item
+    *                            - 'update item next' transfert : this is added to the new item
+    *                            - 'delete' when this CommonDBRelation is remove (from an item)
     *
-    * @return (string) the name of the entry for the database (ie. : correctly slashed)
+    * @return string the name of the entry for the database (ie. : correctly slashed)
    **/
    function getHistoryNameForItem2(CommonDBTM $item, $case) {
 
@@ -689,11 +689,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   /**
-    * Actions done after the ADD of the item in the database
-    *
-    * @return nothing
-   **/
    function post_addItem() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -705,9 +700,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
       $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
-      if (($item1 !== false)
-          && ($item2 !== false)) {
-
+      if ($item1 instanceof CommonDBTM && $item2 instanceof CommonDBTM) {
          if ($item1->dohistory
              && static::$logs_for_item_1) {
             $changes = [
@@ -731,16 +724,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
    }
 
-
-    /**
-    * Actions done after the UPDATE of the item in the database
-    *
-    * @since 0.84
-    *
-    * @param $history store changes history ? (default 1)
-    *
-    * @return nothing
-   **/
    function post_updateItem($history = 1) {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -772,7 +755,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       unset($oldvalues[static::$itemtype_2]);
       unset($oldvalues[static::$items_id_2]);
 
-      foreach ($oldvalues as $field => $value) {
+      foreach (array_keys($oldvalues) as $field) {
          $changes = $this->getHistoryChangeWhenUpdateField($field);
          if ((!is_array($changes)) || (count($changes) != 3)) {
             continue;
@@ -836,14 +819,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
    }
 
-
-   /**
-    *  Actions done when item flag deleted is set to an item
-    *
-    * @since 0.84
-    *
-    * @return nothing
-   **/
    function cleanDBonMarkDeleted() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -857,8 +832,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
          $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
-         if (($item1 !== false)
-             && ($item2 !== false)) {
+         if ($item1 instanceof CommonDBTM && $item2 instanceof CommonDBTM) {
             if ($item1->dohistory
                 && static::$logs_for_item_1) {
                $changes = [
@@ -886,14 +860,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
    }
 
-
-   /**
-    * Actions done after the restore of the item
-    *
-    * @since 0.84
-    *
-    * @return nothing
-   **/
    function post_restoreItem() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -907,8 +873,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
          $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
-         if (($item1 !== false)
-             && ($item2 !== false)) {
+         if ($item1 instanceof CommonDBTM && $item2 instanceof CommonDBTM) {
             if ($item1->dohistory
                 && static::$logs_for_item_1) {
                $changes = [
@@ -935,14 +900,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
    }
 
-
-   /**
-    * Actions done after the DELETE of the item in the database
-    *
-    * @since 0.84
-    *
-    *@return nothing
-   **/
    function post_deleteFromDB() {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -954,8 +911,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $item1 = $this->getConnexityItem(static::$itemtype_1, static::$items_id_1);
       $item2 = $this->getConnexityItem(static::$itemtype_2, static::$items_id_2);
 
-      if (($item1 !== false)
-          && ($item2 !== false)) {
+      if ($item1 instanceof CommonDBTM && $item2 instanceof CommonDBTM) {
 
          if ($item1->dohistory
              && static::$logs_for_item_1) {
@@ -1027,7 +983,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                             HTMLTableCell $father = null, array $options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (empty($item)) {
          if (empty($father)) {
@@ -1064,10 +1020,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Affect a CommonDBRelation to a given item. By default, unaffect it
     *
-    * @param $id       the id of the CommonDBRelation to affect
-    * @param $peer     the number of the peer (ie.: 0 or 1)
-    * @param $items_id the id of the new item
-    * @param $itemtype the type of the new item
+    * @param integer $id       the id of the CommonDBRelation to affect
+    * @param integer $peer     the number of the peer (ie.: 0 or 1)
+    * @param integer $items_id the id of the new item
+    * @param string  $itemtype the type of the new item
     *
     * @return boolean : true on success
    **/
@@ -1136,12 +1092,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * Add relation specificities to the subForm of the massive action
+    * Display subForm of the massive action
     *
-    * @param $ma             current massive action
-    * @param $peer_number    the number of the concerned peer
+    * @param MassiveAction $ma           current massive action
+    * @param integer       $peer_number  the number of the concerned peer
     *
-    * @return nothing (display only)
+    * @return void
    **/
    static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
    }
@@ -1152,7 +1108,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 0.85
     *
-    * @param $ma current massive action
+    * @param MassiveAction $ma current massive action
     *
     * @return number of the peer
    **/
@@ -1186,7 +1142,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       $specificities = static::getRelationMassiveActionsSpecificities();
       $action        = $ma->getAction();
@@ -1267,10 +1222,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * Set based array for static::add or static::update in case of massive actions are doing
     * something.
     *
-    * @param $action            the name of the action
-    * @param $item              the item on which apply the massive action
-    * @param $ids       array   of the ids of the item on which apply the action
-    * @param $input     array   of the input provided by the form ($_POST, $_GET ...)
+    * @param string     $action  the name of the action
+    * @param CommonDBTM $item    the item on which apply the massive action
+    * @param integer[]  $ids     ids of the item on which apply the action
+    * @param array      $input   input provided by the form ($_POST, $_GET ...)
     *
     * @return array containing the elements
    **/
@@ -1355,8 +1310,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $peer = static::getItemFromArray($peertype, $peers_id, $input2, true, true, true);
 
       // $peer not valid => not in DB or try to remove all at once !
-      if (($peer === false)
-          || $peer->isNewItem()) {
+      if (!($peer instanceof CommonDBTM) || $peer->isNewItem()) {
          if ((isset($input2[$peers_id])) && ($input2[$peers_id] > 0)) {
             $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             if ($peer instanceof CommonDBTM) {
@@ -1801,7 +1755,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       $types_iterator = static::getDistinctTypes($item->fields['id'], $extra_types_where);
       while ($data = $types_iterator->next()) {
-         if (!$itemt = getItemForItemtype($data['itemtype'])) {
+         if (!getItemForItemtype($data['itemtype'])) {
             continue;
          }
 

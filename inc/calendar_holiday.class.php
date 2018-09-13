@@ -64,7 +64,7 @@ class Calendar_Holiday extends CommonDBRelation {
     * @param $calendar Calendar object
    **/
    static function showForCalendar(Calendar $calendar) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $calendar->getField('id');
       if (!$calendar->can($ID, READ)) {
