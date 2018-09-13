@@ -1022,7 +1022,7 @@ class TicketFollowup  extends CommonDBTM {
                echo html_entity_decode($content);
                echo "</div>";
             } else {
-               echo autolink($content);;
+               echo autolink($content, false);
             }
             echo "</div>"; // boxnotetext
 
