@@ -534,6 +534,8 @@ class CartridgeItem extends CommonDBTM {
             }
          }
       }
+
+      return $cron_status;
    }
 
 
