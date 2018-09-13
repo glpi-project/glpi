@@ -442,7 +442,7 @@ $RELATION = ["glpi_authldaps"
                         => ['glpi_pdus' => 'pdutypes_id'],
 
                         "glpi_peripheralmodels"
-                        => ['glpi_peripherals' =>' peripheralmodels_id'],
+                        => ['glpi_peripherals' => 'peripheralmodels_id'],
 
                         "glpi_peripheraltypes"
                         => ['glpi_peripherals' => 'peripheraltypes_id'],
