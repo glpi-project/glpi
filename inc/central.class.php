@@ -145,7 +145,7 @@ class Central extends CommonGLPI {
     * Show the central personal view
    **/
    static function showMyView() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $showticket  = Session::haveRightsOr("ticket",
                                            [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]);

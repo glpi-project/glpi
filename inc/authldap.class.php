@@ -302,18 +302,13 @@ class AuthLDAP extends CommonDBTM {
       if (!Config::canUpdate()) {
          return false;
       }
-      $spotted = false;
       if (empty($ID)) {
-         if ($this->getEmpty()) {
-            $spotted = true;
-         }
+         $this->getEmpty();
          if (isset($options['preconfig'])) {
             $this->preconfig($options['preconfig']);
          }
       } else {
-         if ($this->getFromDB($ID)) {
-            $spotted = true;
-         }
+         $this->getFromDB($ID);
       }
 
       if (Toolbox::canUseLdap()) {
@@ -1145,7 +1140,7 @@ class AuthLDAP extends CommonDBTM {
       if (!empty($ldap_servers)) {
          echo "<tr class='tab_bg_2'><th>" . self::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
-         foreach ($ldap_servers as $ID => $value) {
+         foreach ($ldap_servers as $value) {
             $fields = ['Server'            => 'host',
                             'Port'              => 'port',
                             'BaseDN'            => 'basedn',
@@ -1905,7 +1900,6 @@ class AuthLDAP extends CommonDBTM {
       if (is_array($ldap_groups)) {
          $numrows     = count($ldap_groups);
          $rand        = mt_rand();
-         $colspan     = (Session::isMultiEntitiesMode()?5:4);
          if ($numrows > 0) {
             self::displaySizeLimitWarning($limitexceeded);
             $parameters = '';
@@ -2024,7 +2018,7 @@ class AuthLDAP extends CommonDBTM {
       global $DB;
 
       $config_ldap = new self();
-      $res         = $config_ldap->getFromDB($auths_id);
+      $config_ldap->getFromDB($auths_id);
       $infos       = [];
       $groups      = [];
 

@@ -617,12 +617,14 @@ class Calendar extends CommonDropdown {
 
 
    /**
-    * Get day number (in week) for a date
+    * Get day number (in week) for a date.
     *
-    * @param integer $date date
-   **/
+    * @param integer $date Date as a UNIX timestamp
+    *
+    * @return integer
+    */
    static function getDayNumberInWeek($date) {
-      return date('w', $date);
+      return (int)date('w', $date);
    }
 
 }

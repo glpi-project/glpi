@@ -116,7 +116,6 @@ class Change_Ticket extends CommonDBRelation{
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'add_task' :
@@ -228,7 +227,7 @@ class Change_Ticket extends CommonDBRelation{
     * @param $change Change object
    **/
    static function showForChange(Change $change) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $change->getField('id');
       if (!$change->can($ID, READ)) {
@@ -334,7 +333,7 @@ class Change_Ticket extends CommonDBRelation{
     * @param $ticket Ticket object
    **/
    static function showForTicket(Ticket $ticket) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $ticket->getField('id');
       if (!$ticket->can($ID, READ)) {

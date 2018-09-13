@@ -92,7 +92,6 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
     * @return boolean|void
    **/
    static function showForCartridgeItem(CartridgeItem $item) {
-      global $DB, $CFG_GLPI;
 
       $instID = $item->getField('id');
       if (!$item->can($instID, READ)) {
@@ -103,8 +102,6 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
       $iterator = self::getListForItem($item);
       $number = count($iterator);
-
-      $i      = 0;
 
       $used  = [];
       $datas = [];
