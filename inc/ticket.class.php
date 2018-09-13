@@ -384,6 +384,47 @@ class Ticket extends CommonITILObject {
       return true;
    }
 
+   /**
+    * Check if current user can take into account the ticket.
+    *
+    * @return boolean
+    */
+   public function canTakeIntoAccount() {
+
+      // Ticket already taken into account
+      if (array_key_exists('takeintoaccount_delay_stat', $this->fields)
+          && $this->fields['takeintoaccount_delay_stat'] != 0) {
+         return false;
+      }
+
+      // Can take into account if user is assigned user
+      if ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+          || (isset($_SESSION["glpigroups"])
+             && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups']))) {
+         return true;
+      }
+
+      // Cannot take into account if user is a requester (and not assigned)
+      if ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+          || (isset($_SESSION["glpigroups"])
+             && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups']))) {
+         return false;
+      }
+
+      $canAddTask = Session::haveRight("task", CommonITILTask::ADDALLITEM);
+      $canAddFollowup = Session::haveRightsOr(
+         'followup',
+         [
+            TicketFollowup::ADDALLTICKET,
+            TicketFollowup::ADDMYTICKET,
+            TicketFollowup::ADDGROUPTICKET,
+         ]
+      );
+
+      // Can take into account if user has rights to add tasks or followups,
+      // assuming that users that does not have those rights cannot treat the ticket.
+      return $canAddTask || $canAddFollowup;
+   }
 
    /**
     * Get Datas to be added for SLA add
@@ -1565,19 +1606,7 @@ class Ticket extends CommonITILObject {
 
    function pre_updateInDB() {
 
-      // takeintoaccount :
-      //     - update done by someone who have update right
-      //       see also updatedatemod used by ticketfollowup updates
-      if (($this->fields['takeintoaccount_delay_stat'] == 0)
-          && (Session::haveRight("task", CommonITILTask::ADDALLITEM)
-              || Session::haveRightsOr('followup',
-                                       [TicketFollowup::ADDALLTICKET,
-                                             TicketFollowup::ADDMYTICKET,
-                                             TicketFollowup::ADDGROUPTICKET])
-              || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])))) {
-
+      if ($this->canTakeIntoAccount()) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
@@ -2540,28 +2569,18 @@ class Ticket extends CommonITILObject {
     * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
    **/
    function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0) {
-      global $DB;
 
       if ($this->getFromDB($ID)) {
-         if (!$no_stat_computation
-             && (Session::haveRight('task', CommonITILTask::ADDALLITEM)
-                 || Session::haveRightsOr('followup',
-                                          [TicketFollowup::ADDALLTICKET,
-                                                TicketFollowup::ADDMYTICKET,
-                                                TicketFollowup::ADDGROUPTICKET])
-                 || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                 || (isset($_SESSION["glpigroups"])
-                     && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups']))
-                 || isCommandLine())) {
-
-            if ($this->fields['takeintoaccount_delay_stat'] == 0) {
-               return $this->update(['id'            => $ID,
-                                          'takeintoaccount_delay_stat'
-                                                          => $this->computeTakeIntoAccountDelayStat(),
-                                          '_disablenotif' => true]);
-            }
-
+         if (!$no_stat_computation && ($this->canTakeIntoAccount() || isCommandLine())) {
+            return $this->update(
+               [
+                  'id'                         => $ID,
+                  'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
+                  '_disablenotif'              => true
+               ]
+            );
          }
+
          parent::updateDateMod($ID, $no_stat_computation, $users_id_lastupdater);
       }
    }
@@ -7737,5 +7756,4 @@ class Ticket extends CommonITILObject {
          'add_now' => $this->getField('closedate') == ""
       ]);
    }
-
 }
