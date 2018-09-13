@@ -190,7 +190,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
 
       // Instantiate and add Slim specific extension
-      $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
+      $basePath = str_replace(
+         ['index.php', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']],
+         ['', ''],
+         $container['request']->getUri()->getBaseUrl()
+      );
       $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
       $view->addExtension(new \Twig_Extensions_Extension_I18n());
       $view->addExtension(new Twig_Extension_Profiler($container['twig_profile']));
