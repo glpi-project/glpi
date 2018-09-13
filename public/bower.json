@@ -21,7 +21,8 @@
     "jQuery-QueryBuilder": "^2.5.1",
     "jquery-extendext": "^0.1.2",
     "dot": "^1.1.2",
-    "interactjs": "interact.js#^1.3.3"
+    "interactjs": "interact.js#^1.3.3",
+    "Font-Awesome": "FortAwesome/Font-Awesome#5.2.0"
   },
   "resolutions": {
     "jquery": "^3.2.1",
