@@ -861,8 +861,40 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          switch ($sub_item_display) {
             case CommonGLPI::SUBITEM_SHOW_LIST:
                if ($sub_item instanceof CommonDBRelation) {
-                  $sub_item->getListForItem($item);
-                  //$sub_item->getTypeItems($item->getID(), $item->getType());
+                  //$item = new $args['itemtype']();
+                  $params = $request->getQueryParams() + $args;
+                  /*if (isset($args['reset'])) {
+                     $params = $args;
+                     unset($params['reset']);
+                     $this->flash->addMessage('info', __('Search params has been reset'));
+                  }*/
+                  /*if (isset($args['page'])) {
+                     $params['start'] = ($args['page'] - 1) * $_SESSION['glpilist_limit'];
+                  }*/
+
+                  $inverse = $item->getType() == $sub_item::$itemtype_1;
+                  $link_type  = $sub_item::$itemtype_1;
+                  if ($inverse === true) {
+                     $link_type  = $sub_item::$itemtype_2;
+                     if ($link_type == 'itemtype') {
+                        if ($itemtype != null) {
+                           $link_type  = $itemtype;
+                        } else {
+                           $link_type = $item->getType();
+                        }
+                     }
+                  }
+                  $link = new $link_type;
+
+                  $search = new Search($link, $params);
+                  if (isset($args['page'])) {
+                     $search->setPage((int)$args['page']);
+                  }
+                  $data = $search->getData([
+                     'item'      => $item,
+                     'sub_item'  => $sub_item
+                  ]);
+
                   //$legacy = false;
                   $params = [];
                   /*$params = $request->getQueryParams() + $args;
@@ -870,24 +902,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                      $params = $args;
                      unset($params['reset']);
                      $this->flash->addMessage('info', __('Search params has been reset'));
-                  }
-                  if (isset($args['page'])) {
-                     $params['start'] = ($args['page'] - 1) * $_SESSION['glpilist_limit'];
                   }*/
-                  /*$search = new Search($sub_item, $params);
-                  if (isset($args['page'])) {
-                     $search->setPage((int)$args['page']);
-                  }
-                  $data = $search->getData();
 
-                  var_dump($data);
                   return $this->view->render(
                      $response,
                      'list_contents.twig', [
                         'search_data'     => $data,
                         'item'            => $sub_item
                      ]
-                  );*/
+                  );
                } else {
                   $legacy = true;
                }

@@ -181,6 +181,29 @@ function update93to94() {
    // Add a config entry for the CAS version
    $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
+   /** Add main column on displaypreferences */
+   if ($migration->addField(
+         'glpi_displaypreferences',
+         'is_main',
+         'bool',
+         ['value' => 1]
+      )) {
+      $migration->addKey('glpi_displaypreferences', 'is_main');
+   }
+   /** /Add main column on displaypreferences */
+
+   /** add display preferences for sub items */
+   $ADDTODISPLAYPREF['Contract'] = [3, 4, 29, 5];
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $query = "REPLACE INTO `glpi_displaypreferences`
+                           (`itemtype` ,`num` ,`rank` ,`users_id`, `is_main`)
+                     VALUES ('$type', '$newval', '".$rank++."', '0', '0')";
+         $DB->query($query);
+      }
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

@@ -1770,4 +1770,92 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       return $nb;
    }
+
+   /**
+    * Add default where for search
+    *
+    * @since 9.4
+    *
+    * @param CommonDBTM $item     Item instance
+    * @param boolean    $noent    Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    * @param array      $where    Inital WHERE clause. Defaults to []
+    *
+    * @return array
+    */
+   public static function addSubDefaultWhere(CommonDBTM $item, $itemtype = null) {
+      global $DB;
+      $inverse = $item->getType() == static::$itemtype_1;
+      $link_type  = static::$itemtype_1;
+      $link_id    = static::$items_id_1;
+      $where_id   = static::$items_id_2;
+      $item_type  = $item->getType();
+      if ($inverse === true) {
+         $link_type  = static::$itemtype_2;
+         if ($link_type == 'itemtype') {
+            if ($itemtype != null) {
+               $link_type  = $itemtype;
+               $item_type  = $itemtype;
+            } else {
+               $link_type = $item->getType();
+            }
+         }
+         $link_id    = static::$items_id_2;
+         $where_id   = static::$items_id_1;
+      }
+
+      $current_table = static::getTable() . '_' . $link_id;
+      $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype')) {
+         $condition .= ' AND ' . $current_table . '.itemtype = "' . $DB->escape($item_type) . '"';
+      }
+
+      return $condition;
+   }
+
+   /**
+    * Add default join for search
+    *
+    * @since 9.4
+    *
+    * @param CommonDBTM $item     Item instance
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    *
+    * @return array
+    */
+   public static function addSubDefaultJoin(CommonDBTM $item, $itemtype = null) {
+      global $DB;
+      $inverse = $item->getType() == static::$itemtype_1;
+      $link_type  = static::$itemtype_1;
+      $link_id    = static::$items_id_1;
+      $item_type  = $item->getType();
+      if ($inverse === true) {
+         $link_type  = static::$itemtype_2;
+         if ($link_type == 'itemtype') {
+            if ($itemtype != null) {
+               $link_type  = $itemtype;
+               $item_type  = $itemtype;
+            } else {
+               $link_type = $item->getType();
+            }
+         }
+         $link_id    = static::$items_id_2;
+      }
+      $link_table = getTableForItemtype($link_type);
+
+      $existing = [];
+      $join = Search::addLeftJoin(
+         $link_type,
+         $link_table,
+         $existing,
+         static::getTable(),
+         $link_id,
+         0,
+         0,
+         ['jointype' => 'child']
+      );
+
+      return $join;
+   }
 }

@@ -2427,11 +2427,13 @@ CREATE TABLE `glpi_displaypreferences` (
   `num` int(11) NOT NULL DEFAULT '0',
   `rank` int(11) NOT NULL DEFAULT '0',
   `users_id` int(11) NOT NULL DEFAULT '0',
+  `is_main` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`),
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`is_main`),
   KEY `rank` (`rank`),
   KEY `num` (`num`),
-  KEY `itemtype` (`itemtype`)
+  KEY `itemtype` (`itemtype`),
+  KEY `is_main` (`is_main`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_displaypreferences` VALUES ('32','Computer','4','4','0');
@@ -2663,6 +2665,12 @@ INSERT INTO `glpi_displaypreferences` VALUES ('261','SavedSearch','9','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('262','SavedSearch','3','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('263','SavedSearch','10','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('264','SavedSearch','11','1','0');
+
+INSERT INTO `glpi_displaypreferences` VALUES ('265','Contract','3','1','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('266','Contract','4','2','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('267','Contract','29','3','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('268','Contract','5','4','0','0');
+
 
 ### Dump table glpi_documentcategories
 

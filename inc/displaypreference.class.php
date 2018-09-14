@@ -112,16 +112,20 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Get display preference for a user for an itemtype
     *
-    * @param $itemtype  itemtype
-    * @param $user_id   user ID
+    * @param string  $itemtype itemtype
+    * @param string  $user_id  user ID
+    * @param boolean $sub_item As a sub item
+    *
+    * @return array
    **/
-   static function getForTypeUser($itemtype, $user_id) {
+   static function getForTypeUser($itemtype, $user_id, $sub_item = false) {
       global $DB;
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'itemtype'  => $itemtype,
+            'is_main'   => ($sub_item ? 0 : 1),
             'OR'        => [
                ['users_id' => $user_id],
                ['users_id' => 0]
@@ -138,6 +142,20 @@ class DisplayPreference extends CommonDBTM {
             $user_prefs[] = $data["num"];
          } else {
             $default_prefs[] = $data["num"];
+         }
+      }
+
+      if ($sub_item === true
+         && !count($user_prefs)
+         && !count($default_prefs)
+      ) {
+         $rel = new $itemtype;
+         if ($rel->maybeDynamic()) {
+            //FIXME :(
+            //$default_prefs[] = 86;
+         }
+         if ($rel->maybeRecursive()) {
+            $default_prefs[] = 86;
          }
       }
 

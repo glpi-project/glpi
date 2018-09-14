@@ -66,6 +66,7 @@ class Search {
    private $raw_params;
    private $params;
    private $current_page;
+   private $sub_item = false;
 
    /**
     * Constructor
@@ -101,9 +102,12 @@ class Search {
    /**
     * Get data
     *
+    * @param array|false $sub_item Are we looking for a sub item?
+    *
     * @return array
     */
-   public function getData() {
+   public function getData($sub_item = false) {
+      $this->sub_item = $sub_item;
       $params = self::manageParams($this->item->getType(), $this->raw_params);
       if ($params['as_map'] == 1) {
          $params['criteria'][] = [
@@ -124,8 +128,8 @@ class Search {
          $this->current_page = 1;
       }
 
-      $data = self::prepareDatasForSearch($this->item->getType(), $params);
-      self::constructSQL($data);
+      $data = self::prepareDatasForSearch($this->item->getType(), $params, [], $this->sub_item);
+      self::constructSQL($data, $this->sub_item);
       self::constructData($data);
 
       $limit = $_SESSION['glpilist_limit'];
@@ -428,14 +432,15 @@ class Search {
     *
     * @since 0.85
     *
-    * @param $itemtype            item type
-    * @param $params        array of parameters
-    *                             may include sort, order, start, list_limit, deleted, criteria, metacriteria
-    * @param $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
+    * @param string  $itemtype     item type
+    * @param array   $params       array of parameters
+    *                              may include sort, order, start, list_limit, deleted, criteria, metacriteria
+    * @param array   $forcedisplay array of columns to display (default empty = empty use display pref and search criterias)
+    * @param boolean $sub_item     Are we looking for a sub item?
     *
     * @return array prepare to be used for a search (include criterias and others needed informations)
    **/
-   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = []) {
+   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = [], $sub_item = false) {
       global $CFG_GLPI;
 
       // Default values of parameters
@@ -534,7 +539,11 @@ class Search {
       $data['toview'] = self::addDefaultToView($itemtype, $params);
       if (!$forcetoview) {
          // Add items to display depending of personal prefs
-         $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
+         $displaypref = DisplayPreference::getForTypeUser(
+            $itemtype,
+            Session::getLoginUserID(),
+            $sub_item !== false
+         );
          if (count($displaypref)) {
             foreach ($displaypref as $val) {
                array_push($data['toview'], $val);
@@ -610,11 +619,12 @@ class Search {
     *
     * @since 0.85
     *
-    * @param $data    array of search datas prepared to generate SQL
+    * @param array            $data     array of search datas prepared to generate SQL
+    * @param CommonDBTM|false $sub_item Are we calling from a sub item?
     *
     * @return nothing
    **/
-   static function constructSQL(array &$data) {
+   static function constructSQL(array &$data, $sub_item = false) {
       global $CFG_GLPI;
 
       if (!isset($data['itemtype'])) {
@@ -668,6 +678,13 @@ class Search {
 
       // Add default join
       $COMMONLEFTJOIN = self::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
+
+      $itemtype = $data['itemtype'];
+      if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultJoin')) {
+         $sub = $sub_item['sub_item'];
+         $COMMONLEFTJOIN .= $sub::addSubDefaultJoin($sub_item['item']);
+      }
+
       $FROM          .= $COMMONLEFTJOIN;
 
       // Add all table for toview items
@@ -700,7 +717,12 @@ class Search {
       //// 3 - WHERE
 
       // default string
-      $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
+      if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultWhere')) {
+         $sub = $sub_item['sub_item'];
+         $COMMONWHERE = $sub::addSubDefaultWhere($sub_item['item']);
+      } else {
+         $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
+      }
       $first       = empty($COMMONWHERE);
 
       // Add deleted if item have it
