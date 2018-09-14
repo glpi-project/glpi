@@ -3499,9 +3499,9 @@ class Html {
       Html::requireJs('tinymce');
 
       $language = $_SESSION['glpilanguage'];
-      if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
+      if (!file_exists(GLPI_ROOT."/lib/tiny_mce/lib/langs/$language.js")) {
          $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
-         if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
+         if (!file_exists(GLPI_ROOT."/lib/tiny_mce/lib/langs/$language.js")) {
             $language = "en_GB";
          }
       }
