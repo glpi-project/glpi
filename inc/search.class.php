@@ -1476,9 +1476,7 @@ class Search {
             }
             $search_config_top    = "";
             $search_config_bottom = "";
-            if (!isset($_GET['_in_modal'])
-                && Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL,
-                                                                DisplayPreference::GENERAL])) {
+            if (!isset($_GET['_in_modal'])) {
 
                $search_config_top = $search_config_bottom
                   = "<div class='pager_controls'>";
@@ -1496,35 +1494,38 @@ class Search {
                }
                $search_config_top .= $map_link;
 
-               $options_link = "<span class='fa fa-wrench pointer' title='".
-                  __s('Select default items to show')."' onClick=\"$('#%id').dialog('open');\">
-                  <span class='sr-only'>" .  __s('Select default items to show') . "</span></span>";
+               if (Session::haveRightsOr('search_config', [
+                  DisplayPreference::PERSONAL,
+                  DisplayPreference::GENERAL
+               ])) {
+                  $options_link = "<span class='fa fa-wrench pointer' title='".
+                     __s('Select default items to show')."' onClick=\"$('#%id').dialog('open');\">
+                     <span class='sr-only'>" .  __s('Select default items to show') . "</span></span>";
 
-               $search_config_top .= str_replace('%id', 'search_config_top', $options_link);
-               $search_config_bottom .= str_replace('%id', 'search_config_bottom', $options_link);
+                  $search_config_top .= str_replace('%id', 'search_config_top', $options_link);
+                  $search_config_bottom .= str_replace('%id', 'search_config_bottom', $options_link);
 
-               $search_config_top
-                  .= Ajax::createIframeModalWindow('search_config_top',
-                                                   $CFG_GLPI["root_doc"].
-                                                      "/front/displaypreference.form.php?itemtype=".
-                                                      $data['itemtype'],
-                                                   ['title'
-                                                            => __('Select default items to show'),
-                                                         'reloadonclose'
-                                                            => true,
-                                                         'display'
-                                                            => false]);
-               $search_config_bottom
-                  .= Ajax::createIframeModalWindow('search_config_bottom',
-                                                   $CFG_GLPI["root_doc"].
-                                                      "/front/displaypreference.form.php?itemtype=".
-                                                      $data['itemtype'],
-                                                   ['title'
-                                                            => __('Select default items to show'),
-                                                         'reloadonclose'
-                                                            => true,
-                                                         'display'
-                                                            => false]);
+                  $pref_url = $CFG_GLPI["root_doc"]."/front/displaypreference.form.php?itemtype=".
+                              $data['itemtype'];
+                  $search_config_top .= Ajax::createIframeModalWindow(
+                     'search_config_top',
+                     $pref_url,
+                     [
+                        'title'         => __('Select default items to show'),
+                        'reloadonclose' => true,
+                        'display'       => false
+                     ]
+                  );
+                  $search_config_bottom .= Ajax::createIframeModalWindow(
+                     'search_config_bottom',
+                     $pref_url,
+                     [
+                        'title'         => __('Select default items to show'),
+                        'reloadonclose' => true,
+                        'display'       => false
+                     ]
+                  );
+               }
             }
 
             if ($item !== null && $item->maybeDeleted()) {
