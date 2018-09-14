@@ -896,16 +896,14 @@ class Cartridge extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2' width='50%'>";
          echo "<input type='hidden' name='printers_id' value='$instID'>\n";
-         $installok = false;
          if (CartridgeItem::dropdownForPrinter($printer)) {
             //TRANS : multiplier
             echo "</td><td>".__('x')."&nbsp;";
             Dropdown::showNumber("nbcart", ['value' => 1,
                                                  'min'   => 1,
                                                  'max'   => 5]);
-            $installok = true;
             echo "</td><td><input type='submit' name='install' value=\""._sx('button', 'Install')."\"
-                          ".($installok?'':'disabled')." class='submit'>";
+                                  class='submit'>";
 
          } else {
             echo __('No cartridge available');
