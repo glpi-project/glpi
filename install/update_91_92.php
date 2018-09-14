@@ -1039,7 +1039,9 @@ function update91to92() {
       //Just display a Warning to the user.
       $migration->displayWarning("An index must be added in the 'id_search_option' field " .
          "of the 'glpi_logs table'; but your glpi_logs table is " .
-                                 "too huge. You'll have to add it on your database.");
+         "too huge. You'll have to add it on your database " .
+         "with the following query:\n" .
+         "'ALTER TABLE glpi_logs ADD INDEX id_search_option(id_search_option);'");
    }
 
    // count cron task
