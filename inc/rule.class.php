@@ -2698,7 +2698,7 @@ class Rule extends CommonDBTM {
       /// TODO : not working for SLALevels : no sub_type
 
       //Get all the rules whose sub_type is $sub_type and entity is $ID
-      $crit = [
+      $query = [
          'SELECT' => $this->getTable() . '.id',
          'FROM'   => [
             getTableForItemType($this->ruleactionclass),
@@ -2712,10 +2712,10 @@ class Rule extends CommonDBTM {
       ];
 
       foreach ($crit as $field => $value) {
-         $crit['WHERE'][getTableForItemType($this->ruleactionclass).'.'.$field] = $value;
+         $query['WHERE'][getTableForItemType($this->ruleactionclass).'.'.$field] = $value;
       }
 
-      $iterator = $DB->request($crit);
+      $iterator = $DB->request($query);
 
       while ($rule = $iterator->next()) {
          $affect_rule = new Rule();
