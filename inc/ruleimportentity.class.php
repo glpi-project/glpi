@@ -141,7 +141,7 @@ class RuleImportEntity extends Rule {
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 
       $crit = $this->getCriteria($ID);
-      if ($crit['field'] == '_source') {
+      if (count($crit) && $crit['field'] == '_source') {
          $name = Plugin::getInfo($pattern, 'name');
          if (empty($name)) {
             return false;
