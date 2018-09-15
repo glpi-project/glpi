@@ -523,13 +523,16 @@ class Cartridge extends CommonDBChild {
    static function getUsedNumberForPrinter($pID) {
       global $DB;
 
-      $query = "SELECT id
-                FROM `glpi_cartridges`
-                WHERE (`printers_id` = '$pID'
-                       AND `date_use` IS NOT NULL
-                       AND `date_out` IS NULL)";
-      $result = $DB->query($query);
-      return $DB->numrows($result);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'printers_id'  => $pID,
+            'date_out'     => null,
+            'NOT'          => ['date_use' => null]
+         ]
+      ])-next();
+      return $result['cpt'];
    }
 
 
@@ -543,12 +546,15 @@ class Cartridge extends CommonDBChild {
    static function getOldNumber($tID) {
       global $DB;
 
-      $query = "SELECT id
-                FROM `glpi_cartridges`
-                WHERE (`cartridgeitems_id` = '$tID'
-                       AND `date_out` IS NOT NULL)";
-      $result = $DB->query($query);
-      return $DB->numrows($result);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'cartridgeitems_id'  => $tID,
+            'NOT'                => ['date_out' => null]
+         ]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -564,12 +570,15 @@ class Cartridge extends CommonDBChild {
    static function getOldNumberForPrinter($pID) {
       global $DB;
 
-      $query = "SELECT id
-                FROM `glpi_cartridges`
-                WHERE (`printers_id` = '$pID'
-                       AND `date_out` IS NOT NULL)";
-      $result = $DB->query($query);
-      return $DB->numrows($result);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'printers_id'  => $pID,
+            'NOT'          => ['date_out' => null]
+         ]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -583,12 +592,15 @@ class Cartridge extends CommonDBChild {
    static function getUnusedNumber($tID) {
       global $DB;
 
-      $query = "SELECT id
-                FROM `glpi_cartridges`
-                WHERE (`cartridgeitems_id` = '$tID'
-                       AND `date_use` IS NULL)";
-      $result = $DB->query($query);
-      return $DB->numrows($result);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'cartridgeitems_id'  => $tID,
+            'date_use'           => null
+         ]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -629,38 +641,50 @@ class Cartridge extends CommonDBChild {
       }
       $canedit = $cartitem->can($tID, UPDATE);
 
+      $where = ['glpi_cartridges.cartridgeitems_id' => $tID];
+      $order = [
+         'glpi_cartridges.date_use ASC',
+         'glpi_cartridges.date_out DESC',
+         'glpi_cartridges.date_in'
+      ];
+
       if (!$show_old) { // NEW
-         $where = " AND `glpi_cartridges`.`date_out` IS NULL";
+         $where['glpi_cartridges.date_out'] = null;
+         $order = [
+            'glpi_cartridges.date_out ASC',
+            'glpi_cartridges.date_use ASC',
+            'glpi_cartridges.date_in'
+         ];
       } else { //OLD
-         $where = " AND `glpi_cartridges`.`date_out` IS NOT NULL";
+         $where['NOT'] = ['glpi_cartridges.date_out' => null];
       }
 
       $stock_time       = 0;
       $use_time         = 0;
       $pages_printed    = 0;
       $nb_pages_printed = 0;
-      $ORDER = " `glpi_cartridges`.`date_use` ASC,
-                 `glpi_cartridges`.`date_out` DESC,
-                 `glpi_cartridges`.`date_in`";
 
-      if (!$show_old) {
-         $ORDER = " `glpi_cartridges`.`date_out` ASC,
-                    `glpi_cartridges`.`date_use` ASC,
-                    `glpi_cartridges`.`date_in`";
-      }
-      $query = "SELECT `glpi_cartridges`.*,
-                     `glpi_printers`.`id` AS printID,
-                     `glpi_printers`.`name` AS printname,
-                     `glpi_printers`.`init_pages_counter`
-                FROM `glpi_cartridges`
-                LEFT JOIN `glpi_printers`
-                     ON (`glpi_cartridges`.`printers_id` = `glpi_printers`.`id`)
-                WHERE `glpi_cartridges`.`cartridgeitems_id` = '$tID'
-                      $where
-                ORDER BY $ORDER";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_cartridges.*',
+            'glpi_printers.id AS printID',
+            'glpi_printers.name AS printname',
+            'glpi_printers.init_pages_counter'
+         ],
+         'FROM'   => self::gettable(),
+         'LEFT JOIN' => [
+            'glpi_printers'   => [
+               'FKEY'   => [
+                  self::getTable()  => 'printers_id',
+                  'glpi_printers'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => $where,
+         'ORDER'     => $order
+      ]);
 
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $number = count($iterator);
 
       echo "<div class='spaced'>";
       if ($canedit && $number) {
@@ -718,7 +742,7 @@ class Cartridge extends CommonDBChild {
       $pages = [];
 
       if ($number) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_use = Html::convDate($data["date_use"]);
             $date_out = Html::convDate($data["date_out"]);
@@ -866,29 +890,49 @@ class Cartridge extends CommonDBChild {
       $canedit = Session::haveRight("cartridge", UPDATE);
       $rand    = mt_rand();
 
-      $query = "SELECT `glpi_cartridgeitems`.`id` AS tID,
-                       `glpi_cartridgeitems`.`is_deleted`,
-                       `glpi_cartridgeitems`.`ref` AS ref,
-                       `glpi_cartridgeitems`.`name` AS type,
-                       `glpi_cartridges`.`id`,
-                       `glpi_cartridges`.`pages` AS pages,
-                       `glpi_cartridges`.`date_use` AS date_use,
-                       `glpi_cartridges`.`date_out` AS date_out,
-                       `glpi_cartridges`.`date_in` AS date_in,
-                       `glpi_cartridgeitemtypes`.`name` AS typename
-                FROM `glpi_cartridges`,
-                     `glpi_cartridgeitems`
-                LEFT JOIN `glpi_cartridgeitemtypes`
-                  on (`glpi_cartridgeitems`.`cartridgeitemtypes_id` = `glpi_cartridgeitemtypes`.`id`)
-                WHERE (`glpi_cartridges`.`date_out` IS ".($old?"NOT":"")." NULL
-                       AND `glpi_cartridges`.`printers_id` = '$instID'
-                       AND `glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`)
-                ORDER BY `glpi_cartridges`.`date_out` ASC,
-                         `glpi_cartridges`.`date_use` DESC,
-                         `glpi_cartridges`.`date_in`";
+      $where = ['glpi_cartridges.printers_id' => $instID];
+      if ($old) {
+         $where['NOT'] = ['glpi_cartridges.date_out' => null];
+      } else {
+         $where['glpi_cartridges.date_out'] = null;
+      }
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_cartridgeitems.id AS tID',
+            'glpi_cartridgeitems.is_deleted',
+            'glpi_cartridgeitems.ref AS ref',
+            'glpi_cartridgeitems.name AS type',
+            'glpi_cartridges.id',
+            'glpi_cartridges.pages AS pages',
+            'glpi_cartridges.date_use AS date_use',
+            'glpi_cartridges.date_out AS date_out',
+            'glpi_cartridges.date_in AS date_in',
+            'glpi_cartridgeitemtypes.name AS typename'
+         ],
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            'glpi_cartridgeitems'      => [
+               'FKEY'   => [
+                  self::getTable()        => 'cartridgeitems_id',
+                  'glpi_cartridgeitems'   => 'id'
+               ]
+            ],
+            'glpi_cartridgeitemtypes'  => [
+               'FKEY'   => [
+                  'glpi_cartridgeitems'      => 'cartridgeitemtypes_id',
+                  'glpi_cartridgeitemtypes'  => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => $where,
+         'ORDER'     => [
+            'glpi_cartridges.date_out ASC',
+            'glpi_cartridges.date_use DESC',
+            'glpi_cartridges.date_in',
+         ]
+      ]);
 
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $number = count($iterator);
 
       if ($canedit && !$old) {
          echo "<div class='firstbloc'>";
@@ -975,7 +1019,7 @@ class Cartridge extends CommonDBChild {
       $pages_printed    = 0;
       $nb_pages_printed = 0;
 
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $iterator->next()) {
          $cart_id    = $data["id"];
          $typename   = $data["typename"];
          $date_in    = Html::convDate($data["date_in"]);
