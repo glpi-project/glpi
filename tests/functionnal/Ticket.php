@@ -2068,7 +2068,7 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       // Reload ticket to get all default fields values
-      $ticket->getFromDB($ticketId);
+      $this->boolean($ticket->getFromDB($ticketId))->isTrue();
 
       // Check if "takeintoaccount_delay_stat" is not automatically defined
       $expectedStat = array_key_exists('takeintoaccount_delay_stat', $input)
