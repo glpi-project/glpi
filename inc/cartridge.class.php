@@ -531,7 +531,7 @@ class Cartridge extends CommonDBChild {
             'date_out'     => null,
             'NOT'          => ['date_use' => null]
          ]
-      ])-next();
+      ])->next();
       return $result['cpt'];
    }
 
