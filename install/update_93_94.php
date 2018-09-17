@@ -189,6 +189,14 @@ function update93to94() {
          ['value' => 1]
       )) {
       $migration->addKey('glpi_displaypreferences', 'is_main');
+      $migration->dropKey('glpi_displaypreferences', 'unicity');
+      $migration->migrationOneTable('glpi_displaypreferences');
+      $migration->addKey(
+         'glpi_displaypreferences',
+         ['users_id', 'itemtype', 'num', 'is_main'],
+         'unicity',
+         'UNIQUE'
+      );
    }
    /** /Add main column on displaypreferences */
 
