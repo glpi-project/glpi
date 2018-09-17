@@ -11,11 +11,11 @@ before_script:
   - rm -f composer.lock
   - composer install --optimize-autoloader
   #install 0.72.3 database
-  - if [[ "$UPDATE" == "true" ]]; then php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1); fi
+  - if [[ "$UPDATE" == "true" ]]; then bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1); fi
   - if [[ "$UPDATE" == "true" ]]; then php scripts/innodb_migration.php --config-dir=../tests; fi
   - mysql -u root -e 'create database glpitest;'
   - php scripts/cliinstall.php --db=glpitest --user=root --tests
-  - php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
+  - bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
   - ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
   # LDAP stuff
   - ./tests/LDAP/ldap_fixtures.sh > /dev/null
