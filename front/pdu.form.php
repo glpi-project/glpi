@@ -95,6 +95,6 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(PDU::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");
-   $pdu->display(['id' => $_GET["id"]]);
+   $pdu->display(['id' => $_GET["id"], 'withtemplate' => $_GET["withtemplate"]]);
    Html::footer();
 }
