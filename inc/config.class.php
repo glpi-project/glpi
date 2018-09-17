@@ -1929,6 +1929,8 @@ class Config extends CommonDBTM {
                  'check'   => 'SebastianBergmann\\Diff\\Diff' ],
                [ 'name'    => 'elvanto/litemoji',
                  'check'   => 'LitEmoji\\LitEmoji' ],
+               [ 'name'    => 'symfony/console',
+                 'check'   => 'Symfony\\Component\\Console\\Application' ],
       ];
       if ($all || PHP_VERSION_ID < 70000) {
          $deps[] = [
@@ -2709,6 +2711,117 @@ class Config extends CommonDBTM {
       return $result;
    }
 
+   /**
+    * Load legacy configuration into $CFG_GLPI global variable.
+    *
+    * @param boolean $older_to_latest Search on old configuration objects first
+    *
+    * @return boolean True for success, false if an error occured
+    */
+   public static function loadLegacyConfiguration($older_to_latest = true) {
+
+      global $CFG_GLPI, $DB;
+
+      $get_prior_to_078_config  = function() use ($DB) {
+         if (!$DB->tableExists('glpi_config')) {
+            return false;
+         }
+
+         $config = new Config();
+         $config->forceTable('glpi_config');
+         if ($config->getFromDB(1)) {
+            return $config->fields;
+         }
+
+         return false;
+      };
+
+      $get_078_to_084_config    = function() use ($DB) {
+         if (!$DB->tableExists('glpi_configs') || $DB->fieldExists('glpi_configs', 'context')) {
+            return false;
+         }
+
+         $config = new Config();
+         $config->forceTable('glpi_configs');
+         if ($config->getFromDB(1)) {
+            return $config->fields;
+         }
+
+         return false;
+      };
+
+      $get_085_to_latest_config = function() use ($DB) {
+         if (!$DB->tableExists('glpi_configs') || !$DB->fieldExists('glpi_configs', 'context')) {
+            return false;
+         }
+
+         $config = new Config();
+         $config->forceTable('glpi_configs');
+         if ($config->getFromDB(1)) {
+            return Config::getConfigurationValues('core');
+         }
+
+         return false;
+      };
+
+      $functions = [];
+      if ($older_to_latest) {
+         // Try with old config table first : for update process management from < 0.80 to >= 0.80.
+         $functions = [
+            $get_prior_to_078_config,
+            $get_078_to_084_config,
+            $get_085_to_latest_config,
+         ];
+      } else {
+         // Normal load process : use normal config table. If problem try old one.
+         $functions = [
+            $get_085_to_latest_config,
+            $get_078_to_084_config,
+            $get_prior_to_078_config,
+         ];
+      }
+
+      $values = [];
+
+      foreach ($functions as $function) {
+         if ($config = $function()) {
+            $values = $config;
+            break;
+         }
+      }
+
+      if (count($values) === 0) {
+         return false;
+      }
+
+      $CFG_GLPI = array_merge($CFG_GLPI, $values);
+
+      if (isset($CFG_GLPI['priority_matrix'])) {
+         $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix']);
+      }
+
+      if (isset($CFG_GLPI['lock_item_list'])) {
+          $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
+      }
+
+      if (isset($CFG_GLPI['lock_lockprofile_id'])
+          && $CFG_GLPI['lock_use_lock_item']
+          && $CFG_GLPI['lock_lockprofile_id'] > 0
+          && !isset($CFG_GLPI['lock_lockprofile']) ) {
+         $prof = new Profile();
+         $prof->getFromDB($CFG_GLPI['lock_lockprofile_id']);
+         $prof->cleanProfile();
+         $CFG_GLPI['lock_lockprofile'] = $prof->fields;
+      }
+
+      // Path for icon of document type (web mode only)
+      if (isset($CFG_GLPI['root_doc'])) {
+         $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
+      }
+
+      return true;
+   }
+
 
    /**
     * Set config values : create or update entry
@@ -2828,6 +2941,7 @@ class Config extends CommonDBTM {
       // Read configuration
       $conf = [];
       if ($DB
+         && $DB->connected
          && $DB->tableExists(self::getTable())
          && $DB->fieldExists(self::getTable(), 'context')
       ) {
@@ -2922,7 +3036,8 @@ class Config extends CommonDBTM {
                $fallback = true;
             } catch (Exception $e1) {
                Toolbox::logError($e1->getMessage());
-               if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+               if (isset($_SESSION['glpi_use_mode'])
+                   && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
                   //preivous attempt has faled as well.
                   Toolbox::logDebug($e->getMessage());
                }
@@ -2933,7 +3048,8 @@ class Config extends CommonDBTM {
             $opt = ['adapter' => 'memory'];
             $storage = Zend\Cache\StorageFactory::factory($opt);
          }
-         if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+         if (isset($_SESSION['glpi_use_mode'])
+             && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
             Toolbox::logDebug($e->getMessage());
          }
       }

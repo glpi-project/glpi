@@ -179,7 +179,8 @@ class Session {
    **/
    static function setPath() {
 
-      if (ini_get("session.save_handler") == "files") {
+      if (ini_get("session.save_handler") == "files"
+          && session_status() !== PHP_SESSION_ACTIVE) {
          session_save_path(GLPI_SESSION_DIR);
       }
    }
