@@ -68,7 +68,9 @@ if (isset($_POST["table"])
       default :
          if ($_POST["value"] > 0) {
             $tmpname = Dropdown::getDropdownName($_POST["table"], $_POST["value"], 1);
-            echo $tmpname["comment"];
+            if (is_array($tmpname) && isset($tmpname["comment"])) {
+                echo $tmpname["comment"];
+            }
             if (isset($_POST['withlink'])) {
                echo "<script type='text/javascript' >\n";
                echo Html::jsGetElementbyID($_POST['withlink']).".
