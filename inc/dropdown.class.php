@@ -285,7 +285,13 @@ class Dropdown {
    static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true) {
       global $DB, $CFG_GLPI;
 
+      $dft_retval = "&nbsp;";
+
       $item = getItemForItemtype(getItemTypeForTable($table));
+
+      if (!is_object($item)) {
+         return $dft_retval;
+      }
 
       if ($item instanceof CommonTreeDropdown) {
          return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip);
@@ -439,7 +445,7 @@ class Dropdown {
       }
 
       if (empty($name)) {
-         $name = "&nbsp;";
+         $name = $dft_retval;
       }
 
       if ($withcomment) {
