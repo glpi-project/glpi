@@ -33,7 +33,8 @@
         "monolog/monolog": "^1.23",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
         "zendframework/zend-console": "^2.7",
-        "elvanto/litemoji": "^1.4"
+        "elvanto/litemoji": "^1.4",
+        "symfony/console": "^3.4"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
@@ -45,7 +46,8 @@
         "atoum/telemetry-extension": "^1.0",
         "sensiolabs/security-checker": "^4.1",
         "fzaninotto/Faker": "^1.7",
-        "jakub-onderka/php-parallel-lint": "^1.0"
+        "jakub-onderka/php-parallel-lint": "^1.0",
+        "mikey179/vfsStream": "^1.6"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",

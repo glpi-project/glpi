@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+// Be sure to use global objects if this file is included outside normal process
+global $CFG_GLPI, $GLPI, $GLPI_CACHE;
+
 include_once (GLPI_ROOT."/inc/based_config.php");
 include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/dbconnection.class.php");
@@ -87,77 +90,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    //Options from DB, do not touch this part.
 
-   $config_object  = new Config();
-   $current_config = [];
-
-   if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
+   $older_to_latest = !isset($_GET['donotcheckversion']) // use normal config table on restore process
        && (isset($TRY_OLD_CONFIG_FIRST) // index case
-           || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST']))) { // backup case
+       || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST'])); // backup case
 
-      if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
-         unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
-      }
 
-      // First try old config table : for update process management from < 0.80 to >= 0.80
-      $config_object->forceTable('glpi_config');
-
-      if ($DB->tableExists('glpi_config') && $config_object->getFromDB(1)) {
-         $current_config = $config_object->fields;
-      } else {
-         $config_object->forceTable('glpi_configs');
-         if ($config_object->getFromDB(1)) {
-            if (isset($config_object->fields['context'])) {
-               $current_config = Config::getConfigurationValues('core');
-            } else {
-               $current_config = $config_object->fields;
-            }
-            $config_ok = true;
-         }
-      }
-
-   } else { // Normal load process : use normal config table. If problem try old one
-      if ($config_object->getFromDB(1)) {
-         if (isset($config_object->fields['context'])) {
-            $current_config = Config::getConfigurationValues('core');
-         } else {
-            $current_config = $config_object->fields;
-         }
-      } else {
-         // Manage glpi_config table before 0.80
-         $config_object->forceTable('glpi_config');
-         if ($config_object->getFromDB(1)) {
-            $current_config = $config_object->fields;
-         }
-      }
+   if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
+      unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
    }
 
-   if (count($current_config) > 0) {
-      $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
-
-      if (isset($CFG_GLPI['priority_matrix'])) {
-         $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
-                                                          true);
-      }
-      if (isset($CFG_GLPI['lock_item_list'])) {
-          $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
-      }
-      if (isset($CFG_GLPI['lock_lockprofile_id'])
-          && $CFG_GLPI["lock_use_lock_item"]
-          && ($CFG_GLPI["lock_lockprofile_id"] > 0)
-          && !isset($CFG_GLPI['lock_lockprofile']) ) {
-
-            $prof = new Profile();
-            $prof->getFromDB($CFG_GLPI["lock_lockprofile_id"]);
-            $prof->cleanProfile();
-            $CFG_GLPI['lock_lockprofile'] = $prof->fields;
-      }
-
-      // Path for icon of document type (web mode only)
-      if (isset($CFG_GLPI["root_doc"])) {
-         $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
-      }
-
-   } else {
+   if (!Config::loadLegacyConfiguration($older_to_latest)) {
       echo "Error accessing config table";
       exit();
    }

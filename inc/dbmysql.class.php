@@ -246,7 +246,8 @@ class DBmysql {
             throw new GlpitestSQLError($error);
          }
 
-         if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+         if (isset($_SESSION['glpi_use_mode'])
+             && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
              && $CFG_GLPI["debug_sql"]) {
             $SQL_TOTAL_REQUEST++;
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
