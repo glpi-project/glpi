@@ -315,22 +315,28 @@ abstract class CommonDBConnexity extends CommonDBTM {
                              CommonDBTM &$item = null) {
 
       // Do not get it twice
-      if ($item == null) {
-         $item = $this->getConnexityItem($itemtype, $items_id);
+      $connexityItem = $item;
+      if ($connexityItem == null) {
+         $connexityItem = $this->getConnexityItem($itemtype, $items_id);
+
+         // Set value in $item to reuse it on future calls
+         if ($connexityItem instanceof CommonDBTM) {
+            $item = $this->getConnexityItem($itemtype, $items_id);
+         }
       }
       if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
-         if ($item !== false) {
+         if ($connexityItem !== false) {
             if ($item_right == self::HAVE_VIEW_RIGHT_ON_ITEM) {
                $methodNotItem = 'canView';
                $methodItem    = 'canViewItem';
             }
             // here, we can check item's global rights
             if (preg_match('/^itemtype/', $itemtype)) {
-               if (!$item->$methodNotItem()) {
+               if (!$connexityItem->$methodNotItem()) {
                   return false;
                }
             }
-            return $item->$methodItem();
+            return $connexityItem->$methodItem();
          } else {
             // if we cannot get the parent, then we throw an exception
             throw new CommonDBConnexityItemNotFound();
