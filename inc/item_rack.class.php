@@ -942,22 +942,21 @@ JAVASCRIPT;
       $orientation = $this->fields['orientation'];
 
       //check for requirements
-      if ($this->isNewItem()) {
-         if (!isset($input['itemtype'])) {
-            $error_detected[] = __('An item type is required');
-         }
-
-         if (!isset($input['items_id'])) {
-            $error_detected[] = __('An item is required');
-         }
-
-         if (!isset($input['racks_id'])) {
-            $error_detected[] = __('A rack is required');
-         }
-
-         if (!isset($input['position'])) {
-            $error_detected[] = __('A position is required');
-         }
+      if (($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
+          || (isset($input['itemtype']) && empty($input['itemtype']))) {
+         $error_detected[] = __('An item type is required');
+      }
+      if (($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
+          || (isset($input['items_id']) && empty($input['items_id']))) {
+         $error_detected[] = __('An item is required');
+      }
+      if (($this->isNewItem() && (!isset($input['racks_id']) || empty($input['racks_id'])))
+          || (isset($input['racks_id']) && empty($input['racks_id']))) {
+         $error_detected[] = __('A rack is required');
+      }
+      if (($this->isNewItem() && (!isset($input['position']) || empty($input['position'])))
+          || (isset($input['position']) && empty($input['position']))) {
+         $error_detected[] = __('A position is required');
       }
 
       if (isset($input['itemtype'])) {
@@ -984,7 +983,12 @@ JAVASCRIPT;
          $rack = new Rack();
          $rack->getFromDB($racks_id);
 
-         $filled = $rack->getFilled($itemtype, $items_id);
+         if ($this->isNewItem()) {
+            $filled = $rack->getFilled();
+         } else {
+            // If object is existing, exclude current state from used positions
+            $filled = $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']);
+         }
 
          $item = new $itemtype;
          $item->getFromDB($items_id);
