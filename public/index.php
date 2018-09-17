@@ -226,6 +226,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $get = $request->getQueryParams();
 
       $route = $request->getAttribute('route');
+      if (!$route) {
+         return $next($request, $response);
+      }
       $arguments = $route->getArguments();
       $this->view->getEnvironment()->addGlobal(
          "current_itemtype",
@@ -256,12 +259,17 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $arguments = [];
       if ($route) {
          $arguments = $route->getArguments();
+         $key = $route->getName();
       }
 
-      $key = $route->getName();
       if (isset($arguments['itemtype'])) {
          $key = mb_strtolower($arguments['itemtype']);
       }
+
+      if (!isset($key)) {
+         return $next($request, $response);
+      }
+
       $requirements = Html::getJsRequirements($CFG_GLPI['javascript'], $key);
 
       $css_paths = [];
