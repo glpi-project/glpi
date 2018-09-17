@@ -45,41 +45,6 @@ function displayMigrationMessage ($id, $msg = "") {
    // display nothing
 }
 
-
-class CliMigration extends Migration {
-
-
-   function __construct($ver) {
-      $this->deb = time();
-      $this->setVersion($ver);
-   }
-
-
-   function setVersion($ver) {
-      $this->version = $ver;
-   }
-
-
-   function displayMessage ($msg) {
-
-      $msg .= " (".Html::clean(Html::timestampToString(time()-$this->deb)).")";
-      echo str_pad($msg, 100)."\r";
-   }
-
-
-   function displayTitle($title) {
-      echo "\n".str_pad(" $title ", 100, '=', STR_PAD_BOTH)."\n";
-   }
-
-
-   function displayWarning($msg, $red = false) {
-
-      if ($red) {
-         $msg = "** $msg";
-      }
-      echo str_pad($msg, 100)."\n";
-   }
-}
 $migration = new CliMigration("0.72.3");
 
 class Install extends PHPUnit_Framework_TestCase {
