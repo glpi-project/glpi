@@ -351,4 +351,14 @@ class Enclosure extends CommonDBTM {
       $class = new Item_Enclosure();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
+
+
+   function prepareInputForAdd($input) {
+      if (isset($input["id"]) && ($input["id"] > 0)) {
+         $input["_oldID"] = $input["id"];
+      }
+      unset($input['id']);
+      unset($input['withtemplate']);
+      return $input;
+   }
 }

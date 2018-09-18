@@ -102,6 +102,7 @@ if (isset($_POST["add"])) {
    if (isset($_GET['room'])) {
       $options['room'] = $_GET['room'];
    }
+   $options['withtemplate'] = $_GET['withtemplate'];
    $enclosure->display($options);
    Html::footer();
 }
