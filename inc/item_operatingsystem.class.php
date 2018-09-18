@@ -312,9 +312,9 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_license_id$rand'>".__('Product ID')."</label></td>";
+      echo "<td><label for='textfield_licenseid$rand'>".__('Product ID')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'license_id', ['rand' => $rand]);
+      Html::autocompletionTextField($this, 'licenseid', ['rand' => $rand]);
       echo "</td>";
 
       echo "<td><label for='textfield_license_number$rand'>".__('Serial number')."</label></td>";
@@ -446,7 +446,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       $tab[] = [
          'id'                 => '44',
          'table'              => 'glpi_items_operatingsystems',
-         'field'              => 'license_id',
+         'field'              => 'licenseid',
          'name'               => __('Operating System') . ' - ' . __('Product ID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
