@@ -850,4 +850,21 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       return $this->update($input);
    }
+
+   /**
+    * Get hidden fields building form
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormHiddenFields($add = false) {
+      $fields = array_merge(
+         parent::getFormHiddenFields($add), [
+            'itemtype',
+            'items_id'
+         ]
+      );
+      return $fields;
+   }
 }

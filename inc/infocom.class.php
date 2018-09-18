@@ -2058,4 +2058,112 @@ class Infocom extends CommonDBChild {
    public static function getExcludedTypes() {
       return ['ConsumableItem', 'CartridgeItem', 'Software'];
    }
+
+   /**
+    * Get display type for sub item
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_FORM;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'order_date'   => [
+            'label'  => __('Order date')
+         ],
+         'buy_date'     => [
+            'label'  => __('Buy date')
+         ],
+         'delivery_date'   => [
+            'label'  => __('Delivery date')
+         ],
+         'use_date'     => [
+            'label'  => __('Startup date')
+         ],
+         'inventory_date'  => [
+            'label'  => __('Date of last physical inventory')
+         ],
+         'decommission_date'  => [
+            'label'  => __('Decommission date')
+         ],
+         'suppliers_id' => [
+            'label'  => __('Supplier')
+         ],
+         'budgets_id'   => [
+            'label'  => __('Budget')
+         ],
+         'order_number' => [
+            'label'  => __('Order number')
+         ],
+         'immo_number'  => [
+            'label'  => __('Immobilization number')
+         ],
+         'bill'         => [
+            'label'  => __('Invoice number')
+         ],
+         'delivery_number' => [
+            'label'=> __('Delivery number')
+         ],
+         'value'     => [
+            'label'  => __('Value')
+         ],
+         'warranty_value'  => [
+            'label'  => __('Warranty extension value')
+         ],
+         // account net value
+         'sink_type'    => [
+            'label'  => __('Amortization type')
+         ],
+         'sink_time'    => [
+            'label'  => __('Amortization duration')
+         ],
+         'sink_coeff'   => [
+            'label'  => __('Amortization coefficient')
+         ],
+         //TCO (value + tracking cost)
+         //Monthly TCO
+         'businesscriticities_id'   => [
+            'label'  => __('Business criticity')
+         ],
+         'warranty_date'   => [
+            'label'  => __('Start date of warranty')
+         ],
+         'warranty_duration'  => [
+            'label'  => __('Warranty duration')
+         ],
+         'warranty_info'   => [
+            'label'  => __('Warranty information')
+         ]
+      ] + parent::getFormFields();
+      return $fields;
+   }
+
+   /**
+    * Get field to be dropped building form
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormFieldsToDrop($add = false) {
+      $fields = array_merge(
+         ['alert'],
+         parent::getFormFieldsToDrop($add)
+      );
+      return $fields;
+   }
+
 }

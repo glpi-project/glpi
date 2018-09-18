@@ -28,7 +28,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-{% extends "elements/text.twig" %}
+{% extends "elements/input.twig" %}
 
 {% block component %}
    {% set class = 'datepicker' %}
@@ -41,9 +41,9 @@
       'name': name ~ '_picker'
    }) %}
    {{ parent() }}
-   {% set element = element|merge({
+   {#% set element = {
       'name': name,
       'class': ''
-   }) %}
-   {% include "elements/hidden.twig" with {'element': element} %}
+   }|merge(element) %}
+   {% include "elements/hidden.twig" with {'element': element} %#}
 {% endblock %}
