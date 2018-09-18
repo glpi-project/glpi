@@ -156,7 +156,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'table'    => $table,
             'field'    => 'weight',
             'name'     => __('Weight'),
-            'datatype' => 'number'
+            'datatype' => 'decimal'
          ];
       }
 
@@ -176,7 +176,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'table'    => $table,
             'field'    => 'depth',
             'name'     => __('Depth'),
-            'datatype' => 'number'
          ];
       }
 
@@ -196,7 +195,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'table'    => $table,
             'field'    => 'power_consumption',
             'name'     => __('Power consumption'),
-            'datatype' => 'number'
+            'datatype' => 'decimal'
          ];
       }
 
