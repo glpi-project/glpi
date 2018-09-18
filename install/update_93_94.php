@@ -167,6 +167,15 @@ function update93to94() {
    }
    /** /Replacing changes_projects by itils_projects */
 
+   /** Rename non fkey field */
+   $migration->changeField(
+      'glpi_items_operatingsystems',
+      'license_id',
+      'licenseid',
+      "string"
+   );
+   /** Rename non fkey field */
+
    Config::deleteConfigurationValues('core', $config_to_drop);
 
    // Add a config entry for the CAS version

@@ -1093,7 +1093,7 @@ CREATE TABLE `glpi_items_operatingsystems` (
   `operatingsystemarchitectures_id` int(11) NOT NULL DEFAULT '0',
   `operatingsystemkernelversions_id` int(11) NOT NULL DEFAULT '0',
   `license_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `license_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `licenseid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `operatingsystemeditions_id` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
