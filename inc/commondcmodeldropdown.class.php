@@ -146,7 +146,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'    => '130',
             'table' => $table,
             'field' => 'product_number',
-            'name'  => _('Product Number'),
+            'name'  => __('Product Number'),
          ];
       }
 
@@ -155,7 +155,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'       => '131',
             'table'    => $table,
             'field'    => 'weight',
-            'name'     => _('Weight'),
+            'name'     => __('Weight'),
             'datatype' => 'number'
          ];
       }
@@ -165,7 +165,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'       => '132',
             'table'    => $table,
             'field'    => 'required_units',
-            'name'     => _('Required units'),
+            'name'     => __('Required units'),
             'datatype' => 'number'
          ];
       }
@@ -175,7 +175,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'       => '133',
             'table'    => $table,
             'field'    => 'depth',
-            'name'     => _('Depth'),
+            'name'     => __('Depth'),
             'datatype' => 'number'
          ];
       }
@@ -185,7 +185,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'       => '134',
             'table'    => $table,
             'field'    => 'power_connections',
-            'name'     => _('Power connections'),
+            'name'     => __('Power connections'),
             'datatype' => 'number'
          ];
       }
@@ -195,7 +195,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'       => '135',
             'table'    => $table,
             'field'    => 'power_consumption',
-            'name'     => _('Power consumption'),
+            'name'     => __('Power consumption'),
             'datatype' => 'number'
          ];
       }
@@ -205,7 +205,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'       => '136',
             'table'    => $table,
             'field'    => 'is_half_rack',
-            'name'     => _('Is half rack'),
+            'name'     => __('Is half rack'),
             'datatype' => 'bool'
          ];
       }
@@ -215,7 +215,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'            => '137',
             'table'         => $table,
             'field'         => 'picture_front',
-            'name'          => _('Front picture'),
+            'name'          => __('Front picture'),
             'datatype'      => 'specific',
             'nosearch'      => true,
             'massiveaction' => true,
@@ -228,7 +228,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'id'            => '138',
             'table'         => $table,
             'field'         => 'picture_rear',
-            'name'          => _('Rear picture'),
+            'name'          => __('Rear picture'),
             'datatype'      => 'specific',
             'nosearch'      => true,
             'massiveaction' => true,
