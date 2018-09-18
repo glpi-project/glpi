@@ -2660,7 +2660,7 @@ function generate_entity($ID_entity) {
          'operatingsystemversions_id'     => mt_rand(1, $MAX['os_version']),
          'operatingsystemservicepacks_id' => mt_rand(1, $MAX['os_sp']),
          'license_number'                 => "os sn $i",
-         'license_id'                     => "os id $i",
+         'licenseid'                      => "os id $i",
       ]));
 
       // Add trackings
