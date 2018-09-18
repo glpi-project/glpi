@@ -78,7 +78,7 @@ class Item_OperatingSystem extends DbTestCase {
          'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
          'operatingsystemversions_id'        => $objects['Version']->getID(),
          'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'license_id'                        => $this->getUniqueString(),
+         'licenseid'                         => $this->getUniqueString(),
          'license_number'                    => $this->getUniqueString()
       ];
       $this->integer(
@@ -114,7 +114,7 @@ class Item_OperatingSystem extends DbTestCase {
          'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
          'operatingsystemversions_id'        => $objects['Version']->getID(),
          'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'license_id'                        => $this->getUniqueString(),
+         'licenseid'                         => $this->getUniqueString(),
          'license_number'                    => $this->getUniqueString()
       ];
       $this->integer(
@@ -150,7 +150,7 @@ class Item_OperatingSystem extends DbTestCase {
          'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
          'operatingsystemversions_id'        => $objects['Version']->getID(),
          'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'license_id'                        => $this->getUniqueString(),
+         'licenseid'                         => $this->getUniqueString(),
          'license_number'                    => $this->getUniqueString()
       ];
       $this->integer(
@@ -175,7 +175,7 @@ class Item_OperatingSystem extends DbTestCase {
          'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
          'operatingsystemversions_id'        => $objects['Version']->getID(),
          'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
-         'license_id'                        => $this->getUniqueString(),
+         'licenseid'                         => $this->getUniqueString(),
          'license_number'                    => $this->getUniqueString()
       ];
       $this->integer(
