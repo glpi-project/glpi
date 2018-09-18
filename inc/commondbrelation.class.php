@@ -1858,4 +1858,18 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       return $join;
    }
+
+   /**
+    * Get hidden fields building form
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormHiddenFields($add = false) {
+      $fields = parent::getFormHiddenFields($add);
+      $fields[] = 'itemtype';
+      $fields[] = 'items_id';
+      return $fields;
+   }
 }

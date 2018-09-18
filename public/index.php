@@ -903,7 +903,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                      'sub_item'  => $sub_item
                   ]);
 
-                  //$legacy = false;
                   $params = [];
                   /*$params = $request->getQueryParams() + $args;
                   if (isset($args['reset'])) {
@@ -919,11 +918,37 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                         'item'            => $sub_item
                      ]
                   );
-               } else {
-                  $legacy = true;
                }
                break;
             case CommonGLPI::SUBITEM_SHOW_FORM:
+               /*if ($item instanceof CommonITILObject) {
+                  $tpl = 'itil_add_page';
+               }*/
+               /** FIXME: check if already exists to load right form.
+               $sub_item->getFromDBByCrit([
+               ]);*/
+               $params['glpi_form'] = $sub_item->getAddForm();
+               return $this->view->render(
+                  $response,
+                  'elements/form.twig',
+                  $params
+               );
+
+               /*if (!isset($form['action'])) {
+                  $form['action'] = $this->router->pathFor(
+                     'do-add-asset',
+                     $args
+                  );
+               }*/
+               /*
+               $params['glpi_form'] = $item->getEditForm();
+               if (!isset($params['glpi_form']['action'])) {
+                  $params['glpi_form']['action'] = $this->router->pathFor(
+                     'do-edit-asset',
+                     $args
+                  );
+               }
+               */
                break;
             case CommonDBTM::SUBITEM_SHOW_SPEC:
                break;

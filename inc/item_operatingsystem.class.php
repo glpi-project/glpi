@@ -656,4 +656,49 @@ class Item_OperatingSystem extends CommonDBRelation {
    public function getSubItemDisplay() {
       return self::SUBITEM_SHOW_FORM;
    }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = parent::getFormFields() +  [
+         'operatingsystems_id'         => [
+            'label'  => __('Name')
+         ],
+         'operatingsystemversions_id'    => [
+            'label'  => __('Version')
+         ],
+         'operatingsystemarchitectures_id' => [
+            'label'  => __('Architecture')
+         ],
+         'operatingsystemservicepacks_id'   => [
+            'label'  => __('Service pack')
+         ],
+         'operatingsystemkernelversions_id'  => [
+            'label'  => __('Kernel')
+         ],
+         'operatingsystemeditions_id'   => [
+            'label'  => __('Edition')
+         ],
+         'licenseid' => [
+            'label'  => __('Product ID')
+         ],
+         'license_number'   => [
+            'label'  => __('Serial number')
+         ]
+      ];
+
+      $fields = $this->getDbFormFields($fields);
+
+      return $fields;
+   }
+
 }

@@ -5301,12 +5301,13 @@ class CommonDBTM extends CommonGLPI {
          $this->form_elements[$name] = $form_field;
       }
 
-      foreach ($columns as $column) {
-         $this->form_elements[$column['Field']] = $this->buildFormElement($column, $add);
+      foreach ($this->getFormFieldsToDrop($add) as $field) {
+         //unset($this->form_elements[$field]);
+         unset($columns[$field]);
       }
 
-      foreach ($this->getFormFieldsToDrop($add) as $field) {
-         unset($this->form_elements[$field]);
+      foreach ($columns as $column) {
+         $this->form_elements[$column['Field']] = $this->buildFormElement($column, $add);
       }
 
       /*if ($this->$p['maybeempty'] && $p['canedit']) {
