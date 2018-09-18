@@ -660,7 +660,7 @@ class NetworkEquipment extends CommonDBTM {
       $items_device_joinparams   = ['jointype'          => 'itemtype_item',
                                     'specific_itemtype' => 'NetworkEquipment'];
       $tab[] = [
-         'id'                 => '10',
+         'id'                 => '110',
          'table'              => 'glpi_devicememories',
          'field'              => 'designation',
          'name'               => $name . ' - ' . __('Memory type'),
@@ -677,7 +677,7 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '35',
+         'id'                 => '111',
          'table'              => 'glpi_items_devicememories',
          'field'              => 'size',
          'unit'               => 'auto',
@@ -693,7 +693,7 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '11',
+         'id'                 => '112',
          'table'              => 'glpi_devicenetworkcards',
          'field'              => 'designation',
          'name'               => $name . ' - ' . __('Network interface'),
@@ -709,7 +709,7 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '20',
+         'id'                 => '113',
          'table'              => 'glpi_items_devicenetworkcards',
          'field'              => 'mac',
          'name'               => $name . ' - ' . __('MAC address'),
@@ -720,7 +720,7 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '15',
+         'id'                 => '114',
          'table'              => 'glpi_deviceharddrives',
          'field'              => 'designation',
          'name'               => $name . ' - ' . __('Hard drive type'),
@@ -737,7 +737,7 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '34',
+         'id'                 => '115',
          'table'              => 'glpi_items_deviceharddrives',
          'field'              => 'capacity',
          'name'               => $name . ' - ' . __('Hard drive size'),
@@ -753,7 +753,7 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '39',
+         'id'                 => '116',
          'table'              => 'glpi_devicepowersupplies',
          'field'              => 'designation',
          'name'               => $name . ' - ' . __('Power supply'),
@@ -770,7 +770,7 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '95',
+         'id'                 => '117',
          'table'              => 'glpi_devicepcis',
          'field'              => 'designation',
          'name'               => $name . ' - ' . __('Other component'),
