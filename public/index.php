@@ -1171,7 +1171,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->post('/ajax/dropdown/getvalue/{itemtype:.+}', function ($request, $response, $args) {
       $post = $request->getParsedBody();
       if (!isset($post['itemtype'])) {
-         $post['itemtype'] = $agrs['itemtype'];
+         $post['itemtype'] = $args['itemtype'];
       }
       $values = Dropdown::getDropdownValue($post, false);
       return $response->withJson($values);
