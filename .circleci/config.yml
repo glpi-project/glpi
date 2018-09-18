@@ -39,18 +39,18 @@ shared: &shared
           php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
     - run:
         name: Database tests
-        command: composer testdb
+        command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
     - run:
         name: Functionnal tests
-        command: composer testfunc
+        command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
     - run:
         name: Unit tests
-        command: composer testunits
+        command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
     - run:
         name: WEB tests
         command: |
           php -S localhost:8088 tests/router.php &>/dev/null &
-          composer testweb
+          php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
 #    - run:
 #        name: LDAP tests
 #        command: |
@@ -58,7 +58,7 @@ shared: &shared
 #          composer testldap
     - run:
         name: Coding standards
-        command: if [[ $(php --version|grep "7\.2") ]]; then composer cs; else echo "No CS for this version"; fi
+        command: if [[ $(php --version|grep "7\.2") ]]; then vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./; else echo "No CS for this version"; fi
     - run:
         name: sensiolabs/security-checker
         command: vendor/bin/security-checker security:check
