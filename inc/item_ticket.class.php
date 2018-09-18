@@ -323,7 +323,7 @@ class Item_Ticket extends CommonDBRelation{
                             'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype,
                             'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id},
                      success: function(response) {";
-      $js .= "          $(\"#itemAddForm$rand\").html(response);";
+      $js .= "          $(\"#itemAddForm$rand\").replaceWith(response);";
       $js .= "       }";
       $js .= "    });";
       $js .= " }";
@@ -686,10 +686,7 @@ class Item_Ticket extends CommonDBRelation{
       $already_add = $params['used'];
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, Ticket::HELPDESK_MY_HARDWARE)) {
-         $my_devices = ['' => __('General')];
-         if ($params['tickets_id'] > 0) {
-            $my_devices = ['' => Dropdown::EMPTY_VALUE];
-         }
+         $my_devices = ['' => Dropdown::EMPTY_VALUE];
          $devices    = [];
 
          // My items
