@@ -2145,8 +2145,6 @@ abstract class API extends CommonGLPI {
     * @return void
     */
    public function inlineDocumentation($file) {
-      global $CFG_GLPI;
-
       self::header(true, __("API Documentation"));
       echo Html::css("lib/prism/prism.css");
       echo Html::script("lib/prism/prism.js");
@@ -2289,6 +2287,7 @@ abstract class API extends CommonGLPI {
             $hclasses[] = "Problem_Ticket";
             $hclasses[] = "Change_Ticket";
             $hclasses[] = "Item_Ticket";
+            $hclasses[] = "ITILSolution";
             break;
 
          case 'Problem' :
@@ -2297,6 +2296,7 @@ abstract class API extends CommonGLPI {
             $hclasses[] = "Change_Problem";
             $hclasses[] = "Problem_Ticket";
             $hclasses[] = "Item_Problem";
+            $hclasses[] = "ITILSolution";
             break;
 
          case 'Change' :
@@ -2306,6 +2306,7 @@ abstract class API extends CommonGLPI {
             $hclasses[] = "Change_Problem";
             $hclasses[] = "Change_Ticket";
             $hclasses[] = "Change_Item";
+            $hclasses[] = "ITILSolution";
             break;
 
          case 'Project' :
