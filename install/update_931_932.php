@@ -50,7 +50,6 @@ function update931to932() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.3.2'));
    $migration->setVersion('9.3.2');
 
-
    /** Clean rack/enclosure items corrupted relations */
    $corrupted_criteria = [
       'OR' => [

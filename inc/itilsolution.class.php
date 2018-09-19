@@ -292,7 +292,6 @@ class ITILSolution extends CommonDBChild {
          return false;
       }
 
-
       //default status for global solutions
       $status = CommonITILValidation::ACCEPTED;
       if ($input['itemtype'] == Ticket::getType()) {
