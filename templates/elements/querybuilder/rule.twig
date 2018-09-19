@@ -1,0 +1,14 @@
+<div id="{{= it.rule_id }}" class="rule-container">
+  <div class="rule-header"></div>
+  {{? it.settings.display_errors }}
+    <div class="error-container"><i class="{{= it.icons.error }}"></i></div>
+  {{?}}
+  <div class="rule-filter-container"></div>
+  <div class="rule-operator-container"></div>
+  <div class="rule-value-container"></div>
+  <div class="btn-group rule-actions">
+      <button type="button" class="btn btn-xs btn-danger" data-delete="rule">
+        <i class="{{= it.icons.remove_rule }}" title="{{= it.translate("delete_rule") }}"></i>
+      </button>
+    </div>
+</div>

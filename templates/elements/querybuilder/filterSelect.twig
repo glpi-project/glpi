@@ -1,0 +1,16 @@
+{{ var optgroup = null; }}
+<select class="form-control" name="{{= it.rule.id }}_filter">
+  {{? it.settings.display_empty_filter }}
+    <option value="-1">{{= it.settings.select_placeholder }}</option>
+  {{?}}
+  {{~ it.filters: filter }}
+    {{? optgroup !== filter.optgroup }}
+      {{? optgroup !== null }}</optgroup>{{?}}
+      {{? (optgroup = filter.optgroup) !== null }}
+        <optgroup label="{{= it.translate(it.settings.optgroups[optgroup]) }}">
+      {{?}}
+    {{?}}
+    <option value="{{= filter.id }}" {{? filter.icon}}data-icon="{{= filter.icon}}"{{?}}>{{= it.translate(filter.label) }}</option>
+  {{~}}
+  {{? optgroup !== null }}</optgroup>{{?}}
+</select>

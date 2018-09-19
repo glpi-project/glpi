@@ -1,0 +1,16 @@
+{{ var optgroup = null; }}
+<select class="form-control" name="{{= it.name }}" {{? it.rule.filter.multiple }}multiple{{?}}>
+  {{? it.rule.filter.placeholder }}
+    <option value="{{= it.rule.filter.placeholder_value }}" disabled selected>{{= it.rule.filter.placeholder }}</option>
+  {{?}}
+  {{~ it.rule.filter.values: entry }}
+    {{? optgroup !== entry.optgroup }}
+      {{? optgroup !== null }}</optgroup>{{?}}
+      {{? (optgroup = entry.optgroup) !== null }}
+        <optgroup label="{{= it.translate(it.settings.optgroups[optgroup]) }}">
+      {{?}}
+    {{?}}
+    <option value="{{= entry.value }}">{{= entry.label }}</option>
+  {{~}}
+  {{? optgroup !== null }}</optgroup>{{?}}
+</select>
