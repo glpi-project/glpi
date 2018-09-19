@@ -865,8 +865,6 @@ class Config extends CommonDBTM {
                                      $rand);
       echo "</td>";
 
-
-
       echo "<td><label for='dropdown_documentcategories_id_forticket$rand'>" . __('Default heading when adding a document to a ticket') . "</label></td><td>";
       DocumentCategory::dropdown(['value' => $CFG_GLPI["documentcategories_id_forticket"],
                                   'name'  => "documentcategories_id_forticket",

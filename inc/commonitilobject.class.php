@@ -3371,7 +3371,7 @@ abstract class CommonITILObject extends CommonDBTM {
    public static function getStatusClass($status) {
       $class = null;
       $solid = true;
-      
+
       switch ($status) {
          case self::INCOMING :
             $class = 'circle';
