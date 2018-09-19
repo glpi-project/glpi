@@ -2561,6 +2561,7 @@ class Config extends CommonDBTM {
          $PHPLOGGER->addRecord(Monolog\Logger::WARNING, "Test logger");
          $can_write_logs = true;
       } catch (\UnexpectedValueException $e) {
+         $catched = true;
          //empty catch
       }
 

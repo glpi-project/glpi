@@ -374,7 +374,6 @@ class Document extends DbTestCase {
          ])
       )->isGreaterThan(0);
 
-
       $kbItem = new \KnowbaseItem();
       $this->integer(
          (int)$kbItem->add([
