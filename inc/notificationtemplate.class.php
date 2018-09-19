@@ -470,7 +470,7 @@ class NotificationTemplate extends CommonDBTM {
       foreach ($data as $tag => $value) {
          if (is_array($value)) {
             $dataForHtml[$tag] = self::getDataForHtml($target, $value);
-         } elseif (!in_array($tag, $target->html_tags)) {
+         } else if (!in_array($tag, $target->html_tags)) {
             $dataForHtml[$tag] = Html::nl2br_deep(Html::entities_deep($value));
          } else {
             $dataForHtml[$tag] = $value;

@@ -58,7 +58,7 @@ shared: &shared
 #          composer testldap
     - run:
         name: Coding standards
-        command: php --version|grep "7\.2" > /dev/null && composer cs || echo "No CS for this version"
+        command: if [[ $(php --version|grep "7\.2") ]]; then composer cs; else echo "No CS for this version"; fi
     - run:
         name: sensiolabs/security-checker
         command: vendor/bin/security-checker security:check

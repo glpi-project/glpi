@@ -745,7 +745,6 @@ class Document extends CommonDBTM {
          ]
       ])->next();
 
-
       if ($result['cpt'] > 0) {
          return true;
       }
