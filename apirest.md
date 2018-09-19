@@ -6,6 +6,7 @@
 * [Important](#important)
 * [Init session](#init-session)
 * [Kill session](#kill-session)
+* [Forgot Password](#forgot-password)
 * [Get my profiles](#get-my-profiles)
 * [Get active profile](#get-active-profile)
 * [Change active profile](#change-active-profile)
@@ -165,6 +166,38 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/killSession'
 
 < 200 OK
+```
+
+## Forgot password
+
+* **URL**: apirest.php/lostPassword/
+* **Description**: Retrieve lost password.
+* **Method**: PUT
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *Content-Type*: application/json
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+
+Example usage (CURL):
+
+```bash
+$ curl -X PUT \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-H "Content-Type: application/json" \
+-d '{
+	"email": "your_email_registered_in_glpi@email.com"
+} \
+'http://path/to/glpi/apirest.php/lostPassword'
+
+< 200 OK
+[
+    "An email has been sent to your email address. The email contains information for reset your password."
+]
 ```
 
 ## Get my profiles
