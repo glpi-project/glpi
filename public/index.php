@@ -921,13 +921,47 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                }
                break;
             case CommonGLPI::SUBITEM_SHOW_FORM:
+               $getcrit = [];
+               if ($sub_item instanceof CommonDBRelation) {
+                  if ($item->getType() == $sub_item::$itemtype_1) {
+                     $getcrit = [
+                        $sub_item::$items_id_1  => $item->fields['id']
+                     ];
+                  } else if ($item->getType() == $sub_item::$itemtype_2) {
+                     $getcrit = [
+                        $sub_item::$items_id_2  => $item->fields['id']
+                     ];
+                  } else {
+                     $getcrit = [
+                        'itemtype'  => $item->getType(),
+                        'items_id'  => $item->fields['id']
+                     ];
+                  }
+               } else if ($sub_item instanceof CommonDBChild) {
+                  if ($item->getType() == $sub_item::$itemtype) {
+                     $getcrit = [
+                        $sub_item::$items_id => $item->fields['id']
+                     ];
+                  } else {
+                     $getcrit = [
+                        'itemtype'  => $item->getType(),
+                        'items_id'  => $item->fields['id']
+                     ];
+                  }
+               }
+
+               $sub_item->getFromDBByCrit($getcrit);
                /*if ($item instanceof CommonITILObject) {
                   $tpl = 'itil_add_page';
                }*/
                /** FIXME: check if already exists to load right form.
                $sub_item->getFromDBByCrit([
                ]);*/
-               $params['glpi_form'] = $sub_item->getAddForm();
+               if ($sub_item->isNewItem()) {
+                  $params['glpi_form'] = $sub_item->getAddForm();
+               } else {
+                  $params['glpi_form'] = $sub_item->getEditForm();
+               }
                return $this->view->render(
                   $response,
                   'elements/form.twig',
