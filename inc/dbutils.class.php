@@ -272,9 +272,9 @@ final class DbUtils {
             $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
             return $itemtype;
          }
-         throw new \RuntimeException(
+         /*throw new \RuntimeException(
             sprintf('Cannot find itemtype for table "%s"', $table)
-         );
+         );*/
          return "UNKNOWN";
       }
    }
