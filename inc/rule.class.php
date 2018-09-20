@@ -212,12 +212,12 @@ class Rule extends CommonDBTM {
                $menu['rule']['options'][$rulecollection->menu_option]['title']
                               = $rulecollection->getRuleClass()->getTitle();
                $menu['rule']['options'][$rulecollection->menu_option]['page']
-                              = Toolbox::getItemTypeSearchURL($ruleclassname, false);
+                              = $ruleclassname::getSearchURL(false);
                $menu['rule']['options'][$rulecollection->menu_option]['links']['search']
-                              = Toolbox::getItemTypeSearchURL($ruleclassname, false);
+                              = $ruleclassname::getSearchURL(false);
                if ($rulecollection->canCreate()) {
                   $menu['rule']['options'][$rulecollection->menu_option]['links']['add']
-                              = Toolbox::getItemTypeFormURL($ruleclassname, false);
+                              = $ruleclassname::getFormURL(false);
                }
             }
          }
@@ -2839,8 +2839,8 @@ class Rule extends CommonDBTM {
                echo "<td width='10'>";
                Html::showMassiveActionCheckBox(__CLASS__, $rule->fields["id"]);
                echo "</td>";
-               echo "<td><a href='".Toolbox::getItemTypeFormURL(get_class($this))."?id=" .
-                      $rule->fields["id"] . "&amp;onglet=1'>" .$rule->fields["name"] ."</a></td>";
+               echo "<td><a href='".$this->getFormURLWithID($rule->fields["id"])
+                                   . "&amp;onglet=1'>" .$rule->fields["name"] ."</a></td>";
 
             } else {
                echo "<td>" . $rule->fields["name"] . "</td>";

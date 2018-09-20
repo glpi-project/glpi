@@ -144,7 +144,7 @@ abstract class CommonDBVisible extends CommonDBTM {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='{$str_type}visibility_form$rand' id='{$str_type}visibility_form$rand' ";
-         echo " method='post' action='".Toolbox::getItemTypeFormURL($this::getType())."'>";
+         echo " method='post' action='".static::getFormURL()."'>";
          echo "<input type='hidden' name='{$str_type}s_id' value='$ID'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";

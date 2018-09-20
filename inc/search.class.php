@@ -4952,11 +4952,9 @@ class Search {
                if (isset($data[$num][0]['content'])
                    && isset($data[$num][0]['id'])
                    && isset($data[$num][0]['status'])) {
-                  $link = Toolbox::getItemTypeFormURL($itemtype);
+                  $link = $itemtype::getFormURLWithID($data[$num][0]['id']);
 
                   $out  = "<a id='$itemtype".$data[$num][0]['id']."' href=\"".$link;
-                  $out .= (strstr($link, '?') ?'&amp;' :  '?');
-                  $out .= 'id='.$data[$num][0]['id'];
                   // Force solution tab if solved
                   if ($item = getItemForItemtype($itemtype)) {
                      if (in_array($data[$num][0]['status'], $item->getSolvedStatusArray())) {

@@ -413,8 +413,8 @@ class Computer_Item extends CommonDBRelation{
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
-            $link = Toolbox::getItemTypeFormURL($itemtype);
-            $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
+            $link = $itemtype::getFormURLWithID($data["id"]);
+            $name = "<a href=\"".$link."\">".$linkname."</a>";
 
             echo "<tr class='tab_bg_1'>";
 
