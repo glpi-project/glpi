@@ -158,7 +158,8 @@ class CommonGLPI {
          'Link'               => 'link_types',
          'Certificate_Item'   => 'certificate_types',
          'Lock'               => 'lock_lockable_objects',
-         'Reservation'        => 'reservation_types'
+         'Reservation'        => 'reservation_types',
+         'Computer_Item'      => 'directconnect_types'
       ];
 
       foreach ($guess_relations as $class => $conf) {
