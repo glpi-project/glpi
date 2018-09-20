@@ -852,6 +852,32 @@ abstract class CommonDBChild extends CommonDBConnexity {
    }
 
    /**
+    * Add default where for search
+    *
+    * @since 9.4
+    *
+    * @param CommonDBTM $item Item instance
+    * @param boolean    $self Condition is to add on current object itself
+    *
+    * @return array
+    */
+   public static function addSubDefaultWhere(CommonDBTM $item, $self = false) {
+      global $DB;
+
+      $item_type  = $item->getType();
+      $where_id   = static::$items_id;
+
+      $current_table = static::getTable();
+      $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype') && $self === false) {
+         $condition .= ' AND ' . $current_table . '.itemtype = "' . $DB->escape($item_type) . '"';
+      }
+
+      return $condition;
+   }
+
+   /**
     * Get hidden fields building form
     *
     * @param boolean $add Add or update

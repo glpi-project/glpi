@@ -500,7 +500,7 @@ class Search {
       $data             = [];
       $data['search']   = $p;
       $data['real_itemtype'] = $itemtype;
-      if ($sub_item && $sub_item['sub_item']->getType() == $itemtype) {
+      if ($sub_item && $sub_item['sub_item'] instanceof CommonDBRelation && $sub_item['sub_item']->getType() == $itemtype) {
          $itemtype = 'AllAssets';
       }
       $data['itemtype'] = $itemtype;
@@ -545,7 +545,7 @@ class Search {
       if (!$forcetoview) {
          // Add items to display depending of personal prefs
          $pref_itemtype = $itemtype;
-         if ($sub_item && $sub_item['sub_item']->getType() == $itemtype) {
+         if ($sub_item && $sub_item['sub_item'] instanceof CommonDBRelation && $sub_item['sub_item']->getType() == $itemtype) {
             $pref_itemtype = 'AllAssets';
          }
          $displaypref = DisplayPreference::getForTypeUser(

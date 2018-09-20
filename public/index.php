@@ -934,8 +934,25 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                      ]
                   );
                } else if ($sub_item instanceof CommonDBChild) {
-                  //TODO...
-                  throw new \RuntimeException('Not done yet :(');
+                  $params = $request->getQueryParams() + $args;
+
+                  $search = new Search($sub_item, $params);
+                  if (isset($args['page'])) {
+                     $search->setPage((int)$args['page']);
+                  }
+                  $data = $search->getData([
+                     'item'      => $item,
+                     'sub_item'  => $sub_item
+                  ]);
+                  echo $data['sql']['search'];
+
+                  return $this->view->render(
+                     $response,
+                     'list_contents.twig', [
+                        'search_data'     => $data,
+                        'item'            => $sub_item
+                     ]
+                  );
                }
                break;
             case CommonGLPI::SUBITEM_SHOW_FORM:
