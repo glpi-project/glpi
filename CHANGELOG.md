@@ -13,6 +13,9 @@ The present file will list all changes made to the project; according to the
 
 ### API changes
 
+#### Changes
+- Plugins are now loaded in ajax files.
+
 #### Deprecated
 
 - Remove `$CFG_GLPI['use_rich_text']` parameter. Will now be `true` per default.
