@@ -875,34 +875,67 @@ $ curl -X GET \
   * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
 * **Parameters**: (query string)
   * *criteria*: array of criterion objects to filter search. Optional.
-      Each criterion object must provide:
-        * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
-        * *field*: id of the searchoption.
-        * *searchtype*: type of search in [contains¹, equals², notequals², lessthan, morethan, under, notunder].
-        * *value*: the value to search.
+    You can optionally precise `meta=true` to pass a searchoption of another itemtype (meta-criteria).
+    Each criterion object must provide at least:
+      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+
+      And you can pass a direct searchoption usage :
+
+      * *field*: id of the searchoption.
+      * *meta*: boolean, is this criterion a meta one ?
+      * *itemtype*: for meta=true criterion, precise the itemtype to use.
+      * *searchtype*: type of search in [contains¹, equals², notequals², lessthan, morethan, under, notunder].
+      * *value*: the value to search.
+
+      Or a list of sub-nodes with the key:
+
+      * *criteria*: nested criteria inside this criteria.
 
       Ex:
 
-         ```javascript
-         ...
-         "criteria":
-            [
-               {
-                  "field":      1,
-                  "searchtype": 'contains',
-                  "value":      ''
-               }, {
-                  "link":       'AND',
-                  "field":      31,
-                  "searchtype": 'equals',
-                  "value":      1
-                }
-            ]
-         ...
-         ```
+      ```javascript
+      ...
+      "criteria":
+         [
+            {
+               "field":      1,
+               "searchtype": 'contains',
+               "value":      ''
+            }, {
+               "link":       'AND',
+               "field":      31,
+               "searchtype": 'equals',
+               "value":      1
+            }, {
+               "link":       'AND',
+               "meta":       true,
+               "itemtype":   'User',
+               "field":      1,
+               "searchtype": 'equals',
+               "value":      1
+            }, {
+               "link":       'AND',
+               "criteria" : [
+                  {
+                     "field":      34,
+                     "searchtype": 'equals',
+                     "value":      1
+                  }, {
+                     "link":       'OR',
+                     "field":      35,
+                     "searchtype": 'equals',
+                     "value":      1
+                  }
+               ]
+            }
+         ]
+      ...
+      ```
 
   * *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.
-                                 A meta search is a link with another itemtype (ex: Computer with softwares).
+                                 A meta search is a link with another itemtype (ex: Computer with softwares).  
+      **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
+
       Each meta-criterion object must provide:
         * *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
         * *itemtype*: second itemtype to link.
@@ -912,26 +945,26 @@ $ curl -X GET \
 
       Ex:
 
-         ```javascript
-         ...
-         "metacriteria":
-            [
-               {
-                  "link":       'AND',
-                  "itemtype":   'Monitor',
-                  "field":      2,
-                  "searchtype": 'contains',
-                  "value":      ''
-               }, {
-                  "link":       'AND',
-                  "itemtype":   'Monitor',
-                  "field":      3,
-                  "searchtype": 'contains',
-                  "value":      ''
-                }
-            ]
-         ...
-         ```
+      ```javascript
+      ...
+      "metacriteria":
+         [
+            {
+               "link":       'AND',
+               "itemtype":   'Monitor',
+               "field":      2,
+               "searchtype": 'contains',
+               "value":      ''
+            }, {
+               "link":       'AND',
+               "itemtype":   'Monitor',
+               "field":      3,
+               "searchtype": 'contains',
+               "value":      ''
+             }
+         ]
+      ...
+      ```
 
   * *sort* (default 1): id of the searchoption to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
@@ -953,29 +986,29 @@ $ curl -X GET \
 * **Returns**:
   * 200 (OK) with all rows data with this format:
 
-   ```javascript
-      {
-          "totalcount": ":numberofresults_without_pagination",
-          "range": ":start-:end",
-          "data": {
-              ":items_id": {
-                  ":searchoptions_id": "value",
-                  ...
-              },
-              ":items_id": {
-               ...
-             }
-         },
-         "rawdata": {
-            ...
-         }
-      }
-   ```
+     ```javascript
+        {
+            "totalcount": ":numberofresults_without_pagination",
+            "range": ":start-:end",
+            "data": {
+                ":items_id": {
+                    ":searchoptions_id": "value",
+                    ...
+                },
+                ":items_id": {
+                 ...
+               }
+           },
+           "rawdata": {
+              ...
+           }
+        }
+     ```
 
   * 206 (PARTIAL CONTENT) with rows data (pagination doesn't permit to display all rows).
   * 401 (UNAUTHORIZED).
 
-   and theses headers:
+      and theses headers:
       * *Content-Range* offset – limit / count
       * *Accept-Range* itemtype max
 

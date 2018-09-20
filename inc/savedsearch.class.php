@@ -502,7 +502,9 @@ class SavedSearch extends CommonDBTM {
                unset($query_tab['criteria']);
                $new_key = 0;
                foreach ($query_tab_save['criteria'] as $key => $val) {
-                  if (($val['field'] != 'view') && ($val['field'] != 'all')
+                  if (isset($val['field'])
+                      && $val['field'] != 'view'
+                      && $val['field'] != 'all'
                       && (!isset($opt[$val['field']])
                           || (isset($opt[$val['field']]['nosearch'])
                               && $opt[$val['field']]['nosearch']))) {
@@ -923,7 +925,7 @@ class SavedSearch extends CommonDBTM {
                   Toolbox::logError($e);
                   $data = false;
                }
-               if ($data) {
+               if (isset($data['data']['totalcount'])) {
                   $count = $data['data']['totalcount'];
                } else {
                   $info_message = ($this->fields['do_count'] == self::COUNT_NO)
