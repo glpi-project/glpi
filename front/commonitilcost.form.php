@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s purges a cost'), $_SESSION["glpiname"]));
    }
-   Html::redirect(Toolbox::getItemTypeFormURL($itemtype).'?id='.$cost->fields[$fk]);
+   Html::redirect($itemtype::getFormURLWithID($cost->fields[$fk]));
 
 } else if (isset($_POST["update"])) {
    $cost->check($_POST["id"], UPDATE);

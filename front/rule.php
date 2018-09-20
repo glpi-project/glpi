@@ -51,7 +51,8 @@ foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
          $title = $rulecollection->getTitle();
       }
       echo "<tr class='tab_bg_1'><td class='center b'>";
-      echo "<a href='".Toolbox::getItemTypeSearchURL($rulecollection->getRuleClassName())."'>";
+      $ruleClassName = $rulecollection->getRuleClassName();
+      echo "<a href='".$ruleClassName::getSearchURL()."'>";
       echo $title."</a></td></tr>";
    }
 }

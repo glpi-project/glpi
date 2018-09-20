@@ -268,9 +268,8 @@ class Certificate_Item extends CommonDBRelation {
                      $ID = " (" . $data["id"] . ")";
                   }
 
-                  $link = Toolbox::getItemTypeFormURL($itemtype);
-                  $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
-                     . $data["name"] . "$ID</a>";
+                  $link = $itemtype::getFormURLWithID($data["id"]);
+                  $name = "<a href=\"" . $link . "\">" . $data["name"] . "$ID</a>";
 
                   echo "<tr class='tab_bg_1'>";
 

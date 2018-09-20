@@ -571,7 +571,7 @@ class AuthLDAP extends CommonDBTM {
                                                $ldap_replicate["port"]);
             echo "</td>";
             echo "<td class='center'>";
-            Html::showSimpleForm(Toolbox::getItemTypeFormURL(self::getType()),
+            Html::showSimpleForm(static::getFormURL(),
                                  'test_ldap_replicate', _sx('button', 'Test'),
                                  ['id'                => $ID,
                                        'ldap_replicate_id' => $ldap_replicate["id"]]);

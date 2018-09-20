@@ -1517,8 +1517,9 @@ class KnowbaseItem extends CommonDBVisible {
                   } else {
                      $forcetab .= '$1'; //Timeline tab
                   }
-                  $content = "<a href='".Toolbox::getItemTypeFormURL($options['item_itemtype']).
-                               "?load_kb_sol=".$data['id']."&amp;id=".$options['item_items_id'].
+                  $item_itemtype = $options['item_itemtype'];
+                  $content = "<a href='".$item_itemtype::getFormURLWithID($options['item_items_id']).
+                               "&amp;load_kb_sol=".$data['id'].
                                "&amp;forcetab=".$forcetab."'>".
                                __('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);

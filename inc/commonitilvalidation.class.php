@@ -733,8 +733,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $rand   = mt_rand();
 
       if ($canadd) {
-         echo "<form method='post' name=form action='".
-                Toolbox::getItemTypeFormURL(static::$itemtype)."'>";
+         $itemtype = static::$itemtype;
+         echo "<form method='post' name=form action='".$itemtype::getFormURL()."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
