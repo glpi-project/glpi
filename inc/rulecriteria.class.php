@@ -630,7 +630,7 @@ class RuleCriteria extends CommonDBChild {
                   " onClick=\"".Html::jsGetElementbyID('addcriterion'.$rand).".dialog('open');\">".
                   "<span class='sr-only'>" . __s('Add a criterion') . "</span></span>";
          Ajax::createIframeModalWindow('addcriterion'.$rand,
-                                       Toolbox::getItemTypeFormURL($itemtype),
+                                       $itemtype::getFormURL(),
                                        ['reloadonclose' => true]);
       }
 
