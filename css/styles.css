@@ -532,13 +532,27 @@ span.vsubmit, a.vsubmit {
    display: inline-block;
 }
 
-input.submit:hover,
-a.vsubmit:hover {
+.secondary {
+   padding: 5px;
+   cursor:pointer;
+   height: auto;
+   font: bold 12px Arial, Helvetica;
+   color: #5F5F5F;
+   background-color: #E6E6E6;
+   border: 0;
+   white-space: nowrap;
+   display: inline-block;
+   vertical-align: middle;
+}
+
+.submit:hover,
+.vsubmit:hover,
+.secondary:hover {
    opacity: .9;
    box-shadow: 0px 1px 1px #999;
 }
 
-input.submit[type=reset] {
+.submit[type=reset] {
    background-color: transparent;
    margin-left: .5em;
 }
@@ -1295,23 +1309,75 @@ td.rotate {
    background-color: inherit;
 }
 
-#searchcriterias .tab_cadre_fixe {
+#searchcriteria {
    margin-top: 10px;
    background-color: #FFF;
    width: 80%;
+   margin: 0 auto;
    box-shadow: 0px 1px 2px 1px #D2D2D2;
    border-radius: 5px;
-}
-#searchcriterias .tab_bg_1 {
-   background-color: inherit;
+   padding: 10px;
 }
 
-#searchcriterias .switch {
+#searchcriteria.sub_criteria {
+   display: inline-block;
+   border-radius: 2px;
+   width: 100%;
+   margin-left: 7px;
+   box-shadow: none;
+   border: 1px solid #DDD;
+   background-color: rgba(0, 0, 0, .015);
+}
+
+#searchcriteria .normalcriteria,
+#searchcriteria .metacriteria {
+   margin: 10px;
+   display: flex;
+   flex-wrap: nowrap;
+   justify-content: flex-start;
+   align-items: center;
+   align-content: flex-start;
+}
+
+#searchcriteria .normalcriteria *,
+#searchcriteria .metacriteria * {
+   white-space: nowrap;
+}
+
+@media screen and (max-width: 700px) {
+   #searchcriteria {
+      width: 95%;
+   }
+
+   #searchcriteria .normalcriteria,
+   #searchcriteria .metacriteria {
+      display: block;
+   }
+
+   #searchcriteria .normalcriteria *,
+   #searchcriteria .metacriteria * {
+      white-space: normal;
+   }
+}
+
+#searchcriteria .metacriteria {
+   flex-wrap: wrap;
+}
+#searchcriteria .metacriteria blockquote {
+   flex-basis: 100%;
+   margin: 0 10px;
+}
+
+#searchcriteria .switch {
    opacity: .7;
 }
 
-#searchcriterias .switch:hover {
+#searchcriteria .switch:hover {
    opacity: 1;
+}
+
+.search_actions > * {
+   margin: 0 3px;
 }
 
 .reset-search, .reset-search:link {
@@ -4285,36 +4351,21 @@ tr.log_history_filter_row .select2-container--default .select2-selection--multip
       box-sizing: border-box;
    }
 
-   #searchcriterias table {
-      border-collapse: collapse;
-   }
-
-   #searchcriterias .tab_cadre_fixe  {
-      width: 100%;
-   }
-
-   .mceToolbar,
-   #image_paste {
+   .mceToolbar, #image_paste {
       display: none;
    }
 
-   #searchcriterias .tab_cadre_fixe {
-      display: block;
+   #searchcriteria ul {
+      border-collapse: collapse;
       width: 100%;
    }
-   #searchcriterias .metacriteria td,
-   #searchcriterias .normalcriteria td {
-      display: inline-block;
-      float: left;
-      white-space: nowrap;
-      width: initial !important;
-   }
-   #searchcriterias .metacriteria,
-   #searchcriterias .normalcriteria {
+
+   #searchcriteria .metacriteria,
+   #searchcriteria .normalcriteria {
       clear: left;
       display: block;
       width: 100%;
-      margin-bottom: 6px;
+      margin: 6px;
       overflow: auto;
    }
 
@@ -4482,7 +4533,8 @@ td.diff del {
 }
 
 .fa.bookmark_record, .fa.bookmark_record:link,
-   .fa.reset-search,  .fa.reset-search:link{
+.fa.reset-search, .fa.reset-search:link,
+.fa.fold-search, .fa.fold-search:link {
    font-size: 1.5em;
    color: #ccc!important;
 }
@@ -4493,7 +4545,8 @@ td.diff del {
 }
 
 .fa.reset-search:hover,
-.fa.bookmark_record.save:hover {
+.fa.bookmark_record.save:hover,
+.fa.fold-search:hover {
    color: #999!important;
 }
 
