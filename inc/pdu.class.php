@@ -223,6 +223,14 @@ class PDU extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_pdutypes',
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'serial',
