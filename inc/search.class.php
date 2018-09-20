@@ -2356,11 +2356,11 @@ class Search {
          }
 
          if ($p['showreset']) {
-            echo "<a class='fa fa-undo reset-search' href='"
+            echo "<a href='"
                .$p['target']
                .(strpos($p['target'], '?') ? '&amp;' : '?')
                ."reset=reset' title=\"".__s('Blank')."\"
-               ><span class='sr-only'>" . __s('Blank')  ."</span></a>";
+               ><i class='fa fa-undo reset-search'></i><span class='sr-only'>" . __s('Blank')  ."</span></a>";
          }
          echo "</td>";
       }

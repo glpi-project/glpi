@@ -19,8 +19,7 @@
 }
 
 .fa.bookmark_record, .fa.bookmark_record:link,
-   .fa.reset-search,  .fa.reset-search:link{
-   font-size: 1.5em;
+.fa.reset-search,  .fa.reset-search:link {
    color: #ccc!important;
 }
 
