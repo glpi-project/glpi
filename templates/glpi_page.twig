@@ -518,9 +518,8 @@ permit_select_parent	0
          });
       }
 
-      $(function() {
-        _bindSimpleSelect('.forSelect2:not([data-ajax_url])');
-         $('.forSelect2[data-ajax_url]').select2(
+      var _bindAjaxSelect = function(elt) {
+         $(elt).select2(
             _select2_ajax
          ).on("change", function (e) {
              var _this = $(this);
@@ -528,8 +527,14 @@ permit_select_parent	0
                  return window[_this.data('change_func')](_this, e);
              }
          });
+      }
 
-         $('label').on(
+      var _bindLabelSelect = function(parent) {
+         if (typeof parent == undefined) {
+            parent = '';
+         }
+
+         $(parent + 'label').on(
             'click', function(){
                var _this = $(this);
                if (_next = _this.next('.forSelect2')) {
@@ -537,6 +542,12 @@ permit_select_parent	0
                }
             }
          );
+      }
+
+      $(function() {
+         _bindSimpleSelect('.forSelect2:not([data-ajax_url])');
+         _bindAjaxSelect('.forSelect2[data-ajax_url]');
+         _bindLabelSelect();
 
          $('#global_entity_select').on('click', function() {
             createModalWindow(

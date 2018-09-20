@@ -97,6 +97,11 @@
          if (!_loaded) {
             _target.load(_url, function(){
                _target.data('loaded', true);
+
+               _bindSimpleSelect(_tabid + ' .forSelect2:not([data-ajax_url])');
+               _bindAjaxSelect(_tabid + ' .forSelect2[data-ajax_url]');
+               _bindLabelSelect(_tabid);
+
                _this.tab('show');
             });
          } else {
