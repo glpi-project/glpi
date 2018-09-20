@@ -148,6 +148,7 @@ class DisplayPreference extends CommonDBTM {
       if ($sub_item === true
          && !count($user_prefs)
          && !count($default_prefs)
+         && $itemtype != 'AllAssets'
       ) {
          $rel = new $itemtype;
          if ($rel->maybeDynamic()) {

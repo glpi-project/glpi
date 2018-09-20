@@ -71,10 +71,10 @@ class Search {
    /**
     * Constructor
     *
-    * @param CommonDBTM $item   Item instance
-    * @param array      $params Search parameters
+    * @param CommonDBTM|null $item   Item instance
+    * @param array           $params Search parameters
     */
-   public function __construct(CommonDBTM $item, array $params) {
+   public function __construct($item, array $params) {
       $this->item = $item;
       $this->raw_params = $params;
    }
@@ -108,17 +108,18 @@ class Search {
     */
    public function getData($sub_item = false) {
       $this->sub_item = $sub_item;
-      $params = self::manageParams($this->item->getType(), $this->raw_params);
+      $itemtype = ($this->item instanceof CommonDBTM ? $this->item->getType() : 'AllAssets');
+      $params = self::manageParams($itemtype, $this->raw_params);
       if ($params['as_map'] == 1) {
          $params['criteria'][] = [
             'link'         => 'AND NOT',
-            'field'        => ($this->item->getType() == 'Location') ? 21 : 998,
+            'field'        => ($itemtype == 'Location') ? 21 : 998,
             'searchtype'   => 'contains',
             'value'        => 'NULL'
          ];
          $params['criteria'][] = [
             'link'         => 'AND NOT',
-            'field'        => ($this->item->getType() == 'Location') ? 20 : 999,
+            'field'        => ($itemtype == 'Location') ? 20 : 999,
             'searchtype'   => 'contains',
             'value'        => 'NULL'
          ];
@@ -128,7 +129,7 @@ class Search {
          $this->current_page = 1;
       }
 
-      $data = self::prepareDatasForSearch($this->item->getType(), $params, [], $this->sub_item);
+      $data = self::prepareDatasForSearch($itemtype, $params, [], $this->sub_item);
       self::constructSQL($data, $this->sub_item);
       self::constructData($data);
 
@@ -498,6 +499,10 @@ class Search {
 
       $data             = [];
       $data['search']   = $p;
+      $data['real_itemtype'] = $itemtype;
+      if ($sub_item && $sub_item['sub_item']->getType() == $itemtype) {
+         $itemtype = 'AllAssets';
+      }
       $data['itemtype'] = $itemtype;
 
       // Instanciate an object to access method
@@ -539,8 +544,12 @@ class Search {
       $data['toview'] = self::addDefaultToView($itemtype, $params);
       if (!$forcetoview) {
          // Add items to display depending of personal prefs
+         $pref_itemtype = $itemtype;
+         if ($sub_item && $sub_item['sub_item']->getType() == $itemtype) {
+            $pref_itemtype = 'AllAssets';
+         }
          $displaypref = DisplayPreference::getForTypeUser(
-            $itemtype,
+            $pref_itemtype,
             Session::getLoginUserID(),
             $sub_item !== false
          );
@@ -680,9 +689,9 @@ class Search {
       $COMMONLEFTJOIN = self::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
 
       $itemtype = $data['itemtype'];
-      if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultJoin')) {
+      if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultJoin') && $sub_item['sub_item']->getType() !== $itemtype) {
          $sub = $sub_item['sub_item'];
-         $COMMONLEFTJOIN .= $sub::addSubDefaultJoin($sub_item['item']);
+         $COMMONSUBLEFTJOIN = $sub::addSubDefaultJoin($sub_item['item']);
       }
 
       $FROM          .= $COMMONLEFTJOIN;
@@ -717,9 +726,13 @@ class Search {
       //// 3 - WHERE
 
       // default string
+      $COMMONWHERE = '';
       if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultWhere')) {
          $sub = $sub_item['sub_item'];
-         $COMMONWHERE = $sub::addSubDefaultWhere($sub_item['item']);
+         $COMMONSUBWHERE = $sub::addSubDefaultWhere(
+            $sub_item['item'],
+            $sub_item['sub_item']->getType() == $data['real_itemtype']
+         );
       } else {
          $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
       }
@@ -1027,10 +1040,11 @@ class Search {
             $count = "count(DISTINCT `$itemtable`.`id`)";
          }
          // request currentuser for SQL supervision, not displayed
-         $query_num = "SELECT $count,
+         $query_num_select = "SELECT $count,
                               '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser
                        FROM `$itemtable`".
                        $COMMONLEFTJOIN;
+         $query_num = '';
 
          $first     = true;
 
@@ -1056,6 +1070,16 @@ class Search {
                      $query_num  = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                                $ctable, $tmpquery);
                      $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
+
+                     if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubSelect')) {
+                        $sub = $sub_item['sub_item'];
+                        $sub_select = $sub::addSubSelect(
+                           $sub_item['item'],
+                           $ctype
+                        );
+                        $query_num .= "AND $ctable.id IN ($sub_select)";
+                     }
+
                      $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
 
                      // Add deleted if item have it
@@ -1085,18 +1109,24 @@ class Search {
                                               $replace, $tmpquery);
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                               $ctable, $query_num);
-
                   }
                   $query_num = str_replace("ENTITYRESTRICT",
                                            getEntitiesRestrictRequest('', $ctable, '', '',
                                                                       $citem->maybeRecursive()),
                                            $query_num);
-                  $data['sql']['count'][] = $query_num;
+
+                  $data['sql']['count'][] = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
+                                               $ctable, $query_num_select) . $query_num;
                }
             }
 
          } else {
-            $data['sql']['count'][] = $query_num;
+            $query_num_select .= $COMMONSUBLEFTJOIN;
+            if (!empty($COMMONSUBWHERE)) {
+               $query_num .= (!empty($query_num) ? ' AND ( '.$COMMONSUBWHERE.' )':$COMMONSUBWHERE);
+            }
+
+            $data['sql']['count'][] = $query_num_select . $query_num;
          }
       }
 
@@ -1112,6 +1142,11 @@ class Search {
             $WHERE = ' WHERE '.$WHERE.' ';
          }
          $first = false;
+      }
+
+      $NOSUBWHERE = $WHERE;
+      if (!empty($COMMONSUBWHERE)) {
+         $WHERE .= (!empty($WHERE) ? ' AND ( '.$COMMONSUBWHERE.' )':$COMMONSUBWHERE);
       }
 
       if (!empty($HAVING)) {
@@ -1134,9 +1169,16 @@ class Search {
                $tmpquery = "";
                // AllAssets case
                if ($data['itemtype'] == 'AllAssets') {
-                  $tmpquery = $SELECT.", '$ctype' AS TYPE ".
-                              $FROM.
-                              $WHERE;
+                  $tmpquery = "$SELECT, '$ctype' AS TYPE $FROM $NOSUBWHERE";
+
+                  if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubSelect')) {
+                     $sub = $sub_item['sub_item'];
+                     $sub_select = $sub::addSubSelect(
+                        $sub_item['item'],
+                        $ctype
+                     );
+                     $tmpquery .= "AND $ctable.id IN ($sub_select)";
+                  }
 
                   $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
 
@@ -1164,7 +1206,7 @@ class Search {
                                       `$reftable`.`id` AS refID, "."
                                       `$ctable`.`entities_id` AS ENTITY ".
                               $FROM.
-                              $WHERE;
+                              (strpos($QUERY, 'UNION') === false ? $WHERE : $NOSUBWHERE);
                   if ($data['item']->maybeDeleted()) {
                      $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
                                                 `is_deleted`",
@@ -1203,6 +1245,7 @@ class Search {
       } else {
          $QUERY = $SELECT.
                   $FROM.
+                  $COMMONSUBLEFTJOIN.
                   $WHERE.
                   $GROUPBY.
                   $HAVING.

@@ -880,19 +880,34 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                      $params['start'] = ($args['page'] - 1) * $_SESSION['glpilist_limit'];
                   }*/
 
-                  $inverse = $item->getType() == $sub_item::$itemtype_1;
+                  if ($item->getType() == $sub_item::$itemtype_1) {
+                     $link_type = $sub_item::$itemtype_2;
+                  } else if ($item->getType() == $sub_item::$itemtype_2) {
+                     $link_type = $sub_item::$itemtype_1;
+                  } else {
+                     $link_type = ($sub_item::$itemtype_1 != 'itemtype' ? $sub_item::$itemtype_1 : $sub_item::$itemtype_2);
+                  }
+
+                  /*$inverse = $item->getType() == $sub_item::$itemtype_1;
                   $link_type  = $sub_item::$itemtype_1;
                   if ($inverse === true) {
                      $link_type  = $sub_item::$itemtype_2;
                      if ($link_type == 'itemtype') {
+                        $link_type = $item->getType();
                         if ($itemtype != null) {
                            $link_type  = $itemtype;
                         } else {
                            $link_type = $item->getType();
                         }
                      }
+                  }*/
+
+                  $getparams = [];
+                  if ($link_type != 'itemtype') {
+                     $link = new $link_type;
+                  } else {
+                     $link = $sub_item;
                   }
-                  $link = new $link_type;
 
                   $search = new Search($link, $params);
                   if (isset($args['page'])) {
@@ -918,6 +933,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                         'item'            => $sub_item
                      ]
                   );
+               } else if ($sub_item instanceof CommonDBChild) {
+                  //TODO...
+                  throw new \RuntimeException('Not done yet :(');
                }
                break;
             case CommonGLPI::SUBITEM_SHOW_FORM:
@@ -951,6 +969,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                }
 
                $sub_item->getFromDBByCrit($getcrit);
+
                /*if ($item instanceof CommonITILObject) {
                   $tpl = 'itil_add_page';
                }*/

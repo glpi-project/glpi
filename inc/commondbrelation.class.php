@@ -1776,14 +1776,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @since 9.4
     *
-    * @param CommonDBTM $item     Item instance
-    * @param boolean    $noent    Flag to not compute entity informations (see Document_Item::getListForItemParams)
-    * @param string     $itemtype Type for items to retrieve, defaults to null
-    * @param array      $where    Inital WHERE clause. Defaults to []
+    * @param CommonDBTM $item Item instance
+    * @param boolean    $self Condition is to add on current object itself
     *
     * @return array
     */
-   public static function addSubDefaultWhere(CommonDBTM $item, $itemtype = null) {
+   public static function addSubDefaultWhere(CommonDBTM $item, $self = false) {
       global $DB;
       $inverse = $item->getType() == static::$itemtype_1;
       $link_type  = static::$itemtype_1;
@@ -1792,27 +1790,65 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $item_type  = $item->getType();
       if ($inverse === true) {
          $link_type  = static::$itemtype_2;
-         if ($link_type == 'itemtype') {
+         /*if ($link_type == 'itemtype') {
             if ($itemtype != null) {
                $link_type  = $itemtype;
                $item_type  = $itemtype;
             } else {
                $link_type = $item->getType();
             }
-         }
+         }*/
          $link_id    = static::$items_id_2;
          $where_id   = static::$items_id_1;
       }
 
-      $current_table = static::getTable() . '_' . $link_id;
+      $current_table = static::getTable();
+      //if ($self === false) {
+         $current_table .= '_' . $link_id;
+      //}
       $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
 
-      if ($DB->fieldExists(static::getTable(), 'itemtype')) {
+      if ($DB->fieldExists(static::getTable(), 'itemtype') && $self === false) {
          $condition .= ' AND ' . $current_table . '.itemtype = "' . $DB->escape($item_type) . '"';
       }
 
       return $condition;
    }
+
+   /**
+    * Add default where in for itemtype union search
+    *
+    * @since 9.4
+    *
+    * @param CommonDBTM $item     Item instance
+    * @param string     $itemtype Item type to restrict on
+    *
+    * @return array
+    */
+   public static function addSubSelect(CommonDBTM $item, $itemtype) {
+      global $DB;
+
+      $inverse = $item->getType() == static::$itemtype_1;
+      $where_id   = static::$items_id_2;
+      $item_type  = $item->getType();
+      if ($inverse === true) {
+         $where_id   = static::$items_id_1;
+      }
+
+      $dbi = new DBMysqlIterator(null);
+      $dbi->buildQuery(
+         static::getTable(), [
+            'SELECT' => 'items_id',
+            'WHERE'  => [
+               'itemtype'  => $itemtype,
+               $where_id   => $item->fields['id']
+            ]
+         ]
+      );
+
+      return $dbi->getSql();
+   }
+
 
    /**
     * Add default join for search

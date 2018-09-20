@@ -92,6 +92,12 @@ class Monitor extends CommonDBTM {
       return $ong;
    }
 
+   protected function getMainTabs() {
+      return [
+         'Computer_Item'
+      ];
+   }
+
 
    /**
     * @see CommonDBTM::prepareInputForAdd()
