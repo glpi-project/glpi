@@ -63,17 +63,6 @@ if ($max_time == 0) {
  * @global DB $DB
  */
 function xmlbackup() {
-<<<<<<< HEAD
-   global $DB;
-
-   // Will contain the select * from $table
-   $query = [];
-   // Foreach DB tables...
-   $tables = $DB->listTables();
-   foreach ($tables as $id => $row) {
-      // Save the query...
-      $query[$id] = "SELECT * FROM `" . $row['TABLE_NAME'] . "`";
-=======
    global $CFG_GLPI, $DB;
 
    //on parcoure la DB et on liste tous les noms des tables dans $table
@@ -87,7 +76,6 @@ function xmlbackup() {
       $query[$i] = "SELECT *
                     FROM `$table`";
       $i++;
->>>>>>> 9721834baa... Fix deprecated usages (#4510)
    }
 
    // Filename
