@@ -1,8 +1,15 @@
 language: php
 sudo: required
+dist: xenial
 
 env:
   - DB=mysql
+
+services:
+  - mysql
+
+before_install:
+  - sudo apt-get install -y libzip4
 
 before_script:
   - ./tests/LDAP/ldap_run.sh
@@ -13,15 +20,15 @@ before_script:
   #install 0.72.3 database
   - if [[ "$UPDATE" == "true" ]]; then php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1); fi
   - if [[ "$UPDATE" == "true" ]]; then php scripts/innodb_migration.php --config-dir=../tests; fi
-  - mysql -u root -e 'create database glpitest;'
-  - php scripts/cliinstall.php --db=glpitest --user=root --tests
+  - mysql -u travis -e 'create database glpitest;'
+  - php scripts/cliinstall.php --db=glpitest --user=travis --tests
   - php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
   - ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
   # LDAP stuff
   - ./tests/LDAP/ldap_fixtures.sh > /dev/null
   - if [[ "$UPDATE" == "true" ]]; then ./vendor/bin/robo --load-from tools minify; fi
 script:
-  - mysql -u root -e 'select version();'
+  - mysql -u travis -e 'select version();'
   - composer testldap
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
@@ -50,6 +57,12 @@ matrix:
             - slapd
 
     - php: 7.2
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+    - php: 7.3.0RC1
       addons:
         apt:
           packages:
