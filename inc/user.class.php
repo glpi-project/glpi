@@ -4023,7 +4023,7 @@ class User extends CommonDBTM {
                   $iterator_params['WHERE']['is_deleted'] = 0;
                }
 
-               $group_iterator = $DB->request([$iterator_params]);
+               $group_iterator = $DB->request($iterator_params);
 
                $type_name = $item->getTypeName();
 
