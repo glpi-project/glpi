@@ -1,5 +1,6 @@
 language: php
 sudo: required
+dist: xenial
 
 env:
   - DB=mysql
@@ -50,6 +51,12 @@ matrix:
             - slapd
 
     - php: 7.2
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+    - php: 7.3
       addons:
         apt:
           packages:
