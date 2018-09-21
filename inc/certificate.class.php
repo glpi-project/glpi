@@ -113,6 +113,13 @@ class Certificate extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'dns_name',
+         'name'               => __('DNS name'),
+      ];
+
+      $tab[] = [
          'id'                 => '8',
          'table'              => $this->getTable(),
          'field'              => 'dns_suffix',

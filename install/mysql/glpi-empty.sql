@@ -2678,6 +2678,13 @@ INSERT INTO `glpi_displaypreferences` VALUES ('272','Item_Disk','5','4','0','0')
 INSERT INTO `glpi_displaypreferences` VALUES ('273','Item_Disk','6','5','0','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('274','Item_Disk','7','6','0','0');
 
+INSERT INTO `glpi_displaypreferences` VALUES ('275','Certificate','7','1','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('276','Certificate','4','2','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('277','Certificate','8','"','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('278','Certificate','121','"','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('279','Certificate','10','"','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('279','Certificate','31','"','0','0');
+
 ### Dump table glpi_documentcategories
 
 DROP TABLE IF EXISTS `glpi_documentcategories`;
