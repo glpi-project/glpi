@@ -720,6 +720,7 @@ class Ajax {
             }
 
             $out .= $key.":";
+            $regs = [];
             if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
 

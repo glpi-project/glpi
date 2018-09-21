@@ -524,7 +524,7 @@ class ConsumableItem extends CommonDBTM {
     *
     * Overriden here to check entities recursively
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUpdateItem() {
 

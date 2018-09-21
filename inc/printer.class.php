@@ -103,7 +103,7 @@ class Printer  extends CommonDBTM {
     *
     * Overloaded from CommonDBTM
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB, $CFG_GLPI;

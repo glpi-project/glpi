@@ -463,7 +463,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $item                  CommonITILObject object or Project
     * @param $withtemplate boolean  Template or basic item (default 0)
     *
-    * @return total cost
+    * @return number total cost
    **/
    static function showForObject($item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -674,7 +674,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $cost_material   float    material cost
     * @param $edit            boolean  used for edit of computation ? (true by default)
     *
-    * @return total cost formatted string
+    * @return string total cost formatted string
    **/
    static function computeTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
                                      $edit = true) {
