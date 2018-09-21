@@ -2572,7 +2572,7 @@ class Ticket extends CommonITILObject {
 
       if ($this->getFromDB($ID)) {
          if (!$no_stat_computation && ($this->canTakeIntoAccount() || isCommandLine())) {
-            return $this->update(
+            $this->update(
                [
                   'id'                         => $ID,
                   'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),

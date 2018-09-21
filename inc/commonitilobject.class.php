@@ -34,10 +34,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Items\Contracts\BlameableInterface;
+
 /**
  * CommonITILObject Class
 **/
-abstract class CommonITILObject extends CommonDBTM {
+abstract class CommonITILObject extends CommonDBTM implements BlameableInterface {
 
    /// Users by type
    protected $users       = [];
@@ -5731,4 +5733,24 @@ abstract class CommonITILObject extends CommonDBTM {
       return self::TIMELINE_NOTSET;
    }
 
+   public function getLastUpdater() {
+
+      $user_id = $this->getLastUpdaterId();
+
+      $user = new User();
+
+      if (null === $user_id || !$user->getFromDB($user_id)) {
+         return null;
+      }
+      return $user;
+   }
+
+   public function getLastUpdaterId() {
+
+      if (!array_key_exists('users_id_lastupdater', $this->fields)
+          || empty($this->fields['users_id_lastupdater'])) {
+         return null;
+      }
+      return (int)$this->fields['users_id_lastupdater'];
+   }
 }
