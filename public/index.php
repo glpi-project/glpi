@@ -697,6 +697,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    })->setName('knowbase');
 
    $app->get('/{itemtype}/list[/page/{page:\d+}[/{reset:reset}]]', function ($request, $response, $args) {
+      global $IS_TWIG;
+      $IS_TWIG = true;
       $item = new $args['itemtype']();
       $params = $request->getQueryParams() + $args;
       if (isset($args['reset'])) {
@@ -819,6 +821,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    })->setName('add-asset');
 
    $app->get('/ajax/tab/{itemtype}/{id:\d+}/{tab}', function ($request, $response, $args) {
+      global $IS_TWIG;
+      $IS_TWIG = true;
       $get = $request->getQueryParams();
 
       if (!isset($get["withtemplate"])) {
