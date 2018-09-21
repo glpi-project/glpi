@@ -22,6 +22,9 @@ shared: &shared
           rm -f composer.lock
           composer install --optimize-autoloader
     - run:
+        name: PHP Parallel Lint
+        command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
+    - run:
         name: Update DB
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
