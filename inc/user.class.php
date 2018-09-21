@@ -3914,7 +3914,7 @@ class User extends CommonDBTM {
 
       $group_where = [];
       while ($data = $iterator->next()) {
-         $group_where[$field_group] = $data['groups_id'];
+         $group_where[$field_group][] = $data['groups_id'];
          $groups[$data["groups_id"]] = $data["name"];
       }
 
