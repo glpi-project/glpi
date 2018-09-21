@@ -386,7 +386,7 @@ class Item_Disk extends CommonDBChild {
          'field'     => 'totalsize',
          'name'      => __('Global size'),
          'datatype'  => 'number',
-         'unit'      => 'Mio'
+         'unit'      => 'auto'
       ];
 
       $tabs[] = [
@@ -395,7 +395,7 @@ class Item_Disk extends CommonDBChild {
          'field'     => 'freesize',
          'name'      => __('Free size'),
          'datatype'  => 'number',
-         'unit'      => 'Mio'
+         'unit'      => 'auto'
       ];
 
       $tabs[] = [
