@@ -56,7 +56,7 @@ matrix:
           packages:
             - ldap-utils
             - slapd
-    - php: 7.3
+    - php: 7.3.0RC1
       addons:
         apt:
           packages:
