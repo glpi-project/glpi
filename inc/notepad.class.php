@@ -205,7 +205,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '201',
          'table'              => 'glpi_notepads',
          'field'              => 'date',
-         'name'               => $name . ' - ' . __('Creation date'),
+         'name'               => __('Creation date'),
          'datatype'           => 'datetime',
          'joinparams'         => [
             'jointype'           => 'itemtype_item'
@@ -218,7 +218,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '202',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Writer'),
+         'name'               => __('Writer'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -236,7 +236,7 @@ class Notepad extends CommonDBChild {
          'id'                 => '203',
          'table'              => 'glpi_notepads',
          'field'              => 'date_mod',
-         'name'               => $name . ' - ' . __('Last update'),
+         'name'               => __('Last update'),
          'datatype'           => 'datetime',
          'joinparams'         => [
             'jointype'           => 'itemtype_item'
@@ -250,7 +250,7 @@ class Notepad extends CommonDBChild {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_lastupdater',
-         'name'               => $name . ' - ' . __('Last updater'),
+         'name'               => __('Last updater'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
