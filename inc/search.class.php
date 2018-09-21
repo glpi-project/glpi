@@ -4837,20 +4837,25 @@ class Search {
                   }
 
                   $color = $_SESSION['glpiduedateok_color'];
+                  $bar_color = 'green';
                   if ($less_crit < $less_crit_limit) {
                      $color = $_SESSION['glpiduedatecritical_color'];
+                     $bar_color = 'red';
                   } else if ($less_warn < $less_warn_limit) {
                      $color = $_SESSION['glpiduedatewarning_color'];
+                     $bar_color = 'yellow';
                   }
 
-                  //Calculate bar progress
-                  $out .= "<div class='center' style='background-color: #ffffff; width: 100%;
-                            border: 1px solid #9BA563; position: relative;' >";
-                  $out .= "<div style='position:absolute;'>&nbsp;".$percentage_text."%</div>";
-                  $out .= "<div class='center' style='background-color: ".$color.";
-                            width: ".$percentage."%; height: 12px' ></div>";
-                  $out .= "</div>";
-                  return $out;
+                  if (!isset($searchopt[$ID]['datatype'])) {
+                     $searchopt[$ID]['datatype'] = 'progressbar';
+                  }
+
+                  $progressbar_data = [
+                     'text'         => Html::convDateTime($data[$num][0]['name']),
+                     'percent'      => $percentage,
+                     'percent_text' => $percentage_text,
+                     'color'        => $bar_color
+                  ];
                }
                break;
 
@@ -5305,6 +5310,25 @@ class Search {
                   return $CFG_GLPI['languages'][$data[$num][0]['name']][0];
                }
                return __('Default value');
+            case 'progressbar':
+               if (!isset($progressbar_data)) {
+                  $bar_color = 'green';
+                  $progressbar_data = [
+                     'percent'      => $data[$num][0]['name'],
+                     'percent_text' => $data[$num][0]['name'],
+                     'color'        => $bar_color
+                  ];
+               }
+
+               $out = "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
+                        border: 1px solid #9BA563; position: relative;' >";
+               $out .= "<div style='position:absolute;'>&nbsp;{$progressbar_data['percent_text']}%</div>";
+               $out .= "<div class='center' style='background-color: {$progressbar_data['color']};
+                        width: {$progressbar_data['percent']}%; height: 12px' ></div>";
+               $out .= "</div>";
+
+               return $out;
+               break;
          }
       }
       // Manage items with need group by / group_concat
