@@ -5,6 +5,9 @@ dist: xenial
 env:
   - DB=mysql
 
+before_install:
+  - sudo apt-get install -y libzip4
+
 before_script:
   - ./tests/LDAP/ldap_run.sh
   - composer self-update
