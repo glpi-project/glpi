@@ -3556,7 +3556,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $withmetaforsearch boolean (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -3584,7 +3584,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
       return [self::CLOSED];
@@ -3596,7 +3596,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
       return [self::SOLVED];
@@ -3607,7 +3607,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING];
@@ -3618,7 +3618,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
       return [self::ASSIGNED, self::PLANNED];
@@ -3629,7 +3629,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.90.1
     *
-    * @return an array
+    * @return array
    **/
    static function getReopenableStatusArray() {
       return [self::CLOSED, self::SOLVED, self::WAITING];

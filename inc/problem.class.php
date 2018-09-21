@@ -524,7 +524,7 @@ class Problem extends CommonITILObject {
     *
     * @param $withmetaforsearch  boolean  (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -554,7 +554,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
 
@@ -570,7 +570,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
 
@@ -585,7 +585,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING, self::ACCEPTED];
@@ -596,7 +596,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
 
