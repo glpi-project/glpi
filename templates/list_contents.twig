@@ -74,6 +74,16 @@
          </div><!-- /box-tools -->
       </div><!-- /box-header -->
 {% endif %}
+
+{% if search_data is not iterable %}
+<div class="callout callout-danger">
+   <h4>{{ __('An error occured loading contents!') }}</h4>
+   <p>
+      {{ __('Please check GLPI logs or contact your administrator.') }}<br/>
+      {{ __('or') }} <a href="#" onclick="return reloadTab()">{{ __('try to reload') }}</a>
+   </p>
+</div>
+{% else %}
       <div class="box-body">
          <form class="form-horizontal" id="search_form" action="{{ path_for('list', {'itemtype': search_data.itemtype }) }}">
 {% if form_header %}
@@ -170,18 +180,15 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
                         </a>
                   </div>
                   <!-- /.btn-group -->
-               <!--label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label-->
-               <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-               </select>
-
-
-               </div>
-               <!-- /.pull-right -->
-            </div>
+                  <!--label for="dropdown_glpilist_limit">{{ __('Display (number of items)') }}</label-->
+                  <select name="dropdown_glpilist_limit" id="dropdown_glpilist_limit" class="forSelect2">
+                     <option value="10">10</option>
+                     <option value="20">20</option>
+                     <option value="50">50</option>
+                     <option value="100">100</option>
+                  </select>
+               </div><!-- /.pull-right -->
+            </div><!-- /mailbox-controls -->
             <table class="table table-bordered table-hover table-striped">
                <thead>
                   <tr>
@@ -427,5 +434,6 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
             </ul>
          </div><!-- /.pull-right -->
       </div><!-- /.box-footer -->
+{% endif %}{# /No results or error #}
    </div> <!-- /.box-default -->
 </div>

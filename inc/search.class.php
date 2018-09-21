@@ -133,6 +133,10 @@ class Search {
       self::constructSQL($data, $this->sub_item);
       self::constructData($data);
 
+      if (!isset($data['data']['totalcount'])) {
+         Toolbox::logError('Somethng went wrong during search.');
+         return;
+      }
       $limit = $_SESSION['glpilist_limit'];
       $count = $data['data']['totalcount'];
 
