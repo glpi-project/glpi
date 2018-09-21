@@ -204,6 +204,7 @@ function update93to94() {
    $ADDTODISPLAYPREF['Contract'] = [3, 4, 29, 5];
    $ADDTODISPLAYPREF['Item_Disk'] = [2, 3, 4, 5, 6, 7];
    $ADDTODISPLAYPREF['Certificate'] = [7, 4, 8, 121, 10, 31];
+   $ADDTODISPLAYPREF['Notepad'] = [200, 201, 202, 203, 204];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {

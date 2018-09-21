@@ -2680,10 +2680,16 @@ INSERT INTO `glpi_displaypreferences` VALUES ('274','Item_Disk','7','6','0','0')
 
 INSERT INTO `glpi_displaypreferences` VALUES ('275','Certificate','7','1','0','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('276','Certificate','4','2','0','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('277','Certificate','8','"','0','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('278','Certificate','121','"','0','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('279','Certificate','10','"','0','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('279','Certificate','31','"','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('277','Certificate','8','3','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('278','Certificate','121','4','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('279','Certificate','10','5','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('279','Certificate','31','6','0','0');
+
+INSERT INTO `glpi_displaypreferences` VALUES ('280','Notepad','200','1','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('281','Notepad','201','2','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('282','Notepad','202','3','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('283','Notepad','203','4','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('284','Notepad','204','5','0','0');
 
 ### Dump table glpi_documentcategories
 
