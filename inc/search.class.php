@@ -1123,7 +1123,7 @@ class Search {
          } else {
             $query_num_select .= $COMMONSUBLEFTJOIN;
             if (!empty($COMMONSUBWHERE)) {
-               $query_num .= (!empty($query_num) ? ' AND ( '.$COMMONSUBWHERE.' )':$COMMONSUBWHERE);
+               $query_num .= (!empty($query_num) ? " AND ($COMMONSUBWHERE)": " WHERE $COMMONSUBWHERE");
             }
 
             $data['sql']['count'][] = $query_num_select . $query_num;
@@ -2636,6 +2636,7 @@ class Search {
       if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
       }
+
       // Add first element (name)
       array_push($toview, 1);
 
