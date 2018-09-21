@@ -283,13 +283,13 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
       #}
                      <td>
          {% if not col.meta %}
-                        {{ row[colkey].displayname|raw }}
+                        {{ row[colkey].displayname|replace({'#LBBR#': '<br/>'})|raw }}
             {#echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
                                           $item_num, $row_num,
                                           self::displayConfigItem($data['itemtype'], $col['id'],
                                                                   $row, $colkey));#}
          {% else %} {# META case #}
-                        {{ row[colkey].displayname|raw }}
+                        {{ row[colkey].displayname|replace({'#LBBR#': '<br/>'})|raw }}
             {# echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
                                        $item_num, $row_num);#}
                   }
