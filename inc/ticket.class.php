@@ -723,10 +723,6 @@ class Ticket extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if ($item->isNewItem()) {
-         return;
-      }
-
       if (static::canView()) {
          $nb    = 0;
          $title = self::getTypeName(Session::getPluralNumber());
