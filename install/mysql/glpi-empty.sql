@@ -2671,6 +2671,12 @@ INSERT INTO `glpi_displaypreferences` VALUES ('266','Contract','4','2','0','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('267','Contract','29','3','0','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('268','Contract','5','4','0','0');
 
+INSERT INTO `glpi_displaypreferences` VALUES ('269','Item_Disk','2','1','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('270','Item_Disk','3','2','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('271','Item_Disk','4','3','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('272','Item_Disk','5','4','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('273','Item_Disk','6','5','0','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('274','Item_Disk','7','6','0','0');
 
 ### Dump table glpi_documentcategories
 

@@ -202,6 +202,7 @@ function update93to94() {
 
    /** add display preferences for sub items */
    $ADDTODISPLAYPREF['Contract'] = [3, 4, 29, 5];
+   $ADDTODISPLAYPREF['Item_Disk'] = [2, 3, 4, 5, 6, 7];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {
