@@ -2357,8 +2357,7 @@ class AuthLDAP extends CommonDBTM {
          $ds = $config_ldap->connect();
       }
       if ($ds) {
-         $cache = &self::$conn_cache;
-         $cache[$ldap_server]                            = $ds;
+         self::$conn_cache[$ldap_server] = $ds;
          $search_parameters['method']                         = $params['method'];
          $search_parameters['fields'][self::IDENTIFIER_LOGIN] = $params['identifier_field'];
 

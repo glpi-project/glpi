@@ -893,8 +893,8 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Populate the planning with planned tasks
     *
-    * @param $itemtype  itemtype
-    * @param $options   array    of options must contains :
+    * @param string $itemtype itemtype
+    * @param array $options   options must contains :
     *    - who ID of the user (0 = undefined)
     *    - who_group ID of the group of users (0 = undefined)
     *    - begin Date
@@ -1097,13 +1097,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Display a Planning Item
     *
-    * @param $itemtype  itemtype
-    * @param $val       Array    of the item to display
+    * @param string $itemtype  itemtype
+    * @param array  $val       the item to display
     *
-    * @return Already planned information
+    * @return string Output
    **/
    static function genericGetAlreadyPlannedInformation($itemtype, array $val) {
-      global $CFG_GLPI;
 
       if ($item = getItemForItemtype($itemtype)) {
          $objectitemtype = $item->getItilObjectItemType();
@@ -1123,14 +1122,13 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Display a Planning Item
     *
-    * @param $itemtype  itemtype
-    * @param $val       Array of the item to display
-    * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
-    *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
+    * @param string          $itemtype  itemtype
+    * @param array           $val       the item to display
+    * @param integer         $who       ID of the user (0 if all)
+    * @param string          $type      position of the item in the time block (in, through, begin or end)
+    * @param integer|boolean $complete  complete display (more details) (default 0)
     *
-    * @return Nothing (display function)
+    * @return string Output
    **/
    static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
@@ -1206,7 +1204,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $showprivate  (false by default)
    **/
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate = false) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']);
       $canview = $this->canViewItem();
@@ -1349,7 +1347,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *     -  parent Object : the object
    **/
    function showForm($ID, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $rand_template   = mt_rand();
       $rand_text       = mt_rand();
@@ -1682,7 +1680,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tmp         = [$item->getForeignKeyField() => $tID];
       $canadd      = $this->can(-1, CREATE, $tmp);
       $canpurge    = $this->canPurgeItem();
-      $canview     = $this->canViewItem();
 
       $RESTRICT = [];
       if ($this->maybePrivate() && !$showprivate) {
@@ -1866,7 +1863,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @return void
     */
    static function showCentralList($start, $status = 'todo', $showgrouptickets = true) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $req = self::getTaskList($status, $showgrouptickets);
       $numrows = 0;
@@ -1886,10 +1883,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='4'>";
 
-         $forcetab = '';
-         $num      = 0;
          $itemtype = get_called_class();
-         $item = new $itemtype;
          switch ($status) {
             case "todo" :
                $options  = [
@@ -1926,10 +1920,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                ];
 
                if ($itemtype == "TicketTask") {
-                  $forcetab                 = 'Ticket$1';
                   $title = __("Ticket tasks to do");
                } else if ($itemtype == "ProblemTask") {
-                  $forcetab                 = 'ProblemTask$1';
                   $title = __("Problem tasks to do");
                }
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -1951,8 +1943,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "<th>".__('Title')." (".strtolower($type).")</th>";
             echo "<th>".__('Description')."</th>";
             echo "</tr>";
-            foreach ($req as $id => $row) {
-               self::showVeryShort($id, $itemtype);
+            foreach ($req as $row) {
+               self::showVeryShort($row['id'], $itemtype);
             }
          }
          echo "</table>";
@@ -1972,7 +1964,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @return void
     */
    static function showVeryShort($ID, $itemtype) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $job  = new $itemtype();
       $rand = mt_rand();

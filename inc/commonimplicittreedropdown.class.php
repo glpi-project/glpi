@@ -55,7 +55,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * Method that must be overloaded. This method provides the ancestor of the current item
     * according to $this->input
     *
-    * @return the id of the current object ancestor
+    * @return integer the id of the current object ancestor
    **/
    function getNewAncestor() {
       return 0; // By default, we rattach to the root element
@@ -72,14 +72,6 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       return []; // By default, we don't have any son
    }
 
-
-   /**
-    * Used to set the ForeignKeyField
-    *
-    * @param $input datas used to add the item
-    *
-    * @return the modified $input array
-   **/
    function prepareInputForAdd($input) {
 
       $input[$this->getForeignKeyField()] = $this->getNewAncestor();
@@ -87,14 +79,6 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       return parent::prepareInputForAdd($input);
    }
 
-
-   /**
-    * Used to update the ForeignKeyField
-    *
-    * @param $input datas used to add the item
-    *
-    * @return the modified $input array
-   **/
    function prepareInputForUpdate($input) {
 
       $input[$this->getForeignKeyField()] = $this->getNewAncestor();
@@ -102,38 +86,18 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       return parent::prepareInputForUpdate($input);
    }
 
-
-   /**
-    * Used to update tree by redefining other items ForeignKeyField
-    *
-    * @return nothing
-   **/
    function post_addItem() {
 
       $this->alterElementInsideTree("add");
       parent::post_addItem();
    }
 
-
-   /**
-    * Used to update tree by redefining other items ForeignKeyField
-    *
-    * @param $history   (default 1)
-    *
-    * @return nothing
-   **/
    function post_updateItem($history = 1) {
 
       $this->alterElementInsideTree("update");
       parent::post_updateItem($history);
    }
 
-
-   /**
-    * Used to update tree by redefining other items ForeignKeyField
-    *
-    * @return nothing
-   **/
    function pre_deleteItem() {
 
       $this->alterElementInsideTree("delete");

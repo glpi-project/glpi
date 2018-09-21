@@ -592,7 +592,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @param $name
     *
-    * @return an array
+    * @return array
    **/
    static function cronInfo($name) {
       return ['description' => __('Alerts on reservations')];

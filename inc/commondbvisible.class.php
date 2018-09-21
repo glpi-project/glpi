@@ -60,7 +60,7 @@ abstract class CommonDBVisible extends CommonDBTM {
       // Groups
       if (count($this->groups)
           && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
-         foreach ($this->groups as $key => $data) {
+         foreach ($this->groups as $data) {
             foreach ($data as $group) {
                if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
                   // All the group
@@ -79,7 +79,7 @@ abstract class CommonDBVisible extends CommonDBTM {
       // Entities
       if (count($this->entities)
           && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-         foreach ($this->entities as $key => $data) {
+         foreach ($this->entities as $data) {
             foreach ($data as $entity) {
                if (Session::haveAccessToEntity($entity['entities_id'], $entity['is_recursive'])) {
                   return true;
@@ -133,7 +133,7 @@ abstract class CommonDBVisible extends CommonDBTM {
     * @return void
    **/
    public function showVisibility() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID      = $this->fields['id'];
       $canedit = $this->canEdit($ID);
@@ -199,7 +199,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Users
       if (count($this->users)) {
-         foreach ($this->users as $key => $val) {
+         foreach ($this->users as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -216,7 +216,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Groups
       if (count($this->groups)) {
-         foreach ($this->groups as $key => $val) {
+         foreach ($this->groups as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -247,7 +247,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Entity
       if (count($this->entities)) {
-         foreach ($this->entities as $key => $val) {
+         foreach ($this->entities as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -271,7 +271,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Profiles
       if (count($this->profiles)) {
-         foreach ($this->profiles as $key => $val) {
+         foreach ($this->profiles as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {

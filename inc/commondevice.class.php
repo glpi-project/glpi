@@ -162,7 +162,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since 0.85
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB;
@@ -307,7 +307,7 @@ abstract class CommonDevice extends CommonDropdown {
     *                            (default NULL)
     * @param $options   array    parameter such as restriction
     *
-    * @return nothing (elements added to $base)
+    * @return HTMLTableHeader
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
@@ -351,8 +351,6 @@ abstract class CommonDevice extends CommonDropdown {
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                     HTMLTableCell $father = null, array $options = []) {
-
-      global $CFG_GLPI;
 
       $this_type = $this->getType();
 
@@ -400,7 +398,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @param $input array of datas
     *
-    * @return interger ID of existing or new Device
+    * @return integer ID of existing or new Device
    **/
    function import(array $input) {
       global $DB;

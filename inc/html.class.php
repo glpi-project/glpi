@@ -1545,7 +1545,7 @@ class Html {
    /**
     * Print footer for every page
     *
-    * @param $keepDB booleen, closeDBConnections if false (false by default)
+    * @param $keepDB boolean, closeDBConnections if false (false by default)
    **/
    static function footer($keepDB = false) {
       global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
