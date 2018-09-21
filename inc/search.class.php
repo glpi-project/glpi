@@ -1146,7 +1146,7 @@ class Search {
 
       $NOSUBWHERE = $WHERE;
       if (!empty($COMMONSUBWHERE)) {
-         $WHERE .= (!empty($WHERE) ? ' AND ( '.$COMMONSUBWHERE.' )':$COMMONSUBWHERE);
+         $WHERE .= (!empty($WHERE) ? " AND ($COMMONSUBWHERE)": " WHERE $COMMONSUBWHERE");
       }
 
       if (!empty($HAVING)) {
