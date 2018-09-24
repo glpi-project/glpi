@@ -598,12 +598,13 @@ class DisplayPreference extends CommonDBTM {
       $url = Toolbox::getItemTypeFormURL(__CLASS__);
 
       $iterator = $DB->request([
-         'SELECT' => ['itemtype', ['COUNT' => '* AS nb']],
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
+         'SELECT'  => ['itemtype'],
+         'COUNT'   => 'nb',
+         'FROM'    => self::getTable(),
+         'WHERE'   => [
             'users_id'  => $users_id
          ],
-         'GROUP'  => 'itemtype'
+         'GROUPBY' => 'itemtype'
       ]);
 
       if (count($iterator) > 0) {
