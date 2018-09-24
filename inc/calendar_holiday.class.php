@@ -178,9 +178,12 @@ class Calendar_Holiday extends CommonDBRelation {
    static function cloneCalendar($oldid, $newid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_calendars_holidays`
-                WHERE `calendars_id` = '$oldid'";
+      $query = [
+         'FROM'   => 'glpi_calendars_holidays',
+         'WHERE'  => [
+            'calendars_id' => $oldid,
+         ]
+      ];
 
       foreach ($DB->request($query) as $data) {
          $ch                   = new self();

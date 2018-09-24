@@ -458,22 +458,39 @@ class CartridgeItem extends CommonDBTM {
 
          foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
             // if you change this query, please don't forget to also change in showDebug()
-            $query_alert = "SELECT `glpi_cartridgeitems`.`id` AS cartID,
-                                   `glpi_cartridgeitems`.`entities_id` AS entity,
-                                   `glpi_cartridgeitems`.`ref` AS ref,
-                                   `glpi_cartridgeitems`.`name` AS name,
-                                   `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
-                                   `glpi_alerts`.`id` AS alertID,
-                                   `glpi_alerts`.`date`
-                            FROM `glpi_cartridgeitems`
-                            LEFT JOIN `glpi_alerts`
-                                 ON (`glpi_cartridgeitems`.`id` = `glpi_alerts`.`items_id`
-                                     AND `glpi_alerts`.`itemtype` = 'CartridgeItem')
-                            WHERE `glpi_cartridgeitems`.`is_deleted` = 0
-                                  AND `glpi_cartridgeitems`.`alarm_threshold` >= '0'
-                                  AND `glpi_cartridgeitems`.`entities_id` = '".$entity."'
-                                  AND (`glpi_alerts`.`date` IS NULL
-                                       OR (`glpi_alerts`.`date`+$repeat) < CURRENT_TIMESTAMP());";
+            $query_alert = [
+               'SELECT'    => [
+                  'glpi_cartridgeitems.id AS cartID',
+                  'glpi_cartridgeitems.entities_id AS entity',
+                  'glpi_cartridgeitems.ref AS ref',
+                  'glpi_cartridgeitems.name AS name',
+                  'glpi_cartridgeitems.alarm_threshold AS threshold',
+                  'glpi_alerts.id AS alertID',
+                  'glpi_alerts.date',
+               ],
+               'FROM'      => 'glpi_cartridgeitems',
+               'LEFT JOIN' => [
+                  'glpi_alerts' => [
+                     'FKEY' => [
+                        'glpi_alerts'         => 'items_id',
+                        'glpi_cartridgeitems' => 'id',
+                        [
+                           'AND' => ['glpi_alerts.itemtype' => 'CartridgeItem'],
+                        ],
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'glpi_cartridgeitems.is_deleted'      => 0,
+                  'glpi_cartridgeitems.alarm_threshold' => ['>=', 0],
+                  'glpi_cartridgeitems.entities_id'     => $entity,
+                  'OR'                                  => [
+                     ['glpi_alerts.date' => null],
+                     ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                  ],
+               ],
+            ];
+
             $message = "";
             $items   = [];
 

@@ -760,7 +760,11 @@ class CommonDBTM extends CommonGLPI {
                }
 
                foreach ($field as $f) {
-                  foreach ($DB->request($tablename, [$f => $this->getID()]) as $data) {
+                  $crit = [
+                     'FROM'  => $tablename,
+                     'WHERE' => [$f => $this->getID()],
+                  ];
+                  foreach ($DB->request($crit) as $data) {
                      // Be carefull : we must use getIndexName because self::update rely on that !
                      if ($object = getItemForItemtype($itemtype)) {
                         $idName = $object->getIndexName();

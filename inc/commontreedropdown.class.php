@@ -159,10 +159,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $this->cleanParentsSons();
       $tmp  = clone $this;
-      $crit = ['FIELDS'                    => 'id',
-                    $this->getForeignKeyField() => $this->fields["id"]];
 
-      foreach ($DB->request($this->getTable(), $crit) as $data) {
+      $query = [
+         'SELECT' => 'id',
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [$this->getForeignKeyField() => $this->fields['id']]
+      ];
+
+      foreach ($DB->request($query) as $data) {
          $data[$this->getForeignKeyField()] = $parent;
          $tmp->update($data);
       }
@@ -547,11 +551,15 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo $header;
 
       $fk   = $this->getForeignKeyField();
-      $crit = [$fk     => $ID,
-                    'ORDER' => 'name'];
+
+      $query = [
+         'FROM'  => $this->getTable(),
+         'WHERE' => [$fk => $ID],
+         'ORDER' => 'name',
+      ];
 
       $nb = 0;
-      foreach ($DB->request($this->getTable(), $crit) as $data) {
+      foreach ($DB->request($query) as $data) {
          $nb++;
          echo "<tr class='tab_bg_1'><td>";
          if ((($fk == 'entities_id') && in_array($data['id'], $_SESSION['glpiactiveentities']))

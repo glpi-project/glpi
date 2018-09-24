@@ -173,12 +173,17 @@ class Computer extends CommonDBTM {
 
          // Propagates the changes to linked items
          foreach ($CFG_GLPI['directconnect_types'] as $type) {
-            $crit = ['FIELDS'       => ['items_id'],
-                     'itemtype'     => $type,
-                     'computers_id' => $this->fields["id"],
-                     'is_deleted'   => 0];
+            $query = [
+               'SELECT' => ['items_id'],
+               'FROM'   => 'glpi_computers_items',
+               'WHERE'  => [
+                  'itemtype'     => $type,
+                  'computers_id' => $this->fields["id"],
+                  'is_deleted'   => 0
+               ]
+            ];
             $item      = new $type();
-            foreach ($DB->request('glpi_computers_items', $crit) as $data) {
+            foreach ($DB->request($query) as $data) {
                $tID = $data['items_id'];
                $item->getFromDB($tID);
                if (!$item->getField('is_global')) {
@@ -200,13 +205,16 @@ class Computer extends CommonDBTM {
             // Propagates the changes to linked devices
             foreach ($CFG_GLPI['itemdevices'] as $device) {
                $item = new $device();
-               $crit = [
-                  'FIELDS'       => 'id',
-                  'itemtype'     => self::getType(),
-                  'items_id'     => $this->fields["id"],
-                  'is_deleted'   => 0
+               $query = [
+                  'SELECT' => ['id'],
+                  'FROM'   => $item::getTable(),
+                  'WHERE'  => [
+                     'itemtype'     => self::getType(),
+                     'items_id'     => $this->fields["id"],
+                     'is_deleted'   => 0
+                  ]
                ];
-               foreach ($DB->request($item::getTable(), $crit) as $data) {
+               foreach ($DB->request($query) as $data) {
                   $tID = $data['id'];
                   $item->getFromDB($tID);
                   $changes['id'] = $item->getField('id');

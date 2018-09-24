@@ -105,7 +105,11 @@ class ComputerAntivirus extends CommonDBChild {
    static function cloneComputer ($oldid, $newid) {
       global $DB;
 
-      foreach ($DB->request('glpi_computerantiviruses', ['computers_id' => $oldid]) as $data) {
+      $query = [
+         'FROM'  => 'glpi_computerantiviruses',
+         'WHERE' => ['computers_id' => $oldid],
+      ];
+      foreach ($DB->request($query) as $data) {
          $antirivus            = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
@@ -331,8 +335,14 @@ class ComputerAntivirus extends CommonDBChild {
 
       echo "<div class='spaced center'>";
 
-      if ($result = $DB->request('glpi_computerantiviruses', ['computers_id' => $ID,
-                                                                   'is_deleted'   => 0])) {
+      $query = [
+         'FROM'  => 'glpi_computerantiviruses',
+         'WHERE' => [
+            'computers_id' => $ID,
+            'is_deleted'   => 0,
+         ],
+      ];
+      if ($result = $DB->request($query)) {
          echo "<table class='tab_cadre_fixehov'>";
          $colspan = 7;
          if (Plugin::haveImport()) {

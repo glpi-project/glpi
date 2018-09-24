@@ -106,9 +106,14 @@ class Contract extends CommonDBTM {
    static function cloneItem ($itemtype, $oldid, $newid) {
       global $DB;
 
-      foreach ($DB->request('glpi_contracts_items',
-                            ['WHERE'  => "`items_id` = '$oldid'
-                                          AND `itemtype` = '$itemtype'"]) as $data) {
+      $query = [
+         'FROM'   => 'glpi_contracts_items',
+         'WHERE'  => [
+            'items_id' => $oldid,
+            'itemtype' => $itemtype,
+         ],
+      ];
+      foreach ($DB->request($query) as $data) {
          $cd = new Contract_Item();
          unset($data['id']);
          $data['items_id'] = $newid;
@@ -1202,42 +1207,113 @@ class Contract extends CommonDBTM {
 
       foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
          $before       = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
-         $query_notice = "SELECT `glpi_contracts`.*
-                          FROM `glpi_contracts`
-                          LEFT JOIN `glpi_alerts`
-                              ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                                  AND `glpi_alerts`.`itemtype` = 'Contract'
-                                  AND `glpi_alerts`.`type`='".Alert::NOTICE."')
-                          WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::NOTICE).") >'0'
-                                AND `glpi_contracts`.`is_deleted` = 0
-                                AND `glpi_contracts`.`begin_date` IS NOT NULL
-                                AND `glpi_contracts`.`duration` <> 0
-                                AND `glpi_contracts`.`notice` <> 0
-                                AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                     INTERVAL `glpi_contracts`.`duration` MONTH),
-                                             CURDATE()) > 0
-                                AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                     INTERVAL (`glpi_contracts`.`duration`
-                                                                -`glpi_contracts`.`notice`) MONTH),
-                                             CURDATE()) < '$before'
-                                AND `glpi_alerts`.`date` IS NULL
-                                AND `glpi_contracts`.`entities_id` = '".$entity."'";
 
-         $query_end = "SELECT `glpi_contracts`.*
-                       FROM `glpi_contracts`
-                       LEFT JOIN `glpi_alerts`
-                           ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                               AND `glpi_alerts`.`itemtype` = 'Contract'
-                               AND `glpi_alerts`.`type`='".Alert::END."')
-                       WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::END).") > '0'
-                             AND `glpi_contracts`.`is_deleted` = 0
-                             AND `glpi_contracts`.`begin_date` IS NOT NULL
-                             AND `glpi_contracts`.`duration` <> '0'
-                             AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                  INTERVAL (`glpi_contracts`.`duration`) MONTH),
-                                          CURDATE()) < '$before'
-                             AND `glpi_alerts`.`date` IS NULL
-                             AND `glpi_contracts`.`entities_id` = '".$entity."'";
+         $query_notice = [
+            'SELECT'    => [
+               'glpi_contracts.*',
+            ],
+            'FROM'      => 'glpi_contracts',
+            'LEFT JOIN' => [
+               'glpi_alerts' => [
+                  'FKEY' => [
+                     'glpi_alerts'         => 'items_id',
+                     'glpi_contracts' => 'id',
+                     [
+                        'AND' => [
+                           'glpi_alerts.itemtype' => 'Contract',
+                           'glpi_alerts.type'     => Alert::NOTICE,
+                        ],
+                     ],
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               [
+                  'RAW' => [
+                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0]
+                  ]
+               ],
+               'glpi_alerts.date'           => null,
+               'glpi_contracts.is_deleted'  => 0,
+               [
+                  'NOT' => ['glpi_contracts.begin_date' => null],
+               ],
+               'glpi_contracts.duration'    => ['!=', 0],
+               'glpi_contracts.notice'      => ['!=', 0],
+               'glpi_contracts.entities_id' => $entity,
+               [
+                  'RAW' => [
+                     'DATEDIFF(
+                         ADDDATE(
+                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                         ),
+                         CURDATE()
+                      )' => ['>', 0]
+                  ]
+               ],
+               [
+                  'RAW' => [
+                     'DATEDIFF(
+                         ADDDATE(
+                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL (
+                               ' . DBmysql::quoteName('glpi_contracts.duration') . '
+                               - ' . DBmysql::quoteName('glpi_contracts.notice') . '
+                            ) MONTH
+                         ),
+                         CURDATE()
+                      )' => ['<', $before]
+                  ]
+               ],
+            ],
+         ];
+
+         $query_end = [
+            'SELECT'    => [
+               'glpi_contracts.*',
+            ],
+            'FROM'      => 'glpi_contracts',
+            'LEFT JOIN' => [
+               'glpi_alerts' => [
+                  'FKEY' => [
+                     'glpi_alerts'         => 'items_id',
+                     'glpi_contracts' => 'id',
+                     [
+                        'AND' => [
+                           'glpi_alerts.itemtype' => 'Contract',
+                           'glpi_alerts.type'     => Alert::END,
+                        ],
+                     ],
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               [
+                  'RAW' => [
+                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0]
+                  ]
+               ],
+               'glpi_alerts.date'           => null,
+               'glpi_contracts.is_deleted'  => 0,
+               [
+                  'NOT' => ['glpi_contracts.begin_date' => null],
+               ],
+               'glpi_contracts.duration'    => ['!=', 0],
+               'glpi_contracts.entities_id' => $entity,
+               [
+                  'RAW' => [
+                     'DATEDIFF(
+                         ADDDATE(
+                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                         ),
+                         CURDATE()
+                      )' => ['<', $before]
+                  ]
+               ],
+            ],
+         ];
 
          $querys = ['notice' => $query_notice,
                          'end'    => $query_end];

@@ -479,11 +479,16 @@ class Computer_Item extends CommonDBRelation{
       $used    = [];
       $compids = [];
       $dynamic = [];
-      $crit    = ['FIELDS'     => ['id', 'computers_id', 'is_dynamic'],
-                       'itemtype'   => $item->getType(),
-                       'items_id'   => $ID,
-                       'is_deleted' => 0];
-      foreach ($DB->request('glpi_computers_items', $crit) as $data) {
+      $query = [
+         'SELECT' => ['id', 'computers_id', 'is_dynamic'],
+         'FROM'   => 'glpi_computers_items',
+         'WHERE'  => [
+            'itemtype'   => $item->getType(),
+            'items_id'   => $ID,
+            'is_deleted' => 0,
+         ]
+      ];
+      foreach ($DB->request($query) as $data) {
          $compids[$data['id']] = $data['computers_id'];
          $dynamic[$data['id']] = $data['is_dynamic'];
          $used['Computer'][]   = $data['computers_id'];
