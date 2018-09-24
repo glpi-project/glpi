@@ -348,8 +348,13 @@ class Enclosure extends CommonDBTM {
    }
 
    function cleanDBonPurge() {
-      $class = new Item_Enclosure();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Item_Enclosure::class,
+         ]
+      );
    }
 
 

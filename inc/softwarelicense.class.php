@@ -158,8 +158,13 @@ class SoftwareLicense extends CommonTreeDropdown {
    **/
    function cleanDBonPurge() {
 
-      $csl = new Computer_SoftwareLicense();
-      $csl->cleanDBonItemDelete('SoftwareLicense', $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+            Computer_SoftwareLicense::class,
+         ]
+      );
 
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);

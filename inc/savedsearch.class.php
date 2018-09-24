@@ -320,11 +320,11 @@ class SavedSearch extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_savedsearches_users', [
-            'savedsearches_id'   => $this->fields['id']
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            SavedSearch_Alert::class,
+            SavedSearch_User::class,
          ]
       );
    }
@@ -861,16 +861,16 @@ class SavedSearch extends CommonDBTM {
                _rows.each(function() {
                   var _row = $(this);
                   var rowtext = _row.text().toLowerCase();
- 
+
                   var show = true;
- 
+
                   for (var i=0; i < searchparts.length; i++) {
                      if (rowtext.indexOf(searchparts[i]) == -1) {
                         show = false;
                         break;
                      }
                   }
- 
+
                   if (show) {
                      _row.show();
                   } else {

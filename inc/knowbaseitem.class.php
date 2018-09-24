@@ -334,20 +334,24 @@ class KnowbaseItem extends CommonDBVisible {
    **/
    function cleanDBonPurge() {
 
-      $class = new KnowbaseItem_User();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Entity_KnowbaseItem();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Group_KnowbaseItem();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new KnowbaseItem_Profile();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new KnowbaseItem_Item();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new KnowbaseItem_Revision();
-      $class->deleteByCriteria(['knowbaseitems_id' => $this->getID()]);
-      $class = new KnowbaseItem_Comment();
-      $class->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Entity_KnowbaseItem::class,
+            Group_KnowbaseItem::class,
+            KnowbaseItem_Item::class,
+            KnowbaseItem_Profile::class,
+            KnowbaseItem_User::class,
+            KnowbaseItemTranslation::class,
+         ]
+      );
+
+      /// Should KnowbaseItem_Comment be a CommonDBChild
+      $kbic = new KnowbaseItem_Comment();
+      $kbic->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
+
+      /// Should KnowbaseItem_Revision be a CommonDBChild
+      $kbir = new KnowbaseItem_Revision();
+      $kbir->deleteByCriteria(['knowbaseitems_id' => $this->getID()]);
    }
 
    /**

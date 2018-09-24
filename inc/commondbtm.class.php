@@ -786,23 +786,48 @@ class CommonDBTM extends CommonGLPI {
                }
 
                foreach ($field as $f) {
-                  $result = $DB->request(
-                     [
-                        'FROM'  => $tablename,
-                        'WHERE' => [$f => $this->getID()],
-                     ]
-                  );
-                  foreach ($result as $data) {
+
+                  $criteria = [
+                     'FROM'  => $tablename,
+                     'WHERE' => [],
+                  ];
+                  $additionnal_updates = [];
+                  if (is_array($f) && sort($f) && $f === ['items_id', 'itemtype']) {
+                     // Case of 1-n relation using itemtype+items_id (eg. Consumable)
+                     $fkey_field = 'items_id';
+                     $criteria['WHERE'] = [
+                        'itemtype' => $this->getType(),
+                        'items_id' => $this->getID(),
+                     ];
+                     if (empty($newval)) {
+                        $additionnal_updates['itemtype'] = 'NULL';
+                     }
+                  } else if (!is_array($f)) {
+                     // Base case, 1-n relation base on one field
+                     $fkey_field = $f;
+                     $criteria['WHERE'] = [
+                        $fkey_field => $this->getID()
+                     ];
+                  } else {
+                     throw new \LogicException('Unable to handle relations based on an array.');
+                  }
+
+                  $linked_iterator = $DB->request($criteria);
+                  foreach ($linked_iterator as $data) {
                      // Be carefull : we must use getIndexName because self::update rely on that !
                      if ($object = getItemForItemtype($itemtype)) {
                         $idName = $object->getIndexName();
                         // And we must ensure that the index name is not the same as the field
                         // we try to modify. Otherwise we will loose this element because all
                         // will be set to $newval ...
-                        if ($idName != $f) {
-                           $object->update([$idName          => $data[$idName],
-                                            $f               => $newval,
-                                            '_disablenotif'  => true]); // Disable notifs
+                        if ($idName != $fkey_field) {
+                           $object->update(
+                              [
+                                 $idName         => $data[$idName],
+                                 $fkey_field     => $newval,
+                                 '_disablenotif' => true
+                              ] + $additionnal_updates
+                           );
                         }
                      }
                   }
@@ -859,6 +884,28 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function cleanDBonPurge() {
+   }
+
+
+   /**
+    * Delete children items and relation with other items from database.
+    *
+    * @param array $relations_classes List of classname on which deletion will be done
+    *                                 Classes needs to extends CommonDBConnexity.
+    *
+    * @return void
+    **/
+   protected function deleteChildrenAndRelationsFromDb(array $relations_classes) {
+
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            continue;
+         }
+
+         /** @var CommonDBConnexity $relation_item */
+         $relation_item = new $classname();
+         $relation_item->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }
    }
 
 
@@ -2105,6 +2152,9 @@ class CommonDBTM extends CommonGLPI {
     *
     * May be overloaded if needed
     *
+    * @TODO This method should be recursive (but should not enter into infinite loops).
+    *       Currently it only checks into a limited depth of linked elements.
+    *
     * @return boolean
    **/
    function canUnrecurs() {
@@ -2118,7 +2168,6 @@ class CommonDBTM extends CommonGLPI {
 
       $entities = getAncestorsOf('glpi_entities', $this->fields['entities_id']);
       $entities[] = $this->fields['entities_id'];
-      $RELATION  = getDbRelations();
 
       if ($this instanceof CommonTreeDropdown) {
          $f = getForeignKeyFieldForTable($this->getTable());
@@ -2129,91 +2178,140 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
+      $RELATION  = getDbRelations();
+
       if (isset($RELATION[$this->getTable()])) {
-         foreach ($RELATION[$this->getTable()] as $tablename => $field) {
-            if ($tablename[0] != '_') {
+         foreach ($RELATION[$this->getTable()] as $tablename => $fields) {
 
-               $itemtype = getItemTypeForTable($tablename);
-               $item     = new $itemtype();
+            $tablename = preg_replace('/^_/', '', $tablename); // Remove "_"prefix
 
-               if ($item->isEntityAssign()) {
+            // Normalize format
+            if (!is_array($fields)) {
+               $fields = [$fields];
+            }
 
-                  // 1->N Relation
-                  if (is_array($field)) {
-                     foreach ($field as $f) {
-                        if (countElementsInTable($tablename,
-                                                 [ $f => $ID, 'NOT' => [ 'entities_id' => $entities ]]) > 0) {
-                           return false;
-                        }
-                     }
+            $matching_criteria = [
+               'OR' => []
+            ];
+            foreach ($fields as $field) {
+               if (is_array($field) && sort($field) && $field === ['items_id', 'itemtype']) {
+                  // Case of 1-n relation using itemtype+items_id (eg. Consumable)
+                  $matching_criteria['OR'][] = [
+                     $tablename . '.itemtype' => $this->getType(),
+                     $tablename . '.items_id' => $ID,
+                  ];
+               } else if (!is_array($field)) {
+                  // Base case, 1-n relation base on one field
+                  $matching_criteria['OR'][$tablename . '.' . $field] = $ID;
+               } else {
+                  throw new \LogicException('Unable to handle relations based on an array.');
+               }
+            }
 
-                  } else {
-                     if (countElementsInTable($tablename,
-                                              [ $field => $ID, 'NOT' => [ 'entities_id' => $entities ]]) > 0) {
+            $itemtype = getItemTypeForTable($tablename);
+            $item     = new $itemtype();
+
+            // Check if directly linked items has entities out of ancestors
+            if ($item->isEntityAssign()) {
+
+               // 1->N Relation
+               foreach ($fields as $field) {
+                  $criteria = [
+                     'NOT' => ['entities_id' => $entities],
+                  ] + $matching_criteria;
+
+                  if (countElementsInTable($tablename, $criteria) > 0) {
+                     return false;
+                  }
+               }
+            }
+
+            // If linked itemtype has fields 'itemtype' and 'items_id', check
+            // if items linked to it has entities out of ancestors
+            if ($item->isField('itemtype') && $item->isField('items_id')) {
+
+               $linked_itemtype_iterator = $DB->request([
+                  'SELECT DISTINCT' => 'itemtype',
+                  'FROM'            => $tablename,
+                  'WHERE'           => $matching_criteria
+               ]);
+
+               // Search linked device of each type
+               while ($data = $linked_itemtype_iterator->next()) {
+                  $linked_itemtype = $data['itemtype'];
+                  $linked_table    = getTableForItemType($linked_itemtype);
+                  $linked_item     = new $linked_itemtype();
+
+                  if ($linked_item->isEntityAssign()) {
+                     $criteria = [
+                        'NOT' => [$linked_table.'.entities_id' => $entities],
+                        'FKEY' => [
+                           $tablename    => 'items_id',
+                           $linked_table => 'id',
+                           ['AND' => [$tablename . '.itemtype' => $linked_itemtype]],
+                        ]
+                     ] + $matching_criteria;
+
+                     if (countElementsInTable([$tablename, $linked_table], $criteria) > '0') {
                         return false;
                      }
                   }
+               }
+            }
 
-               } else {
-                  foreach ($RELATION as $othertable => $rel) {
-                     // Search for a N->N Relation with devices
-                     if (($othertable == "_virtual_device")
-                         && isset($rel[$tablename])) {
-                        $devfield  = $rel[$tablename][0]; // items_id...
-                        $typefield = $rel[$tablename][1]; // itemtype...
+            // Check if items linked to linked items has entities out of ancestors
+            foreach ($RELATION as $othertable => $rel) {
+               $othertable = preg_replace('/^_/', '', $othertable); // Remove "_"prefix
 
-                        $iterator = $DB->request([
-                           'SELECT DISTINCT' => $typefield,
-                           'FROM'            => $tablename,
-                           'WHERE'           => [$field => $ID]
-                        ]);
+               // Do nothing if no relation with self
+               if(!isset($rel[$tablename]) && !isset($rel['_' . $tablename])) {
+                  continue;
+               }
+               // Do nothing on recursive relations
+               if($othertable == $tablename) {
+                  continue;
+               }
+               // Do nothing if parsing self relations descriptions
+               if($othertable == $this->getTable()) {
+                  continue;
+               }
 
-                        // Search linked device of each type
-                        while ($data = $iterator->next()) {
-                           $itemtype  = $data[$typefield];
-                           $itemtable = getTableForItemType($itemtype);
-                           $item      = new $itemtype();
+               $otherfields = isset($rel[$tablename]) ? $rel[$tablename] : $rel['_' . $tablename];
+               // Normalize data
+               if (!is_array($otherfields)) {
+                  $otherfields = [$otherfields];
+               }
 
-                           if ($item->isEntityAssign()) {
-                              if (countElementsInTable([$tablename, $itemtable],
-                                                         ["$tablename.$field"     => $ID,
-                                                         "$tablename.$typefield" => $itemtype,
-                                                         'FKEY' => [$tablename => $devfield, $itemtable => 'id'],
-                                                         'NOT'  => [$itemtable.'.entities_id' => $entities ]]) > '0') {
-                                 return false;
-                              }
-                           }
-                        }
+               $otheritemtype = getItemTypeForTable($othertable);
+               /** @var $otheritem CommonDBTM */
+               $otheritem     = new $otheritemtype();
 
-                     } else if (($othertable != $this->getTable())
-                              && isset($rel[$tablename])) {
+               if ($otheritem->isEntityAssign()) {
+                  foreach ($otherfields as $otherfield) {
+                     $criteria = [
+                        'NOT' => [$othertable.'.entities_id' => $entities],
+                     ] + $matching_criteria;
 
-                        // Search for another N->N Relation
-                        $itemtype = getItemTypeForTable($othertable);
-                        $item     = new $itemtype();
+                     if (is_array($otherfield) && sort($otherfield)
+                         && $otherfield === ['items_id', 'itemtype']) {
+                        // Case of 1-n relation using itemtype+items_id (eg. Consumable)
+                        $criteria['FKEY'] = [
+                           $tablename  => 'items_id',
+                           $othertable => 'id',
+                           ['AND' => [$tablename . '.itemtype' => $this->getType()]],
+                        ];
+                     } else if (!is_array($otherfield)) {
+                        // Base case, 1-n relation base on one field
+                        $criteria['FKEY'] = [
+                           $tablename  => $otherfield,
+                           $othertable => 'id',
+                        ];
+                     } else {
+                        throw new \LogicException('Unable to handle relations based on an array.');
+                     }
 
-                        if ($item->isEntityAssign()) {
-                           if (is_array($rel[$tablename])) {
-                              foreach ($rel[$tablename] as $otherfield) {
-                                 if (countElementsInTable([$tablename, $othertable],
-                                                          ["$tablename.$field" => $ID,
-                                                           'FKEY' => [$tablename => $otherfield, $othertable => 'id'],
-                                                           'NOT'  => [$othertable.'.entities_id' => $entities ]]) > '0') {
-                                    return false;
-                                 }
-                              }
-
-                           } else {
-                              $otherfield = $rel[$tablename];
-                              if (countElementsInTable([$tablename, $othertable],
-                                                       ["$tablename.$field" => $ID,
-                                                        'FKEY' => [$tablename => $otherfield, $othertable =>'id'],
-                                                        'NOT'  => [ $othertable.'.entities_id' => $entities ]]) > '0') {
-                                 return false;
-                              }
-                           }
-
-                        }
+                     if (countElementsInTable([$tablename, $othertable], $criteria) > '0') {
+                        return false;
                      }
                   }
                }
@@ -2222,15 +2320,15 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Doc links to this item
-      if (($this->getType() > 0)
-          && countElementsInTable(['glpi_documents_items', 'glpi_documents'],
-                                  ['glpi_documents_items.items_id'=> $ID,
-                                   'glpi_documents_items.itemtype'=> $this->getType(),
-                                   'FKEY' => ['glpi_documents_items' => 'documents_id','glpi_documents' => 'id'],
-                                   'NOT'  => ['glpi_documents.entities_id' => $entities]]) > '0') {
+      if (countElementsInTable(['glpi_documents_items', 'glpi_documents'],
+                               ['glpi_documents_items.items_id'=> $ID,
+                                'glpi_documents_items.itemtype'=> $this->getType(),
+                                'FKEY' => ['glpi_documents_items' => 'documents_id','glpi_documents' => 'id'],
+                                'NOT'  => ['glpi_documents.entities_id' => $entities]]) > 0) {
          return false;
       }
-      // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
+
+      // TODO For all tables that contains 'items_id' + 'itemtype' field, check if entities are matching ancestors.
 
       // check connections of a computer
       $connectcomputer = ['Monitor', 'Peripheral', 'Phone', 'Printer'];

@@ -573,26 +573,34 @@ abstract class CommonDropdown extends CommonDBTM {
       if (isset($RELATION[$this->getTable()])) {
          foreach ($RELATION[$this->getTable()] as $tablename => $field) {
             if ($tablename[0] != '_') {
+
                if (!is_array($field)) {
-                  $row = $DB->request([
+                  $field = [$field];
+               }
+
+               foreach ($field as $f) {
+                  $criteria = [
                      'FROM'   => $tablename,
                      'COUNT'  => 'cpt',
-                     'WHERE'  => [$field => $ID]
-                  ])->next();
-                  if ($row['cpt'] > 0) {
-                     return true;
+                  ];
+                  if (is_array($f) && sort($f) && $f === ['items_id', 'itemtype']) {
+                     // Case of 1-n relation using itemtype+items_id (eg. Consumable)
+                     $criteria['WHERE'] = [
+                        'itemtype' => $this->getType(),
+                        'items_id' => $this->getID(),
+                     ];
+                  } else if (!is_array($f)){
+                     // Base case, 1-n relation base on one field
+                     $criteria['WHERE'] = [
+                        $f => $this->getID()
+                     ];
+                  } else {
+                     throw new \LogicException('Unable to handle relations based on an array.');
                   }
 
-               } else {
-                  foreach ($field as $f) {
-                     $row = $DB->request([
-                        'FROM'   => $tablename,
-                        'COUNT'  => 'cpt',
-                        'WHERE'  => [$f => $ID]
-                     ])->next();
-                     if ($row['cpt'] > 0) {
-                        return true;
-                     }
+                  $row = $DB->request($criteria)->next();
+                  if ($row['cpt'] > 0) {
+                     return true;
                   }
                }
             }

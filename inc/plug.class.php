@@ -44,7 +44,10 @@ class Plug extends CommonDropdown {
 
    function cleanDBonPurge() {
 
-      $pdu_plug = new Pdu_Plug();
-      $pdu_plug->deleteByCriteria(['plugs_id' => $this->fields['id']]);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Pdu_Plug::class,
+         ]
+      );
    }
 }

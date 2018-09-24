@@ -152,18 +152,16 @@ class Reminder extends CommonDBVisible {
     * @since 0.83.1
    **/
    function cleanDBonPurge() {
-      global $DB;
 
-      $class = new Reminder_User();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Entity_Reminder();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Group_Reminder();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Profile_Reminder();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new PlanningRecall();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Entity_Reminder::class,
+            Group_Reminder::class,
+            PlanningRecall::class,
+            Profile_Reminder::class,
+            Reminder_User::class,
+         ]
+      );
    }
 
    public function haveVisibilityAccess() {

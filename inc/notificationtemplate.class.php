@@ -549,4 +549,17 @@ class NotificationTemplate extends CommonDBTM {
       return $mailing_options;
    }
 
+
+   function cleanDBonPurge() {
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            NotificationTemplateTranslation::class,
+         ]
+      );
+
+      $queued = new QueuedNotification();
+      $queued->deleteByCriteria(['notificationtemplates_id' => $this->fields['id']]);
+   }
+
 }

@@ -106,13 +106,10 @@ class CronTask extends CommonDBTM{
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_crontasklogs', [
-            'crontasks_id' => $this->fields['id']
-         ]
-      );
+      // TODO Should CronTaskLog be a CommonDBChild ?
+      $ctl = new CronTaskLog();
+      $ctl->deleteByCriteria(['crontasks_id' => $this->fields['id']]);
    }
 
 

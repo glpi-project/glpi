@@ -584,23 +584,23 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      if (!empty($this->grouplinkclass)) {
-         $class = new $this->grouplinkclass();
-         $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $link_classes = [
+         ITILSolution::class
+      ];
+
+      if (is_a($this->grouplinkclass, CommonDBConnexity::class, true)) {
+         $link_classes[] = $this->grouplinkclass;
       }
 
-      if (!empty($this->userlinkclass)) {
-         $class = new $this->userlinkclass();
-         $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      if (is_a($this->userlinkclass, CommonDBConnexity::class, true)) {
+         $link_classes[] = $this->userlinkclass;
       }
 
-      if (!empty($this->supplierlinkclass)) {
-         $class = new $this->supplierlinkclass();
-         $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      if (is_a($this->supplierlinkclass, CommonDBConnexity::class, true)) {
+         $link_classes[] = $this->supplierlinkclass;
       }
 
-      $solution = new ITILSolution();
-      $solution->removeForItem($this->getType(), $this->getID());
+      $this->deleteChildrenAndRelationsFromDb($link_classes);
    }
 
 
