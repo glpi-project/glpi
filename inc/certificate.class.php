@@ -55,8 +55,13 @@ class Certificate extends CommonDBTM {
     * Clean certificate items
     */
    function cleanDBonPurge() {
-      $cert_item = new Certificate_Item();
-      $cert_item->deleteByCriteria(['certificates_id' => $this->fields['id']]);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+         ]
+      );
    }
 
    function rawSearchOptions() {

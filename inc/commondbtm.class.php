@@ -802,6 +802,34 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Delete children items and relation with other items from database.
+    *
+    * @param array $relations_classes List of classname on which deletion will be done
+    *                                 Classes needs to extends CommonDBConnexity.
+    *
+    * @return void
+    **/
+   protected function deleteChildrenAndRelationsFromDb(array $relations_classes) {
+
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            Toolbox::logWarning(
+               sprintf(
+                  'Unable to clean elements of class %s as it does not extends "CommonDBConnexity"',
+                  $classname
+               )
+            );
+            continue;
+         }
+
+         /** @var CommonDBConnexity $relation_item */
+         $relation_item = new $classname();
+         $relation_item->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }
+   }
+
+
+   /**
     * Clean translations associated to a dropdown
     *
     * @since 0.85

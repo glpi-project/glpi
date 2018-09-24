@@ -445,17 +445,18 @@ class Entity extends CommonTreeDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
       // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
       Rule::cleanForItemAction($this, '%entities_id');
       Rule::cleanForItemCriteria($this);
 
-      $gki = new Entity_KnowbaseItem();
-      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gr = new Entity_Reminder();
-      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Entity_KnowbaseItem::class,
+            Entity_Reminder::class,
+            Entity_RSSFeed::class,
+         ]
+      );
    }
 
    function rawSearchOptions() {

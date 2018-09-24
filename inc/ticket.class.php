@@ -916,51 +916,36 @@ class Ticket extends CommonITILObject {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_tickettasks', [
-            'tickets_id'   => $this->fields['id']
-         ]
-      );
-
-      $ts = new TicketValidation();
-      $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $DB->delete(
-         'glpi_ticketsatisfactions', [
-            'tickets_id'   => $this->fields['id']
-         ]
-      );
-
-      $pt = new Problem_Ticket();
-      $pt->cleanDBonItemDelete('Ticket', $this->fields['id']);
-
-      $ts = new TicketCost();
-      $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $slaLevel_ticket = new SlaLevel_Ticket();
-      $slaLevel_ticket->deleteForTicket($this->getID(), SLM::TTO);
-      $slaLevel_ticket->deleteForTicket($this->getID(), SLM::TTR);
-
+      // OlaLevel_Ticket does not extends CommonDBConnexity
       $olaLevel_ticket = new OlaLevel_Ticket();
-      $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTO);
-      $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTR);
+      $olaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTO);
+      $olaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTR);
 
-      $DB->delete(
-         'glpi_tickets_tickets', [
-            'OR'  => [
-               'tickets_id_1' => $this->fields['id'],
-               'tickets_id_2' => $this->fields['id']
-            ]
+      // SlaLevel_Ticket does not extends CommonDBConnexity
+      $slaLevel_ticket = new SlaLevel_Ticket();
+      $slaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTO);
+      $slaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTR);
+
+      // TicketSatisfaction does not extends CommonDBConnexity
+      $tf = new TicketSatisfaction();
+      $tf->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+      // CommonITILTask does not extends CommonDBConnexity
+      $tt = new TicketTask();
+      $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Ticket::class,
+            Item_Ticket::class,
+            Problem_Ticket::class,
+            ProjectTask_Ticket::class,
+            TicketCost::class,
+            Ticket_Ticket::class,
+            TicketValidation::class,
          ]
       );
-
-      $ct = new Change_Ticket();
-      $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Ticket();
-      $ip->cleanDBonItemDelete('Ticket', $this->fields['id']);
 
       parent::cleanDBonPurge();
 

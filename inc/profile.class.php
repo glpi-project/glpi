@@ -210,25 +210,21 @@ class Profile extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $gpr = new ProfileRight();
-      $gpr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gpu = new Profile_User();
-      $gpu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            KnowbaseItem_Profile::class,
+            Profile_Reminder::class,
+            Profile_RSSFeed::class,
+            Profile_User::class,
+            ProfileRight::class,
+         ]
+      );
 
       Rule::cleanForItemAction($this);
       // PROFILES and UNIQUE_PROFILE in RuleMailcollector
       Rule::cleanForItemCriteria($this, 'PROFILES');
       Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
-
-      $gki = new KnowbaseItem_Profile();
-      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gr = new Profile_Reminder();
-      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
    }
 
 

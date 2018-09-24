@@ -227,17 +227,11 @@ class Calendar extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_calendars_holidays', [
-            'calendars_id' => $this->fields['id']
-         ]
-      );
-
-      $DB->delete(
-         'glpi_calendarsegments', [
-            'calendars_id' => $this->fields['id']
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Calendar_Holiday::class,
+            CalendarSegment::class,
          ]
       );
    }

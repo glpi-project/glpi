@@ -90,39 +90,20 @@ class Group extends CommonTreeDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $gu = new Group_User();
-      $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gt = new Group_Ticket();
-      $gt->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gp = new Group_Problem();
-      $gp->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $cg = new Change_Group();
-      $cg->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $DB->delete(
-         'glpi_projecttaskteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Group::class,
+            Group_KnowbaseItem::class,
+            Group_Problem::class,
+            Group_Reminder::class,
+            Group_RSSFeed::class,
+            Group_Ticket::class,
+            Group_User::class,
+            ProjectTaskTeam::class,
+            ProjectTeam::class,
          ]
       );
-
-      $DB->delete(
-         'glpi_projectteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
-         ]
-      );
-
-      $gki = new Group_KnowbaseItem();
-      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gr = new Group_Reminder();
-      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       // Ticket rules use various _groups_id_*
       Rule::cleanForItemAction($this, '_groups_id%');

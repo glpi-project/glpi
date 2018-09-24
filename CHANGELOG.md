@@ -130,7 +130,8 @@ The following methods have been deprecated:
   - `CommonDBTM::NOTHING_TO_DO`
   - `CommonDBTM::SUCCESS`
   - `CommonDBTM::TYPE_MISMATCH`
-- Drop all methods that have been deprecated in GLPI 9.3.1
+- Drop all methods that have been deprecated in GLPI 9.3.2
+ - `ITILSolution::removeForItem()`
  - `Session::isViewAllEntities()`
 
 
@@ -146,6 +147,7 @@ The following methods have been deprecated:
 
 The following methods have been deprecated:
 
+- `ITILSolution::removeForItem()`
 - `Session::isViewAllEntities()`
 
 ## [9.3.1] 2018-09-12

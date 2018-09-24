@@ -172,14 +172,14 @@ class RSSFeed extends CommonDBVisible {
    **/
    function cleanDBonPurge() {
 
-      $class = new RSSFeed_User();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Entity_RSSFeed();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Group_RSSFeed();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Profile_RSSFeed();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Entity_RSSFeed::class,
+            Group_RSSFeed::class,
+            Profile_RSSFeed::class,
+            RSSFeed_User::class,
+         ]
+      );
    }
 
    public function haveVisibilityAccess() {
