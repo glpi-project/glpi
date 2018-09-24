@@ -87,15 +87,13 @@ class Vlan extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $link = new NetworkPort_Vlan();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      $link = new IPNetwork_Vlan();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      return true;
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            IPNetwork_Vlan::class,
+            NetworkPort_Vlan::class,
+         ]
+      );
    }
 
 

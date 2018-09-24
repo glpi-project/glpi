@@ -375,15 +375,13 @@ class ITILSolution extends CommonDBChild {
     * @param integer $items_id Item ID
     *
     * @return void
+    *
+    * @deprecated 9.3.2
     */
    public function removeForItem($itemtype, $items_id) {
-      $this->deleteByCriteria(
-         [
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
-         ],
-         true
-      );
+      Toolbox::deprecated();
+
+      $this->cleanDBonItemDelete($itemtype, $items_id);
    }
 
    /**

@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 
 The following methods have been deprecated:
 
+- `ITILSolution::removeForItem()`
 - `Session::isViewAllEntities()`
 
 ## [9.3.1] 2018-09-12

@@ -202,10 +202,11 @@ class IPAddress extends CommonDBChild {
 
    function cleanDBonPurge() {
 
-      $link = new IPAddress_IPNetwork();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      return true;
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            IPAddress_IPNetwork::class,
+         ]
+      );
    }
 
 
