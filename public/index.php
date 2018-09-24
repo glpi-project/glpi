@@ -868,36 +868,69 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                if ($sub_item instanceof CommonDBRelation) {
                   $params = $request->getQueryParams() + $args;
 
-                  if ($item->getType() == $sub_item::$itemtype_1) {
-                     $link_type = $sub_item::$itemtype_2;
-                  } else if ($item->getType() == $sub_item::$itemtype_2) {
-                     $link_type = $sub_item::$itemtype_1;
+                  if ($sub_item instanceof Item_Devices) {
+                     $types = $sub_item->getDeviceTypes();
+                     $data = [];
+                     foreach ($types as $sub_type) {
+                        $sub_link_item = new $sub_type;
+                        if ($item->getType() == $sub_link_item::$itemtype_1) {
+                           $link_type = $sub_link_item::$itemtype_2;
+                        } else if ($item->getType() == $sub_link_item::$itemtype_2) {
+                           $link_type = $sub_link_item::$itemtype_1;
+                        } else {
+                           $link_type = ($sub_link_item::$itemtype_1 != 'itemtype' ? $sub_link_item::$itemtype_1 : $sub_link_item::$itemtype_2);
+                        }
+
+                        $link = new $link_type;
+                        $search = new Search($link, $params);
+                        $data[$link_type] = [
+                           'search_data'  => $search->getData([
+                              'item'      => $item,
+                              'sub_item'  => $sub_link_item
+                           ]),
+                           'item'         => $sub_link_item
+                        ];
+                     }
+
+                     return $this->view->render(
+                        $response,
+                        'list_itemtyped_contents.twig', [
+                           'data'   => $data
+                        ]
+                     );
+
                   } else {
-                     $link_type = ($sub_item::$itemtype_1 != 'itemtype' ? $sub_item::$itemtype_1 : $sub_item::$itemtype_2);
-                  }
+                     if ($item->getType() == $sub_item::$itemtype_1) {
+                        $link_type = $sub_item::$itemtype_2;
+                     } else if ($item->getType() == $sub_item::$itemtype_2) {
+                        $link_type = $sub_item::$itemtype_1;
+                     } else {
+                        $link_type = ($sub_item::$itemtype_1 != 'itemtype' ? $sub_item::$itemtype_1 : $sub_item::$itemtype_2);
+                     }
 
-                  if ($link_type != 'itemtype') {
-                     $link = new $link_type;
-                  } else {
-                     $link = $sub_item;
-                  }
+                     if (!empty($link_type) && $link_type != 'itemtype') {
+                        $link = new $link_type;
+                     } else {
+                        $link = $sub_item;
+                     }
 
-                  $search = new Search($link, $params);
-                  if (isset($args['page'])) {
-                     $search->setPage((int)$args['page']);
-                  }
-                  $data = $search->getData([
-                     'item'      => $item,
-                     'sub_item'  => $sub_item
-                  ]);
+                     $search = new Search($link, $params);
+                     if (isset($args['page'])) {
+                        $search->setPage((int)$args['page']);
+                     }
+                     $data = $search->getData([
+                        'item'      => $item,
+                        'sub_item'  => $sub_item
+                     ]);
 
-                  return $this->view->render(
-                     $response,
-                     'list_contents.twig', [
-                        'search_data'     => $data,
-                        'item'            => $sub_item
-                     ]
-                  );
+                     return $this->view->render(
+                        $response,
+                        'list_contents.twig', [
+                           'search_data'     => $data,
+                           'item'            => $sub_item
+                        ]
+                     );
+                  }
                } else if ($sub_item instanceof CommonDBChild) {
                   $params = $request->getQueryParams() + $args;
 
@@ -979,6 +1012,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                */
                break;
             case CommonDBTM::SUBITEM_SHOW_SPEC:
+               throw new \RuntimeException('Not implmented!');
                break;
             default:
                $legacy = true;
