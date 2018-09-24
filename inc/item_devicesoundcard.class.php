@@ -43,8 +43,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_DeviceSoundCard extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceSoundCard';
-   static public $items_id_2 = 'devicesoundcards_id';
+   static public $itemtype_1 = 'DeviceSoundCard';
+   static public $items_id_1 = 'devicesoundcards_id';
 
    static protected $notable = false;
 

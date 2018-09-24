@@ -43,8 +43,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_DeviceMemory extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceMemory';
-   static public $items_id_2 = 'devicememories_id';
+   static public $itemtype_1 = 'DeviceMemory';
+   static public $items_id_1 = 'devicememories_id';
 
    static protected $notable = false;
 

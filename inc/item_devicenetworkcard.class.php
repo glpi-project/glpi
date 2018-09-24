@@ -43,8 +43,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_DeviceNetworkCard extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceNetworkCard';
-   static public $items_id_2 = 'devicenetworkcards_id';
+   static public $itemtype_1 = 'DeviceNetworkCard';
+   static public $items_id_1 = 'devicenetworkcards_id';
 
    static protected $notable = false;
 

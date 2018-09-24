@@ -39,8 +39,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_DeviceMotherboard extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceMotherboard';
-   static public $items_id_2 = 'devicemotherboards_id';
+   static public $itemtype_1 = 'DeviceMotherboard';
+   static public $items_id_1 = 'devicemotherboards_id';
 
    static protected $notable = false;
 

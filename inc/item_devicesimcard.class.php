@@ -43,8 +43,8 @@ if (!defined('GLPI_ROOT')) {
  **/
 class Item_DeviceSimcard extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceSimcard';
-   static public $items_id_2 = 'devicesimcards_id';
+   static public $itemtype_1 = 'DeviceSimcard';
+   static public $items_id_1 = 'devicesimcards_id';
 
    static protected $notable = false;
 

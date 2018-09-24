@@ -39,8 +39,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_DeviceFirmware extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceFirmware';
-   static public $items_id_2 = 'devicefirmwares_id';
+   static public $itemtype_1 = 'DeviceFirmware';
+   static public $items_id_1 = 'devicefirmwares_id';
 
    static protected $notable = false;
 

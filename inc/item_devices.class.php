@@ -44,22 +44,22 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_Devices extends CommonDBRelation {
 
-   static public $itemtype_1            = 'itemtype';
-   static public $items_id_1            = 'items_id';
-   static public $mustBeAttached_1      = false;
-   static public $take_entity_1         = false;
-   // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $itemtype_2            = 'itemtype';
+   static public $items_id_2            = 'items_id';
+   static public $mustBeAttached_2      = false;
+   static public $take_entity_2         = false;
+   // static public $checkItem_2_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
    static protected $notable            = true;
 
-   static public $logs_for_item_2       = false;
-   static public $take_entity_2         = true;
+   static public $logs_for_item_1       = false;
+   static public $take_entity_1         = true;
 
-   static public $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
-   static public $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
-   static public $log_history_1_delete  = Log::HISTORY_DELETE_DEVICE;
-   static public $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
-   static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
+   static public $log_history_2_add     = Log::HISTORY_ADD_DEVICE;
+   static public $log_history_2_update  = Log::HISTORY_UPDATE_DEVICE;
+   static public $log_history_2_delete  = Log::HISTORY_DELETE_DEVICE;
+   static public $log_history_2_lock    = Log::HISTORY_LOCK_DEVICE;
+   static public $log_history_2_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
    // This var is defined by CommonDBRelation ...
    public $no_form_page                 = false;
@@ -1342,7 +1342,7 @@ class Item_Devices extends CommonDBRelation {
    function prepareInputForAdd($input) {
       global $DB, $CFG_GLPI;
 
-      $computer = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
+      $computer = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
 
       if ($computer instanceOf CommonDBTM) {
          if (isset($CFG_GLPI['is_location_autoupdate']) && $CFG_GLPI["is_location_autoupdate"]
@@ -1407,4 +1407,5 @@ class Item_Devices extends CommonDBRelation {
 
       return $link;
    }
+
 }

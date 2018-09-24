@@ -39,8 +39,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_DeviceHardDrive extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceHardDrive';
-   static public $items_id_2 = 'deviceharddrives_id';
+   static public $itemtype_1 = 'DeviceHardDrive';
+   static public $items_id_1 = 'deviceharddrives_id';
 
    static protected $notable = false;
 

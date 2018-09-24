@@ -39,8 +39,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Item_DeviceControl extends Item_Devices {
 
-   static public $itemtype_2 = 'DeviceControl';
-   static public $items_id_2 = 'devicecontrols_id';
+   static public $itemtype_1 = 'DeviceControl';
+   static public $items_id_1 = 'devicecontrols_id';
 
    static protected $notable = false;
 
