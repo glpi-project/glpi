@@ -926,4 +926,53 @@ class DbUtils extends DbTestCase {
       $this->runGetSonsOf(true, true);
    }
 
+   /**
+    * Validates that relation mapping is based on existing tables and fields.
+    */
+   public function testRelationsValidity() {
+
+      global $DB;
+
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->array($mapping = $this->testedInstance->getDbRelations())
+         ->hasKey('_virtual_device');
+
+      $virtual_mapping = $mapping['_virtual_device'];
+      unset($mapping['_virtual_device']);
+
+      foreach ($mapping as $tablename => $relations) {
+         $this->boolean($DB->tableExists($tablename))
+            ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $tablename));
+
+         foreach ($relations as $relation_tablename => $fields) {
+            if (strpos($relation_tablename, '_') === 0) {
+               $relation_tablename = substr($relation_tablename, 1);
+            }
+
+            $this->boolean($DB->tableExists($relation_tablename))
+               ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $relation_tablename));
+
+            if (!is_array($fields)) {
+               $fields = [$fields];
+            }
+
+            foreach ($fields as $field) {
+               $this->boolean($DB->fieldExists($relation_tablename, $field))
+                  ->isTrue(sprintf('Invalid table field "%s.%s" in relation mapping.', $relation_tablename, $field));
+            }
+         }
+      }
+
+      foreach ($virtual_mapping as $tablename => $fields) {
+         $this->boolean($DB->tableExists($tablename))
+            ->isTrue(sprintf('Invalid table "%s" in _virtual_device mapping.', $tablename));
+
+         foreach ($fields as $field) {
+            $this->boolean($DB->fieldExists($tablename, $field))
+               ->isTrue(sprintf('Invalid table field "%s.%s" in _virtual_device mapping.', $tablename, $field));
+         }
+      }
+   }
 }

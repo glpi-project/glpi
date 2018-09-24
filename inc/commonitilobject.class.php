@@ -622,29 +622,25 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      if (!empty($this->grouplinkclass)) {
-         $class = new $this->grouplinkclass();
-         $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $link_classes = [
+         Itil_Project::class,
+         ITILFollowup::class,
+         ITILSolution::class
+      ];
+
+      if (is_a($this->grouplinkclass, CommonDBConnexity::class, true)) {
+         $link_classes[] = $this->grouplinkclass;
       }
 
-      if (!empty($this->userlinkclass)) {
-         $class = new $this->userlinkclass();
-         $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      if (is_a($this->userlinkclass, CommonDBConnexity::class, true)) {
+         $link_classes[] = $this->userlinkclass;
       }
 
-      if (!empty($this->supplierlinkclass)) {
-         $class = new $this->supplierlinkclass();
-         $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      if (is_a($this->supplierlinkclass, CommonDBConnexity::class, true)) {
+         $link_classes[] = $this->supplierlinkclass;
       }
 
-      $solution = new ITILSolution();
-      $solution->removeForItem($this->getType(), $this->getID());
-
-      $itil_project = new Itil_Project();
-      $itil_project->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $itilfollowup = new ITILFollowup();
-      $itilfollowup->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb($link_classes);
    }
 
 

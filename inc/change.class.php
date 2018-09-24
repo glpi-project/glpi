@@ -265,28 +265,24 @@ class Change extends CommonITILObject {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_changetasks', [
-            'changes_id'   => $this->fields['id']
+      // CommonITILTask does not extends CommonDBConnexity
+      $ct = new ChangeTask();
+      $ct->deleteByCriteria(['changes_id' => $this->fields['id']]);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            // Done by parent: Change_Group::class,
+            Change_Item::class,
+            Change_Problem::class,
+            // Done by parent: Change_Supplier::class,
+            Change_Ticket::class,
+            // Done by parent: Change_User::class,
+            ChangeCost::class,
+            ChangeValidation::class,
+            // Done by parent: ITILSolution::class,
          ]
       );
-
-      $cp = new Change_Problem();
-      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ct = new Change_Ticket();
-      $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $cv = new ChangeValidation();
-      $cv->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $cc = new ChangeCost();
-      $cc->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
       parent::cleanDBonPurge();
    }

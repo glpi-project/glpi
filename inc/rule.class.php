@@ -1823,23 +1823,18 @@ class Rule extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
       // Delete a rule and all associated criterias and actions
       if (!empty($this->ruleactionclass)) {
-         $DB->delete(
-            getTableForItemType($this->ruleactionclass), [
-               $this->rules_id_field   => $this->fields['id']
-            ]
-         );
+         $ruleactionclass = $this->ruleactionclass;
+         $ra = new $ruleactionclass();
+         $ra->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
       }
 
       if (!empty($this->rulecriteriaclass)) {
-         $DB->delete(
-            getTableForItemType($this->rulecriteriaclass), [
-               $this->rules_id_field   => $this->fields['id']
-            ]
-         );
+         $rulecriteriaclass = $this->rulecriteriaclass;
+         $rc = new $rulecriteriaclass();
+         $rc->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
       }
    }
 
