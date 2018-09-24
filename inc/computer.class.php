@@ -315,38 +315,24 @@ class Computer extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $csv = new Computer_SoftwareVersion();
-      $csv->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $csl = new Computer_SoftwareLicense();
-      $csl->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Computer_Item();
-      $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+            Computer_Item::class,
+            Computer_SoftwareLicense::class,
+            Computer_SoftwareVersion::class,
+            ComputerAntivirus::class,
+            ComputerVirtualMachine::class,
+            Item_Disk::class,
+            Item_OperatingSystem::class,
+            Item_Problem::class,
+            Item_Project::class,
+         ]
+      );
 
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
-
-      $disk = new Item_Disk();
-      $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $vm = new ComputerVirtualMachine();
-      $vm->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $antivirus = new ComputerAntivirus();
-      $antivirus->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ios = new Item_OperatingSystem();
-      $ios->cleanDBonItemDelete('Computer', $this->fields['id']);
    }
 
 

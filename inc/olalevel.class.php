@@ -57,15 +57,12 @@ class OlaLevel extends LevelAgreementLevel {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      parent::cleanDBOnPurge();
+      parent::cleanDBonPurge();
 
-      $DB->delete(
-         'glpi_olalevels_tickets', [
-            $this->rules_id_field   => $this->fields['id']
-         ]
-      );
+      // OlaLevel_Ticket does not extends CommonDBConnexity
+      $olt = new OlaLevel_Ticket();
+      $olt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
    }
 
 

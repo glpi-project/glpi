@@ -46,10 +46,13 @@ class PrinterModel extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-      // Temporary solution to clean wrong updated items
-      $cpm = new CartridgeItem_PrinterModel();
-      $cpm->deleteByCriteria(['printermodels_id' => $this->fields['id']]);
 
+      // Temporary solution to clean wrong updated items
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            CartridgeItem_PrinterModel::class,
+         ]
+      );
    }
 
 }

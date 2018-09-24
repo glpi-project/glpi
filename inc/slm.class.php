@@ -81,13 +81,13 @@ class SLM extends CommonDBTM {
    }
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $sla = new Sla();
-      $sla->deleteByCriteria(['slms_id' => $this->getID()]);
-
-      $ola = new Ola();
-      $ola->deleteByCriteria(['slms_id' => $this->getID()]);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Sla::class,
+            Ola::class,
+         ]
+      );
    }
 
    /**
