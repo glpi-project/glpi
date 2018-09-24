@@ -28,8 +28,19 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-
+<div class="content nav-tabs-custom">
+   <ul class="nav nav-pills" role="tablist">
 {% for itemtype, itemtype_data in data %}
-{{ itemtype }}
-   {% include "list_contents.twig" with {'main_header': false, form_header: false, search_data: itemtype_data.search_data, item: itemtype_data.item} %}
+      <li{% if loop.first %} class="active"{% endif %}>
+         <a href="#{{ itemtype }}" data-toggle="tab">{{ call_static(itemtype, 'getTypeName') }}</a>
+      </li>
 {% endfor %}
+   </ul>
+   <div class="tab-content">
+{% for itemtype, itemtype_data in data %}
+   <div id="{{ itemtype }}" class="tab-pane{% if loop.first %} active {% endif %}">
+   {% include "list_contents.twig" with {'main_header': false, form_header: false, search_data: itemtype_data.search_data, item: itemtype_data.item} %}
+   </div>
+{% endfor %}
+   </div>
+</div>
