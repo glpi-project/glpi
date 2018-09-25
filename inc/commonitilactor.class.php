@@ -121,7 +121,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          'START'  => 0,
          'LIMIT'  => 1
       ]);
-      if (count($iterator > 0)) {
+      if (count($iterator) > 0) {
          return true;
       }
       return false;
