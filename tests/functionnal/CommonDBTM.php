@@ -221,4 +221,38 @@ class CommonDBTM extends DbTestCase {
          ->isEqualTo(\CommonDBTM::getTable($classname))
          ->isEqualTo($tablename);
    }
+
+   /**
+    * Test CommonDBTM::getTableField() method.
+    *
+    * @return void
+    */
+   public function testGetTableField() {
+
+      // Exception if field argument is empty
+      $this->exception(
+         function() {
+            \Computer::getTableField('');
+         }
+      )->isInstanceOf(\InvalidArgumentException::class)
+         ->hasMessage('Argument $field cannot be empty.');
+
+      // Exception if class has no table
+      $this->exception(
+         function() {
+            \Item_Devices::getTableField('id');
+         }
+      )->isInstanceOf(\LogicException::class)
+         ->hasMessage('Invalid table name.');
+
+      // Base case
+      $this->string(\Computer::getTableField('serial'))
+         ->isEqualTo(\CommonDBTM::getTableField('serial', \Computer::class))
+         ->isEqualTo('glpi_computers.serial');
+
+      // Wildcard case
+      $this->string(\Config::getTableField('*'))
+         ->isEqualTo(\CommonDBTM::getTableField('*', \Config::class))
+         ->isEqualTo('glpi_configs.*');
+   }
 }

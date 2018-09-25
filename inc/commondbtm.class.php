@@ -209,6 +209,30 @@ class CommonDBTM extends CommonGLPI {
       return $_SESSION['glpi_foreign_key_field_of'][get_called_class()];
    }
 
+   /**
+    * Return SQL path to access a field.
+    *
+    * @param string      $field     Name of the field (or SQL keyword like '*')
+    * @param string|null $classname Forced classname (to avoid late_binding on inheritance)
+    *
+    * @return string
+    *
+    * @throws InvalidArgumentException
+    * @throws LogicException
+    **/
+   static function getTableField($field, $classname = null) {
+
+      if (empty($field)) {
+         throw new InvalidArgumentException('Argument $field cannot be empty.');
+      }
+
+      $tablename = self::getTable($classname);
+      if (empty($tablename)) {
+         throw new LogicException('Invalid table name.');
+      }
+
+      return sprintf('%s.%s', $tablename, $field);
+   }
 
    /**
     * Retrieve an item from the database
