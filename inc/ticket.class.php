@@ -5394,7 +5394,7 @@ class Ticket extends CommonITILObject {
 
          case "rejected" : // on affiche les tickets rejet??s
             $query .= " LEFT JOIN `glpi_itilsolutions`
-                           ON (`glpi_tickets`.`id` = `glpi_itilsolutions`.`items_id` AND `glpi_itilsolutions`.`itemtype` = 'Tciket')
+                           ON (`glpi_tickets`.`id` = `glpi_itilsolutions`.`items_id` AND `glpi_itilsolutions`.`itemtype` = 'Ticket')
                         WHERE $is_deleted
                              AND ($search_assign)
                              AND `glpi_tickets`.`status` <> '".self::CLOSED."'
