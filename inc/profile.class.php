@@ -2772,34 +2772,53 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * function to check one right of a user
+    * Check if user has given right.
     *
     * @since 0.84
     *
-    * @param $user       integer                id of the user to check rights
-    * @param $right      string                 right to check
-    * @param $valright   integer/string/array   value of the rights searched
-    * @param $entity     integer                id of the entity
+    * @param $user_id    integer  id of the user
+    * @param $rightname  string   name of right to check
+    * @param $rightvalue integer  value of right to check
+    * @param $entity_id  integer  id of the entity
     *
     * @return boolean
     */
-   static function haveUserRight($user, $right, $valright, $entity) {
+   static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id) {
       global $DB;
 
-      $query = "SELECT $right
-                FROM `glpi_profiles`
-                INNER JOIN `glpi_profiles_users`
-                   ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
-                WHERE `glpi_profiles_users`.`users_id` = '$user'
-                      AND $right IN ('$valright') ".
-                      getEntitiesRestrictRequest(" AND ", "glpi_profiles_users", '', $entity, true);
+      $result = $DB->request(
+         [
+            'COUNT'      => 'cpt',
+            'FROM'       => 'glpi_profilerights',
+            'INNER JOIN' => [
+               'glpi_profiles' => [
+                  'FKEY' => [
+                     'glpi_profilerights' => 'profiles_id',
+                     'glpi_profiles'      => 'id',
+                  ]
+               ],
+               'glpi_profiles_users' => [
+                  'FKEY' => [
+                     'glpi_profiles_users' => 'profiles_id',
+                     'glpi_profiles'       => 'id',
+                     [
+                        'AND' => ['glpi_profiles_users.users_id' => $user_id],
+                     ],
+                  ]
+               ],
+            ],
+            'WHERE'      => [
+               'glpi_profilerights.name'   => $rightname,
+               'glpi_profilerights.rights' => ['&',  $rightvalue],
+            ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_id, true),
+         ]
+      );
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return true;
-         }
+      if (!$data = $result->next()) {
+         return false;
       }
-      return false;
+
+      return $data['cpt'] > 0;
    }
 
 

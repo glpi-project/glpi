@@ -282,6 +282,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
 
       $this->login();
       $this->setEntity('Root entity', true);
@@ -307,6 +308,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $ticket = getItemByTypeName('Ticket', '_ticket01');
       $this->boolean((boolean)$ticket->canAdminActors())->isTrue(); //=> get 2
@@ -330,6 +332,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
    }
 
    public function testPostOnlyAcls() {
@@ -358,6 +361,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'));
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
 
       $this->integer(
          (int)$ticket->add([
@@ -389,6 +393,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
@@ -424,6 +429,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
    }
 
    public function testTechAcls() {
@@ -452,6 +458,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $this->integer(
          (int)$ticket->add([
@@ -483,6 +490,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
@@ -518,6 +526,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       //drop update ticket right from tech profile
       global $DB;
@@ -562,6 +571,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       $this->integer(
          (int)$ticket->add([
@@ -591,6 +601,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
    }
 
    public function testNotOwnerAcls() {
@@ -630,6 +641,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       //drop update ticket right from tech profile
       global $DB;
@@ -674,6 +686,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isTrue();
 
       // post only tests
       $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
@@ -699,6 +712,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+      $this->boolean((boolean)$ticket->canUserAddFollowups(\Session::getLoginUserID()))->isFalse();
    }
 
    /**
