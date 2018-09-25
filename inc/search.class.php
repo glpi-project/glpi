@@ -693,6 +693,7 @@ class Search {
       $COMMONLEFTJOIN = self::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
 
       $itemtype = $data['itemtype'];
+      $COMMONSUBLEFTJOIN = '';
       if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultJoin') && $sub_item['sub_item']->getType() !== $itemtype) {
          $sub = $sub_item['sub_item'];
          $COMMONSUBLEFTJOIN = $sub::addSubDefaultJoin($sub_item['item']);
