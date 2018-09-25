@@ -167,6 +167,7 @@ class DBmysqlIterator implements Iterator, Countable {
                      break;
 
                   case 'ORDER' :
+                  case 'ORDERBY' :
                      $orderby = $val;
                      unset($crit[$key]);
                      break;
@@ -186,6 +187,7 @@ class DBmysqlIterator implements Iterator, Countable {
                      unset($crit[$key]);
                      break;
 
+                  case 'GROUP' :
                   case 'GROUPBY' :
                      $groupby = $val;
                      unset($crit[$key]);
