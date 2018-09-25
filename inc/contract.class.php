@@ -108,7 +108,7 @@ class Contract extends CommonDBTM {
 
       $result = $DB->request(
          [
-            'FROM'   => 'glpi_contracts_items',
+            'FROM'   => Contract_Item::getTable(),
             'WHERE'  => [
                'items_id' => $oldid,
                'itemtype' => $itemtype,
@@ -1214,7 +1214,7 @@ class Contract extends CommonDBTM {
             'SELECT'    => [
                'glpi_contracts.*',
             ],
-            'FROM'      => Contract::getTable(),
+            'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                'glpi_alerts' => [
                   'FKEY' => [
@@ -1275,7 +1275,7 @@ class Contract extends CommonDBTM {
             'SELECT'    => [
                'glpi_contracts.*',
             ],
-            'FROM'      => Contract::getTable(),
+            'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                'glpi_alerts' => [
                   'FKEY' => [
