@@ -5346,7 +5346,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $hiddens = $this->getFormHiddenFields($add);
-      if (in_array($column['Field'], $hiddens)) {
+      if (in_array($column['Field'], $hiddens) || Toolbox::endsWith($column['Field'], '_cache')) {
          $element['type'] = 'hidden';
       } else if (Toolbox::endsWith($column['Field'], '_id') || strstr($column['Field'], '_id_')) {
          if ($column['Field'] == 'locations_id') {
