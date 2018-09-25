@@ -2534,6 +2534,44 @@ class Ticket extends CommonITILObject {
                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
    }
 
+   /**
+    * Check if user can add followups to the ticket.
+    *
+    * @param integer $user_id
+    *
+    * @return boolean
+    */
+   public function canUserAddFollowups($user_id) {
+
+      $entity_id = $this->fields['entities_id'];
+
+      $group_user = new Group_User();
+      $user_groups = $group_user->getUserGroups($user_id, ['entities_id' => $entity_id]);
+      $user_groups_ids = [];
+      foreach ($user_groups as $user_group) {
+         $user_groups_ids[] = $user_group['id'];
+      }
+
+      $rightname = ITILFollowup::$rightname;
+
+      return (
+            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDMYTICKET, $entity_id)
+            && ($this->isUser(CommonITILActor::REQUESTER, $user_id)
+               || (
+                  isset($this->fields['users_id_recipient'])
+                  && ($this->fields['users_id_recipient'] === $user_id)
+               )
+            )
+         )
+         || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLTICKET, $entity_id)
+         || (
+            Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDGROUPTICKET, $entity_id)
+            && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
+         )
+         || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+         || $this->haveAGroup(CommonITILActor::ASSIGN, $user_groups_ids);
+   }
+
 
    /**
     * Get default values to search engine to override

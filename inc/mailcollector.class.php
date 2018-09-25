@@ -638,17 +638,7 @@ class MailCollector  extends CommonDBTM {
             for ($i=1; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails); $i++) {
                $uid = $this->messages_uid[$i];
                $tkt = $this->buildTicket($uid, ['mailgates_id' => $mailgateID,
-                                                     'play_rules'   => true]);
-
-               //Indicates that the mail must be deleted from the mailbox
-               $delete_mail = false;
-
-               //If entity assigned, or email refused by rule, or no user and no supplier associated with the email
-               $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"]
-                                  || (isset($tkt['_users_id_requester'])
-                                     && ($tkt['_users_id_requester'] > 0))
-                                  || (isset($tkt['_supplier_email'])
-                                      && $tkt['_supplier_email']));
+                                                'play_rules'   => true]);
 
                $rejinput                      = [];
                $rejinput['mailcollectors_id'] = $mailgateID;
@@ -661,56 +651,72 @@ class MailCollector  extends CommonDBTM {
                }
                $rejinput['date']              = $_SESSION["glpi_currenttime"];
 
-               // Manage blacklisted emails
+               $is_user_anonymous = !(isset($tkt['_users_id_requester'])
+                                      && ($tkt['_users_id_requester'] > 0));
+               $is_supplier_anonymous = !(isset($tkt['_supplier_email'])
+                                          && $tkt['_supplier_email']);
+
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                   $this->deleteMails($uid, self::REFUSED_FOLDER);
                   $blacklisted++;
-               } else if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
-                           && $user_condition)
-                          || isset($tkt['_refuse_email_no_response'])
-                          || isset($tkt['_refuse_email_with_response'])) {
+               } else if (isset($tkt['_refuse_email_with_response'])) {
+                  $this->deleteMails($uid, self::REFUSED_FOLDER);
+                  $refused++;
+                  $this->sendMailRefusedResponse($tkt['_head'][$this->getRequesterField()], $tkt['name']);
 
-                  // entities_id set when new ticket / tickets_id when new followup
-                  if (isset($tkt['_refuse_email_with_response'])) {
-                     $this->sendMailRefusedResponse($tkt['_head'][$this->getRequesterField()], $tkt['name']);
-                     $delete_mail = self::REFUSED_FOLDER;
+               } else if (isset($tkt['_refuse_email_no_response'])) {
+                  $this->deleteMails($uid, self::REFUSED_FOLDER);
+                  $refused++;
+
+               } else if (isset($tkt['entities_id'])
+                          && !isset($tkt['tickets_id'])
+                          && ($CFG_GLPI["use_anonymous_helpdesk"]
+                              || !$is_user_anonymous
+                              || !$is_supplier_anonymous)) {
+
+                  // New ticket case
+                  $ticket = new Ticket();
+
+                  if (!$is_user_anonymous
+                      && !Profile::haveUserRight($tkt['_users_id_requester'],
+                                                 Ticket::$rightname,
+                                                 CREATE,
+                                                 $tkt['entities_id'])) {
+                     $this->deleteMails($uid, self::REFUSED_FOLDER);
                      $refused++;
-                  } else if (isset($tkt['_refuse_email_no_response'])) {
-                     $delete_mail = self::REFUSED_FOLDER;
-                     $refused++;
-                  } else if (isset($tkt['entities_id'])
-                             || isset($tkt['tickets_id'])) {
-
-                     // Is a mail responding of an already existing ticket ?
-                     if (isset($tkt['tickets_id'])) {
-                        $fup = new ITILFollowup();
-                        if ($fup->add($tkt)) {
-                           $delete_mail = self::ACCEPTED_FOLDER;
-                        } else {
-                           $error++;
-                           $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
-                           $rejected->add($rejinput);
-                        }
-
-                     } else { // New ticket
-                        $track = new Ticket();
-                        if ($track->add($tkt)) {
-                           $delete_mail = self::ACCEPTED_FOLDER;
-                        } else {
-                           $error++;
-                           $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
-                           $rejected->add($rejinput);
-                        }
-                     }
-
+                     $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
+                     $rejected->add($rejinput);
+                  } else if ($ticket->add($tkt)) {
+                     $this->deleteMails($uid, self::ACCEPTED_FOLDER);
                   } else {
-                     // Case never raise
-                     $delete_mail = self::REFUSED_FOLDER;
-                     $refused++;
+                     $error++;
+                     $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                     $rejected->add($rejinput);
                   }
-                  //Delete Mail from Mail box if ticket is added successfully
-                  if ($delete_mail) {
-                     $this->deleteMails($uid, $delete_mail);
+
+               } else if (isset($tkt['tickets_id'])
+                          && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous)) {
+
+                  // Followup case
+                  $ticket = new Ticket();
+                  $fup = new ITILFollowup();
+
+                  if (!$ticket->getFromDB($tkt['tickets_id'])) {
+                     $error++;
+                     $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                     $rejected->add($rejinput);
+                  } else if (!$is_user_anonymous
+                             && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])) {
+                     $this->deleteMails($uid, self::REFUSED_FOLDER);
+                     $refused++;
+                     $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
+                     $rejected->add($rejinput);
+                  } else if ($fup->add($tkt)) {
+                     $this->deleteMails($uid, self::ACCEPTED_FOLDER);
+                  } else {
+                     $error++;
+                     $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                     $rejected->add($rejinput);
                   }
 
                } else {
@@ -904,7 +910,6 @@ class MailCollector  extends CommonDBTM {
          $st  = new Supplier_Ticket();
 
          // Check if ticket  exists and users_id exists in GLPI
-         /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
              && ($job->fields['status'] != CommonITILObject::CLOSED)
              && ($CFG_GLPI['use_anonymous_followups']
@@ -2005,5 +2010,4 @@ class MailCollector  extends CommonDBTM {
             return "from";
       }
    }
-
 }
