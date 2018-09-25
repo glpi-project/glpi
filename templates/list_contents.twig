@@ -89,34 +89,29 @@
 {% if form_header %}
             <header id="search_criteria">
                <div class="box-body">
-   {% if old_search == false %}
-                  <div id="query_builder"></div>
-   {% else %}
                   <div class="legacy">
-                  {{ search_form|raw }}
+                     {{ search_form|raw }}
+                     {# New Bookmark, reset and searhc buttons
+                     <div>
+                        <button type="button" class="btn btn-default">
+                           <a href="#" onclick="savesearch.dialog('open'); return false;" class="bookmark_record save" title="{{ __('Save current search') }}">
+                              <i class="fa fa-star"></i>
+                              <span class="sr-only">{{ __('Save current search') }}</span>
+                           </a>
+                        </button>
+                        <button type="button" class="btn btn-default">
+                           <a href="/front/computer.php?reset=reset" title="{{ __('Reset to defaults') }}">
+                              <i class="fa fa-undo reset-search"></i>
+                              <span class="sr-only">{{ __('Blank') }}</span>
+                           </a>
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                           <i class="fa fa-search"></i>
+                           {{ __('Search') }}
+                        </button>
+                     </div>#}
                   </div>
-   {% endif %}
 
-   {% if old_search == false %}
-                  <div>
-                     <button type="button" class="btn btn-default">
-                        <a href="#" onclick="savesearch.dialog('open'); return false;" class="bookmark_record save" title="{{ __('Save current search') }}">
-                           <i class="fa fa-star"></i>
-                           <span class="sr-only">{{ __('Save current search') }}</span>
-                        </a>
-                     </button>
-                     <button type="button" class="btn btn-default">
-                        <a href="/front/computer.php?reset=reset" title="{{ __('Reset to defaults') }}">
-                           <i class="fa fa-undo reset-search"></i>
-                           <span class="sr-only">{{ __('Blank') }}</span>
-                        </a>
-                     </button>
-                     <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-search"></i>
-                        {{ __('Search') }}
-                     </button>
-                  </div>
-   {% endif %}
 {#<script type="text/javascript">
          $(function() {
             $('#loadbookmark').dialog({

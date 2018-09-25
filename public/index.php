@@ -748,7 +748,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             'search_data'     => $data,
             'search_form'     => $search_form,
             'item'            => $item,
-            'old_search'      => isset($get['querybuilder']) ? false : true,
             'search_options'  => Search::getCleanedOptions($item->getType())
          ]
       );

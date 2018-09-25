@@ -18,10 +18,6 @@
   "dependencies": {
     "admin-lte": "^2.4.3",
     "jquery-ui": "^1.12",
-    "jQuery-QueryBuilder": "^2.5.1",
-    "jquery-extendext": "^0.1.2",
-    "dot": "^1.1.2",
-    "interactjs": "interact.js#^1.3.3",
     "Font-Awesome": "FortAwesome/Font-Awesome#5.2.0"
   },
   "resolutions": {
