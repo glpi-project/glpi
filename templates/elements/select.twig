@@ -30,7 +30,7 @@
  #}
 {% extends "elements/input.twig" %}
 
-{% macro html_options(options, selected) %}
+{% macro html_options(options, selected, selected_txt) %}
    {% for key, values in options %}
       {% if values is iterable %}
          <optgroup label="{{ key }}">
@@ -41,6 +41,9 @@
          <option value="{{ key }}"{% if selected == key %} selected="selected"{% endif %}>{{ values }}</option>
       {% endif %}
    {% endfor %}
+   {% if not options|length and selected_txt != '' %}
+      <option value="{{ selected }}">{{ selected_txt }}</option>
+   {% endif %}
 {% endmacro %}
 
 {% block element %}
@@ -56,7 +59,7 @@
       >
          {% if element.empty_value is defined and element.empty_value == true %}<option value="0">{{ element.empty_text|default(constant('\Dropdown::EMPTY_VALUE')) }}</option>{% endif %}
          {% import _self as glpi_select %}
-         {{ glpi_select.html_options(element.values, element.value|default('')) }}
+         {{ glpi_select.html_options(element.values, element.value|default(''), element.value_txt|default('')) }}
     </select>
    <span class="input-group-btn">
    {% if element.listicon is not defined or element.listicon == true %}

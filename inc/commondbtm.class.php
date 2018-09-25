@@ -5387,6 +5387,12 @@ class CommonDBTM extends CommonGLPI {
       }
       if (isset($this->fields[$column['Field']])) {
          $element['value'] = $this->fields[$column['Field']];
+         if (isForeignKeyField($column['Field']) && (int)$element['value'] > 0) {
+            $element['value_txt'] = Dropdown::getDropdownName(
+               getTableNameForForeignKeyField($column['Field']),
+               $element['value']
+            );
+         }
       }
 
       return $element;
