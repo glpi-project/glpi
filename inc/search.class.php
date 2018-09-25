@@ -1063,7 +1063,7 @@ class Search {
          }
          // Union Search :
          if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-            $tmpquery = $query_num;
+            $tmpquery = $query_num_select . $query_num;
             $numrows  = 0;
 
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
@@ -1120,8 +1120,7 @@ class Search {
                                                                       $citem->maybeRecursive()),
                                            $query_num);
 
-                  $data['sql']['count'][] = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                               $ctable, $query_num_select) . $query_num;
+                  $data['sql']['count'][] = $query_num;
                }
             }
 
