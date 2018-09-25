@@ -106,14 +106,16 @@ class Contract extends CommonDBTM {
    static function cloneItem ($itemtype, $oldid, $newid) {
       global $DB;
 
-      $query = [
-         'FROM'   => 'glpi_contracts_items',
-         'WHERE'  => [
-            'items_id' => $oldid,
-            'itemtype' => $itemtype,
-         ],
-      ];
-      foreach ($DB->request($query) as $data) {
+      $result = $DB->request(
+         [
+            'FROM'   => 'glpi_contracts_items',
+            'WHERE'  => [
+               'items_id' => $oldid,
+               'itemtype' => $itemtype,
+            ],
+         ]
+      );
+      foreach ($result as $data) {
          $cd = new Contract_Item();
          unset($data['id']);
          $data['items_id'] = $newid;
@@ -1212,11 +1214,11 @@ class Contract extends CommonDBTM {
             'SELECT'    => [
                'glpi_contracts.*',
             ],
-            'FROM'      => 'glpi_contracts',
+            'FROM'      => Contract::getTable(),
             'LEFT JOIN' => [
                'glpi_alerts' => [
                   'FKEY' => [
-                     'glpi_alerts'         => 'items_id',
+                     'glpi_alerts'    => 'items_id',
                      'glpi_contracts' => 'id',
                      [
                         'AND' => [
@@ -1273,11 +1275,11 @@ class Contract extends CommonDBTM {
             'SELECT'    => [
                'glpi_contracts.*',
             ],
-            'FROM'      => 'glpi_contracts',
+            'FROM'      => Contract::getTable(),
             'LEFT JOIN' => [
                'glpi_alerts' => [
                   'FKEY' => [
-                     'glpi_alerts'         => 'items_id',
+                     'glpi_alerts'    => 'items_id',
                      'glpi_contracts' => 'id',
                      [
                         'AND' => [
@@ -1319,7 +1321,8 @@ class Contract extends CommonDBTM {
                          'end'    => $query_end];
 
          foreach ($querys as $type => $query) {
-            foreach ($DB->request($query) as $data) {
+            $result = $DB->request($query);
+            foreach ($result as $data) {
                $entity  = $data['entities_id'];
 
                $message = sprintf(__('%1$s: %2$s')."<br>\n", $data["name"],

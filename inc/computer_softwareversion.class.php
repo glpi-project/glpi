@@ -886,57 +886,59 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $lic_where['NOT'] = ['glpi_softwarelicenses.id' => $installed];
       }
 
-      $lic_iterator = $DB->request([
-         'SELECT'       => [
-            'glpi_softwarelicenses.*',
-            'glpi_computers_softwarelicenses.id AS linkID',
-            'glpi_softwares.name AS softname',
-            'glpi_softwareversions.name AS version',
-            'glpi_states.name AS state'
-         ],
-         'FROM'         => 'glpi_softwarelicenses',
-         'INNER JOIN'   => [
-            'glpi_softwares'  => [
-               'FKEY'   => [
-                  'glpi_softwarelicenses' => 'softwares_id',
-                  'glpi_softwares'        => 'id'
-               ]
-            ]
-         ],
-         'LEFT JOIN'    => [
-            'glpi_computers_softwarelicenses'   => [
-               'FKEY'   => [
-                  'glpi_computers_softwarelicenses'   => 'softwarelicenses_id',
-                  'glpi_softwarelicenses'             => 'id'
-               ]
+      $lic_iterator = $DB->request(
+         [
+            'SELECT'       => [
+               'glpi_softwarelicenses.*',
+               'glpi_computers_softwarelicenses.id AS linkID',
+               'glpi_softwares.name AS softname',
+               'glpi_softwareversions.name AS version',
+               'glpi_states.name AS state'
             ],
-            'glpi_softwareversions'   => [
-               'FKEY'   => [
-                  'glpi_softwareversions' => 'id',
-                  'glpi_softwarelicenses' => 'softwareversions_id_use',
-                  [
-                     'OR' => [
-                        'AND' => [
-                           'glpi_softwarelicenses.softwareversions_id_use' => 0,
-                           'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
-                        ]
-                     ]
+            'FROM'         => SoftwareLicense::getTable(),
+            'INNER JOIN'   => [
+               'glpi_softwares'  => [
+                  'FKEY'   => [
+                     'glpi_softwarelicenses' => 'softwares_id',
+                     'glpi_softwares'        => 'id'
                   ]
                ]
             ],
-            'glpi_states'  => [
-               'FKEY'   => [
-                  'glpi_softwareversions' => 'states_id',
-                  'glpi_states'           => 'id'
+            'LEFT JOIN'    => [
+               'glpi_computers_softwarelicenses'   => [
+                  'FKEY'   => [
+                     'glpi_computers_softwarelicenses'   => 'softwarelicenses_id',
+                     'glpi_softwarelicenses'             => 'id'
+                  ]
+               ],
+               'glpi_softwareversions'   => [
+                  'FKEY'   => [
+                     'glpi_softwareversions' => 'id',
+                     'glpi_softwarelicenses' => 'softwareversions_id_use',
+                     [
+                        'OR' => [
+                           'AND' => [
+                              'glpi_softwarelicenses.softwareversions_id_use' => 0,
+                              'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
+                           ]
+                        ]
+                     ]
+                  ]
+               ],
+               'glpi_states'  => [
+                  'FKEY'   => [
+                     'glpi_softwareversions' => 'states_id',
+                     'glpi_states'           => 'id'
+                  ]
                ]
-            ]
-         ],
-         'WHERE'     => [
-            'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
-            'glpi_computers_softwarelicenses.is_deleted'    => 0,
-         ] + $lic_where,
-         'ORDER'     => ['softname', 'version']
-      ], '', true);
+            ],
+            'WHERE'     => [
+               'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
+               'glpi_computers_softwarelicenses.is_deleted'    => 0,
+            ] + $lic_where,
+            'ORDER'     => ['softname', 'version']
+         ]
+      );
 
       if ($number = $lic_iterator->count()) {
          if ($canedit) {
