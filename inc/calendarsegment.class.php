@@ -83,11 +83,16 @@ class CalendarSegment extends CommonDBChild {
    static function cloneCalendar($oldid, $newid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id`='$oldid'";
+      $result = $DB->request(
+         [
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'calendars_id' => $oldid,
+            ]
+         ]
+      );
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($result as $data) {
          $c                    = new self();
          unset($data['id']);
          $data['calendars_id'] = $newid;

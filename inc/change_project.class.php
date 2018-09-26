@@ -76,8 +76,14 @@ class Change_Project extends CommonDBRelation{
    static function cloneChangeProject ($oldid, $newid) {
       global $DB;
 
-      foreach ($DB->request('glpi_changes_projects',
-                            ['WHERE'  => "`projects_id` = '$oldid'"]) as $data) {
+      $result = $DB->request(
+         [
+            'FROM'  => self::getTable(),
+            'WHERE' => ['projects_id' => $oldid],
+         ]
+      );
+
+      foreach ($result as $data) {
          $cd                  = new Change_Project();
          unset($data['id']);
          $data['projects_id'] = $newid;

@@ -691,22 +691,45 @@ class Certificate extends CommonDBTM {
       foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
          $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
          // Check licenses
-         $query = "SELECT `glpi_certificates`.*
-                   FROM `glpi_certificates`
-                   LEFT JOIN `glpi_alerts`
-                        ON (`glpi_certificates`.`id` = `glpi_alerts`.`items_id`
-                            AND `glpi_alerts`.`itemtype` = '".__CLASS__."'
-                            AND `glpi_alerts`.`type` = '".Alert::END."')
-                   WHERE `glpi_alerts`.`date` IS NULL
-                         AND `glpi_certificates`.`date_expiration` IS NOT NULL
-                         AND DATEDIFF(`glpi_certificates`.`date_expiration`,
-                                      CURDATE()) < '$before'
-                         AND `glpi_certificates`.`entities_id` = '".$entity."'";
+         $result = $DB->request(
+            [
+               'SELECT'    => [
+                  'glpi_certificates.*',
+               ],
+               'FROM'      => self::getTable(),
+               'LEFT JOIN' => [
+                  'glpi_alerts' => [
+                     'FKEY'   => [
+                        'glpi_alerts'       => 'items_id',
+                        'glpi_certificates' => 'id',
+                        [
+                           'AND' => [
+                              'glpi_alerts.itemtype' => __CLASS__,
+                              'glpi_alerts.type'     => Alert::END,
+                           ],
+                        ],
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'glpi_alerts.date'              => null,
+                  [
+                     'NOT' => ['glpi_certificates.date_expiration' => null],
+                  ],
+                  [
+                     'RAW' => [
+                        'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before]
+                     ]
+                  ],
+                  'glpi_certificates.entities_id' => $entity,
+               ],
+            ]
+         );
 
          $message = "";
          $items   = [];
 
-         foreach ($DB->request($query) as $certificate) {
+         foreach ($result as $certificate) {
             $name     = $certificate['name'].' - '.$certificate['serial'];
             //TRANS: %1$s the license name, %2$s is the expiration date
             $message .= sprintf(__('Certificate %1$s expired on %2$s'),

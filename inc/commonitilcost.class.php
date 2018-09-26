@@ -638,10 +638,17 @@ abstract class CommonITILCost extends CommonDBChild {
    static function getCostsSummary($type, $ID) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".getTableForItemtype($type)."`
-                WHERE `".static::$items_id."` = '$ID'
-                ORDER BY `begin_date`";
+      $result = $DB->request(
+         [
+            'FROM'      => getTableForItemtype($type),
+            'WHERE'     => [
+               static::$items_id      => $ID,
+            ],
+            'ORDER'     => [
+               'begin_date'
+            ],
+         ]
+      );
 
       $tab = ['totalcost'   => 0,
                   'actiontime'   => 0,
@@ -650,7 +657,7 @@ abstract class CommonITILCost extends CommonDBChild {
                   'costmaterial' => 0
              ];
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($result as $data) {
          $tab['actiontime']   += $data['actiontime'];
          $tab['costfixed']    += $data['cost_fixed'];
          $tab['costmaterial'] += $data['cost_material'];
