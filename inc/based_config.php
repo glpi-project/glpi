@@ -42,6 +42,8 @@ if (!empty($tz)) {
    date_default_timezone_set(@date_default_timezone_get());
 }
 
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
+
 // If this file exists, it is load
 if (file_exists(GLPI_ROOT. '/config/local_define.php') && !defined('TU_USER')) {
    require_once GLPI_ROOT. '/config/local_define.php';
