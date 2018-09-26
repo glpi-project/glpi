@@ -750,7 +750,7 @@ class Computer_Item extends CommonDBRelation{
                    || Peripheral::canView()
                    || Monitor::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = self::countForMainItem($item);
+                     $nb = self::countForMainItem($item, [ 'is_deleted' => 0 ]);
                   }
                   return self::createTabEntry(_n('Connection', 'Connections', Session::getPluralNumber()),
                                               $nb);
@@ -881,6 +881,24 @@ class Computer_Item extends CommonDBRelation{
     */
    protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
       $params = parent::getListForItemParams($item, $noent);
+      $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
+      return $params;
+   }
+
+   /**
+    * Get items for an itemtype
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id Object id to restrict on
+    * @param string  $itemtype Type for items to retrieve
+    * @param boolean $noent    Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param array   $where    Inital WHERE clause. Defaults to []
+    *
+    * @return array
+    */
+   protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = []) {
+      $params = parent::getTypeItemsQueryParams($items_id, $itemtype, $noent, $where);
       $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
       return $params;
    }
