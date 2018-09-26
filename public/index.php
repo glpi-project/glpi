@@ -1149,7 +1149,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                   ];
                   return $this->view->render(
                      $response,
-                     'history.twig', [
+                     'list_contents.twig', [
                         'search_data'  => $search_data,
                         'item'         => $item
                      ]

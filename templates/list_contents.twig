@@ -76,13 +76,13 @@
 {% endif %}
 
 {% if search_data is not iterable %}
-<div class="callout callout-danger">
-   <h4>{{ __('An error occured loading contents!') }}</h4>
-   <p>
-      {{ __('Please check GLPI logs or contact your administrator.') }}<br/>
-      {{ __('or') }} <a href="#" onclick="return reloadTab()">{{ __('try to reload') }}</a>
-   </p>
-</div>
+      <div class="callout callout-danger">
+         <h4>{{ __('An error occured loading contents!') }}</h4>
+         <p>
+            {{ __('Please check GLPI logs or contact your administrator.') }}<br/>
+            {{ __('or') }} <a href="#" onclick="return reloadTab()">{{ __('try to reload') }}</a>
+         </p>
+      </div>
 {% else %}
       <div class="box-body">
          <form class="form-horizontal" id="search_form" action="{{ path_for('list', {'itemtype': search_data.itemtype }) }}">

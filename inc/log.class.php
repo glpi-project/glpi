@@ -258,7 +258,6 @@ class Log extends CommonDBTM {
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      $SEARCHOPTION = Search::getOptions($itemtype);
       if (isset($_GET["start"])) {
          $start = intval($_GET["start"]);
       } else {
