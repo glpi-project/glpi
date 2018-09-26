@@ -1011,7 +1011,20 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                */
                break;
             case CommonDBTM::SUBITEM_SHOW_SPEC:
-               throw new \RuntimeException('Not implmented!');
+               if ($sub_item instanceof Log) {
+                  return $this->view->render(
+                     $response,
+                     'history.twig', [
+                        'data'   => $sub_item->getHistoryData(
+                           $item,
+                           0,
+                           $_SESSION['glpilist_limit']
+                        )
+                     ]
+                  );
+               } else {
+                  throw new \RuntimeException('No template parameted :/');
+               }
                break;
             default:
                $legacy = true;

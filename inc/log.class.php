@@ -1239,4 +1239,12 @@ class Log extends CommonDBTM {
       return $values;
    }
 
+   /**
+    * Get display type for sub item
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_SPEC;
+   }
 }
