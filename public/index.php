@@ -1012,14 +1012,146 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                break;
             case CommonDBTM::SUBITEM_SHOW_SPEC:
                if ($sub_item instanceof Log) {
+
+                  $sql_filters = Log::convertFiltersValuesToSqlCriteria(
+                     isset($_GET['filters']) ? $_GET['filters'] : []
+                  );
+
+                  // Total Number of events
+                  $count_params = [
+                     'items_id'  => $item->fields['id'],
+                     'itemtype'  => $item->getType()
+                  ];
+
+                  $limit = $_SESSION['glpilist_limit'];
+                  $history_data = $sub_item->getHistoryData(
+                     $item,
+                     0,
+                     $limit
+                  );
+                  foreach ($history_data as &$data) {
+                     $data = [
+                        'display_history' => $data['display_history'],
+                        'id'              => ['displayname' => $data["id"]],
+                        'date_mod'        => ['displayname' => $data["date_mod"]],
+                        'user_name'       => ['displayname' => $data["user_name"]],
+                        'field'           => ['displayname' => $data['field']],
+                        'change'          => ['displayname' => $data['change']],
+                        'datatype'        => $data['datatype'],
+                        'raw'             => $data['raw']
+                     ];
+                  }
+
+                  $count = (count($sql_filters) ? countElementsInTable("glpi_logs", $count_params) : count($history_data));
+
+                  $pages = $count / $limit;
+                  $last = ceil($count / $limit);
+                  $current_page = 1;
+                  $previous = $current_page - 1;
+                  if ($previous < 1) {
+                     $previous = false;
+                  }
+
+                  $next = $current_page +1;
+                  if ($next > $last) {
+                     $next = $last;
+                  }
+
+                  $pagination = [
+                     'start'           => 0,
+                     'limit'           => $limit,
+                     'count'           => $count,
+                     'current_page'    => $current_page,
+                     'previous_page'   => $previous,
+                     'next_page'       => $next,
+                     'last_page'       => $last,
+                     'pages'           => []
+                  ];
+
+                  $idepart = $current_page - 2;
+                  if ($idepart< 1) {
+                     $idepart = 1;
+                  }
+
+                  $ifin = $current_page + 2;
+                  if ($ifin > $last) {
+                     $ifin = $last;
+                  }
+
+                  for ($i = $idepart; $i <= $ifin; $i++) {
+                     $page = [
+                           'value' => $i,
+                           'title' => preg_replace("(%i)", $i, __("Page %i"))
+                     ];
+                     if ($i == $current_page) {
+                           $page['current'] = true;
+                           $page['title'] = preg_replace(
+                              "(%i)",
+                              $i,
+                              __("Current page (%i)")
+                           );
+                     }
+                     $pagination['pages'][] = $page;
+                  }
+
+                  $columns = [
+                     'id'        => [
+                        'itemtype'  => 'Log',
+                        'id'        => 1,
+                        'name'      => __('ID'),
+                        'meta'      => 0,
+                        'searchopt' => []
+                     ],
+                     'date_mod'  => [
+                        'itemtype'  => 'Log',
+                        'id'        => 2,
+                        'name'      => __('Date'),
+                        'meta'      => 0,
+                        'searchopt' => []
+                     ],
+                     'user_name'  => [
+                        'itemtype'  => 'Log',
+                        'id'        => 3,
+                        'name'      => __('User'),
+                        'meta'      => 0,
+                        'searchopt' => []
+                     ],
+                     'field'  => [
+                        'itemtype'  => 'Log',
+                        'id'        => 4,
+                        'name'      => __('Field'),
+                        'meta'      => 0,
+                        'searchopt' => []
+                     ],
+                     'change'  => [
+                        'itemtype'  => 'Log',
+                        'id'        => 5,
+                        'name'      => __('Update'),
+                        'meta'      => 0,
+                        'searchopt' => []
+                     ]
+
+                  ];
+
+                  $search_data = [
+                     'itemtype'        => 'Log',
+                     'data'            => [
+                        'begin'        => 0,
+                        'end'          => $_SESSION['glpilist_limit'],
+                        'totalcount'   => $count,
+                        'cols'         => $columns,
+                        'rows'         => $history_data
+                     ],
+                     'search'    => [
+                        'start'  => 0
+                     ],
+                     'pagination'   => $pagination
+                  ];
                   return $this->view->render(
                      $response,
                      'history.twig', [
-                        'data'   => $sub_item->getHistoryData(
-                           $item,
-                           0,
-                           $_SESSION['glpilist_limit']
-                        )
+                        'search_data'  => $search_data,
+                        'item'         => $item
                      ]
                   );
                } else {

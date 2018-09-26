@@ -428,6 +428,7 @@ class Log extends CommonDBTM {
          $tmp['field']           = "";
          $tmp['change']          = "";
          $tmp['datatype']        = "";
+         $tmp['raw']             = $data;
 
          // This is an internal device ?
          if ($data["linked_action"]) {
