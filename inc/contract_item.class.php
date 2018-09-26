@@ -281,10 +281,17 @@ class Contract_Item extends CommonDBRelation{
          $newitemtype = $itemtype;
       }
 
-      foreach ($DB->request('glpi_contracts_items',
-                            ['FIELDS' => 'contracts_id',
-                                  'WHERE'  => "`items_id` = '$oldid'
-                                                AND `itemtype` = '$itemtype'"]) as $data) {
+      $result = $DB->request(
+         [
+            'SELECT' => 'contracts_id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'items_id' => $oldid,
+               'itemtype' => $itemtype,
+            ],
+         ]
+      );
+      foreach ($result as $data) {
          $contractitem = new self();
          $contractitem->add(['contracts_id' => $data["contracts_id"],
                                   'itemtype'     => $newitemtype,

@@ -182,13 +182,23 @@ abstract class CommonDevice extends CommonDropdown {
       $linktype  = static::getItem_DeviceType();
       $linktable = getTableForItemType($linktype);
 
-      $sql = "SELECT `itemtype`,
-                     GROUP_CONCAT(DISTINCT `items_id`) AS ids
-              FROM `$linktable`
-              WHERE `$linktable`.`".$this->getForeignKeyField()."` = '$ID'
-              GROUP BY `itemtype`";
+      $result = $DB->request(
+         [
+            'SELECT'    => [
+               'itemtype',
+               new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
+            ],
+            'FROM'      => $linktable,
+            'WHERE'     => [
+               $this->getForeignKeyField() => $ID,
+            ],
+            'GROUPBY'   => [
+               'itemtype',
+            ]
+         ]
+      );
 
-      foreach ($DB->request($sql) as $data) {
+      foreach ($result as $data) {
          if (!empty($data["itemtype"])) {
             $itemtable = getTableForItemType($data["itemtype"]);
             if ($item = getItemForItemtype($data["itemtype"])) {

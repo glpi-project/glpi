@@ -53,15 +53,20 @@ if ($_POST['items_id']
    } else {
       $name_field = "`id`";
    }
-   $query = "SELECT `id`, $name_field AS name
-             FROM `".$linktype::getTable()."`
-             WHERE `".$devicetype::getForeignKeyField()."` = '".$_POST['items_id']."'
-                    AND `itemtype` = ''";
-   $result = $DB->request($query);
+   $result = $DB->request(
+      [
+         'SELECT' => ['id', $name_field . ' AS name'],
+         'FROM'   => $linktype::getTable(),
+         'WHERE'  => [
+            $devicetype::getForeignKeyField() => $_POST['items_id'],
+            'itemtype'                        => '',
+         ]
+      ]
+   );
    echo "<table width='100%'><tr><td>" . __('Choose an existing device') . "</td><td rowspan='2'>" .
         __('and/or') . "</td><td>" . __('Add new devices') . '</td></tr>';
    echo "<tr><td>";
-   if ($result->numrows() == 0) {
+   if ($result->count() == 0) {
       echo __('No unaffected device !');
    } else {
       $devices = [];

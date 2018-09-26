@@ -5546,8 +5546,15 @@ abstract class CommonITILObject extends CommonDBTM {
          $plan          = new $tasktype();
          $items         = [];
 
-         foreach ($DB->request($plan->getTable(),
-                               [$item->getForeignKeyField() => $item->fields['id']]) as $plan) {
+         $result = $DB->request(
+            [
+               'FROM'  => $plan->getTable(),
+               'WHERE' => [
+                  $item->getForeignKeyField() => $item->fields['id'],
+               ],
+            ]
+         );
+         foreach ($result as $plan) {
 
             if (isset($plan['begin']) && $plan['begin']) {
                $items[$plan['id']] = $plan['id'];
