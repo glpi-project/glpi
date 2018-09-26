@@ -831,7 +831,7 @@ class Session {
     *
     * You can't use this function if several rights for same module name
     *
-    * @param aarray $modules Array of modules where keys are modules and value are right
+    * @param array $modules Array of modules where keys are modules and value are right
     *
     * @return void
    **/
@@ -969,8 +969,8 @@ class Session {
    /**
     * Have I the right $right to module $module (conpare to session variable)
     *
-    * @param string $module Module to check
-    * @param intger $right  Right to check
+    * @param string  $module Module to check
+    * @param integer $right  Right to check
     *
     * @return boolean
    **/

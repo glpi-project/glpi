@@ -55,7 +55,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
       case 'Profile' :
          $params = ['value' => $_SESSION['glpiactive_entity'],
                          'name'  => $prefix.'entities_id'.$suffix];
-         if (Session::isViewAllEntities()) {
+         if (Session::canViewAllEntities()) {
             $params['toadd'] = [-1 => __('No restriction')];
          }
          echo "<table class='tab_format'><tr><td>";
