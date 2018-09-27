@@ -31,6 +31,7 @@
 
 {% set main_header = main_header|default(false) %}
 {% set form_header = form_header|default(false) %}
+{% set no_checkbox = no_checkbox|default(false) %}
 
 <div class="content">
    <div class="box box-default">
@@ -187,9 +188,11 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
             <table class="table table-bordered table-hover table-striped">
                <thead>
                   <tr>
+   {% if no_checkbox == false %}
                      <th class="sorting" style="width:1em;">
                         <input type="checkbox" class="checkall"/>
                      </th>
+   {% endif %}
    {% for key, header in search_data.data.cols %}
       {#
                $linkto = '';
@@ -268,9 +271,11 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
 #}
    {% for rowkey, row in search_data.data.rows %}
                   <tr>
+      {% if no_checkbox == false %}
                      <td>
                         <input type="checkbox" name="_ids[]" value="{{ row.raw.id }}"/>
                      </td>
+      {% endif %}
       {% for colkey, col in search_data.data.cols %}
       {#
               if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {

@@ -1151,7 +1151,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                      $response,
                      'list_contents.twig', [
                         'search_data'  => $search_data,
-                        'item'         => $item
+                        'item'         => $item,
+                        'no_checkbox'  => true
                      ]
                   );
                } else {
