@@ -1262,11 +1262,6 @@ class Html {
             Html::requireJs('rateit');
          }
 
-         if (in_array('colorpicker', $jslibs)) {
-            echo Html::css('public/lib/spectrum-colorpicker.css');
-            Html::requireJs('colorpicker');
-         }
-
          if (in_array('dashboard', $jslibs)) {
             echo Html::scss('css/dashboard');
             Html::requireJs('dashboard');
@@ -2888,13 +2883,6 @@ JAVASCRIPT;
       }
       $field_id = Html::cleanId("color_".$name.$p['rand']);
       $output   = "<input type='color' id='$field_id' name='$name' value='".$p['value']."'>";
-      $output  .= Html::scriptBlock("$(function() {
-         $('#$field_id').spectrum({
-            preferredFormat: 'hex',
-            showInput: true,
-            showInitial: true
-         });
-      });");
 
       if ($p['display']) {
          echo $output;
@@ -6356,9 +6344,6 @@ JAVASCRIPT;
             break;
          case 'rateit':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit.js';
-            break;
-         case 'colorpicker':
-            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/spectrum-colorpicker.js';
             break;
          case 'fileupload':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/file-type.js';

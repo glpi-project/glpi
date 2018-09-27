@@ -493,6 +493,11 @@ input:required:valid {
    border: 1px solid rgb(211, 211, 211) !important;
 }
 
+input:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field)[type=color] {
+   padding: 0;
+   width: 3em;
+}
+
 span.required {
    color: red;
    margin-left: .2em;

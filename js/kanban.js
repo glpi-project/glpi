@@ -524,7 +524,7 @@
             });
             var name = $(self.create_column_form + " input[name='name']").val();
             $(self.create_column_form + " input[name='name']").val("");
-            var color = $(self.create_column_form + " input[name='color']").spectrum('get').toHexString();
+            var color = $(self.create_column_form + " input[name='color']").val();
             createColumn(name, {color: color}, function() {
                // Refresh add column list
                refreshAddColumnForm();
@@ -1383,7 +1383,6 @@
          create_form += "<input type='button' class='submit kanban-create-column' value='" + __('Create status') + "'/>";
          create_form += "</form></div>";
          $(self.element).prepend(create_form);
-         $(self.create_column_form + " input[type='color']").spectrum();
       };
 
       /**
