@@ -317,4 +317,50 @@ class DB extends \GLPITestCase {
             ->string($this->testedInstance->escape("First\rSecond"))->isIdenticalTo("First\\rSecond")
             ->string($this->testedInstance->escape('Hi, "you"'))->isIdenticalTo('Hi, \\"you\\"');
    }
+
+   protected function commentsProvider() {
+      return [
+         [
+            'sql' => "SQL EXPRESSION;
+/* Here begins a
+   multiline comment */
+OTHER EXPRESSION;
+",
+            'expected'  => "SQL EXPRESSION;
+OTHER EXPRESSION;"
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider commentsProvider
+    */
+   public function testRemoveSqlComments($sql, $expected) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->removeSqlComments($sql))->isIdenticalTo($expected);
+   }
+
+   /**
+    * Sql expressions provider
+    */
+   protected function sqlProvider () {
+      return array_merge([
+         [
+            'sql'       => "SQL;\n-- comment;\n\nSQL2;",
+            'expected'  => "SQL;\n\nSQL2;"
+         ]
+      ], $this->commentsProvider());
+   }
+
+   /**
+    * @dataProvider sqlProvider
+    */
+   public function testRemoveSqlRemarks($sql, $expected) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->removeSqlRemarks($sql))->isIdenticalTo($expected);
+   }
 }
