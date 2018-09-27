@@ -141,15 +141,19 @@ class Search {
       $count = $data['data']['totalcount'];
 
       $this->pages = $count / $limit;
-      $last = ceil($count / $limit);
-      $previous = $this->current_page - 1;
-      if ($previous < 1) {
-         $previous = false;
-      }
+      if ($count > 0) {
+         $last = ceil($count / $limit);
+         $previous = $this->current_page - 1;
+         if ($previous < 1) {
+            $previous = false;
+         }
 
-      $next = $this->current_page +1;
-      if ($next > $last) {
-         $next = $last;
+         $next = $this->current_page +1;
+         if ($next > $last) {
+            $next = $last;
+         }
+      } else {
+         $previous = $next = $first = $last = false;
       }
       $pagination = [
          'start'           => $data['search']['start'],

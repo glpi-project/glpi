@@ -151,24 +151,26 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
 {% endif %}
             <div class="mailbox-controls">
                <div class="pull-right">
+   {% if search_data.data.totalcount > 0 %}
                   {{ __('%1$s-%2$s/%3$s')|format(
                      search_data.search.start + search_data.data.begin + 1,
                      search_data.search.start + search_data.data.end + 1,
                      search_data.data.totalcount
                   ) }}
                   {#{{ __('From %1$d to %2$d of %3$d')|format() }} , $current_start, $current_end, $numrows); #}
+   {% endif %}
                   <div class="btn-group">
                         <a
-                           class="btn btn-default btn-sm"
-                           href="{% if search_data.pagination.previous_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page}) }}{% endif %}"
+                           class="btn btn-default btn-sm{% if search_data.pagination.previous_page == false or search_data.pagination.current_page == search_data.pagination.previous_page %} disabled{% endif %}"
+                           href="{% if search_data.pagination.previous_page == false or search_data.pagination.current_page == search_data.pagination.previous_page %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page}) }}{% endif %}"
                            title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}"
                         >
                            <i class="fa fa-chevron-left"></i>
                            <span class="sr-only">{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}</span>
                         </a>
                         <a
-                           class="btn btn-default btn-sm"
-                           href="{% if search_data.pagination.next_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page}) }}{% endif %}"
+                           class="btn btn-default btn-sm{% if search_data.pagination.next_page == false or search_data.pagination.current_page == search_data.pagination.next_page %} disabled{% endif %}"
+                           href="{% if search_data.pagination.next_page == false or search_data.pagination.current_page == search_data.pagination.next_page %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page}) }}{% endif %}"
                            title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}"
                         >
                            <i class="fa fa-chevron-right"></i>
@@ -388,11 +390,13 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
          </form>
       </div> <!-- /.box-body -->
       <div class="box-footer">
+   {% if search_data.data.totalcount > 0 %}
          {{ __('From %1$d to %2$d of %3$d')|format(
             search_data.search.start + search_data.data.begin + 1,
             search_data.search.start + search_data.data.end + 1,
             search_data.data.totalcount
          ) }}
+   {% endif %}
          <div class="pull-right">
             <ul class="pagination">
                <li class="paginate_button first{% if search_data.pagination.current_page == 1 %} disabled{% endif %}">
@@ -401,7 +405,7 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
                      <span class="sr-only">{{ __("First page") }}</span>
                   </a>
                </li>
-               <li class="paginate_button previous{% if search_data.pagination.previous_page == false %} disabled{% endif %}">
+               <li class="paginate_button previous{% if search_data.pagination.previous_page == false or search_data.pagination.current_page == search_data.pagination.previous_page %} disabled{% endif %}">
                   <a href="{% if search_data.pagination.previous_page == false %}#{% else %}{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.previous_page})}}{% endif %}" title="{{ __("Previous page (%1$s)")|format(search_data.pagination.previous_page) }}">
                      <i class="fa fa-step-backward"></i>
                      <span class="sr-only">
@@ -417,7 +421,7 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
                   </a>
                </li>
 {% endfor %}
-               <li class="paginate_button next{% if search_data.pagination.next_page == false %} disabled{% endif %}">
+               <li class="paginate_button next{% if search_data.pagination.next_page == false or search_data.pagination.current_page == search_data.pagination.next_page %} disabled{% endif %}">
                   <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.next_page })}}" title="{{ __("Next page (%1$s)")|format(search_data.pagination.next_page) }}">
                      <i class="fa fa-step-forward"></i>
                      <span class="sr-only">
@@ -425,7 +429,7 @@ var savesearch;$(function() {savesearch=$('<div />').dialog({
                      </span>
                   </a>
                </li>
-               <li class="paginate_button last{% if search_data.pagination.current_page == search_data.pagination.last_page %} disabled{% endif %}">
+               <li class="paginate_button last{% if search_data.pagination.last_page == false or search_data.pagination.current_page == search_data.pagination.last_page %} disabled{% endif %}">
                   <a href="{{ path_for('list', {'itemtype': search_data.itemtype, 'page': search_data.pagination.last_page }) }}" title="{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}">
                      <i class="fa fa-fast-forward"></i>
                      <span class="sr-only">{{ __("Last page (%1$s)")|format(search_data.pagination.last_page) }}</span>
