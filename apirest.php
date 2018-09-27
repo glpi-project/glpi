@@ -40,8 +40,6 @@ define('DO_NOT_CHECK_HTTP_REFERER', 1);
 ini_set('session.use_cookies', 0);
 
 include_once (GLPI_ROOT . "/inc/based_config.php");
-include_once (GLPI_ROOT . "/inc/define.php");
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
 $api = new APIRest;
 $api->call();

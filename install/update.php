@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 include_once (GLPI_ROOT . "/inc/based_config.php");
-include_once (GLPI_ROOT . "/inc/define.php");
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();

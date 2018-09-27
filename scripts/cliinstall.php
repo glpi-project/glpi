@@ -39,8 +39,6 @@ if (in_array('--tests', $_SERVER['argv'])) { // Uggly, but must be before any ot
 }
 
 include_once (GLPI_ROOT . "/inc/based_config.php");
-include_once (GLPI_ROOT . "/inc/define.php");
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
 $GLPI = new GLPI();

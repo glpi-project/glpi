@@ -164,3 +164,5 @@ if (!defined("GLPI_JQUERY_UPLOADHANDLER")) {
    define("GLPI_JQUERY_UPLOADHANDLER",
           GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
 }
+
+include_once (GLPI_ROOT . "/inc/define.php");
