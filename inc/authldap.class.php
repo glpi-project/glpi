@@ -2757,6 +2757,7 @@ class AuthLDAP extends CommonDBTM {
     *          - condition : ldap condition used
     *
     * @return array|boolean dn of the user, else false
+    * @throws \RuntimeException
     */
    static function searchUserDn($ds, $options = []) {
 
