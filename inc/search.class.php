@@ -2668,6 +2668,7 @@ class Search {
     * @return select string
    **/
    static function addDefaultSelect($itemtype) {
+      global $DB;
 
       $itemtable = getTableForItemType($itemtype);
       $item      = null;
@@ -2695,7 +2696,12 @@ class Search {
       if ($itemtable == 'glpi_entities') {
          $ret .= "`$itemtable`.`id` AS entities_id, '1' AS is_recursive, ";
       } else if ($mayberecursive) {
-         $ret .= "`$itemtable`.`entities_id`, `$itemtable`.`is_recursive`, ";
+         if ($DB->fieldExists($itemtable, 'entities_id')) {
+            $ret .= "`$itemtable`.`entities_id`, ";
+         }
+         if ($DB->fieldExists($itemtable, 'is_recursive')) {
+            $ret .= "`$itemtable`.`is_recursive`, ";
+         }
       }
       return $ret;
    }

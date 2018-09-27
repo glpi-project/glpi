@@ -151,11 +151,13 @@ class DisplayPreference extends CommonDBTM {
          && $itemtype != 'AllAssets'
       ) {
          $rel = new $itemtype;
+         $reltable = getTableForItemType($itemtype);
          if ($rel->maybeDynamic()) {
             //FIXME :(
             //$default_prefs[] = 86;
+            $cs = true;
          }
-         if ($rel->maybeRecursive()) {
+         if ($rel->maybeRecursive() && $DB->fieldExists($reltable, 'is_recursive')) {
             $default_prefs[] = 86;
          }
       }
