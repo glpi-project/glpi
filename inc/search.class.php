@@ -1724,7 +1724,7 @@ class Search {
                      $tmpcheck = "&nbsp;";
 
                   } else if ($data['itemtype'] == 'User'
-                           && !Session::isViewAllEntities()
+                           && !Session::canViewAllEntities()
                            && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
                      $tmpcheck = "&nbsp;";
 
@@ -2924,7 +2924,7 @@ class Search {
          // No link
          case 'User' :
             // View all entities
-            if (!Session::isViewAllEntities()) {
+            if (!Session::canViewAllEntities()) {
                $condition = getEntitiesRestrictRequest("", "glpi_profiles_users", '', '', true);
             }
             break;
