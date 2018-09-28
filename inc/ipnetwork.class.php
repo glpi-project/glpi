@@ -1024,7 +1024,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       parent::title();
 
       if (Session::haveRight('internet', UPDATE)
-          && Session::isViewAllEntities()) {
+          && Session::canViewAllEntities()) {
 
          echo "<div class='spaced' id='tabsbody'>";
          echo "<table class='tab_cadre_fixe'>";

@@ -118,7 +118,17 @@ The present file will list all changes made to the project; according to the
   - `CommonDBTM::TYPE_MISMATCH`
 
 
-## [9.3.1] unreleased
+## [9.3.2] unreleased
+
+### API changes
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Session::isViewAllEntities()`
+
+## [9.3.1] 2018-09-12
 
 ### Added
 - List receivers folders to choose imported/refused folders
