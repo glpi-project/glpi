@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - Ability to link project with problems and tickets.
+- Search on devices from Printers and Network equipments
 
 ### Changed
 - `license_id` field in `glpi_items_operatingsystems` table has been renamed to `licenseid`

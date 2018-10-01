@@ -206,4 +206,41 @@ class DeviceProcessor extends CommonDevice {
                    'frequence'            => 'delta:10'];
    }
 
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => 'glpi_deviceprocessors',
+         'field'              => 'designation',
+         'name'               => __('Processor'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_deviceprocessors',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '36',
+         'table'              => 'glpi_items_deviceprocessors',
+         'field'              => 'frequency',
+         'name'               => __('Processor frequency'),
+         'unit'               => 'MHz',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'width'              => 100,
+         'massiveaction'      => false,
+         'joinparams'         => $main_joinparams,
+         'computation'        => 'SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)'
+      ];
+
+      return $tab;
+   }
 }

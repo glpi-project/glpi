@@ -190,6 +190,29 @@ function update93to94() {
    // Add a config entry for the CAS version
    $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
+   /** Factorize components search options on Computers, Printers and NetworkEquipments */
+   $so_maping = [
+      '10'  => '110',
+      '35'  => '111',
+      '11'  => '112',
+      '20'  => '113',
+      '15'  => '114',
+      '34'  => '115',
+      '39'  => '116',
+      '95'  => '117'
+   ];
+   foreach ($so_maping as $old => $new) {
+      $DB->updateOrDie(
+         'glpi_displaypreferences', [
+            'num' => $new
+         ], [
+            'num'       => $old,
+            'itemtype'  => 'Computer'
+         ]
+      );
+   }
+   /** /Factorize components search options on Computers, Printers and NetworkEquipments */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
