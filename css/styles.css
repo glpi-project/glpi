@@ -789,7 +789,7 @@ input.submit[type=reset] {
    }
 
    .layout_vsplit #page .glpi_tabs {
-      height: 96%;
+      height: calc(100% - 50px);
       position: relative;
       z-index:1;
    }
@@ -833,7 +833,7 @@ input.submit[type=reset] {
       overflow-y: auto;
       position: absolute;
       top: 0;
-      bottom: 50px;
+      bottom: 33px;
    }
 
    .layout_classic #tabspanel + div.ui-tabs:not(.horizontal),
