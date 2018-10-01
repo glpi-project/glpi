@@ -4409,7 +4409,7 @@ td.diff del {
 /** "slide panel" component */
 
 .slidepanel {
-   z-index: 100;
+   z-index: 1000;
    position: fixed;
    width: 30em;
    max-width: 40%;
