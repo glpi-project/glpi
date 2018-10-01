@@ -811,6 +811,141 @@ class Printer  extends CommonDBTM {
 
       $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
+      $name = _n('Component', 'Components', Session::getPluralNumber());
+      $tab[] = [
+          'id'                => 'periph',
+          'name'              => $name
+      ];
+
+      $items_device_joinparams   = ['jointype'          => 'itemtype_item',
+                                    'specific_itemtype' => 'Printer'];
+
+      $tab[] = [
+         'id'                 => '110',
+         'table'              => 'glpi_devicememories',
+         'field'              => 'designation',
+         'name'               => $name . ' - ' . __('Memory type'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicememories',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '111',
+         'table'              => 'glpi_items_devicememories',
+         'field'              => 'size',
+         'unit'               => 'auto',
+         'name'               => $name . ' - ' . __('Memory'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'width'              => 100,
+         'massiveaction'      => false,
+         'joinparams'         => $items_device_joinparams,
+         'computation'        => '(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)'
+      ];
+
+      $tab[] = [
+         'id'                 => '112',
+         'table'              => 'glpi_devicenetworkcards',
+         'field'              => 'designation',
+         'name'               => $name . ' - ' . __('Network interface'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicenetworkcards',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '113',
+         'table'              => 'glpi_items_devicenetworkcards',
+         'field'              => 'mac',
+         'name'               => $name . ' - ' . __('MAC address'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => $items_device_joinparams
+      ];
+
+      $tab[] = [
+         'id'                 => '114',
+         'table'              => 'glpi_deviceharddrives',
+         'field'              => 'designation',
+         'name'               => $name . ' - ' . __('Hard drive type'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_deviceharddrives',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '115',
+         'table'              => 'glpi_items_deviceharddrives',
+         'field'              => 'capacity',
+         'name'               => $name . ' - ' . __('Hard drive size'),
+         'unit'               => 'Mio',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'joinparams'         => $items_device_joinparams,
+         'computation'        => '(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
+                                       * COUNT(DISTINCT TABLE.`id`)'
+      ];
+
+      $tab[] = [
+         'id'                 => '116',
+         'table'              => 'glpi_devicepowersupplies',
+         'field'              => 'designation',
+         'name'               => $name . ' - ' . __('Power supply'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicepowersupplies',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '117',
+         'table'              => 'glpi_devicepcis',
+         'field'              => 'designation',
+         'name'               => $name . ' - ' . __('Other component'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicepcis',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
       return $tab;
    }
 
