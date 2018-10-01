@@ -948,6 +948,109 @@ class Document_Item extends CommonDBRelation{
     *
     * @param integer $items_id Object id to restrict on
     * @param string  $itemtype Type for items to retrieve
+    * @param boolean $noent    Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param array   $where    Inital WHERE clause. Defaults to []
+    *
+    * @return array
+    */
+   protected static function getMainTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = []) {
+      global $DB;
+
+      $item = getItemForItemtype($itemtype);
+      $order_col = $item->getNameField();
+
+      if ($item instanceof CommonDevice) {
+         $order_col = "designation";
+      } else if ($item instanceof Item_Devices) {
+         $order_col = "itemtype";
+      } else if ($itemtype == 'Ticket') {
+         $order_col = 'id';
+      }
+
+      if (!count($where)) {
+         $where = [static::getTable() . '.' . static::$items_id_1  => $items_id];
+      }
+
+      $link_table = $item->getTable();
+      $link_id    = 'items_id';
+
+      $params = [
+         'SELECT'    => [
+            static::getTable() . '.id AS linkid',
+            $link_table . '.*'
+         ],
+         'FROM'      => static::getTable(),
+         'LEFT JOIN' => [
+            $link_table => [
+               'FKEY' => [
+                  static::getTable()   => $link_id,
+                  $link_table          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => $where,
+         'ORDER'     => $link_table . '.' . $order_col
+      ];
+
+      $rel_class = static::class;
+      $rel = new $rel_class();
+      if ($rel->maybeDynamic()) {
+         $params['SELECT'][] = static::getTable() . '.is_dynamic';
+      }
+
+      if ($rel->maybeRecursive()) {
+         $params['SELECT'][] = static::getTable() . '.is_recursive';
+      }
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype')) {
+         $params['WHERE'][static::getTable() . '.itemtype'] = $itemtype;
+      }
+
+      if ($item->maybeTemplate()) {
+         $params['WHERE'][$link_table . '.is_template'] = 0;
+      }
+
+      if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::getType()) {
+         $params['SELECT'][] = 'glpi_entities.id AS entity';
+         $params['LEFT JOIN']['glpi_entities'] = [
+            'FKEY'   => [
+               $link_table       => 'entities_id',
+               'glpi_entities'   => 'id'
+            ]
+         ];
+         $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', true);
+         $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
+      }
+
+      return $params;
+   }
+
+   /**
+    * Get items for an itemtype
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id Object id to restrict on
+    * @param string  $itemtype Type for items to retrieve
+    *
+    * @return DBMysqlIterator
+    */
+   public static function getTypeItems($items_id, $itemtype) {
+      global $DB;
+
+      $params = static::getTypeItemsQueryParams($items_id, $itemtype);
+      $iterator = $DB->request($params);
+
+      return $iterator;
+   }
+
+   /**
+    * Get items for an itemtype
+    *
+    * @since 9.3.1
+    *
+    * @param integer $items_id Object id to restrict on
+    * @param string  $itemtype Type for items to retrieve
     * @param boolean $noent    Flag to not compute enitty informations (see Document_Item::getTypeItemsQueryParams)
     * @param array   $where    Inital WHERE clause. Defaults to []
     *
@@ -963,10 +1066,10 @@ class Document_Item extends CommonDBRelation{
       ]];
 
       if ($itemtype != 'KnowbaseItem') {
-         $params = parent::getTypeItemsQueryParams($items_id, $itemtype, $noent, $commonwhere);
+         $params = self::getMainTypeItemsQueryParams($items_id, $itemtype, $noent, $commonwhere);
       } else {
          //KnowbaseItem case: no entity restriction, we'll manage it here
-         $params = parent::getTypeItemsQueryParams($items_id, $itemtype, true, $commonwhere);
+         $params = self::getMainTypeItemsQueryParams($items_id, $itemtype, true, $commonwhere);
          $params['SELECT'][] = new QueryExpression('-1 AS entity');
          $kb_params = KnowbaseItem::getVisibilityCriteria();
 
@@ -989,17 +1092,18 @@ class Document_Item extends CommonDBRelation{
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getTypeItemsQueryParams)
+    * @param CommonDBTM $item     Item instance
+    * @param boolean    $noent    Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    * @param array      $where    Inital WHERE clause. Defaults to []
     *
     * @return array
     */
-   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
-
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false, $itemtype = null, $where = []) {
       if (Session::getLoginUserID()) {
-         $params = parent::getListForItemParams($item);
+         $params = parent::getListForItemParams($item, false, $itemtype, $where);
       } else {
-         $params = parent::getListForItemParams($item, true);
+         $params = parent::getListForItemParams($item, true, $itemtype, $where);
          // Anonymous access from FAQ
          $params['WHERE'][self::getTable() . '.entities_id'] = 0;
       }

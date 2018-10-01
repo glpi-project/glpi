@@ -256,7 +256,7 @@ class Certificate_Item extends CommonDBRelation {
          }
 
          if ($item->canView()) {
-            $iterator = self::getTypeItems($instID, $itemtype);
+            $iterator = self::getListForItem($certificate, $itemtype);
 
             if (count($iterator)) {
                Session::initNavigateListItems($itemtype, Certificate::getTypeName(2) . " = " . $certificate->fields['name']);

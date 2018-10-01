@@ -191,6 +191,8 @@ class Contract_Item extends CommonDBRelation{
 
       $items = [];
 
+      $contract = new Contract();
+      $contract->getFromDB($contract_id);
       $types_iterator = self::getDistinctTypes($contract_id);
       $number = count($iterator);
 
@@ -203,7 +205,7 @@ class Contract_Item extends CommonDBRelation{
          }
          $itemtable = getTableForItemType($itemtype);
 
-         $iterator = self::getTypeItems($contract_id, $itemtype);
+         $iterator = self::getListForItem($contract, $itemtype);
          $nb = count($iterator);
 
          while ($objdata = $iterator->next()) {

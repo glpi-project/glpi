@@ -156,7 +156,7 @@ class Item_Project extends CommonDBRelation{
          }
 
          if ($item->canView()) {
-            $iterator = self::getTypeItems($instID, $itemtype);
+            $iterator = self::getListForItem($project, $itemtype);
             $nb = count($iterator);
 
             $prem = true;

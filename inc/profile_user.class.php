@@ -1073,13 +1073,15 @@ class Profile_User extends CommonDBRelation {
     *
     * @since 9.3.1
     *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param CommonDBTM $item     Item instance
+    * @param boolean    $noent    Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    * @param array      $where    Inital WHERE clause. Defaults to []
     *
     * @return array
     */
-   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
-      $params = parent::getListForItemParams($item, $noent);
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false, $itemtype = null, $where = []) {
+      $params = parent::getListForItemParams($item, $noent, $itemtype, $where);
       $params['SELECT'][] = self::getTable() . '.entities_id';
       $params['SELECT'][] = self::getTable() . '.is_recursive';
       $params['SELECT'][] = 'glpi_entities.completename AS completename';

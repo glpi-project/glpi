@@ -160,7 +160,7 @@ class Item_Problem extends CommonDBRelation{
          }
 
          if ($item->canView()) {
-            $iterator = self::getTypeItems($instID, $itemtype);
+            $iterator = self::getListForItem($problem, $itemtype);
             $nb = count($iterator);
 
             $prem = true;
