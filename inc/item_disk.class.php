@@ -257,7 +257,7 @@ class Item_Disk extends CommonDBChild {
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='".Item_Disk::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
+               "<a class='vsubmit' href='".self::getFormURL()."?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a volume');
          echo "</a></div>\n";
@@ -350,4 +350,120 @@ class Item_Disk extends CommonDBChild {
       echo "</div>";
    }
 
+   public static function rawSearchOptionsToAdd($itemtype) {
+      $tab = [];
+
+      $name = _n('Volume', 'Volumes', Session::getPluralNumber());
+      $tab[] = [
+          'id'                 => 'disk',
+          'name'               => $name
+      ];
+
+      $tab[] = [
+         'id'                 => '156',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '150',
+         'table'              => self::getTable(),
+         'field'              => 'totalsize',
+         'unit'               => 'auto',
+         'name'               => __('Global size'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '151',
+         'table'              => self::getTable(),
+         'field'              => 'freesize',
+         'unit'               => 'auto',
+         'name'               => __('Free size'),
+         'forcegroupby'       => true,
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '152',
+         'table'              => self::getTable(),
+         'field'              => 'freepercent',
+         'name'               => __('Free percentage'),
+         'forcegroupby'       => true,
+         'datatype'           => 'decimal',
+         'width'              => 2,
+         'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
+         'computationgroupby' => true,
+         'unit'               => '%',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '153',
+         'table'              => self::getTable(),
+         'field'              => 'mountpoint',
+         'name'               => __('Mount point'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '154',
+         'table'              => self::getTable(),
+         'field'              => 'device',
+         'name'               => __('Partition'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '155',
+         'table'              => 'glpi_filesystems',
+         'field'              => 'name',
+         'name'               => __('File system'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
+
+      return $tab;
+   }
 }
