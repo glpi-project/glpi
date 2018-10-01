@@ -4410,7 +4410,7 @@ td.diff del {
 
 .slidepanel {
    z-index: 100;
-   position: absolute;
+   position: fixed;
    width: 30em;
    max-width: 40%;
    background: white;
