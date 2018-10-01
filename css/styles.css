@@ -41,7 +41,6 @@ body {
    margin: 0;
    padding: 0;
    background:  #f8f7f3;
-   position: relative;
    height: auto;
    min-height: 100%;
 }
@@ -4426,8 +4425,8 @@ td.diff del {
 /** "slide panel" component */
 
 .slidepanel {
-   z-index: 100;
-   position: absolute;
+   z-index: 1000;
+   position: fixed;
    width: 30em;
    max-width: 40%;
    background: white;
