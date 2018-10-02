@@ -667,28 +667,28 @@ class Reservation extends CommonDBChild {
       }
 
       echo "</td></tr>\n";
+
+      $uid = (empty($ID) ? Session::getLoginUserID() : $resa->fields['users_id']);
+      echo "<tr class='tab_bg_2'><td>".__('By')."</td>";
+      echo "<td>";
       if (!Session::haveRight("reservation", UPDATE)
           || is_null($item)
           || !Session::haveAccessToEntity($item->fields["entities_id"])) {
 
-         echo "<input type='hidden' name='users_id' value='".Session::getLoginUserID()."'>";
-
+         echo "<input type='hidden' name='users_id' value='".$uid."'>";
+         echo Dropdown::getDropdownName(
+            User::getTable(),
+            $uid
+         );
       } else {
-         echo "<tr class='tab_bg_2'><td>".__('By')."</td>";
-         echo "<td>";
-         if (empty($ID)) {
-            User::dropdown(['value'  => Session::getLoginUserID(),
-                            'entity' => $item->getEntityID(),
-                            'entity_sons' => $item->isRecursive(),
-                            'right'  => 'all']);
-         } else {
-            User::dropdown(['value'  => $resa->fields["users_id"],
-                            'entity' => $item->getEntityID(),
-                            'entity_sons' => $item->isRecursive(),
-                            'right'  => 'all']);
-         }
-         echo "</td></tr>\n";
+         User::dropdown([
+            'value'        => $uid,
+            'entity'       => $item->getEntityID(),
+            'entity_sons'  => $item->isRecursive(),
+            'right'        => 'all'
+         ]);
       }
+      echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
       $rand_begin = Html::showDateTimeField("resa[begin]",
                                             ['value'      => $resa->fields["begin"],
