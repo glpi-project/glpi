@@ -1139,7 +1139,8 @@ abstract class CommonITILObject extends CommonDBTM {
             // Add current level to do
             $ola->addLevelToDo($this, $this->fields["ttr_olalevels_id"]);
 
-         } else {
+         } else if (in_array("internal_time_to_resolve", $this->fields)) {
+            // Change doesn't have internal_time_to_resolve
             // Using calendar
             if (($calendars_id > 0)
                 && $calendar->getFromDB($calendars_id)) {
