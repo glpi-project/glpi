@@ -1077,4 +1077,16 @@ JAVASCRIPT;
 
       return $input;
    }
+
+   function getRawName() {
+      $rack = new Rack();
+      $rack->getFromDB($this->fields['racks_id']);
+      $name = sprintf(
+         __('Item for rack "%1$s"'),
+         $rack->getName()
+      );
+
+      return $name;
+   }
+
 }
