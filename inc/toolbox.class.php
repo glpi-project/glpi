@@ -1119,9 +1119,21 @@ class Toolbox {
          // This is not a SELinux system
          return 0;
       }
-      $mode = exec("/usr/sbin/getenforce");
-      if (empty($mode)) {
-         $mode = "Unknown";
+      if (function_exists('selinux_getenforce')) { // Use https://pecl.php.net/package/selinux
+         $mode = selinux_getenforce();
+         // Make it human readable, with same output as the command
+         if ($mode > 0) {
+            $mode = 'Enforcing';
+         } else if ($mode < 0) {
+            $mode = 'Disabled';
+         } else {
+            $mode = 'Permissive';
+         }
+      } else {
+         $mode = exec("/usr/sbin/getenforce");
+         if (empty($mode)) {
+            $mode = "Unknown";
+         }
       }
       //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
       $msg  = sprintf(__('SELinux mode is %s'), $mode);
@@ -1144,17 +1156,19 @@ class Toolbox {
       // Enforcing mode will block some feature (notif, ...)
       // Permissive mode will write lot of stuff in audit.log
 
-      if (!file_exists('/usr/sbin/getenforce')) {
-         // should always be there
-         return 0;
-      }
       $bools = ['httpd_can_network_connect', 'httpd_can_network_connect_db',
                      'httpd_can_sendmail'];
       $msg2 = __s('Some features may require this to be on');
       foreach ($bools as $bool) {
-         $state = exec('/usr/sbin/getsebool '.$bool);
-         if (empty($state)) {
-            $state = "$bool --> unkwown";
+         if (function_exists('selinux_get_boolean_active')) {
+            $state = selinux_get_boolean_active($bool);
+            // Make it human readable, with same output as the command
+            $state = "$bool --> " . ($state ? 'on' : 'off');
+         } else {
+            $state = exec('/usr/sbin/getsebool '.$bool);
+            if (empty($state)) {
+               $state = "$bool --> unkwown";
+            }
          }
          //TRANS: %s is an option name
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
