@@ -2320,7 +2320,8 @@ class Rule extends CommonDBTM {
 
             case "dropdown_priority" :
                Ticket::dropdownPriority(['name'  => $name,
-                                              'value' => $value]);
+                                              'value' => $value,
+                                              'withmajor' => true]);
                $display = true;
                break;
 
