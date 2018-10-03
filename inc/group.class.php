@@ -80,6 +80,7 @@ class Group extends CommonTreeDropdown {
    function post_getEmpty () {
 
       $this->fields['is_requester'] = 1;
+      $this->fields['is_watcher']   = 1;
       $this->fields['is_assign']    = 1;
       $this->fields['is_notify']    = 1;
       $this->fields['is_itemgroup'] = 1;
