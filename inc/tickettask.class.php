@@ -251,6 +251,48 @@ class TicketTask  extends CommonITILTask {
       return $values;
    }
 
+   /**
+    * Dropdown of tickettask state
+    *
+    * @param $name   select name
+    * @param $value  default value (default '')
+    * @param $display  display of send string ? (true by default)
+    * @param $options  options
+   **/
+   static function dropdownState($name, $value = '', $display = true, $options = []) {
+
+      $values = [0 => _n('Information', 'Information', 1),
+                      1 => __('To do'),
+                      2 => __('Done')];
+
+      return Dropdown::showFromArray($name, $values, array_merge(['value'   => $value,
+                                                                  'display' => $display], $options));
+   }
+
+    /**
+    * Get object state name
+    *
+    * @param $value state ID
+   **/
+   static function getStateName($value) {
+
+      switch ($value) {
+         case 0 :
+            return __('Information');
+
+         case 1 :
+            return __('To do');
+
+         case 2 :
+            return __('Done');
+
+         default :
+            // Return $value if not define
+            return $value;
+
+      }
+   }
+
 
    /**
     * @since 0.90
