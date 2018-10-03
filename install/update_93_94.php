@@ -178,7 +178,7 @@ function update93to94() {
 
    /** Add watcher visibility to groups */
    if (!$DB->fieldExists('glpi_groups', 'is_watcher')) {
-      if ($migration->addField('glpi_groups', 'is_watcher', 'integer', ['after' => 'is_requester'])) {
+      if ($migration->addField('glpi_groups', 'is_watcher', "tinyint(1) NOT NULL DEFAULT '1'", ['after' => 'is_requester'])) {
          $migration->addKey('glpi_groups', 'is_watcher');
          $migration->migrationOneTable('glpi_groups');
       }
