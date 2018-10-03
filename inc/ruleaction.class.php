@@ -400,7 +400,8 @@ class RuleAction extends CommonDBChild {
                    'send'                => __('Send'),
                    'add_validation'      => __('Send'),
                    'fromuser'            => __('Copy from user'),
-                   'fromitem'            => __('Copy from item')];
+                   'fromitem'            => __('Copy from item'),
+                   'updatetasks'         => __('Update tasks')];
    }
 
 
@@ -459,7 +460,8 @@ class RuleAction extends CommonDBChild {
             if (isset($actions_options[$action["field"]])
                  && ($action["field"] != 'groups_id_validate')
                  && ($action["field"] != 'users_id_validate')
-                 && ($action["field"] != 'affectobject')) {
+                 && ($action["field"] != 'affectobject')
+                 && ($action["field"] != 'updatetasks')) {
                $actions[$action["field"]] = $action["field"];
             }
          }
@@ -622,6 +624,11 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_validation_percent" :
                      $ticket = new Ticket();
                      echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
+                     $display       = true;
+                     break;
+
+                  case "dropdown_taskstate" :
+                     TicketTask::dropdownState("value", $param['value']);
                      $display       = true;
                      break;
 

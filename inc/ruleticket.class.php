@@ -206,6 +206,17 @@ class RuleTicket extends Rule {
                      }
                   }
 
+                  // special case of tasks status
+                  if ($action->fields["field"] == '_tasks_status') {
+                     $tickettask = new TicketTask();
+                     $tasks = $tickettask->find('state IN (0, 1) AND tickets_id = '.$output['id']);
+
+                     foreach ($tasks as $task) {
+                        $task['state'] = $action->fields["value"];
+                        $tickettask->update($task);
+                     }
+                  }
+
                   // Special case of slas_ttr_id & slas_tto_id & olas_ttr_id & olas_tto_id
                   if ($action->fields["field"] === 'slas_ttr_id'
                       || $action->fields["field"] === 'slas_tto_id'
@@ -498,6 +509,9 @@ class RuleTicket extends Rule {
       $criterias['olas_tto_id']['type']                     = 'dropdown';
       $criterias['olas_tto_id']['condition']                = "`glpi_olas`.`type` = '".SLM::TTO."'";
 
+      $criterias['status']['name']                          = __('Status');
+      $criterias['status']['type']                          = 'dropdown_status';
+
       return $criterias;
    }
 
@@ -660,6 +674,11 @@ class RuleTicket extends Rule {
       $actions['requesttypes_id']['name']                   = __('Request source');
       $actions['requesttypes_id']['type']                   = 'dropdown';
       $actions['requesttypes_id']['table']                  = 'glpi_requesttypes';
+
+      $actions['_tasks_status']['name']                     = _n('Ticket task', 'Ticket tasks', 2).' - '.__('Statut');
+      $actions['_tasks_status']['field']                    = '_tasks_status';
+      $actions['_tasks_status']['type']                     = 'dropdown_taskstate';
+      $actions['_tasks_status']['force_actions']            = ['assign'];
 
       return $actions;
    }

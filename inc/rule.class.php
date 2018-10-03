@@ -2414,6 +2414,9 @@ class Rule extends CommonDBTM {
             case "dropdown_management" :
                return Dropdown::getGlobalSwitch($value);
 
+            case "dropdown_taskstate" :
+               return TicketTask::getStateName($value);
+
             default :
                return $this->displayAdditionRuleActionValue($value);
          }
