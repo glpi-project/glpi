@@ -119,6 +119,9 @@ if (isset($_POST["type"])
             if ($_POST["actortype"] == 'assign') {
                $cond = '`is_assign`';
             }
+            if ($_POST["actortype"] == 'observer') {
+               $cond = '`is_watcher`';
+            }
 
             $param = ['name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
                            'entity'    => $_POST['entity_restrict'],
