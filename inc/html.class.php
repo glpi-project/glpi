@@ -2888,6 +2888,7 @@ class Html {
           && ($value != 'TODAY')
           && !preg_match("/\d{4}-\d{2}-\d{2}.*/", $value)
           && !strstr($value, 'HOUR')
+          && !strstr($value, 'MINUTE')
           && !strstr($value, 'DAY')
           && !strstr($value, 'WEEK')
           && !strstr($value, 'MONTH')
@@ -2983,6 +2984,10 @@ class Html {
       if ($params['with_time']) {
          for ($i=1; $i<=24; $i++) {
             $dates['-'.$i.'HOUR'] = sprintf(_n('- %d hour', '- %d hours', $i), $i);
+         }
+
+         for ($i=1; $i<=15; $i++) {
+            $dates['-'.$i.'MINUTE'] = sprintf(_n('- %d minute', '- %d minutes', $i), $i);
          }
       }
 
@@ -3116,7 +3121,7 @@ class Html {
 
       // Search on +- x days, hours...
       if (preg_match("/^(-?)(\d+)(\w+)$/", $val, $matches)) {
-         if (in_array($matches[3], ['YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'])) {
+         if (in_array($matches[3], ['YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR', 'MINUTE'])) {
             $nb = intval($matches[2]);
             if ($matches[1] == '-') {
                $nb = -$nb;
@@ -3144,6 +3149,11 @@ class Html {
 
                case "DAY" :
                   $day += $nb;
+                  break;
+
+               case "MINUTE" :
+                  $format_use = "Y-m-d H:i:s";
+                  $minute    += $nb;
                   break;
 
                case "HOUR" :
