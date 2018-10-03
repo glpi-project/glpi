@@ -176,6 +176,15 @@ function update93to94() {
    );
    /** Rename non fkey field */
 
+   /** Add watcher visibility to groups */
+   if (!$DB->fieldExists('glpi_groups', 'is_watcher')) {
+      if ($migration->addField('glpi_groups', 'is_watcher', 'integer', ['after' => 'is_requester'])) {
+         $migration->addKey('glpi_groups', 'is_watcher');
+         $migration->migrationOneTable('glpi_groups');
+      }
+   }
+   /** Add watcher visibility to groups */
+
    Config::deleteConfigurationValues('core', $config_to_drop);
 
    // Add a config entry for the CAS version

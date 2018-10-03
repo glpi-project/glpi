@@ -260,6 +260,12 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Watcher')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_watcher', $this->fields['is_watcher']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Assigned to')."</td><td>";
       Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
