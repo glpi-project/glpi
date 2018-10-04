@@ -254,10 +254,12 @@ class TicketTask  extends CommonITILTask {
    /**
     * Dropdown of tickettask state
     *
-    * @param $name   select name
-    * @param $value  default value (default '')
-    * @param $display  display of send string ? (true by default)
-    * @param $options  options
+    * @param string $name   select name
+    * @param string $value  default value (default '')
+    * @param boolean $display  display of send string ? (true by default)
+    * @param array $options  options
+    *
+    * @return string from Dropdown::showFromArray function (html output)
    **/
    static function dropdownState($name, $value = '', $display = true, $options = []) {
 
@@ -272,7 +274,9 @@ class TicketTask  extends CommonITILTask {
     /**
     * Get object state name
     *
-    * @param $value state ID
+    * @param integer $value state ID
+    *
+    * @return string translation for value supplied
    **/
    static function getStateName($value) {
 
