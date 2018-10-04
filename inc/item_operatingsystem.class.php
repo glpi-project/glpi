@@ -380,7 +380,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '45',
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -398,7 +398,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '46',
          'table'              => 'glpi_operatingsystemversions',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Version'),
+         'name'               => __('Version'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -416,7 +416,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '41',
          'table'              => 'glpi_operatingsystemservicepacks',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Service pack'),
+         'name'               => __('Service pack'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -434,7 +434,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '43',
          'table'              => 'glpi_items_operatingsystems',
          'field'              => 'license_number',
-         'name'               => __('Operating System') . ' - ' . __('Serial number'),
+         'name'               => __('Serial number'),
          'datatype'           => 'string',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -447,7 +447,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '44',
          'table'              => 'glpi_items_operatingsystems',
          'field'              => 'licenseid',
-         'name'               => __('Operating System') . ' - ' . __('Product ID'),
+         'name'               => __('Product ID'),
          'datatype'           => 'string',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -460,7 +460,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '61',
          'table'              => 'glpi_operatingsystemarchitectures',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Architecture'),
+         'name'               => __('Architecture'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -478,7 +478,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '64',
          'table'              => 'glpi_operatingsystemkernels',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . _n('Kernel', 'Kernels', 1),
+         'name'               => _n('Kernel', 'Kernels', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -501,7 +501,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '48',
          'table'              => 'glpi_operatingsystemkernelversions',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . _n('Kernel version', 'Kernel versions', 1),
+         'name'               => _n('Kernel version', 'Kernel versions', 1),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -519,7 +519,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '63',
          'table'              => 'glpi_operatingsystemeditions',
          'field'              => 'name',
-         'name'               => __('Operating System') . ' - ' . __('Edition'),
+         'name'               => __('Edition'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
