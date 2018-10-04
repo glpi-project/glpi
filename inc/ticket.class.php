@@ -1005,7 +1005,7 @@ class Ticket extends CommonITILObject {
 
       // TODO Should CommonITILTask be a CommonDBChild ?
       $tt = new TicketTask();
-      $tt->deleteByCriteria(['changes_id' => $this->fields['id']]);
+      $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
 
       $this->deleteChildrenAndRelationsFromDb(
          [
