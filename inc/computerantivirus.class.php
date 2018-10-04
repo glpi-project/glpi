@@ -134,7 +134,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '167',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -147,7 +147,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '168',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'antivirus_version',
-         'name'               => $name . ' - ' . __('Version'),
+         'name'               => __('Version'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'text',
@@ -161,7 +161,7 @@ class ComputerAntivirus extends CommonDBChild {
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'is_active',
          'linkfield'          => '',
-         'name'               => $name . ' - ' . __('Active'),
+         'name'               => __('Active'),
          'datatype'           => 'bool',
          'joinparams'         => [
             'jointype'           => 'child'
@@ -176,7 +176,7 @@ class ComputerAntivirus extends CommonDBChild {
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'is_uptodate',
          'linkfield'          => '',
-         'name'               => $name . ' - ' . __('Is up to date'),
+         'name'               => __('Is up to date'),
          'datatype'           => 'bool',
          'joinparams'         => [
             'jointype'           => 'child'
@@ -190,7 +190,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '171',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'signature_version',
-         'name'               => $name . ' - ' . __('Signature database version'),
+         'name'               => __('Signature database version'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'text',
@@ -203,7 +203,7 @@ class ComputerAntivirus extends CommonDBChild {
          'id'                 => '172',
          'table'              => 'glpi_computerantiviruses',
          'field'              => 'date_expiration',
-         'name'               => $name . ' - ' . __('Expiration date'),
+         'name'               => __('Expiration date'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'date',
