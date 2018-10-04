@@ -2264,15 +2264,15 @@ class CommonDBTM extends CommonGLPI {
                $othertable = preg_replace('/^_/', '', $othertable); // Remove "_"prefix
 
                // Do nothing if no relation with self
-               if(!isset($rel[$tablename]) && !isset($rel['_' . $tablename])) {
+               if (!isset($rel[$tablename]) && !isset($rel['_' . $tablename])) {
                   continue;
                }
                // Do nothing on recursive relations
-               if($othertable == $tablename) {
+               if ($othertable == $tablename) {
                   continue;
                }
                // Do nothing if parsing self relations descriptions
-               if($othertable == $this->getTable()) {
+               if ($othertable == $this->getTable()) {
                   continue;
                }
 
