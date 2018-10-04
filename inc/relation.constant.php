@@ -476,7 +476,6 @@ $RELATION = [
       '_glpi_networkaliases'             => 'entities_id',
       'glpi_networkequipments'           => 'entities_id',
       'glpi_networknames'                => 'entities_id',
-      'glpi_networkportmigrations'       => 'entities_id',
       '_glpi_networkports'               => 'entities_id',
       'glpi_notifications'               => 'entities_id',
       '_glpi_olalevels'                  => 'entities_id',
@@ -764,7 +763,6 @@ $RELATION = [
    'glpi_netpoints' => [
       'glpi_networkportethernets'     => 'netpoints_id',
       'glpi_networkportfiberchannels' => 'netpoints_id',
-      'glpi_networkportmigrations'    => 'netpoints_id',
    ],
 
    'glpi_networkequipmentmodels' => [
@@ -776,7 +774,6 @@ $RELATION = [
    ],
 
    'glpi_networkinterfaces' => [
-      'glpi_networkportmigrations' => 'networkinterfaces_id',
       'glpi_networkports'          => 'networkinterfaces_id',
    ],
 
