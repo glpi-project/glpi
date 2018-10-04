@@ -149,6 +149,7 @@ class RuleTicket extends Rule {
     * @param $params
    **/
    function executeActions($output, $params) {
+      global $DB;
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -208,13 +209,13 @@ class RuleTicket extends Rule {
 
                   // special case of tasks status
                   if ($action->fields["field"] == '_tasks_status') {
-                     $tickettask = new TicketTask();
-                     $tasks = $tickettask->find('state IN (0, 1) AND tickets_id = '.$output['id']);
-
-                     foreach ($tasks as $task) {
-                        $task['state'] = $action->fields["value"];
-                        $tickettask->update($task);
-                     }
+                     $DB->update(
+                        'glpi_tickettasks', [
+                           'state'      => $action->fields["value"]
+                        ], [
+                           'tickets_id' => $output['id']
+                        ]
+                     );
                   }
 
                   // Special case of slas_ttr_id & slas_tto_id & olas_ttr_id & olas_tto_id
