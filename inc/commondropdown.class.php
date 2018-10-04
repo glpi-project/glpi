@@ -589,7 +589,7 @@ abstract class CommonDropdown extends CommonDBTM {
                         'itemtype' => $this->getType(),
                         'items_id' => $this->getID(),
                      ];
-                  } else if (!is_array($f)){
+                  } else if (!is_array($f)) {
                      // Base case, 1-n relation base on one field
                      $criteria['WHERE'] = [
                         $f => $this->getID()
