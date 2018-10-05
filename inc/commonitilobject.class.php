@@ -3545,8 +3545,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $icontitle = __s('Technician');
                   break;
             }
-            return "<img src='".$CFG_GLPI['root_doc']."/pics/user.png'
-                     alt=\"$icontitle\" title=\"$icontitle\">";
+            return "<i class='fa fa-user' title='$icontitle'></i><span class='sr-only'>$icontitle</span>";
 
          case 'group' :
             $icontitle = __('Group');

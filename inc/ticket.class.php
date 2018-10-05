@@ -7152,7 +7152,7 @@ class Ticket extends CommonITILObject {
          if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
             echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
             $user->getFromDB($item_i['users_id_tech']);
-            echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+            echo "<i class='fa fa-user'></i>&nbsp;";
             $userdata = getUserName($item_i['users_id_tech'], 2);
             echo $user->getLink()."&nbsp;";
             echo Html::showToolTip($userdata["comment"],
@@ -7200,7 +7200,8 @@ class Ticket extends CommonITILObject {
 
          // show "is_private" icon
          if (isset($item_i['is_private']) && $item_i['is_private']) {
-            echo "<div class='private'>".__('Private')."</div>";
+            echo "<div class='private'><i class='fa fa-lock fa-2x' title='" . __s('Private') .
+               "'></i><span class='sr-only'>".__('Private')."</span></div>";
          }
 
          echo "</div>"; // b_right
