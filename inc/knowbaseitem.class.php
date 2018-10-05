@@ -1412,10 +1412,13 @@ class KnowbaseItem extends CommonDBVisible {
                                $options['item_itemtype'];
             }
 
+            $pager_url = "";
             if ($output_type == Search::HTML_OUTPUT) {
-               Html::printPager($params['start'], $numrows,
-                                Toolbox::getItemTypeSearchURL('KnowbaseItem'), $parameters,
-                                'KnowbaseItem');
+               $pager_url = Toolbox::getItemTypeSearchURL('KnowbaseItem');
+               if (!Session::getLoginUserID()) {
+                  $pager_url = $CFG_GLPI['root_doc']."/front/helpdesk.faq.php";
+               }
+               Html::printPager($params['start'], $numrows, $pager_url, $parameters, 'KnowbaseItem');
             }
 
             $nbcols = 1;
@@ -1563,9 +1566,7 @@ class KnowbaseItem extends CommonDBVisible {
             }
             echo "<br>";
             if ($output_type == Search::HTML_OUTPUT) {
-               Html::printPager($params['start'], $numrows,
-                                Toolbox::getItemTypeSearchURL('KnowbaseItem'), $parameters,
-                                'KnowbaseItem');
+               Html::printPager($params['start'], $numrows, $pager_url, $parameters, 'KnowbaseItem');
             }
 
          } else {
