@@ -44,6 +44,7 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 }
 global $CFG_GLPI, $GLPI_CACHE;
 
+include_once (GLPI_ROOT . "/inc/define.php");
 include __DIR__ . '/../inc/autoload.function.php';
 
 //init cache
