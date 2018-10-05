@@ -294,6 +294,39 @@ class CommonDBTM extends DbTestCase {
       ])->next();
       $this->array($check)
          ->string['serial']->isIdenticalTo('serial-changed');
+
+      $this->integer(
+         (int)$DB->insert(
+            \Computer::getTable(),
+            ['name' => 'serial-to-change']
+         )
+      )->isGreaterThan(0);
+
+      //multiple update case
+      $this->exception(
+         function () use ($DB) {
+            $res = $DB->updateOrInsert(
+               \Computer::getTable(), [
+                  'name'   => 'serial-to-change',
+                  'serial' => 'serial-changed'
+               ], [
+                  'name'   => 'serial-to-change'
+               ]
+            );
+         }
+      )->message->contains('Update would change too many rows!');
+
+      //allow multiples
+      $res = $DB->updateOrInsert(
+         \Computer::getTable(), [
+            'name'   => 'serial-to-change',
+            'serial' => 'serial-changed'
+         ], [
+            'name'   => 'serial-to-change'
+         ],
+         false
+      );
+      $this->boolean($res)->isTrue();
    }
 
 }
