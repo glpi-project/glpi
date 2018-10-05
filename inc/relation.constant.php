@@ -174,8 +174,7 @@ $RELATION = ["glpi_authldaps"
                         => ['glpi_items_devicegenerics' => 'devicegenerics_id'],
 
                         "glpi_documentcategories"
-                        => ['glpi_configs'             => 'documentcategories_id_forticket',
-                                 'glpi_documents'           => 'documentcategories_id',
+                        => ['glpi_documents'           => 'documentcategories_id',
                                  'glpi_documentcategories'  => 'documentcategories_id'],
 
                         "glpi_documents"
@@ -523,8 +522,7 @@ $RELATION = ["glpi_authldaps"
                         "glpi_requesttypes"
                         => ['glpi_ticketfollowups'  => 'requesttypes_id',
                                  'glpi_tickets'          => 'requesttypes_id',
-                                 'glpi_users'            => 'default_requesttypes_id',
-                                 'glpi_configs'          => 'default_requesttypes_id'],
+                                 'glpi_users'            => 'default_requesttypes_id'],
 
                         "glpi_reservationitems"
                         => ['glpi_reservations' => 'reservationitems_id'],
@@ -554,8 +552,7 @@ $RELATION = ["glpi_authldaps"
                             'glpi_tickets'   => ['olas_ttr_id', 'olas_tto_id']],
 
                         "glpi_softwarecategories"
-                        => ['glpi_softwares' => 'softwarecategories_id',
-                            'glpi_configs'   => 'softwarecategories_id_ondelete'],
+                        => ['glpi_softwares' => 'softwarecategories_id'],
 
                         "glpi_softwarelicensetypes"
                         => ['glpi_softwarelicenses' =>'softwarelicensetypes_id'],
@@ -650,12 +647,6 @@ $RELATION = ["glpi_authldaps"
                             'glpi_tickets'             => 'solutiontypes_id',
                             'glpi_solutiontemplates'   => 'solutiontypes_id',
                             'glpi_problems'            => 'solutiontypes_id'],
-
-                        "glpi_ssovariables"
-                        => ['glpi_configs' => 'ssovariables_id'],
-
-                        "glpi_transfers"
-                        => ['glpi_configs' => 'transfers_id_auto'],
 
                         "glpi_usercategories"
                         => ['glpi_users' => 'usercategories_id'],
