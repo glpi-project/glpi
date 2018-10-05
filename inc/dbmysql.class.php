@@ -961,18 +961,23 @@ class DBmysql {
     *
     * @since 9.4
     *
-    * @param string $table   Table name
-    * @param array  $params  Query parameters ([:field name => field value)
-    * @param array  $where   WHERE clause
+    * @param string  $table   Table name
+    * @param array   $params  Query parameters ([:field name => field value)
+    * @param array   $where   WHERE clause
+    * @param boolean $onlyone Do the update only one one element, defaults to true
     *
     * @return mysqli_result|boolean Query result handler
     */
-   public function updateOrInsert($table, $params, $where) {
+   public function updateOrInsert($table, $params, $where, $onlyone = true) {
       $req = $this->request($table, $where);
       if ($req->count() == 0) {
          return $this->insertOrDie($table, $params, 'Unable to create new element or update existing one');
+      } else if ($req->count() == 1 || !$onlyone) {
+         return $this->updateOrDie($table, $params, $where, 'Unable to create new element or update existing one');
+      } else {
+         Toolbox::logWarning('Update would change too many rows!');
+         return false;
       }
-      return $this->updateOrDie($table, $params, $where, 'Unable to create new element or update existing one');
    }
 
    /**
