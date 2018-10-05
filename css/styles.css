@@ -3341,14 +3341,11 @@ a.copyright {
 }
 
 .timeline_history .private {
-   width: 30px;
-   float: right;
-   padding-top: 18px;
-   background: url(../pics/timeline/private.png) no-repeat center top;
-   color: #A2A2A2;
+   padding-top: .5em;
+   color: #000000;
    font-size: .75em;
-   text-align: center;
    white-space: nowrap;
+   text-align: right;
 }
 .timeline_history .right .private {
    float: left;
@@ -3598,11 +3595,6 @@ a.copyright {
    white-space: nowrap;
    margin-top: 4px;
 }
-
-.displayed_content a .fa {
-   font-size: 1.5em;
-}
-
 
 .x-split-button {
   position: relative;

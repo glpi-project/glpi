@@ -193,7 +193,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since 0.90.1
     *
-    * @return an array
+    * @return array
    **/
    static function getReopenableStatusArray() {
       return [self::CLOSED, self::SOLVED, self::WAITING];
@@ -3509,8 +3509,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $icontitle = __s('Technician');
                   break;
             }
-            return "<img src='".$CFG_GLPI['root_doc']."/pics/user.png'
-                     alt=\"$icontitle\" title=\"$icontitle\">";
+            return "<i class='fas fa-user' title='$icontitle'></i><span class='sr-only'>$icontitle</span>";
 
          case 'group' :
             $icontitle = __('Group');
@@ -6353,7 +6352,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
             echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
             $user->getFromDB($item_i['users_id_tech']);
-            echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+            echo "<i class='fas fa-user'></i> ";
             $userdata = getUserName($item_i['users_id_tech'], 2);
             echo $user->getLink()."&nbsp;";
             echo Html::showToolTip($userdata["comment"],
@@ -6401,7 +6400,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // show "is_private" icon
          if (isset($item_i['is_private']) && $item_i['is_private']) {
-            echo "<div class='private'>".__('Private')."</div>";
+            echo "<div class='private'><i class='fas fa-lock fa-2x' title='" . __s('Private') .
+               "'></i><span class='sr-only'>".__('Private')."</span></div>";
          }
 
          echo "</div>"; // b_right
