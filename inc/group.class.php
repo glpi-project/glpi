@@ -917,4 +917,60 @@ class Group extends CommonTreeDropdown {
       echo "</div>";
    }
 
+
+   function cleanRelationData() {
+
+      global $DB;
+
+      parent::cleanRelationData();
+
+      if ($this->isUsedInConsumables()) {
+         // Replace relation with Consumable
+         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+         $fields_updates = [
+            'items_id' => $newval,
+         ];
+         if (empty($newval)) {
+            $fields_updates['itemtype'] = 'NULL';
+            $fields_updates['date_out'] = 'NULL';
+         }
+
+         $DB->update(
+            'glpi_consumables',
+            $fields_updates,
+            [
+               'items_id' => $this->fields['id'],
+               'itemtype' => self::class,
+            ]
+         );
+      }
+   }
+
+
+   function isUsed() {
+
+      if (parent::isUsed()) {
+         return true;
+      }
+
+      return $this->isUsedInConsumables();
+   }
+
+
+   /**
+    * Check if group is used in consumables.
+    *
+    * @return boolean
+    */
+   private function isUsedInConsumables() {
+
+      return countElementsInTable(
+         Consumable::getTable(),
+         [
+            'items_id' => $this->fields['id'],
+            'itemtype' => self::class,
+         ]
+      ) > 0;
+   }
 }

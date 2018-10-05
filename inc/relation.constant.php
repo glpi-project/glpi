@@ -276,7 +276,6 @@ $RELATION = ["glpi_authldaps"
                            'glpi_cartridgeitems'       => 'groups_id_tech',
                            'glpi_changes_groups'       => 'groups_id',
                            'glpi_computers'            => ['groups_id_tech', 'groups_id'],
-                           'glpi_consumables'          => ['items_id', 'itemtype'],
                            'glpi_consumableitems'      => 'groups_id_tech',
                            'glpi_enclosures'           => 'groups_id_tech',
                            'glpi_groups'               => 'groups_id',
