@@ -43,4 +43,45 @@ class DocumentCategory extends CommonTreeDropdown {
    static function getTypeName($nb = 0) {
       return _n('Document heading', 'Document headings', $nb);
    }
+
+
+   function cleanRelationData() {
+
+      parent::cleanRelationData();
+
+      if ($this->isUsedAsDefaultCategoryForTickets()) {
+         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+         Config::setConfigurationValues(
+            'core',
+            [
+               'documentcategories_id_forticket' => $newval,
+            ]
+         );
+      }
+   }
+
+
+   function isUsed() {
+
+      if (parent::isUsed()) {
+         return true;
+      }
+
+      return $this->isUsedAsDefaultCategoryForTickets();
+   }
+
+
+   /**
+    * Check if category is used as default for tickets documents.
+    *
+    * @return boolean
+    */
+   private function isUsedAsDefaultCategoryForTickets() {
+
+      $config_values = Config::getConfigurationValues('core', ['documentcategories_id_forticket']);
+
+      return array_key_exists('documentcategories_id_forticket', $config_values)
+         && $config_values['documentcategories_id_forticket'] == $this->fields['id'];
+   }
 }

@@ -244,4 +244,44 @@ class RequestType extends CommonDropdown {
       Rule::cleanForItemCriteria($this);
    }
 
+
+   function cleanRelationData() {
+
+      parent::cleanRelationData();
+
+      if ($this->isUsedAsDefaultRequestType()) {
+         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+         Config::setConfigurationValues(
+            'core',
+            [
+               'default_requesttypes_id' => $newval,
+            ]
+         );
+      }
+   }
+
+
+   function isUsed() {
+
+      if (parent::isUsed()) {
+         return true;
+      }
+
+      return $this->isUsedAsDefaultRequestType();
+   }
+
+
+   /**
+    * Check if type is used as default for new tickets.
+    *
+    * @return boolean
+    */
+   private function isUsedAsDefaultRequestType() {
+
+      $config_values = Config::getConfigurationValues('core', ['default_requesttypes_id']);
+
+      return array_key_exists('default_requesttypes_id', $config_values)
+         && $config_values['default_requesttypes_id'] == $this->fields['id'];
+   }
 }
