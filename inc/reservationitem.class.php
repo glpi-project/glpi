@@ -122,8 +122,11 @@ class ReservationItem extends CommonDBChild {
 
    function cleanDBonPurge() {
 
-      $class = new Reservation();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Reservation::class,
+         ]
+      );
 
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);

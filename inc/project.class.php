@@ -43,7 +43,7 @@ class Project extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
-   static protected $forward_entity_to = ['ProjectTask'];
+   static protected $forward_entity_to = ['ProjectCost', 'ProjectTask'];
    static $rightname                   = 'project';
    protected $usenotepad               = true;
 
@@ -311,19 +311,16 @@ class Project extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $pt = new ProjectTask();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $cp = new Change_Project();
-      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $pt = new ProjectTeam();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Project::class,
+            Item_Project::class,
+            ProjectCost::class,
+            ProjectTask::class,
+            ProjectTeam::class,
+         ]
+      );
 
       parent::cleanDBonPurge();
    }

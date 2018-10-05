@@ -63,4 +63,44 @@ class SsoVariable extends CommonDropdown {
       return static::canUpdate();
    }
 
+
+   function cleanRelationData() {
+
+      parent::cleanRelationData();
+
+      if ($this->isUsedInAuth()) {
+         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+         Config::setConfigurationValues(
+            'core',
+            [
+               'ssovariables_id' => $newval,
+            ]
+         );
+      }
+   }
+
+
+   function isUsed() {
+
+      if (parent::isUsed()) {
+         return true;
+      }
+
+      return $this->isUsedInAuth();
+   }
+
+
+   /**
+    * Check if variable is used in auth process.
+    *
+    * @return boolean
+    */
+   private function isUsedInAuth() {
+
+      $config_values = Config::getConfigurationValues('core', ['ssovariables_id']);
+
+      return array_key_exists('ssovariables_id', $config_values)
+         && $config_values['ssovariables_id'] == $this->fields['id'];
+   }
 }

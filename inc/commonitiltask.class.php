@@ -543,8 +543,11 @@ abstract class CommonITILTask  extends CommonDBTM {
    **/
    function cleanDBonPurge() {
 
-      $class = new PlanningRecall();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            PlanningRecall::class,
+         ]
+      );
    }
 
 
