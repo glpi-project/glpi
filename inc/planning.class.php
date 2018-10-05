@@ -1267,7 +1267,7 @@ JAVASCRIPT;
 
       if ($filter_data['type'] != 'event_filter') {
          $icon_type = explode('_', $filter_data['type']);
-         echo "<img class='actor_icon' src='".$CFG_GLPI['root_doc']."/pics/".$icon_type[0].".png'>";
+         echo "<i class='actor_icon fa fa-fw fa-".$icon_type[0]."'></i>";
       }
 
       echo "<label for='$filter_key'>$title</label>";
