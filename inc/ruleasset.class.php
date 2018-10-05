@@ -188,15 +188,8 @@ class RuleAsset extends Rule {
       return $values;
    }
 
-   /**
-    * Execute the actions as defined in the rule
-    *
-    * @param $output the fields to manipulate
-    * @param $params parameters
-    *
-    * @return the $output array modified
-   **/
-   function executeActions($output, $params) {
+
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
