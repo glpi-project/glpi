@@ -1866,6 +1866,7 @@ a.icon_nav_move:hover img {
 #planning_filter ul.filters > li .actor_icon {
    padding-bottom: 2px;
    vertical-align: middle;
+   font-size: 14px;
 }
 
 #planning_filter ul.filters > li label {
