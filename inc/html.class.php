@@ -4304,6 +4304,11 @@ class Html {
 
             // Skip if there is no 'children' property
             if (typeof data.children === 'undefined') {
+               if (typeof data.text === 'string'
+                  && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
+               ) {
+                  return data;
+               }
                return null;
             }
 
