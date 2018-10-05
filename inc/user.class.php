@@ -360,10 +360,12 @@ class User extends CommonDBTM {
       // Set no user to consumables
       $DB->update(
          'glpi_consumables', [
-            'items_id' => 0
+            'items_id' => 0,
+            'itemtype' => 'NULL',
+            'date_out' => 'NULL'
          ], [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => 'User'
+            'items_id' => $this->fields['id'],
+            'itemtype' => 'User'
          ]
       );
 
