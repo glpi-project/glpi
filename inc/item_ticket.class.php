@@ -930,6 +930,7 @@ class Item_Ticket extends CommonDBRelation{
             }
          }
          echo "<div id='tracking_my_devices'>";
+         echo __('My devices')."&nbsp;";
          Dropdown::showFromArray('my_items', $my_devices, ['rand' => $rand]);
          echo "</div>";
 
