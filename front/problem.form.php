@@ -110,5 +110,18 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_GET);
+
+   if (isset($_GET['id']) && ($_GET['id'] > 0) && isset($_GET['_sol_to_kb'])) {
+      Ajax::createIframeModalWindow(
+         'savetokb',
+         KnowbaseItem::getFormURL() . '?_in_modal=1&item_itemtype=Problem&item_items_id=' . $_GET['id'],
+         [
+            'title'         => __('Save solution to the knowledge base'),
+            'reloadonclose' => false,
+         ]
+      );
+      echo Html::scriptBlock('$(function() {' . Html::jsGetElementbyID('savetokb') . '.dialog("open"); });');
+   }
+
    Html::footer();
 }
