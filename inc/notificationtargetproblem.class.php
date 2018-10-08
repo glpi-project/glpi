@@ -50,9 +50,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       $events = ['new'            => __('New problem'),
                       'update'         => __('Update of a problem'),
                       'solved'         => __('Problem solved'),
-                      'add_task'       => __('New task'),
-                      'update_task'    => __('Update of a task'),
-                      'delete_task'    => __('Deletion of a task'),
                       'closed'         => __('Closure of a problem'),
                       'delete'         => __('Deleting a problem')];
 
@@ -185,32 +182,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          }
 
          $data['##problem.numberofitems##'] = count($data['items']);
-
-         //Get followups
-         $followup_restrict = [];
-         $followup_restrict['items_id'] = $item->getField('id');
-         if (!isset($options['additionnaloption']['show_private'])
-             || !$options['additionnaloption']['show_private']) {
-            $followup_restrict['is_private'] = 0;
-         }
-         $followup_restrict['itemtype'] = 'Problem';
-
-         //Followup infos
-         $followups          = getAllDatasFromTable('glpi_itilfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
-         $data['followups'] = [];
-         foreach ($followups as $followup) {
-            $tmp                             = [];
-            $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
-            $tmp['##followup.author##']      = Html::clean(getUserName($followup['users_id']));
-            $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                         $followup['requesttypes_id']);
-            $tmp['##followup.date##']        = Html::convDateTime($followup['date']);
-            $tmp['##followup.description##'] = $followup['content'];
-
-            $data['followups'][] = $tmp;
-         }
-
-         $data['##problem.numberoffollowups##'] = count($data['followups']);
       }
       return $data;
    }

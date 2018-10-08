@@ -780,7 +780,7 @@ class Document extends CommonDBTM {
             'glpi_tickets.id' => $tickets_id,
             'OR' => [
                'glpi_tickets.content'         => ['REGEXP', $regexPattern],
-               'glpi_itilfollowups.content' => ['REGEXP', $regexPattern],
+               'glpi_itilfollowups.content'   => ['REGEXP', $regexPattern],
                'glpi_tickettasks.content'     => ['REGEXP', $regexPattern],
                'glpi_itilsolutions.content'   => ['REGEXP', $regexPattern]
             ]

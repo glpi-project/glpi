@@ -552,7 +552,7 @@ function addTracking($type, $ID, $ID_entity) {
       $fID   = 0;
       $first = true;
       $date  = 0;
-      $tf    = new TicketFollowup();
+      $tf    = new ITILFollowup();
       while (mt_rand(0, 100)<$percent['followups']) {
          if ($first) {
             $date = $opendate+$firstactiontime;
@@ -581,15 +581,17 @@ function addTracking($type, $ID, $ID_entity) {
             ]);
 
             //approve solution
-            $follow = new \TicketFollowup();
+            $follow = new \ITILFollowup();
             $follow->add([
-               'tickets_id'   => $tID,
-               'add_close'    => '1'
+               'itemtype'   => 'Ticket',
+               'items_id'   => $tID,
+               'add_close'  => '1'
             ]);
          }
 
          $tf->add(toolbox::addslashes_deep(
-                  ['tickets_id'      => $tID,
+                  ['itemtype'        => 'Ticket',
+                   'items_id'        => $tID,
                    'date'            => date("Y-m-d H:i:s", $date),
                    'users_id'        => $users[1],
                    'content'         => $faker->realText,
@@ -660,17 +662,19 @@ function addTracking($type, $ID, $ID_entity) {
             'date_creation'   => date('Y-m-d H:i:s', $date + mt_rand(3600, 7776000))
          ]);
 
-         $follow = new \TicketFollowup();
+         $follow = new \ITILFollowup();
          if ($faker->boolean($chanceOfGettingTrue = 85)) {
             //approve solution
             $follow->add([
-               'tickets_id'   => $tID,
+               'itemtype'     => 'Ticket',
+               'items_id'     => $tID,
                'add_close'    => '1'
             ]);
          } else if ($faker->boolean($chanceOfGettingTrue = 35)) {
             //refuse solution and reopen ticket
             $follow->add([
-               'tickets_id'   => $tID,
+               'itemtype'     => 'Ticket',
+               'items_id'     => $tID,
                'add_reopen'   => '1',
                'content'      => $faker->realText()
             ]);

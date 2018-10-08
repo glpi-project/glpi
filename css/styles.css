@@ -3329,7 +3329,8 @@ a.copyright {
    border-right-color: transparent !important;
 }
 
-.timeline_history .ITILFollowup:after            { border-color: #E0E0E0;}
+.timeline_history .ITILFollowup:after,
+.timeline_history .KnowbaseItemComment:after     { border-color: #E0E0E0;}
 .timeline_history .ITILTask:after                { border-color: #FEDA90;}
 .timeline_history .Solution:after                { border-color: #9FD6ED;}
 .timeline_history .ITILValidation.status_3:after { border-color: #A1D7A2;}
@@ -3387,7 +3388,8 @@ a.copyright {
    opacity: 1;
 }
 
-.timeline_history .h_content.ITILFollowup {
+.timeline_history .h_content.ITILFollowup,
+.timeline_history .h_content.KnowbaseItemComment {
    background-color: #E0E0E0;
    color: #535353;
    background-image: url(../pics/timeline/followup.png);
@@ -3518,7 +3520,8 @@ a.copyright {
    position: absolute;
 }
 
-.timeline_history .h_content.ITILFollowup .read_more {
+.timeline_history .h_content.ITILFollowup .read_more,
+.timeline_history .h_content.KnowbaseItemComment .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(241,244,227,1) 100%); /* FF3.6+ */
    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(241,244,227,1))); /* Chrome,Safari4+ */
    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* Chrome10+,Safari5.1+ */

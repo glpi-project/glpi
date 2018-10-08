@@ -924,13 +924,6 @@ class Ticket extends CommonITILObject {
          ]
       );
 
-      $DB->delete(
-         'glpi_itilfollowups', [
-            'items_id'   => $this->fields['id'],
-            'itemtype'   => 'Ticket'
-         ]
-      );
-
       $ts = new TicketValidation();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 

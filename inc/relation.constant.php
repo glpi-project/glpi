@@ -637,7 +637,6 @@ $RELATION = ["glpi_authldaps"
                             'glpi_projecttasks_tickets'=> 'tickets_id',
                             'glpi_slalevels_tickets'   => 'tickets_id',
                             'glpi_suppliers_tickets'   => 'tickets_id',
-                            'glpi_itilfollowups'     => 'items_id',
                             'glpi_ticketsatisfactions' => 'tickets_id',
                             'glpi_tickettasks'         => 'tickets_id',
                             'glpi_ticketvalidations'   => 'tickets_id',

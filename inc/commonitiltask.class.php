@@ -1519,7 +1519,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By')."</td>";
       echo "<td colspan='2'>";
-      echo "<i class='fas fa-user'></i>$nbsp;";
+      echo "<i class='fas fa-user'></i>&nbsp;";
       echo _n('User', 'Users', 1);
       $params             = ['name'   => "users_id_tech",
                                   'value'  => (($ID > -1)

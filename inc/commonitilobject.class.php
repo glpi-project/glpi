@@ -147,11 +147,29 @@ abstract class CommonITILObject extends CommonDBTM {
       return false;
    }
 
+
+   /**
+    * Is the current user have right to approve solution of the current ITIL object.
+    *
+    * @since 9.4.0
+    *
+    * @return boolean
+    */
+   function canApprove() {
+
+      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
+              || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+              || (isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
+   }
+
    /**
     * Is the current user have right to add followups to the current ITIL Object ?
     *
+    * @since 9.4.0
+    *
     * @return boolean
-   **/
+    */
    function canAddFollowups() {
       return Session::haveRight(static::$rightname, UPDATE) and Session::haveRight('followup', CREATE);
    }
@@ -191,10 +209,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object closed, solved or waiting status list
     *
-    * @since 0.90.1
+    * @since 9.4.0
     *
     * @return array
-   **/
+    */
    static function getReopenableStatusArray() {
       return [self::CLOSED, self::SOLVED, self::WAITING];
    }
@@ -624,6 +642,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $itil_project = new Itil_Project();
       $itil_project->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $itilfollowup = new ITILFollowup();
+      $itilfollowup->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
@@ -5662,7 +5683,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Summary of getTimelinePosition
     * Returns the position of the $sub_type for the $user_id in the timeline
-    * @param int $items_id is the id of the ticket
+    *
+    * @param int $items_id is the id of the ITIL object
     * @param string $sub_type is ITILFollowup, Document_Item, TicketTask, TicketValidation or Solution
     * @param int $users_id
     * @since 9.2
@@ -5717,10 +5739,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * Gets submit button with a status dropdown
+    *
     * @since 9.4.0
     *
     * @param integer $items_id
-    * @param string $action         (default 'add')
+    * @param string  $action
+    *
     * @return string HTML code for splitted submit button
    **/
    static function getSplittedSubmitButtonHtml($items_id, $action = "add") {
@@ -5757,13 +5781,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * Displays the timeline filter buttons
-    * @return void
+    *
     * @since 9.4.0
-   **/
+    *
+    * @return void
+    */
    function filterTimeline() {
-      global $CFG_GLPI;
 
-      $pics_url = $CFG_GLPI['root_doc']."/pics/timeline";
       echo "<div class='filter_timeline'>";
       echo "<h3>".__("Timeline filter")." : </h3>";
       echo "<ul>";
@@ -5793,10 +5817,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * Displays the timeline header (filters)
-    * @return void
+    *
     * @since 9.4.0
-   **/
+    *
+    * @return void
+    */
    function showTimelineHeader() {
+
       echo "<h2>".__("Actions historical")." : </h2>";
       $this->filterTimeline();
    }
@@ -5805,11 +5832,15 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Displays the form at the top of the timeline.
     * Includes buttons to add items to the timeline, new item form, and approbation form.
-    * @param integer $rand random value used by JavaScript function names
-    * @return void
+    *
     * @since 9.4.0
-   **/
+    *
+    * @param integer $rand random value used by JavaScript function names
+    *
+    * @return void
+    */
    function showTimelineForm($rand) {
+
       global $CFG_GLPI;
 
       $objType = self::getType();
@@ -5819,8 +5850,6 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!Session::haveRight(strtolower($objType), $objType::READMY)) {
          return false;
       }
-
-      $supportsValidation = $objType === "Ticket" || $objType === "Change";
 
       // javascript function for add and edit items
       echo "<script type='text/javascript' >\n";
@@ -5880,8 +5909,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                                         '$foreignKey': ".$this->fields['id'].",
                                                         'id'        : items_id
                                                        });
-
-
       };";
 
       if (isset($_GET['load_kb_sol'])) {
@@ -5956,12 +5983,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * Retrieves all timeline items for this ITILObject
-    * @return mixed[] Timeline items
+    *
     * @since 9.4.0
     *
-   **/
+    * @return mixed[] Timeline items
+    */
    function getTimelineItems() {
-      global $DB, $CFG_GLPI;
 
       $objType = self::getType();
       $foreignKey = self::getForeignKeyField();
@@ -5969,8 +5996,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $timeline = [];
 
-      $user                  = new User();
-      $group                 = new Group();
+      $user = new User();
 
       $fupClass           = 'ITILFollowup';
       $followup_obj       = new $fupClass;
@@ -5983,10 +6009,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //checks rights
-      $showpublic = Session::haveRightsOr("followup", [ITILFollowup::SEEPUBLIC,
-                                                         ITILFollowup::SEEPRIVATE])
-                 || Session::haveRightsOr("task", [CommonITILTask::SEEPUBLIC,
-                                                        CommonITILTask::SEEPRIVATE]);
       $restrict_fup = $restrict_task = "";
       if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
          $restrict_fup = " AND (`is_private` = 0
@@ -5999,10 +6021,6 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
          $restrict_task = " AND (`is_private` = 0
                                  OR `users_id` ='" . Session::getLoginUserID() . "') ";
-      }
-
-      if (!$showpublic) {
-         $restrict = " AND 1 = 0";
       }
 
       //add followups to timeline
@@ -6124,12 +6142,15 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Displays the timeline of items for this ITILObject
     *
-    * @param integer $rand random value used by div
-    * @return void
     * @since 9.4.0
-   **/
+    *
+    * @param integer $rand random value used by div
+    *
+    * @return void
+    */
    function showTimeline($rand) {
-      global $CFG_GLPI, $DB, $autolink_options;
+
+      global $CFG_GLPI, $autolink_options;
 
       $user              = new User();
       $group             = new Group();
@@ -6531,8 +6552,9 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param CommonDBTM $item The item whose form should be shown
     * @param integer $id ID of the item
     * @param mixed[] $params Array of extra parameters
+    *
     * @return void
-   **/
+    */
    static function showSubForm(CommonDBTM $item, $id, $params) {
 
       if ($item instanceof Document_Item) {
@@ -6552,8 +6574,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 9.4.0
     *
     * @return array[] of array[] of users and roles
-    *
-   **/
+    */
    public function getITILActors() {
       global $DB;
 
