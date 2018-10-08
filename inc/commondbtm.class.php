@@ -1110,10 +1110,6 @@ class CommonDBTM extends CommonGLPI {
                if ($this->notificationqueueonaction) {
                   QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
                }
-               // For unit test (workaround for MyIsam without transaction)
-               if (isset($DB->objcreated) && is_array($DB->objcreated)) {
-                  $DB->objcreated[$this->getTable()][] = $this->fields['id'];
-               }
                return $this->fields['id'];
             }
          }
