@@ -189,15 +189,13 @@ class Project extends CommonDBTM {
       // No view to project by right on tasks add it
       if (!static::canView()
           && Session::haveRight('projecttask', ProjectTask::READMY)) {
-         $menu['project']['title']                    = Project::getTypeName(Session::getPluralNumber());
-         $menu['project']['page']                     = ProjectTask::getSearchURL(false);
+         $menu['project']['title'] = Project::getTypeName(Session::getPluralNumber());
+         $menu['project']['page']  = ProjectTask::getSearchURL(false);
 
-         $links = static::getAdditionalMenuLinks();
          if (count($links)) {
             $menu['project']['links'] = $links;
          }
-         $menu['project']['options']['task']['title'] = __('My tasks');
-         $menu['project']['options']['task']['page']  = ProjectTask::getSearchURL(false);
+
          return $menu;
       }
       return false;
@@ -205,9 +203,15 @@ class Project extends CommonDBTM {
 
 
    static function getAdditionalMenuOptions() {
-
-      return ['task' => ['title' => __('My tasks'),
-                                   'page'  => ProjectTask::getSearchURL(false)]];
+      return [
+         'task' => [
+            'title' => __('My tasks'),
+            'page'  => ProjectTask::getSearchURL(false),
+            'links' => [
+               'search' => ProjectTask::getSearchURL(false),
+            ]
+         ]
+      ];
    }
 
 
@@ -223,7 +227,7 @@ class Project extends CommonDBTM {
          $pic_validate = "<img title=\"".__s('My tasks')."\" alt=\"".__('My tasks')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
 
-         $links[$pic_validate] = '/front/projecttask.php';
+         $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
          $links['summary'] = Project::getFormURL(false).'?showglobalgantt=1';
       }
