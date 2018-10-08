@@ -1114,6 +1114,12 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
+   /**
+    * Get SQL join to restrict by profile and by config to avoid send notification
+    * to a user without rights.
+    *
+    * @return string
+    */
    public function getProfileJoinSql() {
 
       return " INNER JOIN `glpi_profiles_users`

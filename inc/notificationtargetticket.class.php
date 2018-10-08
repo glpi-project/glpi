@@ -39,55 +39,18 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
-   public $private_profiles = [];
-
    const HEADERTAG = '=-=-=-=';
    const FOOTERTAG = '=_=_=_=';
 
-   /**
-    * @param $entity          (default '')
-    * @param $event           (default '')
-    * @param $object          (default null)
-    * @param $options   array
-    */
-   function __construct($entity = '', $event = '', $object = null, $options = []) {
-      global $CFG_GLPI;
-
-      parent::__construct($entity, $event, $object, $options);
-
-      if (isset($options['followup_id'])) {
-         $this->options['sendprivate'] = $options['is_private'];
-      }
-
-      if (isset($options['task_id'])) {
-         $this->options['sendprivate'] = $options['is_private'];
-      }
-
-   }
-
-
-   /**
-    * @see NotificationTarget::validateSendTo()
-   **/
    function validateSendTo($event, array $infos, $notify_me = false) {
 
       // Always send notification for satisfaction : if send on ticket closure
       // Always send notification for new ticket
-      if (($event != 'satisfaction')
-          && ($event != 'new')) {
-         // Check global ones for notification to myself
-         if (!parent::validateSendTo($event, $infos, $notify_me)) {
-            return false;
-         }
-
-         // Private object and no right to see private items : do not send
-         if ($this->isPrivate()
-             && (!isset($infos['additionnaloption']['show_private'])
-                 || !$infos['additionnaloption']['show_private'])) {
-            return false;
-         }
+      if (in_array($event, ['satisfaction', 'new'])) {
+         return true;
       }
-      return true;
+
+      return parent::validateSendTo($event, $infos, $notify_me);
    }
 
 
@@ -148,24 +111,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   function addAdditionnalInfosForTarget() {
-      global $DB;
-
-      $iterator = $DB->request([
-         'SELECT' => ['profiles_id'],
-         'FROM'   => 'glpi_profilerights',
-         'WHERE'  => [
-            'name'   => 'followup',
-            'rights' => ['&', ITILFollowup::SEEPRIVATE]
-         ]
-      ]);
-
-      while ($data = $iterator->next()) {
-         $this->private_profiles[$data['profiles_id']] = $data['profiles_id'];
-      }
-   }
-
-
    /**
     * Get item associated with the object on which the event was raised
     *
@@ -190,33 +135,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
    }
 
-
-   /**
-    * @param $data   array
-   **/
-   function addAdditionnalUserInfo(array $data) {
-      global $DB;
-
-      if (!isset($data['users_id'])) {
-         return ['show_private' => 0];
-      }
-
-      $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => 'glpi_profiles_users',
-         'WHERE'  => [
-            'users_id'     => $data['users_id'],
-            'profiles_id'  => $this->private_profiles
-         ] + getEntitiesRestrictCriteria('glpi_profiles_users', 'entities_id', $this->getEntity(), true)
-      ])->next();
-
-      if ($result['cpt']) {
-         return ['show_private' => 1];
-      }
-      return ['show_private' => 0];
-   }
-
-
    /**
     *Get events related to tickets
    **/
@@ -228,12 +146,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'rejectsolution'    => __('Solution rejected'),
                       'validation'        => __('Validation request'),
                       'validation_answer' => __('Validation request answer'),
-                      'add_followup'      => __("New followup"),
-                      'update_followup'   => __('Update of a followup'),
-                      'delete_followup'   => __('Deletion of a followup'),
-                      'add_task'          => __('New task'),
-                      'update_task'       => __('Update of a task'),
-                      'delete_task'       => __('Deletion of a task'),
                       'closed'            => __('Closing of the ticket'),
                       'delete'            => __('Deletion of a ticket'),
                       'alertnotclosed'    => __('Not solved tickets'),
@@ -245,41 +157,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $events = array_merge($events, parent::getEvents());
       asort($events);
       return $events;
-   }
-
-
-   /**
-    * Restrict by profile and by config
-    * to avoid send notification to a user without rights
-   **/
-   function getProfileJoinSql() {
-
-      $query = " INNER JOIN `glpi_profiles_users`
-                     ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
-                         getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
-                                                    $this->getEntity(), true).")";
-
-      if ($this->isPrivate()) {
-         $query .= " INNER JOIN `glpi_profiles`
-                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-                         AND `glpi_profiles`.`interface` = 'central')
-                     INNER JOIN `glpi_profilerights`
-                     ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`
-                         AND `glpi_profilerights`.`name` = 'followup'
-                         AND `glpi_profilerights`.`rights` & ".
-                            ITILFollowup::SEEPRIVATE.") ";
-
-      }
-      return $query;
-   }
-
-
-   function isPrivate() {
-
-      if (isset($this->options['sendprivate']) && ($this->options['sendprivate'] == 1)) {
-         return true;
-      }
-      return false;
    }
 
 
@@ -568,37 +445,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $data['##ticket.numberofchanges##'] = count($data['changes']);
 
-         $followup_restrict = [];
-         $followup_restrict['items_id'] = $item->getField('id');
-         if (!isset($options['additionnaloption']['show_private'])
-             || !$options['additionnaloption']['show_private']) {
-            $followup_restrict['is_private'] = 0;
-         }
-         $followup_restrict['itemtype'] = 'Ticket';
-
-         //Followup infos
-         $followups          = getAllDatasFromTable('glpi_itilfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
-         $data['followups'] = [];
-         foreach ($followups as $followup) {
-            $tmp                             = [];
-            $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
-            $tmp['##followup.author##']      = Html::clean(getUserName($followup['users_id']));
-            $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                         $followup['requesttypes_id']);
-            $tmp['##followup.date##']        = Html::convDateTime($followup['date']);
-            $tmp['##followup.description##'] = $followup['content'];
-
-            $data['followups'][] = $tmp;
-         }
-
-         $data['##ticket.numberoffollowups##'] = count($data['followups']);
-
          // Approbation of solution
          $solution_restrict = [
             'itemtype' => 'Ticket',
             'items_id' => $item->getField('id')
          ];
-         $replysolved = getAllDatasFromTable('glpi_itilfollowups', '', false, ['date_mod DESC', 'id ASC']);
+         $replysolved = getAllDatasFromTable('glpi_itilfollowups', $solution_restrict, false, ['date_mod DESC', 'id ASC']);
          $current = current($replysolved);
          $data['##ticket.solution.approval.description##'] = $current['content'];
          $data['##ticket.solution.approval.date##']        = Html::convDateTime($current['date']);
@@ -756,12 +608,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.item.user'             => __('User'),
                     'ticket.item.group'            => __('Group'),
                     'ticket.isdeleted'             => __('Deleted'),
-                    'followup.date'                => __('Opening date'),
-                    'followup.isprivate'           => __('Private'),
-                    'followup.author'              => __('Writer'),
-                    'followup.description'         => __('Description'),
-                    'followup.requesttype'         => __('Request source'),
-                    'ticket.numberoffollowups'     => _x('quantity', 'Number of followups'),
                     'ticket.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
                     'ticket.numberofproblems'      => _x('quantity', 'Number of problems'),
                     'ticket.numberofchanges'       => _x('quantity', 'Number of changes'),
@@ -855,8 +701,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
       //Foreach global tags
-      $tags = ['followups'     => _n('Followup', 'Followups', Session::getPluralNumber()),
-                    'validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
+      $tags = ['validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
                     'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
                     'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
                     'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),

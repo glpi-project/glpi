@@ -145,7 +145,10 @@ function update93to94() {
          'glpi_itils_projects',
          'itemtype',
          "varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
-         ['after' => 'id']
+         [
+            'after'  => 'id',
+            'update' => "'Change'",
+         ]
       );
 
       $migration->changeField(
@@ -162,8 +165,6 @@ function update93to94() {
          'UNIQUE'
       );
       $migration->migrationOneTable('glpi_itils_projects');
-
-      $DB->queryOrDie('UPDATE `glpi_itils_projects` SET `itemtype` = \'Change\'');
    }
    /** /Replacing changes_projects by itils_projects */
 
@@ -221,11 +222,18 @@ function update93to94() {
          'glpi_itilfollowups',
          'itemtype',
          "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
-         ['after' => 'id']
+         [
+            'after'  => 'id',
+            'update' => "'Ticket'", // Defines value for all existing elements
+         ]
       );
-      $query = "ALTER TABLE `glpi_itilfollowups` CHANGE `tickets_id` `items_id` 
-         INT(11) NOT NULL DEFAULT '0'";
-      $DB->queryOrDie($query, "9.4 change glpi_itilfollowups tickets_id to items_id");
+
+      $migration->changeField(
+         'glpi_itilfollowups',
+         'tickets_id',
+         'items_id',
+         "int(11) NOT NULL DEFAULT '0'"
+      );
       $migration->addKey(
          'glpi_itilfollowups',
          'itemtype'
@@ -246,7 +254,7 @@ function update93to94() {
       );
    }
 
-   if ($DB->tableExists('glpi_requesttypes')) {
+   if ($DB->fieldExists('glpi_requesttypes', 'is_ticketfollowup')) {
       $migration->changeField(
          'glpi_requesttypes', 'is_ticketfollowup', 'is_itilfollowup', 'bool', ['value' => '1']
       );
@@ -260,7 +268,7 @@ function update93to94() {
       );
    }
 
-   if ($DB->tableExists('glpi_itilsolutions')) {
+   if ($DB->fieldExists('glpi_itilsolutions', 'ticketfollowups_id')) {
       $migration->changeField(
          'glpi_itilsolutions',
          'ticketfollowups_id',
@@ -276,6 +284,7 @@ function update93to94() {
          'itilfollowups_id'
       );
    }
+
    /** Add timeline_position to Change and Problem items */
    $migration->addField("glpi_changetasks", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
    $migration->addField("glpi_changevalidations", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");

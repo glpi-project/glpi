@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    Event::log($fup->getField('items_id'), strtolower($_POST['itemtype']), 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s updates a followup'), $_SESSION["glpiname"]));
-   Html::redirect($track->getFormURL()."?id=".$fup->getField('items_id'));
+   Html::redirect($track->getFormURLWithID($fup->getField('items_id')));
 
 } else if (isset($_POST["purge"])) {
    $fup->check($_POST['id'], PURGE);
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    Event::log($fup->getField('items_id'), strtolower($_POST['itemtype']), 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s purges a followup'), $_SESSION["glpiname"]));
-   Html::redirect($track->getFormURL()."?id=".$fup->getField('items_id'));
+   Html::redirect($track->getFormURLWithID($fup->getField('items_id')));
 }
 
 Html::displayErrorAndDie('Lost');

@@ -632,7 +632,7 @@ class Profile extends CommonDBTM {
       $rights = [['rights'     => Profile::getRightsFor('Ticket', 'helpdesk'),
                             'label'      => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                             'field'      => 'ticket'],
-                      ['rights'     => Profile::getRightsFor('TicketFollowup', 'helpdesk'),
+                      ['rights'     => Profile::getRightsFor('ITILFollowup', 'helpdesk'),
                             'label'      => _n('Followup', 'Followups', Session::getPluralNumber()),
                             'field'      => 'followup'],
                       ['rights'     => Profile::getRightsFor('TicketTask', 'helpdesk'),
@@ -1017,7 +1017,7 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = _n('Ticket', 'Tickets', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      $rights = [['itemtype'  => 'TicketFollowup',
+      $rights = [['itemtype'  => 'ITILFollowup',
                             'label'     => _n('Followup', 'Followups', Session::getPluralNumber()),
                             'field'     => 'followup'],
                       ['itemtype'  => 'TicketTask',

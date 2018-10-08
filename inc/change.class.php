@@ -132,20 +132,6 @@ class Change extends CommonITILObject {
 
 
    /**
-    * Is the current user have right to approve solution of the current change ?
-    *
-    * @return boolean
-   **/
-   function canApprove() {
-
-      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
-              || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
-   }
-
-
-   /**
     * Is the current user have right to create the current change ?
     *
     * @return boolean
@@ -161,7 +147,9 @@ class Change extends CommonITILObject {
 
    /**
     * is the current user could reopen the current change
-    * @since  9.2
+    *
+    * @since 9.4.0
+    *
     * @return boolean
     */
    function canReopen() {
@@ -278,13 +266,6 @@ class Change extends CommonITILObject {
 
    function cleanDBonPurge() {
       global $DB;
-
-      $DB->delete(
-         'glpi_itilfollowups', [
-            'items_id'   => $this->fields['id'],
-            'itemtype'   => 'Change'
-         ]
-      );
 
       $DB->delete(
          'glpi_changetasks', [

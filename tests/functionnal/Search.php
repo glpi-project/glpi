@@ -256,6 +256,7 @@ class Search extends DbTestCase {
             'Glpi\\Event',
             'KnowbaseItem',
             'NetworkPortMigration',
+            'TicketFollowup',
          ]
       );
       foreach ($itemtypeslist as $itemtype) {

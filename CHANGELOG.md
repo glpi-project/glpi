@@ -10,9 +10,6 @@ The present file will list all changes made to the project; according to the
 - Ability to link project with problems and tickets.
 - Add followups to Changes and Problems
 - Add timeline to Changes and Problems
-- Fix styles, search, and tests
-- Ability to link project with problems and tickets
-- TicketFollowup changed to ITILFollowup
 - Search on devices from Printers and Network equipments
 
 ### Changed
@@ -22,16 +19,21 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - Plugins are now loaded in ajax files.
+- `TicketFollowup` has been replaced by `ITILFollowup`
 
 #### Deprecated
 
 - Remove `$CFG_GLPI['use_rich_text']` parameter. Will now be `true` per default.
 - Remove `$CFG_GLPI['ticket_timeline']` parameter. Will now be `true` per default.
 - Remove `$CFG_GLPI['ticket_timeline_keep_replaced_tabs']` parameter. Will now be `false` per default.
-- Move `TicketFollowup::showFormMassiveAction` to `ITILFollowup` and deprecate.
-- Move `TicketFollowup::showMassiveActionsSubForm` to `ITILFollowup` and deprecate.
-- Move `TicketFollowup::processMassiveActionsForOneItemtype` to `ITILFollowup` and deprecate.
-- Move `TicketFollowup::showFormMassiveAction` to `ITILFollowup` and deprecate.
+- Usage of `TicketFollowup` class has been deprecated.
+
+The following methods have been deprecated:
+
+- `Ticket::getTicketActors()`
+- `Ticket::processMassiveActionsForOneItemtype()`
+- `Ticket::showFormMassiveAction()`
+- `Ticket::showMassiveActionsSubForm()`
 
 #### Removed
 
