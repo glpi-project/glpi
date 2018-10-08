@@ -281,9 +281,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             'glpi_computers.is_deleted'                  => 0,
             'glpi_computers.is_template'                 => 0,
             'glpi_computers_softwareversions.is_deleted' => 0
-         ] + getEntitiesRestrictCriteria('glpi_computers')
+         ] + getEntitiesRestrictCriteria('glpi_computers', '', '', true)
       ];
-      $results = $DB->request($request);
       $result = $DB->request($request)->next();
       return $result['cpt'];
    }
@@ -463,7 +462,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             'glpi_computers.is_template'                 => 0,
             'glpi_computers_softwareversions.is_deleted' => 0
 
-         ] + getEntitiesRestrictCriteria('glpi_computers'),
+         ] + getEntitiesRestrictCriteria('glpi_computers', '', '', true),
          'ORDER'        => "$sort $order",
          'LIMIT'        => $_SESSION['glpilist_limit'],
          'START'        => $start
