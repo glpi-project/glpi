@@ -92,6 +92,16 @@ class Enclosure extends CommonDBTM {
       );
       echo "</td>";
 
+      echo "<td><label for='dropdown_states_id$rand'>".__('Status')."</label></td>";
+      echo "<td>";
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'rand'      => $rand
+      ]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td><label for='dropdown_power_supplies$rand'>".__('Power supplies')."</label></td>";
       echo "<td>";
       Dropdown::showNumber(
