@@ -741,7 +741,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          'WHERE'     => [
             self::getTable() . '.computers_id'  => $computers_id,
             self::getTable() . '.is_deleted'     => 0,
-         ] + $where,
+         ] + $where + getEntitiesRestrictCriteria('glpi_softwares', '', '', true),
          'ORDER'     => ['softname', 'version']
       ]);
 
