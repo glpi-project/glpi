@@ -204,6 +204,17 @@ class Item_Enclosure extends CommonDBRelation {
          $used [$row['itemtype']][] = $row['items_id'];
       }
 
+      // get used items by racks
+      $iterator = $DB->request([
+         'FROM'  => Item_Rack::getTable(),
+         'WHERE' => [
+            'is_reserved' => 0
+         ]
+      ]);
+      while ($row = $iterator->next()) {
+         $used [$row['itemtype']][] = $row['items_id'];
+      }
+
       Ajax::updateItemOnSelectEvent(
          "dropdown_itemtype$rand",
          "items_id",
