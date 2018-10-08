@@ -6125,7 +6125,7 @@ class Html {
 
       // Generate array for menu and check right
       if ($full === true) {
-         $menu    = self::generateMenuSession();
+         $menu    = self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
          $sector  = $options['sector'];
          $item    = $options['item'];
          $option  = $options['option'];
