@@ -34,14 +34,6 @@
 
 class DbTestCase extends \GLPITestCase {
 
-   public function setUp() {
-      global $DB;
-
-      // Need Innodb -- $DB->begin_transaction() -- workaround:
-      $DB->objcreated = [];
-      parent::setUp();
-   }
-
    public function beforeTestMethod($method) {
       global $DB;
       $DB->beginTransaction();
