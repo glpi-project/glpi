@@ -61,6 +61,13 @@ function update931to932() {
    $DB->delete(Item_Enclosure::getTable(), $corrupted_criteria);
    /** /Clean rack/enclosure items corrupted relations */
 
+   // limit state visibility for enclosures
+   $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [
+      'value' => 1,
+      'after' => 'is_visible_rack'
+   ]);
+   $migration->addKey('glpi_states', 'is_visible_enclosure');
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
