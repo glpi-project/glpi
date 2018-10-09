@@ -97,6 +97,7 @@ class Enclosure extends CommonDBTM {
       State::dropdown([
          'value'     => $this->fields["states_id"],
          'entity'    => $this->fields["entities_id"],
+         'condition' => "`is_visible_enclosure`",
          'rand'      => $rand
       ]);
       echo "</td></tr>\n";
