@@ -48,6 +48,7 @@ The following methods have been deprecated:
 - Drop support of string `$condition` parameter in `countElementsInTableForMyEntities` (`DbUtils::countElementsInTableForMyEntities()`)
 - Drop support of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`)
 - Drop support of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`)
+- Drop ITIL Tasks, Followups and Solutions `showSummary()` method that are replaced with timeline
 
 - Drop class alias `Event` for `Glpi\Event`
 - Drop `Zend\Loader\SplAutoloader` interface

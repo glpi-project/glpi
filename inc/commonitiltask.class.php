@@ -196,16 +196,6 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
-      $itemtype = $item->getType().'Task';
-      if ($task = getItemForItemtype($itemtype)) {
-         $task->showSummary($item);
-         return true;
-      }
-   }
-
-
    function post_deleteFromDB() {
       global $CFG_GLPI;
 
@@ -1653,107 +1643,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       $this->showFormButtons($options);
 
       return true;
-   }
-
-
-   /**
-    * Show the current task sumnary
-    *
-    * @param $item   CommonITILObject
-   **/
-   function showSummary(CommonITILObject $item) {
-      global $DB, $CFG_GLPI;
-
-      if (!static::canView()) {
-         return false;
-      }
-
-      $tID = $item->fields['id'];
-
-      // Display existing Tasks
-      $showprivate = $this->canViewPrivates();
-      $caneditall  = $this->canEditAll();
-      $tmp         = [$item->getForeignKeyField() => $tID];
-      $canadd      = $this->can(-1, CREATE, $tmp);
-      $canpurge    = $this->canPurgeItem();
-
-      $RESTRICT = [];
-      if ($this->maybePrivate() && !$showprivate) {
-         $crits = [
-            'is_private'      => 0,
-            'users_id'        => Session::getLoginUserID(),
-            'users_id_tech'   => Session::getLoginUserID(),
-         ];
-         if (is_array($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
-            $crits['groups_id_tech'] = $_SESSION['glpigroups'];
-         }
-         $RESTRICT[] = ['OR' => $crits];
-      }
-
-      $iterator = $DB->request([
-         'SELECT' => ['id', 'date'],
-         'FROM'   => $this->getTable(),
-         'WHERE'  => [
-            $item->getForeignKeyField() => $tID
-         ] + $RESTRICT,
-         'ORDER'  => 'date DESC'
-      ]);
-
-      $rand = mt_rand();
-
-      $tasktype = $this->getType();
-      if ($caneditall || $canadd || $canpurge) {
-         echo "<div id='viewitem$tasktype$rand'></div>\n";
-      }
-
-      if ($canadd) {
-         echo "<script type='text/javascript' >\n";
-         echo "function viewAdd$tasktype$rand() {\n";
-         $params = ['type'                      => $tasktype,
-                         'parenttype'                => $item->getType(),
-                         $item->getForeignKeyField() => $item->fields['id'],
-                         'id'                        => -1];
-         Ajax::updateItemJsCode("viewitem$tasktype$rand",
-                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
-         echo Html::jsHide("addbutton$rand");
-         echo "};";
-         echo "</script>\n";
-         if (!in_array($item->fields["status"],
-               array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
-            echo "<div id='addbutton$rand' class='center firstbloc'>".
-                 "<a class='vsubmit' href='javascript:viewAdd$tasktype$rand();'>";
-            echo __('Add a new task')."</a></div>\n";
-         }
-      }
-
-      if (count($iterator) == 0) {
-         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th>" . __('No task found.');
-         echo "</th></tr></table>";
-      } else {
-         echo "<table class='tab_cadre_fixehov'>";
-
-         $header = "<tr><th>&nbsp;</th><th>".__('Type')."</th><th>" . __('Date') . "</th>";
-         $header .= "<th>" . __('Description') . "</th><th>" .  __('Duration') . "</th>";
-         $header .= "<th>" . __('Writer') . "</th>";
-         if ($this->maybePrivate() && $showprivate) {
-            $header .= "<th>" . __('Private') . "</th>";
-         }
-         $header .= "<th>" . __('Planning') . "</th></tr>\n";
-         echo $header;
-
-         while ($data = $iterator->next()) {
-            if ($this->getFromDB($data['id'])) {
-               $options = [ 'parent' => $item,
-                                 'rand' => $rand,
-                                 'showprivate' => $showprivate ];
-               Plugin::doHook('pre_show_item', ['item' => $this, 'options' => &$options]);
-               $this->showInObjectSumnary($item, $rand, $showprivate);
-               Plugin::doHook('post_show_item', ['item' => $this, 'options' => $options]);
-            }
-         }
-         echo $header;
-         echo "</table>";
-      }
    }
 
 
