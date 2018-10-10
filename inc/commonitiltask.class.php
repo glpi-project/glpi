@@ -1647,38 +1647,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * Form for Ticket or Problem Task on Massive action
-   **/
-   function showFormMassiveAction() {
-
-      echo "&nbsp;".__('Category')."&nbsp;";
-      TaskCategory::dropdown(['condition' => "`is_active`= '1'"]);
-
-      echo "<br>".__('Description')." ";
-      echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
-
-      if ($this->maybePrivate()) {
-         echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
-      }
-
-       echo "<br>".__('Duration');
-
-      $toadd = [];
-      for ($i=9; $i<=100; $i++) {
-         $toadd[] = $i*HOUR_TIMESTAMP;
-      }
-
-      Dropdown::showTimeStamp("actiontime", ['min'             => 0,
-                                                  'max'             => 8*HOUR_TIMESTAMP,
-                                                  'addfirstminutes' => true,
-                                                  'inhours'         => true,
-                                                  'toadd'           => $toadd]);
-
-      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-   }
-
-
-   /**
     * Get tasks list
     *
     * @since 9.2
