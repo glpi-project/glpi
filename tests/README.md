@@ -21,16 +21,15 @@ Generating optimized autoload files
 Creating a dedicated database
 -----------------------------
 
-Use the **CliInstall** script to create a new database,
-only used for the test suite, using the `--tests` option:
+Use the **glpi:database:install** CLI command to create a new database,
+only used for the test suite, using the `--config-dir=./tests` option:
 
 ```bash
-$ php scripts/cliinstall.php --db=glpitests --user=root --pass=xxxx --tests
-Connect to the DB...
-Create the DB...
-Save configuration file...
-Load default schema...
-Done
+$ bin/console glpi:database:install --config-dir=./tests --db=glpitests --user=root --pass=xxxx
+Creating the database...
+Saving configuration file...
+Loading default schema...
+Installation done.
 ```
 
 The configuration file is saved as `tests/config_db.php`.
@@ -38,7 +37,7 @@ The configuration file is saved as `tests/config_db.php`.
 The database is created using the default schema for current version.
 
 If you need to recreate the database (e.g. for a new schema), you need to run
-**CliInstall** again with the `--force` option.
+**glpi:database:install** CLI command again with the `--force` option.
 
 
 Changing database configuration

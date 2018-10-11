@@ -14,7 +14,7 @@ before_script:
   - if [[ "$UPDATE" == "true" ]]; then bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1); fi
   - if [[ "$UPDATE" == "true" ]]; then php scripts/innodb_migration.php --config-dir=../tests; fi
   - mysql -u root -e 'create database glpitest;'
-  - php scripts/cliinstall.php --db=glpitest --user=root --tests
+  - bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-user=root
   - bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
   - ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
   # LDAP stuff

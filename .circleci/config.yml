@@ -38,7 +38,7 @@ shared: &shared
         name: Install DB
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
-          php scripts/cliinstall.php --db=glpitest --host=127.0.0.1 --user=root --tests
+          bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-host=127.0.0.1 --db-user=root
           bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
     - run:
         name: Unit tests
