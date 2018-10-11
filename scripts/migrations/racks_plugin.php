@@ -202,7 +202,7 @@ function migratePlugin() {
       $out.= "  We found $nb_othermodels models for other items. For each, we'll ask you where you want to import it.\n";
       $out.= "  You need to answer: \n";
       $out.= "   - (C)omputer,\n";
-      $out.= "   - (N)etworkEpuipment,\n";
+      $out.= "   - (N)etworkEquipment,\n";
       $out.= "   - (P)eripheral,\n";
       $out.= "   - Pd(U),\n";
       $out.= "   - Or (I)gnore.\n\n";
