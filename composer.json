@@ -32,7 +32,8 @@
         "paragonie/random_compat": "^2.0",
         "monolog/monolog": "^1.23",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
-        "zendframework/zend-console": "^2.7"
+        "zendframework/zend-console": "^2.7",
+        "elvanto/litemoji": "^1.4"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
