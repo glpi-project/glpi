@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /**
  * Ticket Class
 **/
@@ -1399,6 +1401,15 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
+      if (isset($input[static::getNameField()])) {
+         $input[static::getNameField()] = LitEmoji::encodeShortcode($input[static::getNameField()]);
+      }
+
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
@@ -2056,6 +2067,15 @@ class Ticket extends CommonITILObject {
       if (!isset($input["type"])) {
          $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'], '',
                                                 Ticket::INCIDENT_TYPE);
+      }
+
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
+      if (isset($input[static::getNameField()])) {
+         $input[static::getNameField()] = LitEmoji::encodeShortcode($input[static::getNameField()]);
       }
 
       return $input;
@@ -3125,7 +3145,7 @@ class Ticket extends CommonITILObject {
             'jointype'           => 'child',
             'condition'          => $followup_condition
          ],
-         'datatype'           => 'text'
+         'datatype'           => 'specific'
       ];
       if ($this->getType() == 'Ticket'
           && $CFG_GLPI["use_rich_text"]) {
@@ -3440,6 +3460,7 @@ class Ticket extends CommonITILObject {
          case 'content' :
             $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($values[$field]));
             $content = Html::clean($content);
+            $content = LitEmoji::encodeHtml($content);
             if (empty($content)) {
                $content = ' ';
             }
@@ -4109,6 +4130,7 @@ class Ticket extends CommonITILObject {
          echo "<td class='center middle'>";
 
          $content = $options['content'];
+         $content = LitEmoji::encodeHtml($content);
          if (!$ticket_template) {
             $content = Html::cleanPostForTextArea($options['content']);
          }
@@ -5119,13 +5141,14 @@ class Ticket extends CommonITILObject {
          echo $tt->getBeginHiddenFieldValue('name');
          echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
                 ($tt->isMandatoryField('name') ? " required='required'" : '') .
-                " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+                " value=\"".Html::cleanInputText(LitEmoji::encodeHtml($this->fields["name"]))."\">";
          echo $tt->getEndHiddenFieldValue('name', $this);
       } else {
          if (empty($this->fields["name"])) {
             echo __('Without title');
          } else {
-            echo $this->fields["name"];
+            $name = LitEmoji::encodeHtml($this->fields["name"]);
+            echo $content = $name;
          }
       }
       echo "</td>";
@@ -5136,6 +5159,7 @@ class Ticket extends CommonITILObject {
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       if ($canupdate || $can_requester) {
          $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
+         $content = LitEmoji::encodeHtml($content);
          Html::showTooltip(nl2br(Html::Clean($content)));
       }
       echo $tt->getEndHiddenFieldText('content')."</th>";
@@ -5148,6 +5172,7 @@ class Ticket extends CommonITILObject {
       $content_id = "content$rand";
 
       $content = $this->fields['content'];
+      $content = LitEmoji::encodeHtml($content);
       if (!isset($options['template_preview'])) {
          $content = Html::cleanPostForTextArea($content);
       }
@@ -5159,7 +5184,7 @@ class Ticket extends CommonITILObject {
                                                 !$canupdate);
          $rows = 10;
       } else {
-         $content = Html::setSimpleTextContent($this->fields["content"]);
+         $content = Html::setSimpleTextContent(LitEmoji::encodeHtml($this->fields["content"]));
       }
 
       echo "<div id='content$rand_text'>";
@@ -6306,6 +6331,7 @@ class Ticket extends CommonITILObject {
          $content = Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($job->fields['content'],
                                                                                   ENT_QUOTES,
                                                                                   "UTF-8"));
+         $content = LitEmoji::encodeHtml($content);
          $link    = printf(__('%1$s %2$s'), $link,
                            Html::showToolTip(nl2br(Html::Clean($content)),
                                              ['applyto' => 'ticket'.$job->fields["id"].$rand,
@@ -7088,6 +7114,7 @@ class Ticket extends CommonITILObject {
 
          if (isset($item_i['content'])) {
             $content = $item_i['content'];
+            $content = LitEmoji::encodeHtml($content);
             $content = Toolbox::getHtmlToDisplay($content);
             $content = autolink($content, false);
 
@@ -7306,16 +7333,18 @@ class Ticket extends CommonITILObject {
          echo "<div class='b_right'>".sprintf(__("Ticket# %s description"), $this->getID())."</div>";
 
          echo "<div class='ticket_title'>";
-         echo Html::setSimpleTextContent($this->fields['name']);
+         $name = LitEmoji::encodeHtml($this->fields['name']);
+         echo Html::setSimpleTextContent($name);
          echo "</div>";
 
+         $content = LitEmoji::encodeHtml($this->fields['content']);
          if ($CFG_GLPI["use_rich_text"]) {
             echo "<div class='rich_text_container'>";
-            echo Html::setRichTextContent('', $this->fields['content'], '', true);
+            echo Html::setRichTextContent('', $content, '', true);
             echo "</div>";
          } else {
             echo "<div>";
-            echo Toolbox::getHtmlToDisplay(Html::setSimpleTextContent($this->fields['content']));
+            echo Toolbox::getHtmlToDisplay(Html::setSimpleTextContent($content));
             echo "</div>";
          }
 

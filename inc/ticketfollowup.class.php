@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /// TODO extends it from CommonDBChild
 /**
  * TicketFollowup Class
@@ -267,6 +269,11 @@ class TicketFollowup  extends CommonDBTM {
          $input["users_id_editor"] = $uid;
       }
 
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
       return $input;
    }
 
@@ -391,6 +398,12 @@ class TicketFollowup  extends CommonDBTM {
       $input['timeline_position'] = Ticket::getTimelinePosition($input["tickets_id"], $this->getType(), $input["users_id"]);
 
       $input["date"] = $_SESSION["glpi_currenttime"];
+
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
       return $input;
    }
 
@@ -680,8 +693,10 @@ class TicketFollowup  extends CommonDBTM {
             $cols              = 100;
             $rows              = 10;
          }
+
+         $content = LitEmoji::encodeHtml($this->fields["content"]);
          Html::textarea(['name'              => 'content',
-                         'value'             => $this->fields["content"],
+                         'value'             => $content,
                          'rand'              => $rand_text,
                          'editor_id'         => $content_id,
                          'enable_fileupload' => true,
@@ -1230,5 +1245,31 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       return $values;
+   }
+
+   /**
+    * @since 9.3.2
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'content' :
+            $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($values[$field]));
+            $content = Html::clean($content);
+            $content = LitEmoji::encodeHtml($content);
+            if (empty($content)) {
+               $content = ' ';
+            }
+            return nl2br($content);
+
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 }

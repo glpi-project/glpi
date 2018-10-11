@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /**
  * Session Class
 **/
@@ -1059,6 +1061,7 @@ class Session {
                                            $reset = false) {
 
       if (!empty($msg)) {
+         $msg = LitEmoji::encodeHtml($msg);
          if (self::isCron()) {
             // We are in cron mode
             // Do not display message in user interface, but record error

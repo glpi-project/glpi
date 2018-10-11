@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /**
  * Search Class
  *
@@ -4996,6 +4998,7 @@ class Search {
                   }
                   $out .= "\">";
                   $name = $data[$num][0]['name'];
+                  $name = LitEmoji::encodeHtml($name);
                   if ($_SESSION["glpiis_ids_visible"]
                       || empty($data[$num][0]['name'])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data[$num][0]['id']);
@@ -5003,6 +5006,7 @@ class Search {
                   $out    .= $name."</a>";
                   $hdecode = Html::entity_decode_deep($data[$num][0]['content']);
                   $content = Toolbox::unclean_cross_side_scripting_deep($hdecode);
+                  $content = LitEmoji::encodeHtml($content);
                   $out     = sprintf(__('%1$s %2$s'), $out,
                                      Html::showToolTip(nl2br(Html::Clean($content)),
                                                              ['applyto' => $itemtype.

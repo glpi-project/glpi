@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /**
  *  Common GLPI object
 **/
@@ -862,6 +864,8 @@ class CommonGLPI {
          $name = '';
          if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
             $name = $this->getName();
+            //convert emojis to html enitites on top of form
+            $name = LitEmoji::encodeHtml($name);
             if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
                $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
             }
