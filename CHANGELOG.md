@@ -48,6 +48,7 @@ The following methods have been deprecated:
 - Drop support of string `$condition` parameter in `countElementsInTableForMyEntities` (`DbUtils::countElementsInTableForMyEntities()`)
 - Drop support of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`)
 - Drop support of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`)
+- Drop ITIL Tasks, Followups and Solutions `showSummary()` and massive actions related methods that are replaced with timeline
 
 - Drop class alias `Event` for `Glpi\Event`
 - Drop `Zend\Loader\SplAutoloader` interface
@@ -129,6 +130,8 @@ The following methods have been deprecated:
   - `CommonDBTM::NOTHING_TO_DO`
   - `CommonDBTM::SUCCESS`
   - `CommonDBTM::TYPE_MISMATCH`
+- Drop all methods that have been deprecated in GLPI 9.3.1
+ - `Session::isViewAllEntities()`
 
 
 ## [9.3.2] unreleased

@@ -257,19 +257,6 @@ class Session {
 
    }
 
-   /*
-    * Does user have right to see all entities?
-    *
-    * @deprecated 9.3.2
-    *
-    * @return boolean
-   **/
-
-   static function isViewAllEntities() {
-      Toolbox::deprecated('Use canViewAllEntities');
-      return self::canViewAllEntities();
-   }
-
 
    /** Add an item to the navigate through search results list
     *
