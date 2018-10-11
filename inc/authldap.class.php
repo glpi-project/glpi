@@ -2684,7 +2684,9 @@ class AuthLDAP extends CommonDBTM {
 
       if ($user_dn) {
          $auth->auth_succeded            = true;
-         if ($auth->user->getFromDBbyDn(toolbox::addslashes_deep($user_dn))) {
+         // try by login+auth_id and next by dn
+         if ($auth->user->getFromDBbyNameAndAuth($login, Auth::LDAP, $ldap_method['id'])
+             || $auth->user->getFromDBbyDn(toolbox::addslashes_deep($user_dn))) {
             //There's already an existing user in DB with the same DN but its login field has changed
             $auth->user->fields['name'] = $login;
             $auth->user_present         = true;
