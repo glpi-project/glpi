@@ -25,6 +25,7 @@ The present file will list all changes made to the project; according to the
 - `ttr_slalevels_id` field in `glpi_tickets` table has been renamed to `slalevels_id_ttr`
 - `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `bin/console`
 - `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `bin/console`
+- `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `bin/console`
 
 ### API changes
 
