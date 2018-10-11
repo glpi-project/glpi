@@ -553,78 +553,97 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    }
 
 } else {
-   // Step 2
-   if (test_connect()) {
-      echo "<h3>".__('Database connection successful')."</h3>";
-      echo "<p class='center'>";
-      $result = Config::displayCheckDbEngine(true);
-      echo "</p>";
-      if ($result > 0) {
-         die(1);
-      }
-      if (!isset($_POST["update_location"])) {
-         $current_version = "0.31";
-         $config_table    = "glpi_config";
-
-         if ($DB->tableExists("glpi_configs")) {
-            $config_table = "glpi_configs";
+   if (!empty($_POST["passcheck"]) && $_POST['passcheck'] == $DB->dbpassword) {
+      // Step 2
+      if (test_connect()) {
+         echo "<h3>".__('Database connection successful')."</h3>";
+         echo "<p class='center'>";
+         $result = Config::displayCheckDbEngine(true);
+         echo "</p>";
+         if ($result > 0) {
+            die(1);
          }
+         if (!isset($_POST["update_location"])) {
+            $current_version = "0.31";
+            $config_table    = "glpi_config";
 
-         if ($DB->tableExists($config_table)) {
-            $current_version = Config::getCurrentDBVersion();
-         }
-         echo "<div class='center'>";
-         doUpdateDb();
-
-         if (showLocationUpdateForm()) {
-            switch ($current_version) {
-               case "0.31":
-               case "0.4":
-               case "0.41":
-               case "0.42":
-               case "0.5":
-               case "0.51":
-               case "0.51a":
-               case "0.6":
-               case "0.65":
-               case "0.68":
-               case "0.68.1":
-               case "0.68.2":
-               case "0.68.3":
-                  showContentUpdateForm();
-                  break;
-
-               default:
-                  echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
-                  echo "<input type='hidden' name='update_end' value='1'/>";
-
-                  echo "<hr />";
-                  echo "<h2>".__('One last thing before starting')."</h2>";
-                  echo "<p>";
-                  echo GlpiNetwork::showInstallMessage();
-                  echo "</p>";
-                  echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
-                     __('Donate')."</a><br /><br />";
-
-                  if (!Telemetry::isEnabled()) {
-                     echo "<hr />";
-                     echo Telemetry::showTelemetry();
-                  }
-                  echo Telemetry::showReference();
-
-                  echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-                           __('Use GLPI')."'></p>";
-                  Html::closeForm();
+            if ($DB->tableExists("glpi_configs")) {
+               $config_table = "glpi_configs";
             }
+
+            if ($DB->tableExists($config_table)) {
+               $current_version = Config::getCurrentDBVersion();
+            }
+            echo "<div class='center'>";
+            doUpdateDb();
+
+            if (showLocationUpdateForm()) {
+               switch ($current_version) {
+                  case "0.31":
+                  case "0.4":
+                  case "0.41":
+                  case "0.42":
+                  case "0.5":
+                  case "0.51":
+                  case "0.51a":
+                  case "0.6":
+                  case "0.65":
+                  case "0.68":
+                  case "0.68.1":
+                  case "0.68.2":
+                  case "0.68.3":
+                     showContentUpdateForm();
+                     break;
+
+                  default:
+                     echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
+                     echo "<input type='hidden' name='update_end' value='1'/>";
+
+                     echo "<hr />";
+                     echo "<h2>".__('One last thing before starting')."</h2>";
+                     echo "<p>";
+                     echo GlpiNetwork::showInstallMessage();
+                     echo "</p>";
+                     echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
+                        __('Donate')."</a><br /><br />";
+
+                     if (!Telemetry::isEnabled()) {
+                        echo "<hr />";
+                        echo Telemetry::showTelemetry();
+                     }
+                     echo Telemetry::showReference();
+
+                     echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
+                              __('Use GLPI')."'></p>";
+                     Html::closeForm();
+               }
+            }
+            echo "</div>";
          }
-         echo "</div>";
+
+      } else {
+         echo "<h3>";
+         echo __("Connection to database failed, verify the connection parameters included in config_db.php file")."</h3>";
+      }
+   } else {
+      echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
+      echo "<input type='hidden' name='from_update' value='from_update'>";
+      if (isset($_POST['agree_dev'])) {
+         echo "<input type='hidden' name='agree_dev' value='{$_POST['agree_dev']}'>";
       }
 
-   } else {
-      echo "<h3>";
-      echo __("Connection to database failed, verify the connection parameters included in config_db.php file")."</h3>";
-   }
+      echo "<h3>".__('Confirm password')."</h3>";
+      if (!empty($_POST['passcheck'])) {
+         echo "<p class='center migred'><strong>" . __('Something went wrong') . "<br/>" .
+            __('Check parameters included in config_db.php file.') . "</strong></p>";
+      }
+      echo "<p class='center'><label for='passcheck'>".__('Confirm database password')."</label> ";
+      echo "<input type='password' name='passcheck' id='passcheck' required='required'/></p>";
 
+      echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
+               __('Database connection')."'></p>";
+      Html::closeForm();
+   }
 }
 
 echo "</div></div></body></html>";
