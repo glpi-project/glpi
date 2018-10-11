@@ -23,6 +23,7 @@ The present file will list all changes made to the project; according to the
 - `slas_tto_id` field in `glpi_tickets` table has been renamed to `slas_id_tto`
 - `slas_ttr_id` field in `glpi_tickets` table has been renamed to `slas_id_ttr`
 - `ttr_slalevels_id` field in `glpi_tickets` table has been renamed to `slalevels_id_ttr`
+- `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `bin/console`
 - `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `bin/console`
 
 ### API changes

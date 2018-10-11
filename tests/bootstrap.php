@@ -40,7 +40,7 @@ define('TU_PASS', 'PhpUnit_4');
 define('GLPI_ROOT', __DIR__ . '/../');
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-   die("\nConfiguration file for tests not found\n\nrun: php scripts/cliinstall.php --tests ...\n\n");
+   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
 }
 global $CFG_GLPI, $GLPI_CACHE;
 
