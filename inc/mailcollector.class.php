@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /**
  * MailCollector class
  *
@@ -1057,6 +1059,8 @@ class MailCollector  extends CommonDBTM {
             }
          }
       }
+
+      $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
 
       $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
