@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Items\Contracts\BlameableInterface;
+
 /**
  * Class which manages notification events
 **/
@@ -130,20 +132,26 @@ class NotificationEvent extends CommonDBTM {
             $entity
          );
 
+         $notify_me = false;
+         if (Session::isCron()) {
+            if ($item instanceof BlameableInterface
+                && null !== ($last_updater = $item->getLastUpdater())) {
+               // Get last updater notification preference
+               $notify_me = (bool)$last_updater->fields['notification_to_myself'];
+            } else {
+               // Notify if unable to know last updater
+               $notify_me = true;
+            }
+         } else {
+            // Not cron see my pref
+            $notify_me = $_SESSION['glpinotification_to_myself'];
+         }
+
          foreach ($notifications as $data) {
             $notificationtarget->clearAddressesList();
             $notificationtarget->setMode($data['mode']);
             $template->getFromDB($data['notificationtemplates_id']);
             $template->resetComputedTemplates();
-
-            $notify_me = false;
-            if (Session::isCron()) {
-               // Cron notify me
-               $notify_me = true;
-            } else {
-               // Not cron see my pref
-               $notify_me = $_SESSION['glpinotification_to_myself'];
-            }
 
             $options['mode'] = $data['mode'];
             $eventclass = Notification_NotificationTemplate::getModeClass($data['mode'], 'event');

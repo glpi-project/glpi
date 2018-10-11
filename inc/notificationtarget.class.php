@@ -1,4 +1,6 @@
 <?php
+use Glpi\Items\Contracts\BlameableInterface;
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -184,9 +186,15 @@ class NotificationTarget extends CommonDBChild {
    function validateSendTo($event, array $infos, $notify_me = false) {
 
       if (!$notify_me) {
-         if (isset($infos['users_id'])
-            // Check login user and not event launch by crontask
-             && ($infos['users_id'] === Session::getLoginUserID(false))) {
+         $last_updater_id = null;
+         if ($this->obj instanceof BlameableInterface) {
+            $last_updater_id = $this->obj->getLastUpdaterId();
+         }
+         if (null === $last_updater_id) {
+            $last_updater_id = Session::getLoginUserID(false);
+         }
+
+         if (isset($infos['users_id']) && ((int)$infos['users_id'] === $last_updater_id)) {
             return false;
          }
       }
