@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask  extends CommonDBTM {
 
@@ -143,6 +145,14 @@ abstract class CommonITILTask  extends CommonDBTM {
       switch ($field) {
          case 'state' :
             return Planning::getState($values[$field]);
+         case 'content' :
+            $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($values[$field]));
+            $content = Html::clean($content);
+            $content = LitEmoji::encodeHtml($content);
+            if (empty($content)) {
+               $content = ' ';
+            }
+            return nl2br($content);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
@@ -296,6 +306,11 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $input = $this->addFiles($input);
 
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
       return $input;
    }
 
@@ -431,6 +446,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
       if (isset($input["users_id"])) {
          $input['timeline_position'] = $itemtype::getTimelinePosition($input["_job"]->getID(), $this->getType(), $input["users_id"]);
+      }
+
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
       }
 
       return $input;
@@ -668,7 +688,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => static::getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
-         'datatype'           => 'text',
+         'datatype'           => 'specific',
          'forcegroupby'       => true,
          'splititems'         => true,
          'massiveaction'      => false,
@@ -1398,8 +1418,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          $rows              = 10;
       }
 
+      $content = LitEmoji::encodeHtml($this->fields["content"]);
       Html::textarea(['name'              => 'content',
-                      'value'             => $this->fields["content"],
+                      'value'             => $content,
                       'rand'              => $rand_text,
                       'editor_id'         => $content_id,
                       'enable_fileupload' => true,

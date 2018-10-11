@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
+
 /**
  * CommonITILObject Class
 **/
@@ -875,6 +877,15 @@ abstract class CommonITILObject extends CommonDBTM {
          ]);
       }
 
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
+      if (isset($input[static::getNameField()])) {
+         $input[static::getNameField()] = LitEmoji::encodeShortcode($input[static::getNameField()]);
+      }
+
       return $input;
    }
 
@@ -1336,6 +1347,15 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       $input = $this->computeDefaultValuesForAdd($input);
+
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
+      if (isset($input[static::getNameField()])) {
+         $input[static::getNameField()] = LitEmoji::encodeShortcode($input[static::getNameField()]);
+      }
 
       return $input;
    }
@@ -2808,7 +2828,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'field'              => 'content',
          'name'               => __('Description'),
          'massiveaction'      => false,
-         'datatype'           => 'text'
+         'datatype'           => 'specific'
       ];
       if ($this->getType() == 'Ticket'
           && $CFG_GLPI["use_rich_text"]) {
@@ -3026,7 +3046,7 @@ abstract class CommonITILObject extends CommonDBTM {
          'table'              => ITILSolution::getTable(),
          'field'              => 'content',
          'name'               => _n('Solution', 'Solutions', 1),
-         'datatype'           => 'text',
+         'datatype'           => 'specific',
          'htmltext'           => true,
          'massiveaction'      => false,
          'forcegroupby'       => true,

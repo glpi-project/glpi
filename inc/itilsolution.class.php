@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use LitEmoji\LitEmoji;
 
 /**
  * ITILSolution Class
@@ -232,10 +233,11 @@ class ITILSolution extends CommonDBChild {
       if ($canedit) {
          $rand = mt_rand();
          Html::initEditorSystem("content$rand");
+         $content = LitEmoji::encodeShortcode($this->getField('content'));
 
          echo "<div id='solution$rand_text'>";
          echo "<textarea id='content$rand' name='content' rows='12' cols='80'>".
-                $this->getField('content')."</textarea></div>";
+                $content."</textarea></div>";
 
          // Hide file input to handle only images pasted in text editor
          echo '<div style="display:none;">';
@@ -246,7 +248,7 @@ class ITILSolution extends CommonDBChild {
                      'multiple' => true]);
          echo '</div>';
       } else {
-         echo Toolbox::unclean_cross_side_scripting_deep($this->getField('content'));
+         echo Toolbox::unclean_cross_side_scripting_deep($content);
       }
       echo "</td></tr>";
 
@@ -316,6 +318,11 @@ class ITILSolution extends CommonDBChild {
 
       $input['status'] = $status;
 
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
+
       return $input;
    }
 
@@ -364,6 +371,11 @@ class ITILSolution extends CommonDBChild {
 
       // Replace inline pictures
       $input = $this->addFiles($input);
+
+      //manage emojis
+      if (isset($input['content'])) {
+         $input['content'] = LitEmoji::encodeShortcode($input['content']);
+      }
 
       return $input;
    }
@@ -657,6 +669,15 @@ class ITILSolution extends CommonDBChild {
             $statuses = self::getStatuses();
 
             return (isset($statuses[$value]) ? $statuses[$value] : $value);
+         case 'content' :
+            $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($values[$field]));
+            $content = Html::clean($content);
+            $content = LitEmoji::encodeHtml($content);
+            if (empty($content)) {
+               $content = ' ';
+            }
+            return nl2br($content);
+
             break;
       }
 
