@@ -159,7 +159,7 @@ class ChangeTask extends CommonITILTask {
     *
     * @param $val array of the item to display
     *
-    * @return Already planned information
+    * @return string Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
       return parent::genericGetAlreadyPlannedInformation(__CLASS__, $val);
@@ -169,14 +169,13 @@ class ChangeTask extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param $val       array of the item to display
-    * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
-    *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
+    * @param array           $val       array of the item to display
+    * @param integer         $who       ID of the user (0 if all)
+    * @param string          $type      position of the item in the time block (in, through, begin or end)
+    * @param integer|boolean $complete  complete display (more details)
     *
-    * @return Nothing (display function)
-   **/
+    * @return string
+   */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
