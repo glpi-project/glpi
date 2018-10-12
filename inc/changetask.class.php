@@ -159,7 +159,7 @@ class ChangeTask extends CommonITILTask {
     *
     * @param $val array of the item to display
     *
-    * @return string Already planned information
+    * @return Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
       return parent::genericGetAlreadyPlannedInformation(__CLASS__, $val);
@@ -169,16 +169,49 @@ class ChangeTask extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param array           $val       array of the item to display
-    * @param integer         $who       ID of the user (0 if all)
-    * @param string          $type      position of the item in the time block (in, through, begin or end)
-    * @param integer|boolean $complete  complete display (more details)
+    * @param $val       array of the item to display
+    * @param $who             ID of the user (0 if all)
+    * @param $type            position of the item in the time block (in, through, begin or end)
+    *                         (default '')
+    * @param $complete        complete display (more details) (default 0)
     *
-    * @return string
-    */
+    * @return Nothing (display function)
+   **/
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
 
+   /* Update By Lolokai Conseil */
+   function post_addItem() {
+	global $CFG_GLPI;
+
+	parent::post_addItem();
+	// change change status (from splitted button)
+        $change = new Change();
+        $change->getFromDB($this->fields['changes_id']);
+        if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::WAITING))) {
+               $input = [
+                  'id'            => $change->getID(),
+                  'status'        => Change::EVALUATION
+               ];
+               $change->update($input);
+        }
+   }
+
+   function post_updateItem($history = 1) {
+	global $CFG_GLPI;
+
+	parent::post_updateItem($history);
+	// change change status (from splitted button)
+	$change = new Change();
+	$change->getFromDB($this->fields['changes_id']);
+        if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::WAITING))) {
+               $input = [
+                  'id'            => $change->getID(),
+                  'status'        => Change::EVALUATION
+               ];
+               $change->update($input);
+            }
+   }
 
 }

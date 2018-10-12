@@ -252,25 +252,31 @@ class Change extends CommonITILObject {
 
 
    function cleanDBonPurge() {
+      global $DB;
 
-      // CommonITILTask does not extends CommonDBConnexity
-      $ct = new ChangeTask();
-      $ct->deleteByCriteria(['changes_id' => $this->fields['id']]);
-
-      $this->deleteChildrenAndRelationsFromDb(
-         [
-            // Done by parent: Change_Group::class,
-            Change_Item::class,
-            Change_Problem::class,
-            Change_Project::class,
-            // Done by parent: Change_Supplier::class,
-            Change_Ticket::class,
-            // Done by parent: Change_User::class,
-            ChangeCost::class,
-            ChangeValidation::class,
-            // Done by parent: ITILSolution::class,
+      $DB->delete(
+         'glpi_changetasks', [
+            'changes_id'   => $this->fields['id']
          ]
       );
+
+      $cp = new Change_Problem();
+      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $ct = new Change_Ticket();
+      $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $cp = new Change_Project();
+      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $ci = new Change_Item();
+      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $cv = new ChangeValidation();
+      $cv->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      $cc = new ChangeCost();
+      $cc->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
       parent::cleanDBonPurge();
    }
@@ -284,6 +290,11 @@ class Change extends CommonITILObject {
 
 
    function pre_updateInDB() {
+	/* Modified by Lolokai Conseil */
+      if ((array_key_exists('changeisnotupdate',$this->input) == 0) && (($this->fields['status'] == self::INCOMING) || ($this->fields['status'] == self::APPROVAL) || ($this->fields['status'] == self::ACCEPTED) || ($this->fields['status'] == self::WAITING))) {
+       		$this->updates[] = 'status';
+       		$this->fields['status']= self::EVALUATION;
+      }
       parent::pre_updateInDB();
    }
 
@@ -300,7 +311,7 @@ class Change extends CommonITILObject {
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
       }
-
+ 
       if ($donotif && $CFG_GLPI["use_notifications"]) {
          $mailtype = "update";
          if (isset($this->input["status"]) && $this->input["status"]
@@ -554,7 +565,7 @@ class Change extends CommonITILObject {
 
 
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       if (!static::canView()) {
          return false;
@@ -969,7 +980,7 @@ class Change extends CommonITILObject {
     * @return boolean|void
    **/
    static function showListForItem(CommonDBTM $item) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
@@ -1085,6 +1096,8 @@ class Change extends CommonITILObject {
 
          //TRANS : %d is the number of problems
          echo sprintf(_n('Last %d change', 'Last %d changes', $number), $number);
+         // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+         //            Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 
          echo "</th></tr>";
 
