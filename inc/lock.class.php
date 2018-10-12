@@ -66,8 +66,8 @@ class Lock {
       $itemtype = $item->getType();
       $header   = false;
 
-      //If user doesn't have write right on the item, lock form must not be displayed
-      if (!$item->canCreate()) {
+      //If user doesn't have update right on the item, lock form must not be displayed
+      if (!$item->isDynamic() || !$item->can($item->fields['id'], UPDATE)) {
          return false;
       }
 
@@ -86,6 +86,7 @@ class Lock {
 
       //Special locks for computers only
       if ($itemtype == 'Computer') {
+         $computer_item = new Computer_Item();
          //Locks for items recorded in glpi_computers_items table
          $types = ['Monitor', 'Peripheral', 'Printer'];
          foreach ($types as $type) {
@@ -96,23 +97,31 @@ class Lock {
             $params['FIELDS'] = ['id', 'items_id'];
             $first  = true;
             foreach ($DB->request('glpi_computers_items', $params) as $line) {
-               $tmp    = new $type();
-               $tmp->getFromDB($line['items_id']);
-               $header = true;
+               /** @var CommonDBTM $asset */
+               $asset = new $type();
+               $asset->getFromDB($line['items_id']);
                if ($first) {
                   echo "<tr><th colspan='2'>".$type::getTypeName(Session::getPluralNumber())."</th></tr>\n";
                   $first = false;
                }
 
-               echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-               echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'></td>";
-               echo "<td class='left' width='95%'>" . $tmp->getName() . "</td>";
+               echo "<tr class='tab_bg_1'>";
+
+               echo "<td class='center' width='10'>";
+               if ($computer_item->can($line['id'], UPDATE) || $computer_item->can($line['id'], PURGE)) {
+                  $header = true;
+                  echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'>";
+               }
+               echo "</td>";
+
+               echo "<td class='left' width='95%'>" . $asset->getName() . "</td>";
                echo "</tr>\n";
             }
 
          }
 
          //items disks
+         $item_disk = new Item_Disk();
          $params = [
             'is_dynamic'   => 1,
             'is_deleted'   => 1,
@@ -121,41 +130,52 @@ class Lock {
          ];
          $params['FIELDS'] = ['id', 'name'];
          $first  = true;
-         foreach ($DB->request(getTableForItemType('Item_Disk'), $params) as $line) {
-            $header = true;
+         foreach ($DB->request($item_disk->getTable(), $params) as $line) {
             if ($first) {
-               echo "<tr><th colspan='2'>".Item_Disk::getTypeName(Session::getPluralNumber())."</th></tr>\n";
+               echo "<tr><th colspan='2'>".$item_disk->getTypeName(Session::getPluralNumber())."</th></tr>\n";
                $first = false;
             }
 
-            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-            echo "<input type='checkbox' name='Item_Disk[" . $line['id'] . "]'></td>";
+            echo "<tr class='tab_bg_1'>";
+
+            echo "<td class='center' width='10'>";
+            if ($item_disk->can($line['id'], UPDATE) || $item_disk->can($line['id'], PURGE)) {
+               $header = true;
+               echo "<input type='checkbox' name='Item_Disk[" . $line['id'] . "]'>";
+            }
+            echo "</td>";
+
             echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
             echo "</tr>\n";
          }
 
-         $types = ['ComputerVirtualMachine'];
-         foreach ($types as $type) {
-            $params = ['is_dynamic'    => 1,
-                            'is_deleted'    => 1,
-                            'computers_id'  => $ID];
-            $params['FIELDS'] = ['id', 'name'];
-            $first  = true;
-            foreach ($DB->request(getTableForItemType($type), $params) as $line) {
-               $header = true;
-               if ($first) {
-                  echo "<tr><th colspan='2'>".$type::getTypeName(Session::getPluralNumber())."</th></tr>\n";
-                  $first = false;
-               }
-
-               echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-               echo "<input type='checkbox' name='".$type."[" . $line['id'] . "]'></td>";
-               echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
-               echo "</tr>\n";
+         $computer_vm = new ComputerVirtualMachine();
+         $params = ['is_dynamic'    => 1,
+                         'is_deleted'    => 1,
+                         'computers_id'  => $ID];
+         $params['FIELDS'] = ['id', 'name'];
+         $first  = true;
+         foreach ($DB->request($computer_vm->getTable(), $params) as $line) {
+            if ($first) {
+               echo "<tr><th colspan='2'>".$computer_vm->getTypeName(Session::getPluralNumber())."</th></tr>\n";
+               $first = false;
             }
+
+            echo "<tr class='tab_bg_1'>";
+
+            echo "<td class='center' width='10'>";
+            if ($computer_vm->can($line['id'], UPDATE) || $computer_vm->can($line['id'], PURGE)) {
+               $header = true;
+               echo "<input type='checkbox' name='ComputerVirtualMachine[" . $line['id'] . "]'>";
+            }
+            echo "</td>";
+
+            echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
+            echo "</tr>\n";
          }
 
          //Software versions
+         $computer_sv = new Computer_SoftwareVersion();
          $params = ['is_dynamic'    => 1,
                          'is_deleted'    => 1,
                          'computers_id'  => $ID];
@@ -172,20 +192,27 @@ class Lock {
                           AND `csv`.`is_dynamic` = 1
                           AND `csv`.`computers_id` = '$ID'";
          foreach ($DB->request($query) as $line) {
-            $header = true;
             if ($first) {
                echo "<tr><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>\n";
                $first = false;
             }
 
-            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-            echo "<input type='checkbox' name='Computer_SoftwareVersion[" . $line['id'] . "]'></td>";
+            echo "<tr class='tab_bg_1'>";
+
+            echo "<td class='center' width='10'>";
+            if ($computer_sv->can($line['id'], UPDATE) || $computer_sv->can($line['id'], PURGE)) {
+               $header = true;
+               echo "<input type='checkbox' name='Computer_SoftwareVersion[" . $line['id'] . "]'>";
+            }
+            echo "</td>";
+
             echo "<td class='left' width='95%'>" . $line['software']." ".$line['version'] . "</td>";
             echo "</tr>\n";
 
          }
 
          //Software licenses
+         $computer_sl = new Computer_SoftwareLicense();
          $params = ['is_dynamic'    => 1,
                          'is_deleted'    => 1,
                          'computers_id'  => $ID];
@@ -202,44 +229,56 @@ class Lock {
                           AND `csv`.`is_dynamic` = 1
                           AND `csv`.`computers_id` = '$ID'";
          foreach ($DB->request($query) as $line) {
-            $header = true;
             if ($first) {
                echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th>".
                      "</tr>\n";
                $first = false;
             }
 
-            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-            echo "<input type='checkbox' name='Computer_SoftwareLicense[" . $line['id'] . "]'></td>";
+            echo "<tr class='tab_bg_1'>";
+
+            echo "<td class='center' width='10'>";
+            if ($computer_sl->can($line['id'], UPDATE) || $computer_sl->can($line['id'], PURGE)) {
+               $header = true;
+               echo "<input type='checkbox' name='Computer_SoftwareLicense[" . $line['id'] . "]'>";
+            }
+            echo "</td>";
+
             echo "<td class='left' width='95%'>" . $line['software']." ".$line['version'] . "</td>";
             echo "</tr>\n";
          }
       }
 
       $first  = true;
-      $item   = new NetworkPort();
+      $networkport = new NetworkPort();
       $params = ['is_dynamic' => 1,
                       'is_deleted' => 1,
                       'items_id'   => $ID,
                       'itemtype'   => $itemtype];
       $params['FIELDS'] = ['id'];
-      foreach ($DB->request('glpi_networkports', $params) as $line) {
-         $item->getFromDB($line['id']);
-         $header = true;
+      foreach ($DB->request($networkport->getTable(), $params) as $line) {
+         $networkport->getFromDB($line['id']);
          if ($first) {
-            echo "<tr><th colspan='2'>".NetworkPort::getTypeName(Session::getPluralNumber())."</th></tr>\n";
+            echo "<tr><th colspan='2'>".$networkport->getTypeName(Session::getPluralNumber())."</th></tr>\n";
             $first = false;
          }
 
-         echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-         echo "<input type='checkbox' name='NetworkPort[" . $line['id'] . "]'></td>";
-         echo "<td class='left' width='95%'>" . $item->getName() . "</td>";
+         echo "<tr class='tab_bg_1'>";
+
+         echo "<td class='center' width='10'>";
+         if ($networkport->can($line['id'], UPDATE) || $networkport->can($line['id'], PURGE)) {
+            $header = true;
+            echo "<input type='checkbox' name='NetworkPort[" . $line['id'] . "]'>";
+         }
+         echo "</td>";
+
+         echo "<td class='left' width='95%'>" . $networkport->getName() . "</td>";
          echo "</tr>\n";
 
       }
 
       $first = true;
-      $item  = new NetworkName();
+      $networkname = new NetworkName();
       $params = ['`glpi_networknames`.`is_dynamic`' => 1,
                       '`glpi_networknames`.`is_deleted`' => 1,
                       '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
@@ -248,22 +287,28 @@ class Lock {
                       '`glpi_networkports`.`itemtype`'   => $itemtype];
       $params['FIELDS'] = ['glpi_networknames' => 'id'];
       foreach ($DB->request(['glpi_networknames', 'glpi_networkports'], $params) as $line) {
-         $item->getFromDB($line['id']);
-         $header = true;
+         $networkname->getFromDB($line['id']);
          if ($first) {
             echo "<tr><th colspan='2'>".NetworkName::getTypeName(Session::getPluralNumber())."</th></tr>\n";
             $first = false;
          }
 
-         echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-         echo "<input type='checkbox' name='NetworkName[" . $line['id'] . "]'></td>";
-         echo "<td class='left' width='95%'>" . $item->getName() . "</td>";
+         echo "<tr class='tab_bg_1'>";
+
+         echo "<td class='center' width='10'>";
+         if ($networkname->can($line['id'], UPDATE) || $networkname->can($line['id'], PURGE)) {
+            $header = true;
+            echo "<input type='checkbox' name='NetworkName[" . $line['id'] . "]'>";
+         }
+         echo "</td>";
+
+         echo "<td class='left' width='95%'>" . $networkname->getName() . "</td>";
          echo "</tr>\n";
 
       }
 
       $first  = true;
-      $item   = new IPAddress();
+      $ipaddress = new IPAddress();
       $params = ['`glpi_ipaddresses`.`is_dynamic`' => 1,
                       '`glpi_ipaddresses`.`is_deleted`' => 1,
                       '`glpi_ipaddresses`.`itemtype`'   => 'Networkname',
@@ -276,23 +321,29 @@ class Lock {
       foreach ($DB->request(['glpi_ipaddresses',
                                   'glpi_networknames',
                                   'glpi_networkports'], $params) as $line) {
-         $item->getFromDB($line['id']);
-         $header = true;
+         $ipaddress->getFromDB($line['id']);
          if ($first) {
             echo "<tr><th colspan='2'>".IPAddress::getTypeName(Session::getPluralNumber())."</th></tr>\n";
             $first = false;
          }
 
-         echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-         echo "<input type='checkbox' name='IPAddress[" . $line['id'] . "]'></td>";
-         echo "<td class='left' width='95%'>" . $item->getName() . "</td>";
+         echo "<tr class='tab_bg_1'>";
+
+         echo "<td class='center' width='10'>";
+         if ($ipaddress->can($line['id'], UPDATE) || $ipaddress->can($line['id'], PURGE)) {
+            $header = true;
+            echo "<input type='checkbox' name='IPAddress[" . $line['id'] . "]'>";
+         }
+         echo "</td>";
+
+         echo "<td class='left' width='95%'>" . $ipaddress->getName() . "</td>";
          echo "</tr>\n";
 
       }
 
       $types = Item_Devices::getDeviceTypes();
       $nb    = 0;
-      foreach ($types as $old => $type) {
+      foreach ($types as $type) {
          $nb += countElementsInTable(getTableForItemType($type),
                                      ['items_id'   => $ID,
                                       'itemtype'   => $itemtype,
@@ -300,9 +351,10 @@ class Lock {
                                       'is_deleted' => 1 ]);
       }
       if ($nb) {
-         $header = true;
          echo "<tr><th colspan='2'>"._n('Component', 'Components', Session::getPluralNumber())."</th></tr>\n";
-         foreach ($types as $old => $type) {
+         foreach ($types as $type) {
+            $type_item = new $type();
+
             $associated_type  = str_replace('Item_', '', $type);
             $associated_table = getTableForItemType($associated_type);
             $fk               = getForeignKeyFieldForTable($associated_table);
@@ -317,8 +369,15 @@ class Lock {
                             AND `is_dynamic` = 1
                             AND `is_deleted` = 1";
             foreach ($DB->request($query) as $data) {
-               echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-               echo "<input type='checkbox' name='".$type."[" . $data['id'] . "]'></td>";
+               echo "<tr class='tab_bg_1'>";
+
+               echo "<td class='center' width='10'>";
+               if ($type_item->can($line['id'], UPDATE) || $type_item->can($line['id'], PURGE)) {
+                  $header = true;
+                  echo "<input type='checkbox' name='".$type."[" . $data['id'] . "]'>";
+               }
+               echo "</td>";
+
                echo "<td class='left' width='95%'>";
                printf(__('%1$s: %2$s'), $associated_type::getTypeName(), $data['name']);
                echo "</td></tr>\n";
@@ -352,7 +411,7 @@ class Lock {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if ($item->isDynamic() && $item->canCreate()) {
+      if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
          return Lock::getTypeName(Session::getPluralNumber());
       }
       return '';
@@ -366,7 +425,7 @@ class Lock {
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      if ($item->isDynamic()) {
+      if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
          self::showForItem($item);
       }
       return true;
