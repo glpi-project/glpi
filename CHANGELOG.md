@@ -15,8 +15,17 @@ The present file will list all changes made to the project; according to the
 
 The following methods have been deprecated:
 
+- `CommonITILTask::displayTabContentForItem()`
+- `CommonITILTask::showFormMassiveAction()`
+- `CommonITILTask::showSummary()`
+- `ITILSolution::displayTabContentForItem()`
 - `ITILSolution::removeForItem()`
+- `ITILSolution::showSummary()`
 - `Session::isViewAllEntities()`
+- `TicketFollowup::processMassiveActionsForOneItemtype()`
+- `TicketFollowup::showFormMassiveAction()`
+- `TicketFollowup::showMassiveActionsSubForm()`
+- `TicketFollowup::showSummary()`
 
 ## [9.3.1] 2018-09-12
 
