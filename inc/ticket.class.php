@@ -1899,7 +1899,7 @@ class Ticket extends CommonITILObject {
             }
             break;
       }
-      
+
       // Process Business Rules
       $rules = new RuleTicketCollection($input['entities_id']);
 
