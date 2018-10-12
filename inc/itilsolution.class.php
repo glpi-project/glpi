@@ -65,7 +65,14 @@ class ITILSolution extends CommonDBChild {
       }
    }
 
+
+   /**
+    * @deprecated 9.3.2
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+
+      Toolbox::deprecated();
+
       $sol = new self();
       $sol->showSummary($item);
    }
@@ -389,9 +396,14 @@ class ITILSolution extends CommonDBChild {
     *
     * @param CommonITILObject $item Item instance
     *
-    * return void
+    * @return void
+    *
+    * @deprecated 9.3.2
     */
    public function showSummary(CommonITILObject $item) {
+
+      Toolbox::deprecated();
+
       global $DB, $CFG_GLPI;
 
       if (isset($_GET["start"])) {

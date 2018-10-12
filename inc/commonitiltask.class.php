@@ -196,7 +196,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
+   /**
+    * @deprecated 9.3.2
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+
+      Toolbox::deprecated();
 
       $itemtype = $item->getType().'Task';
       if ($task = getItemForItemtype($itemtype)) {
@@ -1667,8 +1672,13 @@ abstract class CommonITILTask  extends CommonDBTM {
     * Show the current task sumnary
     *
     * @param $item   CommonITILObject
-   **/
+    *
+    * @deprecated 9.3.2
+    */
    function showSummary(CommonITILObject $item) {
+
+      Toolbox::deprecated();
+
       global $DB, $CFG_GLPI;
 
       if (!static::canView()) {
@@ -1766,8 +1776,12 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    /**
     * Form for Ticket or Problem Task on Massive action
-   **/
+    *
+    * @deprecated 9.3.2
+    */
    function showFormMassiveAction() {
+
+      Toolbox::deprecated();
 
       echo "&nbsp;".__('Category')."&nbsp;";
       TaskCategory::dropdown(['condition' => "`is_active`= '1'"]);
