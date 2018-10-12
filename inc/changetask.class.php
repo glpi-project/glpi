@@ -175,7 +175,7 @@ class ChangeTask extends CommonITILTask {
     * @param integer|boolean $complete  complete display (more details)
     *
     * @return string
-   */
+    */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }

@@ -251,12 +251,12 @@ class Change extends CommonITILObject {
    }
 
 
-   function cleanDBonPurge() {
-	   
+   function cleanDBonPurge() {  
       // CommonITILTask does not extends CommonDBConnexity
       $ct = new ChangeTask();
       $ct->deleteByCriteria(['changes_id' => $this->fields['id']]);
-       $this->deleteChildrenAndRelationsFromDb(
+	  
+      $this->deleteChildrenAndRelationsFromDb(
          [
             // Done by parent: Change_Group::class,
             Change_Item::class,
