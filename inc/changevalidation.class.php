@@ -45,7 +45,7 @@ class ChangeValidation  extends CommonITILValidation {
 
    static $rightname                 = 'changevalidation';
 
-      static function rawSearchOptionsToAdd() {
+   static function rawSearchOptionsToAdd() {
       $tab = [];
       $tab[] = [
          'id'                 => 'validation',
@@ -296,51 +296,51 @@ class ChangeValidation  extends CommonITILValidation {
    }
 
    function post_addItem() {
-        global $CFG_GLPI;
+      global $CFG_GLPI;
 
-	$change = new static::$itemtype();
-        $change->getFromDB($this->fields['changes_id']);
-        if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::EVALUATION))) {
+      $change = new static::$itemtype();
+      $change->getFromDB($this->fields['changes_id']);
+      if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::EVALUATION))) {
                $input = [
-                  'id'            => $change->getID(),
-                  'status'        => Change::APPROVAL,
-		  'changeisnotupdate' => 1
-               ];
-               $change->update($input);
-        }
-	parent::post_addItem();
-   }
-
-   function post_updateItem($history = 1) {
-     global $CFG_GLPI;
-     parent::post_updateItem($history);
-
-     $change = new static::$itemtype();
-     $change->getFromDB($this->fields['changes_id']);
-
-     if ($this->fields["status"] == self::WAITING) {
-	$input = [
                   'id'            => $change->getID(),
                   'status'        => Change::APPROVAL,
                   'changeisnotupdate' => 1
                ];
-        $change->update($input);
-     }
-     if ($this->fields["status"] == self::ACCEPTED) {
-        $input = [
+               $change->update($input);
+      }
+      parent::post_addItem();
+   }
+
+   function post_updateItem($history = 1) {
+      global $CFG_GLPI;
+      parent::post_updateItem($history);
+
+      $change = new static::$itemtype();
+      $change->getFromDB($this->fields['changes_id']);
+
+      if ($this->fields["status"] == self::WAITING) {
+         $input = [
+                  'id'            => $change->getID(),
+                  'status'        => Change::APPROVAL,
+                  'changeisnotupdate' => 1
+               ];
+         $change->update($input);
+      }
+      if ($this->fields["status"] == self::ACCEPTED) {
+         $input = [
                   'id'            => $change->getID(),
                   'status'        => Change::ACCEPTED,
                   'changeisnotupdate' => 1
                ];
-        $change->update($input);
-     }
-     if ($this->fields["status"] == self::REFUSED) {
-        $input = [
+         $change->update($input);
+      }
+      if ($this->fields["status"] == self::REFUSED) {
+         $input = [
                   'id'            => $change->getID(),
                   'status'        => Change::CLOSED,
                   'changeisnotupdate' => 1
                ];
-        $change->update($input);
-     }
+         $change->update($input);
+      }
    }
 }

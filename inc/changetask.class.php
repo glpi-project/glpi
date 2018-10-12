@@ -182,35 +182,35 @@ class ChangeTask extends CommonITILTask {
 
    /* Update By Lolokai Conseil */
    function post_addItem() {
-	global $CFG_GLPI;
+      global $CFG_GLPI;
 
-	parent::post_addItem();
-	// change change status (from splitted button)
-        $change = new Change();
-        $change->getFromDB($this->fields['changes_id']);
-        if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::WAITING))) {
+      parent::post_addItem();
+      // change change status (from splitted button)
+      $change = new Change();
+      $change->getFromDB($this->fields['changes_id']);
+      if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::WAITING))) {
                $input = [
                   'id'            => $change->getID(),
                   'status'        => Change::EVALUATION
                ];
                $change->update($input);
-        }
+      }
    }
 
    function post_updateItem($history = 1) {
-	global $CFG_GLPI;
+      global $CFG_GLPI;
 
-	parent::post_updateItem($history);
-	// change change status (from splitted button)
-	$change = new Change();
-	$change->getFromDB($this->fields['changes_id']);
-        if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::WAITING))) {
+      parent::post_updateItem($history);
+      // change change status (from splitted button)
+      $change = new Change();
+      $change->getFromDB($this->fields['changes_id']);
+      if ($change->isStatusExists(Change::EVALUATION) && (($change->fields["status"] == Change::INCOMING) || ($change->fields["status"] == Change::WAITING))) {
                $input = [
                   'id'            => $change->getID(),
                   'status'        => Change::EVALUATION
                ];
                $change->update($input);
-            }
+      }
    }
 
 }
