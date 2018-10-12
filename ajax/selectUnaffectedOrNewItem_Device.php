@@ -48,14 +48,16 @@ if ($_POST['items_id']
    $linktype   = $devicetype::getItem_DeviceType();
 
    if (count($linktype::getSpecificities())) {
-      $name_field = "CONCAT_WS(' - ', `".implode('`, `',
-                                                 array_keys($linktype::getSpecificities()))."`)";
+      $name_field = new QueryExpression(
+         "CONCAT_WS(' - ', `" . implode('`, `', array_keys($linktype::getSpecificities())) . "`)"
+         . "AS `name`"
+      );
    } else {
-      $name_field = "`id`";
+      $name_field = "id AS name";
    }
    $result = $DB->request(
       [
-         'SELECT' => ['id', $name_field . ' AS name'],
+         'SELECT' => ['id', $name_field],
          'FROM'   => $linktype::getTable(),
          'WHERE'  => [
             $devicetype::getForeignKeyField() => $_POST['items_id'],
