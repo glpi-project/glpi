@@ -6074,10 +6074,18 @@ class Html {
       echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 
+      if (Session::getCurrentInterface() == 'central') {
+         $url_help_link = (empty($CFG_GLPI["central_doc_url"])
+            ? "http://glpi-project.org/help-central"
+            : $CFG_GLPI["central_doc_url"]);
+      } else {
+         $url_help_link = (empty($CFG_GLPI["helpdesk_doc_url"])
+            ? "http://glpi-project.org/help-central"
+            : $CFG_GLPI["helpdesk_doc_url"]);
+      }
+
       echo "<li id='help_link'>".
-           "<a href='".(empty($CFG_GLPI["central_doc_url"])
-                         ? "http://glpi-project.org/help-central"
-                         : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
+           "<a href='".$url_help_link."' target='_blank' title=\"".
                             __s('Help')."\" class='fa fa-question'>".
            "<span class='sr-only'>" . __('Help') . "</span>";
       echo "</a></li>";
