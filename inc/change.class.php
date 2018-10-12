@@ -285,9 +285,9 @@ class Change extends CommonITILObject {
 
    function pre_updateInDB() {
       /* Modified by Lolokai Conseil */
-      if ((array_key_exists('changeisnotupdate',$this->input) == 0) && (($this->fields['status'] == self::INCOMING) || ($this->fields['status'] == self::APPROVAL) || ($this->fields['status'] == self::ACCEPTED) || ($this->fields['status'] == self::WAITING))) { 
-       	    $this->updates[] = 'status';
-       	    $this->fields['status']= self::EVALUATION;
+      if ((array_key_exists('changeisnotupdate', $this->input) == 0) && (($this->fields['status'] == self::INCOMING) || ($this->fields['status'] == self::APPROVAL) || ($this->fields['status'] == self::ACCEPTED) || ($this->fields['status'] == self::WAITING))) {
+         $this->updates[] = 'status';
+         $this->fields['status']= self::EVALUATION;
       }
       parent::pre_updateInDB();
    }
