@@ -1886,7 +1886,7 @@ class Ticket extends CommonITILObject {
       ) {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
-      
+
       // Manage auto assign
       $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
 
@@ -1956,7 +1956,7 @@ class Ticket extends CommonITILObject {
             }
             break;
       }
- 
+
       // Process Business Rules
       $rules = new RuleTicketCollection($input['entities_id']);
 
