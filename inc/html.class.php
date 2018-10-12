@@ -3383,7 +3383,7 @@ class Html {
                                                      'width'   => 600,
                                                      'height'  => 300]);
       }
-      $js = "";
+      $js = "$(function(){";
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
          position: { viewport: $(window) },
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
@@ -3398,6 +3398,7 @@ class Html {
                         solo: true, // ...and hide all other tooltips...
                 }, hide: false,";
       }
+      $js .= "});";
       $js .= "});";
       $out .= Html::scriptBlock($js);
 
@@ -4304,70 +4305,69 @@ class Html {
          $placeholder = "placeholder: ".json_encode($params["placeholder"]).",";
       }
 
-      $js = "$('#$id').select2({
-         $placeholder
-         width: '$width',
-         dropdownAutoWidth: true,
-         quietMillis: 100,
-         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-         matcher: function(params, data) {
-            // If there are no search terms, return all of the data
-            if ($.trim(params.term) === '') {
-               return data;
-            }
-
-            // Skip if there is no 'children' property
-            if (typeof data.children === 'undefined') {
-               if (typeof data.text === 'string'
-                  && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
-               ) {
+      $js = "$(function() {
+         $('#$id').select2({
+            $placeholder
+            width: '$width',
+            dropdownAutoWidth: true,
+            quietMillis: 100,
+            minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
+            matcher: function(params, data) {
+               // If there are no search terms, return all of the data
+               if ($.trim(params.term) === '') {
                   return data;
                }
-               return null;
-            }
 
-            // `data.children` contains the actual options that we are matching against
-            // also check in `data.text` (optgroup title)
-            var filteredChildren = [];
-            $.each(data.children, function (idx, child) {
-               if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
-                  || data.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
-               ) {
-                  filteredChildren.push(child);
+               // Skip if there is no 'children' property
+               if (typeof data.children === 'undefined') {
+                  if (typeof data.text === 'string'
+                     && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
+                  ) {
+                     return data;
+                  }
+                  return null;
                }
-            });
 
-            // If we matched any of the group's children, then set the matched children on the group
-            // and return the group object
-            if (filteredChildren.length) {
-               var modifiedData = $.extend({}, data, true);
-               modifiedData.children = filteredChildren;
+               // `data.children` contains the actual options that we are matching against
+               // also check in `data.text` (optgroup title)
+               var filteredChildren = [];
+               $.each(data.children, function (idx, child) {
+                  if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
+                     || data.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
+                  ) {
+                     filteredChildren.push(child);
+                  }
+               });
 
-               // You can return modified objects from here
-               // This includes matching the `children` how you want in nested data sets
-               return modifiedData;
+               // If we matched any of the group's children, then set the matched children on the group
+               // and return the group object
+               if (filteredChildren.length) {
+                  var modifiedData = $.extend({}, data, true);
+                  modifiedData.children = filteredChildren;
+
+                  // You can return modified objects from here
+                  // This includes matching the `children` how you want in nested data sets
+                  return modifiedData;
+               }
+
+               // Return `null` if the term should not be displayed
+               return null;
+            },
+            templateResult: templateResult,
+            templateSelection: function(object) {
+               text = object.text;
+               if (object.element.parentElement.nodeName == 'OPTGROUP') {
+                  text = object.element.parentElement.getAttribute('label') + ' - ' + text;
+               }
+               return text;
             }
 
-            // Return `null` if the term should not be displayed
-            return null;
-         },
-         formatSelection: function(object, container) {
-            text = object.text;
-            if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
-               text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
-            }
-            return text;
-         },
-         formatResult: function (result, container) {
-            container.attr('title', result.title || result.element[0].title);
-            return result.text;
-         }
-
-      })
-      .bind('setValue', function(e, value) {
-         $('#$id').val(value).trigger('change');
-      })
-      $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
+         })
+         .bind('setValue', function(e, value) {
+            $('#$id').val(value).trigger('change');
+         })
+         $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });
+      });";
       return Html::scriptBlock($js);
    }
 
@@ -4471,7 +4471,7 @@ class Html {
                   };
                }
             },
-            templateResult: formatResult
+            templateResult: templateResult
          })
          .bind('setValue', function(e, value) {
             $.ajax('$url', {

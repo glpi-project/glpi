@@ -945,7 +945,10 @@ function markMatch (text, term) {
    return _result.html();
 }
 
-var formatResult = function(result) {
+/**
+ * Function that renders selct2 results
+ */
+var templateResult = function(result) {
    if (!result.id) {
       return result.text;
    }
