@@ -666,6 +666,29 @@ class Project extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '91',
+         'table'              => ProjectCost::getTable(),
+         'field'              => 'totalcost',
+         'name'               => __('Total cost'),
+         'datatype'           => 'decimal',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'specific_itemtype'  => 'ProjectCost',
+            'condition'          => 'AND NEWTABLE.`projects_id` = REFTABLE.`id`',
+            'beforejoin'         => [
+               'table'        => $this->getTable(),
+               'joinparams'   => [
+                  'jointype'  => 'child'
+               ],
+            ],
+         ],
+         'computation'        => '(SUM(TABLE.`cost`))'
+      ];
+
+      $tab[] = [
          'id'                 => 'project_team',
          'name'               => ProjectTeam::getTypeName(),
       ];
