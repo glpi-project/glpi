@@ -142,19 +142,18 @@ function get_content($DB, $table, $from, $limit) {
 
    $content = "";
 
-   $result = $DB->request($table, ['START' => $from, 'LIMIT' => $limit]);
+   $iterator = $DB->request($table, ['START' => $from, 'LIMIT' => $limit]);
 
-   if ($result) {
-      $num_fields = $DB->num_fields($result);
+   if ($iterator->count()) {
 
-      while ($row = $DB->fetch_row($result)) {
+      while ($row = $iterator->next()) {
          $insert = "INSERT INTO `$table` VALUES (";
 
-         for ($j = 0; $j < $num_fields; $j++) {
-            if (is_null($row[$j])) {
+         foreach ($row as $field_key => $field_val) {
+            if (is_null($field_val)) {
                $insert .= "NULL,";
-            } else if ($row[$j] != "") {
-               $insert .= "'" . addslashes($row[$j]) . "',";
+            } else if ($field_val != "") {
+               $insert .= "'" . addslashes($field_val) . "',";
             } else {
                $insert .= "'',";
             }
