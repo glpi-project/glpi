@@ -86,6 +86,9 @@ echo "Clean PHP vendor"
 echo "Minify stylesheets and javascripts"
 $INIT_PWD/vendor/bin/robo minify --load-from tools
 
+echo "Compile SCSS"
+$INIT_PWD/scripts/compile_scss
+
 echo "Compile locale files"
 ./tools/locale/update_mo.pl
 

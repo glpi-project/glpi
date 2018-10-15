@@ -1,0 +1,213 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+/* ===== LOGIN ===== */
+
+#firstboxlogin {
+  background-color: #1A7AB2;
+}
+
+#logo_login {
+  background: url(../../pics/login_logo_glpi.png) center no-repeat, #5ABCFF;
+}
+
+#display-login {
+  color: #FFF;
+}
+
+#text-login {
+  background-color: #5ABCFF;
+  color: #FFF;
+}
+
+/* ====== GENERAL ====== */
+
+a {
+  color: #006573;
+  &:link {
+    color: #006573;
+  }
+}
+
+.ui-widget-content a {
+  color: #006573;
+}
+
+.main_form tr.headerRow th {
+  color: #81BEAA;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+  background-color: #1A7AB2;
+}
+
+#c_preference a, #language_link > span {
+  color: #7cc7f1;
+}
+
+#c_recherche form #champRecherche input {
+  background-color: #005572;
+  color: #F4D4AD;
+}
+
+#c_menu {
+  background-color: #5ABCFF;
+}
+
+ul {
+  &#menu {
+    a {
+      &.itemP, &.itemP1 {
+        color: #fff;
+      }
+    }
+    ul li a {
+      color: #3891cd;
+    }
+    > li.active {
+      background-color: #2da9ff;
+    }
+  }
+  &.ssmenu li.active {
+    background-color: #2da9ff;
+  }
+  &#menu {
+    > li.active > a {
+      color: #FFF;
+    }
+    ul {
+      &.ssmenu li.active > a {
+        color: #FFF;
+      }
+      li a:hover {
+        background: #55B2FF;
+        color: #fff;
+      }
+    }
+    > li:hover {
+      background-color: #41B1FF;
+      color: #fff;
+      > a {
+        background-color: #41B1FF;
+        color: #fff;
+      }
+    }
+  }
+}
+
+#c_recherche form #champRecherche button {
+  background-color: white;
+}
+
+/* ====== BUTTONS ====== */
+
+input.submit {
+  background-color: #41B1FF;
+  color: #fff;
+  border: 1px solid #88c9ff;
+  &:hover {
+    background-color: #92ceff;
+  }
+}
+
+a.vsubmit {
+  background-color: #41B1FF;
+  color: #fff;
+  &:hover {
+    background-color: #92ceff;
+  }
+}
+
+#BackToTop {
+  background-color: #55B2FF;
+  color: #fff;
+}
+
+/* ====== BREADCRUMB ====== */
+
+#c_ssmenu2 .breadcrumb_item:nth-of-type(3) {
+  background-color: #2da9ff;
+  a {
+    color: #fff;
+  }
+  &:after {
+    border-left-color: #2da9ff;
+  }
+}
+
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+
+.primary-bg {
+  background: #5ABCFF;
+}
+
+.primary-bg-inverse {
+  background: white;
+}
+
+.primary-fg {
+  color: white;
+  &:hover {
+    color: white;
+  }
+}
+
+.primary-fg-inverse {
+  color: #5ABCFF;
+  &:hover {
+    color: #5ABCFF;
+  }
+}
+
+#c_preference a.debugon {
+  color: black !important;
+  &:hover {
+    color: black !important;
+  }
+}
+
+#show_all_menu {
+  dt a {
+    color: white;
+    &:hover {
+      background: #41B1FF;
+    }
+  }
+  a {
+    color: #3891cd;
+    &:hover {
+      background-color: #5ABCFF;
+      color: white;
+    }
+  }
+}

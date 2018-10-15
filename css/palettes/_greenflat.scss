@@ -31,120 +31,128 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-   background-color: #C0CC7B;
+  background-color: #54BD90;
 }
 
 #logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #E1D39E;
+  background: url(../../pics/login_logo_glpi.png) center no-repeat, #09A071;
 }
 
 #display-login {
-   color: #FFF;
+  color: #FFF;
 }
 
 #text-login {
-   background-color: #E1D39E;
-   color: #FFF;
+  background-color: #09A071;
+  color: #FFF;
 }
-
 
 /* ====== GENERAL ====== */
 
-a, a:link, .ui-widget-content a {
-    color: #659900;
+a {
+  color: #007A58;
+  &:link {
+    color: #007A58;
+  }
 }
 
-.main_form tr.headerRow th {
-   color: #659900;
+.ui-widget-content a, .main_form tr.headerRow th {
+  color: #007A58;
 }
-
 
 /* ====== HEADER ====== */
 
 #header_top {
-   background-color: #E1D39E;
+  background-color: #09A071;
 }
 
-#c_preference a.fa,
 #c_preference a, #language_link > span {
-   color: #000;
-}
-#c_preference a.fa:hover {
-   color: #999;
+  color: #FFF;
 }
 
 #c_recherche form #champRecherche input {
-   background-color: #877C52;
-   color: #FFF;
+  background-color: #004630;
+  color: #FFF;
 }
 
 #c_menu {
-   background-color: #C0CC7B;
+  background-color: #54BD90;
 }
 
-ul#menu a.itemP, ul#menu a.itemP1 {
-   color: #000;
-}
-
-ul#menu > li.active,
-ul.ssmenu li.active {
-   background-color: #98A458;
-}
-
-ul#menu > li:hover {
-   background-color: #828D41;
-}
-
-ul#menu ul li a:hover {
-   background: #98A458;
-   color: #FFF;
-}
-
-ul#menu ul li a {
-   color: #659900;
+ul {
+  &#menu {
+    a {
+      &.itemP, &.itemP1 {
+        color: #FFF;
+      }
+    }
+    > li.active {
+      background-color: #007A58;
+    }
+  }
+  &.ssmenu li.active {
+    background-color: #007A58;
+  }
+  &#menu {
+    > li:hover {
+      background-color: #09A071;
+    }
+    ul li a {
+      &:hover {
+        background: #54BD90;
+      }
+      color: #004A33;
+    }
+  }
 }
 
 #c_recherche form #champRecherche button {
-   background-color: #000;
-   color: #FFF;
-}
-
-#c_recherche form #champRecherche button:hover {
-   background-color: #999;
+  background-color: white;
 }
 
 /* ====== BUTTONS ====== */
-a.vsubmit,
-.vsubmit a {
-   color: #8f5a0a;
+
+a.vsubmit, .vsubmit a {
+  color: #8f5a0a;
 }
 
 /* Primary color elements (white on blue BG) designed to be overridden from palettes */
 /* Colors are same as #c_menu */
+
 .primary-bg {
-   background: #C0CC7B;
+  background: #54BD90;
 }
+
 .primary-bg-inverse {
-   background: black;
+  background: white;
 }
 
-.primary-fg, .primary-fg:hover {
-   color: black;
+.primary-fg {
+  color: white;
+  &:hover {
+    color: white;
+  }
 }
 
-.primary-fg-inverse, .primary-fg-inverse:hover {
-   color: #C0CC7B;
+.primary-fg-inverse {
+  color: #54BD90;
+  &:hover {
+    color: #54BD90;
+  }
 }
 
-#show_all_menu dt a {
-   color: black;
-}
-
-#show_all_menu dt a:hover {
-   background: #828D41;
-}
-
-#show_all_menu a:hover {
-   background-color: #C0CC7B;
-   color: white;
+#show_all_menu {
+  dt a {
+    color: white;
+    &:hover {
+      background: #09A071;
+    }
+  }
+  a {
+    color: #004A33;
+    &:hover {
+      background-color: #54BD90;
+      color: #004A33;
+    }
+  }
 }
