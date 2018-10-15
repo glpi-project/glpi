@@ -668,8 +668,8 @@ final class DbUtils {
       $sons = false;
 
       if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $sons = $GLPI_CACHE->getItem($ckey);
+         if ($GLPI_CACHE->has($ckey)) {
+            $sons = $GLPI_CACHE->get($ckey);
             if ($sons !== null) {
                return $sons;
             }
@@ -754,7 +754,7 @@ final class DbUtils {
       }
 
       if (Toolbox::useCache()) {
-         $GLPI_CACHE->addItem($ckey, $sons);
+         $GLPI_CACHE->set($ckey, $sons);
       }
 
       return $sons;
@@ -780,8 +780,8 @@ final class DbUtils {
       $ancestors = [];
 
       if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $ancestors = $GLPI_CACHE->getItem($ckey);
+         if ($GLPI_CACHE->has($ckey)) {
+            $ancestors = $GLPI_CACHE->get($ckey);
             if ($ancestors !== null) {
                return $ancestors;
             }
@@ -869,7 +869,7 @@ final class DbUtils {
       }
 
       if (Toolbox::useCache()) {
-         $GLPI_CACHE->addItem($ckey, $ancestors);
+         $GLPI_CACHE->set($ckey, $ancestors);
       }
 
       return $ancestors;

@@ -34,6 +34,7 @@ use Glpi\Exception\PasswordTooWeakException;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
+use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -2837,12 +2838,13 @@ class Config extends CommonDBTM {
    /**
     * Get a cache adapter from configuration
     *
-    * @param string $optname name of the configuration field
-    * @param string $context name of the configuration context (default 'core')
+    * @param string  $optname name of the configuration field
+    * @param string  $context name of the configuration context (default 'core')
+    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
     * @return Zend\Cache\Storage\StorageInterface object or false
     */
-   public static function getCache($optname, $context = 'core') {
+   public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB, $CFG_GLPI;
 
       if (defined('TU_USER') && !defined('CACHED_TESTS')
@@ -2929,8 +2931,11 @@ class Config extends CommonDBTM {
       // Create adapter
       $cache = false;
       try {
-         $cache = Zend\Cache\StorageFactory::factory($opt);
-         $cache_class = get_class($cache);
+         $storage = Zend\Cache\StorageFactory::factory($opt);
+         if ($psr16) {
+            $cache = new SimpleCacheDecorator($storage);
+         }
+         $cache_class = get_class($storage);
       } catch (Exception $e) {
          $cache_class = 'no class';
          if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {

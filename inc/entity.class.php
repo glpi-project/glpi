@@ -132,8 +132,8 @@ class Entity extends CommonTreeDropdown {
       $this->cleanParentsSons();
       if (Toolbox::useCache()) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $GLPI_CACHE->removeItem($ckey);
+         if ($GLPI_CACHE->has($ckey)) {
+            $GLPI_CACHE->delete($ckey);
          }
       }
       return true;
