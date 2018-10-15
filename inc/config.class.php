@@ -1931,6 +1931,8 @@ class Config extends CommonDBTM {
                  'check'   => 'LitEmoji\\LitEmoji' ],
                [ 'name'    => 'symfony/console',
                  'check'   => 'Symfony\\Component\\Console\\Application' ],
+               [ 'name'    => 'leafo/scssphp',
+                 'check'   => 'Leafo\ScssPhp\Compiler' ],
       ];
       if ($all || PHP_VERSION_ID < 70000) {
          $deps[] = [
@@ -3070,14 +3072,8 @@ class Config extends CommonDBTM {
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
       $themes = [];
       foreach ($themes_files as $file) {
-         if (strpos($file, ".css") !== false) {
-            $name     = substr($file, 0, -4);
-            if (strpos($name, '.min') !== false) {
-               $name     = substr($name, 0, -4);
-               if (isset($themes[$name])) {
-                  continue;
-               }
-            }
+         if (strpos($file, ".scss") !== false) {
+            $name     = substr($file, 1, -5);
             $themes[$name] = ucfirst($name);
          }
       }

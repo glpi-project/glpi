@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Leafo\ScssPhp\Compiler;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1280,18 +1282,7 @@ class Html {
       }
 
       //  CSS link
-      echo Html::css('css/styles.css');
-
-      // High constrast CSS link
-      if (isset($_SESSION['glpihighcontrast_css'])
-         && $_SESSION['glpihighcontrast_css']) {
-         echo Html::css('css/highcontrast.css');
-      }
-
-      // CSS theme link
-      if (isset($_SESSION["glpipalette"])) {
-         echo Html::css("css/palettes/{$_SESSION["glpipalette"]}.css");
-      }
+      echo Html::scss('main_styles');
 
       echo Html::css('css/print.css', ['media' => 'print']);
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
@@ -4850,7 +4841,49 @@ class Html {
     * @return string CSS link tag
    **/
    static function css($url, $options = [], $minify = true) {
+      if ($minify === true) {
+         $url = self::getMiniFile($url);
+      }
+      $url = self::getPrefixedUrl($url);
 
+      return self::csslink($url, $options);
+   }
+
+   /**
+    * Creates a link element for SCSS stylesheets.
+    *
+    * @since 9.4
+    *
+    * @param sring   $url     File to include (raltive to GLPI_ROOT)
+    * @param array   $options Array of HTML attributes
+    *
+    * @return string CSS link tag
+   **/
+   static function scss($url, $options = []) {
+      $prod_file = implode('/', self::getScssCompilePath($url));
+
+      if (file_exists($prod_file) && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
+         $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
+      } else {
+         $file = $url;
+         $url = self::getPrefixedUrl('/front/css.php');
+         $url .= '?file=' . $file;
+      }
+
+      return self::csslink($url, $options);
+   }
+
+   /**
+    * Creates a link element for (S)CSS stylesheets.
+    *
+    * @since 9.4
+    *
+    * @param sring   $url     File to include (raltive to GLPI_ROOT)
+    * @param array   $options Array of HTML attributes
+    *
+    * @return string CSS link tag
+   **/
+   static private function csslink($url, $options) {
       if (!isset($options['media']) || $options['media'] == '') {
          $options['media'] = 'all';
       }
@@ -4861,15 +4894,7 @@ class Html {
          unset($options['version']);
       }
 
-      if ($minify === true) {
-         $url = self::getMiniFile($url);
-      }
-
-      $url = self::getPrefixedUrl($url);
-
-      if ($version) {
-         $url .= '?v=' . $version;
-      }
+      $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . $version;
 
       return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,
                      Html::parseAttributes($options));
@@ -6548,5 +6573,88 @@ class Html {
          + str_pad($r, 2, '0', STR_PAD_LEFT)
          + str_pad($g, 2, '0', STR_PAD_LEFT)
          + str_pad($b, 2, '0', STR_PAD_LEFT);
+   }
+
+   /**
+    * Compile SCSS styleshet
+    *
+    * @param array $args Arguments. May contain:
+    *                      - v: version to append (will default to GLPI_VERSION)
+    *                      - debug: if present, will not use Crunched formatter
+    *                      - file: filerepresentation  to load
+    *                      - reload: force reload and recache
+    *                      - nocache: do not use nor update cache
+    *
+    * @return string
+    */
+   public static function compileScss($args) {
+      global $GLPI_CACHE;
+
+      $ckey = isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
+
+      $scss = new Compiler();
+      if ($_SESSION['glpi_use_mode'] != Session::DEBUG_MODE && !isset($args['debug'])) { // mode debug
+         $ckey .= '_debug';
+         $scss->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
+      }
+
+      $paths = [
+         GLPI_ROOT . '/css/',
+         GLPI_ROOT . '/css/palettes/',
+      ];
+
+      if (!isset($args['file']) || $args['file'] == 'main_styles') {
+         $import = '@import "styles.scss";';
+         if (isset($_SESSION['glpihighcontrast_css'])
+            && $_SESSION['glpihighcontrast_css']) {
+            $ckey .= '_highcontrast';
+            $import .= '@import "highcontrast";';
+         }
+
+         // CSS theme
+         $theme = 'auror';
+         if (isset($_SESSION["glpipalette"])) {
+            $ckey .= '_' . $_SESSION['glpipalette'];
+            $theme = $_SESSION['glpipalette'];
+         }
+         $import .= '@import "'.$theme.'";';
+      } else {
+         $ckey .= '_' . md5($args['file']);
+         $exploded = explode('/', $args['file']);
+         $file = array_pop($exploded);
+         if (count($exploded) == 1) {
+            $path = realpath(GLPI_ROOT . '/plugins/' . $exploded[0] . '/css');
+            if ($path && Toolbox::startsWith(GLPI_ROOT . '/plugins/', $path)) {
+               $paths[] = $path;
+            }
+         }
+         $import = '@import "' . $args['file'] . '.scss";';
+      }
+
+      $scss->setImportPaths($paths);
+
+      $ckey = md5($ckey);
+      if ($GLPI_CACHE->has($ckey) && !isset($args['reload']) && !isset($args['nocache'])) {
+         $css = $GLPI_CACHE->get($ckey);
+      } else {
+         $css = $scss->compile($import);
+         if (!isset($args['nocache'])) {
+            $GLPI_CACHE->set($ckey, $css);
+         }
+      }
+
+      return $css;
+   }
+
+   /**
+    * Get scss compilation informations (directory and file name
+    *
+    * @return array
+    */
+   public static function getScssCompilePath($file) {
+      return [
+         'dir'    => GLPI_ROOT . '/css/compiled/',
+         'file'   => str_replace('/', '_', $file) . '.min.css'
+      ];
    }
 }

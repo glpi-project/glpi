@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -28,84 +30,16 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-/* ===== LOGIN ===== */
 
-#firstboxlogin {
-   background-color: #1B2F62;
+if (!defined('GLPI_ROOT')) {
+   define('GLPI_ROOT', dirname(__DIR__));
 }
 
-#logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #3A5693;
-}
+//std cache, with DB connection
+include_once GLPI_ROOT . "/inc/db.function.php";
+include_once GLPI_ROOT . '/inc/config.php';
 
-#display-login {
-   color: #FFF;
-}
+$css = Html::compileScss($_GET);
 
-#text-login {
-   background-color: #3A5693;
-   color: #FFF;
-}
-
-
-/* ====== GENERAL ====== */
-
-a, a:link, .ui-widget-content a {
-    color : #3A5693;
-}
-
-.main_form tr.headerRow th {
-   color: #8CABDB;
-}
-
-/* ====== HEADER ====== */
-
-#header_top {
-   background-color: #1B2F62;
-}
-
-#c_preference a, #language_link > span {
-   color: #C7DBF5;
-}
-
-#c_recherche form #champRecherche input {
-   background-color: #131425;
-   color: #C7DBF5;
-}
-
-#c_menu {
-   background-color: #3A5693;
-}
-
-ul#menu a.itemP, ul#menu a.itemP1 {
-   color: #FFF;
-}
-
-ul#menu > li.active,
-ul.ssmenu li.active {
-   background-color: #8CABDB;
-}
-
-ul#menu > li:hover {
-   background-color: #8BAADA;
-}
-
-ul#menu ul li a:hover {
-   background: #3A5693;
-   color: #C7DBF5;
-}
-
-ul#menu ul li a {
-   color: #131425;
-}
-
-#c_recherche form #champRecherche button {
-   background-color: white;
-}
-
-/* ====== BUTTONS ====== */
-
-a.vsubmit,
-.vsubmit a {
-   color: #8f5a0a;
-}
+header('Content-Type: text/css');
+echo $css;
