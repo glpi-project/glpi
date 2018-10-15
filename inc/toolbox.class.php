@@ -2995,7 +2995,7 @@ class Toolbox {
     */
    public static function useCache() {
       global $GLPI_CACHE;
-      return $GLPI_CACHE instanceof Zend\Cache\Storage\Adapter\AbstractAdapter
+      return $GLPI_CACHE != null
          && (!defined('TU_USER') || defined('CACHED_TESTS'));
    }
 

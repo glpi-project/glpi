@@ -191,8 +191,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $input["ancestors_cache"] = '';
             if (Toolbox::useCache()) {
                $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-               if ($GLPI_CACHE->hasItem($ckey)) {
-                  $GLPI_CACHE->removeItem($ckey);
+               if ($GLPI_CACHE->has($ckey)) {
+                  $GLPI_CACHE->delete($ckey);
                }
             }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
@@ -218,8 +218,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       //drop from sons cache when needed
       if ($changeParent && Toolbox::useCache()) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $GLPI_CACHE->removeItem($ckey);
+         if ($GLPI_CACHE->has($ckey)) {
+            $GLPI_CACHE->delete($ckey);
          }
       }
 
@@ -313,11 +313,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if ($cache && Toolbox::useCache()) {
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
-            if ($GLPI_CACHE->hasItem($ckey)) {
-               $sons = $GLPI_CACHE->getItem($ckey);
+            if ($GLPI_CACHE->has($ckey)) {
+               $sons = $GLPI_CACHE->get($ckey);
                if (isset($sons[$this->getID()])) {
                   unset($sons[$this->getID()]);
-                  $GLPI_CACHE->replaceItem($ckey, $sons);
+                  $GLPI_CACHE->set($ckey, $sons);
                }
             }
          }
@@ -338,11 +338,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $ancestors = getAncestorsOf($this->getTable(), $this->getID());
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
-            if ($GLPI_CACHE->hasItem($ckey)) {
-               $sons = $GLPI_CACHE->getItem($ckey);
+            if ($GLPI_CACHE->has($ckey)) {
+               $sons = $GLPI_CACHE->get($ckey);
                if (!isset($sons[$this->getID()])) {
                   $sons[$this->getID()] = (string)$this->getID();
-                  $GLPI_CACHE->replaceItem($ckey, $sons);
+                  $GLPI_CACHE->set($ckey, $sons);
                }
             }
          }
