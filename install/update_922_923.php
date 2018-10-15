@@ -80,10 +80,11 @@ function update922to923() {
 
          if ($notif == 'SavedSearch_Alert'
             && countElementsInTable(
-               'glpi_notifications_notificationtemplates',
-               "notifications_id = ".$notification->fields['id'].
-               " AND notificationtemplates_id = ".$template->fields['id'] .
-               " AND mode = '".Notification_NotificationTemplate::MODE_MAIL."'"
+               'glpi_notifications_notificationtemplates', [
+                  'notifications_id'         => $notification->fields['id'],
+                  'notificationtemplates_id' => $template->fields['id'],
+                  'mode'                     => Notification_NotificationTemplate::MODE_MAIL
+               ]
             ) == 0
          ) {
             //Add missing notification template link for saved searches
