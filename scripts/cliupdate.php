@@ -49,6 +49,10 @@ if ($_SERVER['argc']>1) {
    }
 }
 
+if (isset($args['tests'])) {
+   define('TU_USER', 'CLI');
+}
+
 if (isset($args['config-dir'])) {
    define("GLPI_CONFIG_DIR", $args['config-dir']);
 }
