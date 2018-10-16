@@ -586,7 +586,7 @@ if (Session::haveRight('backup', CREATE)) {
    echo "<br/>" . __('You should rather use a dedicated tool on your server.');
    echo "</li></ul></div>";
    echo "</td></tr><tr><td>";
-   echo "<i class='fa fa-save fa-3x'></i>";
+   echo "<i class='far fa-save fa-3x'></i>";
          "</td>";
    echo "<td><a class='vsubmit'
               href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
