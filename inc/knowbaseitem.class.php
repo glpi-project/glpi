@@ -934,7 +934,8 @@ class KnowbaseItem extends CommonDBVisible {
                                                             $knowbaseitemcategories_id);
 
       $tmp = "<a href='".$this->getSearchURL().
-             "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
+             "?knowbaseitemcategories_id=$knowbaseitemcategories_id&forcetab=Knowbase$2'>".
+             $fullcategoryname."</a>";
       $out.= "<table class='tab_cadre_fixe'>";
       $out.= "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
       $out.= "</th></tr>";
@@ -1552,7 +1553,10 @@ class KnowbaseItem extends CommonDBVisible {
                if ($output_type == Search::HTML_OUTPUT) {
                   $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".
                               $data["knowbaseitemcategories_id"].'&amp;forcetab=Knowbase$2';
-                  $categ   = "<a href='$cathref'>".$categ.'</a>';
+                  $categ   = "<a class='kb-category'"
+                     . " href='$cathref'"
+                     . " data-category-id='" . $data["knowbaseitemcategories_id"] . "'"
+                     . ">".$categ.'</a>';
                }
                echo Search::showItem($output_type, $categ, $item_num, $row_num);
 

@@ -927,41 +927,4 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
       return $parent;
    }
-
-   /**
-    * Find a node in the dropdown tree with a string (search on id or name)
-    *
-    * @since 9.4.0
-    *
-    * @param string $str
-    *
-    * @return array the found node
-    */
-   static function jstreeSearchNode($str = '') {
-      global $DB;
-
-      $iterator = $DB->request([
-         'FROM'   => static::getTable(),
-         'WHERE'  => [
-            'OR' => [
-               'name' => ['LIKE', "%$str%"],
-               'id'   => $str,
-            ]
-         ],
-         'ORDER'  => ['completename']
-      ]);
-
-      $res = [];
-      while ($data = $iterator->next()) {
-         $ancestors = getAncestorsOf(static::getTable(), $data['id']);
-         foreach ($ancestors as $val) {
-            if (!in_array($val, $res)) {
-               $res[] = $val;
-            }
-         }
-      }
-
-      return $res;
-   }
-
 }
