@@ -603,7 +603,7 @@ if (Session::haveRight('backup', CREATE)) {
    echo "<br/>" . __('You should rather use a dedicated tool on your server.');
    echo "</li></ul></div>";
    echo "</td></tr><tr><td>";
-   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
+   echo "<i class='fa fa-save fa-3x'></i>";
          "</td>";
    echo "<td><a class='vsubmit'
               href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
