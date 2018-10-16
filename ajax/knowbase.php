@@ -39,16 +39,6 @@ if (!$CFG_GLPI["use_public_faq"]
 }
 
 switch ($_REQUEST['action']) {
-   case "getCategoryNode";
-      header("Content-Type: application/json; charset=UTF-8");
-      echo Knowbase::getJstreeCategoryNode((int) $_REQUEST['id']);
-      break;
-
-   case "searchNode";
-      header("Content-Type: application/json; charset=UTF-8");
-      echo json_encode(KnowbaseItemCategory::jstreeSearchNode($_REQUEST['str']));
-      break;
-
    case "getItemslist";
       header("Content-Type: application/json; charset=UTF-8");
       KnowbaseItem::showList([

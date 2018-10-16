@@ -30,6 +30,7 @@ The present file will list all changes made to the project; according to the
 
 The following methods have been deprecated:
 
+- `KnowbaseItemCategory::showFirstLevel()`
 - `Ticket::getTicketActors()`
 - `Ticket::processMassiveActionsForOneItemtype()`
 - `Ticket::showFormMassiveAction()`

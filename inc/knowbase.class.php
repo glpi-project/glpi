@@ -148,6 +148,13 @@ class Knowbase extends CommonGLPI {
                         ? $_REQUEST['start']
                         : 0;
 
+      $cat_id = 'false';
+      if (array_key_exists('knowbaseitemcategories_id', $_REQUEST)) {
+         $cat_id = $_REQUEST['knowbaseitemcategories_id'];
+      }
+
+      $category_list = json_encode(self::getJstreeCategoryList());
+
       $JS = <<<JAVASCRIPT
          $(function() {
             $('#tree_category$rand').jstree({
@@ -156,35 +163,37 @@ class Knowbase extends CommonGLPI {
                   'wholerow',
                   'state' // remember (on browser navigation) the last node open in tree
                ],
-               "state" : {
-                  "key" : "kb_tree_state"
+               'state' : {
+                  'key'    : "kb_tree_state",
+                  'filter' : function (state) {
+                     // Prevent restoring selected state if category is in URL
+                     if ($cat_id) {
+                        state.core.selected = [];
+                     }
+                     return state;
+                  }
                },
                'search': {
                   'case_insensitive': true,
-                  'show_only_matches': true,
-                  'ajax': {
-                     'type': 'POST',
-                     'url': '$ajax_url?action=searchNode'
-                  }
+                  'show_only_matches': true
                },
                'core': {
                   'themes': {
                      'name': 'glpi'
                   },
                   'animation': 0,
-                  'data': {
-                     'url': function(node) {
-                        return '$ajax_url?action=getCategoryNode&id='+ (node.id === '#'
-                                 ? -1
-                                 : node.id);
-                     }
-                  }
+                  'data': $category_list
                }
             })
             .on('ready.jstree', function(event, instance) {
-               // if no state stored, select root node
-               if (instance.instance.restore_state() === false) {
+               if ($cat_id) {
+                  // force category if id found in URL parameters
+                  $('#tree_category$rand').jstree('select_node', $cat_id);
+                  $('#tree_category$rand').jstree('open_node', $cat_id);
+               } else if (instance.instance.restore_state() === false) {
+                  // if no state stored, select root node
                   $('#tree_category$rand').jstree('select_node', 0);
+                  $('#tree_category$rand').jstree('open_node', 0);
                }
             })
             .on('select_node.jstree', function(event, data) {
@@ -210,6 +219,14 @@ class Knowbase extends CommonGLPI {
                   }
                }, 300);
             });
+
+            $('#items_list$rand').on('click', 'a.kb-category', function(event) {
+               event.preventDefault();
+
+               var cat_id = $(event.target).data('category-id');
+               $('#tree_category$rand').jstree('select_node', cat_id);
+               $('#tree_category$rand').jstree('open_node', cat_id);
+            });
          });
 JAVASCRIPT;
       echo Html::scriptBlock($JS);
@@ -223,173 +240,97 @@ JAVASCRIPT;
    }
 
    /**
-    * Get a node for knwobase category tree by its id
-    * Also count children nodes
+    * Get list of knowbase categories in jstree format.
     *
     * @since 9.4
     *
-    * @param integer $id
-    * @return array the node
+    * @return array
     */
-   static function getJstreeCategoryNode($id = 0) {
+   static function getJstreeCategoryList() {
+
       global $DB;
 
-      $table_c = KnowbaseItemCategory::getTable();
-      $cat_fk  = getForeignKeyFieldForItemType('KnowbaseItemCategory');
+      $cat_table = KnowbaseItemCategory::getTable();
+      $cat_fk  = KnowbaseItemCategory::getForeignKeyField();
+
+      $kbitem_visibility_crit = KnowbaseItem::getVisibilityCriteria(true);
+
+      $items_subquery = new QuerySubQuery(
+         array_merge_recursive(
+            [
+               'COUNT' => 'cpt',
+               'FROM'  => KnowbaseItem::getTable(),
+               'WHERE' => [
+                  KnowbaseItem::getTableField($cat_fk) => new QueryExpression(
+                     DB::quoteName(KnowbaseItemCategory::getTableField('id'))
+                  ),
+               ]
+            ],
+            $kbitem_visibility_crit
+         )
+      );
+
+      $cat_iterator = $DB->request([
+         'SELECT' => [
+            KnowbaseItemCategory::getTableField('id'),
+            KnowbaseItemCategory::getTableField('name'),
+            KnowbaseItemCategory::getTableField($cat_fk),
+            new QueryExpression(
+               '(' . $items_subquery->getSubQuery() . ') AS items_count'
+            ),
+         ],
+         'FROM' => $cat_table,
+         'ORDER' => KnowbaseItemCategory::getTableField('name')
+      ]);
+
+      // Add root category (which is not a real category)
+      $root_items_count = $DB->request(
+         array_merge_recursive(
+            [
+               'COUNT' => 'cpt',
+               'FROM'  => KnowbaseItem::getTable(),
+               'WHERE' => [
+                  KnowbaseItem::getTableField($cat_fk) => 0,
+               ]
+            ],
+            $kbitem_visibility_crit
+         )
+      )->next();
+
+      $categories = [
+         [
+            'id'          => '0',
+            'name'        => __('Root category'),
+            $cat_fk       => '#',
+            'items_count' => $root_items_count['cpt'],
+         ]
+      ];
+      foreach ($cat_iterator as $category) {
+         $categories[] = $category;
+      }
+
       $nodes   = [];
 
-      if ($id === -1) {
-         $id = 0;
+      foreach ($categories as $category) {
          $node = [
-            'id'    => "$id",
-            'text'  => __("Root category"),
-            'state' => [
-               'opened' => true,
-            ],
+            'id'     => $category['id'],
+            'parent' => $category[$cat_fk],
+            'text'   => $category['name'],
             'a_attr' => [
-               'data-id' => $id
+               'data-id' => $category['id']
             ],
          ];
 
-         // count child
-         $iterator = $DB->request([
-            'FROM'   => $table_c,
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-               $cat_fk => $id
-            ]
-         ]);
-         $result = $iterator->next();
-         if ($result['cpt'] > 0) {
-            $node['children'] = true;
+         if ($category['items_count'] > 0) {
+            $node['text'] .= ' <strong title="' . __('This category contains articles') . '">'
+               . '(' . $category['items_count'] . ')'
+               . '</strong>';
          }
 
-         // count items
-         $node['text'].= self::getCountStringForNode($id);
-
-         $nodes = [$node];
-      } else {
-         $iterator = $DB->request([
-            'SELECT' => [
-               "$table_c.id",
-               "$table_c.name",
-               'COUNT DISTINCT' => "sub.$cat_fk AS nb_sub_cat",
-            ],
-            'FROM' => $table_c,
-            'LEFT JOIN' => [
-               "$table_c as sub" => [
-                  'FKEY' => [
-                     $table_c => 'id',
-                     "sub"    => $cat_fk,
-                  ]
-               ],
-            ],
-            'WHERE' => [
-               "$table_c.$cat_fk" => $id
-            ],
-            'GROUPBY' => [
-               "$table_c.id",
-               "$table_c.name",
-            ],
-            'ORDER' => "$table_c.name"
-         ]);
-
-         foreach ($iterator as $category) {
-            $node = [
-               'id'     => $category['id'],
-               'text'   => $category['name'].self::getCountStringForNode($category['id']),
-               'a_attr' => [
-                  'data-id' => $category['id']
-               ],
-            ];
-
-            if ($category['nb_sub_cat'] > 0) {
-               $node['children'] = true;
-            }
-
-            $nodes[] = $node;
-         }
+         $nodes[] = $node;
       }
 
-      return json_encode($nodes);
-   }
-
-   /**
-    * Count number of article for a category id
-    *
-    * @since 9.4
-    *
-    * @param integer $id
-    * @return integer number of article
-    */
-   static function countSubItemsForNode($id = 0) {
-      global $DB;
-
-      $count = [
-         'nb_items'     => 0,
-         'nb_sub_items' => 0,
-         'sons_cat'     => 0,
-      ];
-
-      $table_i  = KnowbaseItem::getTable();
-      $cat_fk   = getForeignKeyFieldForItemType('KnowbaseItemCategory');
-      $sons_cat = getSonsOf(KnowbaseItemCategory::getTable(), $id);
-      unset($sons_cat[$id]);
-      $count['sons_cat'] = $sons_cat;
-
-      // count direct items
-      $iterator = $DB->request(array_merge_recursive([
-         'SELECT' => [
-            'COUNT DISTINCT' => "$table_i.id AS nb_items",
-         ],
-         'FROM' => $table_i,
-         'WHERE' => [
-            "$table_i.$cat_fk" => $id
-         ]
-      ], KnowbaseItem::getVisibilityCriteria(true)));
-      $result = $iterator->next();
-      if ($result['nb_items'] > 0) {
-         $count['nb_items'] = $result['nb_items'];
-      }
-
-      // count items from sub categories
-      if (count($sons_cat) > 0) {
-         $iterator = $DB->request(array_merge_recursive([
-            'SELECT' => [
-               'COUNT DISTINCT' => "$table_i.id AS nb_sub_items",
-            ],
-            'FROM' => $table_i,
-            'WHERE' => [
-               "$table_i.$cat_fk" => array_values($sons_cat)
-            ]
-         ], KnowbaseItem::getVisibilityCriteria(true)));
-         $result = $iterator->next();
-         if ($result['nb_sub_items'] > 0) {
-            $count['nb_sub_items'] = $result['nb_sub_items'];
-         }
-      }
-
-      return $count;
-   }
-
-   /**
-    * Display string of count number of article for a category id
-    *
-    * @param integer $id Node id
-    *
-    * @return string
-    */
-   static function getCountStringForNode($id = 0) {
-      $count = self::countSubItemsForNode($id);
-
-      $count_str = "";
-      if ($count['nb_items'] > 0) {
-         $count_str = "<strong title='".__("This category contains articles")."'>
-                        (".$count['nb_items'].")
-                       </strong>";
-      }
-
-      return $count_str;
+      return $nodes;
    }
 
    /**
