@@ -298,16 +298,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 1,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 1,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -332,10 +334,11 @@ class Dropdown extends DbTestCase {
                            'disabled' => true
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -358,16 +361,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 1,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 1,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -392,10 +397,11 @@ class Dropdown extends DbTestCase {
                            'disabled' => true
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -499,10 +505,11 @@ class Dropdown extends DbTestCase {
                            'disabled' => true
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -521,10 +528,11 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_cat_1 > _subcat_1',
-                           'level'  => 0,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_cat_1 > _subcat_1',
+                           'level'          => 0,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -545,16 +553,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 0,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 0,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_cat_1 > _subcat_1',
-                           'level'  => 0,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_cat_1 > _subcat_1',
+                           'level'          => 0,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]
@@ -577,16 +587,18 @@ class Dropdown extends DbTestCase {
                      'text'      => 'Root entity',
                      'children'  => [
                         0 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                           'text'   => '_cat_1',
-                           'level'  => 1,
-                           'title'  => '_cat_1 - Comment for category _cat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                           'text'           => '_cat_1',
+                           'level'          => 1,
+                           'title'          => '_cat_1 - Comment for category _cat_1',
+                           'selection_text' => '_cat_1',
                         ],
                         1 => [
-                           'id'     => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                           'text'   => '_subcat_1',
-                           'level'  => 2,
-                           'title'  => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                           'text'           => '_subcat_1',
+                           'level'          => 2,
+                           'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                           'selection_text' => '_cat_1 > _subcat_1',
                         ]
                      ]
                   ]

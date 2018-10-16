@@ -4360,14 +4360,7 @@ class Html {
                return null;
             },
             templateResult: templateResult,
-            templateSelection: function(object) {
-               text = object.text;
-               if (object.element.parentElement.nodeName == 'OPTGROUP') {
-                  text = object.element.parentElement.getAttribute('label') + ' - ' + text;
-               }
-               return text;
-            }
-
+            templateSelection: templateSelection
          })
          .bind('setValue', function(e, value) {
             $('#$id').val(value).trigger('change');
@@ -4477,7 +4470,8 @@ class Html {
                   };
                }
             },
-            templateResult: templateResult
+            templateResult: templateResult,
+            templateSelection: templateSelection
          })
          .bind('setValue', function(e, value) {
             $.ajax('$url', {
