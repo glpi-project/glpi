@@ -290,6 +290,19 @@ function update93to94() {
    $migration->addField("glpi_changevalidations", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
    $migration->addField("glpi_problemtasks", "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
 
+   /** Search engine on plugins */
+   $ADDTODISPLAYPREF['Plugin'] = [2, 3, 4, 5, 6, 7, 8];
+
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $query = "REPLACE INTO `glpi_displaypreferences`
+                           (`itemtype` ,`num` ,`rank` ,`users_id`)
+                     VALUES ('$type', '$newval', '".$rank++."', '0')";
+         $DB->query($query);
+      }
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

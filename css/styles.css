@@ -5481,3 +5481,11 @@ with incorrect shading in some cases */
 .fa-lg {
    font-size: 1.2em;
 }
+
+.disabled {
+   color: red!important;
+}
+
+.enabled {
+   color:green!important;
+}
