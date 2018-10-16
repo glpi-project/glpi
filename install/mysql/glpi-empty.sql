@@ -2665,6 +2665,13 @@ INSERT INTO `glpi_displaypreferences` VALUES ('261','SavedSearch','9','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('262','SavedSearch','3','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('263','SavedSearch','10','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('264','SavedSearch','11','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('265','Plugin','2','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('266','Plugin','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('267','Plugin','4','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('268','Plugin','5','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('269','Plugin','6','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('270','Plugin','7','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('271','Plugin','8','7','0');
 
 ### Dump table glpi_documentcategories
 

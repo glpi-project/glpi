@@ -52,31 +52,16 @@ class Plugin extends CommonDBTM {
    static $rightname = 'config';
 
 
-
-   /**
-    * @since 0.85
-    *
-    * @param $nb
-   **/
    static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
    }
 
 
-   /**
-    * @see CommonGLPI::getMenuName()
-    *
-    * @since 0.85
-   **/
    static function getMenuName() {
       return static::getTypeName(Session::getPluralNumber());
    }
 
-   /**
-    * @see CommonGLPI::getMenuContent()
-    *
-    * @since 0.85
-   **/
+
    static function getMenuContent() {
       global $CFG_GLPI;
 
@@ -94,9 +79,9 @@ class Plugin extends CommonDBTM {
    /**
     * Retrieve an item from the database using its directory
     *
-    * @param $dir directory of the plugin
+    * @param string $dir directory of the plugin
     *
-    * @return true if succeed else false
+    * @return boolean
    **/
    function getFromDBbyDir($dir) {
       return $this->getFromDBByCrit([$this->getTable() . '.directory' => $dir]);
@@ -106,7 +91,7 @@ class Plugin extends CommonDBTM {
    /**
     * Init plugins list reading plugins directory
     *
-    * @return nothing
+    * @return void
    **/
    function init() {
       global $GLPI_CACHE;
@@ -241,7 +226,7 @@ class Plugin extends CommonDBTM {
    /**
     * Check plugins states and detect new plugins
    **/
-   function checkStates() {
+   public function checkStates() {
 
       //// Get all plugins
       // Get all from DBs
@@ -310,9 +295,13 @@ class Plugin extends CommonDBTM {
 
             $function = "plugin_".$plug."_check_prerequisites";
             if (function_exists($function)) {
-               if (!$function()) {
-                  $usage_ok = false;
+               ob_start();
+               $usage_ok = $function();
+               $msg = '';
+               if (!$usage_ok) {
+                  $msg = '<span class="error">' . ob_get_contents() . '</span>';
                }
+               ob_end_clean();
             }
             $function = "plugin_".$plug."_check_config";
             if (function_exists($function)) {
@@ -376,250 +365,6 @@ class Plugin extends CommonDBTM {
 
       $iterator = $DB->request($query);
       return iterator_to_array($iterator, false);
-   }
-
-
-   /**
-    * List available plugins
-   **/
-   function listPlugins() {
-      global $CFG_GLPI, $PLUGIN_HOOKS;
-
-      $this->checkStates();
-      echo "<div class='center'><table class='tab_cadrehov'>";
-
-      $pluglist          = $this->getList();
-      $i                 = 0;
-      $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
-      echo "<tr><th colspan='9'>".__('Plugins list')."</th></tr>\n";
-
-      if (!empty($pluglist)) {
-         echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions', 1)."</th>";
-         echo "<th>".__('License')."</th>";
-         echo "<th>".__('Status')."</th><th>"._n('Author', 'Authors', Session::getPluralNumber())."</th>";
-         echo "<th>".__('Website')."</th>";
-         echo "<th>".__('CSRF compliant')."</th>";
-         echo "<th colspan='2'>&nbsp;</th></tr>\n";
-
-         foreach ($pluglist as $plug) {
-            $ID = $plug['id'];
-            if (function_exists("plugin_".$plug['directory']."_check_config")) {
-               // init must not be called for incompatible plugins
-               self::load($plug['directory'], true);
-            }
-            $i++;
-            $class = 'tab_bg_1';
-            if (($i%2) == 0) {
-               $class = 'tab_bg_2';
-            }
-            echo "<tr class='$class'>";
-            echo "<td>";
-            $name = trim($plug['name']);
-            if (empty($name)) {
-               $plug['name'] = $plug['directory'];
-            }
-
-            // Only config for install plugins
-            if (in_array($plug['state'], [self::ACTIVATED,
-                                               self::TOBECONFIGURED,
-                                               self::NOTACTIVATED])
-                && isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
-
-               echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".
-                      $PLUGIN_HOOKS['config_page'][$plug['directory']]."'>
-                      <span class='b'>".$plug['name']."</span></a>";
-            } else {
-               echo $plug['name'];
-            }
-            echo "</td>";
-            echo "<td>".$plug['version']."</td><td>";
-            if ($plug['license']) {
-               $link = '';
-               if (file_exists(GLPI_ROOT.'/plugins/'.$plug['directory'].'/LICENSE')) {
-                  $link = $CFG_GLPI['root_doc'].'/plugins/'.$plug['directory'].'/LICENSE';
-               } else if (file_exists(GLPI_ROOT.'/plugins/'.$plug['directory'].'/COPYING.txt')) {
-                  $link = $CFG_GLPI['root_doc'].'/plugins/'.$plug['directory'].'/COPYING.txt';
-               }
-               if ($link) {
-                  echo "<a href='$link'>".$plug['license']."</a>";
-               } else {
-                  echo $plug['license'];
-               }
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td><td>";
-            echo self::getState($plug['state']);
-            echo "</td>";
-            echo "<td>".$plug['author']."</td>";
-            $weblink = trim($plug['homepage']);
-            echo "<td>";
-            if (!empty($weblink)) {
-               echo "<a href='".Toolbox::formatOutputWebLink($weblink)."' target='_blank'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt=\"".
-                      __s('Web')."\" title=\"".__s('Web')."\" ></a>";
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td>";
-            // CSRF
-            echo "<td>";
-            if (isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
-                && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
-               echo __('Yes');
-            } else {
-               echo "<span class='red b'>";
-               echo __('No');
-               echo "</span>";
-            }
-            echo "</td>";
-
-            switch ($plug['state']) {
-               case self::ACTIVATED :
-                  echo "<td>";
-                  Html::showSimpleForm(static::getFormURL(), ['action' => 'unactivate'],
-                                       _x('button', 'Disable'), ['id' => $ID]);
-                  echo "</td>";
-                  echo "<td>";
-                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     Html::showSimpleForm(static::getFormURL(), ['action' => 'uninstall'],
-                                          _x('button', 'Uninstall'), ['id' => $ID]);
-                  } else {
-                     //TRANS: %s is the list of missing functions
-                     echo sprintf(__('%1$s: %2$s'), __('Non-existent function'),
-                                  "plugin_".$plug['directory']."_uninstall");
-                  }
-                  echo "</td>";
-                  break;
-
-               case self::ANEW :
-               case self::NOTINSTALLED :
-               case self::NOTUPDATED :
-                  echo "<td>";
-                  if (function_exists("plugin_".$plug['directory']."_install")
-                      && function_exists("plugin_".$plug['directory']."_check_config")) {
-
-                     $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
-                     $do_install = $this->checkVersions($plug['directory']);
-
-                     if ($do_install && function_exists($function)) {
-                        ob_start();
-                        $do_install = $function();
-                        $msg = '';
-                        if (!$do_install) {
-                           $msg = '<span class="error">' . ob_get_contents() . '</span>';
-                        }
-                        ob_end_clean();
-                        echo $msg;
-                     }
-                     if ($plug['state'] == self::NOTUPDATED) {
-                        $msg = _x('button', 'Upgrade');
-                     } else {
-                        $msg = _x('button', 'Install');
-                     }
-                     if ($do_install) {
-                        Html::showSimpleForm(static::getFormURL(), ['action' => 'install'],
-                                             $msg, ['id' => $ID]);
-                     }
-                  } else {
-
-                     $missing = '';
-                     if (!function_exists("plugin_".$plug['directory']."_install")) {
-                        $missing .= "plugin_".$plug['directory']."_install";
-                     }
-                     if (!function_exists("plugin_".$plug['directory']."_check_config")) {
-                        $missing .= " plugin_".$plug['directory']."_check_config";
-                     }
-                     //TRANS: %s is the list of missing functions
-                     printf(__('%1$s: %2$s'), __('Non-existent function'),
-                            $missing);
-                  }
-                  echo "</td><td>";
-                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     if (function_exists("plugin_".$plug['directory']."_check_config")) {
-                        Html::showSimpleForm(static::getFormURL(), ['action' => 'uninstall'],
-                                             _x('button', 'Uninstall'), ['id' => $ID]);
-                     } else {
-                        // This is an incompatible plugin (0.71), uninstall fonction could crash
-                        echo "&nbsp;";
-                     }
-                  } else {
-                     printf(__('%1$s: %2$s'), __('Non-existent function'),
-                            "plugin_".$plug['directory']."_uninstall");
-                  }
-                  echo "</td>";
-                  break;
-
-               case self::TOBECONFIGURED :
-                  echo "<td>";
-                  $function = 'plugin_' . $plug['directory'] . '_check_config';
-                  if (function_exists($function)) {
-                     if ($function(true)) {
-                        $this->update(['id'    => $ID,
-                                            'state' => self::NOTACTIVATED]);
-                        Html::redirect($this->getSearchURL());
-                     }
-                  } else {
-                     printf(__('%1$s: %2$s'), __('Non-existent function'),
-                            "plugin_".$plug['directory']."_check_config");
-                  }
-                  echo "</td><td>";
-                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     Html::showSimpleForm(static::getFormURL(), ['action' => 'uninstall'],
-                                          _x('button', 'Uninstall'), ['id' => $ID]);
-                  } else {
-                     printf(__('%1$s: %2$s'), __('Non-existent function'),
-                            "plugin_".$plug['directory']."_uninstall");
-                  }
-                  echo "</td>";
-                  break;
-
-               case self::NOTACTIVATED :
-                  echo "<td>";
-                  $process = $this->checkVersions($plug['directory']);
-                  $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
-                  if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
-                      || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
-                     echo __('Not CSRF compliant');
-                  } else if (function_exists($function) && $function() && $process) {
-                     Html::showSimpleForm(static::getFormURL(), ['action' => 'activate'],
-                                          _x('button', 'Enable'), ['id' => $ID]);
-                  }
-                  // Else : reason displayed by the plugin
-                  echo "</td><td>";
-                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     Html::showSimpleForm(static::getFormURL(), ['action' => 'uninstall'],
-                                          _x('button', 'Uninstall'), ['id' => $ID]);
-                  } else {
-                     printf(__('%1$s: %2$s'), __('Non-existent function'),
-                            "plugin_".$plug['directory']."_uninstall");
-                  }
-                  echo "</td>";
-                  break;
-
-               case self::TOBECLEANED :
-               default :
-                  echo "<td colspan='2'>";
-                  Html::showSimpleForm(static::getFormURL(), ['action' => 'clean'],
-                                       _x('button', 'Clean'), ['id' => $ID]);
-                  echo "</td>";
-                  break;
-            }
-            echo "</tr>\n";
-         }
-
-      } else {
-         echo "<tr class='tab_bg_1'><td class='center' colspan='7'>".__('No plugin installed').
-              "</td></tr>";
-      }
-      echo "</table></div>";
-      echo "<br>";
-      echo "<div class='center'><p>";
-      echo "<a href='http://plugins.glpi-project.org'  class='vsubmit' target='_blank'>".
-            __('See the catalog of plugins')."</a></p>";
-      echo "</div>";
-
-      $PLUGIN_HOOKS = $PLUGIN_HOOKS_SAVE;
    }
 
 
@@ -756,7 +501,15 @@ class Plugin extends CommonDBTM {
 
          $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
          if (function_exists($function)) {
-            if (!$function()) {
+            ob_start();
+            $do_activate = $function();
+            $msg = '';
+            if (!$do_activate) {
+               $msg = '<span class="error">' . ob_get_contents() . '</span>';
+            }
+            ob_end_clean();
+
+            if (!$do_activate) {
                $this->setUnloaded($ID);
                Session::addMessageAfterRedirect(
                   sprintf(__('Plugin %1$s has no check function!'), $this->fields['name']),
@@ -1939,5 +1692,361 @@ class Plugin extends CommonDBTM {
          self::setUnloaded($key);
       }
 
+   }
+
+   function rawSearchOptions() {
+      global $CFG_GLPI;
+
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false // implicit key==1
+      ];
+
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'directory',
+         'name'               => __('Directory'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'noremove'           => true
+      ];
+
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'version',
+         'name'               => __('Version'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'license',
+         'name'               => __('License'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'state',
+         'name'               => __('Status'),
+         'searchtype'         => 'equals',
+         'noremove'           => true
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'author',
+         'name'               => __('Authors')
+      ];
+
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'homepage',
+         'name'               => __('Website'),
+         'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('Actions'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'datatype'           => 'specific',
+         'noremove'           => true
+      ];
+
+      return $tab;
+   }
+
+
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+      global $PLUGIN_HOOKS, $CFG_GLPI;
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'id':
+            //action...
+            $value = $values[$field];
+            $ID = $value;
+            $plugin = new self;
+            $plugin->checkStates();
+            $plugin->getFromDB($value);
+            $plug = $plugin->fields;
+
+            if (function_exists("plugin_".$plug['directory']."_check_config")) {
+               // init must not be called for incompatible plugins
+               self::load($plug['directory'], true);
+            }
+
+            $output = '';
+            switch ($plug['state']) {
+               case self::ACTIVATED :
+                  $output .= Html::getSimpleForm(
+                     static::getFormURL(),
+                     ['action' => 'unactivate'],
+                     _x('button', 'Disable'),
+                     ['id' => $ID],
+                     'fa-fw fa-toggle-on fa-2x enabled'
+                  ) . '&nbsp;';
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
+                     $output .= Html::getSimpleForm(
+                        static::getFormURL(),
+                        ['action' => 'uninstall'],
+                        _x('button', 'Uninstall'),
+                        ['id' => $ID],
+                        'fa-fw fa-folder-minus fa-2x'
+                     ) . '&nbsp;';
+                  } else {
+                     //TRANS: %s is the list of missing functions
+                     $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
+                                  "plugin_".$plug['directory']."_uninstall");
+                  }
+                  break;
+
+               case self::ANEW :
+               case self::NOTINSTALLED :
+               case self::NOTUPDATED :
+                  if (function_exists("plugin_".$plug['directory']."_install")
+                      && function_exists("plugin_".$plug['directory']."_check_config")) {
+
+                     $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
+
+                     ob_start();
+                     $do_install = $plugin->checkVersions($plug['directory']);
+                     if (!$do_install) {
+                        $output .= "<span class='error'>" . ob_get_contents() . "</span>";
+                     }
+                     ob_end_clean();
+
+                     if ($do_install && function_exists($function)) {
+                        ob_start();
+                        $do_install = $function();
+                        $msg = '';
+                        if (!$do_install) {
+                           $msg = '<span class="error">' . ob_get_contents() . '</span>';
+                        }
+                        ob_end_clean();
+                        $output .= $msg;
+                     }
+                     if ($plug['state'] == self::NOTUPDATED) {
+                        $msg = _x('button', 'Upgrade');
+                     } else {
+                        $msg = _x('button', 'Install');
+                     }
+                     if ($do_install) {
+                        $output .= Html::getSimpleForm(
+                           static::getFormURL(),
+                           ['action' => 'install'],
+                           $msg,
+                           ['id' => $ID],
+                           'fa-fw fa-folder-plus fa-2x'
+                        ) . '&nbsp;';
+                     }
+                  } else {
+
+                     $missing = '';
+                     if (!function_exists("plugin_".$plug['directory']."_install")) {
+                        $missing .= "plugin_".$plug['directory']."_install";
+                     }
+                     if (!function_exists("plugin_".$plug['directory']."_check_config")) {
+                        $missing .= " plugin_".$plug['directory']."_check_config";
+                     }
+                     //TRANS: %s is the list of missing functions
+                     $output = sprintf(__('%1$s: %2$s'), __('Non-existent function'),
+                            $missing);
+                  }
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
+                     if (function_exists("plugin_".$plug['directory']."_check_config")) {
+                        $output .= Html::getSimpleForm(
+                           static::getFormURL(),
+                           ['action' => 'uninstall'],
+                           _x('button', 'Uninstall'),
+                           ['id' => $ID],
+                           'fa-fw fa-folder-minus fa-2x'
+                        ) . '&nbsp;';
+                     } else {
+                        // This is an incompatible plugin (0.71), uninstall fonction could crash
+                        $output .= "&nbsp;";
+                     }
+                  } else {
+                     $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
+                            "plugin_".$plug['directory']."_uninstall");
+                  }
+                  break;
+
+               case self::TOBECONFIGURED :
+                  $function = 'plugin_' . $plug['directory'] . '_check_config';
+                  if (function_exists($function)) {
+                     if ($function(true)) {
+                        $plugin->update([
+                           'id'    => $ID,
+                           'state' => self::NOTACTIVATED]
+                        );
+                        Html::redirect($plugin->getSearchURL());
+                     }
+                  } else {
+                     $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
+                            "plugin_".$plug['directory']."_check_config");
+                  }
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
+                     $output .= Html::getSimpleForm(
+                        static::getFormURL(),
+                        ['action' => 'uninstall'],
+                        _x('button', 'Uninstall'),
+                        ['id' => $ID],
+                        'fa-fw fa-folder-minus fa-2x'
+                     ) . '&nbsp;';
+                  } else {
+                     $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
+                            "plugin_".$plug['directory']."_uninstall");
+                  }
+                  break;
+
+               case self::NOTACTIVATED :
+                  ob_start();
+                  $process = $plugin->checkVersions($plug['directory']);
+                  if (!$process) {
+                     $output .= "<span class='error'>" . ob_get_contents() . "</span>";
+                  }
+                  ob_end_clean();
+                  $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
+                  if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
+                      || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
+                     $output .= __('Not CSRF compliant');
+                  } else if (function_exists($function) && $process) {
+                     ob_start();
+                     $do_activate = $function();
+                     $msg = '';
+                     if (!$do_activate) {
+                        $msg = '<span class="error">' . ob_get_contents() . '</span>';
+                     }
+                     ob_end_clean();
+                     if (!$do_activate) {
+                        $output .= $msg;
+                     } else {
+                        $output .= Html::getSimpleForm(
+                           static::getFormURL(),
+                           ['action' => 'activate'],
+                           _x('button', 'Enable'),
+                           ['id' => $ID],
+                           'fa-fw fa-toggle-off fa-2x disabled'
+                        ) . '&nbsp;';
+                     }
+                  }
+                  // Else : reason displayed by the plugin
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
+                     $output .= Html::getSimpleForm(
+                        static::getFormURL(),
+                        ['action' => 'uninstall'],
+                        _x('button', 'Uninstall'),
+                        ['id' => $ID],
+                        'fa-fw fa-folder-minus fa-2x'
+                     ) . '&nbsp;';
+                  } else {
+                     $output .= sprintf(__('%1$s: %2$s'), __('Non-existent function'),
+                            "plugin_".$plug['directory']."_uninstall");
+                  }
+                  break;
+
+               case self::TOBECLEANED :
+               default :
+                  $output .= Html::getSimpleForm(
+                     static::getFormURL(),
+                     ['action' => 'clean'],
+                     _x('button', 'Clean'),
+                     ['id' => $ID],
+                     'fa-fw fas fa-broom fa-2x'
+                  );
+                  break;
+            }
+
+            return "<div style='text-align:right'>$output</div>";
+            break;
+         case 'state':
+            $value = $values[$field];
+            return self::getState($value);
+            break;
+         case 'homepage':
+            $value = $values[$field];
+            if (!empty($value)) {
+               return "<a href=\"".Toolbox::formatOutputWebLink($value)."\" target='_blank'>
+                     <i class='fas fa-external-link-alt fa-2x'></i><span class='sr-only'>$value</span>
+                  </a>";
+            }
+            return "&nbsp;";
+            break;
+         case 'name':
+            $value = $values[$field];
+            $state = $options['raw_data']['Plugin_5'][0]['name'];
+            $directory = $options['raw_data']['Plugin_2'][0]['name'];
+            if (in_array($state, [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED])
+               && isset($PLUGIN_HOOKS['config_page'][$directory])
+            ) {
+               return "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$directory."/".
+                      $PLUGIN_HOOKS['config_page'][$directory]."'>
+                      <span class='b'>" . $value . "</span></a>";
+            } else {
+               return $value;
+            }
+            break;
+      }
+
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'state':
+            $tab = [
+               self::ANEW           => _x('status', 'New'),
+               self::ACTIVATED      => _x('plugin', 'Enabled'),
+               self::NOTINSTALLED   => _x('plugin', 'Not installed'),
+               self::NOTUPDATED     => __('To update'),
+               self::TOBECONFIGURED => _x('plugin', 'Installed / not configured'),
+               self::NOTACTIVATED   => _x('plugin', 'Installed / not activated'),
+               self::TOBECLEANED    => __('Error / to clean')
+            ];
+            $options['value'] = $values[$field];
+            return Dropdown::showFromArray($name, $tab, $options);
+            break;
+      }
+   }
+
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      $forbidden[] = 'purge';
+      return $forbidden;
    }
 }
