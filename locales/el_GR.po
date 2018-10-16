@@ -20,7 +20,7 @@ msgstr ""
 
 #: index.php:76
 msgid "GLPI - Authentication"
-msgstr "GLPI - Πιστοποίηση"
+msgstr "GLPI - Αυθεντικοποίηση"
 
 #: index.php:125 inc/authldap.class.php:3149 inc/authmail.class.php:231
 #: inc/config.class.php:1832 inc/dbutils.class.php:1589
@@ -720,11 +720,11 @@ msgstr ""
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
-msgstr ""
+msgstr "Λείπουν απαραίτητα ορίσματα!"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Τα στοιχεία δεν έχουν γεωδεδομένα ή δεν μπορούν να βρεθούν"
 
 #: ajax/getMapPoint.php:75
 msgid "Location seems not geolocalized!"
@@ -739,8 +739,8 @@ msgstr ""
 #: inc/ruleaction.class.php:670 inc/rule.class.php:1089
 msgid "Action"
 msgid_plural "Actions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ενέργεια"
+msgstr[1] "Ενέργειες"
 
 #: ajax/planningcheck.php:51 ajax/planningcheck.php:58 front/planning.php:58
 #: inc/commonitiltask.class.php:1545 inc/commonitiltask.class.php:1552
@@ -825,11 +825,11 @@ msgstr "Κάθε μήνα, ίδια ημέρα της εβδομάδας"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
-msgstr ""
+msgstr "Η αναζήτηση αποθηκεύτηκε"
 
 #: ajax/savedsearch.php:54
 msgid "Search has not been saved"
-msgstr ""
+msgstr "Η αναζήτηση δεν αποθηκεύτηκε"
 
 #: ajax/searchmetarow.php:76
 msgid "Delete a global search criterion"
@@ -962,8 +962,8 @@ msgstr "Κανένας περιορισμός"
 #: inc/user.class.php:4574
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Οντότητες"
+msgstr[1] "Οντότητες"
 
 #: ajax/switchdebug.php:46
 msgid "Debug mode has been enabled!"
@@ -1234,8 +1234,8 @@ msgstr "Μέγεθος"
 #: inc/ticketfollowup.class.php:1179
 msgid "Date"
 msgid_plural "Dates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ημερομηνία"
+msgstr[1] "Ημερομηνίες"
 
 #. TRANS: %s is the filename
 #: front/backup.php:649 front/backup.php:701
@@ -1531,8 +1531,8 @@ msgstr "Τα υποχρεωτικά πεδία δεν συμπληρώθηκαν
 #: inc/stat.class.php:1231
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Αλλαγή"
+msgstr[1] "Αλλαγές"
 
 #: front/change_ticket.form.php:49 front/problem_ticket.form.php:50
 #: inc/commonitilcost.class.php:543 inc/document_item.class.php:420
@@ -1708,8 +1708,8 @@ msgstr "%s προσθέτει αναλώσιμα"
 #: inc/profile.class.php:874 inc/profile.class.php:1740
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Αναλώσιμο"
+msgstr[1] "Αναλώσιμα"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:51 front/contract_supplier.form.php:51
@@ -1723,8 +1723,8 @@ msgstr "%s προσθέτει ένα σύνδεσμο με έναν προμηθ
 #: inc/profile.class.php:1815 inc/transfer.class.php:3507
 msgid "Contract"
 msgid_plural "Contract"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Συμβάσεις"
+msgstr[1] "Συμβάσεις"
 
 #. TRANS: %s is a directory
 #: front/cron.php:42
@@ -1838,8 +1838,8 @@ msgstr ""
 #: install/update_0723_078.php:3864
 msgid "Component"
 msgid_plural "Components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Εξάρτημα"
+msgstr[1] "Εξαρτήματα"
 
 #: front/dictionnary.php:38 inc/html.class.php:1354 inc/profile.class.php:102
 #: inc/profile.class.php:1414 inc/profile.class.php:2023
@@ -1903,8 +1903,8 @@ msgstr "Κανένα επιλεγμένο στοιχείο ή κακώς ορι�
 #: inc/event.class.php:151 inc/profile.class.php:1910
 msgid "Dropdown"
 msgid_plural "Dropdowns"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Λίστα πλοήγησης"
+msgstr[1] "Λίστες Πλοήγησης"
 
 #: front/find_num.php:72
 msgid "Search the ID of your hardware"
@@ -1951,8 +1951,8 @@ msgstr "Είδος υλικού"
 #: inc/ticket.class.php:5773
 msgid "Associated element"
 msgid_plural "Associated elements"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Συσχετισμένο  στοιχείο"
+msgstr[1] "Συσχετισμένα στοιχεία"
 
 #: front/find_num.php:92 inc/apiclient.class.php:89 inc/authldap.class.php:873
 #: inc/authmail.class.php:103 inc/budget.class.php:209
@@ -2080,14 +2080,14 @@ msgstr "Αριθμός Απογραφής"
 #: inc/profile.class.php:1642
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Υπολογιστής"
+msgstr[1] "Υπολογιστές"
 
 #: front/find_num.php:98 inc/networkequipment.class.php:60
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Συσκευή δικτύου"
+msgstr[1] "Συσκευές δικτύου"
 
 #: front/find_num.php:99 inc/cartridge.class.php:1150 inc/lock.class.php:511
 #: inc/printer.class.php:60 inc/profile.class.php:868
@@ -2095,24 +2095,24 @@ msgstr[1] ""
 #: inc/rulecollection.class.php:1984 inc/transfer.class.php:3444
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Εκτυπωτής"
+msgstr[1] "Εκτυπωτές"
 
 #: front/find_num.php:100 inc/lock.class.php:509 inc/monitor.class.php:57
 #: inc/profile.class.php:859 inc/profile.class.php:1656
 #: inc/transfer.class.php:3434 inc/wifinetwork.class.php:71
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Οθόνη"
+msgstr[1] "Οθόνες"
 
 #: front/find_num.php:101 inc/lock.class.php:510 inc/peripheral.class.php:60
 #: inc/profile.class.php:880 inc/profile.class.php:1712
 #: inc/transfer.class.php:3454
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Συσκευή"
+msgstr[1] "Συσκευές"
 
 #: front/find_num.php:153 inc/computer_softwareversion.class.php:753
 #: inc/config.class.php:3085 inc/dropdown.class.php:1017
@@ -2127,8 +2127,8 @@ msgstr[1] ""
 #: install/update_0713_072.php:504
 msgid "Software"
 msgid_plural "Software"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Λογισμικό"
+msgstr[1] "Λογισμικό"
 
 #. TRANS: %s is the user login
 #: front/group_user.form.php:50 front/user.form.php:118
@@ -2296,7 +2296,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:62
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Το σχόλιο σας προστέθηκε"
 
 #: front/knowbaseitem_comment.form.php:81
 #, php-format
@@ -2305,7 +2305,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:83
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Το σχόλιο σας τροποποιήθηκε"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:115 front/reminder.form.php:107
@@ -2396,8 +2396,8 @@ msgstr "Συνδεθείτε ξανά"
 #: inc/notificationtargetmailcollector.class.php:96
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Παραλήπτης"
+msgstr[1] "Παραλήπτες"
 
 #: front/mailcollector.php:44 front/setup.auth.php:57
 #: inc/authldap.class.php:419 inc/authmail.class.php:210
@@ -2557,8 +2557,8 @@ msgstr "Διαγράψτε ή ενημερώστε το αλλιώς το GLPI �
 #: inc/stat.class.php:1222
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Πρόβλημα"
+msgstr[1] "Προβλήματα"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:47
@@ -2727,8 +2727,8 @@ msgstr "Όνομα"
 #: inc/user.class.php:2343 inc/user.class.php:2585
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τοποθεσία"
+msgstr[1] "Τοποθεσίες"
 
 #: front/report.contract.list.php:180 front/report.infocom.php:131
 #: front/report.year.list.php:136 inc/entity.class.php:970
@@ -2749,8 +2749,8 @@ msgstr "Λήξη εγγύησης"
 #: inc/dropdown.class.php:837
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύπος σύμβασης"
+msgstr[1] "Τύποι σύμβασης"
 
 #: front/report.contract.list.php:183 front/report.infocom.conso.php:64
 #: front/report.infocom.php:64 front/report.year.list.php:139
@@ -2945,8 +2945,8 @@ msgstr "Μεταφορά"
 #: front/rule.php:70 inc/blacklist.class.php:85 inc/dropdown.class.php:783
 msgid "Blacklist"
 msgid_plural "Blacklists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Μαύρη λίστα"
+msgstr[1] "Μαύρες λίστες"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:53
@@ -2984,8 +2984,8 @@ msgstr "Εξωτερική πιστοποίηση"
 #: inc/ruleright.class.php:228 inc/user.class.php:4526
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Κατάλογος LDAP"
+msgstr[1] "Κατάλογοι LDAP"
 
 #: front/setup.auth.php:49
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -2999,8 +2999,8 @@ msgstr "Δεν μπορεί να χρισημοποιηθεί το LDAP ως ε�
 #: inc/notificationmailingsetting.class.php:198
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Διακομιστής ηλεκτρονικού ταχυδρομείου"
+msgstr[1] "Διακομιστές ηλεκτρονικού ταχυδρομείου"
 
 #: front/setup.auth.php:58 inc/authmail.class.php:211
 msgid "Impossible to use email server as external source of connection"
@@ -3022,8 +3022,8 @@ msgstr "Άλλες μέθοδοι πιστοποίησης"
 #: inc/profile.class.php:1939
 msgid "Notification"
 msgid_plural "Notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ειδοποίηση"
+msgstr[1] "Ειδοποιήσεις"
 
 #: front/setup.templates.php:55 inc/html.class.php:6446
 msgid "Manage templates..."
@@ -3101,15 +3101,15 @@ msgstr "Αριθμός"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ανοιχτό"
+msgstr[1] "Ανοιχτά"
 
 #: front/stat.global.php:90 front/stat.graph.php:346 inc/stat.class.php:432
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Λυμένο"
+msgstr[1] "Λυμένα"
 
 #: front/stat.global.php:93 front/stat.graph.php:349 inc/stat.class.php:434
 msgid "Late"
@@ -3130,8 +3130,8 @@ msgstr "Μέσος χρόνος"
 #: inc/levelagreement.class.php:201
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ώρα"
+msgstr[1] "Ώρες"
 
 #: front/stat.global.php:131 front/stat.graph.php:386
 #: inc/commonitilobject.class.php:4752 inc/stat.class.php:469
@@ -3161,8 +3161,8 @@ msgstr "Αιτήματα"
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ανοιγμένο"
+msgstr[1] "Ανοιγμένα"
 
 #: front/stat.global.php:162 front/stat.graph.php:439 inc/stat.class.php:451
 msgctxt "survey"
@@ -3245,8 +3245,8 @@ msgstr[1] ""
 #: install/update_0713_072.php:549
 msgid "User"
 msgid_plural "Users"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Χρήστης"
+msgstr[1] "Χρήστες"
 
 #: front/stat.graph.php:125 front/stat.graph.php:215
 #: front/stat.tracking.php:82 front/stat.tracking.php:84
@@ -3391,8 +3391,8 @@ msgstr[1] ""
 #: inc/user.class.php:4046
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ομάδα"
+msgstr[1] "Ομάδες"
 
 #: front/stat.graph.php:178 front/stat.tracking.php:88
 #: inc/change.class.php:756 inc/commonitilobject.class.php:2859
@@ -3443,8 +3443,8 @@ msgstr "Τίτλος"
 #: inc/solutiontype.class.php:42
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύπος επίλυσης"
+msgstr[1] "Τύποι επίλυσης"
 
 #: front/stat.graph.php:223 front/stat.tracking.php:93
 #: inc/dropdown.class.php:798 inc/notificationtargetticket.class.php:721
@@ -3521,8 +3521,8 @@ msgstr "Να ληφθεί υπόψιν"
 #: inc/ruleimportcomputer.class.php:106
 msgid "Model"
 msgid_plural "Models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Μοντέλο"
+msgstr[1] "Μοντέλα"
 
 #: front/stat.location.php:85 inc/dropdown.class.php:960
 #: inc/dropdown.class.php:961 inc/item_operatingsystem.class.php:58
@@ -5140,8 +5140,8 @@ msgstr[1] ""
 #: inc/profile.class.php:871 inc/profile.class.php:1726
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Φυσίγγιο"
+msgstr[1] "Φυσίγγια"
 
 #: inc/cartridge.class.php:288
 msgid "Installing a cartridge"
@@ -5159,24 +5159,24 @@ msgstr "Απεγκατάσταση φυσιγγίου"
 msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Νέο"
+msgstr[1] "Νέα"
 
 #: inc/cartridge.class.php:375 inc/cartridge.class.php:426
 #: inc/cartridge.class.php:621
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Χρησιμοποιημένο"
+msgstr[1] "Χρησιμοποιημένα"
 
 #: inc/cartridge.class.php:377 inc/cartridge.class.php:428
 #: inc/cartridge.class.php:623
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Φθαρμένο"
+msgstr[1] "Φθαρμένα"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
@@ -5320,15 +5320,15 @@ msgstr "Χρησιμοποιημένα φυσίγγια"
 #: inc/notificationtargetcartridgeitem.class.php:82
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Μοντέλο φυσιγγίων"
+msgstr[1] "Μοντέλα φυσιγγίων"
 
 #: inc/cartridge.class.php:1006 inc/cartridgeitemtype.class.php:42
 #: inc/dropdown.class.php:831
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύποι φυσιγγίου"
+msgstr[1] "Τύπος φυσιγγίου"
 
 #: inc/cartridge.class.php:1012
 msgid "Printed pages"
@@ -5394,8 +5394,8 @@ msgstr "Πηγή"
 #: inc/ruleimportcomputer.class.php:109 inc/search.class.php:5735
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Κατασκευαστής"
+msgstr[1] "Κατασκευαστές"
 
 #: inc/cartridgeitem.class.php:208 inc/cartridgeitem.class.php:369
 #: inc/certificate.class.php:204 inc/certificate.class.php:395
@@ -5461,8 +5461,8 @@ msgstr "Αριθμός νέων φυσιγγίων"
 #: inc/rulecollection.class.php:2007
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Μοντέλο Εκτυπωτή"
+msgstr[1] "Μοντέλα εκτυπωτών"
 
 #: inc/cartridgeitem.class.php:440 inc/cartridgeitem.class.php:610
 msgid "Send alarms on cartridges"
@@ -5574,8 +5574,8 @@ msgstr ""
 #: inc/profile.class.php:955
 msgid "Certificate"
 msgid_plural "Certificates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Πιστοποιητικό"
+msgstr[1] "Πιστοποιητικά"
 
 #: inc/certificate.class.php:119 inc/certificate.class.php:473
 #: inc/certificate_item.class.php:427
@@ -7485,8 +7485,8 @@ msgstr ""
 #: inc/profile.class.php:865 inc/profile.class.php:1684
 msgid "Network"
 msgid_plural "Networks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Δίκτυο"
+msgstr[1] "Δίκτυα"
 
 #: inc/computer.class.php:521 inc/computer.class.php:762
 #: inc/domain.class.php:46 inc/dropdown.class.php:997
@@ -7540,8 +7540,8 @@ msgstr[1] ""
 #: inc/printer.class.php:675
 msgid "Memory"
 msgid_plural "Memory"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Μνήμη"
+msgstr[1] "Μνήμες"
 
 #: inc/computer.class.php:888 inc/dropdown.class.php:992
 #: inc/networkinterface.class.php:44 inc/networkportmigration.class.php:295
@@ -8954,11 +8954,11 @@ msgstr[1] ""
 
 #: inc/consumableitem.class.php:279
 msgid "Number of used consumables"
-msgstr ""
+msgstr "Αριθμός χρησιμοποιημένων αναλωσίμων"
 
 #: inc/consumableitem.class.php:294
 msgid "Number of new consumables"
-msgstr ""
+msgstr "Αριθμός νέων αναλωσίμων"
 
 #: inc/consumableitem.class.php:365 inc/consumableitem.class.php:491
 msgid "Send alarms on consumables"
@@ -8984,8 +8984,8 @@ msgstr "%s: αποστολή συναγερμού αναλωσίμου απέτ�
 #: inc/consumableitemtype.class.php:42 inc/dropdown.class.php:834
 msgid "Consumable type"
 msgid_plural "Consumable types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύπος αναλωσίμου"
+msgstr[1] "Τύποι αναλωσίμων"
 
 #: inc/contact.class.php:53 inc/profile.class.php:936
 #: inc/profile.class.php:1787
@@ -9063,7 +9063,7 @@ msgstr "Προσθήκη προμηθευτή"
 
 #: inc/contact.class.php:287 inc/user.class.php:2827
 msgid "Last name"
-msgstr ""
+msgstr "Επίθετο"
 
 #: inc/contact.class.php:408 inc/contract.class.php:899
 msgid "Associated supplier"
@@ -10384,8 +10384,8 @@ msgstr[1] ""
 #: inc/profile.class.php:1506
 msgid "Ticket category"
 msgid_plural "Ticket categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Κατηγορία ticket"
+msgstr[1] "Κατηγορίες Ticket"
 
 #: inc/dropdown.class.php:800 inc/itilsolution.class.php:170
 #: inc/profile.class.php:1521 inc/solutiontemplate.class.php:51
@@ -10430,15 +10430,15 @@ msgstr[1] ""
 #: inc/rule.class.php:372 inc/rulecollection.class.php:2034
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύπος εκτυπωτή"
+msgstr[1] "Τύποι εκτυπωτών"
 
 #: inc/dropdown.class.php:823 inc/monitortype.class.php:42
 #: inc/rule.class.php:360 inc/rulecollection.class.php:2031
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύπος οθόνης"
+msgstr[1] "Τύποι οθονών"
 
 #: inc/dropdown.class.php:825 inc/peripheraltype.class.php:42
 msgid "Devices type"
@@ -10450,14 +10450,14 @@ msgstr[1] ""
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύπος τηλεφώνου"
+msgstr[1] "Τύποι τηλεφώνου"
 
 #: inc/dropdown.class.php:829 inc/softwarelicensetype.class.php:43
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Τύπος άδειας χρήσης"
+msgstr[1] "Τύποι αδειών χρήσης"
 
 #: inc/dropdown.class.php:841
 msgid "Generic device type"
@@ -10563,8 +10563,8 @@ msgstr[1] ""
 #: inc/item_operatingsystem.class.php:574 inc/rulecollection.class.php:2064
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Αρχιτεκτονική"
+msgstr[1] "Αρχιτεκτονικές"
 
 #: inc/dropdown.class.php:976 inc/item_operatingsystem.class.php:306
 #: inc/item_operatingsystem.class.php:522
@@ -10572,8 +10572,8 @@ msgstr[1] ""
 #: inc/operatingsystemedition.class.php:42
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Έκδοση"
+msgstr[1] "Εκδόσεις"
 
 #: inc/dropdown.class.php:980 inc/item_operatingsystem.class.php:297
 #: inc/item_operatingsystem.class.php:481
@@ -10582,8 +10582,8 @@ msgstr[1] ""
 #: inc/operatingsystemkernelversion.class.php:48
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Πυρήνας"
+msgstr[1] "Πυρήνες"
 
 #: inc/dropdown.class.php:984 inc/item_operatingsystem.class.php:504
 #: inc/item_operatingsystem.class.php:576
@@ -10870,7 +10870,7 @@ msgstr[1] ""
 
 #: inc/entity.class.php:245
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "Δεν μπορείτε να προσθέσετε οντότητα χωρίς όνομα"
 
 #: inc/entity.class.php:616 inc/entity.class.php:1416
 msgid "LDAP directory information attribute representing the entity"
@@ -10900,7 +10900,7 @@ msgstr "Επιλογές ειδοποίησης"
 
 #: inc/entity.class.php:666 inc/entity.class.php:1671
 msgid "Delay to send email notifications"
-msgstr ""
+msgstr "Καθυστέρησε να στείλεις ειδοποιήσεις email"
 
 #: inc/entity.class.php:681 inc/entity.class.php:1692
 msgid "Enable notifications by default"
@@ -11004,8 +11004,8 @@ msgstr ""
 #: inc/tickettemplate.class.php:136
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Πρότυπο αιτήματος"
+msgstr[1] "Πρότυπα αιτημάτων"
 
 #: inc/entity.class.php:906 inc/entity.class.php:2213
 #: inc/notificationtargetticket.class.php:763
@@ -11812,11 +11812,11 @@ msgstr ""
 
 #: inc/html.class.php:5228
 msgid "Check/uncheck all"
-msgstr ""
+msgstr "Επιλογή/Αποεπιλογή όλων"
 
 #: inc/html.class.php:5273 inc/html.class.php:5380 inc/profile.class.php:3054
 msgid "Select/unselect all"
-msgstr ""
+msgstr "Επιλογή/Αποεπιλογή όλων"
 
 #: inc/html.class.php:6000
 msgid "Start typing to find a menu"

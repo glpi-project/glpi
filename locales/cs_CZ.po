@@ -12750,7 +12750,7 @@ msgstr "Je třeba položka"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Je vyžadována skříň"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12909,7 +12909,7 @@ msgstr "Pro umístění položky není dost místa"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Položka pro rozvaděč „%1$s“"
 
 #: inc/item_ticket.class.php:303
 #, php-format

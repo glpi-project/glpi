@@ -732,7 +732,7 @@ msgstr "Sijainnille ei ole määritetty maantieteellistä sijaintia"
 
 #: ajax/getMapPoint.php:76
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "Harkitse leveys- ja pituusasteen täyttämistä tälle sijainnille."
 
 #: ajax/massiveaction.php:72 inc/html.class.php:2435
 #: inc/mailcollector.class.php:204 inc/ruleaction.class.php:88
@@ -3906,7 +3906,7 @@ msgstr "Virheellinen ID-kenttä hakukriteerissä"
 
 #: inc/api.class.php:1411
 msgid "Forbidden field ID in search criteria"
-msgstr ""
+msgstr "Kielletty kenttä ID hakukriteereissä"
 
 #: inc/api.class.php:1428
 msgid "ID is forbidden along with 'forcedisplay' parameter."
@@ -4153,8 +4153,8 @@ msgstr "Automaattinen kirjautuminen ei ole käytössä"
 #: inc/auth.class.php:692
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Yhteys LDAP-hakemistoon epäonnistui"
+msgstr[1] "Yhteys LDAP-hakemistoihin epäonnistui"
 
 #: inc/auth.class.php:700
 msgid "User not found in LDAP directory"
@@ -5690,7 +5690,7 @@ msgstr "%1$s%2$s"
 
 #: inc/certificate.class.php:402
 msgid "Root CA"
-msgstr ""
+msgstr "Juurivarmenne"
 
 #. TRANS: Number of the alternate username
 #: inc/certificate.class.php:447 inc/commondbtm.class.php:3316
@@ -5713,7 +5713,7 @@ msgstr "DNS nimi"
 
 #: inc/certificate.class.php:481
 msgid "Empty for infinite"
-msgstr ""
+msgstr "Tyhjä on loputon"
 
 #: inc/certificate.class.php:528
 msgctxt "button"
@@ -5737,7 +5737,7 @@ msgstr ""
 
 #: inc/certificate.class.php:773
 msgid "Send Certificates alert failed"
-msgstr ""
+msgstr "Varmenne hälytyksen lähetys epäonnistui"
 
 #: inc/certificate_item.class.php:207 inc/change_item.class.php:106
 #: inc/contract_item.class.php:590 inc/document_item.class.php:356
@@ -6285,7 +6285,7 @@ msgstr "Toinen kohde olemassa"
 
 #: inc/commondbtm.class.php:4117
 msgid "Item in the trashbin"
-msgstr ""
+msgstr "Kohde roskakorissa"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:4238
@@ -6900,11 +6900,11 @@ msgstr[1] "Ratkaisut"
 
 #: inc/commonitilobject.class.php:3047
 msgid "Any solution status"
-msgstr ""
+msgstr "Mikä tahansa ratkaisun tila"
 
 #: inc/commonitilobject.class.php:3062
 msgid "Last solution status"
-msgstr ""
+msgstr "Viimeinen ratkaisun tila"
 
 #: inc/commonitilobject.class.php:3099
 msgid "Resolution time"
@@ -7063,8 +7063,8 @@ msgstr "Valittu aikaväli päättyy työajan ulkopuolelle"
 #: inc/tasktemplate.class.php:63 inc/tasktemplate.class.php:99
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] "Tehtäväluokka"
-msgstr[1] "Tehtäväluokat"
+msgstr[0] "Tehtäväkategoria"
+msgstr[1] "Tehtäväkategoriat"
 
 #: inc/commonitiltask.class.php:609
 msgid "Public followup"
@@ -7192,7 +7192,7 @@ msgstr "Ongelmatehtävät suoritettavaksi"
 #: inc/commonitiltask.class.php:1996
 #, php-format
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #: inc/commonitiltask.class.php:2009
 msgid "No tasks do to."
@@ -7659,7 +7659,7 @@ msgstr[1] "Virtualisointijärjestelmät"
 
 #: inc/computer.class.php:1214
 msgid "processor number"
-msgstr ""
+msgstr "prosessori numero"
 
 #: inc/computer_item.class.php:252 inc/computer_item.class.php:277
 #: inc/computer_item.class.php:381 inc/computer_item.class.php:534
@@ -8725,7 +8725,7 @@ msgstr "Valitse epävakaan version valintaruutu."
 
 #: inc/config.class.php:3026
 msgid "Logs purge configuration"
-msgstr ""
+msgstr "Lokien puhdistus asetukset"
 
 #: inc/config.class.php:3028
 msgid "Change all"
@@ -8762,7 +8762,7 @@ msgstr "Liitännäiset"
 
 #: inc/config.class.php:3087
 msgid "Installation/uninstallation of software on computers"
-msgstr ""
+msgstr "Ohjelmistojen asennus/poistaminen tietokoneille"
 
 #: inc/config.class.php:3091
 msgid "Installation/uninstallation versions on softwares"
@@ -8778,15 +8778,15 @@ msgstr "Lisää taloustieto kohteelle"
 
 #: inc/config.class.php:3115
 msgid "Add/remove profiles to users"
-msgstr ""
+msgstr "Lisää/poista profiileja käyttäjille"
 
 #: inc/config.class.php:3118
 msgid "Add/remove groups to users"
-msgstr ""
+msgstr "Lisää/poista ryhmiä käyttäjille"
 
 #: inc/config.class.php:3124
 msgid "User authentication method changes"
-msgstr ""
+msgstr "Käyttäjän todennustavan muutokset"
 
 #: inc/config.class.php:3127 inc/user.class.php:3056
 msgid "Deleted user in LDAP directory"
@@ -9849,8 +9849,8 @@ msgstr[1] "Laiteohjelmistojen tyypit"
 #: inc/devicegeneric.class.php:43
 msgid "Generic device"
 msgid_plural "Generic devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Yleinen laite"
+msgstr[1] "Yleiset laitteet"
 
 #: inc/devicegenericmodel.class.php:44 inc/dropdown.class.php:897
 msgid "Device generic model"
@@ -9861,8 +9861,8 @@ msgstr[1] ""
 #: inc/devicegenerictype.class.php:41
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Yleinen tyyppi"
+msgstr[1] "Yleiset tyypit"
 
 #: inc/devicegraphiccard.class.php:51 inc/devicegraphiccard.class.php:157
 #: inc/devicemotherboard.class.php:51 inc/devicemotherboard.class.php:66
@@ -10011,14 +10011,14 @@ msgstr[1] ""
 #: inc/devicesensortype.class.php:43 inc/dropdown.class.php:843
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Anturin tyyppi"
+msgstr[1] "Anturien tyypit"
 
 #: inc/devicesimcard.class.php:42
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "SIM-kortti"
+msgstr[1] "SIM-kortit"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:93
 msgid "Allow VOIP"
@@ -10027,8 +10027,8 @@ msgstr "Salli VOIP"
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:864
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "SIM-kortin tyyppi"
+msgstr[1] "SIM-korttien tyypit"
 
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:915
 msgid "Device sound card model"
@@ -10323,7 +10323,7 @@ msgstr "Ohjeet"
 #: inc/dropdown.class.php:201 inc/user.class.php:3695
 #, php-format
 msgid "Show %1$s"
-msgstr ""
+msgstr "Näytä %1$s"
 
 #: inc/dropdown.class.php:229
 msgid "Display on map"
@@ -10368,8 +10368,8 @@ msgstr[1] "Kohteiden tilat"
 #: inc/profile.class.php:1506
 msgid "Ticket category"
 msgid_plural "Ticket categories"
-msgstr[0] "Tiketin luokka"
-msgstr[1] "Tiketin luokat"
+msgstr[0] "Tikettikategoria"
+msgstr[1] "Tikettikategoriat"
 
 #: inc/dropdown.class.php:800 inc/itilsolution.class.php:170
 #: inc/profile.class.php:1521 inc/solutiontemplate.class.php:51
@@ -10400,8 +10400,8 @@ msgstr[1] "Projektitehtävän tyypit"
 #: inc/projecttasktemplate.class.php:50
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Projektitehtävän mallipohja"
+msgstr[1] "Projektitehtävien mallipohjat"
 
 #: inc/dropdown.class.php:818 inc/networkequipmenttype.class.php:42
 #: inc/rule.class.php:396
@@ -10434,8 +10434,8 @@ msgstr[1] "Laitetyypit"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Puhelimen tyyppi"
+msgstr[1] "Puhelimien tyypit"
 
 #: inc/dropdown.class.php:829 inc/softwarelicensetype.class.php:43
 msgid "License type"
@@ -10526,8 +10526,8 @@ msgstr "Työkalut"
 #: inc/profile.class.php:1509
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] "Tietämyskannan luokka"
-msgstr[1] "Tietämyskannan luokat"
+msgstr[0] "Tietämyskannan kategoria"
+msgstr[1] "Tietämyskannan kategoriat"
 
 #: inc/dropdown.class.php:969 inc/item_operatingsystem.class.php:87
 #: inc/item_operatingsystem.class.php:290
@@ -10644,8 +10644,8 @@ msgstr[1] "Verkkojen nimet"
 #: inc/dropdown.class.php:1018 inc/softwarecategory.class.php:44
 msgid "Software category"
 msgid_plural "Software categories"
-msgstr[0] "Ohjelmistoluokka"
-msgstr[1] "Ohjelmistoluokat"
+msgstr[0] "Ohjelmistokategoria"
+msgstr[1] "Ohjelmistokategoriat"
 
 #: inc/dropdown.class.php:1024 inc/usertitle.class.php:42
 msgid "User title"
@@ -10656,8 +10656,8 @@ msgstr[1] "Käyttäjien tehtävänimikkeet"
 #: inc/dropdown.class.php:1026 inc/usercategory.class.php:42
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] "Käyttäjäluokka"
-msgstr[1] "Käyttäjäluokat"
+msgstr[0] "Käyttäjäkategoria"
+msgstr[1] "Käyttäjäkategoriat"
 
 #: inc/dropdown.class.php:1030 inc/profile.class.php:1418
 #: inc/profile.class.php:2073 inc/ruleright.class.php:66
@@ -12316,11 +12316,11 @@ msgstr ""
 
 #: inc/item_rack.class.php:819
 msgid "asset rear side"
-msgstr ""
+msgstr "takapuoli"
 
 #: inc/item_rack.class.php:820
 msgid "asset front side"
-msgstr ""
+msgstr "etupuoli"
 
 #: inc/item_rack.class.php:831 inc/pdu_rack.class.php:587
 #: inc/rack.class.php:1092
@@ -12342,24 +12342,24 @@ msgstr ""
 
 #: inc/item_rack.class.php:955 inc/pdu_rack.class.php:99
 msgid "A rack is required"
-msgstr ""
+msgstr "Teline vaaditaan"
 
 #: inc/item_rack.class.php:1013
 msgid "You must define an horizontal position for this item"
-msgstr ""
+msgstr "Sinun on määritettävä tämän kohteen vaakasuora sijainti"
 
 #: inc/item_rack.class.php:1019
 msgid "You must define an orientation for this item"
-msgstr ""
+msgstr "Sinun on määritettävä tämän kohteen suunta"
 
 #: inc/item_rack.class.php:1028 inc/pdu_rack.class.php:146
 msgid "Item is out of rack bounds"
-msgstr ""
+msgstr "Kohde on telinerajojen ulkopuolella"
 
 #: inc/item_rack.class.php:1042 inc/item_rack.class.php:1055
 #: inc/pdu_rack.class.php:151
 msgid "Not enough space available to place item"
-msgstr ""
+msgstr "Kohteelle ei ole riittävästi tilaa"
 
 #: inc/item_rack.class.php:1085
 #, php-format
@@ -12493,12 +12493,12 @@ msgstr ""
 
 #: inc/itilsolution.class.php:424
 msgid "Add a new solution"
-msgstr ""
+msgstr "Lisää uusi ratkaisu"
 
 #: inc/itilsolution.class.php:438
 #, php-format
 msgid "No solutions for this %1$s"
-msgstr ""
+msgstr "Ei ratkaisuja tähän %1$s"
 
 #: inc/itilsolution.class.php:553 inc/ticket.class.php:7176
 #, php-format
@@ -12567,7 +12567,7 @@ msgstr[1] "%d näkymää"
 
 #: inc/knowbaseitem.class.php:760
 msgid "Add link"
-msgstr ""
+msgstr "Lisää linkki"
 
 #: inc/knowbaseitem.class.php:766
 #, php-format
@@ -12614,7 +12614,7 @@ msgstr "Kaikki julkaisemattomat artikkelit"
 
 #: inc/knowbaseitem.class.php:1112
 msgid "All published articles"
-msgstr ""
+msgstr "Kaikki julkaistut artikkelit"
 
 #: inc/knowbaseitem.class.php:1527
 msgid "Use as a solution"
@@ -12776,7 +12776,7 @@ msgstr "nykyinen"
 
 #: inc/knowbaseitem_revision.class.php:174
 msgid "Unknown user"
-msgstr ""
+msgstr "Tuntematon käyttäjä"
 
 #: inc/knowbaseitem_revision.class.php:185
 msgid "show"
@@ -12860,11 +12860,11 @@ msgstr[1] "Eskalointitasot"
 
 #: inc/levelagreement.class.php:300
 msgid "Also delete date?"
-msgstr ""
+msgstr "Poista myös päivämäärä?"
 
 #: inc/levelagreement.class.php:423
 msgid "Add a new item"
-msgstr ""
+msgstr "Lisää uusi kohde"
 
 #: inc/levelagreement.class.php:489 inc/slm.class.php:123
 msgid "Calendar of the ticket"
@@ -12940,7 +12940,7 @@ msgstr ""
 
 #: inc/link.class.php:155
 msgid "Example:"
-msgstr ""
+msgstr "Esimerkki:"
 
 #: inc/link.class.php:163 inc/link.class.php:213
 msgid "Link or filename"
@@ -12964,7 +12964,7 @@ msgstr "Kohteen tyypin lisäys"
 
 #: inc/location.class.php:68 inc/location.class.php:154
 msgid "Town"
-msgstr ""
+msgstr "Kaupunki"
 
 #: inc/location.class.php:83 inc/location.class.php:181
 #: inc/location.class.php:232 inc/notificationtargetticket.class.php:737
@@ -12980,7 +12980,7 @@ msgstr "Huoneen numero"
 
 #: inc/location.class.php:94
 msgid "Location on map"
-msgstr ""
+msgstr "Sijainti kartalla"
 
 #: inc/location.class.php:98 inc/location.class.php:208
 #: inc/location.class.php:248 inc/notificationtargetticket.class.php:740
@@ -13007,7 +13007,7 @@ msgstr "Sijainnin lisätiedot"
 
 #: inc/location.class.php:489
 msgid "Set location here"
-msgstr ""
+msgstr "Aseta sijainti tähän"
 
 #: inc/lock.class.php:53
 msgid "Lock"
@@ -13057,11 +13057,11 @@ msgstr "Päivitä"
 
 #: inc/log.class.php:350
 msgid "Show filters"
-msgstr ""
+msgstr "Näytä suodattimet"
 
 #: inc/log.class.php:374
 msgid "No historical matching your filters"
-msgstr ""
+msgstr "Ei historiallista vastaavuutta käytettyihin suodattimiin"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:470 inc/projecttask.class.php:503
@@ -13081,7 +13081,7 @@ msgstr "Muuta arvo %1$s arvoon %2$s"
 
 #: inc/log.class.php:1006
 msgid "Update a field"
-msgstr ""
+msgstr "Päivitä kenttä"
 
 #: inc/log.class.php:1053
 msgid "Lock the item"
@@ -13093,35 +13093,35 @@ msgstr "Vapauta kohde"
 
 #: inc/log.class.php:1065
 msgid "Add a component"
-msgstr ""
+msgstr "Lisää komponentti"
 
 #: inc/log.class.php:1069
 msgid "Change a component"
-msgstr ""
+msgstr "Vaihda komponentti"
 
 #: inc/log.class.php:1073
 msgid "Delete a component"
-msgstr ""
+msgstr "Poista komponentti"
 
 #: inc/log.class.php:1077
 msgid "Lock a component"
-msgstr ""
+msgstr "Lukitse komponentti"
 
 #: inc/log.class.php:1081
 msgid "Unlock a component"
-msgstr ""
+msgstr "Vapauta komponentti"
 
 #: inc/log.class.php:1085
 msgid "Install a software"
-msgstr ""
+msgstr "Asenna ohjelmisto"
 
 #: inc/log.class.php:1089
 msgid "Uninstall a software"
-msgstr ""
+msgstr "Poista ohjelmiston asennus"
 
 #: inc/log.class.php:1093
 msgid "Disconnect an item"
-msgstr ""
+msgstr "Kytke irti kohde"
 
 #: inc/log.class.php:1101
 msgid "Add a link with an item"
@@ -13129,7 +13129,7 @@ msgstr "Linkin lisäys kohteeseen"
 
 #: inc/log.class.php:1105
 msgid "Update a link with an item"
-msgstr ""
+msgstr "Päivitä linkki kohteen kanssa"
 
 #: inc/log.class.php:1109
 msgid "Delete a link with an item"
@@ -13710,7 +13710,7 @@ msgstr "%d Mbit/s"
 
 #: inc/networkportethernet.class.php:370
 msgid "Ethernet outlet"
-msgstr ""
+msgstr "Ethernet-lähtö"
 
 #: inc/networkportfiberchannel.class.php:46
 msgid "Fiber channel port"
@@ -13730,7 +13730,7 @@ msgstr "Kuitukanavaportin nopeus"
 
 #: inc/networkportfiberchannel.class.php:339
 msgid "Network fiber outlet"
-msgstr ""
+msgstr "Kuitu-lähtö"
 
 #: inc/networkportinstantiation.class.php:84
 msgid "No options available for this port type."
@@ -13944,11 +13944,11 @@ msgstr[1] ""
 #: inc/notificationajaxsetting.class.php:72
 #: inc/notificationajaxsetting.class.php:73
 msgid "Sound"
-msgstr ""
+msgstr "Ääni"
 
 #: inc/notificationajaxsetting.class.php:77
 msgid "Default notification sound"
-msgstr ""
+msgstr "Oletusilmoitusääni"
 
 #: inc/notificationajaxsetting.class.php:87
 msgid "Time to check for new notifications (in seconds)"
@@ -13961,7 +13961,7 @@ msgstr ""
 #: inc/notificationajaxsetting.class.php:103
 #: inc/notificationmailingsetting.class.php:240
 msgid "Notifications are disabled."
-msgstr ""
+msgstr "Ilmoitukset eivät ole käytössä."
 
 #: inc/notificationajaxsetting.class.php:105
 #: inc/notificationmailingsetting.class.php:242
@@ -14084,17 +14084,17 @@ msgstr "Sähköpostiseurannan määritykset"
 
 #: inc/notificationmailingsetting.class.php:48
 msgid "Enable followups via email"
-msgstr ""
+msgstr "Ota käyttöön sähköpostiseurannat"
 
 #: inc/notificationmailingsetting.class.php:68
 msgid "Email notification"
 msgid_plural "Email notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sähköposti-ilmoitus"
+msgstr[1] "Sähköposti-ilmoitukset"
 
 #: inc/notificationmailingsetting.class.php:87
 msgid "From email"
-msgstr ""
+msgstr "Sähköpostista"
 
 #: inc/notificationmailingsetting.class.php:88
 msgid "Address to use in from for sent emails."
@@ -14103,6 +14103,8 @@ msgstr ""
 #: inc/notificationmailingsetting.class.php:88
 msgid "If not set, main or entity administrator email will be used."
 msgstr ""
+"Jos ei ole asetettu, käytetään pää- tai yksikön-järjestelmänvalvojan "
+"sähköpostiosoitetta."
 
 #: inc/notificationmailingsetting.class.php:95
 msgid "From name"
@@ -14118,16 +14120,16 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:103
 msgid "Reply-to address"
-msgstr ""
+msgstr "Vastausosoite"
 
 #: inc/notificationmailingsetting.class.php:104
 msgid "Optionnal reply to address."
-msgstr ""
+msgstr "Vaihtoehtoinen vastaus osoitteeseen."
 
 #: inc/notificationmailingsetting.class.php:104
 #: inc/notificationmailingsetting.class.php:234
 msgid "If not set, main administrator email will be used."
-msgstr ""
+msgstr "Jos ei ole asetettu, käytetään pääkäyttäjän sähköpostiosoitetta."
 
 #: inc/notificationmailingsetting.class.php:112
 #: inc/queuednotification.class.php:271 inc/queuednotification.class.php:735
@@ -14140,7 +14142,7 @@ msgstr ""
 
 #: inc/notificationmailingsetting.class.php:113
 msgid "If not set, main administrator name will be used."
-msgstr ""
+msgstr "Jos ei ole asetettu, käytetään pääkäyttäjän nimeä."
 
 #: inc/notificationmailingsetting.class.php:121
 msgid "Add documents into ticket notifications"
@@ -14200,7 +14202,7 @@ msgstr "SMTP-salasana (tarvittaessa)"
 
 #: inc/notificationmailingsetting.class.php:233
 msgid "Email sender"
-msgstr ""
+msgstr "Sähköpostin lähettäjä"
 
 #: inc/notificationmailingsetting.class.php:234
 msgid "May be required for some mails providers."
@@ -14214,20 +14216,20 @@ msgstr "Lähetä testiposti ylläpitäjälle"
 #: inc/notification_notificationtemplate.class.php:125
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mallipohja"
+msgstr[1] "Mallipohjat"
 
 #: inc/notification_notificationtemplate.class.php:108
 msgid "Add a template"
-msgstr ""
+msgstr "Lisää mallipohja"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
-msgstr ""
+msgstr "Mallipohjaa ei ole valittu"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Selain"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -14239,7 +14241,7 @@ msgstr ""
 
 #: inc/notificationsettingconfig.class.php:100
 msgid "Enable followup"
-msgstr ""
+msgstr "Ota seuranta käyttöön"
 
 #: inc/notificationsettingconfig.class.php:161
 msgid ""
@@ -14983,13 +14985,13 @@ msgstr ""
 #: inc/ticket.class.php:2981 inc/ticket.class.php:4757
 #: inc/ticket.class.php:4759 inc/ticket.class.php:7708
 msgid "Internal time to own"
-msgstr ""
+msgstr "Sisäinen vasteaika"
 
 #: inc/notificationtargetticket.class.php:720 inc/ticket.class.php:2755
 #: inc/ticket.class.php:2995 inc/ticket.class.php:4769
 #: inc/ticket.class.php:4771 inc/ticket.class.php:7724
 msgid "Internal time to resolve"
-msgstr ""
+msgstr "Sisäinen ratkaisuaika"
 
 #: inc/notificationtargetticket.class.php:728
 msgid "Location name"
@@ -15080,7 +15082,7 @@ msgstr "CSS"
 #: inc/notificationtemplate.class.php:252
 #: inc/notificationtemplate.class.php:316
 msgid "Automatically generated by GLPI"
-msgstr ""
+msgstr "GLPI:n automaattisesti luoma"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -15303,77 +15305,77 @@ msgstr[1] ""
 #: inc/pdu.class.php:48 inc/pdu_rack.class.php:236
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virransyöttöyksikkö"
+msgstr[1] "Virransyöttöyksiköt"
 
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virransyöttöyksikön malli"
+msgstr[1] "Virransyöttöyksiköiden mallit"
 
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virransyöttöyksikkön pistoke"
+msgstr[1] "Virransyöttöyksiköiden pistokkeet"
 
 #: inc/pdu_plug.class.php:120
 msgid "Add a new plug"
-msgstr ""
+msgstr "Lisää uusi pistoke"
 
 #: inc/pdu_plug.class.php:141
 msgid "No plug found"
-msgstr ""
+msgstr "Pistoketta ei löydy"
 
 #: inc/pdu_rack.class.php:95
 msgid "A pdu is required"
-msgstr ""
+msgstr "Virransyöttöyksikkö vaaditaan"
 
 #: inc/pdu_rack.class.php:107
 msgid "A side is required"
-msgstr ""
+msgstr "Sivu vaaditaan"
 
 #: inc/pdu_rack.class.php:246
 msgid "Side (from rear perspective)"
-msgstr ""
+msgstr "Sivu (takaa katsottuna)"
 
 #: inc/pdu_rack.class.php:297
 msgid "Side pdus"
-msgstr ""
+msgstr "Vara virransyöttöyksiköt"
 
 #: inc/pdu_rack.class.php:330
 msgid "Side"
-msgstr ""
+msgstr "Sivu"
 
 #: inc/pdu_rack.class.php:407
 msgid "Power units"
-msgstr ""
+msgstr "Virtalähteet"
 
 #: inc/pdu_rack.class.php:422
 msgid "Racked"
-msgstr ""
+msgstr "Telineessä"
 
 #: inc/pdu_rack.class.php:427 inc/pdu_rack.class.php:435
 #: inc/pdu_rack.class.php:439
 msgid "On left"
-msgstr ""
+msgstr "Vasemmalla"
 
 #: inc/pdu_rack.class.php:431
 msgid "On right"
-msgstr ""
+msgstr "Oikealla"
 
 #: inc/pdu_rack.class.php:497
 msgid "The pdu will be"
-msgstr ""
+msgstr "Virransyöttöyksikkö on"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
-msgstr ""
+msgstr "telineessä"
 
 #: inc/pdu_rack.class.php:500
 msgid "placed at rack side"
-msgstr ""
+msgstr "sijoitettu telineen sivulle"
 
 #: inc/pdu_rack.class.php:707
 msgid "Top"
@@ -15386,8 +15388,8 @@ msgstr ""
 #: inc/pdutype.class.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virransyöttöyksikön tyyppi"
+msgstr[1] "Virransyöttöyksiköiden tyypit"
 
 #: inc/peripheral.class.php:289 inc/peripheral.class.php:484
 #: inc/phone.class.php:283 inc/phone.class.php:511
@@ -15581,7 +15583,7 @@ msgstr ""
 #: inc/plugin.class.php:712
 #, php-format
 msgid "Plugin %1$s has been installed!"
-msgstr ""
+msgstr "Liitännäinen %1$son asennettu! "
 
 #: inc/plugin.class.php:717
 msgid "Do you want to %activate_link it?"
@@ -15590,72 +15592,72 @@ msgstr ""
 #: inc/plugin.class.php:722
 #, php-format
 msgid "Plugin %1$s has been installed and must be configured!"
-msgstr ""
+msgstr "Liitännäinen %1$son asennettu ja se on määritettävä! "
 
 #: inc/plugin.class.php:729
 #, php-format
 msgid "Plugin %1$s has no install function!"
-msgstr ""
+msgstr "Liitännäisellä %1$sei ole asennustoimintoa! "
 
 #: inc/plugin.class.php:760
 #, php-format
 msgid "Plugin %1$s is not CSRF compliant!"
-msgstr ""
+msgstr "Liitännäinen %1$sei ole CSRF-yhteensopiva! "
 
 #: inc/plugin.class.php:774
 #, php-format
 msgid "Plugin %1$s has no check function!"
-msgstr ""
+msgstr "Liitännäisellä %1$sei ole tarkistustoimintoa! "
 
 #: inc/plugin.class.php:806
 #, php-format
 msgid "Plugin %1$s has been activated!"
-msgstr ""
+msgstr "Liitännäinen %1$son aktivoitu! "
 
 #: inc/plugin.class.php:846
 #, php-format
 msgid "Plugin %1$s has been deactivated!"
-msgstr ""
+msgstr "Liitännäinen %1$son poistettu käytöstä!"
 
 #: inc/plugin.class.php:1521
 #, php-format
 msgid "This plugin requires %1$s < %2$s."
-msgstr ""
+msgstr "Tämä liitännäinen vaatii %1$s < %2$s."
 
 #: inc/plugin.class.php:1527
 #, php-format
 msgid "This plugin requires %1$s > %2$s."
-msgstr ""
+msgstr "Tämä liitännäinen vaatii %1$s > %2$s."
 
 #: inc/plugin.class.php:1534
 #, php-format
 msgid "This plugin requires %1$s > %2$s and < %3$s"
-msgstr ""
+msgstr "Tämä liitännäinen vaatii %1$s > %2$s ja < %3$s."
 
 #: inc/plugin.class.php:1560
 #, php-format
 msgid "This plugin requires PHP extension %1$s"
-msgstr ""
+msgstr "Tämä liitännäinen vaatii PHP-laajennuksen %1$s"
 
 #: inc/plugin.class.php:1566
 #, php-format
 msgid "This plugin requires %1$s plugin"
-msgstr ""
+msgstr "Tämä liitännäinen vaatii %1$s liitännäisen"
 
 #: inc/plugin.class.php:1572
 #, php-format
 msgid "This plugin requires PHP compiled along with \"%1$s\""
-msgstr ""
+msgstr "Tämä liitännäinen vaatii PHP koottuna \"%1$s\" kanssa"
 
 #: inc/plugin.class.php:1578
 #, php-format
 msgid "This plugin requires PHP parameter %1$s"
-msgstr ""
+msgstr "Tämä liitännäinen vaatii PHP-parametrin %1$s"
 
 #: inc/plugin.class.php:1584
 #, php-format
 msgid "This plugin requires GLPI parameter %1$s"
-msgstr ""
+msgstr "Tämä liitännäinen vaatii GLPI-parametrin %1$s"
 
 #: inc/plugin.class.php:1861
 msgctxt "plugin"
@@ -15877,7 +15879,7 @@ msgstr[1] "Julkiset RSS-syötteet"
 
 #: inc/profile.class.php:886
 msgid "Simcard PIN/PUK"
-msgstr ""
+msgstr "SIM-kortin PIN/PUK"
 
 #: inc/profile.class.php:946 inc/profile.class.php:1829
 msgid "Financial and administratives information"
@@ -16241,11 +16243,11 @@ msgstr "Luo tiketti tästä tehtävästä"
 
 #: inc/projecttask_ticket.class.php:267
 msgid "Add a project task"
-msgstr ""
+msgstr "Lisää projektitehtävä"
 
 #: inc/purgelogs.class.php:65
 msgid "Purge history"
-msgstr ""
+msgstr "Puhdista historia"
 
 #: inc/queuednotification.class.php:80
 msgctxt "button"
@@ -16310,27 +16312,27 @@ msgstr "Lähetettyjen viestien säilytys päivinä"
 
 #: inc/rack.class.php:237
 msgid "Position in room"
-msgstr ""
+msgstr "Paikka huoneessa"
 
 #: inc/rack.class.php:261
 msgid "Door orientation in room"
-msgstr ""
+msgstr "Oven suunta huoneessa"
 
 #: inc/rack.class.php:266
 msgid "North"
-msgstr ""
+msgstr "Pohjoinen"
 
 #: inc/rack.class.php:267
 msgid "East"
-msgstr ""
+msgstr "Itä"
 
 #: inc/rack.class.php:268
 msgid "South"
-msgstr ""
+msgstr "Etelä"
 
 #: inc/rack.class.php:269
 msgid "West"
-msgstr ""
+msgstr "Länsi"
 
 #: inc/rack.class.php:281 inc/rack.class.php:419
 msgid "Number of units"
@@ -16342,11 +16344,11 @@ msgstr ""
 
 #: inc/rack.class.php:293
 msgid "Width"
-msgstr ""
+msgstr "Leveys"
 
 #: inc/rack.class.php:298
 msgid "Height"
-msgstr ""
+msgstr "Korkeus"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
@@ -16366,24 +16368,24 @@ msgstr "Seuraavat kohteet ovat huonerajojen ulkopuolella"
 
 #: inc/rack.class.php:685
 msgid "Blueprint"
-msgstr ""
+msgstr "Piirustus"
 
 #: inc/rack.class.php:693
 msgid "Grid"
-msgstr ""
+msgstr "Ruudukko"
 
 #: inc/rack.class.php:723
 msgid "Insert a rack here"
-msgstr ""
+msgstr "Aseta teline tähän"
 
 #: inc/rack.class.php:932
 msgid "Position must be set"
-msgstr ""
+msgstr "Paikka on asetettava"
 
 #: inc/rack.class.php:953
 #, php-format
 msgid "%1$s position is not available"
-msgstr ""
+msgstr "%1$spaikka ei ole käytettävissä"
 
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
@@ -16394,8 +16396,8 @@ msgstr[1] "Telineiden mallit"
 #: inc/racktype.class.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telineen tyyppi"
+msgstr[1] "Telineiden tyypit"
 
 #: inc/registeredid.class.php:54
 msgid "PCI"
@@ -16553,7 +16555,7 @@ msgstr "Kohteen varaus"
 
 #: inc/reservation.class.php:723
 msgid "Repetition"
-msgstr ""
+msgstr "Toisto"
 
 #: inc/reservation.class.php:725
 msgctxt "periodicity"
@@ -16577,7 +16579,7 @@ msgstr "Kuukausittain"
 
 #: inc/reservation.class.php:763
 msgid "Delete all repetition"
-msgstr ""
+msgstr "Poista kaikki toistot"
 
 #: inc/reservation.class.php:1073 inc/reservation.class.php:1075
 #: inc/reservation.class.php:1191
@@ -17357,8 +17359,8 @@ msgstr[1] ""
 #: inc/savedsearch.class.php:1397
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tallennettu haku"
+msgstr[1] "Tallennetut haut"
 
 #: inc/savedsearch_alert.class.php:148 inc/savedsearch_alert.class.php:253
 msgid "Operator"

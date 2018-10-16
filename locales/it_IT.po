@@ -4753,7 +4753,7 @@ msgstr "Utente non trovato oppure sono stati trovati utenti multipli"
 
 #: inc/authldap.class.php:2654
 msgid "Unable to add. The user already exist."
-msgstr "Impossibile aggiungere. L'utente è già esistente."
+msgstr "Impossibile aggiungerlo. L'utente esistente già."
 
 #: inc/authldap.class.php:3058
 msgid "Expert mode"
@@ -5105,7 +5105,7 @@ msgstr "Duplicato"
 
 #: inc/calendar.class.php:87 inc/calendar_holiday.class.php:102
 msgid "Add a close time"
-msgstr "Aggiungi un'ora di chiusura"
+msgstr "Aggiungi un periodo di chiusura"
 
 #: inc/calendar_holiday.class.php:133 inc/holiday.class.php:61
 #: inc/holiday.class.php:89
@@ -5815,7 +5815,7 @@ msgstr "Checklist"
 #: inc/problem.class.php:532 inc/ticket.class.php:3564
 msgctxt "status"
 msgid "New"
-msgstr "Nuove"
+msgstr "Nuova"
 
 #: inc/change.class.php:483
 msgid "Evaluation"
@@ -6822,22 +6822,22 @@ msgstr "Molto alta"
 #: inc/commonitilobject.class.php:2125
 msgctxt "impact"
 msgid "High"
-msgstr "Alta"
+msgstr "Alto"
 
 #: inc/commonitilobject.class.php:2128
 msgctxt "impact"
 msgid "Medium"
-msgstr "Media"
+msgstr "Medio"
 
 #: inc/commonitilobject.class.php:2131
 msgctxt "impact"
 msgid "Low"
-msgstr "Bassa"
+msgstr "Basso"
 
 #: inc/commonitilobject.class.php:2134
 msgctxt "impact"
 msgid "Very low"
-msgstr "Molto bassa"
+msgstr "Molto basso"
 
 #: inc/commonitilobject.class.php:2138
 msgctxt "impact"
@@ -7760,7 +7760,7 @@ msgstr "Tutte le categorie"
 
 #: inc/computer_softwareversion.class.php:786
 msgid "Uncategorized software"
-msgstr "Software non categorizzato"
+msgstr "Software senza categoria"
 
 #: inc/computer_softwareversion.class.php:833
 msgid "Valid license"
@@ -9411,7 +9411,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:806
 msgid "A minimum of 64 Mio is commonly required for GLPI."
-msgstr "Un minimo di di 64 MiB è normalmente richiesto per GLPI."
+msgstr "GLPI, normalmente, richiede un minimo di 64 MiB."
 
 #: inc/crontask.class.php:811
 msgid "No task with Run mode = CLI, fix your tasks configuration"
@@ -9581,8 +9581,8 @@ msgstr "Archiviazione file di log: %1$s a %2$s"
 msgid ""
 "Unable to archive log file: %1$s. %2$s already exists. Wait till next day."
 msgstr ""
-"Impossibile archiviare i file di log: %1$s. %2$s esiste già. Attendere fino "
-"al prossimo giorno."
+"Impossibile archiviare i file di log: %1$s. %2$s esiste già. Attendere "
+"almeno un giorno."
 
 #: inc/crontask.class.php:1584
 #, php-format
@@ -12260,7 +12260,7 @@ msgstr "E' richiesto un elemento"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "È richiesto un contenitore"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12415,7 +12415,7 @@ msgstr "Spazio insufficiente per posizionare l'elemento"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Elemento per il rack \"%1$s\""
 
 #: inc/item_ticket.class.php:303
 #, php-format
@@ -12430,7 +12430,7 @@ msgstr "Visualizza tutti gli oggetti"
 
 #: inc/item_ticket.class.php:601
 msgid "Or complete search"
-msgstr "oppure ricerca globale"
+msgstr "oppure esegui una ricerca in"
 
 #: inc/item_ticket.class.php:750 inc/item_ticket.class.php:933
 #: inc/profile.class.php:2708 inc/profile.class.php:2713
@@ -14537,7 +14537,7 @@ msgstr "Numero di costi"
 
 #: inc/notificationtargetcommonitilobject.class.php:1285
 msgid "Category id"
-msgstr "Id categoria"
+msgstr "ID categoria"
 
 #: inc/notificationtargetcommonitilobject.class.php:1287
 msgid "Category comment"
@@ -16877,7 +16877,7 @@ msgstr "Lista regole"
 
 #: inc/rulecollection.class.php:359
 msgid "The engine stops on the first checked rule."
-msgstr "Il gestore termina alla prima regola soddisfatta"
+msgstr "Il gestore termina alla prima regola soddisfatta."
 
 #: inc/rulecollection.class.php:364
 msgid "The engine treats all the rules."
@@ -18674,7 +18674,7 @@ msgstr "Memoria allocata"
 
 #: inc/toolbox.class.php:1076
 msgid "A minimum of 64Mio is commonly required for GLPI."
-msgstr "Un minimo di di 64 MiB è normalmente richiesto per GLPI."
+msgstr "GLPI, normalmente, richiede un minimo di 64 MiB."
 
 #: inc/toolbox.class.php:1077
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -18682,7 +18682,7 @@ msgstr "Prova ad aumentare il parametro memory_limit nel file php.ini."
 
 #: inc/toolbox.class.php:1084 inc/toolbox.class.php:1085
 msgid "Allocated memory > 64Mio - Perfect!"
-msgstr "Memoria allocata > 64MiB - Perfetto!"
+msgstr "Memoria disponibile > 64MiB - Perfetto!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
 #: inc/toolbox.class.php:1127
@@ -18980,7 +18980,7 @@ msgstr "Il login non è valido. Impossibile aggiungere l'utente."
 
 #: inc/user.class.php:625
 msgid "Unable to add. The user already exists."
-msgstr "Impossibile aggiungere. L'utente è già presente."
+msgstr "Impossibile aggiungerlo. L'utente è già presente."
 
 #: inc/user.class.php:644 inc/user.class.php:814
 msgid "Error: the two passwords do not match"
@@ -19051,7 +19051,7 @@ msgstr "Impossibile aggiornare le credenziali. L'utente è già presente."
 
 #: inc/user.class.php:2653
 msgid "The login is not valid. Unable to update login."
-msgstr "Impossibile aggiornare il login in quanto non valido."
+msgstr "Impossibile aggiornare il login in quanto non è valido."
 
 #: inc/user.class.php:2710
 msgid "Dissociate from a group"

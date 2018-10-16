@@ -12228,7 +12228,7 @@ msgstr "Öge zorunludur"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Bir kutu gereklidir"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12383,7 +12383,7 @@ msgstr "Bu ögeyi yerleştirecek yeterli boşluk yok"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "\"%1$s\" kabini için öge"
 
 #: inc/item_ticket.class.php:303
 #, php-format

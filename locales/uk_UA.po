@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-10 07:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Anael Mobilia <contrib@anael.eu>, 2017\n"
+"Last-Translator: Olexandr <davdta@yandex.ru>, 2017\n"
 "Language-Team: Ukrainian (Ukraine) (https://www.transifex.com/glpi/teams/1637/uk_UA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6619,7 +6619,7 @@ msgstr "Макс. потужність (у Ватах)"
 #: inc/commondcmodeldropdown.class.php:116
 #: inc/commondcmodeldropdown.class.php:207
 msgid "Is half rack"
-msgstr "Is half rack"
+msgstr "Є відкритою шафою"
 
 #: inc/commondcmodeldropdown.class.php:124
 #: inc/commondcmodeldropdown.class.php:217
@@ -8160,7 +8160,7 @@ msgstr "Стан по замовчуванню"
 
 #: inc/config.class.php:451
 msgid "Display source dropdown on login page"
-msgstr ""
+msgstr "Display source dropdown on login page"
 
 #: inc/config.class.php:488 inc/config.class.php:2175 inc/entity.class.php:339
 #: inc/entity.class.php:963 inc/event.class.php:154 inc/html.class.php:1332
@@ -8662,12 +8662,12 @@ msgstr "Розширення \"%s\" встановлено"
 #: inc/config.class.php:1616 inc/config.class.php:1689
 #, php-format
 msgid "%1$ss memory usage is too low or too high"
-msgstr ""
+msgstr "%1$s використання пам'яті занадто низьке або високе"
 
 #: inc/config.class.php:1619 inc/config.class.php:1692
 #, php-format
 msgid "%1$s memory usage is correct"
-msgstr ""
+msgstr "%1$s використання пам'яті коректне"
 
 #: inc/config.class.php:1628
 msgid "Hits rate"
@@ -8676,12 +8676,12 @@ msgstr "Рейтинг попадань"
 #: inc/config.class.php:1634
 #, php-format
 msgid "%1$ss hits rate is low"
-msgstr ""
+msgstr "%1$sрейтинг попадання низький"
 
 #: inc/config.class.php:1637
 #, php-format
 msgid "%1$s hits rate is correct"
-msgstr ""
+msgstr "%1$s рейтинг попадання коректний"
 
 #: inc/config.class.php:1643
 msgid "Out of memory restart"
@@ -8690,12 +8690,12 @@ msgstr "перезапуск закінчення пам'яті"
 #: inc/config.class.php:1647
 #, php-format
 msgid "%1$ss restart rate is too high"
-msgstr ""
+msgstr "%1$s рейтинг перезавантажень занадто високий"
 
 #: inc/config.class.php:1650
 #, php-format
 msgid "%1$s restart rate is correct"
-msgstr ""
+msgstr "%1$s рейтинг перезавантажень коректний"
 
 #: inc/config.class.php:1657 inc/config.class.php:1704
 msgid "Reset"
@@ -8813,7 +8813,7 @@ msgstr "Мій профіль"
 
 #: inc/config.class.php:2179 inc/purgelogs.class.php:40
 msgid "Logs purge"
-msgstr ""
+msgstr "Стирання протоколів"
 
 #: inc/config.class.php:2180 inc/event.class.php:147
 msgid "System"
@@ -8826,12 +8826,12 @@ msgstr "Продуктивність"
 #: inc/config.class.php:2277
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
-msgstr ""
+msgstr "Версія бази даних виглядає коректною (%s) - Чудово!"
 
 #: inc/config.class.php:2278
 #, php-format
 msgid "Your database engine version seems too old: %s."
-msgstr ""
+msgstr "Версія бази даних виглядає надто старою: %s."
 
 #: inc/config.class.php:2321 inc/config.class.php:2334
 #: inc/config.class.php:2345
@@ -8930,7 +8930,7 @@ msgstr "Веб-доступ до файлового каталогу захищ�
 
 #: inc/config.class.php:2675 inc/config.class.php:2679
 msgid "Web access to the files directory should not be allowed"
-msgstr ""
+msgstr "Веб-доступ до файлового каталогу не повинен бути дозволеним"
 
 #: inc/config.class.php:2676 inc/config.class.php:2680
 msgid "Check the .htaccess file and the web server configuration."
@@ -8941,10 +8941,12 @@ msgid ""
 "Web access to the files directory should not be allowed but this cannot be "
 "checked automatically on this instance."
 msgstr ""
+"Веб-доступ до файлового каталогу не повинен бути дозволеним, але це не може "
+"бути автоматично перевірено в цій інсталяції."
 
 #: inc/config.class.php:2696
 msgid "error log file"
-msgstr ""
+msgstr "файл протоколу помилок"
 
 #: inc/config.class.php:2864
 msgid "You are using a development version, be careful!"
@@ -8960,19 +8962,19 @@ msgstr "Будь ласка, поставте відмітку нестабіл�
 
 #: inc/config.class.php:3026
 msgid "Logs purge configuration"
-msgstr ""
+msgstr "Налаштування стирання протоколів"
 
 #: inc/config.class.php:3028
 msgid "Change all"
-msgstr ""
+msgstr "Змінити все"
 
 #: inc/config.class.php:3044
 msgid "Add/update relation between items"
-msgstr ""
+msgstr "Додати або змінити зв'язки між елементами"
 
 #: inc/config.class.php:3048
 msgid "Delete relation between items"
-msgstr ""
+msgstr "Видалити зв'язок між елементами"
 
 #: inc/config.class.php:3053 inc/log.class.php:1045
 #: inc/notificationtargetfieldunicity.class.php:49
@@ -8997,31 +8999,31 @@ msgstr "Плугіни"
 
 #: inc/config.class.php:3087
 msgid "Installation/uninstallation of software on computers"
-msgstr ""
+msgstr "Встановлення або видалення ПЗ на комп'ютерах"
 
 #: inc/config.class.php:3091
 msgid "Installation/uninstallation versions on softwares"
-msgstr ""
+msgstr "Встановлення або видалення версій ПЗ"
 
 #: inc/config.class.php:3098
 msgid "Add/Remove computers from software versions"
-msgstr ""
+msgstr "Додати або видалити комп'ютери з версій ПЗ"
 
 #: inc/config.class.php:3107
 msgid "Add financial information to an item"
-msgstr ""
+msgstr "Додати фінансову інформацію до елемента"
 
 #: inc/config.class.php:3115
 msgid "Add/remove profiles to users"
-msgstr ""
+msgstr "Додати/видалити профілі користувача"
 
 #: inc/config.class.php:3118
 msgid "Add/remove groups to users"
-msgstr ""
+msgstr "Додати/видалити групи користувача"
 
 #: inc/config.class.php:3124
 msgid "User authentication method changes"
-msgstr ""
+msgstr "Зміни методу аутентифікації користувача"
 
 #: inc/config.class.php:3127 inc/user.class.php:3056
 msgid "Deleted user in LDAP directory"
@@ -9029,48 +9031,48 @@ msgstr "Користувач, видалений із LDAP"
 
 #: inc/config.class.php:3135
 msgid "Add component"
-msgstr ""
+msgstr "Додати компоненту"
 
 #: inc/config.class.php:3138
 msgid "Update component"
-msgstr ""
+msgstr "Змінити компоненту"
 
 #: inc/config.class.php:3143
 msgid "Disconnect a component"
-msgstr ""
+msgstr "Від'єднати компоненту"
 
 #: inc/config.class.php:3147
 msgid "Connect a component"
-msgstr ""
+msgstr "Під'єднати компоненту"
 
 #: inc/config.class.php:3152
 msgid "Delete component"
-msgstr ""
+msgstr "Видалити компоненту"
 
 #: inc/config.class.php:3158
 msgid "All sections"
-msgstr ""
+msgstr "Всі розділи"
 
 #: inc/config.class.php:3160
 msgid "Purge all log entries"
-msgstr ""
+msgstr "Витерти всі записи протоколу"
 
 #: inc/config.class.php:3189
 msgid "Delete all"
-msgstr ""
+msgstr "Видалити все"
 
 #: inc/config.class.php:3190
 msgid "Keep all"
-msgstr ""
+msgstr "Зберегти все"
 
 #: inc/config.class.php:3195
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Видалити, якщо старіше  %s місяця"
+msgstr[1] "Видалити, якщо старіше %s місяці"
+msgstr[2] "Видалити, якщо старіше %s місяців"
+msgstr[3] "Видалити, якщо старіше %s місяців"
 
 #: inc/config.php:197 inc/config.php:205
 msgid "Service is down for maintenance. It will be back shortly."
@@ -9108,6 +9110,8 @@ msgid ""
 "You are trying to update to a development version from a development "
 "version. This is not supported."
 msgstr ""
+"Ви намагаєтесь оновити тестову версію з іншої тестової версії. Така операція"
+" не підтримується."
 
 #: inc/consumable.class.php:202 inc/consumable.class.php:513
 msgctxt "button"
@@ -9927,10 +9931,10 @@ msgstr[3] "%d днів"
 #: inc/dcroom.class.php:258
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Датацентр"
+msgstr[1] "Датацентри"
+msgstr[2] "Датацентрів"
+msgstr[3] "Датацентри"
 
 #: inc/dbconnection.class.php:375
 msgid "Check the SQL replica"
@@ -9982,45 +9986,45 @@ msgstr "оптимізувати"
 
 #: inc/dbutils.class.php:1070
 msgid "Address:"
-msgstr ""
+msgstr "Адреса :"
 
 #: inc/dcbreadcrumb.class.php:99
 msgid "Data center position"
-msgstr ""
+msgstr "Координати датацентру"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/dcroom.class.php:50 inc/rack.class.php:200 inc/rack.class.php:411
 msgid "Server room"
 msgid_plural "Server rooms"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Серверне приміщення"
+msgstr[1] "Серверні приміщення"
+msgstr[2] "Серверних приміщеннь"
+msgstr[3] "Серверні приміщення"
 
 #: inc/dcroom.class.php:124 inc/dcroom.class.php:266
 msgid "Number of columns"
-msgstr ""
+msgstr "Кількість стовпчиків"
 
 #: inc/dcroom.class.php:135 inc/dcroom.class.php:274
 msgid "Number of rows"
-msgstr ""
+msgstr "Кількість рядків"
 
 #: inc/dcroom.class.php:149
 msgid "Background picture (blueprint)"
-msgstr ""
+msgstr "Зображення фону (креслення)"
 
 #: inc/dcroom.class.php:362
 msgid "New room for this datacenter..."
-msgstr ""
+msgstr "Нове приміщення для цього датацентру..."
 
 #: inc/dcroom.class.php:387
 msgid "No server room found"
-msgstr ""
+msgstr "Серверного приміщення не знайдено"
 
 #: inc/dcroom.class.php:467
 #, php-format
 msgid "col: %1$s, row: %2$s"
-msgstr ""
+msgstr "стовпчик: %1$s, рядок: %2$s"
 
 #: inc/devicebattery.class.php:42
 msgid "Battery"
@@ -10348,10 +10352,10 @@ msgstr[3] "Моделі процесорів пристроїв"
 #: inc/devicesensor.class.php:45
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Датчик"
+msgstr[1] "Датчики"
+msgstr[2] "Датчиків"
+msgstr[3] "Датчики"
 
 #: inc/devicesensormodel.class.php:46 inc/dropdown.class.php:917
 msgid "Device sensor model"
@@ -10693,7 +10697,7 @@ msgstr "Показати %1$s"
 
 #: inc/dropdown.class.php:229
 msgid "Display on map"
-msgstr ""
+msgstr "Показати на карті"
 
 #. TRANS: %s is the store path
 #: inc/dropdown.class.php:613
@@ -10824,10 +10828,10 @@ msgstr[3] "Типи пристроїв"
 #: inc/rule.class.php:408 inc/rulecollection.class.php:2043
 msgid "Phone type"
 msgid_plural "Phones types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип телефону"
+msgstr[1] "Типи телефонів"
+msgstr[2] "Типів телефонів"
+msgstr[3] "Типи телефонів"
 
 #: inc/dropdown.class.php:829 inc/softwarelicensetype.class.php:43
 msgid "License type"
@@ -11133,7 +11137,7 @@ msgstr[3] "Ігноровані значення для унікальності
 
 #: inc/dropdown.class.php:1046
 msgid "Power management"
-msgstr ""
+msgstr "Керування живленням"
 
 #. TRANS: %d is a number of years
 #: inc/dropdown.class.php:1529 inc/infocom.class.php:1176
@@ -11299,10 +11303,10 @@ msgstr "Немає перекладів"
 #: inc/enclosure.class.php:48 inc/item_enclosure.class.php:260
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Полиця"
+msgstr[1] "Полиці"
+msgstr[2] "Полиць"
+msgstr[3] "Полиці"
 
 #: inc/enclosure.class.php:105
 msgid "Power supplies"
@@ -11311,10 +11315,10 @@ msgstr "Блоки живлення"
 #: inc/enclosuremodel.class.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Модель полиці"
+msgstr[1] "Моделі полиць"
+msgstr[2] "Моделі полиць"
+msgstr[3] "Моделі полиць"
 
 #: inc/entity.class.php:245
 msgid "You can't add an entity without name"
@@ -11528,7 +11532,7 @@ msgstr "Показати все"
 
 #: inc/entity.class.php:1127
 msgid "Load more entities..."
-msgstr ""
+msgstr "Завантажити більше підрозділів..."
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:1233
@@ -11805,6 +11809,14 @@ msgid ""
 "\n"
 "Or, support the GLPI development effort by <b>donating</b>."
 msgstr ""
+"You need help to integrate GLPI in your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n"
+"\n"
+"We provide the %s space for you.\n"
+"GLPI-Network is a commercial product that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n"
+"\n"
+"In this same space, you will be able to <b>contact an official partner</b> to help you with your GLPI integration.\n"
+"\n"
+"Or, support the GLPI development effort by <b>donating</b>."
 
 #: inc/glpiuploadhandler.class.php:48
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
@@ -12246,7 +12258,7 @@ msgstr[3] "+ %d років"
 
 #: inc/html.class.php:3555
 msgid "The description field is mandatory"
-msgstr "Поле опису обов&#x27;язкове"
+msgstr "Поле опису обов'язкове"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3736 inc/html.class.php:3938
@@ -12305,11 +12317,11 @@ msgstr "Вихід"
 
 #: inc/html.class.php:6096
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Налагодження увімкнено"
 
 #: inc/html.class.php:6097
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Налагодження вимкнено"
 
 #: inc/html.class.php:6101
 msgid "Change mode"
@@ -12321,7 +12333,7 @@ msgstr "Керувати збереженими пошуками"
 
 #: inc/html.class.php:6119 inc/search.class.php:2216
 msgid "Load a saved search"
-msgstr ""
+msgstr "Завантажити збережені пошуки"
 
 #: inc/html.class.php:6185 inc/profile.class.php:2234
 #: inc/ticket.class.php:5873
@@ -12385,11 +12397,11 @@ msgstr "Показати"
 
 #: inc/infocom.class.php:748
 msgid "Please fill you fiscal year date in preferences."
-msgstr ""
+msgstr "Будь ласка заповніть в налаштування  дату кінця фінансового року."
 
 #: inc/infocom.class.php:767
 msgid "Please fill either buy or use date in preferences."
-msgstr ""
+msgstr "Заповніть в налаштуваннях дату придбання або використання."
 
 #: inc/infocom.class.php:1006
 msgid "Requested item not found"
@@ -12689,15 +12701,15 @@ msgstr[3] "Ліній"
 
 #: inc/item_devicesimcard.class.php:103
 msgid "Mobile Subscriber Identification Number"
-msgstr ""
+msgstr "Mobile Subscriber Identification Number"
 
 #: inc/item_devicesimcard.class.php:104
 msgid "MSIN"
-msgstr ""
+msgstr "MSIN"
 
 #: inc/item_devicesimcard.class.php:108
 msgid "MSIN is the last 8 or 10 digits of IMSI"
-msgstr ""
+msgstr "MSIN is the last 8 or 10 digits of IMSI"
 
 #: inc/item_disk.class.php:262
 msgid "Add a volume"
@@ -12705,7 +12717,7 @@ msgstr "Додати том"
 
 #: inc/item_enclosure.class.php:105
 msgid "Add new item to this enclosure..."
-msgstr ""
+msgstr "Додати новий елемент до полиці..."
 
 #: inc/item_enclosure.class.php:137 inc/item_enclosure.class.php:264
 #: inc/item_rack.class.php:153 inc/item_rack.class.php:650
@@ -12715,20 +12727,20 @@ msgstr "Позиція"
 
 #: inc/item_enclosure.class.php:302 inc/item_rack.class.php:947
 msgid "An item type is required"
-msgstr ""
+msgstr "Тип елементу є обов'язковим"
 
 #: inc/item_enclosure.class.php:306 inc/item_rack.class.php:951
 msgid "An item is required"
-msgstr ""
+msgstr "Необхідно вказати елемент"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Необхідно вказати полицю"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
 msgid "A position is required"
-msgstr ""
+msgstr "Необхідно вказати позицію"
 
 #: inc/item_operatingsystem.class.php:47
 msgid "Item operating system"
@@ -12749,140 +12761,140 @@ msgstr "Операційна система"
 
 #: inc/item_rack.class.php:124 inc/rack.class.php:558
 msgid "View as list"
-msgstr ""
+msgstr "Показати як список"
 
 #: inc/item_rack.class.php:125 inc/rack.class.php:559
 msgid "View graphical representation"
-msgstr ""
+msgstr "Показати графічне представлення"
 
 #: inc/item_rack.class.php:131
 msgid "Racked items"
-msgstr ""
+msgstr "Елементи в шафах"
 
 #: inc/item_rack.class.php:154
 msgid "Orientation"
-msgstr ""
+msgstr "Орієнтація"
 
 #: inc/item_rack.class.php:169 inc/item_rack.class.php:308
 #: inc/item_rack.class.php:670
 msgid "Front"
-msgstr ""
+msgstr "Спереду"
 
 #: inc/item_rack.class.php:169 inc/item_rack.class.php:335
 #: inc/item_rack.class.php:671
 msgid "Rear"
-msgstr ""
+msgstr "Ззаду"
 
 #: inc/item_rack.class.php:287
 msgid "Following elements are out of rack bounds"
-msgstr ""
+msgstr "Наступні елементи виходять за межі монтажу (rack bounds)"
 
 #: inc/item_rack.class.php:302
 msgid "images"
-msgstr ""
+msgstr "зображення"
 
 #: inc/item_rack.class.php:304
 msgid "texts"
-msgstr ""
+msgstr "тексти"
 
 #: inc/item_rack.class.php:368
 msgid "Insert an item here"
-msgstr ""
+msgstr "Вставте елемент тут"
 
 #: inc/item_rack.class.php:507
 msgid "Rack stats"
-msgstr ""
+msgstr "Статистика шаф"
 
 #: inc/item_rack.class.php:510
 msgid "Space"
-msgstr ""
+msgstr "Місце"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/item_rack.class.php:646 inc/pdu_rack.class.php:259
 #: inc/rack.class.php:62
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Шафа"
+msgstr[1] "Шафи"
+msgstr[2] "Шаф"
+msgstr[3] "Шафи"
 
 #: inc/item_rack.class.php:666
 msgid "Orientation (front rack point of view)"
-msgstr ""
+msgstr "Орієнтація (з передньої сторони шафи)"
 
 #: inc/item_rack.class.php:678 inc/pdu_rack.class.php:280
 #: inc/rack.class.php:314
 msgid "Background color"
-msgstr ""
+msgstr "Колір фону"
 
 #: inc/item_rack.class.php:690
 msgid "Horizontal position (from rack point of view)"
-msgstr ""
+msgstr "Горизонтальна позиція (з точки зору шафи)"
 
 #: inc/item_rack.class.php:696 inc/pdu_rack.class.php:705
 msgid "Left"
-msgstr ""
+msgstr "Зліва"
 
 #: inc/item_rack.class.php:697 inc/pdu_rack.class.php:706
 msgid "Right"
-msgstr ""
+msgstr "Справа"
 
 #: inc/item_rack.class.php:704
 msgid "Reserved position ?"
-msgstr ""
+msgstr "Зарезервована позиція?"
 
 #: inc/item_rack.class.php:819
 msgid "asset rear side"
-msgstr ""
+msgstr "Задня сторона елементу"
 
 #: inc/item_rack.class.php:820
 msgid "asset front side"
-msgstr ""
+msgstr "Передня сторона елементу"
 
 #: inc/item_rack.class.php:831 inc/pdu_rack.class.php:587
 #: inc/rack.class.php:1092
 msgid "name"
-msgstr ""
+msgstr "Назва"
 
 #: inc/item_rack.class.php:837 inc/pdu_rack.class.php:592
 #: inc/rack.class.php:1096
 msgid "serial"
-msgstr ""
+msgstr "Серійний номер"
 
 #: inc/item_rack.class.php:849 inc/pdu_rack.class.php:604
 msgid "model"
-msgstr ""
+msgstr "Модель"
 
 #: inc/item_rack.class.php:870 inc/pdu_rack.class.php:641
 msgid "Edit rack relation"
-msgstr ""
+msgstr "Змінити зв'язки шафи"
 
 #: inc/item_rack.class.php:955 inc/pdu_rack.class.php:99
 msgid "A rack is required"
-msgstr ""
+msgstr "Необхідно вказати шафу"
 
 #: inc/item_rack.class.php:1013
 msgid "You must define an horizontal position for this item"
-msgstr ""
+msgstr "Необхідно вказати горизонтальну позицію цього елементу"
 
 #: inc/item_rack.class.php:1019
 msgid "You must define an orientation for this item"
-msgstr ""
+msgstr "Необхідно визначити орієнтацію цього елементу"
 
 #: inc/item_rack.class.php:1028 inc/pdu_rack.class.php:146
 msgid "Item is out of rack bounds"
-msgstr ""
+msgstr "Елемент виходить за межі шафи"
 
 #: inc/item_rack.class.php:1042 inc/item_rack.class.php:1055
 #: inc/pdu_rack.class.php:151
 msgid "Not enough space available to place item"
-msgstr ""
+msgstr "Для розміщення елементу немає достатньо місця"
 
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Елемент для шафи \"%1$s\""
 
 #: inc/item_ticket.class.php:303
 #, php-format
@@ -13011,16 +13023,16 @@ msgstr "Зберегти та додати в базу знань"
 
 #: inc/itilsolution.class.php:290
 msgid "The item is already solved, did anyone pushed a solution before you ?"
-msgstr ""
+msgstr "Елемент вже вирішено, хтось встановив рішення до вас?"
 
 #: inc/itilsolution.class.php:424
 msgid "Add a new solution"
-msgstr ""
+msgstr "Додати нове рішення"
 
 #: inc/itilsolution.class.php:438
 #, php-format
 msgid "No solutions for this %1$s"
-msgstr ""
+msgstr "Немає рішень для %1$s"
 
 #: inc/itilsolution.class.php:553 inc/ticket.class.php:7176
 #, php-format
@@ -13030,7 +13042,7 @@ msgstr "Востаннє змінено %1$s %2$s"
 #: inc/itilsolution.class.php:565 inc/ticket.class.php:7188
 #, php-format
 msgid "%1$s on %2$s by %3$s"
-msgstr ""
+msgstr "%1$s on %2$s by %3$s"
 
 #: inc/itilsolution.class.php:566 inc/itilsolution.class.php:697
 #: inc/ticket.class.php:7189
@@ -13093,12 +13105,12 @@ msgstr[3] "%d переглядів"
 
 #: inc/knowbaseitem.class.php:760
 msgid "Add link"
-msgstr ""
+msgstr "Додати зв'язок"
 
 #: inc/knowbaseitem.class.php:766
 #, php-format
 msgid "link with %1$s"
-msgstr ""
+msgstr "зв'язати з %1$s"
 
 #: inc/knowbaseitem.class.php:776
 msgid "Visible since"
@@ -13140,7 +13152,7 @@ msgstr "Всі неопубліковані статті"
 
 #: inc/knowbaseitem.class.php:1112
 msgid "All published articles"
-msgstr ""
+msgstr "Всі опубліковані статті"
 
 #: inc/knowbaseitem.class.php:1527
 msgid "Use as a solution"
@@ -13312,7 +13324,7 @@ msgstr "поточна"
 
 #: inc/knowbaseitem_revision.class.php:174
 msgid "Unknown user"
-msgstr ""
+msgstr "Невідомий користувач"
 
 #: inc/knowbaseitem_revision.class.php:185
 msgid "show"
@@ -13400,11 +13412,11 @@ msgstr[3] "Рівні ескалації"
 
 #: inc/levelagreement.class.php:300
 msgid "Also delete date?"
-msgstr ""
+msgstr "Також видалити дату?"
 
 #: inc/levelagreement.class.php:423
 msgid "Add a new item"
-msgstr ""
+msgstr "Додати новий елемент"
 
 #: inc/levelagreement.class.php:489 inc/slm.class.php:123
 msgid "Calendar of the ticket"
@@ -13470,6 +13482,7 @@ msgstr "Код мережі оператора"
 #: inc/lineoperator.class.php:109
 msgid "Mobile country code and network code combination must be unique!"
 msgstr ""
+"Комбінація коду країни та коду мобільного оператора має бути унікальною!"
 
 #: inc/link.class.php:51 inc/link.class.php:583 inc/profile.class.php:1530
 #: inc/profile.class.php:1967 inc/search.class.php:5822
@@ -13482,11 +13495,11 @@ msgstr[3] "Зовнішні зв’язки"
 
 #: inc/link.class.php:155
 msgid "field name in DB"
-msgstr ""
+msgstr "назва поля бази даних"
 
 #: inc/link.class.php:155
 msgid "Example:"
-msgstr ""
+msgstr "Наприклад:"
 
 #: inc/link.class.php:163 inc/link.class.php:213
 msgid "Link or filename"
@@ -13510,7 +13523,7 @@ msgstr "Додати тип елементу"
 
 #: inc/location.class.php:68 inc/location.class.php:154
 msgid "Town"
-msgstr ""
+msgstr "Місто"
 
 #: inc/location.class.php:83 inc/location.class.php:181
 #: inc/location.class.php:232 inc/notificationtargetticket.class.php:737
@@ -13526,7 +13539,7 @@ msgstr "Номер кімнати"
 
 #: inc/location.class.php:94
 msgid "Location on map"
-msgstr ""
+msgstr "Місце на карті"
 
 #: inc/location.class.php:98 inc/location.class.php:208
 #: inc/location.class.php:248 inc/notificationtargetticket.class.php:740
@@ -13553,7 +13566,7 @@ msgstr "Примітки до приміщення"
 
 #: inc/location.class.php:489
 msgid "Set location here"
-msgstr ""
+msgstr "Встановити місце тут"
 
 #: inc/lock.class.php:53
 msgid "Lock"
@@ -13607,11 +13620,11 @@ msgstr "Оновити"
 
 #: inc/log.class.php:350
 msgid "Show filters"
-msgstr ""
+msgstr "Показати фільтри"
 
 #: inc/log.class.php:374
 msgid "No historical matching your filters"
-msgstr ""
+msgstr "Немає даних з вказаними фільтрами"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:470 inc/projecttask.class.php:503
@@ -13631,7 +13644,7 @@ msgstr "Замінити %1$s на %2$s"
 
 #: inc/log.class.php:1006
 msgid "Update a field"
-msgstr ""
+msgstr "Змінити поле"
 
 #: inc/log.class.php:1053
 msgid "Lock the item"
@@ -13643,35 +13656,35 @@ msgstr "Розблокувати елемент"
 
 #: inc/log.class.php:1065
 msgid "Add a component"
-msgstr ""
+msgstr "Додати компоненту"
 
 #: inc/log.class.php:1069
 msgid "Change a component"
-msgstr ""
+msgstr "Змінити компоненту"
 
 #: inc/log.class.php:1073
 msgid "Delete a component"
-msgstr ""
+msgstr "Видалити компоненту"
 
 #: inc/log.class.php:1077
 msgid "Lock a component"
-msgstr ""
+msgstr "Блокувати компоненту"
 
 #: inc/log.class.php:1081
 msgid "Unlock a component"
-msgstr ""
+msgstr "Розблокувати компоненту"
 
 #: inc/log.class.php:1085
 msgid "Install a software"
-msgstr ""
+msgstr "Встановити ПЗ"
 
 #: inc/log.class.php:1089
 msgid "Uninstall a software"
-msgstr ""
+msgstr "Видалити ПЗ"
 
 #: inc/log.class.php:1093
 msgid "Disconnect an item"
-msgstr ""
+msgstr "Від’єднати елемент"
 
 #: inc/log.class.php:1101
 msgid "Add a link with an item"
@@ -13742,7 +13755,7 @@ msgstr "Використовувати дату листа замість дат
 #: inc/mailcollector.class.php:388
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr ""
+msgstr "Не знайдено елементів папки '%s'."
 
 #: inc/mailcollector.class.php:406
 msgctxt "button"
@@ -13914,15 +13927,15 @@ msgstr "default_value повинно бути числом"
 #: inc/migration.class.php:570
 #, php-format
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
-msgstr ""
+msgstr "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "ok"
-msgstr ""
+msgstr "ok"
 
 #: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "nok"
-msgstr ""
+msgstr "nok"
 
 #. TRANS: %s is 'Clean DB : rename tables'
 #. TRANS: %s is the table or item implied
@@ -13967,7 +13980,7 @@ msgstr "Зміна формату бази даних - %s"
 #: inc/migration.class.php:662
 #, php-format
 msgid "Adding fulltext index - %s"
-msgstr ""
+msgstr "Adding fulltext index - %s"
 
 #: inc/migration.class.php:705 inc/software.class.php:1113
 #: install/update.php:79
@@ -14469,28 +14482,28 @@ msgstr "Створено %1$s %2$s"
 
 #: inc/notificationajax.class.php:90
 msgid "Error inserting browser notification to queue"
-msgstr ""
+msgstr "Помилка розміщення у чергу повідомлень браузера"
 
 #: inc/notificationajax.class.php:96
 #, php-format
 msgid "A browser notification to %s was added to queue"
-msgstr ""
+msgstr "Повідомлення браузера для %s розміщено у чергу"
 
 #: inc/notificationajaxsetting.class.php:43
 msgid "Browser followups configuration"
-msgstr ""
+msgstr "Налаштування повідомлень браузера"
 
 #: inc/notificationajaxsetting.class.php:48
 msgid "Enable followups from browser"
-msgstr ""
+msgstr "Увімкнути повідомлення браузера"
 
 #: inc/notificationajaxsetting.class.php:65
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Повідомлення браузера"
+msgstr[1] "Повідомлення браузера"
+msgstr[2] "Повідомлень браузера"
+msgstr[3] "Повідомлення браузера"
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -14523,7 +14536,7 @@ msgstr "Дивитись налаштування"
 
 #: inc/notificationajaxsetting.class.php:109
 msgid "Send a test browser notification to you"
-msgstr ""
+msgstr "Відправити собі тестове повідомлення браузера"
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14584,7 +14597,7 @@ msgstr "Режим"
 #: inc/notificationmailing.class.php:97
 #, php-format
 msgid "Original email address was %1$s"
-msgstr ""
+msgstr "Початкова електронна адресі була %1$s"
 
 #: inc/notificationeventmailing.class.php:265
 msgid "Error in sending the email"
@@ -14743,7 +14756,7 @@ msgstr "Максимальна кількість спроб відправки"
 
 #: inc/notificationmailingsetting.class.php:180
 msgid "Try to deliver again in (minutes)"
-msgstr ""
+msgstr "Спробувати повторну відправку через (хвилин)"
 
 #: inc/notificationmailingsetting.class.php:201
 msgid "Check certificate"
@@ -14788,11 +14801,11 @@ msgstr "Додати шаблон"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
-msgstr ""
+msgstr "Шаблон не обрано"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Browser"
-msgstr ""
+msgstr "Браузер"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"
@@ -14800,7 +14813,7 @@ msgstr "Налаштування повідомлень"
 
 #: inc/notificationsettingconfig.class.php:97
 msgid "You must enable at least one notification mode."
-msgstr ""
+msgstr "Необхідно увімкнути хоча б один режим сповіщень."
 
 #: inc/notificationsettingconfig.class.php:100
 msgid "Enable followup"
@@ -15554,7 +15567,7 @@ msgstr "SLA"
 #: inc/ticket.class.php:2973 inc/ticket.class.php:2981
 #: inc/ticket.class.php:2995 inc/ticket.class.php:3008
 msgid "OLA"
-msgstr ""
+msgstr "OLA"
 
 #: inc/notificationtargetticket.class.php:717 inc/ticket.class.php:2791
 #: inc/ticket.class.php:2981 inc/ticket.class.php:4757
@@ -15661,7 +15674,7 @@ msgstr "CSS"
 #: inc/notificationtemplate.class.php:252
 #: inc/notificationtemplate.class.php:316
 msgid "Automatically generated by GLPI"
-msgstr ""
+msgstr "Автоматично згенеровано GLPI %s"
 
 #: inc/notificationtemplatetranslation.class.php:50
 msgid "Template translation"
@@ -15794,7 +15807,7 @@ msgstr "Заблоковано Вами!"
 #: inc/objectlock.class.php:176
 #, php-format
 msgid "Unlock %1s #%2s"
-msgstr ""
+msgstr "Розблокувати %1s #%2s"
 
 #: inc/objectlock.class.php:207
 msgid "Ask for unlock item?"
@@ -15851,7 +15864,7 @@ msgstr "Коли призначається OLA, то внутрішній ча�
 #: inc/ola.class.php:62
 msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
-msgstr ""
+msgstr "Призначення OLA Заявці призведе до перерахунку дати."
 
 #: inc/ola.class.php:63
 msgid "Escalations defined in the OLA will be triggered under this new date."
@@ -15867,7 +15880,7 @@ msgstr "Автоматичне нагадування з OLA"
 
 #: inc/olalevel_ticket.class.php:45
 msgid "OLA level for Ticket"
-msgstr ""
+msgstr "Рівень OLA для заявки"
 
 #: inc/olalevel_ticket.class.php:131
 msgid "Automatic actions of OLA"
@@ -15894,99 +15907,99 @@ msgstr[3] "Версій операційної системи"
 #: inc/pdu.class.php:48 inc/pdu_rack.class.php:236
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "PDU"
+msgstr[1] "PDU"
+msgstr[2] "PDU"
+msgstr[3] "PDUs"
 
 #: inc/pdumodel.class.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Модель PDU"
+msgstr[1] "Моделі PDU"
+msgstr[2] "Моделей PDU"
+msgstr[3] "Моделі PDU"
 
 #: inc/pdu_plug.class.php:49
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Роз'єм PDU"
+msgstr[1] "Роз'єми PDU"
+msgstr[2] "Роз'ємів PDU"
+msgstr[3] "Штепселі PDU"
 
 #: inc/pdu_plug.class.php:120
 msgid "Add a new plug"
-msgstr ""
+msgstr "Додати новий штепсель"
 
 #: inc/pdu_plug.class.php:141
 msgid "No plug found"
-msgstr ""
+msgstr "Штепсель не знайдено"
 
 #: inc/pdu_rack.class.php:95
 msgid "A pdu is required"
-msgstr ""
+msgstr "Необхідно вказати PDU"
 
 #: inc/pdu_rack.class.php:107
 msgid "A side is required"
-msgstr ""
+msgstr "Необхідно вказати сторону"
 
 #: inc/pdu_rack.class.php:246
 msgid "Side (from rear perspective)"
-msgstr ""
+msgstr "Сторона (погляд ззаду)"
 
 #: inc/pdu_rack.class.php:297
 msgid "Side pdus"
-msgstr ""
+msgstr "PDU сторони"
 
 #: inc/pdu_rack.class.php:330
 msgid "Side"
-msgstr ""
+msgstr "Сторона"
 
 #: inc/pdu_rack.class.php:407
 msgid "Power units"
-msgstr ""
+msgstr "Power units"
 
 #: inc/pdu_rack.class.php:422
 msgid "Racked"
-msgstr ""
+msgstr "Вмонтовано"
 
 #: inc/pdu_rack.class.php:427 inc/pdu_rack.class.php:435
 #: inc/pdu_rack.class.php:439
 msgid "On left"
-msgstr ""
+msgstr "Зліва"
 
 #: inc/pdu_rack.class.php:431
 msgid "On right"
-msgstr ""
+msgstr "Справа"
 
 #: inc/pdu_rack.class.php:497
 msgid "The pdu will be"
-msgstr ""
+msgstr "PDU буде"
 
 #: inc/pdu_rack.class.php:499
 msgid "racked"
-msgstr ""
+msgstr "вмонтовано"
 
 #: inc/pdu_rack.class.php:500
 msgid "placed at rack side"
-msgstr ""
+msgstr "розміщено збоку шафи"
 
 #: inc/pdu_rack.class.php:707
 msgid "Top"
-msgstr ""
+msgstr "Зверху"
 
 #: inc/pdu_rack.class.php:708
 msgid "Bottom"
-msgstr ""
+msgstr "Знизу"
 
 #: inc/pdutype.class.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип PDU"
+msgstr[1] "Типи PDU"
+msgstr[2] "Типів PDU"
+msgstr[3] "Типи PDU"
 
 #: inc/peripheral.class.php:289 inc/peripheral.class.php:484
 #: inc/phone.class.php:283 inc/phone.class.php:511
@@ -16112,10 +16125,10 @@ msgstr "Відправити перегляд планування"
 #: inc/plug.class.php:42
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Штепсель"
+msgstr[1] "Штепселі"
+msgstr[2] "Штепселів"
+msgstr[3] "Штепселі"
 
 #: inc/plugin.class.php:408
 msgid "Plugins list"
@@ -16871,11 +16884,11 @@ msgstr "Створити Заявку з цього Завдання"
 
 #: inc/projecttask_ticket.class.php:267
 msgid "Add a project task"
-msgstr ""
+msgstr "Додати завдання проекту"
 
 #: inc/purgelogs.class.php:65
 msgid "Purge history"
-msgstr ""
+msgstr "Очистити історію"
 
 #: inc/queuednotification.class.php:80
 msgctxt "button"
@@ -16940,96 +16953,96 @@ msgstr "Скільки днів зберігати відправлені лис
 
 #: inc/rack.class.php:237
 msgid "Position in room"
-msgstr ""
+msgstr "Позиція в приміщенні"
 
 #: inc/rack.class.php:261
 msgid "Door orientation in room"
-msgstr ""
+msgstr "Орієнтація двері в приміщенні"
 
 #: inc/rack.class.php:266
 msgid "North"
-msgstr ""
+msgstr "Північ"
 
 #: inc/rack.class.php:267
 msgid "East"
-msgstr ""
+msgstr "Схід"
 
 #: inc/rack.class.php:268
 msgid "South"
-msgstr ""
+msgstr "Південь"
 
 #: inc/rack.class.php:269
 msgid "West"
-msgstr ""
+msgstr "Захід"
 
 #: inc/rack.class.php:281 inc/rack.class.php:419
 msgid "Number of units"
-msgstr ""
+msgstr "Кількість юнітів"
 
 #: inc/rack.class.php:291
 msgid "U"
-msgstr ""
+msgstr "U"
 
 #: inc/rack.class.php:293
 msgid "Width"
-msgstr ""
+msgstr "Ширина"
 
 #: inc/rack.class.php:298
 msgid "Height"
-msgstr ""
+msgstr "Висота"
 
 #: inc/rack.class.php:307
 msgid "Measured power (in watts)"
-msgstr ""
+msgstr "Виміряна потужність (у Ватах)"
 
 #: inc/rack.class.php:312
 msgid "Max. weight"
-msgstr ""
+msgstr "Максимальна вага"
 
 #: inc/rack.class.php:567
 msgid "No rack found"
-msgstr ""
+msgstr "Шафа не знайдена"
 
 #: inc/rack.class.php:655
 msgid "Following elements are out of room bounds"
-msgstr ""
+msgstr "Наступні елементи поза межами кімнати"
 
 #: inc/rack.class.php:685
 msgid "Blueprint"
-msgstr ""
+msgstr "Креслення"
 
 #: inc/rack.class.php:693
 msgid "Grid"
-msgstr ""
+msgstr "Сітка"
 
 #: inc/rack.class.php:723
 msgid "Insert a rack here"
-msgstr ""
+msgstr "Поставте тут шафу"
 
 #: inc/rack.class.php:932
 msgid "Position must be set"
-msgstr ""
+msgstr "Необхідно вказати позицію"
 
 #: inc/rack.class.php:953
 #, php-format
 msgid "%1$s position is not available"
-msgstr ""
+msgstr "%1$s позиція недоступна"
 
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Модель шафи"
+msgstr[1] "Моделі шаф"
+msgstr[2] "Моделей шаф"
+msgstr[3] "Моделі шаф"
 
 #: inc/racktype.class.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Тип шафи"
+msgstr[1] "Типи шаф"
+msgstr[2] "Типів шаф"
+msgstr[3] "Типи шаф"
 
 #: inc/registeredid.class.php:54
 msgid "PCI"
@@ -17196,7 +17209,7 @@ msgstr "Резервувати предмет"
 
 #: inc/reservation.class.php:723
 msgid "Repetition"
-msgstr ""
+msgstr "Повторення"
 
 #: inc/reservation.class.php:725
 msgctxt "periodicity"
@@ -17220,7 +17233,7 @@ msgstr "щомісячно"
 
 #: inc/reservation.class.php:763
 msgid "Delete all repetition"
-msgstr ""
+msgstr "Видалити всі повторення"
 
 #: inc/reservation.class.php:1073 inc/reservation.class.php:1075
 #: inc/reservation.class.php:1191
@@ -17400,7 +17413,7 @@ msgstr "до"
 
 #: inc/rule.class.php:700
 msgid "Ranking"
-msgstr ""
+msgstr "Ranking"
 
 #: inc/rule.class.php:794 inc/rule.class.php:950 inc/rule.class.php:2503
 msgid "and"
@@ -17786,6 +17799,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin.<br>Sure to "
 "notify your users."
 msgstr ""
+"Увага! Ця операція може викинути в кошик об’єднане ПЗ.<br>Попередьте "
+"користувачів."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
 msgid "Manufacturer choice"
@@ -17968,6 +17983,8 @@ msgid ""
 "Urgency or impact used in actions, think to add Priority: recompute action "
 "if needed."
 msgstr ""
+"Нагальність або вплив, що використовується в діях, подумайте, щоб додати "
+"Пріоритет: переробіть дію, якщо потрібно."
 
 #: inc/ruleticket.class.php:357
 msgid "Requester in group"
@@ -18123,7 +18140,7 @@ msgstr "Дата останнього виконання"
 
 #: inc/savedsearch.class.php:374
 msgid "New saved search"
-msgstr ""
+msgstr "Новий збережений пошук"
 
 #: inc/savedsearch.class.php:383
 msgid "Do count"
@@ -18135,29 +18152,29 @@ msgstr "Часткове завантаження збереженого пош�
 
 #: inc/savedsearch.class.php:774
 msgid "Filter list"
-msgstr ""
+msgstr "Список фільтрів"
 
 #: inc/savedsearch.class.php:778
 #, php-format
 msgid "Private %1$s"
 msgid_plural "Private %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Особисте %1$s"
+msgstr[1] "Особисте %1$s"
+msgstr[2] "Особисте %1$s"
+msgstr[3] "Особисте %1$s"
 
 #: inc/savedsearch.class.php:781 inc/savedsearch.class.php:791
 msgid "Hide/Show elements"
-msgstr ""
+msgstr "Сховати/показати елементи"
 
 #: inc/savedsearch.class.php:788
 #, php-format
 msgid "Public %1$s"
 msgid_plural "Public %1$s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Публічне %1$s"
+msgstr[1] "Публічне %1$s"
+msgstr[2] "Публічне %1$s"
+msgstr[3] "Публічне %1$s"
 
 #: inc/savedsearch.class.php:835
 msgid "Default bookmark has not been changed!"
@@ -18214,33 +18231,36 @@ msgstr "Повідомлення створено!"
 
 #: inc/search.class.php:157
 msgid "assets"
-msgstr ""
+msgstr "активи"
 
 #: inc/search.class.php:159
 msgid "Search results for localized items only"
-msgstr ""
+msgstr "Результати пошуку лише для локалізованих елементів"
 
 #: inc/search.class.php:271
 msgid "An error occured loading data :("
-msgstr ""
+msgstr "Під час завантаження сталась помилка :("
 
 #: inc/search.class.php:278
 msgid "Reload"
-msgstr ""
+msgstr "Перезавантажити"
 
 #: inc/search.class.php:1159
 msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"Критерій 'Все' не можна використати з цим списком об'єктів, sql запит не "
+"виконується (занадто багато таблиць). Використайте критерій 'виділені "
+"елементи'."
 
 #: inc/search.class.php:1491 inc/search.class.php:1813
 msgid "Show as map"
-msgstr ""
+msgstr "Показати як карту"
 
 #: inc/search.class.php:1844 inc/search.class.php:1845
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Показати кошик"
 
 #: inc/search.class.php:1918 inc/search.class.php:1920
 #: inc/search.class.php:1995 inc/search.class.php:1998
@@ -18317,7 +18337,7 @@ msgstr "Автоматичне нагадування SLA"
 
 #: inc/slalevel_ticket.class.php:41
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "Рівень SLA для заявки"
 
 #: inc/slalevel_ticket.class.php:127
 msgid "Automatic actions of SLA"
@@ -18546,12 +18566,12 @@ msgstr "Встановити статус: %s"
 #: inc/state.class.php:265
 #, php-format
 msgid "%1$s must be unique!"
-msgstr ""
+msgstr "%1$s має бути унікальним!"
 
 #: inc/state.class.php:381
 #, php-format
 msgid "%1$s must be unique per level!"
-msgstr ""
+msgstr "%1$s має бути унікальним для рівня!"
 
 #: inc/supplier.class.php:212
 msgctxt "button"
@@ -18576,7 +18596,7 @@ msgstr[3] "Пов’язані договори"
 
 #: inc/telemetry.class.php:40
 msgid "Telemetry"
-msgstr ""
+msgstr "Телеметрія"
 
 #: inc/telemetry.class.php:261
 msgid "Send telemetry informations"
@@ -19270,7 +19290,7 @@ msgstr "Сесії працюють (немає проблем з trans_id) - Ч
 
 #: inc/toolbox.class.php:1049
 msgid "Testing DB engine version"
-msgstr ""
+msgstr "Перевірка версії DB"
 
 #: inc/toolbox.class.php:1058
 msgid "Allocated memory test"
@@ -19615,7 +19635,7 @@ msgstr "...з зовнішнього джерела"
 
 #: inc/user.class.php:2019
 msgid "Download user VCard"
-msgstr ""
+msgstr "Завантажити VCard користувача"
 
 #: inc/user.class.php:2112 inc/user.class.php:2499 inc/user.class.php:4292
 msgid "Password confirmation"
@@ -19965,11 +19985,11 @@ msgstr "Зібрати дані"
 
 #: install/install.php:468 install/update.php:602
 msgid "One last thing before starting"
-msgstr ""
+msgstr "Остання річ перед запуском"
 
 #: install/install.php:477 install/update.php:607
 msgid "Donate"
-msgstr ""
+msgstr "Пожертва"
 
 #: install/install.php:519
 msgid "The installation is finished"
