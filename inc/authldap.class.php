@@ -2718,7 +2718,7 @@ class AuthLDAP extends CommonDBTM {
     * @param integer $auths_id auths_id already used for the user (default 0)
     * @param boolean $user_dn  user LDAP DN if present (false by default)
     * @param boolean $break    if user is not found in the first directory,
-    *                          stop searching or try the following ones (true by default)
+    *                          continue searching on the following ones (true by default)
     *
     * @return object identification object
     */
@@ -2727,11 +2727,11 @@ class AuthLDAP extends CommonDBTM {
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["ldap"] as $ldap_method) {
-            if (!$auth->auth_succeded
-                && $ldap_method['is_active']) {
+            if ($ldap_method['is_active']) {
                $auth = self::ldapAuth($auth, $login, $password, $ldap_method, $user_dn);
-            } else {
-               if ($break) {
+
+               if ($auth->auth_succeded
+                   && $break) {
                   break;
                }
             }
