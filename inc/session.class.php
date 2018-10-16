@@ -566,7 +566,7 @@ class Session {
     * @return void
    **/
    static function loadLanguage($forcelang = '') {
-      global $LANG, $CFG_GLPI, $TRANSLATE, $GLPI_CACHE;
+      global $LANG, $CFG_GLPI, $TRANSLATE;
 
       $file = "";
 
@@ -606,19 +606,15 @@ class Session {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
-      $cache = Config::getCache('cache_trans');
+      $cache = Config::getCache('cache_trans', 'core', false);
       if ($cache !== false) {
          $TRANSLATE->setCache($cache);
       }
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
       // Load plugin dicts
-      if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
-         if (count($_SESSION['glpi_plugins'])) {
-            foreach ($_SESSION['glpi_plugins'] as $plug) {
-               Plugin::loadLang($plug, $forcelang, $trytoload);
-            }
-         }
+      foreach (Plugin::getPlugins() as $plug) {
+         Plugin::loadLang($plug, $forcelang, $trytoload);
       }
 
       // TRANSLATION_MODE deleted : maybe find another solution ?

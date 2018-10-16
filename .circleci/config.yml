@@ -30,8 +30,8 @@ shared: &shared
           mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
           mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
           cp tests/circleci.config_db.php tests/config_db.php
-          php scripts/cliupdate.php --config-dir=../tests --dev
-          php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
+          php scripts/cliupdate.php --config-dir=../tests --dev --tests
+          php scripts/cliupdate.php --config-dir=../tests --dev --tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
           php scripts/innodb_migration.php --config-dir=../tests
           rm tests/config_db.php
     - run:
@@ -39,7 +39,7 @@ shared: &shared
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
           php scripts/cliinstall.php --db=glpitest --host=127.0.0.1 --user=root --tests
-          php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
+          php scripts/cliupdate.php --config-dir=../tests --tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
     - run:
         name: Database tests
         command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
