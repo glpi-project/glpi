@@ -2466,6 +2466,8 @@ class Dropdown {
                                  if (!$firstitem) {
                                     $title = $item->fields['completename'];
 
+                                    $selection_text = $title;
+
                                     if (isset($item->fields["comment"])) {
                                        $addcomment
                                        = DropdownTranslation::getTranslatedValue($ID, $post['itemtype'],
@@ -2486,6 +2488,7 @@ class Dropdown {
                                                 'disabled' => true];
                                     if ($post['permit_select_parent']) {
                                        $temp['title'] = $title;
+                                       $temp['selection_text'] = $selection_text;
                                        unset($temp['disabled']);
                                     }
                                     array_unshift($parent_datas, $temp);
@@ -2523,6 +2526,8 @@ class Dropdown {
                         $title = $data['completename'];
                      }
 
+                     $selection_text = $title;
+
                      if (isset($data["comment"])) {
                         if (isset($data['transcomment']) && !empty($data['transcomment'])) {
                            $addcomment = $data['transcomment'];
@@ -2531,10 +2536,11 @@ class Dropdown {
                         }
                         $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                      }
-                     array_push($datastoadd, ['id'    => $ID,
-                                                   'text'  => $outputval,
-                                                   'level' => (int)$level,
-                                                   'title' => $title]);
+                     array_push($datastoadd, ['id'             => $ID,
+                                              'text'           => $outputval,
+                                              'level'          => (int)$level,
+                                              'title'          => $title,
+                                              'selection_text' => $selection_text]);
                      $count++;
                   }
                   $firstitem = false;
