@@ -805,8 +805,12 @@ class RuleCollection extends CommonDBTM {
       $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=import"] = _x('button', 'Import');
       $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=export"] = _x('button', 'Export');
 
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/sauvegardes.png",
-                         _n('User', 'Users', Session::getPluralNumber()), $title, $buttons);
+      echo "<div class='center'><table class='tab_glpi'><tr>";
+      echo "<td><i class='fa fa-save fa-3x'></i></td>";
+      foreach ($buttons as $key => $val) {
+         echo "<td><a class='vsubmit' href='".$key."'>".$val."</a></td>";
+      }
+      echo "</tr></table></div>";
    }
 
 
