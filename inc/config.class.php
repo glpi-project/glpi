@@ -1560,7 +1560,7 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      global $GLPI_CACHE;
+      $GLPI_CACHE = self::getCache('cache_db', 'core', false);
 
       if (!Config::canUpdate()) {
          return false;
@@ -2934,6 +2934,8 @@ class Config extends CommonDBTM {
          $storage = Zend\Cache\StorageFactory::factory($opt);
          if ($psr16) {
             $cache = new SimpleCacheDecorator($storage);
+         } else {
+            $cache = $storage;
          }
          $cache_class = get_class($storage);
       } catch (Exception $e) {
