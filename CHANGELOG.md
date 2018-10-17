@@ -20,6 +20,11 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - Plugins are now loaded in ajax files.
 - `TicketFollowup` has been replaced by `ITILFollowup`
+- `$num` parameter has been removed from several `Search` class methods:
+   - `addSelect()`,
+   - `addOrderBy()`,
+   - `addHaving()`,
+   - `giveItem()`
 
 #### Deprecated
 
