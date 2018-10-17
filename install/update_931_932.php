@@ -68,7 +68,7 @@ function update931to932() {
    ]);
    $migration->addField('glpi_states', 'is_visible_pdu', 'bool', [
       'value' => 1,
-      'after' => 'is_visible_rack'
+      'after' => 'is_visible_enclosure'
    ]);
    $migration->addKey('glpi_states', 'is_visible_enclosure');
    $migration->addKey('glpi_states', 'is_visible_pdu');
