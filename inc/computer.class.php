@@ -1011,6 +1011,20 @@ class Computer extends CommonDBTM {
          ]
       ];
 
+      $tab[] = [
+      'id'                 => '96',
+      'table'              => 'glpi_devicefirmwares',
+      'field'              => 'designation',
+      'name'               => __('Firmware'),
+      'forcegroupby'       => true,
+      'usehaving'          => true,
+      'massiveaction'      => false,
+      'datatype'           => 'string',
+      'joinparams'         => ['beforejoin' => ['table'       => 'glpi_items_devicefirmwares',
+                                                'joinparams'  => $items_device_joinparams]
+                              ]
+      ];
+
       $name = _n('Volume', 'Volumes', Session::getPluralNumber());
       $tab[] = [
           'id'                 => 'disk',
