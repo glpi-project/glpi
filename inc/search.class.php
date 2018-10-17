@@ -6096,7 +6096,7 @@ class Search {
 
          case self::SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
-            $value                  = Html::weblink_extract($value);
+            $value                  = Html::weblink_extract(Html::clean($value));
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
@@ -6107,7 +6107,7 @@ class Search {
          case self::CSV_OUTPUT : //csv
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
-            $value = Html::weblink_extract($value);
+            $value = Html::weblink_extract(Html::clean($value));
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
