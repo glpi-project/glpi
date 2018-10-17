@@ -409,16 +409,20 @@ class DisplayPreference extends CommonDBTM {
                      echo "<td>&nbsp;</td>";
                   }
 
-                  echo "<td class='center middle'>";
-                  echo "<form method='post' action='$target'>";
-                  echo "<input type='hidden' name='id' value='".$data["id"]."'>";
-                  echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                  echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<button type='submit' name='purge'".
-                         " title=\""._sx('button', 'Delete permanently')."\"".
-                         " class='unstyled pointer'><i class='fa fa-times-circle'></i></button>";
-                  Html::closeForm();
-                  echo "</td>\n";
+                  if (!isset($searchopt[$data["num"]]["noremove"]) || $searchopt[$data["num"]]["noremove"] !== true) {
+                     echo "<td class='center middle'>";
+                     echo "<form method='post' action='$target'>";
+                     echo "<input type='hidden' name='id' value='".$data["id"]."'>";
+                     echo "<input type='hidden' name='users_id' value='$IDuser'>";
+                     echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+                     echo "<button type='submit' name='purge'".
+                           " title=\""._sx('button', 'Delete permanently')."\"".
+                           " class='unstyled pointer'><i class='fa fa-times-circle'></i></button>";
+                     Html::closeForm();
+                     echo "</td>\n";
+                  } else {
+                     echo "<td>&nbsp;</td>\n";
+                  }
                   echo "</tr>";
                   $i++;
                }
@@ -565,16 +569,20 @@ class DisplayPreference extends CommonDBTM {
                      echo "<td>&nbsp;</td>\n";
                   }
 
-                  echo "<td class='center middle'>";
-                  echo "<form method='post' action='$target'>";
-                  echo "<input type='hidden' name='id' value='".$data["id"]."'>";
-                  echo "<input type='hidden' name='users_id' value='$IDuser'>";
-                  echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<button type='submit' name='purge'".
-                         " title=\""._sx('button', 'Delete permanently')."\"".
-                         " class='unstyled pointer'><i class='fa fa-times-circle'></i></button>";
-                  Html::closeForm();
-                  echo "</td>\n";
+                  if (!isset($searchopt[$data["num"]]["noremove"]) || $searchopt[$data["num"]]["noremove"] !== true) {
+                     echo "<td class='center middle'>";
+                     echo "<form method='post' action='$target'>";
+                     echo "<input type='hidden' name='id' value='".$data["id"]."'>";
+                     echo "<input type='hidden' name='users_id' value='$IDuser'>";
+                     echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+                     echo "<button type='submit' name='purge'".
+                           " title=\""._sx('button', 'Delete permanently')."\"".
+                           " class='unstyled pointer'><i class='fa fa-times-circle'></i></button>";
+                     Html::closeForm();
+                     echo "</td>\n";
+                  } else {
+                     echo "<td>&nbsp;</td>\n";
+                  }
                }
 
                echo "</tr>";
