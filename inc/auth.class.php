@@ -678,16 +678,16 @@ class Auth extends CommonGLPI {
                         ],
                      ];
                      try {
-                        $user_dn
-                           = AuthLdap::searchUserDn($ds,
-                                                   ['basedn'      => $ldap_method["basedn"],
-                                                         'login_field' => $ldap_method['login_field'],
-                                                         'search_parameters'
-                                                                        => $params,
-                                                         'user_params'
-                                                            => ['method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                                     'value'  => $login_name],
-                                                            'condition'   => $ldap_method["condition"]]);
+                        $user_dn = AuthLdap::searchUserDn($ds, [
+                           'basedn'            => $ldap_method["basedn"],
+                           'login_field'       => $ldap_method['login_field'],
+                           'search_parameters' => $params,
+                           'condition'         => $ldap_method["condition"],
+                           'user_params'       => [
+                              'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                              'value'  => $login_name
+                           ],
+                        ]);
                      } catch (\RuntimeException $e) {
                         Toolbox::logError($e->getMessage());
                         $user_dn = false;
