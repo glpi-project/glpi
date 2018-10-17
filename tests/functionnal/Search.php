@@ -777,7 +777,7 @@ class Search extends DbTestCase {
          ->array['rows']
          ->array[0]
          ->array['raw']
-         ->string['ITEM_0']->isEqualTo('test problem visibility for tech');
+         ->string['ITEM_Problem_1']->isEqualTo('test problem visibility for tech');
 
    }
 
@@ -829,7 +829,7 @@ class Search extends DbTestCase {
          ->array['rows']
          ->array[0]
          ->array['raw']
-         ->string['ITEM_0']->isEqualTo('test Change visibility for tech');
+         ->string['ITEM_Change_1']->isEqualTo('test Change visibility for tech');
 
    }
 

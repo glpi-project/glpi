@@ -1476,15 +1476,12 @@ abstract class API extends CommonGLPI {
 
       //prepare cols (searchoptions_id) for cleaned data
       $cleaned_cols = [];
+      $uid_cols = [];
       foreach ($rawdata['data']['cols'] as $col) {
          $cleaned_cols[] = $col['id'];
-      }
-
-      // prepare cols wwith uid
-      if (isset($params['uid_cols'])) {
-         $uid_cols = [];
-         foreach ($cleaned_cols as $col) {
-            $uid_cols[] = $soptions[$col]['uid'];
+         if (isset($params['uid_cols'])) {
+            // prepare cols with uid
+            $uid_cols[] = $soptions[$col['id']]['uid'];
          }
       }
 
@@ -1500,11 +1497,8 @@ abstract class API extends CommonGLPI {
 
          // retrive value (and manage multiple values)
          $clean_values = [];
-         foreach ($row as $rkey => $rvalues) {
-            // skip index who are not real columns (ex: raw, entities_id, etc)
-            if (!is_integer($rkey)) {
-               continue;
-            }
+         foreach ($rawdata['data']['cols'] as $col) {
+            $rvalues = $row[$col['itemtype'] . '_' . $col['id']];
 
             // manage multiple values (ex: IP adresses)
             $current_values = [];
