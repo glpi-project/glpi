@@ -1015,7 +1015,22 @@ class Computer extends CommonDBTM {
       'id'                 => '96',
       'table'              => 'glpi_devicefirmwares',
       'field'              => 'designation',
-      'name'               => __('Firmware'),
+      'name'               => sprintf(__('%1$s - %2$s'), $name, __('Firmware')),
+      'forcegroupby'       => true,
+      'usehaving'          => true,
+      'massiveaction'      => false,
+      'datatype'           => 'string',
+      'joinparams'         => ['beforejoin' => ['table'       => 'glpi_items_devicefirmwares',
+                                                'joinparams'  => $items_device_joinparams]
+                              ]
+      ];
+
+      $tab[] = [
+      'id'                 => '97',
+      'table'              => 'glpi_devicefirmwares',
+      'field'              => 'version',
+      'name'               => sprintf(__('%1$s - %2$s'), $name,
+                                      sprintf(__('%1$s %2$s'), __('Firmware'), __('Version'))),
       'forcegroupby'       => true,
       'usehaving'          => true,
       'massiveaction'      => false,
