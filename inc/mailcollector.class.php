@@ -76,6 +76,12 @@ class MailCollector  extends CommonDBTM {
    /// Body converted
    public $body_converted  = false;
 
+   /**
+    * Flag that tells wheter the body is in HTML format or not.
+    * @var string
+    */
+   private $body_is_html   = false;
+
    public $dohistory       = true;
 
    static $rightname       = 'config';
@@ -889,32 +895,6 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
-      // Double encoding for > and < char to avoid misinterpretations
-      $tkt['content'] = str_replace(['&lt;', '&gt;'], ['&amp;lt;', '&amp;gt;'], $tkt['content']);
-
-      $is_html = false;
-      //If files are present and content is html
-      if (isset($this->files)
-          && count($this->files)
-          && ($tkt['content'] != strip_tags($tkt['content']))
-          && !isset($tkt['tickets_id'])) {
-         $is_html = true;
-         $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
-                                                           $this->files + $this->altfiles,
-                                                           $this->tags);
-      }
-
-      // Clean mail content
-      $striptags = true;
-      if (!isset($tkt['tickets_id'])) {
-         $striptags = false;
-      }
-      $tkt['content'] = $this->cleanMailContent(Html::entities_deep($tkt['content']), $striptags);
-
-      if ($is_html && !isset($tkt['tickets_id'])) {
-         $tkt['content'] = nl2br($tkt['content']);
-      }
-
       $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
@@ -943,33 +923,51 @@ class MailCollector  extends CommonDBTM {
 
             $begin_strip     = -1;
             $end_strip       = -1;
-            $begin_match     = "/".NotificationTargetTicket::HEADERTAG.".*".
-                                 NotificationTargetTicket::HEADERTAG."/";
-            $end_match       = "/".NotificationTargetTicket::FOOTERTAG.".*".
-                                 NotificationTargetTicket::FOOTERTAG."/";
+            $header_tag      = NotificationTargetTicket::HEADERTAG;
+            $header_pattern  = $header_tag . '.*' . $header_tag;
+            $footer_tag      = NotificationTargetTicket::FOOTERTAG;
+            $footer_pattern  = $footer_tag . '.*' . $footer_tag;
             foreach ($content as $ID => $val) {
                // Get first tag for begin
                if ($begin_strip < 0) {
-                  if (preg_match($begin_match, $val)) {
+                  if (preg_match('/' . $header_pattern . '/', $val)) {
                      $begin_strip = $ID;
                   }
                }
                // Get last tag for end
                if ($begin_strip >= 0) {
-                  if (preg_match($end_match, $val)) {
+                  if (preg_match('/' . $footer_pattern . '/', $val)) {
                      $end_strip = $ID;
                      continue;
                   }
                }
             }
 
-            if ($begin_strip >= 0) {
-               // Clean first and last lines
-               $content[$begin_strip] = preg_replace($begin_match, '', $content[$begin_strip]);
-            }
-            if ($end_strip >= 0) {
-               // Clean first and last lines
-               $content[$end_strip] = preg_replace($end_match, '', $content[$end_strip]);
+            if ($begin_strip >= 0 && $end_strip >= 0 && $begin_strip === $end_strip) {
+               // If header and footer tag are on same line,
+               // remove contents between header and footer tag
+               $content[$begin_strip] = preg_replace(
+                  '/' . $header_pattern . '.*' . $footer_pattern . '/',
+                  '',
+                  $content[$begin_strip]
+               );
+            } else {
+               if ($begin_strip >= 0) {
+                  // Remove contents between header and end of line
+                  $content[$begin_strip] = preg_replace(
+                     '/' . $header_pattern . '.*$/',
+                     '',
+                     $content[$begin_strip]
+                  );
+               }
+               if ($end_strip >= 0) {
+                  // Remove contents between beginning of line and footer
+                  $content[$end_strip] = preg_replace(
+                     '/^.*' . $footer_pattern . '$/',
+                     '',
+                     $content[$end_strip]
+                  );
+               }
             }
 
             if ($begin_strip >= 0) {
@@ -1011,6 +1009,16 @@ class MailCollector  extends CommonDBTM {
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
       }
+
+      //If files are present and content is html
+      if (isset($this->files) && count($this->files) && $this->body_is_html) {
+         $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
+                                                           $this->files + $this->altfiles,
+                                                           $this->tags);
+      }
+
+      // Clean mail content
+      $tkt['content'] = $this->cleanMailContent($tkt['content']);
 
       $tkt['name'] = $this->textCleaner($head['subject']);
       if (!Toolbox::seems_utf8($tkt['name'])) {
@@ -1071,39 +1079,49 @@ class MailCollector  extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @param $string text to clean
-    * @param $striptags remove html tags
+    * @param string $string text to clean
     *
-    * @return cleaned text
+    * @return string cleaned text
    **/
-   function cleanMailContent($string, $striptags = true) {
+   function cleanMailContent($string) {
       global $DB;
 
-      // Delete html tags
-      $string = Html::clean($string, $striptags, 2);
+      // Clean HTML
+      $string = Html::clean(Html::entities_deep($string), false, 2);
 
-      // First clean HTML and XSS
-      $string = Toolbox::clean_cross_side_scripting_deep($string);
+      $br_marker = '==' . mt_rand() . '==';
 
-      $rand   = mt_rand();
-      // Move line breaks to special CHARS
-      $string = str_replace(["<br>"], "==$rand==", $string);
+      // Replace HTML line breaks to marker
+      $string = preg_replace('/<br\s*\/?>/', $br_marker, $string);
 
-      $string = str_replace(["\r\n", "\n", "\r"], "==$rand==", $string);
+      // Replace plain text line breaks to marker if content is not html
+      // and rich text mode is enabled (otherwise remove them)
+      $string = str_replace(
+         ["\r\n", "\n", "\r"],
+         $this->body_is_html ? '' : $br_marker,
+         $string
+      );
 
       // Wrap content for blacklisted items
       $itemstoclean = [];
       foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
          $toclean = trim($data['content']);
          if (!empty($toclean)) {
-            $toclean        = str_replace(["\r\n", "\n", "\r"], "==$rand==", $toclean);
-            $itemstoclean[] = $toclean;
+            $itemstoclean[] = str_replace(["\r\n", "\n", "\r"], $br_marker, $toclean);
          }
       }
       if (count($itemstoclean)) {
          $string = str_replace($itemstoclean, '', $string);
       }
-      $string = str_replace("==$rand==", "\n", $string);
+
+      $string = str_replace($br_marker, "<br />", $string);
+
+      // Double encoding for > and < char to avoid misinterpretations
+      $string = str_replace(['&lt;', '&gt;'], ['&amp;lt;', '&amp;gt;'], $string);
+
+      // Prevent XSS
+      $string = Toolbox::clean_cross_side_scripting_deep($string);
+
       return $string;
    }
 
@@ -1408,11 +1426,7 @@ class MailCollector  extends CommonDBTM {
                $text =  imap_qprint($text);
             }
 
-            //else { return $text; }
-            if ($structure->subtype && ($structure->subtype == "HTML")) {
-               $text = str_replace("\r", " ", $text);
-               $text = str_replace("\n", " ", $text);
-            }
+            $text = str_replace(["\r\n", "\r"], "\n", $text); // Normalize line breaks
 
             if (count($structure->parameters) > 0) {
                foreach ($structure->parameters as $param) {
@@ -1668,8 +1682,11 @@ class MailCollector  extends CommonDBTM {
       $this->getStructure($uid);
       $body = $this->get_part($this->marubox, $uid, "TEXT/HTML", $this->structure);
 
-      if ($body == "") {
+      if (!empty($body)) {
+         $this->body_is_html = true;
+      } else {
          $body = $this->get_part($this->marubox, $uid, "TEXT/PLAIN", $this->structure);
+         $this->body_is_html = false;
       }
 
       if ($body == "") {

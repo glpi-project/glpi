@@ -6410,16 +6410,14 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.85
     *
-    * @param $content_html         html content of input
-    * @param $files         array  of filename
-    * @param $tags          array  of image tag
+    * @param string $html  html content of input
+    * @param array  $files filenames
+    * @param array  $tags  image tags
     *
-    * @return htlm content
+    * @return string html content
    **/
-   static function convertContentForTicket($content_html, $files, $tags) {
+   static function convertContentForTicket($html, $files, $tags) {
 
-      // We inject another meta tag
-      $html = Html::entity_decode_deep($content_html);
       preg_match_all("/src\s*=\s*['|\"](.+?)['|\"]/", $html, $matches, PREG_PATTERN_ORDER);
       if (isset($matches[1]) && count($matches[1])) {
          // Get all image src
