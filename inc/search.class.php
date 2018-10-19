@@ -4869,11 +4869,15 @@ class Search {
 
             case "glpi_reservationitems.comment" :
                if (empty($data[$num][0]['name'])) {
-                  return "<a title=\"".__s('Modify the comment')."\"
-                           href='".ReservationItem::getFormURLWithID($data["refID"])."' >".__('None')."</a>";
+                  $text = __('None');
+               } else {
+                  $text = Html::resume_text($data[$num][0]['name']);
                }
-               return "<a title=\"".__s('Modify the comment')."\"
-                        href='".ReservationItem::getFormURLWithID($data['refID'])."' >".Html::resume_text($data[$num][0]['name'])."</a>";
+               if (Session::haveRight('reservation', UPDATE)) {
+                  return "<a title=\"".__s('Modify the comment')."\"
+                           href='".ReservationItem::getFormURLWithID($data["refID"])."' >".$text."</a>";
+               }
+               return $text;
 
             case 'glpi_crontasks.description' :
                $tmp = new CronTask();
