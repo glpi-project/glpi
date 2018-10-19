@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 - `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `console.php`
 - `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `console.php`
 - `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `console.php`
+- `scripts/unlock_tasks.php` has been replaced by `glpi:task:unlock` command available using `console.php`
 
 ### API changes
 
