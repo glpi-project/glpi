@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 - `license_id` field in `glpi_items_operatingsystems` table has been renamed to `licenseid`
+- `scripts/add_creation_date.php` has been replaced by `glpi:migration:build_missing_timestamps` command available using `console.php`
 - `scripts/checkdb.php` has been replaced by `glpi:database:check` command available using `console.php`
 - `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `console.php`
 - `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `console.php`
