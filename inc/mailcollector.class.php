@@ -337,10 +337,10 @@ class MailCollector  extends CommonDBTM {
 
             var data = 'action=getFoldersList';
             data += '&input_id=' + input.attr('id');
-            // Get form values without current input value to prevent filtering
-            data += '&' + $(this).closest('form').find(':not([name=\"' + input.attr('name') + '\"])').serialize();
-            // Force empty value for current input
-            data += '&' + input.attr('name') + '=';
+            // Get form values without server_mailbox value to prevent filtering
+            data += '&' + $(this).closest('form').find(':not([name=\"server_mailbox\"])').serialize();
+            // Force empty value for server_mailbox
+            data += '&server_mailbox=';
 
             $('#imap-folder')
                .html('')
