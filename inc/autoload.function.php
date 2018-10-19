@@ -336,7 +336,7 @@ if ($needrun) {
    $getComposerUrl = 'https://getcomposer.org/';
    if (isCommandLine()) {
       echo 'Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
-          . 'To install composer please refer to ' . $getComposerUrl;
+          . 'To install composer please refer to ' . $getComposerUrl . PHP_EOL;
    } else {
       echo 'Run "composer install --no-dev" in the glpi tree.<br>'
           . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>';
