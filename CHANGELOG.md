@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 #### Changed
 
 - `Rule::executePluginsActions()` signature has changed
+- Javascript function `formatResult()` has been renamed to `templateResult()`
 
 #### Deprecated
 
