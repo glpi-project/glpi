@@ -211,7 +211,14 @@ class DBmysqlIterator implements Iterator, Countable {
                               break;
                         }
                         foreach ($val as $jointable => $joincrit) {
-                           $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                           if (isset($joincrit['SUBQUERY'])) {
+                              $subquery = new QuerySubquery($joincrit['SUBQUERY']);
+                              unset($joincrit['SUBQUERY']);
+                              $alias = DBMysql::quoteName($jointable);
+                              $join .= " $jointype JOIN (" . $subquery->getSubQuery() . ") AS $alias ON (" . $this->analyseCrit($joincrit) . ")";
+                           } else {
+                              $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                           }
                         }
                      } else {
                         trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
