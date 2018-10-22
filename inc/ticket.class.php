@@ -1815,56 +1815,6 @@ class Ticket extends CommonITILObject {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
 
-      // Process Business Rules
-      $rules = new RuleTicketCollection($input['entities_id']);
-
-      // Set unset variables with are needed
-      $user = new User();
-      if (isset($input["_users_id_requester"])
-          && !is_array($input["_users_id_requester"])
-          && $user->getFromDB($input["_users_id_requester"])) {
-         $input['users_locations'] = $user->fields['locations_id'];
-         $tmprequester = $input["_users_id_requester"];
-      } else {
-         $tmprequester = 0;
-      }
-
-      // Clean new lines before passing to rules
-      if (isset($input["content"])) {
-         $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-         $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
-      }
-
-      $input = $rules->processAllRules($input,
-                                       $input,
-                                       ['recursive' => true],
-                                       ['condition' => RuleTicket::ONADD]);
-      $input = Toolbox::stripslashes_deep($input);
-
-      // Recompute default values based on values computed by rules
-      $input = $this->computeDefaultValuesForAdd($input);
-
-      if (isset($input['_users_id_requester'])
-          && !is_array($input['_users_id_requester'])
-          && ($input['_users_id_requester'] != $tmprequester)) {
-         // if requester set by rule, clear address from mailcollector
-         unset($input['_users_id_requester_notif']);
-      }
-      if (isset($input['_users_id_requester_notif'])
-         && isset($input['_users_id_requester_notif']['alternative_email'])
-         && is_array($input['_users_id_requester_notif']['alternative_email'])) {
-         foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
-            if ($email && !NotificationMailing::isUserAddressValid($email)) {
-               Session::addMessageAfterRedirect(
-                  sprintf(__('Invalid email address %s'), $email),
-                  false,
-                  ERROR
-               );
-               return false;
-            }
-         }
-      }
-
       // Manage auto assign
       $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
 
@@ -1933,6 +1883,56 @@ class Ticket extends CommonITILObject {
                }
             }
             break;
+      }
+      
+      // Process Business Rules
+      $rules = new RuleTicketCollection($input['entities_id']);
+
+      // Set unset variables with are needed
+      $user = new User();
+      if (isset($input["_users_id_requester"])
+          && !is_array($input["_users_id_requester"])
+          && $user->getFromDB($input["_users_id_requester"])) {
+         $input['users_locations'] = $user->fields['locations_id'];
+         $tmprequester = $input["_users_id_requester"];
+      } else {
+         $tmprequester = 0;
+      }
+
+      // Clean new lines before passing to rules
+      if (isset($input["content"])) {
+         $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+         $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+      }
+
+      $input = $rules->processAllRules($input,
+                                       $input,
+                                       ['recursive' => true],
+                                       ['condition' => RuleTicket::ONADD]);
+      $input = Toolbox::stripslashes_deep($input);
+
+      // Recompute default values based on values computed by rules
+      $input = $this->computeDefaultValuesForAdd($input);
+
+      if (isset($input['_users_id_requester'])
+          && !is_array($input['_users_id_requester'])
+          && ($input['_users_id_requester'] != $tmprequester)) {
+         // if requester set by rule, clear address from mailcollector
+         unset($input['_users_id_requester_notif']);
+      }
+      if (isset($input['_users_id_requester_notif'])
+          && isset($input['_users_id_requester_notif']['alternative_email'])
+          && is_array($input['_users_id_requester_notif']['alternative_email'])) {
+         foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
+            if ($email && !NotificationMailing::isUserAddressValid($email)) {
+               Session::addMessageAfterRedirect(
+                  sprintf(__('Invalid email address %s'), $email),
+                  false,
+                  ERROR
+               );
+               return false;
+            }
+         }
       }
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
