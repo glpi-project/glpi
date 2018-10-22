@@ -38,15 +38,6 @@ use \DbTestCase;
 
 class Ticket extends DbTestCase {
 
-   public function afterTestMethod($method) {
-      global $CFG_GLPI;
-
-      //make sure rich text has been reset to false
-      $CFG_GLPI['use_rich_text'] = 0;
-
-      parent::afterTestMethod($method);
-   }
-
    public function ticketProvider() {
       return [
          'single requester' => [
@@ -401,10 +392,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -494,10 +486,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -938,10 +931,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1085,10 +1079,11 @@ class Ticket extends DbTestCase {
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => 'Ticket',
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1356,10 +1351,11 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       //add a followup to the ticket
-      $fup = new \TicketFollowup();
+      $fup = new \ITILFollowup();
       $this->integer(
          (int)$fup->add([
-            'tickets_id'   => $ticket->getID(),
+            'itemtype'  => $ticket::getType(),
+            'items_id'   => $ticket->getID(),
             'users_id'     => $uid,
             'content'      => 'A simple followup'
          ])
@@ -1384,11 +1380,12 @@ class Ticket extends DbTestCase {
          $this->login($users_name, $user['pass']);
          $uid = getItemByTypeName('User', $users_name, true);
 
-         // TicketFollowup
-         $fup = new \TicketFollowup();
+         // ITILFollowup
+         $fup = new \ITILFollowup();
          $this->integer(
             (int)$fup->add([
-               'tickets_id'   => $tickets_id,
+               'itemtype'  => 'Ticket',
+               'items_id'   => $tickets_id,
                'users_id'     => $uid,
                'content'      => 'A simple followup'
             ])
@@ -1527,7 +1524,7 @@ class Ticket extends DbTestCase {
 
       foreach ($timeline_items as $item) {
          switch ($item['type']) {
-            case 'TicketFollowup':
+            case 'ITILFollowup':
             case 'TicketTask':
             case 'TicketValidation':
             case 'Document_Item':
@@ -1554,28 +1551,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a title',
                'content' => 'This is a content'
-            ],
-            'rich'      => false
-         ], [
-            'input'     => [
-               'name'     => '',
-               'content'   => "This is a content\nwith a carriage return"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => false
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => "This is a content\r\nwith a carriage return"
-            ],
-            'expected'  => [
-               'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => false
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1584,8 +1560,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content',
                'content' => 'This is a content'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1594,8 +1569,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1604,8 +1578,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => 'This is a content\nwith a carriage return'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1614,8 +1587,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => '<p>This is a content\nwith a carriage return</p>',
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1624,8 +1596,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name' => 'This is a content with a carriage return',
                'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
-            ],
-            'rich'      => true
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1634,8 +1605,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name'      => 'Test for buggy \\\' character',
                'content'   => 'Test for buggy \\\' character',
-            ],
-            'rich'      => false
+            ]
          ], [
             'input'     => [
                'name'      => '',
@@ -1644,8 +1614,7 @@ class Ticket extends DbTestCase {
             'expected'  => [
                'name'      => 'Test for buggy \\\' character',
                'content'   => 'Test for buggy \\\' character',
-            ],
-            'rich'      => false
+            ]
          ]
       ];
    }
@@ -1653,10 +1622,9 @@ class Ticket extends DbTestCase {
    /**
     * @dataProvider inputProvider
     */
-   public function testPrepareInputForAdd($input, $expected, $rich) {
+   public function testPrepareInputForAdd($input, $expected) {
       global $CFG_GLPI;
 
-      $CFG_GLPI['use_rich_text'] = $rich;
       $this
          ->if($this->newTestedInstance)
          ->then
@@ -1982,7 +1950,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDALLTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDALLTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -1996,7 +1964,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDMYTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDMYTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -2010,7 +1978,7 @@ class Ticket extends DbTestCase {
                'password' => 'tech',
                'rights'   => [
                   'task' => \READ,
-                  'followup' => \READ + \TicketFollowup::ADDGROUPTICKET,
+                  'followup' => \READ + \ITILFollowup::ADDGROUPTICKET,
                ],
             ],
             'expected' => true, // has not enough rights so cannot take into account
@@ -2043,7 +2011,6 @@ class Ticket extends DbTestCase {
          */
       ];
    }
-
    /**
     * Tests ability to take a ticket into account.
     *
@@ -2055,7 +2022,6 @@ class Ticket extends DbTestCase {
     * @dataProvider canTakeIntoAccountProvider
     */
    public function testCanTakeIntoAccount(array $input, array $user, $expected) {
-
       // Create a ticket
       $this->login();
       $_SESSION['glpiset_default_tech'] = false;
@@ -2066,26 +2032,21 @@ class Ticket extends DbTestCase {
             'content' => 'A ticket to check canTakeIntoAccount() results',
          ] + $input)
       )->isGreaterThan(0);
-
       // Reload ticket to get all default fields values
       $this->boolean($ticket->getFromDB($ticketId))->isTrue();
-
       // Check if "takeintoaccount_delay_stat" is not automatically defined
       $expectedStat = array_key_exists('takeintoaccount_delay_stat', $input)
          ? $input['takeintoaccount_delay_stat']
          : 0;
       $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo($expectedStat);
-
       // Login with tested user
       $this->login($user['login'], $user['password']);
-
       // Apply specific rights if defined
       if (array_key_exists('rights', $user)) {
          foreach ($user['rights'] as $rightname => $rightvalue) {
             $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
          }
       }
-
       // Verify result
       $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
    }

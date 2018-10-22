@@ -431,42 +431,6 @@ class DbUtils extends DbTestCase {
       }
    }
 
-   public function testTableExist() {
-      $this->exception(
-         function() {
-            $this->boolean(TableExists('glpi_configs'))->isTrue();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('TableExists() function is deprecated');
-
-      $this->exception(
-         function() {
-            $this->boolean(tableExists('fakeTable'))->isFalse();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('TableExists() function is deprecated');
-   }
-
-   public function testFieldExist() {
-      $this->exception(
-         function() {
-            $this->boolean(fieldExists('glpi_configs', 'id'))->isTrue();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('FieldExists() function is deprecated');
-
-      $this->exception(
-         function() {
-            $this->boolean(fieldExists('glpi_configs', 'fakeField'))->isFalse();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('FieldExists() function is deprecated');
-   }
-
 
    public function testIsIndex() {
       $this

@@ -66,7 +66,7 @@ class ComputerVirtualMachine extends CommonDBChild {
           && Computer::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable('glpi_computervirtualmachines',
+            $nb = countElementsInTable(self::getTable(),
                                       ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
          }
          return self::createTabEntry(self::getTypeName(), $nb);
@@ -433,23 +433,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Get correct uuid sql search for virtualmachines
     *
-    * @deprecated 9.3.1
-    *
-    * @param $uuid the uuid given
-    *
-    * @return the restrict which contains uuid, uuid with first block flipped,
-    * uuid with 3 first block flipped
-   **/
-   static function getUUIDRestrictRequest($uuid) {
-      $uuids = self::getUUIDRestrictCriteria($uuid);
-      $in = " IN('" . implode("', '", $uuids) . "')";
-      return $in;
-   }
-
-
-   /**
-    * Get correct uuid sql search for virtualmachines
-    *
     * @since 9.3.1
     *
     * @param $uuid the uuid given
@@ -525,4 +508,121 @@ class ComputerVirtualMachine extends CommonDBChild {
       return false;
    }
 
+   public static function rawSearchOptionsToAdd($itemtype) {
+      $tab = [];
+
+      $name = _n('Virtual machine', 'Virtual machines', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'virtualmachine',
+         'name'               => $name
+      ];
+
+      $tab[] = [
+         'id'                 => '160',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '161',
+         'table'              => 'glpi_virtualmachinestates',
+         'field'              => 'name',
+         'name'               => __('State'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '162',
+         'table'              => 'glpi_virtualmachinesystems',
+         'field'              => 'name',
+         'name'               => __('Virtualization model'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '163',
+         'table'              => 'glpi_virtualmachinetypes',
+         'field'              => 'name',
+         'name'               => __('Virtualization system'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '164',
+         'table'              => self::getTable(),
+         'field'              => 'vcpu',
+         'name'               => __('processor number'),
+         'datatype'           => 'number',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '165',
+         'table'              => self::getTable(),
+         'field'              => 'ram',
+         'name'               => __('Memory'),
+         'datatype'           => 'string',
+         'unit'               => 'Mio',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '166',
+         'table'              => self::getTable(),
+         'field'              => 'uuid',
+         'name'               => __('UUID'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      return $tab;
+   }
 }

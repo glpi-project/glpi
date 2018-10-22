@@ -132,4 +132,27 @@ class DevicePowerSupply extends CommonDevice {
             Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
       }
    }
+
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tb = [];
+
+      $tab[] = [
+         'id'                 => '39',
+         'table'              => 'glpi_devicepowersupplies',
+         'field'              => 'designation',
+         'name'               => __('Power supply'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicepowersupplies',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      return $tab;
+   }
 }

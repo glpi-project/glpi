@@ -450,52 +450,26 @@ class User extends CommonDBTM {
    function getFromDBbyEmail($email, $condition = []) {
       global $DB;
 
-      if (is_array($condition)) {
-         $crit = [
-            'SELECT'    => $this->getTable() . '.id',
-            'FROM'      => $this->getTable(),
-            'LEFT JOIN'  => [
-               'glpi_useremails' => [
-                  'FKEY' => [
-                     $this->getTable() => 'id',
-                     'glpi_useremails' => 'users_id'
-                  ]
+      $crit = [
+         'SELECT'    => $this->getTable() . '.id',
+         'FROM'      => $this->getTable(),
+         'LEFT JOIN'  => [
+            'glpi_useremails' => [
+               'FKEY' => [
+                  $this->getTable() => 'id',
+                  'glpi_useremails' => 'users_id'
                ]
-            ],
-            'WHERE'     => ['glpi_useremails.email' => $email] + $condition
-         ];
+            ]
+         ],
+         'WHERE'     => ['glpi_useremails.email' => $email] + $condition
+      ];
 
-         $iter = $DB->request($crit);
-         if ($iter->numrows()==1) {
-            $row = $iter->next();
-            return $this->getFromDB($row['id']);
-         }
-         return false;
-      } else {
-         Toolbox::deprecated('condition param for getFromDBbyEmail must be an array');
-         $request = "LEFT JOIN `glpi_useremails`
-                     ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
-                     WHERE `glpi_useremails`.`email` = '$email'";
-
-         if (!empty($condition)) {
-            $request .= " AND $condition";
-         }
-
-         //return $this->getFromDBByQuery($request);
-         $query = "SELECT `".$this->getTable()."`.*
-                  FROM `".$this->getTable()."`
-                  $request";
-
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) == 1) {
-               $this->fields = $DB->fetch_assoc($result);
-               $this->post_getFromDB();
-
-               return true;
-            }
-         }
-         return false;
+      $iter = $DB->request($crit);
+      if ($iter->numrows()==1) {
+         $row = $iter->next();
+         return $this->getFromDB($row['id']);
       }
+      return false;
    }
 
 
@@ -827,6 +801,12 @@ class User extends CommonDBTM {
          if (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))) {
             unset($input['entities_id']);
          }
+      }
+
+      // Security on default group  update
+      if (isset($input['groups_id'])
+         && !Group_User::isUserInGroup($input['id'], $input['groups_id'])) {
+            unset($input['groups_id']);
       }
 
       if (isset($input['_reset_personal_token'])
@@ -1989,7 +1969,7 @@ class User extends CommonDBTM {
       $formtitle = $this->getTypeName(1);
 
       if ($ID > 0) {
-         $formtitle .= "<a class='pointer fa fa-address-card-o' target='_blank' href='".$CFG_GLPI["root_doc"].
+         $formtitle .= "<a class='pointer far fa-address-card' target='_blank' href='".$CFG_GLPI["root_doc"].
                        User::getFormURLWithID($ID)."&amp;getvcard=1' title='".__s('Download user VCard').
                        "'><span class='sr-only'>". __('Vcard')."</span></a>";
       }
@@ -2244,6 +2224,23 @@ class User extends CommonDBTM {
                               'rand'   => $entrand,
                               'entity' => $entities]);
             echo "</td></tr>";
+
+            $grouprand = mt_rand();
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='dropdown_profiles_id$grouprand'>" .  __('Default group') . "</label></td><td>";
+
+            $options = [];
+            foreach (Group_User::getUserGroups($this->fields['id']) as $group) {
+               $options[$group['id']] = $group['completename'];
+            }
+
+            Dropdown::showFromArray("groups_id", $options,
+                                    ['value'               => $this->fields["groups_id"],
+                                     'rand'                => $grouprand,
+                                     'display_emptychoice' => true]);
+
+            echo "</td><td colspan='2'></td></tr>";
+
          }
 
          echo "<tr class='tab_bg_1'>";
@@ -4582,18 +4579,6 @@ class User extends CommonDBTM {
 
    }
 
-   /**
-   * Get personal token checking that it is unique
-   *
-   * @deprecated 9.2 @see User::getUniqueToken()
-   *
-   * @return string personal token
-    */
-   static function getUniquePersonalToken() {
-      Toolbox::deprecated('getUniquePersonalToken() method is deprecated');
-      return self::getUniqueToken('personal_token');
-   }
-
 
    /**
     * Get token of a user. If not exists generate it.
@@ -4607,32 +4592,38 @@ class User extends CommonDBTM {
 
       $user = new self();
       if ($user->getFromDB($ID)) {
-         if (!empty($user->fields[$field])) {
-            return $user->fields[$field];
-         }
-         $token = self::getUniqueToken($field);
-         $user->update(['id'             => $user->getID(),
-                             $field           => $token,
-                             $field . "_date" => $_SESSION['glpi_currenttime']]);
-         return $user->fields[$field];
+         return $user->getAuthToken($field);
       }
 
       return false;
    }
 
    /**
-    * Get personal token of a user. If not exists generate it.
+    * Get token of a user. If it does not exists  then generate it.
     *
-    * @param $ID user ID
-   *
-   * @deprecated 9.2 @see User::getToken()
+    * @since 9.4
     *
-    * @return string personal token
+    * @param string $field the field storing the token
+    *
+    * @return string|false token or false in case of error
     */
-   static function getPersonalToken($ID) {
-      Toolbox::deprecated('getPersonalToken() method is deprecated');
-      return self::getToken($ID, 'personal_token');
+   public function getAuthToken($field = 'personal_token') {
+      global $DB;
+
+      if ($this->isNewItem()) {
+         return false;
+      }
+
+      if (!empty($this->fields[$field])) {
+         return $this->fields[$field];
+      }
+      $token = self::getUniqueToken($field);
+      $this->update(['id'             => $this->getID(),
+                     $field           => $token,
+                     $field . "_date" => $_SESSION['glpi_currenttime']]);
+      return $this->fields[$field];
    }
+
 
    /**
     * Get name of users using default passwords

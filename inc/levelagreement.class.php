@@ -260,7 +260,7 @@ abstract class LevelAgreement extends CommonDBChild {
             echo Html::convDateTime($ticket->fields[$dateField]);
             echo "</td>";
             echo "<td>";
-            echo "<i class='fa fa-clock-o slt'></i>";
+            echo "<i class='far fa-clock slt'></i>";
             echo Dropdown::getDropdownName(static::getTable(),
                                            $ticket->fields[$laField])."&nbsp;";
             echo Html::hidden($laField, ['value' => $ticket->fields[$laField]]);
@@ -335,10 +335,10 @@ abstract class LevelAgreement extends CommonDBChild {
                echo "<a ".Html::addConfirmationOnAction($this->getAddConfirmation(),
                         "cleanhide('la_action$type$rand');cleandisplay('la_choice$type$rand');").
                     " class='pointer' title='".static::getTypeName()."'>
-                    <i class='fa fa-clock-o slt'></i></a>";
+                    <i class='far fa-clock slt'></i></a>";
                echo "</span>";
                echo "<span id='la_choice$type$rand' style='display:none' class='assign_la'>";
-               echo "<i class='fa fa-clock-o slt'></i>";
+               echo "<i class='far fa-clock slt'></i>";
                echo "<span class='b'>".static::getTypeName()."</span>&nbsp;";
                static::dropdown(['name'      => $laField,
                                  'entity'    => $ticket->fields["entities_id"],

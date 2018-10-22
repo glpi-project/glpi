@@ -226,7 +226,7 @@ class Dropdown {
          }
 
          if ($itemtype == 'Location') {
-            $output .= "<span class='fa fa-globe pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
+            $output .= "<span class='fa fa-globe-americas pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
          }
 
          $paramscomment = ['value' => '__VALUE__',
@@ -1696,55 +1696,6 @@ class Dropdown {
 
 
    /**
-    * Private / Public switch for items which may be assign to a user and/or an entity
-    *
-    * @deprecated 9.3
-    *
-    * @param $is_private      default is private ?
-    * @param $entity          working entity ID
-    * @param $is_recursive    is the item recursive ?
-   **/
-   static function showPrivatePublicSwitch($is_private, $entity, $is_recursive) {
-      global $CFG_GLPI;
-
-      Toolbox::deprecated();
-
-      $rand = mt_rand();
-      echo "<script type='text/javascript' >\n";
-      echo "function setPrivate$rand() {\n";
-
-         $params = ['is_private'   => 1,
-                         'is_recursive' => $is_recursive,
-                         'entities_id'  => $entity,
-                         'rand'         => $rand];
-
-         Ajax::updateItemJsCode('private_switch'.$rand,
-                                $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
-      echo "};";
-
-      echo "function setPublic$rand() {\n";
-
-         $params = ['is_private'   => 0,
-                         'is_recursive' => $is_recursive,
-                         'entities_id'  => $entity,
-                         'rand'         => $rand];
-         Ajax::updateItemJsCode('private_switch'.$rand,
-                                $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
-      echo "};";
-      echo "</script>";
-
-      echo "<span id='private_switch$rand'>";
-      $_POST['rand']         = $rand;
-      $_POST['is_private']   = $is_private;
-      $_POST['is_recursive'] = $is_recursive;
-      $_POST['entities_id']  = $entity;
-      include (GLPI_ROOT."/ajax/private_public.php");
-      echo "</span>\n";
-      return $rand;
-   }
-
-
-   /**
     * Toggle view in LDAP user import/synchro between no restriction and date restriction
     *
     * @param $enabled (default 0)
@@ -2164,7 +2115,7 @@ class Dropdown {
       Dropdown::showFromArray('display_type', $values);
       echo "<button type='submit' name='export' class='unstyled pointer' ".
              " title=\"" . _sx('button', 'Export') . "\">" .
-             "<i class='fa fa-floppy-o'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
+             "<i class='far fa-save'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
    }
 
 
@@ -2515,6 +2466,8 @@ class Dropdown {
                                  if (!$firstitem) {
                                     $title = $item->fields['completename'];
 
+                                    $selection_text = $title;
+
                                     if (isset($item->fields["comment"])) {
                                        $addcomment
                                        = DropdownTranslation::getTranslatedValue($ID, $post['itemtype'],
@@ -2535,6 +2488,7 @@ class Dropdown {
                                                 'disabled' => true];
                                     if ($post['permit_select_parent']) {
                                        $temp['title'] = $title;
+                                       $temp['selection_text'] = $selection_text;
                                        unset($temp['disabled']);
                                     }
                                     array_unshift($parent_datas, $temp);
@@ -2572,6 +2526,8 @@ class Dropdown {
                         $title = $data['completename'];
                      }
 
+                     $selection_text = $title;
+
                      if (isset($data["comment"])) {
                         if (isset($data['transcomment']) && !empty($data['transcomment'])) {
                            $addcomment = $data['transcomment'];
@@ -2580,10 +2536,11 @@ class Dropdown {
                         }
                         $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                      }
-                     array_push($datastoadd, ['id'    => $ID,
-                                                   'text'  => $outputval,
-                                                   'level' => (int)$level,
-                                                   'title' => $title]);
+                     array_push($datastoadd, ['id'             => $ID,
+                                              'text'           => $outputval,
+                                              'level'          => (int)$level,
+                                              'title'          => $title,
+                                              'selection_text' => $selection_text]);
                      $count++;
                   }
                   $firstitem = false;

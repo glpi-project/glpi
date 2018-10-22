@@ -189,7 +189,7 @@ function update0905to91() {
 
    // cron task
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='ObjectLock' AND `name`='unlockobject'")) {
+                             ['itemtype' => 'ObjectLock', 'name' => 'unlockobject'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -607,7 +607,7 @@ function update0905to91() {
       $DB->queryOrDie($query, "Add antivirus table");
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'license'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
       //new right for software license
       //copy the software right value to the new license right
       foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {

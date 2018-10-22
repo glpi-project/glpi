@@ -603,7 +603,7 @@ class Planning extends CommonGLPI {
                changeYear:      true,
                numberOfMonths:  3,
                showOn:          'button',
-               buttonText:      '<i class=\'fa fa-calendar\'></i>',
+               buttonText:      '<i class=\'far fa-calendar-alt\'></i>',
                dateFormat:      'DD, d MM, yy',
                onSelect: function(dateText, inst) {
                   var selected_date = $(this).datepicker('getDate');
@@ -925,7 +925,7 @@ class Planning extends CommonGLPI {
          // attach button (planning and refresh) in planning header
          $('#planning$rand .fc-toolbar .fc-center h2')
             .after(
-               $('<i id=\"refresh_planning\" class=\"fa fa-refresh pointer\"></i>')
+               $('<i id=\"refresh_planning\" class=\"fa fa-sync pointer\"></i>')
             ).after(
                $('<input type=\"hidden\" id=\"planning_datepicker\">')
             );
@@ -1296,11 +1296,13 @@ JAVASCRIPT;
                $port = 443;
             }
 
+            $loginUser = new User();
+            $loginUser->getFromDB(Session::getLoginUserID(true));
             $cal_url = "/front/planning.php?genical=1&uID=".$uID."&gID=".$gID.
                        //"&limititemtype=$limititemtype".
                        "&entities_id=".$_SESSION["glpiactive_entity"].
                        "&is_recursive=".$_SESSION["glpiactive_entity_recursive"].
-                       "&token=".User::getToken(Session::getLoginUserID(true), 'personal_token');
+                       "&token=".$loginUser->getAuthToken();
 
             echo "<li><a target='_blank' href='".$CFG_GLPI["root_doc"]."$cal_url'>".
                  _sx("button", "Export")." - ".__("Ical")."</a></li>";

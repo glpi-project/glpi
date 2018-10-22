@@ -473,38 +473,6 @@ function getUserName($ID, $link = 0) {
 
 
 /**
- * Verify if a DB table exists
- *
- * @param $tablename string : Name of the table we want to verify.
- *
- * @return bool : true if exists, false elseway.
-**/
-function TableExists($tablename) {
-   global $DB;
-
-   Toolbox::deprecated('TableExists() function is deprecated');
-   return $DB->tableExists($tablename);
-}
-
-
-/**
- * Verify if a DB field exists
- *
- * @param $table     String   Name of the table we want to verify.
- * @param $field     String   Name of the field we want to verify.
- * @param $usecache  Boolean  if use field list cache (default true)
- *
- * @return bool : true if exists, false elseway.
-**/
-function FieldExists($table, $field, $usecache = true) {
-   global $DB;
-
-   Toolbox::deprecated('FieldExists() function is deprecated');
-   return $DB->fieldExists($table, $field, $usecache);
-}
-
-
-/**
  * Determine if an index exists in database
  *
  * @param $table  string  table of the index
@@ -543,19 +511,6 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
 function closeDBConnections() {
    $dbu = new DbUtils();
    return $dbu->closeDBConnections();
-}
-
-
-/**
- * Format a web link adding http:// if missing
- *
- * @param $link link to format
- *
- * @return formatted link.
-**/
-function formatOutputWebLink($link) {
-   Toolbox::deprecated('formatOutputWebLink() function is deprecated');
-   return Toolbox::formatOutputWebLink($link);
 }
 
 

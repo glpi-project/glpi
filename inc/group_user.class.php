@@ -49,9 +49,26 @@ class Group_User extends CommonDBRelation{
    static $items_id_2                 = 'groups_id';
 
    /**
+   * Check if a user belongs to a group
+   *
+   * @since 9.4
+   *
+   * @param integer $users_id  the user ID
+   * @param integer $groups_id the group ID
+   *
+   * @return boolean true if the user belongs to the group
+   */
+   static function isUserInGroup($users_id, $groups_id) {
+      return countElementsInTable(
+         'glpi_groups_users', [
+            'users_id' => $users_id,
+            'groups_id' => $groups_id
+         ]
+      ) > 0;
+   }
+
+   /**
     * Get groups for a user
-    *
-    * @since 9.3.1 $condition as string has been deprecated
     *
     * @param integer $users_id  User id
     * @param array   $condition Query extra condition (default [])
@@ -62,53 +79,33 @@ class Group_User extends CommonDBRelation{
       global $DB;
 
       $groups = [];
-      if (!is_array($condition)) {
-         Toolbox::deprecated('getUserGroups condition must be an array!');
-         $query  = "SELECT `glpi_groups`.*,
-                           `glpi_groups_users`.`id` AS IDD,
-                           `glpi_groups_users`.`id` AS linkID,
-                           `glpi_groups_users`.`is_dynamic` AS is_dynamic,
-                           `glpi_groups_users`.`is_manager` AS is_manager,
-                           `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
-                  FROM `glpi_groups_users`
-                  LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                  WHERE `glpi_groups_users`.`users_id` = '$users_id' ";
-         if (!empty($condition)) {
-            $query .= " AND $condition ";
-         }
-         $query.=" ORDER BY `glpi_groups`.`name`";
-
-         foreach ($DB->request($query) as $data) {
-            $groups[] = $data;
-         }
-      } else {
-         $iterator = $DB->request([
-            'SELECT' => [
-               'glpi_groups.*',
-               'glpi_groups_users.id AS IDD',
-               'glpi_groups_users.id AS linkID',
-               'glpi_groups_users.is_dynamic AS is_dynamic',
-               'glpi_groups_users.is_manager AS is_manager',
-               'glpi_groups_users.is_userdelegate AS is_userdelegate'
-            ],
-            'FROM'   => self::getTable(),
-            'LEFT JOIN'    => [
-               Group::getTable() => [
-                  'FKEY' => [
-                     Group::getTable() => 'id',
-                     self::getTable()  => 'groups_id'
-                  ]
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_groups.*',
+            'glpi_groups_users.id AS IDD',
+            'glpi_groups_users.id AS linkID',
+            'glpi_groups_users.is_dynamic AS is_dynamic',
+            'glpi_groups_users.is_manager AS is_manager',
+            'glpi_groups_users.is_userdelegate AS is_userdelegate'
+         ],
+         'FROM'   => self::getTable(),
+         'LEFT JOIN'    => [
+            Group::getTable() => [
+               'FKEY' => [
+                  Group::getTable() => 'id',
+                  self::getTable()  => 'groups_id'
                ]
-            ],
-            'WHERE'        => [
-               'glpi_groups_users.users_id' => $users_id
-            ] + $condition,
-            'ORDER'        => 'glpi_groups.name'
-         ]);
-         while ($row = $iterator->next()) {
-            $groups[] = $row;
-         }
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_groups_users.users_id' => $users_id
+         ] + $condition,
+         'ORDER'        => 'glpi_groups.name'
+      ]);
+      while ($row = $iterator->next()) {
+         $groups[] = $row;
       }
+
       return $groups;
    }
 
@@ -117,7 +114,6 @@ class Group_User extends CommonDBRelation{
     * Get users for a group
     *
     * @since 0.84
-    * @since 9.3.1 $condition as string has been deprecated
     *
     * @param integer $groups_id Group ID
     * @param array   $condition Query extra condition (default [])
@@ -129,53 +125,33 @@ class Group_User extends CommonDBRelation{
 
       $users = [];
 
-      if (!is_array($condition)) {
-         Toolbox::deprecated('getGroupUsers condition must be an array!');
-         $query = "SELECT `glpi_users`.*,
-                        `glpi_groups_users`.`id` AS IDD,
-                        `glpi_groups_users`.`id` AS linkID,
-                        `glpi_groups_users`.`is_dynamic` AS is_dynamic,
-                        `glpi_groups_users`.`is_manager` AS is_manager,
-                        `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
-                  FROM `glpi_groups_users`
-                  LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
-                  WHERE `glpi_groups_users`.`groups_id` = '$groups_id'";
-         if (!empty($condition)) {
-            $query .= " AND $condition ";
-         }
-         $query .= "ORDER BY `glpi_users`.`name`";
-
-         foreach ($DB->request($query) as $data) {
-            $users[] = $data;
-         }
-      } else {
-         $iterator = $DB->request([
-            'SELECT' => [
-               'glpi_users.*',
-               'glpi_groups_users.id AS IDD',
-               'glpi_groups_users.id AS linkID',
-               'glpi_groups_users.is_dynamic AS is_dynamic',
-               'glpi_groups_users.is_manager AS is_manager',
-               'glpi_groups_users.is_userdelegate AS is_userdelegate'
-            ],
-            'FROM'   => self::getTable(),
-            'LEFT JOIN'    => [
-               User::getTable() => [
-                  'FKEY' => [
-                     User::getTable() => 'id',
-                     self::getTable()  => 'users_id'
-                  ]
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_users.*',
+            'glpi_groups_users.id AS IDD',
+            'glpi_groups_users.id AS linkID',
+            'glpi_groups_users.is_dynamic AS is_dynamic',
+            'glpi_groups_users.is_manager AS is_manager',
+            'glpi_groups_users.is_userdelegate AS is_userdelegate'
+         ],
+         'FROM'   => self::getTable(),
+         'LEFT JOIN'    => [
+            User::getTable() => [
+               'FKEY' => [
+                  User::getTable() => 'id',
+                  self::getTable()  => 'users_id'
                ]
-            ],
-            'WHERE'        => [
-               'glpi_groups_users.groups_id' => $groups_id
-            ] + $condition,
-            'ORDER'        => 'glpi_users.name'
-         ]);
-         while ($row = $iterator->next()) {
-            $users[] = $row;
-         }
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_groups_users.groups_id' => $groups_id
+         ] + $condition,
+         'ORDER'        => 'glpi_users.name'
+      ]);
+      while ($row = $iterator->next()) {
+         $users[] = $row;
       }
+
       return $users;
    }
 

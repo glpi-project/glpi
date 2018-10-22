@@ -67,17 +67,9 @@ class Autoload extends DbTestCase {
    }
 
    /**
-    * @extensions event
+    * Checks autoload of some class located in Glpi namespace.
     */
-   public function testAutoloadEvent() {
-      $this->boolean(class_exists('Event'))->isTrue();
-   }
-
    public function testAutoloadGlpiEvent() {
       $this->boolean(class_exists('Glpi\\Event'))->isTrue();
-      if (class_exists('Event', false)) {
-         //tested if pecl/event is not present
-         $this->boolean(class_exists('Event'))->isTrue();
-      }
    }
 }

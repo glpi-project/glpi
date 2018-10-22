@@ -275,7 +275,7 @@ class Search {
                var fail_info = L.control();
                fail_info.onAdd = function (map) {
                   this._div = L.DomUtil.create('div', 'fail_info');
-                  this._div.innerHTML = _message + '<br/><span id=\'reload_data\'><i class=\'fa fa-refresh\'></i> ".__s('Reload')."</span>';
+                  this._div.innerHTML = _message + '<br/><span id=\'reload_data\'><i class=\'fa fa-sync\'></i> ".__s('Reload')."</span>';
                   return this._div;
                };
                fail_info.addTo(map_elt);
@@ -1084,26 +1084,6 @@ class Search {
       $data['sql']['search'] = $QUERY;
    }
 
-   /**
-    * Retrieve datas from DB : construct data array containing columns definitions and rows datas
-    *
-    * add to data array a field data containing :
-    *      cols : columns definition
-    *      rows : rows data
-    *
-    * @since 0.85
-    *
-    * @param array   $data      array of search data prepared to get data
-    * @param boolean $onlycount If we just want to count results
-    *
-    * @deprecated 9.3 @see Search::constructData()
-    *
-    * @return nothing
-   **/
-   static function constructDatas(array &$data, $onlycount = false) {
-      Toolbox::deprecated('constructDatas is deprecated');
-      return self::constructData($data, $onlycount);
-   }
 
    /**
     * Retrieve datas from DB : construct data array containing columns definitions and rows datas
@@ -1398,19 +1378,6 @@ class Search {
       }
    }
 
-   /**
-    * Display datas extracted from DB
-    *
-    * @param $data array of search datas prepared to get datas
-    *
-    * @deprecated 9.3 @see Search::displayData()
-    *
-    * @return nothing
-   **/
-   static function displayDatas(array &$data) {
-      Toolbox::deprecated('displayDatas is deprecated');
-      return self::displayData($data);
-   }
 
    /**
     * Display datas extracted from DB
@@ -1488,7 +1455,7 @@ class Search {
                      $map_link .= " checked='checked'";
                   }
                   $map_link .= "/>";
-                  $map_link .= "<label for='as_map'><span title='".__s('Show as map')."' class='pointer fa fa-globe'
+                  $map_link .= "<label for='as_map'><span title='".__s('Show as map')."' class='pointer fa fa-globe-americas'
                      onClick=\"toogle('as_map','','','');
                                  document.forms['searchform".$data["itemtype"]."'].submit();\"></span></label>";
                }
@@ -1810,7 +1777,7 @@ class Search {
                $map_link .= " checked='checked'";
             }
             $map_link .= "/>";
-            $map_link .= "<label for='as_map'><span title='".__s('Show as map')."' class='pointer fa fa-globe'
+            $map_link .= "<label for='as_map'><span title='".__s('Show as map')."' class='pointer fa fa-globe-americas'
                onClick=\"toogle('as_map','','','');
                            document.forms['searchform".$data["itemtype"]."'].submit();\"></span></label>";
             echo $map_link;
@@ -1848,7 +1815,7 @@ class Search {
                   ($is_deleted?"checked='checked'":"").
                   " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
-                "<span class='fa fa-trash-o pointer'></span>".
+                "<span class='fa fa-trash-alt pointer'></span>".
                 "<span class='lever'></span>" .
                 "</label>".
              "</div>";
@@ -3099,7 +3066,7 @@ class Search {
             break;
 
          case 'Config':
-            $availableContexts = ['core'] + $_SESSION['glpi_plugins'];
+            $availableContexts = ['core'] + Plugin::getPlugins();
             $availableContexts = implode("', '", $availableContexts);
             $condition = "`context` IN ('$availableContexts')";
             break;
@@ -5164,12 +5131,27 @@ class Search {
                      if (self::$output_type == self::HTML_OUTPUT
                          && (Toolbox::strlen($text) > $CFG_GLPI['cut'])) {
                         $rand = mt_rand();
-                        $out .= sprintf(__('%1$s %2$s'),
-                                        "<span id='text$rand'>".
-                                          Html::resume_text($text, $CFG_GLPI['cut']).'</span>',
-                                        Html::showToolTip($text, ['applyto' => "text$rand",
-                                                                       'display' => false]));
-
+                        $popup_params = [
+                           'display'   => false
+                        ];
+                        if (Toolbox::strlen($text) > $CFG_GLPI['cut']) {
+                           $popup_params += [
+                              'awesome-class'   => 'fa-comments-o',
+                              'autoclose'       => false,
+                              'onclick'         => true
+                           ];
+                        } else {
+                           $popup_params += [
+                              'applyto'   => "text$rand",
+                           ];
+                        }
+                        $out .= sprintf(
+                           __('%1$s %2$s'),
+                           "<span id='text$rand'>". Html::resume_text($text, $CFG_GLPI['cut']).'</span>',
+                           Html::showToolTip(
+                              '<div class="fup-popup">'.$text.'</div>', $popup_params
+                              )
+                        );
                      } else {
                         $out .= $text;
                      }
@@ -6114,7 +6096,7 @@ class Search {
 
          case self::SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
-            $value                  = Html::weblink_extract($value);
+            $value                  = Html::weblink_extract(Html::clean($value));
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
@@ -6125,7 +6107,7 @@ class Search {
          case self::CSV_OUTPUT : //csv
             $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
             $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
-            $value = Html::weblink_extract($value);
+            $value = Html::weblink_extract(Html::clean($value));
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
@@ -6139,18 +6121,24 @@ class Search {
                $values = preg_split('/'.self::LBHR.'/i', $value);
                $line_delimiter = '<hr>';
             }
-            $limitto = 20;
-            if (count($values) > $limitto) {
-               for ($i=0; $i<$limitto; $i++) {
-                  $out .= $values[$i].$line_delimiter;
+
+            if (count($values) > 1) {
+               $value = '';
+               foreach ($values as $v) {
+                  $value .= $v.$line_delimiter;
                }
-               // $rand=mt_rand();
-               $out .= "...&nbsp;";
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
                $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
-               $out .= Html::showToolTip($value, ['display'   => false,
-                                                      'autoclose' => false]);
-
+               $value = '<div class="fup-popup">'.$value.'</div>';
+               $valTip = "&nbsp;".Html::showToolTip(
+                  $value, [
+                     'awesome-class'   => 'fa-comments-o',
+                     'display'         => false,
+                     'autoclose'       => false,
+                     'onclick'         => true
+                  ]
+               );
+               $out .= $values[0] . $valTip;
             } else {
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
                $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);

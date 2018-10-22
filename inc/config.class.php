@@ -34,6 +34,7 @@ use Glpi\Exception\PasswordTooWeakException;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
+use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -97,7 +98,7 @@ class Config extends CommonDBTM {
    function canViewItem() {
       if (isset($this->fields['context']) &&
          ($this->fields['context'] == 'core' ||
-         in_array($this->fields['context'], $_SESSION['glpi_plugins']))) {
+         Plugin::isPluginLoaded($this->fields['context']))) {
          return true;
       }
       return false;
@@ -865,44 +866,29 @@ class Config extends CommonDBTM {
                                      $rand);
       echo "</td>";
 
-      echo "<td><label for='dropdown_use_rich_text$rand'>" . __('Use rich text for helpdesk') . "</label></td><td>";
-      $id    = 'alert'.mt_rand();
-      $param = [
-         'on_change' => '$("#'.$id.'").html("");
-            if ($(this).val() == 0) {
-               $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
-            }',
-         'rand' => $rand,
-      ];
-      Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
-      echo "<span class='red' id='".$id."'></span>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_documentcategories_id_forticket$rand'>" . __('Default heading when adding a document to a ticket') . "</label></td><td>";
       DocumentCategory::dropdown(['value' => $CFG_GLPI["documentcategories_id_forticket"],
                                   'name'  => "documentcategories_id_forticket",
                                   'rand'  => $rand]);
-      echo "</td>";
-      echo "<td><label for='dropdown_default_software_helpdesk_visible$rand'>" . __('By default, a software may be linked to a ticket') . "</label></td><td>";
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_default_software_helpdesk_visible$rand'>" . __('By default, a software may be linked to a ticket') . "</label></td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
                           $CFG_GLPI["default_software_helpdesk_visible"],
                           -1,
                           ['rand' => $rand]);
-      echo "</td></tr>";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_keep_tickets_on_delete$rand'>" . __('Keep tickets when purging hardware in the inventory') . "</label></td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"], -1, ['rand' => $rand]);
-      echo "</td><td><label for='dropdown_use_check_pref$rand'>".__('Show personnal information in new ticket form (simplified interface)');
-      echo "</label></td><td>";
+      echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_check_pref$rand'>".__('Show personnal information in new ticket form (simplified interface)');
+      echo "</label></td>";
+      echo "<td>";
       Dropdown::showYesNo('use_check_pref', $CFG_GLPI['use_check_pref'], -1, ['rand' => $rand]);
-      echo "</td></tr>";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_use_anonymous_helpdesk$rand'>" .__('Allow anonymous ticket creation (helpdesk.receiver)') . "</label></td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"], -1, ['rand' => $rand]);
-      echo "</td><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
+      echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"], -1, ['rand' => $rand]);
       echo "</td></tr>";
 
@@ -1299,15 +1285,6 @@ class Config extends CommonDBTM {
          echo "</tr></table>";
 
          echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'><td><label for='dropdown_ticket_timeline$rand'>".__('Enable ticket timeline')."</label></td>";
-         echo "<td>";
-         Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline'], -1, ['rand' => $rand]);
-         echo "</td>";
-         echo "<td><label for='dropdown_ticket_timeline_keep_replaced_tabs$rand'>" . __('Keep tabs replaced by the ticket timeline')."</label></td><td>";
-         Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
-                             $data['ticket_timeline_keep_replaced_tabs'], -1, ['rand' => $rand]);
-         echo "</td></tr>";
       }
 
       // Only for user
@@ -1583,7 +1560,7 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      global $GLPI_CACHE;
+      $GLPI_CACHE = self::getCache('cache_db', 'core', false);
 
       if (!Config::canUpdate()) {
          return false;
@@ -1935,24 +1912,6 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
 
       echo "</table></div>\n";
-   }
-
-
-   /**
-    * @return string
-    *
-    * @since 0.90
-    * @deprecated 9.3.1 No longer used.
-    **/
-   static function getSQLMode() {
-      global $DB;
-
-      $query   = "SELECT @@GLOBAL.sql_mode;";
-      $results = $DB->query($query);
-      if ($DB->numrows($results) > 0) {
-         return $DB->result($results, 0);
-      }
-      return '';
    }
 
 
@@ -2879,12 +2838,13 @@ class Config extends CommonDBTM {
    /**
     * Get a cache adapter from configuration
     *
-    * @param string $optname name of the configuration field
-    * @param string $context name of the configuration context (default 'core')
+    * @param string  $optname name of the configuration field
+    * @param string  $context name of the configuration context (default 'core')
+    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
     * @return Zend\Cache\Storage\StorageInterface object or false
     */
-   public static function getCache($optname, $context = 'core') {
+   public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB, $CFG_GLPI;
 
       if (defined('TU_USER') && !defined('CACHED_TESTS')
@@ -2971,8 +2931,13 @@ class Config extends CommonDBTM {
       // Create adapter
       $cache = false;
       try {
-         $cache = Zend\Cache\StorageFactory::factory($opt);
-         $cache_class = get_class($cache);
+         $storage = Zend\Cache\StorageFactory::factory($opt);
+         if ($psr16) {
+            $cache = new SimpleCacheDecorator($storage);
+         } else {
+            $cache = $storage;
+         }
+         $cache_class = get_class($storage);
       } catch (Exception $e) {
          $cache_class = 'no class';
          if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {

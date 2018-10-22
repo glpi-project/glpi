@@ -298,7 +298,7 @@ class KnowbaseItem_Comment extends CommonDBTM {
          $html .= "</div>"; // h_user
          $html .= "</div>"; //h_info
 
-         $html .= "<div class='h_content TicketFollowup'>";
+         $html .= "<div class='h_content KnowbaseItemComment'>";
          $html .= "<div class='displayed_content'>";
 
          if ($cancomment) {

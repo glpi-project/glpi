@@ -172,7 +172,7 @@ class Project extends CommonDBTM {
       $this->addStandardTab('ProjectTeam', $ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('ProjectCost', $ong, $options);
-      $this->addStandardTab('Change_Project', $ong, $options);
+      $this->addStandardTab('Itil_Project', $ong, $options);
       $this->addStandardTab('Item_Project', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
@@ -265,8 +265,8 @@ class Project extends CommonDBTM {
          // ADD Team
          ProjectTeam::cloneProjectTeam($this->input["_oldID"], $this->fields['id']);
 
-         // ADD Change
-         Change_Project::cloneChangeProject($this->input["_oldID"], $this->fields['id']);
+         // ADD Itil
+         Itil_Project::cloneItilProject($this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          Contract::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
@@ -318,8 +318,8 @@ class Project extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
-            Change_Project::class,
             Item_Project::class,
+            Itil_Project::class,
             ProjectCost::class,
             ProjectTask::class,
             ProjectTeam::class,
@@ -663,6 +663,29 @@ class Project extends CommonDBTM {
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '91',
+         'table'              => ProjectCost::getTable(),
+         'field'              => 'totalcost',
+         'name'               => __('Total cost'),
+         'datatype'           => 'decimal',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'specific_itemtype'  => 'ProjectCost',
+            'condition'          => 'AND NEWTABLE.`projects_id` = REFTABLE.`id`',
+            'beforejoin'         => [
+               'table'        => $this->getTable(),
+               'joinparams'   => [
+                  'jointype'  => 'child'
+               ],
+            ],
+         ],
+         'computation'        => '(SUM(TABLE.`cost`))'
       ];
 
       $tab[] = [

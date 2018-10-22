@@ -2280,7 +2280,6 @@ abstract class API extends CommonGLPI {
       //specific case
       switch ($itemtype) {
          case 'Ticket' :
-            $hclasses[] = "TicketFollowup";
             $hclasses[] = "TicketTask";
             $hclasses[] = "TicketValidation";
             $hclasses[] = "TicketCost";
@@ -2288,6 +2287,7 @@ abstract class API extends CommonGLPI {
             $hclasses[] = "Change_Ticket";
             $hclasses[] = "Item_Ticket";
             $hclasses[] = "ITILSolution";
+            $hclasses[] = "ITILFollowup";
             break;
 
          case 'Problem' :
@@ -2297,22 +2297,24 @@ abstract class API extends CommonGLPI {
             $hclasses[] = "Problem_Ticket";
             $hclasses[] = "Item_Problem";
             $hclasses[] = "ITILSolution";
+            $hclasses[] = "ITILFollowup";
             break;
 
          case 'Change' :
             $hclasses[] = "ChangeTask";
             $hclasses[] = "ChangeCost";
-            $hclasses[] = "Change_Project";
+            $hclasses[] = "Itil_Project";
             $hclasses[] = "Change_Problem";
             $hclasses[] = "Change_Ticket";
             $hclasses[] = "Change_Item";
             $hclasses[] = "ITILSolution";
+            $hclasses[] = "ITILFollowup";
             break;
 
          case 'Project' :
             $hclasses[] = "ProjectTask";
             $hclasses[] = "ProjectCost";
-            $hclasses[] = "Change_Project";
+            $hclasses[] = "Itil_Project";
             $hclasses[] = "Item_Project";
             break;
       }

@@ -156,29 +156,6 @@ class CommonDBTM extends CommonGLPI {
    public $notificationqueueonaction = false;
 
    /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const SUCCESS                    = 0; //Process is OK
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const ERROR_FIELDSIZE_EXCEEDED   = 2; //Value is bigger than the field's size
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const HAS_DUPLICATE              = 3; //Can insert or update because it's duplicating another item
-   /**
-    * @deprecated 9.3.1 No longer used.
-    */
-   const NOTHING_TO_DO              = 4; //Nothing to insert or update
-
-
-
-   /**
     * Constructor
    **/
    function __construct () {
@@ -294,44 +271,6 @@ class CommonDBTM extends CommonGLPI {
          );
       }
 
-      return false;
-   }
-
-   /**
-    * Retrieve an item from the database by query. The query must include the WHERE keyword. Thus,
-    * we can replace "WHERE" to make complex SQL JOINED queries (for instance, see
-    * User::getFromDBbyEmail()).
-    *
-    * @since 0.84
-    * @deprecated 9.3
-    *
-    * @param string $query the "WHERE" or "JOIN" part of the SQL query
-    *
-    * @return boolean true if succeed else false
-   **/
-   function getFromDBByQuery($query) {
-      global $DB;
-
-      Toolbox::deprecated('Use DBmysqlIterator');
-
-      // Make new database object and fill variables
-
-      if (empty($query)) {
-         return false;
-      }
-
-      $query = "SELECT `".$this->getTable()."`.*
-                FROM `".$this->getTable()."`
-                $query";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $this->fields = $DB->fetch_assoc($result);
-            $this->post_getFromDB();
-
-            return true;
-         }
-      }
       return false;
    }
 
@@ -1101,6 +1040,9 @@ class CommonDBTM extends CommonGLPI {
          $this->filterValues(!isCommandLine());
       }
 
+      //Process business rules for assets
+      $this->assetBusinessRules(\RuleAsset::ONADD);
+
       if ($this->input && is_array($this->input)) {
          $this->fields = [];
          $table_fields = $DB->list_fields($this->getTable());
@@ -1358,6 +1300,9 @@ class CommonDBTM extends CommonGLPI {
          }
          $this->filterValues(!isCommandLine());
       }
+
+      //Process business rules for assets
+      $this->assetBusinessRules(\RuleAsset::ONUPDATE);
 
       // Valid input for update
       if ($this->checkUnicity(false, $options)) {
@@ -3578,14 +3523,6 @@ class CommonDBTM extends CommonGLPI {
    public final function searchOptions() {
       $options = [];
 
-      if (method_exists(get_class($this), 'getSearchOptions')) {
-         if (defined('TU_USER')) {
-            throw new \RuntimeException('getSearchOptions must not be used!');
-         }
-         Toolbox::deprecated('getSearchOptions should not be used. Check the docs.');
-         $options = $this->getSearchOptions();
-      }
-
       foreach ($this->rawSearchOptions() as $opt) {
          $missingFields = [];
          if (!isset($opt['id'])) {
@@ -3625,22 +3562,6 @@ class CommonDBTM extends CommonGLPI {
       return $options;
    }
 
-   /**
-    * Get the Search options for the given Type
-    *
-    * @since 9.2
-    * @deprecated 9.3
-    *
-    * This should be overloaded in Class
-    *
-    * @return array a *not indexed* array of search options
-    *
-    * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-   **/
-   function getSearchOptionsNew() {
-      Toolbox::deprecated('Use rawSearchOptions instead');
-      return $this->rawSearchOptions();
-   }
 
    /**
     * Provides search options configuration. Do not rely directly
@@ -3698,10 +3619,7 @@ class CommonDBTM extends CommonGLPI {
 
       $classname = get_called_class();
       $method_name = 'rawSearchOptionsToAdd';
-      if (method_exists($classname, 'getSearchOptionsToAddNew')) {
-         Toolbox::deprecated('getSearchOptionsToAddNew must be replaced with rawSearchOptionsToAdd');
-         $method_name = 'getSearchOptionsToAddNew';
-      } else if (!method_exists($classname, $method_name)) {
+      if (!method_exists($classname, $method_name)) {
          return $options;
       }
 
@@ -5038,7 +4956,6 @@ class CommonDBTM extends CommonGLPI {
     *                        - force_update (default false) update the content field of the object
     *                        - content_field (default content) the field who receive the main text
     *                                                          (with images)
-    *                        - use_rich_text (default false) to force the use of rich text
     *
     * @return array the input param transformed
    **/
@@ -5047,8 +4964,7 @@ class CommonDBTM extends CommonGLPI {
 
       $default_options = [
          'force_update'  => false,
-         'content_field' => 'content',
-         'use_rich_text' => false
+         'content_field' => 'content'
       ];
       $options = array_merge($default_options, $options);
 
@@ -5136,11 +5052,9 @@ class CommonDBTM extends CommonGLPI {
             }
 
             // if doc is an image and already inserted in content, do not attach in docitem
-            // (except if not using rich text as image will be stripped in this case)
             if (isset($input[$options['content_field']])
                 && strpos($input[$options['content_field']], $doc->fields["tag"]) !== false
-                && strpos($doc->fields['mime'], 'image/') !== false
-                && ($CFG_GLPI["use_rich_text"] || $options['use_rich_text'])) {
+                && strpos($doc->fields['mime'], 'image/') !== false) {
                $skip_docitem = true;
             }
 
@@ -5165,15 +5079,11 @@ class CommonDBTM extends CommonGLPI {
 
       // manage content transformation
       if (isset($input[$options['content_field']])) {
-         if ($CFG_GLPI["use_rich_text"] or $options['use_rich_text']) {
-            $input[$options['content_field']]
-               = Toolbox::convertTagToImage($input[$options['content_field']],
-                                            $this,
-                                            $docadded);
-         } else {
-            $input[$options['content_field']]
-               = Html::setSimpleTextContent($input[$options['content_field']]);
-         }
+         $input[$options['content_field']] = Toolbox::convertTagToImage(
+            $input[$options['content_field']],
+            $this,
+            $docadded
+         );
 
          if (isset($this->input['_forcenotif'])) {
             $input['_forcenotif'] = $this->input['_forcenotif'];
@@ -5223,5 +5133,43 @@ class CommonDBTM extends CommonGLPI {
          $mark = "<i class='fa fa-magic' title='$title'></i>";
       }
       return $mark;
+   }
+
+   /**
+   * Manage business rules for assets
+   *
+   * @since 9.4
+   *
+   * @param boolean $condition the condition (RuleAsset::ONADD or RuleAsset::ONUPDATE)
+   *
+   * @return void
+   */
+   private function assetBusinessRules($condition) {
+      global $CFG_GLPI;
+
+      //Only process itemtype that are assets
+      if (in_array($this->getType(), $CFG_GLPI['asset_types'])) {
+         $ruleasset          = new RuleAssetCollection();
+         $input              = $this->input;
+         $input['_itemtype'] = $this->getType();
+
+         //If _auto is not defined : it's a manual process : set it's value to 0
+         if (!isset($this->input['_auto'])) {
+            $input['_auto'] = 0;
+         }
+         //Set the condition (add or update)
+         $params['condition'] = $condition;
+         $output = $ruleasset->processAllRules($input, [], $params);
+         //If at least one rule has matched
+         if (isset($output['_rule_process'])) {
+            foreach ($output as $key => $value) {
+               if ($key == '_rule_process' || $key == '_no_rule_matches') {
+                  continue;
+               }
+               //Add the rule output to the input array
+               $this->input[$key] = $value;
+            }
+         }
+      }
    }
 }

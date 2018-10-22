@@ -46,12 +46,8 @@ echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
     <title>GLPI</title>
 
 <?php
-// Appel CSS
-echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' ".
-      "media='screen' >";
-// Appel javascript
-echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
-
+echo Html::css($CFG_GLPI["root_doc"].'/css/styles.css');
+echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 ?>
 
 </head>

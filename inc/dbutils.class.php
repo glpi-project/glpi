@@ -319,9 +319,6 @@ final class DbUtils {
       if (!is_array($condition)) {
          if (empty($condition)) {
             $condition = [];
-         } else {
-            Toolbox::Deprecated('Condition should be an array!');
-            $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
       $condition['COUNT'] = 'cpt';
@@ -345,9 +342,6 @@ final class DbUtils {
       if (!is_array($condition)) {
          if (empty($condition)) {
             $condition = [];
-         } else {
-            Toolbox::Deprecated('Condition should be an array!');
-            $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
       $condition['COUNT'] = 'cpt';
@@ -371,12 +365,7 @@ final class DbUtils {
       $item     = new $itemtype();
 
       $criteria = $this->getEntitiesRestrictCriteria($table, '', '', $item->maybeRecursive());
-      if (is_array($condition)) {
-         $criteria = array_merge($condition, $criteria);
-      } else if ($condition) {
-         Toolbox::Deprecated('Condition should be an array!');
-         $criteria[] = $condition;
-      }
+      $criteria = array_merge($condition, $criteria);
       return $this->countElementsInTable($table, $criteria);
    }
 
@@ -402,12 +391,7 @@ final class DbUtils {
       }
 
       $criteria = $this->getEntitiesRestrictCriteria($table, '', $entity, $recursive);
-      if (is_array($condition)) {
-         $criteria = array_merge($condition, $criteria);
-      } else if ($condition) {
-         Toolbox::Deprecated('Condition should be an array!');
-         $criteria[] = $condition;
-      }
+      $criteria = array_merge($condition, $criteria);
       return $this->countElementsInTable($table, $criteria);
    }
 
@@ -436,9 +420,6 @@ final class DbUtils {
       if (!is_array($condition)) {
          if (empty($condition)) {
             $condition = [];
-         } else {
-            Toolbox::Deprecated('Condition should be an array!');
-            $condition = ['WHERE' => $condition]; // Deprecated use case
          }
       }
 
@@ -687,8 +668,8 @@ final class DbUtils {
       $sons = false;
 
       if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $sons = $GLPI_CACHE->getItem($ckey);
+         if ($GLPI_CACHE->has($ckey)) {
+            $sons = $GLPI_CACHE->get($ckey);
             if ($sons !== null) {
                return $sons;
             }
@@ -773,7 +754,7 @@ final class DbUtils {
       }
 
       if (Toolbox::useCache()) {
-         $GLPI_CACHE->addItem($ckey, $sons);
+         $GLPI_CACHE->set($ckey, $sons);
       }
 
       return $sons;
@@ -799,8 +780,8 @@ final class DbUtils {
       $ancestors = [];
 
       if (Toolbox::useCache()) {
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $ancestors = $GLPI_CACHE->getItem($ckey);
+         if ($GLPI_CACHE->has($ckey)) {
+            $ancestors = $GLPI_CACHE->get($ckey);
             if ($ancestors !== null) {
                return $ancestors;
             }
@@ -888,7 +869,7 @@ final class DbUtils {
       }
 
       if (Toolbox::useCache()) {
-         $GLPI_CACHE->addItem($ckey, $ancestors);
+         $GLPI_CACHE->set($ckey, $ancestors);
       }
 
       return $ancestors;

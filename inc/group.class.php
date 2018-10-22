@@ -80,6 +80,7 @@ class Group extends CommonTreeDropdown {
    function post_getEmpty () {
 
       $this->fields['is_requester'] = 1;
+      $this->fields['is_watcher']   = 1;
       $this->fields['is_assign']    = 1;
       $this->fields['is_notify']    = 1;
       $this->fields['is_itemgroup'] = 1;
@@ -238,6 +239,12 @@ class Group extends CommonTreeDropdown {
       echo "<td>".__('Requester')."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Watcher')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_watcher', $this->fields['is_watcher']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

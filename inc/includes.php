@@ -100,20 +100,19 @@ if (isset($AJAX_INCLUDE)) {
 }
 
 /* On startup, register all plugins configured for use. */
-if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
+if (!isset($PLUGINS_INCLUDED)) {
    // PLugin already included
    $PLUGINS_INCLUDED = 1;
    $LOADED_PLUGINS   = [];
    $plugin           = new Plugin();
-   if (!isset($_SESSION["glpi_plugins"])) {
+   if ($plugin->getPlugins() === []) {
       $plugin->init();
    }
-   if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-      //Plugin::doHook("config");
-      if (count($_SESSION["glpi_plugins"])) {
-         foreach ($_SESSION["glpi_plugins"] as $name) {
-            Plugin::load($name);
-         }
+
+   $plugins_list = $plugin->getPlugins();
+   if (count($plugins_list)) {
+      foreach ($plugins_list as $name) {
+         Plugin::load($name);
       }
       // For plugins which require action after all plugin init
       Plugin::doHook("post_init");

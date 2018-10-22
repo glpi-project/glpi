@@ -56,7 +56,7 @@ $(function() {
       $('.log_history_filter_row .select2-hidden-accessible').select2('close');
 
       reloadTab($('[name^="filters\["]').serialize());
-   }
+   };
 
    $('.glpi_tabs').on('tabsload', function(event) {
        bindShowFiltersBtn();

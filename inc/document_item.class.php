@@ -695,16 +695,16 @@ class Document_Item extends CommonDBRelation{
 
       $canedit = $item->canAddItem('Document') && Document::canView();
 
-      $columns = ['name'      => __('Name'),
-                       'entity'    => __('Entity'),
-                       'filename'  => __('File'),
-                       'link'      => __('Web link'),
-                       'headings'  => __('Heading'),
-                       'mime'      => __('MIME type')];
-      if ($CFG_GLPI['use_rich_text']) {
-         $columns['tag'] = __('Tag');
-      }
-      $columns['assocdate'] = __('Date');
+      $columns = [
+         'name'      => __('Name'),
+         'entity'    => __('Entity'),
+         'filename'  => __('File'),
+         'link'      => __('Web link'),
+         'headings'  => __('Heading'),
+         'mime'      => __('MIME type'),
+         'tag'       => __('Tag'),
+         'assocdate' => __('Date')
+      ];
 
       if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
          $order = "ASC";
@@ -877,11 +877,9 @@ class Document_Item extends CommonDBRelation{
                                                                  $data["documentcategories_id"]);
             echo "</td>";
             echo "<td class='center'>".$data["mime"]."</td>";
-            if ($CFG_GLPI['use_rich_text']) {
-               echo "<td class='center'>";
-               echo !empty($data["tag"]) ? Document::getImageTag($data["tag"]) : '';
-               echo "</td>";
-            }
+            echo "<td class='center'>";
+            echo !empty($data["tag"]) ? Document::getImageTag($data["tag"]) : '';
+            echo "</td>";
             echo "<td class='center'>".Html::convDateTime($data["assocdate"])."</td>";
             echo "</tr>";
             $i++;

@@ -411,88 +411,6 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * Get SQL restrict request to determine profiles with less rights than the active one
-    *
-    * @deprecated 9.3.1
-    *
-    * @param $separator string   Separator used at the beginning of the request (default 'AND')
-    *
-    * @return SQL restrict string
-   **/
-   static function getUnderActiveProfileRestrictRequest($separator = "AND") {
-      Toolboox::deprecated();
-      // I don't understand usefull of this code (yllen)
-      /*
-      if (in_array('reservation', self::$helpdesk_rights)
-          && !Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
-         return false;
-      }
-
-      if (in_array('ticket', self::$helpdesk_rights)
-          && !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
-         return false;
-      }
-      if (in_array('followup', self::$helpdesk_rights)
-          && !Session::haveRightsOr('followup',
-                                    array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
-                                          TicketFollowup::SEEPUBLIC))) {
-         return false;
-      }
-      if (in_array('task', self::$helpdesk_rights)
-         && !Session::haveRight('task', TicketTask::SEEPUBLIC)) {
-         return false;
-      }
-      if (in_array('ticketvalidation', self::$helpdesk_rights)
-            && !Session::haveRightsOr('ticketvalidation',
-                                      array(TicketValidation::CREATEREQUEST,
-                                            TicketValidation::CREATEINCIDENT,
-                                            TicketValidation::VALIDATEREQUEST,
-                                            TicketValidation::VALIDATEINCIDENT))) {
-         return false;
-      }
-      */
-
-      $query = $separator ." ";
-
-      // Not logged -> no profile to see
-      if (!isset($_SESSION['glpiactiveprofile'])) {
-         return $query." 0 ";
-      }
-
-      // Profile right : may modify profile so can attach all profile
-      if (Profile::canCreate()) {
-         return $query." 1 ";
-      }
-
-      if (Session::getCurrentInterface() == 'central') {
-         $query .= " (`glpi_profiles`.`interface` = 'helpdesk') ";
-      }
-
-      $query .= " OR (`glpi_profiles`.`interface` = '".Session::getCurrentInterface()."' ";
-
-      // First, get all possible rights
-      $right_subqueries = [];
-      foreach (ProfileRight::getAllPossibleRights() as $key => $default) {
-         $val = isset($_SESSION['glpiactiveprofile'][$key])?$_SESSION['glpiactiveprofile'][$key]:0;
-
-         if (!is_array($val) // Do not include entities field added by login
-             && (Session::getCurrentInterface() == 'central'
-                 || in_array($key, self::$helpdesk_rights))) {
-
-            $right_subqueries[] = "(`glpi_profilerights`.`name` = '$key'
-                                   AND (`glpi_profilerights`.`rights` | $val) = $val)";
-         }
-      }
-      $query .= " AND ".count($right_subqueries)." = (
-                    SELECT count(*)
-                    FROM `glpi_profilerights`
-                    WHERE `glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`
-                     AND (".implode(' OR ', $right_subqueries).")))";
-
-      return $query;
-   }
-
-   /**
     * Get SQL restrict criteria to determine profiles with less rights than the active one
     *
     * @since 9.3.1
@@ -710,7 +628,7 @@ class Profile extends CommonDBTM {
       $rights = [['rights'     => Profile::getRightsFor('Ticket', 'helpdesk'),
                             'label'      => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                             'field'      => 'ticket'],
-                      ['rights'     => Profile::getRightsFor('TicketFollowup', 'helpdesk'),
+                      ['rights'     => Profile::getRightsFor('ITILFollowup', 'helpdesk'),
                             'label'      => _n('Followup', 'Followups', Session::getPluralNumber()),
                             'field'      => 'followup'],
                       ['rights'     => Profile::getRightsFor('TicketTask', 'helpdesk'),
@@ -1095,7 +1013,7 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = _n('Ticket', 'Tickets', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      $rights = [['itemtype'  => 'TicketFollowup',
+      $rights = [['itemtype'  => 'ITILFollowup',
                             'label'     => _n('Followup', 'Followups', Session::getPluralNumber()),
                             'field'     => 'followup'],
                       ['itemtype'  => 'TicketTask',
@@ -1425,6 +1343,10 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'RuleTicket',
                             'label'     => __('Business rules for tickets (entity)'),
                             'field'     => 'rule_ticket',
+                            'row_class' => 'tab_bg_2'],
+                      ['itemtype'  => 'RuleAsset',
+                            'label'     => __('Business rules for assets'),
+                            'field'     => 'rule_asset',
                             'row_class' => 'tab_bg_2'],
                       ['itemtype'  => 'Transfer',
                             'label'     => __('Transfer'),

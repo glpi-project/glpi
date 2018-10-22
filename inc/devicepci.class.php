@@ -79,4 +79,26 @@ class DevicePci extends CommonDevice {
       return $tab;
    }
 
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '95',
+         'table'              => 'glpi_devicepcis',
+         'field'              => 'designation',
+         'name'               => __('Other component'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicepcis',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
+
+      return $tab;
+   }
 }

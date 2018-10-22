@@ -200,7 +200,7 @@ class APIRest extends APIBaseClass {
       $this->boolean((bool)$user->getFromDB($uid))->isTrue();
       $token = isset($user->fields['api_token'])?$user->fields['api_token']:"";
       if (empty($token)) {
-         $token = \User::getToken($uid, 'api_token');
+         $token = $user->getAuthToken('api_token');
       }
 
       $res = $this->doHttpRequest('GET', 'initSession/',

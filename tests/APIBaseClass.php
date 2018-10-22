@@ -69,7 +69,7 @@ abstract class APIBaseClass extends \atoum {
       $user->getFromDB($uid);
       $token = isset($user->fields['api_token'])?$user->fields['api_token']:"";
       if (empty($token)) {
-         $token = User::getToken($uid, 'api_token');
+         $token = $user->getAuthToken('api_token');
       }
 
       $data = $this->query('initSession',

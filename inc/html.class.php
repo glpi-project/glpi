@@ -722,6 +722,7 @@ class Html {
    **/
    static function displayDebugInfos($with_session = true, $ajax = false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
+      $GLPI_CACHE = Config::getCache('cache_db', 'core', false);
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
@@ -748,6 +749,9 @@ class Html {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
             echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
+            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+               echo "<li><a href='#debugcache$rand'>CACHE VARIABLE</a></li>";
+            }
          }
          echo "</ul>";
 
@@ -792,6 +796,16 @@ class Html {
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
 
+            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+               echo "<div id='debugcache$rand'>";
+               $cache_keys = $GLPI_CACHE->getIterator();
+               $cache_contents = [];
+               foreach ($cache_keys as $cache_key) {
+                  $cache_contents[$cache_key] = $GLPI_CACHE->getItem($cache_key);
+               }
+               self::printCleanArray($cache_contents, 0, true);
+               echo "</div>";
+            }
          }
 
          echo Html::scriptBlock("
@@ -1166,7 +1180,7 @@ class Html {
       echo Html::css('css/jstree-glpi.css');
       echo Html::css('lib/jqueryplugins/select2/css/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
-      echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
+      echo Html::css('lib/font-awesome-5.2.0/css/all.min.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
@@ -2085,25 +2099,6 @@ class Html {
 
 
    /**
-    * Display "check All as" checkbox
-    *
-    * @since 0.84
-    * @deprecated 9.3.1
-    *
-    * @param $container_id  string html of the container of checkboxes link to this check all checkbox
-    * @param $rand          string rand value to use (default is auto generated) (default ''))
-    *
-    * @return nothing / display item
-   **/
-   static function checkAllAsCheckbox($container_id, $rand = '') {
-
-      Toolbox::deprecated();
-
-      echo Html::getCheckAllAsCheckbox($container_id, $rand);
-   }
-
-
-   /**
     * Get "check All as" checkbox
     *
     * @since 0.84
@@ -2627,7 +2622,7 @@ class Html {
                   changeYear: true,
                   showOn: 'button',
                   showWeek: true,
-                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
+                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
 
       if (!$p['canedit']) {
          $js .= ",disabled: true";
@@ -2835,7 +2830,7 @@ class Html {
                   showOn: 'button',
                   showWeek: true,
                   controlType: 'select',
-                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
+                  buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
       if (!$p['canedit']) {
          $js .= ",disabled: true";
       }
@@ -2907,6 +2902,7 @@ class Html {
           && ($value != 'TODAY')
           && !preg_match("/\d{4}-\d{2}-\d{2}.*/", $value)
           && !strstr($value, 'HOUR')
+          && !strstr($value, 'MINUTE')
           && !strstr($value, 'DAY')
           && !strstr($value, 'WEEK')
           && !strstr($value, 'MONTH')
@@ -3002,6 +2998,10 @@ class Html {
       if ($params['with_time']) {
          for ($i=1; $i<=24; $i++) {
             $dates['-'.$i.'HOUR'] = sprintf(_n('- %d hour', '- %d hours', $i), $i);
+         }
+
+         for ($i=1; $i<=15; $i++) {
+            $dates['-'.$i.'MINUTE'] = sprintf(_n('- %d minute', '- %d minutes', $i), $i);
          }
       }
 
@@ -3135,7 +3135,7 @@ class Html {
 
       // Search on +- x days, hours...
       if (preg_match("/^(-?)(\d+)(\w+)$/", $val, $matches)) {
-         if (in_array($matches[3], ['YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'])) {
+         if (in_array($matches[3], ['YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR', 'MINUTE'])) {
             $nb = intval($matches[2]);
             if ($matches[1] == '-') {
                $nb = -$nb;
@@ -3163,6 +3163,11 @@ class Html {
 
                case "DAY" :
                   $day += $nb;
+                  break;
+
+               case "MINUTE" :
+                  $format_use = "Y-m-d H:i:s";
+                  $minute    += $nb;
                   break;
 
                case "HOUR" :
@@ -3318,6 +3323,7 @@ class Html {
       $param['ajax']       = '';
       $param['display']    = true;
       $param['autoclose']  = true;
+      $param['onclick']    = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3377,7 +3383,7 @@ class Html {
                                                      'width'   => 600,
                                                      'height'  => 300]);
       }
-      $js = "";
+      $js = "$(function(){";
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
          position: { viewport: $(window) },
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
@@ -3385,11 +3391,14 @@ class Html {
          $js .=", title: {text: ' ',button: true}";
       }
       $js .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
-      if (!$param['autoclose']) {
+      if ($param['onclick']) {
+         $js .= ",show: 'click', hide: false,";
+      } else if (!$param['autoclose']) {
          $js .= ",show: {
                         solo: true, // ...and hide all other tooltips...
                 }, hide: false,";
       }
+      $js .= "});";
       $js .= "});";
       $out .= Html::scriptBlock($js);
 
@@ -4296,70 +4305,62 @@ class Html {
          $placeholder = "placeholder: ".json_encode($params["placeholder"]).",";
       }
 
-      $js = "$('#$id').select2({
-         $placeholder
-         width: '$width',
-         dropdownAutoWidth: true,
-         quietMillis: 100,
-         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-         matcher: function(params, data) {
-            // If there are no search terms, return all of the data
-            if ($.trim(params.term) === '') {
-               return data;
-            }
-
-            // Skip if there is no 'children' property
-            if (typeof data.children === 'undefined') {
-               if (typeof data.text === 'string'
-                  && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
-               ) {
+      $js = "$(function() {
+         $('#$id').select2({
+            $placeholder
+            width: '$width',
+            dropdownAutoWidth: true,
+            quietMillis: 100,
+            minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
+            matcher: function(params, data) {
+               // If there are no search terms, return all of the data
+               if ($.trim(params.term) === '') {
                   return data;
                }
-               return null;
-            }
 
-            // `data.children` contains the actual options that we are matching against
-            // also check in `data.text` (optgroup title)
-            var filteredChildren = [];
-            $.each(data.children, function (idx, child) {
-               if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
-                  || data.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
-               ) {
-                  filteredChildren.push(child);
+               // Skip if there is no 'children' property
+               if (typeof data.children === 'undefined') {
+                  if (typeof data.text === 'string'
+                     && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
+                  ) {
+                     return data;
+                  }
+                  return null;
                }
-            });
 
-            // If we matched any of the group's children, then set the matched children on the group
-            // and return the group object
-            if (filteredChildren.length) {
-               var modifiedData = $.extend({}, data, true);
-               modifiedData.children = filteredChildren;
+               // `data.children` contains the actual options that we are matching against
+               // also check in `data.text` (optgroup title)
+               var filteredChildren = [];
+               $.each(data.children, function (idx, child) {
+                  if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
+                     || data.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
+                  ) {
+                     filteredChildren.push(child);
+                  }
+               });
 
-               // You can return modified objects from here
-               // This includes matching the `children` how you want in nested data sets
-               return modifiedData;
-            }
+               // If we matched any of the group's children, then set the matched children on the group
+               // and return the group object
+               if (filteredChildren.length) {
+                  var modifiedData = $.extend({}, data, true);
+                  modifiedData.children = filteredChildren;
 
-            // Return `null` if the term should not be displayed
-            return null;
-         },
-         formatSelection: function(object, container) {
-            text = object.text;
-            if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
-               text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
-            }
-            return text;
-         },
-         formatResult: function (result, container) {
-            container.attr('title', result.title || result.element[0].title);
-            return result.text;
-         }
+                  // You can return modified objects from here
+                  // This includes matching the `children` how you want in nested data sets
+                  return modifiedData;
+               }
 
-      })
-      .bind('setValue', function(e, value) {
-         $('#$id').val(value).trigger('change');
-      })
-      $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
+               // Return `null` if the term should not be displayed
+               return null;
+            },
+            templateResult: templateResult,
+            templateSelection: templateSelection
+         })
+         .bind('setValue', function(e, value) {
+            $('#$id').val(value).trigger('change');
+         })
+         $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });
+      });";
       return Html::scriptBlock($js);
    }
 
@@ -4463,7 +4464,8 @@ class Html {
                   };
                }
             },
-            templateResult: formatResult
+            templateResult: templateResult,
+            templateSelection: templateSelection
          })
          .bind('setValue', function(e, value) {
             $.ajax('$url', {
@@ -4798,42 +4800,6 @@ class Html {
 
 
    /**
-    * Begin a script block that captures output until HtmlHelper::scriptEnd()
-    * is called. This capturing block will capture all output between the methods
-    * and create a scriptBlock from it.
-    *
-    * @since 0.85
-    * @deprecated 9.3.1
-   **/
-   static function scriptStart() {
-
-      Toolbox::deprecated();
-
-      ob_start();
-      return null;
-   }
-
-
-   /**
-    * End a Buffered section of Javascript capturing.
-    * Generates a script tag inline
-    *
-    * @since 0.85
-    * @deprecated 9.3.1
-    *
-    * @return mixed depending on the settings of scriptStart() either a script tag or null
-   **/
-   static function scriptEnd() {
-
-      Toolbox::deprecated();
-
-      $buffer = ob_get_clean();
-      $buffer = "$( document ).ready(function() {\n".$buffer."\n});";
-      return Html::scriptBlock($buffer);
-   }
-
-
-   /**
     * Returns one or many script tags depending on the number of scripts given.
     *
     * @since 0.85
@@ -4915,10 +4881,6 @@ class Html {
     */
    static function fileForRichText($options = []) {
       global $CFG_GLPI;
-
-      if (!$CFG_GLPI["use_rich_text"]) {
-         return '';
-      }
 
       $p['editor_id']     = '';
       $p['name']          = 'filename';
@@ -5999,7 +5961,7 @@ class Html {
             return "<div id='fuzzysearch'>
                     <input type='text' placeholder='".__("Start typing to find a menu")."'>
                     <ul class='results'></ul>
-                    <i class='fa fa-2x fa-close'></i>
+                    <i class='fa fa-2x fa-times'></i>
                     </div>
                     <div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'>
                     </div>";
@@ -6070,7 +6032,7 @@ class Html {
       if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
          echo "?noAUTO=1";
       }
-      echo "' title=\"".__s('Logout')."\" class='fa fa-sign-out'>";
+      echo "' title=\"".__s('Logout')."\" class='fa fa-sign-out-alt'>";
       // check user id : header used for display messages when session logout
       echo "<span class='sr-only'>" . __s('Logout') . "></span>";
       echo "</a>";
@@ -6120,10 +6082,18 @@ class Html {
       echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 
+      if (Session::getCurrentInterface() == 'central') {
+         $url_help_link = (empty($CFG_GLPI["central_doc_url"])
+            ? "http://glpi-project.org/help-central"
+            : $CFG_GLPI["central_doc_url"]);
+      } else {
+         $url_help_link = (empty($CFG_GLPI["helpdesk_doc_url"])
+            ? "http://glpi-project.org/help-central"
+            : $CFG_GLPI["helpdesk_doc_url"]);
+      }
+
       echo "<li id='help_link'>".
-           "<a href='".(empty($CFG_GLPI["central_doc_url"])
-                         ? "http://glpi-project.org/help-central"
-                         : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
+           "<a href='".$url_help_link."' target='_blank' title=\"".
                             __s('Help')."\" class='fa fa-question'>".
            "<span class='sr-only'>" . __('Help') . "</span>";
       echo "</a></li>";
@@ -6190,7 +6160,7 @@ class Html {
          //  Tickets
          if (Session::haveRight("ticket", CREATE)
             || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
+            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)) {
             $menu['tickets'] = [
                'default'   => '/front/ticket.php',
                'title'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),

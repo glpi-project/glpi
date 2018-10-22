@@ -248,9 +248,12 @@ class KnowbaseItem extends CommonDBVisible {
    function post_addItem() {
 
       // add documents (and replace inline pictures)
-      $this->input = $this->addFiles($this->input, ['force_update'  => true,
-                                                    'content_field' => 'answer',
-                                                    'use_rich_text' => true]);
+      $this->input = $this->addFiles(
+         $this->input, [
+            'force_update'  => true,
+            'content_field' => 'answer'
+         ]
+      );
 
       if (isset($this->input["_visibility"])
           && isset($this->input["_visibility"]['_type'])
@@ -639,8 +642,10 @@ class KnowbaseItem extends CommonDBVisible {
    function prepareInputForUpdate($input) {
 
       // add documents (and replace inline pictures)
-      $input = $this->addFiles($input, ['content_field' => 'answer',
-                                        'use_rich_text' => true]);
+      $input = $this->addFiles(
+         $input,
+         ['content_field' => 'answer']
+      );
 
       // set title for question if empty
       if (isset($input["name"]) && empty($input["name"])) {
@@ -1437,6 +1442,10 @@ class KnowbaseItem extends CommonDBVisible {
             }
             echo Search::showHeaderItem($output_type, __('Category'), $header_num);
 
+            if ($output_type == Search::HTML_OUTPUT) {
+               echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', 2), $header_num);
+            }
+
             if (isset($options['item_itemtype'])
                 && isset($options['item_items_id'])
                 && ($output_type == Search::HTML_OUTPUT)) {
@@ -1514,16 +1523,29 @@ class KnowbaseItem extends CommonDBVisible {
                }
                echo Search::showItem($output_type, $categ, $item_num, $row_num);
 
+               if ($output_type == Search::HTML_OUTPUT) {
+                  echo "<td class='center'>";
+                  $j=0;
+                  foreach ($DB->request('glpi_documents_items',
+                                     ['FIELDS' => 'documents_id',
+                                     'WHERE'  => "`items_id` = '".$data["id"]."'
+                                                   AND `itemtype` = 'KnowbaseItem'"]) as $docs) {
+                     $doc = new Document();
+                     $doc->getFromDB($docs["documents_id"]);
+                     echo $doc->getDownloadLink();
+                     $j++;
+                     if ($j > 1) {
+                        echo "<br>";
+                     }
+                  }
+                  echo "</td>";
+               }
+
                if (isset($options['item_itemtype'])
                    && isset($options['item_items_id'])
                    && ($output_type == Search::HTML_OUTPUT)) {
 
-                  $forcetab = $options['item_itemtype'];
-                  if (!$_SESSION['glpiticket_timeline'] || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
-                     $forcetab .= '$2'; //Solution tab
-                  } else {
-                     $forcetab .= '$1'; //Timeline tab
-                  }
+                  $forcetab = $options['item_itemtype'] . '$1';
                   $item_itemtype = $options['item_itemtype'];
                   $content = "<a href='".$item_itemtype::getFormURLWithID($options['item_items_id']).
                                "&amp;load_kb_sol=".$data['id'].

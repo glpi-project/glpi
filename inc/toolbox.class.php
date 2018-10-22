@@ -1119,9 +1119,21 @@ class Toolbox {
          // This is not a SELinux system
          return 0;
       }
-      $mode = exec("/usr/sbin/getenforce");
-      if (empty($mode)) {
-         $mode = "Unknown";
+      if (function_exists('selinux_getenforce')) { // Use https://pecl.php.net/package/selinux
+         $mode = selinux_getenforce();
+         // Make it human readable, with same output as the command
+         if ($mode > 0) {
+            $mode = 'Enforcing';
+         } else if ($mode < 0) {
+            $mode = 'Disabled';
+         } else {
+            $mode = 'Permissive';
+         }
+      } else {
+         $mode = exec("/usr/sbin/getenforce");
+         if (empty($mode)) {
+            $mode = "Unknown";
+         }
       }
       //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
       $msg  = sprintf(__('SELinux mode is %s'), $mode);
@@ -1144,17 +1156,19 @@ class Toolbox {
       // Enforcing mode will block some feature (notif, ...)
       // Permissive mode will write lot of stuff in audit.log
 
-      if (!file_exists('/usr/sbin/getenforce')) {
-         // should always be there
-         return 0;
-      }
       $bools = ['httpd_can_network_connect', 'httpd_can_network_connect_db',
                      'httpd_can_sendmail'];
       $msg2 = __s('Some features may require this to be on');
       foreach ($bools as $bool) {
-         $state = exec('/usr/sbin/getsebool '.$bool);
-         if (empty($state)) {
-            $state = "$bool --> unkwown";
+         if (function_exists('selinux_get_boolean_active')) {
+            $state = selinux_get_boolean_active($bool);
+            // Make it human readable, with same output as the command
+            $state = "$bool --> " . ($state ? 'on' : 'off');
+         } else {
+            $state = exec('/usr/sbin/getsebool '.$bool);
+            if (empty($state)) {
+               $state = "$bool --> unkwown";
+            }
          }
          //TRANS: %s is an option name
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
@@ -1866,12 +1880,11 @@ class Toolbox {
                                  }
                               }
                            }
-                           if ($_SESSION['glpiticket_timeline'] == 1) {
-                              // force redirect to timeline when timeline is enabled and viewing
-                              // Tasks or Followups
-                              $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
-                              $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
-                           }
+                           // force redirect to timeline when timeline is enabled and viewing
+                           // Tasks or Followups
+                           $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                           $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
+                           $forcetab = str_replace( 'ITILFollowup$1', 'Ticket$1', $forcetab);
                            Html::redirect(Ticket::getFormURLWithID($data[1])."&$forcetab");
 
                         } else if (!empty($data[0])) { // redirect to list
@@ -1926,11 +1939,10 @@ class Toolbox {
                                     }
                                  }
                               }
-                              if ($_SESSION['glpiticket_timeline'] == 1 && $item->getType() == 'Ticket') {
-                                 // force redirect to timeline when timeline is enabled
-                                 $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
-                                 $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
-                              }
+                              // force redirect to timeline when timeline is enabled
+                              $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                              $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
+                              $forcetab = str_replace( 'ITILFollowup$1', 'Ticket$1', $forcetab);
                               Html::redirect($item->getFormURLWithID($data[1])."&$forcetab");
                            }
 
@@ -2510,31 +2522,6 @@ class Toolbox {
 
 
    /**
-    * Check if the given object is of the type $class_name. Can be identical or a subclass.
-    * This method emulates PHP 5.3.9: is_a with allow_string == true
-    *
-    * @todo: remove when prerequisite > 5.3.9 !
-    *
-    * @since 0.85
-    * @deprecated 9.3.1
-    *
-    * @param $object        can be an object or a string contining the class name
-    * @param $class_name    the name of the class to compare
-    *
-    * @return true if $object is an instance of $class_name
-    *
-   **/
-   static function is_a($object, $class_name) {
-      Toolbox::deprecated();
-      if (is_object($object)) {
-         return is_a($object, $class_name);
-      } else {
-         return is_a($object, $class_name, true);
-      }
-   }
-
-
-   /**
     * Retrieve the mime type of a file
     *
     * @since 0.85.5
@@ -2790,20 +2777,11 @@ class Toolbox {
     * @return html content
    **/
    static function cleanTagOrImage($content, array $tags) {
-      global $CFG_GLPI;
-
       // RICH TEXT : delete img tag
-      if ($CFG_GLPI["use_rich_text"]) {
-         $content = Html::entity_decode_deep($content);
+      $content = Html::entity_decode_deep($content);
 
-         foreach ($tags as $tag) {
-            $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
-         }
-
-      } else { // SIMPLE TEXT : delete tag
-         foreach ($tags as $tag) {
-            $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
-         }
+      foreach ($tags as $tag) {
+         $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
       }
 
       return $content;
@@ -2995,7 +2973,7 @@ class Toolbox {
     */
    public static function useCache() {
       global $GLPI_CACHE;
-      return $GLPI_CACHE instanceof Zend\Cache\Storage\Adapter\AbstractAdapter
+      return $GLPI_CACHE != null
          && (!defined('TU_USER') || defined('CACHED_TESTS'));
    }
 

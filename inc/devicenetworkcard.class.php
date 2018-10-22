@@ -223,4 +223,36 @@ class DeviceNetworkCard extends CommonDevice {
       }
    }
 
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '112',
+         'table'              => 'glpi_devicenetworkcards',
+         'field'              => 'designation',
+         'name'               => __('Network interface'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicenetworkcards',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '113',
+         'table'              => 'glpi_items_devicenetworkcards',
+         'field'              => 'mac',
+         'name'               => __('MAC address'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => $main_joinparams
+      ];
+
+      return $tab;
+   }
 }

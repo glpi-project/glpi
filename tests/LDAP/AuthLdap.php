@@ -598,6 +598,26 @@ class AuthLDAP extends DbTestCase {
       $this->boolean($auth->user_present)->isTrue();
       $this->resource($auth->ldap_connection)->isOfType('ldap link');
 
+      //ensure duplicated DN on different authldaps_id does not prevent login
+      $this->boolean(
+         $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org'])
+      )->isTrue();
+
+      $dup = $user->fields;
+      unset($dup['id']);
+      $aid = $dup['auths_id'];
+      $dup['auths_id'] = $aid + 1;
+
+      $this->integer(
+         (int)$user->add($dup)
+      )->isGreaterThan(0);
+
+      $this->boolean($auth->login('brazil6', 'password'))->isTrue();
+      $this->array($auth->user->fields)
+         ->string['auths_id']->isIdenticalTo($aid)
+         ->string['name']->isIdenticalTo('brazil6')
+         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
+
       global $DB;
       $DB->updateOrDie(
          'glpi_authldaps',

@@ -122,6 +122,14 @@ class RuleRight extends Rule {
                         $is_recursive = $action->fields["value"];
                         break;
 
+                     case '_entities_id_default':
+                        $output['entities_id'] = $action->fields["value"];
+                        break;
+
+                     case '_profiles_id_default':
+                        $output['profiles_id'] = $action->fields["value"];
+                        break;
+
                      case "is_active" :
                         $output["is_active"] = $action->fields["value"];
                         break;
@@ -314,6 +322,25 @@ class RuleRight extends Rule {
       $actions['_ignore_user_import']['name']               = __('To be unaware of import');
       $actions['_ignore_user_import']['type']               = 'yesonly';
       $actions['_ignore_user_import']['table']              = '';
+
+      $actions['_entities_id_default']['table']             = 'glpi_entities';
+      $actions['_entities_id_default']['field']             = 'name';
+      $actions['_entities_id_default']['name']              = __('Default entity');
+      $actions['_entities_id_default']['linkfield']         = 'entities_id';
+      $actions['_entities_id_default']['type']              = 'dropdown';
+
+      $actions['groups_id']['table']                        = 'glpi_groups';
+      $actions['groups_id']['field']                        = 'name';
+      $actions['groups_id']['name']                         = __('Default group');
+      $actions['groups_id']['linkfield']                    = 'groups_id';
+      $actions['groups_id']['type']                         = 'dropdown';
+      $actions['groups_id']['condition']                    = "`is_usergroup`='1'";
+
+      $actions['_profiles_id_default']['table']             = 'glpi_profiles';
+      $actions['_profiles_id_default']['field']             = 'name';
+      $actions['_profiles_id_default']['name']              = __('Default profile');
+      $actions['_profiles_id_default']['linkfield']         = 'profiles_id';
+      $actions['_profiles_id_default']['type']              = 'dropdown';
 
       return $actions;
    }

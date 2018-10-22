@@ -636,7 +636,7 @@ JAVASCRIPT;
                         </a>
                      </span>
                      <a href='".$rel->getLinkUrl()."' class='rel-link'>
-                        <i class='fa fa-pencil fa-rotate-270'
+                        <i class='fa fa-pencil-alt fa-rotate-270'
                            style='$fg_color_s'
                            title='".__("Edit rack relation")."'></i>
                      </a>

@@ -193,13 +193,9 @@ class DBmysqlIterator implements Iterator, Countable {
                      unset($crit[$key]);
                      break;
 
-                  case 'JOIN' : // deprecated
                   case 'LEFT JOIN' :
                   case 'RIGHT JOIN' :
                   case 'INNER JOIN' :
-                     if ($key == 'JOIN') {
-                        Toolbox::deprecated('"JOIN" is deprecated, please use "LEFT JOIN" instead.');
-                     }
                      if (is_array($val)) {
                         $jointype = null;
                         switch ($key) {

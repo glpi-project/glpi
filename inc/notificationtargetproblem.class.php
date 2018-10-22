@@ -50,9 +50,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       $events = ['new'            => __('New problem'),
                       'update'         => __('Update of a problem'),
                       'solved'         => __('Problem solved'),
-                      'add_task'       => __('New task'),
-                      'update_task'    => __('Update of a task'),
-                      'delete_task'    => __('Deletion of a task'),
                       'closed'         => __('Closure of a problem'),
                       'delete'         => __('Deleting a problem')];
 
@@ -185,7 +182,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          }
 
          $data['##problem.numberofitems##'] = count($data['items']);
-
       }
       return $data;
    }

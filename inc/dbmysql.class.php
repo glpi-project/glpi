@@ -378,25 +378,6 @@ class DBmysql {
    /**
     * List tables in database
     *
-    * @param string $table table name condition (glpi_% as default to retrieve only glpi tables)
-    *
-    * @return mysqli_result list of tables
-    *
-    * @deprecated 9.3
-    */
-   function list_tables($table = "glpi_%") {
-      Toolbox::deprecated('list_tables is deprecated, use listTables');
-      return $this->query(
-         "SELECT TABLE_NAME FROM information_schema.`TABLES`
-             WHERE TABLE_SCHEMA = '{$this->dbdefault}'
-                AND TABLE_TYPE = 'BASE TABLE'
-                AND TABLE_NAME LIKE '$table'"
-      );
-   }
-
-   /**
-    * List tables in database
-    *
     * @param string $table Table name condition (glpi_% as default to retrieve only glpi tables)
     * @param array  $where Where clause to append
     *
@@ -581,61 +562,6 @@ class DBmysql {
       return $iterator;
    }
 
-    /**
-     *  Optimize sql table
-     *
-     * @var DB $DB
-     *
-     * @param mixed   $migration Migration class (default NULL)
-     * @param boolean $cron      To know if optimize must be done (false by default)
-     *
-     * @deprecated 9.2.2
-     *
-     * @return int number of tables
-     */
-   static function optimize_tables($migration = null, $cron = false) {
-      global $DB;
-
-      Toolbox::deprecated();
-
-      $crashed_tables = self::checkForCrashedTables();
-      if (!empty($crashed_tables)) {
-         Toolbox::logError("Cannot launch automatic action : crashed tables detected");
-         return -1;
-      }
-
-      if (!is_null($migration) && method_exists($migration, 'displayMessage')) {
-         $migration->displayTitle(__('Optimizing tables'));
-         $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
-         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
-      }
-      $result = $DB->listTables();
-      $nb     = 0;
-
-      while ($line = $result->next()) {
-         $table = $line['TABLE_NAME'];
-
-         // For big database to reduce delay of migration
-         if ($cron
-             || (countElementsInTable($table) < 15000000)) {
-
-            if (!is_null($migration) && method_exists($migration, 'displayMessage')) {
-               $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
-            }
-
-            $query = "OPTIMIZE TABLE `".$table."`;";
-            $DB->query($query);
-            $nb++;
-         }
-      }
-
-      if (!is_null($migration)
-          && method_exists($migration, 'displayMessage') ) {
-         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
-      }
-
-      return $nb;
-   }
 
    /**
     * Get information about DB connection for showSystemInformations
@@ -729,40 +655,6 @@ class DBmysql {
       return $lock_ok;
    }
 
-   /**
-   * Check for crashed MySQL Tables
-   *
-   * @since 0.90.2
-   *
-   * @deprecated 9.3.1
-   *
-   * @var DB $DB
-    *
-   * @return string[] array with supposed crashed table and check message
-   */
-   static public function checkForCrashedTables() {
-      global $DB;
-
-      Toolbox::deprecated();
-
-      $crashed_tables = [];
-
-      $result_tables = $DB->listTables();
-
-      while ($line = $result_tables->next()) {
-         $query  = "CHECK TABLE `".$line['TABLE_NAME']."` FAST";
-         $result  = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            $row = $DB->fetch_array($result);
-            if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
-               $crashed_tables[] = ['table'    => $row[0],
-                                    'Msg_type' => $row['Msg_type'],
-                                    'Msg_text' => $row['Msg_text']];
-            }
-         }
-      }
-      return $crashed_tables;
-   }
 
    /**
     * Check if a table exists
@@ -1062,6 +954,30 @@ class DBmysql {
          }
       }
       return $res;
+   }
+
+   /**
+    * Update a row in the database or insert a new one
+    *
+    * @since 9.4
+    *
+    * @param string  $table   Table name
+    * @param array   $params  Query parameters ([:field name => field value)
+    * @param array   $where   WHERE clause
+    * @param boolean $onlyone Do the update only one one element, defaults to true
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function updateOrInsert($table, $params, $where, $onlyone = true) {
+      $req = $this->request($table, $where);
+      if ($req->count() == 0) {
+         return $this->insertOrDie($table, $params, 'Unable to create new element or update existing one');
+      } else if ($req->count() == 1 || !$onlyone) {
+         return $this->updateOrDie($table, $params, $where, 'Unable to create new element or update existing one');
+      } else {
+         Toolbox::logWarning('Update would change too many rows!');
+         return false;
+      }
    }
 
    /**

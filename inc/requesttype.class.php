@@ -63,7 +63,7 @@ class RequestType extends CommonDropdown {
                    ['name'  => 'is_ticketheader',
                          'label' => __('Request source visible for tickets'),
                          'type'  => 'bool'],
-                   ['name'  => 'is_ticketfollowup',
+                   ['name'  => 'is_itilfollowup',
                          'label' => __('Request source visible for followups'),
                          'type'  => 'bool'],
                          ];
@@ -128,7 +128,7 @@ class RequestType extends CommonDropdown {
       $tab[] = [
          'id'                 => '181',
          'table'              => $this->getTable(),
-         'field'              => 'is_ticketfollowup',
+         'field'              => 'is_itilfollowup',
          'name'               => __('Request source visible for followups'),
          'datatype'           => 'bool'
       ];

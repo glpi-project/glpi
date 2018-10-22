@@ -55,8 +55,6 @@ class NotificationTarget extends CommonDBChild {
    // Tags which have data in HTML : do not try to clean them
    public $html_tags                   = [];
 
-   /** @deprecated 9.2 */
-   private $datas                      = [];
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
    public $data                        = [];
@@ -119,18 +117,9 @@ class NotificationTarget extends CommonDBChild {
       $this->raiseevent = $event;
       $this->options    = $options;
 
-      if (method_exists($this, 'getNotificationTargets')) {
-         Toolbox::deprecated('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
-         $this->getNotificationTargets($this->entity);
-      } else {
-         $this->addNotificationTargets($this->entity);
-      }
+      $this->addNotificationTargets($this->entity);
 
       $this->addAdditionalTargets($event);
-      if (method_exists($this, 'getAdditionalTargets')) {
-         Toolbox::deprecated('getAdditionalTargets() method is deprecated (' . get_called_class() . ')');
-         $this->getAdditionalTargets();
-      }
 
       // add new target by plugin
       unset($this->data);
@@ -1066,12 +1055,7 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  if (method_exists($this, 'getSpecificTargets')) {
-                     Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
-                     $this->getSpecificTargets($data, $options);
-                  } else {
-                     $this->addSpecificTargets($data, $options);
-                  }
+                  $this->addSpecificTargets($data, $options);
             }
             break;
 
@@ -1092,12 +1076,7 @@ class NotificationTarget extends CommonDBChild {
 
          default :
             //Maybe a target specific to a type
-            if (method_exists($this, 'getSpecificTargets')) {
-               Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
-               $this->getSpecificTargets($data, $options);
-            } else {
-               $this->addSpecificTargets($data, $options);
-            }
+            $this->addSpecificTargets($data, $options);
       }
       // action for target from plugin
       $this->data = $data;
@@ -1135,6 +1114,12 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
+   /**
+    * Get SQL join to restrict by profile and by config to avoid send notification
+    * to a user without rights.
+    *
+    * @return string
+    */
    public function getProfileJoinSql() {
 
       return " INNER JOIN `glpi_profiles_users`
@@ -1157,11 +1142,6 @@ class NotificationTarget extends CommonDBChild {
                                 'label' => __('URL of the application')]);
 
       $this->addDataForTemplate($event, $options);
-
-      if (method_exists($this, 'getDatasForTemplate')) {
-         Toolbox::deprecated('getDatasForTemplate() method is deprecated (' . get_called_class() . ')');
-         $this->getDatasForTemplate($event, $options);
-      }
 
       Plugin::doHook('item_get_datas', $this);
 
@@ -1401,260 +1381,5 @@ class NotificationTarget extends CommonDBChild {
    public function setEvent($event) {
       $this->event = $event;
       return $this;
-   }
-
-   /**
-    * Get item's author
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemAuthor()
-    *
-    * @return void
-    */
-   function getItemAuthorAddress() {
-      Toolbox::deprecated('getItemAuthorAddress() method is deprecated');
-      $this->addItemAuthor();
-   }
-
-
-   /**
-    * Get targets for all the users of a group
-    *
-    * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
-    * @param integer $group_id id of the group
-    *
-    * @deprecated 9.2 Use NotificationTarget::addForGroup()
-    *
-    * @return void
-   **/
-   function getAddressesByGroup($manager, $group_id) {
-      Toolbox::deprecated('getAddressesByGroup() method is deprecated');
-      $this->addForGroup($manager, $group_id);
-   }
-
-   /**
-    * Get GLPI's global administrator email
-    *
-    * @deprecated 9.2 Use NotificationTarget::addAdmin()
-    *
-    * @return void
-    */
-   function getAdminAddress() {
-      Toolbox::deprecated('getAdminAddress() method is deprecated');
-      $this->addAdmin();
-   }
-
-   /**
-    * Get Group of the item
-    *
-    * @since 0.85
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemGroup()
-    *
-    * @return void
-   **/
-   function getItemGroupAddress() {
-      Toolbox::deprecated('getItemGroupAddress() method is deprecated');
-      $this->addItemGroup();
-   }
-
-   /**
-    * Get Group supervisor of the item
-    *
-    * @since 0.85
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemGroupSupervisor()
-    *
-    * @return void
-   **/
-   function getItemGroupSupervisorAddress() {
-      Toolbox::deprecated('getItemGroupSupervisorAddress() method is deprecated');
-      $this->addItemGroupSupervisor();
-   }
-
-
-   /**
-    * Get Group without supervisor of the item
-    *
-    * @since 0.85
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemGroupWithoutSupervisor()
-    *
-    * @return void
-   **/
-   function getItemGroupWithoutSupervisorAddress() {
-      Toolbox::deprecated('getItemGroupWithoutSupervisorAddress() method is deprecated');
-      $this->addItemGroupWithoutSupervisor();
-   }
-
-   /**
-    * Get Group of technicians in charge of the item
-    *
-    * @deprecated 9.2 Use NotificationTarget addItemTechnicianInCharge()
-    *
-    * @return void
-   **/
-   function getItemGroupTechInChargeAddress() {
-      Toolbox::deprecated('getItemGroupTechInChargeAddress() method is deprecated');
-      $this->addItemTechnicianInCharge();
-   }
-
-   /**
-    * Get technician in charge of the item
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemTechnicianInCharge()
-    *
-    * @return void
-   **/
-   function getItemTechnicianInChargeAddress() {
-      Toolbox::deprecated('getItemTechnicianInChargeAddress() method is deprecated');
-      $this->addItemTechnicianInCharge();
-   }
-
-   /**
-    * Get user owner of the material
-    *
-    * @deprecated 9.2 use NotificationTarget::addItemowner()
-    *
-    * @return void
-   **/
-   function getItemOwnerAddress() {
-      Toolbox::deprecated('getItemOwnerAddress() method is deprecated');
-      $this->addItemowner();
-   }
-
-   /**
-    * Get users emails by profile
-    *
-    * @param integer $profiles_id the profile ID to get users emails
-    *
-    * @deprecated 9.2 Use NotificationTarget::addForProfile()
-    *
-    * @return nothing
-   **/
-   function getUsersAddressesByProfile($profiles_id) {
-      Toolbox::deprecated('getUsersAddressesByProfile() method is deprecated');
-      $this->addForProfile($profiles_id);
-   }
-
-   /**
-    * Add user to the notified users list
-    *
-    * @param string  $field            look for user looking for this field in the object
-    *                                  which raises the event
-    * @param boolean $search_in_object search is done in the object ? if not  in target object
-    *                                  (false by default)
-    *
-    * @deprecated 9.2 Use NotificationTarget::addUserByField()
-    *
-    * @return void
-   **/
-   function getUserByField($field, $search_in_object = false) {
-      Toolbox::deprecated('getUserByField() method is deprecated');
-      $this->addUserByField($field, $search_in_object);
-   }
-
-   /**
-    * Add new recipient with lang to current recipients array
-    *
-    * @param array $data Data (users_id, lang[, field used for notification])
-    *
-    * @deprecated 9.2 Use NotificationTarget::addToRecipientsList()
-    *
-    * @return void|false
-   **/
-   function addToAddressesList(array $data) {
-      Toolbox::deprecated('addToAddressesList() method is deprecated');
-      $this->addToRecipientsList($data);
-   }
-
-
-   /**
-    * Add addresses according to type of notification
-    *
-    * @param array $data    Data
-    * @param array $options Option
-    *
-    * @deprecated 9.2 Use NotificationTarget::addForTarget
-    *
-    * @return void
-   **/
-   function getAddressesByTarget($data, $options = []) {
-      Toolbox::deprecated('getAddressesByTarget() method is deprecated');
-      $this->addForTarget($data, $options);
-   }
-
-   /**
-    * Add entity admin
-    *
-    * @deprecated 9.2 Use NotificationTarget::addEntityAdmin()
-    *
-    * @return void
-    */
-   function getEntityAdminAddress() {
-      Toolbox::deprecated('getEntityAdminAddress() method is deprecated');
-      $this->addEntityAdmin();
-   }
-
-   /**
-    * Magic call to handle deprecated and removed methods
-    *
-    * @param string $name      Method name
-    * @param array  $arguments Passed args
-    *
-    * @return mixed
-    */
-   public function __call($name, $arguments) {
-      switch ($name) {
-         /**
-         * Return all the targets for this notification
-         * Values returned by this method are the ones for the alerts
-         * Can be updated by implementing the addAdditionnalTargets() method
-         * Can be overwitten (like dbconnection)
-         *
-         * @param integer $entity the entity on which the event is raised
-         *
-         * @deprecated 9.2 Use NotificationTarget::addNotificationTargets()
-         *
-         * @return void
-         */
-         case 'getNotificationTargets':
-            Toolbox::deprecated('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
-            call_user_func_array([$this, 'addNotificationTargets'], $arguments);
-            break;
-         /**
-         * Add targets by a method not defined in NotificationTarget (specific to an itemtype)
-         *
-         * @param array $data    Data
-         * @param array $options Options
-         *
-         * @deprecated 9.2 Use NotificationTarget::addSpecificTargets()
-         *
-         * @return void
-         **/
-         case 'getSpecificTargets':
-            Toolbox::deprecated('getSpecificTargets() method is deprecated');
-            call_user_func_array([$this, 'addSpecificTargets'], $arguments);
-            break;
-         default:
-            throw new \RuntimeException('Unknown method ' . get_called_class() . '::' . $name);
-      }
-   }
-
-   public function __set($name, $value) {
-      if ($name == 'datas') {
-         Toolbox::deprecated('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
-         $this->data = $value;
-      } else {
-         $this->$name = $value;
-      }
-   }
-
-   public function &__get($name) {
-      if ($name == 'datas') {
-         Toolbox::deprecated('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
-         return $this->data;
-      } else {
-         return $this->$name;
-      }
    }
 }

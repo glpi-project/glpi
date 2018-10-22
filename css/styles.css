@@ -179,11 +179,14 @@ a, a:link {
    font-size : 11px;
 }
 
-a.fa, a.fa:link {
+a.fa, a.fa:link,
+a.fas, a.fas:link {
    font-size: inherit;
-   font-weight: normal;
+   font-weight: 900;
 }
-#page a.fa, #page a.fa:link, a .fa {
+
+#page a.fa, #page a.fa:link, a .fa,
+#page a.far, #page a.far:link, a .far {
    color: #222;
 }
 
@@ -210,7 +213,7 @@ hr {
 }
 
 .pager_controls .fa.pointer {
-   font-size: 1.7em;
+   font-size: 1.5em;
 }
 .pager_controls label span.fa {
    margin-right: 1em;
@@ -308,7 +311,7 @@ hr {
    display: block;
 }
 
-#fuzzysearch .fa-close {
+#fuzzysearch .fa-times {
    position: absolute;
    top: 0;
    right: -30px;
@@ -1440,7 +1443,7 @@ img.picture_square {
    border:none;
    background:none;
    padding: 0;
-   font-size: 1.3em!important;
+   font-size: 1.2em!important;
 }
 .fc button.ui-datepicker-trigger {
    height: auto;
@@ -2335,23 +2338,27 @@ a.icon_nav_move:hover img {
 }
 
 #boxlogin .login_input:before {
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    left:8px;
    position:absolute;
    top:3px;
    color: #9B9B9B;
    font-size: 24px;
+   font-weight: 900;
 }
 
 #boxlogin #login_input_name:before {
-   content: "\f2be";
+   content: "\f2bd";
+   font-weight: 900;
 }
 #boxlogin #login_input_password:before {
    content: "\f023";
    left: 11px;
+   font-weight: 900;
 }
 #boxlogin #login_input_src:before {
    content: "\f2ba";
+   font-weight: 900;
 }
 
 #boxlogin #dropdown_auth1:before {
@@ -2445,9 +2452,10 @@ a.icon_nav_move:hover img {
 }
 
 #c_preference a.fa {
-   font-size: 1.8em;
+   font-size: 1.6em;
    color: white;
 }
+
 #c_preference a.fa:hover {
    text-decoration: none;
    color: #ccc;
@@ -3321,12 +3329,13 @@ a.copyright {
    border-right-color: transparent !important;
 }
 
-.timeline_history .TicketFollowup:after            { border-color: #E0E0E0;}
-.timeline_history .TicketTask:after                { border-color: #FEDA90;}
-.timeline_history .Solution:after                  { border-color: #9FD6ED;}
-.timeline_history .TicketValidation.status_3:after { border-color: #A1D7A2;}
-.timeline_history .TicketValidation:after          { border-color: #FFFFFF;}
-.timeline_history .TicketValidation.status_4:after { border-color: #D3A4A4;}
+.timeline_history .ITILFollowup:after,
+.timeline_history .KnowbaseItemComment:after     { border-color: #E0E0E0;}
+.timeline_history .ITILTask:after                { border-color: #FEDA90;}
+.timeline_history .Solution:after                { border-color: #9FD6ED;}
+.timeline_history .ITILValidation.status_3:after { border-color: #A1D7A2;}
+.timeline_history .ITILValidation:after          { border-color: #FFFFFF;}
+.timeline_history .ITILValidation.status_4:after { border-color: #D3A4A4;}
 
 .timeline_history .right .h_content p {
    margin: 2px 0 0;
@@ -3340,7 +3349,7 @@ a.copyright {
    text-align: right;
 }
 .timeline_history .right .private {
-   text-align: left;
+   float: left;
 }
 
 .timeline_history .left .h_content.timeline_active {
@@ -3379,14 +3388,15 @@ a.copyright {
    opacity: 1;
 }
 
-.timeline_history .h_content.TicketFollowup {
+.timeline_history .h_content.ITILFollowup,
+.timeline_history .h_content.KnowbaseItemComment {
    background-color: #E0E0E0;
    color: #535353;
    background-image: url(../pics/timeline/followup.png);
    background-repeat: no-repeat;
 }
 
-.timeline_history .h_content.TicketTask {
+.timeline_history .h_content.ITILTask {
    background-color: #FEDA90;
    color: #38301F;
    background-image: url(../pics/timeline/task.png);
@@ -3418,18 +3428,18 @@ a.copyright {
    padding: 0;
 }
 
-.timeline_history .h_content.TicketContent {
+.timeline_history .h_content.ITILContent {
    background-color: #B2E0B6;
    color: #093806;
    background-repeat: no-repeat;
 }
-.timeline_history .h_content.TicketContent .ticket_title {
+.timeline_history .h_content.ITILContent .title {
    font-weight: bold;
    font-size: 1.2em;
    margin-bottom: 5px;
 }
 
-.timeline_history .h_content.TicketContent img {
+.timeline_history .h_content.ITILContent img {
    max-width: 100%;
 }
 
@@ -3458,18 +3468,18 @@ a.copyright {
    border: 3px solid black;
 }
 
-.timeline_history .h_content.TicketValidation {
+.timeline_history .h_content.ITILValidation {
    background-color: #FFFFFF;
    border-color: #BECADD;
    color: #030F21;
    padding: 5px 5px 5px 8px;
 }
 
-.timeline_history .h_content.TicketValidation.status_3 {
+.timeline_history .h_content.ITILValidation.status_3 {
    background-color: #A1D7A2;
    border-color: #385139;
 }
-.timeline_history .h_content.TicketValidation.status_4 {
+.timeline_history .h_content.ITILValidation.status_4 {
    background-color: #D3A4A4;
    border-color: #5E3232;
 }
@@ -3510,7 +3520,8 @@ a.copyright {
    position: absolute;
 }
 
-.timeline_history .h_content.TicketFollowup .read_more {
+.timeline_history .h_content.ITILFollowup .read_more,
+.timeline_history .h_content.KnowbaseItemComment .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(241,244,227,1) 100%); /* FF3.6+ */
    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(241,244,227,1))); /* Chrome,Safari4+ */
    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -3518,7 +3529,7 @@ a.copyright {
    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* IE10+ */
    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* W3C */
 }
-.timeline_history .h_content.TicketTask .read_more {
+.timeline_history .h_content.ITILTask .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(240,228,181,1) 100%); /* FF3.6+ */
    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(240,228,181,1))); /* Chrome,Safari4+ */
    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -3638,7 +3649,8 @@ a.copyright {
 }
 
 .x-button-drop:after        {
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
+   font-weight: 900;
 }
 .x-button.x-button-drop.new:after      { content: '\f111'; color: #49bf4d; }
 .x-button.x-button-drop.assigned:after { content: '\f10c'; color: #49bf4d; }
@@ -3734,7 +3746,7 @@ a.copyright {
 }
 .dates_timelines .dot:before {
    color: #929292;
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
    padding-left: 2px;
 }
 
@@ -3755,6 +3767,7 @@ a.copyright {
 }
 .dates_timelines .creation .dot:before {
    content: '\f069';
+   font-weight: 900;
 }
 
 .dates_timelines .passed time,
@@ -3767,11 +3780,13 @@ a.copyright {
    content: '\f12a';
    padding-left: 6px;
    color: #E54E5A;
+   font-weight: 900;
 }
 
 .dates_timelines .checked .dot:before {
    content: '\f00c';
    padding-left: 2px;
+   font-weight: 900;
 }
 
 .dates_timelines .end .dot {
@@ -3780,6 +3795,7 @@ a.copyright {
 }
 .dates_timelines .end .dot:before {
    content: '\f024';
+   font-weight: 900;
 }
 
 .dates_timelines label {
@@ -4015,21 +4031,24 @@ input[type=checkbox].toggle_comments:checked ~ ul {
 }
 
 .copy_to_clipboard_wrapper:after {
-   font-family: 'FontAwesome';
+   font-family: 'Font Awesome\ 5 Free';
    position: relative;
    left: -15px;
    top: 1px;
    content: "\f0ea";
    color: #7F7F7F;
    transition: color 0.3s ease-in-out;
+   font-weight: 900;
 }
 .copy_to_clipboard_wrapper.copied:after {
    content: "\f00c";
    color: green;
+   font-weight: 900;
 }
 .copy_to_clipboard_wrapper.copyfail:after {
    content: "\f071";
    color: red;
+   font-weight: 900;
 }
 
 
@@ -4419,10 +4438,12 @@ td.diff del {
    color: #ccc;
 }
 
-.fa.bookmark_record, .fa.bookmark_record:link {
+.fa.bookmark_record, .fa.bookmark_record:link,
+   .fa.reset-search,  .fa.reset-search:link{
    font-size: 1.5em;
    color: #ccc!important;
 }
+
 .fa.bookmark_default, .fa.bookmark_default:link {
    font-size: 1.5em;
    color: #f3b51f!important;
@@ -4734,11 +4755,13 @@ div#viewgraph .mini_toggle:before {
    left: 0;
    top: 0;
    font-size: 15px;
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    position: absolute;
+   font-weight: 900;
 }
 div#viewgraph .mini_toggle.active:before {
    content: "\f205";
+   font-weight: 900;
 }
 
 div#viewgraph .mini_toggle:hover {
@@ -4931,8 +4954,9 @@ ul.indexes {
    font-size: 1em;
    color: grey;
    top: 5px;
-   font-family: FontAwesome;
+   font-family: 'Font Awesome\ 5 Free';
    position: absolute;
+   font-weight: 900;
 }
 
 .racks_add .cell_add:hover {
@@ -5365,6 +5389,13 @@ input[name=as_map]:checked + label {
 
 /** /ITIL statuses */
 
+.fup-popup {
+   overflow-y: auto;
+   width: 350px;
+   height: 200px;
+   font-size: 11px;
+}
+
 /** Responsive for documentation */
 
 @media screen and (max-width: 900px) {
@@ -5395,4 +5426,18 @@ input[name=as_map]:checked + label {
    .documentation {
       margin-left: 200px;
    }
+}
+
+/** Fixes for Font Awesome 5 icons not showing at all or
+with incorrect shading in some cases */
+.fa:before, .fas:before, .fa:after, .fas:after {
+   font-weight: 900;
+}
+
+.far:before, .far:after {
+   font-weight: 400;
+}
+
+.fa-lg {
+   font-size: 1.2em;
 }

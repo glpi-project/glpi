@@ -49,6 +49,10 @@ if ($_SERVER['argc']>1) {
    }
 }
 
+if (isset($args['tests'])) {
+   define('TU_USER', 'CLI');
+}
+
 if (isset($args['config-dir'])) {
    define("GLPI_CONFIG_DIR", $args['config-dir']);
 }
@@ -159,8 +163,8 @@ if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
    $migration->displayWarning("\nMigration Done.");
 } else if (isset($args['force']) || $current_db_version != GLPI_SCHEMA_VERSION && isset($args['dev'])) {
 
-   include_once("../install/update_931_932.php");
-   update931to932();
+   include_once("../install/update_93_94.php");
+   update93to94();
 
    $migration->displayWarning((isset($args['force']) ? "\nForced" : "\nDevelopment") . " migration Done.");
 } else {

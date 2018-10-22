@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
+   public $private_profiles = [];
+
    public $html_tags        = [
       '##change.solution.description##',
       '##followup.description##',
@@ -56,7 +58,32 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       parent::__construct($entity, $event, $object, $options);
 
-      $this->options['sendprivate'] = false;
+      if (isset($options['followup_id'])) {
+         $this->options['sendprivate'] = $options['is_private'];
+      }
+
+      if (isset($options['task_id'])) {
+         $this->options['sendprivate'] = $options['is_private'];
+      }
+
+   }
+
+
+   function validateSendTo($event, array $infos, $notify_me = false) {
+
+      // Check global ones for notification to myself
+      if (!parent::validateSendTo($event, $infos, $notify_me)) {
+         return false;
+      }
+
+      // Private object and no right to see private items : do not send
+      if ($this->isPrivate()
+          && (!isset($infos['additionnaloption']['show_private'])
+              || !$infos['additionnaloption']['show_private'])) {
+         return false;
+      }
+
+      return true;
    }
 
    /**
@@ -86,13 +113,21 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    **/
    function getEvents() {
 
-      $events = ['requester_user'    => __('New user in requesters'),
-                      'requester_group'   => __('New group in requesters'),
-                      'observer_user'     => __('New user in observers'),
-                      'observer_group'    => __('New group in observers'),
-                      'assign_user'       => __('New user in assignees'),
-                      'assign_group'      => __('New group in assignees'),
-                      'assign_supplier'   => __('New supplier in assignees')];
+      $events = [
+         'requester_user'    => __('New user in requesters'),
+         'requester_group'   => __('New group in requesters'),
+         'observer_user'     => __('New user in observers'),
+         'observer_group'    => __('New group in observers'),
+         'assign_user'       => __('New user in assignees'),
+         'assign_group'      => __('New group in assignees'),
+         'assign_supplier'   => __('New supplier in assignees'),
+         'add_task'          => __('New task'),
+         'update_task'       => __('Update of a task'),
+         'delete_task'       => __('Deletion of a task'),
+         'add_followup'      => __("New followup"),
+         'update_followup'   => __('Update of a followup'),
+         'delete_followup'   => __('Deletion of a followup'),
+      ];
 
       asort($events);
       return $events;
@@ -525,6 +560,78 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
+   function addAdditionnalInfosForTarget() {
+      global $DB;
+
+      $iterator = $DB->request([
+         'SELECT' => ['profiles_id'],
+         'FROM'   => 'glpi_profilerights',
+         'WHERE'  => [
+            'name'   => 'followup',
+            'rights' => ['&', ITILFollowup::SEEPRIVATE]
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
+         $this->private_profiles[$data['profiles_id']] = $data['profiles_id'];
+      }
+   }
+
+
+   function addAdditionnalUserInfo(array $data) {
+      global $DB;
+
+      if (!isset($data['users_id'])) {
+         return ['show_private' => 0];
+      }
+
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_profiles_users',
+         'WHERE'  => [
+            'users_id'     => $data['users_id'],
+            'profiles_id'  => $this->private_profiles
+         ] + getEntitiesRestrictCriteria('glpi_profiles_users', 'entities_id', $this->getEntity(), true)
+      ])->next();
+
+      if ($result['cpt']) {
+         return ['show_private' => 1];
+      }
+      return ['show_private' => 0];
+   }
+
+
+   public function getProfileJoinSql() {
+
+      $query = " INNER JOIN `glpi_profiles_users`
+                     ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
+                         getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
+                                                    $this->getEntity(), true).")";
+
+      if ($this->isPrivate()) {
+         $query .= " INNER JOIN `glpi_profiles`
+                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
+                         AND `glpi_profiles`.`interface` = 'central')
+                     INNER JOIN `glpi_profilerights`
+                     ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`
+                         AND `glpi_profilerights`.`name` = 'followup'
+                         AND `glpi_profilerights`.`rights` & ".
+                            ITILFollowup::SEEPRIVATE.") ";
+
+      }
+      return $query;
+   }
+
+
+   function isPrivate() {
+
+      if (isset($this->options['sendprivate']) && ($this->options['sendprivate'] == 1)) {
+         return true;
+      }
+      return false;
+   }
+
+
    /**
     * Add additionnals targets for ITIL objects
     *
@@ -778,10 +885,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                         = $this->formatURL($options['additionnaloption']['usertype'],
                                            $objettype."_".$item->getField("id"));
 
-      $tab = '$2';
-      if ($_SESSION['glpiticket_timeline'] == 1) {
-         $tab = '$1';
-      }
+      $tab = '$1';
       $data["##$objettype.urlapprove##"]
                            = $this->formatURL($options['additionnaloption']['usertype'],
                                               $objettype."_".$item->getField("id")."_".
@@ -1025,6 +1129,31 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       // Complex mode
       if (!$simple) {
+         $followup_restrict = [];
+         $followup_restrict['items_id'] = $item->getField('id');
+         if (!isset($options['additionnaloption']['show_private'])
+             || !$options['additionnaloption']['show_private']) {
+            $followup_restrict['is_private'] = 0;
+         }
+         $followup_restrict['itemtype'] = $objettype;
+
+         //Followup infos
+         $followups          = getAllDatasFromTable('glpi_itilfollowups', $followup_restrict, false, ['date_mod DESC', 'id ASC']);
+         $data['followups'] = [];
+         foreach ($followups as $followup) {
+            $tmp                             = [];
+            $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
+            $tmp['##followup.author##']      = Html::clean(getUserName($followup['users_id']));
+            $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                                         $followup['requesttypes_id']);
+            $tmp['##followup.date##']        = Html::convDateTime($followup['date']);
+            $tmp['##followup.description##'] = $followup['content'];
+
+            $data['followups'][] = $tmp;
+         }
+
+         $data["##$objettype.numberoffollowups##"] = count($data['followups']);
+
          $data['log'] = [];
          // Use list_limit_max or load the full history ?
          foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $log) {
@@ -1251,6 +1380,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.solution.description'  => _n('Solution', 'Solutions', 1),
                     $objettype.'.observerusers'         => _n('Watcher', 'Watchers', Session::getPluralNumber()),
                     $objettype.'.action'                => _n('Event', 'Events', 1),
+                    'followup.date'                     => __('Opening date'),
+                    'followup.isprivate'                => __('Private'),
+                    'followup.author'                   => __('Writer'),
+                    'followup.description'              => __('Description'),
+                    'followup.requesttype'              => __('Request source'),
+                    $objettype.'.numberoffollowups'     => _x('quantity', 'Number of followups'),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
                     $objettype.'.numberofdocuments'     => _x('quantity', 'Number of documents'),
                     $objettype.'.costtime'              => __('Time cost'),
@@ -1321,6 +1456,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Foreach global tags
       $tags = ['log'       => __('Historical'),
+                    'followups' => _n('Followup', 'Followups', Session::getPluralNumber()),
                     'tasks'     => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
@@ -1407,201 +1543,5 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                    'lang'           => false,
                                    'allowed_values' => $label['allowed_values']]);
       }
-   }
-
-   /**
-    * Add linked users to the notified users list
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedUserByType()
-    *
-    * @param integer $type type of linked users
-    *
-    * @return void
-   **/
-   function getLinkedUserByType($type) {
-      Toolbox::deprecated('getLinkedUserByType() method is deprecated');
-      $this->addLinkedUserByType($type);
-   }
-
-   /**
-    * Add linked group to the notified user list
-    *
-    * @param integer $type type of linked groups
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedGroupByType()
-    *
-    * @return void
-   **/
-   function getLinkedGroupByType($type) {
-      Toolbox::deprecated('getLinkedGroupByType() method is deprecated');
-      $this->addLinkedGroupByType();
-   }
-
-   /**
-    * Add linked group without supervisor to the notified user list
-    *
-    * @since 0.84.1
-    *
-    * @param integer $type type of linked groups
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedGroupWithoutSupervisorByType()
-    *
-    * @return void
-    */
-   function getLinkedGroupWithoutSupervisorByType($type) {
-      Toolbox::deprecated('getLinkedGroupWithoutSupervisorByType() method is deprecated');
-      $this->addLinkedGroupWithoutSupervisorByType($type);
-   }
-
-
-   /**
-    * Add linked group supervisor to the notified user list
-    *
-    * @param integer $type type of linked groups
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedGroupSupervisorByType()
-    *
-    * @return void
-    */
-   function getLinkedGroupSupervisorByType($type) {
-      Toolbox::deprecated('getLinkedGroupSupervisorByType() method is deprecated');
-      $this->addLinkedGroupSupervisorByType($type);
-   }
-
-   /**
-    * Add recipient
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addRecipientAddress()
-    *
-    * @return void
-    */
-   function getRecipientAddress() {
-      Toolbox::deprecated('getRecipientAddress() method is deprecated');
-      return $this->addRecipientAddress();
-   }
-
-   /**
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addOldAssignTechnician()
-    *
-    * @return void
-    */
-   function getOldAssignTechnicianAddress() {
-      Toolbox::deprecated('getOldAssignTechnicianAddress() method is deprecated');
-      $this->addOldAssignTechnician();
-   }
-
-   /**
-    * Get supplier related to the ITIL object
-    *
-    * @param boolean $sendprivate (false by default)
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addSupplier()
-    *
-    * @return void
-   **/
-   function getSupplierAddress($sendprivate = false) {
-      Toolbox::deprecated('getSupplierAddress() method is deprecated');
-      $this->addSupplier($sendprivate);
-   }
-
-   /**
-    * Get approuver related to the ITIL object validation
-    *
-    * @param array $options Options
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addValidationApprover()
-    *
-    * @return void
-   **/
-   function getValidationApproverAddress($options = []) {
-      Toolbox::deprecated('getValidationApproverAddress() method is deprecated');
-      $this->addValidationApprover($options);
-   }
-
-   /**
-    * Add requester related to the ITIL object validation
-    *
-    * @param array $options Options
-    *
-    * @return void
-   **/
-   function getValidationRequesterAddress($options = []) {
-      Toolbox::deprecated('getValidationRequesterAddress() method is deprecated');
-      $this->addValidationRequester($options);
-   }
-
-   /**
-    * Add author related to the followup
-    *
-    * @param array $options Options
-    *
-    * @return void
-    */
-   function getFollowupAuthor($options = []) {
-      Toolbox::deprecated('getFollowupAuthor() method is deprecated');
-      $this->addFollowupAuthor($options);
-   }
-
-   /**
-    * Add task author
-    *
-    * @param array $options Options
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addTaskAuthor()
-    *
-    * @return void
-    */
-   function getTaskAuthor($options = []) {
-      Toolbox::deprecated('getTaskAuthor() method is deprecated');
-      $this->addTaskAuthor($options);
-   }
-
-
-   /**
-    * Add user assigned to task
-    *
-    * @param array $options Options
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addTaskAssignUser()
-    *
-    * @return void
-    */
-   function getTaskAssignUser($options = []) {
-      Toolbox::deprecated('getTaskAssignUser() method is deprecated');
-      $this->addTaskAssignUser($options);
-   }
-
-
-   /**
-    * Add group assigned to the task
-    *
-    * @since 9.1
-    *
-    * @param array $options Options
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addTaskAssignGroup()
-    *
-    * @return void
-    */
-   function getTaskAssignGroup($options = []) {
-      Toolbox::deprecated('getTaskAssignGroup() method is deprecated');
-      $this->addTaskAssignGroup($options);
-   }
-
-
-   /**
-    * Get data from an item
-    *
-    * @param CommonDBTM $item    Object instance
-    * @param array      $options Options
-    * @param boolean    $simple  (false by default)
-    *
-    * @deprecated 9.2 Use NotificationTargetCommonITILObject::getDataForObject()
-    *
-    * @return array
-    */
-   function getDatasForObject(CommonDBTM $item, array $options, $simple = false) {
-      Toolbox::deprecated('getDatasForObject() method is deprecated');
-      return $this->getDataForObject($item, $options, $simple);
    }
 }
