@@ -1803,4 +1803,229 @@ class CronTask extends CommonDBTM{
          $_SESSION["glpicrontimer"] = time();
       }
    }
+
+
+   /**
+    * Run a task.
+    *
+    * @param string $force
+    *
+    * @return integer
+    *    0: success
+    *    1: execution prevented by status (not self::WAITING)
+    *    1: execution prevented by maintenance mode
+    *    2: unable to run on slave DB
+    *    3: unable to get DB lock
+    *    4: locked by global lock file
+    *    5: locked by self lock file
+    *    6: no callable function associated to task
+    *
+    * @TODO Are DB locks usefull ?
+    * @TODO Are filesystem locks really used ?
+    * @TODO Use constants for result values.
+    *
+    * @TODO If cron are run using this function, a lot of functions in this class can be cleaned !
+    */
+   public function run($force = false) {
+
+      global $CFG_GLPI, $DB;
+
+      if (self::STATE_WAITING !== (int)$this->fields['state'] && !$force) {
+         return 1;
+      }
+
+      if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
+         return 2;
+      }
+
+      if ($DB->isSlave()) {
+         return 3;
+      }
+
+      if (!self::get_lock()) {
+         return 4;
+      }
+
+      if (is_file(GLPI_CRON_DIR . DIRECTORY_SEPARATOR . 'all.lock')) {
+         return 5;
+      }
+
+      $itemtype = $this->fields['itemtype'];
+      $name     = $this->fields['name'];
+
+      if (is_file(GLPI_CRON_DIR . DIRECTORY_SEPARATOR . $itemtype . '__' . $name . 'all.lock')
+         || is_file(GLPI_CRON_DIR . DIRECTORY_SEPARATOR . $name . '.lock') // Old lock format
+         ) {
+         return 6;
+      }
+
+      // Required in Session::isCron()
+      $_SESSION['glpicronuserrunning'] = 'cron_' . $itemtype . '::' . $name;
+
+      $function = $itemtype . '::cron' . $name;
+      if (!is_callable($function)) {
+         return 7;
+      }
+
+      if (isCommandLine() && function_exists('pcntl_signal')) {
+         pcntl_signal(SIGTERM, [$this, 'signal']);
+      }
+
+      $start_crit = [
+         'id'    => $this->fields['id'],
+      ];
+      if (!$force) {
+         $start_crit['state'] = self::STATE_WAITING;
+      }
+
+      $start_result = $DB->update(
+         $this->getTable(),
+         [
+            'state'   => self::STATE_RUNNING,
+            'lastrun' => new \QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
+         ],
+         $start_crit
+      );
+
+      if ($DB->affected_rows($start_result) === 0) {
+         // Assume that update failed due to not expected status
+         return 1;
+      }
+
+      $this->timer  = microtime(true);
+      $this->volume = 0;
+
+      $log = new CronTaskLog();
+      // No gettext for log
+      $txt = sprintf(
+         '%1$s: %2$s', 'Run mode',
+         $this->getModeName(isCommandLine() ? self::MODE_EXTERNAL : self::MODE_INTERNAL)
+      );
+      $this->startlog = $log->add(
+         [
+            'crontasks_id'    => $this->fields['id'],
+            'date'            => $_SESSION['glpi_currenttime'],
+            'content'         => addslashes($txt),
+            'crontasklogs_id' => 0,
+            'state'           => CronTaskLog::STATE_START,
+            'volume'          => 0,
+            'elapsed'         => 0,
+         ]
+      );
+
+      $retcode = call_user_func($function, $this);
+
+      $this->fields['state'] = self::STATE_WAITING; // self::end() update self to self state, refactor it !
+      $this->end($retcode); // Unlock in DB + log end
+
+      $_SESSION['glpicronuserrunning'] = '';
+
+      self::release_lock();
+
+      return 0;
+   }
+
+   /**
+    * Return next task to execute.
+    *
+    * @param array $excluded_ids List of crontask ids to exclude from result.
+    *
+    * @return CronTask|null
+    */
+   public static function getNextTaskToExecute(array $excluded_ids = []) {
+
+      global $DB;
+
+      $next_crit = [
+         'SELECT' => [
+            'id',
+            new QueryExpression(
+               'LOCATE('
+               . $DB->quoteValue('Plugin') . ', ' . $DB->quoteName('itemtype')
+               . ') AS ' . $DB->quoteName('is_plugin')
+            ),
+            new QueryExpression(
+               'UNIX_TIMESTAMP(' .  $DB->quoteName('lastrun') . ')'
+               . ' + ' . $DB->quoteName('frequency')
+               . ' AS ' . $DB->quoteName('next_run_timestamp')
+            ),
+         ],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'state' => Crontask::STATE_WAITING,
+            [
+               'OR' => [
+                  'lastrun' => null,
+                  new QueryExpression(
+                     'UNIX_TIMESTAMP(' .  $DB->quoteName('lastrun') . ')'
+                     . ' + ' . $DB->quoteName('frequency')
+                     . ' <  UNIX_TIMESTAMP(NOW())'
+                  ),
+               ],
+            ]
+         ],
+         'ORDER'  => [
+            'is_plugin',
+            'next_run_timestamp',
+         ],
+         'LIMIT'  => 1,
+      ];
+
+      // Include only nactive plugins
+      $active_plugins_crit = [
+         ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]]
+      ];
+      foreach (Plugin::getPlugins() as $plug) {
+         $active_plugins_crit[] = ['itemtype' => ['LIKE', 'Plugin' . $plug . '%']];
+      }
+      $next_crit['WHERE'][] = ['OR' => $active_plugins_crit];
+
+      // TODO Exclude locked tasks
+      /*
+         $locks = [];
+         foreach (glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
+            if (preg_match('/.*\/(.*).lock$/', $lock, $reg)) {
+               $locks[] = $reg[1];
+            }
+         }
+         if (count($locks)) {
+            $lock = "AND `name` NOT IN ('".implode("','", $locks)."')";
+         } else {
+            $lock = '';
+         }
+       */
+
+      // Filter hours of execution
+      $next_crit['WHERE'][] = [
+         'OR' => [
+            [
+               // Normal case (hourmin < hourmax)
+               new QueryExpression($DB->quoteName('hourmin') . '<' . $DB->quoteName('hourmax')),
+               'hourmin' => ['<=', new QueryExpression('HOUR(NOW())')],
+               'hourmax' => ['>', new QueryExpression('HOUR(NOW())')],
+            ],
+            [
+               // Not normal case (hourmin > hourmax), should we keep this complexity ?
+               new QueryExpression($DB->quoteName('hourmin') . '>' . $DB->quoteName('hourmax')),
+               'hourmax' => ['<=', new QueryExpression('HOUR(NOW())')],
+               'hourmin' => ['>', new QueryExpression('HOUR(NOW())')],
+            ],
+         ],
+      ];
+
+      if (!empty($excluded_ids)) {
+         $next_crit['WHERE'][] = ['NOT' => ['id' => $excluded_ids]];
+      }
+
+      $result = $DB->request($next_crit);
+
+      if (false !== ($task_data = $result->next())) {
+         $crontask = new self();
+         if (true === $crontask->getFromDB($task_data['id'])) {
+            return $crontask;
+         }
+      }
+
+      return null;
+   }
 }
