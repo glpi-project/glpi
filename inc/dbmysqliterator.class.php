@@ -211,10 +211,12 @@ class DBmysqlIterator implements Iterator, Countable {
                               break;
                         }
                         foreach ($val as $jointable => $joincrit) {
-                           if (isset($joincrit['SUBQUERY'])) {
-                              $subquery = new QuerySubquery($joincrit['SUBQUERY']);
-                              unset($joincrit['SUBQUERY']);
+                           $joinExpressionKeys = ['FKEY' => null, 'ON' => null];
+                           $subquery = array_diff_key($joincrit, $joinExpressionKeys);
+                           if (count($subquery)) {
+                              $subquery = new QuerySubquery($subquery);
                               $alias = DBMysql::quoteName($jointable);
+                              $joincrit = array_intersect_key($joincrit, $joinExpressionKeys);
                               $join .= " $jointype JOIN (" . $subquery->getSubQuery() . ") AS $alias ON (" . $this->analyseCrit($joincrit) . ")";
                            } else {
                               $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";

@@ -366,9 +366,7 @@ class DBmysqlIterator extends DbTestCase {
          'foo', [
             'LEFT JOIN' => [
                't2' => [
-                  'SUBQUERY' => [
-                     'FROM' => 'bar'
-                  ],
+                  'FROM' => 'bar',
                   'FKEY' => [
                      't2'  => 'id',
                      'foo' => 'fk'
