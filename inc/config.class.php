@@ -1642,15 +1642,19 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
       if (Toolbox::useCache()) {
-         $ext = get_class($GLPI_CACHE);
+         $ext = strtolower(get_class($GLPI_CACHE));
          $ext = substr($ext, strrpos($ext, '\\')+1);
-         $msg = sprintf(__s('The "%s" extension is installed'), $ext);
-         echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
+         if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
+            $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
+         } else {
+            $msg = sprintf(__s('"%s" cache system is used'), $ext);
+         }
+         echo "<tr><td>" . $msg . "</td>
                <td>" . phpversion($ext) . "</td>
                <td></td>
                <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-         if ($GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
+         if ($ext != 'filesystem' && $GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
             $free = $GLPI_CACHE->getAvailableSpace();
             $max  = $GLPI_CACHE->getTotalSpace();
             $used = $max - $free;
@@ -1663,15 +1667,12 @@ class Config extends CommonDBTM {
             Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                     'forcepadding' => false]);
             $class   = 'info-circle missing';
-            $msg     = sprintf(__s('%1$ss memory usage is too low or too high'), $ext);
-            if ($rate > 5 && $rate < 50) {
+            $msg     = sprintf(__s('%1$ss memory usage is too high'), $ext);
+            if ($rate < 80) {
                $class   = 'check-circle ok';
                $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
             }
             echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-         } else {
-            echo "<tr><td>" . __('Memory') . "</td>
-               <td>" . NOT_AVAILABLE. "</td><td>" . NOT_AVAILABLE . "</td><td></td></tr>";
          }
 
          if ($GLPI_CACHE instanceof FlushableInterface) {
