@@ -1871,7 +1871,7 @@ class Plugin extends CommonDBTM {
     */
    public static function getPlugins() {
       global $GLPI_CACHE;
-      if ($GLPI_CACHE->has('plugins')) {
+      if ($GLPI_CACHE && $GLPI_CACHE->has('plugins')) {
          return $GLPI_CACHE->get('plugins');
       }
       return [];
