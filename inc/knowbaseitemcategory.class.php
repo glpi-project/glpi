@@ -62,6 +62,8 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    static function showFirstLevel($options) {
       global $DB, $CFG_GLPI;
 
+      Toolbox::deprecated();
+
       $faq = !Session::haveRight("knowbase", READ);
 
       // Default values of parameters
