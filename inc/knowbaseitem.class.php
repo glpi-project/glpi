@@ -1515,16 +1515,17 @@ class KnowbaseItem extends CommonDBVisible {
 
                   $fa_class = "";
                   $fa_title = "";
-                  if (isset($data['visibility_count'])
+                  if ($data['is_faq']
+                      && (!Session::isMultiEntitiesMode()
+                          || isset($data['visibility_count'])
+                             && $data['visibility_count'] > 0)) {
+                     $fa_class = "fa-question-circle faq";
+                     $fa_title = __s("This item is part of the FAQ");
+                  } else if (isset($data['visibility_count'])
                      && $data['visibility_count'] <= 0) {
                      $fa_class = "fa-eye-slash not-published";
                      $fa_title = __s("This item is not published yet");
                   }
-                  if ($data['is_faq']) {
-                     $fa_class = "fa-question-circle faq";
-                     $fa_title = __s("This item is part of the FAQ");
-                  }
-
                   echo Search::showItem($output_type,
                                         "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>".Html::resume_text($name, 80)."</a></div>
                                           <div class='kb_resume'>".
