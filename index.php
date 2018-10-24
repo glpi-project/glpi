@@ -88,7 +88,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // CSS theme link
    echo Html::css("css/palettes/".$CFG_GLPI["palette"].".css");
    // font awesome icons
-   echo Html::css('lib/font-awesome-5.2.0/css/all.min.css');
+   echo Html::css('lib/font-awesome-5.4.1/css/all.min.css');
 
    echo Html::script('lib/jquery/js/jquery-1.10.2.js');
    echo Html::script('lib/jqueryplugins/select2/js/select2.full.js');

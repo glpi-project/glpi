@@ -1180,7 +1180,7 @@ class Html {
       echo Html::css('css/jstree-glpi.css');
       echo Html::css('lib/jqueryplugins/select2/css/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
-      echo Html::css('lib/font-awesome-5.2.0/css/all.min.css');
+      echo Html::css('lib/font-awesome-5.4.1/css/all.min.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
