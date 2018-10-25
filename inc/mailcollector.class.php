@@ -701,6 +701,11 @@ class MailCollector  extends CommonDBTM {
                   $ticket = new Ticket();
                   $fup = new ITILFollowup();
 
+                  $fup_input = $tkt;
+                  $fup_input['itemtype'] = Ticket::class;
+                  $fup_input['items_id'] = $fup_input['tickets_id'];
+                  unset($fup_input['tickets_id']);
+
                   if (!$ticket->getFromDB($tkt['tickets_id'])) {
                      $error++;
                      $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
@@ -711,7 +716,7 @@ class MailCollector  extends CommonDBTM {
                      $refused++;
                      $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
                      $rejected->add($rejinput);
-                  } else if ($fup->add($tkt)) {
+                  } else if ($fup->add($fup_input)) {
                      $this->deleteMails($uid, self::ACCEPTED_FOLDER);
                   } else {
                      $error++;
