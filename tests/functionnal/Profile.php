@@ -117,4 +117,24 @@ class Profile extends DbTestCase {
             );
       }
    }
+
+   /**
+    * We try to login with tech profile and check if we can get a super-admin profile
+    */
+   public function testGetUnderActiveProfileRestrictCriteria() {
+      global $DB;
+
+      $this->login('tech', 'tech');
+
+      $iterator = $DB->request([
+         'FROM'   => \Profile::getTable(),
+         'WHERE'  => \Profile::getUnderActiveProfileRestrictCriteria(),
+         'ORDER'  => 'name'
+      ]);
+
+      foreach ($iterator as $profile_found) {
+         $this->array($profile_found)->string['name']->isNotEqualTo('Super-Admin');
+         $this->array($profile_found)->string['name']->isNotEqualTo('Admin');
+      }
+   }
 }
