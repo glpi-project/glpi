@@ -445,37 +445,35 @@ class Profile extends CommonDBTM {
              && (Session::getCurrentInterface() == 'central'
                  || in_array($key, self::$helpdesk_rights))) {
             $right_subqueries[] = [
-               'glpi_profilerights.name'     => $key,
-               'RAW'                         => [
-                  '(' . DBmysql::quoteName('glpi_profilerights.rights') . ' | ' . DBmysql::quoteValue($val) . ')' => $val
+               'AND' => [
+                  'glpi_profilerights.name'     => $key,
+                  'RAW'                         => [
+                     '(' . DBmysql::quoteName('glpi_profilerights.rights') . ' | ' . DBmysql::quoteValue($val) . ')' => $val
+                  ]
                ]
             ];
          }
       }
 
-      $dbiterator = new DBmysqlIterator(null);
-      $dbiterator->buildQuery(
-         'glpi_profilerights', [
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-               'glpi_profilerights.profiles_id' => new \QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
-               'OR'                             => $right_subqueries
-            ]
+      $sub_query = new QuerySubQuery([
+         'FROM'   => 'glpi_profilerights',
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            'glpi_profilerights.profiles_id' => new \QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
+            'OR'                             => $right_subqueries
          ]
-      );
-      $sub_query = $dbiterator->getSql();
-      $criteria['RAW'] = [
-         $sub_query => count($right_subqueries)
-      ];
+      ]);
+      $criteria[] = new \QueryExpression(count($right_subqueries)." = (".$sub_query->getSubQuery().")");
 
       if (Session::getCurrentInterface() == 'central') {
          return [
             'OR'  => [
-               $criteria,
-               'glpi_profiles.interface' => 'helpdesk'
+               'glpi_profiles.interface' => 'helpdesk',
+               'AND' => [$criteria]
             ]
          ];
       }
+
       return $criteria;
    }
 
