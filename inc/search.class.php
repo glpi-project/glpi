@@ -5303,7 +5303,8 @@ class Search {
                   $progressbar_data = [
                      'percent'      => $data[$num][0]['name'],
                      'percent_text' => $data[$num][0]['name'],
-                     'color'        => $bar_color
+                     'color'        => $bar_color,
+                     'text'         => ''
                   ];
                }
 
