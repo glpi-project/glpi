@@ -162,13 +162,12 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                         GLPI_DOC_DIR."/".$doc->fields['filepath'],
                         'mail'
                      );
-                     $cid = hash('sha256', $image_path) . '@glpimailer.0'; // RFC2392 S 2
                      if ($mmail->AddEmbeddedImage($image_path,
-                                                  $cid,
+                                                  $doc->fields['tag'],
                                                   $doc->fields['filename'],
                                                   'base64',
                                                   $doc->fields['mime'])) {
-                        $inline_docs[$doc_i_data['documents_id']] = $cid;
+                        $inline_docs[$doc_i_data['documents_id']] = $doc->fields['tag'];
                      }
                   } else if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
                      // Add all other attachments, according to configuration
@@ -217,27 +216,26 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                            $width,
                            $height
                         );
-                        $cid = hash('sha256', $image_path) . '@glpimailer.0'; // RFC2392 S 2
                         if ($mmail->AddEmbeddedImage($image_path,
-                                                     $cid,
+                                                     $doc->fields['tag'],
                                                      $doc->fields['filename'],
                                                      'base64',
                                                      $doc->fields['mime'])) {
-                           $inline_docs[$docID] = $cid;
+                           $inline_docs[$docID] = $doc->fields['tag'];
                         }
                      }
                   }
                }
             }
 
-            // replace img[src] by cid:$cid in html content
+            // replace img[src] by cid:tag in html content
             // replace a[href] by absolute URL
-            foreach ($inline_docs as $docID => $cid) {
+            foreach ($inline_docs as $docID => $tag) {
                $current->fields['body_html'] = preg_replace([
                      '/src=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
                      '/href=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
                   ], [
-                     'src="cid:' . $cid . '"',
+                     'src="cid:' . $tag . '"',
                      'href="' . $CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID . '"',
                   ],
                   $current->fields['body_html']);
