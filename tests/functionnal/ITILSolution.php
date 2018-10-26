@@ -137,6 +137,73 @@ class ITILSolution extends DbTestCase {
       )->isIdenticalTo(2);
    }
 
+   public function testProblemSolution() {
+      $this->login();
+      $uid = getItemByTypeName('User', TU_USER, true);
+
+      $problem = new \Problem();
+      $this->integer((int)$problem->add([
+         'name'               => 'problem title',
+         'description'        => 'a description',
+         'content'            => '',
+         '_users_id_assign'   => $uid
+      ]))->isGreaterThan(0);
+
+      $this->boolean($problem->isNewItem())->isFalse();
+      $this->variable($problem->getField('status'))->isIdenticalTo($problem::ASSIGNED);
+
+      $solution = new \ITILSolution();
+      $this->integer(
+         (int)$solution->add([
+            'itemtype'  => $problem::getType(),
+            'items_id'  => $problem->getID(),
+            'content'   => 'Current friendly problem\r\nis solved!'
+         ])
+      );
+      //reload from DB
+      $this->boolean($problem->getFromDB($problem->getID()))->isTrue();
+
+      $this->variable($problem->getField('status'))->isEqualTo($problem::SOLVED);
+      $this->string($solution->getField('content'))->isIdenticalTo('Current friendly problem\r\nis solved!');
+
+      $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
+      $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
+   }
+
+   public function testChangeSolution() {
+      $this->login();
+      $uid = getItemByTypeName('User', TU_USER, true);
+
+      $change = new \Change();
+      $this->integer((int)$change->add([
+         'name'               => 'change title',
+         'description'        => 'a description',
+         'content'            => '',
+         '_users_id_assign'   => $uid
+      ]))->isGreaterThan(0);
+
+      $this->boolean($change->isNewItem())->isFalse();
+      $this->variable($change->getField('status'))->isIdenticalTo($change::INCOMING);
+
+      $solution = new \ITILSolution();
+      $this->integer(
+         (int)$solution->add([
+            'itemtype'  => $change::getType(),
+            'items_id'  => $change->getID(),
+            'content'   => 'Current friendly change\r\nis solved!'
+         ])
+      );
+      //reload from DB
+      $this->boolean($change->getFromDB($change->getID()))->isTrue();
+
+      $this->variable($change->getField('status'))->isEqualTo($change::SOLVED);
+      $this->string($solution->getField('content'))->isIdenticalTo('Current friendly change\r\nis solved!');
+
+      $this->boolean($solution->getFromDB($solution->getID()))->isTrue();
+      $this->integer((int)$solution->fields['status'])->isIdenticalTo(\CommonITILValidation::ACCEPTED);
+   }
+
+
    public function testSolutionOnDuplicate() {
       $this->login();
       $this->setEntity('Root entity', true);
