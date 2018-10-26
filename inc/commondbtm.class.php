@@ -5103,8 +5103,12 @@ class CommonDBTM extends CommonGLPI {
                $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
                $input2["tickets_id"] = $this->getID();
             }
-            // Insert image tag
-            $input2["tag"] = $input['_tag'][$key];
+
+            if (isset($input['_tag'][$key])) {
+               // Insert image tag
+               $input2["tag"] = $input['_tag'][$key];
+            }
+
             $input2["entities_id"]             = $entities_id;
             $input2["is_recursive"]            = 1;
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
@@ -5114,7 +5118,11 @@ class CommonDBTM extends CommonGLPI {
                $input2["_prefix_filename"]  = [$this->input['_prefix_filename'][$key]];
             }
             $docID = $doc->add($input2);
-            $docadded[$docID]['tag'] = $input['_tag'][$key];
+
+            if (isset($input['_tag'][$key])) {
+               // Store image tag
+               $docadded[$docID]['tag'] = $doc->fields["tag"];
+            }
          }
 
          if ($docID > 0) {
