@@ -575,6 +575,16 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
+    * @since 9.3.2
+    */
+   function canPurgeItem() {
+
+      return $this->canRelationItem('canUpdateItem', 'canUpdate', false,
+                                    static::$checkAlwaysBothItems);
+   }
+
+
+   /**
     * @since 0.84
    **/
    function addNeededInfoToInput($input) {
