@@ -59,11 +59,15 @@ class Reminder_User extends CommonDBRelation {
       global $DB;
 
       $users = [];
-      $query = "SELECT `glpi_reminders_users`.*
-                FROM `glpi_reminders_users`
-                WHERE `reminders_id` = '$reminders_id'";
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'reminders_id' => $reminders_id
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $users[$data['users_id']][] = $data;
       }
       return $users;
