@@ -289,19 +289,23 @@ class ITILSolution extends CommonDBChild {
 
       //default status for global solutions
       $status = CommonITILValidation::ACCEPTED;
-      $autoclosedelay =  Entity::getUsedConfig(
-         'autoclose_delay',
-         $this->item->getEntityID(),
-         '',
-         Entity::CONFIG_NEVER
-      );
 
-      // 0 = immediatly
-      if ($autoclosedelay != 0) {
-         $status = CommonITILValidation::WAITING;
+      //handle autoclose, for tickets only
+      if ($input['itemtype'] == Ticket::getType()) {
+         $autoclosedelay =  Entity::getUsedConfig(
+            'autoclose_delay',
+            $this->item->getEntityID(),
+            '',
+            Entity::CONFIG_NEVER
+         );
+
+         // 0 = immediatly
+         if ($autoclosedelay != 0) {
+            $status = CommonITILValidation::WAITING;
+         }
       }
 
-      //Auto approval; store user and date
+      //Accepted; store user and date
       if ($status == CommonITILValidation::ACCEPTED) {
          $input['users_id_approval'] = Session::getLoginUserID();
          $input['date_approval'] = $_SESSION["glpi_currenttime"];
@@ -325,17 +329,21 @@ class ITILSolution extends CommonDBChild {
       }
 
       $item = $this->item;
-      $status = $item::CLOSED;
-      $autoclosedelay =  Entity::getUsedConfig(
-         'autoclose_delay',
-         $this->item->getEntityID(),
-         '',
-         Entity::CONFIG_NEVER
-      );
+      $status = $item::SOLVED;
+
+      //handle autoclose, for tickets only
+      if ($item->getType() == Ticket::getType()) {
+         $autoclosedelay =  Entity::getUsedConfig(
+            'autoclose_delay',
+            $this->item->getEntityID(),
+            '',
+            Entity::CONFIG_NEVER
+         );
 
          // 0 = immediatly
-      if ($autoclosedelay != 0) {
-         $status = $item::SOLVED;
+         if ($autoclosedelay == 0) {
+            $status = $item::CLOSED;
+         }
       }
 
       $this->item->update([
