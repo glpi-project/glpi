@@ -3628,9 +3628,12 @@ a.copyright {
    background-repeat: no-repeat;
 }
 
-
 .timeline_history .approbation_separator {
    margin-bottom: 55px;
+}
+
+.timeline_history .item_content img {
+   max-width: 100%;
 }
 
 .assign_la {
