@@ -2378,6 +2378,15 @@ class Dropdown {
                                  AND `commentt`.`field` = 'comment')";
          }
 
+         if ($start > 0 && $multi) {
+            //we want to load last entry of previous page
+            //(and therefore one more result) to check if
+            //entity name must be displayed again
+            --$start;
+            ++$limit;
+            $LIMIT = "LIMIT $limit OFFSET $start";
+         }
+
          $query = "SELECT `$table`.* $addselect
                   FROM `$table`
                   $addjoin
