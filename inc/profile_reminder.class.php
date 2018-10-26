@@ -59,11 +59,14 @@ class Profile_Reminder extends CommonDBRelation {
       global $DB;
 
       $prof  = [];
-      $query = "SELECT `glpi_profiles_reminders`.*
-                FROM `glpi_profiles_reminders`
-                WHERE `reminders_id` = '$reminders_id'";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'reminders_id' => $reminders_id
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $prof[$data['profiles_id']][] = $data;
       }
       return $prof;
