@@ -12282,7 +12282,7 @@ msgstr "Se requiere un elemento"
 
 #: inc/item_enclosure.class.php:310
 msgid "An enclosure is required"
-msgstr ""
+msgstr "Se requiere un cerramiento"
 
 #: inc/item_enclosure.class.php:314 inc/item_rack.class.php:959
 #: inc/pdu_rack.class.php:103
@@ -12437,7 +12437,7 @@ msgstr "No hay suficiente espacio disponible para colocar el elemento"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Elemento para rack \"%1$s\""
 
 #: inc/item_ticket.class.php:303
 #, php-format

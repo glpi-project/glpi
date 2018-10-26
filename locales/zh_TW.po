@@ -12141,7 +12141,7 @@ msgstr "事件"
 #: inc/notificationtargetticket.class.php:788 inc/ticket.class.php:3527
 #: inc/ticket.class.php:3545
 msgid "Request"
-msgstr "依"
+msgstr "需求"
 
 #: inc/itilsolution.class.php:138
 msgid ""

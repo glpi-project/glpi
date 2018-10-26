@@ -12446,7 +12446,7 @@ msgstr "Pas assez d'espace disponible pour placer cet élément"
 #: inc/item_rack.class.php:1085
 #, php-format
 msgid "Item for rack \"%1$s\""
-msgstr ""
+msgstr "Élément dans la baie \"%1$s\""
 
 #: inc/item_ticket.class.php:303
 #, php-format
