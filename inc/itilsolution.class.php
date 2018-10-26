@@ -339,7 +339,7 @@ class ITILSolution extends CommonDBChild {
       }
 
       $item = $this->item;
-      $status = $item::CLOSED;
+      $status = $item::SOLVED;
       if ($this->item->getType() == 'Ticket') {
          $autoclosedelay =  Entity::getUsedConfig(
             'autoclose_delay',
@@ -349,8 +349,8 @@ class ITILSolution extends CommonDBChild {
          );
 
          // 0 = immediatly
-         if ($autoclosedelay != 0) {
-            $status = $item::SOLVED;
+         if ($autoclosedelay == 0) {
+            $status = $item::CLOSED;
          }
       }
       $this->item->update([
