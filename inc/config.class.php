@@ -2894,7 +2894,6 @@ class Config extends CommonDBTM {
       }
 
       // Create adapter
-      $cache = false;
       try {
          $storage = Zend\Cache\StorageFactory::factory($opt);
       } catch (Exception $e) {
@@ -2916,8 +2915,10 @@ class Config extends CommonDBTM {
                $storage = Zend\Cache\StorageFactory::factory($opt);
                $fallback = true;
             } catch (Exception $e1) {
+               Toolbox::logError($e1->getMessage());
                if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-                  Toolbox::logDebug($e1->getMessage());
+                  //preivous attempt has faled as well.
+                  Toolbox::logDebug($e->getMessage());
                }
             }
          }
