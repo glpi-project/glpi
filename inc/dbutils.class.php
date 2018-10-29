@@ -792,7 +792,7 @@ final class DbUtils {
 
       $ckey = $table . '_ancestors_cache_';
       if (is_array($items_id)) {
-         $ckey .= implode('|', $items_id);
+         $ckey .= md5(implode('|', $items_id));
       } else {
          $ckey .= $items_id;
       }
