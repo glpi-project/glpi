@@ -1438,17 +1438,32 @@ class MailCollector  extends CommonDBTM {
 
             $text = str_replace(["\r\n", "\r"], "\n", $text); // Normalize line breaks
 
-            if (count($structure->parameters) > 0) {
-               foreach ($structure->parameters as $param) {
-                  if ((strtoupper($param->attribute) == 'CHARSET')
-                      && function_exists('mb_convert_encoding')
-                      && (strtoupper($param->value) != 'UTF-8')) {
+            $charset = null;
 
-                     $text                 = mb_convert_encoding($text, 'utf-8', $param->value);
+            foreach ($structure->parameters as $param) {
+               if (strtoupper($param->attribute) == 'CHARSET') {
+                  $charset = strtoupper($param->value);
+               }
+            }
+
+            if (null !== $charset && 'UTF-8' !== $charset) {
+               if (extension_loaded('mbstring')
+                   && in_array($charset, array_map('strtoupper', mb_list_encodings()))) {
+                  $text                 = mb_convert_encoding($text, 'UTF-8', $charset);
+                  $this->body_converted = true;
+               } else if (extension_loaded('iconv')) {
+                  // Convert Windows charsets names
+                  if (preg_match('/^WINDOWS-\d{4}$/', $charset)) {
+                     $charset = preg_replace('/^WINDOWS-(\d{4})$/', 'CP$1', $charset);
+                  }
+
+                  if ($converted_test = iconv($charset, 'UTF-8//TRANSLIT', $text)) {
+                     $text                 = $converted_test;
                      $this->body_converted = true;
                   }
                }
             }
+
             return $text;
          }
 
