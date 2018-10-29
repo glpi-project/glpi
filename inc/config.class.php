@@ -2897,11 +2897,6 @@ class Config extends CommonDBTM {
       $cache = false;
       try {
          $storage = Zend\Cache\StorageFactory::factory($opt);
-         if ($psr16) {
-            $cache = new SimpleCacheDecorator($storage);
-         } else {
-            $cache = $storage;
-         }
       } catch (Exception $e) {
          //fallback to another cache system
          $fallback = false;
@@ -2918,7 +2913,7 @@ class Config extends CommonDBTM {
                mkdir($opt['options']['cache_dir']);
             }
             try {
-               $cache = Zend\Cache\StorageFactory::factory($opt);
+               $storage = Zend\Cache\StorageFactory::factory($opt);
                $fallback = true;
             } catch (Exception $e1) {
                if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
@@ -2929,13 +2924,18 @@ class Config extends CommonDBTM {
 
          if ($fallback === false) {
             $opt = ['adapter' => 'memory'];
-            $cache = Zend\Cache\StorageFactory::factory($opt);
+            $storage = Zend\Cache\StorageFactory::factory($opt);
          }
          if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
             Toolbox::logDebug($e->getMessage());
          }
       }
-      return $cache;
+
+      if ($psr16) {
+         return new SimpleCacheDecorator($storage);
+      } else {
+         return $storage;
+      }
    }
 
    /**
