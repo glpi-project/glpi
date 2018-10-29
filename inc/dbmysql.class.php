@@ -260,7 +260,7 @@ class DBmysql {
     *
     * @param mysqli_result $result MySQL result handler
     * @param int           $i      Row offset to give
-    * @param type          $field  Field to give
+    * @param string        $field  Field to give
     *
     * @return mixed Value of the Row $i and the Field $field of the Mysql $result
     */
@@ -1119,6 +1119,7 @@ class DBmysql {
       );
 
       //Mariadb 10.2 allow default values on longblob, text and longtext
+      $defaults = [];
       preg_match_all(
          '/^.+ (longblob|text|longtext) .+$/m',
          $structure,

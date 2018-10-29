@@ -82,7 +82,6 @@ class Datacenter extends CommonDBTM {
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
 
       $tab = [];
 

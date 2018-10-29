@@ -54,21 +54,11 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonGLPI::getMenuName()
-    *
-    * @since 0.85
-   **/
    static function getMenuName() {
       return Consumable::getTypeName(Session::getPluralNumber());
    }
 
 
-   /**
-    * @see CommonGLPI::getAdditionalMenuLinks()
-    *
-    * @since 0.85
-   **/
    static function getAdditionalMenuLinks() {
 
       if (static::canView()) {
@@ -78,11 +68,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see CommonDBTM::getPostAdditionalInfosForName
-   **/
    function getPostAdditionalInfosForName() {
 
       if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
@@ -132,16 +117,14 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Print the consumable type form
     *
-    * @param $ID        integer ID of the item
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
+    * @param integer $ID    ID of the item
+    * @param array $options
+    *    - target filename : where to go when done.
+    *    - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
-    *
-    **/
+    * @return true
+    */
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -396,11 +379,11 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Cron action on consumables : alert if a stock is behind the threshold
     *
-    * @param $task   to log, if NULL display (default NULL)
+    * @param CronTask|null $task to log, if NULL display (default NULL)
     *
-    * @return 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
    **/
-   static function cronConsumable($task = null) {
+   static function cronConsumable(CronTask $task = null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;
@@ -538,20 +521,9 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   /**
-    * Have I the right to "update" the Object
-    *
-    * Default is true and check entity if the objet is entity assign
-    *
-    * May be overloaded if needed
-    *
-    * Overriden here to check entities recursively
-    *
-    * @return boolean
-   **/
    function canUpdateItem() {
 
-      if (!$this->checkEntity(true)) {
+      if (!$this->checkEntity(true)) { //check entities recursively
          return false;
       }
       return true;

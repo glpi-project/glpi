@@ -49,10 +49,6 @@ class Contract_Item extends CommonDBRelation{
    static public $items_id_2 = 'items_id';
 
 
-
-   /**
-    * @since 0.84
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -61,14 +57,6 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * Don't create a Contract_Item on contract that is alreay max used
-    * Was previously done (until 0.83.*) by Contract_Item::can()
-    *
-    * @see CommonDBRelation::canCreateItem()
-    *
-    * @since 0.84
-   **/
    function canCreateItem() {
 
       // Try to load the contract
@@ -76,6 +64,9 @@ class Contract_Item extends CommonDBRelation{
       if ($contract === false) {
          return false;
       }
+
+      // Don't create a Contract_Item on contract that is alreay max used
+      // Was previously done (until 0.83.*) by Contract_Item::can()
       if (($contract->fields['max_links_allowed'] > 0)
           && (countElementsInTable($this->getTable(),
                                   ['contracts_id'=> $this->input['contracts_id']])
@@ -115,14 +106,6 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
-    * @param $options      array
-   **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -187,25 +170,18 @@ class Contract_Item extends CommonDBRelation{
     * @return array of items linked to contracts
    **/
    static function getItemsForContract($contract_id, $entities_id) {
-      global $DB;
 
       $items = [];
 
       $types_iterator = self::getDistinctTypes($contract_id);
-      $number = count($iterator);
 
-      $data    = [];
-      $totalnb = 0;
       while ($type_row = $types_iterator->next()) {
          $itemtype = $type_row['itemtype'];
-         if (!($item = getItemForItemtype($itemtype))) {
+         if (!getItemForItemtype($itemtype)) {
             continue;
          }
-         $itemtable = getTableForItemType($itemtype);
 
          $iterator = self::getTypeItems($contract_id, $itemtype);
-         $nb = count($iterator);
-
          while ($objdata = $iterator->next()) {
             $items[$itemtype][$objdata['id']] = $objdata;
          }
@@ -215,9 +191,6 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -243,11 +216,6 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -269,10 +237,12 @@ class Contract_Item extends CommonDBRelation{
     *
     * @since 0.84
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
-    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
+    * @param string  $itemtype     itemtype of the item
+    * @param integer $oldid        ID of the item to clone
+    * @param integer $newid        ID of the item cloned
+    * @param string  $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
+    *
+    * @return void
    **/
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
@@ -305,20 +275,19 @@ class Contract_Item extends CommonDBRelation{
     *
     * @since 0.84
     *
-    * @param $item            CommonDBTM object wanted
-    * @param $withtemplate    not used (to be deleted) (default 0)
+    * @param CommonDBTM $item         CommonDBTM object wanted
+    * @param boolean    $withtemplate not used (to be deleted)
     *
-    * @return Nothing (display)
+    * @return void
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
 
       $itemtype = $item->getType();
       $ID       = $item->fields['id'];
 
       if (!Contract::canView()
           || !$item->can($ID, READ)) {
-         return false;
+         return;
       }
 
       $canedit = $item->can($ID, UPDATE);
@@ -652,7 +621,7 @@ class Contract_Item extends CommonDBRelation{
          } else {
             $prem = true;
             $nb   = count($datas);
-            foreach ($datas as $id => $objdata) {
+            foreach ($datas as $objdata) {
                $item = new $itemtype();
                if ($item instanceof Item_Devices) {
                   $name = $objdata["name_device"];
@@ -712,11 +681,6 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-   **/
    static function getRelationMassiveActionsSpecificities() {
       global $CFG_GLPI;
 

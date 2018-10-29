@@ -73,9 +73,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.84
-   **/
    function prepareInputForUpdate($input) {
 
       if (!isset($input['is_template_computer'])
@@ -94,13 +91,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'add' :
@@ -128,14 +119,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
 
       switch ($ma->getAction()) {
          case 'move_version' :
@@ -217,11 +202,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Get number of installed licenses of a version
     *
-    * @param $softwareversions_id   version ID
-    * @param $entity                to search for computer in (default '' = all active entities)
-    *                               (default '')
+    * @param integer          $softwareversions_id version ID
+    * @param string|integer[] $entity              to search for computer in ('' = all active entities)
     *
-    * @return number of installations
+    * @return integer number of installations
    **/
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
@@ -293,7 +277,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $software Software object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForSoftware(Software $software) {
       self::showInstallations($software->getField('id'), 'softwares_id');
@@ -305,7 +289,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $version SoftwareVersion object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForVersion(SoftwareVersion $version) {
       self::showInstallations($version->getField('id'), 'id');
@@ -315,16 +299,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Show installations of a software
     *
-    * @param $searchID  value of the ID to search
-    * @param $crit      to search : softwares_id (software) or id (version)
+    * @param integer $searchID  value of the ID to search
+    * @param string  $crit      to search : softwares_id (software) or id (version)
     *
-    * @return nothing
+    * @return void
    **/
    private static function showInstallations($searchID, $crit) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Software::canView() || !$searchID) {
-         return false;
+         return;
       }
 
       $canedit         = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
@@ -626,15 +610,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $version SoftwareVersion object
     *
-    * @return nothing
+    * @return void
    **/
    static function showForVersionByEntity(SoftwareVersion $version) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $softwareversions_id = $version->getField('id');
 
       if (!Software::canView() || !$softwareversions_id) {
-         return false;
+         return;
       }
 
       echo "<div class='center'>";
@@ -674,16 +658,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Show software installed on a computer
     *
-    * @param $comp            Computer object
-    * @param $withtemplate    template case of the view process (default 0)
+    * @param Computer $comp         Computer object
+    * @param boolean  $withtemplate template case of the view process
     *
-    * @return nothing
+    * @return void
    **/
    static function showForComputer(Computer $comp, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (!Software::canView()) {
-         return false;
+         return;
       }
 
       $computers_id = $comp->getField('id');
@@ -744,7 +728,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          'ORDER'     => ['softname', 'version']
       ]);
 
-      $i      = 0;
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
          echo "<form method='post' action='".Computer_SoftwareVersion::getFormURL()."'>";
@@ -762,8 +745,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          Html::closeForm();
       }
       echo "<div class='spaced'>";
-
-      $cat = -1;
 
       Session::initNavigateListItems('Software',
                            //TRANS : %1$s is the itemtype name,
@@ -974,7 +955,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
-         $cat = true;
          foreach ($lic_iterator as $data) {
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('SoftwareLicense', $data["id"]);
@@ -1000,27 +980,26 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display a installed software for a category
     *
-    * @param $data                     data used to display
-    * @param $computers_id             ID of the computer
-    * @param $withtemplate             template case of the view process
-    * @param $canedit         boolean  user can edit software ?
-    * @param $display         boolean  display and calculte if true or juste calculate
+    * @param array   $data         data used to display
+    * @param integer $computers_id ID of the computer
+    * @param boolean $withtemplate template case of the view process
+    * @param boolean $canedit      user can edit software ?
+    * @param boolean $display      display and calculte if true or juste calculate
     *
-    * @return array of found license id
+    * @return integer[] Found licenses ids
    **/
    private static function softsByCategory($data, $computers_id, $withtemplate, $canedit,
                                            $display) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
-      $ID       = $data["id"];
-      $verid    = $data["verid"];
-      $multiple = false;
+      $ID    = $data["id"];
+      $verid = $data["verid"];
 
       if ($display) {
          echo "<tr class='tab_bg_1'>";
          if ($canedit) {
             echo "<td>";
-            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            Html::showMassiveActionCheckBox(__CLASS__, $ID);
             echo "</td>";
          }
          echo "<td class='center b'>";
@@ -1120,19 +1099,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display a software for a License (not installed)
     *
-    * @param $data                  data used to display
-    * @param $computers_id          ID of the computer
-    * @param $withtemplate          template case of the view process
-    * @param $canedit      boolean  user can edit software ?
+    * @param array   $data         data used to display
+    * @param integer $computers_id ID of the computer
+    * @param boolean $withtemplate template case of the view process
+    * @param boolean $canedit      user can edit software ?
     *
-    * @return nothing
+    * @return void
    */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
-      global $CFG_GLPI;
 
       $ID = $data['linkID'];
 
-      $multiple  = false;
       $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];
 
@@ -1176,11 +1153,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Update version installed on a computer
     *
-    * @param $instID                ID of the install software lienk
-    * @param $softwareversions_id   ID of the new version
-    * @param $dohistory             Do history ? (default 1)
+    * @param integer $instID              ID of the install software lienk
+    * @param integer $softwareversions_id ID of the new version
+    * @param boolean $dohistory           Do history ? (default 1)
     *
-    * @return nothing
+    * @return void
    **/
    function upgrade($instID, $softwareversions_id, $dohistory = 1) {
 
@@ -1196,8 +1173,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Duplicate all software from a computer template to its clone
     *
-    * @param $oldid ID of the computer to clone
-    * @param $newid ID of the computer cloned
+    * @param integer $oldid ID of the computer to clone
+    * @param integer $newid ID of the computer cloned
    **/
    static function cloneComputer($oldid, $newid) {
       global $DB;
@@ -1218,9 +1195,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nb = 0;
@@ -1259,11 +1233,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='Software') {
@@ -1286,16 +1255,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       return true;
    }
 
-   /**
-    * Get linked items list for specified item
-    *
-    * @since 9.3.1
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
-    *
-    * @return array
-    */
+
    protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
       $params = parent::getListForItemParams($item, $noent);
       $params['WHERE'][self::getTable() . '.is_deleted'] = 0;

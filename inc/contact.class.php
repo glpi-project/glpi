@@ -136,7 +136,7 @@ class Contact extends CommonDBTM{
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    * @return Nothing (display)
+    * @return true
    **/
    function showForm($ID, $options = []) {
 
@@ -228,9 +228,6 @@ class Contact extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -245,11 +242,6 @@ class Contact extends CommonDBTM{
    }
 
 
-   /**
-    * @see CommonDBTM::getRawName()
-    *
-    * @since 0.85
-   **/
    function getRawName() {
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -463,12 +455,12 @@ class Contact extends CommonDBTM{
    /**
     * Generate the Vcard for the current Contact
     *
-    *@return Nothing (display)
-   **/
+    * @return void
+    */
    function generateVcard() {
 
       if (!$this->can($this->fields['id'], READ)) {
-         return false;
+         return;
       }
 
       // build the Vcard

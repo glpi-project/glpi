@@ -44,9 +44,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   /**
-    * Return Additional Fileds for this type
-   **/
    function getAdditionalFields() {
 
       return [['name'  => $this->getForeignKeyField(),
@@ -466,10 +463,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    * @return Nothing (display)
-    **/
+    * @return void
+    */
    function showChildren() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID            = $this->getID();
       $this->check($ID, READ);
@@ -582,9 +579,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -599,13 +593,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'move_under' :
@@ -623,11 +611,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return parent::showMassiveActionsSubForm($ma);
    }
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -674,11 +658,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
    function rawSearchOptions() {
       $tab = [];
 
@@ -782,10 +761,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * Report if a dropdown have Child
-    * Used to (dis)allow delete action
-   **/
    function haveChildren() {
 
       $fk = $this->getForeignKeyField();
@@ -817,13 +792,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * check if a tree dropdown already exists (before import)
-    *
-    * @param &$input array of value to import (name, ...)
-    *
-    * @return the ID of the new (or -1 if not found)
-   **/
    function findID(array &$input) {
       global $DB;
 
@@ -871,13 +839,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * Import a dropdown - check if already exists
-    *
-    * @param $input array of value to import (name or completename, ...)
-    *
-    * @return the ID of the new or existing dropdown (0 on failure)
-   **/
    function import(array $input) {
 
       if (isset($input['name'])) {

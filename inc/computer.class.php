@@ -55,39 +55,21 @@ class Computer extends CommonDBTM {
    protected $usenotepad               = true;
 
 
-   /**
-    * Name of the type
-    *
-    * @param $nb  integer  number of item in the type (default 0)
-   **/
    static function getTypeName($nb = 0) {
       return _n('Computer', 'Computers', $nb);
    }
 
 
-   /**
-    * @see CommonDBTM::useDeletedToLockIfDynamic()
-    *
-    * @since 0.84
-   **/
    function useDeletedToLockIfDynamic() {
       return false;
    }
 
 
-   /**
-    * @see CommonGLPI::getMenuShorcut()
-    *
-    * @since 0.85
-   **/
    static function getMenuShorcut() {
       return 'o';
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -132,9 +114,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::post_updateItem()
-   **/
    function post_updateItem($history = 1) {
       global $DB, $CFG_GLPI;
 
@@ -255,9 +234,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && ($input["id"] > 0)) {
@@ -271,7 +247,6 @@ class Computer extends CommonDBTM {
 
 
    function post_addItem() {
-      global $DB;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
@@ -344,10 +319,9 @@ class Computer extends CommonDBTM {
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
+    * @return boolean
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -539,12 +513,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * Return the linked items (in computers_items)
-    *
-    * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-    * @since 0.84.4
-   **/
    function getLinkedItems() {
       global $DB;
 
@@ -562,9 +530,6 @@ class Computer extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -587,7 +552,6 @@ class Computer extends CommonDBTM {
 
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
 
       $tab = [];
 
