@@ -728,17 +728,18 @@ class DbUtils extends DbTestCase {
 
       //test on multiple entities
       $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
+      $newckey = $ckey . md5("$new_id|$new_id2");
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $new_id . '|' . $new_id2))->isFalse();
+         $this->boolean(apcu_exists($newckey))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
       }
    }
 
