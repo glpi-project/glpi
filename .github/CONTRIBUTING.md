@@ -4,7 +4,7 @@
 
 Please note current repository is about GLPI core only. All related plugins are the responsibility of their respective owners and all requests must be done on their own systems.
 
-**Plase write only in english!**
+**Please write only in english!**
 
 ## Bugs
 
