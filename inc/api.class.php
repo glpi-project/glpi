@@ -2180,7 +2180,7 @@ abstract class API extends CommonGLPI {
       // parse fields recursively
       foreach ($fields as $key => &$value) {
          if (is_array($value)) {
-            $value = self::parseDropdowns($value);
+            $value = self::parseDropdowns($value, $params);
          }
          if (is_integer($key)) {
             continue;
