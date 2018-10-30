@@ -257,9 +257,12 @@ abstract class LevelAgreement extends CommonDBChild {
       if ($ticket->fields['id']) {
          if ($this->getDataForTicket($ticket->fields['id'], $type)) {
             echo "<td style='width: 105px'>";
+            echo $tt->getBeginHiddenFieldValue($dateField);
             echo Html::convDateTime($ticket->fields[$dateField]);
+            echo $tt->getEndHiddenFieldValue($dateField, $ticket);
             echo "</td>";
             echo "<td>";
+            echo $tt->getBeginHiddenFieldText($laField);
             echo "<i class='far fa-clock slt'></i>";
             echo Dropdown::getDropdownName(static::getTable(),
                                            $ticket->fields[$laField])."&nbsp;";
@@ -311,6 +314,7 @@ abstract class LevelAgreement extends CommonDBChild {
                echo "<span class='sr-only'>"._x('button', 'Delete permanently')."</span>";
                echo "</a>";
             }
+            echo $tt->getEndHiddenFieldText($laField);
             echo "</td>";
 
          } else {
