@@ -738,11 +738,18 @@ class Search extends DbTestCase {
                     'order'        => 'ASC',
                     'sort'         => 1,
                     'is_deleted'   => 0,
-                    'criteria'     => [0 => ['field' => 'view',
-                                             'link' => 'contains',
-                                             'value' => '',
-                                            ],
-                                      ],
+                    'criteria'     => [
+                        0 => [
+                           'field' => 'view',
+                           'link'  => 'contains',
+                           'value' => '',
+                        ],
+                        1 => [
+                           'field' => 'view',
+                           'link'  => 'notcontains',
+                           'value' => '',
+                        ],
+                     ],
                     'metacriteria' => [],
                     'as_map'       => 0
                    ]);
