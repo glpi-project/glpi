@@ -6447,7 +6447,7 @@ class Html {
                         break;
 
                      default :
-                        echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</span>";
+                        echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val, ['class' => 'pointer'])."</span>";
                         break;
                   }
                }
