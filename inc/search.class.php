@@ -1923,6 +1923,11 @@ class Search {
                                              '%'.$valuename.'%');
                      break;
 
+                  case "notcontains" :
+                     $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
+                                             '%'.$valuename.'%');
+                     break;
+
                   case "under" :
                      $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
                                              sprintf(__('%1$s %2$s'), __('under'), $gdname));
@@ -2001,6 +2006,11 @@ class Search {
 
                   case "contains" :
                      $titlecontain2 = sprintf(__('%1$s = %2$s'), $titlecontain2,
+                                                '%'.$metacriteria['value'].'%');
+                     break;
+
+                  case "notcontains" :
+                     $titlecontain2 = sprintf(__('%1$s <> %2$s'), $titlecontain2,
                                                 '%'.$metacriteria['value'].'%');
                      break;
 
@@ -2676,11 +2686,17 @@ JAVASCRIPT;
          }
       }
 
-      return [[
-         'field' => $field,
-         'link'  => 'contains',
-         'value' => ''
-      ]];
+      return [
+         [
+            'field' => $field,
+            'link'  => 'contains',
+            'value' => ''
+         ],  [
+            'field' => $field,
+            'link'  => 'notcontains',
+            'value' => ''
+         ]
+      ];
    }
 
    /**
@@ -2995,6 +3011,10 @@ JAVASCRIPT;
                }
                break;
          }
+      }
+
+      if ($searchtype == "notcontains") {
+         $nott = !$nott;
       }
 
       return self::makeTextCriteria("`$NAME`", $val, $NOT, $LINK);
@@ -3841,6 +3861,8 @@ JAVASCRIPT;
          }
       }
       switch ($searchtype) {
+         case "notcontains" :
+            $nott = !$nott;
          case "contains" :
             $SEARCH = self::makeTextSearch($val, $nott);
             break;
@@ -4202,7 +4224,7 @@ JAVASCRIPT;
                if ($searchtype) {
                   $date_computation = $tocompute;
                }
-               if ($searchtype == "contains") {
+               if (in_array($searchtype, ["contains", "notcontains"])) {
                   $date_computation = "CONVERT($date_computation USING utf8)";
                }
                $search_unit = ' MONTH ';
@@ -6583,8 +6605,11 @@ JAVASCRIPT;
    static function getActionsFor($itemtype, $field_num) {
 
       $searchopt = &self::getOptions($itemtype);
-      $actions   = ['contains'  => __('contains'),
-                         'searchopt' => []];
+      $actions   = [
+         'contains'    => __('contains'),
+         'notcontains' => __('not contains'),
+         'searchopt'   => []
+      ];
 
       if (isset($searchopt[$field_num]) && isset($searchopt[$field_num]['table'])) {
          $actions['searchopt'] = $searchopt[$field_num];
@@ -6608,7 +6633,12 @@ JAVASCRIPT;
                      break;
 
                   case "contains" :
-                     $actions['contains'] = __('contains');
+                     $actions['contains']    = __('contains');
+                     $actions['notcontains'] = __('not contains');
+                     break;
+
+                  case "notcontains" :
+                     $actions['notcontains'] = __('not contains');
                      break;
 
                   case "under" :
@@ -6635,10 +6665,13 @@ JAVASCRIPT;
             switch ($searchopt[$field_num]['datatype']) {
                case 'count' :
                case 'number' :
-                  $opt = ['contains'  => __('contains'),
-                               'equals'    => __('is'),
-                               'notequals' => __('is not'),
-                               'searchopt' => $searchopt[$field_num]];
+                  $opt = [
+                     'contains'    => __('contains'),
+                     'notcontains' => __('notcontains'),
+                     'equals'      => __('is'),
+                     'notequals'   => __('is not'),
+                     'searchopt'   => $searchopt[$field_num]
+                  ];
                   // No is / isnot if no limits defined
                   if (!isset($searchopt[$field_num]['min'])
                       && !isset($searchopt[$field_num]['max'])) {
@@ -6648,10 +6681,13 @@ JAVASCRIPT;
                   return $opt;
 
                case 'bool' :
-                  return ['equals'    => __('is'),
-                               'notequals' => __('is not'),
-                               'contains'  => __('contains'),
-                               'searchopt' => $searchopt[$field_num]];
+                  return [
+                     'equals'      => __('is'),
+                     'notequals'   => __('is not'),
+                     'contains'    => __('contains'),
+                     'notcontains' => __('not contains'),
+                     'searchopt'   => $searchopt[$field_num]
+                  ];
 
                case 'right' :
                   return ['equals'    => __('is'),
@@ -6666,12 +6702,15 @@ JAVASCRIPT;
                case 'date' :
                case 'datetime' :
                case 'date_delay' :
-                  return ['equals'    => __('is'),
-                               'notequals' => __('is not'),
-                               'lessthan'  => __('before'),
-                               'morethan'  => __('after'),
-                               'contains'  => __('contains'),
-                               'searchopt' => $searchopt[$field_num]];
+                  return [
+                     'equals'      => __('is'),
+                     'notequals'   => __('is not'),
+                     'lessthan'    => __('before'),
+                     'morethan'    => __('after'),
+                     'contains'    => __('contains'),
+                     'notcontains' => __('not contains'),
+                     'searchopt'   => $searchopt[$field_num]
+                  ];
             }
          }
 
@@ -6690,10 +6729,13 @@ JAVASCRIPT;
 
             case 'name' :
             case 'completename' :
-               $actions = ['contains'  => __('contains'),
-                                'equals'    => __('is'),
-                                'notequals' => __('is not'),
-                                'searchopt' => $searchopt[$field_num]];
+               $actions = [
+                  'contains'    => __('contains'),
+                  'notcontains' => __('contains'),
+                  'equals'      => __('is'),
+                  'notequals'   => __('is not'),
+                  'searchopt'   => $searchopt[$field_num]
+               ];
 
                // Specific case of TreeDropdown : add under
                $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
