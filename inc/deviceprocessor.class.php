@@ -227,6 +227,23 @@ class DeviceProcessor extends CommonDevice {
       ];
 
       $tab[] = [
+         'id'                 => '18',
+         'table'              => 'glpi_deviceprocessors',
+         'field'              => 'id',
+         'name'               => __('processor number'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'count',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_deviceprocessors',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
          'id'                 => '36',
          'table'              => 'glpi_items_deviceprocessors',
          'field'              => 'frequency',
