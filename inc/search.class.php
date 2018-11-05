@@ -671,7 +671,12 @@ class Search {
       //// 7 - Manage GROUP BY
       $GROUPBY = "";
       // Meta Search / Search All / Count tickets
+      $criteria_with_meta = array_filter($data['search']['criteria'], function($criterion) {
+         return isset($criterion['meta'])
+                && $criterion['meta'];
+      });
       if ((count($data['search']['metacriteria']))
+          || count($criteria_with_meta)
           || !empty($HAVING)
           || $data['search']['all_search']) {
          $GROUPBY = " GROUP BY `$itemtable`.`id`";
@@ -2069,6 +2074,12 @@ class Search {
             }
             break;
 
+         case 'Change' :
+            if (Session::haveRight("change", Change::READALL)) {
+               $linked = array_keys(Change::getAllTypesForHelpdesk());
+            }
+            break;
+
          case 'Printer' :
          case 'Monitor' :
          case "Peripheral" :
@@ -2088,8 +2099,17 @@ class Search {
    **/
    static function getMetaReferenceItemtype ($itemtype) {
 
-      $types = ['Computer', 'Problem', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
-                     'Software', 'Phone'];
+      $types = [
+         'Computer',
+         'Problem',
+         'Change',
+         'Ticket',
+         'Printer',
+         'Monitor',
+         'Peripheral',
+         'Software',
+         'Phone'
+      ];
       foreach ($types as $type) {
          if (is_a($itemtype, $type, true)) {
             return $type;
@@ -2190,15 +2210,18 @@ class Search {
 
       echo "<div class='search_actions'>";
       $rand_criteria = mt_rand();
+      $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<span id='addsearchcriteria$rand_criteria' class='secondary'>
                <i class='fas fa-plus-square'></i>
                ".__s('rule')."
-            </span>
-            <span id='addmetasearchcriteria$rand_criteria' class='secondary'>
-               <i class='far fa-plus-square'></i>
-               ".__s('global rule')."
-            </span>
-            <span id='addcriteriagroup$rand_criteria' class='secondary'>
+            </span>";
+      if (count($linked)) {
+         echo "<span id='addmetasearchcriteria$rand_criteria' class='secondary'>
+                  <i class='far fa-plus-square'></i>
+                  ".__s('global rule')."
+               </span>";
+      }
+      echo "<span id='addcriteriagroup$rand_criteria' class='secondary'>
                <i class='fas fa-plus-circle'></i>
                ".__s('group')."
             </span>";
@@ -4839,6 +4862,7 @@ JAVASCRIPT;
       }
 
       $from_table = getTableForItemType($from_type);
+      $from_fk    = getForeignKeyFieldForTable($from_table);
       $to_table   = getTableForItemType($to_type);
       $to_fk      = getForeignKeyFieldForTable($to_table);
 
@@ -4867,17 +4891,24 @@ JAVASCRIPT;
       switch (static::getMetaReferenceItemtype($from_type)) {
          case 'Ticket' :
          case 'Problem' :
-            if ($from_type == 'Ticket') {
-               $table = 'tickets';
-            } else if ($from_type == 'Problem') {
-               $table = 'problems';
+         case 'Change' :
+            switch ($from_type) {
+               case 'Ticket':
+                  $link_table = "glpi_items_tickets";
+                  break;
+               case 'Problem':
+                  $link_table = "glpi_items_problems";
+                  break;
+               case 'Change':
+                  $link_table = "glpi_changes_items";
+                  break;
             }
             array_push($already_link_tables2, $to_table);
-            return " $LINK `glpi_items_".$table."` AS glpi_items_".$table."_to_$to_type
-                        ON (`glpi_".$table."`.`id` = `glpi_items_".$table."_to_$to_type`.`".$table."_id`)
+            return " $LINK `$link_table` AS {$link_table}_to_$to_type
+                        ON (`$from_table`.`id` = `{$link_table}_to_$to_type`.`$from_fk`)
                      $LINK `$to_table`
-                        ON (`$to_table`.`id` = `glpi_items_".$table."_to_$to_type`.`items_id`
-                     AND `glpi_items_".$table."_to_$to_type`.`itemtype` = '$to_type')";
+                        ON (`$to_table`.`id` = `{$link_table}_to_$to_type`.`items_id`
+                     AND `{$link_table}_to_$to_type`.`itemtype` = '$to_type')";
 
          case 'Computer' :
             switch ($to_type) {
