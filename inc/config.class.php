@@ -2340,6 +2340,9 @@ class Config extends CommonDBTM {
             'mbstring' => [
                'required'  => true,
             ],
+            'iconv'    => [
+               'required'  => true,
+            ],
             'zlib'     => [
                'required'  => true,
             ],

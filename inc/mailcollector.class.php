@@ -1447,11 +1447,10 @@ class MailCollector  extends CommonDBTM {
             }
 
             if (null !== $charset && 'UTF-8' !== $charset) {
-               if (extension_loaded('mbstring')
-                   && in_array($charset, array_map('strtoupper', mb_list_encodings()))) {
+               if (in_array($charset, array_map('strtoupper', mb_list_encodings()))) {
                   $text                 = mb_convert_encoding($text, 'UTF-8', $charset);
                   $this->body_converted = true;
-               } else if (extension_loaded('iconv')) {
+               } else {
                   // Convert Windows charsets names
                   if (preg_match('/^WINDOWS-\d{4}$/', $charset)) {
                      $charset = preg_replace('/^WINDOWS-(\d{4})$/', 'CP$1', $charset);
