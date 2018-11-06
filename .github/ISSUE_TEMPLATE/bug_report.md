@@ -1,3 +1,9 @@
+---
+name: Bug report
+about: Create a report to help us improve GLPI (plugins issues are not handled here).
+
+---
+
 <!--
 
 Dear GLPI user.
