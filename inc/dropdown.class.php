@@ -844,6 +844,8 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'DeviceMemoryType'     => _n('Memory type', 'Memory types',
                                               Session::getPluralNumber()),
+                  'DeviceModemType'    => _n('Modem type', 'Modem types',
+                                              Session::getPluralNumber()),
                  'SupplierType'         => _n('Third party type',
                                               'Third party types',
                                               Session::getPluralNumber()),
@@ -865,7 +867,7 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'LineType'             => _n('Line type', 'Line types',
                                              Session::getPluralNumber()),
-                 'RackType'             => RackType::getTypeName(Session::getPluralNumber())
+                 'RackType'             => RackType::getTypeName(Session::getPluralNumber()),
              ],
 
              __('Model') => [
@@ -902,6 +904,8 @@ class Dropdown {
                                                    'Device hard drive models', Session::getPluralNumber()),
                   'DeviceMemoryModel'        => _n('Device memory model',
                                                    'Device memory models', Session::getPluralNumber()),
+                  'DeviceModemModel'         => _n('Device modem model',
+                                                   'Device modem models', Session::getPluralNumber()),
                   'DeviceMotherBoardModel'   => _n('Device mother board model',
                                                    'Device mother board models', Session::getPluralNumber()),
                   'DeviceNetworkCardModel'   => _n('Device network card model',

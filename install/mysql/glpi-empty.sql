@@ -2046,6 +2046,61 @@ INSERT INTO `glpi_devicememorytypes` VALUES ('2','DDR',NULL,NULL,NULL);
 INSERT INTO `glpi_devicememorytypes` VALUES ('3','SDRAM',NULL,NULL,NULL);
 INSERT INTO `glpi_devicememorytypes` VALUES ('4','SDRAM-2',NULL,NULL,NULL);
 
+### Dump table glpi_devicemodemmodels
+
+DROP TABLE IF EXISTS `glpi_devicemodemmodels`;
+CREATE TABLE `glpi_devicemodemmodels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `product_number` (`product_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_devicemodems
+
+DROP TABLE IF EXISTS `glpi_devicemodems`;
+CREATE TABLE `glpi_devicemodems` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+  `devicemodemtypes_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `devicemodemmodels_id` int(11) DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `designation` (`designation`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `devicemodemtypes_id` (`devicemodemtypes_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `devicemodemmodels_id` (`devicemodemmodels_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_devicemodemtypes
+
+DROP TABLE IF EXISTS `glpi_devicemodemtypes`;
+CREATE TABLE `glpi_devicemodemtypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 ### Dump table glpi_devicemotherboardmodels
 
 DROP TABLE IF EXISTS `glpi_devicemotherboardmodels`;
@@ -3680,6 +3735,57 @@ CREATE TABLE `glpi_items_devicememories` (
   KEY `computers_id` (`items_id`),
   KEY `devicememories_id` (`devicememories_id`),
   KEY `specificity` (`size`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `serial` (`serial`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `busID` (`busID`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `otherserial` (`otherserial`),
+  KEY `locations_id` (`locations_id`),
+  KEY `states_id` (`states_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicemodems
+
+DROP TABLE IF EXISTS `glpi_items_devicemodems`;
+CREATE TABLE `glpi_items_devicemodems` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicemodems_id` int(11) NOT NULL DEFAULT '0',
+  `imei_1` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `imei_2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `imei_3` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `imei_4` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicesimcardtypes_id_1` int(11) NOT NULL DEFAULT '0',
+  `devicesimcardtypes_id_2` int(11) NOT NULL DEFAULT '0',
+  `devicesimcardtypes_id_3` int(11) NOT NULL DEFAULT '0',
+  `devicesimcardtypes_id_4` int(11) NOT NULL DEFAULT '0',
+  `firmware_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `busID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicemodems_id` (`devicemodems_id`),
+  KEY `specificity_1` (`imei_1`),
+  KEY `specificity_2` (`imei_2`),
+  KEY `specificity_3` (`imei_3`),
+  KEY `specificity_4` (`imei_4`),
+  KEY `specificity_5` (`devicesimcardtypes_id_1`),
+  KEY `specificity_6` (`devicesimcardtypes_id_2`),
+  KEY `specificity_7` (`devicesimcardtypes_id_3`),
+  KEY `specificity_8` (`devicesimcardtypes_id_4`),
+  KEY `specificity_9` (`firmware_version`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),

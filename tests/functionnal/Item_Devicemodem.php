@@ -34,31 +34,22 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Devicesimcard extends DbTestCase {
-   private $method;
+class Item_DeviceModem extends DbTestCase {
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      //to handle GLPI barbarian replacements.
-      $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-            );
-   }
-
-   public function testAdd() {
+   public function testCreate() {
       $this->login();
-      $obj = new \DeviceSimcard();
+      $obj = new \Item_DeviceModem();
 
       // Add
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $this->object($computer)->isInstanceOf('\Computer');
+      $deviceModem = getItemForItemtype('DeviceModem', '_test_modem_1');
+      $this->object($deviceModem)->isInstanceOf('\DeviceModem');
       $in = [
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1',
-            'comment'                  => $this->getUniqueString(),
+            'itemtype'           => 'Computer',
+            'items_id'           => $computer->getID(),
+            'devicemodems_id'  => $deviceModem->getID(),
+            'entities_id'        => 0,
       ];
       $id = $obj->add($in);
       $this->integer((int)$id)->isGreaterThan(0);
@@ -73,23 +64,34 @@ class Devicesimcard extends DbTestCase {
 
    public function testUpdate() {
       $this->login();
-      $obj = new \DeviceSimcard();
+      $obj = new \Item_DeviceModem();
 
       // Add
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $this->object($computer)->isInstanceOf('\Computer');
+      $deviceModem = getItemForItemtype('Devicemodem', '_test_modem_1');
+      $this->object($deviceModem)->isInstanceOf('\DeviceModem');
       $id = $obj->add([
-            'designation' => $this->getUniqueString(),
+            'itemtype'           => 'Computer',
+            'items_id'           => $computer->getID(),
+            'devicemodems_id'    => $deviceModem->getID(),
+            'entities_id'        => 0,
       ]);
-      $this->integer($id)->isGreaterThan(0);
+       $this->integer($id)->isGreaterThan(0);
 
       // Update
+      $id = $obj->getID();
       $in = [
             'id'                       => $id,
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1',
-            'comment'                  => $this->getUniqueString(),
+            'imei_1'                   => '0123',
+            'imei_2'                   => '1234',
+            'imei_3'                   => '2345',
+            'imei_1'                   => '3456',
+            'devicesimcardtypes_id_1'  => $this->getUniqueInteger(),
+            'devicesimcardtypes_id_2'  => $this->getUniqueInteger(),
+            'devicesimcardtypes_id_3'  => $this->getUniqueInteger(),
+            'devicesimcardtypes_id_4'  => $this->getUniqueInteger(),
+            'firmware_version'         => $this->getUniqueString(),
       ];
       $this->boolean($obj->update($in))->isTrue();
       $this->boolean($obj->getFromDB($id))->isTrue();
@@ -102,11 +104,18 @@ class Devicesimcard extends DbTestCase {
 
    public function testDelete() {
       $this->login();
-      $obj = new \DeviceSimcard();
+      $obj = new \Item_DeviceSimcard();
 
       // Add
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $this->object($computer)->isInstanceOf('\Computer');
+      $deviceSimcard = getItemForItemtype('DeviceModem', '_test_modem_1');
+      $this->object($deviceSimcard)->isInstanceOf('\DeviceModem');
       $id = $obj->add([
-            'designation' => $this->method,
+            'itemtype'           => 'Computer',
+            'items_id'           => $computer->getID(),
+            'devicemodems_id'    => $deviceSimcard->getID(),
+            'entities_id'        => 0,
       ]);
       $this->integer($id)->isGreaterThan(0);
 

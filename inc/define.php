@@ -235,7 +235,7 @@ $CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_Dev
                                                   'Item_DeviceMotherBoard', 'Item_DeviceNetworkCard',
                                                   'Item_DeviceSoundCard', 'Item_DeviceControl',
                                                   'Item_DeviceHardDrive', 'Item_DeviceDrive', 'Item_DeviceMemory',
-                                                  'Item_DeviceProcessor', 'Item_DeviceGeneric',
+                                                  'Item_DeviceModem', 'Item_DeviceProcessor', 'Item_DeviceGeneric',
                                                   'Item_DeviceBattery', 'Item_DeviceFirmware', 'Item_DeviceSimcard',
                                                   'Item_DeviceSensor'];
 
@@ -316,11 +316,11 @@ $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPort
                                                   'NetworkPortFiberchannel'];
 
 $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
-                                                  'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
-                                                  'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
-                                                  'DeviceSoundCard', 'DeviceControl', 'DevicePci',
-                                                  'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-                                                  'DeviceSimcard', 'DeviceSensor'];
+                                             'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
+                                             'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
+                                             'DeviceSoundCard', 'DeviceControl', 'DevicePci',
+                                             'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
+                                             'DeviceModem', 'DeviceSimcard', 'DeviceSensor'];
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure'];
@@ -328,6 +328,8 @@ $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Pe
 $CFG_GLPI["itemdevices_itemaffinity"]     = ['Computer'];
 
 $CFG_GLPI["itemdevicememory_types"]       = ['Computer', 'NetworkEquipment', 'Peripheral', 'Printer'];
+
+$CFG_GLPI['itemdevicemodem_types']        = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
 
 $CFG_GLPI["itemdevicepowersupply_types"]  = ['Computer', 'NetworkEquipment', 'Enclosure'];
 
@@ -339,7 +341,7 @@ $CFG_GLPI['itemdevicebattery_types']      = ['Computer', 'Peripheral', 'Phone', 
 
 $CFG_GLPI['itemdevicefirmware_types']     = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
 
-$CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
+$CFG_GLPI['itemdevicesimcard_types']      = $CFG_GLPI['itemdevicemodem_types'];
 
 $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 

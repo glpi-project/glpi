@@ -34,30 +34,26 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Devicesimcard extends DbTestCase {
+class DeviceModemType extends DbTestCase {
    private $method;
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
       //to handle GLPI barbarian replacements.
       $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-            );
+         ['\\', 'beforeTestMethod'],
+         ['', $method],
+         __METHOD__
+      );
    }
 
    public function testAdd() {
       $this->login();
-      $obj = new \DeviceSimcard();
+      $obj = new \DeviceModemType();
 
       // Add
       $in = [
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1',
+            'name'                     => $this->method,
             'comment'                  => $this->getUniqueString(),
       ];
       $id = $obj->add($in);
@@ -73,22 +69,19 @@ class Devicesimcard extends DbTestCase {
 
    public function testUpdate() {
       $this->login();
-      $obj = new \DeviceSimcard();
+      $obj = new \DeviceSimcardType();
 
       // Add
       $id = $obj->add([
-            'designation' => $this->getUniqueString(),
+            'name'                     => $this->getUniqueString(),
       ]);
       $this->integer($id)->isGreaterThan(0);
 
       // Update
+      $id = $obj->getID();
       $in = [
             'id'                       => $id,
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1',
+            'name'                     => $this->method,
             'comment'                  => $this->getUniqueString(),
       ];
       $this->boolean($obj->update($in))->isTrue();
@@ -102,11 +95,11 @@ class Devicesimcard extends DbTestCase {
 
    public function testDelete() {
       $this->login();
-      $obj = new \DeviceSimcard();
+      $obj = new \DeviceSimcardType();
 
       // Add
       $id = $obj->add([
-            'designation' => $this->method,
+            'name'                     => $this->method,
       ]);
       $this->integer($id)->isGreaterThan(0);
 

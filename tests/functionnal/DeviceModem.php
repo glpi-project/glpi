@@ -55,9 +55,8 @@ class Devicesimcard extends DbTestCase {
       $in = [
             'designation'              => $this->method,
             'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1',
+            'devicemodemtypes_id'      => $this->getUniqueInteger(),
+            'devicemodemmodels_id'     => $this->getUniqueInteger(),
             'comment'                  => $this->getUniqueString(),
       ];
       $id = $obj->add($in);
@@ -86,9 +85,8 @@ class Devicesimcard extends DbTestCase {
             'id'                       => $id,
             'designation'              => $this->method,
             'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesimcardtypes_id'    => $this->getUniqueInteger(),
-            'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1',
+            'devicemodemtypes_id'      => $this->getUniqueInteger(),
+            'devicemodemmodels_id'     => $this->getUniqueInteger(),
             'comment'                  => $this->getUniqueString(),
       ];
       $this->boolean($obj->update($in))->isTrue();
