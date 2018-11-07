@@ -31,10 +31,6 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 //#################### INCLUDE & SESSIONS ############################
 define('GLPI_ROOT', realpath('..'));
 
@@ -49,6 +45,10 @@ include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 Session::setPath();
 Session::start();
+
+if (!isset($_SESSION['do_content_update'])) {
+   die("Sorry. You can't access this file directly");
+}
 
 // Init debug variable
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
