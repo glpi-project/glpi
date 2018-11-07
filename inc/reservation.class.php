@@ -1068,7 +1068,8 @@ class Reservation extends CommonDBChild {
 
          echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
 
-         if (count($result) && $ri->fields["is_active"]) {
+         if (count($result) && $ri->fields["is_active"]
+             && Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."'>".__('Current and future reservations')."</a>";
          } else {
@@ -1124,7 +1125,8 @@ class Reservation extends CommonDBChild {
 
          echo "<div class='spaced'><table class='tab_cadre_fixehov'><tr><th colspan='5'>";
 
-         if (count($result) && $ri->fields["is_active"]) {
+         if (count($result) && $ri->fields["is_active"]
+             && Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."' >".__('Past reservations')."</a>";
          } else {
