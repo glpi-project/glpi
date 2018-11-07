@@ -1064,11 +1064,11 @@ class Reservation extends CommonDBChild {
                    WHERE `end` > '".$now."'
                          AND `reservationitems_id` = '".$ri->fields['id']."'
                    ORDER BY `begin`";
-         $result = $DB->query($query);
+         $result = $DB->request($query);
 
          echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
 
-         if ($ri->fields["is_active"]) {
+         if (count($result) && $ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."'>".__('Current and future reservations')."</a>";
          } else {
@@ -1076,7 +1076,7 @@ class Reservation extends CommonDBChild {
          }
          echo "</th></tr>\n";
 
-         if ($DB->numrows($result) == 0) {
+         if (!count($result)) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='5'>".__('No reservation')."</td></tr>\n";
 
@@ -1086,20 +1086,29 @@ class Reservation extends CommonDBChild {
             echo "<th>".__('By')."</th>";
             echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
-            while ($data  =$DB->fetch_assoc($result)) {
+            while ($data = $result->next()) {
                echo "<tr class='tab_bg_2'>";
                echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
                echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
-               echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a></td>";
+               if (Session::haveRight('user', READ)) {
+                  echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a>";
+               } else {
+                  echo getUserName($data["users_id"]);
+               }
+               echo "</td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
-               list($annee, $mois, $jour) = explode("-", $data["begin"]);
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                     $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
-                     __s('See planning')."\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt=''>".
-                    "</a>";
+               if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
+                  list($annee, $mois, $jour) = explode("-", $data["begin"]);
+                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
+                        $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
+                        __s('See planning')."\">";
+                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt=''>".
+                       "</a>";
+               } else {
+                  echo "&nbsp;";
+               }
                echo "</td></tr>\n";
             }
          }
@@ -1111,11 +1120,11 @@ class Reservation extends CommonDBChild {
                    WHERE `end` <= '".$now."'
                          AND `reservationitems_id` = '".$ri->fields['id']."'
                    ORDER BY `begin` DESC";
-         $result = $DB->query($query);
+         $result = $DB->request($query);
 
          echo "<div class='spaced'><table class='tab_cadre_fixehov'><tr><th colspan='5'>";
 
-         if ($ri->fields["is_active"]) {
+         if (count($result) && $ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."' >".__('Past reservations')."</a>";
          } else {
@@ -1123,7 +1132,7 @@ class Reservation extends CommonDBChild {
          }
          echo "</th></tr>\n";
 
-         if ($DB->numrows($result) == 0) {
+         if (!count($result)) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='5'>".__('No reservation')."</td></tr>\n";
 
@@ -1133,20 +1142,30 @@ class Reservation extends CommonDBChild {
             echo "<th>".__('By')."</th>";
             echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $result->next()) {
                echo "<tr class='tab_bg_2'>";
                echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
                echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
-               echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a></td>";
+               if (Session::haveRight('user', READ)) {
+                  echo "<a href='".User::getFormURLWithID($data["users_id"])."'>".getUserName($data["users_id"])."</a>";
+               } else {
+                  echo getUserName($data["users_id"]);
+               }
+               echo "</td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
-               list($annee, $mois ,$jour) = explode("-", $data["begin"]);
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                     $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
-                     __s('See planning')."\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt=''>";
-               echo "</a></td></tr>\n";
+               if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
+                  list($annee, $mois ,$jour) = explode("-", $data["begin"]);
+                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
+                        $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
+                        __s('See planning')."\">";
+                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt=''>";
+                  echo "</a>";
+               } else {
+                  echo "&nbsp;";
+               }
+               echo "</td></tr>\n";
             }
          }
          echo "</table>\n";
