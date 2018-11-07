@@ -43,20 +43,6 @@ class Ticket_User extends CommonITILActor {
    static public $itemtype_2 = 'User';
    static public $items_id_2 = 'users_id';
 
-   function prepareInputForUpdate($input) {
-      if (isset($input['alternative_email']) && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
-         Session::addMessageAfterRedirect(
-            __('Invalid email address'),
-            false,
-            ERROR
-         );
-         return false;
-      }
-
-      $input = parent::prepareInputForUpdate($input);
-      return $input;
-   }
-
    function post_addItem() {
 
       switch ($this->input['type']) { // Values from CommonITILObject::getSearchOptionsActors()

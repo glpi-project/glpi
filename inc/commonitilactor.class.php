@@ -341,6 +341,33 @@ abstract class CommonITILActor extends CommonDBRelation {
       return $input;
    }
 
+   function prepareInputForUpdate($input) {
+      if ($input['alternative_email'] == '') {
+         if (isset($input['users_id'])) {
+            $actor = new User();
+            if ($actor->getFromDB($input["users_id"])) {
+               $input['alternative_email'] = $actor->getDefaultEmail();
+            }
+         }
+         if (isset($input['suppliers_id'])) {
+            $actor = new Supplier;
+            if ($actor->getFromDB($input["suppliers_id"])) {
+               $input['alternative_email'] = $actor->fields['email'];
+            }
+         }
+      }
+      if (isset($input['alternative_email']) && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
+         Session::addMessageAfterRedirect(
+            __('Invalid email address'),
+            false,
+            ERROR
+         );
+         return false;
+      }
+
+      $input = parent::prepareInputForUpdate($input);
+      return $input;
+   }
 
    function post_addItem() {
 
