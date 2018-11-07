@@ -2841,12 +2841,8 @@ class Config extends CommonDBTM {
          Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
 
-      //use memory adapter when called from tests
-      if (defined('TU_USER') && !defined('CACHED_TESTS')) {
-         $opt['adapter'] = 'memory';
-      }
-      //force FS adapter for translations for tests
-      if (defined('TU_USER') && $optname == 'cache_trans') {
+      //use FS adapter when called from tests
+      if (defined('TU_USER') && (!defined('CACHED_TESTS') ||$optname = 'cache_trans' )) {
          $opt['adapter'] = 'filesystem';
       }
 

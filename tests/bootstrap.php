@@ -33,7 +33,7 @@
 error_reporting(E_ALL);
 
 define('GLPI_CONFIG_DIR', __DIR__);
-define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
+define('GLPI_VAR_DIR', __DIR__ . '/files');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
@@ -44,8 +44,29 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 }
 global $CFG_GLPI, $GLPI_CACHE;
 
-include_once (GLPI_ROOT . "/inc/define.php");
-include __DIR__ . '/../inc/autoload.function.php';
+include_once GLPI_ROOT . '/inc/based_config.php';
+//create var_dir and children if it does not exists
+$directories = [
+   GLPI_VAR_DIR,
+   GLPI_DUMP_DIR,
+   GLPI_DOC_DIR,
+   GLPI_CRON_DIR,
+   GLPI_SESSION_DIR,
+   GLPI_PLUGIN_DOC_DIR,
+   GLPI_LOCK_DIR,
+   GLPI_LOG_DIR,
+   GLPI_GRAPH_DIR,
+   GLPI_PICTURE_DIR,
+   GLPI_TMP_DIR,
+   GLPI_CACHE_DIR,
+   GLPI_RSS_DIR,
+   GLPI_UPLOAD_DIR
+];
+foreach ($directories as $directory) {
+   if (!file_exists($directory)) {
+      mkdir($directory);
+   }
+}
 
 //init cache
 $GLPI_CACHE = Config::getCache('cache_db');
