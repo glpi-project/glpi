@@ -67,6 +67,10 @@ function update93to94() {
    ]);
    /** /Add requester field on glpi_mailcollectors */
 
+   /** Increase value length for criteria */
+   $migration->changeField('glpi_rulecriterias', 'pattern', 'pattern', 'text');
+   /** /Increase value length for criteria */
+
    /** Add business rules on assets */
    $rule = ['name'         => 'Domain user assignation',
             'is_active'    => 1,

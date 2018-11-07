@@ -7722,7 +7722,7 @@ CREATE TABLE `glpi_rulecriterias` (
   `rules_id` int(11) NOT NULL DEFAULT '0',
   `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `condition` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
-  `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pattern` TEXT COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `rules_id` (`rules_id`),
   KEY `condition` (`condition`)
