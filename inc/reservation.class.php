@@ -1072,7 +1072,7 @@ class Reservation extends CommonDBChild {
 
          echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
 
-         if ($ri->fields["is_active"]) {
+         if (($DB->numrows($result) > 0) && $ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."'>".__('Current and future reservations')."</a>";
          } else {
@@ -1120,7 +1120,7 @@ class Reservation extends CommonDBChild {
 
          echo "<div class='spaced'><table class='tab_cadre_fixehov'><tr><th colspan='5'>";
 
-         if ($ri->fields["is_active"]) {
+         if (($DB->numrows($result) > 0) & $ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."' >".__('Past reservations')."</a>";
          } else {
@@ -1143,16 +1143,25 @@ class Reservation extends CommonDBChild {
                echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
                echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
+               if (Session::haveRight('user', READ)) {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".
                       $data["users_id"]."'>".getUserName($data["users_id"])."</a></td>";
+               } else {
+                  echo getUserName($data["users_id"]);
+               }
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
-               list($annee, $mois ,$jour) = explode("-", $data["begin"]);
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                     $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
-                     __s('See planning')."\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>";
-               echo "</a></td></tr>\n";
+               if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
+                  list($annee, $mois ,$jour) = explode("-", $data["begin"]);
+                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
+                        $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
+                        __s('See planning')."\">";
+                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>";
+                  echo "</a>";
+               } else {
+                  echo "&nbsp;";
+               }
+               echo "</td></tr>\n";
             }
          }
          echo "</table>\n";
