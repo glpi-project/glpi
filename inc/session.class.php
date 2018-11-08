@@ -527,17 +527,29 @@ class Session {
 
       $_SESSION["glpigroups"] = [];
 
-      $query_gp = "SELECT `glpi_groups_users`.`groups_id`
-                   FROM `glpi_groups_users`
-                   LEFT JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                   WHERE `glpi_groups_users`.`users_id`='" . self::getLoginUserID() . "' " .
-                         getEntitiesRestrictRequest(" AND ", "glpi_groups", "entities_id",
-                                                    $_SESSION['glpiactiveentities'], true);
-      $result_gp = $DB->query($query_gp);
-      if ($DB->numrows($result_gp)) {
-         while ($data = $DB->fetch_assoc($result_gp)) {
-            $_SESSION["glpigroups"][] = $data["groups_id"];
-         }
+      $iterator = $DB->request([
+         'SELECT'    => Group_User::getTable() . '.groups_id',
+         'FROM'      => Group_User::getTable(),
+         'LEFT JOIN' => [
+            Group::getTable() => [
+               'ON' => [
+                  Group::getTable()       => 'id',
+                  Group_User::getTable()  => 'groups_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            Group_User::getTable(). '.users_id' => self::getLoginUserID()
+         ] + getEntitiesRestrictCriteria(
+            Group::getTable(),
+            'entities_id',
+            $_SESSION['glpiactiveentities'],
+            true
+         )
+      ]);
+
+      while ($data = $iterator->next()) {
+         $_SESSION["glpigroups"][] = $data["groups_id"];
       }
    }
 

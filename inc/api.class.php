@@ -570,21 +570,31 @@ abstract class API extends CommonGLPI {
           && $params['with_disks']
           && in_array($itemtype, $CFG_GLPI['itemdeviceharddrive_types'])) {
          // build query to retrive filesystems
-         $query = "SELECT `glpi_filesystems`.`name` AS fsname,
-                          `glpi_items_disks`.*
-                   FROM `glpi_items_disks`
-                   LEFT JOIN `glpi_filesystems`
-                             ON (`glpi_items_disks`.`filesystems_id` = `glpi_filesystems`.`id`)
-                   WHERE `items_id` = '$id'
-                         AND `itemtype` = '$itemtype'
-                         AND `is_deleted` = 0";
+         $fs_iterator = $DB->request([
+            'SELECT'    => [
+               'glpi_filesystems.name AS fsname',
+               'glpi_items_disks.*'
+            ],
+            'FROM'      => 'glpi_items_disks',
+            'LEF JOIN'  => [
+               'glpi_filesystems' => [
+                  'ON' => [
+                     'glpi_items_disks'   => 'filesystems_id',
+                     'glpi_filesystems'   => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'items_id'     => $id,
+               'itemtype'     => $itemtype,
+               'is_deleted'   => 0
+            ]
+         ]);
          $fields['_disks'] = [];
-         if ($result = $DB->query($query)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               unset($data['items_id']);
-               unset($data['is_deleted']);
-               $fields['_disks'][] = ['name' => $data];
-            }
+         while ($data = $fs_iterator->next()) {
+            unset($data['items_id']);
+            unset($data['is_deleted']);
+            $fields['_disks'][] = ['name' => $data];
          }
       }
 
@@ -596,25 +606,41 @@ abstract class API extends CommonGLPI {
          if (!Software::canView()) {
             $fields['_softwares'] = self::arrayRightError();
          } else {
-            $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
-                             `glpi_softwares`.`id` AS softwares_id,
-                             `glpi_softwareversions`.`id` AS softwareversions_id,
-                             `glpi_computers_softwareversions`.`is_dynamic`,
-                             `glpi_softwareversions`.`states_id`,
-                             `glpi_softwares`.`is_valid`
-                      FROM `glpi_computers_softwareversions`
-                      LEFT JOIN `glpi_softwareversions`
-                           ON (`glpi_computers_softwareversions`.`softwareversions_id`
-                                 = `glpi_softwareversions`.`id`)
-                      LEFT JOIN `glpi_softwares`
-                           ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
-                      WHERE `glpi_computers_softwareversions`.`computers_id` = '$id'
-                            AND `glpi_computers_softwareversions`.`is_deleted` = 0
-                      ORDER BY `glpi_softwares`.`name`, `glpi_softwareversions`.`name`";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $fields['_softwares'][] = $data;
-               }
+            $soft_iterator = $DB->request([
+               'SELECT'    => [
+                  'glpi_softwares.softwarecategories_id',
+                  'glpi_softwares.id AS softwares_id',
+                  'glpi_softwareversions.id AS softwareversions_id',
+                  'glpi_computers_softwareversions.is_dynamic',
+                  'glpi_softwareversions.states_id',
+                  'glpi_softwares.is_valid'
+               ],
+               'FROM'      => 'glpi_computers_softwareversions',
+               'LEFT JOIN' => [
+                  'glpi_softwareversions' => [
+                     'ON' => [
+                        'glpi_computers_softwareversions'   => 'softwareversions_id',
+                        'glpi_softwareversions'             => 'id'
+                     ]
+                  ],
+                  'glpi_softwares'        => [
+                     'ON' => [
+                        'glpi_softwareversions' => 'softwares_id',
+                        'glpi_softwares'        => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'glpi_computers_softwareversions.computers_id'  => $id,
+                  'glpi_computers_softwareversions.is_deleted'    => 0
+               ],
+               'ORDERBY'   => [
+                  'glpi_softwares.name',
+                  'glpi_softwareversions.name'
+               ]
+            ]);
+            while ($data = $soft_iterator->next()) {
+               $fields['_softwares'][] = $data;
             }
          }
       }
@@ -627,23 +653,33 @@ abstract class API extends CommonGLPI {
          foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
             $connect_item = new $connect_type();
             if ($connect_item->canView()) {
-               $query = "SELECT `glpi_computers_items`.`id` AS assoc_id,
-                         `glpi_computers_items`.`computers_id` AS assoc_computers_id,
-                         `glpi_computers_items`.`itemtype` AS assoc_itemtype,
-                         `glpi_computers_items`.`items_id` AS assoc_items_id,
-                         `glpi_computers_items`.`is_dynamic` AS assoc_is_dynamic,
-                         ".getTableForItemType($connect_type).".*
-                         FROM `glpi_computers_items`
-                         LEFT JOIN `".getTableForItemType($connect_type)."`
-                           ON (`".getTableForItemType($connect_type)."`.`id`
-                                 = `glpi_computers_items`.`items_id`)
-                         WHERE `computers_id` = '$id'
-                               AND `itemtype` = '".$connect_type."'
-                               AND `glpi_computers_items`.`is_deleted` = 0";
-               if ($result = $DB->query($query)) {
-                  while ($data = $DB->fetch_assoc($result)) {
-                     $fields['_connections'][$connect_type][] = $data;
-                  }
+               $connect_table = getTableForItemType($connect_type);
+               $iterator = $DB->request([
+                  'SELECT'    => [
+                     'glpi_computers_items.id AS assoc_id',
+                     'glpi_computers_items.computers_id AS assoc_computers_id',
+                     'glpi_computers_items.itemtype AS assoc_itemtype',
+                     'glpi_computers_items.items_id AS assoc_items_id',
+                     'glpi_computers_items.is_dynamic AS assoc_is_dynamic',
+                     "$connect_table.*"
+                  ],
+                  'FROM'      => 'glpi_computers_items',
+                  'LEFT JOIN' => [
+                     $connect_table => [
+                        'ON' => [
+                           'glpi_computers_items'  => 'items_id',
+                           $connect_table          => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'computers_id'                      => $id,
+                     'itemtype'                          => $connect_type,
+                     'glpi_computers_items.is_deleted'   => 0
+                  ]
+               ]);
+               while ($data = $iterator->next()) {
+                  $fields['_connections'][$connect_type][] = $data;
                }
             }
          }
@@ -658,99 +694,154 @@ abstract class API extends CommonGLPI {
          } else {
             foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
                $netport_table = $networkport_type::getTable();
-               $query = "SELECT
-                           netp.`id` as netport_id,
-                           netp.`entities_id`,
-                           netp.`is_recursive`,
-                           netp.`logical_number`,
-                           netp.`name`,
-                           netp.`mac`,
-                           netp.`comment`,
-                           netp.`is_dynamic`,
-                           netp_subtable.*
-                         FROM glpi_networkports AS netp
-                         LEFT JOIN `$netport_table` AS netp_subtable
-                           ON netp_subtable.`networkports_id` = netp.`id`
-                         WHERE netp.`instantiation_type` = '$networkport_type'
-                           AND netp.`items_id` = '$id'
-                           AND netp.`itemtype` = '$itemtype'
-                           AND netp.`is_deleted` = 0";
-               if ($result = $DB->query($query)) {
-                  while ($data = $DB->fetch_assoc($result)) {
-                     if (isset($data['netport_id'])) {
-                        // append network name
-                        $query_netn = "SELECT
-                              GROUP_CONCAT(CONCAT(ipadr.`id`, '".Search::SHORTSEP."' , ipadr.`name`)
-                                           SEPARATOR '".Search::LONGSEP."') as ipadresses,
-                              netn.`id` as networknames_id,
-                              netn.`name` as networkname,
-                              netn.`fqdns_id`,
-                              fqdn.`name` as fqdn_name,
-                              fqdn.`fqdn`
-                           FROM `glpi_networknames` AS netn
-                           LEFT JOIN `glpi_ipaddresses` AS ipadr
-                              ON ipadr.`itemtype` = 'NetworkName' AND ipadr.`items_id` = netn.`id`
-                           LEFT JOIN `glpi_fqdns` AS fqdn
-                              ON fqdn.`id` = netn.`fqdns_id`
-                           LEFT JOIN `glpi_ipaddresses_ipnetworks` ipadnet
-                              ON ipadnet.`ipaddresses_id` = ipadr.`id`
-                           LEFT JOIN `glpi_ipnetworks` `ipnet`
-                              ON ipnet.`id` = ipadnet.`ipnetworks_id`
-                           WHERE netn.`itemtype` = 'NetworkPort'
-                             AND netn.`items_id` = ".$data['netport_id']."
-                           GROUP BY netn.`id`, netn.`name`, netn.fqdns_id, fqdn.name, fqdn.fqdn";
-                        if ($result_netn = $DB->query($query_netn)) {
-                           $data_netn = $DB->fetch_assoc($result_netn);
+               $netp_iterator = $DB->request([
+                  'SELECT'    => [
+                     'netp.id AS netport_id',
+                     'netp.entities_id',
+                     'netp.is_recursive',
+                     'netp.logical_number',
+                     'netp.name',
+                     'netp.mac',
+                     'netp.comment',
+                     'netp.is_dynamic',
+                     'netp_subtable.*'
+                  ],
+                  'FROM'      => 'glpi_networkports AS netp',
+                  'LEFT JOIN' => [
+                     "$netport_table AS netp_subtable" => [
+                        'ON' => [
+                           'netp_subtable'   => 'networkports_id',
+                           'netp'            => 'id'
+                        ]
+                     ]
+                  ],
+                  'WHERE'     => [
+                     'netp.instantiation_type'  => $networkport_type,
+                     'netp.items_id'            => $id,
+                     'netp.itemtype'            => $itemtype,
+                     'netp.is_deleted'          => 0
+                  ]
+               ]);
 
-                           $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
-                           $ipadresses = [];
-                           foreach ($raw_ipadresses as $ipadress) {
-                              $ipadress = explode(Search::SHORTSEP, $ipadress);
+               while ($data = $netp_iterator->next()) {
+                  if (isset($data['netport_id'])) {
+                     // append network name
+                     $concat_expr = new QueryExpression(
+                        "GROUP_CONCAT(CONCAT(ipadr.`id`, '".Search::SHORTSEP."' , ipadr.`name`)
+                        SEPARATOR '".Search::LONGSEP."') AS ipadresses"
+                     );
+                     $netn_iterator = $DB->request([
+                        'SELECT'    => [
+                           $concat_expr,
+                           'netn.id AS networknames_id',
+                           'netn.name AS networkname',
+                           'netn.fqdns_id',
+                           'fqdn.name AS fqdn_name',
+                           'fqdn.fqdn'
+                        ],
+                        'FROM'      => [
+                           'glpi_networknames AS netn'
+                        ],
+                        'LEFT JOIN' => [
+                           'glpi_ipaddresses AS ipadr'               => [
+                              'ON' => [
+                                 'ipadr'  => 'items_id',
+                                 'netn'   => 'id'
+                              ]
+                           ],
+                           'glpi_fqdns AS fqdn'                      => [
+                              'ON' => [
+                                 'fqdn'   => 'id',
+                                 'netn'   => 'fqdns_id'
+                              ]
+                           ],
+                           'glpi_ipaddresses_ipnetworks AS ipadnet'  => [
+                              'ON' => [
+                                 'ipadnet'   => 'ipaddresses_id',
+                                 'ipadr'     => 'id'
+                              ]
+                           ],
+                           'glpi_ipnetworks AS ipnet'                => [
+                              'ON' => [
+                                 'ipnet'     => 'id',
+                                 'ipadnet'   => 'ipnetworks_id'
+                              ]
+                           ]
+                        ],
+                        'WHERE'     => [
+                           'ipadr.itemtype'  => 'NetworkName',
+                           'netn.itemtype'   => 'NetworkPort',
+                           'netn.items_id'   => $data['netport_id']
+                        ],
+                        'GROUPBY'   => [
+                           'netn.id',
+                           'netn.name',
+                           'netn.fqdns_id',
+                           'fqdn.name',
+                           'fqdn.fqdn'
+                        ]
+                     ]);
 
-                              //find ip network attached to these ip
-                              $ipnetworks = [];
-                              $query_ipnet = "SELECT
-                                    ipnet.`id`,
-                                    ipnet.`completename`,
-                                    ipnet.`name`,
-                                    ipnet.`address`,
-                                    ipnet.`netmask`,
-                                    ipnet.`gateway`,
-                                    ipnet.`ipnetworks_id`,
-                                    ipnet.`comment`
-                                 FROM `glpi_ipnetworks` ipnet
-                                 INNER JOIN `glpi_ipaddresses_ipnetworks` ipadnet
-                                    ON ipnet.`id` = ipadnet.`ipnetworks_id`
-                                    AND ipadnet.`ipaddresses_id` = ".$ipadress[0];
-                              if ($result_ipnet = $DB->query($query_ipnet)) {
-                                 while ($data_ipnet = $DB->fetch_assoc($result_ipnet)) {
-                                    $ipnetworks[] = $data_ipnet;
-                                 }
-                              }
+                     if (count($netn_iterator)) {
+                        $data_netn = $netn_iterator->next();
 
-                              $ipadresses[] = [
-                                 'id'        => $ipadress[0],
-                                 'name'      => $ipadress[1],
-                                 'IPNetwork' => $ipnetworks
-                              ];
+                        $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
+                        $ipadresses = [];
+                        foreach ($raw_ipadresses as $ipadress) {
+                           $ipadress = explode(Search::SHORTSEP, $ipadress);
+
+                           //find ip network attached to these ip
+                           $ipnetworks = [];
+                           $ipnet_iterator = $DB->request([
+                              'SELECT'       => [
+                                 'ipnet.id',
+                                 'ipnet.completename',
+                                 'ipnet.name',
+                                 'ipnet.address',
+                                 'ipnet.netmask',
+                                 'ipnet.gateway',
+                                 'ipnet.ipnetworks_id',
+                                 'ipnet.comment'
+                              ],
+                              'FROM'         => 'glpi_ipnetworks AS ipnet',
+                              'INNER JOIN'   => [
+                                 'glpi_ipaddresses_ipnetworks AS ipadnet' => [
+                                    'ON' => [
+                                       'ipadnet'   => 'ipnetworks_id',
+                                       'ipnet'     => 'id'
+                                    ]
+                                 ]
+                              ],
+                              'WHERE'        => [
+                                 'ipnet.ipaddresses_id'  => $ipadress[0]
+                              ]
+                           ]);
+                           while ($data_ipnet = $ipnet_iterator->next()) {
+                              $ipnetworks[] = $data_ipnet;
                            }
 
-                           $data['NetworkName'] = [
-                              'id'         => $data_netn['networknames_id'],
-                              'name'       => $data_netn['networkname'],
-                              'fqdns_id'   => $data_netn['fqdns_id'],
-                              'FQDN'       => [
-                                 'id'   => $data_netn['fqdns_id'],
-                                 'name' => $data_netn['fqdn_name'],
-                                 'fqdn' => $data_netn['fqdn']
-                              ],
-                              'IPAddress' => $ipadresses
+                           $ipadresses[] = [
+                              'id'        => $ipadress[0],
+                              'name'      => $ipadress[1],
+                              'IPNetwork' => $ipnetworks
                            ];
                         }
-                     }
 
-                     $fields['_networkports'][$networkport_type][] = $data;
+                        $data['NetworkName'] = [
+                           'id'         => $data_netn['networknames_id'],
+                           'name'       => $data_netn['networkname'],
+                           'fqdns_id'   => $data_netn['fqdns_id'],
+                           'FQDN'       => [
+                              'id'   => $data_netn['fqdns_id'],
+                              'name' => $data_netn['fqdn_name'],
+                              'fqdn' => $data_netn['fqdn']
+                           ],
+                           'IPAddress' => $ipadresses
+                        ];
+                     }
                   }
+
+                  $fields['_networkports'][$networkport_type][] = $data;
                }
             }
          }
@@ -777,19 +868,31 @@ abstract class API extends CommonGLPI {
          if (!Contract::canView()) {
             $fields['_contracts'] = self::arrayRightError();
          } else {
-            $query = "SELECT `glpi_contracts_items`.*
-                     FROM `glpi_contracts_items`,
-                          `glpi_contracts`
-                     LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id`=`glpi_entities`.`id`)
-                     WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
-                           AND `glpi_contracts_items`.`items_id` = '$id'
-                           AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
-                           getEntitiesRestrictRequest(" AND", "glpi_contracts", '', '', true)."
-                     ORDER BY `glpi_contracts`.`name`";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $fields['_contracts'][] = $data;
-               }
+            $iterator = $DB->request([
+               'SELECT'    => ['glpi_contracts_items.*'],
+               'FROM'      => 'glpi_contracts_items',
+               'LEFT JOIN' => [
+                  'glpi_contracts'  => [
+                     'ON' => [
+                        'glpi_contracts_items'  => 'contracts_id',
+                        'glpi_contracts'        => 'id'
+                     ]
+                  ],
+                  'glpi_entities'   => [
+                     'ON' => [
+                        'glpi_contracts_items'  => 'entities_id',
+                        'glpi_entities'         => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'glpi_contracts_items.items_id'  => $id,
+                  'glpi_contracts_items.itemtype'  => $itemtype
+               ] + getEntitiesRestrictCriteria('glpi_contracts', '', '', true),
+               'ORDERBY'   => 'glpi_contracts.name'
+            ]);
+            while ($data = $iterator->next()) {
+               $fields['_contracts'][] = $data;
             }
          }
       }
@@ -804,24 +907,43 @@ abstract class API extends CommonGLPI {
              && !Document::canView()) {
             $fields['_documents'] = self::arrayRightError();
          } else {
-            $query = "SELECT `glpi_documents_items`.`id` AS assocID,
-                             `glpi_documents_items`.`date_mod` AS assocdate,
-                             `glpi_entities`.`id` AS entityID,
-                             `glpi_entities`.`completename` AS entity,
-                             `glpi_documentcategories`.`completename` AS headings,
-                             `glpi_documents`.*
-                      FROM `glpi_documents_items`
-                      LEFT JOIN `glpi_documents`
-                                ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
-                      LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                      LEFT JOIN `glpi_documentcategories`
-                              ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                      WHERE `glpi_documents_items`.`items_id` = '$id'
-                            AND `glpi_documents_items`.`itemtype` = '$itemtype' ";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $fields['_documents'][] = $data;
-               }
+            $doc_iterator = $DB->request([
+               'SELECT'    => [
+                  'glpi_documents_items.id AS assocID',
+                  'glpi_documents_items.date_mod AS assocdate',
+                  'glpi_entities.id AS entityID',
+                  'glpi_entities.completename AS entity',
+                  'glpi_documentcategories.completename AS headings',
+                  'glpi_documents.*'
+               ],
+               'FROM'      => 'glpi_documents_items',
+               'LEFT JOIN' => [
+                  'glpi_documents'           => [
+                     'ON' => [
+                        'glpi_documents_items'  => 'documents_id',
+                        'glpi_documents'        => 'id'
+                     ]
+                  ],
+                  'glpi_entities'            => [
+                     'ON' => [
+                        'glpi_documents'  => 'entities_id',
+                        'glpi_entities'   => 'id'
+                     ]
+                  ],
+                  'glpi_documentcategories'  => [
+                     'ON' => [
+                        'glpi_documents'           => 'documentcategories_id',
+                        'glpi_documentcategories'  => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'glpi_documents_items.items_id'  => $id,
+                  'glpi_documents_items.itemtype'  => $itemtype
+               ]
+            ]);
+            while ($data = $doc_iterator->next()) {
+               $fields['_documents'][] = $data;
             }
          }
       }
@@ -1140,9 +1262,7 @@ abstract class API extends CommonGLPI {
       }
 
       // get result full row counts
-      $query_numtotalrow = "Select FOUND_ROWS()";
-      $result_numtotalrow = $DB->query($query_numtotalrow);
-      $data_numtotalrow = $DB->fetch_assoc($result_numtotalrow);
+      $data_numtotalrow = $DB->request('SELECT FOUND_ROWS()')->next();
       $totalcount = $data_numtotalrow['FOUND_ROWS()'];
 
       if ($params['range'][0] > $totalcount) {
