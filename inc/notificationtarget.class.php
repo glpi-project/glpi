@@ -677,30 +677,67 @@ class NotificationTarget extends CommonDBChild {
 
       // members/managers of the group allowed on object entity
       // filter group with 'is_assign' (attribute can be unset after notification)
-      $query = $this->getDistinctUserSql()."
-               FROM `glpi_groups_users`
-               INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
-               $this->getProfileJoinSql()."
-               INNER JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-               WHERE `glpi_groups_users`.`groups_id` = '$group_id'
-                     AND `glpi_groups`.`is_notify`";
+      $criteria = array_merge(
+         [
+            'INNER JOIN' => [
+               User::getTable() => [
+                  'ON' => [
+                     Group_User::getTable()  => 'users_id',
+                     User::getTable()        => 'id'
+                  ]
+               ],
+               Group::getTable() => [
+                  'ON' => [
+                     Group_User::getTable()  => 'groups_id',
+                     Group::getTable()       => 'id'
+                  ]
+               ]
+            ]
+         ],
+         $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria()
+      );
+      $criteria['FROM'] = Group_User::getTable();
+      $criteria['WHERE'] = array_merge(
+         $criteria['WHERE'], [
+            Group_User::getTable() . '.groups_id'  => $group_id,
+            Group::getTable() . '.is_notify'       => 1,
+         ]
+      );
 
       if ($manager == 1) {
-         $query .= " AND `glpi_groups_users`.`is_manager` = 1 ";
+         $criteria['WHERE']['is_manager'] = 1;
       } else if ($manager == 2) {
-         $query .= " AND `glpi_groups_users`.`is_manager` = 0 ";
+         $criteria['WHERE']['is_manager'] = 0;
       }
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request($criteria);
+      while ($data = $iterator-next()) {
          $this->addToRecipientsList($data);
       }
    }
 
 
+   /**
+    * @deprecated 9.4
+    */
    final public function getDistinctUserSql() {
-
+      Toolbox::deprecated('Use getDistinctUserCriteria');
       return  "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                `glpi_users`.`language` AS language";
+   }
+
+   /**
+    * Get request criteria to select uniques users
+    *
+    * @since 9.4
+    *
+    * @return array
+    */
+   final public function getDistinctUserCriteria() {
+      return [
+         'SELECT DISTINCT' => User::getTable() . '.id AS users_id',
+         'FIELDS'          => [User::getTable() . '.language AS language']
+      ];
    }
 
 
@@ -762,14 +799,17 @@ class NotificationTarget extends CommonDBChild {
       global $DB;
 
       // Filter groups which can be notified and have members (as notifications are sent to members)
-      $query = "SELECT `id`, `name`
-                FROM `glpi_groups`".
-                getEntitiesRestrictRequest(" WHERE", 'glpi_groups', 'entities_id', $entity, true)."
-                      AND `is_usergroup`
-                      AND `is_notify`
-                ORDER BY `name`";
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'name'],
+         'FROM'   => Group::getTable(),
+         'WHERE'  => [
+            'is_usergroup' => 1,
+            'is_notify'    => 1
+         ] + getEntitiesRestrictCriteria('glpi_groups', 'entities_id', $entity, true),
+         'ORDER'  => 'name'
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          //Add group
          $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Group'), $data["name"]),
                           Notification::GROUP_TYPE);
@@ -868,12 +908,12 @@ class NotificationTarget extends CommonDBChild {
 
       if (!empty($id)) {
          //Look for the user by his id
-         $query = $this->getDistinctUserSql()."
-                  FROM `glpi_users`".
-                  $this->getProfileJoinSql()."
-                  WHERE `glpi_users`.`id` IN ('".implode("','", $id)."')";
+         $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+         $criteria['FROM'] = User::getTable();
+         $criteria['WHERE'][User::getTable() . '.id'] = $id;
+         $iterator = $DB->request($criteria);
 
-         foreach ($DB->request($query) as $data) {
+         while ($data = $iterator->next()) {
             //Add the user email and language in the notified users list
             $this->addToRecipientsList($data);
          }
@@ -927,13 +967,13 @@ class NotificationTarget extends CommonDBChild {
    final public function addForProfile($profiles_id) {
       global $DB;
 
-      $query = $this->getDistinctUserSql().",
-               glpi_profiles_users.entities_id AS entity
-               FROM `glpi_users`".
-               $this->getProfileJoinSql()."
-               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."';";
+      $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+      $criteria['FIELDS'][] = Profile_User::getTable() . '.entities_id AS entity';
+      $criteria['FROM'] = User::getTable();
+      $criteria['WHERE'][Profile_User::getTable() . '.profiles_id'] = $profiles_id;
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request($criteria);
+      while ($data = $iterator->next()) {
          $this->addToRecipientsList($data);
       }
    }
@@ -1118,14 +1158,41 @@ class NotificationTarget extends CommonDBChild {
     * Get SQL join to restrict by profile and by config to avoid send notification
     * to a user without rights.
     *
+    * @deprecated 9.4
+    *
     * @return string
     */
    public function getProfileJoinSql() {
-
+      Toolbox::deprecated('Use getProfileJoinCriteria');
       return " INNER JOIN `glpi_profiles_users`
                      ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
                          getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
                                                     $this->getEntity(), true).")";
+   }
+
+   /**
+    * Get SQL join to restrict by profile and by config to avoid send notification
+    * to a user without rights.
+    *
+    * @return string
+    */
+   public function getProfileJoinCriteria() {
+      return [
+         'INNER JOIN'   => [
+            Profile_User::getTable() => [
+               'ON' => [
+                  Profile_User::getTable()   => 'users_id',
+                  User::getTable()           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => getEntitiesRestrictCriteria(
+            Profile_User::getTable(),
+            'entities_id',
+            $this->getEntity(),
+            true
+         )
+      ];
    }
 
 
@@ -1239,16 +1306,26 @@ class NotificationTarget extends CommonDBChild {
    static function countForGroup(Group $group) {
       global $DB;
 
-      $sql = "SELECT COUNT(*)AS cpt
-              FROM `glpi_notificationtargets`
-              INNER JOIN `glpi_notifications`
-                    ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
-              WHERE `items_id` = '".$group->getID()."'
-                    AND (`type` = '".Notification::SUPERVISOR_GROUP_TYPE."'
-                         OR `type` = '".Notification::GROUP_TYPE."') ".
-                    getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
-      $data = $DB->request($sql)->next();
-      return $data['cpt'];
+      $count = $DB->request([
+         'COUNT'        => 'cpt',
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            Notification::getTable()   => [
+               'ON'  => [
+                  Notification::getTable()   => 'id',
+                  self::getTable()           => 'notifications_id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'type'      => [
+               Notification::SUPERVISOR_GROUP_TYPE,
+               Notification::GROUP_TYPE
+            ],
+            'items_id'  => $group->getID()
+         ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
+      ])->next();
+      return $count['cpt'];
    }
 
 
@@ -1268,19 +1345,29 @@ class NotificationTarget extends CommonDBChild {
          return false;
       }
 
-      $sql = "SELECT `glpi_notifications`.`id`
-              FROM `glpi_notificationtargets`
-              INNER JOIN `glpi_notifications`
-                    ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
-              WHERE `items_id` = '".$group->getID()."'
-                    AND (`type` = '".Notification::SUPERVISOR_GROUP_TYPE."'
-                         OR `type` = '".Notification::GROUP_TYPE."') ".
-                    getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
-      $req = $DB->request($sql);
+      $iterator = $DB->request([
+         'SELECT'       => [Notification::getTable() . '.id'],
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            Notification::getTable() => [
+               'ON' => [
+                  self::getTable()           => 'notifications_id',
+                  Notification::getTable()   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'type'      => [
+               Notification::SUPERVISOR_GROUP_TYPE,
+               Notification::GROUP_TYPE
+            ],
+            'items_id'  => $group->getID()
+         ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
+      ]);
 
       echo "<table class='tab_cadre_fixe'>";
 
-      if ($req->numrows()) {
+      if (count($iterator)) {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Active')."</th>";
@@ -1296,7 +1383,7 @@ class NotificationTarget extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), Group::getTypeName(1),
                                                 $group->getName()));
 
-         foreach ($req as $data) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Notification', $data['id']);
 
             if ($notif->getFromDB($data['id'])) {

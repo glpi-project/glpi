@@ -40,6 +40,9 @@ The following methods have been deprecated:
 - `Ticket::processMassiveActionsForOneItemtype()`
 - `Ticket::showFormMassiveAction()`
 - `Ticket::showMassiveActionsSubForm()`
+- `NotificationTarget::getProfileJoinSql()`
+- `NotificationTarget::getDistinctUserSql()`
+- `RuleCollection::getRuleListQuery()`
 
 #### Removed
 

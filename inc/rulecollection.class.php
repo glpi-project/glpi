@@ -108,9 +108,11 @@ class RuleCollection extends CommonDBTM {
 
 
    /**
+    * @deprecated 9.4
     * @param $options   array
    **/
    function getRuleListQuery($options = []) {
+      Toolbox::deprecated('Use getRuleListCriteria');
 
       $p['active']    = true;
       $p['start']     = 0;
@@ -164,6 +166,81 @@ class RuleCollection extends CommonDBTM {
       return $sql;
    }
 
+   /**
+    * Get rules list criteria
+    *
+    * @param array $options Options
+    *
+    * @return array
+   **/
+   function getRuleListCriteria($options = []) {
+
+      $p['active']    = true;
+      $p['start']     = 0;
+      $p['limit']     = 0;
+      $p['inherited'] = 1;
+      $p['childrens'] = 0;
+      $p['condition'] = 0;
+
+      foreach ($options as $key => $value) {
+         $p[$key] = $value;
+      }
+
+      $criteria = [
+         'SELECT' => Rule::getTable() . '.*',
+         'FROM'   => Rule::getTable(),
+         'ORDER'  => [
+            $this->orderby . ' ASC'
+         ]
+      ];
+
+      $where = [];
+      if ($p['active']) {
+         $where['is_active'] = 1;
+      }
+
+      if ($p['condition'] > 0) {
+         $where['condition'] = ['&', (int)$p['condition']];
+      }
+
+      //Select all the rules of a different type
+      $where['sub_type'] = $this->getRuleClassName();
+      if ($this->isRuleRecursive()) {
+         $criteria['LEFT JOIN'] = [
+            Entity::getTable() => [
+               'ON' => [
+                  Entity::getTable()   => 'id',
+                  Rule::getTable()     => 'entities_id'
+               ]
+            ]
+         ];
+
+         if (!$p['childrens']) {
+            $where += getEntitiesRestrictCriteria(
+               Rule::getTable(),
+               'entities_id',
+               $this->entity,
+               $p['inherited']
+            );
+         } else {
+            $sons = getSonsOf('glpi_entities', $this->entity);
+            $where[Rule::getTable() . '.entities_id'] = $sons;
+         }
+
+         $criteria['ORDER'] = [
+            Entity::getTable() . '.level ASC',
+            $this->orderby . ' ASC'
+         ];
+      }
+
+      if ($p['limit']) {
+         $criteria['LIMIT'] = (int)$p['limit'];
+         $criteria['START'] = (int)$p['start'];
+      }
+      $criteria['WHERE'] = $where;
+
+      return $criteria;
+   }
 
    /**
     * Get Collection Part : retrieve descriptions of a range of rules
@@ -192,16 +269,14 @@ class RuleCollection extends CommonDBTM {
       $this->RuleList->list = [];
 
       //Select all the rules of a different type
-      $sql    = $this->getRuleListQuery($p);
-      $result = $DB->query($sql);
+      $criteria   = $this->getRuleListCriteria($p);
+      $iterator   = $DB->request($criteria);
 
-      if ($result) {
-         while ($data = $DB->fetch_assoc($result)) {
-            //For each rule, get a Rule object with all the criterias and actions
-            $tempRule               = $this->getRuleClass();
-            $tempRule->fields       = $data;
-            $this->RuleList->list[] = $tempRule;
-         }
+      while ($data = $iterator->next()) {
+         //For each rule, get a Rule object with all the criterias and actions
+         $tempRule               = $this->getRuleClass();
+         $tempRule->fields       = $data;
+         $this->RuleList->list[] = $tempRule;
       }
    }
 
@@ -225,13 +300,13 @@ class RuleCollection extends CommonDBTM {
       // check if load required
       if (($need & $this->RuleList->load) != $need) {
          //Select all the rules of a different type
-         $sql = $this->getRuleListQuery(['condition' => $condition]);
+         $criteria = $this->getRuleListCriteria(['condition' => $condition]);
+         $iterator = $DB->request($criteria);
 
-         $result = $DB->query($sql);
-         if ($result) {
+         if (count($iterator)) {
             $this->RuleList->list = [];
 
-            while ($rule = $DB->fetch_assoc($result)) {
+            while ($rule = $iterator->next()) {
                //For each rule, get a Rule object with all the criterias and actions
                $tempRule = $this->getRuleClass();
 
