@@ -1917,7 +1917,7 @@ class Config extends CommonDBTM {
                  'check'   => 'hl_version' ],
                [ 'name'    => 'phpmailer/phpmailer',
                  'version' => $pm::VERSION,
-                 'check'   => 'PHPMailer' ],
+                 'check'   => 'PHPMailer\\PHPMailer\\PHPMailer' ],
                [ 'name'    => 'simplepie/simplepie',
                  'version' => SIMPLEPIE_VERSION,
                  'check'   => $sp ],
@@ -1984,6 +1984,8 @@ class Config extends CommonDBTM {
                echo "version {$dep['version']} ";
             }
             echo "in ($path)\n";
+         } else {
+            echo "{$dep['name']} not found\n";
          }
       }
 
