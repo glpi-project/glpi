@@ -1899,6 +1899,72 @@ class Config extends CommonDBTM {
 
 
    /**
+    * get libraries list
+    *
+    * @param $all   (default false)
+    * @return array dependencies list
+    *
+    * @since 9.4
+    */
+   static function getLibraries($all = false) {
+      include_once(GLPI_HTMLAWED);
+      $pm = new PHPMailer();
+      $sp = new SimplePie();
+
+      // use same name that in composer.json
+      $deps = [[ 'name'    => 'htmLawed',
+                 'version' => hl_version() ,
+                 'check'   => 'hl_version' ],
+               [ 'name'    => 'phpmailer/phpmailer',
+                 'version' => $pm::VERSION,
+                 'check'   => 'PHPMailer' ],
+               [ 'name'    => 'simplepie/simplepie',
+                 'version' => SIMPLEPIE_VERSION,
+                 'check'   => $sp ],
+               [ 'name'    => 'tecnickcom/tcpdf',
+                 'version' => TCPDF_STATIC::getTCPDFVersion(),
+                 'check'   => 'TCPDF' ],
+               [ 'name'    => 'michelf/php-markdown',
+                 'check'   => 'Michelf\\Markdown' ],
+               [ 'name'    => 'true/punycode',
+                 'check'   => 'TrueBV\\Punycode' ],
+               [ 'name'    => 'iamcal/lib_autolink',
+                 'check'   => 'autolink' ],
+               [ 'name'    => 'sabre/vobject',
+                 'check'   => 'Sabre\\VObject\\Component' ],
+               [ 'name'    => 'zendframework/zend-cache',
+                 'check'   => 'Zend\\Cache\\Module' ],
+               [ 'name'    => 'zendframework/zend-console',
+                 'check'   => 'Zend\\Console\\Console' ],
+               [ 'name'    => 'zendframework/zend-i18n',
+                 'check'   => 'Zend\\I18n\\Module' ],
+               [ 'name'    => 'zendframework/zend-serializer',
+                 'check'   => 'Zend\\Serializer\\Module' ],
+               [ 'name'    => 'monolog/monolog',
+                 'check'   => 'Monolog\\Logger' ],
+               [ 'name'    => 'sebastian/diff',
+                 'check'   => 'SebastianBergmann\\Diff\\Diff' ],
+               [ 'name'    => 'elvanto/litemoji',
+                 'check'   => 'LitEmoji\\LitEmoji' ],
+      ];
+      if ($all || PHP_VERSION_ID < 70000) {
+         $deps[] = [
+            'name'    => 'paragonie/random_compat',
+            'check'   => 'random_int'
+         ];
+      }
+      if (Toolbox::canUseCAS()) {
+         $deps[] = [
+            'name'    => 'phpCas',
+            'version' => phpCAS::getVersion(),
+            'check'   => 'phpCAS'
+         ];
+      }
+      return $deps;
+   }
+
+
+   /**
     * show Libraries information in system information
     *
     * @since 0.84
@@ -1910,41 +1976,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-      include_once(GLPI_HTMLAWED);
-      $pm = new PHPMailer();
-      $sp = new SimplePie();
-
-      $deps = [[ 'name'    => 'htmLawed',
-                 'version' => hl_version() ,
-                 'check'   => 'hl_version' ],
-               [ 'name'    => 'PHPMailer',
-                 'version' => $pm::VERSION,
-                 'check'   => 'PHPMailer' ],
-               [ 'name'    => 'SimplePie',
-                 'version' => SIMPLEPIE_VERSION,
-                 'check'   => $sp ],
-               [ 'name'    => 'TCPDF',
-                 'version' => TCPDF_STATIC::getTCPDFVersion(),
-                 'check'   => 'TCPDF' ],
-               [ 'name'    => 'michelf/php-markdown',
-                 'check'   => 'Michelf\\Markdown' ],
-               [ 'name'    => 'true/punycode',
-                 'check'   => 'TrueBV\\Punycode' ],
-               [ 'name'    => 'iacaml/autolink',
-                 'check'   => 'autolink' ],
-               [ 'name'    => 'sabre/vobject',
-                 'check'   => 'Sabre\\VObject\\Component' ],
-      ];
-
-      if (Toolbox::canUseCAS()) {
-         $deps[] = [
-            'name'    => 'phpCas',
-            'version' => phpCAS::getVersion() ,
-            'check'   => 'phpCAS'
-         ];
-      }
-
-      foreach ($deps as $dep) {
+      foreach (self::getLibraries() as $dep) {
          $path = self::getLibraryDir($dep['check']);
          if ($path) {
             echo "{$dep['name']} ";
