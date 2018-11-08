@@ -137,10 +137,10 @@ class DBmysqlIterator implements Iterator, Countable {
 
          // Check field, orderby, limit, start in criterias
          $field    = "";
+         $dfield    = "";
          $orderby  = null;
          $limit    = 0;
          $start    = 0;
-         $distinct = '';
          $where    = '';
          $count    = '';
          $join     = '';
@@ -156,8 +156,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
                   case 'SELECT DISTINCT' :
                   case 'DISTINCT FIELDS' :
-                     $field = $val;
-                     $distinct = "DISTINCT";
+                     $dfield = $val;
                      unset($crit[$key]);
                      break;
 
@@ -231,24 +230,41 @@ class DBmysqlIterator implements Iterator, Countable {
             }
          }
 
-         $this->sql = "";
+         $this->sql = 'SELECT ';
+         $first = true;
          // SELECT field list
          if ($count) {
-            $this->sql = "SELECT COUNT(*) AS $count";
-         }
-
-         if (is_array($field)) {
-            foreach ($field as $t => $f) {
-               $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ');
-               $this->sql .= $this->handleFields($t, $f);
-            }
-         } else if (empty($field) && !$count) {
-            $this->sql = "SELECT *";
-         } else if (!empty($field)) {
-            if ($count) {
-               $this->sql = "SELECT COUNT($distinct " . DBmysql::quoteName($field) . ") AS $count";
+            $this->sql .= 'COUNT(';
+            if (!empty($dfield)) {
+               $this->sql .= "DISTINCT " . DBmysql::quoteName($dfield);
+            } else if (!empty($field) && !is_array($field)) {
+               $this->sql .= "" . DBmysql::quoteName($field);
             } else {
-               $this->sql = "SELECT $distinct " . DBmysql::quoteName($field);
+               $this->sql .= "*";
+            }
+            $this->sql .= ") AS $count";
+            $first = false;
+         }
+         if (!$count || $count && is_array($field)) {
+            if (empty($field) && empty($dfield)) {
+               $this->sql .= '*';
+            }
+            if (!empty($dfield)) {
+               $this->sql .= 'DISTINCT ' . DBmysql::quoteName($dfield);
+               $first = false;
+            }
+            if (!empty($field)) {
+               if (!is_array($field)) {
+                  $field = [$field];
+               }
+               foreach ($field as $t => $f) {
+                  if ($first) {
+                     $first = false;
+                  } else {
+                     $this->sql .= ', ';
+                  }
+                  $this->sql .= $this->handleFields($t, $f);
+               }
             }
          }
 
