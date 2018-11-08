@@ -199,6 +199,15 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS cpt FROM `foo`');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar', 'baz']]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('DISTINCT selection can only take one field!');
    }
 
 
