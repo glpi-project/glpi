@@ -594,7 +594,8 @@ class Profile_User extends CommonDBRelation {
       global $DB;
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => ['entities_id', 'is_recursive'],
+         'SELECT DISTINCT' => 'entities_id',
+         'FIELDS'          => 'is_recursive',
          'FROM'            => 'glpi_profiles_users',
          'WHERE'           => ['users_id' => $user_ID]
       ]);
@@ -693,7 +694,7 @@ class Profile_User extends CommonDBRelation {
       }
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => ['profiles_id'],
+         'SELECT DISTINCT' => 'profiles_id',
          'FROM'            => 'glpi_profiles_users',
          'WHERE'           => $where
       ]);

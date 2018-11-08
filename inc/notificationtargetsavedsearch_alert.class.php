@@ -43,7 +43,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
       $events = [];
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => ['event'],
+         'SELECT DISTINCT' => 'event',
          'FROM'            => Notification::getTable(),
          'WHERE'           => ['itemtype' => SavedSearch_Alert::getType()]
       ]);
