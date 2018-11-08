@@ -232,6 +232,18 @@ class DBmysqlIterator implements Iterator, Countable {
 
          $this->sql = 'SELECT ';
          $first = true;
+
+         //check DISTINCT is not an array
+         if (is_array($dfield)) {
+            Toolbox::logWarning('DISTINCT selection can only take one field!');
+            if (!is_array($field)) {
+               $field = $dfield;
+            } else {
+               $field = array_merge($field, $dfield);
+            }
+            $dfield = '';
+         }
+
          // SELECT field list
          if ($count) {
             $this->sql .= 'COUNT(';
