@@ -244,6 +244,29 @@ class Config extends DbTestCase {
          ->isEmpty();
    }
 
+   public function testGetLibraries() {
+      $actual = $expected = [];
+      $deps = \Config::getLibraries(true);
+      foreach ($deps as $dep) {
+         // composer names only (skip htmlLawed)
+         if (strpos($dep['name'], '/')) {
+            $actual[] =$dep['name'];
+         }
+      }
+      sort($actual);
+      $this->array($actual)->isNotEmpty();
+      $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+      foreach ($composer['require'] as $dep => $ver) {
+         // composer names only (skip php, ext-*, ...)
+         if (strpos($dep, '/')) {
+            $expected[] = $dep;
+         }
+      }
+      sort($expected);
+      $this->array($expected)->isNotEmpty();
+      $this->array($actual)->isIdenticalTo($expected);
+   }
+
    public function testGetLibraryDir() {
       $this->boolean(\Config::getLibraryDir(''))->isFalse();
       $this->boolean(\Config::getLibraryDir('abcde'))->isFalse();
