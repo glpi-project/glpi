@@ -164,6 +164,9 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
 
+      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+
       $it = $this->it->execute('foo', ['FIELDS' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
 
