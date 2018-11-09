@@ -4834,7 +4834,7 @@ class Search {
                   }
 
                   $progressbar_data = [
-                     'text'         => Html::convDateTime($data[$num][0]['name']),
+                     'text'         => Html::convDateTime($data[$ID][0]['name']),
                      'percent'      => $percentage,
                      'percent_text' => $percentage_text,
                      'color'        => $bar_color
@@ -4859,7 +4859,7 @@ class Search {
                if (empty($data[$ID][0]['name'])) {
                   $text = __('None');
                } else {
-                  $text = Html::resume_text($data[$num][0]['name']);
+                  $text = Html::resume_text($data[$ID][0]['name']);
                }
                if (Session::haveRight('reservation', UPDATE)) {
                   return "<a title=\"".__s('Modify the comment')."\"
@@ -5297,8 +5297,8 @@ class Search {
                if (!isset($progressbar_data)) {
                   $bar_color = 'green';
                   $progressbar_data = [
-                     'percent'      => $data[$num][0]['name'],
-                     'percent_text' => $data[$num][0]['name'],
+                     'percent'      => $data[$ID][0]['name'],
+                     'percent_text' => $data[$ID][0]['name'],
                      'color'        => $bar_color,
                      'text'         => ''
                   ];
