@@ -1770,6 +1770,8 @@ final class DbUtils {
    /**
     * Add dates for request
     *
+    * @Deprecated 9.4
+    *
     * @param string $field table.field to request
     * @param string $begin begin date
     * @param string $end   end date
@@ -1777,6 +1779,7 @@ final class DbUtils {
     * @return string SQL
     */
    public function getDateRequest($field, $begin, $end) {
+      Toolbox::deprecated('Use getDateCriteria');
       $sql = '';
       if (!empty($begin)) {
          $sql .= " $field >= '$begin' ";
@@ -1790,6 +1793,35 @@ final class DbUtils {
       }
       return " (".$sql.") ";
    }
+
+   /**
+    * Get dates conditions to use in 'WHERE' clause
+    *
+    * @param string $field table.field to request
+    * @param string $begin begin date
+    * @param string $end   end date
+    *
+    * @return array
+    */
+   public function getDateCriteria($field, $begin, $end) {
+      $criteria = [];
+      if (!empty($begin)) {
+         $criteria[] = [$field => ['>=', $begin]];
+      }
+
+      if (!empty($end)) {
+         $end_expr = new QueryExpression(
+            'ADDDATE(\''.$end.'\', INTERVAL 1 DAY)'
+         );
+         $criteria[] = [$field => ['<=', $end_expr]];
+      }
+
+      if (count($criteria)) {
+         $criteria = ['AND' => $criteria];
+      }
+      return $criteria;
+   }
+
 
    /**
     * Export an array to be stored in a simple field in the database

@@ -716,50 +716,84 @@ class Stat extends CommonGLPI {
       $closed_status  = $item->getClosedStatusArray();
       $solved_status  = array_merge($closed_status, $item->getSolvedStatusArray());
 
-      $query             = "";
-      $WHERE             = "WHERE `$table`.`is_deleted` = 0 ".
-                                 getEntitiesRestrictRequest("AND", $table);
-      $LEFTJOIN          = "";
-      $LEFTJOINUSER      = "LEFT JOIN `$userlinktable`
-                              ON (`$userlinktable`.`$fkfield` = `$table`.`id`)";
-      $LEFTJOINGROUP     = "LEFT JOIN `$grouplinktable`
-                              ON (`$grouplinktable`.`$fkfield` = `$table`.`id`)";
-      $LEFTJOINSUPPLIER  = "LEFT JOIN `$supplierlinktable`
-                              ON (`$supplierlinktable`.`$fkfield` = `$table`.`id`)";
+      $criteria = [];
+      $WHERE           = [
+         "$table.is_deleted" => 0
+      ] + getEntitiesRestrictCriteria($table);
+      $LEFTJOIN          = [];
+      $INNERJOIN         = [];
+      $LEFTJOINUSER      = [
+         $userlinktable => [
+            'ON' => [
+               $userlinktable => $fkfield,
+               $table         => 'id'
+            ]
+         ]
+      ];
+      $LEFTJOINGROUP    = [
+         $grouplinktable => [
+            'ON' => [
+               $grouplinktable   => $fkfield,
+               $table            => 'id'
+            ]
+         ]
+      ];
+      $LEFTJOINSUPPLIER = [
+         $supplierlinktable => [
+            'ON' => [
+               $supplierlinktable   => $fkfield,
+               $table               => 'id'
+            ]
+         ]
+      ];
 
       switch ($param) {
          case "technicien" :
             $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE   .= " AND (`$userlinktable`.`users_id` = '$value'
-                               AND `$userlinktable`.`type`='".CommonITILActor::ASSIGN."')";
+            $WHERE["$userlinktable.users_id"] = $value;
+            $WHERE["$userlinktable.type"] = CommonITILActor::ASSIGN;
             break;
 
          case "technicien_followup" :
-            $WHERE   .= " AND `$tasktable`.`users_id` = '$value'";
-            $LEFTJOIN = " LEFT JOIN `$tasktable`
-                              ON (`$tasktable`.`$fkfield` = `$table`.`id`)";
+            $WHERE["$tasktable.users_id"] = $value;
+            $LEFTJOIN = [
+               $tasktable => [
+                  'ON' => [
+                     $tasktable  => $fkfield,
+                     $table      => 'id'
+                  ]
+               ]
+            ];
             break;
 
          case "user" :
             $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE   .= " AND (`$userlinktable`.`users_id` = '$value'
-                               AND `$userlinktable`.`type` ='".CommonITILActor::REQUESTER."')";
+            $WHERE["$userlinktable.users_id"] = $value;
+            $WHERE["$userlinktable.type"] = CommonITILActor::REQUESTER;
             break;
 
          case "usertitles_id" :
             $LEFTJOIN  = $LEFTJOINUSER;
-            $LEFTJOIN .= " LEFT JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
-            $WHERE    .= " AND (`glpi_users`.`usertitles_id` = '$value'
-                                AND `$userlinktable`.`type` = '".CommonITILActor::REQUESTER."')";
+            $LEFTJOIN['glpi_users'] = [
+               'ON' => [
+                  $userlinktable => 'users_id',
+                  'glpi_users'   => 'id'
+               ]
+            ];
+            $WHERE["glpi_users.usertitles_id"] = $value;
+            $WHERE["$userlinktable.type"] = CommonITILActor::REQUESTER;
             break;
 
          case "usercategories_id" :
             $LEFTJOIN  = $LEFTJOINUSER;
-            $LEFTJOIN .= " LEFT JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
-            $WHERE    .= " AND (`glpi_users`.`usercategories_id` = '$value'
-                                AND `$userlinktable`.`type` = '".CommonITILActor::REQUESTER."')";
+            $LEFTJOIN['glpi_users'] = [
+               'ON' => [
+                  $userlinktable => 'users_id',
+                  'glpi_users'   => 'id'
+               ]
+            ];
+            $WHERE["glpi_users.usercategories_id"] = $value;
+            $WHERE["$userlinktable.type"] = CommonITILActor::REQUESTER;
             break;
 
          case "itilcategories_tree" :
@@ -768,18 +802,16 @@ class Stat extends CommonGLPI {
             } else {
                $categories = getSonsOf("glpi_itilcategories", $value);
             }
-            $condition  = implode("','", $categories);
-            $WHERE     .= " AND `$table`.`itilcategories_id` IN ('$condition')";
+            $WHERE["$table.itilcategories_id"] = $categories;
             break;
 
          case 'locations_tree' :
             if ($value == $value2) {
-               $categories = [$value];
+               $locations = [$value];
             } else {
-               $categories = getSonsOf('glpi_locations', $value);
+               $locations = getSonsOf('glpi_locations', $value);
             }
-            $condition  = implode("','", $categories);
-            $WHERE     .= " AND `$table`.`locations_id` IN ('$condition')";
+            $WHERE["$table.locations_id"] = $locations;
             break;
 
          case 'group_tree' :
@@ -791,29 +823,28 @@ class Stat extends CommonGLPI {
             } else {
                $groups = getSonsOf("glpi_groups", $value);
             }
-            $condition = implode("','", $groups);
 
             $LEFTJOIN  = $LEFTJOINGROUP;
-            $WHERE    .= " AND (`$grouplinktable`.`groups_id` IN ('$condition')
-                                AND `$grouplinktable`.`type` = '$grptype')";
+            $WHERE["$grouplinktable.groups_id"] = $groups;
+            $WHERE["$grouplinktable.type"] = $grptype;
             break;
 
          case "group" :
             $LEFTJOIN = $LEFTJOINGROUP;
-            $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
-                               AND `$grouplinktable`.`type` = '".CommonITILActor::REQUESTER."')";
+            $WHERE["$grouplinktable.groups_id"] = $value;
+            $WHERE["$grouplinktable.type"] = CommonITILActor::REQUESTER;
             break;
 
          case "groups_id_assign" :
             $LEFTJOIN = $LEFTJOINGROUP;
-            $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
-                               AND `$grouplinktable`.`type` = '".CommonITILActor::ASSIGN."')";
+            $WHERE["$grouplinktable.groups_id"] = $value;
+            $WHERE["$grouplinktable.type"] = CommonITILActor::ASSIGN;
             break;
 
          case "suppliers_id_assign" :
             $LEFTJOIN = $LEFTJOINSUPPLIER;
-            $WHERE   .= " AND (`$supplierlinktable`.`suppliers_id` = '$value'
-                               AND `$supplierlinktable`.`type` = '".CommonITILActor::ASSIGN."')";
+            $WHERE["$supplierlinktable.suppliers_id"] = $value;
+            $WHERE["$supplierlinktable.type"] = CommonITILActor::ASSIGN;
             break;
 
          case "requesttypes_id" :
@@ -825,144 +856,228 @@ class Stat extends CommonGLPI {
          case "type" :
          case "itilcategories_id" :
          case 'locations_id' :
-            $WHERE .= " AND `$table`.`$param` = '$value'";
+            $WHERE["$table.$param"] = $value;
             break;
 
          case "device":
             $devtable = getTableForItemType('Computer_'.$value2);
             $fkname   = getForeignKeyFieldForTable(getTableForItemType($value2));
             //select computers IDs that are using this device;
-            $LEFTJOIN = '';
             $linkdetable = $table;
             if ($itemtype == 'Ticket') {
                $linkedtable = 'glpi_items_tickets';
-               $LEFTJOIN .= " LEFT JOIN `glpi_items_tickets`
-                                 ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)";
+               $LEFTJOIN = [
+                  'glpi_items_tickets' => [
+                     'ON' => [
+                        'glpi_items_tickets' => 'tickets_id',
+                        'glpi_tickets'       => 'id', [
+                           'AND' => [
+                              "$linkdetable.itemtype" => 'Computer'
+                           ]
+                        ]
+                     ]
+                  ]
+               ];
+
             }
-            $LEFTJOIN .= " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `$linkedtable`.`items_id`
-                                  AND `$linkedtable`.`itemtype` = 'Computer')
-                          INNER JOIN `$devtable`
-                              ON (`glpi_computers`.`id` = `$devtable`.`computers_id`
-                                  AND `$devtable`.`$fkname` = '$value')";
-            $WHERE   .= " AND `glpi_computers`.`is_template` <> '1' ";
+            $INNERJOIN = [
+               'glpi_computers'  => [
+                  'ON' => [
+                     'glpi_computers'  => 'id',
+                     $linkedtable      => 'items_id'
+                  ]
+               ],
+               $devtable         => [
+                  'ON' => [
+                     'glpi_computers'  => 'id',
+                     $devtable         => 'computers_id', [
+                        'AND' => [
+                           "$devtable.$fkname" => $value
+                        ]
+                     ]
+                  ]
+               ]
+            ];
+
+            $WHERE["glpi_computers.is_template"] = 0;
             break;
 
          case "comp_champ" :
             $ftable   = getTableForItemType($value2);
             $champ    = getForeignKeyFieldForTable($ftable);
-                  $LEFTJOIN = '';
             $linkdetable = $table;
             if ($itemtype == 'Ticket') {
                $linkedtable = 'glpi_items_tickets';
-               $LEFTJOIN .= " LEFT JOIN `glpi_items_tickets`
-                                 ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)";
+               $LEFTJOIN = [
+                  'glpi_items_tickets' => [
+                     'ON' => [
+                        'glpi_items_tickets' => 'tickets_id',
+                        'glpi_tickets'       => 'id', [
+                           'AND' => [
+                              "$linkedtable.itemtype" => 'Computer'
+                           ]
+                        ]
+                     ]
+                  ]
+               ];
             }
-            $LEFTJOIN .= " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `$linkedtable`.`items_id`
-                                  AND `$linkedtable`.`itemtype` = 'Computer')";
+            $INNERJOIN = [
+               'glpi_computers' => [
+                  'ON' => [
+                     'glpi_computers'  => 'id',
+                     $linkedtable      => 'items_id'
+                  ]
+               ]
+            ];
+
+            $WHERE["glpi_computers.is_template"] = 0;
             if (substr($champ, 0, strlen('operatingsystem')) === 'operatingsystem') {
-               $LEFTJOIN .= " INNER JOIN `glpi_items_operatingsystems`
-                              ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id`
-                                  AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')";
-               $WHERE   .= " AND `glpi_items_operatingsystems`.`$champ` = '$value'
-                             AND `glpi_computers`.`is_template` <> '1'";
+               $INNERJOIN['glpi_items_operatingsystems'] = [
+                  'ON' => [
+                     'glpi_computers'              => 'id',
+                     'glpi_items_operatingsystems' => 'items_id', [
+                        'AND' => [
+                           "glpi_items_operatingsystems.itemtype" => 'Computer'
+                        ]
+                     ]
+                  ]
+               ];
+               $WHERE["glpi_items_operatingsystems.$champ"] = $value;
             } else {
-               $WHERE   .= " AND `glpi_computers`.`$champ` = '$value'
-                             AND `glpi_computers`.`is_template` <> '1'";
+               $WHERE["glpi_computers.$champ"] = $value;
             }
             break;
       }
 
       switch ($type) {
          case "inter_total" :
-            $WHERE .= " AND ".getDateRequest("`$table`.`date`", $begin, $end);
+            $WHERE[] = getDateCriteria("$table.date", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`date`),'%Y-%m')
-                                  AS date_unix,
-                             COUNT(`$table`.`id`) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`date`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`date`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'COUNT'  => "$table.id AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.date"
+            ];
             break;
 
          case "inter_solved" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
-                        AND `$table`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
+            $WHERE["$table.status"] = $solved_status;
+            $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
+            $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
-                                 AS date_unix,
-                              COUNT(`$table`.`id`) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`solvedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'COUNT'  => "$table.id AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.solvedate"
+            ];
             break;
 
          case "inter_solved_late" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
-                        AND `$table`.`solvedate` IS NOT NULL
-                        AND `$table`.`time_to_resolve` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end)."
-                        AND `$table`.`solvedate` > `$table`.`time_to_resolve`";
+            $WHERE["$table.status"] = $solved_status;
+            $WHERE[] = [
+               'NOT' => [
+                  "$table.solvedate"         => null,
+                  "$table.time_to_resolve"   => null
+               ]
+            ];
+            $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
+            $WHERE[] = new QueryExpression("$table.solvedate > $table.time_to_resolve");
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
-                                 AS date_unix,
-                              COUNT(`$table`.`id`) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`solvedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'COUNT'  => "$table.id AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.solvedate"
+            ];
             break;
 
          case "inter_closed" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $closed_status)."')
-                        AND `$table`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
+            $WHERE["$table.status"] = $closed_status;
+            $WHERE[] = ['NOT' => ["$table.closedate" => null]];
+            $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
-                                 AS date_unix,
-                              COUNT(`$table`.`id`) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`closedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'COUNT'  => "$table.id AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.closedate"
+            ];
             break;
 
          case "inter_avgsolvedtime" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
-                        AND `$table`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
+            $WHERE["$table.status"] = $solved_status;
+            $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
+            $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
-                                 AS date_unix,
-                              AVG(solve_delay_stat) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`solvedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'AVG' => "solve_delay_stat AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.solvedate"
+            ];
             break;
 
          case "inter_avgclosedtime" :
-            $WHERE .= " AND  `$table`.`status` IN ('".implode("','", $closed_status)."')
-                        AND `$table`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
+            $WHERE["$table.status"] = $closed_status;
+            $WHERE[] = ['NOT' => ["$table.closedate" => null]];
+            $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
-                                 AS date_unix,
-                              AVG(close_delay_stat) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`closedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'AVG'  => "close_delay_stat AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.closedate"
+            ];
             break;
 
          case "inter_avgactiontime" :
@@ -971,92 +1086,152 @@ class Stat extends CommonGLPI {
             } else {
                $actiontime_table = $table;
             }
-            $WHERE .= " AND `$actiontime_table`.`actiontime` > '0'
-                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
+            $WHERE["$actiontime_table.actiontime"] = ['>', 0];
+            $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
-                                 AS date_unix,
-                              AVG(`$actiontime_table`.`actiontime`) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`solvedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'AVG'  => "$actiontime_table.actiontime AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.solvedate"
+            ];
             break;
 
          case "inter_avgtakeaccount" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
-                        AND `$table`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
+            $WHERE["$table.status"] = $solved_status;
+            $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
+            $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-            $query  = "SELECT `$table`.`id`,
-                              FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
-                                 AS date_unix,
-                              AVG(`$table`.`takeintoaccount_delay_stat`) AS total_visites
-                       FROM `$table`
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`solvedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m') AS date_unix"
+            );
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'AVG'  => "$table.takeintoaccount_delay_stat AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.solvedate"
+            ];
             break;
 
          case "inter_opensatisfaction" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $closed_status)."')
-                        AND `$table`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
+            $WHERE["$table.status"] = $closed_status;
+            $WHERE[] = ['NOT' => ["$table.closedate" => null]];
+            $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
-                                 AS date_unix,
-                              COUNT(`$table`.`id`) AS total_visites
-                       FROM `$table`
-                       INNER JOIN `glpi_ticketsatisfactions`
-                           ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`closedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m') AS date_unix"
+            );
+
+            $INNERJOIN['glpi_ticketsatisfactions'] = [
+               'ON' => [
+                  'glpi_ticketsatisfactions' => 'tickets_id',
+                  $table                     => 'id'
+               ]
+            ];
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'COUNT'  => "$table.id AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.closedate"
+            ];
             break;
 
          case "inter_answersatisfaction" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $closed_status)."')
-                        AND `$table`.`closedate` IS NOT NULL
-                        AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
+            $WHERE["$table.status"] = $closed_status;
+            $WHERE[] = [
+               'NOT' => [
+                  "$table.closedate"                        => null,
+                  "glpi_ticketsatisfactions.date_answered"  => null
+               ]
+            ];
+            $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
-                                 AS date_unix,
-                              COUNT(`$table`.`id`) AS total_visites
-                       FROM `$table`
-                       INNER JOIN `glpi_ticketsatisfactions`
-                           ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`closedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m') AS date_unix"
+            );
+
+            $INNERJOIN['glpi_ticketsatisfactions'] = [
+               'ON' => [
+                  'glpi_ticketsatisfactions' => 'tickets_id',
+                  $table                     => 'id'
+               ]
+            ];
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'COUNT'  => "$table.id AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.closedate"
+            ];
             break;
 
          case "inter_avgsatisfaction" :
-            $WHERE .= " AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND `$table`.`status` IN ('".implode("','", $closed_status)."')
-                        AND `$table`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
+            $WHERE["$table.status"] = $closed_status;
+            $WHERE[] = [
+               'NOT' => [
+                  "$table.closedate" => null,
+                  "glpi_ticketsatisfactions.date_answered" => null
+               ]
+            ];
+            $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
-                                 AS date_unix,
-                              AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
-                       FROM `$table`
-                       INNER JOIN `glpi_ticketsatisfactions`
-                           ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
-                       $LEFTJOIN
-                       $WHERE
-                       GROUP BY date_unix
-                       ORDER BY `$table`.`closedate`";
+            $date_unix = new QueryExpression(
+               "FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m') AS date_unix"
+            );
+
+            $INNERJOIN['glpi_ticketsatisfactions'] = [
+               'ON' => [
+                  'glpi_ticketsatisfactions' => 'tickets_id',
+                  $table                     => 'id'
+               ]
+            ];
+
+            $criteria = [
+               'SELECT'    => [
+                  $date_unix,
+                  'AVG'  => "glpi_ticketsatisfactions.satisfaction AS total_visites"
+               ],
+               'FROM'      => $table,
+               'WHERE'     => $WHERE,
+               'GROUPBY'   => 'date_unix',
+               'ORDERBY'   => "$table.closedate"
+            ];
             break;
+      }
+
+      if (count($LEFTJOIN)) {
+         $criteria['LEFT JOIN'] = $LEFTJOIN;
+      }
+
+      if (count($INNERJOIN)) {
+         $criteria['INNER JOIN'] = $INNERJOIN;
       }
 
       $entrees = [];
       $count   = [];
-      if (empty($query)) {
+      if (!count($criteria)) {
          return [];
       }
 

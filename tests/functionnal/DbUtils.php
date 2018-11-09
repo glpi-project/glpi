@@ -976,4 +976,50 @@ class DbUtils extends DbTestCase {
          }
       }
    }
+
+   /**
+    * Test getDateCriteria
+    *
+    * @return void
+    */
+   public function testGetDateCriteria() {
+      $this->newTestedInstance();
+
+      $this->array(
+         $this->testedInstance->getDateCriteria('date', null, null)
+      )->isIdenticalTo([]);
+
+      $this->array(
+         $this->testedInstance->getDateCriteria('date', '2018-11-09', null)
+      )->isIdenticalTo([
+         'AND' => [
+            ['date' => ['>=', '2018-11-09']]
+         ]
+      ]);
+
+      $result = $this->testedInstance->getDateCriteria('date', null, '2018-11-09');
+      $this->array($result['AND'])->hasSize(1);
+
+      $this->array($result['AND'][0]['date'])
+         ->hasSize(2)
+         ->string[0]->isIdenticalTo('<=')
+         ->object[1]->isInstanceOf('\QueryExpression');
+
+      $this->string(
+         $result['AND'][0]['date'][1]->getValue()
+      )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+
+      $result = $this->testedInstance->getDateCriteria('date', '2018-11-08', '2018-11-09');
+      $this->array($result['AND'])->hasSize(2);
+
+      $this->array($result['AND'][0])->isIdenticalTo(['date' => ['>=', '2018-11-08']]);
+      $this->array($result['AND'][1]['date'])
+         ->hasSize(2)
+         ->string[0]->isIdenticalTo('<=')
+         ->object[1]->isInstanceOf('\QueryExpression');
+
+      $this->string(
+         $result['AND'][1]['date'][1]->getValue()
+      )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+   }
 }

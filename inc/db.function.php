@@ -517,6 +517,8 @@ function closeDBConnections() {
 /**
  * Add dates for request
  *
+ * @deprecated 9.4
+ *
  * @param string $field table.field to request
  * @param string $begin begin date
  * @param string $end   end date
@@ -528,6 +530,19 @@ function getDateRequest($field, $begin, $end) {
    return $dbu->getDateRequest($field, $begin, $end);
 }
 
+/**
+ * Add dates for request
+ *
+ * @param $field        table.field to request
+ * @param $begin  date  begin date
+ * @param $end    date  end date
+ *
+ * @return sql
+**/
+function getDateCriteria($field, $begin, $end) {
+   $dbu = new DbUtils();
+   return $dbu->getDateCriteria($field, $begin, $end);
+}
 
 /**
  * Export an array to be stored in a simple field in the database
