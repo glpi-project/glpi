@@ -242,7 +242,7 @@ class DeviceHardDrive extends CommonDevice {
          'table'              => 'glpi_items_deviceharddrives',
          'field'              => 'capacity',
          'name'               => __('Hard drive size'),
-         'unit'               => 'Mio',
+         'unit'               => 'auto',
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'number',
