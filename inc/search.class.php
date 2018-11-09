@@ -4395,33 +4395,29 @@ class Search {
     * @param array   $data            array containing data results
     * @param boolean $meta            is a meta item ? (default 0)
     * @param array   $addobjectparams array added parameters for union search
+    * @param string  $orig_itemtype   Original itemtype, used for union_search_type
     *
     * @return string to print
    **/
    static function giveItem($itemtype, $ID, array $data, $meta = 0,
-                            array $addobjectparams = []) {
+                            array $addobjectparams = [], $orig_itemtype = null) {
       global $CFG_GLPI, $DB;
 
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])) {
 
+         $oparams = [];
          if (isset($searchopt[$ID]['addobjectparams'])
              && $searchopt[$ID]['addobjectparams']) {
-            return self::giveItem(
-               $data["TYPE"],
-               $ID,
-               $data,
-               $meta,
-               $searchopt[$ID]['addobjectparams']
-            );
+            $oparams = $searchopt[$ID]['addobjectparams'];
          }
 
-         return self::giveItem($data["TYPE"], $ID, $data, $meta);
+         return self::giveItem($data["TYPE"], $ID, $data, $meta, $oparams, $itemtype);
       }
 
       $so = $searchopt[$ID];
-      $ID = $itemtype . '_' . $ID;
+      $ID = ($orig_itemtype !== null ? $orig_itemtype : $itemtype) . '_' . $ID;
 
       if (count($addobjectparams)) {
          $so = array_merge($so, $addobjectparams);
