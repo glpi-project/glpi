@@ -4417,6 +4417,7 @@ class Search {
       }
 
       $so = $searchopt[$ID];
+      $orig_id = $ID;
       $ID = ($orig_itemtype !== null ? $orig_itemtype : $itemtype) . '_' . $ID;
 
       if (count($addobjectparams)) {
@@ -4426,7 +4427,7 @@ class Search {
       if ($plug = isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_giveItem';
          if (function_exists($function)) {
-            $out = $function($itemtype, $ID, $data, "{$itemtype}_{$ID}");
+            $out = $function($itemtype, $orig_id, $data, $ID);
             if (!empty($out)) {
                return $out;
             }
@@ -5055,7 +5056,7 @@ class Search {
                $plug     = $matches[1];
                $function = 'plugin_'.$plug.'_giveItem';
                if (function_exists($function)) {
-                  $out = $function($itemtype, $ID, $data, "{$itemtype}_{$ID}");
+                  $out = $function($itemtype, $orig_id, $data, $ID);
                   if (!empty($out)) {
                      return $out;
                   }
