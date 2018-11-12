@@ -3303,17 +3303,18 @@ class User extends CommonDBTM {
 
       $joinprofile      = false;
       $joinprofileright = false;
+      $WHERE = [];
 
       switch ($right) {
          case "interface" :
             $joinprofile = true;
-            $where       = " `glpi_profiles`.`interface` = 'central' ".
-                             getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                        $entity_restrict, 1);
+            $WHERE = [
+               'glpi_profiles.interface' => 'central'
+            ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1);
             break;
 
          case "id" :
-            $where = " `glpi_users`.`id` = '".Session::getLoginUserID()."' ";
+            $WHERE = ['glpi_users.id' => Session::getLoginUserID()];
             break;
 
          case "delegate" :
@@ -3346,9 +3347,7 @@ class User extends CommonDBTM {
             }
 
             if (count($users)) {
-               $where = " `glpi_users`.`id` IN (".implode(",", $users).")";
-            } else {
-               $where = '0';
+               $WHERE = ['glpi_users.id' => $users];
             }
             break;
 
@@ -3385,16 +3384,15 @@ class User extends CommonDBTM {
             }
 
             if (count($users)) {
-               $where = " `glpi_users`.`id` IN (".implode(",", $users).")";
-            } else {
-               $where = '0';
+               $WHERE = ['glpi_users.id' => $users];
             }
 
             break;
 
          case "all" :
-            $where = " `glpi_users`.`id` > '0' ".
-                     getEntitiesRestrictRequest("AND", "glpi_profiles_users", '', $entity_restrict, 1);
+            $WHERE = [
+               'glpi_users.id' => ['>', 0]
+            ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1);
             break;
 
          default :
@@ -3404,173 +3402,227 @@ class User extends CommonDBTM {
                $right = [$right];
             }
             $forcecentral = true;
-            $where        = [];
 
+            $ORWHERE = [];
             foreach ($right as $r) {
                switch ($r) {
                   case  'own_ticket' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'ticket'
-                                  AND (`glpi_profilerights`.`rights` & ".Ticket::OWN.") ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => 'ticket',
+                           'glpi_profilerights.rights'   => ['&', Ticket::OWN]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                      break;
 
                   case 'create_ticket_validate' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'ticketvalidation'
-                                  AND (`glpi_profilerights`.`rights` & ".TicketValidation::CREATEREQUEST."
-                                       OR `glpi_profilerights`.`rights` & ".TicketValidation::CREATEINCIDENT.") ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'  => 'ticketvalidation',
+                           'OR'                       => [
+                              'glpi_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST],
+                              'glpi_profilerights.rights'   => ['&', TicketValidation::CREATEINCIDENT]
+                           ]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                      $forcecentral = false;
                      break;
 
                   case 'validate_request' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'ticketvalidation'
-                                  AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEREQUEST.") ".
-                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                              $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => 'ticketvalidation',
+                           'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEREQUEST]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                      $forcecentral = false;
                      break;
 
                   case 'validate_incident' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'ticketvalidation'
-                                  AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEINCIDENT.") ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => 'ticketvalidation',
+                           'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEINCIDENT]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                      $forcecentral = false;
                      break;
 
                   case 'validate' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'changevalidation'
-                                  AND (`glpi_profilerights`.`rights` & ".ChangeValidation::VALIDATE.") ".
-                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                              $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => 'changevalidation',
+                           'glpi_profilerights.rights'   => ['&', ChangeValidation::VALIDATE]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                      break;
 
                   case 'create_validate' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'changevalidation'
-                                  AND (`glpi_profilerights`.`rights` & ".ChangeValidation::CREATE.") ".
-                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                              $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => 'changevalidation',
+                           'glpi_profilerights.rights'   => ['&', ChangeValidation::CREATE]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                      break;
 
                   case 'see_project' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'project'
-                                  AND (`glpi_profilerights`.`rights` & ".Project::READMY.") ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => 'project',
+                           'glpi_profilerights.rights'   => ['&', Project::READMY]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                      break;
 
                   case 'faq' :
-                     $where[]= " (`glpi_profilerights`.`name` = 'knowbase'
-                                  AND (`glpi_profilerights`.`rights` & ".KnowbaseItem::READFAQ.") ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => 'knowbase',
+                           'glpi_profilerights.rights'   => ['&', KnowbaseItem::READFAQ]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
 
                   default :
                      // Check read or active for rights
-                     $where[]= " (`glpi_profilerights`.`name` = '".$r."'
-                                  AND `glpi_profilerights`.`rights` & ".
-                                       (READ | CREATE | UPDATE | DELETE | PURGE) ." ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $entity_restrict, 1).") ";
+                     $ORWHERE[] = [
+                        'AND' => [
+                           'glpi_profilerights.name'     => $r,
+                           'glpi_profilerights.rights'   => [
+                              '&',
+                              READ | CREATE | UPDATE | DELETE | PURGE
+                           ]
+                        ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
+                     ];
                }
                if (in_array($r, Profile::$helpdesk_rights)) {
                   $forcecentral = false;
                }
             }
 
-            $where = '('.implode(' OR ', $where);
+            if (count($ORWHERE)) {
+               $WHERE[] = ['OR' => $ORWHERE];
+            }
 
             if ($forcecentral) {
-               $where .= " AND `glpi_profiles`.`interface` = 'central' ";
+               $WHERE['glpi_profiles.interface'] = 'central';
             }
-            $where .= ')';
       }
 
       if (!$inactive_deleted) {
-         $where .= " AND `glpi_users`.`is_deleted` = 0
-                     AND `glpi_users`.`is_active` = 1
-                     AND (`glpi_users`.`begin_date` IS NULL
-                          OR `glpi_users`.`begin_date` < NOW())
-                     AND (`glpi_users`.`end_date` IS NULL
-                          OR `glpi_users`.`end_date` > NOW())";
+         $WHERE = array_merge(
+            $WHERE, [
+               'glpi_users.is_deleted' => 0,
+               'glpi_users.is_active'  => 1,
+               [
+                  'OR' => [
+                     ['glpi_users.begin_date' => null],
+                     ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+                  ]
+               ],
+               [
+                  'OR' => [
+                     ['glpi_users.end_date' => null],
+                     ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]]
+                  ]
+               ]
+
+            ]
+         );
       }
 
       if ((is_numeric($value) && $value)
           || count($used)) {
 
-         $where .= " AND `glpi_users`.`id` NOT IN (";
-         if (is_numeric($value)) {
-            $first  = false;
-            $where .= $value;
-         } else {
-            $first = true;
-         }
-         foreach ($used as $val) {
-            if ($first) {
-               $first = false;
-            } else {
-               $where .= ",";
-            }
-            $where .= $val;
-         }
-         $where .= ")";
+         $WHERE[] = [
+            'NOT' => [
+               'glpi_users.id' => $used
+            ]
+         ];
       }
 
+      $criteria = [
+         'SELECT DISTINCT' => 'glpi_users.*',
+         'FROM'            => 'glpi_users',
+         'LEFT JOIN'       => [
+            'glpi_useremails'       => [
+               'ON' => [
+                  'glpi_useremails' => 'users_id',
+                  'glpi_users'      => 'id'
+               ]
+            ],
+            'glpi_profiles_users'   => [
+               'ON' => [
+                  'glpi_profiles_users'   => 'users_id',
+                  'glpi_users'            => 'id'
+               ]
+            ]
+         ]
+      ];
       if ($count) {
-         $query = "SELECT COUNT(DISTINCT `glpi_users`.`id` ) AS CPT
-                   FROM `glpi_users` ";
-      } else {
-         $query = "SELECT DISTINCT `glpi_users`.*
-                   FROM `glpi_users` ";
+         $criteria['COUNT'] = 'CPT';
       }
-
-      $query .= " LEFT JOIN `glpi_useremails`
-                     ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
-                  LEFT JOIN `glpi_profiles_users`
-                     ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
 
       if ($joinprofile) {
-         $query .= " LEFT JOIN `glpi_profiles`
-                        ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)";
+         $criteria['LEFT JOIN']['glpi_profiles'] = [
+            'ON' => [
+               'glpi_profiles_users'   => 'profiles_id',
+               'glpi_profiles'         => 'id'
+            ]
+         ];
          if ($joinprofileright) {
-            $query .= " LEFT JOIN `glpi_profilerights`
-                           ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`)";
+            $criteria['LEFT JOIN']['glpi_profilerights'] = [
+               'ON' => [
+                  'glpi_profilerights' => 'profiles_id',
+                  'glpi_profiles'      => 'id'
+               ]
+            ];
          }
       }
 
-      if ($count) {
-         $query .= " WHERE $where ";
-      } else {
+      if (!$count) {
          if ((strlen($search) > 0)) {
-            $where .= " AND (`glpi_users`.`name` ".Search::makeTextSearch($search)."
-                             OR `glpi_users`.`realname` ".Search::makeTextSearch($search)."
-                             OR `glpi_users`.`firstname` ".Search::makeTextSearch($search)."
-                             OR `glpi_users`.`phone` ".Search::makeTextSearch($search)."
-                             OR `glpi_useremails`.`email` ".Search::makeTextSearch($search)."
-                             OR CONCAT(`glpi_users`.`realname`,' ',
-                                       `glpi_users`.`firstname`,' ',
-                                       `glpi_users`.`firstname`) ".
-                                       Search::makeTextSearch($search).")";
+            $txt_search = Search::makeTextSearchValue($search);
+            $concat = new \QueryExpression(
+               "CONCAT(
+                  glpi_users.realname,
+                  glpi_users.firstname,
+                  glpi_users.firstname
+               ) LIKE '$txt_search'"
+            );
+            $WHERE[] = [
+               'OR' => [
+                  'glpi_users.name'       => ['LIKE', $txt_search],
+                  'glpi_users.realname'   => ['LIKE', $txt_search],
+                  'glpi_users.firstname'  => ['LIKE', $txt_search],
+                  'glpi_users.phone'      => ['LIKE', $txt_search],
+                  'glpi_useremails.email' => ['LIKE', $txt_search],
+                  $concat
+               ]
+            ];
          }
-         $query .= " WHERE $where ";
 
          if ($_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE) {
-            $query.=" ORDER BY `glpi_users`.`firstname`,
-                               `glpi_users`.`realname`,
-                               `glpi_users`.`name` ";
+            $criteria['ORDERBY'] = [
+               'glpi_users.firstname',
+               'glpi_users.realname',
+               'glpi_users.name'
+            ];
          } else {
-            $query.=" ORDER BY `glpi_users`.`realname`,
-                               `glpi_users`.`firstname`,
-                               `glpi_users`.`name` ";
+            $criteria['ORDERBY'] = [
+               'glpi_users.realname',
+               'glpi_users.firstname',
+               'glpi_users.name'
+            ];
          }
 
          if ($limit > 0) {
-            $query .= " LIMIT $start,$limit";
+            $criteria['LIMIT'] = $limit;
+            $criteria['START'] = $start;
          }
       }
-      return $DB->query($query);
+      $criteria['WHERE'] = $WHERE;
+      return $DB->request($criteria);
    }
 
 
@@ -4271,15 +4323,16 @@ class User extends CommonDBTM {
 
       // Verif token.
       $token_ok = false;
-      $query = "SELECT *
-                FROM `glpi_users`
-                WHERE `password_forget_token` = '$token'
-                      AND NOW() < ADDDATE(`password_forget_token_date`, INTERVAL 1 DAY)";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'password_forget_token'       => $token,
+            new \QueryExpression('NOW() < ADDDATE(password_forget_token_date, INTERVAL 1 DAY))')
+         ]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $token_ok = true;
-         }
+      if (count($iterator) == 1) {
+         $token_ok = true;
       }
       echo "<div class='center'>";
 

@@ -3390,8 +3390,8 @@ class Dropdown {
 
       // Count real items returned
       $count = 0;
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+      if (count($result)) {
+         while ($data = $result->next()) {
             $users[$data["id"]] = formatUserName($data["id"], $data["name"], $data["realname"],
                                                 $data["firstname"]);
             $logins[$data["id"]] = $data["name"];
