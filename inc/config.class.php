@@ -655,7 +655,7 @@ class Config extends CommonDBTM {
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
 
-      if (!DBConnection::isDBSlaveActive() || !Config::canUpdate()) {
+      if (!Config::canUpdate()) {
          return;
       }
 

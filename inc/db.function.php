@@ -248,7 +248,7 @@ function getAllDatasFromTable($table, $condition = [], $usecache = false, $order
  *
  * @return string : name of the element
  *
- * @see DbUtils::getTreeValueCompleteName()
+ * @see getTreeValueCompleteName()
 **/
 function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true) {
    $dbu = new DbUtils();
@@ -267,7 +267,7 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  *
  * @return string : completename of the element
  *
- * @see DbUtils::getTreeLeafValueName()
+ * @see getTreeLeafValueName()
 **/
 function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
    $dbu = new DbUtils();
