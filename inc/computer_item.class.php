@@ -50,18 +50,12 @@ class Computer_Item extends CommonDBRelation{
    static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-
-   /**
-    * @since 0.84
-    *
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-
 
 
    /**
@@ -83,19 +77,8 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * Prepare input datas for adding the relation
-    *
-    * Overloaded to check is Disconnect needed (during OCS sync)
-    * and to manage autoupdate feature
-    *
-    * @param $input array of data used to add the item
-    *
-    * @return the modified $input array
-    *
-   **/
    function prepareInputForAdd($input) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $item = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
       if (!($item instanceof CommonDBTM)
@@ -178,12 +161,6 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * Actions done when item is deleted from the database
-    * Overloaded to manage autoupdate feature
-    *
-    *@return nothing
-   **/
    function cleanDBonPurge() {
       global $CFG_GLPI;
 
@@ -236,11 +213,6 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::getMassiveActionsForItemtype()
-   **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
@@ -255,13 +227,7 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-   **/
    static function getRelationMassiveActionsSpecificities() {
-      global $CFG_GLPI;
 
       $specificities              = parent::getRelationMassiveActionsSpecificities();
 
@@ -318,13 +284,13 @@ class Computer_Item extends CommonDBRelation{
     *
     * Print the form for computers or templates connections to printers, screens or peripherals
     *
-    * @param $comp                     Computer object
-    * @param $withtemplate    boolean  Template or basic item (default 0)
+    * @param Computer $comp         Computer object
+    * @param boolean  $withtemplate Template or basic item (default 0)
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForComputer(Computer $comp, $withtemplate = 0) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID      = $comp->fields['id'];
       $canedit = $comp->canEdit($ID);
@@ -458,7 +424,7 @@ class Computer_Item extends CommonDBRelation{
     * @param $item                     CommonDBTM object: the Monitor/Phone/Peripheral/Printer
     * @param $withtemplate    integer  withtemplate param (default 0)
     *
-    * @return nothing (print out a table)
+    * @return void
    **/
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       // Prints a direct connection to a computer
@@ -468,7 +434,7 @@ class Computer_Item extends CommonDBRelation{
       $ID     = $item->getField('id');
 
       if (!$item->can($ID, READ)) {
-         return false;
+         return;
       }
       $canedit = $item->canEdit($ID);
       $rand    = mt_rand();
@@ -648,13 +614,13 @@ class Computer_Item extends CommonDBRelation{
    *
    * @since 0.84
    *
-   * @param $fromtype               from where the connection is
-   * @param $myname                 select name
-   * @param $entity_restrict        Restrict to a defined entity (default = -1)
-   * @param $onlyglobal             display only global devices (used for templates) (default 0)
-   * @param $used             array Already used items ID: not to display in dropdown
+   * @param string            $fromtype        from where the connection is
+   * @param string            $myname          select name
+   * @param integer|integer[] $entity_restrict Restrict to a defined entity (default = -1)
+   * @param boolean           $onlyglobal      display only global devices (used for templates) (default 0)
+   * @param integer[]         $used            Already used items ID: not to display in dropdown
    *
-   * @return nothing (print out an HTML select box)
+   * @return integer Random generated number used for select box ID (select box HTML is printed)
    */
    static function dropdownAllConnect($fromtype, $myname, $entity_restrict = -1,
                                       $onlyglobal = 0, $used = []) {
@@ -692,14 +658,14 @@ class Computer_Item extends CommonDBRelation{
    /**
    * Make a select box for connections
    *
-   * @param $itemtype               type to connect
-   * @param $fromtype               from where the connection is
-   * @param $myname                 select name
-   * @param $entity_restrict        Restrict to a defined entity (default = -1)
-   * @param $onlyglobal             display only global devices (used for templates) (default 0)
-   * @param $used             array Already used items ID: not to display in dropdown
+   * @param string            $itemtype        type to connect
+   * @param string            $fromtype        from where the connection is
+   * @param string            $myname          select name
+   * @param integer|integer[] $entity_restrict Restrict to a defined entity (default = -1)
+   * @param boolean           $onlyglobal      display only global devices (used for templates) (default 0)
+   * @param integer[]         $used            Already used items ID: not to display in dropdown
    *
-   * @return nothing (print out an HTML select box)
+   * @return integer Random generated number used for select box ID (select box HTML is printed)
    */
    static function dropdownConnect($itemtype, $fromtype, $myname, $entity_restrict = -1,
                                    $onlyglobal = 0, $used = []) {
@@ -722,9 +688,6 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for Template
@@ -762,11 +725,6 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -789,8 +747,8 @@ class Computer_Item extends CommonDBRelation{
     *
     * @since 0.84
     *
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
+    * @param integer $oldid ID of the item to clone
+    * @param integer $newid ID of the item cloned
    **/
    static function cloneComputer($oldid, $newid) {
       global $DB;
@@ -814,9 +772,9 @@ class Computer_Item extends CommonDBRelation{
     *
     * @since 0.83.3
     *
-    * @param $itemtype     type of the item to clone
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
+    * @param string  $itemtype type of the item to clone
+    * @param integer $oldid    ID of the item to clone
+    * @param integer $newid    ID of the item cloned
    **/
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
@@ -841,12 +799,12 @@ class Computer_Item extends CommonDBRelation{
    /**
     * @since 9.1.7
     *
-    * @param  $item        item linked to the computer to check
-    * $param  $entities
+    * @param CommonDBTM $item     item linked to the computer to check
+    * @param integer[]  $entities entities to check
     *
     * @return boolean
    **/
-   static function canUnrecursSpecif($item, $entities) {
+   static function canUnrecursSpecif(CommonDBTM $item, $entities) {
       global $DB;
 
       // RELATION : computers -> items
@@ -869,16 +827,7 @@ class Computer_Item extends CommonDBRelation{
       return true;
    }
 
-   /**
-    * Get linked items list for specified item
-    *
-    * @since 9.3.1
-    *
-    * @param CommonDBTM $item  Item instance
-    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
-    *
-    * @return array
-    */
+
    protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
       $params = parent::getListForItemParams($item, $noent);
       $params['WHERE'][self::getTable() . '.is_deleted'] = 0;

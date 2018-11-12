@@ -49,9 +49,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBChild::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (!empty($input['begin_date'])
@@ -66,9 +63,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       if (!empty($input['begin_date'])
@@ -83,9 +77,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
@@ -101,11 +92,6 @@ class ContractCost extends CommonDBChild {
    }
 
 
-   /**
-    * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForContract($item, $withtemplate);
@@ -201,7 +187,7 @@ class ContractCost extends CommonDBChild {
     * @param $oldid
     * @param $newid
    **/
-   static function cloneContract ($oldid, $newid) {
+   static function cloneContract($oldid, $newid) {
       global $DB;
 
       $query  = "SELECT *
@@ -324,10 +310,10 @@ class ContractCost extends CommonDBChild {
    /**
     * Print the contract costs
     *
-    * @param $contract               Contract object
-    * @param $withtemplate  boolean  Template or basic item (default 0)
+    * @param Contract $contract
+    * @param boolean  $withtemplate Template or basic item
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForContract(Contract $contract, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
@@ -336,7 +322,7 @@ class ContractCost extends CommonDBChild {
 
       if (!$contract->getFromDB($ID)
           || !$contract->can($ID, READ)) {
-         return false;
+         return;
       }
       $canedit = $contract->can($ID, UPDATE);
 

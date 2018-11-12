@@ -56,9 +56,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
@@ -75,11 +72,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    *
-    * @since 0.85
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -89,11 +81,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForVirtualMachine($item);
@@ -120,7 +107,6 @@ class ComputerVirtualMachine extends CommonDBChild {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
          return false;
@@ -245,17 +231,15 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param $comp   Computer object that represents the virtual machine
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForVirtualMachine(Computer $comp) {
-      global $DB;
 
       $ID = $comp->fields['id'];
 
       if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
-         return false;
+         return;
       }
-      $canedit = $comp->canEdit($ID);
 
       echo "<div class='center'>";
 
@@ -319,10 +303,9 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param $comp Computer object
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForComputer(Computer $comp) {
-      global $DB;
 
       $ID = $comp->fields['id'];
 
@@ -435,7 +418,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @since 9.3.1
     *
-    * @param $uuid the uuid given
+    * @param string $uuid the uuid given
     *
     * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
     * uuid with 3 first block flipped
@@ -480,7 +463,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param fields array of virtualmachine fields
     *
-    * @return the ID of the computer that have this uuid or false otherwise
+    * @return integer|boolean ID of the computer that have this uuid or false otherwise
    **/
    static function findVirtualMachine($fields = []) {
       global $DB;

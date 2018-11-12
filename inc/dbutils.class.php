@@ -122,6 +122,7 @@ final class DbUtils {
       ];
 
       foreach ($rules as $singular => $plural) {
+         $count = 0;
          $string = preg_replace("/$singular/", "$plural", $string, -1, $count);
          if ($count > 0) {
             break;
@@ -159,6 +160,7 @@ final class DbUtils {
       ]; // Add at the end if not exists
 
       foreach ($rules as  $plural => $singular) {
+         $count = 0;
          $string = preg_replace("/$plural/", "$singular", $string, -1, $count);
          if ($count > 0) {
             break;
@@ -238,6 +240,7 @@ final class DbUtils {
          $prefix    = "";
          $pref2     = NS_GLPI;
 
+         $matches = [];
          if (preg_match('/^plugin_([a-z0-9]+)_/', $table, $matches)) {
             $table  = preg_replace('/^plugin_[a-z0-9]+_/', '', $table);
             $prefix = "Plugin".Toolbox::ucfirst($matches[1]);
@@ -337,7 +340,6 @@ final class DbUtils {
     * @return int nb of elements in table
     */
    public function countDistinctElementsInTable($table, $field, $condition = []) {
-      global $DB;
 
       if (!is_array($condition)) {
          if (empty($condition)) {
@@ -1168,8 +1170,12 @@ final class DbUtils {
             }
          }
       }
-      $tree[$IDf]['name'] = Dropdown::getDropdownName($table, $IDf);
-      $tree[$IDf]['tree'] = $this->constructTreeFromList($id_found, $IDf);
+      $tree = [
+         $IDf => [
+            'name' => Dropdown::getDropdownName($table, $IDf),
+            'tree' => $this->constructTreeFromList($id_found, $IDf),
+         ],
+      ];
       return $tree;
    }
 
@@ -1231,7 +1237,6 @@ final class DbUtils {
     * @return string the query
     */
    public function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
-      global $DB;
 
       if (empty($IDf)) {
          return "";
@@ -1285,10 +1290,10 @@ final class DbUtils {
     * @param string  $condition     condition to add to the search (default ='')
     * @param string  $nextprev_item field used to sort (default ='name')
     *
-    * @return the next ID, -1 if not exist
+    * @return integer the next ID, -1 if not exist
     */
    public function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (empty($nextprev_item)) {
          return false;
@@ -1372,12 +1377,12 @@ final class DbUtils {
     * @param string  $table         table to search next item
     * @param integer $ID            current ID
     * @param string  $condition     condition to add to the search (default ='')
-    * @param stgring $nextprev_item field used to sort (default ='name')
+    * @param string  $nextprev_item field used to sort (default ='name')
     *
-    * @return the previous ID, -1 if not exist
+    * @return integer the previous ID, -1 if not exist
     */
    public function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (empty($nextprev_item)) {
          return false;
@@ -1530,7 +1535,7 @@ final class DbUtils {
     * @return string username string (realname if not empty and name if realname is empty).
     */
    public function getUserName($ID, $link = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $user = "";
       if ($link == 2) {
@@ -1843,7 +1848,6 @@ final class DbUtils {
     * @return array the $RELATION array
     */
    function getDbRelations() {
-      global $CFG_GLPI;
 
       include (GLPI_ROOT . "/inc/relation.constant.php");
 

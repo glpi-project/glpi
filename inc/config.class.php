@@ -67,11 +67,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    *  @see CommonGLPI::getMenuContent()
-    *
-    *   @since 0.85
-   **/
    static function getMenuContent() {
       $menu = [];
       if (static::canView()) {
@@ -113,16 +108,6 @@ class Config extends CommonDBTM {
       return $ong;
    }
 
-
-   /**
-    * Prepare input datas for updating the item
-    *
-    * @see CommonDBTM::prepareInputForUpdate()
-    *
-    * @param $input array of datas used to update the item
-    *
-    * @return the modified $input array
-   **/
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
       // Update only an item
@@ -268,13 +253,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for display
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormDisplay() {
       global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       $rand = mt_rand();
@@ -469,13 +454,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormInventory() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       $rand = mt_rand();
@@ -621,13 +606,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormAuthentication() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
-         return false;
+         return;
       }
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
@@ -665,20 +650,19 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for slave DB
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
 
       if (!Config::canUpdate()) {
-         return false;
+         return;
       }
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='_dbslave_status' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
-      $active = DBConnection::isDBSlaveActive();
 
       echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('SQL replica', 'SQL replicas', Session::getPluralNumber()) .
            "</th></tr>";
@@ -735,13 +719,13 @@ class Config extends CommonDBTM {
     * Print the config form for External API
     *
     * @since 9.1
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormAPI() {
       global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       echo "<div class='center spaced' id='tabsbody'>";
@@ -805,7 +789,6 @@ class Config extends CommonDBTM {
       $buttons = [
          'apiclient.form.php' => __('Add API client'),
       ];
-      $title = "";
       Html::displayTitle("",
                          self::getTypeName(Session::getPluralNumber()),
                          "",
@@ -819,13 +802,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for connections
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormHelpdesk() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       $rand = mt_rand();
@@ -979,10 +962,10 @@ class Config extends CommonDBTM {
     * @param $data array containing datas
     * (CFG_GLPI for global config / glpi_users fields for user prefs)
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormUserPrefs($data = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $oncentral = (Session::getCurrentInterface() == "central");
       $userpref  = false;
@@ -1443,7 +1426,7 @@ class Config extends CommonDBTM {
     * @param $password  string   password to validate
     * @param $display   boolean  display errors messages? (true by default)
     *
-    * @throws PasswordTooWeak when $display is false and the password does not matches the requirements
+    * @throws PasswordTooWeakException when $display is false and the password does not matches the requirements
     *
     * @return boolean is password valid?
    **/
@@ -1996,9 +1979,9 @@ class Config extends CommonDBTM {
    /**
     * Dropdown for global management config
     *
-    * @param $name   select name
-    * @param $value  default value
-    * @param $rand   rand
+    * @param string       $name   select name
+    * @param string       $value  default value
+    * @param integer|null $rand   rand
    **/
    static function dropdownGlobalManagement($name, $value, $rand = null) {
 
@@ -2015,9 +1998,9 @@ class Config extends CommonDBTM {
     * Get language in GLPI associated with the value coming from LDAP
     * Value can be, for example : English, en_EN or en
     *
-    * @param $lang : the value coming from LDAP
+    * @param string $lang the value coming from LDAP
     *
-    * @return the locale's php page in GLPI or '' is no language associated with the value
+    * @return string locale's php page in GLPI or '' is no language associated with the value
    **/
    static function getLanguage($lang) {
       global $CFG_GLPI;
@@ -2097,16 +2080,12 @@ class Config extends CommonDBTM {
     * Display field unicity criterias form
    **/
    function showFormFieldUnicity() {
-      global $CFG_GLPI;
 
       $unicity = new FieldUnicity();
       $unicity->showForm(1, -1);
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -2144,11 +2123,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -2495,7 +2469,7 @@ class Config extends CommonDBTM {
     *
     * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
     *
-    * @return 2 : creation error 1 : delete error 0: OK
+    * @return integer 2 : creation error 1 : delete error 0: OK
    **/
    static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
@@ -2791,11 +2765,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -3004,7 +2973,7 @@ class Config extends CommonDBTM {
     * @return void
     */
    function showFormLogs() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
          return false;

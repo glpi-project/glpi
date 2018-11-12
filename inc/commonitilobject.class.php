@@ -2822,7 +2822,6 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since 0.85
    **/
    function getSearchOptionsMain() {
-      global $CFG_GLPI;
 
       $tab = [];
 

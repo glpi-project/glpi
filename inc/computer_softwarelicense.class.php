@@ -103,7 +103,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       $input = $ma->getInput();
       switch ($ma->getAction()) {
@@ -127,7 +126,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
 
       switch ($ma->getAction()) {
          case 'move_license' :
@@ -285,7 +283,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return void
    **/
    static function showForLicenseByEntity(SoftwareLicense $license) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $softwarelicense_id = $license->getField('id');
 
@@ -335,7 +333,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return void
    **/
    static function showForLicense(SoftwareLicense $license) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $searchID = $license->getField('id');
 
@@ -610,7 +608,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return void
    **/
    function upgrade($licID, $softwarelicenses_id) {
-      global $DB;
 
       if ($this->getFromDB($licID)) {
          $computers_id = $this->fields['computers_id'];

@@ -45,10 +45,6 @@ class Contract_Supplier extends CommonDBRelation {
    static public $items_id_2 = 'suppliers_id';
 
 
-
-   /**
-    * @since 0.84
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -106,17 +102,16 @@ class Contract_Supplier extends CommonDBRelation {
     *
     * @since 0.84
     *
-    * @param $supplier   Supplier object
+    * @param Supplier $supplier
     *
-    * @return Nothing (display)
+    * @return void
    **/
    static function showForSupplier(Supplier $supplier) {
-      global $DB, $CFG_GLPI;
 
       $ID = $supplier->fields['id'];
       if (!Contract::canView()
           || !$supplier->can($ID, READ)) {
-         return false;
+         return;
       }
       $canedit = $supplier->can($ID, UPDATE);
       $rand    = mt_rand();
@@ -234,16 +229,15 @@ class Contract_Supplier extends CommonDBRelation {
     *
     * @param $contract Contract object
     *
-    * @return Nothing (HTML display)
+    * @return void
     **/
    static function showForContract(Contract $contract) {
-      global $DB, $CFG_GLPI;
 
       $instID = $contract->fields['id'];
 
       if (!$contract->can($instID, READ)
           || !Session::haveRight("contact_enterprise", READ)) {
-         return false;
+         return;
       }
       $canedit = $contract->can($instID, UPDATE);
       $rand    = mt_rand();
