@@ -1358,7 +1358,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return string
     */
-   protected function getMode() {
+   public function getMode() {
       return $this->mode;
    }
 
