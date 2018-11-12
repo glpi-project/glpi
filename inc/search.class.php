@@ -7343,6 +7343,38 @@ JAVASCRIPT;
       return " $link ($sql $sql_or)";
    }
 
+   /**
+    * Create SQL search value
+    *
+    * @since 9.4
+    *
+    * @param string  $val value to search
+    *
+    * @return string|null
+   **/
+   static function makeTextSearchValue($val) {
+      // Unclean to permit < and > search
+      $val = Toolbox::unclean_cross_side_scripting_deep($val);
+
+      // escape _ char used as wildcard in mysql likes
+      $val = str_replace('_', '\\_', $val);
+
+      if (($val == 'NULL') || ($val == 'null')) {
+         return null;
+      }
+
+      $search = '';
+      preg_match('/^(\^)?([^\^\$]*)(\$)?$/', $val, $matches);
+      Toolbox::logDebug($matches);
+      if (isset($matches[2]) && strlen(trim($matches[2])) > 0) {
+         $search =
+            ($matches[1] != '^' ? '%' : '') .
+            trim($matches[2]) .
+            (!isset($matches[3]) || $matches[3] != '$' ? '%' : '');
+      }
+      return $search;
+   }
+
 
    /**
     * Create SQL search condition
@@ -7359,34 +7391,11 @@ JAVASCRIPT;
          $NOT = "NOT";
       }
 
-      // Unclean to permit < and > search
-      $val = Toolbox::unclean_cross_side_scripting_deep($val);
-
-      // escape _ char used as wildcard in mysql likes
-      $val = str_replace('_', '\\_', $val);
-
-      if (($val == 'NULL') || ($val == 'null')) {
+      $val = self::makeTextSearchValue($val);
+      if ($val == null) {
          $SEARCH = " IS $NOT NULL ";
-
       } else {
-         $begin = 0;
-         $end   = 0;
-         if (($length = strlen($val)) > 0) {
-            if (($val[0] == '^')) {
-               $begin = 1;
-            }
-
-            if ($val[$length-1] == '$') {
-               $end = 1;
-            }
-         }
-
-         if ($begin || $end) {
-            // no Toolbox::substr, to be consistent with strlen result
-            $val = substr($val, $begin, $length-$end-$begin);
-         }
-
-         $SEARCH = " $NOT LIKE '".(!$begin?"%":"").trim($val).(!$end?"%":"")."' ";
+         $SEARCH = " $NOT LIKE '$val' ";
       }
       return $SEARCH;
    }
