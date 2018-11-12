@@ -25,6 +25,7 @@ The present file will list all changes made to the project; according to the
    - `addOrderBy()`,
    - `addHaving()`,
    - `giveItem()`
+- `NotificationTarget::getMode()` visibility is now `public`.
 
 #### Deprecated
 
