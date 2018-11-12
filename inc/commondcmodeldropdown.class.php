@@ -60,7 +60,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          $fields[] = [
             'name'   => 'weight',
             'type'   => 'integer',
-            'label'  => __('Weight')
+            'label'  => __('Weight'),
+            'max'    => 1000
          ];
       }
 
