@@ -973,7 +973,7 @@ class MailCollector  extends CommonDBTM {
                if ($end_strip >= 0) {
                   // Remove contents between beginning of line and footer
                   $content[$end_strip] = preg_replace(
-                     '/^.*' . $footer_pattern . '$/',
+                     '/^.*' . $footer_pattern . '/',
                      '',
                      $content[$end_strip]
                   );
