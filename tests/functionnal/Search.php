@@ -1094,6 +1094,26 @@ class Search extends DbTestCase {
    public function testIsInfocomOption($index, $expected) {
       $this->boolean(\Search::isInfocomOption('Computer', $index))->isIdenticalTo($expected);
    }
+
+   protected function makeTextSearchValueProvider() {
+      return [
+         ['', ''],
+         ['^', ''],
+         ['$', ''],
+         ['^$', ''],
+         ['looking for', '%looking for%'],
+         ['^starts with', 'starts with%'],
+         ['ends with$', '%ends with'],
+         ['^exact string$', 'exact string']
+      ];
+   }
+
+   /**
+    * @dataProvider makeTextSearchValueProvider
+    */
+   public function testMakeTextSearchValue($value, $expected) {
+      $this->string(\Search::makeTextSearchValue($value))->isIdenticalTo($expected);
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
