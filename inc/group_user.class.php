@@ -310,8 +310,8 @@ class Group_User extends CommonDBRelation{
       global $CFG_GLPI, $DB;
 
       $rand = mt_rand();
-      $res  = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
-      $nb   = ($res ? $DB->result($res, 0, "CPT") : 0);
+      $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids);
+      $nb = count($res);
 
       if ($nb) {
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'

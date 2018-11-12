@@ -1367,8 +1367,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $list       = [];
       $restrict   = [];
 
-      $res = User::getSqlSearchResult (false, $params['right'], $params['entity']);
-      while ($data = $DB->fetch_assoc($res)) {
+      $res = User::getSqlSearchResult(false, $params['right'], $params['entity']);
+      while ($data = $res->next()) {
          $list[] = $data['id'];
       }
       if (count($list) > 0) {

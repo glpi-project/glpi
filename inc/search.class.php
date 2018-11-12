@@ -7364,13 +7364,12 @@ JAVASCRIPT;
       }
 
       $search = '';
-      preg_match('/^(\^)?([^\^\$]*)(\$)?$/', $val, $matches);
-      Toolbox::logDebug($matches);
+      preg_match('/^(\^?)([^\^\$]*)(\$?)$/', $val, $matches);
       if (isset($matches[2]) && strlen(trim($matches[2])) > 0) {
          $search =
             ($matches[1] != '^' ? '%' : '') .
             trim($matches[2]) .
-            (!isset($matches[3]) || $matches[3] != '$' ? '%' : '');
+            ($matches[3] != '$' ? '%' : '');
       }
       return $search;
    }
