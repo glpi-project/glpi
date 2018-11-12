@@ -746,7 +746,10 @@ abstract class API extends CommonGLPI {
                            'glpi_ipaddresses AS ipadr'               => [
                               'ON' => [
                                  'ipadr'  => 'items_id',
-                                 'netn'   => 'id'
+                                 'netn'   => 'id',
+                                 [
+                                    'AND' => ['ipadr.itemtype' => 'NetworkName']
+                                 ]
                               ]
                            ],
                            'glpi_fqdns AS fqdn'                      => [
@@ -769,7 +772,6 @@ abstract class API extends CommonGLPI {
                            ]
                         ],
                         'WHERE'     => [
-                           'ipadr.itemtype'  => 'NetworkName',
                            'netn.itemtype'   => 'NetworkPort',
                            'netn.items_id'   => $data['netport_id']
                         ],
