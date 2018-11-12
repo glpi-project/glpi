@@ -59,9 +59,9 @@ class DeviceSimcard extends CommonDevice {
                'unit'  => 'mV'
             ],
             [
-                  'name'  => 'allow_voip',
-                  'label' => __('Allow VOIP'),
-                  'type'  => 'bool'
+               'name'  => 'allow_voip',
+               'label' => __('Allow VOIP'),
+               'type'  => 'bool'
             ],
          ]
       );
