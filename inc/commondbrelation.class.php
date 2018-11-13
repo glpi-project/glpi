@@ -1572,7 +1572,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                'glpi_entities'   => 'id'
             ]
          ];
-         $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', true);
+         $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', 'auto');
          $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
       }
 
