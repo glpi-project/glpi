@@ -654,28 +654,21 @@ class Group_User extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate) {
+      if (!$withtemplate && static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'User' :
-               if (Group::canView()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = countElementsInTable($this->getTable(),
-                                                "users_id = '".$item->getID()."'");
-                  }
-                  return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable($this->getTable(), "users_id = '".$item->getID()."'");
                }
-               break;
+               return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Group' :
-               if (User::canView()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = countElementsInTable("glpi_groups_users",
-                                                "`groups_id` = '".$item->getID()."'" );
-                  }
-                  return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable("glpi_groups_users",
+                                             "`groups_id` = '".$item->getID()."'" );
                }
-               break;
+               return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
