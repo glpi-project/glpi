@@ -536,42 +536,74 @@ class MailCollector  extends CommonDBTM {
    function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0) {
       global $DB;
 
-      $mailbox_id = 0;
-      $query      = "SELECT *
-                     FROM `glpi_notimportedemails`
-                     WHERE `id` IN (".implode(',', $emails_ids).")
-                     ORDER BY `mailcollectors_id`";
+      $query = [
+         'FROM'   => NotImportedEmail::getTable(),
+         'WHERE'  => [
+            'id' => $emails_ids,
+         ],
+         'ORDER'  => 'mailcollectors_id'
+      ];
 
       $todelete = [];
       foreach ($DB->request($query) as $data) {
          $todelete[$data['mailcollectors_id']][$data['messageid']] = $data;
       }
-      $ticket = new Ticket();
+
       foreach ($todelete as $mailcollector_id => $rejected) {
-         if ($this->getFromDB($mailcollector_id)) {
-            $this->uid          = -1;
-            $this->fetch_emails = 0;
+         $collector = new self();
+         if ($collector->getFromDB($mailcollector_id)) {
+            // Use refused folder in connection string
+            $connect_config = Toolbox::parseMailServerConnectString($collector->fields['host']);
+            $collector->fields['host'] = Toolbox::constructMailServerConfig(
+               [
+                  'mail_server'   => $connect_config['address'],
+                  'server_port'   => $connect_config['port'],
+                  'server_type'   => !empty($connect_config['type']) ? '/' . $connect_config['type'] : '',
+                  'server_ssl'    => $connect_config['ssl'] ? '/ssl' : '',
+                  'server_cert'   => $connect_config['validate-cert'] ? '/validate-cert' : '/novalidate-cert',
+                  'server_tls'    => $connect_config['tls'] ? '/tls' : '',
+                  'server_rsh'    => $connect_config['norsh'] ? '/norsh' : '',
+                  'server_secure' => $connect_config['secure'] ? '/secure' : '',
+                  'server_debug'  => $connect_config['debug'] ? '/debug' : '',
+
+                  'server_mailbox' => $collector->fields[self::REFUSED_FOLDER],
+               ]
+            );
+
+            $collector->uid          = -1;
+            $collector->fetch_emails = 0;
             //Connect to the Mail Box
-            $this->connect();
+            $collector->connect();
             // Get Total Number of Unread Email in mail box
-            $tot = $this->getTotalMails(); //Total Mails in Inbox Return integer value
+            $tot = $collector->getTotalMails(); //Total Mails in Inbox Return integer value
 
             for ($i=1; $i<=$tot; $i++) {
-               $head = $this->getHeaders($i);
+               $uid = imap_uid($collector->marubox, $i);
+               $head = $collector->getHeaders($uid);
                if (isset($rejected[$head['message_id']])) {
                   if ($action == 1) {
                      $tkt = [];
-                     $tkt = $this->buildTicket($i, ['mailgates_id' => $mailcollector_id,
-                                                         'play_rules'   => false]);
+                     $tkt = $collector->buildTicket($uid, ['mailgates_id' => $mailcollector_id,
+                                                           'play_rules'   => false]);
                      $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
                      $tkt['entities_id']         = $entity;
-                     $ticket->add($tkt);
+
+                     if (!isset($tkt['tickets_id'])) {
+                        // New ticket case
+                        $ticket = new Ticket();
+                        $ticket->add($tkt);
+                     } else {
+                        // Followup case
+                        $fup = new TicketFollowup();
+                        $fup->add($tkt);
+                     }
+
                      $folder = self::ACCEPTED_FOLDER;
                   } else {
                      $folder = self::REFUSED_FOLDER;
                   }
                   //Delete email
-                  if ($this->deleteMails($i, $folder)) {
+                  if ($collector->deleteMails($uid, $folder)) {
                      $rejectedmail = new NotImportedEmail();
                      $rejectedmail->delete(['id' => $rejected[$head['message_id']]['id']]);
                   }
@@ -595,8 +627,8 @@ class MailCollector  extends CommonDBTM {
                   }
                }
             }
-            imap_expunge($this->marubox);
-            $this->close_mailbox();
+            imap_expunge($collector->marubox);
+            $collector->close_mailbox();
          }
       }
    }
