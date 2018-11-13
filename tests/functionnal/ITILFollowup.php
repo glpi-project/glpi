@@ -107,4 +107,104 @@ class ITILFollowup extends DbTestCase {
       $this->boolean((boolean) $fup->canUpdateItem())->isTrue();
       $this->boolean((boolean) $fup->canPurgeItem())->isTrue();
    }
+
+   public function testUpdateAndDelete() {
+      $this->login();
+
+      $ticketId = $this->getNewITILObject('Ticket');
+      $fup      = new \ITILFollowup();
+      $tmp      = ['itemtype' => 'Ticket', 'items_id' => $ticketId];
+
+      $fup_id = $fup->add([
+         'content'      => "my followup",
+         'itemtype'   => 'Ticket',
+         'items_id'   => $ticketId
+      ]);
+      $this->integer((int)$fup_id)->isGreaterThan(0);
+
+      $this->boolean(
+         $fup->update([
+            'id'         => $fup_id,
+            'content'    => "my followup updated",
+            'itemtype'   => 'Ticket',
+            'items_id'   => $ticketId
+         ])
+      )->isTrue();
+
+      $this->boolean(
+         $fup->getFromDB($fup_id)
+      )->isTrue();
+      $this->string((string) $fup->fields['content'])->isEqualTo('my followup updated');
+
+      $this->boolean(
+         $fup->delete([
+            'id'  => $fup_id
+         ])
+      )->isTrue();
+      $this->boolean((boolean) $fup->getFromDB($fup_id))->isFalse();
+
+      $changeId = $this->getNewITILObject('Change');
+      $fup      = new \ITILFollowup();
+      $tmp      = ['itemtype' => 'Change', 'items_id' => $changeId];
+
+      $fup_id = $fup->add([
+         'content'      => "my followup",
+         'itemtype'   => 'Change',
+         'items_id'   => $changeId
+      ]);
+      $this->integer((int)$fup_id)->isGreaterThan(0);
+
+      $this->boolean(
+         $fup->update([
+            'id'         => $fup_id,
+            'content'    => "my followup updated",
+            'itemtype'   => 'Change',
+            'items_id'   => $changeId
+         ])
+      )->isTrue();
+
+      $this->boolean(
+         $fup->getFromDB($fup_id)
+      )->isTrue();
+      $this->string((string) $fup->fields['content'])->isEqualTo('my followup updated');
+
+      $this->boolean(
+         $fup->delete([
+            'id'  => $fup_id
+         ])
+      )->isTrue();
+      $this->boolean((boolean) $fup->getFromDB($fup_id))->isFalse();
+
+      $problemId = $this->getNewITILObject('Problem');
+      $fup      = new \ITILFollowup();
+      $tmp      = ['itemtype' => 'Problem', 'items_id' => $problemId];
+
+      $fup_id = $fup->add([
+         'content'      => "my followup",
+         'itemtype'   => 'Problem',
+         'items_id'   => $problemId
+      ]);
+      $this->integer((int)$fup_id)->isGreaterThan(0);
+
+      $this->boolean(
+         $fup->update([
+            'id'         => $fup_id,
+            'content'    => "my followup updated",
+            'itemtype'   => 'Problem',
+            'items_id'   => $problemId
+         ])
+      )->isTrue();
+
+      $this->boolean(
+         $fup->getFromDB($fup_id)
+      )->isTrue();
+      $this->string((string) $fup->fields['content'])->isEqualTo('my followup updated');
+
+      $this->boolean(
+         $fup->delete([
+            'id'  => $fup_id
+         ])
+      )->isTrue();
+      $this->boolean((boolean) $fup->getFromDB($fup_id))->isFalse();
+   }
 }

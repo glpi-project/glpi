@@ -289,7 +289,7 @@ class ITILFollowup  extends CommonDBChild {
          $donotif = false;
       }
 
-      $job = new self::$itemtype();
+      $job = new $this->fields['itemtype'];
       $job->getFromDB($this->fields[self::$items_id]);
       $job->updateDateMod($this->fields[self::$items_id]);
 
@@ -299,7 +299,7 @@ class ITILFollowup  extends CommonDBChild {
          '',
          $this->fields['id'],
       ];
-      Log::history($this->getField(self::$items_id), self::$itemtype, $changes, $this->getType(),
+      Log::history($this->getField(self::$items_id), $this->fields['itemtype'], $changes, $this->getType(),
                    Log::HISTORY_DELETE_SUBITEM);
 
       if ($donotif) {
