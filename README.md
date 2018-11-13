@@ -50,6 +50,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 * Mandatory PHP extensions:
     - json
     - mbstring
+    - iconv
     - mysqli
     - session
     - gd (picture generation)
