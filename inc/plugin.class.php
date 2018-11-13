@@ -34,6 +34,10 @@
  * Based on cacti plugin system
  */
 
+use Composer\Factory;
+use Composer\IO\NullIO;
+use Composer\Repository\PlatformRepository;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -131,6 +135,7 @@ class Plugin extends CommonDBTM {
     * @return nothing
    **/
    static function load($name, $withhook = false) {
+
       global $LOADED_PLUGINS;
 
       if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
@@ -1546,6 +1551,88 @@ class Plugin extends CommonDBTM {
 
 
    /**
+    * Returns missing dependencies declared in composer.
+    *
+    * @since 9.4
+    *
+    * @param string $directory Plugin directory
+    *
+    * @return array List of missing dependencies (format is: "name constraint")
+    */
+   public function getMissingComposerDependencies($directory) {
+
+      // Composer requires COMPOSER_HOME env to be set.
+      // If it is not set, it will not be able to detect dependencies installed in the global scope.
+      //
+      // Two options:
+      //
+      // 1. We consider that only developpers will manually install plugins (i.e. not using the
+      // plugin archive), so we add a section in the developper documentation to says that
+      // defining the COMPOSER_HOME variable is necessary to detect dependencies installed
+      // in a global scope.
+      //
+      // 2. We consider that we cannot be sure of our checks if this env var is not
+      // defined and we have to make this check non blocking (i.e. display only a warning).
+      if (false === getenv('COMPOSER_HOME')) {
+         putenv('COMPOSER_HOME=' . GLPI_TMP_DIR . DIRECTORY_SEPARATOR . 'composer');
+      }
+
+      $factory = new Factory();
+      $null_io = new NullIO();
+
+      $core_composer    = $factory->createComposer(
+         $null_io,
+         implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'composer.json']),
+         false,
+         GLPI_ROOT,
+         false
+      );
+      $core_inst_manager = $core_composer->getInstallationManager();
+      $core_repository   = $core_composer->getRepositoryManager()->getLocalRepository();
+
+      $plugin_path   = implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'plugins', $directory]);
+      $composer_file = $plugin_path . DIRECTORY_SEPARATOR . 'composer.json';
+
+      $missing = [];
+
+      if (file_exists($composer_file)) {
+         $plugin_composer = $factory->createComposer(
+            $null_io,
+            $composer_file,
+            false,
+            $plugin_path,
+            false
+         );
+
+         $installation_manager = $plugin_composer->getInstallationManager();
+         $local_repository     = $plugin_composer->getRepositoryManager()->getLocalRepository();
+
+         foreach ($plugin_composer->getPackage()->getRequires() as $link) {
+            if (preg_match(PlatformRepository::PLATFORM_PACKAGE_REGEX, $link->getTarget())) {
+               continue; // Skip checks on platform requires
+            }
+
+            $package = $local_repository->findPackage($link->getTarget(), $link->getConstraint());
+            if (null !== $package
+               && $installation_manager->isPackageInstalled($local_repository, $package)) {
+               continue; // Find in plugin directory
+            }
+
+            $package = $core_repository->findPackage($link->getTarget(), $link->getConstraint());
+            if (null !== $package
+               && $core_inst_manager->isPackageInstalled($core_repository, $package)) {
+               continue; // Find in core directory
+            }
+
+            $missing[$link->getTarget()] = $link->getTarget() . ' ' . $link->getConstraint();
+         }
+      }
+
+      return $missing;
+   }
+
+
+   /**
     * Check expected GLPI plugins
     *
     * @since 9.2
@@ -1871,31 +1958,48 @@ class Plugin extends CommonDBTM {
                   if (function_exists("plugin_".$plug['directory']."_install")
                       && function_exists("plugin_".$plug['directory']."_check_config")) {
 
-                     $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
+                     $can_install = true;
 
                      ob_start();
-                     $do_install = $plugin->checkVersions($plug['directory']);
-                     if (!$do_install) {
+                     $is_compatible = $plugin->checkVersions($plug['directory']);
+                     if (!$is_compatible) {
+                        $can_install = false;
                         $output .= "<span class='error'>" . ob_get_contents() . "</span>";
                      }
                      ob_end_clean();
 
-                     if ($do_install && function_exists($function)) {
-                        ob_start();
-                        $do_install = $function();
-                        $msg = '';
-                        if (!$do_install) {
-                           $msg = '<span class="error">' . ob_get_contents() . '</span>';
+                     if ($is_compatible) {
+                        // Check prerequisites
+                        $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
+                        if (function_exists($function)) {
+                           ob_start();
+                           if (!$function()) {
+                              $can_install = false;
+                              $output .= '<span class="error">' . ob_get_contents() . '</span>';
+                           }
+                           ob_end_clean();
                         }
-                        ob_end_clean();
-                        $output .= $msg;
+
+                        // Check composer dependencies
+                        $missing_deps = $plugin->getMissingComposerDependencies($plug['directory']);
+                        if (!empty($missing_deps)) {
+                           $can_install = false;
+
+                           $output .= '<span class="error">';
+                           $output .= '<u title="' . implode(', ', $missing_deps) . '">';
+                           $output .= __('Missing composer dependencies.');
+                           $output .= '</u>';
+                           $output .= ' ' . __('Please run "composer install" command in plugin directory.');
+                           $output .= '</span>';
+                        }
                      }
-                     if ($plug['state'] == self::NOTUPDATED) {
-                        $msg = _x('button', 'Upgrade');
-                     } else {
-                        $msg = _x('button', 'Install');
-                     }
-                     if ($do_install) {
+
+                     if ($can_install) {
+                        if ($plug['state'] == self::NOTUPDATED) {
+                           $msg = _x('button', 'Upgrade');
+                        } else {
+                           $msg = _x('button', 'Install');
+                        }
                         $output .= Html::getSimpleForm(
                            static::getFormURL(),
                            ['action' => 'install'],

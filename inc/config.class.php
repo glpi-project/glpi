@@ -1929,6 +1929,8 @@ class Config extends CommonDBTM {
                  'check'   => 'SebastianBergmann\\Diff\\Diff' ],
                [ 'name'    => 'elvanto/litemoji',
                  'check'   => 'LitEmoji\\LitEmoji' ],
+               [ 'name'    => 'composer/composer',
+                 'check'   => 'Composer\\Composer' ],
       ];
       if ($all || PHP_VERSION_ID < 70000) {
          $deps[] = [

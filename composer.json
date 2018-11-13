@@ -33,7 +33,8 @@
         "monolog/monolog": "^1.23",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
         "zendframework/zend-console": "^2.7",
-        "elvanto/litemoji": "^1.4"
+        "elvanto/litemoji": "^1.4",
+        "composer/composer": "^1.7"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
