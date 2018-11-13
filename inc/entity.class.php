@@ -249,13 +249,14 @@ class Entity extends CommonTreeDropdown {
 
       $input = parent::prepareInputForAdd($input);
 
-      $query = "SELECT MAX(`id`)+1 AS newID
-                FROM `glpi_entities`";
-      if ($result = $DB->query($query)) {
-          $input['id'] = $DB->result($result, 0, 0);
-      } else {
-         return false;
-      }
+      $result = $DB->request([
+         'SELECT' => new \QueryExpression(
+            'MAX('.$DB->quoteName('id').')+1 AS newID'
+         ),
+         'FROM'   => self::getTable()
+      ])->next();
+      $input['id'] = $result['newID'];
+
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
 
       if (!Session::isCron()) { // Filter input for connected
@@ -1251,24 +1252,28 @@ class Entity extends CommonTreeDropdown {
       }
 
       // Others entities in level order (parent first)
-      $query = "SELECT `glpi_entities`.`id` AS `entity`,
-                       `glpi_entities`.`entities_id` AS `parent`,
-                       `glpi_entities`.`$field`
-                FROM `glpi_entities`
-                ORDER BY `glpi_entities`.`level` ASC";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'id AS entity',
+            'entities_id AS parent',
+            $field
+         ],
+         'FROM'   => self::getTable(),
+         'ORDER'  => 'level ASC'
+      ]);
 
-      foreach ($DB->request($query) as $entitydatas) {
-         if ((is_null($entitydatas[$field])
-              || ($entitydatas[$field] == self::CONFIG_PARENT))
-             && isset($entities[$entitydatas['parent']])) {
+      while ($entitydata = $iterator->next()) {
+         if ((is_null($entitydata[$field])
+              || ($entitydata[$field] == self::CONFIG_PARENT))
+             && isset($entities[$entitydata['parent']])) {
 
             // config inherit from parent
-            $entities[$entitydatas['entity']] = $entities[$entitydatas['parent']];
+            $entities[$entitydata['entity']] = $entities[$entitydata['parent']];
 
-         } else if ($entitydatas[$field] > 0) {
+         } else if ($entitydata[$field] > 0) {
 
             // config found in entity
-            $entities[$entitydatas['entity']] = $entitydatas[$field];
+            $entities[$entitydata['entity']] = $entitydata[$field];
          }
       }
 
@@ -2008,13 +2013,15 @@ class Entity extends CommonTreeDropdown {
    private static function getEntityIDByField($field, $value) {
       global $DB;
 
-      $sql = "SELECT `id`
-              FROM `glpi_entities`
-              WHERE `".$field."` = '".$value."'";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [$field => $value]
+      ]);
 
-      if ($DB->numrows($result) == 1) {
-         return $DB->result($result, 0, "id");
+      if ($count($iterator) == 1) {
+         $result = $iterator->next();
+         return $result['id'];
       }
       return -1;
    }
@@ -2362,13 +2369,7 @@ class Entity extends CommonTreeDropdown {
 
          }
       }
-      /*
-      switch ($fieldval) {
-         case "tickettype" :
-            // Default is Incident if not set
-            return Ticket::INCIDENT_TYPE;
-      }
-      */
+
       return $default_value;
    }
 

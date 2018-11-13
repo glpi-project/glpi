@@ -190,10 +190,11 @@ class ContractCost extends CommonDBChild {
    static function cloneContract($oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_contractcosts`
-                 WHERE `contracts_id` = '$oldid'";
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['contracts_id' => $oldid]
+      ]);
+      while ($data = $iterator->next()) {
          $cd                   = new self();
          unset($data['id']);
          $data['contracts_id'] = $newid;

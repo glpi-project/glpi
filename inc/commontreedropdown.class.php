@@ -796,43 +796,56 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB;
 
       if (isset($input['completename'])) {
-         // Clean datas
+         // Clean data
          $input['completename'] = self::cleanTreeText($input['completename']);
       }
 
       if (isset($input['completename']) && !empty($input['completename'])) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `completename` = '".$input['completename']."'";
+         $criteria = [
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'completename' => $input['completename']
+            ]
+         ];
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                 $input['entities_id'], $this->maybeRecursive());
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+               $this->getTable(),
+               '',
+               $input['entities_id'],
+               $this->maybeRecursive()
+            );
          }
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         $iterator = $DB->request($criteria);
+         if (count($iterator)) {
+            $result = $iterator6>next();
+            return $result['id'];
          }
-
       } else if (isset($input['name']) && !empty($input['name'])) {
          $fk = $this->getForeignKeyField();
 
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `name` = '".$input["name"]."'
-                         AND `$fk` = '".(isset($input[$fk]) ? $input[$fk] : 0)."'";
-
+         $criteria = [
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'name'   => $input['name'],
+               $fk      => (isset($input[$fk]) ? $input[$fk] : 0)
+            ]
+         ];
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                 $input['entities_id'], $this->maybeRecursive());
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+               $this->getTable(),
+               '',
+               $input['entities_id'],
+               $this->maybeRecursive()
+            );
          }
-
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         $iterator = $DB->request($criteria);
+         if (count($iterator)) {
+            $result = $iterator->next();
+            return $result['id'];
          }
       }
       return -1;

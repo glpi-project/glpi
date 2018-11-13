@@ -125,17 +125,20 @@ class DeviceNetworkCard extends CommonDevice {
          return 0;
       }
 
-      $query = "SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE `designation` = '" . $input['designation'] . "'";
+      $criteria = [
+         'SELECT' => 'id',
+         'FROM'   => $this->getTable(),
+         'WHERE'  => ['designation' => $input['designation']]
+      ];
 
       if (isset($input["bandwidth"])) {
-         $query .= " AND `bandwidth` = '".$input["bandwidth"]."'";
+         $criteria['WHERE']['bandwidth'] = $input['bandwidth'];
       }
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         $line = $DB->fetch_assoc($result);
+      $iterator = $DB->request($criteria);
+
+      if (count($iterator) > 0) {
+         $line = $iterator->next();
          return $line['id'];
       }
       return $this->add($input);

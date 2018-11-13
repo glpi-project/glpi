@@ -409,6 +409,8 @@ function regenerateTreeCompleteName($table) {
 /**
  * Get the ID of the next Item
  *
+ * @deprecated 9.4
+ *
  * @param string  $table         table to search next item
  * @param integer $ID            current ID
  * @param string  $condition     condition to add to the search (default ='')
@@ -424,6 +426,8 @@ function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
 
 /**
  * Get the ID of the previous Item
+ *
+ * @deprecated 9.4
  *
  * @param string  $table         table to search next item
  * @param integer $ID            current ID

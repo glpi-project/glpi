@@ -1285,6 +1285,8 @@ final class DbUtils {
    /**
     * Get the ID of the next Item
     *
+    * @deprecated 9.4
+    *
     * @param string  $table         table to search next item
     * @param integer $ID            current ID
     * @param string  $condition     condition to add to the search (default ='')
@@ -1294,6 +1296,7 @@ final class DbUtils {
     */
    public function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
       global $DB;
+      Toolbox::deprecated();
 
       if (empty($nextprev_item)) {
          return false;
@@ -1374,6 +1377,8 @@ final class DbUtils {
    /**
     * Get the ID of the previous Item
     *
+    * @deprecated 9.4
+    *
     * @param string  $table         table to search next item
     * @param integer $ID            current ID
     * @param string  $condition     condition to add to the search (default ='')
@@ -1383,6 +1388,7 @@ final class DbUtils {
     */
    public function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
       global $DB;
+      Toolbox::deprecated();
 
       if (empty($nextprev_item)) {
          return false;

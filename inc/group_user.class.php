@@ -373,42 +373,54 @@ class Group_User extends CommonDBRelation{
       }
 
       if ($tree) {
-         $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $group->getID())).")";
+         $restrict = getSonsOf('glpi_groups', $group->getID());
       } else {
-         $restrict = "='".$group->getID()."'";
+         $restrict = $group->getID();
       }
 
       // All group members
-      $query = "SELECT DISTINCT `glpi_users`.`id`,
-                       `glpi_groups_users`.`id` AS linkID,
-                       `glpi_groups_users`.`groups_id`,
-                       `glpi_groups_users`.`is_dynamic` AS is_dynamic,
-                       `glpi_groups_users`.`is_manager` AS is_manager,
-                       `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
-                FROM `glpi_groups_users`
-                INNER JOIN `glpi_users`
-                        ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
-                INNER JOIN `glpi_profiles_users`
-                        ON (`glpi_profiles_users`.`users_id`=`glpi_users`.`id`)
-                WHERE `glpi_groups_users`.`groups_id` $restrict ".
-                      getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '',
-                                                 $entityrestrict, 1)."
-                ORDER BY `glpi_users`.`realname`,
-                         `glpi_users`.`firstname`,
-                         `glpi_users`.`name`";
+      $iterator = $DB->request([
+         'SELECT'       => [
+            'glpi_users.id',
+            'glpi_groups_users.id AS linkID',
+            'glpi_groups_users.groups_id',
+            'glpi_groups_user.is_dynamic AS is_dynamic',
+            'glpi_groups_users.is_manager AS is_manager',
+            'glpi_groups_users.is_userdelegate AS is_userdelegate'
+         ],
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            User::getTable()           => [
+               'ON' => [
+                  self::getTable()  => 'users_id',
+                  User::getTable()  => 'id'
+               ]
+            ],
+            Profile_User::getTable()   => [
+               'ON' => [
+                  Profile_User::getTable()   => 'users_id',
+                  User::getTable()           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            self::getTable() . '.groups_id'  => $restrict
+         ] + getEntitiesRestrictCriteria(self::getTable(), '', $entityrestrict, 1),
+         'ORDERBY'      => [
+            User::getTable() . '.realname',
+            User::getTable() . '.firstname',
+            User::getTable() . '.name'
+         ]
+      ]);
 
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) > 0) {
-         while ($data=$DB->fetch_assoc($result)) {
-            // Add to display list, according to criterion
-            if (empty($crit) || $data[$crit]) {
-               $members[] = $data;
-            }
-            // Add to member list (member of sub-group are not member)
-            if ($data['groups_id'] == $group->getID()) {
-               $ids[]  = $data['id'];
-            }
+      while ($data = $iterator->next()) {
+         // Add to display list, according to criterion
+         if (empty($crit) || $data[$crit]) {
+            $members[] = $data;
+         }
+         // Add to member list (member of sub-group are not member)
+         if ($data['groups_id'] == $group->getID()) {
+            $ids[]  = $data['id'];
          }
       }
 

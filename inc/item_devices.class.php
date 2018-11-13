@@ -767,38 +767,50 @@ class Item_Devices extends CommonDBRelation {
                                                        $previous_column);
       }
 
+      $ctable = $this->getTable();
+      $criteria = [
+         'SELECT' => "$ctable.*",
+         'FROM'   => $ctable
+      ];
       if ($is_device) {
          $fk = 'items_id';
 
          // Entity restrict
          $leftjoin = '';
          $where = "";
+         $criteria['WHERE'] = [
+            $this->getDeviceForeignKey()  => $item->getID(),
+            "$ctable.itemtype"            => $peer_type,
+            "$ctable.is_deleted"          => 0
+         ];
+         $criteria['ORDERBY'] = [
+            "$ctable.itemtype",
+            "$ctable.$fk"
+         ];
          if (!empty($peer_type)) {
-            $leftjoin = "LEFT JOIN `".getTableForItemType($peer_type)."`
-                        ON (`".$this->getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
-                            AND `".$this->getTable()."`.`itemtype` = '$peer_type')";
-            $where = getEntitiesRestrictRequest(" AND", getTableForItemType($peer_type));
+            $criteria['LEFT JOIN'] = [
+               getTableForItemType($peer_type) => [
+                  'ON' => [
+                     "$ctable.items_id"               => 'items_id',
+                     getTableForItemType($peer_type)  => 'id', [
+                        'AND' => [
+                           "$ctable.itemtype"   => $peer_type
+                        ]
+                     ]
+                  ]
+               ]
+            ];
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(getTableForItemType($peer_type));
          }
-
-         $query = "SELECT `".$this->getTable()."`.*
-                   FROM `".$this->getTable()."`
-                   $leftjoin
-                   WHERE `".$this->getDeviceForeignKey()."` = '".$item->getID()."'
-                         AND `".$this->getTable()."`.`itemtype` = '$peer_type'
-                         AND `".$this->getTable()."`.`is_deleted` = 0
-                         $where
-                   ORDER BY `".$this->getTable()."`.`itemtype`, `".$this->getTable()."`.`$fk`";
-
       } else {
          $fk = $this->getDeviceForeignKey();
 
-         $query = "SELECT *
-                   FROM `".$this->getTable()."`
-                   WHERE `itemtype` = '".$item->getType()."'
-                         AND `items_id` = '".$item->getID()."'
-                         AND `is_deleted` = 0
-                   ORDER BY $fk";
-
+         $criteria['WHERE'] = [
+            'itemtype'     => $item->getType(),
+            'items_id'     => $item->getID(),
+            'is_deleted'   => 0
+         ];
+         $criteria['ORDERBY'] = $fk;
       }
 
       if (!empty($peer_type)) {
@@ -807,7 +819,9 @@ class Item_Devices extends CommonDBRelation {
       } else {
          $peer = null;
       }
-      foreach ($DB->request($query) as $link) {
+
+      $iterator = $DB->request($criteria);
+      while ($link = $iterator->next()) {
 
          Session::addToNavigateListItems(static::getType(), $link["id"]);
          $this->getFromDB($link['id']);
@@ -892,14 +906,20 @@ class Item_Devices extends CommonDBRelation {
 
          $content = [];
          // The order is to be sure that specific documents appear first
-         $query = "SELECT `documents_id`
-                   FROM `glpi_documents_items`
-                   WHERE (`itemtype` = '".$this->getType()."' AND `items_id` = '".$link['id']."')
-                          OR (`itemtype` = '".$this->getDeviceType()."'
-                              AND `items_id` = '".$link[$this->getDeviceForeignKey()]."')
-                   ORDER BY `itemtype` = '".$this->getDeviceType()."'";
+         $doc_iterator = $DB->request([
+            'SELECT' => 'documents_id',
+            'FROM'   => 'glpi_documents_items',
+            'WHERE'  => [
+               'itemtype'  => $this->getType(),
+               'OR'        => [
+                  'itemtype'  => $this->getDeviceType(),
+                  'items_id'  => $link[$this->getDeviceForeignKey()]
+               ]
+            ],
+            'ORDER'  => 'itemtype'
+         ]);
          $document = new Document();
-         foreach ($DB->request($query) as $document_link) {
+         while ($document_link = $doc_iterator->next()) {
             if ($document->can($document_link['documents_id'], READ)) {
                $content[] = $document->getLink();
             }
@@ -1142,16 +1162,15 @@ class Item_Devices extends CommonDBRelation {
          $link = getItemForItemtype($link_type);
          if ($link) {
             if ($unaffect) {
-               $query = "SELECT `id`
-                         FROM `".$link->getTable()."`
-                         WHERE `itemtype` = '$itemtype'
-                               AND `items_id` = '$items_id'";
-               $input = ['items_id' => 0,
-                              'itemtype' => ''];
-               foreach ($DB->request($query) as $data) {
-                  $input['id'] = $data['id'];
-                  $link->update($input);
-               }
+               $DB->update(
+                  $link->getTable(), [
+                     'items_id'  => 0,
+                     'itemtype'  => ''
+                  ], [
+                     'items_id'  => $items_id,
+                     'itemtype'  => $itemtype
+                  ]
+               );
             } else {
                $link->cleanDBOnItemDelete($itemtype, $items_id);
             }
