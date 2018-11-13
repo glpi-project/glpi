@@ -662,18 +662,19 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-     $nb = 0;
-      switch ($item->getType()) {
-         case 'SoftwareLicense' :
-            if (!$withtemplate) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = self::countForLicense($item->getID());
-               }
-               return array(1 => __('Summary'),
-                            2 => self::createTabEntry(Computer::getTypeName(Session::getPluralNumber()),
-                                                      $nb));
-            }
-            break;
+     if (static::canView()) {
+        $nb = 0;
+        switch ($item->getType()) {
+           case 'SoftwareLicense' :
+              if (!$withtemplate) {
+                 if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = self::countForLicense($item->getID());
+                 }
+                 return array(1 => __('Summary'),
+                              2 => self::createTabEntry(Computer::getTypeName(Session::getPluralNumber()),
+                                                        $nb));
+              }
+        }
       }
       return '';
    }
