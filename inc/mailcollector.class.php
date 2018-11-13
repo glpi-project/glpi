@@ -709,7 +709,7 @@ class MailCollector  extends CommonDBTM {
                   // New ticket case
                   $ticket = new Ticket();
 
-                  if (!$is_user_anonymous
+                  if (!$CFG_GLPI["use_anonymous_helpdesk"]
                       && !Profile::haveUserRight($tkt['_users_id_requester'],
                                                  Ticket::$rightname,
                                                  CREATE,
@@ -742,7 +742,7 @@ class MailCollector  extends CommonDBTM {
                      $error++;
                      $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                      $rejected->add($rejinput);
-                  } else if (!$is_user_anonymous
+                  } else if (!$CFG_GLPI['use_anonymous_followups']
                              && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])) {
                      $this->deleteMails($uid, self::REFUSED_FOLDER);
                      $refused++;
