@@ -34,9 +34,6 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
-$plugin = new Plugin();
-$plugin->checkStates();
-
 Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
 Search::show('Plugin');

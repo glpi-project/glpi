@@ -224,22 +224,12 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * Check plugins states and detect new plugins
-   **/
+    * Check plugins states and detect new plugins.
+    *
+    * @return void
+    */
    public function checkStates() {
 
-      //// Get all plugins
-      // Get all from DBs
-      $pluglist   = $this->find([], "name, directory");
-      $db_plugins = [];
-      if (count($pluglist)) {
-         foreach ($pluglist as $plug) {
-            $db_plugins[$plug['directory']] = $plug['id'];
-         }
-      }
-      // Parse plugin dir
-      $file_plugins  = [];
-      $error_plugins = [];
       $dirplug       = GLPI_ROOT."/plugins";
       $dh            = opendir($dirplug);
 
@@ -249,94 +239,123 @@ class Plugin extends CommonDBTM {
              && ($filename != "..")
              && is_dir($dirplug."/".$filename)) {
 
-            // Find version
-            if (file_exists($dirplug."/".$filename."/setup.php")) {
-               self::loadLang($filename);
-               include_once($dirplug."/".$filename."/setup.php");
-               $info = self::getInfo($filename);
-               if (count($info)) {
-                  $file_plugins[$filename] = Toolbox::addslashes_deep($info);
-               }
-            }
+             $this->checkPluginState($filename);
          }
       }
+   }
 
-      // check plugin state
-      foreach ($db_plugins as $plug => $ID) {
-         $install_ok = true;
-         // Check file
-         if (!isset($file_plugins[$plug])) {
-            $this->update(['id'    => $ID,
-                                'state' => self::TOBECLEANED]);
-            $install_ok = false;
-         } else {
-            // Check version
-            if ($file_plugins[$plug]['version'] != $pluglist[$ID]['version']) {
-               $input          = $file_plugins[$plug];
-               $input['id']    = $ID;
-               if ($pluglist[$ID]['version']) {
-                  $input['state'] = self::NOTUPDATED;
-               }
 
-               $this->setUnloadedByName($plug);
-               // reset menu
-               if (isset($_SESSION['glpimenu'])) {
-                  unset($_SESSION['glpimenu']);
-               }
+   /**
+    * Check plugin state.
+    *
+    * @param string $directory
+    *
+    * return void
+    */
+   public function checkPluginState($directory) {
 
-               $this->update($input);
-               $install_ok = false;
-            }
-         }
-         // Check install is ok for activated plugins
-         if ($install_ok
-             && ($pluglist[$ID]['state'] == self::ACTIVATED)) {
-            $usage_ok = $this->checkVersions($plug);
+      $plugin = new self();
+      $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
 
-            $function = "plugin_".$plug."_check_prerequisites";
-            if (function_exists($function)) {
-               ob_start();
-               $usage_ok = $function();
-               $msg = '';
-               if (!$usage_ok) {
-                  $msg = '<span class="error">' . ob_get_contents() . '</span>';
-               }
-               ob_end_clean();
-            }
-            $function = "plugin_".$plug."_check_config";
-            if (function_exists($function)) {
-               if (!$function()) {
-                  $usage_ok = false;
-               }
-            } else {
-               $usage_ok = false;
-            }
-            if (!$usage_ok) {
-               $this->unactivate($ID);
-            }
-         }
-         // Delete plugin for file list
-         if (isset($file_plugins[$plug])) {
-            unset($file_plugins[$plug]);
-         }
+      $plugin_path = implode(DIRECTORY_SEPARATOR, [GLPI_ROOT, 'plugins', $directory]);
+      $setup_file  = $plugin_path . DIRECTORY_SEPARATOR . 'setup.php';
+
+      // Retrieve plugin informations
+      $informations = [];
+      if (file_exists($setup_file)) {
+         self::loadLang($directory);
+         include_once($setup_file);
+         $informations = Toolbox::addslashes_deep(self::getInfo($directory));
       }
 
-      if (count($file_plugins)) {
-         foreach ($file_plugins as $plug => $data) {
-            if (isset($data['oldname'])) {
-               $checking = $pluglist;
-               foreach ($checking as $check) {
-                  if (isset($check['directory']) && ($check['directory'] == $data['oldname'])) {
-                     $data['state'] = self::NOTUPDATED;
-                     $this->delete(['id' => $check['id']]);
-                  }
-               }
-            } else {
-               $data['state'] = self::NOTINSTALLED;
-            }
-            $data['directory'] = $plug;
-            $this->add($data);
+      if (empty($informations)) {
+         if (!$is_already_known) {
+            // Plugin is not known and we are unable to load informations, we ignore it
+            return;
          }
+
+         // Plugin is known but we are unable to load informations, it should be cleaned
+         $this->update(
+            [
+               'id'    => $plugin->fields['id'],
+               'state' => self::TOBECLEANED,
+            ]
+         );
+         return;
+      }
+
+      if (!$is_already_known && array_key_exists($informations['oldname'])) {
+         // Plugin not known but was named differently before, we try to load state using old name
+         $is_already_known = $plugin->getFromDBByCrit(['directory' => $informations['oldname']]);
+      }
+
+      if (!$is_already_known) {
+         // Plugin not known, add it in DB
+         $this->add(
+            array_merge(
+               $informations,
+               [
+                  'state'     => self::NOTINSTALLED,
+                  'directory' => $directory,
+               ]
+            )
+         );
+         return;
+      }
+
+      if ($informations['version'] != $plugin->fields['version']) {
+         // Plugin known version differs from informations, mark it as 'updatable'
+         $input       = $informations;
+         $input['id'] = $plugin->fields['id'];
+         if ($informations['version']) {
+            $input['state'] = self::NOTUPDATED;
+         }
+
+         $this->update($input);
+
+         $this->setUnloadedByName($directory);
+         // reset menu
+         if (isset($_SESSION['glpimenu'])) {
+            unset($_SESSION['glpimenu']);
+         }
+
+         return;
+      }
+
+      if (self::ACTIVATED !== $plugin->fields['state']) {
+         // Plugin is not activated, nothing to do
+         return;
+      }
+
+      // Check that active state of plugin can be kept
+      $usage_ok = true;
+
+      // Check compatibility
+      ob_start();
+      if (!$this->checkVersions($directory)) {
+         $usage_ok = false;
+      }
+      ob_end_clean();
+
+      // Check prerequisites
+      $function = 'plugin_' . $directory . '_check_prerequisites';
+      if (function_exists($function)) {
+         ob_start();
+         if (!$function()) {
+            $usage_ok = false;
+         }
+         ob_end_clean();
+      }
+
+      // Check configuration
+      $function = 'plugin_' . $directory . '_check_config';
+      if (!function_exists($function) || !$function()) {
+         $usage_ok = false;
+      }
+
+      if (!$usage_ok) {
+         // Deactivate if not usable
+         $this->unactivate($plugin->fields['id']);
       }
    }
 
@@ -1793,13 +1812,19 @@ class Plugin extends CommonDBTM {
             $value = $values[$field];
             $ID = $value;
             $plugin = new self;
-            $plugin->checkStates();
             $plugin->getFromDB($value);
             $plug = $plugin->fields;
 
-            if (function_exists("plugin_".$plug['directory']."_check_config")) {
-               // init must not be called for incompatible plugins
-               self::load($plug['directory'], true);
+            $plugin->checkPluginState($plug['directory']);
+
+            $plugin_setup_file = GLPI_ROOT . '/plugins/' . $plug['directory'] . '/setup.php';
+            if (file_exists($plugin_setup_file)) {
+               include_once($plugin_setup_file);
+            }
+
+            $plugin_hook_file = GLPI_ROOT . '/plugins/' . $plug['directory'] . '/hook.php';
+            if (file_exists($plugin_hook_file)) {
+               include_once($plugin_hook_file);
             }
 
             $output = '';
