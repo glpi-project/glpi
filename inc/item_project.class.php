@@ -262,6 +262,7 @@ class Item_Project extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $CFG_GLPI;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -271,11 +272,22 @@ class Item_Project extends CommonDBRelation{
                   $nb = countElementsInTable('glpi_items_projects',
                                              "`projects_id` = '".$item->getID()."'");
                }
+               $display = false;
+               foreach ($CFG_GLPI["project_asset_types"] as $itemtype) {
+                  if (!($type = getItemForItemtype($itemtype))) {
+                     continue;
+                  }
+                  if ($type->canView()) {
+                     $display = true;
+                  }
+               }
+               if ($display) {
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+               }
 
             default :
                // Not used now
-               if (Session::haveRight("project", Project::READALL)) {
+               if (Session::haveRightsOr("project", [Project::READMY, Project::READALL])) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
                      $nb = countElementsInTable('glpi_items_projects',
