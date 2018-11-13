@@ -9607,6 +9607,8 @@ CREATE TABLE `glpi_itilfollowups` (
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
+  `sourceitems_id` int(11) NOT NULL DEFAULT '0',
+  `sourceof_items_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `itemtype` (`itemtype`),
   KEY `item_id` (`items_id`),
@@ -9617,5 +9619,7 @@ CREATE TABLE `glpi_itilfollowups` (
   KEY `users_id` (`users_id`),
   KEY `users_id_editor` (`users_id_editor`),
   KEY `is_private` (`is_private`),
-  KEY `requesttypes_id` (`requesttypes_id`)
+  KEY `requesttypes_id` (`requesttypes_id`),
+  KEY `sourceitems_id` (`sourceitems_id`),
+  KEY `sourceof_items_id` (`sourceof_items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -366,6 +366,20 @@ function update93to94() {
       );
    }
 
+   /** Add source item id to ITILFollowups. Used by followups created by merging tickets */
+   if (!$DB->fieldExists('glpi_itilfollowups', 'sourceitems_id')) {
+      if ($migration->addField('glpi_itilfollowups', 'sourceitems_id', "int(11) NOT NULL DEFAULT '0'")) {
+         $migration->addKey('glpi_itilfollowups', 'sourceitems_id');
+      }
+   }
+
+   /** Add sourceof item id to ITILFollowups. Used to link to tickets created by promotion */
+   if (!$DB->fieldExists('glpi_itilfollowups', 'sourceof_items_id')) {
+      if ($migration->addField('glpi_itilfollowups', 'sourceof_items_id', "int(11) NOT NULL DEFAULT '0'")) {
+         $migration->addKey('glpi_itilfollowups', 'sourceof_items_id');
+      }
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

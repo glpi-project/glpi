@@ -6265,7 +6265,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //add followups to timeline
       if ($followup_obj->canview()) {
-         $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, 'date DESC');
+         $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
          foreach ($followups as $followups_id => $followup) {
             $followup_obj->getFromDB($followups_id);
             $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
@@ -6543,9 +6543,24 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<div class='displayed_content'>";
          if (!in_array($item['type'], ['Document_Item', 'Assign'])
              && $item_i['can_edit']) {
-            echo "<span class='far fa-edit edit_item' ";
+            echo "<div class='h_controls'>";
+            if ($objType == 'Ticket' && $item['type'] == ITILFollowup::getType()) {
+               if (isset($item_i['sourceof_items_id']) && $item_i['sourceof_items_id'] > 0) {
+                  echo Html::link('', '#', [
+                     'class' => 'fa fa-code-branch control_item disabled',
+                     'title' => __('Followup was already promoted')
+                  ]);
+               } else {
+                  echo Html::link('', Ticket::getFormURL()."?_promoted_fup_id=".$item_i['id'], [
+                     'class' => 'fa fa-code-branch control_item',
+                     'title' => __('Promote to Ticket')
+                  ]);
+               }
+            }
+            echo "<span class='far fa-edit control_item' title='".__('Edit')."'";
             echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$domid\")'";
             echo "></span>";
+            echo "</div>";
          }
          if (isset($item_i['requesttypes_id'])
              && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
@@ -6641,6 +6656,22 @@ abstract class CommonITILObject extends CommonDBTM {
             );
             echo Html::showToolTip($userdata["comment"],
                                    ['link' => $userdata['link']]);
+            echo "</div>";
+         }
+         if ($objType == 'Ticket' && isset($item_i['sourceitems_id']) && $item_i['sourceitems_id'] > 0) {
+            echo "<div id='sourceitems_id_".$item_i['sourceitems_id']."'>";
+            echo sprintf(
+               __('Merged from Ticket %1$s'),
+               Html::link($item_i['sourceitems_id'], Ticket::getFormURLWithID($item_i['sourceitems_id']))
+            );
+            echo "</div>";
+         }
+         if ($objType == 'Ticket' && isset($item_i['sourceof_items_id']) && $item_i['sourceof_items_id'] > 0) {
+            echo "<div id='sourceof_items_id_".$item_i['sourceof_items_id']."'>";
+            echo sprintf(
+               __('Promoted to Ticket %1$s'),
+               Html::link($item_i['sourceof_items_id'], Ticket::getFormURLWithID($item_i['sourceof_items_id']))
+            );
             echo "</div>";
          }
          if ($item['type'] == 'Solution' && $item_i['status'] != CommonITILValidation::WAITING && $item_i['status'] != CommonITILValidation::NONE) {
