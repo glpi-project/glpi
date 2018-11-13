@@ -44,6 +44,8 @@ The following methods have been deprecated:
 - `NotificationTarget::getProfileJoinSql()`
 - `NotificationTarget::getDistinctUserSql()`
 - `RuleCollection::getRuleListQuery()`
+- `getNextItem()`
+- `getPreviousItem()`
 
 #### Removed
 

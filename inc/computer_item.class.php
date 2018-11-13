@@ -808,20 +808,25 @@ class Computer_Item extends CommonDBRelation{
       global $DB;
 
       // RELATION : computers -> items
-      $sql = "SELECT `itemtype`, GROUP_CONCAT(DISTINCT `items_id`) AS ids, `computers_id`
-              FROM `glpi_computers_items`
-              WHERE `glpi_computers_items`.`itemtype` = '".$item->getType()."'
-                    AND `glpi_computers_items`.`items_id` = ".$item->fields['id']."
-              GROUP BY `itemtype`";
-      $res = $DB->query($sql);
+      $iterator = $DB->request([
+         'SELECT' => [
+            'itemtype',
+            new \QueryExpression('GROUP_CONCAT(DISTINCT '.$DB->quoteName('items_id').') AS ids'),
+            'computers_id'
+         ],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'itemtype'  => $item->getType(),
+            'items_id'  => $item->fields['id']
+         ],
+         'ORDER'  => 'itemtype'
+      ]);
 
-      if ($res) {
-         while ($data = $DB->fetch_assoc($res)) {
-            if (countElementsInTable("glpi_computers",
-                                     ['id' => $data["computers_id"],
-                                     'NOT' => ['entities_id' => $entities]]) > 0) {
-               return false;
-            }
+      while ($data = $iterator->next()) {
+         if (countElementsInTable("glpi_computers",
+                                    ['id' => $data["computers_id"],
+                                    'NOT' => ['entities_id' => $entities]]) > 0) {
+            return false;
          }
       }
       return true;

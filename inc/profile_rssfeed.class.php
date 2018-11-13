@@ -59,11 +59,12 @@ class Profile_RSSFeed extends CommonDBRelation {
       global $DB;
 
       $prof  = [];
-      $query = "SELECT `glpi_profiles_rssfeeds`.*
-                FROM `glpi_profiles_rssfeeds`
-                WHERE `rssfeeds_id` = '$rssfeeds_id'";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $prof[$data['profiles_id']][] = $data;
       }
       return $prof;

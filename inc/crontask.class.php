@@ -1665,13 +1665,18 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       // Crontasks running for more than 1 hour or 2 frequency
-      $query = "SELECT *
-                FROM `glpi_crontasks`
-                WHERE `state` = '".self::STATE_RUNNING."'
-                      AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
-                           OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now())))";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'state'  => self::STATE_RUNNING,
+            'OR'     => [
+               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.$DB->quoteName('frequency').' < unix_timestamp(now()'),
+               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.HOUR_TIMESTAMP.' < unix_timestamp(now()')
+            ]
+         ]
+      ]);
       $crontasks = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $crontasks[$data['id']] = $data;
       }
 

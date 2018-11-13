@@ -3572,11 +3572,11 @@ class AuthLDAP extends CommonDBTM {
       global $DB;
 
       $replicates = [];
-      $query = ['FIELDS' => ['id', 'host', 'port'],
+      $criteria = ['FIELDS' => ['id', 'host', 'port'],
                 'FROM'   => 'glpi_authldapreplicates',
                 'WHERE'  => ['authldaps_id' => $master_id]
                ];
-      foreach ($DB->request($query) as $replicate) {
+      foreach ($DB->request($criteria) as $replicate) {
          $replicates[] = ["id"   => $replicate["id"],
                           "host" => $replicate["host"],
                           "port" => $replicate["port"]
