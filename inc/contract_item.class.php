@@ -292,14 +292,27 @@ class Contract_Item extends CommonDBRelation{
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForContract($item);
                }
-               return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+               $display = false;
+               foreach ($CFG_GLPI["contract_types"] as $itemtype) {
+                  if (!($type = getItemForItemtype($itemtype))) {
+                     continue;
+                  }
+                  if ($type->canView()) {
+                     $display = true;
+                  }
+               }
+               if ($display) {
+                 return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+               }
 
             default :
                if ($_SESSION['glpishow_count_on_tabs']
                    && in_array($item->getType(), $CFG_GLPI["contract_types"])) {
                    $nb = self::countForItem($item);
                }
-               return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
+               if (in_array($item->getType(), $CFG_GLPI["contract_types"])) {
+                  return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
+               }
          }
       }
       return '';
