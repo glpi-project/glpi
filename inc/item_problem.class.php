@@ -126,8 +126,11 @@ class Item_Problem extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-
-      if ($canedit) {
+      $types = array();
+      foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
+         $types[] = $key;
+      }
+      if ($canedit && $types) {
          echo "<div class='firstbloc'>";
          echo "<form name='problemitem_form$rand' id='problemitem_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -136,10 +139,6 @@ class Item_Problem extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>";
-         $types = array();
-         foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
-            $types[] = $key;
-         }
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
                                                       => $types,
                                                      'entity_restrict'
@@ -266,7 +265,7 @@ class Item_Problem extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate) {
+      if (!$withtemplate && static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Problem' :
@@ -298,7 +297,7 @@ class Item_Problem extends CommonDBRelation{
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
             default :
-               if (Session::haveRight("problem", Problem::READALL)) {
+               if (Session::haveRightsOr("problem", [Problem::READMY, Problem::READALL])) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
                      $nb = countElementsInTable('glpi_items_problems',
