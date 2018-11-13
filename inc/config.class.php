@@ -2919,7 +2919,6 @@ class Config extends CommonDBTM {
             return false;
          }
          $opt = json_decode($conf[$optname], true);
-         Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
       if (!isset($opt['options']['namespace'])) {
          $namespace = "glpi_${optname}_" . GLPI_VERSION;
@@ -2986,7 +2985,6 @@ class Config extends CommonDBTM {
             Toolbox::logError($e->getMessage());
          }
       }
-      Toolbox::logDebug("CACHE $optname", $cache_class);
       return $cache;
    }
 
