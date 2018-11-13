@@ -677,6 +677,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $computers_id = $comp->getField('id');
       $rand         = mt_rand();
       $canedit      = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
+      $canlicense   = Session::haveRight("license", READ);
       $entities_id  = $comp->fields["entities_id"];
 
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
@@ -798,18 +799,22 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $header_end    .= "</th>";
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-         $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         $header_end .= "<th>" .__('Version')."</th>";
+         if ($canlicense) {
+            $header_end .= "<th>" . __('License') . "</th>";
+         }
          $header_end .="<th>" . __('Installation date') . "</th>";
          if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";
          }
          $header_end .= "<th>".SoftwareCategory::getTypeName(1)."</th>";
-         $header_end .= "<th>".__('Valid license')."</th>";
+         if ($canlicense) {
+            $header_end .= "<th>".__('Valid license')."</th>";
+         }
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
          for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
-
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
                $licids = self::softsByCategory($data, $computers_id, $withtemplate,
                                                $canedit, true);
@@ -817,7 +822,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $licids = self::softsByCategory($data, $computers_id, $withtemplate,
                                                $canedit, false);
             }
-            Session::addToNavigateListItems('Software', $data["softwares_id"]);
+           Session::addToNavigateListItems('Software', $data["softwares_id"]);
 
             foreach ($licids as $licid) {
                Session::addToNavigateListItems('SoftwareLicense', $licid);
@@ -837,7 +842,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       echo "</div>\n";
       if ((empty($withtemplate) || ($withtemplate != 2))
-          && $canedit) {
+          && $canlicense) {
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                 "/front/computer_softwarelicense.form.php'>";
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
@@ -884,6 +889,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $query .= " ORDER BY `softname`, `version`;";
 
       $req = $DB->request($query);
+      if ($canlicense) {
       if ($number = $req->numrows()) {
          if ($canedit) {
             $rand = mt_rand();
@@ -936,7 +942,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";
       }
-
+      }
       echo "</div>\n";
 
    }
@@ -978,9 +984,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td>" . $data["state"] . "</td>";
 
          echo "<td>" . $data["version"];
-         echo "</td><td>";
-      }
+         echo "</td>";
 
+         if (Session::haveRight("license", READ)) {
+            echo "<td>";
+         }
+      }
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_softwarelicensetypes`.`name` AS type
                 FROM `glpi_computers_softwarelicenses`
@@ -1004,7 +1013,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $licserial = sprintf(__('%1$s (%2$s)'), $licserial, $licdata['type']);
          }
 
-         if ($display) {
+         if ($display && Session::haveRight("license", READ)) {
             echo "<span class='b'>". $licdata['name']. "</span> - ".$licserial;
 
             $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
@@ -1024,8 +1033,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "&nbsp;";
          }
 
+         if (Session::haveRight("license", READ)) {
          echo "</td>";
-
+         }
          echo "<td>".Html::convDate($data['dateinstall'])."</td>";
 
          if (isset($data['is_dynamic'])) {
@@ -1035,7 +1045,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
                                                                   $data['softwarecategories_id']);
          echo "</td>";
+         if (Session::haveRight("license", READ)) {
          echo "<td class='center'>" .Dropdown::getYesNo($data["softvalid"]) . "</td>";
+         }
          echo "</tr>\n";
       }
 
