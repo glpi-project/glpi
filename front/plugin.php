@@ -34,6 +34,8 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
+// This has to be called before search process is called, in order to add
+// "new" plugins in DB to be able to display them.
 $plugin = new Plugin();
 $plugin->checkStates();
 
