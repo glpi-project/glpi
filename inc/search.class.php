@@ -2320,6 +2320,10 @@ class Search {
    static function addOrderBy($itemtype, $ID, $order) {
       global $CFG_GLPI;
 
+      if ($itemtype == 'AllAssets') {
+         return '';
+      }
+
       // Security test for order
       if ($order != "ASC") {
          $order = "DESC";
@@ -4404,7 +4408,7 @@ class Search {
       global $CFG_GLPI, $DB;
 
       $searchopt = &self::getOptions($itemtype);
-      if (isset($CFG_GLPI["union_search_type"][$itemtype])
+      if ($itemtype == 'AllAssets' || isset($CFG_GLPI["union_search_type"][$itemtype])
           && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])) {
 
          $oparams = [];
@@ -4418,7 +4422,7 @@ class Search {
 
       $so = $searchopt[$ID];
       $orig_id = $ID;
-      $ID = ($orig_itemtype !== null ? $orig_itemtype : $itemtype) . '_' . $ID;
+      $ID = ($orig_itemtype !== null && $orig_itemtype != 'AllAssets' ? $orig_itemtype : $itemtype) . '_' . $ID;
 
       if (count($addobjectparams)) {
          $so = array_merge($so, $addobjectparams);
