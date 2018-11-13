@@ -262,7 +262,7 @@ class Change_Item extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate) {
+      if (!$withtemplate && static::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Change' :
