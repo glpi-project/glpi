@@ -2123,6 +2123,18 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      if (isset($this->input['_promoted_fup_id']) && $this->input['_promoted_fup_id'] > 0) {
+         $fup = new ITILFollowup();
+         $fup->getFromDB($this->input['_promoted_fup_id']);
+         $fup_ticket_id = $fup->fields['items_id'];
+         $fup->update([
+            'id'                 => $this->input['_promoted_fup_id'],
+            'sourceof_items_id'  => $this->getID()
+         ]);
+         Event::log($this->getID(), "ticket", 4, "tracking",
+              sprintf(__('%s promotes a followup from ticket %s'), $_SESSION["glpiname"], $fup->fields['items_id']));
+      }
+
       if (!empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
          foreach ($this->input['items_id'] as $itemtype => $items) {
@@ -2662,8 +2674,146 @@ class Ticket extends CommonITILObject {
                $actions['KnowbaseItem_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Link knowledgebase article');
             }
          }
+
+         if (Ticket::canCreate() && Ticket::canDelete()) {
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
+               = __('Merge as Followup');
+         }
       }
       return $actions;
+   }
+
+
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $CFG_GLPI;
+
+      switch ($ma->getAction()) {
+         case 'merge_as_followup' :
+            $itemtype = $ma->getItemtype(true);
+            $mergeparam = [
+               'name'         => "_mergeticket",
+               'used'         => $ma->items['Ticket'],
+               'displaywith'  => ['id']
+            ];
+            echo "<div><p>";
+            echo __('Ticket')."&nbsp;";
+            Ticket::dropdown($mergeparam);
+            echo "</p><p>".__('Merge Followups')."&nbsp;";
+            Html::showCheckbox([
+               'name'    => 'with_followups',
+               'checked' => false
+            ]);
+            echo "</p><p>";
+            echo Html::submit(_x('button', 'Merge'), [
+               'name'      => 'merge',
+               'confirm'   => 'Confirm the merge? This ticket will be deleted!'
+            ]);
+            echo "</p></div>";
+            return true;
+      }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $DB;
+
+      switch ($ma->getAction()) {
+         case 'merge_as_followup' :
+            $merge_succeeded = false;
+            $input = $ma->getInput();
+
+            foreach ($ids as $id) {
+               $DB->beginTransaction();
+               $fup = new ITILFollowup();
+               $input2 = [];
+
+               foreach ($input as $key => $val) {
+                  $input2[$key] = $val;
+               }
+               if ($item->can($id, CREATE) && $item->can($id, DELETE)) {
+                  if (!$item->getFromDB($id)) {
+                     //Cannot retreive ticket. Abort/fail the merge
+                     $DB->rollBack();
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                  }
+
+                  //Build followup from the original ticket
+                  $input2 = [
+                     'itemtype'        => 'Ticket',
+                     'items_id'        => $input['_mergeticket'],
+                     'content'         => $item->fields['name']."\n\n".$item->fields['content'],
+                     'users_id'        => $item->fields['users_id_recipient'],
+                     'date_creation'   => $item->fields['date_creation'],
+                     'sourceitems_id'  => $item->getID()
+                  ];
+
+                  if (!$fup->add($input2)) {
+                     //Cannot add followup. Abort/fail the merge
+                     $DB->rollBack();
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                  }
+
+                  if (isset($input['with_followups'])) {
+                     //Migrate/clone any followups to the ticket
+                     $tomerge = $fup->find([
+                        'items_id' => $id,
+                        'itemtype' => 'Ticket'
+                     ]);
+                     foreach ($tomerge as $key => $fup2) {
+                        $fup2['items_id'] = $input['_mergeticket'];
+                        $fup2['sourceitems_id'] = $item->getID();
+                        $fup2['date_creation'] = $item->fields['date_creation'];
+                        $fup2['date_mod'] = $item->fields['date_mod'];
+                        unset($fup2['id']);
+                        if (!$fup->add($fup2)) {
+                           //Cannot add followup. Abort/fail the merge
+                           $DB->rollBack();
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                     }
+                  }
+
+                  //Add relation (this is parent of merge target)
+                  $tt = new Ticket_Ticket();
+                  $linkparams = [
+                     'link'         => Ticket_Ticket::PARENT_OF,
+                     'tickets_id_1' => $id,
+                     'tickets_id_2' => $input['_mergeticket']
+                  ];
+                  if (!$tt->add($linkparams)) {
+                     //Cannot link tickets. Abort/fail the merge
+                     $DB->rollBack();
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                  }
+
+                  //Close then delete this ticket
+                  if (!$item->update(['id' => $id, 'status' => CommonITILObject::CLOSED]) ||
+                     !$item->delete(['id' => $id])) {
+                     $DB->rollBack();
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                  }
+
+                  $DB->commit();
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  Event::log($input['_mergeticket'], "ticket", 4, "tracking",
+                     sprintf(__('%s merges ticket %s into %s'), $_SESSION["glpiname"],
+                     $id, $input['_mergeticket']));
+               } else {
+                  $DB->rollBack();
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 
@@ -4306,6 +4456,18 @@ class Ticket extends CommonITILObject {
                $options['content'] = $pt->getField('name');
             }
          }
+         // Override defaut values from followup if needed
+         if (isset($options['_promoted_fup_id'])) {
+            $fup = new ITILFollowup();
+            if ($fup->getFromDB($options['_promoted_fup_id'])) {
+               $options['content'] = $fup->getField('content');
+               $options['_users_id_requester'] = $fup->fields['users_id'];
+               $options['_link'] = [
+                  'link'         => Ticket_Ticket::SON_OF,
+                  'tickets_id_2' => $fup->fields['items_id']
+               ];
+            }
+         }
       }
 
       // Check category / type validity
@@ -4367,6 +4529,10 @@ class Ticket extends CommonITILObject {
 
       if (!isset($options['template_preview'])) {
          $options['template_preview'] = 0;
+      }
+
+      if (!isset($options['_promoted_fup_id'])) {
+         $options['_promoted_fup_id'] = 0;
       }
 
       // Load ticket template if available :
@@ -5125,7 +5291,7 @@ class Ticket extends CommonITILObject {
                }
             } else {
                if ($this->canDeleteItem()) {
-                  echo "<input type='submit' class='submit' name='delete' value='".
+                  echo "<input type='submit' class='submit small_space' name='delete' value='".
                          _sx('button', 'Put in trashbin')."'>";
                }
             }
@@ -5133,12 +5299,17 @@ class Ticket extends CommonITILObject {
             echo "</div>";
          } else {
             echo "<div class='tab_bg_2 center'>";
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            $add_params = ['name' => 'add'];
+            if ($options['_promoted_fup_id']) {
+               $add_params['confirm'] = __('Confirm the promotion?');
+            }
+            echo Html::submit(_x('button', 'Add'), $add_params);
             if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
                       value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
             }
+            echo Html::hidden('_promoted_fup_id', ['value' => $options['_promoted_fup_id']]);
             echo '</div>';
          }
       }

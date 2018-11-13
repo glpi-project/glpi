@@ -13,6 +13,8 @@ The present file will list all changes made to the project; according to the
 - Add timeline to Changes and Problems.
 - CLI console to centralize CLI commands.
 - Search on devices from Printers and Network equipments.
+- Ability to merge and split tickets.
+- Search on devices from Printers and Network equipments.
 - Ability to specify creation and modification dates during CommonDBTM object add method.
 
 ### Changed

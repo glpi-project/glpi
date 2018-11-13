@@ -3531,14 +3531,18 @@ a.copyright {
       float: right;
       height: 20px;
     }
-    .edit_item {
+    .h_controls {
       display: block;
       float: right;
-      opacity: .5;
-      font-size: 1.5em;
-      &:hover {
-        opacity: 1;
-        cursor: pointer;
+
+      .control_item {
+        margin-left: 5px;
+        opacity: .5;
+        font-size: 1.3em;
+        &:hover {
+          opacity: 1;
+          cursor: pointer;
+        }
       }
     }
     .long_text {
