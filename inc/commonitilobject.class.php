@@ -6834,23 +6834,58 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       $fk = $this->getForeignKeyField();
 
-      $query = "SELECT DISTINCT `users_id`, `type`
-                FROM (SELECT usr.`id` AS users_id, tu.`type` AS type
-                      FROM `$users_table` tu
-                      LEFT JOIN `glpi_users` usr ON tu.`users_id` = usr.`id`
-                      WHERE tu.`$fk` = ".$this->getId()."
-                      UNION
-                      SELECT usr.`id` AS users_id, gt.`type` AS type
-                      FROM `$groups_table` gt
-                      LEFT JOIN `glpi_groups_users` gu ON gu.`groups_id` = gt.`groups_id`
-                      LEFT JOIN `glpi_users` usr ON gu.`users_id` = usr.`id`
-                      WHERE gt.`$fk` = ".$this->getId()."
-                     ) AS allactors
-                ";
+      $subquery1 = new \QuerySubQuery([
+         'SELECT'    => [
+            'usr.id AS users_id',
+            'tu.type AS type'
+         ],
+         'FROM'      => "$users_table AS tu",
+         'LEFT JOIN' => [
+            User::getTable() . ' AS usr' => [
+               'ON' => [
+                  'tu'  => 'users_id',
+                  'usr' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            "tu.$fk" => $this->getID()
+         ]
+      ]);
+      $subquery2 = new \QuerySubQuery([
+         'SELECT'    => [
+            'usr.id AS users_id',
+            'gt.type AS type'
+         ],
+         'FROM'      => "$groups_table AS gt",
+         'LEFT JOIN' => [
+            Group_User::getTable() . ' AS gu'   => [
+               'ON' => [
+                  'gu'  => 'groups_id',
+                  'gt'  => 'groups_id'
+               ]
+            ],
+            User::getTable() . ' AS usr'        => [
+               'ON' => [
+                  'gu'  => 'users_id',
+                  'usr' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            "gt.$fk" => $this->getId()
+         ]
+      ]);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'users_id',
+         'FIELDS'          => ['type'],
+         'FROM'            => new \QueryExpression(
+            '(' . $subquery1->getSubQuery() . ' UNION ' . $subquery2->getSubQuery() . ') AS allactors'
+         )
+      ]);
 
-      $res        = $DB->query($query);
       $users_keys = [];
-      while ($current_tu = $DB->fetch_assoc($res)) {
+      while ($current_tu = $iterator->next()) {
          $users_keys[$current_tu['users_id']][] = $current_tu['type'];
       }
 
