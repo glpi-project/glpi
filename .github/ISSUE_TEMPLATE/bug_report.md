@@ -45,7 +45,7 @@ A clear and concise description of what you expected to happen.
 
 ```
 paste logs here
-Find them in *-error.lo files under glpi/files/_log/
+Find them in *-error.log files under glpi/files/_log/
 ```
 
 **Screenshots**
