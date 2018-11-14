@@ -576,7 +576,7 @@ abstract class API extends CommonGLPI {
                'glpi_items_disks.*'
             ],
             'FROM'      => 'glpi_items_disks',
-            'LEF JOIN'  => [
+            'LEFT JOIN'  => [
                'glpi_filesystems' => [
                   'ON' => [
                      'glpi_items_disks'   => 'filesystems_id',
