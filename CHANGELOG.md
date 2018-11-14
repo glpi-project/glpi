@@ -47,6 +47,9 @@ The following methods have been deprecated:
 - `RuleCollection::getRuleListQuery()`
 - `getNextItem()`
 - `getPreviousItem()`
+- `CommonDBChild::getSQLRequestToSearchForItem()`
+- `CommonDBConnexity::getSQLRequestToSearchForItem()`
+- `CommonDBRelation::getSQLRequestToSearchForItem()`
 
 #### Removed
 

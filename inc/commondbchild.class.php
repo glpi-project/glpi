@@ -55,12 +55,15 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * @since 0.84
     *
+    * @deprecated 9.4
+    *
     * @param $itemtype
     * @param $items_id
     *
     * @return string
    **/
    static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+      Toolbox::deprecated('Use getSQLCriteriaToSearchForItem');
 
       $fields     = ['`'.static::getIndexName().'`'];
 
@@ -83,6 +86,48 @@ abstract class CommonDBChild extends CommonDBConnexity {
                  WHERE $condition";
       }
       return '';
+   }
+
+
+   /**
+    * Get request cirteria to search for an item
+    *
+    * @since 9.4
+    *
+    * @param string  $itemtype Item type
+    * @param integer $items_id Item ID
+    *
+    * @return array|null
+   **/
+   static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
+
+      $criteria = [
+         'SELECT' => [
+            static::getIndexName(),
+            static::$items_id . ' AS items_id',
+            new \QueryExpression("'" . static::$itemtype . "' AS itemtype")
+         ],
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id  => $items_id
+         ]
+      ];
+
+      // Check item 1 type
+      $request = false;
+      if (preg_match('/^itemtype/', static::$itemtype)) {
+         $criteria['WHERE'][static::$itemtype] = $itemtype;
+         $request = true;
+      } else {
+         if (($itemtype ==  static::$itemtype)
+             || is_subclass_of($itemtype, static::$itemtype)) {
+            $request = true;
+         }
+      }
+      if ($request === true) {
+         return $criteria;
+      }
+      return null;
    }
 
 
