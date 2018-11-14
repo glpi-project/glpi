@@ -5729,7 +5729,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $sixth_col  = "";
          $is_deleted = false;
          $item_ticket = new Item_Ticket();
-         $data = $item_ticket->find("`tickets_id` = ".$item->fields['id']);
+         $data = $item_ticket->find(['tickets_id' => $item->fields['id']]);
 
          if ($item->getType() == 'Ticket') {
             if (!empty($data)) {
@@ -6242,23 +6242,31 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       //checks rights
-      $restrict_fup = $restrict_task = "";
+      $restrict_fup = $restrict_task = [];
       if (!Session::haveRight("followup", ITILFollowup::SEEPRIVATE)) {
-         $restrict_fup = " AND (`is_private` = 0
-                                OR `users_id` ='" . Session::getLoginUserID() . "') ";
+         $restrict_fup = [
+            'OR' => [
+               'is_private'   => 0,
+               'users_id'     => Session::getLoginUserID()
+            ]
+         ];
       }
 
-      $restrict_fup .= " AND `itemtype`='" . self::getType() . "' AND `items_id`='" . $this->getID() . "'";
+      $restrict_fup['itemtype'] = self::getType();
+      $restrict_fup['items_id'] = $this->getID();
 
-      $restrict_task = "";
       if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
-         $restrict_task = " AND (`is_private` = 0
-                                 OR `users_id` ='" . Session::getLoginUserID() . "') ";
+         $restrict_task = [
+            'OR' => [
+               'is_private'   => 0,
+               'users_id'     => Session::getLoginUserID()
+            ]
+         ];
       }
 
       //add followups to timeline
       if ($followup_obj->canview()) {
-         $followups = $followup_obj->find("items_id = ".$this->getID()." $restrict_fup", 'date DESC');
+         $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, 'date DESC');
          foreach ($followups as $followups_id => $followup) {
             $followup_obj->getFromDB($followups_id);
             $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
@@ -6270,7 +6278,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //add tasks to timeline
       if ($task_obj->canview()) {
-         $tasks = $task_obj->find("$foreignKey = ".$this->getID()." $restrict_task", 'date DESC');
+         $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
          foreach ($tasks as $tasks_id => $task) {
             $task_obj->getFromDB($tasks_id);
             $task['can_edit']                           = $task_obj->canUpdateItem();
@@ -6282,7 +6290,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       //add documents to timeline
       $document_obj   = new Document();
-      $document_items = $document_item_obj->find("itemtype = '$objType' AND items_id = ".$this->getID());
+      $document_items = $document_item_obj->find(['itemtype' => $objType, 'items_id' => $this->getID()]);
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
 
@@ -6298,9 +6306,10 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       $solution_obj = new ITILSolution();
-      $solution_items = $solution_obj->find(
-         "`itemtype`='" . self::getType() . "' AND `items_id`='" . $this->getID() . "'"
-      );
+      $solution_items = $solution_obj->find([
+         'itemtype'  => self::getType(),
+         'items_id'  => $this->getID()
+      ]);
       foreach ($solution_items as $solution_item) {
          // fix trouble with html_entity_decode who skip accented characters (on windows browser)
          $solution_content = preg_replace_callback("/(&#[0-9]+;)/", function($m) {
@@ -6327,7 +6336,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ($supportsValidation and $validationClass::canCreate()) {
-         $validations = $valitation_obj->find($foreignKey.' = '.$this->getID());
+         $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
          foreach ($validations as $validations_id => $validation) {
             $canedit = $valitation_obj->can($validations_id, UPDATE);
             $user->getFromDB($validation['users_id_validate']);

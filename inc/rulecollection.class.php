@@ -926,7 +926,7 @@ class RuleCollection extends CommonDBTM {
       }
       //find and duplicate actions
       $ruleaction = new RuleAction(get_class($rule));
-      $actions    = $ruleaction->find("`rules_id` = '$ID'");
+      $actions    = $ruleaction->find(['rules_id' => $ID]);
       $actions    = toolbox::addslashes_deep($actions);
       foreach ($actions as $action) {
          $action['rules_id'] = $newID;
@@ -938,7 +938,7 @@ class RuleCollection extends CommonDBTM {
 
       //find and duplicate criterias
       $rulecritera = new RuleCriteria(get_class($rule));
-      $criteria   = $rulecritera->find("`rules_id` = '$ID'");
+      $criteria   = $rulecritera->find(['rules_id' => $ID]);
       $criteria = toolbox::addslashes_deep($criteria);
       foreach ($criteria as $criterion) {
          $criterion['rules_id'] = $newID;
@@ -997,7 +997,7 @@ class RuleCollection extends CommonDBTM {
          }
 
          //find criterias
-         $criterias = $rulecritera->find("`rules_id` = '$ID'");
+         $criterias = $rulecritera->find(['rules_id' => $ID]);
          foreach ($criterias as &$criteria) {
             unset($criteria['id']);
             unset($criteria['rules_id']);
@@ -1018,7 +1018,7 @@ class RuleCollection extends CommonDBTM {
          }
 
          //find actions
-         $actions = $ruleaction->find("`rules_id` = '$ID'");
+         $actions = $ruleaction->find(['rules_id' => $ID]);
          foreach ($actions as &$action) {
             unset($action['id']);
             unset($action['rules_id']);
@@ -1145,8 +1145,7 @@ class RuleCollection extends CommonDBTM {
          $tmprule = new $rule['sub_type'];
          //check entities
          if ($tmprule->isEntityAssign()) {
-            $entities_found = $entity->find("`completename` = '".
-                                            $DB->escape($rule['entities_id'])."'");
+            $entities_found = $entity->find(['completename' => $rule['entities_id']]);
             if (empty($entities_found)) {
                $rules_refused[$k_rule]['entity'] = true;
             }
@@ -1178,9 +1177,9 @@ class RuleCollection extends CommonDBTM {
                   $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
-                     $found = $item->find("`completename` = '".$criteria['pattern']."'");
+                     $found = $item->find(['completename' => $criteria['pattern']]);
                   } else {
-                     $found = $item->find("`name` = '".$criteria['pattern']."'");
+                     $found = $item->find(['name' => $criteria['pattern']]);
                   }
                   if (empty($found)) {
                      $rules_refused[$k_rule]['criterias'][] = $k_crit;
@@ -1219,9 +1218,9 @@ class RuleCollection extends CommonDBTM {
                   $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
-                     $found = $item->find("`completename` = '".$action['value']."'");
+                     $found = $item->find(['completename' => $action['value']]);
                   } else {
-                     $found = $item->find("`name` = '".$action['value']."'");
+                     $found = $item->find(['name' => $action['value']]);
                   }
                   if (empty($found)) {
                      $rules_refused[$k_rule]['actions'][] = $k_action;
@@ -1414,7 +1413,7 @@ class RuleCollection extends CommonDBTM {
          $item                     = new $itemtype();
 
          //Find a rule by it's uuid
-         $found    = $item->find("`uuid`='".$current_rule['uuid']."'");
+         $found    = $item->find(['uuid' => $current_rule['uuid']]);
          $params   = Toolbox::addslashes_deep($current_rule);
          unset($params['rulecriteria']);
          unset($params['ruleaction']);
@@ -1422,7 +1421,7 @@ class RuleCollection extends CommonDBTM {
          if (!$item->isEntityAssign()) {
             $params['entities_id'] = 0;
          } else {
-            $entities_found = $entity->find("completename = '".$rule['entities_id']."'");
+            $entities_found = $entity->find(['completename' => $rule['entities_id']]);
             if (!empty($entities_found)) {
                $entity_found          = array_shift($entities_found);
                $params['entities_id'] = $entity_found['id'];

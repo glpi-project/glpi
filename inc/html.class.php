@@ -5607,11 +5607,11 @@ class Html {
     *
     * @since 9.2
     *
-    * @param string $tag       the tag identifier of the document
-    * @param int $width        witdh of the final image
-    * @param int $height       height of the final image
-    * @param bool $addLink     boolean, do we need to add an anchor link
-    * @param string $more_link append to the link (ex &test=true)
+    * @param string|array $tag       the tag identifier of the document
+    * @param int          $width     witdh of the final image
+    * @param int          $height    height of the final image
+    * @param bool         $addLink   boolean, do we need to add an anchor link
+    * @param string       $more_link append to the link (ex &test=true)
     *
     * @return nothing
    **/
@@ -5619,7 +5619,7 @@ class Html {
       global $CFG_GLPI;
 
       $doc = new Document();
-      $doc_data = $doc->find("`tag` IN('".$tag."')");
+      $doc_data = $doc->find(['tag' => $tag]);
       $out = "";
 
       if (count($doc_data)) {

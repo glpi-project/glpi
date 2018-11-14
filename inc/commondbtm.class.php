@@ -461,37 +461,69 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Retrieve all items from the database
     *
-    * @param string $condition condition used to search if needed (empty get all) (default '')
-    * @param string $order     order field if needed (default '')
-    * @param string $limit     limit retrieved datas if needed (default '')
+    * @since 9.4 string condition is deprecated
+    *
+    * @param array        $condition condition used to search if needed (empty get all) (default '')
+    * @param array|string $order     order field if needed (default '')
+    * @param integer      $limit     limit retrieved data if needed (default '')
     *
     * @return array all retrieved data in a associative array by id
    **/
-   function find($condition = "", $order = "", $limit = "") {
+   function find($condition = [], $order = [], $limit = null) {
       global $DB;
       // Make new database object and fill variables
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`";
+      if (!is_array($condition)) {
+         Toolbox::deprecated('Using string condition in find is deprecated!');
 
-      if (!empty($condition)) {
-         $query .= " WHERE $condition";
-      }
+         $query = "SELECT *
+                  FROM `".$this->getTable()."`";
 
-      if (!empty($order)) {
-         $query .= " ORDER BY $order";
-      }
+         if (!empty($condition)) {
+            $query .= " WHERE $condition";
+         }
 
-      if (!empty($limit)) {
-         $query .= " LIMIT ".intval($limit);
-      }
+         if (!empty($order)) {
+            $query .= " ORDER BY $order";
+         }
 
-      $data = [];
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($line = $DB->fetch_assoc($result)) {
-               $data[$line['id']] = $line;
+         if (!empty($limit)) {
+            $query .= " LIMIT ".intval($limit);
+         }
+
+         $data = [];
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result)) {
+               while ($line = $DB->fetch_assoc($result)) {
+                  $data[$line['id']] = $line;
+               }
             }
+         }
+      } else {
+         //@since 9.4: use iterator
+         $criteria = [
+            'FROM'   => $this->getTable()
+         ];
+
+         if (count($condition)) {
+            $criteria['WHERE'] = $condition;
+         }
+
+         if (!is_array($order)) {
+            $order = [$order];
+         }
+         if (count($order)) {
+            $criteria['ORDERBY'] = $order;
+         }
+
+         if ((int)$limit > 0) {
+            $criteria['LIMIT'] = (int)$limit;
+         }
+
+         $data = [];
+         $iterator = $DB->request($criteria);
+         while ($line = $iterator->next()) {
+            $data[$line['id']] = $line;
          }
       }
 

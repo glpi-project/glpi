@@ -33,6 +33,7 @@ The present file will list all changes made to the project; according to the
 - Remove `$CFG_GLPI['ticket_timeline']` parameter. Will now be `true` per default.
 - Remove `$CFG_GLPI['ticket_timeline_keep_replaced_tabs']` parameter. Will now be `false` per default.
 - Usage of `TicketFollowup` class has been deprecated.
+- Usage of string `$condition` parameter in `CommonDBTM::find()` has been deprecated
 
 The following methods have been deprecated:
 

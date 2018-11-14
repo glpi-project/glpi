@@ -112,9 +112,11 @@ if (isset($_POST["add"])) {
    $doc->getFromDB(intval($_REQUEST['documents_id']));
    if ($doc->can($doc->getID(), UPDATE)) {
       $document_item = new Document_Item;
-      $found_document_items = $document_item->find("itemtype = 'Problem' ".
-                                                   " AND items_id = ".intval($_REQUEST['problems_id']).
-                                                   " AND documents_id = ".$doc->getID());
+      $found_document_items = $document_item->find([
+         'itemtype'     => 'Problem',
+         'items_id'     => (int)$_REQUEST['problems_id'],
+         'documents_id' => $doc->getID()
+      ]);
       foreach ($found_document_items  as $item) {
          $document_item->delete(Toolbox::addslashes_deep($item), true);
       }
