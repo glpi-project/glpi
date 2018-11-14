@@ -815,7 +815,7 @@ abstract class API extends CommonGLPI {
                                  ]
                               ],
                               'WHERE'        => [
-                                 'ipnet.ipaddresses_id'  => $ipadress[0]
+                                 'ipadnet.ipaddresses_id'  => $ipadress[0]
                               ]
                            ]);
                            while ($data_ipnet = $ipnet_iterator->next()) {
