@@ -94,13 +94,33 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * That is used by cleanDBOnItem : the only interesting field is static::getIndexName()
     * But CommonDBRelation also use it to get more complex result
     *
+    * @deprecated 9.4
+    *
     * @param string  $itemtype the type of the item to look for
     * @param integer $items_id the id of the item to look for
     *
     * @return string the SQL request of '' if it is not possible
     **/
    static function getSQLRequestToSearchForItem($itemtype, $items_id) {
+      Toolbox::deprecated('Use getSQLCriteriaToSearchForItem');
       return '';
+   }
+
+
+   /**
+    * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
+    * That is used by cleanDBOnItem : the only interesting field is static::getIndexName()
+    * But CommonDBRelation also use it to get more complex result
+    *
+    * @since 9.4
+    *
+    * @param string  $itemtype the type of the item to look for
+    * @param integer $items_id the id of the item to look for
+    *
+    * @return array|null
+    */
+   static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
+      return null;
    }
 
 
@@ -114,12 +134,15 @@ abstract class CommonDBConnexity extends CommonDBTM {
    function cleanDBonItemDelete ($itemtype, $items_id) {
       global $DB;
 
-      $query = static::getSQLRequestToSearchForItem($itemtype, $items_id);
-      if (!empty($query)) {
-         $input = ['_no_history'     => true,
-                        '_no_notif'       => true];
+      $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
+      if ($criteria !== null) {
+         $input = [
+            '_no_history'     => true,
+            '_no_notif'       => true
+         ];
 
-         foreach ($DB->request($query) as $data) {
+         $iterator = $DB->request($criteria);
+         while ($data = $iterator->next()) {
             $input[$this->getIndexName()] = $data[$this->getIndexName()];
             $this->delete($input, 1);
          }
