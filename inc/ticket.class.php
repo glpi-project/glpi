@@ -901,7 +901,7 @@ class Ticket extends CommonITILObject {
 
       if (!empty($this->fields["id"])) {
          $item_ticket = new Item_Ticket();
-         $data = $item_ticket->find("`tickets_id` = ".$this->fields["id"]);
+         $data = $item_ticket->find(['tickets_id' => $this->fields["id"]]);
 
          foreach ($data as $val) {
             if (!empty($val["itemtype"]) && ($item = getItemForItemtype($val["itemtype"]))) {

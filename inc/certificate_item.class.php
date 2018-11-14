@@ -124,10 +124,11 @@ class Certificate_Item extends CommonDBRelation {
    function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype) {
 
       $certificate  = new self();
-      $certificates = $certificate->find(['certificates_id' => $certificates_id,
-                                          'itemtype'        => $itemtype,
-                                          'items_id'        => $items_id
-                                         ]);
+      $certificates = $certificate->find([
+         'certificates_id' => $certificates_id,
+         'itemtype'        => $itemtype,
+         'items_id'        => $items_id
+      ]);
       if (count($certificates) != 1) {
          return false;
       }

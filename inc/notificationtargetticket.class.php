@@ -122,7 +122,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       if ($this->obj && isset($this->obj->fields['id']) && !empty($this->obj->fields['id'])) {
          $item_ticket = new Item_Ticket();
-         $data = $item_ticket->find("`tickets_id` = ".$this->obj->fields['id']);
+         $data = $item_ticket->find(['tickets_id' => $this->obj->fields['id']]);
          foreach ($data as $val) {
             if (($val['itemtype'] != NOT_AVAILABLE)
                 && ($val['itemtype'] != '')
@@ -266,7 +266,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $data['##ticket.item.model##']               = '';
 
       $item_ticket = new Item_Ticket();
-      $items = $item_ticket->find("`tickets_id` = '".$item->getField('id')."'");
+      $items = $item_ticket->find(['tickets_id' => $item->getField('id')]);
       $data['items'] = [];
       if (count($items)) {
          foreach ($items as $val) {

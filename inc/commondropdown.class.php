@@ -938,8 +938,9 @@ abstract class CommonDropdown extends CommonDBTM {
 
          $rand = mt_rand();
          $kbitem = new KnowbaseItem;
-         $found_kbitem = $kbitem->find("`knowbaseitemcategories_id` = ".
-                                       $this->fields['knowbaseitemcategories_id']);
+         $found_kbitem = $kbitem->find([
+            'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+         ]);
 
          $kbitem->getFromDB(reset($found_kbitem)['id']);
          if (count($found_kbitem)) {

@@ -125,16 +125,28 @@ abstract class API extends CommonGLPI {
 
       // check ip access
       $apiclient = new APIClient;
-      $where_ip = "";
+      $where_ip = [];
       if ($this->ipnum) {
-         $where_ip .= " AND (`ipv4_range_start` IS NULL
-                             OR (`ipv4_range_start` <= '$this->ipnum'
-                                 AND `ipv4_range_end` >= '$this->ipnum'))";
+         $where_ip = [
+            'OR' => [
+               'ipv4_range_start' => null,
+               [
+                  'AND' => [
+                     'ipv4_range_start'   => ['<=', $this->ipnum],
+                     'ipv4_range_end'     => ['>=', $this->ipnum]
+                  ]
+               ]
+            ]
+         ];
       } else {
-         $where_ip .= " AND (`ipv6` IS NULL
-                             OR `ipv6` = '".$DB->escape($this->iptxt)."')";
+         $where_ip = [
+            'OR' => [
+               ['ipv6'  => null],
+               ['ipv6'  => $this->iptxt]
+            ]
+         ];
       }
-      $found_clients = $apiclient->find("`is_active` = 1 $where_ip");
+      $found_clients = $apiclient->find(['is_active' => 1] + $where_ip);
       if (count($found_clients) <= 0) {
          $this->returnError(__("There isn't an active API client matching your IP address in the configuration").
                             " (".$this->iptxt.")",

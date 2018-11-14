@@ -330,8 +330,9 @@ abstract class LevelAgreement extends CommonDBChild {
             }
             echo "</span>";
             echo $tt->getEndHiddenFieldValue($dateField, $ticket);
-            $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
-            $data     = $this->find("`type` = '$type' AND $sql_entities");
+            $data     = $this->find(
+               ['type' => $type] + getEntitiesRestrictCriteria('', '', $ticket->fields['entities_id'], true)
+            );
             if ($canupdate
                 && !empty($data)) {
                echo $tt->getBeginHiddenFieldText($laField);
@@ -363,8 +364,9 @@ abstract class LevelAgreement extends CommonDBChild {
                                               'required'   => $tt->isMandatoryField($dateField)]);
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
-         $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
-         $data         = $this->find("`type` = '$type' AND $sql_entities");
+         $data     = $this->find(
+            ['type' => $type] + getEntitiesRestrictCriteria('', '', $ticket->fields['entities_id'], true)
+         );
          if ($canupdate
              && !empty($data)) {
             echo $tt->getBeginHiddenFieldText($laField);
@@ -428,7 +430,7 @@ abstract class LevelAgreement extends CommonDBChild {
       }
 
       // list
-      $laList = $la->find("`slms_id` = '".$instID."'");
+      $laList = $la->find(['slms_id' => $instID]);
       Session::initNavigateListItems(__CLASS__,
                                      sprintf(__('%1$s = %2$s'),
                                              $slm::getTypeName(1),

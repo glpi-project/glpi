@@ -234,7 +234,7 @@ class Ticket extends DbTestCase {
 
       // 6 - check creation of the tasks
       $tickettask = new \TicketTask;
-      $found_tasks = $tickettask->find("`tickets_id` = $tickets_id", "id ASC");
+      $found_tasks = $tickettask->find(['tickets_id' => $tickets_id], "id ASC");
 
       // 6.1 -> check first task
       $taskA = array_shift($found_tasks);

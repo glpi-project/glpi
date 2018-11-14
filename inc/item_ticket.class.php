@@ -1129,7 +1129,11 @@ class Item_Ticket extends CommonDBRelation{
             $item_ticket = new static();
             foreach ($ids as $id) {
                if ($item->getFromDB($id) && !empty($input['items_id'])) {
-                  $item_found = $item_ticket->find("`tickets_id` = $id AND `itemtype` = '".$input['item_itemtype']."' AND `items_id` = ".$input['items_id']);
+                  $item_found = $item_ticket->find([
+                     'tickets_id'   => $id,
+                     'itemtype'     => $input['item_itemtype'],
+                     'items_id'     => $input['items_id']
+                  ]);
                   if (!empty($item_found)) {
                      $item_founds_id = array_keys($item_found);
                      $input['id'] = $item_founds_id[0];

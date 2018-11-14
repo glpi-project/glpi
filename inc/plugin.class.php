@@ -97,7 +97,7 @@ class Plugin extends CommonDBTM {
       global $GLPI_CACHE;
 
       $this->checkStates();
-      $plugins                  = $this->find('state='.self::ACTIVATED);
+      $plugins                  = $this->find(['state' => self::ACTIVATED]);
 
       $GLPI_CACHE->set('plugins_init', true);
       $GLPI_CACHE->set('plugins', []);
@@ -230,7 +230,7 @@ class Plugin extends CommonDBTM {
 
       //// Get all plugins
       // Get all from DBs
-      $pluglist   = $this->find("", "name, directory");
+      $pluglist   = $this->find([], "name, directory");
       $db_plugins = [];
       if (count($pluglist)) {
          foreach ($pluglist as $plug) {
@@ -866,7 +866,7 @@ class Plugin extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $plug     = new Plugin();
-      $pluglist = $plug->find("", "name, directory");
+      $pluglist = $plug->find([], "name, directory");
       foreach ($pluglist as $plugin) {
          $msg  = substr(str_pad($plugin['directory'], 30), 0, 20).
                  " Name: ".Toolbox::substr(str_pad($plugin['name'], 40), 0, 30).

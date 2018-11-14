@@ -1147,9 +1147,8 @@ abstract class APIBaseClass extends \atoum {
          $this->string($value[$name])->isNotEmpty();
       }
 
-      $where = "'" . implode("', '", $sensitiveSettings) . "'";
       $config = new config();
-      $rows = $config->find("`context`='core' AND `name` IN ($where)");
+      $rows = $config->find(['context' => 'core', 'name' => $sensitiveSettings]);
       $this->array($rows)
          ->hasSize(count($sensitiveSettings));
 
