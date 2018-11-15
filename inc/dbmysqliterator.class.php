@@ -289,7 +289,11 @@ class DBmysqlIterator implements Iterator, Countable {
                trigger_error("Missing table name", E_USER_ERROR);
             }
          } else if ($table) {
-            $table = DBmysql::quoteName($table);
+            if ($table instanceof \QueryUnion) {
+               $table = $table->getQuery();
+            } else {
+               $table = DBmysql::quoteName($table);
+            }
             $this->sql .= " FROM $table";
          } else {
             /*
@@ -396,7 +400,11 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    private function handleFields($t, $f) {
       if (is_numeric($t)) {
-         return DBmysql::quoteName($f);
+         if ($f instanceof \QueryUnion) {
+            return $f->getQuery();
+         } else {
+            return DBmysql::quoteName($f);
+         }
       } else {
          switch ($t) {
             case 'COUNT DISTINCT':
@@ -561,6 +569,8 @@ class DBmysqlIterator implements Iterator, Countable {
       } else if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
          // NULL condition
          $ret = 'IS NULL';
+      } else if ($value instanceof QueryUnion) {
+         $ret = $value->getQuery();
       } else if ($value instanceof QuerySubQuery) {
          $ret = $value->getOperator() . ' (' . $value->getSubQuery() . ')';
       } else {
@@ -667,15 +677,6 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function count() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
-   }
-
-   /**
-    * Get known query operators
-    *
-    * @return array
-    */
-   public function getOperators() {
-      return $this->operators;
    }
 
    /**
