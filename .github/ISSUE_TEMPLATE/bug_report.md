@@ -41,6 +41,13 @@ Steps to reproduce the behavior:
 
 A clear and concise description of what you expected to happen.
 
+**Logs**
+
+```
+paste logs here
+Find them in *-error.log files under glpi/files/_log/
+```
+
 **Screenshots**
 
 If applicable, add screenshots to help explain your problem.
