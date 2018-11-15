@@ -2305,58 +2305,6 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Number of followups of the ticket
-    *
-    * @param $with_private boolean : true : all followups / false : only public ones (default 1)
-    *
-    * @return followup count
-   **/
-   function numberOfFollowups($with_private = 1) {
-      global $DB;
-
-      $RESTRICT = "";
-      if ($with_private!=1) {
-         $RESTRICT = " AND `is_private` = 0";
-      }
-
-      // Set number of followups
-      $query = "SELECT COUNT(*)
-                FROM `glpi_itilfollowups`
-                WHERE `itemtype` = 'Ticket' AND `items_id` = '".$this->fields["id"]."'
-                      $RESTRICT";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 0);
-   }
-
-
-   /**
-    * Number of tasks of the ticket
-    *
-    * @param $with_private boolean : true : all ticket / false : only public ones (default 1)
-    *
-    * @return followup count
-   **/
-   function numberOfTasks($with_private = 1) {
-      global $DB;
-
-      $RESTRICT = "";
-      if ($with_private!=1) {
-         $RESTRICT = " AND `is_private` = 0";
-      }
-
-      // Set number of followups
-      $query = "SELECT COUNT(*)
-                FROM `glpi_tickettasks`
-                WHERE `tickets_id` = '".$this->fields["id"]."'
-                      $RESTRICT";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 0);
-   }
-
-
-   /**
     * Get active or solved tickets for an hardware last X days
     *
     * @since 0.83

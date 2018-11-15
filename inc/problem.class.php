@@ -1525,24 +1525,6 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * Number of tasks of the problem
-    *
-    * @return task count
-   **/
-   function numberOfTasks() {
-      global $DB;
-
-      // Set number of tasks
-      $query = "SELECT COUNT(*)
-                FROM `glpi_problemtasks`
-                WHERE `problems_id` = '".$this->fields["id"]."'";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 0);
-   }
-
-
-   /**
     * @since 0.85
     *
     * @see commonDBTM::getRights()
