@@ -1091,12 +1091,6 @@ class Transfer extends CommonDBTM {
                $this->manageConnectionComputer($itemtype, $ID);
             }
 
-            // Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
-            if (($this->inittype == $itemtype)
-                && in_array($itemtype, ['Monitor', 'Phone', 'Peripheral', 'Printer'])) {
-               $this->deleteDirectConnection($itemtype, $ID);
-            }
-
             // Contract : keep / delete + clean unused / keep unused
             if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
                $this->transferContracts($itemtype, $ID, $newID);
@@ -2316,24 +2310,6 @@ class Transfer extends CommonDBTM {
             }
          }
       }
-   }
-
-
-   /**
-    * Delete direct connection for a linked item
-    *
-    * @param $itemtype  item type
-    * @param $ID        ID of the item
-   **/
-   function deleteDirectConnection($itemtype, $ID) {
-      global $DB;
-
-      // Delete Direct connection to computers for item type
-      $query = "SELECT *
-                FROM `glpi_computers_items`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '$itemtype'";
-      $result = $DB->query($query);
    }
 
 
