@@ -6897,7 +6897,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param boolean $with_private true : all followups / false : only public ones (default 1)
     *
-    * @return followup count
+    * @return integer followup count
    **/
    function numberOfFollowups($with_private = true) {
       global $DB;
@@ -6930,7 +6930,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function numberOfTasks($with_private = true) {
       global $DB;
 
-      $table = 'glpi_' . strtolower($this->getType) . 'tasks';
+      $table = 'glpi_' . strtolower($this->getType()) . 'tasks';
 
       $RESTRICT = [];
       if ($with_private !== true && $this->getType() == 'Ticket') {

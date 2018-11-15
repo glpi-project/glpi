@@ -237,22 +237,33 @@ class Change_Ticket extends CommonDBRelation{
       $canedit = $change->canEdit($ID);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
-                                `glpi_tickets`.*
-                FROM `glpi_changes_tickets`
-                LEFT JOIN `glpi_tickets`
-                     ON (`glpi_changes_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                WHERE `glpi_changes_tickets`.`changes_id` = '$ID'
-                ORDER BY `glpi_tickets`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkID',
+         'FIELDS'          => 'glpi_tickets.*',
+         'FROM'            => 'glpi_changes_tickets',
+         'LEFT JOIN'       => [
+            'glpi_tickets' => [
+               'ON' => [
+                  'glpi_changes_tickets'  => 'tickets_id',
+                  'glpi_tickets'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_changes_tickets.changes_id'   => $ID
+         ],
+         'ORDERY'          => [
+            'glpi_tickets.name'
+         ]
+      ]);
 
       $tickets = [];
       $used    = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $tickets[$data['id']] = $data;
-            $used[$data['id']]    = $data['id'];
-         }
+      $numrows = count($iterator);
+
+      while ($data = $iterator->next()) {
+         $tickets[$data['id']] = $data;
+         $used[$data['id']]    = $data['id'];
       }
 
       if ($canedit) {
@@ -343,23 +354,35 @@ class Change_Ticket extends CommonDBRelation{
       $canedit = $ticket->canEdit($ID);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
-                                `glpi_changes`.*
-                FROM `glpi_changes_tickets`
-                LEFT JOIN `glpi_changes`
-                     ON (`glpi_changes_tickets`.`changes_id` = `glpi_changes`.`id`)
-                WHERE `glpi_changes_tickets`.`tickets_id` = '$ID'
-                ORDER BY `glpi_changes`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkID',
+         'FIELDS'          => 'glpi_changes.*',
+         'FROM'            => 'glpi_changes_tickets',
+         'LEFT JOIN'       => [
+            'glpi_changes' => [
+               'ON' => [
+                  'glpi_changes_tickets'  => 'changes_id',
+                  'glpi_changes'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_changes_tickes.tickets_id'   => $ID
+         ],
+         'ORDERY'          => [
+            'glpi_changes.name'
+         ]
+      ]);
 
       $changes = [];
-      $used = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $changes[$data['id']] = $data;
-            $used[$data['id']] = $data['id'];
-         }
+      $used    = [];
+      $numrows = count($iterator);
+
+      while ($data = $iterator->next()) {
+         $changes[$data['id']] = $data;
+         $used[$data['id']]    = $data['id'];
       }
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'

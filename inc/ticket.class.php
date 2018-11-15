@@ -2320,21 +2320,38 @@ class Ticket extends CommonITILObject {
 
       $result = [];
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                LEFT JOIN `glpi_items_tickets`
-                  ON (`".$this->getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
-                WHERE `glpi_items_tickets`.`itemtype` = '$itemtype'
-                      AND `glpi_items_tickets`.`items_id` = '$items_id'
-                      AND (`".$this->getTable()."`.`status`
-                              NOT IN ('".implode("', '", array_merge($this->getSolvedStatusArray(),
-                                                                     $this->getClosedStatusArray())
-                                                )."')
-                            OR (`".$this->getTable()."`.`solvedate` IS NOT NULL
-                                AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY)
-                                            > NOW()))";
+      $iterator = $DB->request([
+         'FROM'      => $this->getTable(),
+         'LEFT JOIN' => [
+            'glpi_items_tickets' => [
+               'ON' => [
+                  'glpi_items_tickets' => 'tickets_id',
+                  $this->getTable()    => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_items_tickets.items_id' => $items_id,
+            'glpi_items_tickets.itemtype' => $itemtype,
+            'OR'                          => [
+               'NOT' => [
+                  $this->getTable() . '.status' => array_merge(
+                     $this->getClosedStatusArray(),
+                     $this->getSolvedStatusArray()
+                  )
+               ],
+               'AND' => [
+                  'NOT' => [$this->getTable() . '.solvedate' => null],
+                  new \QueryExpression(
+                     "ADDDATE(" . $DB->quoteName($this->getTable()) .
+                     ".".$DB->quoteName('solvedate').", INTERVAL $days DAY) > NOW()"
+                  )
+               ]
+            ]
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $tick) {
+      while ($tick = $iterator->next()) {
          $result[$tick['id']] = $tick['name'];
       }
 
@@ -2355,22 +2372,29 @@ class Ticket extends CommonITILObject {
    function countActiveTicketsForItem($itemtype, $items_id) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `".$this->getTable()."`
-                LEFT JOIN `glpi_items_tickets`
-                   ON (`".$this->getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
-                WHERE `glpi_items_tickets`.`itemtype` = '$itemtype'
-                AND `glpi_items_tickets`.`items_id` = '$items_id'
-                AND `".$this->getTable()."`.`status`
-                   NOT IN ('".implode("', '",
-                            array_merge($this->getSolvedStatusArray(),
-                                        $this->getClosedStatusArray())
-                            )."')";
-
-      $result = $DB->query($query);
-      $ligne  = $DB->fetch_assoc($result);
-
-      return $ligne['cpt'];
+      $result = $DB->request([
+         'COUNT'     => 'cpt',
+         'FROM'      => $this->getTable(),
+         'LEFT JOIN' => [
+            'glpi_items_tickets' => [
+               'ON' => [
+                  'glpi_items_tickets' => 'tickets_id',
+                  $this->getTable()    => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_items_tickets.itemtype' => $itemtype,
+            'glpi_items_tickets.items_id' => $items_id,
+            'NOT'                         => [
+               $this->getTable() . '.status' => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+               )
+            ]
+         ]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -2388,25 +2412,33 @@ class Ticket extends CommonITILObject {
    function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `".$this->getTable()."`
-                LEFT JOIN `glpi_items_tickets`
-                   ON (`".$this->getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
-                WHERE `glpi_items_tickets`.`itemtype` = '$itemtype'
-                AND `glpi_items_tickets`.`items_id` = '$items_id'
-                AND `".$this->getTable()."`.`solvedate` IS NOT NULL
-                AND ADDDATE(`".$this->getTable()."`.`solvedate`,
-                           INTERVAL $days DAY) > NOW()
-                AND `".$this->getTable()."`.`status`
-                     IN ('".implode("', '",
-                                    array_merge($this->getSolvedStatusArray(),
-                                                $this->getClosedStatusArray())
-                                    )."')";
-
-      $result = $DB->query($query);
-      $ligne  = $DB->fetch_assoc($result);
-
-      return $ligne['cpt'];
+      $result = $DB->request([
+         'COUNT'     => 'cpt',
+         'FROM'      => $this->getTable(),
+         'LEFT JOIN' => [
+            'glpi_items_tickets' => [
+               'ON' => [
+                  'glpi_items_tickets' => 'tickets_id',
+                  $this->getTable()    => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_items_tickets.itemtype' => $itemtype,
+            'glpi_items_tickets.items_id' => $items_id,
+            $this->getTable() . '.status' => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+            ),
+            new \QueryExpression(
+               "ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW()"
+            ),
+            'NOT'                         => [
+               $this->getTable() . '.solvedate' => null
+            ]
+         ]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -3413,22 +3445,35 @@ class Ticket extends CommonITILObject {
 
       $totalcost = 0;
 
-      $query = "SELECT `glpi_ticketcosts`.*
-                FROM `glpi_items_tickets`, `glpi_ticketcosts`
-                WHERE `glpi_ticketcosts`.`tickets_id` = `glpi_items_tickets`.`tickets_id`
-                      AND `glpi_items_tickets`.`itemtype` = '".get_class($item)."'
-                      AND `glpi_items_tickets`.`items_id` = '".$item->getField('id')."'
-                      AND (`glpi_ticketcosts`.`cost_time` > '0'
-                           OR `glpi_ticketcosts`.`cost_fixed` > '0'
-                           OR `glpi_ticketcosts`.`cost_material` > '0')";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'    => 'glpi_ticketcosts.*',
+         'FROM'      => 'glpi_ticketcosts',
+         'LEFT JOIN' => [
+            'glpi_items_tickets' => [
+               'ON' => [
+                  'glpi_items_tickets' => 'tickets_id',
+                  'glpi_ticketcosts'   => 'tickets_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_items_tickets.itemtype' => get_class($item),
+            'glpi_items_tickets.items_id' => $item->getField('id'),
+            'OR'                          => [
+               'glpi_ticketcosts.cost_time'     => ['>', 0],
+               'glpi_ticketcosts.cost_fixed'    => ['>', 0],
+               'glpi_ticketcosts.cost_material' => ['>', 0]
+            ]
+         ]
+      ]);
 
-      $i = 0;
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $totalcost += TicketCost::computeTotalCost($data["actiontime"], $data["cost_time"],
-                                                       $data["cost_fixed"], $data["cost_material"]);
-         }
+      while ($data = $iterator->next()) {
+         $totalcost += TicketCost::computeTotalCost(
+            $data["actiontime"],
+            $data["cost_time"],
+            $data["cost_fixed"],
+            $data["cost_material"]
+         );
       }
       return $totalcost;
    }
