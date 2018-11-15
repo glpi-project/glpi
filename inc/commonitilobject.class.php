@@ -5778,16 +5778,15 @@ abstract class CommonITILObject extends CommonDBTM {
                 && ($p['output_type'] == Search::HTML_OUTPUT)) {
                $eigth_column .= ITILFollowup::showShortForITILObject($item->fields["id"], static::class);
             } else {
-               if (method_exists($item, 'numberOfFollowups')) {
-                  $eigth_column  = sprintf(__('%1$s (%2$s)'), $eigth_column,
-                                          sprintf(__('%1$s - %2$s'),
-                                                   $item->numberOfFollowups($showprivate),
-                                                   $item->numberOfTasks($showprivate)));
-               } else {
-                  $eigth_column  = sprintf(__('%1$s (%2$s)'), $eigth_column,
-                                                   $item->numberOfTasks($showprivate));
-
-               }
+               $eigth_column  = sprintf(
+                  __('%1$s (%2$s)'),
+                  $eigth_column,
+                  sprintf(
+                     __('%1$s - %2$s'),
+                     $item->numberOfFollowups($showprivate),
+                     $item->numberOfTasks($showprivate)
+                  )
+               );
             }
          }
 
@@ -6891,4 +6890,63 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $users_keys;
    }
+
+
+   /**
+    * Number of followups of the object
+    *
+    * @param boolean $with_private true : all followups / false : only public ones (default 1)
+    *
+    * @return followup count
+   **/
+   function numberOfFollowups($with_private = true) {
+      global $DB;
+
+      $RESTRICT = [];
+      if ($with_private !== true) {
+         $RESTRICT['is_private'] = 0;
+      }
+
+      // Set number of followups
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_itilfollowups',
+         'WHERE'  => [
+            'itemtype'  => $this->getType(),
+            'items_id'  => $this->fields['id']
+         ] + $RESTRICT
+      ])->next();
+
+      return $result['cpt'];
+   }
+
+   /**
+    * Number of tasks of the objec
+    *
+    * @param boolean $with_private true : all followups / false : only public ones (default 1)
+    *
+    * @return integer
+   **/
+   function numberOfTasks($with_private = true) {
+      global $DB;
+
+      $table = 'glpi_' . strtolower($this->getType) . 'tasks';
+
+      $RESTRICT = [];
+      if ($with_private !== true && $this->getType() == 'Ticket') {
+         //No private tasks for Problems and Changes
+         $RESTRICT['is_private'] = 0;
+      }
+
+      // Set number of tasks
+      $row = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => $table,
+         'WHERE'  => [
+            $this->getForeignKeyField()   => $this->fields['id']
+         ] + $RESTRICT
+      ])->next();
+      return (int)$row['cpt'];
+   }
+
 }

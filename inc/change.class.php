@@ -925,22 +925,6 @@ class Change extends CommonITILObject {
    }
 
 
-   /**
-    * Number of tasks of the change
-    *
-    * @return integer
-   **/
-   function numberOfTasks() {
-      global $DB;
-      // Set number of tasks
-      $row = $DB->request([
-         'FROM'   => 'glpi_changetasks',
-         'COUNT'  => 'cpt',
-         'WHERE'  => ['changes_id' => $this->fields['id']]
-      ])->next();
-      return (int)$row['cpt'];
-   }
-
    static function getCommonSelect() {
 
       $SELECT = "";
