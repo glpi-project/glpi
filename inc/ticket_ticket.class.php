@@ -130,21 +130,29 @@ class Ticket_Ticket extends CommonDBRelation {
          return false;
       }
 
-      $sql = "SELECT *
-              FROM `glpi_tickets_tickets`
-              WHERE `tickets_id_1` = '$ID'
-                    OR `tickets_id_2` = '$ID'";
-
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'OR'  => [
+               'tickets_id_1' => $ID,
+               'tickets_id_2' => $ID
+            ]
+         ]
+      ]);
       $tickets = [];
 
-      foreach ($DB->request($sql) as $data) {
+      while ($data = $iterator->next()) {
          if ($data['tickets_id_1'] != $ID) {
-            $tickets[$data['id']] = ['link'         => $data['link'],
-                                     'tickets_id_1' => $data['tickets_id_1'],
-                                     'tickets_id'   => $data['tickets_id_1']];
+            $tickets[$data['id']] = [
+               'link'         => $data['link'],
+               'tickets_id_1' => $data['tickets_id_1'],
+               'tickets_id'   => $data['tickets_id_1']
+            ];
          } else {
-            $tickets[$data['id']] = ['link'       => $data['link'],
-                                          'tickets_id' => $data['tickets_id_2']];
+            $tickets[$data['id']] = [
+               'link'       => $data['link'],
+               'tickets_id' => $data['tickets_id_2']
+            ];
          }
       }
 
@@ -351,13 +359,25 @@ class Ticket_Ticket extends CommonDBRelation {
    public function countOpenChildren($pid) {
       global $DB;
 
-      $query = "SELECT COUNT(1) AS cpt FROM " . $this->getTable() . " links " .
-         "INNER JOIN " . Ticket::getTable() . " tickets ON " .
-         "links.tickets_id_1=tickets.id " .
-         "WHERE links.link='" . self::SON_OF . "' AND links.tickets_id_2=$pid " .
-         "AND tickets.status NOT IN ('" . Ticket::SOLVED . "', '" . Ticket::CLOSED . "')";
-      $results = $DB->query($query);
-      $result = $results->fetch_assoc();
+      $result = $DB->request([
+         'COUNT'        => 'cpt',
+         'FROM'         => $this->getTable() . ' AS links',
+         'INNER JOIN'   => [
+            Ticket::getTable() . ' AS tickets' => [
+               'ON' => [
+                  'links'     => 'tickets_id_1',
+                  'tickets'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'links.link'         => self::SON_OF,
+            'links.tickets_id_2' => $pid,
+            'NOT'                => [
+               'tickets.status'  => Ticket::getClosedStatusArray() + Ticket::getSolvedStatusArray()
+            ]
+         ]
+      ])->next();
       return (int)$result['cpt'];
    }
 

@@ -160,17 +160,17 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    function getPredefinedFields($ID, $withtypeandcategory = false) {
       global $DB;
 
-      $sql = "SELECT *
-              FROM `".$this->getTable()."`
-              WHERE `".static::$items_id."` = '$ID'
-              ORDER BY `id`";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [static::$items_id => $ID],
+         'ORDER'  => 'id'
+      ]);
 
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
       $fields         = [];
       $multiple       = self::getMultiplePredefinedValues();
-      while ($rule = $DB->fetch_assoc($result)) {
+      while ($rule = $iterator->next()) {
          if (isset($allowed_fields[$rule['num']])) {
             if (in_array($rule['num'], $multiple)) {
                if ($allowed_fields[$rule['num']] == 'items_id') {
@@ -243,127 +243,128 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $ticket        = new Ticket();
       $rand          = mt_rand();
 
-      $query = "SELECT `glpi_tickettemplatepredefinedfields`.*
-                FROM `glpi_tickettemplatepredefinedfields`
-                WHERE (`tickettemplates_id` = '$ID')
-                ORDER BY 'id'";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['tickettemplates_id' => $ID],
+         'ORDER'  => 'id'
+      ]);
 
-      $display_options = ['relative_dates' => true,
-                               'comments'       => true,
-                               'html'           => true];
-      if ($result = $DB->query($query)) {
-         $predeffields = [];
-         $used         = [];
-         if ($numrows = $DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $predeffields[$data['id']] = $data;
-               $used[$data['num']] = $data['num'];
-            }
-         }
-         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                  action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      $display_options = [
+         'relative_dates' => true,
+         'comments'       => true,
+         'html'           => true
+      ];
 
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a predefined field')."</th></tr>";
-            echo "<tr class='tab_bg_2'><td class='right top' width='30%'>";
-            echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
-            $display_fields[-1] = Dropdown::EMPTY_VALUE;
-            $display_fields    += $fields;
-
-            // Unset multiple items
-            $multiple = self::getMultiplePredefinedValues();
-            foreach ($multiple as $val) {
-               if (isset($used[$val])) {
-                  unset($used[$val]);
-               }
-            }
-
-            $rand_dp  = Dropdown::showFromArray('num', $display_fields, ['used' => $used,
-                                                                              'toadd']);
-            echo "</td><td class='top'>";
-            $paramsmassaction = ['id_field'         => '__VALUE__',
-                                      'itemtype'         => 'Ticket',
-                                      'inline'           => true,
-                                      'submitname'       => _sx('button', 'Add'),
-                                      'options'          => ['relative_dates'     => 1,
-                                                                  'with_time'          => 1,
-                                                                  'with_days'          => 0,
-                                                                  'with_specific_date' => 0,
-                                                                  'itemlink_as_string' => 1,
-                                                                  'entity'             => $tt->getEntityID()]];
-
-            Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
-                                          $paramsmassaction);
-            echo "</td><td>";
-            echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-         }
-
-         echo "<div class='spaced'>";
-         if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                         'container'     => 'mass'.__CLASS__.$rand];
-            Html::showMassiveActions($massiveactionparams);
-         }
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr class='noHover'><th colspan='3'>";
-         echo self::getTypeName($DB->numrows($result));
-         echo "</th></tr>";
-         if ($numrows) {
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-               $header_top    .= "<th width='10'>";
-               $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-               $header_bottom .= "<th width='10'>";
-               $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-            }
-            $header_end .= "<th>".__('Name')."</th>";
-            $header_end .= "<th>".__('Value')."</th>";
-            $header_end .= "</tr>";
-            echo $header_begin.$header_top.$header_end;
-
-            foreach ($predeffields as $data) {
-               if (!isset($fields[$data['num']])) {
-                  // could happen when itemtype removed and items_id present
-                  continue;
-               }
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
-               }
-               echo "<td>".$fields[$data['num']]."</td>";
-
-               echo "<td>";
-               $display_datas[$searchOption[$data['num']]['field']] = $data['value'];
-               echo $ticket->getValueToDisplay($searchOption[$data['num']], $display_datas,
-                                               $display_options);
-               echo "</td>";
-               echo "</tr>";
-            }
-            echo $header_begin.$header_bottom.$header_end;
-         } else {
-            echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
-         }
-
-         echo "</table>";
-         if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-         }
-         echo "</div>";
-
+      $predeffields = [];
+      $used         = [];
+      $numrows      = count($iterator);
+      while ($data = $iterator->next()) {
+         $predeffields[$data['id']] = $data;
+         $used[$data['num']] = $data['num'];
       }
+
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
+               action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a predefined field')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td class='right top' width='30%'>";
+         echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
+         $display_fields[-1] = Dropdown::EMPTY_VALUE;
+         $display_fields    += $fields;
+
+         // Unset multiple items
+         $multiple = self::getMultiplePredefinedValues();
+         foreach ($multiple as $val) {
+            if (isset($used[$val])) {
+               unset($used[$val]);
+            }
+         }
+
+         $rand_dp  = Dropdown::showFromArray('num', $display_fields, ['used' => $used,
+                                                                           'toadd']);
+         echo "</td><td class='top'>";
+         $paramsmassaction = ['id_field'         => '__VALUE__',
+                                    'itemtype'         => 'Ticket',
+                                    'inline'           => true,
+                                    'submitname'       => _sx('button', 'Add'),
+                                    'options'          => ['relative_dates'     => 1,
+                                                               'with_time'          => 1,
+                                                               'with_days'          => 0,
+                                                               'with_specific_date' => 0,
+                                                               'itemlink_as_string' => 1,
+                                                               'entity'             => $tt->getEntityID()]];
+
+         Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
+                                       $paramsmassaction);
+         echo "</td><td>";
+         echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
+         echo "</td></tr>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+      echo "<div class='spaced'>";
+      if ($canedit && $numrows) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                       'container'     => 'mass'.__CLASS__.$rand];
+         Html::showMassiveActions($massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='noHover'><th colspan='3'>";
+      echo self::getTypeName($numrows);
+      echo "</th></tr>";
+      if ($numrows) {
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit) {
+            $header_top    .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            $header_bottom .= "<th width='10'>";
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         }
+         $header_end .= "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__('Value')."</th>";
+         $header_end .= "</tr>";
+         echo $header_begin.$header_top.$header_end;
+
+         foreach ($predeffields as $data) {
+            if (!isset($fields[$data['num']])) {
+               // could happen when itemtype removed and items_id present
+               continue;
+            }
+            echo "<tr class='tab_bg_2'>";
+            if ($canedit) {
+               echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
+            }
+            echo "<td>".$fields[$data['num']]."</td>";
+
+            echo "<td>";
+            $display_datas[$searchOption[$data['num']]['field']] = $data['value'];
+            echo $ticket->getValueToDisplay($searchOption[$data['num']], $display_datas,
+                                             $display_options);
+            echo "</td>";
+            echo "</tr>";
+         }
+         echo $header_begin.$header_bottom.$header_end;
+      } else {
+         echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
+      }
+
+      echo "</table>";
+      if ($canedit && $numrows) {
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
+         Html::closeForm();
+      }
+      echo "</div>";
    }
 
 }
