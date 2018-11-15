@@ -2714,10 +2714,6 @@ JAVASCRIPT;
             'field' => $field,
             'link'  => 'contains',
             'value' => ''
-         ],  [
-            'field' => $field,
-            'link'  => 'notcontains',
-            'value' => ''
          ]
       ];
    }
