@@ -743,12 +743,7 @@ class Search extends DbTestCase {
                            'field' => 'view',
                            'link'  => 'contains',
                            'value' => '',
-                        ],
-                        1 => [
-                           'field' => 'view',
-                           'link'  => 'notcontains',
-                           'value' => '',
-                        ],
+                        ]
                      ],
                     'metacriteria' => [],
                     'as_map'       => 0
