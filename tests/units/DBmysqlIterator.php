@@ -725,4 +725,103 @@ class DBmysqlIterator extends DbTestCase {
          ->isInstanceOf('RuntimeException')
          ->hasMessage('Unknown query operator NOONE');
    }
+
+   public function testUnionQuery() {
+      $union_crit = [
+         ['FROM' => 'table1'],
+         ['FROM' => 'table2']
+      ];
+      $union = new \QueryUnion($union_crit);
+      $raw_query = 'SELECT * FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`)';
+      $it = $this->it->execute(['FROM' => $union]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $fk = \Ticket::getForeignKeyField();
+      $users_table = \User::getTable();
+      $users_table = 'glpi_ticket_users';
+      $groups_table = 'glpi_groups_tickets';
+
+      $subquery1 = new \QuerySubQuery([
+         'SELECT'    => [
+            'usr.id AS users_id',
+            'tu.type AS type'
+         ],
+         'FROM'      => "$users_table AS tu",
+         'LEFT JOIN' => [
+            \User::getTable() . ' AS usr' => [
+               'ON' => [
+                  'tu'  => 'users_id',
+                  'usr' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            "tu.$fk" => 42
+         ]
+      ]);
+      $subquery2 = new \QuerySubQuery([
+         'SELECT'    => [
+            'usr.id AS users_id',
+            'gt.type AS type'
+         ],
+         'FROM'      => "$groups_table AS gt",
+         'LEFT JOIN' => [
+            \Group_User::getTable() . ' AS gu'   => [
+               'ON' => [
+                  'gu'  => 'groups_id',
+                  'gt'  => 'groups_id'
+               ]
+            ],
+            \User::getTable() . ' AS usr'        => [
+               'ON' => [
+                  'gu'  => 'users_id',
+                  'usr' => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            "gt.$fk" => 42
+         ]
+      ]);
+
+      $raw_query = "SELECT DISTINCT `users_id`, `type`"
+                     . " FROM (SELECT `usr`.`id` AS `users_id`, `tu`.`type` AS `type`"
+                     . " FROM `$users_table` AS `tu`"
+                     . " LEFT JOIN `glpi_users` AS `usr` ON (`tu`.`users_id` = `usr`.`id`)"
+                     . " WHERE `tu`.`$fk` = '42'"
+                     . " UNION ALL"
+                     . " SELECT `usr`.`id` AS `users_id`, `gt`.`type` AS `type`"
+                     . " FROM `$groups_table` AS `gt`"
+                     . " LEFT JOIN `glpi_groups_users` AS `gu` ON (`gu`.`groups_id` = `gt`.`groups_id`)"
+                     . " LEFT JOIN `glpi_users` AS `usr` ON (`gu`.`users_id` = `usr`.`id`)"
+                     . " WHERE `gt`.`$fk` = '42'"
+                     . ") AS `allactors`";
+
+      $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
+      $it = $this->it->execute([
+         'SELECT DISTINCT' => 'users_id',
+         'FIELDS'          => ['type'],
+         'FROM'            => $union
+      ]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, false, 'theunion');
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`) AS `theunion`';
+      $crit = [
+         'SELECT DISTINCT' => 'theunion.field',
+         'FROM'            => $union,
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, true);
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION SELECT * FROM `table2`)';
+      $crit = [
+         'SELECT DISTINCT' => 'theunion.field',
+         'FROM'            => $union,
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+   }
 }
