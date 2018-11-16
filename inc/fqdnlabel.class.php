@@ -165,11 +165,13 @@ abstract class FQDNLabel extends CommonDBChild {
             'WHERE'  => ['name' => $relation]
          ];
 
-         if (is_array($fqdns_id) && count($fqdns_id) > 0 ||
-            is_int($fqdns_id) && $fqdns_id > 0) {
+         if (is_array($fqdns_id) && count($fqdns_id) > 0
+            || is_int($fqdns_id) && $fqdns_id > 0
+         ) {
             $criteria['WHERE']['fqdns_id'] = $fqdns_id;
          }
 
+         $iterator = $DB->request($criteria);
          while ($element = $iterator->next()) {
             $IDs[$class][] = $element['id'];
          }

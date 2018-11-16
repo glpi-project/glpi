@@ -163,22 +163,21 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $fields     = [
          static::getIndexName(),
          static::$items_id_1 . ' AS items_id_1',
-         static::$items_id_2 . ' AS items_id_2',
-         new \QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1"),
-         new \QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2")
+         static::$items_id_2 . ' AS items_id_2'
       ];
 
       // Check item 1 type
       $where1 = [
          static::$items_id_1  => $items_id
       ];
-      $condition_id_1 = "`".static::$items_id_1."` = '$items_id'";
 
       $request = false;
       if (preg_match('/^itemtype/', static::$itemtype_1)) {
+         $criteria['SELECT'][] = static::$itemtype_1 . ' AS itemtype_1';
          $where1[static::$itemtype_1] = $itemtype;
          $request = true;
       } else {
+         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1");
          if (($itemtype ==  static::$itemtype_1)
              || is_subclass_of($itemtype, static::$itemtype_1)) {
             $request = true;
@@ -200,9 +199,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       ];
       $request = false;
       if (preg_match('/^itemtype/', static::$itemtype_2)) {
+         $criteria['SELECT'][] = static::$itemtype_2 . ' AS itemtype_2';
          $where2[static::$itemtype_2] = $itemtype;
          $request = true;
       } else {
+         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2");
          if (($itemtype ==  static::$itemtype_2)
              || is_subclass_of($itemtype, static::$itemtype_2)) {
             $request = true;
@@ -1519,8 +1520,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                      continue;
                   }
 
-                  $query = 'SELECT `'.static::getIndexName().'`
-                            FROM `'.static::getTable().'`';
                   $WHERE = [
                      static::$items_id_1  => $item_1->getID(),
                      static::$items_id_2  => $item_2->getID()
@@ -1546,8 +1545,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                      }
                      $WHERE = [
                         'OR' => [
-                           $WHERE,
-                           $ORWHERE
+                           ['AND' => $WHERE],
+                           ['AND' => $ORWHERE]
                         ]
                      ];
                   }
@@ -1559,7 +1558,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   ];
 
                }
-               $request        = $DB->request($query);
+               $request        = $DB->request($criteria);
                $number_results = count($request);
                if ($number_results == 0) {
                   $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);

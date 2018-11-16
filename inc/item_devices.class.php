@@ -791,7 +791,7 @@ class Item_Devices extends CommonDBRelation {
             $criteria['LEFT JOIN'] = [
                getTableForItemType($peer_type) => [
                   'ON' => [
-                     "$ctable.items_id"               => 'items_id',
+                     $ctable                          => 'items_id',
                      getTableForItemType($peer_type)  => 'id', [
                         'AND' => [
                            "$ctable.itemtype"   => $peer_type
@@ -910,10 +910,17 @@ class Item_Devices extends CommonDBRelation {
             'SELECT' => 'documents_id',
             'FROM'   => 'glpi_documents_items',
             'WHERE'  => [
-               'itemtype'  => $this->getType(),
-               'OR'        => [
-                  'itemtype'  => $this->getDeviceType(),
-                  'items_id'  => $link[$this->getDeviceForeignKey()]
+               'OR' => [
+                  'AND' => [
+                     'itemtype'  => $this->getType(),
+                     'items_id'  => $link['id']
+                  ]
+               ],
+               'OR' => [
+                  'AND' => [
+                     'itemtype'  => $this->getDeviceType(),
+                     'items_id'  => $link[$this->getDeviceForeignKey()]
+                  ]
                ]
             ],
             'ORDER'  => 'itemtype'

@@ -100,12 +100,10 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @return array|null
    **/
    static function getSQLCriteriaToSearchForItem($itemtype, $items_id) {
-
       $criteria = [
          'SELECT' => [
             static::getIndexName(),
-            static::$items_id . ' AS items_id',
-            new \QueryExpression("'" . static::$itemtype . "' AS itemtype")
+            static::$items_id . ' AS items_id'
          ],
          'FROM'   => static::getTable(),
          'WHERE'  => [
@@ -116,9 +114,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
       // Check item 1 type
       $request = false;
       if (preg_match('/^itemtype/', static::$itemtype)) {
+         $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
          $criteria['WHERE'][static::$itemtype] = $itemtype;
          $request = true;
       } else {
+         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");
          if (($itemtype ==  static::$itemtype)
              || is_subclass_of($itemtype, static::$itemtype)) {
             $request = true;

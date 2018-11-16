@@ -571,6 +571,7 @@ class FieldUnicity extends CommonDropdown {
 
          $iterator = $DB->request([
             'SELECT'    => $fields,
+            'COUNT'     => 'cpt',
             'FROM'      => $item->getTable(),
             'WHERE'     => [
                $item->getTable() . '.entities_id'  => $entities

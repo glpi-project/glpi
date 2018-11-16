@@ -60,7 +60,7 @@ class RSSFeed_User extends CommonDBRelation {
 
       $users = [];
       $iterator = $DB->request([
-         'FROM'   => sefl::getTable(),
+         'FROM'   => self::getTable(),
          'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
       ]);
 

@@ -1670,8 +1670,8 @@ class CronTask extends CommonDBTM{
          'WHERE'  => [
             'state'  => self::STATE_RUNNING,
             'OR'     => [
-               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.$DB->quoteName('frequency').' < unix_timestamp(now()'),
-               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.HOUR_TIMESTAMP.' < unix_timestamp(now()')
+               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.$DB->quoteName('frequency').' < unix_timestamp(now())'),
+               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.HOUR_TIMESTAMP.' < unix_timestamp(now())')
             ]
          ]
       ]);

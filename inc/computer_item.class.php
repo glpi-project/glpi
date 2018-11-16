@@ -819,7 +819,7 @@ class Computer_Item extends CommonDBRelation{
             'itemtype'  => $item->getType(),
             'items_id'  => $item->fields['id']
          ],
-         'ORDER'  => 'itemtype'
+         'GROUP'  => 'itemtype'
       ]);
 
       while ($data = $iterator->next()) {

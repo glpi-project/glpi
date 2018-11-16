@@ -205,7 +205,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       }
 
       $obj   = new self;
-      $found = $obj->find(['knowbaseitems_id' => $item->getID()], "`language` ASC");
+      $found = $obj->find(['knowbaseitems_id' => $item->getID()], "language ASC");
 
       if (count($found) > 0) {
          if ($canedit) {
