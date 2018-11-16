@@ -384,7 +384,7 @@ class Group_User extends CommonDBRelation{
             'glpi_users.id',
             'glpi_groups_users.id AS linkID',
             'glpi_groups_users.groups_id',
-            'glpi_groups_user.is_dynamic AS is_dynamic',
+            'glpi_groups_users.is_dynamic AS is_dynamic',
             'glpi_groups_users.is_manager AS is_manager',
             'glpi_groups_users.is_userdelegate AS is_userdelegate'
          ],
@@ -405,7 +405,7 @@ class Group_User extends CommonDBRelation{
          ],
          'WHERE'        => [
             self::getTable() . '.groups_id'  => $restrict
-         ] + getEntitiesRestrictCriteria(self::getTable(), '', $entityrestrict, 1),
+         ] + getEntitiesRestrictCriteria(Profile_User::getTable(), '', $entityrestrict, 1),
          'ORDERBY'      => [
             User::getTable() . '.realname',
             User::getTable() . '.firstname',

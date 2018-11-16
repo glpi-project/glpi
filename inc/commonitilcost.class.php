@@ -523,9 +523,9 @@ abstract class CommonITILCost extends CommonDBChild {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr class='noHover'>";
       if ($forproject) {
-         echo "<th colspan='10'>"._n('Ticket cost', 'Ticket costs', $DB->numrows($result))."</th>";
+         echo "<th colspan='10'>"._n('Ticket cost', 'Ticket costs', count($iterator))."</th>";
       } else {
-         echo "<th colspan='7'>".self::getTypeName($DB->numrows($result))."</th>";
+         echo "<th colspan='7'>".self::getTypeName(count($iterator))."</th>";
          echo "<th>".__('Item duration')."</th>";
          echo "<th>".CommonITILObject::getActionTime($item->fields['actiontime'])."</th>";
       }
