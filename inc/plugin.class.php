@@ -1809,7 +1809,8 @@ class Plugin extends CommonDBTM {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific',
-         'noremove'           => true
+         'noremove'           => true,
+         'additionalfields'   => ['directory']
       ];
 
       return $tab;
@@ -1826,13 +1827,12 @@ class Plugin extends CommonDBTM {
       switch ($field) {
          case 'id':
             //action...
-            $value = $values[$field];
-            $ID = $value;
             $plugin = new self;
-            $plugin->getFromDB($value);
-            $plug = $plugin->fields;
+            $plugin->checkPluginState($values['directory']);
 
-            $plugin->checkPluginState($plug['directory']);
+            $ID = $values[$field];
+            $plugin->getFromDB($ID);
+            $plug = $plugin->fields;
 
             if (function_exists("plugin_".$plug['directory']."_check_config")) {
                // init must not be called for incompatible plugins
