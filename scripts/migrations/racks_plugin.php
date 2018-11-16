@@ -123,6 +123,9 @@ function checkPlugin() {
          if (!checkPluginVersion(false)) {
             exit (1);
          }
+
+         // clean message from plugin activation
+         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
       } else {
          if ($plugin->fields['version'] == "1.8.0") {
             $out .= textRed("You can try option --update_plugin\n");
@@ -205,6 +208,7 @@ function migratePlugin() {
       $out.= "   - (N)etworkEquipment,\n";
       $out.= "   - (P)eripheral,\n";
       $out.= "   - Pd(U),\n";
+      $out.= "   - (M)onitor,\n";
       $out.= "   - Or (I)gnore.\n\n";
 
       foreach ($iterator_othermodels as $othermodel) {
@@ -227,6 +231,8 @@ function migratePlugin() {
             $new_model_itemtype = "PeripheralModel";
          } else if (in_array($answer, ['u', 'pdu'])) {
             $new_model_itemtype = "PduModel";
+         } else if (in_array($answer, ['m', 'monitor'])) {
+            $new_model_itemtype = "MonitorModel";
          }
 
          // import model
@@ -249,11 +255,14 @@ function migratePlugin() {
                // replace itemtype in specifications
                $DB->update("glpi_plugin_racks_itemspecifications", [
                   'itemtype' => $new_model_itemtype,
+                  'model_id' => $newmodel_id,
                ], [
                   'itemtype' => 'PluginRacksOtherModel',
                   'model_id' => $othermodel['id']
                ]);
             }
+         } else {
+            $out.= "\n";
          }
       }
 
@@ -264,6 +273,11 @@ function migratePlugin() {
       if (count($iterator_others)) {
          $out.= "- Import other items:\n\n";
          foreach ($iterator_others as $other) {
+            // pass import if other model previously ignored
+            if (!isset($old_othermodel[$other['plugin_racks_othermodels_id']])) {
+               continue;
+            }
+
             $old_model = $old_othermodel[$other['plugin_racks_othermodels_id']];
             list($new_model_itemtype, $new_models_id) = explode(':', $old_model);
             $new_itemtype = str_replace('Model', '', $new_model_itemtype);
@@ -279,10 +293,8 @@ function migratePlugin() {
                'entities_id' => $other['entities_id'],
                $fk_new_model => $new_models_id
             ]);
-            if (!$new_item->getFromDBByCrit($new_item_fields)
-                || !$new_items_id = $new_item->getID()) {
-               $new_items_id = $new_item->add($new_item_fields);
-            }
+
+            $new_items_id = $new_item->add($new_item_fields);
 
             if (!checkResult($new_items_id, true)) {
                $error = true;
@@ -307,7 +319,8 @@ function migratePlugin() {
    $out.= "- Import specifications:\n";
    $old_specs = [];
    $iterator_specs = $DB->request([
-      'FROM' => 'glpi_plugin_racks_itemspecifications'
+      'FROM'  => 'glpi_plugin_racks_itemspecifications',
+      'ORDER' => 'id ASC'
    ]);
    foreach ($iterator_specs as $spec) {
       $out.= "   * ".$spec['itemtype']." (".$spec['model_id']."): ";
@@ -402,13 +415,13 @@ function migratePlugin() {
       $out.= "   * ".$old_state['name'].": ";
       $state_fields = Toolbox::sanitize([
          'name'         => $old_state['name'],
-         'entities_id'  => $old_state['entities_id'],
-         'is_recursive' => $old_state['is_recursive'],
          'states_id'    => 0,
       ]);
       if (!$state->getFromDBByCrit($state_fields)
           || !$state_id = $state->getID()) {
-         $state_fields['comment'] = $old_state['comment'];
+         $state_fields['comment']      = $old_state['comment'];
+         $state_fields['entities_id']  = $old_state['entities_id'];
+         $state_fields['is_recursive'] = $old_state['is_recursive'];
          $state_id = $state->add($state_fields);
       }
       if (!checkResult($state_id, true)) {
@@ -571,6 +584,9 @@ function migratePlugin() {
       }
    }
    checkError($error);
+
+   $out.= "Everything seems OK\n";
+   printOutput();
 }
 
 
