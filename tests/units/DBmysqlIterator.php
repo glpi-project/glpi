@@ -439,6 +439,14 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['bar' => 1]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'1\'');
 
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['bar' => []]);
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->hasMessage('Empty IN are not allowed');
+
       $it = $this->it->execute('foo', ['bar' => [1, 2, 4]]);
       $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ('1', '2', '4')");
 

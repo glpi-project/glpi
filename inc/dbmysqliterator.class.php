@@ -549,6 +549,9 @@ class DBmysqlIterator implements Iterator, Countable {
          if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
             $ret = $value[0] . ' ' . DBmysql::quoteValue($value[1]);
          } else {
+            if (!count($value)) {
+               throw new \RuntimeException('Empty IN are not allowed');
+            }
             // Array of Values
             foreach ($value as $k => $v) {
                $value[$k] = DBmysql::quoteValue($v);
