@@ -233,14 +233,31 @@ class Plugin extends CommonDBTM {
       $dirplug       = GLPI_ROOT."/plugins";
       $dh            = opendir($dirplug);
 
+      $directories = [];
+
+      // Add known plugins to the check list
+      $known_plugins = $this->find();
+      foreach ($known_plugins as $plugin) {
+         $directories[] = $plugin['directory'];
+      }
+
+      // Add found directories to the check list
       while (false !== ($filename = readdir($dh))) {
          if (($filename != ".svn")
              && ($filename != ".")
              && ($filename != "..")
              && is_dir($dirplug."/".$filename)) {
 
-             $this->checkPluginState($filename);
+             $directories[] = $filename;
          }
+      }
+
+      // Prevent duplicated checks
+      $directories = array_unique($directories);
+
+      // Check all directories from the checklist
+      foreach ($directories as $directory) {
+         $this->checkPluginState($directory);
       }
    }
 
@@ -284,7 +301,7 @@ class Plugin extends CommonDBTM {
          return;
       }
 
-      if (!$is_already_known && array_key_exists($informations['oldname'])) {
+      if (!$is_already_known && array_key_exists('oldname', $informations)) {
          // Plugin not known but was named differently before, we try to load state using old name
          $is_already_known = $plugin->getFromDBByCrit(['directory' => $informations['oldname']]);
       }
@@ -307,7 +324,7 @@ class Plugin extends CommonDBTM {
          // Plugin known version differs from informations, mark it as 'updatable'
          $input       = $informations;
          $input['id'] = $plugin->fields['id'];
-         if ($informations['version']) {
+         if ($plugin->fields['version']) {
             $input['state'] = self::NOTUPDATED;
          }
 
@@ -1817,14 +1834,9 @@ class Plugin extends CommonDBTM {
 
             $plugin->checkPluginState($plug['directory']);
 
-            $plugin_setup_file = GLPI_ROOT . '/plugins/' . $plug['directory'] . '/setup.php';
-            if (file_exists($plugin_setup_file)) {
-               include_once($plugin_setup_file);
-            }
-
-            $plugin_hook_file = GLPI_ROOT . '/plugins/' . $plug['directory'] . '/hook.php';
-            if (file_exists($plugin_hook_file)) {
-               include_once($plugin_hook_file);
+            if (function_exists("plugin_".$plug['directory']."_check_config")) {
+               // init must not be called for incompatible plugins
+               self::load($plug['directory'], true);
             }
 
             $output = '';
