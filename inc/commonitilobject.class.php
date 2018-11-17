@@ -6851,6 +6851,7 @@ abstract class CommonITILObject extends CommonDBTM {
             "tu.$fk" => $this->getID()
          ]
       ]);
+
       $subquery2 = new \QuerySubQuery([
          'SELECT'    => [
             'usr.id AS users_id',
@@ -6872,15 +6873,15 @@ abstract class CommonITILObject extends CommonDBTM {
             ]
          ],
          'WHERE'     => [
-            "gt.$fk" => $this->getId()
+            "gt.$fk" => $this->getID()
          ]
       ]);
+
+      $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
       $iterator = $DB->request([
          'SELECT DISTINCT' => 'users_id',
          'FIELDS'          => ['type'],
-         'FROM'            => new \QueryExpression(
-            '(' . $subquery1->getSubQuery() . ' UNION ' . $subquery2->getSubQuery() . ') AS allactors'
-         )
+         'FROM'            => $union
       ]);
 
       $users_keys = [];

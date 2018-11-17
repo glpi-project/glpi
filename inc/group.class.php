@@ -623,7 +623,7 @@ class Group extends CommonTreeDropdown {
                         'groups_id'  => $groups_ids,
                      ]
                   ]
-               ),
+               )
             ]
          ];
       } else {

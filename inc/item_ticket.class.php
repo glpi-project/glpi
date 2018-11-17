@@ -1011,25 +1011,30 @@ class Item_Ticket extends CommonDBRelation{
 
       $itemtypes = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
-      $query = "";
+      $union = new \QueryUnion();
       foreach ($itemtypes as $type) {
          //TODO: migrate when iterator usuports UNION
          $table = getTableForItemType($type);
-         if (!empty($query)) {
-            $query .= " UNION ";
-         }
-         $query .= " SELECT `$table`.`id` AS id , '$type' AS itemtype , `$table`.`name` AS name
-                     FROM `$table`
-                     WHERE `$table`.`id` IS NOT NULL AND `$table`.`is_deleted` = 0 AND `$table`.`is_template` = 0 ";
+         $union->addQuery([
+            'SELECT' => [
+               'id',
+               new \QueryExpression("$type AS " . $DB->quoteName('itemtype')),
+               "name"
+            ],
+            'FROM'   => $table,
+            'WHERE'  => [
+               'NOT'          => ['id' => null],
+               'is_deleted'   => 0,
+               'is_template'  => 0
+            ]
+         ]);
       }
 
-      $result = $DB->query($query);
+      $iterator = $DB->request(['FROM' => $union]);
       $output = [];
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $item = getItemForItemtype($data['itemtype']);
-            $output[$data['itemtype']."_".$data['id']] = $item->getTypeName()." - ".$data['name'];
-         }
+      while ($data = $iterator->next()) {
+         $item = getItemForItemtype($data['itemtype']);
+         $output[$data['itemtype']."_".$data['id']] = $item->getTypeName()." - ".$data['name'];
       }
 
       return Dropdown::showFromArray($p['name'], $output, $p);

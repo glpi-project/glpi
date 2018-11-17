@@ -1698,8 +1698,6 @@ final class DbUtils {
             $like = str_replace('#', '_', $autoNum);
 
             if ($global == 1) {
-               $query = "";
-               $first = 1;
                $types = [
                   'Computer',
                   'Monitor',
@@ -1709,52 +1707,75 @@ final class DbUtils {
                   'Printer'
                ];
 
+               $subqueries = [];
                foreach ($types as $t) {
                   $table = $this->getTableForItemType($t);
-                  $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
-                           FROM `$table`
-                           WHERE `$field` LIKE '$like'
-                                 AND `is_deleted` = 0
-                                 AND `is_template` = 0";
+                  $criteria = [
+                     'SELECT' => ["$field AS code"],
+                     'FROM'   => $table,
+                     'WHERE'  => [
+                        $field         => ['LIKE', $like],
+                        'is_deleted'   => 0,
+                        'is_template'  => 0
+                     ]
+                  ];
 
                   if ($CFG_GLPI["use_autoname_by_entity"]
                      && ($entities_id >= 0)) {
-                     $query .=" AND `entities_id` = '$entities_id' ";
+                     $criteria['WHERE']['entities_id'] = $entities_id;
                   }
 
-                  $first = 0;
+                  $subqueries[] = new \QuerySubQuery($criteria);
                }
 
-               $query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no
-                        FROM ($query) AS codes";
-
+               $criteria = [
+                  'SELECT' => [
+                     new \QueryExpression(
+                        "CAST(SUBSTRING(".$DB->quoteName('code').", $pos, $len) AS " .
+                        "unsigned) AS " . $DB->quoteName('no')
+                     )
+                  ],
+                  'FROM'   => new \QueryUnion($subqueries, false, 'codes')
+               ];
             } else {
                $table = $this->getTableForItemType($itemtype);
-               $query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no
-                        FROM `$table`
-                        WHERE `$field` LIKE '$like' ";
+               $criteria = [
+                  'SELECT' => [
+                     new \QueryExpression(
+                        "CAST(SUBSTRING(".$DB->quoteName($field).", $pos, $len) AS " .
+                        "unsigned) AS " . $DB->quoteName('no')
+                     )
+                  ],
+                  'FROM'   => $table,
+                  'WHERE'  => [
+                     $field   => ['LIKE', $like]
+                  ]
+               ];
 
                if ($itemtype != 'Infocom') {
-                  $query .= " AND `is_deleted` = 0
-                              AND `is_template` = 0";
+                  $criteria['WHERE']['is_deleted'] = 0;
+                  $criteria['WHERE']['is_template'] = 0;
 
                   if ($CFG_GLPI["use_autoname_by_entity"]
                      && ($entities_id >= 0)) {
-                     $query .= " AND `entities_id` = '$entities_id' ";
+                     $criteria['WHERE']['entities_id'] = $entities_id;
                   }
                }
             }
 
-            $query = "SELECT MAX(Num.no) AS lastNo
-                     FROM (".$query.") AS Num";
-            $resultNo = $DB->query($query);
+            $subquery = new \QuerySubQuery($criteria, 'Num');
+            $iterator = $DB->request([
+               'SELECT' => ['MAX' => 'Num.no AS lastNo'],
+               'FROM'   => $subquery
+            ]);
 
-            if ($DB->numrows($resultNo) > 0) {
-               $data  = $DB->fetch_assoc($resultNo);
-               $newNo = $data['lastNo'] + 1;
+            if (count($iterator)) {
+               $result = $iterator->next();
+               $newNo = $result['lastNo'] + 1;
             } else {
                $newNo = 0;
             }
+
             $objectName = str_replace(
                [
                   $mask,
