@@ -2202,14 +2202,13 @@ class Search {
          ]);
       }
 
-      echo "<li id='more-criteria'
-                class='normalcriteria headerRow'
-                style='display: none;'>...</li>";
+      $rand_criteria = mt_rand();
+      echo "<li id='more-criteria$rand_criteria'
+            class='normalcriteria headerRow'
+            style='display: none;'>...</li>";
 
       echo "</ul>";
-
       echo "<div class='search_actions'>";
-      $rand_criteria = mt_rand();
       $linked = self::getMetaItemtypeAvailable($itemtype);
       echo "<span id='addsearchcriteria$rand_criteria' class='secondary'>
                <i class='fas fa-plus-square'></i>
@@ -2265,7 +2264,7 @@ class Search {
                'p': $json_p
             })
             .done(function(data) {
-               $('#$searchcriteriatableid').append(data);
+               $(data).insertBefore('#more-criteria$rand_criteria');
                $nbsearchcountvar++;
             });
          });
@@ -2280,7 +2279,7 @@ class Search {
                'p': $json_p
             })
             .done(function(data) {
-               $('#$searchcriteriatableid').append(data);
+               $(data).insertBefore('#more-criteria$rand_criteria');
                $nbsearchcountvar++;
             });
          });
@@ -2295,11 +2294,14 @@ class Search {
                'p': $json_p
             })
             .done(function(data) {
-               $('#$searchcriteriatableid').append(data);
+               $(data).insertBefore('#more-criteria$rand_criteria');
                $nbsearchcountvar++;
             });
          });
+JAVASCRIPT;
 
+      if ($p['mainform']) {
+         $JS .= <<<JAVASCRIPT
          $('.fold-search').on('click', function(event) {
             event.preventDefault();
             $(this)
@@ -2308,6 +2310,7 @@ class Search {
             $('#searchcriteria ul li:not(:first-child)').toggle();
          });
 JAVASCRIPT;
+      }
       echo Html::scriptBlock($JS);
 
       if (count($p['addhidden'])) {
@@ -2406,7 +2409,8 @@ JAVASCRIPT;
             ]);
          }
          echo "<i class='far fa-minus-square' alt='-' title=\"".
-                  __s('Delete a rule')."\" onclick=\"$('#$rowid').remove();\"></i>&nbsp;";
+                  __s('Delete a rule')."\" onclick=\"$('#$rowid').remove();
+                  $('#searchcriteria ul li:first-child').addClass('headerRow').show();\"></i>&nbsp;";
 
       }
 
@@ -2546,7 +2550,8 @@ JAVASCRIPT;
 
       echo "<li class='metacriteria' id='$rowid'>";
       echo "<i class='far fa-minus-square' alt='-' title=\"".
-               __s('Delete a global rule')."\" onclick=\"$('#$rowid').remove();\"></i>&nbsp;";
+               __s('Delete a global rule')."\" onclick=\"$('#$rowid').remove();
+               $('#searchcriteria ul li:first-child').addClass('headerRow').show();\"></i>&nbsp;";
 
       // Display link item (not for the first item)
       Dropdown::showFromArray(
@@ -2629,7 +2634,8 @@ JAVASCRIPT;
 
       echo "<li class='normalcriteria$addclass' id='$rowid'>";
       echo "<i class='far fa-minus-square' alt='-' title=\"".
-               __s('Delete a rule')."\" onclick=\"$('#$rowid').remove();\"></i>&nbsp;";
+               __s('Delete a rule')."\" onclick=\"$('#$rowid').remove();
+               $('#searchcriteria ul li:first-child').addClass('headerRow').show();\"></i>&nbsp;";
       Dropdown::showFromArray("criteria{$prefix}[$num][link]", Search::getLogicalOperators(), [
          'value' => isset($criteria["link"]) ? $criteria["link"] : '',
          'width' => '80px'
