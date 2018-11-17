@@ -1665,22 +1665,35 @@ final class DbUtils {
 
          if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
             $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
-            $autoNum = str_replace(['\\y',
-                                       '\\Y',
-                                       '\\m',
-                                       '\\d',
-                                       '_','%',
-                                       '\\g'],
-                                 [date('y'),
-                                       date('Y'),
-                                       date('m'),
-                                       date('d'),
-                                       '\\_',
-                                       '\\%',
-                                       ''],
-                                 $autoNum);
+
+            //do not add extra escapements for now
+            //substring position would be wrong if name contains "_"
+            $autoNum = str_replace(
+               [
+                  '\\y',
+                  '\\Y',
+                  '\\m',
+                  '\\d',
+                  '\\g'
+               ], [
+                  date('y'),
+                  date('Y'),
+                  date('m'),
+                  date('d'),
+                  ''
+               ],
+               $autoNum
+            );
+
             $mask = $mask[0];
             $pos  = strpos($autoNum, $mask) + 1;
+
+            //got substring position, add extra escapements
+            $autoNum = str_replace(
+               ['_', '%'],
+               ['\\_', '\\%'],
+               $autoNum
+            );
             $len  = Toolbox::strlen($mask);
             $like = str_replace('#', '_', $autoNum);
 
