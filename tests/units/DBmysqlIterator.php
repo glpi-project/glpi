@@ -736,6 +736,37 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
+      $union = new \QueryUnion($union_crit, true);
+      $raw_query = 'SELECT * FROM (SELECT * FROM `table1` UNION SELECT * FROM `table2`)';
+      $it = $this->it->execute(['FROM' => $union]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, false, 'theunion');
+      $raw_query = 'SELECT * FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`) AS `theunion`';
+      $it = $this->it->execute(['FROM' => $union]);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, false, 'theunion');
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`) AS `theunion`';
+      $crit = [
+         'SELECT DISTINCT' => 'theunion.field',
+         'FROM'            => $union,
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+
+      $union = new \QueryUnion($union_crit, true);
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION SELECT * FROM `table2`)';
+      $crit = [
+         'SELECT DISTINCT' => 'theunion.field',
+         'FROM'            => $union,
+      ];
+      $it = $this->it->execute($crit);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+   }
+
+   public function testComplexUnionQuery() {
+
       $fk = \Ticket::getForeignKeyField();
       $users_table = \User::getTable();
       $users_table = 'glpi_ticket_users';
@@ -804,24 +835,5 @@ class DBmysqlIterator extends DbTestCase {
          'FROM'            => $union
       ]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
-
-      $union = new \QueryUnion($union_crit, false, 'theunion');
-      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`) AS `theunion`';
-      $crit = [
-         'SELECT DISTINCT' => 'theunion.field',
-         'FROM'            => $union,
-      ];
-      $it = $this->it->execute($crit);
-      $this->string($it->getSql())->isIdenticalTo($raw_query);
-
-      $union = new \QueryUnion($union_crit, true);
-      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION SELECT * FROM `table2`)';
-      $crit = [
-         'SELECT DISTINCT' => 'theunion.field',
-         'FROM'            => $union,
-      ];
-      $it = $this->it->execute($crit);
-      $this->string($it->getSql())->isIdenticalTo($raw_query);
-
    }
 }
