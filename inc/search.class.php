@@ -6694,7 +6694,7 @@ JAVASCRIPT;
                case 'number' :
                   $opt = [
                      'contains'    => __('contains'),
-                     'notcontains' => __('notcontains'),
+                     'notcontains' => __('not contains'),
                      'equals'      => __('is'),
                      'notequals'   => __('is not'),
                      'searchopt'   => $searchopt[$field_num]
@@ -6758,7 +6758,7 @@ JAVASCRIPT;
             case 'completename' :
                $actions = [
                   'contains'    => __('contains'),
-                  'notcontains' => __('contains'),
+                  'notcontains' => __('not contains'),
                   'equals'      => __('is'),
                   'notequals'   => __('is not'),
                   'searchopt'   => $searchopt[$field_num]
