@@ -46,24 +46,31 @@ class QueryUnion extends AbstractQuery {
     *
     * @param array   $queries  An array of queries to union. Either SubQuery objects
     *                          or an array of criteria to build them.
+    *                          You can also add later using @see addQuery
     * @param boolean $distinct Include duplicatesi or not. Turning on may has
     *                          huge cost on queries performances.
     * @param string  $alias    Union ALIAS. Defaults to null.
     */
-   public function __construct(array $queries, $distinct = false, $alias = null) {
-      if (empty($queries)) {
-         throw new \RuntimeException('Cannot build an empty union query');
-      }
-
+   public function __construct(array $queries = [], $distinct = false, $alias = null) {
       parent::__construct($alias);
       $this->distinct = $distinct;
 
       foreach ($queries as $query) {
-         if (!$query instanceof \QuerySubQuery) {
-            $query = new \QuerySubQuery($query);
-         }
-         $this->queries[] = $query;
+         $this->addQuery($query);
       }
+   }
+
+   /**
+    * Add a query
+    *
+    * @param QuerySubQuery|array $query Either a SubQuery object
+    *                                   or an array of criteria to build it.
+    */
+   public function addQuery($query) {
+      if (!$query instanceof \QuerySubQuery) {
+         $query = new \QuerySubQuery($query);
+      }
+      $this->queries[] = $query;
    }
 
 
@@ -85,8 +92,14 @@ class QueryUnion extends AbstractQuery {
    public function getQuery() {
       global $DB;
 
+      $union_queries = $this->getQueries();
+      if (empty($union_queries
+      )) {
+         throw new \RuntimeException('Cannot build an empty union query');
+      }
+
       $queries = [];
-      foreach ($this->getQueries() as $uquery) {
+      foreach ($union_queries as $uquery) {
          $queries[] = $uquery->getQuery();
       }
 

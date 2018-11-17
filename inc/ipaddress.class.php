@@ -236,8 +236,10 @@ class IPAddress extends CommonDBChild {
 
          $order_by_itemtype             = ($table_options['order'] == 'itemtype');
 
-         $table_options['SQL_options']  = "LIMIT ".$_SESSION['glpilist_limit']."
-                                           OFFSET $start";
+         $table_options['SQL_options']  = [
+            'LIMIT'  => $_SESSION['glpilist_limit'],
+            'START'  => $start
+         ];
 
          $table           = new HTMLTableMain();
          $content         = "<a href='javascript:reloadTab(\"order=ip\");'>" .
@@ -1047,112 +1049,166 @@ class IPAddress extends CommonDBChild {
           && ($item->getType() == 'IPNetwork')) {
 
          $queries = [];
+         $main_criteria = [
+            'SELECT'       => [
+               'ADDR.binary_0 AS binary_0',
+               'ADDR.binary_1 AS binary_1',
+               'ADDR.binary_2 AS binary_2',
+               'ADDR.binary_3 AS binary_3',
+               'ADDR.name AS ip',
+               'ADDR.id AS id',
+               'ADDR.itemtype AS addr_item_type',
+               'ADDR.items_id AS addr_item_id',
+               'glpi_entities.completename AS entity',
+            ],
+            'FROM'         => 'glpi_ipaddresses_ipnetworks AS LINK',
+            'INNER JOIN'   => [
+               'glpi_ipaddresses AS ADDR' => [
+                  'ON' => [
+                     'ADDR'   => 'id',
+                     'LINK'   => 'ipaddresses_id', [
+                        'AND' => [
+                           'ADDR.itemtype' => 'NetworkName',
+                           'ADDR.is_deleted' => 0
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'LEFT JOIN'    => [
+               'glpi_entities'             => [
+                  'ON' => [
+                     'ADDR'            => 'entities_id',
+                     'glpi_entities'   => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'        => [
+               'LINK.ipnetworks_id' => $item->getID(),
+            ]
+         ];
+
          foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
             $table = getTableForItemType($itemtype);
-            $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
-                                  ADDR.`binary_1` AS binary_1,
-                                  ADDR.`binary_2` AS binary_2,
-                                  ADDR.`binary_3` AS binary_3,
-                                  ADDR.`name`     AS ip,
-                                  ADDR.`id`       AS id,
-                                  ADDR.`itemtype` AS addr_item_type,
-                                  ADDR.`items_id` AS addr_item_id,
-                                  `glpi_entities`.`completename` AS entity,
-                                  NAME.`id`       AS name_id,
-                                  PORT.`id`       AS port_id,
-                                  ITEM.`id`       AS item_id,
-                                  '$itemtype'     AS item_type
-                           FROM `glpi_ipaddresses_ipnetworks` AS LINK
-                           JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                               AND ADDR.`itemtype` = 'NetworkName'
-                                                               AND ADDR.`is_deleted` = 0)
-                           LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
-                           JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
-                                                                AND NAME.`itemtype` = 'NetworkPort')
-                           JOIN `glpi_networkports` AS PORT ON (NAME.`items_id` = PORT.`id`
-                                                                AND PORT.`itemtype` = '$itemtype')
-                           JOIN `$table` AS ITEM ON (ITEM.`id` = PORT.`items_id`)
-                           WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
+            $criteria = $main_criteria;
+            $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+               'NAME.id AS name_id',
+               'PORT.id AS port_id',
+               'ITEM.id AS item_id',
+               new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+            ]);
+            $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+               'glpi_networknames AS NAME'   => [
+                  'ON' => [
+                     'NAME'   => 'id',
+                     'ADDR'   => 'items_id', [
+                        'AND' => [
+                           'NAME.itemtype' => 'NetworkPort'
+                        ]
+                     ]
+                  ]
+               ],
+               'glpi_networkports AS PORT'   => [
+                  'ON' => [
+                     'NAME'   => 'items_id',
+                     'PORT'   => 'id', [
+                        'AND' => [
+                           'PORT.itemtype' => $itemtype
+                        ]
+                     ]
+                  ]
+               ],
+               "$table AS ITEM"              => [
+                  'ON' => [
+                     'ITEM'   => 'id',
+                     'PORT'   => 'items_id'
+                  ]
+               ]
+            ];
+            $queries[] = $criteria;
          }
 
-         $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
-                               ADDR.`binary_1` AS binary_1,
-                               ADDR.`binary_2` AS binary_2,
-                               ADDR.`binary_3` AS binary_3,
-                               ADDR.`name`     AS ip,
-                               ADDR.`id`       AS id,
-                               ADDR.`itemtype` AS addr_item_type,
-                               ADDR.`items_id` AS addr_item_id,
-                               `glpi_entities`.`completename` AS entity,
-                               NAME.`id`       AS name_id,
-                               PORT.`id`       AS port_id,
-                               NULL            AS item_id,
-                               NULL            AS item_type
-                        FROM `glpi_ipaddresses_ipnetworks` AS LINK
-                        JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                            AND ADDR.`itemtype` = 'NetworkName'
-                                                            AND ADDR.`is_deleted` = 0)
-                        LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
-                        JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
-                                                             AND NAME.`itemtype` = 'NetworkPort')
-                        JOIN `glpi_networkports` AS PORT
-                           ON (NAME.`items_id` = PORT.`id`
-                               AND PORT.`itemtype`
-                                    NOT IN ('" .implode("', '", $CFG_GLPI["networkport_types"])."'))
-                        WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
+         $criteria = $main_criteria;
+         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+            'NAME.id AS name_id',
+            'PORT.id AS port_id',
+            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+         ]);
+         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+            'glpi_networknames AS NAME'   => [
+               'ON' => [
+                  'NAME'   => 'id',
+                  'ADDR'   => 'items_id', [
+                     'AND' => [
+                        'NAME.itemtype' => 'NetworkPort'
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_networkports AS PORT'   => [
+               'ON' => [
+                  'NAME'   => 'items_id',
+                  'PORT'   => 'id', [
+                     'NOT' => [
+                        'PORT.itemtype' => $CFG_GLPI['networkport_types']
+                     ]
+                  ]
+               ]
+            ]
+         ];
+         $queries[] = $criteria;
 
-         $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
-                               ADDR.`binary_1` AS binary_1,
-                               ADDR.`binary_2` AS binary_2,
-                               ADDR.`binary_3` AS binary_3,
-                               ADDR.`name`     AS ip,
-                               ADDR.`id`       AS id,
-                               ADDR.`itemtype` AS addr_item_type,
-                               ADDR.`items_id` AS addr_item_id,
-                               `glpi_entities`.`completename` AS entity,
-                               NAME.`id`       AS name_id,
-                               NULL            AS port_id,
-                               NULL            AS item_id,
-                               NULL            AS item_type
-                        FROM `glpi_ipaddresses_ipnetworks` AS LINK
-                        JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                            AND ADDR.`itemtype` = 'NetworkName'
-                                                            AND ADDR.`is_deleted` = 0)
-                        LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
-                        JOIN `glpi_networknames` AS NAME ON (NAME.`id` = ADDR.`items_id`
-                                                             AND NAME.`itemtype` != 'NetworkPort')
-                        WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
+         $criteria = $main_criteria;
+         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+            'NAME.id AS name_id',
+            new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+         ]);
+         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+            'glpi_networknames AS NAME'   => [
+               'ON' => [
+                  'NAME'   => 'id',
+                  'ADDR'   => 'items_id', [
+                     'AND' => [
+                        'NAME.itemtype' => ['!=', 'NetworkPort']
+                     ]
+                  ]
+               ]
+            ]
+         ];
+         $queries[] = $criteria;
 
-         $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
-                               ADDR.`binary_1` AS binary_1,
-                               ADDR.`binary_2` AS binary_2,
-                               ADDR.`binary_3` AS binary_3,
-                               ADDR.`name`     AS ip,
-                               ADDR.`id`       AS id,
-                               ADDR.`itemtype` AS addr_item_type,
-                               ADDR.`items_id` AS addr_item_id,
-                               `glpi_entities`.`completename` AS entity,
-                               NULL            AS name_id,
-                               NULL            AS port_id,
-                               NULL            AS item_id,
-                               NULL            AS item_type
-                        FROM `glpi_ipaddresses_ipnetworks` AS LINK
-                        JOIN `glpi_ipaddresses` AS ADDR ON (ADDR.`id` = LINK.`ipaddresses_id`
-                                                            AND ADDR.`itemtype` != 'NetworkName'
-                                                            AND ADDR.`is_deleted` = 0)
-                        LEFT JOIN `glpi_entities` ON (ADDR.`entities_id` = `glpi_entities`.`id`)
-                        WHERE LINK.`ipnetworks_id` = '".$item->getID()."')";
+         $criteria = $main_criteria;
+         $criteria['SELECT'] = $criteria['SELECT'] + [
+            new \QueryExpression("NULL AS name_id"),
+            new \QueryExpression("NULL AS port_id"),
+            new \QueryExpression('NULL AS item_id'),
+            new \QueryExpression("NULL AS item_type")
+         ];
+         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!', 'NetworkName'];
+         $queries[] = $criteria;
 
-         $query = implode('UNION ', $queries);
+         $union = new \QueryUnion($queries);
+         $criteria = [
+            'FROM'   => $union,
+         ];
 
          if (($options['order'] == 'ip')
              || ($options['order'] == 'itemtype')) {
-            $query .= " ORDER BY binary_0, binary_1, binary_2, binary_3";
+            $criteria['ORDERBY'] = [
+               'binary_0',
+               'binary_1',
+               'binary_2',
+               'binary_3'
+            ];
          }
 
          if (isset($options['SQL_options'])) {
-            $query .= "\n".$options['SQL_options'];
+            $criteria = array_merge($criteria, $options['SQL_options']);
          }
+         $iterator = $DB->request($criteria);
 
          $canedit              = (isset($options['canedit']) && $options['canedit']);
          $options['createRow'] = false;
@@ -1163,8 +1219,7 @@ class IPAddress extends CommonDBChild {
          $networkport = new NetworkPort();
 
          $item = null;
-         foreach ($DB->request($query) as $line) {
-
+         while ($line = $iterator->next()) {
             unset($row);
 
             if (($options['order'] == 'itemtype')
@@ -1236,18 +1291,22 @@ class IPAddress extends CommonDBChild {
             $item = $father->getItem();
          }
 
-         $query                = "SELECT `id`
-                                  FROM `glpi_ipaddresses`
-                                  WHERE `items_id` = '" . $item->getID() . "'
-                                        AND `itemtype` = '" . $item->getType() . "'
-                                        AND `is_deleted` = 0";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'items_id'     => $item->getID(),
+               'itemtype'     => $item->getType(),
+               'is_deleted'   => 0
+            ]
+         ]);
 
          $canedit              = (isset($options['canedit']) && $options['canedit']);
          $createRow            = (isset($options['createRow']) && $options['createRow']);
          $options['createRow'] = false;
          $address              = new self();
 
-         foreach ($DB->request($query) as $ipaddress) {
+         while ($ipaddress = $iterator->next()) {
             if ($address->getFromDB($ipaddress['id'])) {
 
                if ($createRow) {

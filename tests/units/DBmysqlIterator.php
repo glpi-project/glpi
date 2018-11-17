@@ -834,4 +834,263 @@ class DBmysqlIterator extends DbTestCase {
       ]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
    }
+
+   public function testComplexUnionQueryAgain() {
+      global $CFG_GLPI, $DB;
+
+      //Old build way
+      $queries = [];
+
+      foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+         $table = getTableForItemType($itemtype);
+         $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                                 `ADDR`.`binary_1` AS `binary_1`,
+                                 `ADDR`.`binary_2` AS `binary_2`,
+                                 `ADDR`.`binary_3` AS `binary_3`,
+                                 `ADDR`.`name` AS `ip`,
+                                 `ADDR`.`id` AS `id`,
+                                 `ADDR`.`itemtype` AS `addr_item_type`,
+                                 `ADDR`.`items_id` AS `addr_item_id`,
+                                 `glpi_entities`.`completename` AS `entity`,
+                                 `NAME`.`id` AS `name_id`,
+                                 `PORT`.`id` AS `port_id`,
+                                 `ITEM`.`id` AS `item_id`,
+                                 '$itemtype' AS `item_type`
+                        FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                        INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                            AND `ADDR`.`itemtype` = 'NetworkName'
+                                                            AND `ADDR`.`is_deleted` = '0')
+                        INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                                                               AND `NAME`.`itemtype` = 'NetworkPort')
+                        INNER JOIN `glpi_networkports` AS `PORT` ON (`NAME`.`items_id` = `PORT`.`id`
+                                                               AND `PORT`.`itemtype` = '$itemtype')
+                        INNER JOIN `$table` AS `ITEM` ON (`ITEM`.`id` = `PORT`.`items_id`)
+                        LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                        WHERE `LINK`.`ipnetworks_id` = '42')";
+      }
+
+      $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                              `ADDR`.`binary_1` AS `binary_1`,
+                              `ADDR`.`binary_2` AS `binary_2`,
+                              `ADDR`.`binary_3` AS `binary_3`,
+                              `ADDR`.`name` AS `ip`,
+                              `ADDR`.`id` AS `id`,
+                              `ADDR`.`itemtype` AS `addr_item_type`,
+                              `ADDR`.`items_id` AS `addr_item_id`,
+                              `glpi_entities`.`completename` AS `entity`,
+                              `NAME`.`id` AS `name_id`,
+                              `PORT`.`id` AS `port_id`,
+                              NULL AS `item_id`,
+                              NULL AS `item_type`
+                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                         AND `ADDR`.`itemtype` = 'NetworkName'
+                                                         AND `ADDR`.`is_deleted` = '0')
+                     INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                                                            AND `NAME`.`itemtype` = 'NetworkPort')
+                     INNER JOIN `glpi_networkports` AS `PORT`
+                        ON (`NAME`.`items_id` = `PORT`.`id`
+                              NOT `PORT`.`itemtype`
+                                 IN ('" .implode("', '", $CFG_GLPI["networkport_types"])."'))
+                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     WHERE `LINK`.`ipnetworks_id` = '42')";
+
+      $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                              `ADDR`.`binary_1` AS `binary_1`,
+                              `ADDR`.`binary_2` AS `binary_2`,
+                              `ADDR`.`binary_3` AS `binary_3`,
+                              `ADDR`.`name` AS `ip`,
+                              `ADDR`.`id` AS `id`,
+                              `ADDR`.`itemtype` AS `addr_item_type`,
+                              `ADDR`.`items_id` AS `addr_item_id`,
+                              `glpi_entities`.`completename` AS `entity`,
+                              `NAME`.`id` AS `name_id`,
+                              NULL AS `port_id`,
+                              NULL AS `item_id`,
+                              NULL AS `item_type`
+                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                         AND `ADDR`.`itemtype` = 'NetworkName'
+                                                         AND `ADDR`.`is_deleted` = '0')
+                     INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
+                                                            AND `NAME`.`itemtype` != 'NetworkPort')
+                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     WHERE `LINK`.`ipnetworks_id` = '42')";
+
+      $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
+                              `ADDR`.`binary_1` AS `binary_1`,
+                              `ADDR`.`binary_2` AS `binary_2`,
+                              `ADDR`.`binary_3` AS `binary_3`,
+                              `ADDR`.`name` AS `ip`,
+                              `ADDR`.`id` AS `id`,
+                              `ADDR`.`itemtype` AS `addr_item_type`,
+                              `ADDR`.`items_id` AS `addr_item_id`,
+                              `glpi_entities`.`completename` AS `entity`,
+                              NULL AS `name_id`,
+                              NULL AS `port_id`,
+                              NULL AS `item_id`,
+                              NULL AS `item_type`
+                     FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
+                     INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
+                                                         AND `ADDR`.`itemtype` != 'NetworkName'
+                                                         AND `ADDR`.`is_deleted` = '0')
+                     LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
+                     WHERE `LINK`.`ipnetworks_id` = '42')";
+
+      $query = implode(' UNION ALL ', $queries);
+      $query = "SELECT * FROM (" . preg_replace('/\s+/', ' ', $query) . ")";
+
+      $raw_query = $query;
+
+      //New build way
+      $queries = [];
+      $main_criteria = [
+         'SELECT'       => [
+            'ADDR.binary_0 AS binary_0',
+            'ADDR.binary_1 AS binary_1',
+            'ADDR.binary_2 AS binary_2',
+            'ADDR.binary_3 AS binary_3',
+            'ADDR.name AS ip',
+            'ADDR.id AS id',
+            'ADDR.itemtype AS addr_item_type',
+            'ADDR.items_id AS addr_item_id',
+            'glpi_entities.completename AS entity',
+         ],
+         'FROM'         => 'glpi_ipaddresses_ipnetworks AS LINK',
+         'INNER JOIN'   => [
+            'glpi_ipaddresses AS ADDR' => [
+               'ON' => [
+                  'ADDR'   => 'id',
+                  'LINK'   => 'ipaddresses_id', [
+                     'AND' => [
+                        'ADDR.itemtype' => 'NetworkName',
+                        'ADDR.is_deleted' => 0
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_entities'             => [
+               'ON' => [
+                  'ADDR'            => 'entities_id',
+                  'glpi_entities'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'LINK.ipnetworks_id' => 42,
+         ]
+      ];
+
+      foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
+         $table = getTableForItemType($itemtype);
+         $criteria = $main_criteria;
+         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+            'NAME.id AS name_id',
+            'PORT.id AS port_id',
+            'ITEM.id AS item_id',
+            new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+         ]);
+         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+            'glpi_networknames AS NAME'   => [
+               'ON' => [
+                  'NAME'   => 'id',
+                  'ADDR'   => 'items_id', [
+                     'AND' => [
+                        'NAME.itemtype' => 'NetworkPort'
+                     ]
+                  ]
+               ]
+            ],
+            'glpi_networkports AS PORT'   => [
+               'ON' => [
+                  'NAME'   => 'items_id',
+                  'PORT'   => 'id', [
+                     'AND' => [
+                        'PORT.itemtype' => $itemtype
+                     ]
+                  ]
+               ]
+            ],
+            "$table AS ITEM"              => [
+               'ON' => [
+                  'ITEM'   => 'id',
+                  'PORT'   => 'items_id'
+               ]
+            ]
+         ];
+         $queries[] = $criteria;
+      }
+
+      $criteria = $main_criteria;
+      $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+         'NAME.id AS name_id',
+         'PORT.id AS port_id',
+         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+      ]);
+      $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+         'glpi_networknames AS NAME'   => [
+            'ON' => [
+               'NAME'   => 'id',
+               'ADDR'   => 'items_id', [
+                  'AND' => [
+                     'NAME.itemtype' => 'NetworkPort'
+                  ]
+               ]
+            ]
+         ],
+         'glpi_networkports AS PORT'   => [
+            'ON' => [
+               'NAME'   => 'items_id',
+               'PORT'   => 'id', [
+                  'NOT' => [
+                     'PORT.itemtype' => $CFG_GLPI['networkport_types']
+                  ]
+               ]
+            ]
+         ]
+      ];
+      $queries[] = $criteria;
+
+      $criteria = $main_criteria;
+      $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+         'NAME.id AS name_id',
+         new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+      ]);
+      $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
+         'glpi_networknames AS NAME'   => [
+            'ON' => [
+               'NAME'   => 'id',
+               'ADDR'   => 'items_id', [
+                  'AND' => [
+                     'NAME.itemtype' => ['!=', 'NetworkPort']
+                  ]
+               ]
+            ]
+         ]
+      ];
+      $queries[] = $criteria;
+
+      $criteria = $main_criteria;
+      $criteria['SELECT'] = array_merge($criteria['SELECT'], [
+         new \QueryExpression("NULL AS " . $DB->quoteName('name_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+         new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+         new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+      ]);
+      $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
+      $queries[] = $criteria;
+
+      $union = new \QueryUnion($queries);
+      $criteria = [
+         'FROM'   => $union,
+      ];
+
+      $it = $this->it->execute($criteria);
+      $this->string($it->getSql())->isIdenticalTo($raw_query);
+   }
 }

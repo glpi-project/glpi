@@ -701,13 +701,14 @@ class Html {
 
       $request = str_replace("<", "&lt;", $request);
       $request = str_replace(">", "&gt;", $request);
-      $request = str_ireplace("UNION", "<br>UNION<br>", $request);
-      $request = str_ireplace("FROM", "<br>FROM", $request);
-      $request = str_ireplace("WHERE", "<br>WHERE", $request);
-      $request = str_ireplace("INNER JOIN", "<br>INNER JOIN", $request);
-      $request = str_ireplace("LEFT JOIN", "<br>LEFT JOIN", $request);
-      $request = str_ireplace("ORDER BY", "<br>ORDER BY", $request);
-      $request = str_ireplace("SORT", "<br>SORT", $request);
+      $request = str_ireplace("UNION", "<br/>UNION<br/>", $request);
+      $request = str_ireplace("UNION ALL", "<br/>UNION ALL<br/>", $request);
+      $request = str_ireplace("FROM", "<br/>FROM", $request);
+      $request = str_ireplace("WHERE", "<br/>WHERE", $request);
+      $request = str_ireplace("INNER JOIN", "<br/>INNER JOIN", $request);
+      $request = str_ireplace("LEFT JOIN", "<br/>LEFT JOIN", $request);
+      $request = str_ireplace("ORDER BY", "<br/>ORDER BY", $request);
+      $request = str_ireplace("SORT", "<br/>SORT", $request);
 
       return $request;
    }
