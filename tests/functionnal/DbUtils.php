@@ -431,7 +431,6 @@ class DbUtils extends DbTestCase {
       }
    }
 
-
    public function testIsIndex() {
       $this
          ->if($this->newTestedInstance)
@@ -1021,5 +1020,94 @@ class DbUtils extends DbTestCase {
       $this->string(
          $result['AND'][1]['date'][1]->getValue()
       )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+   }
+
+   protected function autoNameProvider() {
+      return [
+         //will return name without changes
+         [
+            //not a template
+            'name'         => 'Computer 1',
+            'field'        => 'name',
+            'is_template'  => false,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, //default
+            'expected'     => 'Computer 1'
+         ], [
+            //not a template
+            'name'         => '&lt;abc&gt;',
+            'field'        => 'name',
+            'is_template'  => false,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '&lt;abc&gt;'
+         ], [
+            //does not match pattern
+            'name'         => '&lt;abc&gt;',
+            'field'        => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '&lt;abc&gt;'
+         ], [
+            //first added
+            'name'         => '&lt;####&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '0001'
+         ], [
+            //existing
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '_test_pc23'
+         ], [
+            //not existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 0,
+            'expected'     => '_test_pc01'
+         ], [
+            //existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 1,
+            'expected'     => '_test_pc04'
+         ], [
+            //existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => '_test_pc14'
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider autoNameProvider
+    */
+   public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected) {
+      $this
+         ->if($this->newTestedInstance)
+            ->then
+            ->string(
+               $autoname = $this->testedInstance->autoName(
+                  $name,
+                  $field,
+                  $is_template,
+                  $itemtype,
+                  $entities_id
+               )
+            )->isIdenticalTo($expected);
    }
 }
