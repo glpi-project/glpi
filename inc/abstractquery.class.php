@@ -37,25 +37,25 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Sub query class
 **/
-class QuerySubQuery extends AbstractQuery {
-   private $dbiterator;
+abstract class AbstractQuery {
+   protected $alias = null;
 
    /**
-    * Create a sub query
+    * Create a query
     *
-    * @param array  $crit      Array of query criteria. Any valid DBmysqliterator parameters are valid.
-    * @param string $alias     Alias for the whole subquery
+    * @param string $alias Alias for the whole subquery
     */
-   public function __construct(array $crit, $alias = null) {
-      global $DB;
+   public function __construct($alias = null) {
+      $this->alias = $alias;
+   }
 
-      parent::__construct($alias);
-      if (empty($crit)) {
-         throw new \RuntimeException('Cannot build an empty subquery');
-      }
-
-      $this->dbiterator = new DBmysqliterator($DB);
-      $this->dbiterator->buildQuery($crit);
+   /**
+    * Get alias
+    *
+    * @return string|null
+    */
+   public function getAlias() {
+      return $this->alias;
    }
 
    /**
@@ -64,14 +64,5 @@ class QuerySubQuery extends AbstractQuery {
     *
     * @return string
     */
-   public function getQuery() {
-      global $DB;
-
-      $sql = "(" . $this->dbiterator->getSql() . ")";
-
-      if ($this->alias !== null) {
-         $sql .= ' AS ' . $DB->quoteName($this->alias);
-      }
-      return $sql;
-   }
+   abstract public function getQuery();
 }

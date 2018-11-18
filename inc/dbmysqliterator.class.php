@@ -213,10 +213,9 @@ class DBmysqlIterator implements Iterator, Countable {
                            $joinExpressionKeys = ['FKEY' => null, 'ON' => null];
                            $subquery = array_diff_key($joincrit, $joinExpressionKeys);
                            if (count($subquery)) {
-                              $subquery = new QuerySubquery($subquery);
-                              $alias = DBMysql::quoteName($jointable);
+                              $subquery = new QuerySubquery($subquery, $jointable);
                               $joincrit = array_intersect_key($joincrit, $joinExpressionKeys);
-                              $join .= " $jointype JOIN (" . $subquery->getSubQuery() . ") AS $alias ON (" . $this->analyseCrit($joincrit) . ")";
+                              $join .= " $jointype JOIN " . $subquery->getQuery() . " ON (" . $this->analyseCrit($joincrit) . ")";
                            } else {
                               $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
                            }
@@ -289,7 +288,7 @@ class DBmysqlIterator implements Iterator, Countable {
                trigger_error("Missing table name", E_USER_ERROR);
             }
          } else if ($table) {
-            if ($table instanceof \QueryUnion) {
+            if ($table instanceof \AbstractQuery) {
                $table = $table->getQuery();
             } else {
                $table = DBmysql::quoteName($table);
@@ -400,7 +399,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    private function handleFields($t, $f) {
       if (is_numeric($t)) {
-         if ($f instanceof \QueryUnion) {
+         if ($f instanceof \AbstractQuery) {
             return $f->getQuery();
          } else {
             return DBmysql::quoteName($f);
@@ -552,31 +551,51 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    private function analyzeCriterion($value) {
-      $ret = null;
-      if (is_array($value)) {
-         if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
-            $ret = $value[0] . ' ' . DBmysql::quoteValue($value[1]);
-         } else {
-            if (!count($value)) {
-               throw new \RuntimeException('Empty IN are not allowed');
-            }
-            // Array of Values
-            foreach ($value as $k => $v) {
-               $value[$k] = DBmysql::quoteValue($v);
-            }
-            $ret = 'IN (' . implode(', ', $value) . ')';
-         }
-      } else if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
+      $criterion = null;
+      $crit_value;
+
+      if (is_null($value) || is_string($value) && strtolower($value) === 'null') {
          // NULL condition
-         $ret = 'IS NULL';
-      } else if ($value instanceof QueryUnion) {
-         $ret = $value->getQuery();
-      } else if ($value instanceof QuerySubQuery) {
-         $ret = $value->getOperator() . ' (' . $value->getSubQuery() . ')';
+         $criterion = 'IS NULL';
       } else {
-         $ret = "= " . DBmysql::quoteValue($value);
+         $criterion = "= %crit_value";
+         if (is_array($value)) {
+            if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
+               $criterion = "{$value[0]} %crit_value";
+               $crit_value = $this->analyzeCriterionValue($value[1]);
+            } else {
+               if (!count($value)) {
+                  throw new \RuntimeException('Empty IN are not allowed');
+               }
+               // Array of Values
+               $criterion = "IN (%crit_value)";
+               $crit_value = $this->analyzeCriterionValue($value);
+            }
+         } else {
+            if ($value instanceof \QuerySubquery) {
+               $criterion = "IN %crit_value";
+            }
+            $crit_value = $this->analyzeCriterionValue($value);
+         }
+         $criterion = str_replace('%crit_value', $crit_value, $criterion);
       }
-      return $ret;
+
+      return $criterion;
+   }
+
+   private function analyzeCriterionValue($value) {
+      $crit_value = null;
+      if (is_array($value)) {
+         foreach ($value as $k => $v) {
+            $value[$k] = DBmysql::quoteValue($v);
+         }
+         $crit_value = implode(', ', $value);
+      } else if ($value instanceof \AbstractQuery) {
+         $crit_value = $value->getQuery();
+      } else {
+         $crit_value = DBmysql::quoteValue($value);
+      }
+      return $crit_value;
    }
 
    /**

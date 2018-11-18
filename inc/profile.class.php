@@ -463,7 +463,7 @@ class Profile extends CommonDBTM {
             'OR'                             => $right_subqueries
          ]
       ]);
-      $criteria[] = new \QueryExpression(count($right_subqueries)." = (".$sub_query->getSubQuery().")");
+      $criteria[] = new \QueryExpression(count($right_subqueries)." = ".$sub_query->getQuery());
 
       if (Session::getCurrentInterface() == 'central') {
          return [
