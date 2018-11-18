@@ -1235,14 +1235,11 @@ class Stat extends CommonGLPI {
          return [];
       }
 
-      $result = $DB->query($query);
-      if ($result
-          && ($DB->numrows($result) > 0)) {
-         while ($row = $DB->fetch_assoc($result)) {
-            $date             = $row['date_unix'];
-            //$visites = round($row['total_visites']);
-            $entrees["$date"] = $row['total_visites'];
-         }
+      $iterator = $DB->request($criteria);
+      while ($row = $iterator->next()) {
+         $date             = $row['date_unix'];
+         //$visites = round($row['total_visites']);
+         $entrees["$date"] = $row['total_visites'];
       }
 
       $end_time   = strtotime(date("Y-m", strtotime($end))."-01");
