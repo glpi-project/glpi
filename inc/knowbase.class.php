@@ -267,7 +267,8 @@ JAVASCRIPT;
                ]
             ],
             $kbitem_visibility_crit
-         )
+         ),
+         'items_count'
       );
 
       $cat_iterator = $DB->request([
@@ -275,9 +276,7 @@ JAVASCRIPT;
             KnowbaseItemCategory::getTableField('id'),
             KnowbaseItemCategory::getTableField('name'),
             KnowbaseItemCategory::getTableField($cat_fk),
-            new QueryExpression(
-               '(' . $items_subquery->getSubQuery() . ') AS items_count'
-            ),
+            $items_subquery,
          ],
          'FROM' => $cat_table,
          'ORDER' => KnowbaseItemCategory::getTableField('name')

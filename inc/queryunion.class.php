@@ -37,9 +37,8 @@ if (!defined('GLPI_ROOT')) {
 /**
  * UNION query class
 **/
-class QueryUnion {
+class QueryUnion extends AbstractQuery {
    private $queries = [];
-   private $alias;
    private $distinct = false;
 
    /**
@@ -56,7 +55,7 @@ class QueryUnion {
          throw new \RuntimeException('Cannot build an empty union query');
       }
 
-      $this->alias = $alias;
+      parent::__construct($alias);
       $this->distinct = $distinct;
 
       foreach ($queries as $query) {
@@ -78,15 +77,6 @@ class QueryUnion {
    }
 
    /**
-    * Get alias
-    *
-    * @return string|null
-    */
-   public function getAlias() {
-      return $this->alias;
-   }
-
-   /**
     *
     * Get SQL query
     *
@@ -97,7 +87,7 @@ class QueryUnion {
 
       $queries = [];
       foreach ($this->getQueries() as $uquery) {
-         $queries[] = $uquery->getSubQuery();
+         $queries[] = $uquery->getQuery();
       }
 
       $keyword = 'UNION';

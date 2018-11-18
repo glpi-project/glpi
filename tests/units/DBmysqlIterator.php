@@ -692,38 +692,36 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testSubQuery() {
       $crit = ['SELECT' => 'id', 'FROM' => 'baz', 'WHERE' => ['z' => 'f']];
-      $raw_subq = "SELECT `id` FROM `baz` WHERE `z` = 'f'";
+      $raw_subq = "(SELECT `id` FROM `baz` WHERE `z` = 'f')";
+
       $sub_query =new \QuerySubQuery($crit);
-      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
-      $this->string($sub_query->getOperator())->isIdenticalTo('IN');
+      $this->string($sub_query->getQuery())->isIdenticalTo($raw_subq);
 
       $it = $this->it->execute('foo', ['bar' => $sub_query]);
       $this->string($it->getSql())
-           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ($raw_subq)");
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN $raw_subq");
 
-      $sub_query =new \QuerySubQuery($crit, '<>');
-      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
-      $this->string($sub_query->getOperator())->isIdenticalTo('<>');
+      $it = $this->it->execute('foo', ['bar' => ['<>', $sub_query]]);
+      $this->string($it->getSql())
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` <> $raw_subq");
+
+      $it = $this->it->execute('foo', ['NOT' => ['bar' => $sub_query]]);
+      $this->string($it->getSql())
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE NOT (`bar` IN $raw_subq)");
+
+      $sub_query =new \QuerySubQuery($crit, 'thesubquery');
+      $this->string($sub_query->getQuery())->isIdenticalTo("$raw_subq AS `thesubquery`");
 
       $it = $this->it->execute('foo', ['bar' => $sub_query]);
       $this->string($it->getSql())
-           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` <> ($raw_subq)");
+           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN $raw_subq AS `thesubquery`");
 
-      $sub_query =new \QuerySubQuery($crit, 'NOT IN');
-      $this->string($sub_query->getSubQuery())->isIdenticalTo($raw_subq);
-      $this->string($sub_query->getOperator())->isIdenticalTo('NOT IN');
-
-      $it = $this->it->execute('foo', ['bar' => $sub_query]);
+      $it = $this->it->execute([
+         'SELECT' => ['bar', $sub_query],
+         'FROM'   => 'foo'
+      ]);
       $this->string($it->getSql())
-           ->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` NOT IN ($raw_subq)");
-
-      $this->exception(
-         function() use($crit) {
-            $sub_query =new \QuerySubQuery($crit, 'NOONE');
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->hasMessage('Unknown query operator NOONE');
+           ->isIdenticalTo("SELECT `bar`, $raw_subq AS `thesubquery` FROM `foo`");
    }
 
    public function testUnionQuery() {
@@ -732,22 +730,22 @@ class DBmysqlIterator extends DbTestCase {
          ['FROM' => 'table2']
       ];
       $union = new \QueryUnion($union_crit);
-      $raw_query = 'SELECT * FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`)';
+      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, true);
-      $raw_query = 'SELECT * FROM (SELECT * FROM `table1` UNION SELECT * FROM `table2`)';
+      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, false, 'theunion');
-      $raw_query = 'SELECT * FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`) AS `theunion`';
+      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, false, 'theunion');
-      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION ALL SELECT * FROM `table2`) AS `theunion`';
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
       $crit = [
          'SELECT DISTINCT' => 'theunion.field',
          'FROM'            => $union,
@@ -756,7 +754,7 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, true);
-      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM (SELECT * FROM `table1` UNION SELECT * FROM `table2`)';
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
       $crit = [
          'SELECT DISTINCT' => 'theunion.field',
          'FROM'            => $union,
@@ -816,16 +814,16 @@ class DBmysqlIterator extends DbTestCase {
       ]);
 
       $raw_query = "SELECT DISTINCT `users_id`, `type`"
-                     . " FROM (SELECT `usr`.`id` AS `users_id`, `tu`.`type` AS `type`"
+                     . " FROM ((SELECT `usr`.`id` AS `users_id`, `tu`.`type` AS `type`"
                      . " FROM `$users_table` AS `tu`"
                      . " LEFT JOIN `glpi_users` AS `usr` ON (`tu`.`users_id` = `usr`.`id`)"
-                     . " WHERE `tu`.`$fk` = '42'"
+                     . " WHERE `tu`.`$fk` = '42')"
                      . " UNION ALL"
-                     . " SELECT `usr`.`id` AS `users_id`, `gt`.`type` AS `type`"
+                     . " (SELECT `usr`.`id` AS `users_id`, `gt`.`type` AS `type`"
                      . " FROM `$groups_table` AS `gt`"
                      . " LEFT JOIN `glpi_groups_users` AS `gu` ON (`gu`.`groups_id` = `gt`.`groups_id`)"
                      . " LEFT JOIN `glpi_users` AS `usr` ON (`gu`.`users_id` = `usr`.`id`)"
-                     . " WHERE `gt`.`$fk` = '42'"
+                     . " WHERE `gt`.`$fk` = '42')"
                      . ") AS `allactors`";
 
       $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
