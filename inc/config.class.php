@@ -2911,7 +2911,7 @@ class Config extends CommonDBTM {
                'options'   => [
                   'cache_dir' => GLPI_CACHE_DIR . '/' . $optname
                ],
-               'plugins'   => 'serializer'
+               'plugins'   => ['serializer']
             ];
 
             if (!is_dir($opt['options']['cache_dir'])) {
