@@ -625,11 +625,7 @@ class Plugin extends DbTestCase {
 
       // Assert that data in DB matches expected
       if (null !== $expected_data) {
-         if (null !== $plugin_id) {
-            $this->boolean($plugin->getFromDB($plugin_id))->isTrue();
-         } else {
          $this->boolean($plugin->getFromDBByCrit(['directory' => $plugin_directory]))->isTrue();
-         }
 
          $this->string($plugin->fields['directory'])->isIdenticalTo($expected_data['directory']);
          $this->string($plugin->fields['name'])->isIdenticalTo($expected_data['name']);
