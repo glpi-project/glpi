@@ -2309,6 +2309,10 @@ JAVASCRIPT;
                .toggleClass('fa-angle-double-down');
             $('#searchcriteria ul li:not(:first-child)').toggle();
          });
+         function removeSearchCriteria(rowID) {
+            $('#' + rowID).remove();
+            $('#searchcriteria ul li:first-child').addClass('headerRow').show();
+         }
 JAVASCRIPT;
       }
       echo Html::scriptBlock($JS);
@@ -2409,8 +2413,7 @@ JAVASCRIPT;
             ]);
          }
          echo "<i class='far fa-minus-square' alt='-' title=\"".
-                  __s('Delete a rule')."\" onclick=\"$('#$rowid').remove();
-                  $('#searchcriteria ul li:first-child').addClass('headerRow').show();\"></i>&nbsp;";
+                  __s('Delete a rule')."\" onclick=\"removeSearchCriteria('$rowid');\"></i>&nbsp;";
 
       }
 
@@ -2550,8 +2553,7 @@ JAVASCRIPT;
 
       echo "<li class='metacriteria' id='$rowid'>";
       echo "<i class='far fa-minus-square' alt='-' title=\"".
-               __s('Delete a global rule')."\" onclick=\"$('#$rowid').remove();
-               $('#searchcriteria ul li:first-child').addClass('headerRow').show();\"></i>&nbsp;";
+               __s('Delete a global rule')."\" onclick=\"removeSearchCriteria('$rowid');\"></i>&nbsp;";
 
       // Display link item (not for the first item)
       Dropdown::showFromArray(
@@ -2634,8 +2636,7 @@ JAVASCRIPT;
 
       echo "<li class='normalcriteria$addclass' id='$rowid'>";
       echo "<i class='far fa-minus-square' alt='-' title=\"".
-               __s('Delete a rule')."\" onclick=\"$('#$rowid').remove();
-               $('#searchcriteria ul li:first-child').addClass('headerRow').show();\"></i>&nbsp;";
+               __s('Delete a rule')."\" onclick=\"removeSearchCriteria('$rowid');\"></i>&nbsp;";
       Dropdown::showFromArray("criteria{$prefix}[$num][link]", Search::getLogicalOperators(), [
          'value' => isset($criteria["link"]) ? $criteria["link"] : '',
          'width' => '80px'
