@@ -230,9 +230,6 @@ class Plugin extends CommonDBTM {
     */
    public function checkStates() {
 
-      $dirplug       = GLPI_ROOT."/plugins";
-      $dh            = opendir($dirplug);
-
       $directories = [];
 
       // Add known plugins to the check list
@@ -242,12 +239,11 @@ class Plugin extends CommonDBTM {
       }
 
       // Add found directories to the check list
-      while (false !== ($filename = readdir($dh))) {
-         if (($filename != ".svn")
-             && ($filename != ".")
-             && ($filename != "..")
-             && is_dir($dirplug."/".$filename)) {
-
+      $plugins_directory = GLPI_ROOT."/plugins";
+      $directory_handle  = opendir($plugins_directory);
+      while (false !== ($filename = readdir($directory_handle))) {
+         if (!in_array($filename, ['.svn', '.', '..'])
+             && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)) {
              $directories[] = $filename;
          }
       }
@@ -320,13 +316,14 @@ class Plugin extends CommonDBTM {
          return;
       }
 
-      if ($informations['version'] != $plugin->fields['version']) {
-         // Plugin known version differs from informations, mark it as 'updatable'
-         $input       = $informations;
-         $input['id'] = $plugin->fields['id'];
-         if ($plugin->fields['version']) {
-            $input['state'] = self::NOTUPDATED;
-         }
+      if ($informations['version'] != $plugin->fields['version']
+          || $directory != $plugin->fields['directory']) {
+         // Plugin known version differs from informations or plugin has been renamed,
+         // mark it as 'updatable'
+         $input              = $informations;
+         $input['id']        = $plugin->fields['id'];
+         $input['directory'] = $directory;
+         $input['state']     = self::NOTUPDATED;
 
          $this->update($input);
 
@@ -339,7 +336,7 @@ class Plugin extends CommonDBTM {
          return;
       }
 
-      if (self::ACTIVATED !== $plugin->fields['state']) {
+      if (self::ACTIVATED !== (int)$plugin->fields['state']) {
          // Plugin is not activated, nothing to do
          return;
       }
@@ -355,19 +352,23 @@ class Plugin extends CommonDBTM {
       ob_end_clean();
 
       // Check prerequisites
-      $function = 'plugin_' . $directory . '_check_prerequisites';
-      if (function_exists($function)) {
-         ob_start();
-         if (!$function()) {
-            $usage_ok = false;
+      if ($usage_ok) {
+         $function = 'plugin_' . $directory . '_check_prerequisites';
+         if (function_exists($function)) {
+            ob_start();
+            if (!$function()) {
+               $usage_ok = false;
+            }
+            ob_end_clean();
          }
-         ob_end_clean();
       }
 
       // Check configuration
-      $function = 'plugin_' . $directory . '_check_config';
-      if (!function_exists($function) || !$function()) {
-         $usage_ok = false;
+      if ($usage_ok) {
+         $function = 'plugin_' . $directory . '_check_config';
+         if (!function_exists($function) || !$function()) {
+            $usage_ok = false;
+         }
       }
 
       if (!$usage_ok) {
