@@ -84,7 +84,6 @@ class KnowbaseItem_Comment extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
-      $kbitem_id = null;
       $item_id = $item->getID();
       $item_type = $item::getType();
       if (isset($_GET["start"])) {
@@ -105,8 +104,9 @@ class KnowbaseItem_Comment extends CommonDBTM {
             'language'         => $item->fields['language']
          ];
       }
+
       $kbitem_id = $where['knowbaseitems_id'];
-      $kbitem = new KnowbaseItem_Item();
+      $kbitem = new KnowbaseItem();
       $kbitem->getFromDB($kbitem_id);
 
       $number = countElementsInTable(
@@ -114,9 +114,7 @@ class KnowbaseItem_Comment extends CommonDBTM {
          $where
        );
 
-      $entry = new KnowbaseItem();
-      $entry->getFromDB($kbitem->fields['knowbaseitems_id']);
-      $cancomment = $entry->canComment();
+      $cancomment = $kbitem->canComment();
       if ($cancomment) {
          echo "<div class='firstbloc'>";
 
