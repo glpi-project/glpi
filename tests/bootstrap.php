@@ -99,10 +99,10 @@ function emptyDirectory($dir, $regex = null) {
 if (!file_exists(GLPI_VAR_DIR)) {
    mkdir(GLPI_VAR_DIR);
 }
-//cleaup files directory
+//cleanup files directory
 emptyDirectory(GLPI_VAR_DIR);
 
-//crete empty directories
+//create empty directories
 foreach ($directories as $directory) {
    mkdir($directory);
 }
