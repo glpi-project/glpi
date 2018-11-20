@@ -2309,10 +2309,13 @@ JAVASCRIPT;
                .toggleClass('fa-angle-double-down');
             $('#searchcriteria ul li:not(:first-child)').toggle();
          });
-         function removeSearchCriteria(rowID) {
+
+         $(document).on("click", ".remove-search-criteria", function() {
+            var rowID = $(this).data('rowid');
+            console.log('remove-search-criteria', rowID);
             $('#' + rowID).remove();
             $('#searchcriteria ul li:first-child').addClass('headerRow').show();
-         }
+         });
 JAVASCRIPT;
       }
       echo Html::scriptBlock($JS);
@@ -2412,8 +2415,8 @@ JAVASCRIPT;
                'id'    => 'as_map'
             ]);
          }
-         echo "<i class='far fa-minus-square' alt='-' title=\"".
-                  __s('Delete a rule')."\" onclick=\"removeSearchCriteria('$rowid');\"></i>&nbsp;";
+         echo "<i class='far fa-minus-square remove-search-criteria' alt='-' title=\"".
+                  __s('Delete a rule')."\" data-rowid='$rowid'></i>&nbsp;";
 
       }
 
@@ -2552,8 +2555,8 @@ JAVASCRIPT;
       $rowid  = 'metasearchrow'.$request['itemtype'].$rand;
 
       echo "<li class='metacriteria' id='$rowid'>";
-      echo "<i class='far fa-minus-square' alt='-' title=\"".
-               __s('Delete a global rule')."\" onclick=\"removeSearchCriteria('$rowid');\"></i>&nbsp;";
+      echo "<i class='far fa-minus-square remove-search-criteria' alt='-' title=\"".
+               __s('Delete a global rule')."\" data-rowid='$rowid'></i>&nbsp;";
 
       // Display link item (not for the first item)
       Dropdown::showFromArray(
@@ -2635,8 +2638,8 @@ JAVASCRIPT;
       }
 
       echo "<li class='normalcriteria$addclass' id='$rowid'>";
-      echo "<i class='far fa-minus-square' alt='-' title=\"".
-               __s('Delete a rule')."\" onclick=\"removeSearchCriteria('$rowid');\"></i>&nbsp;";
+      echo "<i class='far fa-minus-square remove-search-criteria' alt='-' title=\"".
+               __s('Delete a rule')."\" data-rowid='$rowid'></i>&nbsp;";
       Dropdown::showFromArray("criteria{$prefix}[$num][link]", Search::getLogicalOperators(), [
          'value' => isset($criteria["link"]) ? $criteria["link"] : '',
          'width' => '80px'
