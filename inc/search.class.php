@@ -2312,7 +2312,6 @@ JAVASCRIPT;
 
          $(document).on("click", ".remove-search-criteria", function() {
             var rowID = $(this).data('rowid');
-            console.log('remove-search-criteria', rowID);
             $('#' + rowID).remove();
             $('#searchcriteria ul li:first-child').addClass('headerRow').show();
          });
