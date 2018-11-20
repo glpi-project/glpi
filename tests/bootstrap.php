@@ -62,9 +62,34 @@ $directories = [
    GLPI_RSS_DIR,
    GLPI_UPLOAD_DIR
 ];
+
+/**
+ * Recursively remove contents from a directory
+ *
+ * @param string $dir Directory path
+ *
+ * @return void
+ */
+function emptyDirectory($dir) {
+   if (substr($dir, 0, strlen(__DIR__)) != __DIR__) {
+      throw new \RuntimeException('About to remove directory outside tests directory!');
+   }
+   $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+   $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+   foreach ($files as $file) {
+      $path = $file->getPathName();
+      if ($file->isDir()) {
+         rmdir($path);
+      } else {
+         unlink($path);
+      }
+   }
+   rmdir($dir);
+}
+
 foreach ($directories as $directory) {
-   if (!file_exists($directory)) {
-      mkdir($directory);
+   if (file_exists($directory)) {
+      emptyDirectory($directory);
    }
 }
 
