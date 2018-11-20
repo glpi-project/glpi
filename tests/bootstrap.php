@@ -37,7 +37,7 @@ define('GLPI_VAR_DIR', __DIR__ . '/files');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
-define('GLPI_ROOT', __DIR__ . '/../');
+define('GLPI_ROOT', realpath(__DIR__ . '/../'));
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: php scripts/cliinstall.php --tests ...\n\n");
@@ -47,9 +47,7 @@ global $CFG_GLPI, $GLPI_CACHE;
 include_once GLPI_ROOT . '/inc/based_config.php';
 //create var_dir and children if it does not exists
 $directories = [
-   GLPI_VAR_DIR,
    GLPI_DUMP_DIR,
-   GLPI_DOC_DIR,
    GLPI_CRON_DIR,
    GLPI_SESSION_DIR,
    GLPI_PLUGIN_DOC_DIR,
@@ -66,16 +64,28 @@ $directories = [
 /**
  * Recursively remove contents from a directory
  *
- * @param string $dir Directory path
+ * @param string $dir   Directory path
+ * @param string $regex Regular expression (full, with separators) to find paths
  *
  * @return void
  */
-function emptyDirectory($dir) {
+function emptyDirectory($dir, $regex = null) {
    if (substr($dir, 0, strlen(__DIR__)) != __DIR__) {
       throw new \RuntimeException('About to remove directory outside tests directory!');
    }
+   if (!file_exists($dir)) {
+      return;
+   }
+
    $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
    $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+   if ($regex !== null) {
+      $reg_files = new RegexIterator($files, $regex, RecursiveRegexIterator::GET_MATCH);
+      $files = [];
+      foreach ($reg_files as $reg_file) {
+         $files[] = new \SplFileInfo($reg_file[0]);
+      }
+   }
    foreach ($files as $file) {
       $path = $file->getPathName();
       if ($file->isDir()) {
@@ -84,13 +94,17 @@ function emptyDirectory($dir) {
          unlink($path);
       }
    }
-   rmdir($dir);
 }
 
+if (!file_exists(GLPI_VAR_DIR)) {
+   mkdir(GLPI_VAR_DIR);
+}
+//cleaup files directory
+emptyDirectory(GLPI_VAR_DIR);
+
+//crete empty directories
 foreach ($directories as $directory) {
-   if (file_exists($directory)) {
-      emptyDirectory($directory);
-   }
+   mkdir($directory);
 }
 
 //init cache
@@ -560,8 +574,6 @@ function loadDataset() {
    $CFG_GLPI['url_base']      = GLPI_URI;
    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
-   is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
-
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {
       printf("\nGLPI dataset version %s already loaded\n\n", $data['_version']);
@@ -636,10 +648,6 @@ function getItemByTypeName($type, $name, $onlyid = false) {
 }
 
 // Cleanup log directory
-foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
-   if (file_exists($file)) {
-      unlink($file);
-   }
-}
+emptyDirectory(GLPI_LOG_DIR, '/^.+\.log$/i');
 
 loadDataset();
