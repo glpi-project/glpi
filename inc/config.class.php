@@ -2842,7 +2842,7 @@ class Config extends CommonDBTM {
       }
 
       //use FS adapter when called from tests
-      if (defined('TU_USER') && (!defined('CACHED_TESTS') ||$optname = 'cache_trans' )) {
+      if (defined('TU_USER') && (!defined('CACHED_TESTS') || $optname == 'cache_trans' )) {
          $opt['adapter'] = 'filesystem';
       }
 
