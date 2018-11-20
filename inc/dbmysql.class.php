@@ -770,10 +770,12 @@ class DBmysql {
 
          // backslash in regex is twice backslashed (first for PHP string and then for regex)
          $backslash = '\\\\';
-         // search for quotes or backslash preceded no backslashes or even count of backslashes
-         $regex = "/(?<!{$backslash})((?:{$backslash}{$backslash})*)['\"{$backslash}]{1}/";
+         // search for quotes preceded by no backslashes or even count of backslashes
+         $quotes_regex = "/(?<!{$backslash})((?:{$backslash}{$backslash})*)['\"]{1}/";
+         // search for backslash preceded no backslashes or even count of backslashes and not followed by backslashes
+         $backslashes_regex = "/(?<!{$backslash})((?:{$backslash}{$backslash})*)['\"{$backslash}]{1}(?!{$backslash})/";
          // escape if unprotected special chars are found
-         if (preg_match($regex, $value)) {
+         if (preg_match($quotes_regex, $value) || preg_match($backslashes_regex, $value)) {
             $value = $DB->escape($value);
          }
 
