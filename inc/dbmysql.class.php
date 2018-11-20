@@ -759,12 +759,24 @@ class DBmysql {
     * @return mixed
     */
    public static function quoteValue($value) {
+      global $DB;
+
       if ($value instanceof QueryParam || $value instanceof QueryExpression) {
          //no quote for query parameters nor expressions
          $value = $value->getValue();
       } else if ($value === null || $value === 'NULL' || $value === 'null') {
          $value = 'NULL';
       } else if (!preg_match("/^`.*?`$/", $value)) { //`field` is valid only for mysql :/
+
+         // backslash in regex is twice backslashed (first for PHP string and then for regex)
+         $backslash = '\\\\';
+         // search for quotes or backslash preceded no backslashes or even count of backslashes
+         $regex = "/(?<!{$backslash})((?:{$backslash}{$backslash})*)['\"\\]{1}/";
+         // escape if unprotected special chars are found
+         if (preg_match($regex, $value)) {
+            $value = $DB->escape($value);
+         }
+
          //phone numbers may start with '+' and will be considered as numeric
          $value = "'$value'";
       }
