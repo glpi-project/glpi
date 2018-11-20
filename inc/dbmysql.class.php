@@ -771,7 +771,7 @@ class DBmysql {
          // backslash in regex is twice backslashed (first for PHP string and then for regex)
          $backslash = '\\\\';
          // search for quotes or backslash preceded no backslashes or even count of backslashes
-         $regex = "/(?<!{$backslash})((?:{$backslash}{$backslash})*)['\"\\]{1}/";
+         $regex = "/(?<!{$backslash})((?:{$backslash}{$backslash})*)['\"{$backslash}]{1}/";
          // escape if unprotected special chars are found
          if (preg_match($regex, $value)) {
             $value = $DB->escape($value);
