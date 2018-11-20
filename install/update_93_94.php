@@ -122,7 +122,12 @@ function update93to94() {
    $migration->createRule($rule, $criteria, $action);
 
    if (!countElementsInTable('glpi_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
-      $DB->query("INSERT INTO `glpi_profilerights` VALUES ('NULL','4','rule_asset','255')");
+      $DB->insert("glpi_profilerights", [
+         'id'           => "NULL",
+         'profiles_id'  => "4",
+         'name'         => "rule_asset",
+         'rights'       => "255",
+      ]);
    }
    /** /Add business rules on assets */
 
@@ -303,10 +308,16 @@ function update93to94() {
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {
-         $query = "REPLACE INTO `glpi_displaypreferences`
-                           (`itemtype` ,`num` ,`rank` ,`users_id`)
-                     VALUES ('$type', '$newval', '".$rank++."', '0')";
-         $DB->query($query);
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'itemtype'  => $type,
+            'num'       => $newval,
+            'rank'      => $rank++,
+            'users_id'  => "0",
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $itemtype,
+            'num'       => $newval,
+         ]);
       }
    }
 
