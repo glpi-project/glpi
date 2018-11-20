@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - Add followups to Changes and Problems
 - Add timeline to Changes and Problems
 - Search on devices from Printers and Network equipments
+- Ability to specify creation and modification dates during CommonDBTM object add method
 
 ### Changed
 - `license_id` field in `glpi_items_operatingsystems` table has been renamed to `licenseid`
