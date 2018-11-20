@@ -677,26 +677,25 @@ class NotificationTarget extends CommonDBChild {
 
       // members/managers of the group allowed on object entity
       // filter group with 'is_assign' (attribute can be unset after notification)
-      $criteria = array_merge(
+      $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+      $criteria['FROM'] = Group_User::getTable();
+      $criteria['INNER JOIN'] = array_merge(
          [
-            'INNER JOIN' => [
-               User::getTable() => [
-                  'ON' => [
-                     Group_User::getTable()  => 'users_id',
-                     User::getTable()        => 'id'
-                  ]
-               ],
-               Group::getTable() => [
-                  'ON' => [
-                     Group_User::getTable()  => 'groups_id',
-                     Group::getTable()       => 'id'
-                  ]
+            User::getTable() => [
+               'ON' => [
+                  Group_User::getTable()  => 'users_id',
+                  User::getTable()        => 'id'
+               ]
+            ],
+            Group::getTable() => [
+               'ON' => [
+                  Group_User::getTable()  => 'groups_id',
+                  Group::getTable()       => 'id'
                ]
             ]
          ],
-         $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria()
+         $criteria['INNER JOIN']
       );
-      $criteria['FROM'] = Group_User::getTable();
       $criteria['WHERE'] = array_merge(
          $criteria['WHERE'], [
             Group_User::getTable() . '.groups_id'  => $group_id,
@@ -705,13 +704,13 @@ class NotificationTarget extends CommonDBChild {
       );
 
       if ($manager == 1) {
-         $criteria['WHERE']['is_manager'] = 1;
+         $criteria['WHERE']['glpi_groups_users.is_manager'] = 1;
       } else if ($manager == 2) {
-         $criteria['WHERE']['is_manager'] = 0;
+         $criteria['WHERE']['glpi_groups_users.is_manager'] = 0;
       }
 
       $iterator = $DB->request($criteria);
-      while ($data = $iterator-next()) {
+      while ($data = $iterator->next()) {
          $this->addToRecipientsList($data);
       }
    }
