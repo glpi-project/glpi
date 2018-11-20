@@ -99,7 +99,7 @@ class DB extends \GLPITestCase {
          ['`field`', '`field`'],
          ['`field', "'`field'"],
          ["value with \\ backslash", "'value with \\\\ backslash'"],
-         ["value with single ' quote", "value with single \\' quote"],
+         ["value with single ' quote", "'value with single \\' quote'"],
          ["value with escaped single \\' quote", "'value with escaped single \\' quote'"],
          ["value with double escaped single \\\\\\' quote", "'value with double escaped single \\\\\\' quote'"],
          ["value with not really escaped single \' quote", "'value with not really escaped single \' quote'"],
