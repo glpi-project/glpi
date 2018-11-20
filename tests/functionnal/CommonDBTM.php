@@ -812,4 +812,24 @@ class CommonDBTM extends DbTestCase {
       $input=['entities_id' => $ent3];
       $this->boolean($entity->can(-1, CREATE, $input))->isFalse("Fail: can create entity in 2.1");
    }
+
+   public function testAdd() {
+      $computer = new \Computer();
+      $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+
+      $computerID = $computer->add([
+         'name'            => 'Computer01',
+         'date_creation'   => '2018-01-01 11:22:33',
+         'date_mod'        => '2018-01-01 22:33:44',
+         'entities_id'     => $ent0
+      ]);
+
+      $this->integer($computerID)->isGreaterThan(0);
+      $this->boolean(
+         $computer->getFromDB($computerID)
+      )->isTrue();
+      // Verify you can override creation and modifcation dates from add
+      $this->string($computer->fields['date_creation'])->isEqualTo('2018-01-01 11:22:33');
+      $this->string($computer->fields['date_mod'])->isEqualTo('2018-01-01 22:33:44');
+   }
 }

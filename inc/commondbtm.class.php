@@ -1127,12 +1127,12 @@ class CommonDBTM extends CommonGLPI {
          }
 
          // Auto set date_creation if exsist
-         if (isset($table_fields['date_creation'])) {
+         if (isset($table_fields['date_creation']) && !isset($this->input['date_creation'])) {
             $this->fields['date_creation'] = $_SESSION["glpi_currenttime"];
          }
 
          // Auto set date_mod if exsist
-         if (isset($table_fields['date_mod'])) {
+         if (isset($table_fields['date_mod']) && !isset($this->input['date_mod'])) {
             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
          }
 
