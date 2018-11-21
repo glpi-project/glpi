@@ -315,7 +315,7 @@ function update93to94() {
             'users_id'  => "0",
          ], [
             'users_id'  => "0",
-            'itemtype'  => $itemtype,
+            'itemtype'  => $type,
             'num'       => $newval,
          ]);
       }
