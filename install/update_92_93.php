@@ -744,10 +744,16 @@ function update92to93() {
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {
-         $query = "REPLACE INTO `glpi_displaypreferences`
-                           (`itemtype` ,`num` ,`rank` ,`users_id`)
-                     VALUES ('$type', '$newval', '".$rank++."', '0')";
-         $DB->query($query);
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'itemtype'  => $type,
+            'num'       => $newval,
+            'rank'      => $rank++,
+            'users_id'  => "0",
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+         ]);
       }
    }
 
