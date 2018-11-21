@@ -768,9 +768,13 @@ function update92to93() {
       );
    }
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
-   $migration->addPostQuery("UPDATE `glpi_users`
-                          SET `glpi_users`.`authtype` = 1
-                          WHERE `glpi_users`.`authtype` = 0");
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         "glpi_users", 
+         ["glpi_users.authtype" => 1], 
+         ["glpi_users.authtype" => 0]
+      )
+   );
 
    //Permit same license several times on same computer
    $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
