@@ -770,8 +770,8 @@ function update92to93() {
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
    $migration->addPostQuery(
       $DB->buildUpdate(
-         "glpi_users", 
-         ["glpi_users.authtype" => 1], 
+         "glpi_users",
+         ["glpi_users.authtype" => 1],
          ["glpi_users.authtype" => 0]
       )
    );
