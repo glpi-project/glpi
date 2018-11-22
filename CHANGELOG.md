@@ -26,6 +26,7 @@ The present file will list all changes made to the project; according to the
    - `addHaving()`,
    - `giveItem()`
 - `NotificationTarget::getMode()` visibility is now `public`.
+- Added `add_recipient_to_target` hook, triggered when a recipient is added to a notification.
 
 #### Deprecated
 

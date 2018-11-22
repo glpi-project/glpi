@@ -511,6 +511,15 @@ class NotificationTarget extends CommonDBChild {
          $param[$target_field] = $data[$target_field];
          $this->target[$data[$target_field]] = $param;
       }
+
+      if (isset($data['users_id']) && $data['users_id']) {
+         $this->recipient_data = [
+            'itemtype' => User::class,
+            'items_id' => $data['users_id'],
+         ];
+         Plugin::doHook('add_recipient_to_target', $this);
+         unset($this->recipient_data);
+      }
    }
 
 
@@ -712,6 +721,16 @@ class NotificationTarget extends CommonDBChild {
       $iterator = $DB->request($criteria);
       while ($data = $iterator->next()) {
          $this->addToRecipientsList($data);
+      }
+
+      if ($manager != 1) {
+         // Do not consider it as a group notification if it only targets supervisor
+         $this->recipient_data = [
+            'itemtype' => Group::class,
+            'items_id' => $group_id,
+         ];
+         Plugin::doHook('add_recipient_to_target', $this);
+         unset($this->recipient_data);
       }
    }
 
@@ -975,6 +994,13 @@ class NotificationTarget extends CommonDBChild {
       while ($data = $iterator->next()) {
          $this->addToRecipientsList($data);
       }
+
+      $this->recipient_data = [
+         'itemtype' => Profile::class,
+         'items_id' => $profiles_id,
+      ];
+      Plugin::doHook('add_recipient_to_target', $this);
+      unset($this->recipient_data);
    }
 
 
