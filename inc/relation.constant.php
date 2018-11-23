@@ -815,14 +815,14 @@ $RELATION = [
       '_glpi_olalevelactions'   => 'olalevels_id',
       '_glpi_olalevelcriterias' => 'olalevels_id',
       '_glpi_olalevels_tickets' => 'olalevels_id',
-      'glpi_tickets'            => 'ttr_olalevels_id',
+      'glpi_tickets'            => 'olalevels_id_ttr',
    ],
 
    'glpi_olas' => [
       'glpi_olalevels' => 'olas_id',
       'glpi_tickets'   => [
-         'olas_ttr_id',
-         'olas_tto_id',
+         'olas_id_ttr',
+         'olas_id_tto',
       ],
    ],
 
@@ -1011,14 +1011,14 @@ $RELATION = [
       '_glpi_slalevelactions'   => 'slalevels_id',
       '_glpi_slalevelcriterias' => 'slalevels_id',
       '_glpi_slalevels_tickets' => 'slalevels_id',
-      'glpi_tickets'            => 'ttr_slalevels_id',
+      'glpi_tickets'            => 'slalevels_id_ttr',
    ],
 
    'glpi_slas' => [
       'glpi_slalevels' => 'slas_id',
       'glpi_tickets'   => [
-         'slas_ttr_id',
-         'slas_tto_id',
+         'slas_id_ttr',
+         'slas_id_tto',
       ],
    ],
 

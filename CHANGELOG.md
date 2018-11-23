@@ -14,6 +14,12 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 - `license_id` field in `glpi_items_operatingsystems` table has been renamed to `licenseid`
+- `olas_tto_id` field in `glpi_tickets` table has been renamed to `olas_id_tto`
+- `olas_ttr_id` field in `glpi_tickets` table has been renamed to `olas_id_ttr`
+- `ttr_olalevels_id` field in `glpi_tickets` table has been renamed to `olalevels_id_ttr`
+- `slas_tto_id` field in `glpi_tickets` table has been renamed to `slas_id_tto`
+- `slas_ttr_id` field in `glpi_tickets` table has been renamed to `slas_id_ttr`
+- `ttr_slalevels_id` field in `glpi_tickets` table has been renamed to `slalevels_id_ttr`
 
 ### API changes
 

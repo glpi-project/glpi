@@ -310,6 +310,23 @@ function update93to94() {
       }
    }
 
+   /** Renaming olas / slas foreign keys that does not match naming conventions */
+   $olas_slas_mapping = [
+      'olas_tto_id'      => 'olas_id_tto',
+      'olas_ttr_id'      => 'olas_id_ttr',
+      'ttr_olalevels_id' => 'olalevels_id_ttr',
+      'slas_tto_id'      => 'slas_id_tto',
+      'slas_ttr_id'      => 'slas_id_ttr',
+      'ttr_slalevels_id' => 'slalevels_id_ttr',
+   ];
+   foreach ($olas_slas_mapping as $old_fieldname => $new_fieldname) {
+      if ($DB->fieldExists('glpi_tickets', $old_fieldname)) {
+         $migration->changeField('glpi_tickets', $old_fieldname, $new_fieldname, 'integer');
+      }
+      $migration->dropKey('glpi_tickets', $old_fieldname);
+      $migration->addKey('glpi_tickets', $new_fieldname);
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
