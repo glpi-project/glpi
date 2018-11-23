@@ -803,8 +803,9 @@ $RELATION = [
    ],
 
    'glpi_notificationtemplates' => [
-      '_glpi_notificationtemplatetranslations' => 'notificationtemplates_id',
-      '_glpi_queuednotifications'              => 'notificationtemplates_id',
+      '_glpi_notifications_notificationtemplates' => 'notificationtemplates_id',
+      '_glpi_notificationtemplatetranslations'    => 'notificationtemplates_id',
+      '_glpi_queuednotifications'                 => 'notificationtemplates_id',
    ],
 
    'glpi_olalevels' => [

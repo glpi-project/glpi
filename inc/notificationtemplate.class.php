@@ -554,6 +554,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
+            Notification_NotificationTemplate::class,
             NotificationTemplateTranslation::class,
          ]
       );

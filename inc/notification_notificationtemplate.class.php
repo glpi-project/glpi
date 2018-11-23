@@ -40,12 +40,16 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since 9.2
 **/
-class Notification_NotificationTemplate extends CommonDBChild {
-   // From CommonDBChild
-   static public $itemtype             = 'Notification';
-   static public $items_id             = 'notifications_id';
-   //WHY? Can edit but not create without that one
-   static public $mustBeAttached       = false;
+class Notification_NotificationTemplate extends CommonDBRelation {
+
+   // From CommonDBRelation
+   static public $itemtype_1       = 'Notification';
+   static public $items_id_1       = 'notifications_id';
+   static public $itemtype_2       = 'NotificationTemplate';
+   static public $items_id_2       = 'notificationtemplates_id';
+   static public $mustBeAttached_2 = false; // Mandatory to display creation form
+
+   public $no_form_page    = false;
    protected $displaylist  = false;
 
    const MODE_MAIL      = 'mailing';
