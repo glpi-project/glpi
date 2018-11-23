@@ -1874,13 +1874,13 @@ class Ticket extends DbTestCase {
 
       $this->string($input['time_to_resolve'])->isEqualTo('NULL');
       $this->string($input['time_to_own'])->isEqualTo('NULL');
-      $this->integer((int) $input['slas_tto_id'])->isEqualTo(0);
-      $this->integer((int) $input['slas_ttr_id'])->isEqualTo(0);
+      $this->integer((int) $input['slas_id_tto'])->isEqualTo(0);
+      $this->integer((int) $input['slas_id_ttr'])->isEqualTo(0);
 
       $this->string($input['internal_time_to_resolve'])->isEqualTo('NULL');
       $this->string($input['internal_time_to_own'])->isEqualTo('NULL');
-      $this->integer((int) $input['olas_tto_id'])->isEqualTo(0);
-      $this->integer((int) $input['olas_ttr_id'])->isEqualTo(0);
+      $this->integer((int) $input['olas_id_tto'])->isEqualTo(0);
+      $this->integer((int) $input['olas_id_ttr'])->isEqualTo(0);
 
       $this->integer((int) $input['_add_validation'])->isEqualTo(0);
 

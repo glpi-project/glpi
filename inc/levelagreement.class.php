@@ -79,12 +79,12 @@ abstract class LevelAgreement extends CommonDBChild {
       switch ($subtype) {
          case SLM::TTO:
             $dateField = static::$prefixticket.'time_to_own';
-            $laField   = static::$prefix.'s_tto_id';
+            $laField   = static::$prefix.'s_id_tto';
             break;
 
          case SLM::TTR:
             $dateField = static::$prefixticket.'time_to_resolve';
-            $laField   = static::$prefix.'s_ttr_id';
+            $laField   = static::$prefix.'s_id_ttr';
             break;
       }
       return [$dateField, $laField];
@@ -1004,8 +1004,8 @@ abstract class LevelAgreement extends CommonDBChild {
 
       $pre = static::$prefix;
 
-      if (!$levels_id && isset($ticket->fields['ttr_'.$pre.'levels_id'])) {
-         $levels_id = $ticket->fields["ttr_".$pre."levels_id"];
+      if (!$levels_id && isset($ticket->fields[$pre.'levels_id_ttr'])) {
+         $levels_id = $ticket->fields[$pre."levels_id_ttr"];
       }
 
       if ($levels_id) {
@@ -1033,7 +1033,7 @@ abstract class LevelAgreement extends CommonDBChild {
    static function deleteLevelsToDo(Ticket $ticket) {
       global $DB;
 
-      $ticketfield = "ttr_".static::$prefix."levels_id";
+      $ticketfield = static::$prefix."levels_id_ttr";
 
       if ($ticket->fields[$ticketfield] > 0) {
          $levelticket = new static::$levelticketclass();

@@ -196,26 +196,26 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
       $data['##ticket.sla_tto##'] = '';
-      if ($item->getField('slas_tto_id')) {
+      if ($item->getField('slas_id_tto')) {
          $data['##ticket.sla_tto##'] = Dropdown::getDropdownName('glpi_slas',
-                                                                 $item->getField('slas_tto_id'));
+                                                                 $item->getField('slas_id_tto'));
       }
       $data['##ticket.sla_ttr##'] = '';
-      if ($item->getField('slas_ttr_id')) {
+      if ($item->getField('slas_id_ttr')) {
          $data['##ticket.sla_ttr##'] = Dropdown::getDropdownName('glpi_slas',
-                                                                 $item->getField('slas_ttr_id'));
+                                                                 $item->getField('slas_id_ttr'));
       }
       $data['##ticket.sla##'] = $data['##ticket.sla_ttr##'];
 
       $data['##ticket.ola_tto##'] = '';
-      if ($item->getField('olas_tto_id')) {
+      if ($item->getField('olas_id_tto')) {
          $data['##ticket.ola_tto##'] = Dropdown::getDropdownName('glpi_olas',
-                                                                 $item->getField('olas_tto_id'));
+                                                                 $item->getField('olas_id_tto'));
       }
       $data['##ticket.ola_ttr##'] = '';
-      if ($item->getField('olas_ttr_id')) {
+      if ($item->getField('olas_id_ttr')) {
          $data['##ticket.ola_ttr##'] = Dropdown::getDropdownName('glpi_olas',
-                                                                 $item->getField('olas_ttr_id'));
+                                                                 $item->getField('olas_id_ttr'));
       }
 
       $data['##ticket.location##'] = '';

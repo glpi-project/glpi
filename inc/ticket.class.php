@@ -393,14 +393,14 @@ class Ticket extends CommonITILObject {
       if ($sla->getFromDB($slas_id)) {
          $sla->setTicketCalendar($calendars_id);
          if ($sla->fields['type'] == SLM::TTR) {
-            $data["ttr_slalevels_id"] = SlaLevel::getFirstSlaLevel($slas_id);
+            $data["slalevels_id_ttr"] = SlaLevel::getFirstSlaLevel($slas_id);
          }
          // Compute time_to_resolve
          $data[$dateField]             = $sla->computeDate($date);
          $data['sla_waiting_duration'] = 0;
 
       } else {
-         $data["ttr_slalevels_id"]     = 0;
+         $data["slalevels_id_ttr"]     = 0;
          $data[$slaField]              = 0;
          $data['sla_waiting_duration'] = 0;
       }
@@ -431,14 +431,14 @@ class Ticket extends CommonITILObject {
       if ($ola->getFromDB($olas_id)) {
          $ola->setTicketCalendar($calendars_id);
          if ($ola->fields['type'] == SLM::TTR) {
-            $data["ttr_olalevels_id"] = OlaLevel::getFirstOlaLevel($olas_id);
+            $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);
          }
          // Compute time_to_resolve
          $data[$dateField]             = $ola->computeDate($date);
          $data['ola_waiting_duration'] = 0;
 
       } else {
-         $data["ttr_olalevels_id"]     = 0;
+         $data["olalevels_id_ttr"]     = 0;
          $data[$olaField]              = 0;
          $data['ola_waiting_duration'] = 0;
       }
@@ -476,14 +476,14 @@ class Ticket extends CommonITILObject {
       $input = [];
       switch ($subtype) {
          case SLM::TTR :
-            $input[$prefix.'s_ttr_id'] = 0;
+            $input[$prefix.'s_id_ttr'] = 0;
             if ($delete_date) {
                $input[$prefix_ticket.'time_to_resolve'] = '';
             }
             break;
 
          case SLM::TTO :
-            $input[$prefix.'s_tto_id'] = 0;
+            $input[$prefix.'s_id_tto'] = 0;
             if ($delete_date) {
                $input[$prefix_ticket.'time_to_own'] = '';
             }
@@ -696,8 +696,8 @@ class Ticket extends CommonITILObject {
                   $nb = countElementsInTable(
                      'glpi_tickets', [
                         'OR'  => [
-                           'slas_tto_id'  => $item->getID(),
-                           'slas_ttr_id'  => $item->getID()
+                           'slas_id_tto'  => $item->getID(),
+                           'slas_id_ttr'  => $item->getID()
                         ]
                      ]
                   );
@@ -706,8 +706,8 @@ class Ticket extends CommonITILObject {
                   $nb = countElementsInTable(
                      'glpi_tickets', [
                         'OR'  => [
-                           'olas_tto_id'  => $item->getID(),
-                           'olas_ttr_id'  => $item->getID()
+                           'olas_id_tto'  => $item->getID(),
+                           'olas_id_ttr'  => $item->getID()
                         ]
                      ]
                   );
@@ -2846,7 +2846,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '37',
          'table'              => 'glpi_slas',
          'field'              => 'name',
-         'linkfield'          => 'slas_tto_id',
+         'linkfield'          => 'slas_id_tto',
          'name'               => __('SLA')."&nbsp;".__('Time to own'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -2860,7 +2860,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '30',
          'table'              => 'glpi_slas',
          'field'              => 'name',
-         'linkfield'          => 'slas_ttr_id',
+         'linkfield'          => 'slas_id_ttr',
          'name'               => __('SLA')."&nbsp;".__('Time to resolve'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -2897,7 +2897,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '190',
          'table'              => 'glpi_olas',
          'field'              => 'name',
-         'linkfield'          => 'olas_tto_id',
+         'linkfield'          => 'olas_id_tto',
          'name'               => __('OLA')."&nbsp;".__('Internal time to own'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -2911,7 +2911,7 @@ class Ticket extends CommonITILObject {
          'id'                 => '191',
          'table'              => 'glpi_olas',
          'field'              => 'name',
-         'linkfield'          => 'olas_ttr_id',
+         'linkfield'          => 'olas_id_ttr',
          'name'               => __('OLA')."&nbsp;".__('Internal time to resolve'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -4078,12 +4078,12 @@ class Ticket extends CommonITILObject {
                'global_validation'         => CommonITILValidation::NONE,
                'time_to_resolve'           => 'NULL',
                'time_to_own'               => 'NULL',
-               'slas_tto_id'               => 0,
-               'slas_ttr_id'               => 0,
+               'slas_id_tto'               => 0,
+               'slas_id_ttr'               => 0,
                'internal_time_to_resolve'  => 'NULL',
                'internal_time_to_own'      => 'NULL',
-               'olas_tto_id'               => 0,
-               'olas_ttr_id'               => 0,
+               'olas_id_tto'               => 0,
+               'olas_id_ttr'               => 0,
                '_add_validation'           => 0,
                'users_id_validate'         => [],
                'type'                      => $type,
@@ -5798,8 +5798,8 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'SLA' :
-            $restrict  = "`slas_tto_id` = '".$item->getID()."'
-                           OR `slas_ttr_id` = '".$item->getID()."'";
+            $restrict  = "`slas_id_tto` = '".$item->getID()."'
+                           OR `slas_id_ttr` = '".$item->getID()."'";
             $order     = '`glpi_tickets`.`time_to_resolve` DESC';
 
             $options['criteria'][0]['field']      = 30;
@@ -5809,8 +5809,8 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'OLA' :
-            $restrict  = "`olas_tto_id` = '".$item->getID()."'
-                           OR `olas_ttr_id` = '".$item->getID()."'";
+            $restrict  = "`olas_id_tto` = '".$item->getID()."'
+                           OR `olas_id_ttr` = '".$item->getID()."'";
             $order     = '`glpi_tickets`.`internal_time_to_resolve` DESC';
 
             $options['criteria'][0]['field']      = 30;
@@ -6532,9 +6532,9 @@ class Ticket extends CommonITILObject {
    **/
    function getCalendar() {
 
-      if (isset($this->fields['slas_ttr_id']) && $this->fields['slas_ttr_id'] > 0) {
+      if (isset($this->fields['slas_id_ttr']) && $this->fields['slas_id_ttr'] > 0) {
          $slm = new SLM();
-         if ($slm->getFromDB($this->fields['slas_ttr_id'])) {
+         if ($slm->getFromDB($this->fields['slas_id_ttr'])) {
             // not -1: calendar of the entity
             if ($slm->getField('calendars_id') >= 0) {
                return $slm->getField('calendars_id');
@@ -6594,19 +6594,19 @@ class Ticket extends CommonITILObject {
       $ola_tto_link =
       $ola_ttr_link = "";
 
-      if ($sla->getFromDB($this->fields['slas_tto_id'])) {
+      if ($sla->getFromDB($this->fields['slas_id_tto'])) {
          $sla_tto_link = "<a href='".$sla->getLinkURL()."'>
                           <i class='far fa-clock slt' title='".$sla->getName()."'></i></a>";
       }
-      if ($sla->getFromDB($this->fields['slas_ttr_id'])) {
+      if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
          $sla_ttr_link = "<a href='".$sla->getLinkURL()."'>
                           <i class='far fa-clock slt' title='".$sla->getName()."'></i></a>";
       }
-      if ($ola->getFromDB($this->fields['olas_tto_id'])) {
+      if ($ola->getFromDB($this->fields['olas_id_tto'])) {
          $ola_tto_link = "<a href='".$ola->getLinkURL()."'>
                           <i class='far fa-clock slt' title='".$ola->getName()."'></i></a>";
       }
-      if ($ola->getFromDB($this->fields['olas_ttr_id'])) {
+      if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
          $ola_ttr_link = "<a href='".$ola->getLinkURL()."'>
                           <i class='far fa-clock slt' title='".$ola->getName()."'></i></a>";
       }

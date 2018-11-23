@@ -1120,9 +1120,9 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          // SLA case : compute sla_ttr duration
-         if (isset($this->fields['slas_ttr_id']) && ($this->fields['slas_ttr_id'] > 0)) {
+         if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
             $sla = new SLA();
-            if ($sla->getFromDB($this->fields['slas_ttr_id'])) {
+            if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
                $sla->setTicketCalendar($calendars_id);
                $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
@@ -1159,9 +1159,9 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          // OLA case : compute ola_ttr duration
-         if (isset($this->fields['olas_ttr_id']) && ($this->fields['olas_ttr_id'] > 0)) {
+         if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
             $ola = new OLA();
-            if ($ola->getFromDB($this->fields['olas_ttr_id'])) {
+            if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
                $ola->setTicketCalendar($calendars_id);
                $delay_time_ola  = $ola->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
@@ -1174,7 +1174,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $this->fields['internal_time_to_resolve'] = $ola->computeDate($this->fields['date'],
                                                                           $this->fields["ola_waiting_duration"]);
             // Add current level to do
-            $ola->addLevelToDo($this, $this->fields["ttr_olalevels_id"]);
+            $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
 
          } else if (in_array("internal_time_to_resolve", $this->fields)) {
             // Change doesn't have internal_time_to_resolve
@@ -1217,11 +1217,11 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
          // Specific for tickets
-         if (isset($this->fields['slas_ttr_id']) && ($this->fields['slas_ttr_id'] > 0)) {
+         if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
             SLA::deleteLevelsToDo($this);
          }
 
-         if (isset($this->fields['olas_ttr_id']) && ($this->fields['olas_ttr_id'] > 0)) {
+         if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
             OLA::deleteLevelsToDo($this);
          }
       }

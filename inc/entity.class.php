@@ -2457,35 +2457,35 @@ class Entity extends CommonTreeDropdown {
       }
 
       if (strstr($url, "[SLA_TTO_ID]")) {
-         $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_tto_id'], $url);
+         $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_id_tto'], $url);
       }
 
       if (strstr($url, "[SLA_TTO_NAME]")) {
          $url = str_replace("[SLA_TTO_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slas',
-                                                                $ticket->fields['slas_tto_id'])),
+                                                                $ticket->fields['slas_id_tto'])),
                             $url);
       }
 
       if (strstr($url, "[SLA_TTR_ID]")) {
-         $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_ttr_id'], $url);
+         $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_id_ttr'], $url);
       }
 
       if (strstr($url, "[SLA_TTR_NAME]")) {
          $url = str_replace("[SLA_TTR_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slas',
-                                                                $ticket->fields['slas_ttr_id'])),
+                                                                $ticket->fields['slas_id_ttr'])),
                             $url);
       }
 
       if (strstr($url, "[SLALEVEL_ID]")) {
-         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['ttr_slalevels_id'], $url);
+         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id_ttr'], $url);
       }
 
       if (strstr($url, "[SLALEVEL_NAME]")) {
          $url = str_replace("[SLALEVEL_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slalevels',
-                                                                $ticket->fields['ttr_slalevels_id'])),
+                                                                $ticket->fields['slalevels_id_ttr'])),
                             $url);
       }
 
