@@ -75,6 +75,7 @@ class NotificationTemplate extends CommonDBTM {
       $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
+      $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -554,6 +555,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $this->deleteChildrenAndRelationsFromDb(
          [
+            Notification_NotificationTemplate::class,
             NotificationTemplateTranslation::class,
          ]
       );
