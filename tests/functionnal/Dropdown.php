@@ -122,13 +122,16 @@ class Dropdown extends DbTestCase {
    public function testGetDropdownName() {
       global $CFG_GLPI;
 
+      $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
+      $this->string($ret)->isIdenticalTo('&nbsp;');
+
       $cat = getItemByTypeName('TaskCategory', '_cat_1');
 
-      $subCat = getItemByTypeName( 'TaskCategory', '_subcat_1' );
+      $subCat = getItemByTypeName('TaskCategory', '_subcat_1');
 
       // basic test returns string only
       $expected = $cat->fields['name']." > ".$subCat->fields['name'];
-      $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID() );
+      $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID());
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
@@ -152,9 +155,9 @@ class Dropdown extends DbTestCase {
       $expected = ['name'    => 'FR - _cat_1 > FR - _subcat_1',
                         'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
-      $this->array($ret)->isIdenticalTo($expected);
       // switch back to default language
       $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+      $this->array($ret)->isIdenticalTo($expected);
 
       ////////////////////////////////
       // test for other dropdown types
@@ -1131,5 +1134,41 @@ class Dropdown extends DbTestCase {
             'title',
             'selection_text'
          ]);
+
+      //use a condition
+      $post = [
+         'itemtype'              => $location::getType(),
+         'condition'             => '`name` LIKE "%3%"',
+         'display_emptychoice'   => true,
+         'entity_restrict'       => 0,
+         'page'                  => 1,
+         'page_limit'            => 10
+      ];
+      $_SESSION['glpicondition'][$post['condition']] = $post['condition'];
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(2)
+         ->array['results']
+            ->hasSize(2);
+
+      //use a condition that does not exists in session
+      $post = [
+         'itemtype'              => $location::getType(),
+         'condition'             => '`name` LIKE "%4%"',
+         'display_emptychoice'   => true,
+         'entity_restrict'       => 0,
+         'page'                  => 1,
+         'page_limit'            => 10
+      ];
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(10)
+         ->array['results']
+            ->hasSize(2);
+
    }
 }

@@ -301,33 +301,57 @@ class Dropdown {
       $comment = "";
 
       if ($id) {
-         $SELECTNAME    = "'' AS transname";
-         $SELECTCOMMENT = "'' AS transcomment";
-         $JOIN          = '';
+         $SELECTNAME    = new \QueryExpression("'' AS ". $DB->quoteName('transname'));
+         $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+         $JOIN          = [];
+         $JOINS         = [];
          if ($translate) {
             if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
-               $SELECTNAME = "`namet`.`value` AS transname";
-               $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
-                                 ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
-                                     AND `namet`.`items_id` = `$table`.`id`
-                                     AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
-                                     AND `namet`.`field` = 'name')";
+               $SELECTNAME = new \QueryExpression("namet.value AS ". $DB->quoteName('transname'));
+               $JOINS['glpi_dropdowntranslations AS namet'] = [
+                  'ON' => [
+                     'namet'  => 'items_id',
+                     $table   => 'id', [
+                        'AND' => [
+                           'namet.itemtype'  => getItemTypeForTable($table),
+                           'namet.language'  => $_SESSION['glpilanguage'],
+                           'namet.field'     => 'name'
+                        ]
+                     ]
+                  ]
+               ];
             }
             if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
-               $SELECTCOMMENT = "`namec`.`value` AS transcomment";
-               $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
-                                    ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
-                                        AND `namec`.`items_id` = `$table`.`id`
-                                        AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
-                                              AND `namec`.`field` = 'comment')";
+               $SELECTCOMMENT = new \QueryExpression("namec.value AS " . $DB->quoteName('transcomment'));
+               $JOINS['glpi_dropdowntranslations AS namec'] = [
+                  'ON' => [
+                     'namec'  => 'items_id',
+                     $table   => 'id', [
+                        'AND' => [
+                           'namec.itemtype'  => getItemTypeForTable($table),
+                           'namec.language'  => $_SESSION['glpilanguage'],
+                           'namec.field'     => 'comment'
+                        ]
+                     ]
+                  ]
+               ];
             }
 
+            if (count($JOINS)) {
+               $JOIN = ['LEFT JOIN' => $JOINS];
+            }
          }
 
-         $query = "SELECT `$table`.*, $SELECTNAME, $SELECTCOMMENT
-                   FROM `$table`
-                   $JOIN
-                   WHERE `$table`.`id` = '$id'";
+         $criteria = [
+            'SELECT' => [
+               "$table.*",
+               $SELECTNAME,
+               $SELECTCOMMENT
+            ],
+            'FROM'   => $table,
+            'WHERE'  => ["$table.id" => $id]
+         ] + $JOIN;
+         $iterator = $DB->request($criteria);
 
          /// TODO review comment management...
          /// TODO getDropdownName need to return only name
@@ -336,110 +360,108 @@ class Dropdown {
          /// TODO CommonDBTM : review getComments to be recursive and add informations from class hierarchy
          /// getUserName have the same system : clean it too
          /// Need to study the problem
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) != 0) {
-               $data = $DB->fetch_assoc($result);
-               if ($translate && !empty($data['transname'])) {
-                  $name = $data['transname'];
+         if (count($iterator)) {
+            $data = $iterator->next();
+            if ($translate && !empty($data['transname'])) {
+               $name = $data['transname'];
+            } else {
+               $name = $data[$item->getNameField()];
+            }
+            if (isset($data["comment"])) {
+               if ($translate && !empty($data['transcomment'])) {
+                  $comment = $data['transcomment'];
                } else {
-                  $name = $data[$item->getNameField()];
+                  $comment = $data["comment"];
                }
-               if (isset($data["comment"])) {
-                  if ($translate && !empty($data['transcomment'])) {
-                     $comment = $data['transcomment'];
-                  } else {
-                     $comment = $data["comment"];
+            }
+
+            switch ($table) {
+               case "glpi_computers" :
+                  if (empty($name)) {
+                     $name = "($id)";
                   }
-               }
+                  break;
 
-               switch ($table) {
-                  case "glpi_computers" :
-                     if (empty($name)) {
-                        $name = "($id)";
+               case "glpi_contacts" :
+                  //TRANS: %1$s is the name, %2$s is the firstname
+                  $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
+                  if ($tooltip) {
+                     if (!empty($data["phone"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                                                   "</span>".$data['phone']);
                      }
-                     break;
-
-                  case "glpi_contacts" :
-                     //TRANS: %1$s is the name, %2$s is the firstname
-                     $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
-                     if ($tooltip) {
-                        if (!empty($data["phone"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
-                                                      "</span>".$data['phone']);
-                        }
-                        if (!empty($data["phone2"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Phone 2'),
-                                                      "</span>".$data['phone2']);
-                        }
-                        if (!empty($data["mobile"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Mobile phone'),
-                                                      "</span>".$data['mobile']);
-                        }
-                        if (!empty($data["fax"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
-                                                      "</span>".$data['fax']);
-                        }
-                        if (!empty($data["email"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
-                                                      "</span>".$data['email']);
-                        }
+                     if (!empty($data["phone2"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                   "<span class='b'>".__('Phone 2'),
+                                                   "</span>".$data['phone2']);
                      }
-                     break;
-
-                  case "glpi_suppliers" :
-                     if ($tooltip) {
-                        if (!empty($data["phonenumber"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
-                                                      "</span>".$data['phonenumber']);
-                        }
-                        if (!empty($data["fax"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
-                                                      "</span>".$data['fax']);
-                        }
-                        if (!empty($data["email"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
-                                                      "</span>".$data['email']);
-                        }
+                     if (!empty($data["mobile"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                   "<span class='b'>".__('Mobile phone'),
+                                                   "</span>".$data['mobile']);
                      }
-                     break;
-
-                  case "glpi_netpoints" :
-                     $name = sprintf(__('%1$s (%2$s)'), $name,
-                                     self::getDropdownName("glpi_locations",
-                                                           $data["locations_id"], false, $translate));
-                     break;
-
-                  case "glpi_budgets" :
-                     if ($tooltip) {
-                        if (!empty($data['locations_id'])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Location')."</span>",
-                                                      self::getDropdownName("glpi_locations",
-                                                                            $data["locations_id"],
-                                                                            false, $translate));
-
-                        }
-                        if (!empty($data['budgettypes_id'])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Type')."</span>",
-                                        self::getDropdownName("glpi_budgettypes",
-                                                              $data["budgettypes_id"], false, $translate));
-
-                        }
-                        if (!empty($data['begin_date'])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Start date')."</span>",
-                                                      Html::convDateTime($data["begin_date"]));
-
-                        }
-                        if (!empty($data['end_date'])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('End date')."</span>",
-                                                      Html::convDateTime($data["end_date"]));
-                        }
+                     if (!empty($data["fax"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
+                                                   "</span>".$data['fax']);
                      }
-               }
+                     if (!empty($data["email"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                                                   "</span>".$data['email']);
+                     }
+                  }
+                  break;
+
+               case "glpi_suppliers" :
+                  if ($tooltip) {
+                     if (!empty($data["phonenumber"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                                                   "</span>".$data['phonenumber']);
+                     }
+                     if (!empty($data["fax"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
+                                                   "</span>".$data['fax']);
+                     }
+                     if (!empty($data["email"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                                                   "</span>".$data['email']);
+                     }
+                  }
+                  break;
+
+               case "glpi_netpoints" :
+                  $name = sprintf(__('%1$s (%2$s)'), $name,
+                                    self::getDropdownName("glpi_locations",
+                                                         $data["locations_id"], false, $translate));
+                  break;
+
+               case "glpi_budgets" :
+                  if ($tooltip) {
+                     if (!empty($data['locations_id'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                   "<span class='b'>".__('Location')."</span>",
+                                                   self::getDropdownName("glpi_locations",
+                                                                           $data["locations_id"],
+                                                                           false, $translate));
+
+                     }
+                     if (!empty($data['budgettypes_id'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Type')."</span>",
+                                       self::getDropdownName("glpi_budgettypes",
+                                                            $data["budgettypes_id"], false, $translate));
+
+                     }
+                     if (!empty($data['begin_date'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                   "<span class='b'>".__('Start date')."</span>",
+                                                   Html::convDateTime($data["begin_date"]));
+
+                     }
+                     if (!empty($data['end_date'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                   "<span class='b'>".__('End date')."</span>",
+                                                   Html::convDateTime($data["end_date"]));
+                     }
+                  }
             }
          }
       }
@@ -449,8 +471,10 @@ class Dropdown {
       }
 
       if ($withcomment) {
-         return ['name'     => $name,
-                 'comment'  => $comment];
+         return [
+            'name'      => $name,
+            'comment'   => $comment
+         ];
       }
 
       return $name;
@@ -2838,34 +2862,34 @@ class Dropdown {
          return;
       }
 
-      $datas = [];
-
-      $where = "";
+      $where = [];
 
       if ($item->maybeDeleted()) {
-         $where .= " AND `$table`.`is_deleted` = 0 ";
+         $where["$table.is_deleted"] = 0;
       }
       if ($item->maybeTemplate()) {
-         $where .= " AND `$table`.`is_template` = 0 ";
+         $where["$table.is_template"] = 0;
       }
 
       if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
-         $where .= " AND (`$table`.`name` ".Search::makeTextSearch($post['searchText'])."
-                        OR `$table`.`otherserial` ".Search::makeTextSearch($post['searchText'])."
-                        OR `$table`.`serial` ".Search::makeTextSearch($post['searchText'])." )";
+         $search = Search::makeTextSearchValue($post['searchText']);
+         $where['OR'] = [
+            "$table.name"        => ['LIKE', $search],
+            "$table.otherserial" => ['LIKE', $search],
+            "$table.serial"      => ['LIKE', $search]
+         ];
       }
 
       $multi = $item->maybeRecursive();
 
       if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
-         $where .= getEntitiesRestrictRequest(" AND ", $table, '', $post["entity_restrict"], $multi);
+         $where = $where + getEntitiesRestrictCriteria($table, '', $post["entity_restrict"], $multi);
          if (is_array($post["entity_restrict"]) && (count($post["entity_restrict"]) > 1)) {
             $multi = true;
          }
 
       } else {
-         $where .= getEntitiesRestrictRequest(" AND ", $table, '', $_SESSION['glpiactiveentities'],
-                                             $multi);
+         $where = $where + getEntitiesRestrictCriteria($table, '', $_SESSION['glpiactiveentities'], $multi);
          if (count($_SESSION['glpiactiveentities']) > 1) {
             $multi = true;
          }
@@ -2880,71 +2904,93 @@ class Dropdown {
       $limit = intval($post['page_limit']);
       $LIMIT = "LIMIT $start,$limit";
 
-      $where_used = '';
-      if (!empty($used)) {
-         $where_used = " AND `$table`.`id` NOT IN ('".implode("','", $used)."')";
-      }
-
       if (!isset($post['onlyglobal'])) {
          $post['onlyglobal'] = false;
       }
 
       if ($post["onlyglobal"]
          && ($post["itemtype"] != 'Computer')) {
-         $CONNECT_SEARCH = " WHERE `$table`.`is_global` = 1 ";
+         $where["$table.is_global"] = 1;
       } else {
+         $where_used = [];
+         if (!empty($used)) {
+            $where_used[] = ['NOT' => ["$table.id" => $used]];
+         }
+
          if ($post["itemtype"] == 'Computer') {
-            $CONNECT_SEARCH = " WHERE 1
-                                    $where_used";
+            $where = $where +$where_used;
          } else {
-            $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL
-                                       $where_used)
-                                       OR `$table`.`is_global` = 1) ";
+            $where[] = [
+               'OR' => [
+                  'AND' => [
+                     'glpi_computers_items.id'  => null
+                  ] + $where_used,
+                  "$table.is_global"            => 1
+
+               ]
+            ];
          }
       }
 
-      $LEFTJOINCONNECT = "";
+      $criteria = [
+         'SELECT DISTINCT' => "$table.id",
+         'FIELDS'          => [
+            "$table.name AS name",
+            "$table.serial AS serial",
+            "$table.otherserial AS otherserial",
+            "$table.entities_id AS entities_id"
+         ],
+         'FROM'            => $table,
+         'WHERE'           => $where,
+         'ORDERBY'         => ['entities_id', 'name ASC'],
+         'LIMIT'           => $limit,
+         'START'           => $start
+      ];
 
-      if (($post["itemtype"] != 'Computer')
-         && !$post["onlyglobal"]) {
-         $LEFTJOINCONNECT = " LEFT JOIN `glpi_computers_items`
-                                 ON (`$table`.`id` = `glpi_computers_items`.`items_id`
-                                    AND `glpi_computers_items`.`itemtype` = '".$post['itemtype']."')";
+      if (($post["itemtype"] != 'Computer') && !$post["onlyglobal"]) {
+         $criteria['LEFT JOIN'] = [
+            'glpi_computers_items'  => [
+               'ON' => [
+                  $table                  => 'id',
+                  'glpi_computers_items'  => 'items_id', [
+                     'AND' => [
+                        'glpi_computers_items.itemtype'  => $post['itemtype']
+                     ]
+                  ]
+               ]
+            ]
+         ];
       }
 
-      $query = "SELECT DISTINCT `$table`.`id`,
-                              `$table`.`name` AS name,
-                              `$table`.`serial` AS serial,
-                              `$table`.`otherserial` AS otherserial,
-                              `$table`.`entities_id` AS entities_id
-               FROM `$table`
-               $LEFTJOINCONNECT
-               $CONNECT_SEARCH
-                     $where
-               ORDER BY entities_id,
-                        name ASC
-               $LIMIT";
+      $iterator = $DB->request($criteria);
 
-      $result = $DB->query($query);
-
+      $results = [];
       // Display first if no search
       if (empty($post['searchText'])) {
-         array_push($datas, ['id'   => 0,
-                                 'text' => Dropdown::EMPTY_VALUE]);
+         array_push(
+            $results, [
+               'id'   => 0,
+               'text' => Dropdown::EMPTY_VALUE
+            ]
+         );
       }
-      if ($DB->numrows($result)) {
+      if (count($iterator)) {
          $prev       = -1;
-         $datastoadd = [];
+         $datatoadd = [];
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             if ($multi && ($data["entities_id"] != $prev)) {
-               if (count($datastoadd)) {
-                  array_push($datas, ['text'    => Dropdown::getDropdownName("glpi_entities", $prev),
-                                          'children' => $datastoadd]);
+               if (count($datatoadd)) {
+                  array_push(
+                     $results, [
+                        'text'      => Dropdown::getDropdownName("glpi_entities", $prev),
+                        'children'  => $datatoadd
+                     ]
+                  );
                }
                $prev = $data["entities_id"];
                // Reset last level displayed :
-               $datastoadd = [];
+               $datatoadd = [];
             }
             $output = $data['name'];
             $ID     = $data['id'];
@@ -2959,24 +3005,27 @@ class Dropdown {
             if (!empty($data['otherserial'])) {
                $output = sprintf(__('%1$s - %2$s'), $output, $data["otherserial"]);
             }
-            array_push($datastoadd, ['id'    => $ID,
+            array_push($datatoadd, ['id'    => $ID,
                                           'text'  => $output]);
          }
 
          if ($multi) {
-            if (count($datastoadd)) {
-               array_push($datas, ['text'     => Dropdown::getDropdownName("glpi_entities", $prev),
-                                       'children' => $datastoadd]);
+            if (count($datatoadd)) {
+               array_push(
+                  $results, [
+                     'text'      => Dropdown::getDropdownName("glpi_entities", $prev),
+                     'children'  => $datatoadd
+                  ]
+               );
             }
          } else {
-            if (count($datastoadd)) {
-               $datas = array_merge($datas, $datastoadd);
+            if (count($datatoadd)) {
+               $results = array_merge($results, $datatoadd);
             }
          }
       }
 
-      $ret['results'] = $datas;
-
+      $ret['results'] = $results;
       return ($json === true) ? json_encode($ret) : $ret;
    }
 
@@ -3002,6 +3051,43 @@ class Dropdown {
          return;
       }
 
+      $where = [];
+      if (isset($post['used']) && !empty($post['used'])) {
+         $where['NOT'] = ['id' => $post['used']];
+      }
+
+      if ($item->maybeDeleted()) {
+         $where['is_deleted'] = 0;
+      }
+
+      if ($item->maybeTemplate()) {
+         $where['is_template'] = 0;
+      }
+
+      if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
+         $search = Search::makeTextSearchValue($post['searchText']);
+         $orwhere =[
+            'name'   => $search,
+            'id'     => $post['searchText']
+         ];
+
+         if ($DB->fieldExists($post['table'], "contact")) {
+            $orwhere['contact'] = $search;
+         }
+         if ($DB->fieldExists($post['table'], "serial")) {
+            $orwhere['serial'] = $search;
+         }
+         if ($DB->fieldExists($post['table'], "otherserial")) {
+            $orwhere['otherserial'] = $search;
+         }
+         $where['AND'] = ['OR' => $orwhere];
+      }
+
+      //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
+      if (in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"])) {
+         $where['is_helpdesk_visible'] = 1;
+      }
+
       if ($item->isEntityAssign()) {
          if (isset($post["entity_restrict"]) && ($post["entity_restrict"] >= 0)) {
             $entity = $post["entity_restrict"];
@@ -3011,45 +3097,7 @@ class Dropdown {
 
          // allow opening ticket on recursive object (printer, software, ...)
          $recursive = $item->maybeRecursive();
-         $where     = getEntitiesRestrictRequest("WHERE", $post['table'], '', $entity, $recursive);
-
-      } else {
-         $where = "WHERE 1";
-      }
-
-      if (isset($post['used']) && !empty($post['used'])) {
-         $where .= " AND `id` NOT IN ('".implode("','", $post['used'])."') ";
-      }
-
-      if ($item->maybeDeleted()) {
-         $where .= " AND `is_deleted` = 0 ";
-      }
-
-      if ($item->maybeTemplate()) {
-         $where .= " AND `is_template` = 0 ";
-      }
-
-      if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
-         $search = Search::makeTextSearch($post['searchText']);
-
-         $where .= " AND (`name` ".$search."
-                        OR `id` = '".$post['searchText']."'";
-
-         if ($DB->fieldExists($post['table'], "contact")) {
-            $where .= " OR `contact` ".$search;
-         }
-         if ($DB->fieldExists($post['table'], "serial")) {
-            $where .= " OR `serial` ".$search;
-         }
-         if ($DB->fieldExists($post['table'], "otherserial")) {
-            $where .= " OR `otherserial` ".$search;
-         }
-         $where .= ")";
-      }
-
-      //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
-      if (in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"])) {
-         $where .= " AND `is_helpdesk_visible` = 1 ";
+         $where     = $where + getEntitiesRestrictCriteria($post['table'], '', $entity, $recursive);
       }
 
       if (!isset($post['page'])) {
@@ -3059,25 +3107,25 @@ class Dropdown {
 
       $start = intval(($post['page']-1)*$post['page_limit']);
       $limit = intval($post['page_limit']);
-      $LIMIT = "LIMIT $start,$limit";
 
-      $query = "SELECT *
-               FROM `".$post['table']."`
-               $where
-               ORDER BY `name`
-               $LIMIT";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => $post['table'],
+         'WHERE'  => $where,
+         'ORDER'  => 'name',
+         'LIMIT'  => $limit,
+         'START'  => $start
+      ]);
 
-      $datas = [];
+      $results = [];
 
       // Display first if no search
       if ($post['page'] == 1 && empty($post['searchText'])) {
-         array_push($datas, ['id'   => 0,
+         array_push($results, ['id'   => 0,
                                  'text' => Dropdown::EMPTY_VALUE]);
       }
       $count = 0;
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
             $output = $data['name'];
 
             if (isset($data['contact']) && !empty($data['contact'])) {
@@ -3095,14 +3143,18 @@ class Dropdown {
                $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
             }
 
-            array_push($datas, ['id'   => $data['id'],
-                                    'text' => $output]);
+            array_push(
+               $results, [
+                  'id'   => $data['id'],
+                  'text' => $output
+               ]
+            );
             $count++;
          }
       }
 
       $ret['count']   = $count;
-      $ret['results'] = $datas;
+      $ret['results'] = $results;
 
       return ($json === true) ? json_encode($ret) : $ret;
    }
@@ -3119,7 +3171,7 @@ class Dropdown {
       global $DB;
 
       // Make a select box with preselected values
-      $datas             = [];
+      $results           = [];
       $location_restrict = false;
 
       if (!isset($post['page'])) {
@@ -3192,8 +3244,12 @@ class Dropdown {
       // Display first if no search
       if (empty($post['searchText'])) {
          if ($post['page'] == 1) {
-            array_push($datas, ['id'   => 0,
-                              'text' => Dropdown::EMPTY_VALUE]);
+            array_push(
+               $results, [
+                  'id'   => 0,
+                  'text' => Dropdown::EMPTY_VALUE
+               ]
+            );
          }
       }
 
@@ -3213,15 +3269,19 @@ class Dropdown {
                $output = sprintf(__('%1$s (%2$s)'), $output, $loc);
             }
 
-            array_push($datas, ['id'    => $ID,
-                                    'text'  => $output,
-                                    'title' => $title]);
+            array_push(
+               $results, [
+                  'id'    => $ID,
+                  'text'  => $output,
+                  'title' => $title
+               ]
+            );
             $count++;
          }
       }
 
       $ret['count']   = $count;
-      $ret['results'] = $datas;
+      $ret['results'] = $results;
 
       return ($json === true) ? json_encode($ret) : $ret;
    }
@@ -3398,16 +3458,24 @@ class Dropdown {
          }
       }
 
-      $datas = [];
+      $results = [];
 
       // Display first if empty search
       if ($post['page'] == 1 && empty($post['searchText'])) {
          if ($post['all'] == 0) {
-            array_push($datas, ['id'   => 0,
-                              'text' => Dropdown::EMPTY_VALUE]);
+            array_push(
+               $results, [
+                  'id'   => 0,
+                  'text' => Dropdown::EMPTY_VALUE
+               ]
+            );
          } else if ($post['all'] == 1) {
-            array_push($datas, ['id'   => 0,
-                              'text' => __('All')]);
+            array_push(
+               $results, [
+                  'id'   => 0,
+                  'text' => __('All')
+               ]
+            );
          }
       }
 
@@ -3415,14 +3483,18 @@ class Dropdown {
          foreach ($users as $ID => $output) {
             $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
 
-            array_push($datas, ['id'    => $ID,
-                              'text'  => $output,
-                              'title' => $title]);
+            array_push(
+               $results, [
+                  'id'    => $ID,
+                  'text'  => $output,
+                  'title' => $title
+               ]
+            );
             $count++;
          }
       }
 
-      $ret['results'] = $datas;
+      $ret['results'] = $results;
       $ret['count']   = $count;
 
       return ($json === true) ? json_encode($ret) : $ret;
