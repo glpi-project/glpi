@@ -160,7 +160,7 @@ class SlaLevel_Ticket extends CommonDBTM {
       $iterator = $DB->request([
          'SELECT'    => [
             'glpi_slalevels_tickets.*',
-            'glpi_slas.typa AS type',
+            'glpi_slas.type AS type',
          ],
          'FROM'      => 'glpi_slalevels_tickets',
          'LEFT JOIN' => [
