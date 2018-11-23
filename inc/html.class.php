@@ -4337,8 +4337,8 @@ class Html {
                // also check in `data.text` (optgroup title)
                var filteredChildren = [];
                $.each(data.children, function (idx, child) {
-                  if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
-                     || data.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0
+                  if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
+                     || data.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
                   ) {
                      filteredChildren.push(child);
                   }
