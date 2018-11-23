@@ -536,7 +536,7 @@ class QueuedNotification extends CommonDBTM {
    static function cronQueuedNotification($task = null) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["notifications_mailing"]) {
+      if (!Notification_NotificationTemplate::hasActiveMode()) {
          return 0;
       }
       $cron_status = 0;
