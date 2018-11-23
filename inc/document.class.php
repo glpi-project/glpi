@@ -510,21 +510,24 @@ class Document extends CommonDBTM {
       $splitter = explode("/", $this->fields['filepath']);
 
       if (count($splitter)) {
-         $query = "SELECT *
-                   FROM `glpi_documenttypes`
-                   WHERE `ext` LIKE '".$splitter[0]."'
-                         AND `icon` <> ''";
+         $iterator = $DB->request([
+            'SELECT' => 'icon',
+            'FROM'   => 'glpi_documenttypes',
+            'WHERE'  => [
+               'ext'    => ['LIKE', $splitter[0]],
+               'icon'   => ['<>', '']
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               $icon = $DB->result($result, 0, 'icon');
-               if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
-                  $icon = "defaut-dist.png";
-               }
-               $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
-                               $initfileout."\" title=\"".$initfileout."\" src='".
-                               $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
+         if (count($iterator) > 0) {
+            $result = $iterator->next();
+            $icon = $result['icon'];
+            if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
+               $icon = "defaut-dist.png";
             }
+            $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
+                              $initfileout."\" title=\"".$initfileout."\" src='".
+                              $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
          }
       }
       $out .= "$open<span class='b'>$fileout</span>$close";
@@ -1400,23 +1403,27 @@ class Document extends CommonDBTM {
          }
       }
 
-      $where = " WHERE `glpi_documents`.`is_deleted` = 0 ".
-                       getEntitiesRestrictRequest("AND", "glpi_documents", '', $p['entity'], true);
+      $subwhere = [
+         'glpi_documents.is_deleted'   => 0,
+      ] + getEntitiesRestrictCriteria('glpi_documents', '', $p['entity'], true);
 
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN (0, ".implode(",", $p['used']).")";
+         $subwhere['NOT'] = $p['used'];
       }
 
-      $query = "SELECT *
-                FROM `glpi_documentcategories`
-                WHERE `id` IN (SELECT DISTINCT `documentcategories_id`
-                               FROM `glpi_documents`
-                             $where)
-                ORDER BY `name`";
-      $result = $DB->query($query);
+      $criteria = [
+         'FROM'   => 'glpi_documentcategories',
+         'WHERE'  => new QuerySubQuery([
+            'SELECT DISTINCT' => 'documentcategories_id',
+            'FROM'            => 'glpi_documents',
+            'WHERE'           => $subwhere
+         ]),
+         'ORDER'  => 'name'
+      ];
+      $iterator = $DB->request($criteria);
 
       $values = [];
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $iterator->next()) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();

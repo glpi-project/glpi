@@ -909,57 +909,83 @@ final class DbUtils {
       $name    = "";
       $comment = "";
 
-      $SELECTNAME    = "`$table`.`name`, '' AS transname";
-      $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
-      $JOIN          = '';
+      $SELECTNAME    = new \QueryExpression("'' AS ". $DB->quoteName('transname'));
+      $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+      $JOIN          = [];
+      $JOINS         = [];
       if ($translate) {
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'name')) {
-            $SELECTNAME  = "`$table`.`name`, `namet`.`value` AS transname";
-            $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
-                              ON (`namet`.`itemtype` = '".$this->getItemTypeForTable($table)."'
-                                 AND `namet`.`items_id` = `$table`.`id`
-                                 AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
-                                 AND `namet`.`field` = 'name')";
+            $SELECTNAME = new \QueryExpression("namet.value AS ". $DB->quoteName('transname'));
+            $JOINS['glpi_dropdowntranslations AS namet'] = [
+               'ON' => [
+                  'namet'  => 'items_id',
+                  $table   => 'id', [
+                     'AND' => [
+                        'namet.itemtype'  => $this->getItemTypeForTable($table),
+                        'namet.language'  => $_SESSION['glpilanguage'],
+                        'namet.field'     => 'name'
+                     ]
+                  ]
+               ]
+            ];
          }
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'comment')) {
-            $SELECTCOMMENT  = "`$table`.`comment`, `namec`.`value` AS transcomment";
-            $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
-                              ON (`namec`.`itemtype` = '".$this->getItemTypeForTable($table)."'
-                                 AND `namec`.`items_id` = `$table`.`id`
-                                 AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
-                                 AND `namec`.`field` = 'comment')";
+            $SELECTCOMMENT = new \QueryExpression("namec.value AS " . $DB->quoteName('transcomment'));
+            $JOINS['glpi_dropdowntranslations AS namec'] = [
+               'ON' => [
+                  'namec'  => 'items_id',
+                  $table   => 'id', [
+                     'AND' => [
+                        'namec.itemtype'  => $this->getItemTypeForTable($table),
+                        'namec.language'  => $_SESSION['glpilanguage'],
+                        'namec.field'     => 'comment'
+                     ]
+                  ]
+               ]
+            ];
          }
 
+         if (count($JOINS)) {
+            $JOIN = ['LEFT JOIN' => $JOINS];
+         }
       }
 
-      $query = "SELECT $SELECTNAME, $SELECTCOMMENT
-               FROM `$table`
-               $JOIN
-               WHERE `$table`.`id` = '$ID'";
+      $criteria = [
+         'SELECT' => [
+            "$table.name",
+            "$table.comment",
+            $SELECTNAME,
+            $SELECTCOMMENT
+         ],
+         'FROM'   => $table,
+         'WHERE'  => ["$table.id" => $ID]
+      ] + $JOIN;
+      $iterator = $DB->request($criteria);
+      $result = $iterator->next();
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $transname = $DB->result($result, 0, "transname");
-            if ($translate && !empty($transname)) {
-               $name = $transname;
-            } else {
-               $name = $DB->result($result, 0, "name");
-            }
+      if (count($iterator) == 1) {
+         $transname = $result['transname'];
+         if ($translate && !empty($transname)) {
+            $name = $transname;
+         } else {
+            $name = $result['name'];
+         }
 
-            $comment      = $name." :<br>";
-            $transcomment = $DB->result($result, 0, "transcomment");
+         $comment      = $name." :<br/>";
+         $transcomment = $result['transcomment'];
 
-            if ($translate && !empty($transcomment)) {
-               $comment .= nl2br($transcomment);
-            } else {
-               $comment .= nl2br($DB->result($result, 0, "comment"));
-            }
+         if ($translate && !empty($transcomment)) {
+            $comment .= nl2br($transcomment);
+         } else {
+            $comment .= nl2br($result['comment']);
          }
       }
 
       if ($withcomment) {
-         return ["name"    => $name,
-                 "comment" => $comment];
+         return [
+            'name'      => $name,
+            'comment'   => $comment
+         ];
       }
       return $name;
    }
@@ -983,84 +1009,115 @@ final class DbUtils {
       $name    = "";
       $comment = "";
 
-      $SELECTNAME    = "`$table`.`completename`, '' AS transname";
-      $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
-      $JOIN          = '';
+      $SELECTNAME    = new \QueryExpression("'' AS ". $DB->quoteName('transname'));
+      $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+      $JOIN          = [];
+      $JOINS         = [];
       if ($translate) {
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'completename')) {
-            $SELECTNAME  = "`$table`.`completename`, `namet`.`value` AS transname";
-            $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
-                              ON (`namet`.`itemtype` = '".$this->getItemTypeForTable($table)."'
-                                 AND `namet`.`items_id` = `$table`.`id`
-                                 AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
-                                 AND `namet`.`field` = 'completename')";
+            $SELECTNAME = new \QueryExpression("namet.value AS ". $DB->quoteName('transname'));
+            $JOINS['glpi_dropdowntranslations AS namet'] = [
+               'ON' => [
+                  'namet'  => 'items_id',
+                  $table   => 'id', [
+                     'AND' => [
+                        'namet.itemtype'  => $this->getItemTypeForTable($table),
+                        'namet.language'  => $_SESSION['glpilanguage'],
+                        'namet.field'     => 'completename'
+                     ]
+                  ]
+               ]
+            ];
          }
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'comment')) {
-            $SELECTCOMMENT  = "`$table`.`comment`, `namec`.`value` AS transcomment";
-            $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
-                                 ON (`namec`.`itemtype` = '".$this->getItemTypeForTable($table)."'
-                                    AND `namec`.`items_id` = `$table`.`id`
-                                    AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
-                                    AND `namec`.`field` = 'comment')";
+            $SELECTCOMMENT = new \QueryExpression("namec.value AS " . $DB->quoteName('transcomment'));
+            $JOINS['glpi_dropdowntranslations AS namec'] = [
+               'ON' => [
+                  'namec'  => 'items_id',
+                  $table   => 'id', [
+                     'AND' => [
+                        'namec.itemtype'  => $this->getItemTypeForTable($table),
+                        'namec.language'  => $_SESSION['glpilanguage'],
+                        'namec.field'     => 'comment'
+                     ]
+                  ]
+               ]
+            ];
          }
 
+         if (count($JOINS)) {
+            $JOIN = ['LEFT JOIN' => $JOINS];
+         }
       }
+
+      $criteria = [
+         'SELECT' => [
+            "$table.completename",
+            "$table.comment",
+            $SELECTNAME,
+            $SELECTCOMMENT
+         ],
+         'FROM'   => $table,
+         'WHERE'  => ["$table.id" => $ID]
+      ] + $JOIN;
 
       if ($table == Location::getTable()) {
-         $SELECTNAME .= ", `$table`.`address`, `$table`.`town`, `$table`.`country`";
+         $criteria['SELECT'] = array_merge(
+            $criteria['SELECT'], [
+               "$table.address",
+               "$table.town",
+               "$table.country"
+            ]
+         );
       }
 
-      $query = "SELECT $SELECTNAME, $SELECTCOMMENT
-               FROM `$table`
-               $JOIN
-               WHERE `$table`.`id` = '$ID'";
+      $iterator = $DB->request($criteria);
+      $result = $iterator->next();
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $transname = $DB->result($result, 0, "transname");
-            if ($translate && !empty($transname)) {
-               $name = $transname;
-            } else {
-               $name = $DB->result($result, 0, "completename");
-            }
-            if ($tooltip) {
-               $comment  = sprintf(__('%1$s: %2$s')."<br>",
-                                 "<span class='b'>".__('Complete name')."</span>",
-                                 $name);
-               if ($table == Location::getTable()) {
-                  $acomment = '';
-                  $address = $DB->result($result, 0, 'address');
-                  $town    = $DB->result($result, 0, 'town');
-                  $country = $DB->result($result, 0, 'country');
-                  if (!empty($address)) {
-                     $acomment .= $address;
-                  }
-                  if (!empty($address) &&
-                     (!empty($town) || !empty($country))
-                  ) {
-                     $acomment .= '<br/>';
-                  }
-                  if (!empty($town)) {
-                     $acomment .= $town;
-                  }
-                  if (!empty($country)) {
-                     if (!empty($town)) {
-                        $acomment .= ' - ';
-                     }
-                     $acomment .= $country;
-                  }
-                  if (trim($acomment != '')) {
-                     $comment .= "<span class='b'>&nbsp;".__('Address:')."</span> " . $acomment . "<br/>";
-                  }
+      if (count($iterator) == 1) {
+         $transname = $result['transname'];
+         if ($translate && !empty($transname)) {
+            $name = $transname;
+         } else {
+            $name = $result['completename'];
+         }
+         if ($tooltip) {
+            $comment  = sprintf(__('%1$s: %2$s')."<br>",
+                              "<span class='b'>".__('Complete name')."</span>",
+                              $name);
+            if ($table == Location::getTable()) {
+               $acomment = '';
+               $address = $result['address'];
+               $town    = $result['town'];
+               $country = $result['country'];
+               if (!empty($address)) {
+                  $acomment .= $address;
                }
-               $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
+               if (!empty($address) &&
+                  (!empty($town) || !empty($country))
+               ) {
+                  $acomment .= '<br/>';
+               }
+               if (!empty($town)) {
+                  $acomment .= $town;
+               }
+               if (!empty($country)) {
+                  if (!empty($town)) {
+                     $acomment .= ' - ';
+                  }
+                  $acomment .= $country;
+               }
+               if (trim($acomment != '')) {
+                  $comment .= "<span class='b'>&nbsp;".__('Address:')."</span> " . $acomment . "<br/>";
+               }
             }
-            $transcomment = $DB->result($result, 0, "transcomment");
-            if ($translate && !empty($transcomment)) {
-               $comment .= nl2br($transcomment);
-            } else {
-               $comment .= nl2br($DB->result($result, 0, "comment"));
-            }
+            $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
+         }
+         $transcomment = $result['transcomment'];
+         if ($translate && !empty($transcomment)) {
+            $comment .= nl2br($transcomment);
+         } else {
+            $comment .= nl2br($result['comment']);
          }
       }
 
@@ -1069,8 +1126,10 @@ final class DbUtils {
       }
 
       if ($withcomment) {
-         return ["name"    => $name,
-                 "comment" => $comment];
+         return [
+            'name'      => $name,
+            'comment'   => $comment
+         ];
       }
       return $name;
    }
