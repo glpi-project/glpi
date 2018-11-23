@@ -1524,7 +1524,7 @@ class Search {
             }
 
             if ($item !== null && $item->maybeDeleted()) {
-               $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted']);
+               $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted'], $data['itemtype']);
                $search_config_top .= $delete_ctrl;
             }
 
@@ -1813,7 +1813,7 @@ class Search {
          }
 
          if ($item !== null && $item->maybeDeleted()) {
-            echo self::isDeletedSwitch($data['search']['is_deleted']);
+            echo self::isDeletedSwitch($data['search']['is_deleted'], $data['itemtype']);
          }
          echo "</div>";
          echo self::showError($data['display_type']);
@@ -1828,11 +1828,7 @@ class Search {
     *
     * @return string
    */
-   static function isDeletedSwitch($is_deleted) {
-      if (!isset($_POST["itemtype"])) {
-         return;
-      }
-
+   static function isDeletedSwitch($is_deleted, $itemtype = "") {
       $rand = mt_rand();
       return "<div class='switch grey_border pager_controls'>".
              "<label for='is_deletedswitch$rand' title='".__s('Show the trashbin')."' >".
@@ -1841,7 +1837,7 @@ class Search {
                 "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
                   ($is_deleted?"checked='checked'":"").
                   " onClick = \"toogle('is_deleted','','','');
-                              document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
+                              document.forms['searchform$itemtype'].submit();\" />".
                 "<span class='fa fa-trash-alt pointer'></span>".
                 "<span class='lever'></span>" .
                 "</label>".
