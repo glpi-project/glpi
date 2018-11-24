@@ -1851,7 +1851,7 @@ abstract class API extends CommonGLPI {
                }
 
                //check rights
-               if (!$item->can($object['id'], UPDATE)) {
+               if (!$item->can($object['id'], UPDATE, $object)) {
                   $failed++;
                   $current_res = [$object['id'] => false,
                                  'message'    => __("You don't have permission to perform this action.")];
