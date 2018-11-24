@@ -1840,19 +1840,20 @@ abstract class API extends CommonGLPI {
          $failed       = 0;
          $index        = 0;
          foreach ($input as $object) {
+            $object      = self::inputObjectToArray($object);
             $current_res = [];
-            if (isset($object->id)) {
-               if (!$item->getFromDB($object->id)) {
+            if (isset($object['id'])) {
+               if (!$item->getFromDB($object['id'])) {
                   $failed++;
-                  $current_res = [$object->id => false,
+                  $current_res = [$object['id'] => false,
                                   'message'   => __("Item not found")];
                   continue;
                }
 
                //check rights
-               if (!$item->can($object->id, UPDATE)) {
+               if (!$item->can($object['id'], UPDATE)) {
                   $failed++;
-                  $current_res = [$object->id => false,
+                  $current_res = [$object['id'] => false,
                                  'message'    => __("You don't have permission to perform this action.")];
                } else {
                   // if parent key not provided in input and present in parameter
@@ -1867,7 +1868,7 @@ abstract class API extends CommonGLPI {
                   }
 
                   //update item
-                  $object = Toolbox::sanitize((array)$object);
+                  $object = Toolbox::sanitize($object);
                   $update_return = $item->update($object);
                   if ($update_return === false) {
                      $failed++;
