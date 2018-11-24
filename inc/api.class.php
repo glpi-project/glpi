@@ -1857,8 +1857,8 @@ abstract class API extends CommonGLPI {
                                  'message'    => __("You don't have permission to perform this action.")];
                } else {
                   // if parent key not provided in input and present in parameter
-                  // (detected from url for example), try to appent it do input
-                  // This is usefull to have logs in parent (and avoid some warnings in commonDBTM)
+                  // (detected from url for example), try to append it do input
+                  // This is useful to have logs in parent (and avoid some warnings in commonDBTM)
                   if (isset($params['parent_itemtype'])
                       && isset($params['parent_id'])) {
                      $fk_parent = getForeignKeyFieldForItemType($params['parent_itemtype']);
