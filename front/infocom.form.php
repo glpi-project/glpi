@@ -53,7 +53,7 @@ if (isset($_POST['add'])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $ic->check($_POST["id"], UPDATE);
+   $ic->check($_POST["id"], UPDATE, $_POST);
 
    $ic->update($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial",

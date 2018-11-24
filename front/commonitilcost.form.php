@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    Html::redirect($itemtype::getFormURLWithID($cost->fields[$fk]));
 
 } else if (isset($_POST["update"])) {
-   $cost->check($_POST["id"], UPDATE);
+   $cost->check($_POST["id"], UPDATE, $_POST);
 
    if ($cost->update($_POST)) {
       Event::log($cost->fields[$fk], strtolower($itemtype), 4, "tracking",

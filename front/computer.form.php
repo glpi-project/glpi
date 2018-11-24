@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
 
    //update a computer
 } else if (isset($_POST["update"])) {
-   $computer->check($_POST['id'], UPDATE);
+   $computer->check($_POST['id'], UPDATE, $_POST);
    $computer->update($_POST);
    Event::log($_POST["id"], "computers", 4, "inventory",
               //TRANS: %s is the user login

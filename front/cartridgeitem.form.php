@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $cartype->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $cartype->check($_POST["id"], UPDATE);
+   $cartype->check($_POST["id"], UPDATE, $_POST);
 
    if ($cartype->update($_POST)) {
       Event::log($_POST["id"], "cartridgeitems", 4, "inventory",

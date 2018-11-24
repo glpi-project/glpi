@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
    Html::redirect($itemtype::getFormURLWithID($task->getField($fk)));
 
 } else if (isset($_POST["update"])) {
-   $task->check($_POST["id"], UPDATE);
+   $task->check($_POST["id"], UPDATE, $_POST);
    $task->update($_POST);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",

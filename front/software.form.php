@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $soft->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $soft->check($_POST["id"], UPDATE);
+   $soft->check($_POST["id"], UPDATE, $_POST);
 
    $soft->update($_POST);
    Event::log($_POST["id"], "software", 4, "inventory",

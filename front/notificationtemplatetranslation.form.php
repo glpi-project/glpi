@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    $language->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $language->check($_POST["id"], UPDATE);
+   $language->check($_POST["id"], UPDATE, $_POST);
    $language->update($_POST);
 
    Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",

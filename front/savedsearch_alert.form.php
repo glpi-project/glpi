@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('SavedSearch').'?id='.$alert->fields['savedsearches_id']);
 
 } else if (isset($_POST["update"])) {
-   $alert->check($_POST["id"], UPDATE);
+   $alert->check($_POST["id"], UPDATE, $_POST);
 
    if ($alert->update($_POST)) {
       Event::log($alert->fields['savedsearches_id'], "savedsearches", 4, "inventory",

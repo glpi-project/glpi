@@ -37,7 +37,7 @@ Session::checkCentralAccess();
 $ios = new \Item_OperatingSystem();
 
 if (isset($_POST['update'])) {
-   $ios->check($_POST['id'], UPDATE);
+   $ios->check($_POST['id'], UPDATE, $_POST);
    //update existing OS
    $ios->update($_POST);
 

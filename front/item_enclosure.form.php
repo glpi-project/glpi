@@ -38,7 +38,7 @@ $ien = new \Item_Enclosure();
 $enclosure = new Enclosure();
 
 if (isset($_POST['update'])) {
-   $ien->check($_POST['id'], UPDATE);
+   $ien->check($_POST['id'], UPDATE, $_POST);
    //update existing relation
    if ($ien->update($_POST)) {
       $url = $enclosure->getFormURLWithID($_POST['enclosures_id']);

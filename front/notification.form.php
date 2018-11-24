@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    $notification->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $notification->check($_POST["id"], UPDATE);
+   $notification->check($_POST["id"], UPDATE, $_POST);
 
    $notification->update($_POST);
    Event::log($_POST["id"], "notifications", 4, "notification",

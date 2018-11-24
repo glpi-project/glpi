@@ -38,7 +38,7 @@ $pdup = new \Pdu_Plug();
 $pdu = new PDU();
 
 if (isset($_POST['update'])) {
-   $pdup->check($_POST['id'], UPDATE);
+   $pdup->check($_POST['id'], UPDATE, $_POST);
    //update existing relation
    if ($pdup->update($_POST)) {
       $url = $pdu->getFormURLWithID($_POST['pdus_id']);

@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $license->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $license->check($_POST['id'], UPDATE);
+   $license->check($_POST['id'], UPDATE, $_POST);
 
    $license->update($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",

@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $monitor->check($_POST["id"], UPDATE);
+   $monitor->check($_POST["id"], UPDATE, $_POST);
 
    $monitor->update($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $monitor->check($_POST["id"], UPDATE);
+   $monitor->check($_POST["id"], UPDATE, $_POST);
 
    Computer_Item::unglobalizeItem($monitor);
    Event::log($_POST["id"], "monitors", 4, "inventory",

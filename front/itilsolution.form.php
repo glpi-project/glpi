@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    }
 } else if (isset($_POST['update'])) {
    $solution->getFromDB($_POST['id']);
-   $solution->check($_POST['id'], UPDATE);
+   $solution->check($_POST['id'], UPDATE, $_POST);
    $solution->update($_POST);
    $handled = true;
    $redirect = $track->getLinkURL();

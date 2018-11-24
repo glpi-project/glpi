@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
    $contract->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $contract->check($_POST['id'], UPDATE);
+   $contract->check($_POST['id'], UPDATE, $_POST);
 
    if ($contract->update($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial",

@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/transfer.php");
 
 } else if (isset($_POST["update"])) {
-   $transfer->check($_POST["id"], UPDATE);
+   $transfer->check($_POST["id"], UPDATE, $_POST);
 
    $transfer->update($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup",

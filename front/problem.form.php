@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
    $problem->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $problem->check($_POST["id"], UPDATE);
+   $problem->check($_POST["id"], UPDATE, $_POST);
 
    $problem->update($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",

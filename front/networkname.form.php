@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
    $nn->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $nn->check($_POST['id'], UPDATE);
+   $nn->check($_POST['id'], UPDATE, $_POST);
    $nn->update($_POST);
    Event::log($_POST["id"], "networkname", 4, "inventory",
               //TRANS: %s is the user login

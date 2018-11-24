@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    $ola->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $ola->check($_POST["id"], UPDATE);
+   $ola->check($_POST["id"], UPDATE, $_POST);
    $ola->update($_POST);
 
    Event::log($_POST["id"], "olas", 4, "setup",

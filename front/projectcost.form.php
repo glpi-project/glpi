@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Project').'?id='.$cost->fields['projects_id']);
 
 } else if (isset($_POST["update"])) {
-   $cost->check($_POST["id"], UPDATE);
+   $cost->check($_POST["id"], UPDATE, $_POST);
 
    if ($cost->update($_POST)) {
       Event::log($cost->fields['projects_id'], "project", 4, "maintain",

@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
                   ($contract->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $cost->check($_POST["id"], UPDATE);
+   $cost->check($_POST["id"], UPDATE, $_POST);
 
    if ($cost->update($_POST)) {
       Event::log($cost->fields['contracts_id'], "contracts", 4, "financial",

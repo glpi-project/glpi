@@ -46,7 +46,7 @@ Session ::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
-   $link->check($_POST["id"], UPDATE);
+   $link->check($_POST["id"], UPDATE, $_POST);
 
    $link->update($_POST);
    echo "<script type='text/javascript' >\n";

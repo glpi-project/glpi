@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["update"])) {
-   $alias->check($_POST["id"], UPDATE);
+   $alias->check($_POST["id"], UPDATE, $_POST);
    $alias->update($_POST);
 
    Event::log($_POST["id"], $alias->getType(), 4, "setup",
@@ -94,4 +94,3 @@ if (isset($_GET['_in_modal'])) {
    $alias->display($_GET);
    Html::footer();
 }
-

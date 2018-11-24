@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    $slm->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $slm->check($_POST["id"], UPDATE);
+   $slm->check($_POST["id"], UPDATE, $_POST);
    $slm->update($_POST);
 
    Event::log($_POST["id"], "slms", 4, "setup",

@@ -38,7 +38,7 @@ $pra  = new \PDU_Rack();
 $rack = new Rack();
 
 if (isset($_POST['update'])) {
-   $pra->check($_POST['id'], UPDATE);
+   $pra->check($_POST['id'], UPDATE, $_POST);
    //update existing relation
    if ($pra->update($_POST)) {
       $url = $rack->getFormURLWithID($_POST['racks_id']);

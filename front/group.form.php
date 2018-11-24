@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["update"])) {
-   $group->check($_POST["id"], UPDATE);
+   $group->check($_POST["id"], UPDATE, $_POST);
    $group->update($_POST);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login
@@ -97,4 +97,3 @@ if (isset($_POST["add"])) {
    $group->display(['id' =>$_GET["id"]]);
    Html::footer();
 }
-

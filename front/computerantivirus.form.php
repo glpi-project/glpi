@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
                   ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $antivirus->check($_POST["id"], UPDATE);
+   $antivirus->check($_POST["id"], UPDATE, $_POST);
 
    if ($antivirus->update($_POST)) {
       Event::log($antivirus->fields['computers_id'], "computers", 4, "inventory",

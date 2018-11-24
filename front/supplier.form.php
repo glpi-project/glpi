@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
    $ent->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $ent->check($_POST["id"], UPDATE);
+   $ent->check($_POST["id"], UPDATE, $_POST);
    $ent->update($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login

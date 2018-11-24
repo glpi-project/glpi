@@ -42,7 +42,7 @@ include ('../inc/includes.php');
 $item = new OlaLevel();
 
 if (isset($_POST["update"])) {
-   $item->check($_POST["id"], UPDATE);
+   $item->check($_POST["id"], UPDATE, $_POST);
 
    $item->update($_POST);
 

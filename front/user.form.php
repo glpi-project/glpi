@@ -103,7 +103,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $user->check($_POST['id'], UPDATE);
+   $user->check($_POST['id'], UPDATE, $_POST);
    $user->update($_POST);
    Event::log($_POST['id'], "users", 5, "setup",
               //TRANS: %s is the user login

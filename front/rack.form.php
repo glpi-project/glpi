@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $rack->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $rack->check($_POST["id"], UPDATE);
+   $rack->check($_POST["id"], UPDATE, $_POST);
 
    $rack->update($_POST);
    Event::log($_POST["id"], "racks", 4, "inventory",

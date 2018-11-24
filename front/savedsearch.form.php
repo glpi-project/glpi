@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    $savedsearch->redirectToList();
 } else if (isset($_POST["update"])) {
    //update a saved search
-   $savedsearch->check($_POST['id'], UPDATE);
+   $savedsearch->check($_POST['id'], UPDATE, $_POST);
    $savedsearch->update($_POST);
    Html::back();
 } else if (isset($_GET['create_notif'])) {

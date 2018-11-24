@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
    $doc->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $doc->check($_POST["id"], UPDATE);
+   $doc->check($_POST["id"], UPDATE, $_POST);
 
    if ($doc->update($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",

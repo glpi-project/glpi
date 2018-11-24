@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
                   ($item->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $disk->check($_POST["id"], UPDATE);
+   $disk->check($_POST["id"], UPDATE, $_POST);
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['items_id'], $disk->fields['itemtype'], 4, "inventory",
@@ -102,4 +102,3 @@ if (isset($_POST["add"])) {
    ]);
    Html::footer();
 }
-

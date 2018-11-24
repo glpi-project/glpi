@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $budget->check($_POST["id"], UPDATE);
+   $budget->check($_POST["id"], UPDATE, $_POST);
 
    if ($budget->update($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",

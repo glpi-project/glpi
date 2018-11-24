@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
    $project->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $project->check($_POST["id"], UPDATE);
+   $project->check($_POST["id"], UPDATE, $_POST);
 
    $project->update($_POST);
    Event::log($_POST["id"], "project", 4, "maintain",

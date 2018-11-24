@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $line->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $line->check($_POST["id"], UPDATE);
+   $line->check($_POST["id"], UPDATE, $_POST);
 
    $line->update($_POST);
    Event::log($_POST["id"], "lines", 4, "financial",

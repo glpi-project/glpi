@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $enclosure->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $enclosure->check($_POST["id"], UPDATE);
+   $enclosure->check($_POST["id"], UPDATE, $_POST);
 
    $enclosure->update($_POST);
    Event::log($_POST["id"], "enclosure", 4, "inventory",

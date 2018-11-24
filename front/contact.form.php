@@ -92,7 +92,7 @@ if (isset($_GET['getvcard'])) {
    $contact->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $contact->check($_POST["id"], UPDATE);
+   $contact->check($_POST["id"], UPDATE, $_POST);
 
    if ($contact->update($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial",

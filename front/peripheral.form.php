@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $peripheral->check($_POST["id"], UPDATE);
+   $peripheral->check($_POST["id"], UPDATE, $_POST);
 
    $peripheral->update($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $peripheral->check($_POST["id"], UPDATE);
+   $peripheral->check($_POST["id"], UPDATE, $_POST);
 
    Computer_Item::unglobalizeItem($peripheral);
    Event::log($_POST["id"], "peripherals", 4, "inventory",

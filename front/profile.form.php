@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])
            || isset($_POST["interface"])) {
-   $prof->check($_POST['id'], UPDATE);
+   $prof->check($_POST['id'], UPDATE, $_POST);
 
    $prof->update($_POST);
    Html::back();

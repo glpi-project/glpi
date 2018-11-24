@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])) {
    // actualiser  un item dans la base de connaissances
-   $kb->check($_POST["id"], UPDATE);
+   $kb->check($_POST["id"], UPDATE, $_POST);
 
    $kb->update($_POST);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools",
@@ -118,7 +118,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET["id"]) and isset($_GET['to_rev'])) {
-   $kb->check($_GET["id"], UPDATE);
+   $kb->check($_GET["id"], UPDATE, $_POST);
    if ($kb->revertTo($_GET['to_rev'])) {
       Session::addMessageAfterRedirect(
          sprintf(

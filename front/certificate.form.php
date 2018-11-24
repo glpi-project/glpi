@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
    $certificate->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $certificate->check($_POST["id"], UPDATE);
+   $certificate->check($_POST["id"], UPDATE, $_POST);
 
    $certificate->update($_POST);
    Event::log($_POST["id"], "certificates", 4, "inventory",

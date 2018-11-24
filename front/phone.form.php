@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $phone->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $phone->check($_POST["id"], UPDATE);
+   $phone->check($_POST["id"], UPDATE, $_POST);
 
    $phone->update($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $phone->check($_POST["id"], UPDATE);
+   $phone->check($_POST["id"], UPDATE, $_POST);
 
    Computer_Item::unglobalizeItem($phone);
    Event::log($_POST["id"], "phones", 4, "inventory",

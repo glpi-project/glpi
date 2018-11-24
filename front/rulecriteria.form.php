@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $criteria->check($_POST['id'], UPDATE);
+   $criteria->check($_POST['id'], UPDATE, $_POST);
    $criteria->update($_POST);
 
    Html::back();

@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $version->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $version->check($_POST['id'], UPDATE);
+   $version->check($_POST['id'], UPDATE, $_POST);
 
    $version->update($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",

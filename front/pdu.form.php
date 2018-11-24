@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $pdu->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $pdu->check($_POST["id"], UPDATE);
+   $pdu->check($_POST["id"], UPDATE, $_POST);
 
    $pdu->update($_POST);
    Event::log($_POST["id"], "pdus", 4, "inventory",

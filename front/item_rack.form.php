@@ -38,7 +38,7 @@ $ira = new \Item_Rack();
 $rack = new Rack();
 
 if (isset($_POST['update'])) {
-   $ira->check($_POST['id'], UPDATE);
+   $ira->check($_POST['id'], UPDATE, $_POST);
    //update existing relation
    if ($ira->update($_POST)) {
       $url = $rack->getFormURLWithID($_POST['racks_id']);

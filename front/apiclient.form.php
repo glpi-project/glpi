@@ -43,7 +43,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $client->check($_POST["id"], UPDATE);
+   $client->check($_POST["id"], UPDATE, $_POST);
    $client->update($_POST);
    Html::back();
 

@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
    $change->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $change->check($_POST["id"], UPDATE);
+   $change->check($_POST["id"], UPDATE, $_POST);
 
    $change->update($_POST);
    Event::log($_POST["id"], "change", 4, "maintain",

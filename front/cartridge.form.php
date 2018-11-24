@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["install"])) {
    if ($_POST["cartridgeitems_id"]) {
-      $cartype->check($_POST["cartridgeitems_id"], UPDATE);
+      $cartype->check($_POST["cartridgeitems_id"], UPDATE, $_POST);
       for ($i=0; $i<$_POST["nbcart"]; $i++) {
          if ($cart->install($_POST["printers_id"], $_POST["cartridgeitems_id"])) {
             Event::log($_POST["printers_id"], "printers", 5, "inventory",
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Printer::getFormURLWithID($_POST["printers_id"]));
 
 } else if (isset($_POST["update"])) {
-   $cart->check($_POST["id"], UPDATE);
+   $cart->check($_POST["id"], UPDATE, $_POST);
 
    if ($cart->update($_POST)) {
       Event::log($_POST["printers_id"], "printers", 4, "inventory",

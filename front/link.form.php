@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    $link->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $link->check($_POST["id"], UPDATE);
+   $link->check($_POST["id"], UPDATE, $_POST);
    $link->update($_POST);
    Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login

@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $netdevice->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $netdevice->check($_POST["id"], UPDATE);
+   $netdevice->check($_POST["id"], UPDATE, $_POST);
 
    $netdevice->update($_POST);
    Event::log($_POST["id"], "networkequipment", 4, "inventory",

@@ -46,7 +46,7 @@ if (isset($_POST["add"])) {
 
    Html::back();
 } else if (isset($_POST["update"])) {
-   $action->check($_POST['id'], UPDATE);
+   $action->check($_POST['id'], UPDATE, $_POST);
    $action->update($_POST);
 
    Html::back();
@@ -56,4 +56,3 @@ if (isset($_POST["add"])) {
 
    Html::back();
 }
-

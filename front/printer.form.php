@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $print->check($_POST["id"], UPDATE);
+   $print->check($_POST["id"], UPDATE, $_POST);
 
    $print->update($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $print->check($_POST["id"], UPDATE);
+   $print->check($_POST["id"], UPDATE, $_POST);
 
    Computer_Item::unglobalizeItem($print);
    Event::log($_POST["id"], "printers", 4, "inventory",

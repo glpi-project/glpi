@@ -57,7 +57,7 @@ if (isset($_POST['add'])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $note->check($_POST["id"], UPDATE);
+   $note->check($_POST["id"], UPDATE, $_POST);
 
    $note->update($_POST);
    Event::log($_POST["id"], "notepad", 4, "tools",

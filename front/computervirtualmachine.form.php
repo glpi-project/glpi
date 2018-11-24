@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
                   ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $disk->check($_POST["id"], UPDATE);
+   $disk->check($_POST["id"], UPDATE, $_POST);
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
@@ -87,4 +87,3 @@ if (isset($_POST["add"])) {
                         'computers_id' => $_GET["computers_id"]]);
    Html::footer();
 }
-

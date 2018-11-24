@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["update"])) {
-   $fup->check($_POST['id'], UPDATE);
+   $fup->check($_POST['id'], UPDATE, $_POST);
    $fup->update($_POST);
 
    Event::log($fup->getField('items_id'), strtolower($_POST['itemtype']), 4, "tracking",

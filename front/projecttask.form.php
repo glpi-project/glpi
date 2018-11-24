@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Project::getFormURLWithID($task->fields['projects_id']));
 
 } else if (isset($_POST["update"])) {
-   $task->check($_POST["id"], UPDATE);
+   $task->check($_POST["id"], UPDATE, $_POST);
    $task->update($_POST);
 
    Event::log($task->fields['projects_id'], 'project', 4, "maintain",
@@ -92,4 +92,3 @@ if (isset($_POST["add"])) {
    $task->display($_GET);
    Html::footer();
 }
-

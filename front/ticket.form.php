@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST['update'])) {
-   $track->check($_POST['id'], UPDATE);
+   $track->check($_POST['id'], UPDATE, $_POST);
 
    $track->update($_POST);
 
@@ -135,7 +135,7 @@ if (isset($_POST["add"])) {
    $track->redirectToList();
 
 } else if (isset($_POST['sla_delete'])) {
-   $track->check($_POST["id"], UPDATE);
+   $track->check($_POST["id"], UPDATE, $_POST);
 
    $track->deleteLevelAgreement("SLA", $_POST["id"], $_POST['type'], $_POST['delete_date']);
    Event::log($_POST["id"], "ticket", 4, "tracking",
@@ -145,7 +145,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 
 } else if (isset($_POST['ola_delete'])) {
-   $track->check($_POST["id"], UPDATE);
+   $track->check($_POST["id"], UPDATE, $_POST);
 
    $track->deleteLevelAgreement("OLA", $_POST["id"], $_POST['type'], $_POST['delete_date']);
    Event::log($_POST["id"], "ticket", 4, "tracking",

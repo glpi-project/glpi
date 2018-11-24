@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $rssfeed->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $rssfeed->check($_POST["id"], UPDATE);   // Right to update the rssfeed
+   $rssfeed->check($_POST["id"], UPDATE, $_POST);   // Right to update the rssfeed
 
    $rssfeed->update($_POST);
    Event::log($_POST["id"], "rssfeed", 4, "tools",

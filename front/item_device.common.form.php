@@ -69,7 +69,7 @@ if (isset($_POST["purge"])) {
    Html::redirect($device->getLinkURL());
 
 } else if (isset($_POST["update"])) {
-   $item_device->check($_POST["id"], UPDATE);
+   $item_device->check($_POST["id"], UPDATE, $_POST);
    $item_device->update($_POST);
 
    Event::log($_POST["id"], get_class($item_device), 4, "setup",

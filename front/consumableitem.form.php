@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $constype->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $constype->check($_POST["id"], UPDATE);
+   $constype->check($_POST["id"], UPDATE, $_POST);
 
    if ($constype->update($_POST)) {
       Event::log($_POST["id"], "consumableitems", 4, "inventory",

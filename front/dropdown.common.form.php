@@ -102,7 +102,7 @@ if (isset($_POST["add"])) {
    $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $dropdown->check($_POST["id"], UPDATE);
+   $dropdown->check($_POST["id"], UPDATE, $_POST);
    $dropdown->update($_POST);
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",

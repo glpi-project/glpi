@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    $notiftpl->delete($_POST, 1);
    $notiftpl->redirectToList();
 } else if (isset($_POST["update"])) {
-   $notiftpl->check($_POST["id"], UPDATE);
+   $notiftpl->check($_POST["id"], UPDATE, $_POST);
 
    $notiftpl->update($_POST);
    Html::back();

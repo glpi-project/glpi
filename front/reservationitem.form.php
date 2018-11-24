@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $ri->check($_POST["id"], UPDATE);
+   $ri->check($_POST["id"], UPDATE, $_POST);
    $ri->update($_POST);
    Event::log($_POST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login

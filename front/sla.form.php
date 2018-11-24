@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    $sla->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $sla->check($_POST["id"], UPDATE);
+   $sla->check($_POST["id"], UPDATE, $_POST);
    $sla->update($_POST);
 
    Event::log($_POST["id"], "slas", 4, "setup",
@@ -78,4 +78,3 @@ if (isset($_POST["add"])) {
    $sla->display(['id' => $_GET["id"]]);
    Html::footer();
 }
-

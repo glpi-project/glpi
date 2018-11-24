@@ -45,7 +45,7 @@ if (isset($_POST['add'])) {
    $translation->update($_POST);
    Html::back();
 } else if (isset($_GET["id"]) and isset($_GET['to_rev'])) {
-   $translation->check($_GET["id"], UPDATE);
+   $translation->check($_GET["id"], UPDATE, $_POST);
    if ($translation->revertTo($_GET['to_rev'])) {
       Session::addMessageAfterRedirect(
          sprintf(

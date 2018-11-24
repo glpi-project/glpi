@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    $mailgate->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $mailgate->check($_POST['id'], UPDATE);
+   $mailgate->check($_POST['id'], UPDATE, $_POST);
    $mailgate->update($_POST);
 
    Event::log($_POST["id"], "mailcollector", 4, "setup",
@@ -83,4 +83,3 @@ if (isset($_POST["add"])) {
    $mailgate->display(['id' =>$_GET["id"]]);
    Html::footer();
 }
-

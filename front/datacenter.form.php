@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $datacenter->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $datacenter->check($_POST["id"], UPDATE);
+   $datacenter->check($_POST["id"], UPDATE, $_POST);
 
    $datacenter->update($_POST);
    Event::log($_POST["id"], "datacenters", 4, "inventory",

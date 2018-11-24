@@ -38,7 +38,7 @@ include ('../inc/includes.php');
 $item = new SlaLevel();
 
 if (isset($_POST["update"])) {
-   $item->check($_POST["id"], UPDATE);
+   $item->check($_POST["id"], UPDATE, $_POST);
 
    $item->update($_POST);
 
@@ -97,4 +97,3 @@ if (isset($_POST["update"])) {
    $item->display(['id' => $_GET["id"]]);
    Html::footer();
 }
-

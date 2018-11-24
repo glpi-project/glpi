@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["update"])) {
-   $remind->check($_POST["id"], UPDATE);   // Right to update the reminder
+   $remind->check($_POST["id"], UPDATE, $_POST);   // Right to update the reminder
 
    $remind->update($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools",
@@ -124,4 +124,3 @@ if (isset($_POST["add"])) {
       Html::footer();
    }
 }
-

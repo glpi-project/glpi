@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket').'?id='.$cost->fields['tickets_id']);
 
 } else if (isset($_POST["update"])) {
-   $cost->check($_POST["id"], UPDATE);
+   $cost->check($_POST["id"], UPDATE, $_POST);
 
    if ($cost->update($_POST)) {
       Event::log($cost->fields['tickets_id'], "tickets", 4, "tracking",

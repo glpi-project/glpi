@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $room->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $room->check($_POST["id"], UPDATE);
+   $room->check($_POST["id"], UPDATE, $_POST);
 
    $room->update($_POST);
    Event::log($_POST["id"], "serverroms", 4, "inventory",

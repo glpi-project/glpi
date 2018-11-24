@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 
 } else if (isset($_POST["update"])) {
-   $np->check($_POST['id'], UPDATE);
+   $np->check($_POST['id'], UPDATE, $_POST);
 
    $np->update($_POST);
    Event::log($_POST["id"], "networkport", 4, "inventory",

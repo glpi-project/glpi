@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $validation->check($_POST['id'], UPDATE);
+   $validation->check($_POST['id'], UPDATE, $_POST);
    $validation->update($_POST);
    Event::log($validation->getField($fk), strtolower($itemtype), 4, "tracking",
         //TRANS: %s is the user login
