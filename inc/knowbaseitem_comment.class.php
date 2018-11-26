@@ -301,7 +301,7 @@ class KnowbaseItem_Comment extends CommonDBTM {
 
          if ($cancomment) {
             if (Session::getLoginUserID() == $comment['users_id']) {
-               $html .= "<span class='edit_item'
+               $html .= "<span class='fa fa-pencil-square-o edit_item'
                   data-kbitem_id='{$comment['knowbaseitems_id']}'
                   data-lang='{$comment['language']}'
                   data-id='{$comment['id']}'></span>";
