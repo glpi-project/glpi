@@ -39,11 +39,10 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownTicketCategories.php")) {
 }
 
 $opt = ['entity' => $_POST["entity_restrict"]];
+$condition  =[];
 
 if (Session::getCurrentInterface() == "helpdesk") {
-   $opt['condition'] = "`is_helpdeskvisible`='1' AND ";
-} else {
-   $opt['condition'] = '';
+   $condition['is_helpdeskvisible'] = 1;
 }
 
 $currentcateg = new ItilCategory();
@@ -52,14 +51,14 @@ $currentcateg->getFromDB($_POST['value']);
 if ($_POST["type"]) {
    switch ($_POST['type']) {
       case Ticket::INCIDENT_TYPE :
-         $opt['condition'].= " `is_incident`='1'";
+         $condition['is_incident'] = 1;
          if ($currentcateg->getField('is_incident') == 1) {
             $opt['value'] = $_POST['value'];
          }
          break;
 
       case Ticket::DEMAND_TYPE:
-         $opt['condition'].= " `is_request`='1'";
+         $condition['is_request'] = 1;
          if ($currentcateg->getField('is_request') == 1) {
             $opt['value'] = $_POST['value'];
          }
@@ -67,4 +66,5 @@ if ($_POST["type"]) {
    }
 }
 
+$opt['condition'] = $condition;
 ItilCategory::dropdown($opt);

@@ -1468,10 +1468,12 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category')."</td><td>";
-      TaskCategory::dropdown(['value'     => $this->fields["taskcategories_id"],
-                              'rand'      => $rand_type,
-                              'entity'    => $item->fields["entities_id"],
-                              'condition' => "`is_active` = 1"]);
+      TaskCategory::dropdown([
+         'value'     => $this->fields["taskcategories_id"],
+         'rand'      => $rand_type,
+         'entity'    => $item->fields["entities_id"],
+         'condition' => ['is_active' => 1]
+      ]);
 
       echo "</td></tr>\n";
 
@@ -1543,13 +1545,15 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<br />";
       echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
       echo _n('Group', 'Groups', 1)."&nbsp;";
-      $params     = ['name'      => "groups_id_tech",
-                          'value'     => (($ID > -1)
-                                          ?$this->fields["groups_id_tech"]
-                                          :Dropdown::EMPTY_VALUE),
-                          'condition' => "is_task",
-                          'rand'      => $rand_group,
-                          'entity'    => $item->fields["entities_id"]];
+      $params     = [
+         'name'      => "groups_id_tech",
+         'value'     => (($ID > -1)
+                        ?$this->fields["groups_id_tech"]
+                        :Dropdown::EMPTY_VALUE),
+         'condition' => ['is_task' => 1],
+         'rand'      => $rand_group,
+         'entity'    => $item->fields["entities_id"]
+      ];
 
       $params['toupdate'] = ['value_fieldname' => 'users_id',
                                   'to_update' => "group_available$rand_group",

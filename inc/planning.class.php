@@ -1419,15 +1419,17 @@ JAVASCRIPT;
    static function showAddGroupUsersForm() {
       echo __("Group")." : <br>";
 
-      $condition = "is_task = 1";
+      $condition = ['is_task' => 1];
       // filter groups
       if (!Session::haveRight('planning', self::READALL)) {
-         $condition.= " AND id IN(".implode(',', $_SESSION['glpigroups']).")";
+         $condition['id'] = $_SESSION['glpigroups'];
       }
 
-      Group::dropdown(['entity'      => $_SESSION['glpiactive_entity'],
-                            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-                            'condition'   => $condition]);
+      Group::dropdown([
+         'entity'      => $_SESSION['glpiactive_entity'],
+         'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+         'condition'   => $condition
+      ]);
       echo "<br /><br />";
       echo Html::hidden('action', ['value' => 'send_add_group_users_form']);
       echo Html::submit(_sx('button', 'Add'));
@@ -1515,16 +1517,18 @@ JAVASCRIPT;
     */
    static function showAddGroupForm($params = []) {
 
-      $condition = "is_task = 1";
+      $condition = ['is_task' => 1];
       // filter groups
       if (!Session::haveRight('planning', self::READALL)) {
-         $condition.= " AND id IN(".implode(',', $_SESSION['glpigroups']).")";
+         $condition['id'] = $_SESSION['glpigroups'];
       }
 
       echo __("Group")." : <br>";
-      Group::dropdown(['entity'      => $_SESSION['glpiactive_entity'],
-                            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-                            'condition'   => $condition]);
+      Group::dropdown([
+         'entity'      => $_SESSION['glpiactive_entity'],
+         'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+         'condition'   => $condition
+      ]);
       echo "<br /><br />";
       echo Html::hidden('action', ['value' => 'send_add_group_form']);
       echo Html::submit(_sx('button', 'Add'));

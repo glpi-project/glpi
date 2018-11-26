@@ -76,8 +76,6 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          }
       }
 
-      $faq_limit = '';
-
       $parameters = '';
       // Manage search solution
       if (isset($options['item_itemtype'])
@@ -92,125 +90,135 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
             return false;
          }
 
+         $where = [];
          if (Session::getLoginUserID()) {
-            $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "", "",
-                                                    true);
+            $where = getEntitiesRestrictCriteria('glpi_knowbaseitemcategories', '', '', true);
          } else {
             // Anonymous access
             if (Session::isMultiEntitiesMode()) {
-               $faq_limit = " AND (`glpi_knowbaseitemcategories`.`entities_id` = 0
-                                   AND `glpi_knowbaseitemcategories`.`is_recursive` = 1)";
+               $where['glpi_knowbaseitemcategories.entities_id'] = 0;
+               $where['glpi_knowbaseitemcategories.is_recursive'] = 1;
             }
          }
 
          // Get All FAQ categories
-         if (!isset($_SESSION['glpi_faqcategories'])) {
+         $categories = [];
 
-            $_SESSION['glpi_faqcategories'] = '(0)';
-            $tmp   = [];
-            $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
-                      FROM `glpi_knowbaseitems`
-                      ".KnowbaseItem::addVisibilityJoins()."
-                      LEFT JOIN `glpi_knowbaseitemcategories`
-                           ON (`glpi_knowbaseitemcategories`.`id`
-                                 = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
-                      WHERE `glpi_knowbaseitems`.`is_faq` = 1
-                            AND ".KnowbaseItem::addVisibilityRestrict()."
-                            $faq_limit";
+         $criteria = [
+            'SELECT DISTINCT' => 'glpi_knowbaseitems.knowbaseitemcategories_id',
+            'FROM'            => 'glpi_knowbaseitems',
+            'LEFT JOIN'       => [
+               'glpi_knowbaseitemcategories', [
+                  'ON' => [
+                     'glpi_knowbaseitemcategories' => 'id',
+                     'glpi_knowbaseitems'          => 'knowbaseitemcategories_id'
+                  ]
+               ]
+            ],
+            'WHERE'           => $where + ['glpi_knowbaseitems.is_faq' => 1]
+         ];
+         $criteria = array_merge(
+            $criteria,
+            KnowbaseItem::getVisibilityCriteria()
+         );
 
-            if ($result = $DB->query($query)) {
-               if ($DB->numrows($result)) {
-                  while ($data = $DB->fetch_assoc($result)) {
-                     if (!in_array($data['knowbaseitemcategories_id'], $tmp)) {
-                        $tmp[] = $data['knowbaseitemcategories_id'];
-                        $tmp   = array_merge($tmp,
-                                             getAncestorsOf('glpi_knowbaseitemcategories',
-                                                            $data['knowbaseitemcategories_id']));
-                     }
-                  }
-               }
-               if (count($tmp)) {
-                  $_SESSION['glpi_faqcategories'] = "('".implode("','", $tmp)."')";
-               }
+         $iterator = $DB->request($criteria);
+         while ($data = $iterator->next()) {
+            if (!in_array($data['knowbaseitemcategories_id'], $categories)) {
+               $categories[] = $data['knowbaseitemcategories_id'];
+               $categories = array_merge(
+                  $categories,
+                  getAncestorsOf(
+                     'glpi_knowbaseitemcategories',
+                     $data['knowbaseitemcategories_id']
+                  )
+               );
             }
          }
-         $query = "SELECT DISTINCT `glpi_knowbaseitemcategories`.*
-                   FROM `glpi_knowbaseitemcategories`
-                   WHERE `glpi_knowbaseitemcategories`.`id` IN ".$_SESSION['glpi_faqcategories']."
-                         AND (`glpi_knowbaseitemcategories`.`knowbaseitemcategories_id`
-                                 = '".$params["knowbaseitemcategories_id"]."')
-                         $faq_limit
-                   ORDER BY `name` ASC";
 
+         $criteria = [
+            'SELECT DISTINCT' => 'glpi_knowbaseitemcategories.*',
+            'FROM'            => 'glpi_knowbaseitemcategories',
+            'WHERE'           => [
+               'id'                          => $categories,
+               'knowbaseitemcategories_id'   => $params['knowbaseitemcategories_id']
+            ] + $where,
+            'ORDERBY'         => 'name ASC'
+         ];
       } else {
          if (!Session::haveRight("knowbase", READ)) {
             return false;
          }
-         $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "entities_id",
-                                                 $_SESSION['glpiactiveentities'], true);
+         $where = getEntitiesRestrictCriteria(
+            'glpi_knowbaseitemcategories',
+            'entities_id',
+            $_SESSION['glpiactiveentities'],
+            true
+         );
 
-         $query = "SELECT *
-                   FROM `glpi_knowbaseitemcategories`
-                   WHERE `glpi_knowbaseitemcategories`.`knowbaseitemcategories_id`
-                              = '".$params["knowbaseitemcategories_id"]."'
-                         $faq_limit
-                   ORDER BY `name` ASC";
+         $criteria = [
+            'FROM'   => 'glpi_knowbaseitemcategories',
+            'WHERE'  => [
+               'knowbaseitemcategories_id'   => $params['knowbaseitemcategories_id']
+            ] + $where,
+            'ORDER'  => 'name ASC'
+         ];
       }
+      $iterator = $DB->request($criteria);
 
       // Show category
-      if ($result = $DB->query($query)) {
-         echo "<table class='tab_cadre_central'>";
-         echo "<tr><td colspan='3'><a href='".$params['target']."?knowbaseitemcategories_id=0$parameters'>";
-         echo "<i class='far fa-folder-open'></i> " . __('Root category')  . "</a>";
+      echo "<table class='tab_cadre_central'>";
+      echo "<tr><td colspan='3'><a href='".$params['target']."?knowbaseitemcategories_id=0$parameters'>";
+      echo "<i class='far fa-folder-open'></i> " . __('Root category')  . "</a>";
 
-         // Display Category
-         if ($params["knowbaseitemcategories_id"]!=0) {
-            $tmpID     = $params["knowbaseitemcategories_id"];
-            $todisplay = "";
+      // Display Category
+      if ($params["knowbaseitemcategories_id"]!=0) {
+         $tmpID     = $params["knowbaseitemcategories_id"];
+         $todisplay = "";
 
-            while ($tmpID != 0) {
-               $query2 = "SELECT *
-                          FROM `glpi_knowbaseitemcategories`
-                          WHERE `glpi_knowbaseitemcategories`.`id` = '$tmpID'
-                                $faq_limit";
-               $result2 = $DB->query($query2);
+         while ($tmpID != 0) {
+            $cat_iterator = $DB->request([
+               'FROM'   => 'glpi_knowbaseitemcategories',
+               'WHERE'  => [
+                  'knowbaseitemcategories_id'   => $tmpID
+               ] + $where
+            ]);
 
-               if ($DB->numrows($result2) == 1) {
-                  $data      = $DB->fetch_assoc($result2);
-                  $tmpID     = $data["knowbaseitemcategories_id"];
-                  $todisplay = "<a href='".$params['target']."?knowbaseitemcategories_id=".
-                                 $data["id"]."$parameters'>".$data["name"]."</a>".
-                                 (empty($todisplay)?"":" > "). $todisplay;
-               } else {
-                  $tmpID = 0;
-               }
-            }
-            echo " > ".$todisplay;
-         }
-
-         if ($DB->numrows($result) > 0) {
-            $i = 0;
-            while ($row=$DB->fetch_assoc($result)) {
-               // on affiche les résultats sur trois colonnes
-               if (($i%3) == 0) {
-                  echo "<tr>";
-               }
-               $ID = $row["id"];
-               echo "<td class='tdkb_result'>";
-               echo "<i class='far fa-folder'></i> ";
-               echo "<span class='b'>".
-                    "<a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."$parameters'>".
-                      $row["name"]."</a></span>";
-               echo "<div class='kb_resume'>".Html::resume_text($row['comment'], 60)."</div>";
-
-               if (($i%3) == 2) {
-                  echo "</tr>";
-               }
-               $i++;
+            if (count($cat_iterator) == 1) {
+               $data      = $cat_iterator->next();
+               $tmpID     = $data["knowbaseitemcategories_id"];
+               $todisplay = "<a href='".$params['target']."?knowbaseitemcategories_id=".
+                              $data["id"]."$parameters'>".$data["name"]."</a>".
+                              (empty($todisplay)?"":" > "). $todisplay;
+            } else {
+               $tmpID = 0;
             }
          }
-         echo "<tr><td colspan='3'>&nbsp;</td></tr></table><br>";
+         echo " > ".$todisplay;
       }
+
+      if (count($iterator) > 0) {
+         $i = 0;
+         while ($row = $iterator->next()) {
+            // on affiche les résultats sur trois colonnes
+            if (($i%3) == 0) {
+               echo "<tr>";
+            }
+            $ID = $row["id"];
+            echo "<td class='tdkb_result'>";
+            echo "<i class='far fa-folder'></i> ";
+            echo "<span class='b'>".
+                  "<a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."$parameters'>".
+                     $row["name"]."</a></span>";
+            echo "<div class='kb_resume'>".Html::resume_text($row['comment'], 60)."</div>";
+
+            if (($i%3) == 2) {
+               echo "</tr>";
+            }
+            $i++;
+         }
+      }
+      echo "<tr><td colspan='3'>&nbsp;</td></tr></table><br>";
    }
 
 }

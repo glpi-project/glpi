@@ -107,7 +107,7 @@ class Line extends CommonDropdown {
       echo "<td>";
       State::dropdown(['value'     => $this->fields["states_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => "`is_visible_line`"]);
+            'condition' => ['is_visible_line' => 1]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

@@ -350,10 +350,12 @@ class Computer extends CommonDBTM {
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_states_id$randDropdown'>".__('Status')."</label></td>";
       echo "<td>";
-      State::dropdown(['value'     => $this->fields["states_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_computer`",
-                            'rand'      => $randDropdown]);
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_visible_computer' => 1],
+         'rand'      => $randDropdown
+      ]);
       echo "</td></tr>\n";
 
       $this->showDcBreadcrumb();
@@ -392,11 +394,13 @@ class Computer extends CommonDBTM {
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_groups_id_tech$randDropdown'>".__('Group in charge of the hardware')."</label></td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`',
-                            'rand' => $randDropdown]);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1],
+         'rand' => $randDropdown
+      ]);
 
       echo "</td>";
       $randDropdown = mt_rand();
@@ -459,10 +463,12 @@ class Computer extends CommonDBTM {
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_groups_id$randDropdown'>".__('Group')."</label></td>";
       echo "<td>";
-      Group::dropdown(['value'     => $this->fields["groups_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`',
-                            'rand'      => $randDropdown]);
+      Group::dropdown([
+         'value'     => $this->fields["groups_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_itemgroup' => 1],
+         'rand'      => $randDropdown
+      ]);
 
       echo "</td>";
 

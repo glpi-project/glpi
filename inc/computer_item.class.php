@@ -643,7 +643,7 @@ class Computer_Item extends CommonDBRelation{
                          'used'            => $used];
 
          if ($onlyglobal) {
-            $params['condition'] = "`is_global` = 1";
+            $params['condition'] = ['is_global' => 1];
          }
          Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_$myname$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownConnect.php", $params);

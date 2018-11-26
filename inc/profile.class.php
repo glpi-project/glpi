@@ -676,7 +676,7 @@ class Profile extends CommonDBTM {
       $options = ['value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0];
       if (Session::isMultiEntitiesMode()) {
-         $options['condition'] = '`is_recursive`';
+         $options['condition'] = ['is_recursive' => 1];
       }
       // Only add profile if on root entity
       if (!isset($_SESSION['glpiactiveentities'][0])) {
@@ -987,7 +987,7 @@ class Profile extends CommonDBTM {
       $options = ['value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0];
       if (Session::isMultiEntitiesMode()) {
-         $options['condition'] = '`is_recursive`';
+         $options['condition'] = ['is_recursive' => 1];
       }
       // Only add profile if on root entity
       if (!isset($_SESSION['glpiactiveentities'][0])) {

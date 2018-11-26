@@ -4713,9 +4713,14 @@ JAVASCRIPT;
 
          $addcondition = '';
          if (isset($joinparams['condition'])) {
+            $condition = $joinparams['condition'];
+            if (is_array($condition)) {
+               $it = new DBmysqlIterator(null);
+               $condition = $it->analyseCrit($condition);
+            }
             $from         = ["`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE"];
             $to           = ["`$rt`", "`$rt`", "`$nt`", "`$nt`"];
-            $addcondition = str_replace($from, $to, $joinparams['condition']);
+            $addcondition = str_replace($from, $to, $condition);
             $addcondition = $addcondition." ";
          }
 

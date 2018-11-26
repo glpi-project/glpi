@@ -3958,14 +3958,13 @@ class Ticket extends CommonITILObject {
                           $tt->getMandatoryMark('itilcategories_id'))."</td>";
       echo "<td>";
 
-      $condition = "`is_helpdeskvisible`='1'";
+      $condition = ['is_helpdeskvisible' => 1];
       switch ($options['type']) {
          case self::DEMAND_TYPE :
-            $condition .= " AND `is_request`='1'";
+            $condition['is_request'] = 1;
             break;
-
          default: // self::INCIDENT_TYPE :
-            $condition .= " AND `is_incident`='1'";
+            $condition['is_incident'] = 1;
       }
       $opt = ['value'     => $options['itilcategories_id'],
               'condition' => $condition,
@@ -4842,13 +4841,12 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize4%'>";
       // Permit to set category when creating ticket without update right
       if ($canupdate || $can_requester) {
+         $conditions = [];
 
          $opt = ['value'  => $this->fields["itilcategories_id"],
                       'entity' => $this->fields["entities_id"]];
          if (Session::getCurrentInterface() == "helpdesk") {
-            $opt['condition'] = "`is_helpdeskvisible`='1' AND ";
-         } else {
-            $opt['condition'] = '';
+            $conditions['is_helpdeskvisible'] = 1;
          }
          /// Auto submit to load template
          if (!$ID) {
@@ -4864,17 +4862,18 @@ class Ticket extends CommonITILObject {
 
          switch ($this->fields["type"]) {
             case self::INCIDENT_TYPE :
-               $opt['condition'] .= "`is_incident`='1'";
+               $conditions['is_incident'] = 1;
                break;
 
             case self::DEMAND_TYPE :
-               $opt['condition'] .= "`is_request`='1'";
+               $conditions['is_request'] = 1;
                break;
 
             default :
                break;
          }
          echo "<span id='show_category_by_type'>";
+         $opt['condition'] = $conditions;
          ITILCategory::dropdown($opt);
          echo "</span>";
       } else {
@@ -4916,7 +4915,7 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize4%'>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
       if ($canupdate) {
-         RequestType::dropdown(['value' => $this->fields["requesttypes_id"], 'condition' => 'is_active = 1 AND is_ticketheader = 1']);
+         RequestType::dropdown(['value' => $this->fields["requesttypes_id"], 'condition' => ['is_active' => 1, 'is_ticketheader' => 1]]);
       } else {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
          echo Html::hidden('requesttypes_id', ['value' => $this->fields["requesttypes_id"]]);

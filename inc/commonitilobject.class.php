@@ -4130,10 +4130,12 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             echo "&nbsp;";
 
-            Group::dropdown(['name'      => '_groups_id_requester',
-                                  'value'     => $options["_groups_id_requester"],
-                                  'entity'    => $this->fields["entities_id"],
-                                  'condition' => '`is_requester`']);
+            Group::dropdown([
+               'name'      => '_groups_id_requester',
+               'value'     => $options["_groups_id_requester"],
+               'entity'    => $this->fields["entities_id"],
+               'condition' => ['is_requester' => 1]
+            ]);
 
          } else { // predefined value
             if (isset($options["_groups_id_requester"]) && $options["_groups_id_requester"]) {
@@ -4222,10 +4224,12 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             echo "&nbsp;";
 
-            Group::dropdown(['name'      => '_groups_id_observer',
-                                  'value'     => $options["_groups_id_observer"],
-                                  'entity'    => $this->fields["entities_id"],
-                                  'condition' => '`is_requester`']);
+            Group::dropdown([
+               'name'      => '_groups_id_observer',
+               'value'     => $options["_groups_id_observer"],
+               'entity'    => $this->fields["entities_id"],
+               'condition' => ['is_requester' => 1]
+            ]);
          } else { // predefined value
             if (isset($options["_groups_id_observer"]) && $options["_groups_id_observer"]) {
                echo self::getActorIcon('group', CommonITILActor::OBSERVER)."&nbsp;";
@@ -4332,11 +4336,13 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             echo "&nbsp;";
             $rand   = mt_rand();
-            $params = ['name'      => '_groups_id_assign',
-                            'value'     => $options["_groups_id_assign"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_assign`',
-                            'rand'      => $rand];
+            $params = [
+               'name'      => '_groups_id_assign',
+               'value'     => $options["_groups_id_assign"],
+               'entity'    => $this->fields["entities_id"],
+               'condition' => ['is_assign' => 1],
+               'rand'      => $rand
+            ];
 
             if ($this->getType() == 'Ticket') {
                $params['toupdate'] = ['value_fieldname' => 'value',

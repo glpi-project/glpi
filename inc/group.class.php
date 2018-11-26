@@ -356,10 +356,17 @@ class Group extends CommonTreeDropdown {
                 && isset($input['check_itemtype'])) {
                if ($group = getItemForItemtype($input['check_itemtype'])) {
                   if ($group->getFromDB($input['check_items_id'])) {
-                     self::dropdown(['entity'    => $group->fields["entities_id"],
-                                          'used'      => [$group->fields["id"]],
-                                          'condition' => ($input['is_tech'] ? '`is_assign`'
-                                                                            : '`is_itemgroup`')]);
+                     $condition = [];
+                     if ($input['is_tech']) {
+                        $condition['is_assign'] = 1;
+                     } else {
+                        $condition['is_itemgroup'] = 1;
+                     }
+                     self::dropdown([
+                        'entity'    => $group->fields["entities_id"],
+                        'used'      => [$group->fields["id"]],
+                        'condition' => $condition
+                     ]);
                      echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                                     _sx('button', 'Move')."'>";
                      return true;
