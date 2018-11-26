@@ -256,6 +256,23 @@ class Dropdown extends DbTestCase {
       $this->array($ret)->isIdenticalTo($expected);
    }
 
+   public function testGetDropdownNetpoint() {
+      $netpoint = getItemByTypeName( 'Netpoint', '_netpoint01' );
+      $location = getItemByTypeName( 'Location', '_location01' );
+      $ret = \Dropdown::getDropdownNetpoint([], false);
+      $this->array($ret)->hasKeys(['count', 'results'])->integer['count']->isIdenticalTo(1);
+      $this->array($ret['results'])->isIdenticalTo([
+         [
+            'id'     => 0,
+            'text'   => '-----'
+         ], [
+            'id'     => $netpoint->fields['id'],
+            'text'   => $netpoint->getName() . ' (' . $location->getName() . ')',
+            'title'  =>  $netpoint->getName() . ' - ' . $location->getName() . ' - ' . $netpoint->fields['comment']
+         ]
+      ]);
+   }
+
    public function dataGetValueWithUnit() {
       return [
             [1,         'auto',        '1024 Kio'],
