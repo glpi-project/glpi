@@ -3168,7 +3168,7 @@ class Dropdown {
     * @return string|array
     */
    public static function getDropdownNetpoint($post, $json = true) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // Make a select box with preselected values
       $results           = [];
@@ -3182,14 +3182,30 @@ class Dropdown {
       $start = intval(($post['page']-1)*$post['page_limit']);
       $limit = intval($post['page_limit']);
 
-      $LIMIT = "LIMIT $start,$limit";
-
-      if (strlen($post['searchText']) > 0) {
-         $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($post['searchText'])."
-                           OR `glpi_locations`.`completename` ".Search::makeTextSearch($post['searchText']).")";
-      } else {
-         $where = " WHERE 1 ";
-      }
+      $criteria = [
+         'SELECT'    => [
+            'glpi_netpoints.comment AS comment',
+            'glpi_netpoints.id',
+            'glpi_netpoints.name AS netpname',
+            'glpi_locations.completename AS loc'
+         ],
+         'FROM'      => 'glpi_netpoints',
+         'LEFT JOIN' => [
+            'glpi_locations'  => [
+               'ON' => [
+                  'glpi_netpoints'  => 'locations_id',
+                  'glpi_locations'  => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [],
+         'ORDERBY'   => [
+            'glpi_locations.completename',
+            'glpi_netpoints.name'
+         ],
+         'START'     => $start,
+         'LIMIT'     => $limit
+      ];
 
       if (!(isset($post["devtype"])
             && ($post["devtype"] != 'NetworkEquipment')
@@ -3197,49 +3213,55 @@ class Dropdown {
             && ($post["locations_id"] > 0))) {
 
          if (isset($post["entity_restrict"]) && ($post["entity_restrict"] >= 0)) {
-            $where .= " AND `glpi_netpoints`.`entities_id` = '".$post["entity_restrict"]."'";
+            $criteria['WHERE']['glpi_netpoints.entities_id'] = $post['entity_restrict'];
          } else {
-            $where .= getEntitiesRestrictRequest(" AND ", "glpi_locations");
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria('glpi_locations');
          }
       }
 
-      $query = "SELECT `glpi_netpoints`.`comment` AS comment,
-                     `glpi_netpoints`.`id`,
-                     `glpi_netpoints`.`name` AS netpname,
-                     `glpi_locations`.`completename` AS loc
-               FROM `glpi_netpoints`
-               LEFT JOIN `glpi_locations` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`) ";
+      if (isset($post['searchText']) && strlen($post['searchText']) > 0) {
+         $criteria['WHERE']['OR'] = [
+            'glpi_netpoints.name'         => ['LIKE', Search::makeTextSearchValue($post['searchText'])],
+            'glpi_locations.completename' => ['LIKE', Search::makeTextSearchValue($post['searchText'])]
+         ];
+      }
 
       if (isset($post["devtype"]) && !empty($post["devtype"])) {
-         $query .= "LEFT JOIN `glpi_networkportethernets`
-                        ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)
-                  LEFT JOIN `glpi_networkports`
-                        ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`id`
-                           AND `glpi_networkports`.`instantiation_type` = 'NetworkPortEthernet'
-                           AND `glpi_networkports`.`itemtype`";
+         $criteria['LEFT JOIN']['glpi_networkportethernets'] = [
+            'ON' => [
+               'glpi_networkportethernets'   => 'netpoints_id',
+               'glpi_netpoints'              => 'id'
+            ]
+         ];
 
+         $extra_and = [];
          if ($post["devtype"] == 'NetworkEquipment') {
-            $query .= " = 'NetworkEquipment' )";
+            $extra_and['glpi_networkports.itemtype'] = 'NetworkEquipment';
          } else {
-            $query .= " != 'NetworkEquipment' )";
+            $extra_and['NOT'] = ['glpi_networkports.itemtype' => 'NetworkEquipment'];
             if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
                $location_restrict = true;
-               $where .= " AND `glpi_netpoints`.`locations_id` = '".$post["locations_id"]."' ";
+               $criteria['WHERE']['glpi_netpoints.locations_id'] = $post['locations_id'];
             }
          }
-         $where .= " AND `glpi_networkportethernets`.`netpoints_id` IS NULL ";
 
+         $criteria['LEFT JOIN']['glpi_networkports'] = [
+            'ON' => [
+               'glpi_networkportethernets'   => 'id',
+               'glpi_networkports'           => 'id', [
+                  'AND' => [
+                     'glpi_networkports.instantiation_type'    => 'NetworkPortEthernet',
+                  ] + $extra_and
+               ]
+            ]
+         ];
+         $criteria['WHERE']['glpi_networkportethernets.netpoints_id'] = null;
       } else if (isset($post["locations_id"]) && ($post["locations_id"] >= 0)) {
          $location_restrict = true;
-         $where .= " AND `glpi_netpoints`.`locations_id` = '".$post["locations_id"]."' ";
+         $criteria['WHERE']['glpi_netpoints.locations_id'] = $post['locations_id'];
       }
 
-      $query .= $where ."
-               ORDER BY `glpi_locations`.`completename`,
-                        `glpi_netpoints`.`name`
-               $LIMIT";
-
-      $result = $DB->query($query);
+      $iterator = $DB->request($criteria);
 
       // Display first if no search
       if (empty($post['searchText'])) {
@@ -3254,8 +3276,8 @@ class Dropdown {
       }
 
       $count = 0;
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
             $output     = $data['netpname'];
             $loc        = $data['loc'];
             $ID         = $data['id'];
