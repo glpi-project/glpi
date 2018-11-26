@@ -2842,7 +2842,7 @@ JAVASCRIPT;
 
       $p                 = $request['p'];
       $prefix            = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
-      $searchopt         = isset($request['$searchopt']) ? $request['searchopt'] : [];
+      $searchopt         = isset($request['searchopt']) ? $request['searchopt'] : [];
       $request['value']  = rawurldecode($request['value']);
       $fieldname         = isset($request['meta']) && $request['meta']
                               ? 'metacriteria'
