@@ -335,12 +335,6 @@ class Ticket extends CommonITILObject {
     */
    public function canTakeIntoAccount() {
 
-      // Ticket already taken into account
-      if (array_key_exists('takeintoaccount_delay_stat', $this->fields)
-          && $this->fields['takeintoaccount_delay_stat'] != 0) {
-         return false;
-      }
-
       // Can take into account if user is assigned user
       if ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
           || (isset($_SESSION["glpigroups"])
@@ -368,6 +362,17 @@ class Ticket extends CommonITILObject {
       // Can take into account if user has rights to add tasks or followups,
       // assuming that users that does not have those rights cannot treat the ticket.
       return $canAddTask || $canAddFollowup;
+   }
+
+   /**
+    * Check if ticket has already been taken into account.
+    *
+    * @return boolean
+    */
+   public function isAlreadyTakenIntoAccount() {
+
+      return array_key_exists('takeintoaccount_delay_stat', $this->fields)
+          && $this->fields['takeintoaccount_delay_stat'] != 0;
    }
 
    /**
@@ -1511,7 +1516,7 @@ class Ticket extends CommonITILObject {
 
    function pre_updateInDB() {
 
-      if ($this->canTakeIntoAccount()) {
+      if (!$this->isAlreadyTakenIntoAccount() && $this->canTakeIntoAccount()) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
@@ -2454,7 +2459,9 @@ class Ticket extends CommonITILObject {
    function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0) {
 
       if ($this->getFromDB($ID)) {
-         if (!$no_stat_computation && ($this->canTakeIntoAccount() || isCommandLine())) {
+         if (!$no_stat_computation
+             && !$this->isAlreadyTakenIntoAccount()
+             && ($this->canTakeIntoAccount() || isCommandLine())) {
             return $this->update(
                [
                   'id'                         => $ID,

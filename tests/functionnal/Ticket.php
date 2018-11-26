@@ -1997,17 +1997,6 @@ class Ticket extends DbTestCase {
             ],
             'expected' => true, // has not enough rights so cannot take into account
          ],
-         [
-            'input'    => [
-               '_users_id_requester'        => ['3'], // "post-only"
-               'takeintoaccount_delay_stat' => '10',
-            ],
-            'user'     => [
-               'login'    => 'tech',
-               'password' => 'tech',
-            ],
-            'expected' => false, // ticket is already taken into account
-         ],
          /* Cannot test that requester user can take ticket into account if also assigned
           * because assigning a user makes the ticket automatically taken into account.
           * We decided with @orthagh to keep this rule even if it cannot be tested yet.
@@ -2063,5 +2052,46 @@ class Ticket extends DbTestCase {
       }
       // Verify result
       $this->boolean($ticket->canTakeIntoAccount())->isEqualTo($expected);
+   }
+
+   /**
+    * Tests taken into account state.
+    */
+   public function testIsAlreadyTakenIntoAccount() {
+
+      // Create a ticket
+      $this->login();
+      $_SESSION['glpiset_default_tech'] = false;
+      $ticket = new \Ticket();
+      $ticket_id = $ticket->add(
+         [
+            'name'    => '',
+            'content' => 'A ticket to check isAlreadyTakenIntoAccount() results',
+         ]
+      );
+      $this->integer((int)$ticket_id)->isGreaterThan(0);
+
+      // Reload ticket to get all default fields values
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+
+      // Empty ticket is not taken into account
+      $this->boolean($ticket->isAlreadyTakenIntoAccount())->isFalse();
+
+      // Take into account
+      $this->login('tech', 'tech');
+      $ticket_user = new \Ticket_User();
+      $ticket_user_id = $ticket_user->add(
+         [
+            'tickets_id'       => $ticket_id,
+            'users_id'         => \Session::getLoginUserID(),
+            'use_notification' => 1,
+            'type'             => \CommonITILActor::ASSIGN
+         ]
+      );
+      $this->integer((int)$ticket_user_id)->isGreaterThan(0);
+
+      // Assign to tech made ticket taken into account
+      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+      $this->boolean($ticket->isAlreadyTakenIntoAccount())->isTrue();
    }
 }
