@@ -969,12 +969,15 @@ abstract class CommonDropdown extends CommonDBTM {
                ");
                $ret.= "<label for='dropdown_knowbaseitems_id$rand'>".
                       KnowbaseItem::getTypeName()."</label>&nbsp;";
-               $ret.= KnowbaseItem::dropdown(['value'     => reset($found_kbitem)['id'],
-                                              'display'   => false,
-                                              'rand'      => $rand,
-                                              'condition' => "`knowbaseitemcategories_id` = ".
-                                                             $this->fields['knowbaseitemcategories_id'],
-                                              'on_change' => "getKnowbaseItemAnswer$rand()"]);
+               $ret.= KnowbaseItem::dropdown([
+                  'value'     => reset($found_kbitem)['id'],
+                  'display'   => false,
+                  'rand'      => $rand,
+                  'condition' => [
+                     'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+                  ],
+                  'on_change' => "getKnowbaseItemAnswer$rand()"
+               ]);
                $ret.= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
                $ret.= $kbitem->showFull(['display' => false]);
                $ret.= "</div>"; // .faqadd_block_content

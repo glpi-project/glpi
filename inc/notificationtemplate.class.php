@@ -186,10 +186,12 @@ class NotificationTemplate extends CommonDBTM {
    static function dropdownTemplates($name, $itemtype, $value = 0) {
       global $DB;
 
-      self::dropdown(['name'       => $name,
-                            'value'     => $value,
-                            'comment'   => 1,
-                            'condition' => "`itemtype`='$itemtype'"]);
+      self::dropdown([
+         'name'       => $name,
+         'value'     => $value,
+         'comment'   => 1,
+         'condition' => ['itemtype' => $itemtype]
+      ]);
    }
 
 

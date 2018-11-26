@@ -116,17 +116,19 @@ class TaskTemplate extends CommonDropdown {
             Planning::dropdownState("state", $this->fields["state"]);
             break;
          case 'users_id_tech' :
-            User::dropdown(['name'   => "users_id_tech",
-                            'right'  => "own_ticket",
-                            'value'  => $this->fields["users_id_tech"],
-                            'entity' => $this->fields["entities_id"],
+            User::dropdown([
+               'name'   => "users_id_tech",
+               'right'  => "own_ticket",
+               'value'  => $this->fields["users_id_tech"],
+               'entity' => $this->fields["entities_id"],
             ]);
             break;
          case 'groups_id_tech' :
-            Group::dropdown(['name'     => "groups_id_tech",
-                            'condition' => "is_task",
-                            'value'     => $this->fields["groups_id_tech"],
-                            'entity'    => $this->fields["entities_id"],
+            Group::dropdown([
+               'name'     => "groups_id_tech",
+               'condition' => ['is_task' => 1],
+               'value'     => $this->fields["groups_id_tech"],
+               'entity'    => $this->fields["entities_id"],
             ]);
             break;
          case 'actiontime' :
@@ -134,13 +136,16 @@ class TaskTemplate extends CommonDropdown {
             for ($i=9; $i<=100; $i++) {
                $toadd[] = $i*HOUR_TIMESTAMP;
             }
-            Dropdown::showTimeStamp("actiontime",
-                                    ['min'             => 0,
-                                          'max'             => 8*HOUR_TIMESTAMP,
-                                          'value'           => $this->fields["actiontime"],
-                                          'addfirstminutes' => true,
-                                          'inhours'         => true,
-                                          'toadd'           => $toadd]);
+            Dropdown::showTimeStamp(
+               "actiontime", [
+                  'min'             => 0,
+                  'max'             => 8*HOUR_TIMESTAMP,
+                  'value'           => $this->fields["actiontime"],
+                  'addfirstminutes' => true,
+                  'inhours'         => true,
+                  'toadd'           => $toadd
+               ]
+            );
             break;
       }
    }

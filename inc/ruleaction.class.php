@@ -608,11 +608,12 @@ class RuleAction extends CommonDBChild {
                         }
                      }
 
-                     $condition = "(SELECT count(`users_id`)
-                                    FROM `glpi_groups_users`
-                                    WHERE `groups_id` = `glpi_groups`.`id`)";
                      $param['name']      = 'value';
-                     $param['condition'] = $condition;
+                     $param['condition'] = [new QuerySubQuery([
+                        'SELECT' => ['COUNT' => ['users_id']],
+                        'FROM'   => 'glpi_groups_users',
+                        'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+                     ])];
                      $param['right']     = ['validate_incident', 'validate_request'];
                      $param['used']      = $used;
                      Group::dropdown($param);

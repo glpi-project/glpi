@@ -68,7 +68,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand {
 
       $output->writeln(
          sprintf(
-            '<info>' . __('Found %s table found using MyISAM engine.') . '</info>',
+            '<info>' . __('Found %s table(s) using MyISAM engine.') . '</info>',
             $myisam_tables->count()
          )
       );

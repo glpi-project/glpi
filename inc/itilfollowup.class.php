@@ -780,7 +780,10 @@ class ITILFollowup  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Source of followup')."</td><td>";
-         RequestType::dropdown(['value' => $this->fields["requesttypes_id"], 'condition' => 'is_active =1 AND is_itilfollowup = 1']);
+         RequestType::dropdown([
+            'value'     => $this->fields["requesttypes_id"],
+            'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
+         ]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";

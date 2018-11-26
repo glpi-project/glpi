@@ -332,46 +332,106 @@ class Project extends CommonDBTM {
    /**
     * Return visibility joins to add to SQL
     *
+    * @deprecated 9.4.0
+    *
     * @return string joins to add
     **/
    static function addVisibilityJoins() {
+      global $DB;
 
-      $join = '';
+      Toolbox::deprecated('Use getVisibilityCriteria');
 
-      if (!Session::haveRight("project", Project::READALL)) {
-         $join .= " LEFT JOIN `glpi_projectteams`
-                     ON (`glpi_projectteams`.`projects_id` = `glpi_projects`.`id`) ";
-      }
+      //get and clean criteria
+      $criteria = self::getVisibilityCriteria();
+      unset($criteria['WHERE']);
+      $criteria['FROM'] = self::getTable();
 
-      return $join;
+      $it = new \DBmysqlIterator(null);
+      $it->buildQuery($criteria);
+      $sql = $it->getSql();
+      $sql = str_replace(
+         'SELECT * FROM '.$DB->quoteName(self::getTable()).' ',
+         '',
+         $sql
+      );
+      return $sql;
    }
 
    /**
     * Return visibility to add to SQL
     *
+    * @deprecated 9.4.0
+    *
     * @return string joins to add
     **/
    static function addVisibility() {
+      Toolbox::deprecated('Use getVisibilityCriteria');
 
-      $condition = '';
-      if (!Session::haveRight("project", Project::READALL)) {
-         $teamtable = 'glpi_projectteams';
-         $condition .= "AND (`glpi_projects`.users_id = '" . Session::getLoginUserID() . "'
-                               OR (`$teamtable`.`itemtype` = 'User'
-                                   AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
-         if (count($_SESSION['glpigroups'])) {
-            $condition .= " OR (`glpi_projects`.`groups_id`
-                                       IN (" . implode(",", $_SESSION['glpigroups']) . "))";
-            $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                      AND `$teamtable`.`items_id`
-                                          IN (" . implode(",", $_SESSION['glpigroups']) . "))";
-         }
-         $condition .= ") ";
-      }
+      //get and clean criteria
+      $criteria = self::getVisibilityCriteria();
+      unset($criteria['LEFT JOIN']);
+      $criteria['FROM'] = self::getTable();
 
-      return $condition;
+      $it = new \DBmysqlIterator(null);
+      $it->buildQuery($criteria);
+      $sql = $it->getSql();
+      $sql = preg_replace('/.*WHERE /', '', $sql);
+
+      return $sql;
    }
 
+   /**
+    * Return visibility joins to add to DBIterator parameters
+    *
+    * @since 9.4
+    *
+    * @param boolean $forceall force all joins (false by default)
+    *
+    * @return array
+    */
+   static public function getVisibilityCriteria($forceall = false) {
+      global $CFG_GLPI;
+
+      if (Session::haveRight('project', self::READALL)) {
+         return [
+            'LEFT JOIN' => [],
+            'WHERE' => [],
+         ];
+      }
+
+      $join = [];
+      $where = [];
+
+      $join['glpi_projectteams'] = [
+         'ON' => [
+            'glpi_projectteams'  => 'projects_id',
+            'glpi_projects'      => 'id'
+         ]
+      ];
+
+      $teamtable = 'glpi_projectteams';
+      $where['OR'] = [
+         'glpi_projects.users_id'   => Session::getLoginUserID(),
+         'AND'                      => [
+            "$teamtable.itemtype"   => 'User',
+            "$teamtable.items_id"   => Session::getLoginUserID()
+         ]
+      ];
+      if (count($_SESSION['glpigroups'])) {
+         $where['OR']['glpi_projects.groups_id'] = $_SESSION['glpigroups'];
+         $where['OR'][] = ['AND' => [
+            "$teamtable.itemtype"   => 'Group',
+            "$teamtable.items_id"   => $_SESSION['glpigroups']
+         ]];
+      }
+
+      $criteria = [
+         'LEFT JOIN' => $join,
+         'WHERE'     => $where
+      ];
+
+      return $criteria;
+   }
    /**
     * Is the current user in the team?
     *
@@ -1193,10 +1253,12 @@ class Project extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id',
-                            'value'     => $this->fields['groups_id'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_manager`']);
+      Group::dropdown([
+         'name'      => 'groups_id',
+         'value'     => $this->fields['groups_id'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_manager' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr><td colspan='4' class='subheader'>".__('Planning')."</td></tr>";

@@ -610,30 +610,49 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT *
-                FROM `glpi_documents_items`
-                LEFT JOIN `glpi_reminders`
-                     ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
-                         AND `glpi_documents_items`.`itemtype` = 'Reminder')
-                ".Reminder::addVisibilityJoins()."
-                WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                      AND ".Reminder::addVisibilityRestrict();
-      $result = $DB->query($query);
+      $criteria = array_merge_recursive(
+         [
+            'COUNT'     => 'cpt',
+            'FROM'      => 'glpi_documents_items',
+            'LEFT JOIN' => [
+               'glpi_reminders'  => [
+                  'ON' => [
+                     'glpi_documents_items'  => 'items_id',
+                     'glpi_reminders'        => 'id', [
+                        'AND' => [
+                           'glpi_documents_items.itemtype'  => 'Reminder'
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'glpi_documents_items.documents_id' => $this->fields['id']
+            ]
+         ],
+         Reminder::getVisibilityCriteria()
+      );
 
-      if ($DB->numrows($result) > 0) {
+      $result = $DB->request($criteria)->next();
+      if ($result['cpt'] > 0) {
          return true;
       }
 
       // Inlined images do not have entries in glpi_documents_items table.
       // Check in Reminder content
-      $query = "SELECT *
-                FROM `glpi_reminders`
-                ".Reminder::addVisibilityJoins()."
-                WHERE `glpi_reminders`.`text` REGEXP '". $this->getSelfUrlRegexPattern() . "'
-                      AND ".Reminder::addVisibilityRestrict();
-      $result = $DB->query($query);
+      $criteria = array_merge_recursive(
+         [
+            'COUNT'     => 'cpt',
+            'FROM'      => 'glpi_reminders',
+            'WHERE'     => [
+               'text' => ['REGEXP', $this->getSelfUrlRegexPattern()]
+            ]
+         ],
+         Reminder::getVisibilityCriteria()
+      );
 
-      return $DB->numrows($result) > 0;
+      $result = $DB->request($criteria)->next();
+      return $result['cpt'] > 0;
    }
 
    /**

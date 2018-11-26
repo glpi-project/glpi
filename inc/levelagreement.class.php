@@ -345,9 +345,11 @@ abstract class LevelAgreement extends CommonDBChild {
                echo "<span id='la_choice$type$rand' style='display:none' class='assign_la'>";
                echo "<i class='far fa-clock slt'></i>";
                echo "<span class='b'>".static::getTypeName()."</span>&nbsp;";
-               static::dropdown(['name'      => $laField,
-                                 'entity'    => $ticket->fields["entities_id"],
-                                 'condition' => "`type` = '".$type."'"]);
+               static::dropdown([
+                  'name'      => $laField,
+                  'entity'    => $ticket->fields["entities_id"],
+                  'condition' => ['type' => $type]
+               ]);
                echo "</span>";
                echo $tt->getEndHiddenFieldText($laField);
             }
@@ -377,11 +379,12 @@ abstract class LevelAgreement extends CommonDBChild {
             }
             echo $tt->getEndHiddenFieldText($laField);
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($laField);
-            static::dropdown(['name'      => $laField,
-                              'entity'    => $ticket->fields["entities_id"],
-                              'value'     => isset($ticket->fields[$laField])
-                                                ? $ticket->fields[$laField] : 0,
-                              'condition' => "`type` = '".$type."'"]);
+            static::dropdown([
+               'name'      => $laField,
+               'entity'    => $ticket->fields["entities_id"],
+               'value'     => isset($ticket->fields[$laField]) ? $ticket->fields[$laField] : 0,
+               'condition' => ['type' => $type]
+            ]);
             echo $tt->getEndHiddenFieldValue($laField, $ticket);
             echo "</td>";
          }

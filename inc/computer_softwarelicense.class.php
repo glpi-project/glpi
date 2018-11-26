@@ -109,11 +109,12 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          case 'move_license' :
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
-                  SoftwareLicense::dropdown(['condition'
-                                                    => "`glpi_softwarelicenses`.`softwares_id`
-                                                         = '".$input['options']['move']['softwares_id']."'",
-                                                  'used'
-                                                    => $input['options']['move']['used']]);
+                  SoftwareLicense::dropdown([
+                     'condition' => [
+                        'glpi_softwarelicenses.softwares_id' => $input['options']['move']['softwares_id']
+                     ],
+                     'used'      => $input['options']['move']['used']
+                  ]);
                   echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                   return true;
                }

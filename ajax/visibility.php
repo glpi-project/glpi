@@ -103,10 +103,14 @@ if (isset($_POST['type']) && !empty($_POST['type'])
             $righttocheck = 'knowbase';
             $checkright   = KnowbaseItem::READFAQ;
          }
-         $params             = ['rand'      => $rand,
-                                     'name'      => $prefix.'profiles_id'.$suffix,
-                                     'condition' => "`glpi_profilerights`.`name` = '$righttocheck' ".
-                                                    " AND `glpi_profilerights`.`rights` & ".$checkright];
+         $params             = [
+            'rand'      => $rand,
+            'name'      => $prefix.'profiles_id'.$suffix,
+            'condition' => [
+               'glpi_profilerights.name'     => $righttocheck,
+               'glpi_profilerights.rights'   => ['&', $checkright]
+            ]
+         ];
          $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
                                      'to_update'  => "subvisibility$rand",

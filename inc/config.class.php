@@ -1211,10 +1211,12 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td><label for='dropdown_task_private$rand'>" . __('Private tasks by default') . "</label></td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"], -1, ['rand' => $rand]);
          echo "</td><td><label for='dropdown_default_requesttypes_id$rand'>" . __('Request sources by default') . "</label></td><td>";
-         RequestType::dropdown(['value'      => $data["default_requesttypes_id"],
-                                'name'       => "default_requesttypes_id",
-                                'condition'  => 'is_active = 1 AND is_ticketheader = 1',
-                                'rand'       => $rand]);
+         RequestType::dropdown([
+            'value'      => $data["default_requesttypes_id"],
+            'name'       => "default_requesttypes_id",
+            'condition'  => ['is_active' => 1, 'is_ticketheader' => 1],
+            'rand'       => $rand
+         ]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td><label for='dropdown_task_state$rand'>" . __('Tasks state by default') . "</label></td><td>";

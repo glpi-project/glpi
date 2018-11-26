@@ -145,10 +145,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
             //TODO: pass used array to restrict visible items in list
             $rand = self::dropdownAllTypes($item, 'items_id');
          } else {
+            $visibility = KnowbaseItem::getVisibilityCriteria();
+            $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];
             $rand = KnowbaseItem::dropdown([
                'entity'    => $item->getEntityID(),
                'used'      => self::getItems($item, 0, 0, true),
-               'condition' => KnowbaseItem::addVisibilityRestrict()
+               'condition' => $condition
             ]);
          }
          echo "</td><td>";

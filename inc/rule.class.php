@@ -2610,12 +2610,14 @@ class Rule extends CommonDBTM {
          return false;
       }
 
-      $add_condition = '';
+      $conditions = [
+         'sub_type' => $p['sub_type']
+      ];
       if ($p['condition'] > 0) {
-         $add_condition = ' AND `condition` & '. (int) $p['condition'];
+         $conditions['condition'] = ['&', (int)$p['condition']];
       }
 
-      $p['condition'] = "`sub_type` = '".$p['sub_type']."' $add_condition";
+      $p['condition'] = $conditions;
       return Dropdown::show($p['sub_type'], $p);
    }
 

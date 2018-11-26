@@ -192,11 +192,23 @@ class Group_User extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
 
-         $params = ['used'      => $used,
-                    'condition' => "is_usergroup
-                                     AND (`entities_id` =  ".$_SESSION['glpiactive_entity']."
-                                          OR (`entities_id` IN (0,".implode(',', $_SESSION['glpiactiveentities']).")
-                                              AND is_recursive))"];
+         $params = [
+            'used'      => $used,
+            'condition' => [
+               'is_usergroup' => 1,
+               [
+                  'OR' => [
+                     ['entities_id' => $_SESSION['glpiactive_entity']],
+                     [
+                        'AND' => [
+                           'entities_id' => array_merge([0], $_SESSION['glpiactiveentities']),
+                           'is_recursive' => 1
+                        ]
+                     ]
+                  ]
+               ]
+            ]
+         ];
          Group::dropdown($params);
          echo "</td><td>".__('Manager')."</td><td>";
          Dropdown::showYesNo('is_manager');
@@ -601,7 +613,7 @@ class Group_User extends CommonDBRelation{
       $specificities                           = parent::getRelationMassiveActionsSpecificities();
 
       $specificities['select_items_options_1'] = ['right'     => 'all'];
-      $specificities['select_items_options_2'] = ['condition' => '`is_usergroup`'];
+      $specificities['select_items_options_2'] = ['condition' => ['is_usergroup' => 1]];
 
       // Define normalized action for add_item and remove_item
       $specificities['normalized']['add'][]    = 'add_supervisor';

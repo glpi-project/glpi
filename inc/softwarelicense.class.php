@@ -298,12 +298,15 @@ class SoftwareLicense extends CommonTreeDropdown {
          echo "<a href='".Software::getFormURLWithID($softwares_id)."'>".
                 Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       } else {
-         Dropdown::show('Software',
-                        ['condition'   => "`is_template`='0' AND `is_deleted`='0'",
-                              'entity'      => $_SESSION['glpiactive_entity'],
-                              'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-                              'on_change'   => 'this.form.submit()',
-                              'value'       => $softwares_id]);
+         Dropdown::show(
+            'Software', [
+               'condition'   => ['is_template' => 0, 'is_deleted' => 0],
+               'entity'      => $_SESSION['glpiactive_entity'],
+               'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+               'on_change'   => 'this.form.submit()',
+               'value'       => $softwares_id
+            ]
+         );
       }
 
       echo "</td>";
@@ -322,18 +325,22 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(['value'     => $this->fields["states_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_softwarelicense`='1'"]);
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_visible_softwarelicense' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('As child of')."</td><td>";
-      self::dropdown(['value'  => $this->fields['softwarelicenses_id'],
-                           'name'   => 'softwarelicenses_id',
-                           'entity' => $this->fields['entities_id'],
-                           'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : []),
-                           'condition' => "`softwares_id`='".$this->fields['softwares_id']."'"]);
+      self::dropdown([
+         'value'     => $this->fields['softwarelicenses_id'],
+         'name'      => 'softwarelicenses_id',
+         'entity'    => $this->fields['entities_id'],
+         'used'      => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : []),
+         'condition' => ['softwares_id' => $this->fields['softwares_id']]
+      ]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -362,10 +369,12 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the license')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
       echo "</td>";
       echo "<td>".__('Serial number')."</td>";
       echo "<td>";
@@ -392,9 +401,11 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Group') . "</td><td>";
-      Group::dropdown(['value'     => $this->fields["groups_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`']);
+      Group::dropdown([
+         'value'     => $this->fields["groups_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_itemgroup' => 1]
+      ]);
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='4'>";

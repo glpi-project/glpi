@@ -115,18 +115,20 @@ if (isset($_POST["type"])
             break;
 
          case "group" :
-            $cond = '`is_requester`';
+            $cond = ['is_requester' => 1];
             if ($_POST["actortype"] == 'assign') {
-               $cond = '`is_assign`';
+               $cond['is_assign'] = 1;
             }
             if ($_POST["actortype"] == 'observer') {
-               $cond = '`is_watcher`';
+               $cond['is_watcher'] = 1;
             }
 
-            $param = ['name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
-                           'entity'    => $_POST['entity_restrict'],
-                           'condition' => $cond,
-                           'rand'      => $rand];
+            $param = [
+               'name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
+               'entity'    => $_POST['entity_restrict'],
+               'condition' => $cond,
+               'rand'      => $rand
+            ];
             if (($_POST["itemtype"] == 'Ticket')
                 && ($_POST["actortype"] == 'assign')) {
                $param['toupdate'] = ['value_fieldname' => 'value',

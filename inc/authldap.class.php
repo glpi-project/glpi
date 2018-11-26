@@ -2315,7 +2315,7 @@ class AuthLDAP extends CommonDBTM {
          AuthLDAP::Dropdown(['name'                => 'ldap_server',
                              'display_emptychoice' => false,
                              'comment'             => true,
-                             'condition'           => "`is_active`='1'"]);
+                             'condition'           => ['is_active' => 1]]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
@@ -3127,7 +3127,7 @@ class AuthLDAP extends CommonDBTM {
                   echo "<td colspan='3'>";
                   self::dropdown(['name'                 => 'authldaps_id',
                                   'value'                => $_SESSION['ldap_import']['authldaps_id'],
-                                  'condition'            => "`is_active` = 1",
+                                  'condition'            => ['is_active' => 1],
                                   'display_emptychoice'  => false,
                                   'rand'                 => $rand]);
                   echo "&nbsp;<input class='submit' type='submit' name='change_directory'
@@ -3155,7 +3155,7 @@ class AuthLDAP extends CommonDBTM {
                echo "<td colspan='3'>";
                self::dropdown(['name'                 => 'authldaps_id',
                                  'value'                => $_SESSION['ldap_import']['authldaps_id'],
-                                 'condition'            => "`is_active` = 1",
+                                 'condition'            => ['is_active' => 1],
                                  'display_emptychoice'  => false,
                                  'rand'                 => $rand]);
                echo "&nbsp;<input class='submit' type='submit' name='change_directory'

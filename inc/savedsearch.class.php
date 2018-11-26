@@ -688,44 +688,59 @@ class SavedSearch extends CommonDBTM {
    function displayMine() {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `".$this->getTable()."`.*,
-                       `glpi_savedsearches_users`.`id` AS IS_DEFAULT
-                FROM `".$this->getTable()."`
-                LEFT JOIN `glpi_savedsearches_users`
-                  ON (`".$this->getTable()."`.`itemtype` = `glpi_savedsearches_users`.`itemtype`
-                      AND `".$this->getTable()."`.`id` = `glpi_savedsearches_users`.`savedsearches_id`
-                      AND `glpi_savedsearches_users`.`users_id` = '".Session::getLoginUserID()."')
-                WHERE ";
+      $table = $this->getTable();
+      $utable = 'glpi_savedsearches_users';
+      $criteria = [
+         'SELECT'    => [
+            "$table.*",
+            "$utable.id AS IS_DEFAULT"
+         ],
+         'FROM'      => $table,
+         'LEFT JOIN' => [
+            $utable => [
+               'ON' => [
+                  $utable  => 'savedsearches_id',
+                  $table   => 'id', [
+                     'AND' => [
+                        "$table.itemtype"    => new \QueryExpression("$utable.itemtype"),
+                        "$utable.users_id"   => Session::getLoginUserID()
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'WHERE'     => [],
+         'ORDERBY'   => [
+            'itemtype',
+            'name'
+         ]
+      ];
 
-      $privatequery = $query . "(`".$this->getTable()."`.`is_private`='1'
-                            AND `".$this->getTable()."`.`users_id`='".Session::getLoginUserID()."')
-                      ORDER BY `itemtype`, `name`";
-
+      $public_criteria = $criteria;
       if ($this->canView()) {
-         $publicquery = $query . "(`".$this->getTable()."`.`is_private`='0' ".
-                        getEntitiesRestrictRequest("AND", $this->getTable(), "", "", true) . ")";
-         $publicquery .= " ORDER BY `itemtype`, `name`";
+         $public_criteria['WHERE'] = [
+            "$table.is_private"  => 0,
+         ] + getEntitiesRestrictCriteria($table, '', '', true);
       }
+      $public_iterator = $DB->request($public_criteria);
+
+      $private_criteria = $criteria;
+      $private_criteria['WHERE'] = [
+         "$table.is_private"  => 1,
+         "$table.users_id"    => Session::getLoginUserID()
+      ];
+      $private_iterator = $DB->request($private_criteria);
 
       // get saved searches
       $searches = ['private'   => [],
                    'public'    => []];
-      if ($result = $DB->query($privatequery)) {
-         if ($numrows = $DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $searches['private'][$data['id']] = $data;
-            }
-         }
+
+      while ($data = $private_iterator->next()) {
+         $searches['private'][$data['id']] = $data;
       }
 
-      if ($this->canView()) {
-         if ($result = $DB->query($publicquery)) {
-            if ($numrows = $DB->numrows($result)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $searches['public'][$data['id']] = $data;
-               }
-            }
-         }
+      while ($data = $public_iterator->next()) {
+         $searches['public'][$data['id']] = $data;
       }
 
       $ordered = [];
@@ -766,7 +781,6 @@ class SavedSearch extends CommonDBTM {
       $searches['private'] = $ordered;
 
       $rand    = mt_rand();
-      $numrows = $DB->numrows($result);
 
       echo "<div class='center' id='tabsbody' >";
 
@@ -1414,17 +1428,55 @@ class SavedSearch extends CommonDBTM {
     * @return string restrict to add
    **/
    static function addVisibilityRestrict() {
+      //not deprecated because used in Search
+
       if (Session::haveRight('config', UPDATE)) {
          return '';
       }
 
-      $restrict = self::getTable() .'.is_private=1 AND ' . self::getTable() .
-         '.users_id='.Session::getLoginUserID();
+      //get and clean criteria
+      $criteria = self::getVisibilityCriteria();
+      unset($criteria['LEFT JOIN']);
+      $criteria['FROM'] = self::getTable();
 
-      if (Session::haveRight(self::$rightname, READ)) {
-         $restrict .= ' OR ' . self::getTable() . '.is_private=0';
+      $it = new \DBmysqlIterator(null);
+      $it->buildQuery($criteria);
+      $sql = $it->getSql();
+      $sql = preg_replace('/.*WHERE /', '', $sql);
+
+      return $sql;
+   }
+
+   /**
+    * Return visibility joins to add to DBIterator parameters
+    *
+    * @since 9.4
+    *
+    * @param boolean $forceall force all joins (false by default)
+    *
+    * @return array
+    */
+   static public function getVisibilityCriteria($forceall = false) {
+      $criteria = ['WHERE' => []];
+      if (Session::haveRight('config', UPDATE)) {
+         return $criteria;
       }
 
-      return "($restrict)";
+      $restrict = [
+         self::getTable() . '.is_private' => 1,
+         self::getTable() . '.users_id'    => Session::getLoginUserID()
+      ];
+
+      if (Session::haveRight(self::$rightname, READ)) {
+         $restrict = [
+            'OR' => [
+               'AND'                            => $restrict,
+               self::getTable() . '.is_private' => 0
+            ]
+         ];
+      }
+
+      $criteria['WHERE'] = $restrict;
+      return $criteria;
    }
 }

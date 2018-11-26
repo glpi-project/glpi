@@ -1152,16 +1152,28 @@ class Dropdown extends DbTestCase {
             'selection_text'
          ]);
 
-      //use a condition
+      //use a array condition
       $post = [
          'itemtype'              => $location::getType(),
-         'condition'             => '`name` LIKE "%3%"',
+         'condition'             => ['name' => ['LIKE', "%3%"]],
          'display_emptychoice'   => true,
          'entity_restrict'       => 0,
          'page'                  => 1,
          'page_limit'            => 10
       ];
-      $_SESSION['glpicondition'][$post['condition']] = $post['condition'];
+      $values = \Dropdown::getDropdownValue($post);
+      $values = (array)json_decode($values);
+
+      $this->array($values)
+         ->integer['count']->isEqualTo(2)
+         ->array['results']
+            ->hasSize(2);
+
+      //use a string condition
+      // Put condition in session and post its key
+      $condition_key = sha1(serialize($post['condition']));
+      $_SESSION['glpicondition'][$condition_key] = $post['condition'];
+      $post['condition'] = $condition_key;
       $values = \Dropdown::getDropdownValue($post);
       $values = (array)json_decode($values);
 

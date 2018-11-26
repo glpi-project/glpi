@@ -170,15 +170,21 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='projecttasks_id' value='$ID'>";
-         $condition = "`glpi_tickets`.`status`
-                        NOT IN ('".implode("', '",
-                                           array_merge(Ticket::getSolvedStatusArray(),
-                                                       Ticket::getClosedStatusArray()))."')";
-         Ticket::dropdown(['used'        => $used,
-                                'entity'      => $projecttask->getEntityID(),
-                                'entity_sons' => $projecttask->isRecursive(),
-                                'condition'   => $condition,
-                                'displaywith' => ['id']]);
+         $condition = [
+            'NOT' => [
+               'glpi_tickets.status'    => array_merge(
+                  Ticket::getSolvedStatusArray(),
+                  Ticket::getClosedStatusArray()
+               )
+            ]
+         ];
+         Ticket::dropdown([
+            'used'        => $used,
+            'entity'      => $projecttask->getEntityID(),
+            'entity_sons' => $projecttask->isRecursive(),
+            'condition'   => $condition,
+            'displaywith' => ['id']
+         ]);
 
          echo "</td><td width='20%'>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Ticket')."?_projecttasks_id=$ID'>";
@@ -284,11 +290,12 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo Html::hidden('tickets_id', ['value' => $ID]);
-         Project::dropdown(['entity'      => $ticket->getEntityID(),
-                            'entity_sons' => $ticket->isRecursive(),
-                            'condition'   => '`glpi_projects`.`projectstates_id`
-                                                 NOT IN(' . implode($finished_states_ids, ", ") . ')',
-                            'rand'        => $rand]);
+         Project::dropdown([
+            'entity'      => $ticket->getEntityID(),
+            'entity_sons' => $ticket->isRecursive(),
+            'condition'   => ['NOT' => ['glpi_projects.projectstates_id' => $finished_states_ids]],
+            'rand'        => $rand
+         ]);
 
          $p = ['projects_id'     => '__VALUE__',
                'entity_restrict' => $ticket->getEntityID(),
@@ -315,20 +322,24 @@ class ProjectTask_Ticket extends CommonDBRelation{
                ],
             ]
          );
-         $ecluded_projects_ids = [];
-         foreach ($excluded_projects_it as $ecluded_project) {
-            $ecluded_projects_ids[] = $ecluded_project['id'];
+         $excluded_projects_ids = [];
+         foreach ($excluded_projects_it as $excluded_project) {
+            $excluded_projects_ids[] = $excluded_project['id'];
          }
          echo "<td class='right'>";
          echo "<span id='results_projects$rand'>";
-         ProjectTask::dropdown(['used'        => $used,
-                                'entity'      => $ticket->getEntityID(),
-                                'entity_sons' => $ticket->isRecursive(),
-                                'condition'   => '`glpi_projecttasks`.`projectstates_id`
-                                                     NOT IN(' . implode($finished_states_ids, ", ") . ')
-                                                  AND `glpi_projecttasks`.`projects_id`
-                                                     NOT IN(' . implode($ecluded_projects_ids, ", ") . ')',
-                                'displaywith' => ['id']]);
+         ProjectTask::dropdown([
+            'used'        => $used,
+            'entity'      => $ticket->getEntityID(),
+            'entity_sons' => $ticket->isRecursive(),
+            'condition'   => [
+               'NOT' => [
+                  'glpi_projecttasks.projectstates_id'   => $finished_states_ids,
+                  'glpi_projecttasks.projects_id'        => $excluded_projects_ids
+               ]
+            ],
+            'displaywith' => ['id']
+         ]);
          echo "</span>";
 
          echo "</td><td width='20%'>";

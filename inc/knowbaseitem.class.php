@@ -405,40 +405,26 @@ class KnowbaseItem extends CommonDBVisible {
    * @return string joins to add
    **/
    static function addVisibilityJoins($forceall = false) {
+      //not deprecated because used in self::getListRequest and self::showRecentPopular
 
-      $join = '';
+      global $DB;
 
-      // Users
-      $join .= " LEFT JOIN `glpi_knowbaseitems_users`
-                     ON (`glpi_knowbaseitems_users`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+      Toolbox::deprecated('Use getVisibilityCriteria');
 
-      // Groups
-      if ($forceall
-          || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
-         $join .= " LEFT JOIN `glpi_groups_knowbaseitems`
-                        ON (`glpi_groups_knowbaseitems`.`knowbaseitems_id`
-                              = `glpi_knowbaseitems`.`id`) ";
-      }
+      //get and clean criteria
+      $criteria = self::getVisibilityCriteria();
+      unset($criteria['WHERE']);
+      $criteria['FROM'] = self::getTable();
 
-      // Profiles
-      if ($forceall
-          || (isset($_SESSION["glpiactiveprofile"])
-              && isset($_SESSION["glpiactiveprofile"]['id']))) {
-         $join .= " LEFT JOIN `glpi_knowbaseitems_profiles`
-                        ON (`glpi_knowbaseitems_profiles`.`knowbaseitems_id`
-                              = `glpi_knowbaseitems`.`id`) ";
-      }
-
-      // Entities
-      if ($forceall
-          || !Session::getLoginUserID()
-          || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
-         $join .= " LEFT JOIN `glpi_entities_knowbaseitems`
-                        ON (`glpi_entities_knowbaseitems`.`knowbaseitems_id`
-                              = `glpi_knowbaseitems`.`id`) ";
-      }
-
-      return $join;
+      $it = new \DBmysqlIterator(null);
+      $it->buildQuery($criteria);
+      $sql = $it->getSql();
+      $sql = str_replace(
+         'SELECT * FROM '.$DB->quoteName(self::getTable()).' ',
+         '',
+         $sql
+      );
+      return $sql;
    }
 
    /**
@@ -449,49 +435,19 @@ class KnowbaseItem extends CommonDBVisible {
     * @return string restrict to add
    **/
    static function addVisibilityRestrict() {
+      //not deprecated because used in self::getListRequest and self::showRecentPopular
 
-      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-         return "1";
-      }
+      //get and clean criteria
+      $criteria = self::getVisibilityCriteria();
+      unset($criteria['LEFT JOIN']);
+      $criteria['FROM'] = self::getTable();
 
-      $restrict = '';
-      if (Session::getLoginUserID()) {
-         $restrict = "(`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."' ";
+      $it = new \DBmysqlIterator(null);
+      $it->buildQuery($criteria);
+      $sql = $it->getSql();
+      $sql = preg_replace('/.*WHERE /', '', $sql);
 
-         // Users
-         $restrict .= " OR `glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
-
-         // Groups
-         if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
-            $restrict .= " OR (`glpi_groups_knowbaseitems`.`groups_id`
-                                    IN ('".implode("','", $_SESSION["glpigroups"])."')
-                               AND (`glpi_groups_knowbaseitems`.`entities_id` < 0
-                                    ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems",
-                                                                 '', '', true).")) ";
-         }
-
-         // Profiles
-         if (isset($_SESSION["glpiactiveprofile"])
-             && isset($_SESSION["glpiactiveprofile"]['id'])) {
-            $restrict .= " OR (`glpi_knowbaseitems_profiles`.`profiles_id`
-                                    = '".$_SESSION["glpiactiveprofile"]['id']."'
-                               AND (`glpi_knowbaseitems_profiles`.`entities_id` < 0
-                                    ".getEntitiesRestrictRequest("OR", "glpi_knowbaseitems_profiles",
-                                                                 '', '', true).")) ";
-         }
-
-         // Entities
-         if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-            // Force complete SQL not summary when access to all entities
-            $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '',
-                                                    true, true);
-         }
-
-         $restrict .= ") ";
-      } else {
-         $restrict = '1';
-      }
-      return $restrict;
+      return $sql;
    }
 
    /**
@@ -873,10 +829,6 @@ class KnowbaseItem extends CommonDBVisible {
             'id' => $this->fields['id']
          ]
       );
-
-      if (isset($_SESSION['glpi_faqcategories'])) {
-         unset($_SESSION['glpi_faqcategories']);
-      }
    }
 
    /**
@@ -1564,10 +1516,15 @@ class KnowbaseItem extends CommonDBVisible {
                if ($output_type == Search::HTML_OUTPUT) {
                   echo "<td class='center'>";
                   $j=0;
-                  foreach ($DB->request('glpi_documents_items',
-                                     ['FIELDS' => 'documents_id',
-                                     'WHERE'  => "`items_id` = '".$data["id"]."'
-                                                   AND `itemtype` = 'KnowbaseItem'"]) as $docs) {
+                  $iterator = $DB->request([
+                     'FIELDS' => 'documents_id',
+                     'FROM'   => 'glpi_documents_items',
+                     'WHERE'  => [
+                        'items_id'  => $data["id"],
+                        'itemtype'  => 'KnowbaseItem'
+                     ]
+                  ]);
+                  while ($docs = $iterator->next()) {
                      $doc = new Document();
                      $doc->getFromDB($docs["documents_id"]);
                      echo $doc->getDownloadLink();
