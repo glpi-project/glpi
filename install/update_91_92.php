@@ -93,7 +93,7 @@ function update91to92() {
       $DB->updateOrDie("glpi_softwarelicensetypes", [
          'completename' => "name",
          'is_recursive' => "1"
-      ], [], "9.2 make glpi_softwarelicensetypes a tree dropdown");
+      ], "1", "9.2 make glpi_softwarelicensetypes a tree dropdown");
    }
 
    // give READ right on components to profiles having UPDATE right
