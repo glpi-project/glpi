@@ -94,7 +94,7 @@ function update91to92() {
             'completename' =>  new \QueryExpression(DBmysql::quoteName("name")),
             'is_recursive' => "1"
          ], 
-         "1", 
+         [true], 
          "9.2 make glpi_softwarelicensetypes a tree dropdown"
       );
    }
@@ -619,7 +619,7 @@ function update91to92() {
       $DB->updateOrDie("glpi_softwarelicenses", [
             'completename' => new \QueryExpression(DBmysql::QuoteName("name"))
          ],
-         "1",
+         [true],
          "9.2 copy name to completename for software licenses"
       );
    }
@@ -950,7 +950,7 @@ function update91to92() {
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_savedsearches",
          ['do_count' => SavedSearch::COUNT_AUTO],
-         "1"
+         [true]
       )
    );
 
@@ -1065,7 +1065,7 @@ function update91to92() {
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_queuednotifications",
          ['mode' => Notification_NotificationTemplate::MODE_MAIL],
-         "1"
+         [true]
       ), 
       "9.2 set default mode in queue"
    );
