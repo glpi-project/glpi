@@ -6,18 +6,18 @@ shared: &shared
     - run:
         name: Dependencies
         command: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-client libpng-dev libxml2-dev
-          sudo docker-php-ext-install mysqli gd xmlrpc
-          sudo pecl install apcu <<< '' || sudo pecl install apcu-4.0.11 <<< ''
-          sudo docker-php-ext-enable apcu
-          echo "apc.enable=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
-          echo "apc.enable_cli=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
-          echo "memory_limit = 512M" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-memory.ini
+          sudo -E apt-get update
+          sudo -E apt-get install -y mysql-client libpng-dev libxml2-dev
+          sudo -E docker-php-ext-install mysqli gd xmlrpc
+          sudo -E pecl install apcu <<< '' || sudo -E pecl install apcu-4.0.11 <<< ''
+          sudo -E docker-php-ext-enable apcu
+          echo "apc.enable=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+          echo "apc.enable_cli=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+          echo "memory_limit = 512M" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-memory.ini
     - run:
         name: Composer
         command: |
-          sudo composer self-update
+          sudo -E composer self-update
           sed -e '/"php":/d' -i composer.json
           rm -f composer.lock
           composer install --optimize-autoloader
