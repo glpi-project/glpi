@@ -970,11 +970,11 @@ class DBmysql {
     */
    public function updateOrInsert($table, $params, $where, $onlyone = true) {
       $req = $this->request($table, $where);
-      $data = array_merge_recursive($where, $params);
+      $data = array_merge($where, $params);
       if ($req->count() == 0) {
-         return $this->insertOrDie($table, $params, 'Unable to create new element or update existing one');
+         return $this->insertOrDie($table, $data, 'Unable to create new element or update existing one');
       } else if ($req->count() == 1 || !$onlyone) {
-         return $this->updateOrDie($table, $params, $where, 'Unable to create new element or update existing one');
+         return $this->updateOrDie($table, $data, $where, 'Unable to create new element or update existing one');
       } else {
          Toolbox::logWarning('Update would change too many rows!');
          return false;
