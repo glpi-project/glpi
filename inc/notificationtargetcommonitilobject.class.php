@@ -648,6 +648,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
    public function getProfileJoinSql() {
 
+      Toolbox::deprecated('Use getProfileJoinCriteria');
+
       $query = parent::getProfileJoinSql();
 
       if ($this->isPrivate()) {
