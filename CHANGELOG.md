@@ -157,8 +157,20 @@ The following methods have been deprecated:
  - `ITILSolution::removeForItem()`
  - `Session::isViewAllEntities()`
 
+## [9.3.3] 2018-11-27
 
-## [9.3.2] unreleased
+### Changed
+
+- Fix some cache issues
+- Fix reservation tab of an item
+- Fix actors notifications massive action
+- Improve racks plugins migration script
+
+### API changes
+
+No API changes.
+
+## [9.3.2] 2018-10-26
 
 ### API changes
 
@@ -171,8 +183,17 @@ The following methods have been deprecated:
 
 The following methods have been deprecated:
 
+- `CommonITILTask::displayTabContentForItem()`
+- `CommonITILTask::showFormMassiveAction()`
+- `CommonITILTask::showSummary()`
+- `ITILSolution::displayTabContentForItem()`
 - `ITILSolution::removeForItem()`
+- `ITILSolution::showSummary()`
 - `Session::isViewAllEntities()`
+- `TicketFollowup::processMassiveActionsForOneItemtype()`
+- `TicketFollowup::showFormMassiveAction()`
+- `TicketFollowup::showMassiveActionsSubForm()`
+- `TicketFollowup::showSummary()`
 - `Plugin::removeFromSession()`
 
 ## [9.3.1] 2018-09-12
