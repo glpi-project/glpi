@@ -1777,7 +1777,7 @@ class Config extends CommonDBTM {
       // No need to translate, this part always display in english (for copy/paste to forum)
 
       // Try to compute a better version for .git
-      $ver = $CFG_GLPI['version'];
+      $ver = GLPI_VERSION;
       if (is_dir(GLPI_ROOT."/.git")) {
          $dir = getcwd();
          chdir(GLPI_ROOT);
