@@ -1045,6 +1045,7 @@ function update91to92() {
    }
 
    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
+      // TODO can be done when DB::updateOrInsert() supports SELECT
       $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
                        (`notifications_id`, `mode`, `notificationtemplates_id`)
                        SELECT `id`, `mode`, `notificationtemplates_id`
@@ -1345,6 +1346,7 @@ Regards,',
 
    if ($DB->fieldExists('glpi_computers', 'operatingsystems_id')) {
       //migrate data from computers table, and drop old fields
+      // TODO can be done when DB::updateOrInsert() supports SELECT
       $query = "REPLACE INTO `glpi_items_operatingsystems`
                        (`itemtype`, `items_id`, `operatingsystems_id`, `operatingsystemversions_id`,
                         `operatingsystemservicepacks_id`, `operatingsystemarchitectures_id`,
@@ -2224,7 +2226,7 @@ Regards,',
 
          $where = [
             "$tl_table.tickets_id"           => new \QueryExpression(
-               DBmysql::quoteName("glpi_groups_users.tickets_id")
+               DBmysql::quoteName("glpi_tickets_users.tickets_id")
             ),
             "glpi_groups_users.groups_id"    => new \QueryExpression(
                DBmysql::quoteName("glpi_groups_tickets.groups_id")

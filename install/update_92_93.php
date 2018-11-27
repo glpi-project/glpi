@@ -91,6 +91,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_tickets', 'solution')) {
       //migrate solution history for tickets
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Ticket' AS itemtype,
@@ -124,6 +125,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_problems', 'solution')) {
       // Problem soution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Problem' AS itemtype,
@@ -158,6 +160,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_changes', 'solution')) {
       // Change solution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Change' AS itemtype,
