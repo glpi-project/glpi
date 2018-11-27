@@ -3,7 +3,20 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.3.2] unreleased
+## [9.3.3] 2018-11-27
+
+### Changed
+
+- Fix some cache issues
+- Fix reservation tab of an item
+- Fix actors notifications massive action
+- Improve racks plugins migration script
+
+### API changes
+
+No API changes.
+
+## [9.3.2] 2018-10-26
 
 ### API changes
 
