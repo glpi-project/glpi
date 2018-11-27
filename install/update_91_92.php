@@ -952,7 +952,7 @@ function update91to92() {
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_savedsearches",
          ['do_count' => SavedSearch::COUNT_AUTO],
-         []
+         "1"
       )
    );
 
@@ -1067,7 +1067,7 @@ function update91to92() {
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_queuednotifications",
          ['mode' => Notification_NotificationTemplate::MODE_MAIL],
-         []
+         "1"
       ), 
       "9.2 set default mode in queue"
    );
