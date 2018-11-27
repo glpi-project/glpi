@@ -1059,16 +1059,16 @@ abstract class LevelAgreement extends CommonDBChild {
 
       // Update tickets : clean SLA/OLA
       list($dateField, $laField) = static::getFieldNames($this->fields['type']);
-      $query = "SELECT `id`
-                FROM `glpi_tickets`
-                WHERE `$laField` = '".$this->fields['id']."'";
+      $iterator =  $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => 'glpi_tickets',
+         'WHERE'  => [$laField => $this->fields['id']]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $ticket = new Ticket();
-            while ($data = $DB->fetch_assoc($result)) {
-               $ticket->deleteLevelAgreement($classname, $data['id'], $this->fields['type']);
-            }
+      if (count($iterator)) {
+         $ticket = new Ticket();
+         while ($data = $iterator->next()) {
+            $ticket->deleteLevelAgreement($classname, $data['id'], $this->fields['type']);
          }
       }
 

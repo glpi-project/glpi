@@ -900,22 +900,26 @@ class ITILFollowup  extends CommonDBChild {
       // Print Followups for a job
       $showprivate = Session::haveRight(self::$rightname, self::SEEPRIVATE);
 
-      $RESTRICT = "";
+      $where = [
+         'itemtype'  => $itemtype,
+         'items_id'  => $ID
+      ];
       if (!$showprivate) {
-         $RESTRICT = " AND (`is_private` = 0
-                            OR `users_id` ='".Session::getLoginUserID()."') ";
+         $where['OR'] = [
+            'is_private'   => 0,
+            'users_id'     => Session::getLoginUserID()
+         ];
       }
 
-      // Get Number of Followups
-      $query = "SELECT *
-                FROM `glpi_itilfollowups`
-                WHERE `itemtype` = '$itemtype' AND `items_id` = '$ID'
-                      $RESTRICT
-                ORDER BY `date` DESC";
-      $result = $DB->query($query);
+      // Get Followups
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_itilfollowups',
+         'WHERE'  => $where,
+         'ORDER'  => 'date DESC'
+      ]);
 
       $out = "";
-      if ($DB->numrows($result) > 0) {
+      if (count($iterator)) {
          $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
                   <tr><th>".__('Date')."</th><th>".__('Requester')."</th>
                   <th>".__('Description')."</th></tr>\n";
@@ -924,7 +928,7 @@ class ITILFollowup  extends CommonDBChild {
          if (Session::haveRight('user', READ)) {
             $showuserlink = 1;
          }
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             $out .= "<tr class='tab_bg_3'>
                      <td class='center'>".Html::convDateTime($data["date"])."</td>
                      <td class='center'>".getUserName($data["users_id"], $showuserlink)."</td>

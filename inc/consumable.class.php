@@ -248,12 +248,12 @@ class Consumable extends CommonDBChild {
    static function getTotalNumber($tID) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_consumables`
-                WHERE `consumableitems_id` = '$tID'";
-      $result = $DB->query($query);
-
-      return $DB->numrows($result);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_consumables',
+         'WHERE'  => ['consumableitems_id' => $tID]
+      ])->next();
+      return (int)$result['cpt'];
    }
 
 
@@ -267,13 +267,15 @@ class Consumable extends CommonDBChild {
    static function getOldNumber($tID) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_consumables`
-                WHERE (`consumableitems_id` = '$tID'
-                       AND `date_out` IS NOT NULL)";
-      $result = $DB->query($query);
-
-      return $DB->numrows($result);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_consumables',
+         'WHERE'  => [
+            'consumableitems_id' => $tID,
+            'NOT'                => ['date_out' => null]
+         ]
+      ])->next();
+      return (int)$result['cpt'];
    }
 
 
@@ -287,13 +289,15 @@ class Consumable extends CommonDBChild {
    static function getUnusedNumber($tID) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_consumables`
-                WHERE (`consumableitems_id` = '$tID'
-                       AND `date_out` IS NULL)";
-      $result = $DB->query($query);
-
-      return $DB->numrows($result);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_consumables',
+         'WHERE'  => [
+            'consumableitems_id' => $tID,
+            'date_out'           => null
+         ]
+      ])->next();
+      return(int) $result['cpt'];
    }
 
 
@@ -347,13 +351,15 @@ class Consumable extends CommonDBChild {
    static function isNew($cID) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_consumables`
-                WHERE (`id` = '$cID'
-                       AND `date_out` IS NULL)";
-      $result = $DB->query($query);
-
-      return ($DB->numrows($result) == 1);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_consumables',
+         'WHERE'  => [
+            'id'        => $cID,
+            'date_out'  => null
+         ]
+      ])->next();
+      return $result['cpt'] == 1;
    }
 
 
@@ -367,13 +373,15 @@ class Consumable extends CommonDBChild {
    static function isOld($cID) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_consumables`
-                WHERE (`id` = '$cID'
-                       AND `date_out` IS NOT NULL)";
-      $result = $DB->query($query);
-
-      return ($DB->numrows($result) == 1);
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_consumables',
+         'WHERE'  => [
+            'id'     => $cID,
+            'NOT'   => ['date_out' => null]
+         ]
+      ])->next();
+      return $result['cpt'] == 1;
    }
 
 

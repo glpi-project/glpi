@@ -695,15 +695,18 @@ class Infocom extends CommonDBChild {
          return false;
       }
 
-      $query = "SELECT COUNT(*)
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$device_id'
-                      AND `itemtype` = '$itemtype'";
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_infocoms',
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $device_id
+         ]
+      ])->next();
 
       $add    = "add";
       $text   = __('Add');
-      $result = $DB->query($query);
-      if ($DB->result($result, 0, 0) > 0) {
+      if ($result['cpt'] > 0) {
          $add  = "";
          $text = _x('button', 'Show');
       } else if (!Infocom::canUpdate()) {

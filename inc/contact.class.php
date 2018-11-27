@@ -85,24 +85,33 @@ class Contact extends CommonDBTM{
     *
     *@return string containing the address
    **/
-   function GetAddress() {
+   function getAddress() {
       global $DB;
 
-      $query = "SELECT `glpi_suppliers`.`name`, `glpi_suppliers`.`address`,
-                       `glpi_suppliers`.`postcode`, `glpi_suppliers`.`town`,
-                       `glpi_suppliers`.`state`, `glpi_suppliers`.`country`
-                FROM `glpi_suppliers`, `glpi_contacts_suppliers`
-                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."'
-                      AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_suppliers.name',
+            'glpi_suppliers.address',
+            'glpi_suppliers.postcode',
+            'glpi_suppliers.town',
+            'glpi_suppliers.state',
+            'glpi_suppliers.country'
+         ],
+         'FROM'         => 'glpi_suppliers',
+         'INNER JOIN'   => [
+            'glpi_contacts_suppliers'  => [
+               'ON' => [
+                  'glpi_contacts_suppliers'  => 'suppliers_id',
+                  'glpi_suppliers'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => ['contacts_id' => $this->fields['id']]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            if ($data = $DB->fetch_assoc($result)) {
-               return $data;
-            }
-         }
+      if ($data = $iterator->next()) {
+         return $data;
       }
-      return "";
    }
 
 
@@ -111,20 +120,29 @@ class Contact extends CommonDBTM{
     *
     *@return string containing the website
    **/
-   function GetWebsite() {
+   function getWebsite() {
       global $DB;
 
-      $query = "SELECT `glpi_suppliers`.`website` as website
-                FROM `glpi_suppliers`, `glpi_contacts_suppliers`
-                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."'
-                      AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_suppliers.website AS website'
+         ],
+         'FROM'         => 'glpi_suppliers',
+         'INNER JOIN'   => [
+            'glpi_contacts_suppliers'  => [
+               'ON' => [
+                  'glpi_contacts_suppliers'  => 'suppliers_id',
+                  'glpi_suppliers'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => ['contacts_id' => $this->fields['id']]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return $DB->result($result, 0, "website");
-         }
-         return "";
+      if ($data = $iterator->next()) {
+         return $data['website'];
       }
+      return '';
    }
 
 

@@ -1254,42 +1254,50 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $restrict);
 
          // Document
-         $query = "SELECT `glpi_documents`.*
-                   FROM `glpi_documents`
-                   LEFT JOIN `glpi_documents_items`
-                     ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                   WHERE `glpi_documents_items`.`itemtype` =  '".$item->getType()."'
-                         AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+         $iterator = $DB->request([
+            'SELECT'    => 'glpi_documents.*',
+            'FROM'      => 'glpi_documents',
+            'LEFT JOIN' => [
+               'glpi_documents_items'  => [
+                  'ON' => [
+                     'glpi_documents_items'  => 'documents_id',
+                     'glpi_documents'        => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'glpi_documents_items.itemtype'  => $item->getType(),
+               'glpi_documents_items.items_id'  => $item->fields['id']
+            ]
+         ]);
 
          $data["documents"] = [];
          $addtodownloadurl   = '';
          if ($item->getType() == 'Ticket') {
             $addtodownloadurl = "%2526tickets_id=".$item->fields['id'];
          }
-         if ($result = $DB->query($query)) {
-            while ($row = $DB->fetch_assoc($result)) {
-               $tmp                      = [];
-               $tmp['##document.id##']   = $row['id'];
-               $tmp['##document.name##'] = $row['name'];
-               $tmp['##document.weblink##']
-                                         = $row['link'];
+         while ($row = $iterator->next()) {
+            $tmp                      = [];
+            $tmp['##document.id##']   = $row['id'];
+            $tmp['##document.name##'] = $row['name'];
+            $tmp['##document.weblink##']
+                                       = $row['link'];
 
-               $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                            "document_".$row['id']);
-               $downloadurl              = "/front/document.send.php?docid=".$row['id'];
+            $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                         "document_".$row['id']);
+            $downloadurl              = "/front/document.send.php?docid=".$row['id'];
 
-               $tmp['##document.downloadurl##']
-                                         = $this->formatURL($options['additionnaloption']['usertype'],
-                                                            $downloadurl.$addtodownloadurl);
-               $tmp['##document.heading##']
-                                         = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                     $row['documentcategories_id']);
+            $tmp['##document.downloadurl##']
+                                       = $this->formatURL($options['additionnaloption']['usertype'],
+                                                         $downloadurl.$addtodownloadurl);
+            $tmp['##document.heading##']
+                                       = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                  $row['documentcategories_id']);
 
-               $tmp['##document.filename##']
-                                         = $row['filename'];
+            $tmp['##document.filename##']
+                                       = $row['filename'];
 
-               $data['documents'][]     = $tmp;
-            }
+            $data['documents'][]     = $tmp;
          }
 
          $data["##$objettype.urldocument##"]

@@ -586,7 +586,7 @@ class Dropdown {
          }
       }
 
-      $iterator = $DB->Request([
+      $iterator = $DB->request([
          'SELECT DISTINCT' => $p['field'],
          'FROM'            => getTableForItemType($itemtype_ref)
       ]);

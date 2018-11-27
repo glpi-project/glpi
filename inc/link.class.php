@@ -458,26 +458,34 @@ class Link extends CommonDBTM {
          $restrict = Profile_User::getEntitiesForUser($item->getID());
       }
 
-      $query = "SELECT `glpi_links`.`id`,
-                       `glpi_links`.`link` AS link,
-                       `glpi_links`.`name` AS name ,
-                       `glpi_links`.`data` AS data,
-                       `glpi_links`.`open_window` AS open_window
-                FROM `glpi_links`
-                INNER JOIN `glpi_links_itemtypes`
-                     ON `glpi_links`.`id` = `glpi_links_itemtypes`.`links_id`
-                WHERE `glpi_links_itemtypes`.`itemtype`='".$item->getType()."' " .
-                      getEntitiesRestrictRequest(" AND", "glpi_links", "entities_id",
-                                                 $restrict, true)."
-                ORDER BY name";
-
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'       => [
+            'glpi_links.id',
+            'glpi_links.link AS link',
+            'glpi_links.name AS name',
+            'glpi_links.data AS data',
+            'glpi_links.open_window AS open_window'
+         ],
+         'FROM'         => 'glpi_links',
+         'INNER JOIN'   => [
+            'glpi_links_itemtypes'  => [
+               'ON' => [
+                  'glpi_links_itemtypes'  => 'links_id',
+                  'glpi_links'            => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_links_itemtypes.itemtype'  => $item->getType(),
+         ] + getEntitiesRestrictCriteria('glpi_links', 'entities_id', $restrict, true),
+         'ORDERBY'      => 'name'
+      ]);
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if ($DB->numrows($result) > 0) {
+      if (count($iterator)) {
          echo "<tr><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             $links = self::getAllLinksFor($item, $data);
 
             foreach ($links as $link) {
