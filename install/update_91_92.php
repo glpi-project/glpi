@@ -2206,8 +2206,8 @@ Regards,',
          $migration->addPostQuery(
             $DB->buildUpdate($update, [
                   "$tl_table.timeline_position" => new \QueryExpression("IF(" .
-                     DBmysql::quoteName("glpi_tickets_users", "type") . " NOT IN (1,3) AND " .
-                     DBmysql::quoteName("glpi_tickets_users", "type") . " IN (2), 4, 1)"
+                     DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
+                     DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"
                   )
                ], 
                $where
@@ -2235,8 +2235,8 @@ Regards,',
          $migration->addPostQuery(
             $DB->buildUpdate($update, [
                   "$tl_table.timeline_position" => new \QueryExpression("IF(" .
-                     DBmysql::quoteName("glpi_groups_tickets", "type") . " NOT IN (1,3) AND " .
-                     DBmysql::quoteName("glpi_groups_tickets", "type") . " IN (2), 4, 1)"
+                     DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
+                     DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"
                   )
                ], 
                $where
