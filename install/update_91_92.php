@@ -206,11 +206,9 @@ function update91to92() {
          new \QueryExpression(
             DBmysql::quoteName("glpi_documents_items") . ", " . DBmysql::quoteName("glpi_documents")
          ), [
-            'glpi_documents_items.users_id' =>  
-               new \QueryExpression(DBmysql::quoteName("glpi_documents.users_id"))
+            'glpi_documents_items.users_id' => DBmysql::quoteName("glpi_documents.users_id")
          ], [
-            'glpi_documents_items.documents_id' => 
-               new \QueryExpression(DBmysql::quoteName("glpi_documents.id"))
+            'glpi_documents_items.documents_id' => DBmysql::quoteName("glpi_documents.id")
          ]
       ), "9.2 update set users_id on glpi_documents_items"
    );
@@ -2207,12 +2205,10 @@ Regards,',
          );
          $migration->addPostQuery(
             $DB->buildUpdate($update, [
-                  new \QueryExpression(
-                     DBmysql::quoteName($tl_table, "timeline_position")
-                  ) => new \QueryExpression("IF(" .
-                        DBmysql::quoteName("glpi_tickets_users", "type") . " NOT IN (1,3) AND " .
-                        DBmysql::quoteName("glpi_tickets_users", "type" . " IN (2), 4, 1)")
-                     )
+                  "$tl_table.timeline_position" => new \QueryExpression("IF(" .
+                     DBmysql::quoteName("glpi_tickets_users", "type") . " NOT IN (1,3) AND " .
+                     DBmysql::quoteName("glpi_tickets_users", "type" . " IN (2), 4, 1)")
+                  )
                ], 
                $where
             )
@@ -2238,12 +2234,10 @@ Regards,',
          );
          $migration->addPostQuery(
             $DB->buildUpdate($update, [
-                  new \QueryExpression(
-                     DBmysql::quoteName($tl_table, "timeline_position")
-                  ) => new \QueryExpression("IF(" .
-                        DBmysql::quoteName("glpi_groups_tickets", "type") . " NOT IN (1,3) AND " 
-                        . DBmysql::quoteName("glpi_groups_tickets", "type" . " IN (2), 4, 1)")
-                     )
+                  "$tl_table.timeline_position" => new \QueryExpression("IF(" .
+                     DBmysql::quoteName("glpi_groups_tickets", "type") . " NOT IN (1,3) AND " .
+                     DBmysql::quoteName("glpi_groups_tickets", "type" . " IN (2), 4, 1)")
+                  )
                ], 
                $where
             )
