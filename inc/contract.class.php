@@ -1141,14 +1141,21 @@ class Contract extends CommonDBTM {
    function getSuppliersNames() {
       global $DB;
 
-      $query = "SELECT `glpi_suppliers`.`id`
-                FROM `glpi_contracts_suppliers`,
-                     `glpi_suppliers`
-                WHERE `glpi_contracts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`
-                      AND `glpi_contracts_suppliers`.`contracts_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'       => 'glpi_suppliers.id',
+         'FROM'         => 'glpi_suppliers',
+         'INNER JOIN'   => [
+            'glpi_contracts_suppliers' => [
+               'ON' => [
+                  'glpi_contracts_suppliers' => 'suppliers_id',
+                  'glpi_suppliers'           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => ['contracts_id' => $this->fields['id']]
+      ]);
       $out    = "";
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $iterator->next()) {
          $out .= Dropdown::getDropdownName("glpi_suppliers", $data['id'])."<br>";
       }
       return $out;

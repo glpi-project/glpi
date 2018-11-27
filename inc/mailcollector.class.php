@@ -1817,39 +1817,37 @@ class MailCollector  extends CommonDBTM {
       global $DB;
 
       NotImportedEmail::deleteLog();
-      $query = "SELECT *
-                FROM `glpi_mailcollectors`
-                WHERE `is_active` = 1";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_mailcollectors',
+         'WHERE'  => ['is_active' => 1]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         $max = $task->fields['param'];
+      $max = $task->fields['param'];
 
-         if ($DB->numrows($result) > 0) {
-            $mc = new self();
+      if (count($iterator) > 0) {
+         $mc = new self();
 
-            while (($max > 0)
-                   && ($data = $DB->fetch_assoc($result))) {
-               $mc->maxfetch_emails = $max;
+         while (($max > 0)
+                  && ($data = $iterator->next())) {
+            $mc->maxfetch_emails = $max;
 
-               $task->log("Collect mails from ".$data["name"]." (".$data["host"].")\n");
-               $message = $mc->collect($data["id"]);
+            $task->log("Collect mails from ".$data["name"]." (".$data["host"].")\n");
+            $message = $mc->collect($data["id"]);
 
-               $task->addVolume($mc->fetch_emails);
-               $task->log("$message\n");
+            $task->addVolume($mc->fetch_emails);
+            $task->log("$message\n");
 
-               $max -= $mc->fetch_emails;
-            }
+            $max -= $mc->fetch_emails;
          }
-
-         if ($max == $task->fields['param']) {
-            return 0; // Nothin to do
-         } else if ($max > 0) {
-            return 1; // done
-         }
-
-         return -1; // still messages to retrieve
       }
-      return 0;
+
+      if ($max == $task->fields['param']) {
+         return 0; // Nothin to do
+      } else if ($max > 0) {
+         return 1; // done
+      }
+
+      return -1; // still messages to retrieve
    }
 
 
@@ -1868,13 +1866,16 @@ class MailCollector  extends CommonDBTM {
       }
       $cron_status   = 0;
 
-      $query = "SELECT `glpi_mailcollectors`.*
-                FROM `glpi_mailcollectors`
-                WHERE `glpi_mailcollectors`.`errors`  > 0
-                      AND `glpi_mailcollectors`.`is_active`";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_mailcollectors',
+         'WHERE'  => [
+            'errors'    => ['>', 0],
+            'is_active' => 1
+         ]
+      ]);
 
       $items = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $items[$data['id']]  = $data;
       }
 
@@ -1993,11 +1994,11 @@ class MailCollector  extends CommonDBTM {
    static function getNumberOfMailCollectors() {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_mailcollectors`";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 'cpt');
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_mailcollectors'
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -2007,12 +2008,12 @@ class MailCollector  extends CommonDBTM {
    static function getNumberOfActiveMailCollectors() {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_mailcollectors`
-                WHERE `is_active` = 1";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 'cpt');
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_mailcollectors',
+         'WHERE'  => ['is_active' => 1]
+      ])->next();
+      return $result['cpt'];
    }
 
 

@@ -389,38 +389,46 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->data['##projecttask.numberoftickets##'] = count($this->data['tickets']);
 
       // Document
-      $query = "SELECT `glpi_documents`.*
-                FROM `glpi_documents`
-                LEFT JOIN `glpi_documents_items`
-                  ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                WHERE `glpi_documents_items`.`itemtype` =  'ProjectTask'
-                      AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+      $iterator = $DB->request([
+         'SELECT'    => 'glpi_documents.*',
+         'FROM'      => 'glpi_documents',
+         'LEFT JOIN' => [
+            'glpi_documents_items'  => [
+               'ON' => [
+                  'glpi_documents_items'  => 'documents_id',
+                  'glpi_documents'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_documents_items.itemtype'  => 'ProjectTask',
+            'glpi_documents_items.items_id'  => $item->fields['id']
+         ]
+      ]);
 
       $this->data["documents"] = [];
-      if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $tmp                      = [];
-            $tmp['##document.id##']   = $data['id'];
-            $tmp['##document.name##'] = $data['name'];
-            $tmp['##document.weblink##']
-                                      = $data['link'];
+      while ($data = $iterator->next()) {
+         $tmp                      = [];
+         $tmp['##document.id##']   = $data['id'];
+         $tmp['##document.name##'] = $data['name'];
+         $tmp['##document.weblink##']
+                                    = $data['link'];
 
-            $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         "document_".$data['id']);
-            $downloadurl              = "/front/document.send.php?docid=".$data['id'];
+         $tmp['##document.url##']  = $this->formatURL($options['additionnaloption']['usertype'],
+                                                      "document_".$data['id']);
+         $downloadurl              = "/front/document.send.php?docid=".$data['id'];
 
-            $tmp['##document.downloadurl##']
-                                      = $this->formatURL($options['additionnaloption']['usertype'],
-                                                         $downloadurl);
-            $tmp['##document.heading##']
-                                      = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                  $data['documentcategories_id']);
+         $tmp['##document.downloadurl##']
+                                    = $this->formatURL($options['additionnaloption']['usertype'],
+                                                      $downloadurl);
+         $tmp['##document.heading##']
+                                    = Dropdown::getDropdownName('glpi_documentcategories',
+                                                               $data['documentcategories_id']);
 
-            $tmp['##document.filename##']
-                                      = $data['filename'];
+         $tmp['##document.filename##']
+                                    = $data['filename'];
 
-            $this->data['documents'][]     = $tmp;
-         }
+         $this->data['documents'][]     = $tmp;
       }
 
       $this->data["##projecttask.urldocument##"]

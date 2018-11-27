@@ -1049,13 +1049,14 @@ class Project extends CommonDBTM {
       $this->check($ID, READ);
       $rand = mt_rand();
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `".$this->getForeignKeyField()."` = '$ID'
-                AND `is_deleted`=0";
-      if ($result = $DB->query($query)) {
-         $numrows = $DB->numrows($result);
-      }
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            $this->getForeignKeyField()   => $ID,
+            'is_deleted'                  => 0
+         ]
+      ]);
+      $numrows = count($iterator);
 
       if ($this->can($ID, UPDATE)) {
          echo "<div class='firstbloc'>";
@@ -1081,7 +1082,7 @@ class Project extends CommonDBTM {
                                                  $this->fields["name"]));
 
          $i = 0;
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Project', $data["id"]);
             Project::showShort($data['id'], ['row_num' => $i]);
             $i++;

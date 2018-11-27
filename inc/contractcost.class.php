@@ -239,13 +239,13 @@ class ContractCost extends CommonDBChild {
    function getLastCostForContract($contracts_id) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `contracts_id` = '$contracts_id'
-                ORDER BY 'end_date' DESC, `id` DESC";
-
-      if ($result = $DB->query($query)) {
-         return $DB->fetch_assoc($result);
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => ['contracts_id' => $contracts_id],
+         'ORDER'  => ['end_date DESC', 'id DESC']
+      ]);
+      if ($result = $iterator->next()) {
+         return $result;
       }
 
       return [];

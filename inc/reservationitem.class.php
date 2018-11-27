@@ -448,32 +448,47 @@ class ReservationItem extends CommonDBChild {
 
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
 
-      $sql = "SELECT DISTINCT(`itemtype`)
-              FROM `glpi_reservationitems`
-              WHERE `is_active` = 1".
-                    getEntitiesRestrictRequest(" AND", 'glpi_reservationitems', 'entities_id',
-                                               $_SESSION['glpiactiveentities']);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'itemtype',
+         'FROM'            => 'glpi_reservationitems',
+         'WHERE'           => [
+            'is_active' => 1
+         ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'])
+      ]);
 
-      $result = $DB->query($sql);
-
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $iterator->next()) {
          $values[$data['itemtype']] = $data['itemtype']::getTypeName();
       }
 
-      $query = "SELECT `glpi_peripheraltypes`.`name`, `glpi_peripheraltypes`.`id`
-                FROM `glpi_peripheraltypes`
-                LEFT JOIN `glpi_peripherals`
-                  ON `glpi_peripherals`.`peripheraltypes_id` = `glpi_peripheraltypes`.`id`
-                LEFT JOIN `glpi_reservationitems`
-                  ON `glpi_reservationitems`.`items_id` = `glpi_peripherals`.`id`
-                WHERE `itemtype` = 'Peripheral'
-                      AND `is_active` = 1
-                      AND `peripheraltypes_id`".
-                      getEntitiesRestrictRequest(" AND", 'glpi_reservationitems', 'entities_id',
-                            $_SESSION['glpiactiveentities'])."
-                ORDER BY `glpi_peripheraltypes`.`name`";
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_peripheraltypes.name',
+            'glpi_peripheraltypes.id'
+         ],
+         'FROM'      => 'glpi_peripheraltypes',
+         'LEFT JOIN' => [
+            'glpi_peripherals'      => [
+               'ON' => [
+                  'glpi_peripheraltypes'  => 'id',
+                  'glpi_peripherals'      => 'peripheraltypes_id'
+               ]
+            ],
+            'glpi_reservationitems' => [
+               'ON' => [
+                  'glpi_reservationitems' => 'items_id',
+                  'glpi_peripherals'      => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'itemtype'           => 'Peripheral',
+            'is_active'          => 1,
+            'peripheraltypes_id' => ['>', 0]
+         ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities']),
+         'ORDERBY'   => 'glpi_peripheraltypes.name'
+      ]);
 
-      foreach ($DB->request($query) as $ptype) {
+      while ($ptype = $iterator->next()) {
          $id = $ptype['id'];
          $values["Peripheral#$id"] = $ptype['name'];
       }

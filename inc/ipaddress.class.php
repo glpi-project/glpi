@@ -309,12 +309,14 @@ class IPAddress extends CommonDBChild {
 
       switch ($item->getType()) {
          case 'IPNetwork' :
-            $query = "SELECT DISTINCT COUNT(*) AS cpt
-                      FROM `glpi_ipaddresses_ipnetworks`
-                      WHERE `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
-            $result = $DB->query($query);
-            $ligne  = $DB->fetch_assoc($result);
-            return $ligne['cpt'];
+            $result = $DB->request([
+               'COUNT'  => 'cpt',
+               'FROM'   => 'glpi_ipaddresses_ipnetworks',
+               'WHERE'  => [
+                  'ipnetworks_id'   => $item->getID()
+               ]
+            ])->next();
+            return $result['cpt'];
       }
    }
 
@@ -570,14 +572,18 @@ class IPAddress extends CommonDBChild {
 
       if (!empty($itemtype)
           && ($items_id > 0)) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `items_id` = '$items_id'
-                         AND `itemtype` = '$itemtype'
-                         AND `name` = '$address'";
-         $result = $DB->query($query);
-         if ($DB->numrows($result) == 1) {
-            $line = $DB->fetch_assoc($result);
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'items_id'  => $items_id,
+               'itemtype'  => $itemtype,
+               'name'      => $address
+            ]
+         ]);
+
+         if (count($iterator) == 1) {
+            $line = $iterator->next();
             if ($this->getFromDB($line["id"])) {
                return true;
             }
@@ -733,17 +739,23 @@ class IPAddress extends CommonDBChild {
       }
       if (!empty($itemtype)
           && ($items_id > 0)) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `items_id` = '$items_id'
-                         AND `itemtype` = '$itemtype'";
+         $where = [
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id
+         ];
 
          for ($i = 0; $i < 4; ++$i) {
-            $query .= " AND `binary_".$i."` = '".$address[$i]."'";
+            $where["binary_$i"] = $address[$i];
          }
-         $result = $DB->query($query);
-         if ($DB->numrows($result) == 1) {
-            $line = $DB->fetch_assoc($result);
+
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => $where
+         ]);
+
+         if (count($iterator) == 1) {
+            $line = $iterator->next();
             if ($this->getFromDB($line["id"])) {
                return true;
             }
