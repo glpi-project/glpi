@@ -1378,7 +1378,7 @@ Regards,',
       foreach ($mapping as $map) {
          foreach ($map as $computers_id => $kver_id) {
             $DB->updateOrDie("glpi_items_operatingsystems", 
-               ['operatingsystemkernelversions_id' => "$kver_id"], 
+               ['operatingsystemkernelversions_id' => $kver_id], 
                [
                   'itemtype' => "Computer",
                   'items_id' => $computers_id
@@ -1532,7 +1532,7 @@ Regards,',
                'name'         => "certificate",
                'rights'       => $rightValue,
             ],
-            "9.1 add right for certificates"
+            "9.2 add right for certificates"
          );
       }
    }
@@ -1816,7 +1816,7 @@ Regards,',
                'name'         => "line",
                'rights'       => $rightValue
             ],
-            "9.1 add right for line"
+            "9.2 add right for line"
          );
       }
    }
@@ -1836,7 +1836,7 @@ Regards,',
                'name'         => "lineoperator",
                'rights'       => $rightValue
             ],
-            "9.1 add right for lineoperator"
+            "9.2 add right for lineoperator"
          );
       }
    }
@@ -1856,7 +1856,7 @@ Regards,',
                'name'         => "devicesimcard_pinpuk",
                'rights'       => $rightValue
             ],
-            "9.1 add right for simcards pin and puk codes"
+            "9.2 add right for simcards pin and puk codes"
          );
       }
    }
@@ -2189,14 +2189,22 @@ Regards,',
       if (!$DB->fieldExists($tl_table, 'timeline_position')) {
          $migration->addField($tl_table, "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
          $where = [
-            "$tl_table.tickets_id"  => "glpi_tickets_users.tickets_id",
-            "$tl_table.users_id"    => "glpi_tickets_users.users_id",
+            "$tl_table.tickets_id"  => new \QueryExpression(
+               DBmysql::quoteName("glpi_tickets_users.tickets_id")
+            ),
+            "$tl_table.users_id"    => new \QueryExpression(
+               DBmysql::quoteName("glpi_tickets_users.users_id")
+            ),
          ];
          if (!$DB->fieldExists($tl_table, 'tickets_id')) {
             $where = [
                "$tl_table.itemtype"    => "Ticket",
-               "$tl_table.items_id"    => "glpi_tickets_users.tickets_id",
-               "$tl_table.users_id"    => "glpi_tickets_users.users_id",
+               "$tl_table.items_id"    => new \QueryExpression(
+                  DBmysql::quoteName("glpi_tickets_users.tickets_id")
+               ),
+               "$tl_table.users_id"    => new \QueryExpression(
+                  DBmysql::quoteName("glpi_tickets_users.users_id")
+               ),
             ];
          }
          
@@ -2215,16 +2223,28 @@ Regards,',
          );
 
          $where = [
-            "$tl_table.tickets_id"           => "glpi_groups_users.tickets_id",
-            "glpi_groups_users.groups_id"    => "glpi_groups_tickets.groups_id",
-            "$tl_table.users_id"             => "glpi_groups_users.users_id",
+            "$tl_table.tickets_id"           => new \QueryExpression(
+               DBmysql::quoteName("glpi_groups_users.tickets_id")
+            ),
+            "glpi_groups_users.groups_id"    => new \QueryExpression(
+               DBmysql::quoteName("glpi_groups_tickets.groups_id")
+            ),
+            "$tl_table.users_id"             => new \QueryExpression(
+               DBmysql::quoteName("glpi_groups_users.users_id")
+            ),
          ];
          if (!$DB->fieldExists($tl_table, 'tickets_id')) {
             $where = [
                "$tl_table.itemtype"             => "Ticket",
-               "$tl_table.items_id"             => "glpi_tickets_users.tickets_id",
-               "glpi_groups_users.groups_id"    => "glpi_groups_tickets.groups_id",
-               "$tl_table.users_id"             => "glpi_groups_users.users_id",
+               "$tl_table.items_id"             => new \QueryExpression(
+                  DBmysql::quoteName("glpi_tickets_users.tickets_id")
+               ),
+               "glpi_groups_users.groups_id"    => new \QueryExpression(
+                  DBmysql::quoteName("glpi_groups_tickets.groups_id")
+               ),
+               "$tl_table.users_id"             => new \QueryExpression(
+                  DBmysql::quoteName("glpi_groups_users.users_id")
+               ),
             ];
          }
 

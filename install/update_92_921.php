@@ -327,6 +327,7 @@ function update92to921() {
       )
    );
 
+   // TODO: can be done when DB::delete() supports JOINs
    $migration->addPreQuery("DELETE `duplicated` FROM `glpi_profilerights` AS `duplicated`
                             INNER JOIN `glpi_profilerights` AS `original`
                             WHERE `duplicated`.`profiles_id` = `original`.`profiles_id`
@@ -390,6 +391,7 @@ function update92to921() {
       'Printer'            => 'glpi_printers'
    ];
    foreach ($items as $itemtype => $table) {
+      // TODO: can be done when DB::update() supports JOINs
       $migration->addPostQuery(
          "UPDATE glpi_items_operatingsystems AS ios
             INNER JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = '$itemtype'
