@@ -500,6 +500,14 @@ class RuleTicket extends Rule {
       $criterias['olas_id_tto']['type']                     = 'dropdown';
       $criterias['olas_id_tto']['condition']                = "`glpi_olas`.`type` = '".SLM::TTO."'";
 
+      $criterias['_date_creation_calendars_id'] = [
+         'name'            => __("Creation date is a working hour in calendar"),
+         'table'           => Calendar::getTable(),
+         'field'           => 'name',
+         'linkfield'       => '_date_creation_calendars_id',
+         'type'            => 'dropdown',
+      ];
+
       return $criterias;
    }
 
