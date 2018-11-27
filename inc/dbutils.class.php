@@ -915,7 +915,7 @@ final class DbUtils {
       $JOINS         = [];
       if ($translate) {
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'name')) {
-            $SELECTNAME = new \QueryExpression("namet.value AS ". $DB->quoteName('transname'));
+            $SELECTNAME = 'namet.value AS transname';
             $JOINS['glpi_dropdowntranslations AS namet'] = [
                'ON' => [
                   'namet'  => 'items_id',
@@ -930,7 +930,7 @@ final class DbUtils {
             ];
          }
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'comment')) {
-            $SELECTCOMMENT = new \QueryExpression("namec.value AS " . $DB->quoteName('transcomment'));
+            $SELECTCOMMENT = 'namec.value AS transcomment';
             $JOINS['glpi_dropdowntranslations AS namec'] = [
                'ON' => [
                   'namec'  => 'items_id',
@@ -1015,7 +1015,7 @@ final class DbUtils {
       $JOINS         = [];
       if ($translate) {
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'completename')) {
-            $SELECTNAME = new \QueryExpression("namet.value AS ". $DB->quoteName('transname'));
+            $SELECTNAME = 'namet.value AS transname';
             $JOINS['glpi_dropdowntranslations AS namet'] = [
                'ON' => [
                   'namet'  => 'items_id',
@@ -1030,7 +1030,7 @@ final class DbUtils {
             ];
          }
          if (Session::haveTranslations($this->getItemTypeForTable($table), 'comment')) {
-            $SELECTCOMMENT = new \QueryExpression("namec.value AS " . $DB->quoteName('transcomment'));
+            $SELECTCOMMENT = 'namec.value AS transcomment';
             $JOINS['glpi_dropdowntranslations AS namec'] = [
                'ON' => [
                   'namec'  => 'items_id',
