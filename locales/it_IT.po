@@ -15246,7 +15246,7 @@ msgstr "E-mail non trovata. Impossibile importare"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Diritti insufficienti"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"

@@ -45,7 +45,7 @@ msgstr "Parole"
 
 #: index.php:138
 msgid "Lang (from user profile)"
-msgstr "Valoda (no lietotāja profile)"
+msgstr "Valoda (no lietotāja profila)"
 
 #: index.php:155
 msgid "Remember me"

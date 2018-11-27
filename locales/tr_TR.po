@@ -15200,7 +15200,7 @@ msgstr "E-posta bulunamadığından alınamadı."
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "İzinler yetersiz"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"

@@ -17,10 +17,10 @@
 # Remi Collet <fedora@famillecollet.com>, 2018
 # Legastelois François <flegastelois@teclib.com>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
-# Tiago Graca, 2018
 # Gilles WLT <gilles.wlt@gmail.com>, 2018
 # Pierre <plebel@teclib.com>, 2018
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2018
+# Tiago Graca, 2018
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-22 16:18+0100\n"
 "PO-Revision-Date: 2017-11-17 10:20+0000\n"
-"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2018\n"
+"Last-Translator: Tiago Graca, 2018\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15292,7 +15292,7 @@ msgstr "Courriel absent. Import impossible"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr "Autorisations insufisantes"
+msgstr "Autorisations insuffisantes"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"

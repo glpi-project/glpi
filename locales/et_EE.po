@@ -7,7 +7,7 @@
 # pexy <pexyyy@gmail.com>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# Aarne Põder <croco3008@gmail.com>, 2017
+# croco3008 <croco3008@gmail.com>, 2017
 # Indrek Teppan <indrek@laanesaare.ee>, 2018
 # Rivo Zängov <eraser@eraser.ee>, 2018
 # Diana Lõhmus <diana.lohmus@saaremaavald.ee>, 2018

@@ -721,7 +721,7 @@ msgstr "Passerelle : %s"
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
 "Saisissez les premières lettres (utilisateur, nom d'article, numéro de série"
-" ou numéro d'inventaire)"
+" ou numéro d'actif)"
 
 #: ajax/getMapPoint.php:43 ajax/map.php:44
 msgid "Required argument missing!"
@@ -7979,7 +7979,7 @@ msgstr "Afficher la source de l'intitulé sur la page de connexion"
 #: inc/profile.class.php:97 inc/profile.class.php:887
 #: inc/profile.class.php:1629 inc/transfer.class.php:3361
 msgid "Assets"
-msgstr "Parc"
+msgstr "Actifs"
 
 #: inc/config.class.php:492
 msgid "Enable the financial and administrative information by default"
@@ -11999,7 +11999,7 @@ msgstr ""
 
 #: inc/infocom.class.php:1053
 msgid "Asset lifecycle"
-msgstr "Cycle de vie du matériel"
+msgstr "Cycle de vie de l'actif"
 
 #: inc/infocom.class.php:1079 inc/infocom.class.php:1447
 #: inc/infocom.class.php:1679
@@ -12414,11 +12414,11 @@ msgstr "Emplacement réservé ?"
 
 #: inc/item_rack.class.php:819
 msgid "asset rear side"
-msgstr "côté arrière du matériel"
+msgstr "côté arrière de l'actif"
 
 #: inc/item_rack.class.php:820
 msgid "asset front side"
-msgstr "côté avant du matériel"
+msgstr "côté avant de l'actif"
 
 #: inc/item_rack.class.php:831 inc/pdu_rack.class.php:587
 #: inc/rack.class.php:1094
@@ -15294,7 +15294,7 @@ msgstr "Courriel absent. Importation impossible"
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Autorisations insuffisantes"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -17676,7 +17676,7 @@ msgstr "La notification a été créée !"
 
 #: inc/search.class.php:157
 msgid "assets"
-msgstr "parc"
+msgstr "actifs"
 
 #: inc/search.class.php:159
 msgid "Search results for localized items only"

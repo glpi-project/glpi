@@ -15782,7 +15782,7 @@ msgstr "Лист не знайдено. Імпорт неможливий."
 
 #: inc/notimportedemail.class.php:242
 msgid "Not enough rights"
-msgstr ""
+msgstr "Недостатньо прав"
 
 #: inc/objectlock.class.php:63
 msgid "Object Lock"
@@ -16256,7 +16256,7 @@ msgstr "Цей плугін вимагає %1$s > %2$s."
 #: inc/plugin.class.php:1527
 #, php-format
 msgid "This plugin requires %1$s > %2$s and < %3$s"
-msgstr "TЦей плугін вимагає %1$s > %2$s та < %3$s"
+msgstr "Цей плугін вимагає %1$s > %2$s та < %3$s"
 
 #: inc/plugin.class.php:1553
 #, php-format
@@ -18886,7 +18886,7 @@ msgstr "Останні заявки"
 
 #: inc/ticket.class.php:6151 inc/ticket.class.php:6163
 msgid "New ticket for this item..."
-msgstr "Нові Заявки щодо цього елементу"
+msgstr "Нова Заявка щодо цього елементу"
 
 #: inc/ticket.class.php:6179
 #, php-format

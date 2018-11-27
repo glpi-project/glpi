@@ -13,8 +13,8 @@
 # Emilio Florido <eflorido@sevired.com>, 2017
 # DOMBRE Julien <moyo@indepnet.net>, 2017
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2017
-# FranciscoFJ <dev-ooo@satel-sa.com>, 2018
 # cdbb401dea6e83fa2f78b700f63b58b1, 2018
+# FranciscoFJ <dev-ooo@satel-sa.com>, 2018
 # Alvaro Sáez <asaez@asaez.eu>, 2018
 # Tomás Abad <tabadgp@gmail.com>, 2018
 # Dani Gamero <gargam3@gmail.com>, 2018
@@ -15669,12 +15669,12 @@ msgstr "Ver el catálogo de complementos"
 #: inc/plugin.class.php:663
 #, php-format
 msgid "Plugin %1$s has no uninstall function!"
-msgstr "¡El plugin %1$s no tiene función de desinstalación!"
+msgstr "¡El complemento %1$s no tiene función de desinstalación!"
 
 #: inc/plugin.class.php:677
 #, php-format
 msgid "Plugin %1$s has been uninstalled!"
-msgstr "¡El plugin %1$s ha sido desinstalado!"
+msgstr "¡El complemento %1$s ha sido desinstalado!"
 
 #: inc/plugin.class.php:679 inc/plugin.class.php:734 inc/plugin.class.php:821
 #: inc/plugin.class.php:859
@@ -15685,7 +15685,7 @@ msgstr "¡Complemento %1$s no encontrado!"
 #: inc/plugin.class.php:714
 #, php-format
 msgid "Plugin %1$s has been installed!"
-msgstr "¡El plugin %1$s ha sido instalado!"
+msgstr "¡El complemento %1$s ha sido instalado!"
 
 #: inc/plugin.class.php:719
 msgid "Do you want to %activate_link it?"
@@ -15704,7 +15704,7 @@ msgstr "¡El plugin %1$s no tiene función de instalación!"
 #: inc/plugin.class.php:762
 #, php-format
 msgid "Plugin %1$s is not CSRF compliant!"
-msgstr "¡El plugin %1$s no es compatible con CSRF!"
+msgstr "¡El complemento %1$s no es compatible con CSRF!"
 
 #: inc/plugin.class.php:776
 #, php-format
@@ -15744,7 +15744,7 @@ msgstr "Este complemento requiere la extensión de PHP %1$s"
 #: inc/plugin.class.php:1559
 #, php-format
 msgid "This plugin requires %1$s plugin"
-msgstr "Este plugin requiere el plugin %1$s"
+msgstr "Este complemento requiere el complemento %1$s"
 
 #: inc/plugin.class.php:1565
 #, php-format
@@ -15754,12 +15754,12 @@ msgstr "Este plugin requiere php compilado junto con \"%1$s\""
 #: inc/plugin.class.php:1571
 #, php-format
 msgid "This plugin requires PHP parameter %1$s"
-msgstr "Este plugin requiere el parámetro php %1$s"
+msgstr "Este complemento requiere el parámetro php %1$s"
 
 #: inc/plugin.class.php:1577
 #, php-format
 msgid "This plugin requires GLPI parameter %1$s"
-msgstr "Este plugin requiere el parámetro GLPI %1$s"
+msgstr "Este complemento requiere el parámetro GLPI %1$s"
 
 #: inc/plugin.class.php:1854
 msgctxt "plugin"
@@ -18043,7 +18043,8 @@ msgstr "Enviar estadísticas de uso."
 
 #: inc/telemetry.class.php:457
 msgid "We need your help to improve GLPI and the plugins ecosystem!"
-msgstr "¡Necesitamos su ayuda para mejorar GLPI y el ecosistema de plugins!"
+msgstr ""
+"¡Necesitamos su ayuda para mejorar GLPI y el ecosistema de complementos!"
 
 #: inc/telemetry.class.php:458
 msgid ""
@@ -18068,7 +18069,7 @@ msgid ""
 "Let us know your usage to improve future versions of GLPI and its plugins!"
 msgstr ""
 "¡Déjenos conocer su uso para mejorar las versiones futuras de GLPI y sus "
-"plugins!"
+"complementos!"
 
 #: inc/telemetry.class.php:473
 msgid "Reference your GLPI"
