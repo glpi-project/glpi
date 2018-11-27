@@ -325,6 +325,30 @@ function update93to94() {
       }
       $migration->dropKey('glpi_tickets', $old_fieldname);
       $migration->addKey('glpi_tickets', $new_fieldname);
+
+      $migration->addPostQuery(
+         $DB->buildUpdate(
+            'glpi_rulecriterias',
+            [
+               'criteria' => $new_fieldname
+            ],
+            [
+               'criteria' => $old_fieldname
+            ]
+         )
+      );
+
+      $migration->addPostQuery(
+         $DB->buildUpdate(
+            'glpi_ruleactions',
+            [
+               'field' => $new_fieldname
+            ],
+            [
+               'field' => $old_fieldname
+            ]
+         )
+      );
    }
 
    /** Adding the responsible field */
