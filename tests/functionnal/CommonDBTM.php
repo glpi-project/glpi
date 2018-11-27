@@ -329,6 +329,74 @@ class CommonDBTM extends DbTestCase {
       $this->boolean($res)->isTrue();
    }
 
+   public function testupdateOrInsertMerged() {
+      global $DB;
+
+      //insert case
+      $res = (int)$DB->updateOrInsert(
+         \Computer::getTable(), [
+            'serial' => 'serial-one'
+         ], [
+            'name'   => 'serial-to-change'
+         ]
+      );
+      $this->integer($res)->isGreaterThan(0);
+
+      $check = $DB->request([
+         'FROM'   => \Computer::getTable(),
+         'WHERE'  => ['name' => 'serial-to-change']
+      ])->next();
+      $this->array($check)
+         ->string['serial']->isIdenticalTo('serial-one');
+
+      //update case
+      $res = $DB->updateOrInsert(
+         \Computer::getTable(), [
+            'serial' => 'serial-changed'
+         ], [
+            'name'   => 'serial-to-change'
+         ]
+      );
+      $this->boolean($res)->isTrue();
+
+      $check = $DB->request([
+         'FROM'   => \Computer::getTable(),
+         'WHERE'  => ['name' => 'serial-to-change']
+      ])->next();
+      $this->array($check)
+         ->string['serial']->isIdenticalTo('serial-changed');
+
+      $this->integer(
+         (int)$DB->insert(
+            \Computer::getTable(),
+            ['name' => 'serial-to-change']
+         )
+      )->isGreaterThan(0);
+
+      //multiple update case
+      $this->exception(
+         function () use ($DB) {
+            $res = $DB->updateOrInsert(
+               \Computer::getTable(), [
+                  'serial' => 'serial-changed'
+               ], [
+                  'name'   => 'serial-to-change'
+               ]
+            );
+         }
+      )->message->contains('Update would change too many rows!');
+
+      //allow multiples
+      $res = $DB->updateOrInsert(
+         \Computer::getTable(), [
+            'serial' => 'serial-changed'
+         ], [
+            'name'   => 'serial-to-change'
+         ],
+         false
+      );
+      $this->boolean($res)->isTrue();
+   }
    /**
     * Check right on Recursive object
     *
