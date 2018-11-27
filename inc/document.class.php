@@ -1408,16 +1408,18 @@ class Document extends CommonDBTM {
       ] + getEntitiesRestrictCriteria('glpi_documents', '', $p['entity'], true);
 
       if (count($p['used'])) {
-         $subwhere['NOT'] = $p['used'];
+         $subwhere['NOT'] = ['id' => array_merge([0], $p['used'])];
       }
 
       $criteria = [
          'FROM'   => 'glpi_documentcategories',
-         'WHERE'  => new QuerySubQuery([
-            'SELECT DISTINCT' => 'documentcategories_id',
-            'FROM'            => 'glpi_documents',
-            'WHERE'           => $subwhere
-         ]),
+         'WHERE'  => [
+            'id' => new QuerySubQuery([
+               'SELECT DISTINCT' => 'documentcategories_id',
+               'FROM'            => 'glpi_documents',
+               'WHERE'           => $subwhere
+            ])
+         ],
          'ORDER'  => 'name'
       ];
       $iterator = $DB->request($criteria);

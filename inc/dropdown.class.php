@@ -307,7 +307,7 @@ class Dropdown {
          $JOINS         = [];
          if ($translate) {
             if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
-               $SELECTNAME = new \QueryExpression("namet.value AS ". $DB->quoteName('transname'));
+               $SELECTNAME = 'namet.value AS transname';
                $JOINS['glpi_dropdowntranslations AS namet'] = [
                   'ON' => [
                      'namet'  => 'items_id',
@@ -322,7 +322,7 @@ class Dropdown {
                ];
             }
             if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
-               $SELECTCOMMENT = new \QueryExpression("namec.value AS " . $DB->quoteName('transcomment'));
+               $SELECTCOMMENT = 'namec.value AS transcomment';
                $JOINS['glpi_dropdowntranslations AS namec'] = [
                   'ON' => [
                      'namec'  => 'items_id',
@@ -2902,7 +2902,6 @@ class Dropdown {
 
       $start = intval(($post['page']-1)*$post['page_limit']);
       $limit = intval($post['page_limit']);
-      $LIMIT = "LIMIT $start,$limit";
 
       if (!isset($post['onlyglobal'])) {
          $post['onlyglobal'] = false;
@@ -2918,7 +2917,7 @@ class Dropdown {
          }
 
          if ($post["itemtype"] == 'Computer') {
-            $where = $where +$where_used;
+            $where = $where + $where_used;
          } else {
             $where[] = [
                'OR' => [
@@ -2926,7 +2925,6 @@ class Dropdown {
                      'glpi_computers_items.id'  => null
                   ] + $where_used,
                   "$table.is_global"            => 1
-
                ]
             ];
          }
@@ -3065,7 +3063,7 @@ class Dropdown {
       }
 
       if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
-         $search = Search::makeTextSearchValue($post['searchText']);
+         $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
          $orwhere =[
             'name'   => $search,
             'id'     => $post['searchText']
@@ -3080,7 +3078,7 @@ class Dropdown {
          if ($DB->fieldExists($post['table'], "otherserial")) {
             $orwhere['otherserial'] = $search;
          }
-         $where['AND'] = ['OR' => $orwhere];
+         $where[] = ['OR' => $orwhere];
       }
 
       //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
