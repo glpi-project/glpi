@@ -51,6 +51,7 @@ The following methods have been deprecated:
 - `Ticket::showMassiveActionsSubForm()`
 - `NotificationTarget::getProfileJoinSql()`
 - `NotificationTarget::getDistinctUserSql()`
+- `NotificationTargetCommonITILObject::getProfileJoinSql()`
 - `RuleCollection::getRuleListQuery()`
 - `getNextItem()`
 - `getPreviousItem()`
