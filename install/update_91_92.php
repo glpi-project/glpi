@@ -91,19 +91,23 @@ function update91to92() {
    //First time the dropdown is changed from CommonDropdown to CommonTreeDropdown
    if ($tree) {
       $DB->updateOrDie("glpi_softwarelicensetypes", [
-         'completename' => "name",
-         'is_recursive' => "1"
-      ], "1", "9.2 make glpi_softwarelicensetypes a tree dropdown");
+            'completename' =>  new \QueryExpression(DBmysql::quoteName("name")),
+            'is_recursive' => "1"
+         ], 
+         "1", 
+         "9.2 make glpi_softwarelicensetypes a tree dropdown"
+      );
    }
 
    // give READ right on components to profiles having UPDATE right
-   $DB->updateOrDie(
-      "glpi_profilerights", [
+   $DB->updateOrDie("glpi_profilerights", [
          'rights' => new \QueryExpression($DB->quoteName("rights") . " | " . READ)
       ], [
-         new \QueryExpression($DB->quoteName("rights") . " & " . UPDATE)   => UPDATE,
-         'name'                                                            => "device"
-      ], "grant READ right on components to profiles having UPDATE right");
+         new \QueryExpression(DBmysql::quoteName("rights") . " & " . DBmysql::quoteValue(UPDATE)),
+         'name' => "device"
+      ],
+      "grant READ right on components to profiles having UPDATE right"
+   );
 
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item link to tickets'));
    if (!$DB->tableExists('glpi_knowbaseitems_items')) {
@@ -180,9 +184,11 @@ function update91to92() {
    }
 
    $DB->updateOrDie("glpi_profilerights", [
-         'rights' => 
-            new \QueryExpression($DB->quoteName("rights") . " | " . KnowbaseItem::COMMENTS)
-      ], ['name' => "knowbase"],
+         'rights' => new \QueryExpression(
+            DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue( KnowbaseItem::COMMENTS)
+         )
+      ], 
+      ['name' => "knowbase"],
       "9.2 update knowledge base with comment right"
    );
 
@@ -198,10 +204,14 @@ function update91to92() {
    $migration->addPostQuery(
       $DB->buildUpdate(
          new \QueryExpression(
-            $DB->quoteName("glpi_documents_items") . ", " . $DB->quoteName("glpi_documents")
-         ), 
-         ['glpi_documents_items.users_id' => "glpi_documents.users_id"], 
-         ['glpi_documents_items.documents_id' => "glpi_documents.id"]
+            DBmysql::quoteName("glpi_documents_items") . ", " . DBmysql::quoteName("glpi_documents")
+         ), [
+            'glpi_documents_items.users_id' =>  
+               new \QueryExpression(DBmysql::quoteName("glpi_documents.users_id"))
+         ], [
+            'glpi_documents_items.documents_id' => 
+               new \QueryExpression(DBmysql::quoteName("glpi_documents.id"))
+         ]
       ), "9.2 update set users_id on glpi_documents_items"
    );
 
@@ -608,9 +618,10 @@ function update91to92() {
    $migration->addField("glpi_softwarelicenses", "level", "integer", ['after' => 'completename']);
    $migration->migrationOneTable("glpi_softwarelicenses");
    if ($new) {
-      $DB->updateOrDie("glpi_softwarelicenses",
-         ['completename' => "name"],
-         [],
+      $DB->updateOrDie("glpi_softwarelicenses", [
+            'completename' => new \QueryExpression(DBmysql::QuoteName("name"))
+         ],
+         "1",
          "9.2 copy name to completename for software licenses"
       );
    }

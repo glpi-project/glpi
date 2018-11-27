@@ -123,7 +123,7 @@ function update93to94() {
 
    if (!countElementsInTable('glpi_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
       $DB->insert("glpi_profilerights", [
-         'id'           => "NULL",
+         'id'           => null,
          'profiles_id'  => "4",
          'name'         => "rule_asset",
          'rights'       => "255",

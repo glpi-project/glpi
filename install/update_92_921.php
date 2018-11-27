@@ -160,16 +160,16 @@ function update92to921() {
          'itemtype'        => "OlaLevel_Ticket",
          'name'            => "olaticket",
          'frequency'       => "604800",
-         'param'           => "NULL",
+         'param'           => null,
          'state'           => "0",
          'mode'            => "1",
          'allowmode'       => "3",
          'hourmin'         => "0",
          'hourmax'         => "24",
          'logs_lifetime'   => "10",
-         'lastrun'         => "NULL",
-         'lastcode'        => "NULL",
-         'comment'         => "NULL",
+         'lastrun'         => null,
+         'lastcode'        => null,
+         'comment'         => null,
       ], "9.2 populate glpi_crontasks for olaticket");
    }
 
