@@ -434,10 +434,23 @@ function update0905to91() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.1 add table glpi_apiclients");
 
-      $query = "INSERT INTO `glpi_apiclients`
-                VALUES (1, 0, 1, 'full access from localhost', NOW(), 1, INET_ATON('127.0.0.1'),
-                        INET_ATON('127.0.0.1'), '::1', '', NULL, 0, NULL);";
-      $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
+      $DB->insertOrDie("glpi_apiclients", [
+            'id'                 => 1,
+            'entities_id'        => 0,
+            'is_recursive'       => 1,
+            'name'               => "full access from localhost",
+            'date_mod'           => new \QueryExpression("NOW()"),
+            'is_active'          => 1,
+            'ipv4_range_start'   => "INET_ATON('127.0.0.1')",
+            'ipv4_range_end'     => "INET_ATON('127.0.0.1')",
+            'ipv6'               => "::1",
+            'app_token'          => "",
+            'app_token_date'     => null,
+            'dolog_method'       => 0,
+            'comment'            => null
+         ],
+         "9.1 insert first line into table glpi_apiclients"
+      );
    }
 
    /************** Date mod/creation for itemtypes *************/
@@ -522,22 +535,27 @@ function update0905to91() {
             $columns = ['num', 'tickettemplates_id'];
             break;
       }
-      $query = "SELECT `".implode('`,`', $columns)."`
-                FROM `$table`
-                WHERE `num` = '$item_num'
-                      OR `num` = '$itemtype_num';";
+
+      $iterator = $DB->request([
+         'SELECT' => $columns,
+         'FROM'   => $table,
+         'WHERE'  => [
+            'OR' => [
+               'num' => $item_num,
+               'num' => $itemtype_num
+            ]
+         ]
+      ]);
 
       $items_to_update = [];
-      if ($result          = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               if ($data['num'] == $itemtype_num) {
-                  $items_to_update[$data['tickettemplates_id']]['itemtype']
-                     = isset($data['value']) ? $data['value'] : 0;
-               } else if ($data['num'] == $item_num) {
-                  $items_to_update[$data['tickettemplates_id']]['items_id']
-                     = isset($data['value']) ? $data['value'] : 0;
-               }
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
+            if ($data['num'] == $itemtype_num) {
+               $items_to_update[$data['tickettemplates_id']]['itemtype']
+                  = isset($data['value']) ? $data['value'] : 0;
+            } else if ($data['num'] == $item_num) {
+               $items_to_update[$data['tickettemplates_id']]['items_id']
+                  = isset($data['value']) ? $data['value'] : 0;
             }
          }
       }
@@ -547,16 +565,21 @@ function update0905to91() {
             foreach ($items_to_update as $templates_id => $type) {
                if (isset($type['itemtype'])) {
                   if (isset($type['items_id'])) {
-                     $DB->queryOrDie("UPDATE `$table`
-                                      SET `value` = '".$type['itemtype']."_".$type['items_id']."'
-                                      WHERE `num` = '".$item_num."'
-                                      AND `tickettemplates_id` = '".$templates_id."'",
-                                     "Associated items migration : update predefined items");
+                     $DB->updateOrDie($table, [
+                           'value' => $type['itemtype'] . "_" . $type['items_id']
+                        ], [
+                           'num'                => $item_num,
+                           'tickettemplates_id' => $templates_id,
+                        ],
+                        "Associated items migration : update predefined items"
+                     );
 
-                     $DB->queryOrDie("DELETE FROM `$table`
-                                      WHERE `num` = '".$itemtype_num."'
-                                            AND `tickettemplates_id` = '".$templates_id."'",
-                                     "Associated items migration : delete $table itemtypes");
+                     $DB->deleteOrDie($table, [
+                           'num'                => $itemtype_num,
+                           'tickettemplates_id' => $templates_id,
+                        ],
+                        "Associated items migration : delete $table itemtypes"
+                     );
                   }
                }
             }
@@ -566,16 +589,21 @@ function update0905to91() {
             foreach ($items_to_update as $templates_id => $type) {
                if (isset($type['itemtype'])) {
                   if (isset($type['items_id'])) {
-                     $DB->queryOrDie("DELETE FROM `$table`
-                                      WHERE `num` = '".$item_num."'
-                                            AND `tickettemplates_id` = '".$templates_id."'",
-                                     "Associated items migration : delete $table itemtypes");
+                     $DB->deleteOrDie($table, [
+                           'num'                => $item_num,
+                           'tickettemplates_id' => $templates_id,
+                        ],
+                        "Associated items migration : delete $table itemtypes"
+                     );
                   }
-                  $DB->queryOrDie("UPDATE `$table`
-                                   SET `num` = '".$item_num."'
-                                   WHERE `num` = '".$itemtype_num."'
-                                         AND `tickettemplates_id` = '".$templates_id."'",
-                                 "Associated items migration : delete $table itemtypes");
+                  $DB->updateOrDie($table, [
+                        'num' => $item_num
+                     ], [
+                        'num'                => $itemtype_num,
+                        'tickettemplates_id' => $templates_id,
+                     ],
+                     "Associated items migration : delete $table itemtypes"
+                  );
                }
             }
             break;
@@ -655,21 +683,29 @@ function update0905to91() {
       //new right for software license
       //copy the software right value to the new license right
       foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
-         $query = "INSERT INTO `glpi_profilerights`
-                          (`id`, `profiles_id`, `name`, `rights`)
-                   VALUES (NULL, '".$profrights['profiles_id']."', 'license',
-                           '".$profrights['rights']."')";
-         $DB->queryOrDie($query, "9.1 add right for softwarelicense");
+         $DB->insertOrDie("glpi_profilerights", [
+               'id'           => null,
+               'profiles_id'  => $profrights['profiles_id'],
+               'name'         => "license",
+               'rights'       => $profrights['rights'],
+            ],
+            "9.1 add right for softwarelicense"
+         );
       }
    }
 
    //new right for survey
    foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
-      $query = "UPDATE `glpi_profilerights`
-                SET `rights` = `rights` | " . Ticket::SURVEY ."
-                WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "9.1 update ticket with survey right");
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(Ticket::SURVEY)
+            )
+         ], [
+            'profiles_id'  => $profrights['profiles_id'],
+            'name'         => "ticket"
+         ],
+         "9.1 update ticket with survey right"
+      );
    }
 
    //new field
@@ -680,47 +716,55 @@ function update0905to91() {
 
    $ADDTODISPLAYPREF['SoftwareLicense'] = [3, 10, 162, 5];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $query = "SELECT DISTINCT `users_id`
-                FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type'";
+      $displaypreferencesIterator = $DB->request([
+         'SELECT DISTINCT' => "users_id",
+         'FROM'            => "glpi_displaypreferences",
+         'WHERE'           => ['itemtype' => $type]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query = "SELECT MAX(`rank`)
-                         FROM `glpi_displaypreferences`
-                         WHERE `users_id` = '".$data['users_id']."'
-                               AND `itemtype` = '$type'";
-               $result = $DB->query($query);
-               $rank   = $DB->result($result, 0, 0);
-               $rank++;
+      if (count($displaypreferencesIterator)) {
+         while ($data = $displaypreferencesIterator->next()) {
+            $rank = $DB->request([
+               'SELECT DISTINCT' => ['MAX' => "rank AS max_rank"],
+               'FROM'            => "glpi_displaypreferences",
+               'WHERE'           => [
+                  'users_id' => $data['users_id'],
+                  'itemtype' => $type
+               ]
+            ])->next();
+            $rank = $rank ? $rank['max_rank']++ : 1;
 
-               foreach ($tab as $newval) {
-                  $query = "SELECT *
-                            FROM `glpi_displaypreferences`
-                            WHERE `users_id` = '".$data['users_id']."'
-                                  AND `num` = '$newval'
-                                  AND `itemtype` = '$type'";
-                  if ($result2 = $DB->query($query)) {
-                     if ($DB->numrows($result2) == 0) {
-                        $query = "INSERT INTO `glpi_displaypreferences`
-                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                  VALUES ('$type', '$newval', '".$rank++."',
-                                          '".$data['users_id']."')";
-                        $DB->query($query);
-                     }
+            foreach ($tab as $newval) {
+               $iterator = $DB->request([
+                  'FROM' => "glpi_displaypreferences",
+                  'WHERE' => [
+                     'users_id'  => $data['users_id'],
+                     'num'       => $newval,
+                     'itemtype'  => $type
+                  ],
+               ]);
+               if ($iterator->valid()) {
+                  if (count($iterator) == 0) {
+                     $DB->insert("glpi_displaypreferences", [
+                        'itemtype'  => $type,
+                        'num'       => $newval,
+                        'rank'      => $rank++,
+                        'users_id'  => $data['users_id'],
+                     ]);
                   }
                }
             }
+         }
 
-         } else { // Add for default user
-            $rank = 1;
-            foreach ($tab as $newval) {
-               $query = "INSERT INTO `glpi_displaypreferences`
-                                (`itemtype` ,`num` ,`rank` ,`users_id`)
-                         VALUES ('$type', '$newval', '".$rank++."', '0')";
-               $DB->query($query);
-            }
+      } else { // Add for default user
+         $rank = 1;
+         foreach ($tab as $newval) {
+            $DB->insert("glpi_displaypreferences", [
+               'itemtype'  => $type,
+               'num'       => $newval,
+               'rank'      => $rank++,
+               'users_id'  => 0,
+            ]);
          }
       }
    }
@@ -751,24 +795,25 @@ function update0905to91() {
       $DB->queryOrDie($query, "9.1 add table glpi_slts");
 
       // Sla migration
-      $query = "SELECT *
-                FROM `glpi_slas`";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query = "INSERT INTO `glpi_slts`
-                                (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`,
-                                 `number_time`, `date_mod`, `definition_time`,
-                                 `end_of_working_day`, `date_creation`, `slas_id`)
-                         VALUES ('".$data['id']."', '".Toolbox::addslashes_deep($data['name'])."',
-                                 '".$data['entities_id']."',
-                                 '".$data['is_recursive']."', '".SLM::TTR."',
-                                 '".addslashes($data['comment'])."', '".$data['resolution_time']."',
-                                 '".$data['date_mod']."',
-                                 '".$data['definition_time']."', '".$data['end_of_working_day']."',
-                                 '".date('Y-m-d H:i:s')."', '".$data['id']."');";
-               $DB->queryOrDie($query, "SLA migration to SLT");
-            }
+      $slasIterator = $DB->request("glpi_slas");
+      if (count($slasIterator)) {
+         while ($data = $slasIterator->next()) {
+            $DB->insertOrDie("glpi_slts", [
+                  'id'                 => $data['id'],
+                  'name'               => Toolbox::addslashes_deep($data['name']),
+                  'entities_id'        => $data['entities_id'],
+                  'is_recursive'       => $data['is_recursive'],
+                  'type'               => SLM::TTR,
+                  'comment'            => addslashes($data['comment']),
+                  'number_time'        => $data['resolution_time'],
+                  'date_mod'           => $data['date_mod'],
+                  'definition_time'    => $data['definition_time'],
+                  'end_of_working_day' => $data['end_of_working_day'],
+                  'date_creation'      => date('Y-m-d H:i:s'),
+                  'slas_id'            => $data['id']
+               ],
+               "SLA migration to SLT"
+            );
          }
       }
 
@@ -820,16 +865,18 @@ function update0905to91() {
                         'unicity', 'UNIQUE');
 
    // Sla rules criterias migration
-   $DB->queryOrDie("UPDATE `glpi_rulecriterias`
-                     SET `criteria` = 'slts_ttr_id'
-                     WHERE `criteria` = 'slas_id'",
-                     "SLA rulecriterias migration");
+   $DB->updateOrDie("glpi_rulecriterias",
+      ['criteria' => "slts_ttr_id" ],
+      ['criteria' => "slas_id"],
+      "SLA rulecriterias migration"
+   );
 
    // Sla rules actions migration
-   $DB->queryOrDie("UPDATE `glpi_ruleactions`
-                     SET `field` = 'slts_ttr_id'
-                     WHERE `field` = 'slas_id'",
-                     "SLA ruleactions migration");
+   $DB->updateOrDie("glpi_ruleactions",
+      ['field' => "slts_ttr_id" ],
+      ['field' => "slas_id"],
+      "SLA ruleactions migration"
+   );
 
    // to delete in next version - fix change in update
    if (!$DB->fieldExists('glpi_slas', 'calendars_id')) {
@@ -885,11 +932,14 @@ function update0905to91() {
    $migration->addKey("glpi_requesttypes", "is_mailfollowup_default");
 
    /************** Fix autoclose_delay for root_entity in glpi_entities (from -1 to 0) **************/
-   $query = "UPDATE `glpi_entities`
-             SET `autoclose_delay` = 0
-             WHERE `autoclose_delay` = '-1'
-                   AND `id` = 0";
-   $DB->queryOrDie($query, "glpi_entities root_entity change autoclose_delay value from -1 to 0");
+   $DB->updateOrDie("glpi_entities", [
+         'autoclose_delay' => 0
+      ], [
+         'autoclose_delay' => -1,
+         'id'              => 0
+      ],
+      "glpi_entities root_entity change autoclose_delay value from -1 to 0"
+   );
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
