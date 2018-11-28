@@ -1663,7 +1663,7 @@ class Ticket extends CommonITILObject {
 
 
    function prepareInputForAdd($input) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // save value before clean;
       $title = ltrim($input['name']);
@@ -1818,6 +1818,24 @@ class Ticket extends CommonITILObject {
           && Session::haveRight("ticket", Ticket::OWN)
       ) {
          $input['_users_id_assign'] = Session::getLoginUserID();
+      }
+
+      // add calendars matching date creation (for business rules)
+      $calendars = [];
+      $ite_calandar = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => Calendar::getTable(),
+         'WHERE'  => getEntitiesRestrictCriteria('', '', $input['entities_id'], true)
+      ]);
+      foreach ($ite_calandar as $calendar_data) {
+         $calendar = new Calendar;
+         $calendar->getFromDB($calendar_data['id']);
+         if ($calendar->isAWorkingHour(time())) {
+            $calendars[] = $calendar_data['id'];
+         }
+      }
+      if (count($calendars)) {
+         $input['_date_creation_calendars_id'] = $calendars;
       }
 
       // Process Business Rules
