@@ -473,7 +473,7 @@ class Item_Ticket extends CommonDBRelation{
                    || empty($data["name"])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                }
-               if (Session::getCurrentInterface() != 'helpdesk') {
+               if ((Session::getCurrentInterface() != 'helpdesk') && $item::canView()) {
                   $link     = $itemtype::getFormURLWithID($data['id']);
                   $namelink = "<a href=\"".$link."\">".$name."</a>";
                } else {
