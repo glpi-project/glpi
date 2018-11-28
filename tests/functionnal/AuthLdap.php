@@ -113,7 +113,7 @@ class AuthLDAP extends DbTestCase {
    public function testPost_getEmpty() {
       $ldap = new \AuthLDAP();
       $ldap->post_getEmpty();
-      $this->array($ldap->fields)->hasSize(23);
+      $this->array($ldap->fields)->hasSize(24);
    }
 
    public function testUnsetUndisclosedFields() {
@@ -254,7 +254,7 @@ class AuthLDAP extends DbTestCase {
    public function testGetSearchOptionsNew() {
       $ldap     = new \AuthLDAP();
       $options  = $ldap->rawSearchOptions();
-      $this->array($options)->hasSize(31);
+      $this->array($options)->hasSize(32);
    }
 
    public function testGetSyncFields() {
