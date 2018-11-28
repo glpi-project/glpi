@@ -1822,11 +1822,12 @@ class Ticket extends CommonITILObject {
 
       // add calendars matching date creation (for business rules)
       $calendars = [];
-      foreach ($DB->request([
+      $ite_calandar = $DB->request([
          'SELECT' => ['id'],
          'FROM'   => Calendar::getTable(),
          'WHERE'  => getEntitiesRestrictCriteria('', '', $input['entities_id'], true)
-      ]) as $calendar_data) {
+      ]);
+      foreach ($ite_calandar as $calendar_data) {
          $calendar = new Calendar;
          $calendar->getFromDB($calendar_data['id']);
          if ($calendar->isAWorkingHour(time())) {
