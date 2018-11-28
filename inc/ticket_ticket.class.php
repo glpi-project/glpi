@@ -396,6 +396,8 @@ class Ticket_Ticket extends CommonDBRelation {
       if ($ticket->getfromDB($ID)) {
          $solution_data = $solution->fields;
          unset($solution_data['id']);
+         unset($solution_data['date_creation']);
+         unset($solution_data['date_mod']);
 
          $tickets = self::getLinkedTicketsTo($ID);
          if (count($tickets)) {

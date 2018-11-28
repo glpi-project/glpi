@@ -1897,13 +1897,21 @@ class Infocom extends CommonDBChild {
             $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1, 'Infocom',
                                              $input['entities_id']);
          }
-         $date_fields = ['buy_date', 'delivery_date', 'inventory_date', 'order_date',
-                              'use_date', 'warranty_date'];
+         $date_fields = [
+            'buy_date',
+            'delivery_date',
+            'inventory_date',
+            'order_date',
+            'use_date',
+            'warranty_date',
+         ];
          foreach ($date_fields as $f) {
             if (empty($input[$f])) {
                unset($input[$f]);
             }
          }
+         unset($input['date_creation']);
+         unset($input['date_mod']);
          $ic2 = new self();
          $ic2->add($input);
       }
