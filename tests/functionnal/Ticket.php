@@ -2094,4 +2094,52 @@ class Ticket extends DbTestCase {
       $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
       $this->boolean($ticket->isAlreadyTakenIntoAccount())->isTrue();
    }
+
+   public function testCronCloseTicket() {
+      global $DB;
+      // set default calendar and autoclose delay in root entity
+      $entity = new \Entity;
+      $this->boolean($entity->update([
+         'id'              => 0,
+         'calendars_id'    => 1,
+         'autoclose_delay' => 5,
+      ]))->isTrue();
+
+      // create some solved tickets at various solvedate
+      $ticket = new \Ticket;
+      $tickets_id_1 = $ticket->add([
+         'name'        => "test autoclose 1",
+         'content'     => "test autoclose 1",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::SOLVED,
+      ]);
+      $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+      $DB->update('glpi_tickets', [
+         'solvedate' => date('Y-m-d 10:00:00', time() - 10 * DAY_TIMESTAMP),
+      ], [
+         'id' => $tickets_id_1,
+      ]);
+      $tickets_id_2 = $ticket->add([
+         'name'        => "test autoclose 1",
+         'content'     => "test autoclose 1",
+         'entities_id' => 0,
+         'status'      => \CommonITILObject::SOLVED,
+      ]);
+      $DB->update('glpi_tickets', [
+         'solvedate' => date('Y-m-d 10:00:00', time()),
+      ], [
+         'id' => $tickets_id_2,
+      ]);
+      $this->integer((int)$tickets_id_2)->isGreaterThan(0);
+
+      // launch Cron for closing tickets
+      $mode = - \CronTask::MODE_EXTERNAL; // force
+      \CronTask::launch($mode, 5, 'closeticket');
+
+      // check ticket status
+      $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+      $this->boolean($ticket->getFromDB($tickets_id_2))->isTrue();
+      $this->integer((int)$ticket->fields['status'])->isEqualTo(\CommonITILObject::SOLVED);
+   }
 }

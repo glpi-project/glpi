@@ -6266,7 +6266,21 @@ class Ticket extends CommonITILObject {
                             AND `is_deleted` = 0";
 
             if ($delay > 0) {
-               $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < NOW()";
+               $calendars_id = Entity::getUsedConfig('calendars_id', $entity);
+               if ($calendars_id > 0) {
+                  $calendar = new Calendar;
+                  $calendar->getFromDB($calendars_id);
+                  $end_date = $calendar->computeEndDate(
+                     date('Y-m-d H:i:s'),
+                     - $delay * DAY_TIMESTAMP,
+                     0,
+                     true
+                  );
+                  $query .= " AND `solvedate` <= '$end_date'";
+               } else {
+                  // no calendar, remove all days
+                  $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < NOW()";
+               }
             }
 
             $nb = 0;
