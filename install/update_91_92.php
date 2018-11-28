@@ -776,8 +776,6 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
       $DB->updateOrInsert("glpi_crontasks", [
-            'itemtype'        => "OlaLevel_Ticket",
-            'name'            => "olaticket",
             'frequency'       => "604800",
             'param'           => null,
             'state'           => "0",
@@ -1114,10 +1112,7 @@ function update91to92() {
       $rank = 1;
       foreach ($tab as $newval) {
          $DB->updateOrInsert("glpi_displaypreferences", [
-            'itemtype'  => $type,
-            'num'       => $newval,
-            'rank'      => $rank++,
-            'users_id'  => "0"
+            'rank'      => $rank++
          ], [
             'users_id'  => "0",
             'itemtype'  => $type,
@@ -1216,10 +1211,7 @@ function update91to92() {
       ];
       if (countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
          $DB->updateOrInsert("glpi_notifications_notificationtemplates", [
-               'id'                       => null, 
-               'notifications_id'         => $notid,
-               'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-               'notificationtemplates_id' => $nottid
+               'id'                       => null
             ], [
                'notifications_id'         => $notid,
                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
@@ -1590,10 +1582,7 @@ Regards,',
       ];
       if (!countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
          $DB->updateOrInsert("glpi_notifications_notificationtemplates", [
-               'id'                       => null,
-               'notifications_id'         => $notid,
-               'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-               'notificationtemplates_id' => $nottid
+               'id'                       => null
             ], [
                'notifications_id'         => $notid,
                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,

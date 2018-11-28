@@ -309,10 +309,7 @@ function update93to94() {
       $rank = 1;
       foreach ($tab as $newval) {
          $DB->updateOrInsert("glpi_displaypreferences", [
-            'itemtype'  => $type,
-            'num'       => $newval,
-            'rank'      => $rank++,
-            'users_id'  => "0",
+            'rank'      => $rank++
          ], [
             'users_id'  => "0",
             'itemtype'  => $type,
