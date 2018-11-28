@@ -18,26 +18,30 @@ stages:
 
 .shared_script: &shared_script
   script:
-  <<: *composer
-  <<: *update_db
-  <<: *install_db
-  <<: *unit_tests
-  <<: *db_tests
-  <<: *functional_tests
-  <<: *web_tests
+  - composer
+  - update_db
+  - install_db
+  - unit_tests
+  - db_tests
+  - functional_tests
+  - web_tests
 
 lint:
   stage: test
-  script: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
+  script:
+  - composer
+  - vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
 
 cs:
   stage: test
   script:
+  - composer
   - vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./
 
 security-checker:
   stage: test
   script:
+  - composer
   - vendor/bin/security-checker security:check
 
 test:5.6:
@@ -72,7 +76,6 @@ test:latest:
   stage: test
   allow_failure: true
   <<: *shared_script
-
 
 .bash_functions: &bash_function |
   function composer() {
