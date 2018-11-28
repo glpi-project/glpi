@@ -136,14 +136,16 @@ class Link_Itemtype extends CommonDBChild {
          $typename = NOT_AVAILABLE;
          if ($item = getItemForItemtype($data['itemtype'])) {
             $typename = $item->getTypeName(1);
-            echo "<tr class='tab_bg_1'>";
-            if ($canedit) {
-               echo "<td>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-               echo "</td>";
+            if ($item->canView()) {
+               echo "<tr class='tab_bg_1'>";
+               if ($canedit) {
+                  echo "<td>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+                  echo "</td>";
+               }
+               echo "<td class='center'>$typename</td>";
+               echo "</tr>";
             }
-            echo "<td class='center'>$typename</td>";
-            echo "</tr>";
          }
       }
       echo $header_begin.$header_bottom.$header_end;
