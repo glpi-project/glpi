@@ -93,8 +93,8 @@ function update91to92() {
       $DB->updateOrDie("glpi_softwarelicensetypes", [
             'completename' =>  new \QueryExpression(DBmysql::quoteName("name")),
             'is_recursive' => "1"
-         ], 
-         [true], 
+         ],
+         [true],
          "9.2 make glpi_softwarelicensetypes a tree dropdown"
       );
    }
@@ -187,7 +187,7 @@ function update91to92() {
          'rights' => new \QueryExpression(
             DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue( KnowbaseItem::COMMENTS)
          )
-      ], 
+      ],
       ['name' => "knowbase"],
       "9.2 update knowledge base with comment right"
    );
@@ -892,33 +892,33 @@ function update91to92() {
    }
 
    // ProfileRights changes
-   $DB->updateOrDie("glpi_profilerights", 
+   $DB->updateOrDie("glpi_profilerights",
       ['name' => "slm"],
       ['name' => "sla"],
       "SLM profilerights migration"
    );
 
    //Sla rules criterias migration
-   $DB->updateOrDie("glpi_rulecriterias", 
+   $DB->updateOrDie("glpi_rulecriterias",
       ['criteria' => "slas_ttr_id"],
       ['criteria' => "slts_ttr_id"],
       "SLA rulecriterias migration"
    );
 
-   $DB->updateOrDie("glpi_rulecriterias", 
+   $DB->updateOrDie("glpi_rulecriterias",
       ['criteria' => "slas_tto_id"],
       ['criteria' => "slts_tto_id"],
       "SLA rulecriterias migration"
    );
 
    // Sla rules actions migration
-   $DB->updateOrDie("glpi_ruleactions", 
+   $DB->updateOrDie("glpi_ruleactions",
       ['field' => "slas_ttr_id"],
       ['field' => "slts_ttr_id"],
       "SLA ruleactions migration"
    );
 
-   $DB->updateOrDie("glpi_ruleactions", 
+   $DB->updateOrDie("glpi_ruleactions",
       ['field' => "slas_tto_id"],
       ['field' => "slts_tto_id"],
       "SLA ruleactions migration"
@@ -1065,7 +1065,7 @@ function update91to92() {
       $DB->buildUpdate("glpi_queuednotifications",
          ['mode' => Notification_NotificationTemplate::MODE_MAIL],
          [true]
-      ), 
+      ),
       "9.2 set default mode in queue"
    );
 
@@ -1073,7 +1073,7 @@ function update91to92() {
       $DB->buildUpdate("glpi_notifications_notificationtemplates",
          ['mode' => Notification_NotificationTemplate::MODE_MAIL],
          ['mode' => "mail"]
-      ), 
+      ),
       "9.2 set default mode in notifications templates"
    );
 
@@ -1138,7 +1138,7 @@ function update91to92() {
                              ['itemtype' => 'SavedSearch', 'name' => 'countAll'])) {
       $DB->insertOrDie("glpi_crontasks", [
             'itemtype'        => "SavedSearch",
-            'name'            => "countAll", 
+            'name'            => "countAll",
             'frequency'       => "604800",
             'param'           => null,
             'state'           => "0",
@@ -1150,7 +1150,7 @@ function update91to92() {
             'lastrun'         => null,
             'lastcode'        => null,
             'comment'         => null
-         ], 
+         ],
          "9.2 Add countAll SavedSearch cron task"
       );
    };
@@ -1160,7 +1160,7 @@ function update91to92() {
                              ['itemtype' => 'SavedSearch_Alert', 'name' => 'savedsearchesalerts'])) {
       $DB->insertOrDie("glpi_crontasks", [
             'itemtype'        => "SavedSearch_Alert",
-            'name'            => "savedsearchesalerts", 
+            'name'            => "savedsearchesalerts",
             'frequency'       => "86400",
             'param'           => null,
             'state'           => "0",
@@ -1172,7 +1172,7 @@ function update91to92() {
             'lastrun'         => null,
             'lastcode'        => null,
             'comment'         => null
-         ], 
+         ],
          "9.2 Add saved searches alerts cron task"
       );
    }
@@ -1181,7 +1181,7 @@ function update91to92() {
                              ['itemtype' => 'SavedSearch_Alert'])) {
       $DB->insertOrDie("glpi_notifications", [
             'id'              => null,
-            'name'            => "Saved searches", 
+            'name'            => "Saved searches",
             'entities_id'     => "0",
             'itemtype'        => "SavedSearch_Alert",
             'event'           => "alert",
@@ -1190,16 +1190,16 @@ function update91to92() {
             'is_active'       => "1",
             'date_creation'   => new \QueryExpression("NOW()"),
             'date_mod'        => new \QueryExpression("NOW()")
-         ], 
+         ],
          "9.2 Add saved search alerts notification"
       );
       $notid = $DB->insert_id();
 
       $DB->insertOrDie("glpi_notificationtemplates", [
-            'name'            => "Saved searches alerts", 
+            'name'            => "Saved searches alerts",
             'itemtype'        => "SavedSearch_Alert",
             'date_mod'        => new \QueryExpression("NOW()")
-         ], 
+         ],
          "9.2 Add saved search alerts notification template"
       );
       $nottid = $DB->insert_id();
@@ -1225,7 +1225,7 @@ function update91to92() {
            'items_id'         => "19",
            'type'             => "1",
            'notifications_id' => $notid
-         ], 
+         ],
          "9.2 Add saved search alerts notification targets"
       );
 
@@ -1371,8 +1371,8 @@ Regards,',
 
       foreach ($mapping as $map) {
          foreach ($map as $computers_id => $kver_id) {
-            $DB->updateOrDie("glpi_items_operatingsystems", 
-               ['operatingsystemkernelversions_id' => $kver_id], 
+            $DB->updateOrDie("glpi_items_operatingsystems",
+               ['operatingsystemkernelversions_id' => $kver_id],
                [
                   'itemtype' => "Computer",
                   'items_id' => $computers_id
@@ -2198,7 +2198,7 @@ Regards,',
                ),
             ];
          }
-         
+
          $update = new \QueryExpression(
             DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_tickets_users")
          );
@@ -2208,7 +2208,7 @@ Regards,',
                      DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
                      DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"
                   )
-               ], 
+               ],
                $where
             )
          );
@@ -2249,14 +2249,14 @@ Regards,',
                      DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
                      DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"
                   )
-               ], 
+               ],
                $where
             )
          );
 
          $migration->addPostQuery(
-            $DB->buildUpdate($tl_table, 
-               ["$tl_table.timeline_position" => "1"], 
+            $DB->buildUpdate($tl_table,
+               ["$tl_table.timeline_position" => "1"],
                ["$tl_table.timeline_position" => "0"]
             )
          );
