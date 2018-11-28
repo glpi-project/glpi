@@ -178,6 +178,10 @@ class RuleTicket extends Rule {
                         $output['_add_validation'][] = $action->fields["value"];
                         break;
 
+                     case 'responsible_id_validate':
+                        $output['_add_validation'][] = 'requester_responsible';
+                        break;
+
                      case 'validation_percent' :
                         $output[$action->fields["field"]] = $action->fields["value"];
                         break;
@@ -636,6 +640,12 @@ class RuleTicket extends Rule {
                                                                       __('User'));
       $actions['users_id_validate']['type']                 = 'dropdown_users_validate';
       $actions['users_id_validate']['force_actions']        = ['add_validation'];
+
+      $actions['responsible_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
+                                                                      __('Send an approval request'),
+                                                                      __('Responsible of the requester'));
+      $actions['responsible_id_validate']['type']                 = 'yesno';
+      $actions['responsible_id_validate']['force_actions']        = ['add_validation'];
 
       $actions['groups_id_validate']['name']                = sprintf(__('%1$s - %2$s'),
                                                                          __('Send an approval request'),

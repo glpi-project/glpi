@@ -2235,6 +2235,24 @@ class Ticket extends CommonITILObject {
                   }
                   break;
 
+               case 'requester_responsible':
+                  if (isset($input['_users_id_requester'])) {
+                     if (is_array($input['_users_id_requester'])) {
+                        foreach ($input['_users_id_requester'] as $users_id) {
+                           $user = new User();
+                           if ($user->getFromDB($users_id)) {
+                              $validations_to_send[] = $user->getField('users_id_supervisor');
+                           }
+                        }
+                     } else {
+                        $user = new User();
+                        if ($user->getFromDB($input['_users_id_requester'])) {
+                           $validations_to_send[] = $user->getField('users_id_supervisor');
+                        }
+                     }
+                  }
+                  break;
+
                default :
                   // Group case from rules
                   if ($key === 'group') {
