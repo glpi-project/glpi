@@ -2226,7 +2226,7 @@ Regards,',
 
          $where = [
             "$tl_table.tickets_id"           => new \QueryExpression(
-               DBmysql::quoteName("glpi_tickets_users.tickets_id")
+               DBmysql::quoteName("glpi_groups_tickets.tickets_id")
             ),
             "glpi_groups_users.groups_id"    => new \QueryExpression(
                DBmysql::quoteName("glpi_groups_tickets.groups_id")
@@ -2239,7 +2239,7 @@ Regards,',
             $where = [
                "$tl_table.itemtype"             => "Ticket",
                "$tl_table.items_id"             => new \QueryExpression(
-                  DBmysql::quoteName("glpi_tickets_users.tickets_id")
+                  DBmysql::quoteName("glpi_groups_tickets.tickets_id")
                ),
                "glpi_groups_users.groups_id"    => new \QueryExpression(
                   DBmysql::quoteName("glpi_groups_tickets.groups_id")
