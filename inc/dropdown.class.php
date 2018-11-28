@@ -514,7 +514,7 @@ class Dropdown {
       $values = array();
       if (count($types)) {
          foreach ($types as $type) {
-            if ($item = getItemForItemtype($type)) {
+            if (($item = getItemForItemtype($type)) && $item::canView()) {
                $values[$type] = $item->getTypeName(1);
             }
          }
