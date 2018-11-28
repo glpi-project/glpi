@@ -324,7 +324,6 @@ function loadDataset() {
             'is_faq'   => 0,
             'users_id' => TU_USER,
             'date'     => '2016-11-17 12:27:48',
-            'date_mod' => '2016-11-17 12:28:06'
          ],
          [
             'name'     => '_knowbaseitem02',
@@ -332,43 +331,32 @@ function loadDataset() {
             'is_faq'   => 0,
             'users_id' => TU_USER,
             'date'     => '2016-11-17 12:27:48',
-            'date_mod' => '2016-11-17 12:28:06'
          ]
       ], 'KnowbaseItem_Item' => [
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket01',
-            'date_creation'    => '2016-11-17 14:27:28',
-            'date_mod'         => '2016-11-17 14:27:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket02',
-            'date_creation'    => '2016-11-17 14:28:28',
-            'date_mod'         => '2016-11-17 14:28:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket03',
-            'date_creation'    => '2016-11-17 14:29:28',
-            'date_mod'         => '2016-11-17 14:29:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem02',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket03',
-            'date_creation'    => '2016-11-17 14:30:28',
-            'date_mod'         => '2016-11-17 14:30:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem02',
             'itemtype'         => 'Computer',
             'items_id'         => '_test_pc21',
-            'date_creation'    => '2016-11-17 14:31:28',
-            'date_mod'         => '2016-11-17 14:31:52'
          ]
       ], 'Entity_KnowbaseItem' => [
          [

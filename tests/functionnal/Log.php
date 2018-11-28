@@ -62,6 +62,8 @@ class Log extends DbTestCase {
          ],
          $log_data
       );
+      unset($log_data['date_creation']);
+      unset($log_data['date_mod']);
 
       $log = new \Log();
       $this->integer((int)$log->add($log_data))->isGreaterThan(0);

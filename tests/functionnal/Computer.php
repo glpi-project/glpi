@@ -39,18 +39,22 @@ use DbTestCase;
 class Computer extends DbTestCase {
 
    private function getNewComputer() {
-         $computer = getItemByTypeName('Computer', '_test_pc01');
-         $fields   = $computer->fields;
-         unset($fields['id']);
-         $fields['name'] = $this->getUniqueString();
-         $this->integer((int)$computer->add($fields))->isGreaterThan(0);
-         return $computer;
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $fields   = $computer->fields;
+      unset($fields['id']);
+      unset($fields['date_creation']);
+      unset($fields['date_mod']);
+      $fields['name'] = $this->getUniqueString();
+      $this->integer((int)$computer->add($fields))->isGreaterThan(0);
+      return $computer;
    }
 
    private function getNewPrinter() {
       $printer  = getItemByTypeName('Printer', '_test_printer_all');
       $pfields  = $printer->fields;
       unset($pfields['id']);
+      unset($pfields['date_creation']);
+      unset($pfields['date_mod']);
       $pfields['name'] = $this->getUniqueString();
       $this->integer((int)$printer->add($pfields))->isGreaterThan(0);
       return $printer;

@@ -151,6 +151,8 @@ class KnowbaseItem_Revision extends DbTestCase {
       $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
       $toadd = $kb1->fields;
       unset($toadd['id']);
+      unset($toadd['date_creation']);
+      unset($toadd['date_mod']);
       $toadd['name'] = $this->getUniqueString();
       $this->integer((int)$kb1->add($toadd))->isGreaterThan(0);
       return $kb1;
