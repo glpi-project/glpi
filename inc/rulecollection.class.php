@@ -963,8 +963,6 @@ class RuleCollection extends CommonDBTM {
    **/
    static function exportRulesToXML($items = []) {
 
-      global $DB;
-
       if (!count($items)) {
          return false;
       }
@@ -1035,25 +1033,6 @@ class RuleCollection extends CommonDBTM {
                   $field = substr($action['field'], 1);
                }
                $table = getTableNameForForeignKeyField($field);
-
-               // Special case for foreign keys that does not respect naming convention
-               if (!$DB->tableExists($table)) {
-                  switch ($field) {
-                     case 'olas_ttr_id':
-                     case 'olas_tto_id':
-                        $table = OLA::getTable();
-                        break;
-                     case 'slas_ttr_id':
-                     case 'slas_tto_id':
-                        $table = SLA::getTable();
-                        break;
-                     default:
-                        throw new LogicException(
-                           sprintf('Unable get table corresponding to field "%s".', $field)
-                        );
-                        break;
-                  }
-               }
 
                $action['value'] = Html::clean(Dropdown::getDropdownName($table, $action['value']));
             }
