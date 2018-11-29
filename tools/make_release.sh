@@ -87,7 +87,7 @@ echo "Minify stylesheets and javascripts"
 $INIT_PWD/vendor/bin/robo minify --load-from tools
 
 echo "Compile SCSS"
-$INIT_PWD/scripts/compile_scss
+$INIT_PWD/bin/console build:compile_scss
 
 echo "Compile locale files"
 ./tools/locale/update_mo.pl

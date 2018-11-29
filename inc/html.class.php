@@ -1293,15 +1293,22 @@ class Html {
 
          foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
             $version = Plugin::getInfo($plugin, 'version');
-            if (is_array($files)) {
-               foreach ($files as $file) {
-                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::css("plugins/$plugin/$file", ['version' => $version]);
-                  }
+
+            if (!is_array($files)) {
+               $files = [$files];
+            }
+
+            foreach ($files as $file) {
+               $filename = GLPI_ROOT."/plugins/$plugin/$file";
+
+               if (!file_exists($filename)) {
+                  continue;
                }
-            } else {
-               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::css("plugins/$plugin/$files", ['version' => $version]);
+
+               if ('scss' === substr(strrchr($filename, '.'), 1)) {
+                  echo Html::scss("plugins/$plugin/$file", ['version' => $version]);
+               } else {
+                  echo Html::css("plugins/$plugin/$file", ['version' => $version]);
                }
             }
          }
@@ -4834,7 +4841,7 @@ class Html {
     * @since 0.85
     * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
     *
-    * @param sring   $url     File to include (raltive to GLPI_ROOT)
+    * @param string  $url     File to include (relative to GLPI_ROOT)
     * @param array   $options Array of HTML attributes
     * @param boolean $minify  Try to load minified file (defaults to true)
     *
@@ -4854,13 +4861,13 @@ class Html {
     *
     * @since 9.4
     *
-    * @param sring   $url     File to include (raltive to GLPI_ROOT)
+    * @param string  $url     File to include (relative to GLPI_ROOT)
     * @param array   $options Array of HTML attributes
     *
     * @return string CSS link tag
    **/
    static function scss($url, $options = []) {
-      $prod_file = implode('/', self::getScssCompilePath($url));
+      $prod_file = self::getScssCompilePath($url);
 
       if (file_exists($prod_file) && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
          $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
@@ -6588,50 +6595,56 @@ class Html {
     * @return string
     */
    public static function compileScss($args) {
-      global $GLPI_CACHE;
+      global $CFG_GLPI, $GLPI_CACHE;
 
       $ckey = isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
 
       $scss = new Compiler();
-      if ($_SESSION['glpi_use_mode'] != Session::DEBUG_MODE && !isset($args['debug'])) { // mode debug
-         $ckey .= '_debug';
-         $scss->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
+      $scss->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE || isset($args['debug'])) {
+         $ckey .= '_sourcemap';
+         $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
+         $scss->setSourceMapOptions(
+            [
+               'sourceMapBasepath' => GLPI_ROOT . '/',
+               'sourceRoot'        => $CFG_GLPI['root_doc'] . '/',
+            ]
+         );
       }
 
-      $paths = [
-         GLPI_ROOT . '/css/',
-         GLPI_ROOT . '/css/palettes/',
-      ];
-
       if (!isset($args['file']) || $args['file'] == 'main_styles') {
-         $import = '@import "styles.scss";';
+         $import = '@import "css/styles";';
          if (isset($_SESSION['glpihighcontrast_css'])
             && $_SESSION['glpihighcontrast_css']) {
             $ckey .= '_highcontrast';
-            $import .= '@import "highcontrast";';
+            $import .= '@import "css/highcontrast";';
          }
 
          // CSS theme
          $theme = 'auror';
          if (isset($_SESSION["glpipalette"])) {
-            $ckey .= '_' . $_SESSION['glpipalette'];
             $theme = $_SESSION['glpipalette'];
          }
-         $import .= '@import "'.$theme.'";';
+         $ckey .= '_' . $theme;
+         $import .= '@import "css/palettes/'.$theme.'";';
       } else {
          $ckey .= '_' . md5($args['file']);
-         $exploded = explode('/', $args['file']);
-         $file = array_pop($exploded);
-         if (count($exploded) == 1) {
-            $path = realpath(GLPI_ROOT . '/plugins/' . $exploded[0] . '/css');
-            if ($path && Toolbox::startsWith(GLPI_ROOT . '/plugins/', $path)) {
-               $paths[] = $path;
-            }
+
+         $filename = realpath(GLPI_ROOT . '/' . $args['file']);
+         if (!Toolbox::startsWith($filename, realpath(GLPI_ROOT))) {
+            // Prevent import of a file from ouside GLPI dir
+            return '';
          }
-         $import = '@import "' . $args['file'] . '.scss";';
+
+         if (!Toolbox::endsWith($args['file'], '.scss')) {
+            // Prevent include of file if ext is not .scss
+            $args['file'] .= '.scss';
+         }
+
+         $import = '@import "' . $args['file'] . '";';
       }
 
-      $scss->setImportPaths($paths);
+      $scss->addImportPath(GLPI_ROOT);
 
       $ckey = md5($ckey);
       if ($GLPI_CACHE->has($ckey) && !isset($args['reload']) && !isset($args['nocache'])) {
@@ -6647,14 +6660,26 @@ class Html {
    }
 
    /**
-    * Get scss compilation informations (directory and file name
+    * Get scss compilation path for given file.
     *
     * @return array
     */
    public static function getScssCompilePath($file) {
-      return [
-         'dir'    => GLPI_ROOT . '/css/compiled/',
-         'file'   => str_replace('/', '_', $file) . '.min.css'
-      ];
+      return implode(
+         DIRECTORY_SEPARATOR,
+         [
+            self::getScssCompileDir(),
+            str_replace('/', '_', $file) . '.min.css',
+         ]
+      );
+   }
+
+   /**
+    * Get scss compilation directory.
+    *
+    * @return string
+    */
+   public static function getScssCompileDir() {
+      return GLPI_ROOT . '/css/compiled';
    }
 }
