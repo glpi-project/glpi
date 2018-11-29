@@ -217,7 +217,7 @@ function update0905to91() {
       );
    }
    // notification template
-   $notificationtemplatesIterator = $DB->request("glpi_notificationtemplates", [
+   $notificationtemplatesIterator = $DB->request([
       'FROM'   => "glpi_notificationtemplates",
       'WHERE'  => ['itemtype' => "ObjectLock"]
    ]);
