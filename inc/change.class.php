@@ -1070,7 +1070,7 @@ class Change extends CommonITILObject {
             break;
       }
 
-      // Link to open a new ticket
+      // Link to open a new change
       if ($item->getID()
           && Change::isPossibleToAssignType($item->getType())
           && self::canCreate()
