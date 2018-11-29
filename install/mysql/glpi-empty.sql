@@ -103,6 +103,7 @@ CREATE TABLE `glpi_authldaps` (
   `email3_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email4_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `location_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `responsible_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pagesize` int(11) NOT NULL DEFAULT '0',
   `ldap_maxlimit` int(11) NOT NULL DEFAULT '0',
   `can_support_pagesize` tinyint(1) NOT NULL DEFAULT '0',
@@ -8919,6 +8920,7 @@ CREATE TABLE `glpi_users` (
   `plannings` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `sync_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `groups_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_supervisor` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`, `authtype`, `auths_id`),
   KEY `firstname` (`firstname`),
@@ -8937,7 +8939,8 @@ CREATE TABLE `glpi_users` (
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
   KEY `sync_field` (`sync_field`),
-  KEY `groups_id` (`groups_id`)
+  KEY `groups_id` (`groups_id`),
+  KEY `users_id_supervisor` (`users_id_supervisor`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_users` (`id`, `name`, `password`, `list_limit`, `authtype`, `last_login`, `date_mod`)

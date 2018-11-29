@@ -101,6 +101,7 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['title_field']                 = '';
       $this->fields['use_dn']                      = 0;
       $this->fields['picture_field']               = '';
+      $this->fields['responsible_field']           = '';
    }
 
    static public function unsetUndisclosedFields(&$fields) {
@@ -147,6 +148,7 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['can_support_pagesize']      = 1;
             $this->fields['pagesize']                  = '1000';
             $this->fields['picture_field']             = '';
+            $this->fields['responsible_field']         = 'manager';
             break;
 
          default:
@@ -400,7 +402,7 @@ class AuthLDAP extends CommonDBTM {
                                    'group_field', 'group_member_field', 'group_search_type',
                                    'mobile_field', 'phone_field', 'phone2_field', 'port',
                                    'realname_field', 'registration_number_field', 'title_field',
-                                   'use_dn', 'use_tls'];
+                                   'use_dn', 'use_tls', 'responsible_field'];
 
             foreach ($hidden_fields as $hidden_field) {
                echo "<input type='hidden' name='$hidden_field' value='".
@@ -793,6 +795,11 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='location_field' value='".$this->fields["location_field"]."'>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td>" . __('Responsible') . "</td>";
+      echo "<td><input type='text' name='responsible_field' value='".
+           $this->fields["responsible_field"]."'></td>";
+      echo "<td colspan='2'></td></tr>";
+
       echo "<tr><td colspan=4 class='center green'>".__('You can use a field name or an expression using various %{fieldname}').
            " <br />".__('Example for location: %{city} > %{roomnumber}')."</td></tr>";
 
@@ -1121,6 +1128,15 @@ class AuthLDAP extends CommonDBTM {
          'datatype'           => 'string'
       ];
 
+      $tab[] = [
+         'id'                 => '29',
+         'table'              => $this->getTable(),
+         'field'              => 'responsible_field',
+         'name'               => __('Responsible'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
       return $tab;
    }
 
@@ -1189,6 +1205,7 @@ class AuthLDAP extends CommonDBTM {
                   'language_field'            => 'language',
                   'registration_number_field' => 'registration_number',
                   'picture_field'             => 'picture',
+                  'responsible_field'         => 'users_id_supervisor',
                   'sync_field'                => 'sync_field'];
 
       foreach ($fields as $key => $val) {

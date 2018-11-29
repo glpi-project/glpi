@@ -1515,6 +1515,7 @@ class User extends CommonDBTM {
                   case "usertitles_id" :
                   case "usercategories_id" :
                   case 'locations_id' :
+                  case 'users_id_supervisor' :
                      $this->fields[$k] = 0;
                      break;
 
@@ -1562,6 +1563,10 @@ class User extends CommonDBTM {
 
                   case "usercategories_id" :
                      $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
+                     break;
+
+                  case 'users_id_supervisor':
+                     $this->fields[$k] = self::getIdByField('user_dn', $val);
                      break;
 
                   default :
@@ -2239,7 +2244,16 @@ class User extends CommonDBTM {
                                      'rand'                => $grouprand,
                                      'display_emptychoice' => true]);
 
-            echo "</td><td colspan='2'></td></tr>";
+            echo "</td>";
+            $userrand = mt_rand();
+            echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Responsible') . "</label></td><td>";
+
+            User::dropdown(['name'   => 'users_id_supervisor',
+                            'value'  => $this->fields["users_id_supervisor"],
+                            'rand'   => $userrand,
+                            'entity' => $_SESSION["glpiactive_entity"],
+                            'right'  => 'all']);
+            echo "</td></tr>";
 
          }
 

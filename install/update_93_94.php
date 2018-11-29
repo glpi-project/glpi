@@ -327,6 +327,21 @@ function update93to94() {
       $migration->addKey('glpi_tickets', $new_fieldname);
    }
 
+   /** Adding the responsible field */
+   if (!$DB->fieldExists('glpi_users', 'users_id_supervisor')) {
+      if ($migration->addField('glpi_users', 'users_id_supervisor', 'integer')) {
+         $migration->addKey('glpi_users', 'users_id_supervisor');
+      }
+      $migration->addField(
+         'glpi_authldaps',
+         'responsible_field',
+         "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL",
+         [
+            'after'  => 'location_field',
+         ]
+      );
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
