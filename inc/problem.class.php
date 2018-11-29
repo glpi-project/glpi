@@ -1441,7 +1441,7 @@ class Problem extends CommonITILObject {
             break;
       }
 
-      // Link to open a new ticket
+      // Link to open a new problem
       if ($item->getID()
           && Problem::isPossibleToAssignType($item->getType())
           && self::canCreate()
