@@ -83,7 +83,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
 
    // Appel CSS
-   echo Html::css('css/styles', [], true, true);
+   echo Html::scss('main_styles');
    // font awesome icons
    echo Html::css('lib/font-awesome-5.4.1/css/all.min.css');
 
