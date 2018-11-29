@@ -769,6 +769,30 @@ class Project extends CommonDBTM {
          ]
       ];
 
+      $itil_count_types = [
+         'Change'  => _x('quantity', 'Number of changes'),
+         'Problem' => _x('quantity', 'Number of problems'),
+         'Ticket'  => _x('quantity', 'Number of tickets'),
+      ];
+      $index = 92;
+      foreach ($itil_count_types as $itil_type => $label) {
+         $tab[] = [
+            'id'                 => $index,
+            'table'              => Itil_Project::getTable(),
+            'field'              => 'id',
+            'name'               => $label,
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+               'jointype'           => 'child',
+               'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'"
+            ]
+         ];
+         $index++;
+      }
+
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
