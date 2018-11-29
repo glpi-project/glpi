@@ -124,7 +124,7 @@ if (isset($_POST["add"])) {
    Html::back();
 } else {
    Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
-   $problem->display($_GET);
+   $problem->display($_REQUEST);
 
    if (isset($_GET['id']) && ($_GET['id'] > 0) && isset($_GET['_sol_to_kb'])) {
       Ajax::createIframeModalWindow(
