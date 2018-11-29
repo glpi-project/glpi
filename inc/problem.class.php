@@ -382,6 +382,16 @@ class Problem extends CommonITILObject {
          NotificationEvent::raiseEvent($type, $this);
       }
 
+      if (isset($this->input['_items_id'])
+          && isset($this->input['_itemtype'])) {
+         $item_problem = new Item_Problem();
+         $item_problem->add([
+            'items_id'      => (int)$this->input['_items_id'],
+            'itemtype'      => $this->input['_itemtype'],
+            'problems_id'   => $this->fields['id'],
+            '_disablenotif' => true
+         ]);
+      }
    }
 
    /**
@@ -1102,6 +1112,13 @@ class Problem extends CommonITILObject {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
       }
 
+      if (isset($options['_add_fromitem'])
+          && isset($options['_items_id'])
+          && isset($options['_itemtype'])) {
+         echo Html::hidden('_items_id', ['value' => $options['_items_id']]);
+         echo Html::hidden('_itemtype', ['value' => $options['_itemtype']]);
+      }
+
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
@@ -1422,6 +1439,25 @@ class Problem extends CommonITILObject {
                             AND `itemtype` = '".$item->getType()."')";
             $order      = '`glpi_problems`.`date_mod` DESC';
             break;
+      }
+
+      // Link to open a new problem
+      if ($item->getID()
+          && Problem::isPossibleToAssignType($item->getType())
+          && self::canCreate()
+          && !(!empty($withtemplate) && $withtemplate == 2)
+          && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)) {
+         echo "<div class='firstbloc'>";
+         Html::showSimpleForm(
+            Problem::getFormURL(),
+            '_add_fromitem',
+            __('New problem for this item...'),
+            [
+               '_itemtype' => $item->getType(),
+               '_items_id' => $item->getID()
+            ]
+         );
+         echo "</div>";
       }
 
       $query = "SELECT ".self::getCommonSelect()."

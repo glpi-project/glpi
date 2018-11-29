@@ -386,6 +386,16 @@ class Change extends CommonITILObject {
          NotificationEvent::raiseEvent($type, $this);
       }
 
+      if (isset($this->input['_items_id'])
+          && isset($this->input['_itemtype'])) {
+         $change_item = new Change_Item();
+         $change_item->add([
+            'items_id'      => (int)$this->input['_items_id'],
+            'itemtype'      => $this->input['_itemtype'],
+            'changes_id'    => $this->fields['id'],
+            '_disablenotif' => true
+         ]);
+      }
    }
 
 
@@ -670,6 +680,14 @@ class Change extends CommonITILObject {
       if (isset($options['problems_id'])) {
          echo "<input type='hidden' name='_problems_id' value='".$options['problems_id']."'>";
       }
+
+      if (isset($options['_add_fromitem'])
+          && isset($options['_items_id'])
+          && isset($options['_itemtype'])) {
+         echo Html::hidden('_items_id', ['value' => $options['_items_id']]);
+         echo Html::hidden('_itemtype', ['value' => $options['_itemtype']]);
+      }
+
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
@@ -1050,6 +1068,25 @@ class Change extends CommonITILObject {
                             AND `itemtype` = '".$item->getType()."')";
             $order      = '`glpi_changes`.`date_mod` DESC';
             break;
+      }
+
+      // Link to open a new change
+      if ($item->getID()
+          && Change::isPossibleToAssignType($item->getType())
+          && self::canCreate()
+          && !(!empty($withtemplate) && $withtemplate == 2)
+          && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)) {
+         echo "<div class='firstbloc'>";
+         Html::showSimpleForm(
+            Change::getFormURL(),
+            '_add_fromitem',
+            __('New change for this item...'),
+            [
+               '_itemtype' => $item->getType(),
+               '_items_id' => $item->getID()
+            ]
+         );
+         echo "</div>";
       }
 
       $query = "SELECT ".self::getCommonSelect()."
