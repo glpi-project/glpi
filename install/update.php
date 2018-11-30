@@ -515,7 +515,7 @@ echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
 echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
-echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
+echo Html::script("lib/jquery/js/jquery.js");
 echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
 // CSS
 echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen' >";

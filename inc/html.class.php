@@ -1183,7 +1183,7 @@ class Html {
       echo Html::css('css/jstree-glpi.css');
       echo Html::css('lib/jqueryplugins/select2/css/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
-      echo Html::css('lib/font-awesome-5.4.1/css/all.min.css');
+      echo Html::css('lib/font-awesome/css/all.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          Html::requireJs('notifications_ajax');
@@ -1231,7 +1231,7 @@ class Html {
          }
 
          if (in_array('colorpicker', $jslibs)) {
-            echo Html::css('lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css');
+            echo Html::css('lib/jqueryplugins/spectrum-colorpicker/spectrum.css');
             Html::requireJs('colorpicker');
          }
 
@@ -1315,7 +1315,7 @@ class Html {
       }
 
       // AJAX library
-      echo Html::script('lib/jquery/js/jquery-1.10.2.js');
+      echo Html::script('lib/jquery/js/jquery.js');
       echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
 
       // PLugins jquery
