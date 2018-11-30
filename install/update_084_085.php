@@ -150,8 +150,7 @@ function update084to085() {
             $migration->dropField('glpi_profiles', $field['Field']);
          }
       }
-      $query = "SELECT *
-                FROM `origin_glpi_profiles`";
+      $query = "origin_glpi_profiles";
 
       foreach ($DB->request($query) as $profile) {
          $profiles_id = $profile['id'];
@@ -166,335 +165,556 @@ function update084to085() {
                $new_right = ALLSTANDARDRIGHT;
             }
 
-            $query = "INSERT INTO `glpi_profilerights`
-                             (`profiles_id`, `name`, `rights`)
-                      VALUES ('$profiles_id', '$right', '".$new_right."')";
-            $DB->query($query);
+            $DB->insert("glpi_profilerights", [
+               'profiles_id'  => $profiles_id,
+               'name'         => $rights,
+               'rights'       => $new_right
+            ]);
          }
       }
       $migration->migrationOneTable('glpi_profiles');
       $migration->dropTable('origin_glpi_profiles');
-
    }
 
    // New system of profiles
 
    // delete import_externalauth_users
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'import_externalauth_users' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . User::IMPORTEXTAUTHUSERS ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'user'";
-      $DB->queryOrDie($query, "0.85 update user with import_externalauth_users right");
+   $profileRightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         "name"      => "import_externalauth_users",
+         "rights"    => ALLSTANDARDRIGHT
+      ]
+   ]);
+   foreach ($profileRightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . User::IMPORTEXTAUTHUSERS
+            ),
+         ], [
+            'profiles_id'  => $profrights['profiles_id'],
+            'name'         => "user",
+         ],
+         "0.85 update user with import_externalauth_users right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'import_externalauth_users'";
-   $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
+
+   $DB->deleteOrDie("glpi_profilerights", [
+         'name' => 'import_externalauth_users'
+      ],
+      "0.85 delete import_externalauth_users right"
+   );
 
    // save value of rule_ticket to root_rule_ticket
-   $query  = "UPDATE `glpi_profilerights`
-              SET `name` = 'root_rule_ticket'
-              WHERE `name` = 'rule_ticket'";
-   $DB->queryOrDie($query, "0.85 rename rule_ticket to root_rule_ticket");
+   $DB->updateOrDie("glpi_profilerights", [
+         'name' => "root_rule_ticket",
+      ], [
+         'name' => "rule_ticket"
+      ],
+      "0.85 rename rule_ticket to root_rule_ticket"
+   );
 
    // rename entity_rule_ticket to rule_ticket
-   $query  = "UPDATE `glpi_profilerights`
-              SET `name` = 'rule_ticket'
-              WHERE `name` = 'entity_rule_ticket'";
-   $DB->queryOrDie($query, "0.85 rename entity_rule_ticket to rule_ticket");
+   $DB->updateOrDie("glpi_profilerights", [
+         'name' => "rule_ticket",
+      ], [
+         'name' => "entity_rule_ticket"
+      ],
+      "0.85 rename entity_rule_ticket to rule_ticket"
+   );
 
    // delete root_rule_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'root_rule_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` =  `rights` | " . RuleTicket::PARENT ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'rule_ticket'";
-      $DB->queryOrDie($query, "0.85 update new rule_ticket with old rule_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM' => "glpi_profilerights",
+      'WHERE' => [
+         'name' => "root_rule_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . RuleTicket::PARENT
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "rule_ticket"
+         ],
+         "0.85 update new rule_ticket with old rule_ticket right"
+      );
    }
 
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'root_rule_ticket'";
-   $DB->queryOrDie($query, "0.85 delete old rule_ticket right");
+   $DB->deleteOrDie("glpi_profilerights", [
+         'name' => "root_rule_ticket"
+      ],
+      "0.85 delete old rule_ticket right"
+   );
 
    // delete knowbase_admin
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'knowbase_admin' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . KnowbaseItem::KNOWBASEADMIN ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'knowbase'";
-      $DB->queryOrDie($query, "0.85 update knowbase with knowbase_admin right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "knowbase_admin",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . KnowbaseItem::KNOWBASEADMIN
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "knowbase"
+         ],
+         "0.85 update knowbase with knowbase_admin right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'knowbase_admin'";
-   $DB->queryOrDie($query, "0.85 delete knowbase_admin right");
+
+   $DB->deleteOrDie("glpi_profilerights", [
+         'name' => "knowbase_admin"
+      ],
+      "0.85 delete knowbase_admin right"
+   );
 
    // delete faq
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'faq' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . KnowbaseItem::READFAQ ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'knowbase'";
-      $DB->queryOrDie($query, "0.85 update knowbase with read faq right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "faq",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . KnowbaseItem::READFAQ
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "knowbase"
+         ],
+         "0.85 update knowbase with read faq right"
+      );
    }
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'faq' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . KnowbaseItem::READFAQ ." | ".KnowbaseItem::PUBLISHFAQ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'knowbase'";
-      $DB->queryOrDie($query, "0.85 update knowbase with write faq right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "faq",
+         'rights' => ALLSTANDARDRIGHT
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . KnowbaseItem::READFAQ . " | " .
+               KnowbaseItem::PUBLISHFAQ
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "knowbase"
+         ],
+         "0.85 update knowbase with write faq right"
+      );
    }
 
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'faq'";
-   $DB->queryOrDie($query, "0.85 delete faq right");
+   $DB->deleteOrDie("glpi_profilerights", [
+         'name' => "faq"
+      ],
+      "0.85 delete faq right"
+   );
 
    // delete user_authtype
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'user_authtype' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . User::READAUTHENT ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'user'";
-      $DB->queryOrDie($query, "0.85 update user with read user_authtype right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "user_authtype",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . User::READAUTHENT
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "user"
+         ],
+         "0.85 update user with read user_authtype right"
+      );
    }
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'user_authtype' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . User::READAUTHENT ." | ".User::UPDATEAUTHENT."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'user'";
-         $DB->queryOrDie($query, "0.85 update user with write user_authtype right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "user_authtype",
+         'rights' => ALLSTANDARDRIGHT
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . User::READAUTHENT . " | ". User::UPDATEAUTHENT
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "user"
+         ],
+         "0.85 update user with write user_authtype right"
+      );
    }
 
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'user_authtype'";
-   $DB->queryOrDie($query, "0.85 delete user_authtype right");
+   $DB->deleteOrDie("glpi_profilerights", [
+         'name' => "user_authtype"
+      ],
+      "0.85 delete user_authtype right"
+   );
 
    // delete entity_helpdesk
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'entity_helpdesk' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Entity::READHELPDESK ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'entity'";
-         $DB->queryOrDie($query, "0.85 update entity with read entity_helpdesk right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "entity_helpdesk",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Entity::READHELPDESK
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "entity"
+         ],
+         "0.85 update entity with read entity_helpdesk right"
+      );
    }
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'entity_helpdesk' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Entity::READHELPDESK ." | ".Entity::UPDATEHELPDESK."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'entity'";
-         $DB->queryOrDie($query, "0.85 update user with write entity_helpdesk right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "entity_helpdesk",
+         'rights' => ALLSTANDARDRIGHT
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+         $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Entity::READHELPDESK . " | " .
+               Entity::UPDATEHELPDESK
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "entity"
+         ],
+         "0.85 update user with write entity_helpdesk right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'entity_helpdesk'";
-   $DB->queryOrDie($query, "0.85 delete entity_helpdesk right");
+
+   $DB->deleteOrDie("glpi_profilerights", [
+         'name' => "entity_helpdesk"
+      ],
+      "0.85 delete entity_helpdesk right"
+   );
 
    // delete reservation_helpdesk
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'reservation_helpdesk' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ReservationItem::RESERVEANITEM ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'reservation_central'";
-         $DB->queryOrDie($query, "0.85 update reservation_central with reservation_helpdesk right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "reservation_helpdesk",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . ReservationItem::RESERVEANITEM
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "reservation_central"
+         ],
+         "0.85 update reservation_central with reservation_helpdesk right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'reservation_helpdesk'";
-   $DB->queryOrDie($query, "0.85 delete reservation_helpdesk right");
+
+   $DB->deleteOrDie("glpi_profilerights", [
+         'name' => "reservation_helpdesk"
+      ],
+      "0.85 delete reservation_helpdesk right"
+   );
 
    // rename reservation_central
-   $query  = "UPDATE `glpi_profilerights`
-              SET `name` = 'reservation'
-              WHERE `name` = 'reservation_central'";
-   $DB->queryOrDie($query, "0.85 delete reservation_central");
+   $DB->updateOrDie("glpi_profilerights",
+      ['name' => "reservation"],
+      ['name' => 'reservation_central'],
+      "0.85 delete reservation_central"
+   );
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", ['name' => 'ticket']) == 0) {
       // rename create_ticket
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `name` = 'ticket'
-                 WHERE `name` = 'create_ticket'";
-      $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
+      $DB->updateOrDie("glpi_profilerights",
+         ['name' => "ticket"],
+         ['name' => 'create_ticket'],
+         "0.85 rename create_ticket to ticket"
+      );
 
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". (CREATE | Ticket::READMY)."
-                 WHERE `name` = 'ticket'
-                       AND `rights` = '1'";
-      $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
+      $DB->updateOrDie("glpi_profilerights", [
+         'rights' => (CREATE | Ticket::READMY)
+         ],[
+            'name' => 'ticket',
+            'rights' => 1
+         ],
+         "0.85 update ticket with create_ticket right"
+      );
    }
 
    // delete update_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'update_ticket' AND `rights` = '1'") as $profrights) {
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "update_ticket",
+         'rights' => 1
+      ]
+   ]);
 
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . UPDATE  ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with update_ticket right");
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(DBmysql::quoteName("rights") . " | " . UPDATE)
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with update_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'update_ticket'";
-   $DB->queryOrDie($query, "0.85 delete update_ticket right");
+
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "update_ticket"],
+      "0.85 delete update_ticket right"
+   );
 
    // delete delete_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'delete_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . DELETE ." | " . PURGE ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with delete_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "delete_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . DELETE . " | " . PURGE
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with delete_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'delete_ticket'";
-   $DB->queryOrDie($query, "0.85 delete delete_ticket right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "delete_ticket"],
+      "0.85 delete delete_ticket right"
+   );
 
    // delete show_all_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'show_all_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Ticket::READALL ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with show_all_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "show_all_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Ticket::READALL
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with show_all_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'show_all_ticket'";
-   $DB->queryOrDie($query, "0.85 delete show_all_ticket right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "show_all_ticket"],
+      "0.85 delete show_all_ticket right"
+   );
 
    // delete show_group_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'show_group_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Ticket::READGROUP ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with show_group_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "show_group_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Ticket::READGROUP
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with show_group_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'show_group_ticket'";
-   $DB->queryOrDie($query, "0.85 delete show_group_ticket right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "show_group_ticket"],
+      "0.85 delete show_group_ticket right"
+   );
 
    // delete show_assign_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'show_assign_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Ticket::READASSIGN ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-         $DB->queryOrDie($query, "0.85 update ticket with show_assign_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "show_assign_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Ticket::READASSIGN
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with show_assign_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'show_assign_ticket'";
-   $DB->queryOrDie($query, "0.85 delete show_assign_ticket right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "show_assign_ticket"],
+      "0.85 delete show_assign_ticket right"
+   );
 
    // delete assign_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'assign_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Ticket::ASSIGN ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with assign_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "assign_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Ticket::ASSIGN
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with assign_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'assign_ticket'";
-   $DB->queryOrDie($query, "0.85 delete assign_ticket right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "assign_ticket"],
+      "0.85 delete assign_ticket right"
+   );
 
    // delete steal_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'steal_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Ticket::STEAL ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with steal_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "steal_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Ticket::STEAL
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with steal_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'steal_ticket'";
-   $DB->queryOrDie($query, "0.85 delete steal_ticket right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "steal_ticket"],
+      "0.85 delete steal_ticket right"
+   );
 
    // delete own_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'own_ticket' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Ticket::OWN ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with own_ticket right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "own_ticket",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Ticket::OWN
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with own_ticket right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'own_ticket'";
-   $DB->queryOrDie($query, "0.85 delete own_ticket right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "own_ticket"],
+      "0.85 delete own_ticket right"
+   );
 
    // delete update_priority
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'update_priority' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Ticket::CHANGEPRIORITY ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-         $DB->queryOrDie($query, "0.85 update ticket with update_priority right");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "update_priority",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Ticket::CHANGEPRIORITY
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "ticket"
+         ],
+         "0.85 update ticket with update_priority right"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'update_priority'";
-   $DB->queryOrDie($query, "0.85 delete update_priority right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "update_priority"],
+      "0.85 delete update_priority right"
+   );
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", ['name' => 'followup']) == 0) {
       // rename create_ticket
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `name` = 'followup'
-                 WHERE `name` = 'global_add_followups'";
-      $DB->queryOrDie($query, "0.85 rename global_add_followups to followup");
+      $DB->updateOrDie("glpi_profilerights",
+         ['name' => "followup"],
+         ['name' => 'global_add_followups'],
+         "0.85 rename global_add_followups to followup"
+      );
 
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". ITILFollowup::ADDALLTICKET ."
-                 WHERE `name` = 'followup'
-                       AND `rights` = '1'";
-      $DB->queryOrDie($query, "0.85 update followup with global_add_followups right");
+      $DB->updateOrDie("glpi_profilerights", [
+         'rights' => ITILFollowup::ADDALLTICKET
+         ],[
+            'name' => 'followup',
+            'rights' => 1
+         ],
+         "0.85 update followup with global_add_followups right"
+      );
    }
 
    // delete add_followups
