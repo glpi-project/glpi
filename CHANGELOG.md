@@ -27,6 +27,7 @@ The present file will list all changes made to the project; according to the
 - `scripts/checkdb.php` has been replaced by `glpi:database:check` command available using `bin/console`
 - `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `bin/console`
 - `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `bin/console`
+- `scripts/ldap_mass_sync.php` has been replaced by `glpi:ldap:synchronize_users` command available using `bin/console`
 - `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `bin/console`
 - `scripts/unlock_tasks.php` has been replaced by `glpi:task:unlock` command available using `bin/console`
 
