@@ -1116,11 +1116,16 @@ class User extends CommonDBTM {
                $filename  = uniqid($this->fields['id'].'_');
                $sub       = substr($filename, -2); /* 2 hex digit */
                $file      = GLPI_PICTURE_DIR . "/$sub/${filename}.jpg";
-               $oldfile   = GLPI_PICTURE_DIR . "/".$this->fields["picture"];
+
+               if (array_key_exists('picture', $this->fields)) {
+                  $oldfile = GLPI_PICTURE_DIR . "/" . $this->fields["picture"];
+               } else {
+                  $oldfile = null;
+               }
 
                // update picture if not exist or changed
-               if (!file_exists($oldfile)
-                   || empty($this->fields["picture"])
+               if (empty($this->fields["picture"])
+                   || !file_exists($oldfile)
                    || sha1_file($oldfile) !== sha1($img)) {
                   if (!is_dir(GLPI_PICTURE_DIR . "/$sub")) {
                      mkdir(GLPI_PICTURE_DIR . "/$sub");
@@ -4289,30 +4294,30 @@ class User extends CommonDBTM {
       switch ($CFG_GLPI['user_deleted_ldap']) {
          //DO nothing
          default :
-         case 0 :
+         case AuthLDAP::DELETED_USER_PRESERVE:
             $myuser->update($tmp);
             break;
 
          //Put user in trashbin
-         case 1 :
+         case AuthLDAP::DELETED_USER_DELETE:
             $myuser->delete($tmp);
             break;
 
          //Delete all user dynamic habilitations and groups
-         case 2 :
+         case AuthLDAP::DELETED_USER_WITHDRAWDYNINFO:
             Profile_User::deleteRights($users_id, true);
             Group_User::deleteGroups($users_id, true);
             $myuser->update($tmp);
             break;
 
          //Deactivate the user
-         case 3 :
+         case AuthLDAP::DELETED_USER_DISABLE:
             $tmp['is_active'] = 0;
             $myuser->update($tmp);
             break;
 
          //Deactivate the user+ Delete all user dynamic habilitations and groups
-         case 4:
+         case AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO:
             $tmp['is_active'] = 0;
             $myuser->update($tmp);
             Profile_User::deleteRights($users_id, true);

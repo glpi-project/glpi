@@ -56,6 +56,36 @@ class AuthLDAP extends CommonDBTM {
    const GROUP_SEARCH_GROUP   = 1;
    const GROUP_SEARCH_BOTH    = 2;
 
+   /**
+    * Deleted user strategy: preserve user.
+    * @var integer
+    */
+   const DELETED_USER_PRESERVE = 0;
+
+   /**
+    * Deleted user strategy: put user in trashbin.
+    * @var integer
+    */
+   const DELETED_USER_DELETE = 1;
+
+   /**
+    * Deleted user strategy: withdraw dynamic authorizations and groups.
+    * @var integer
+    */
+   const DELETED_USER_WITHDRAWDYNINFO = 2;
+
+   /**
+    * Deleted user strategy: disable user.
+    * @var integer
+    */
+   const DELETED_USER_DISABLE = 3;
+
+   /**
+    * Deleted user strategy: disable user and withdraw dynamic authorizations and groups.
+    * @var integer
+    */
+   const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
+
    // From CommonDBTM
    public $dohistory = true;
 
@@ -1826,13 +1856,13 @@ class AuthLDAP extends CommonDBTM {
                                    'dn'         => $user['user_dn']];
                }
 
-            } else if (($values['action'] == self::ACTION_ALL)
+            } else if (($values['mode'] == self::ACTION_ALL)
                         && !$limitexceeded) {
                // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
                //If user is marked as coming from LDAP, but is not present in it anymore
                if (!$user['is_deleted']
-                   && ($user['auths_id'] == $options['ldapservers_id'])) {
+                   && ($user['auths_id'] == $options['authldaps_id'])) {
                   User::manageDeletedUserInLdap($user['id']);
                   $results[self::USER_DELETED_LDAP] ++;
                }
@@ -3409,6 +3439,22 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
+    * Get LDAP deleted user action options.
+    *
+    * @return array
+    */
+   static function getLdapDeletedUserActionOptions() {
+
+      return [
+         self::DELETED_USER_PRESERVE                  => __('Preserve'),
+         self::DELETED_USER_DELETE                    => __('Put in trashbin'),
+         self::DELETED_USER_WITHDRAWDYNINFO           => __('Withdraw dynamic authorizations and groups'),
+         self::DELETED_USER_DISABLE                   => __('Disable'),
+         self::DELETED_USER_DISABLEANDWITHDRAWDYNINFO => __('Disable').' + '.__('Withdraw dynamic authorizations and groups'),
+      ];
+   }
+
+   /**
     * Builds deleted actions dropdown
     *
     * @param integer $value (default 0)
@@ -3417,13 +3463,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function dropdownUserDeletedActions($value = 0) {
 
-      $options = [
-         __('Preserve'),
-         __('Put in trashbin'),
-         __('Withdraw dynamic authorizations and groups'),
-         __('Disable'),
-         __('Disable').' + '.__('Withdraw dynamic authorizations and groups'),
-      ];
+      $options = self::getLdapDeletedUserActionOptions();
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, ['value' => $value]);
    }
