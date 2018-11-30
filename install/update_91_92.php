@@ -617,7 +617,7 @@ function update91to92() {
    $migration->migrationOneTable("glpi_softwarelicenses");
    if ($new) {
       $DB->updateOrDie("glpi_softwarelicenses", [
-            'completename' => new \QueryExpression(DBmysql::QuoteName("name"))
+            'completename' => new \QueryExpression(DBmysql::quoteName("name"))
          ],
          [true],
          "9.2 copy name to completename for software licenses"

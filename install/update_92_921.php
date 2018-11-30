@@ -412,6 +412,10 @@ function update92to921() {
          'OR' => [
             ['license_number' => null],
             ['license_number' => ""]
+         ],
+         'OR' => [
+            ['license_id' => null],
+            ['license_id' => ""]
          ]
       ])
    );
