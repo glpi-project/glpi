@@ -32,6 +32,7 @@ The present file will list all changes made to the project; according to the
 - `scripts/ldap_mass_sync.php` has been replaced by `glpi:ldap:synchronize_users` command available using `bin/console`
 - `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `bin/console`
 - `scripts/unlock_tasks.php` has been replaced by `glpi:task:unlock` command available using `bin/console`
+- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
 
 ### API changes
 
