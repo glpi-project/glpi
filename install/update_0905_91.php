@@ -172,7 +172,7 @@ function update0905to91() {
 
       // updates rights for Super-Admin profile
       foreach ($CFG_GLPI['lock_lockable_objects'] as $itemtype) {
-         $rightnames[] = "'".$itemtype::$rightname."'";
+         $rightnames[] = $itemtype::$rightname;
       }
 
       $DB->updateOrDie("glpi_profilerights", [
@@ -181,9 +181,7 @@ function update0905to91() {
             )
          ], [
             'profiles_id'  => 4,
-            new \QueryExpression(
-               DBmysql::quoteName('name') . " IN (" . implode(",", $rightnames) . ")"
-            )
+            'name'         => $rightnames
          ],
          "update super-admin profile with UNLOCK right"
       );
@@ -602,7 +600,7 @@ function update0905to91() {
                         'num'                => $itemtype_num,
                         'tickettemplates_id' => $templates_id,
                      ],
-                     "Associated items migration : delete $table itemtypes"
+                     "Associated items migration : update $table itemtypes"
                   );
                }
             }
