@@ -9,6 +9,9 @@ The present file will list all changes made to the project; according to the
 
 - encrypted file systems support
 
+### Changed
+
+- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
 
 ### API changes
 
