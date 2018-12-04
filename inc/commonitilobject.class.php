@@ -6393,8 +6393,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return void
     */
    function showTimeline($rand) {
-
-      global $CFG_GLPI, $autolink_options;
+      global $DB, $CFG_GLPI, $autolink_options;
 
       $user              = new User();
       $group             = new Group();
@@ -6550,7 +6549,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<div class='h_controls'>";
             if ($objType == 'Ticket' && $item['type'] == ITILFollowup::getType()) {
                if (isset($item_i['sourceof_items_id']) && $item_i['sourceof_items_id'] > 0) {
-                  echo Html::link('', '#', [
+                  echo Html::link('', Ticket::getFormURLWithID($item_i['sourceof_items_id']), [
                      'class' => 'fa fa-code-branch control_item disabled',
                      'title' => __('Followup was already promoted')
                   ]);
@@ -6799,7 +6798,29 @@ abstract class CommonITILObject extends CommonDBTM {
 
          echo "<div class='h_content ITILContent'>";
 
-         echo "<div class='b_right'>".sprintf(__($objType."# %s description"), $this->getID())."</div>";
+         echo "<div class='b_right'>";
+
+         if ($objType == 'Ticket') {
+            $result = $DB->request([
+               'SELECT' => ['id', 'itemtype', 'items_id'],
+               'FROM'   => ITILFollowup::getTable(),
+               'WHERE'  => [
+                  'sourceof_items_id'  => $this->fields['id'],
+                  'itemtype'           => static::getType()
+               ]
+            ])->next();
+            if ($result) {
+               echo Html::link(
+                  '',
+                  static::getFormURLWithID($result['items_id']) . '&forcetab=Ticket$1#viewitemitilfollowup' . $result['id'], [
+                     'class' => 'fa fa-code-branch control_item disabled',
+                     'title' => __('Followup promotion source')
+                  ]
+               );
+            }
+         }
+         echo sprintf(__($objType."# %s description"), $this->getID());
+         echo "</div>";
 
          echo "<div class='title'>";
          echo Html::setSimpleTextContent($this->fields['name']);
