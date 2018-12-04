@@ -438,6 +438,19 @@ class Ajax {
                $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
                   { itemtype: '$type', id: '$ID', tab: newIndex });
             },
+            load: function(event) {
+               var _url = window.location.href;
+               //get the anchor
+               var _parts = _url.split('#');
+               var _anchor = _parts[1];
+
+               //get the top offset of the target anchor
+               var target_offset = $('#' + _anchor).offset();
+               var target_top = target_offset.top;
+
+               //goto that anchor by setting the body scroll top to anchor top
+               $('html, body').animate({scrollTop:target_top}, 2000, 'easeOutQuad');
+            },
             ajaxOptions: {type: 'POST'}
          });";
 
