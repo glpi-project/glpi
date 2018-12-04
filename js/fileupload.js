@@ -204,6 +204,9 @@ var insertImgFromFile = function(editor, fileImg, tag) {
    var maxWidth   = $(tinyMCE.activeEditor.getContainer()).width()  - 120;
 
    if (window.FileReader && window.File && window.FileList && window.Blob ) {
+      // indicate loading in tinymce
+      editor.setProgressState(true);
+
       var reader = new FileReader();
       reader.onload = (function(theFile) {
          var image    = new Image();
@@ -229,6 +232,9 @@ var insertImgFromFile = function(editor, fileImg, tag) {
 
             editor.execCommand('mceInsertContent', false,
                                "<img width='"+imgWidth+"' height='"+imgHeight+"'' id='"+tag.replace(regex,'')+"' src='"+imageUrl+"'>");
+
+            // loading done, remove indicator
+            editor.setProgressState(false);
          };
       });
       reader.readAsDataURL(fileImg);
