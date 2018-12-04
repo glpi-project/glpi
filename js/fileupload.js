@@ -309,22 +309,11 @@ var extractSrcFromImgTag = function(content) {
  * @param  {Blob}   image  The image to insert
  */
 var insertImageInTinyMCE = function(editor, image) {
-   // set a tempory tag in mce editor
-   var state_upload = '[** UPLOADING FILE == '+image.name+' **]';
-   editor.execCommand('mceInsertContent', false, state_upload);
-
    //make ajax call for upload doc
    var tag = uploadFile(image, editor);
-
-   //replace upload state by html render of image
-   replaceContent(editor, state_upload, '');
-
    if (tag !== false) {
       insertImgFromFile(editor, image, tag);
    }
-
-   //Set cursor at the end
-   setCursorAtTheEnd(editor);
 
    return tag;
 };
