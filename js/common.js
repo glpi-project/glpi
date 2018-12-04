@@ -730,24 +730,6 @@ var getSize = function (size) {
 };
 
 /**
- * Replace content in tinyMCE
- *
- * @param {Object} editor   TinyMCE editor instance
- * @param {String} search   The search
- * @param {String} replace  The replace
- */
-var replaceContent = function(editor, search, replace) {
-   if (!replace) {
-      replace = '';
-   }
-
-   var re =/\[\*\*(.*?)\*\*\]/;
-   var body = editor.getContent();
-   body = body.replace(re,replace);
-   editor.setContent(body);
-};
-
-/**
  * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
  * @since  9.3
  * @param  integer index    the numeric index
@@ -761,20 +743,6 @@ var getBijectiveIndex = function(index) {
       index /= 26;
    }
    return bij_str;
-};
-
-/**
- * Sets the cursor at the end in a tinymce editor.
- *
- * @param  {Object}  editor TinyMCE editor instance
- */
-var setCursorAtTheEnd = function(editor) {
-   var body = editor.getContent();
-   body +='<p> </p>';
-   editor.setContent(body);
-   editor.dom.add(editor.getBody(),'p');
-   editor.selection.select(editor.getBody(), true); // ed is the editor instance
-   editor.selection.collapse(false);
 };
 
 /**

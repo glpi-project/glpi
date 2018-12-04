@@ -204,6 +204,9 @@ var insertImgFromFile = function(editor, fileImg, tag) {
    var maxWidth   = $(tinyMCE.activeEditor.getContainer()).width()  - 120;
 
    if (window.FileReader && window.File && window.FileList && window.Blob ) {
+      // indicate loading in tinymce
+      editor.setProgressState(true);
+
       var reader = new FileReader();
       reader.onload = (function(theFile) {
          var image    = new Image();
@@ -229,6 +232,9 @@ var insertImgFromFile = function(editor, fileImg, tag) {
 
             editor.execCommand('mceInsertContent', false,
                                "<img width='"+imgWidth+"' height='"+imgHeight+"'' id='"+tag.replace(regex,'')+"' src='"+imageUrl+"'>");
+
+            // loading done, remove indicator
+            editor.setProgressState(false);
          };
       });
       reader.readAsDataURL(fileImg);
@@ -309,22 +315,11 @@ var extractSrcFromImgTag = function(content) {
  * @param  {Blob}   image  The image to insert
  */
 var insertImageInTinyMCE = function(editor, image) {
-   // set a tempory tag in mce editor
-   var state_upload = '[** UPLOADING FILE == '+image.name+' **]';
-   editor.execCommand('mceInsertContent', false, state_upload);
-
    //make ajax call for upload doc
    var tag = uploadFile(image, editor);
-
-   //replace upload state by html render of image
-   replaceContent(editor, state_upload, '');
-
    if (tag !== false) {
       insertImgFromFile(editor, image, tag);
    }
-
-   //Set cursor at the end
-   setCursorAtTheEnd(editor);
 
    return tag;
 };
