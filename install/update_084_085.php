@@ -1301,45 +1301,75 @@ function update084to085() {
    );
 
    // update search_config
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'search_config' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . DisplayPreference::PERSONAL ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'search_config'";
-      $DB->queryOrDie($query, "0.85 update search_config with search_config");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "search_config",
+         'rights' => ALLSTANDARDRIGHT
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . DisplayPreference::PERSONAL
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "search_config"
+         ],
+         "0.85 update search_config with search_config"
+      );
    }
 
    // delete search_config_global
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'search_config_global' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . DisplayPreference::GENERAL ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'search_config'";
-      $DB->queryOrDie($query, "0.85 update search_config with search_config_global");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "search_config_global",
+         'rights' => ALLSTANDARDRIGHT
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . DisplayPreference::GENERAL
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "search_config"
+         ],
+         "0.85 update search_config with search_config_global"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'search_config_global'";
-   $DB->queryOrDie($query, "0.85 delete search_config_global right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "search_config_global"],
+      "0.85 delete search_config_global right"
+   );
 
    // delete check_update
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'check_update' AND `rights` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Backup::CHECKUPDATE ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'backup'";
-         $DB->queryOrDie($query, "0.85 update backup with check_update");
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "check_update",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
+      $DB->updateOrDie("glpi_profilerights", [
+            'rights' => new \QueryExpression(
+               DBmysql::quoteName("rights") . " | " . Backup::CHECKUPDATE
+            )
+         ], [
+            'profiles_id' => $profrights['profiles_id'],
+            'name' => "backup"
+         ],
+         "0.85 update backup with check_update"
+      );
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'check_update'";
-   $DB->queryOrDie($query, "0.85 delete check_update right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "check_update"],
+      "0.85 delete check_update right"
+   );
 
    // entity_dropdown => right by object
 
@@ -1384,42 +1414,62 @@ function update084to085() {
       ProfileRight::updateProfileRightsAsOtherRights('solutiontemplate', 'entity_dropdown');
    }
 
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'entity_dropdown'";
-   $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "entity_dropdown"],
+      "0.85 delete entity_dropdown right"
+   );
 
    // delete notes
    $tables = ['budget', 'cartridge', 'change','computer', 'consumable', 'contact_enterprise',
                    'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
                    'phone', 'printer', 'problem', 'software'];
 
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'notes' AND `rights` = '1'") as $profrights) {
-
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "notes",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
       foreach ($tables as $table) {
-         $query  = "UPDATE `glpi_profilerights`
-                    SET `rights` = `rights` | " . READNOTE ."
-                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                          AND `name` = '$table'";
-         $DB->queryOrDie($query, "0.85 update $table with read notes right");
+         $DB->updateOrDie("glpi_profilerights", [
+               'rights' => new \QueryExpression(
+                  DBmysql::quoteName("rights") . " | " . READNOTE
+               )
+            ], [
+               'profiles_id' => $profrights['profiles_id'],
+               'name' => $table
+            ],
+            "0.85 update $table with read notes right"
+         );
       }
    }
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'notes' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
-
+   $profilerightsIterator = $DB->request([
+      'FROM'   => "glpi_profilerights",
+      'WHERE'  => [
+         'name'   => "notes",
+         'rights' => 1
+      ]
+   ]);
+   foreach ($profilerightsIterator as $profrights) {
       foreach ($tables as $table) {
-         $query  = "UPDATE `glpi_profilerights`
-                    SET `rights` = `rights` | " . READNOTE ." | ".UPDATENOTE ."
-                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                          AND `name` = '$table'";
-         $DB->queryOrDie($query, "0.85 update $table with update notes right");
+         $DB->updateOrDie("glpi_profilerights", [
+               'rights' => new \QueryExpression(
+                  DBmysql::quoteName("rights") . " | " . READNOTE . " | " . UPDATENOTE
+               )
+            ], [
+               'profiles_id' => $profrights['profiles_id'],
+               'name' => $table
+            ],
+            "0.85 update $table with update notes right"
+         );
       }
    }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'notes'";
-   $DB->queryOrDie($query, "0.85 delete notes right");
+   $DB->deleteOrDie("glpi_profilerights",
+      ['name' => "notes"],
+      "0.85 delete notes right"
+   );
 
    $DELFROMDISPLAYPREF['Profile'] = [29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70, 71,
                                           72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
@@ -1465,42 +1515,76 @@ function update084to085() {
 
    if (!countElementsInTable('glpi_crontasks',
                              ['itemtype' => 'QueuedMail', 'name' => 'queuedmail'])) {
-      $query = "INSERT INTO `glpi_crontasks`
-                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                VALUES ('QueuedMail', 'queuedmail', 60, 50, 1, 1, 3,
-                        0, 24, 30, NULL, NULL, NULL)";
-      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
+      $DB->insertOrDie("glpi_crontasks", [
+            'itemtype'        => "QueuedMail",
+            'name'            => "queuedmail",
+            'frequency'       => 60,
+            'param'           => 50,
+            'state'           => 1,
+            'mode'            => 1,
+            'allowmode'       => 3,
+            'hourmin'         => 0,
+            'hourmax'         => 24,
+            'logs_lifetime'   => 30,
+            'lastrun'         => null,
+            'lastcode'        => null,
+            'comment'         => null,
+         ],
+      "0.85 populate glpi_crontasks for queuemail"
+      );
    }
 
    if (!countElementsInTable('glpi_crontasks',
                              ['itemtype' => 'QueuedMail', 'name' => 'queuedmailclean'])) {
-      $query = "INSERT INTO `glpi_crontasks`
-                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                VALUES ('QueuedMail', 'queuedmailclean', 86400, 30, 1, 1, 3,
-                        0, 24, 30, NULL, NULL, NULL)";
-      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
+      $DB->insertOrDie("glpi_crontasks", [
+            'itemtype'        => "QueuedMail",
+            'name'            => "queuedmailclean",
+            'frequency'       => 86400,
+            'param'           => 30,
+            'state'           => 1,
+            'mode'            => 1,
+            'allowmode'       => 3,
+            'hourmin'         => 0,
+            'hourmax'         => 24,
+            'logs_lifetime'   => 30,
+            'lastrun'         => null,
+            'lastcode'        => null,
+            'comment'         => null,
+         ],
+         "0.85 populate glpi_crontasks for queuemail"
+      );
    }
 
    if (!countElementsInTable('glpi_crontasks',
                              ['itemtype' => 'Crontask', 'name' => 'temp'])) {
-      $query = "INSERT INTO `glpi_crontasks`
-                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                VALUES ('Crontask', 'temp', 3600, NULL, 1, 1, 3,
-                        0, 24, 30, NULL, NULL, NULL)";
-      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for clean temporary files");
+      $DB->insertOrDie("glpi_crontasks", [
+            'itemtype'        => "Crontask",
+            'name'            => "temp",
+            'frequency'       => 3600,
+            'param'           => null,
+            'state'           => 1,
+            'mode'            => 1,
+            'allowmode'       => 3,
+            'hourmin'         => 0,
+            'hourmax'         => 24,
+            'logs_lifetime'   => 30,
+            'lastrun'         => null,
+            'lastcode'        => null,
+            'comment'         => null,
+         ],
+         "0.85 populate glpi_crontasks for clean temporary files"
+      );
    }
 
    if ($migration->addField("glpi_entities", "delay_send_emails", "integer",
                             ['value' => -2])) {
       $migration->migrationOneTable('glpi_entities');
       // Set directly to root entity
-      $query = 'UPDATE `glpi_entities`
-                SET `delay_send_emails` = 0
-                WHERE `id` = 0';
-      $DB->queryOrDie($query, "0.85 default value for delay_send_emails for root entity");
+      $DB->upgradeOrDie("glpi_entities",
+         ['delay_send_emails' => 0],
+         ['id' => 0],
+         "0.85 default value for delay_send_emails for root entity"
+      );
    }
 
    // pour que la proc??dure soit r??-entrante
@@ -1732,24 +1816,22 @@ function update084to085() {
    }
 
    // Change notifications
-   $query = "SELECT *
-             FROM `glpi_notificationtemplates`
-             WHERE `itemtype` = 'Change'";
+   $notificationtemplatesIterator = $DB->request('glpi_notificationtemplates', [
+      'itemtype' => "Change"
+   ]);
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)==0) {
-         $query = "INSERT INTO `glpi_notificationtemplates`
-                          (`name`, `itemtype`, `date_mod`)
-                   VALUES ('Changes', 'Change', NOW())";
-         $DB->queryOrDie($query, "0.85 add change notification");
+   if ($notificationtemplatesIterator->valid()) {
+      if (count($notificationtemplatesIterator) == 0) {
+         $DB->insertOrDie('glpi_notificationtemplates', [
+               'name'      => "Changes",
+               'itemtype'  => "Change",
+               'date_mod'  => new \QueryExpression("NOW()"),
+            ],
+            "0.85 add change notification"
+         );
          $notid = $DB->insert_id();
 
-         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                          (`notificationtemplates_id`, `language`, `subject`,
-                           `content_text`,
-                           `content_html`)
-                   VALUES ($notid, '', '##change.action## ##change.title##',
-                          '##IFchange.storestatus=5##
+         $contentText = '##IFchange.storestatus=5##
  ##lang.change.url## : ##change.urlapprove##
  ##lang.change.solvedate## : ##change.solvedate##
  ##lang.change.solution.type## : ##change.solution.type##
@@ -1792,8 +1874,9 @@ function update084to085() {
  ##lang.task.category## ##task.category##
 
 ##ENDFOREACHtasks##
-',
-                          '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
+';
+
+$contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 &lt;div&gt;##lang.change.url## : &lt;a href=\"##change.urlapprove##\"&gt;##change.urlapprove##&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;span style=\"color: #888888;\"&gt;&lt;strong&gt;&lt;span style=\"text-decoration: underline;\"&gt;##lang.change.solvedate##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solvedate##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.type##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.type##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.description##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.description## ##ENDIFchange.storestatus##&lt;/div&gt;
 &lt;div&gt;##ELSEchange.storestatus## ##lang.change.url## : &lt;a href=\"##change.url##\"&gt;##change.url##&lt;/a&gt; ##ENDELSEchange.storestatus##&lt;/div&gt;
@@ -1808,8 +1891,17 @@ function update084to085() {
 &lt;p&gt;##FOREACHtasks##&lt;/p&gt;
 &lt;div class=\"description b\"&gt;&lt;strong&gt;[##task.date##] &lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.author##&lt;/span&gt; ##task.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.description##&lt;/span&gt; ##task.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.time##&lt;/span&gt; ##task.time##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; ##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
-&lt;/div&gt;')";
-         $DB->queryOrDie($query, "0.85 add change notification translation");
+&lt;/div&gt;';
+
+         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+               'notificationtemplates_id' => $notid,
+               'language'     => "",
+               'subject'      => "##change.action## ##change.title##",
+               'content_text' => $contentText,
+               'content_html' => $contentHtml
+            ],
+            "0.85 add change notification translation"
+         );
 
          $notifications = ['new'         => [],
                                 'update'      => [Notification::ASSIGN_TECH,
@@ -1837,20 +1929,31 @@ function update084to085() {
          }
 
          foreach ($notifications as $type => $targets) {
-            $query = "INSERT INTO `glpi_notifications`
-                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                              `date_mod`)
-                      VALUES ('".$notif_names[$type]."', 0, 'Change', '$type', 'mail',
-                              $notid, '', 1, 1, NOW())";
-            $DB->queryOrDie($query, "0.85 add change $type notification");
+            $DB->insertOrDie("glpi_notifications", [
+                  'name'                     => $notif_names[$type],
+                  'entities_id'              => 0,
+                  'itemtype'                 => "Change",
+                  'event'                    => $type,
+                  'mode'                     => "mail",
+                  'notificationtemplates_id' => $notid,
+                  'comment'                  => "",
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => new \QueryExpression("NOW()")
+               ],
+               "0.85 add change $type notification"
+            );
             $notifid = $DB->insert_id();
 
             foreach ($targets as $target) {
-               $query = "INSERT INTO `glpi_notificationtargets`
-                                (`id`, `notifications_id`, `type`, `items_id`)
-                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
-               $DB->queryOrDie($query, "0.85 add change $type notification target");
+               $DB->insertOrDie("glpi_notificationtargets", [
+                     'id'                 => null,
+                     'notifications_id'   => $notifid,
+                     'type'               => Notification::USER_TYPE,
+                     'items_id'           => $target,
+                  ],
+                  "0.85 add change $type notification target"
+               );
             }
          }
       }
@@ -1994,35 +2097,40 @@ function update084to085() {
 
    $i = 0;
    foreach ($rules as $rule) {
-      $query  = "UPDATE `glpi_rules`
-                 SET `uuid` = 'STATIC-UUID-$i'
-                 WHERE `entities_id` = 0
-                       AND `is_recursive` = 0
-                       AND `sub_type` = '".$rule['sub_type']."'
-                       AND `name` = '".$rule['name']."'
-                       AND `description` = '".$rule['description']."'
-                       AND `match` = '".$rule['match']."'
-                 ORDER BY id ASC
-                 LIMIT 1";
-      $DB->queryOrDie($query, "0.85 add uuid to basic rules (STATIC-UUID-$i)");
+      $DB->updateOrDie("glpi_rules", [
+            'uuid' => "STATIC-UUID-$i"
+         ], [
+            'WHERE' => [
+               'entities_id'  => 0,
+               'is_recursive' => 0,
+               'sub_type'     => $rule['sub_type'],
+               'name'         => $rule['name'],
+               'description'  => $rule['description'],
+               'match'        => $rule['match'],
+            ],
+            "ORDER" => ['id ASC'],
+            "LIMIT" => 1,
+         ],
+         "0.85 add uuid to basic rules (STATIC-UUID-$i)"
+      );
       $i++;
    }
 
    //generate uuid for the rules of user
    foreach ($DB->request('glpi_rules', ['uuid' => null]) as $data) {
-      $uuid  = Rule::getUuid();
-      $query = "UPDATE `glpi_rules`
-                SET `uuid` = '$uuid'
-                WHERE `id` = '".$data['id']."'";
-      $DB->queryOrDie($query, "0.85 add uuid to existing rules");
+      $DB->updateOrDie("glpi_rules",
+         ['uuid' => Rule::getUuid()],
+         ['id' => $data['id']],
+         "0.85 add uuid to existing rules"
+      );
    }
 
    foreach ($DB->request('glpi_slalevels', ['uuid' => null]) as $data) {
-      $uuid  = Rule::getUuid();
-      $query = "UPDATE `glpi_slalevels`
-                SET `uuid` = '$uuid'
-                WHERE `id` = '".$data['id']."'";
-      $DB->queryOrDie($query, "0.85 add uuid to existing slalevels");
+      $DB->updateOrDie("glpi_slalevels",
+         ['uuid' => Rule::getUuid()],
+         ['id' => $data['id']],
+         "0.85 add uuid to existing slalevels"
+      );
    }
 
    $migration->addField('glpi_users', 'is_deleted_ldap', 'bool');
@@ -2094,38 +2202,48 @@ function update084to085() {
                              'event'    => 'replysatisfaction'])==0) {
       // No notifications duplicate all
 
-      $query = "SELECT *
-                FROM `glpi_notifications`
-                WHERE `itemtype` = 'Ticket'
-                      AND `event` = 'satisfaction'";
-      foreach ($DB->request($query) as $notif) {
-         $query = "INSERT INTO `glpi_notifications`
-                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                          `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                          `date_mod`)
-                   VALUES ('".addslashes($notif['name'])." Answer',
-                           '".$notif['entities_id']."', 'Ticket',
-                           'replysatisfaction', '".$notif['mode']."',
-                           '".$notif['notificationtemplates_id']."',
-                           '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
-                           '".$notif['is_active']."', NOW());";
-         $DB->queryOrDie($query, "0.85 insert replysatisfaction notification");
+      $notificationsIterator = $DB->request("glpi_notifications", [
+         'itemtype'  => "Ticket",
+         'event'     => "satisfaction",
+      ]);
+
+      foreach ($notificationtemplatesIterator as $notif) {
+         $DB->insertOrDie("glpi_notifications", [
+               'name'                     => addslashes($notif['name']). "Answer",
+               'entities_id'              => $notif['entities_id'],
+               'itemtype'                 => 'Ticket',
+               'event'                    => "replysatisfaction",
+               'mode'                     => $notif['mode'],
+               'notificationtemplates_id' => $notif['notificationtemplates_id'],
+               'comment'                  => addslashes($notif['comment']),
+               'is_recursive'             => $notif['is_recursive'],
+               'is_active'                => $notif['is_active'],
+               'date_mod'                 => new \QueryExpression("NOW()")
+            ],
+            "0.85 insert replysatisfaction notification"
+         );
          $newID  = $DB->insert_id();
-         $query2 = "SELECT *
-                    FROM `glpi_notificationtargets`
-                    WHERE `notifications_id` = '".$notif['id']."'";
+         $notificationtargetsIterator = $DB->request("glpi_notificationtargets", [
+            'notifications_id' => $notif['id']
+         ]);
          // Add same recipent of satisfaction
-         foreach ($DB->request($query2) as $target) {
-            $query = "INSERT INTO `glpi_notificationtargets`
-                             (`notifications_id`, `type`, `items_id`)
-                      VALUES ($newID, '".$target['type']."', '".$target['items_id']."')";
-            $DB->queryOrDie($query, "0.85 insert targets for replysatisfaction notification");
+         foreach ($notificationtargetsIterator as $target) {
+            $DB->insertOrDie("glpi_notificationtargets", [
+                  'notifications_id'   => $newID,
+                  'type'               => $target['type'],
+                  'items_id'           => $target['items_id'],
+               ],
+               "0.85 insert targets for replysatisfaction notification"
+            );
          }
          // Add Tech in charge
-            $query = "INSERT INTO `glpi_notificationtargets`
-                             (`notifications_id`, `type`, `items_id`)
-                      VALUES ($newID, '".Notification::USER_TYPE."', '".Notification::ASSIGN_TECH."')";
-            $DB->queryOrDie($query, "0.85 insert tech in charge target for replysatisfaction notification");
+         $DB->insertOrDie("glpi_notificationtargets", [
+               'notifications_id'   => $newID,
+               'type'               => Notification::USER_TYPE,
+               'items_id'           => Notification::ASSIGN_TECH
+            ],
+            "0.85 insert tech in charge target for replysatisfaction notification"
+         );
       }
    }
 
@@ -2138,20 +2256,27 @@ function update084to085() {
       $migration->migrationOneTable('glpi_slas');
 
       // Minutes
-      $query = "SELECT *
-                FROM `glpi_slas`
-                WHERE `resolution_time` <= '3000'";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $a_ids = [];
-            while ($data = $DB->fetch_assoc($result)) {
-               $a_ids[] = $data['id'];
-            }
-            $DB->query("UPDATE `glpi_slas`
-                        SET `definition_time` = 'minute',
-                            `resolution_time` = `resolution_time`/60
-                        WHERE `id` IN (".implode(",", $a_ids).")");
+      $slasIterator = $DB->request("glpi_slas", [
+         'resolution_time' => ["<=", 3000]
+      ]);
+      if (count($slasIterator)) {
+         $a_ids = [];
+         while ($data = $DB->fetch_assoc($result)) {
+            $a_ids[] = $data['id'];
          }
+         $DB->query("UPDATE `glpi_slas`
+                     SET `definition_time` = 'minute',
+                         `resolution_time` = `resolution_time`/60
+                     WHERE `id` IN (".implode(",", $a_ids).")");
+         $DB->update("glpi_slas", [
+               'definition_time' => "minute",
+               'resolution_time' => new \QueryExpression(
+                  DBmysql::quoteName("resolution_time") . "/60"
+               )
+            ], [
+               'id' => $a_ids
+            ]
+         );
       }
       // Hours
       $query = "SELECT *
