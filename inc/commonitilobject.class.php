@@ -6124,16 +6124,19 @@ abstract class CommonITILObject extends CommonDBTM {
                var target = e.target || window.event.srcElement;
                if (target.nodeName == 'a') return;
                if (target.className == 'read_more_button') return;
-               $('#'+domid).addClass('edited');
-               $('#'+domid+' .displayed_content').hide();
-               $('#'+domid+' .cancel_edit_item_content').show()
+
+               var _eltsel = '[data-uid='+domid+']';
+               var _elt = $(_eltsel);
+               _elt.addClass('edited');
+               $(_eltsel + ' .displayed_content').hide();
+               $(_eltsel + ' .cancel_edit_item_content').show()
                                                         .click(function() {
                                                             $(this).hide();
-                                                            $('#'+domid).removeClass('edited');
-                                                            $('#'+domid+' .edit_item_content').empty().hide();
-                                                            $('#'+domid+' .displayed_content').show();
+                                                            _elt.removeClass('edited');
+                                                            $(_eltsel + ' .edit_item_content').empty().hide();
+                                                            $(_eltsel + ' .displayed_content').show();
                                                         });
-               $('#'+domid+' .edit_item_content').show()
+               $(_eltsel + ' .edit_item_content').show()
                                                  .load('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
                                                        {'action'    : 'viewsubitem',
                                                         'type'      : itemtype,
@@ -6504,7 +6507,8 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($item['type'] == $objType.'Validation' && isset($item_i['status'])) {
             $domid .= $item_i['status'];
          }
-         $domid .= $rand;
+         $randdomid = $domid . $rand;
+         $domid = Toolbox::slugify($domid);
 
          $fa = null;
          $class = "h_content";
@@ -6532,7 +6536,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $class .= " {$item_i['status']}";
          }
 
-         echo "<div class='$class' id='$domid'>";
+         echo "<div class='$class' id='$domid' data-uid='$randdomid'>";
          if ($fa !== null) {
             echo "<i class='solimg fa fa-$fa fa-5x'></i>";
          }
@@ -6558,7 +6562,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
             echo "<span class='far fa-edit control_item' title='".__('Edit')."'";
-            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$domid\")'";
+            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$randdomid\")'";
             echo "></span>";
             echo "</div>";
          }
