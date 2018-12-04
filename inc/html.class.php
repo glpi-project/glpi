@@ -6598,10 +6598,12 @@ class Html {
       global $CFG_GLPI, $GLPI_CACHE;
 
       $ckey = isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
+      $is_debug = $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
+      $files = [];
 
       $scss = new Compiler();
       $scss->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE || isset($args['debug'])) {
+      if ($is_debug || isset($args['debug'])) {
          $ckey .= '_sourcemap';
          $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
          $scss->setSourceMapOptions(
@@ -6613,11 +6615,11 @@ class Html {
       }
 
       if (!isset($args['file']) || $args['file'] == 'main_styles') {
-         $import = '@import "css/styles";';
+         $files[] = 'css/styles';
          if (isset($_SESSION['glpihighcontrast_css'])
             && $_SESSION['glpihighcontrast_css']) {
             $ckey .= '_highcontrast';
-            $import .= '@import "css/highcontrast";';
+            $files[] = 'css/highcontrast';
          }
 
          // CSS theme
@@ -6626,7 +6628,7 @@ class Html {
             $theme = $_SESSION['glpipalette'];
          }
          $ckey .= '_' . $theme;
-         $import .= '@import "css/palettes/'.$theme.'";';
+         $files[] = 'css/palettes/' . $theme;
       } else {
          $ckey .= '_' . md5($args['file']);
 
@@ -6641,12 +6643,48 @@ class Html {
             $args['file'] .= '.scss';
          }
 
-         $import = '@import "' . $args['file'] . '";';
+         $files[] = $args['file'];
+      }
+
+      $ckey = md5($ckey);
+      $import = '';
+
+      foreach ($files as $file) {
+         $path = GLPI_ROOT . "/$file";
+         if (!Toolbox::endsWith($file, '.scss')) {
+            $path .= ".scss";
+         }
+         $pathargs = explode('/', $file);
+         $pathargs[] = '_' . array_pop($pathargs);
+         $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs) . '.scss';
+         if (file_exists($path) || file_exists($pathalt)) {
+            if (!file_exists($path)) {
+               $path = $pathalt;
+            }
+            $import .= '@import "' . $file . '";';
+            $fckey = md5($file);
+            //check if files has changed
+            if ($GLPI_CACHE->has($fckey)) {
+               $md5 = $GLPI_CACHE->get($fckey);
+               $md5file = md5(file_get_contents($path));
+
+               if ($md5file != $md5) {
+                  //file has changed
+                  Toolbox::logDebug("$file has changed, reloading");
+                  $args['reload'] = true;
+                  $GLPI_CACHE->set($fckey, $md5file);
+               }
+            } else {
+               Toolbox::logDebug("$file is new, loading");
+               $GLPI_CACHE->set(md5($file), md5($path));
+            }
+         } else {
+            Toolbox::logWarning('Requested file ' . $path . ' does not exists.');
+         }
       }
 
       $scss->addImportPath(GLPI_ROOT);
 
-      $ckey = md5($ckey);
       if ($GLPI_CACHE->has($ckey) && !isset($args['reload']) && !isset($args['nocache'])) {
          $css = $GLPI_CACHE->get($ckey);
       } else {
