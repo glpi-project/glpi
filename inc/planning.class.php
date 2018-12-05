@@ -637,8 +637,13 @@ class Planning extends CommonGLPI {
                },
                listFull: {
                   type: 'list',
-                  duration: { years: 10 },
                   titleFormat: '[]',
+                  visibleRange: function(currentDate) {
+                     return {
+                        start: currentDate.clone().subtract(5, 'years'),
+                        end: currentDate.clone().add(5, 'years')
+                     };
+                 }
                }
             },
             viewRender: function(view){ // on date changes, replicate to datepicker
@@ -723,16 +728,6 @@ class Planning extends CommonGLPI {
 
                   // hide control buttons
                   $('#planning .fc-left .fc-button-group').hide();
-
-                  // set date to today - 5 years
-                  if (!lastDateDirty) {
-                     lastDate = $('#planning').fullCalendar('getDate');
-                     // tag lastDate to dirty as viewRender will be called again with gotoDate
-                     lastDateDirty = true
-
-                     $('#planning').fullCalendar('gotoDate',
-                                                 moment().subtract(5, 'years'));
-                  }
                } else {
                   // reinit datepicker
                   $('#planning_datepicker').show();
@@ -740,26 +735,7 @@ class Planning extends CommonGLPI {
 
                   // show controls buttons
                   $('#planning .fc-left .fc-button-group').show();
-
-                  // return to previous save date
-                  if (lastView != view.name
-                      && !lastDateDirty
-                      && typeof lastDate != 'undefined'
-                      && lastDate != $('#planning').fullCalendar('getDate')) {
-                     // tag lastDate to dirty as viewRender will be called again with gotoDate
-                     lastDateDirty = true
-
-                     $('#planning').fullCalendar('gotoDate', lastDate);
-                  }
-                  lastDate = $('#planning').fullCalendar('getDate');
-                  //console.log(lastDate);
                }
-
-               // remove dirty on lastDate
-               lastDateDirty = false
-
-               // store current view name (to avoid a new call of gotoDate)
-               lastView = view.name;
             },
             eventAfterAllRender: function(view) {
                // set a var to force refetch events (see viewRender callback)
