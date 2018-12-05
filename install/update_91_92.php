@@ -201,17 +201,12 @@ function update91to92() {
    $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => true]);
    $migration->migrationOneTable("glpi_documents_items");
    $migration->addKey("glpi_documents_items", "users_id");
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         new \QueryExpression(
-            DBmysql::quoteName("glpi_documents_items") . ", " . DBmysql::quoteName("glpi_documents")
-         ), [
-            'glpi_documents_items.users_id' => DBmysql::quoteName("glpi_documents.users_id")
-         ], [
-            'glpi_documents_items.documents_id' => DBmysql::quoteName("glpi_documents.id")
-         ]
-      ), "9.2 update set users_id on glpi_documents_items"
-   );
+   // TODO : can be improved when DBmysql->buildUpdate() support joins
+   $migration->addPostQuery("UPDATE `glpi_documents_items`,
+                                    `glpi_documents`
+                             SET `glpi_documents_items`.`users_id` = `glpi_documents`.`users_id`
+                             WHERE `glpi_documents_items`.`documents_id` = `glpi_documents`.`id`",
+                            "9.2 update set users_id on glpi_documents_items");
 
    //add product number
    $product_types = ['Computer',
