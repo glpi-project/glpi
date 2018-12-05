@@ -2725,90 +2725,84 @@ class Ticket extends CommonITILObject {
             $input = $ma->getInput();
 
             foreach ($ids as $id) {
-               $DB->beginTransaction();
-               $fup = new ITILFollowup();
-               $input2 = [];
+               try {
+                  $DB->beginTransaction();
+                  $fup = new ITILFollowup();
+                  $input2 = [];
 
-               foreach ($input as $key => $val) {
-                  $input2[$key] = $val;
-               }
-               if ($item->can($id, CREATE) && $item->can($id, DELETE)) {
-                  if (!$item->getFromDB($id)) {
-                     //Cannot retreive ticket. Abort/fail the merge
-                     $DB->rollBack();
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                  foreach ($input as $key => $val) {
+                     $input2[$key] = $val;
                   }
+                  if ($item->can($id, CREATE) && $item->can($id, DELETE)) {
+                     if (!$item->getFromDB($id)) {
+                        //Cannot retreive ticket. Abort/fail the merge
+                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
+                     }
 
-                  //Build followup from the original ticket
-                  $input2 = [
-                     'itemtype'        => 'Ticket',
-                     'items_id'        => $input['_mergeticket'],
-                     'content'         => $item->fields['name']."\n\n".$item->fields['content'],
-                     'users_id'        => $item->fields['users_id_recipient'],
-                     'date_creation'   => $item->fields['date_creation'],
-                     'sourceitems_id'  => $item->getID()
-                  ];
+                     //Build followup from the original ticket
+                     $input2 = [
+                        'itemtype'        => 'Ticket',
+                        'items_id'        => $input['_mergeticket'],
+                        'content'         => $item->fields['name']."\n\n".$item->fields['content'],
+                        'users_id'        => $item->fields['users_id_recipient'],
+                        'date_creation'   => $item->fields['date_creation'],
+                        'sourceitems_id'  => $item->getID()
+                     ];
 
-                  if (!$fup->add($input2)) {
-                     //Cannot add followup. Abort/fail the merge
-                     $DB->rollBack();
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                  }
+                     if (!$fup->add($input2)) {
+                        //Cannot add followup. Abort/fail the merge
+                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
+                     }
 
-                  if (isset($input['with_followups'])) {
-                     //Migrate/clone any followups to the ticket
-                     $tomerge = $fup->find([
-                        'items_id' => $id,
-                        'itemtype' => 'Ticket'
-                     ]);
-                     foreach ($tomerge as $key => $fup2) {
-                        $fup2['items_id'] = $input['_mergeticket'];
-                        $fup2['sourceitems_id'] = $item->getID();
-                        $fup2['date_creation'] = $item->fields['date_creation'];
-                        $fup2['date_mod'] = $item->fields['date_mod'];
-                        unset($fup2['id']);
-                        if (!$fup->add($fup2)) {
-                           //Cannot add followup. Abort/fail the merge
-                           $DB->rollBack();
-                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     if (isset($input['with_followups'])) {
+                        //Migrate/clone any followups to the ticket
+                        $tomerge = $fup->find([
+                           'items_id' => $id,
+                           'itemtype' => 'Ticket'
+                        ]);
+                        foreach ($tomerge as $key => $fup2) {
+                           $fup2['items_id'] = $input['_mergeticket'];
+                           $fup2['sourceitems_id'] = $item->getID();
+                           $fup2['date_creation'] = $item->fields['date_creation'];
+                           $fup2['date_mod'] = $item->fields['date_mod'];
+                           unset($fup2['id']);
+                           if (!$fup->add($fup2)) {
+                              //Cannot add followup. Abort/fail the merge
+                              throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
+                           }
                         }
                      }
-                  }
 
-                  //Add relation (this is parent of merge target)
-                  $tt = new Ticket_Ticket();
-                  $linkparams = [
-                     'link'         => Ticket_Ticket::PARENT_OF,
-                     'tickets_id_1' => $id,
-                     'tickets_id_2' => $input['_mergeticket']
-                  ];
-                  if (!$tt->add($linkparams)) {
-                     //Cannot link tickets. Abort/fail the merge
-                     $DB->rollBack();
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                  }
+                     //Add relation (this is parent of merge target)
+                     $tt = new Ticket_Ticket();
+                     $linkparams = [
+                        'link'         => Ticket_Ticket::PARENT_OF,
+                        'tickets_id_1' => $id,
+                        'tickets_id_2' => $input['_mergeticket']
+                     ];
+                     if (!$tt->add($linkparams)) {
+                        //Cannot link tickets. Abort/fail the merge
+                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
+                     }
 
-                  //Close then delete this ticket
-                  if (!$item->update(['id' => $id, 'status' => CommonITILObject::CLOSED]) ||
-                     !$item->delete(['id' => $id])) {
-                     $DB->rollBack();
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                  }
+                     //Close then delete this ticket
+                     if (!$item->update(['id' => $id, 'status' => CommonITILObject::CLOSED]) ||
+                        !$item->delete(['id' => $id])) {
+                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
+                     }
 
-                  $DB->commit();
-                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                  Event::log($input['_mergeticket'], "ticket", 4, "tracking",
-                     sprintf(__('%s merges ticket %s into %s'), $_SESSION["glpiname"],
-                     $id, $input['_mergeticket']));
-               } else {
+                     $DB->commit();
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     Event::log($input['_mergeticket'], "ticket", 4, "tracking",
+                        sprintf(__('%s merges ticket %s into %s'), $_SESSION["glpiname"],
+                        $id, $input['_mergeticket']));
+                  } else {
+                     throw new \RuntimeException(ERROR_RIGHT, MassiveAction::ACTION_NORIGHT);
+                  }
+               } catch (\RuntimeException $e) {
                   $DB->rollBack();
-                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  $ma->itemDone($item->getType(), $id, $e->getCode());
+                  $ma->addMessage($item->getErrorMessage($e->getMessage()));
                }
             }
             return;
