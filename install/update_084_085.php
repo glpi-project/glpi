@@ -1110,45 +1110,37 @@ function update084to085() {
    if (countElementsInTable("glpi_profilerights", ['name' => 'change']) == 0) {
       ProfileRight::addProfileRights(['change']);
 
-      ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY, [
-         'name' => "ticket",
-         'rights' => ['&', Ticket::OWN]
-      ]);
-
-      ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL, [
-         'name' => "ticket",
-         'rights' => ['&', Ticket::READALL]
-      ]);
-
-      ProfileRight::updateProfileRightAsOtherRight(
-         'change',
-         CREATE . " | " . UPDATE . " | " . DELETE . " | " . PURGE,
-         [
-            'name' => "ticket",
-            'rights' => ['&', UPDATE]
-         ]
-      );
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
+      ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
+                                                   "`name` = 'ticket'
+                                                     AND `rights` & ". Ticket::OWN);
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
+      ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL,
+                                                   "`name` = 'ticket'
+                                                     AND `rights` & ".Ticket::READALL);
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
+      ProfileRight::updateProfileRightAsOtherRight('change',
+                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
+                                                    "`name` = 'ticket' AND `rights` & ".UPDATE);
    }
 
    if (countElementsInTable("glpi_profilerights", ['name' => 'changevalidation']) == 0) {
       ProfileRight::addProfileRights(['changevalidation']);
 
-      ProfileRight::updateProfileRightAsOtherRight('changevalidation', CREATE, [
-         'name' => 'ticketvalidation',
-         'rights' => ['&', TicketValidation::CREATEINCIDENT],
-         'rights' => ['&', TicketValidation::CREATEREQUEST]
-      ]);
-
-      ProfileRight::updateProfileRightAsOtherRight('changevalidation', ChangeValidation::VALIDATE, [
-         'name' => 'ticketvalidation',
-         'rights' => ['&', TicketValidation::VALIDATEINCIDENT],
-         'rights' => ['&', TicketValidation::VALIDATEREQUEST]
-      ]);
-
-      ProfileRight::updateProfileRightAsOtherRight('changevalidation', PURGE, [
-         'name' => 'ticketvalidation',
-         'rights' => ['&', TicketValidation::PURGE]
-      ]);
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
+      ProfileRight::updateProfileRightAsOtherRight('changevalidation', CREATE,
+                                                   "`name` = 'ticketvalidation'
+                                                     AND `rights` & ". TicketValidation::CREATEINCIDENT."
+                                                     AND `rights` & ". TicketValidation::CREATEREQUEST);
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
+      ProfileRight::updateProfileRightAsOtherRight('changevalidation', ChangeValidation::VALIDATE,
+                                                   "`name` = 'ticketvalidation'
+                                                     AND `rights` & ". TicketValidation::VALIDATEINCIDENT."
+                                                     AND `rights` & ". TicketValidation::VALIDATEREQUEST);
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
+      ProfileRight::updateProfileRightAsOtherRight('changevalidation', PURGE,
+                                                   "`name` = 'ticketvalidation'
+                                                     AND `rights` & ". PURGE);
    }
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
@@ -2261,13 +2253,9 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
       ]);
       if (count($slasIterator)) {
          $a_ids = [];
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $slasIterator->next()) {
             $a_ids[] = $data['id'];
          }
-         $DB->query("UPDATE `glpi_slas`
-                     SET `definition_time` = 'minute',
-                         `resolution_time` = `resolution_time`/60
-                     WHERE `id` IN (".implode(",", $a_ids).")");
          $DB->update("glpi_slas", [
                'definition_time' => "minute",
                'resolution_time' => new \QueryExpression(
@@ -2279,37 +2267,43 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
          );
       }
       // Hours
-      $query = "SELECT *
-                FROM `glpi_slas`
-                WHERE `resolution_time` > '3000'
-                      AND `resolution_time` <= '82800'";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $a_ids = [];
-            while ($data = $DB->fetch_assoc($result)) {
-               $a_ids[] = $data['id'];
-            }
-            $DB->query("UPDATE `glpi_slas`
-                        SET `definition_time` = 'hour',
-                            `resolution_time` = `resolution_time`/3600
-                        WHERE `id` IN (".implode(",", $a_ids).")");
+      $slasIterator = $DB->request("glpi_slas", [
+         'resolution_time' => [">", 3000],
+         'resolution_time' => ["<=", 82800]
+      ]);
+      if (count($slasIterator)) {
+         $a_ids = [];
+         while ($data = $slasIterator->next()) {
+            $a_ids[] = $data['id'];
          }
+         $DB->update("glpi_slas", [
+               'definition_time' => "hour",
+               'resolution_time' => new \QueryExpression(
+                  DBmysql::quoteName("resolution_time") . "/3600"
+               )
+            ], [
+               'id' => $a_ids
+            ]
+         );
       }
       // Days
-      $query = "SELECT *
-                FROM `glpi_slas`
-                WHERE `resolution_time` > '82800'";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $a_ids = [];
-            while ($data = $DB->fetch_assoc($result)) {
-               $a_ids[] = $data['id'];
-            }
-            $DB->query("UPDATE `glpi_slas`
-                        SET `definition_time` = 'day',
-                            `resolution_time` = `resolution_time`/86400
-                        WHERE `id` IN (".implode(",", $a_ids).")");
+      $slasIterator = $DB->request("glpi_slas", [
+         'resolution_time' => [">", 82800]
+      ]);
+      if (count($slasIterator)) {
+         $a_ids = [];
+         while ($data = $DB->fetch_assoc($result)) {
+            $a_ids[] = $data['id'];
          }
+         $DB->update("glpi_slas", [
+               'definition_time' => "day",
+               'resolution_time' => new \QueryExpression(
+                  DBmysql::quoteName("resolution_time") . "/86400"
+               )
+            ], [
+               'id' => $a_ids
+            ]
+         );
       }
    }
 
@@ -2322,62 +2316,106 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'MailCollector'";
+   $notificationtemplatesIterator = $DB->request("glpi_notificationtemplates", [
+      'itemtype' => "MailCollector"
+   ]);
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)==0) {
-         $query = "INSERT INTO `glpi_notificationtemplates`
-                          (`name`, `itemtype`, `date_mod`)
-                   VALUES ('Receiver errors', 'MailCollector', NOW())";
-         $DB->queryOrDie($query, "0.85 add mail collector notification");
+   if ($notificationtemplatesIterator->valid()) {
+      if (count($notificationtemplatesIterator) == 0) {
+         $DB->insertOrDie("glpi_notificationtemplates", [
+               'name'      => "Receiver errors",
+               'itemtype'  => "MailCollector",
+               'date_mod'  => new \QueryExpression("NOW()"),
+            ],
+            "0.85 add mail collector notification"
+         );
          $notid = $DB->insert_id();
 
-         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                          (`notificationtemplates_id`, `language`, `subject`,
-                           `content_text`,
-                           `content_html`)
-                   VALUES ($notid, '', '##mailcollector.action##',
-                           '##FOREACHmailcollectors##
+         $contentText = '##FOREACHmailcollectors##
 ##lang.mailcollector.name## : ##mailcollector.name##
 ##lang.mailcollector.errors## : ##mailcollector.errors##
 ##mailcollector.url##
-##ENDFOREACHmailcollectors##',
-'&lt;p&gt;##FOREACHmailcollectors##&lt;br /&gt;##lang.mailcollector.name## : ##mailcollector.name##&lt;br /&gt; ##lang.mailcollector.errors## : ##mailcollector.errors##&lt;br /&gt;&lt;a href=\"##mailcollector.url##\"&gt;##mailcollector.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHmailcollectors##&lt;/p&gt;
-&lt;p&gt;&lt;/p&gt;')";
-         $DB->queryOrDie($query, "0.85 add mail collector notification translation");
+##ENDFOREACHmailcollectors##';
 
-         $query = "INSERT INTO `glpi_notifications`
-                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                           `date_mod`)
-                   VALUES ('Receiver errors', 0, 'MailCollector', 'error', 'mail',
-                             $notid, '', 1, 1, NOW())";
-         $DB->queryOrDie($query, "0.85 add mail collector notification");
+         $contentHtml = '&lt;p&gt;##FOREACHmailcollectors##&lt;br /&gt;##lang.mailcollector.name## : ##mailcollector.name##&lt;br /&gt; ##lang.mailcollector.errors## : ##mailcollector.errors##&lt;br /&gt;&lt;a href=\"##mailcollector.url##\"&gt;##mailcollector.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHmailcollectors##&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;';
+
+         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+               'notificationtemplates_id' => $notid,
+               'language' => "",
+               'subject' => '##mailcollector.action##',
+               'content_text' => $contentText,
+               'content_html' => $contentHtml,
+            ],
+            "0.85 add mail collector notification translation"
+         );
+
+         $DB->insertOrDie("glpi_notifications", [
+               'name'                     => "Receiver errors",
+               'entities_id'              => 0,
+               'itemtype'                 => "MailCollector",
+               'event'                    => "error",
+               'mode'                     => "mail",
+               'notificationtemplates_id' => $notid,
+               'comment'                  => "",
+               'is_recursive'             => 1,
+               'is_active'                => 1,
+               'date_mod'                 => new \QueryExpression("NOW()")
+            ],
+            "0.85 add mail collector notification"
+         );
          $notifid = $DB->insert_id();
 
-         $query = "INSERT INTO `glpi_notificationtargets`
-                          (`id`, `notifications_id`, `type`, `items_id`)
-                   VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::GLOBAL_ADMINISTRATOR.");";
-         $DB->queryOrDie($query, "0.85 add mail collector notification target");
+         $DB->insertOrDie("glpi_notificationtargets", [
+               'id'                 => null,
+               'notifications_id'   => $notifid,
+               'type'               => Notification::USER_TYPE,
+               'items_id'           => Notification::GLOBAL_ADMINISTRATOR
+            ],
+            "0.85 add mail collector notification target"
+         );
       }
    }
 
    if (!countElementsInTable('glpi_crontasks',
                              ['itemtype' => 'MailCollector', 'name' => 'mailgateerror'])) {
-      $query = "INSERT INTO `glpi_crontasks`
-                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                VALUES ('MailCollector', 'mailgateerror', ".DAY_TIMESTAMP.", NULL, 1, 1, 3,
-                        0, 24, 30, NULL, NULL, NULL)";
-      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for mailgateerror");
+      $DB->insertOrDie("glpi_crontasks", [
+            'itemtype'        => "MailCollector",
+            'name'            => "mailgateerror",
+            'frequency'       => DAY_TIMESTAMP,
+            'param'           => null,
+            'state'           => 1,
+            'mode'            => 1,
+            'allowmode'       => 3,
+            'hourmin'         => 0,
+            'hourmax'         => 24,
+            'logs_lifetime'   => 30,
+            'lastrun'         => null,
+            'lastcode'        => null,
+            'comment'         => null,
+         ],
+         "0.85 populate glpi_crontasks for mailgateerror"
+      );
    }
    if (!countElementsInTable('glpi_crontasks',
                              ['itemtype' => 'Crontask', 'name' => 'circularlogs'])) {
-      $query = "INSERT INTO `glpi_crontasks`
-                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                VALUES ('Crontask', 'circularlogs', ".DAY_TIMESTAMP.", 4, ".CronTask::STATE_DISABLE.", 1, 3,
-                        0, 24, 30, NULL, NULL, NULL)";
-      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for circularlogs");
+      $DB->insertOrDie("glpi_crontasks", [
+            'itemtype'        => "Crontask",
+            'name'            => "circularlogs",
+            'frequency'       => DAY_TIMESTAMP,
+            'param'           => 4,
+            'state'           => CronTask::STATE_DISABLE,
+            'mode'            => 1,
+            'allowmode'       => 3,
+            'hourmin'         => 0,
+            'hourmax'         => 24,
+            'logs_lifetime'   => 30,
+            'lastrun'         => null,
+            'lastcode'        => null,
+            'comment'         => null,
+         ],
+         "0.85 populate glpi_crontasks for circularlogs"
+      );
    }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_documents'));
@@ -2402,9 +2440,11 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    Config::setConfigurationValues('core', ['attach_ticket_documents_to_mail' => 0]);
 
    $migration->migrationOneTable('glpi_documents');
-   $query = "UPDATE `glpi_documents`
-             SET `tag` = `id`";
-   $DB->queryOrDie($query, "0.85 set tag to all documents");
+   $DB->updateOrDie('glpi_documents',
+      ['tag' => "id"],
+      [true],
+      "0.85 set tag to all documents"
+   );
 
    // increase password length
    $migration->changeField('glpi_users', 'password', 'password', 'string');
@@ -2431,25 +2471,29 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
                         ['update' => '1',
                               'after'  => 'entities_id']);
    // Fix events
-   $query = "UPDATE `glpi_events`
-             SET `type` = 'consumableitems'
-             WHERE `type` = 'consumables'";
-   $DB->queryOrDie($query, "0.85 fix events for consumables");
+   $DB->updateOrDie("glpi_events",
+      ['type' => "consumableitems"],
+      ['type' => "consumables"],
+      "0.85 fix events for consumables"
+   );
 
-   $query = "UPDATE `glpi_events`
-             SET `type` = 'cartridgeitems'
-             WHERE `type` = 'cartridges';";
-   $DB->queryOrDie($query, "0.85 fix events for cartridges");
-
+   $DB->updateOrDie("glpi_events",
+      ['type' => "cartridgeitems"],
+      ['type' => "cartridges"],
+      "0.85 fix events for cartridges"
+   );
    // Bookmark order :
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
    // Pref to comme back ticket created
    if ($migration->addField('glpi_users', 'backcreated', 'TINYINT(1) DEFAULT NULL')) {
-      $query = "INSERT INTO `glpi_configs`
-                       (`context`, `name`, `value`)
-                VALUES ('core', 'backcreated', 0)";
-      $DB->queryOrDie($query, "update glpi_configs with backcreated");
+      $DB->insertOrDie("glpi_configs", [
+            'context'   => "core",
+            'name'      => "backcreated",
+            'value'     => 0
+         ],
+         "update glpi_configs with backcreated"
+      );
    }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_projects'));
@@ -2508,12 +2552,17 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    if (countElementsInTable("glpi_profilerights", ['name' => 'project']) == 0) {
       ProfileRight::addProfileRights(['project']);
 
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
       ProfileRight::updateProfileRightAsOtherRight('project', Project::READMY,
                                                    "`name` = 'change'
                                                      AND `rights` & ". Change::READMY);
+
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
       ProfileRight::updateProfileRightAsOtherRight('project', Project::READALL,
                                                    "`name` = 'change'
                                                      AND `rights` & ".Change::READALL);
+
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
       ProfileRight::updateProfileRightAsOtherRight('project',
                                                     CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ." | ".READNOTE ." | ".UPDATENOTE,
                                                     "`name` = 'change'
@@ -2522,9 +2571,11 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    if (countElementsInTable("glpi_profilerights", ['name' => 'projecttask']) == 0) {
       ProfileRight::addProfileRights(['projecttask']);
 
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
       ProfileRight::updateProfileRightAsOtherRight('projecttask', ProjectTask::READMY,
                                                    "`name` = 'change'
                                                      AND `rights` & ". Change::READMY);
+      // TODO : to improve when updateProfileRightAsOtherRight support the new request structure
       ProfileRight::updateProfileRightAsOtherRight('projecttask', ProjectTask::UPDATEMY,
                                                    "`name` = 'change'
                                                      AND `rights` & ".Change::READMY);
@@ -2578,11 +2629,13 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
                                      'color'       => '#ff0000',
                                      'is_finished' => 1]];
       foreach ($states as $key => $val) {
-         $query = "INSERT INTO `glpi_projectstates`
-                          (`name`,`color`,`is_finished`)
-                   VALUES ('".addslashes($val['name'])."','".addslashes($val['color'])."',
-                           '".addslashes($val['is_finished'])."')";
-         $DB->queryOrDie($query, "0.85 insert default project state $key");
+         $DB->insertOrDie("glpi_projectstates", [
+               'name'         => addslashes($val['name']),
+               'color'        => addslashes($val['color']),
+               'is_finished'  => addslashes($val['is_finished'])
+            ],
+            "0.85 insert default project state $key"
+         );
       }
    }
    if (!$DB->tableExists('glpi_projecttypes')) {
@@ -2717,24 +2770,22 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    }
 
    // Project notifications
-   $query = "SELECT *
-             FROM `glpi_notificationtemplates`
-             WHERE `itemtype` = 'Project'";
+   $notificationtemplatesIterator = $DB->request("glpi_notificationtemplates", [
+      'itemtype' => "Project"
+   ]);
 
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result) == 0) {
-         $query = "INSERT INTO `glpi_notificationtemplates`
-                          (`name`, `itemtype`, `date_mod`)
-                   VALUES ('Projects', 'Project', NOW())";
-         $DB->queryOrDie($query, "0.85 add project notification");
+   if ($notificationtemplatesIterator->valid()) {
+      if (count($notificationtemplatesIterator) == 0) {
+         $DB->insertOrDie("glpi_notificationtemplates", [
+               'name'      => "Projects",
+               'itemtype'  => "Project",
+               'date_mod'  => new \QueryExpression("NOW()")
+            ],
+            "0.85 add project notification"
+         );
          $notid = $DB->insert_id();
 
-         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                          (`notificationtemplates_id`, `language`, `subject`,
-                           `content_text`,
-                           `content_html`)
-                   VALUES ($notid, '', '##project.action## ##project.name## ##project.code##',
-                          '##lang.project.url## : ##project.url##
+         $contenText = '##lang.project.url## : ##project.url##
 
 ##lang.project.description##
 
@@ -2761,8 +2812,10 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 ##lang.task.percent## : ##task.percent##
 ##lang.task.description## : ##task.description##
 
-##ENDFOREACHtasks##',
-                          '&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
+##ENDFOREACHtasks##';
+
+
+         $contentHtml = '&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;##lang.project.description##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.project.name## : ##project.name##&lt;br /&gt;##lang.project.code## : ##project.code##&lt;br /&gt; ##lang.project.manager## : ##project.manager##&lt;br /&gt;##lang.project.managergroup## : ##project.managergroup##&lt;br /&gt; ##lang.project.creationdate## : ##project.creationdate##&lt;br /&gt;##lang.project.priority## : ##project.priority## &lt;br /&gt;##lang.project.state## : ##project.state##&lt;br /&gt;##lang.project.type## : ##project.type##&lt;br /&gt;##lang.project.description## : ##project.description##&lt;/p&gt;
 &lt;p&gt;##lang.project.numberoftasks## : ##project.numberoftasks##&lt;/p&gt;
@@ -2770,8 +2823,18 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 &lt;p&gt;##FOREACHtasks##&lt;/p&gt;
 &lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt; ##lang.task.name## : ##task.name##&lt;br /&gt;##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
-&lt;/div&gt;')";
-         $DB->queryOrDie($query, "0.85 add project notification translation");
+&lt;/div&gt;';
+
+         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+               'notificationtemplates_id' => $notid,
+               'language'                 => "",
+               'subject'                  => "##project.action## ##project.name## ##project.code##",
+               'content_text'             => $contentText,
+               'content_html'             => $contentHtml
+            ],
+            "0.85 add project notification translation"
+         );
+
 
          $notifications = ['new'         => [],
                                 'update'      => [],
@@ -2788,44 +2851,54 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
          }
 
          foreach ($notifications as $type => $targets) {
-            $query = "INSERT INTO `glpi_notifications`
-                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                              `date_mod`)
-                      VALUES ('".$notif_names[$type]."', 0, 'Project', '$type', 'mail',
-                              $notid, '', 1, 1, NOW())";
-            $DB->queryOrDie($query, "0.85 add project $type notification");
+            $DB->insertOrDie("glpi_notifications", [
+                  'name'                     => $notif_names[$type],
+                  'entities_id'              => 0,
+                  'itemtype'                 => "Project",
+                  'event'                    => $type,
+                  'mode'                     => "mail",
+                  'notificationtemplates_id' => $notid,
+                  'comment'                  => "",
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => new \QueryExpression("NOW()"),
+               ],
+               "0.85 add project $type notification"
+            );
             $notifid = $DB->insert_id();
 
             foreach ($targets as $target) {
-               $query = "INSERT INTO `glpi_notificationtargets`
-                                (`id`, `notifications_id`, `type`, `items_id`)
-                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
-               $DB->queryOrDie($query, "0.85 add project $type notification target");
+               $DB->insertOrDie("glpi_notificationtargets", [
+                     'id'                 => null,
+                     'notifications_id'   => $notifid,
+                     'type'               =>  Notification::USER_TYPE,
+                     'items_id'           => $target
+                  ],
+                  "0.85 add project $type notification target"
+               );
             }
          }
       }
    }
 
    // Project Task notifications
-   $query = "SELECT *
-             FROM `glpi_notificationtemplates`
-             WHERE `itemtype` = 'ProjectTask'";
+   $notificationtemplatesIterator = $DB->request("glpi_notificationtemplates", [
+      'itemtype' => "ProjectTask"
+   ]);
 
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result) == 0) {
-         $query = "INSERT INTO `glpi_notificationtemplates`
-                          (`name`, `itemtype`, `date_mod`)
-                   VALUES ('Project Tasks', 'ProjectTask', NOW())";
-         $DB->queryOrDie($query, "0.85 add project task notification");
+   if ($notificationtemplatesIterator->valid()) {
+      if (count($notificationtemplatesIterator) == 0) {
+         $DB->insertOrDie("glpi_notificationtemplates", [
+               'name'      => "Project Tasks",
+               'itemtype'  => "ProjectTask",
+               'date_mod'  => new \QueryExpression("NOW()")
+            ],
+            "0.85 add project notification"
+         );
          $notid = $DB->insert_id();
 
-         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                          (`notificationtemplates_id`, `language`, `subject`,
-                           `content_text`,
-                           `content_html`)
-                   VALUES ($notid, '', '##projecttask.action## ##projecttask.name##',
-                          '##lang.projecttask.url## : ##projecttask.url##
+
+        $contentText = '##lang.projecttask.url## : ##projecttask.url##
 
 ##lang.projecttask.description##
 
@@ -2849,8 +2922,8 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 ##lang.task.percent## : ##task.percent##
 ##lang.task.description## : ##task.description##
 
-##ENDFOREACHtasks##',
-                          '&lt;p&gt;##lang.projecttask.url## : &lt;a href=\"##projecttask.url##\"&gt;##projecttask.url##&lt;/a&gt;&lt;/p&gt;
+##ENDFOREACHtasks##';
+         $contentHtml = '&lt;p&gt;##lang.projecttask.url## : &lt;a href=\"##projecttask.url##\"&gt;##projecttask.url##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;##lang.projecttask.description##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.projecttask.name## : ##projecttask.name##&lt;br /&gt;##lang.projecttask.project## : &lt;a href=\"##projecttask.projecturl##\"&gt;##projecttask.project##&lt;/a&gt;&lt;br /&gt;##lang.projecttask.creationdate## : ##projecttask.creationdate##&lt;br /&gt;##lang.projecttask.state## : ##projecttask.state##&lt;br /&gt;##lang.projecttask.type## : ##projecttask.type##&lt;br /&gt;##lang.projecttask.description## : ##projecttask.description##&lt;/p&gt;
 &lt;p&gt;##lang.projecttask.numberoftasks## : ##projecttask.numberoftasks##&lt;/p&gt;
@@ -2858,8 +2931,16 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 &lt;p&gt;##FOREACHtasks##&lt;/p&gt;
 &lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt;##lang.task.name## : ##task.name##&lt;br /&gt;##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
-&lt;/div&gt;')";
-         $DB->queryOrDie($query, "0.85 add project task notification translation");
+&lt;/div&gt;';
+         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+               'notificationtemplates_id' => $notid,
+               'language'                 => "",
+               'subject'                  => "##projecttask.action## ##projecttask.name##",
+               'content_text'             => $contentText,
+               'content_html'             => $contentHtml
+            ],
+            "0.85 add project task notification translation"
+         );
 
          $notifications = ['new'         => [],
                                 'update'      => [],
@@ -2876,20 +2957,31 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
          }
 
          foreach ($notifications as $type => $targets) {
-            $query = "INSERT INTO `glpi_notifications`
-                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                              `date_mod`)
-                      VALUES ('".$notif_names[$type]."', 0, 'ProjectTask', '$type', 'mail',
-                              $notid, '', 1, 1, NOW())";
-            $DB->queryOrDie($query, "0.85 add project task  $type notification");
+            $DB->insertOrDie("glpi_notifications", [
+                  'name'                     => $notif_names[$type],
+                  'entities_id'              => 0,
+                  'itemtype'                 => "ProjectTask",
+                  'event'                    => $type,
+                  'mode'                     => "mail",
+                  'notificationtemplates_id' => $notid,
+                  'comment'                  => "",
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => new \QueryExpression("NOW()")
+               ],
+               "0.85 add project task  $type notification"
+            );
             $notifid = $DB->insert_id();
 
             foreach ($targets as $target) {
-               $query = "INSERT INTO `glpi_notificationtargets`
-                                (`id`, `notifications_id`, `type`, `items_id`)
-                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
-               $DB->queryOrDie($query, "0.85 add project task $type notification target");
+               $DB->insertOrDie("glpi_notificationtargets", [
+                     'id'                 => null,
+                     'notifications_id'   => $notifid,
+                     'type'               => Notification::USER_TYPE,
+                     'items_id'           => $target
+                  ],
+                  "0.85 add project task $type notification target"
+               );
             }
          }
       }
@@ -2926,16 +3018,26 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
       foreach ($notepad_tables as $t) {
          // Migrate data
          if ($DB->fieldExists($t, 'notepad', false)) {
-            $query = "SELECT id, notepad
-                      FROM `$t`
-                      WHERE notepad IS NOT NULL
-                            AND notepad <>'';";
-            foreach ($DB->request($query) as $data) {
-               $iq = "INSERT INTO `glpi_notepads`
-                             (`itemtype`, `items_id`, `content`, `date`, `date_mod`)
-                      VALUES ('".getItemTypeForTable($t)."', '".$data['id']."',
-                              '".addslashes($data['notepad'])."', NOW(), NOW())";
-               $DB->queryOrDie($iq, "0.85 migrate notepad data");
+            $notepadIterator = $DB->request([
+               'SELECT' => ["id", "notepad"],
+               'FROM'   => $t,
+               'WHERE'  => [
+                  new \QueryExpression(
+                     DBmysql::quoteName("notepad") . " IS NOT NULL"
+                  ),
+                  ["notepad" => ["<>", ""]]
+               ]
+            ]);
+            foreach ($notepadIterator as $data) {
+               $DB->insertOrDie("glpi_notepads", [
+                     'itemtype'  => getItemTypeForTable($t),
+                     'items_id'  => $data['id'],
+                     'content'   => addslashes($data['notepad']),
+                     'date'      => new \QueryExpression("NOW()"),
+                     'date_mod'  => new \QueryExpression("NOW()")
+                  ],
+                  "0.85 migrate notepad data"
+               );
             }
             $migration->dropField($t, 'notepad');
          }
