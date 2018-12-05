@@ -44,6 +44,9 @@ if (isset($_POST['add'])) {
 } else if (isset($_POST['update'])) {
    $translation->update($_POST);
    Html::back();
+} else if (isset($_POST["purge"])) {
+   $translation->delete($_POST, true);
+   Html::redirect(KnowbaseItem::getFormURLWithID($_POST['knowbaseitems_id']));
 } else if (isset($_GET["id"]) and isset($_GET['to_rev'])) {
    $translation->check($_GET["id"], UPDATE);
    if ($translation->revertTo($_GET['to_rev'])) {
