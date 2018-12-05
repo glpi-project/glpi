@@ -111,6 +111,14 @@ table[class^="tab_cadre"] table:not([class^="tab_cadre"]) {
   }
 }
 
+
+// Tables in KB should still have border
+#kbanswer table {
+   th, td {
+      border: 1px solid #adadad;
+   }
+}
+
 #searchcriterias {
   .tab_cadre_fixe {
     border: 1px solid #ADADAD;
