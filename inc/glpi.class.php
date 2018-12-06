@@ -57,12 +57,11 @@ class GLPI {
 
       $this->log_level = Logger::WARNING;
       if (defined('TU_USER')) {
-         $this->log_level = Logger::WARNING;
+         $this->log_level = Logger::DEBUG;
       } else if (defined('GLPI_LOG_LVL')) {
          $this->log_level = GLPI_LOG_LVL;
       } else if (!isset($_SESSION['glpi_use_mode'])
          || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-         || defined('TU_USER')
       ) {
          $this->log_level = Logger::DEBUG;
       }
