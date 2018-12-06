@@ -556,10 +556,12 @@ class Toolbox {
       try {
          self::log(null, Logger::NOTICE, [$message]);
       } finally {
-         if (isCommandLine()) {
-            echo self::backtrace(null);
-         } else {
-            self::backtrace();
+         if (defined('TU_USER')) {
+            if (isCommandLine()) {
+               echo self::backtrace(null);
+            } else {
+               self::backtrace();
+            }
          }
       }
    }
