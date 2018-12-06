@@ -1532,17 +1532,17 @@ class Ticket extends CommonITILObject {
    function computeTakeIntoAccountDelayStat() {
 
       if (isset($this->fields['id'])
-          && !empty($this->fields['date'])) {
+          && !empty($this->fields['date_creation'])) {
          $calendars_id = $this->getCalendar();
          $calendar     = new Calendar();
 
          // Using calendar
          if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
-            return max(1, $calendar->getActiveTimeBetween($this->fields['date'],
+            return max(1, $calendar->getActiveTimeBetween($this->fields['date_creation'],
                                                           $_SESSION["glpi_currenttime"]));
          }
          // Not calendar defined
-         return max(1, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']));
+         return max(1, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date_creation']));
       }
       return 0;
    }
@@ -6795,7 +6795,7 @@ class Ticket extends CommonITILObject {
 
    function showStatsDates() {
       $now                      = time();
-      $date_creation            = strtotime($this->fields['date']);
+      $date_creation            = strtotime($this->fields['date_creation']);
       $date_takeintoaccount     = $date_creation + $this->fields['takeintoaccount_delay_stat'];
       if ($date_takeintoaccount == $date_creation) {
          $date_takeintoaccount  = 0;
