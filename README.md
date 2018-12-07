@@ -46,7 +46,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB >= 10.0 or MySQL >= 5.6
-* PHP 5.6 or higher
+* PHP 7.0.8 or higher
 * Mandatory PHP extensions:
     - json
     - mbstring

@@ -66,11 +66,6 @@ shared: &shared
         name: sensiolabs/security-checker
         command: vendor/bin/security-checker security:check
 jobs:
-  "php5.6":
-    <<: *shared
-    docker:
-      - image: circleci/php:5.6-fpm-node-browsers
-      - image: circleci/mariadb:10.1
   "php7.0":
     <<: *shared
     docker:
@@ -97,7 +92,6 @@ workflows:
   version: 2
   tests_all:
     jobs:
-      - php5.6
       - php7.0
       - php7.1
       - php7.2
