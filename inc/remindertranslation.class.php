@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -42,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * ReminderTranslation Class
  *
- * @since version 9.2.2
+ * @since version 9.4
 **/
 class ReminderTranslation extends CommonDBChild {
 
@@ -253,11 +249,12 @@ class ReminderTranslation extends CommonDBChild {
     * @return the field translated if a translation is available, or the original field if not
    **/
    static function getTranslatedValue(Reminder $item, $field = "name") {
-      global $DB;
 
       $obj   = new self;
-      $found = $obj->find("`reminders_id` = '".$item->getID().
-                          "' AND `language` = '".$_SESSION['glpilanguage']."'");
+      $found = $obj->find([
+                             'knowbaseitems_id'   => $item->getID(),
+                             'language'           => $_SESSION['glpilanguage']
+                          ]);
 
       if ((count($found) > 0)
           && in_array($field, ['name', 'text'])) {
@@ -266,20 +263,6 @@ class ReminderTranslation extends CommonDBChild {
       }
       return $item->fields[$field];
    }
-
-
-   /**
-    * Is Reminder translation functionnality active
-    *
-    * @return true if active, false if not
-   **/
-   static function isReminderTranslationActive() {
-      global $CFG_GLPI;
-
-      //return $CFG_GLPI['translate_reminder'];
-      return true;
-   }
-
 
    /**
     * Check if an item can be translated
@@ -323,7 +306,7 @@ class ReminderTranslation extends CommonDBChild {
 
       $tab = [];
       foreach ($DB->request(getTableForItemType(__CLASS__),
-                           "`reminders_id`='".$item->getID()."'") as $data) {
+                           ["reminders_id" => $item->getID()]) as $data) {
          $tab[$data['language']] = $data['language'];
       }
       return $tab;
