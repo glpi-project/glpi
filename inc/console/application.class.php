@@ -353,9 +353,7 @@ class Application extends BaseApplication {
       }
 
       $plugin = new Plugin();
-      if (!$plugin->hasBeenInit()) {
-         $plugin->init();
-      }
+      $plugin->init();
 
       $plugins_list = $plugin->getPlugins();
       if (count($plugins_list) > 0) {
