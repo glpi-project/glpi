@@ -41,12 +41,12 @@ use User;
 use Glpi\Console\AbstractCommand;
 
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Helper\ProgressBar;
 
 class SynchronizeUsersCommand extends AbstractCommand {
 
@@ -334,8 +334,9 @@ class SynchronizeUsersCommand extends AbstractCommand {
                if (false !== $result) {
                   $results[$result['action']] += 1;
                } else {
-                  $output->writeln(
+                  $this->writelnOutputWithProgressBar(
                      sprintf(__('Unable to synchronize user "%s".'), $user['user']),
+                     $users_progress_bar,
                      OutputInterface::VERBOSITY_VERBOSE
                   );
                }

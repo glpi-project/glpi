@@ -40,6 +40,7 @@ use DB;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -50,7 +51,20 @@ abstract class AbstractCommand extends Command {
     */
    protected $db;
 
+   /**
+    * @var InputInterface
+    */
+   protected $input;
+
+   /**
+    * @var OutputInterface
+    */
+   protected $output;
+
    protected function initialize(InputInterface $input, OutputInterface $output) {
+
+      $this->input = $input;
+      $this->output = $output;
 
       $this->initDbConnection();
    }
@@ -71,5 +85,30 @@ abstract class AbstractCommand extends Command {
       }
 
       $this->db = $DB;
+   }
+
+   /**
+    * Correctly write output messages when a progress bar is displayed.
+    *
+    * @param string|array $messages
+    * @param ProgressBar  $progress_bar
+    * @param integer      $verbosity
+    *
+    * @return void
+    */
+   protected function writelnOutputWithProgressBar($messages,
+                                                   ProgressBar $progress_bar,
+                                                   $verbosity = OutputInterface::VERBOSITY_NORMAL) {
+
+      if ($verbosity > $this->output->getVerbosity()) {
+         return; // Do nothing if message will not be output due to its too high verbosity
+      }
+
+      $progress_bar->clear();
+      $this->output->writeln(
+         $messages,
+         $verbosity
+      );
+      $progress_bar->display();
    }
 }
