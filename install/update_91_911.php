@@ -49,6 +49,7 @@ function update91to911() {
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
+   // not table created during the migration
    $newtables     = [];
 
    foreach ($newtables as $new_table) {
@@ -68,12 +69,15 @@ function update91to911() {
 
    // rectify missing right in 9.1 update
    if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
-      foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
-         $query = "INSERT INTO `glpi_profilerights`
-                          (`id`, `profiles_id`, `name`, `rights`)
-                   VALUES (NULL, '".$profrights['profiles_id']."', 'license',
-                           '".$profrights['rights']."')";
-         $DB->queryOrDie($query, "9.1 add right for softwarelicense");
+      foreach ($DB->request("glpi_profilerights", ["name" => 'software']) as $profrights) {
+         $DB->insertOrDie("glpi_profilerights", [
+               'id'           => null,
+               'profiles_id'  => $profrights['profiles_id'],
+               'name'         => "license",
+               'rights'       => $profrights['rights']
+            ],
+            "9.1 add right for softwarelicense"
+         );
       }
    }
 
