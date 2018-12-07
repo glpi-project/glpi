@@ -220,84 +220,83 @@ function update0905to91() {
       'WHERE'  => ['itemtype' => "ObjectLock"]
    ]);
 
-   if ($notificationtemplatesIterator->valid()) {
-      if (count($notificationtemplatesIterator) == 0) {
-         $DB->insertOrDie("glpi_notificationtemplates", [
-               'name'      => "Unlock Item request",
-               'itemtype'  => "ObjectLock",
-               'date_mod'  => new \QueryExpression("NOW()")
-            ],
-            "9.1 Add unlock request notification template"
-         );
-         $notid = $DB->insert_id();
+   if (count($notificationtemplatesIterator) == 0) {
+      $DB->insertOrDie("glpi_notificationtemplates", [
+            'name'      => "Unlock Item request",
+            'itemtype'  => "ObjectLock",
+            'date_mod'  => new \QueryExpression("NOW()")
+         ],
+         "9.1 Add unlock request notification template"
+      );
+      $notid = $DB->insert_id();
 
-         $contentText =
-            '##objectlock.type## ###objectlock.id## - ##objectlock.name##
+      $contentText =
+         '##objectlock.type## ###objectlock.id## - ##objectlock.name##
 
-            ##lang.objectlock.url##
-            ##objectlock.url##
+         ##lang.objectlock.url##
+         ##objectlock.url##
 
-            ##lang.objectlock.date_mod##
-            ##objectlock.date_mod##
+         ##lang.objectlock.date_mod##
+         ##objectlock.date_mod##
 
-            Hello ##objectlock.lockedby.firstname##,
-            Could go to this item and unlock it for me?
-            Thank you,
-            Regards,
-            ##objectlock.requester.firstname##';
+         Hello ##objectlock.lockedby.firstname##,
+         Could go to this item and unlock it for me?
+         Thank you,
+         Regards,
+         ##objectlock.requester.firstname##';
 
-         $contentHtml =
-            '&lt;table&gt;
-            &lt;tbody&gt;
-            &lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##objectlock.url##\"&gt;##objectlock.type## ###objectlock.id## - ##objectlock.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
-            &lt;tr&gt;
-            &lt;td&gt;##lang.objectlock.url##&lt;/td&gt;
-            &lt;td&gt;##objectlock.url##&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr&gt;
-            &lt;td&gt;##lang.objectlock.date_mod##&lt;/td&gt;
-            &lt;td&gt;##objectlock.date_mod##&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;/tbody&gt;
-            &lt;/table&gt;
-            &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello ##objectlock.lockedby.firstname##,&lt;br /&gt;Could go to this item and unlock it for me?&lt;br /&gt;Thank you,&lt;br /&gt;Regards,&lt;br /&gt;##objectlock.requester.firstname## ##objectlock.requester.lastname##&lt;/span&gt;&lt;/p&gt;';
+      $contentHtml =
+         '&lt;table&gt;
+         &lt;tbody&gt;
+         &lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##objectlock.url##\"&gt;##objectlock.type## ###objectlock.id## - ##objectlock.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
+         &lt;tr&gt;
+         &lt;td&gt;##lang.objectlock.url##&lt;/td&gt;
+         &lt;td&gt;##objectlock.url##&lt;/td&gt;
+         &lt;/tr&gt;
+         &lt;tr&gt;
+         &lt;td&gt;##lang.objectlock.date_mod##&lt;/td&gt;
+         &lt;td&gt;##objectlock.date_mod##&lt;/td&gt;
+         &lt;/tr&gt;
+         &lt;/tbody&gt;
+         &lt;/table&gt;
+         &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello ##objectlock.lockedby.firstname##,&lt;br /&gt;Could go to this item and unlock it for me?&lt;br /&gt;Thank you,&lt;br /&gt;Regards,&lt;br /&gt;##objectlock.requester.firstname## ##objectlock.requester.lastname##&lt;/span&gt;&lt;/p&gt;';
 
-         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
-               'notificationtemplates_id' => $notid,
-               'language'                 => "",
-               'subject'                  => "##objectlock.action##",
-               'content_text'             => $contentText,
-               'content_html'             => $contentHtml
-            ],
-            "9.1 add Unlock Request notification translation"
-         );
+      $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+            'notificationtemplates_id' => $notid,
+            'language'                 => "",
+            'subject'                  => "##objectlock.action##",
+            'content_text'             => $contentText,
+            'content_html'             => $contentHtml
+         ],
+         "9.1 add Unlock Request notification translation"
+      );
 
-         $DB->insertOrDie("glpi_notifications", [
-               'name'                     => "Request Unlock Item",
-               'entities_id'              => 0,
-               'itemtype'                 => "ObjectLock",
-               'event'                    => "unlock",
-               'mode'                     => "mail",
-               'notificationtemplates_id' => $notid,
-               'comment'                  => "",
-               'is_recursive'             => 1,
-               'is_active'                => 1,
-               'date_mod'                 => new \QueryExpression("NOW()")
-            ],
-            "9.1 add Unlock Request notification"
-         );
-         $notifid = $DB->insert_id();
+      $DB->insertOrDie("glpi_notifications", [
+            'name'                     => "Request Unlock Item",
+            'entities_id'              => 0,
+            'itemtype'                 => "ObjectLock",
+            'event'                    => "unlock",
+            'mode'                     => "mail",
+            'notificationtemplates_id' => $notid,
+            'comment'                  => "",
+            'is_recursive'             => 1,
+            'is_active'                => 1,
+            'date_mod'                 => new \QueryExpression("NOW()")
+         ],
+         "9.1 add Unlock Request notification"
+      );
+      $notifid = $DB->insert_id();
 
-         $DB->insertOrDie("glpi_notificationtargets", [
-               'id'                 => null,
-               'notifications_id'   => $notifid,
-               'type'               => Notification::USER_TYPE,
-               'items_id'           => Notification::USER_TYPE
-            ],
-            "9.1 add Unlock Request notification target"
-         );
-      }
+      $DB->insertOrDie("glpi_notificationtargets", [
+            'id'                 => null,
+            'notifications_id'   => $notifid,
+            'type'               => Notification::USER_TYPE,
+            'items_id'           => Notification::USER_TYPE
+         ],
+         "9.1 add Unlock Request notification target"
+      );
    }
+
    $migration->addField("glpi_users", "lock_autolock_mode", "tinyint(1) NULL DEFAULT NULL");
    $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint(1) NULL DEFAULT NULL");
 
@@ -741,15 +740,13 @@ function update0905to91() {
                      'itemtype'  => $type
                   ],
                ]);
-               if ($iterator->valid()) {
-                  if (count($iterator) == 0) {
-                     $DB->insert("glpi_displaypreferences", [
-                        'itemtype'  => $type,
-                        'num'       => $newval,
-                        'rank'      => $rank++,
-                        'users_id'  => $data['users_id'],
-                     ]);
-                  }
+               if (count($iterator) == 0) {
+                  $DB->insert("glpi_displaypreferences", [
+                     'itemtype'  => $type,
+                     'num'       => $newval,
+                     'rank'      => $rank++,
+                     'users_id'  => $data['users_id'],
+                  ]);
                }
             }
          }
