@@ -269,7 +269,7 @@ $CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor'
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 
-$CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 
