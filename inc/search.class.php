@@ -132,12 +132,26 @@ class Search {
          $criteria = $data['search']['criteria'];
          array_pop($criteria);
          array_pop($criteria);
+         // required to have the location name in the search list
          $criteria[] = [
             'link'         => 'AND',
             'field'        => ($itemtype == 'Location') ? 1 : ($itemtype == 'Ticket') ? 83 : 3,
-            'searchtype'   => 'equals',
-            'value'        => 'CURLOCATION'
+            'searchtype'   => 'contains',
+            'value'        => '^'
          ];
+         $criteria[] = [
+            'link'         => 'AND',
+            'field'        => ($itemtype == 'Location') ? 21 : 998,
+            'searchtype'   => 'contains',
+            'value'        => '^LATLOCATION$'
+         ];
+         $criteria[] = [
+            'link'         => 'AND',
+            'field'        => ($itemtype == 'Location') ? 20 : 999,
+            'searchtype'   => 'contains',
+            'value'        => '^LNGLOCATION$'
+         ];
+
          $globallinkto = Toolbox::append_params(
             [
                'criteria'     => Toolbox::stripslashes_deep($criteria),
@@ -233,7 +247,7 @@ class Search {
                });
 
                $.each(_points, function(index, point) {
-                  var _title = '<strong>' + point.title + '</strong><br/><a href=\''+'$fulltarget'.replace(/CURLOCATION/, point.loc_id)+'\'>".sprintf(__('%1$s %2$s'), 'COUNT', $typename)."'.replace(/COUNT/, point.count)+'</a>';
+                  var _title = '<strong>' + point.title + '</strong><br/><a href=\''+'$fulltarget'.replace(/LATLOCATION/, point.lat).replace(/LNGLOCATION/, point.lng)+'\'>".sprintf(__('%1$s %2$s'), 'COUNT', $typename)."'.replace(/COUNT/, point.count)+'</a>';
                   if (point.types) {
                      $.each(point.types, function(tindex, type) {
                         _title += '<br/>".sprintf(__('%1$s %2$s'), 'COUNT', 'TYPE')."'.replace(/COUNT/, type.count).replace(/TYPE/, type.name);
