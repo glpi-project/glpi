@@ -125,7 +125,7 @@ class SynchronizeUsersCommand extends AbstractCommand {
       $strategies = AuthLDAP::getLdapDeletedUserActionOptions();
       $description = sprintf(
          __('Force strategy used for deleted users (current configured action: "%s")'),
-         $CFG_GLPI['user_deleted_ldap']
+         (isset($CFG_GLPI['user_deleted_ldap']) ? $CFG_GLPI['user_deleted_ldap'] : __('unknown'))
       );
       $description .= "\n" . __('Possible values are:') . "\n";
       $description .= implode(
