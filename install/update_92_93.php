@@ -91,6 +91,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_tickets', 'solution')) {
       //migrate solution history for tickets
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Ticket' AS itemtype,
@@ -124,6 +125,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_problems', 'solution')) {
       // Problem soution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Problem' AS itemtype,
@@ -158,6 +160,7 @@ function update92to93() {
 
    if ($DB->fieldExists('glpi_changes', 'solution')) {
       // Change solution history
+      // TODO can be done when DB::insertOrUpdate() supports SELECT
       $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Change' AS itemtype,
@@ -744,10 +747,13 @@ function update92to93() {
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {
-         $query = "REPLACE INTO `glpi_displaypreferences`
-                           (`itemtype` ,`num` ,`rank` ,`users_id`)
-                     VALUES ('$type', '$newval', '".$rank++."', '0')";
-         $DB->query($query);
+         $DB->updateOrInsert("glpi_displaypreferences", [
+            'rank'      => $rank++
+         ], [
+            'users_id'  => "0",
+            'itemtype'  => $type,
+            'num'       => $newval,
+         ]);
       }
    }
 
@@ -762,9 +768,13 @@ function update92to93() {
       );
    }
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
-   $migration->addPostQuery("UPDATE `glpi_users`
-                          SET `glpi_users`.`authtype` = 1
-                          WHERE `glpi_users`.`authtype` = 0");
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         "glpi_users",
+         ["glpi_users.authtype" => 1],
+         ["glpi_users.authtype" => 0]
+      )
+   );
 
    //Permit same license several times on same computer
    $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
