@@ -276,8 +276,15 @@ class Plugin extends CommonDBTM {
       // Retrieve plugin informations
       $informations = [];
       if (file_exists($setup_file)) {
-         self::loadLang($directory);
-         include_once($setup_file);
+         // Includes are made inside a function to prevent included files to override
+         // variables used in this function.
+         // For example, if the included files contains a $plugin variable, it will
+         // replace the $plugin variable used here.
+         $include_fct = function () use ($directory, $setup_file) {
+            self::loadLang($directory);
+            include_once($setup_file);
+         };
+         $include_fct();
          $informations = Toolbox::addslashes_deep(self::getInfo($directory));
       }
 
