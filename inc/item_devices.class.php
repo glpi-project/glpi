@@ -343,17 +343,17 @@ class Item_Devices extends CommonDBRelation {
 
       // If the size of $CFG_GLPI['item_device_types'] and $CFG_GLPI['device_types'] then,
       // there is new device_types and we must update item_device_types !
-      if (!isset($CFG_GLPI['item_device_types'])
-          || (count($CFG_GLPI['item_device_types']) != count($CFG_GLPI['device_types']))) {
+      if (!isset($CFG_GLPI['itemdevice_types'])
+          || (count($CFG_GLPI['itemdevice_types']) != count($CFG_GLPI['device_types']))) {
 
-         $CFG_GLPI['item_device_types'] = [];
+         $CFG_GLPI['itemdevice_types'] = [];
 
          foreach (CommonDevice::getDeviceTypes() as $deviceType) {
-            $CFG_GLPI['item_device_types'][] = $deviceType::getItem_DeviceType();
+            $CFG_GLPI['itemdevice_types'][] = $deviceType::getItem_DeviceType();
          }
       }
 
-      return $CFG_GLPI['item_device_types'];
+      return $CFG_GLPI['itemdevice_types'];
    }
 
 
