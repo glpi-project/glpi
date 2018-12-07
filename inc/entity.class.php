@@ -2021,7 +2021,7 @@ class Entity extends CommonTreeDropdown {
          'WHERE'  => [$field => $value]
       ]);
 
-      if ($count($iterator) == 1) {
+      if (count($iterator) == 1) {
          $result = $iterator->next();
          return $result['id'];
       }
