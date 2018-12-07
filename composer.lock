@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "974f77a63a127b7d34c9e110b225f70b",
+    "content-hash": "5c6a3bc6bba6c77f649ab1c012e53e69",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -590,23 +590,23 @@
         },
         {
             "name": "sabre/uri",
-            "version": "1.2.1",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/uri.git",
-                "reference": "ada354d83579565949d80b2e15593c2371225e61"
+                "reference": "a42126042c7dcb53e2978dadb6d22574d1359b4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/uri/zipball/ada354d83579565949d80b2e15593c2371225e61",
-                "reference": "ada354d83579565949d80b2e15593c2371225e61",
+                "url": "https://api.github.com/repos/sabre-io/uri/zipball/a42126042c7dcb53e2978dadb6d22574d1359b4c",
+                "reference": "a42126042c7dcb53e2978dadb6d22574d1359b4c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.7"
+                "php": ">=7"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=4.0,<6.0",
+                "phpunit/phpunit": "^6.0",
                 "sabre/cs": "~1.0.0"
             },
             "type": "library",
@@ -637,7 +637,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-02-20T19:59:28+00:00"
+            "time": "2017-02-20T20:02:35+00:00"
         },
         {
             "name": "sabre/vobject",
@@ -738,16 +738,16 @@
         },
         {
             "name": "sabre/xml",
-            "version": "1.5.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/xml.git",
-                "reference": "59b20e5bbace9912607481634f97d05a776ffca7"
+                "reference": "c5f510f8d0fa8135de9495145e2758f56037aa1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/xml/zipball/59b20e5bbace9912607481634f97d05a776ffca7",
-                "reference": "59b20e5bbace9912607481634f97d05a776ffca7",
+                "url": "https://api.github.com/repos/sabre-io/xml/zipball/c5f510f8d0fa8135de9495145e2758f56037aa1e",
+                "reference": "c5f510f8d0fa8135de9495145e2758f56037aa1e",
                 "shasum": ""
             },
             "require": {
@@ -755,12 +755,11 @@
                 "ext-xmlreader": "*",
                 "ext-xmlwriter": "*",
                 "lib-libxml": ">=2.6.20",
-                "php": ">=5.5.5",
+                "php": ">=7.0",
                 "sabre/uri": ">=1.0,<3.0.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "*",
-                "sabre/cs": "~1.0.0"
+                "phpunit/phpunit": "*"
             },
             "type": "library",
             "autoload": {
@@ -797,32 +796,32 @@
                 "dom",
                 "xml"
             ],
-            "time": "2016-10-09T22:57:52+00:00"
+            "time": "2018-10-09T11:41:10+00:00"
         },
         {
             "name": "sebastian/diff",
-            "version": "1.4.3",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/diff.git",
-                "reference": "7f066a26a962dbe58ddea9f72a4e82874a3975a4"
+                "reference": "347c1d8b49c5c3ee30c7040ea6fc446790e6bddd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/7f066a26a962dbe58ddea9f72a4e82874a3975a4",
-                "reference": "7f066a26a962dbe58ddea9f72a4e82874a3975a4",
+                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/347c1d8b49c5c3ee30c7040ea6fc446790e6bddd",
+                "reference": "347c1d8b49c5c3ee30c7040ea6fc446790e6bddd",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3.3 || ^7.0"
+                "php": "^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0"
+                "phpunit/phpunit": "^6.2"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -849,7 +848,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2017-05-22T07:24:03+00:00"
+            "time": "2017-08-03T08:09:46+00:00"
         },
         {
             "name": "simplepie/simplepie",
@@ -920,7 +919,7 @@
         },
         {
             "name": "symfony/console",
-            "version": "v3.4.19",
+            "version": "v3.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
@@ -989,16 +988,16 @@
         },
         {
             "name": "symfony/debug",
-            "version": "v3.4.19",
+            "version": "v3.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "2016b3eec2e49c127dd02d0ef44a35c53181560d"
+                "reference": "a2233f555ddf55e5600f386fba7781cea1cb82d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/2016b3eec2e49c127dd02d0ef44a35c53181560d",
-                "reference": "2016b3eec2e49c127dd02d0ef44a35c53181560d",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/a2233f555ddf55e5600f386fba7781cea1cb82d3",
+                "reference": "a2233f555ddf55e5600f386fba7781cea1cb82d3",
                 "shasum": ""
             },
             "require": {
@@ -1041,7 +1040,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2018-11-11T19:48:54+00:00"
+            "time": "2018-11-27T12:43:10+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -2619,32 +2618,33 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.4.2",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c"
+                "reference": "9f83dded91781a01c63574e387eaa769be769115"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
-                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/9f83dded91781a01c63574e387eaa769be769115",
+                "reference": "9f83dded91781a01c63574e387eaa769be769115",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0",
-                "psr/http-message": "~1.0"
+                "psr/http-message": "~1.0",
+                "ralouphie/getallheaders": "^2.0.5"
             },
             "provide": {
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -2674,13 +2674,14 @@
             "keywords": [
                 "http",
                 "message",
+                "psr-7",
                 "request",
                 "response",
                 "stream",
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20T17:10:46+00:00"
+            "time": "2018-12-04T20:46:45+00:00"
         },
         {
             "name": "jakub-onderka/php-parallel-lint",
@@ -2986,6 +2987,46 @@
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
+            "name": "ralouphie/getallheaders",
+            "version": "2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "5601c8a83fbba7ef674a7369456d12f1e0d0eafa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/5601c8a83fbba7ef674a7369456d12f1e0d0eafa",
+                "reference": "5601c8a83fbba7ef674a7369456d12f1e0d0eafa",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.0",
+                "satooshi/php-coveralls": ">=1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/getallheaders.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "time": "2016-02-11T07:05:27+00:00"
+        },
+        {
             "name": "sensiolabs/security-checker",
             "version": "v4.1.8",
             "source": {
@@ -3083,16 +3124,16 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v3.4.19",
+            "version": "v3.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "d365fc4416ec4980825873962ea5d1b1bca46f1a"
+                "reference": "cc35e84adbb15c26ae6868e1efbf705a917be6b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/d365fc4416ec4980825873962ea5d1b1bca46f1a",
-                "reference": "d365fc4416ec4980825873962ea5d1b1bca46f1a",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/cc35e84adbb15c26ae6868e1efbf705a917be6b5",
+                "reference": "cc35e84adbb15c26ae6868e1efbf705a917be6b5",
                 "shasum": ""
             },
             "require": {
@@ -3142,11 +3183,11 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2018-11-26T10:17:44+00:00"
+            "time": "2018-11-30T18:07:24+00:00"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v3.4.19",
+            "version": "v3.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
@@ -3196,7 +3237,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v3.4.19",
+            "version": "v3.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -3303,7 +3344,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v3.4.19",
+            "version": "v3.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -3352,7 +3393,7 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.4.19",
+            "version": "v3.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
@@ -3416,7 +3457,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.0",
+        "php": ">=7.0.0",
         "ext-mysqli": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
@@ -3427,6 +3468,6 @@
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "5.6.0"
+        "php": "7.0.8"
     }
 }

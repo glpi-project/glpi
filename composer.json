@@ -11,7 +11,7 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.0.8",
         "ext-mysqli": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
@@ -57,7 +57,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "5.6.0"
+            "php": "7.0.8"
         }
     },
     "scripts": {
