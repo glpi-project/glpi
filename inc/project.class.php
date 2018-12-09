@@ -625,7 +625,7 @@ class Project extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id',
          'name'               => __('Manager group'),
-         'condition'          => '`is_manager`',
+         'condition'          => ['is_manager' => 1],
          'datatype'           => 'dropdown'
       ];
 

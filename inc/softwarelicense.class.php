@@ -621,7 +621,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_softwarelicense`'
+         'condition'          => ['is_visible_softwarelicense' => 1]
       ];
 
       $tab[] = [
@@ -630,7 +630,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the license'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -648,7 +648,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'name'               => __('Group'),
-         'condition'          => '`is_itemgroup`',
+         'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
 
