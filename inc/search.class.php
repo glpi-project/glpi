@@ -1862,7 +1862,7 @@ class Search {
             //If link was like '%NOT%' just use NOT. Otherwise remove the link
             if ($notpos > 0) {
                $data['search']['criteria']['0']['link'] = 'NOT';
-            } elseif (!$notpos) {
+            } else if (!$notpos) {
                unset($data['search']['criteria']['0']['link']);
             }
          }
