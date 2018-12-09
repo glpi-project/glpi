@@ -540,13 +540,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             'COUNT'        => 'cpt',
             'FROM'         => 'glpi_notifications',
             'INNER JOIN'   => [
-               'glpi_notificationtargets'                   => [
-                  'glpi_notificationtargets' => 'notifications_id',
-                  'glpi_notifications'       => 'id'
+               'glpi_notificationtargets' => [
+                  'ON' => [
+                     'glpi_notificationtargets' => 'notifications_id',
+                     'glpi_notifications'       => 'id'
+                  ]
                ],
-               'glpi_notifications_notificationtemplates'   => [
-                  'glpi_notifications_notificationtemplates'   => 'notifications_id',
-                  'glpi_notifications'                         => 'id'
+               'glpi_notifications_notificationtemplates' => [
+                  'ON' => [
+                     'glpi_notifications_notificationtemplates'   => 'notifications_id',
+                     'glpi_notifications'                         => 'id'
+                  ]
                ]
             ],
             'WHERE'        => [

@@ -5012,8 +5012,10 @@ abstract class CommonITILObject extends CommonDBTM {
          ],
          'LEFT JOIN'       => [
             $table         => [
-               'glpi_users'   => $field,
-               $table         => 'id'
+               'ON' => [
+                  'glpi_users'   => $field,
+                  $table         => 'id'
+               ]
             ]
          ],
          'WHERE'           => [
