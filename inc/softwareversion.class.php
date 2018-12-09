@@ -190,7 +190,7 @@ class SoftwareVersion extends CommonDBChild {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_softwareversion`'
+         'condition'          => ['is_visible_softwareversion' => 1]
       ];
 
       $tab[] = [
