@@ -456,8 +456,9 @@ class Document_Item extends CommonDBRelation{
                echo "<td ".
                      (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
                      ">".$name."</td>";
-               echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                     $data['entity']);
+               echo "<td class='center'>".
+                  (isset($data['entity']) ? Dropdown::getDropdownName("glpi_entities",
+                     $data['entity']) : "-");
                echo "</td>";
                echo "<td class='center'>".
                         (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
