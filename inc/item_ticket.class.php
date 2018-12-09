@@ -861,10 +861,10 @@ class Item_Ticket extends CommonDBRelation{
                   ];
 
                   if ($item->maybeDeleted()) {
-                     $criteria['WHERE']['is_deleted'] = 0;
+                     $criteria['WHERE']["$itemtable.is_deleted"] = 0;
                   }
                   if ($item->maybeTemplate()) {
-                     $criteria['WHERE']['is_template'] = 0;
+                     $criteria['WHERE']["$itemtable.is_template"] = 0;
                   }
 
                   $iterator = $DB->request($criteria);
@@ -915,7 +915,7 @@ class Item_Ticket extends CommonDBRelation{
                         ]
                      ],
                      'WHERE'        => [
-                        'glpi_softwareversions.computers_id'   => $already_add['Computer'],
+                        'glpi_computers_softwareversions.computers_id'   => $already_add['Computer'],
                         'glpi_softwares.is_helpdesk_visible'   => 1
                      ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
                      'ORDERBY'      => 'glpi_softwares.name'
