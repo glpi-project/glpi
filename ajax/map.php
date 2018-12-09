@@ -67,23 +67,24 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
 
    $rows = $data['data']['rows'];
    $points = [];
+   $int_points = [];
    foreach ($rows as $row) {
       $idx = $row['raw']["ITEM_$lat_field"] . ',' . $row['raw']["ITEM_$lng_field"];
       $level = count(explode(' > ', $row['raw']["ITEM_$name_field"]));
       if (isset($points[$idx])) {
          $points[$idx]['count'] += 1;
-         if ($level < $points[$idx]['level']) {
+         if ($level < $int_points[$idx]['level']) {
             // It's the higher level
-            $points[$idx]['level'] = $level;
+            $int_points[$idx]['level'] = $level;
             $points[$idx]['title'] = $row['raw']["ITEM_$name_field"];
-            $points[$idx]['loc_ids'] = [$row['raw']['loc_id']];
-         } else if ($level == $points[$idx]['level']) {
+            $int_points[$idx]['loc_ids'] = [$row['raw']['loc_id']];
+         } else if ($level == $int_points[$idx]['level']) {
             // It's the same level
-            if (!in_array($row['raw']['loc_id'], $points[$idx]['loc_ids'])) {
-               $points[$idx]['loc_ids'][] = $row['raw']['loc_id'];
-               if (count($points[$idx]['loc_ids']) == 6) {
+            if (!in_array($row['raw']['loc_id'], $int_points[$idx]['loc_ids'])) {
+               $int_points[$idx]['loc_ids'][] = $row['raw']['loc_id'];
+               if (count($int_points[$idx]['loc_ids']) == 6) {
                   $points[$idx]['title'] .= '<br>[...]';
-               } else if (count($points[$idx]['loc_ids']) < 6) {
+               } else if (count($int_points[$idx]['loc_ids']) < 6) {
                   // We add the title
                   $points[$idx]['title'] .= '<br>'.$row['raw']["ITEM_$name_field"];
                }
@@ -94,9 +95,11 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
             'lat'     => $row['raw']["ITEM_$lat_field"],
             'lng'     => $row['raw']["ITEM_$lng_field"],
             'title'   => $row['raw']["ITEM_$name_field"],
-            'level'   => $level,
-            'loc_ids' => [$row['raw']['loc_id']],
             'count'   => 1
+         ];
+         $int_points[$idx] = [
+            'level'   => $level,
+            'loc_ids' => [$row['raw']['loc_id']]
          ];
       }
 
