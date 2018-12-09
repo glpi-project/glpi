@@ -36,7 +36,6 @@
 
 include ('../inc/includes.php');
 
-
 $translation = new KnowbaseItemTranslation();
 if (isset($_POST['add'])) {
    $translation->add($_POST);
@@ -68,6 +67,7 @@ if (isset($_POST['add'])) {
    }
    Html::redirect($translation->getFormURLWithID($_GET['id']));
 } else if (isset($_GET["id"])) {
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
    // modifier un item dans la base de connaissance
    $translation->check($_GET["id"], READ);
 
