@@ -1231,9 +1231,11 @@ class Reservation extends CommonDBChild {
                   'glpi_reservations'     => 'reservationitems_id'
                ]
             ],
-            'glpi_entities'         => [
-               'glpi_reservationitems' => 'entities_id',
-               'glpi_entities'         => 'id'
+            'glpi_entities' => [
+               'ON' => [
+                  'glpi_reservationitems' => 'entities_id',
+                  'glpi_entities'         => 'id'
+               ]
             ]
          ],
          'WHERE'     => [
