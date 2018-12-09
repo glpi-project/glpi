@@ -178,7 +178,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
          if ($item->getType() == KnowbaseItem::getType()) {
             $form = KnowbaseItem::getFormURLWithID($revision['knowbaseitems_id']);
          } else {
-            $form = KnowbaseItemTranslation::getFormURL($revision['knowbaseitems_id']);
+            $form = KnowbaseItemTranslation::getFormURLWithID($revision['knowbaseitems_id']);
          }
 
          echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
