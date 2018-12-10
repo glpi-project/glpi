@@ -30,6 +30,12 @@
 */
 /* ################--------------- GLPI CSS style   ---------------#################### */
 
+$break_sphones: 490px;
+$break_phones: 700px;
+$break_lphones: 900px;
+$break_menu: 1055px;
+$break_tablets: 1300px;
+
 /* ################--------------- Default style  ---------------#################### */
 
 body {
@@ -366,7 +372,7 @@ hr {
    }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: $break_phones) {
    #fuzzysearch {
       width: 85%;
       top: 20%;
@@ -689,7 +695,7 @@ span.vsubmit, a.vsubmit {
    margin-left: -10px;
    margin-top: -5px;
 
-   @media screen and (max-width: 700px) {
+   @media screen and (max-width: $break_phones) {
       flex-wrap: wrap;
    }
 
@@ -897,7 +903,7 @@ span.vsubmit, a.vsubmit {
 }
 
 /* Vertical split layout */
-@media screen and (min-width: 1300px) {
+@media screen and (min-width: $break_tablets) {
    html {
       height: 100%;
    }
@@ -1506,7 +1512,7 @@ td {
    }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: $break_phones) {
    #searchcriteria {
       width: 95%;
 
@@ -2924,13 +2930,13 @@ ul#menu {
 }
 
 /* hide menu on small screen */
-@media screen and (max-width: 1055px) {
+@media screen and (max-width: $break_menu) {
    #c_menu ul#menu, #language_link, #help_link, #myname {
       display: none;
    }
 }
 
-@media screen and (max-width: 490px) {
+@media screen and (max-width: $break_sphones) {
    #show_all_menu .top {
       display: block;
       float: left;
@@ -4612,7 +4618,7 @@ tr.log_history_filter_row {
 
 /* ################--------------- Responsive  ---------------#################### */
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: $break_phones) {
    #header {
       transition: top 0.2s ease-in-out;
       position: fixed;
@@ -5834,7 +5840,7 @@ ul.indexes {
    padding: 5px 0;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: $break_lphones) {
    .racks_col:not(:last-child) {
       margin-right: 0;
       margin-bottom: 15px;
@@ -6117,13 +6123,13 @@ input[name=as_map] {
 
 /** Responsive for documentation */
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: $break_lphones) {
    .documentation {
       margin-left: 0 !important;
    }
 }
 
-@media screen and (min-width: 900px) {
+@media screen and (min-width: $break_lphones) {
    .documentation #summary {
       position: fixed;
       top: 40px;
