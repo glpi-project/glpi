@@ -145,6 +145,7 @@ class DBmysqlIterator implements Iterator, Countable {
          $count    = '';
          $join     = '';
          $groupby  = '';
+         $having   = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                switch ((string)$key) {
@@ -183,6 +184,11 @@ class DBmysqlIterator implements Iterator, Countable {
 
                   case 'WHERE' :
                      $where = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'HAVING' :
+                     $having = $val;
                      unset($crit[$key]);
                      break;
 
@@ -323,6 +329,11 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if ($groupby) {
             $groupby = DBmysql::quoteName($groupby);
             $this->sql .= " GROUP BY $groupby";
+         }
+
+         // HAVING criteria list
+         if ($having) {
+            $this->sql .= " HAVING ".$this->analyseCrit($having);
          }
 
          // ORDER BY
