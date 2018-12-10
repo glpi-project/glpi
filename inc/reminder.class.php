@@ -939,7 +939,7 @@ class Reminder extends CommonDBVisible {
       if (count($nreadpub)
           && count($nreadpriv)) {
          $NASSIGN = ['OR' => [$nreadpub, $nreadpriv]];
-      } else if ($count(readpub)) {
+      } else if (count($nreadpub)) {
          $NASSIGN = $nreadpub;
       } else {
          $NASSIGN = $nreadpriv;
