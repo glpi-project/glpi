@@ -279,10 +279,17 @@ class Dropdown {
     *
     * @return string
     */
-   static function addNewCondition(array $condition) {
-       $sha1 = sha1(serialize($condition));
-       $_SESSION['glpicondition'][$sha1] = $condition;
-       return $sha1;
+   static function addNewCondition($condition) {
+      if (!is_array($condition)) {
+         Toolbox::deprecated('Using a string in dropdown condition is deprecated.');
+         $condition = Toolbox::cleanNewLines($condition);
+         $sha1 = sha1($condition);
+      } else {
+         $sha1 = sha1(serialize($condition));
+      }
+
+      $_SESSION['glpicondition'][$sha1] = $condition;
+      return $sha1;
    }
 
    /**
