@@ -412,7 +412,7 @@ class KnowbaseItem extends CommonDBVisible {
       Toolbox::deprecated('Use getVisibilityCriteria');
 
       //get and clean criteria
-      $criteria = self::getVisibilityCriteria(true);
+      $criteria = self::getVisibilityCriteria($forceall);
       unset($criteria['WHERE']);
       $criteria['FROM'] = self::getTable();
 
