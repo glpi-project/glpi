@@ -31,175 +31,192 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-  background-color: #006573;
+   background-color: #006573;
 }
 
 #logo_login {
-  background: url(../pics/login_logo_glpi.png) center no-repeat, #008B8D;
+   background: url(../pics/login_logo_glpi.png) center no-repeat, #008B8D;
 }
 
 #display-login {
-  color: #FFF;
+   color: #FFF;
 }
 
 #text-login {
-  background-color: #008B8D;
-  color: #FFF;
+   background-color: #008B8D;
+   color: #FFF;
 }
 
 /* ====== GENERAL ====== */
 
 a {
-  color: #006573;
-  &:link {
-    color: #006573;
-  }
+   color: #006573;
+
+   &:link {
+      color: #006573;
+   }
 }
 
 .ui-widget-content a {
-  color: #006573;
+   color: #006573;
 }
 
 .main_form tr.headerRow th {
-  color: #81BEAA;
+   color: #81BEAA;
 }
 
 /* ====== HEADER ====== */
 
 #header_top {
-  background-color: #006573;
+   background-color: #006573;
 }
 
 #c_preference a, #language_link > span {
-  color: #81BEAA;
+   color: #81BEAA;
 }
 
 #c_recherche form #champRecherche input {
-  background-color: #005572;
-  color: #F4D4AD;
+   background-color: #005572;
+   color: #F4D4AD;
 }
 
 #c_menu {
-  background-color: #008B8D;
+   background-color: #008B8D;
 }
 
 ul {
-  &#menu {
-    a {
-      &.itemP, &.itemP1 {
-        color: #fff;
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #fff;
+         }
       }
-    }
-    ul li a {
-      color: #006573;
-    }
-    > li.active {
+
+      ul li a {
+         color: #006573;
+      }
+
+      > li.active {
+         background-color: #006573;
+      }
+   }
+
+   &.ssmenu li.active {
       background-color: #006573;
-    }
-  }
-  &.ssmenu li.active {
-    background-color: #006573;
-  }
-  &#menu {
-    > li.active > a {
-      color: #FFF;
-    }
-    ul {
-      &.ssmenu li.active > a {
-        color: #FFF;
+   }
+
+   &#menu {
+      > li.active > a {
+         color: #FFF;
       }
-      li a:hover {
-        background: #81BEAA;
-        color: #000;
+
+      ul {
+         &.ssmenu li.active > a {
+            color: #FFF;
+         }
+
+         li a:hover {
+            background: #81BEAA;
+            color: #000;
+         }
       }
-    }
-    > li:hover {
-      background-color: #81BEAA;
-      color: #000;
-      > a {
-        background-color: #81BEAA;
-        color: #000;
+
+      > li:hover {
+         background-color: #81BEAA;
+         color: #000;
+
+         > a {
+            background-color: #81BEAA;
+            color: #000;
+         }
       }
-    }
-  }
+   }
 }
 
 #c_recherche form #champRecherche button {
-  background-color: white;
+   background-color: white;
 }
 
 /* ====== BUTTONS ====== */
 
 input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
-  color: #816644;
-  background-color: #F4D4AD;
+   color: #816644;
+   background-color: #F4D4AD;
 }
 
 .vsubmit a {
-  color: #816644;
-  text-decoration: underline;
+   color: #816644;
+   text-decoration: underline;
 }
 
 input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
-  background-color: #F4D4AD;
+   background-color: #F4D4AD;
 }
 
 /* ====== Breadcrumb ====== */
 
 .breadcrumb_item:nth-of-type(3) {
-  background-color: #F4D4AD;
-  a {
-    color: #816644 !important;
-  }
-  &:after {
-    border-left-color: #F4D4AD;
-  }
+   background-color: #F4D4AD;
+
+   a {
+      color: #816644 !important;
+   }
+
+   &:after {
+      border-left-color: #F4D4AD;
+   }
 }
 
 /* Primary color elements (white on blue BG) designed to be overridden from palettes */
 /* Colors are same as #c_menu */
 
 .primary-bg {
-  background: #008B8D;
+   background: #008B8D;
 }
 
 .primary-bg-inverse {
-  background: white;
+   background: white;
 }
 
 .primary-fg {
-  color: white;
-  &:hover {
-    color: white;
-  }
+   color: white;
+
+   &:hover {
+      color: white;
+   }
 }
 
 .primary-fg-inverse {
-  color: #008B8D;
-  &:hover {
-    color: #008B8D;
-  }
+   color: #008B8D;
+
+   &:hover {
+      color: #008B8D;
+   }
 }
 
 #c_preference a.debugon {
-  color: black !important;
-  &:hover {
-    color: black !important;
-  }
+   color: black !important;
+
+   &:hover {
+      color: black !important;
+   }
 }
 
 #show_all_menu {
-  dt a {
-    color: white;
-    &:hover {
-      background: #81BEAA;
-    }
-  }
-  a {
-    color: #006573;
-    &:hover {
-      background-color: #008B8D;
-      color: black;
-    }
-  }
+   dt a {
+      color: white;
+
+      &:hover {
+         background: #81BEAA;
+      }
+   }
+
+   a {
+      color: #006573;
+
+      &:hover {
+         background-color: #008B8D;
+         color: black;
+      }
+   }
 }

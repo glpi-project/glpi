@@ -31,161 +31,175 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-  background-color: #19BEC0;
+   background-color: #19BEC0;
 }
 
 #logo_login {
-  background: url(../pics/login_logo_glpi.png) center no-repeat, #113F59;
+   background: url(../pics/login_logo_glpi.png) center no-repeat, #113F59;
 }
 
 #display-login {
-  color: #FFF;
+   color: #FFF;
 }
 
 #text-login {
-  background-color: #113F59;
-  color: #FFF;
+   background-color: #113F59;
+   color: #FFF;
 }
 
 /* ====== GENERAL ====== */
 
 a {
-  color: #113E58;
-  &:link {
-    color: #113E58;
-  }
+   color: #113E58;
+
+   &:link {
+      color: #113E58;
+   }
 }
 
 .ui-widget-content a {
-  color: #113E58;
+   color: #113E58;
 }
 
 .main_form tr.headerRow th {
-  color: #19BEC0;
+   color: #19BEC0;
 }
 
 /* ====== HEADER ====== */
 
 #header_top {
-  background-color: #113F59;
+   background-color: #113F59;
 }
 
 #c_preference a, #language_link > span {
-  color: #F3EDD3;
+   color: #F3EDD3;
 }
 
 #c_recherche form #champRecherche input {
-  background-color: #0C2736;
-  color: #F3EDD3;
+   background-color: #0C2736;
+   color: #F3EDD3;
 }
 
 #c_menu {
-  background-color: #19BEC0;
+   background-color: #19BEC0;
 }
 
 ul {
-  &#menu {
-    a {
-      &.itemP, &.itemP1 {
-        color: #FFF;
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #FFF;
+         }
       }
-    }
-    > li.active {
+
+      > li.active {
+         background-color: #113F59;
+      }
+   }
+
+   &.ssmenu li.active {
       background-color: #113F59;
-    }
-  }
-  &.ssmenu li.active {
-    background-color: #113F59;
-  }
-  &#menu {
-    > li.active > a {
-      color: #F3EDD3;
-    }
-    ul {
-      &.ssmenu li.active > a {
-        color: #F3EDD3;
+   }
+
+   &#menu {
+      > li.active > a {
+         color: #F3EDD3;
       }
-      li a {
-        &:hover {
-          background: #19BEC0;
-          color: #113F59;
-        }
-        color: #113F59;
+
+      ul {
+         &.ssmenu li.active > a {
+            color: #F3EDD3;
+         }
+
+         li a {
+            &:hover {
+               background: #19BEC0;
+               color: #113F59;
+            }
+
+            color: #113F59;
+         }
       }
-    }
-    > li:hover {
-      background-color: #20D6C7;
-    }
-  }
+
+      > li:hover {
+         background-color: #20D6C7;
+      }
+   }
 }
 
 #c_recherche form #champRecherche button {
-  background-color: white;
+   background-color: white;
 }
 
 /* ====== BUTTONS ====== */
 
 input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
-  color: #F3EDD3;
-  background-color: #D54F58;
+   color: #F3EDD3;
+   background-color: #D54F58;
 }
 
 .vsubmit a {
-  color: #F3EDD3;
-  text-decoration: underline;
+   color: #F3EDD3;
+   text-decoration: underline;
 }
 
 input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
-  background-color: #D54F58;
+   background-color: #D54F58;
 }
 
 /* ====== Breadcrumb ====== */
 
 .breadcrumb_item:nth-of-type(3) {
-  background-color: #D54F58;
-  a {
-    color: #F3EDD3 !important;
-  }
-  &:after {
-    border-left-color: #D54F58;
-  }
+   background-color: #D54F58;
+
+   a {
+      color: #F3EDD3 !important;
+   }
+
+   &:after {
+      border-left-color: #D54F58;
+   }
 }
 
 /* Primary color elements (white on blue BG) designed to be overridden from palettes */
 /* Colors are same as #c_menu */
 
 .primary-bg {
-  background: #19BEC0;
+   background: #19BEC0;
 }
 
 .primary-bg-inverse {
-  background: white;
+   background: white;
 }
 
 .primary-fg {
-  color: white;
-  &:hover {
-    color: white;
-  }
+   color: white;
+
+   &:hover {
+      color: white;
+   }
 }
 
 .primary-fg-inverse {
-  color: #19BEC0;
-  &:hover {
-    color: #19BEC0;
-  }
+   color: #19BEC0;
+
+   &:hover {
+      color: #19BEC0;
+   }
 }
 
 #show_all_menu {
-  dt a {
-    color: white;
-    &:hover {
-      background: #20D6C7;
+   dt a {
       color: white;
-    }
-  }
-  a:hover {
-    background-color: #19BEC0;
-    color: #113F59;
-  }
+
+      &:hover {
+         background: #20D6C7;
+         color: white;
+      }
+   }
+
+   a:hover {
+      background-color: #19BEC0;
+      color: #113F59;
+   }
 }

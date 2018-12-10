@@ -31,163 +31,178 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin {
-  background-color: #585957;
+   background-color: #585957;
 }
 
 #logo_login {
-  background: url(../pics/login_logo_glpi.png) center no-repeat, #161514;
+   background: url(../pics/login_logo_glpi.png) center no-repeat, #161514;
 }
 
 #display-login {
-  color: #FFF;
+   color: #FFF;
 }
 
 #text-login {
-  background-color: #161514;
-  color: #FFF;
+   background-color: #161514;
+   color: #FFF;
 }
 
 /* ====== GENERAL ====== */
 
 a {
-  color: #161514;
-  &:link {
-    color: #161514;
-  }
+   color: #161514;
+
+   &:link {
+      color: #161514;
+   }
 }
 
 .ui-widget-content a {
-  color: #161514;
+   color: #161514;
 }
 
 .main_form tr.headerRow th {
-  color: #262626;
+   color: #262626;
 }
 
 /* ====== HEADER ====== */
 
 #header_top {
-  background-color: #161514;
+   background-color: #161514;
 }
 
 #c_preference a, #language_link > span {
-  color: #585957;
+   color: #585957;
 }
 
 #c_recherche form #champRecherche input {
-  background-color: #3F403E;
-  color: #FFF;
+   background-color: #3F403E;
+   color: #FFF;
 }
 
 #c_menu {
-  background-color: #585957;
+   background-color: #585957;
 }
 
 ul {
-  &#menu {
-    a {
-      &.itemP, &.itemP1 {
-        color: #FFF;
+   &#menu {
+      a {
+         &.itemP, &.itemP1 {
+            color: #FFF;
+         }
       }
-    }
-    > li.active {
+
+      > li.active {
+         background-color: #161514;
+      }
+   }
+
+   &.ssmenu li.active {
       background-color: #161514;
-    }
-  }
-  &.ssmenu li.active {
-    background-color: #161514;
-  }
-  &#menu {
-    > li.active > a {
-      color: #FFF;
-    }
-    ul {
-      &.ssmenu li.active > a {
-        color: #FFF;
+   }
+
+   &#menu {
+      > li.active > a {
+         color: #FFF;
       }
-      li a {
-        &:hover {
-          background: #262626;
-          color: #FFF;
-        }
-        color: #585957;
+
+      ul {
+         &.ssmenu li.active > a {
+            color: #FFF;
+         }
+
+         li a {
+            &:hover {
+               background: #262626;
+               color: #FFF;
+            }
+
+            color: #585957;
+         }
       }
-    }
-    > li:hover {
-      background-color: #3F403E;
-    }
-  }
+
+      > li:hover {
+         background-color: #3F403E;
+      }
+   }
 }
 
 #c_recherche form #champRecherche button {
-  background-color: white;
+   background-color: white;
 }
 
 /* ====== BUTTONS ====== */
 
 input.submit, span.vsubmit, a.vsubmit, .ui-widget-content span.vsubmit, a.vsubmit, #BackToTop {
-  color: #fff;
-  background-color: #585957;
+   color: #fff;
+   background-color: #585957;
 }
 
 .vsubmit a {
-  color: #fff;
-  text-decoration: underline;
+   color: #fff;
+   text-decoration: underline;
 }
 
 input.submit:hover, a.vsubmit:hover, #BackToTop:hover {
-  background-color: #585957;
+   background-color: #585957;
 }
 
 /* ====== Breadcrumb ====== */
 
 .breadcrumb_item:nth-of-type(3) {
-  background-color: #585957;
-  a {
-    color: #fff !important;
-  }
-  &:after {
-    border-left-color: #585957;
-  }
+   background-color: #585957;
+
+   a {
+      color: #fff !important;
+   }
+
+   &:after {
+      border-left-color: #585957;
+   }
 }
 
 /* Primary color elements (white on blue BG) designed to be overridden from palettes */
 /* Colors are same as #c_menu */
 
 .primary-bg {
-  background: #585957;
+   background: #585957;
 }
 
 .primary-bg-inverse {
-  background: white;
+   background: white;
 }
 
 .primary-fg {
-  color: white;
-  &:hover {
-    color: white;
-  }
+   color: white;
+
+   &:hover {
+      color: white;
+   }
 }
 
 .primary-fg-inverse {
-  color: #585957;
-  &:hover {
-    color: #585957;
-  }
+   color: #585957;
+
+   &:hover {
+      color: #585957;
+   }
 }
 
 #show_all_menu {
-  dt a {
-    color: white;
-    &:hover {
-      background: #3F403E;
-    }
-  }
-  a {
-    color: #585957;
-    &:hover {
-      background-color: #585957;
+   dt a {
       color: white;
-    }
-  }
+
+      &:hover {
+         background: #3F403E;
+      }
+   }
+
+   a {
+      color: #585957;
+
+      &:hover {
+         background-color: #585957;
+         color: white;
+      }
+   }
 }
