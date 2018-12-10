@@ -252,7 +252,7 @@ class Change_Ticket extends CommonDBRelation{
          'WHERE'           => [
             'glpi_changes_tickets.changes_id'   => $ID
          ],
-         'ORDERY'          => [
+         'ORDERBY'          => [
             'glpi_tickets.name'
          ]
       ]);
@@ -369,7 +369,7 @@ class Change_Ticket extends CommonDBRelation{
          'WHERE'           => [
             'glpi_changes_tickes.tickets_id'   => $ID
          ],
-         'ORDERY'          => [
+         'ORDERBY'          => [
             'glpi_changes.name'
          ]
       ]);
