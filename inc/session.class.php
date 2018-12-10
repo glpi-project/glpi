@@ -471,43 +471,61 @@ class Session {
          return;
       }
 
-      $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
-                FROM `glpi_profiles_users`
-                INNER JOIN `glpi_profiles`
-                     ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
-                WHERE `glpi_profiles_users`.`users_id` = ' $userID'
-                ORDER BY `glpi_profiles`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'glpi_profiles.id',
+         'FIELDS'          => ['glpi_profiles.name'],
+         'FROM'            => 'glpi_profiles_users',
+         'INNER JOIN'      => [
+            'glpi_profiles'   => [
+               'ON' => [
+                  'glpi_profiles_users'   => 'profiles_id',
+                  'glpi_profiles'         => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_profiles_users.users_id'   => $userID
+         ],
+         'ORDERBY'         => 'glpi_profiles.name'
+      ]);
 
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];
-         }
-         foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
-            $query2 = "SELECT `glpi_profiles_users`.`entities_id` AS eID,
-                              `glpi_profiles_users`.`id` AS kID,
-                              `glpi_profiles_users`.`is_recursive`,
-                              `glpi_entities`.*
-                       FROM `glpi_profiles_users`
-                       LEFT JOIN `glpi_entities`
-                                ON (`glpi_profiles_users`.`entities_id` = `glpi_entities`.`id`)
-                       WHERE `glpi_profiles_users`.`profiles_id` = '$key'
-                             AND `glpi_profiles_users`.`users_id` = '$userID'
-                       ORDER BY `glpi_entities`.`completename`";
-            $result2 = $DB->query($query2);
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
+            $key = $data['id'];
+            $_SESSION['glpiprofiles'][$key]['name'] = $data['name'];
+            $entities_iterator = $DB->request([
+               'SELECT'    => [
+                  'glpi_profiles_users.entities_id AS eID',
+                  'glpi_profiles_users.id AS kID',
+                  'glpi_profiles_users.is_recursive',
+                  'glpi_entities.*'
+               ],
+               'FROM'      => 'glpi_profiles_users',
+               'LEFT JOIN' => [
+                  'glpi_entities'   => [
+                     'ON' => [
+                        'glpi_profiles_users'   => 'entities_id',
+                        'glpi_entities'         => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'glpi_profiles_users.profiles_id'   => $key,
+                  'glpi_profiles_users.users_id'      => $userID
+               ],
+               'ORDERBY'   => 'glpi_entities.completename'
+            ]);
 
-            if ($DB->numrows($result2)) {
-               while ($data = $DB->fetch_assoc($result2)) {
-                  // Do not override existing entity if define as recursive
-                  if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
-                      || $data['is_recursive']) {
-                     $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['id']
-                                                                           = $data['eID'];
-                     $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['name']
-                                                                           = $data['name'];
-                     $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['is_recursive']
-                                                                           = $data['is_recursive'];
-                  }
+            while ($data = $entities_iterator->next()) {
+               // Do not override existing entity if define as recursive
+               if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
+                  || $data['is_recursive']
+               ) {
+                  $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']] = [
+                     'id'           => $data['eID'],
+                     'name'         => $data['name'],
+                     'is_recursive' => $data['is_recursive']
+                  ];
                }
             }
          }
