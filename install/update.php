@@ -37,6 +37,13 @@ if (!defined('GLPI_ROOT')) {
 include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+$GLPI_CACHE = Config::getCache('cache_db');
+$GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data
+
+$translation_cache = Config::getCache('cache_trans');
+$translation_cache->clear(); // Force cache cleaning to prevent usage of outdated cache data
+
 Config::detectRootDoc();
 
 $GLPI = new GLPI();
@@ -445,7 +452,7 @@ function changeVarcharToID($table1, $table2, $chps) {
 
 //update database
 function doUpdateDb() {
-   global $DB, $migration, $update;
+   global $DB, $GLPI_CACHE, $migration, $update;
 
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
@@ -462,6 +469,7 @@ function doUpdateDb() {
    }
 
    $update->doUpdates($current_version);
+   $GLPI_CACHE->clear();
 }
 
 
