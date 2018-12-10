@@ -652,8 +652,15 @@ span.vsubmit, a.vsubmit {
   min-height: 60vh;
   margin-left: -10px;
   margin-top: -5px;
+
+  @media screen and (max-width: 700px) {
+    flex-wrap: wrap;
+  }
+
   .kb_tree {
-    min-width: 250px;
+    flex-basis: 250px;
+    flex-grow: 1;
+    flex-shrink: 0;
     padding-right: 10px;
     text-align: left;
     background-color: #F8F8F8;
@@ -670,6 +677,9 @@ span.vsubmit, a.vsubmit {
   }
   .kb_items {
     padding: 10px;
+    .tab_cadre_pager {
+      width: 100%;
+    }
   }
   i.fa.sub_items {
     color: #787878;
