@@ -1942,14 +1942,15 @@ class Rule extends CommonDBTM {
    function getNextRanking() {
       global $DB;
 
-      $sql = "SELECT MAX(`ranking`) AS rank
-              FROM `glpi_rules`
-              WHERE `sub_type` = '".$this->getType()."'";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'SELECT' => ['MAX' => 'ranking AS rank'],
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['sub_type' => $this->getType()]
+      ]);
 
-      if ($DB->numrows($result) > 0) {
-         $datas = $DB->fetch_assoc($result);
-         return $datas["rank"] + 1;
+      if (count($iterator)) {
+         $data = $iterator->next();
+         return $data["rank"] + 1;
       }
       return 0;
    }

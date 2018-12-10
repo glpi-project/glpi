@@ -118,9 +118,11 @@ class Telemetry extends CommonGLPI {
 
       $dbinfos = $DB->getInfo();
 
-      $size_res = $DB->query("SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) dbsize
-         FROM information_schema.tables WHERE table_schema='" . $DB->dbdefault ."'");
-      $size_res = $DB->fetch_assoc($size_res);
+      $size_res = $DB->request([
+         'SELECT' => new \QueryExpression("ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS dbsize"),
+         'FROM'   => 'information_schema.tables',
+         'WHERE'  => ['table_schema' => $DB->dbdefault]
+      ])->next();
 
       $db = [
          'engine'    => $dbinfos['Server Software'],

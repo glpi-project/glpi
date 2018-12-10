@@ -334,20 +334,21 @@ class KnowbaseItem_Revision extends CommonDBTM {
    private function getNewRevision() {
       global $DB;
 
-      $rev = null;
-      $last_rev = $DB->query(
-         "SELECT MAX(revision)+1 AS new_revision FROM glpi_knowbaseitems_revisions
-            WHERE knowbaseitems_id='" . $this->fields['knowbaseitems_id'] .
-           "' AND language='" . $this->fields['language'] . "'"
-       );
+      $result = $DB->request([
+         'SELECT' => ['MAX' => 'revision AS revision'],
+         'FROM'   => 'glpi_knowbaseitems_revisions',
+         'WHERE'  => [
+            'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
+            'language'           => $this->fields['language']
+         ]
+      ])->next();
 
-      if ($last_rev) {
-         $rev = $DB->result($last_rev, 0, 0);
-      }
-
+      $rev = $result['revision'];
       if ($rev === null) {
          //no revisions yet
          $rev = 1;
+      } else {
+         ++$rev;
       }
 
       return $rev;
