@@ -392,6 +392,15 @@ class DBmysqlIterator extends DbTestCase {
       );
    }
 
+   public function testHaving() {
+      $it = $this->it->execute('foo', ['HAVING' => ['bar' => 1]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` HAVING `bar` = \'1\'');
+
+      $it = $this->it->execute('foo', ['HAVING' => ['bar' => ['>', 0]]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` HAVING `bar` > \'0\'');
+   }
+
+
 
    public function testOperators() {
       $it = $this->it->execute('foo', ['a' => 1]);
