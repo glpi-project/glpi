@@ -1065,6 +1065,18 @@ class Search {
                                                          &$data = []) {
       $data['meta_toview'] = [];
       foreach ($criteria as $criterion) {
+         // manage sub criteria
+         if (isset($criterion['criteria'])) {
+            self::constructAdditionalSqlForMetacriteria(
+               $criterion['criteria'],
+               $SELECT,
+               $FROM,
+               $already_link_tables,
+               $data
+            );
+            continue;
+         }
+
          // parse only criterion with meta flag
          if (!isset($criterion['itemtype'])
              || empty($criterion['itemtype'])
