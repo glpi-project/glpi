@@ -412,7 +412,7 @@ class KnowbaseItem extends CommonDBVisible {
       Toolbox::deprecated('Use getVisibilityCriteria');
 
       //get and clean criteria
-      $criteria = self::getVisibilityCriteria();
+      $criteria = self::getVisibilityCriteria($forceall);
       unset($criteria['WHERE']);
       $criteria['FROM'] = self::getTable();
 
@@ -420,7 +420,7 @@ class KnowbaseItem extends CommonDBVisible {
       $it->buildQuery($criteria);
       $sql = $it->getSql();
       $sql = str_replace(
-         'SELECT * FROM '.$DB->quoteName(self::getTable()).' ',
+         'SELECT * FROM '.$DB->quoteName(self::getTable()).'',
          '',
          $sql
       );
@@ -437,6 +437,8 @@ class KnowbaseItem extends CommonDBVisible {
    static function addVisibilityRestrict() {
       //not deprecated because used in self::getListRequest and self::showRecentPopular
 
+      global $DB;
+
       //get and clean criteria
       $criteria = self::getVisibilityCriteria();
       unset($criteria['LEFT JOIN']);
@@ -445,8 +447,17 @@ class KnowbaseItem extends CommonDBVisible {
       $it = new \DBmysqlIterator(null);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
+      $sql = str_replace(
+         'SELECT * FROM '.$DB->quoteName(self::getTable()).'',
+         '',
+         $sql
+      );
       $sql = preg_replace('/.*WHERE /', '', $sql);
 
+      //No where restrictions. Add a placeholder for compatibility with later restrictions
+      if (strlen(trim($sql)) == 0) {
+         $sql = "1";
+      }
       return $sql;
    }
 
@@ -462,24 +473,51 @@ class KnowbaseItem extends CommonDBVisible {
    static public function getVisibilityCriteria($forceall = false) {
       global $CFG_GLPI;
 
+      $where = [];
+      $join = [
+         'glpi_knowbaseitems_users' => [
+            'ON' => [
+               'glpi_knowbaseitems_users' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'       => 'id'
+            ]
+         ]
+      ];
+
+      if ($forceall || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
+         $join['glpi_groups_knowbaseitems'] = [
+            'ON' => [
+               'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'       => 'id'
+            ]
+         ];
+      }
+      if ($forceall || (isset($_SESSION["glpiactiveprofile"])
+              && isset($_SESSION["glpiactiveprofile"]['id']))) {
+         $join['glpi_knowbaseitems_profiles'] = [
+            'ON' => [
+               'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'       => 'id'
+            ]
+         ];
+      }
+      if ($forceall || (isset($_SESSION["glpiactiveentities"])
+              && isset($_SESSION["glpiactiveentities"]['id']))) {
+         $join['glpi_entities_knowbaseitems'] = [
+            'ON' => [
+               'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'       => 'id'
+            ]
+         ];
+      }
+
       if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          return [
-            'LEFT JOIN' => [],
+            'LEFT JOIN' => $join,
             'WHERE' => [],
          ];
       }
 
-      $join = [];
-      $where = [];
-
       // Users
-      $join['glpi_knowbaseitems_users'] = [
-         'FKEY' => [
-            'glpi_knowbaseitems_users' => 'knowbaseitems_id',
-            'glpi_knowbaseitems'       => 'id'
-         ]
-      ];
-
       if (Session::getLoginUserID()) {
          $where['OR'] = [
                'glpi_knowbaseitems.users_id'       => Session::getLoginUserID(),
@@ -508,12 +546,6 @@ class KnowbaseItem extends CommonDBVisible {
       // Groups
       if ($forceall
           || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
-         $join['glpi_groups_knowbaseitems'] = [
-            'FKEY' => [
-               'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
-               'glpi_knowbaseitems'        => 'id'
-            ]
-         ];
 
          if (Session::getLoginUserID()) {
             $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true, true);
@@ -532,12 +564,6 @@ class KnowbaseItem extends CommonDBVisible {
       if ($forceall
           || (isset($_SESSION["glpiactiveprofile"])
               && isset($_SESSION["glpiactiveprofile"]['id']))) {
-         $join['glpi_knowbaseitems_profiles'] = [
-            'FKEY' => [
-               'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
-               'glpi_knowbaseitems'          => 'id'
-            ]
-         ];
 
          if (Session::getLoginUserID()) {
             $where['OR'][] = ['AND' => [
