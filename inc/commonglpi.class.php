@@ -48,10 +48,18 @@ class CommonGLPI {
    /// Show Debug
    public $showdebug               = false;
 
-   /// Tab orientation : horizontal or vertical
+   /**
+    * Tab orientation : horizontal or vertical.
+    *
+    * @var string
+    */
    public $taborientation          = 'horizontal';
 
-   /// Need to get item to show tab
+   /**
+    * Need to get item to show tab
+    *
+    * @var boolean
+    */
    public $get_item_to_display_tab = false;
    static protected $othertabs     = [];
 
@@ -226,7 +234,6 @@ class CommonGLPI {
     * @return CommonGLPI
    **/
    function addDefaultFormTab(array &$ong) {
-      global $CFG_GLPI;
 
       if (self::isLayoutExcludedPage()
           || !self::isLayoutWithMain()
@@ -251,8 +258,6 @@ class CommonGLPI {
       $type       = static::getType();
       $item       = new $type();
       $forbidden  = $type::getForbiddenActionsForMenu();
-
-      $debug      = false;
 
       if ($item instanceof CommonDBTM) {
          if ($type::canView()) {
@@ -294,7 +299,9 @@ class CommonGLPI {
          $menu['options'] = $data;
       }
       if ($data = static::getAdditionalMenuContent()) {
-         $newmenu[strtolower($type)]  = $menu;
+         $newmenu = [
+            strtolower($type) => $menu,
+         ];
          // Force overwrite existing menu
          foreach ($data as $key => $val) {
             $newmenu[$key] = $val;
@@ -656,7 +663,6 @@ class CommonGLPI {
     * @return void
    **/
    function showTabsContent($options = []) {
-      global $CFG_GLPI;
 
       // for objects not in table like central
       if (isset($this->fields['id'])) {
@@ -698,7 +704,6 @@ class CommonGLPI {
       }
       echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
-      $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -765,7 +770,7 @@ class CommonGLPI {
             $withtemplate = $options['withtemplate'];
             unset($cleanoptions['withtemplate']);
          }
-         foreach ($cleanoptions as $key => $val) {
+         foreach (array_keys($cleanoptions) as $key) {
             // Do not include id options
             if (($key[0] == '_') || ($key == 'id')) {
                unset($cleanoptions[$key]);
@@ -849,7 +854,7 @@ class CommonGLPI {
             $glpilisttitle = __s('List');
          }
          echo "<td><a href=\"".$glpilisturl."\" title='$glpilisttitle'>";
-         echo "<i class='fa fa-list-alt fa-2x pointer'><span class='sr-only'>";
+         echo "<i class='far fa-list-alt fa-2x pointer'><span class='sr-only'>";
          echo Toolbox::substr($glpilisttitle, 0, 100)."...";
          echo "</span></i>";
          echo "</a></td>";
@@ -1052,13 +1057,13 @@ class CommonGLPI {
          }
          // reset
          if (isset($input['reset'])) {
-            foreach ($options as $option_group_name => $option_group) {
+            foreach ($options as $option_group) {
                foreach ($option_group as $option_name => $attributs) {
                   $display_options[$option_name] = $attributs['default'];
                }
             }
          } else {
-            foreach ($options as $option_group_name => $option_group) {
+            foreach ($options as $option_group) {
                foreach ($option_group as $option_name => $attributs) {
                   if (isset($input[$option_name]) && ($_GET[$option_name] == 'on')) {
                      $display_options[$option_name] = true;
@@ -1118,7 +1123,7 @@ class CommonGLPI {
       // Load default values if not set
       $options = static::getAvailableDisplayOptions();
       if (count($options)) {
-         foreach ($options as $option_group_name => $option_group) {
+         foreach ($options as $option_group) {
             foreach ($option_group as $option_name => $attributs) {
                if (!isset($display_options[$option_name])) {
                   $display_options[$option_name] = $attributs['default'];
@@ -1236,7 +1241,7 @@ class CommonGLPI {
     * @since 0.85
     *
     * @param integer $error  error type see define.php for ERROR_*
-    * @param istring $object string to use instead of item link (default '')
+    * @param string  $object string to use instead of item link (default '')
     *
     * @return string
    **/

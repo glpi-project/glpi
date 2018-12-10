@@ -99,17 +99,12 @@ $stat->displayLineGraph(
    ]
 );
 
-$show_all = false;
-if (!isset($_GET['graph']) || (count($_GET['graph']) == 0)) {
-   $show_all = true;
-}
-
 $values = [];
 //Temps moyen de resolution d'intervention
 $values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",
                                                    $_GET["date1"], $_GET["date2"]);
 // Pass to hour values
-foreach ($values['avgsolved'] as $key => &$val) {
+foreach ($values['avgsolved'] as &$val) {
    $val = round($val / HOUR_TIMESTAMP, 2);
 }
 
@@ -117,7 +112,7 @@ foreach ($values['avgsolved'] as $key => &$val) {
 $values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
                                                    $_GET["date1"], $_GET["date2"]);
 // Pass to hour values
-foreach ($values['avgclosed'] as $key => &$val) {
+foreach ($values['avgclosed'] as &$val) {
    $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen d'intervention reel
@@ -125,7 +120,7 @@ $values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_
                                                        $_GET["date1"], $_GET["date2"]);
 
 // Pass to hour values
-foreach ($values['avgactiontime'] as $key => &$val) {
+foreach ($values['avgactiontime'] as &$val) {
    $val =  round($val / HOUR_TIMESTAMP, 2);
 }
 

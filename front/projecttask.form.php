@@ -53,7 +53,7 @@ $task = new ProjectTask();
 
 if (isset($_POST["add"])) {
    $task->check(-1, CREATE, $_POST);
-   $newID = $task->add($_POST);
+   $task->add($_POST);
 
    Event::log($task->fields['projects_id'], 'project', 4, "maintain",
               //TRANS: %s is the user login
@@ -83,8 +83,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET['_in_modal'])) {
-   Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF']);
-   $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
+   Html::popHeader(ProjectTask::getTypeName(1), $_SERVER['PHP_SELF']);
+   $task->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
    Html::popFooter();
 
 } else {

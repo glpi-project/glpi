@@ -116,7 +116,7 @@ class DeviceNetworkCard extends CommonDevice {
     *
     * @param $input array of datas
     *
-    * @return interger ID of existing or new Device
+    * @return integer ID of existing or new Device
    **/
    function import(array $input) {
       global $DB;
@@ -125,17 +125,20 @@ class DeviceNetworkCard extends CommonDevice {
          return 0;
       }
 
-      $query = "SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE `designation` = '" . $input['designation'] . "'";
+      $criteria = [
+         'SELECT' => 'id',
+         'FROM'   => $this->getTable(),
+         'WHERE'  => ['designation' => $input['designation']]
+      ];
 
       if (isset($input["bandwidth"])) {
-         $query .= " AND `bandwidth` = '".$input["bandwidth"]."'";
+         $criteria['WHERE']['bandwidth'] = $input['bandwidth'];
       }
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         $line = $DB->fetch_assoc($result);
+      $iterator = $DB->request($criteria);
+
+      if (count($iterator) > 0) {
+         $line = $iterator->next();
          return $line['id'];
       }
       return $this->add($input);
@@ -223,4 +226,36 @@ class DeviceNetworkCard extends CommonDevice {
       }
    }
 
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '112',
+         'table'              => 'glpi_devicenetworkcards',
+         'field'              => 'designation',
+         'name'               => __('Network interface'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicenetworkcards',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '113',
+         'table'              => 'glpi_items_devicenetworkcards',
+         'field'              => 'mac',
+         'name'               => __('MAC address'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => $main_joinparams
+      ];
+
+      return $tab;
+   }
 }

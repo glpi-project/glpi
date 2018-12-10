@@ -405,14 +405,13 @@ class NetworkPort extends CommonDBChild {
          unset($instantiation);
       }
 
-      $nn = new NetworkPort_NetworkPort();
-      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      $nv = new NetworkPort_Vlan();
-      $nv->cleanDBonItemDelete ($this->getType(), $this->getID());
-
-      $names = new NetworkName();
-      $names->cleanDBonItemDelete ($this->getType(), $this->getID());
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            NetworkName::class,
+            NetworkPort_NetworkPort::class,
+            NetworkPort_Vlan::class,
+         ]
+      );
    }
 
 
@@ -701,7 +700,7 @@ class NetworkPort extends CommonDBChild {
                       WHERE `items_id` = '$items_id'
                             AND `itemtype` = '$itemtype'
                             AND `instantiation_type` = '$portType'
-                            AND `is_deleted` = '0'
+                            AND `is_deleted` = 0
                       ORDER BY `name`,
                                `logical_number`";
          }
@@ -1158,9 +1157,10 @@ class NetworkPort extends CommonDBChild {
          } else {
             $aliases = '';
          }
-         $nbAggregates = countElementsInTable('glpi_networkportaggregates',
-                                              "`networkports_id_list`
-                                                   LIKE '%\"".$item->getField('id')."\"%'");
+         $nbAggregates = countElementsInTable(
+            'glpi_networkportaggregates',
+            ['networkports_id_list'   => ['LIKE', '%"'.$item->getField('id').'"%']]
+         );
          if ($nbAggregates > 0) {
             $aggregates = self::createTabEntry(NetworkPortAggregate::getTypeName(Session::getPluralNumber()),
                                                $nbAggregates);

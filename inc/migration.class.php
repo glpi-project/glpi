@@ -676,7 +676,7 @@ class Migration {
     * @return void
    **/
    function executeMigration() {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
       foreach ($this->queries[self::PRE_QUERY] as $query) {
          $DB->queryOrDie($query['query'], $query['message']);
@@ -699,7 +699,7 @@ class Migration {
       $this->storeConfig();
 
       // as some tables may have be renamed, unset session matching between tables and classes
-      unset($_SESSION['glpi_table_of']);
+      $GLPI_CACHE->delete('table_of');
 
       // end of global message
       $this->displayMessage(__('Task completed.'));
@@ -785,7 +785,7 @@ class Migration {
       if (count($toadd)) {
          foreach ($toadd as $type => $tab) {
             $iterator = $DB->request([
-               'SELECT DISTINCT' => ['users_id'],
+               'SELECT DISTINCT' => 'users_id',
                'FROM'            => 'glpi_displaypreferences',
                'WHERE'           => ['itemtype' => $type]
             ]);
@@ -841,11 +841,12 @@ class Migration {
          // delete display preferences
          foreach ($todel as $type => $tab) {
             if (count($tab)) {
-               $query = "DELETE
-                         FROM `glpi_displaypreferences`
-                         WHERE `itemtype` = '$type'
-                               AND `num` IN (".implode(',', $tab).")";
-               $DB->query($query);
+               $DB->delete(
+                  'glpi_displaypreferences', [
+                     'itemtype'  => $type,
+                     'num'       => $tab
+                  ]
+               );
             }
          }
       }

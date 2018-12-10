@@ -217,4 +217,42 @@ class DeviceHardDrive extends CommonDevice {
                    'interfacetypes_id' => 'equal'];
    }
 
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '114',
+         'table'              => 'glpi_deviceharddrives',
+         'field'              => 'designation',
+         'name'               => __('Hard drive type'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_deviceharddrives',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '115',
+         'table'              => 'glpi_items_deviceharddrives',
+         'field'              => 'capacity',
+         'name'               => __('Hard drive size'),
+         'unit'               => 'auto',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'width'              => 1000,
+         'massiveaction'      => false,
+         'joinparams'         => $main_joinparams,
+         'computation'        => '(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
+                                       * COUNT(DISTINCT TABLE.`id`)'
+      ];
+
+      return $tab;
+   }
 }

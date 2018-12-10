@@ -47,10 +47,6 @@ class Certificate extends CommonDBTM {
    static $rightname           = "certificate";
    protected $usenotepad       = true;
 
-   /**
-    * @param int $nb
-    * @return string|translated
-    */
    static function getTypeName($nb = 0) {
       return _n('Certificate', 'Certificates', $nb);
    }
@@ -59,12 +55,16 @@ class Certificate extends CommonDBTM {
     * Clean certificate items
     */
    function cleanDBonPurge() {
-      $cert_item = new Certificate_Item();
-      $cert_item->deleteByCriteria(['certificates_id' => $this->fields['id']]);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+         ]
+      );
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
 
       $tab = [];
 
@@ -172,6 +172,7 @@ class Certificate extends CommonDBTM {
          'nosearch'           => true,
          'massiveaction'      => false,
          'forcegroupby'       => true,
+         'additionalfields'   => ['itemtype'],
          'joinparams'         => ['jointype' => 'child']
       ];
 
@@ -216,7 +217,7 @@ class Certificate extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_certificate`'
+         'condition'          => ['is_visible_certificate' => 1]
       ];
 
       $tab[] = [
@@ -225,7 +226,7 @@ class Certificate extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -243,7 +244,7 @@ class Certificate extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'name'               => __('Group'),
-         'condition'          => '`is_itemgroup`',
+         'condition'          => ['is_itemgroup' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -332,7 +333,6 @@ class Certificate extends CommonDBTM {
    }
 
    function post_addItem() {
-      global $DB;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
@@ -357,7 +357,6 @@ class Certificate extends CommonDBTM {
     * @return bool
     */
    function showForm($ID, $options = []) {
-      global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -377,9 +376,11 @@ class Certificate extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(['value'     => $this->fields["states_id"],
-                       'entity'    => $this->fields["entities_id"],
-                       'condition' => "`is_visible_certificate`"]);
+      State::dropdown([
+         'value'     => $this->fields["states_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_visible_certificate' => 1]
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -427,10 +428,12 @@ class Certificate extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(['name'      => 'groups_id_tech',
-                       'value'     => $this->fields['groups_id_tech'],
-                       'entity'    => $this->fields['entities_id'],
-                       'condition' => '`is_assign`']);
+      Group::dropdown([
+         'name'      => 'groups_id_tech',
+         'value'     => $this->fields['groups_id_tech'],
+         'entity'    => $this->fields['entities_id'],
+         'condition' => ['is_assign' => 1]
+      ]);
 
       echo "</td><td colspan='2'></td></tr>\n";
 
@@ -443,9 +446,11 @@ class Certificate extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Group::dropdown(['value'     => $this->fields["groups_id"],
-                       'entity'    => $this->fields["entities_id"],
-                       'condition' => '`is_itemgroup`']);
+      Group::dropdown([
+         'value'     => $this->fields["groups_id"],
+         'entity'    => $this->fields["entities_id"],
+         'condition' => ['is_itemgroup' => 1]
+      ]);
 
       echo "</td></tr>\n";
 
@@ -523,7 +528,7 @@ class Certificate extends CommonDBTM {
     *
     * @see CommonDBTM::getSpecificMassiveActions()
     * @param null $checkitem
-    * @return an
+    * @return array
     */
    function getSpecificMassiveActions($checkitem = null) {
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -580,7 +585,7 @@ class Certificate extends CommonDBTM {
     * @param MassiveAction $ma
     * @param CommonDBTM $item
     * @param array $ids
-    * @return nothing|void
+    * @return void
     */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma,
                                                        CommonDBTM $item,
@@ -671,7 +676,7 @@ class Certificate extends CommonDBTM {
     *
     * @param $name : task's name
     *
-    * @return arrray of information
+    * @return array
    **/
    static function cronInfo($name) {
       return ['description' => __('Send alarms on expired certificate')];
@@ -680,9 +685,9 @@ class Certificate extends CommonDBTM {
    /**
     * Cron action on certificates : alert on expired certificates
     *
-    * @param $task to log, if NULL display (default NULL)
+    * @param CronTask $task to log, if NULL display (default NULL)
     *
-    * @return 0 : nothing to do 1 : done with success
+    * @return integer 0 : nothing to do 1 : done with success
    **/
    static function cronCertificate($task = null) {
       global $DB, $CFG_GLPI;
@@ -694,25 +699,48 @@ class Certificate extends CommonDBTM {
       }
 
       $message      = [];
-      foreach (Entity::getEntitiesToNotify('use_certificates_alert') as $entity => $value) {
+      foreach (array_keys(Entity::getEntitiesToNotify('use_certificates_alert')) as $entity) {
          $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
          // Check licenses
-         $query = "SELECT `glpi_certificates`.*
-                   FROM `glpi_certificates`
-                   LEFT JOIN `glpi_alerts`
-                        ON (`glpi_certificates`.`id` = `glpi_alerts`.`items_id`
-                            AND `glpi_alerts`.`itemtype` = '".__CLASS__."'
-                            AND `glpi_alerts`.`type` = '".Alert::END."')
-                   WHERE `glpi_alerts`.`date` IS NULL
-                         AND `glpi_certificates`.`date_expiration` IS NOT NULL
-                         AND DATEDIFF(`glpi_certificates`.`date_expiration`,
-                                      CURDATE()) < '$before'
-                         AND `glpi_certificates`.`entities_id` = '".$entity."'";
+         $result = $DB->request(
+            [
+               'SELECT'    => [
+                  'glpi_certificates.*',
+               ],
+               'FROM'      => self::getTable(),
+               'LEFT JOIN' => [
+                  'glpi_alerts' => [
+                     'FKEY'   => [
+                        'glpi_alerts'       => 'items_id',
+                        'glpi_certificates' => 'id',
+                        [
+                           'AND' => [
+                              'glpi_alerts.itemtype' => __CLASS__,
+                              'glpi_alerts.type'     => Alert::END,
+                           ],
+                        ],
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'glpi_alerts.date'              => null,
+                  [
+                     'NOT' => ['glpi_certificates.date_expiration' => null],
+                  ],
+                  [
+                     'RAW' => [
+                        'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before]
+                     ]
+                  ],
+                  'glpi_certificates.entities_id' => $entity,
+               ],
+            ]
+         );
 
          $message = "";
          $items   = [];
 
-         foreach ($DB->request($query) as $certificate) {
+         foreach ($result as $certificate) {
             $name     = $certificate['name'].' - '.$certificate['serial'];
             //TRANS: %1$s the license name, %2$s is the expiration date
             $message .= sprintf(__('Certificate %1$s expired on %2$s'),
@@ -721,9 +749,11 @@ class Certificate extends CommonDBTM {
          }
 
          if (!empty($items)) {
-            $alert                   = new Alert();
-            $options['entities_id']  = $entity;
-            $options['certificates'] = $items;
+            $alert   = new Alert();
+            $options = [
+               'entities_id'  => $entity,
+               'certificates' => $items,
+            ];
 
             if (NotificationEvent::raiseEvent('alert', new self(), $options)) {
                $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
@@ -736,8 +766,10 @@ class Certificate extends CommonDBTM {
                                                            $entityname, $message));
                }
 
-               $input["type"]     = Alert::END;
-               $input["itemtype"] = __CLASS__;
+               $input = [
+                  'type'     => Alert::END,
+                  'itemtype' => __CLASS__,
+               ];
 
                // add alerts
                foreach ($items as $ID => $certificate) {

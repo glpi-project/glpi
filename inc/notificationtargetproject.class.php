@@ -103,32 +103,32 @@ class NotificationTargetProject extends NotificationTarget {
 
                //Send to the users in project team
                case Notification::TEAM_USER :
-                  $this->getTeamUsers();
+                  $this->addTeamUsers();
                   break;
 
                //Send to the groups in project team
                case Notification::TEAM_GROUP :
-                  $this->getTeamGroups(0);
+                  $this->addTeamGroups(0);
                   break;
 
                //Send to the group supervisors in project team
                case Notification::TEAM_GROUP_SUPERVISOR :
-                  $this->getTeamGroups(1);
+                  $this->addTeamGroups(1);
                   break;
 
                //Send to the group without supervisors in project team
                case Notification::TEAM_GROUP_WITHOUT_SUPERVISOR :
-                  $this->getTeamGroups(2);
+                  $this->addTeamGroups(2);
                   break;
 
                //Send to the contacts in project team
                case Notification::TEAM_CONTACT :
-                  $this->getTeamContacts();
+                  $this->addTeamContacts();
                   break;
 
                   //Send to the suppliers in project team
                case Notification::TEAM_SUPPLIER :
-                  $this->getTeamSuppliers();
+                  $this->addTeamSuppliers();
                   break;
 
             }
@@ -138,8 +138,10 @@ class NotificationTargetProject extends NotificationTarget {
 
    /**
     * Add team users to the notified user list
-   **/
-   function getTeamUsers() {
+    *
+    * @return void
+    **/
+   function addTeamUsers() {
       global $DB;
 
       $query = "SELECT `items_id`
@@ -159,9 +161,11 @@ class NotificationTargetProject extends NotificationTarget {
    /**
     * Add team groups to the notified user list
     *
-    * @param $manager      0 all users, 1 only supervisors, 2 all users without supervisors
-   **/
-   function getTeamGroups($manager) {
+    * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+    *
+    * @return void
+    **/
+   function addTeamGroups($manager) {
       global $DB;
 
       $query = "SELECT `items_id`
@@ -176,8 +180,10 @@ class NotificationTargetProject extends NotificationTarget {
 
    /**
     * Add team contacts to the notified user list
-   **/
-   function getTeamContacts() {
+    *
+    * @return void
+    **/
+   function addTeamContacts() {
       global $DB, $CFG_GLPI;
 
       $query = "SELECT `items_id`
@@ -198,8 +204,10 @@ class NotificationTargetProject extends NotificationTarget {
 
    /**
     * Add team suppliers to the notified user list
-   **/
-   function getTeamSuppliers() {
+    *
+    * @return void
+    **/
+   function addTeamSuppliers() {
       global $DB, $CFG_GLPI;
 
       $query = "SELECT `items_id`
@@ -305,7 +313,7 @@ class NotificationTargetProject extends NotificationTarget {
                                                           $item->getField('groups_id'));
       }
       // Team infos
-      $restrict = "`projects_id` = '".$item->getField('id')."'";
+      $restrict = ['projects_id' => $item->getField('id')];
       $items    = getAllDatasFromTable('glpi_projectteams', $restrict);
 
       $this->data['teammembers'] = [];
@@ -325,10 +333,7 @@ class NotificationTargetProject extends NotificationTarget {
       $this->data['##project.numberofteammembers##'] = count($this->data['teammembers']);
 
       // Task infos
-      $restrict             = "`projects_id`='".$item->getField('id')."'";
-      $restrict            .= " ORDER BY `date` DESC, `id` ASC";
-
-      $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict);
+      $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict, false, ['date DESC', 'id ASC']);
       $this->data['tasks'] = [];
       foreach ($tasks as $task) {
          $tmp                            = [];
@@ -367,10 +372,7 @@ class NotificationTargetProject extends NotificationTarget {
       $this->data["##project.numberoftasks##"] = count($this->data['tasks']);
 
       //costs infos
-      $restrict             = "`projects_id`='".$item->getField('id')."'";
-      $restrict            .= " ORDER BY `begin_date` DESC, `id` ASC";
-
-      $costs                = getAllDatasFromTable('glpi_projectcosts', $restrict);
+      $costs                = getAllDatasFromTable('glpi_projectcosts', $restrict, false, ['begin_date DESC', 'id ASC']);
       $this->data['costs'] = [];
       $this->data["##project.totalcost##"] = 0;
       foreach ($costs as $cost) {
@@ -403,68 +405,79 @@ class NotificationTargetProject extends NotificationTarget {
 
       $this->data["##project.numberoflogs##"] = count($this->data['log']);
 
-      // Changes infos
-      $restrict               = "`projects_id`='".$item->getField('id')."'";
-      $changes                = getAllDatasFromTable('glpi_changes_projects', $restrict);
-      $this->data['changes'] = [];
-      if (count($changes)) {
-         $change = new Change();
-         foreach ($changes as $data) {
-            if ($change->getFromDB($data['changes_id'])) {
-               $tmp = [];
+      // ITIL items informations
+      foreach ([Change::class, Problem::class, Ticket::class] as $itemtype) {
+         $values = [];
 
-               $tmp['##change.id##']
-                              = $data['changes_id'];
-               $tmp['##change.date##']
-                              = $change->getField('date');
-               $tmp['##change.title##']
-                              = $change->getField('name');
-               $tmp['##change.url##']
-                              = $this->formatURL($options['additionnaloption']['usertype'],
-                                                 "change_".$data['changes_id']);
-               $tmp['##change.content##']
-                              = $change->getField('content');
-
-               $this->data['changes'][] = $tmp;
+         $lc_itemtype = strtolower($itemtype);
+         $restrict = [
+            'projects_id' => $item->getField('id'),
+            'itemtype'    => $itemtype,
+         ];
+         $link_items = getAllDatasFromTable(Itil_Project::getTable(), $restrict);
+         if (count($link_items)) {
+            $nitem = new $itemtype();
+            foreach ($link_items as $data) {
+               if ($nitem->getFromDB($data['items_id'])) {
+                  $values[] = [
+                     '##' . $lc_itemtype . '.id##'      => $data['items_id'],
+                     '##' . $lc_itemtype . '.date##'    => $nitem->getField('date'),
+                     '##' . $lc_itemtype . '.title##'   => $nitem->getField('name'),
+                     '##' . $lc_itemtype . '.url##'     => $this->formatURL(
+                        $options['additionnaloption']['usertype'],
+                        $lc_itemtype . '_' . $data['items_id']
+                     ),
+                     '##' . $lc_itemtype . '.content##' => $nitem->getField('content')
+                  ];
+               }
             }
          }
+         $this->data[$lc_itemtype . 's'] = $values;
+
+         $this->data['##project.numberof' . $lc_itemtype . 's##'] = count($values);
       }
 
-      $this->data['##project.numberofchanges##'] = count($this->data['changes']);
-
       // Document
-      $query = "SELECT `glpi_documents`.*
-                FROM `glpi_documents`
-                LEFT JOIN `glpi_documents_items`
-                  ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                WHERE `glpi_documents_items`.`itemtype` =  'Project'
-                      AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
+      $iterator = $DB->request([
+         'SELECT'    => 'glpi_documents.*',
+         'FROM'      => 'glpi_documents',
+         'LEFT JOIN' => [
+            'glpi_documents_items'  => [
+               'ON' => [
+                  'glpi_documents_items'  => 'documents_id',
+                  'glpi_documents'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_documents_items.itemtype'  => 'Project',
+            'glpi_documents_items.items_id'  => $item->fields['id']
+         ]
+      ]);
 
       $this->data["documents"] = [];
-      if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $tmp                       = [];
-            $tmp['##document.id##']    = $data['id'];
-            $tmp['##document.name##']  = $data['name'];
-            $tmp['##document.weblink##']
-                                       = $data['link'];
+      while ($data = $iterator->next()) {
+         $tmp                       = [];
+         $tmp['##document.id##']    = $data['id'];
+         $tmp['##document.name##']  = $data['name'];
+         $tmp['##document.weblink##']
+                                    = $data['link'];
 
-            $tmp['##document.url##']   = $this->formatURL($options['additionnaloption']['usertype'],
-                                                          "document_".$data['id']);
-            $downloadurl               = "/front/document.send.php?docid=".$data['id'];
+         $tmp['##document.url##']   = $this->formatURL($options['additionnaloption']['usertype'],
+                                                         "document_".$data['id']);
+         $downloadurl               = "/front/document.send.php?docid=".$data['id'];
 
-            $tmp['##document.downloadurl##']
-                                        = $this->formatURL($options['additionnaloption']['usertype'],
-                                                          $downloadurl);
-            $tmp['##document.heading##']
-                                        = Dropdown::getDropdownName('glpi_documentcategories',
-                                                                    $data['documentcategories_id']);
+         $tmp['##document.downloadurl##']
+                                       = $this->formatURL($options['additionnaloption']['usertype'],
+                                                         $downloadurl);
+         $tmp['##document.heading##']
+                                       = Dropdown::getDropdownName('glpi_documentcategories',
+                                                                  $data['documentcategories_id']);
 
-            $tmp['##document.filename##']
-                                        = $data['filename'];
+         $tmp['##document.filename##']
+                                       = $data['filename'];
 
-            $this->data['documents'][] = $tmp;
-         }
+         $this->data['documents'][] = $tmp;
       }
 
       $this->data["##project.urldocument##"]
@@ -475,7 +488,6 @@ class NotificationTargetProject extends NotificationTarget {
                      = count($this->data['documents']);
 
       // Items infos
-      $restrict             = "`projects_id` = '".$item->getField('id')."'";
       $items                = getAllDatasFromTable('glpi_items_projects', $restrict);
 
       $this->data['items'] = [];
@@ -592,6 +604,8 @@ class NotificationTargetProject extends NotificationTarget {
                         'project.log.content'         => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                                  _x('name', 'Update')),
                         'project.numberofchanges'     => _x('quantity', 'Number of changes'),
+                        'project.numberofproblems'    => _x('quantity', 'Number of problems'),
+                        'project.numberoftickets'     => _x('quantity', 'Number of tickets'),
                         'project.numberofdocuments'   => _x('quantity', 'Number of documents'),
                         'item.name'                   => __('Associated item'),
                         'item.serial'                 => __('Serial number'),
@@ -611,49 +625,50 @@ class NotificationTargetProject extends NotificationTarget {
       }
 
       //Tags without lang
-      $tags = ['change.id'               => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
-                    'change.date'             => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
-                    'change.url'              => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
-                    'change.title'            => sprintf(__('%1$s: %2$s'), __('Change'),
-                                                         __('Title')),
-                    'change.content'          => sprintf(__('%1$s: %2$s'), __('Change'),
-                                                         __('Description')),
-                    'cost.name'               => sprintf(__('%1$s: %2$s'), __('Cost'), __('Name')),
-                    'cost.comment'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                         __('Comments')),
-                    'cost.datebegin'          => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                         __('Begin date')),
-                    'cost.dateend'            => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                         __('End date')),
-                    'cost.cost'               => __('Cost'),
-                    'cost.budget'             => sprintf(__('%1$s: %2$s'), __('Cost'),
-                                                         __('Budget')),
-                    'document.url'            => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                         __('URL')),
-                    'document.downloadurl'    => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                         __('Download URL')),
-                    'document.heading'        => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                         __('Heading')),
-                    'document.id'             => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
-                    'document.filename'       => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                         __('File')),
-                    'document.weblink'        => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                         __('Web Link')),
-                    'document.name'           => sprintf(__('%1$s: %2$s'), __('Document'),
-                                                         __('Name')),
-                    'project.urldocument'     => sprintf(__('%1$s: %2$s'),
-                                                         _n('Document', 'Documents', Session::getPluralNumber()), __('URL')),
-                    'project.entity'         => sprintf(__('%1$s (%2$s)'),
-                                                        __('Entity'), __('Complete name')),
-                    'project.shortentity'    => sprintf(__('%1$s (%2$s)'),
-                                                        __('Entity'), __('Name')),
-                    'teammember.name'        => sprintf(__('%1$s: %2$s'),
-                                                        _n('Team member', 'Team members', 1),
-                                                        __('Name')),
-                    'teammember.itemtype'    => sprintf(__('%1$s: %2$s'),
-                                                        _n('Team member', 'Team members', 1),
-                                                        __('Type'))
-                     ];
+      $tags = [
+         'change.id'            => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
+         'change.date'          => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
+         'change.url'           => sprintf(__('%1$s: %2$s'), __('Change'), ('URL')),
+         'change.title'         => sprintf(__('%1$s: %2$s'), __('Change'), __('Title')),
+         'change.content'       => sprintf(__('%1$s: %2$s'), __('Change'), __('Description')),
+         'problem.id'           => sprintf(__('%1$s: %2$s'), __('Problem'), __('ID')),
+         'problem.date'         => sprintf(__('%1$s: %2$s'), __('Problem'), __('Date')),
+         'problem.url'          => sprintf(__('%1$s: %2$s'), __('Problem'), ('URL')),
+         'problem.title'        => sprintf(__('%1$s: %2$s'), __('Problem'), __('Title')),
+         'problem.content'      => sprintf(__('%1$s: %2$s'), __('Problem'), __('Description')),
+         'ticket.id'            => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
+         'ticket.date'          => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
+         'ticket.url'           => sprintf(__('%1$s: %2$s'), __('Ticket'), ('URL')),
+         'ticket.title'         => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Title')),
+         'ticket.content'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Description')),
+         'cost.name'            => sprintf(__('%1$s: %2$s'), __('Cost'), __('Name')),
+         'cost.comment'         => sprintf(__('%1$s: %2$s'), __('Cost'), __('Comments')),
+         'cost.datebegin'       => sprintf(__('%1$s: %2$s'), __('Cost'), __('Begin date')),
+         'cost.dateend'         => sprintf(__('%1$s: %2$s'), __('Cost'), __('End date')),
+         'cost.cost'            => __('Cost'),
+         'cost.budget'          => sprintf(__('%1$s: %2$s'), __('Cost'), __('Budget')),
+         'document.url'         => sprintf(__('%1$s: %2$s'), __('Document'), __('URL')),
+         'document.downloadurl' => sprintf(__('%1$s: %2$s'), __('Document'), __('Download URL')),
+         'document.heading'     => sprintf(__('%1$s: %2$s'), __('Document'), __('Heading')),
+         'document.id'          => sprintf(__('%1$s: %2$s'), __('Document'), __('ID')),
+         'document.filename'    => sprintf(__('%1$s: %2$s'), __('Document'), __('File')),
+         'document.weblink'     => sprintf(__('%1$s: %2$s'), __('Document'), __('Web link')),
+         'document.name'        => sprintf(__('%1$s: %2$s'), __('Document'), __('Name')),
+         'project.urldocument'  => sprintf(
+            __('%1$s: %2$s'),
+            _n('Document', 'Documents', Session::getPluralNumber()), __('URL')
+         ),
+         'project.entity'      => sprintf(__('%1$s (%2$s)'), __('Entity'), __('Complete name')),
+         'project.shortentity' => sprintf(__('%1$s (%2$s)'), __('Entity'), __('Name')),
+         'teammember.name'     => sprintf(
+            __('%1$s: %2$s'),
+            _n('Team member', 'Team members', 1), __('Name')
+         ),
+         'teammember.itemtype' => sprintf(
+            __('%1$s: %2$s'),
+            _n('Team member', 'Team members', 1), __('Type')
+         ),
+      ];
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(['tag'   => $tag,
@@ -669,6 +684,8 @@ class NotificationTargetProject extends NotificationTarget {
                     'project.team'     => __('Project team'),
                     'project.costs'    => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'project.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
+                    'project.problems' => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'project.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'project.items'    => _n('Item', 'Items', Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
@@ -683,6 +700,8 @@ class NotificationTargetProject extends NotificationTarget {
                     'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'costs'       => _n('Cost', 'Costs', Session::getPluralNumber()),
                     'changes'     => _n('Change', 'Changes', Session::getPluralNumber()),
+                    'problems'    => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber()),
                     'items'       => _n('Item', 'Items', Session::getPluralNumber())];
 

@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 class TicketSatisfaction extends CommonDBTM {
 
+   static $rightname = 'ticket';
+
    public $dohistory         = true;
    public $history_blacklist = ['date_answered'];
 

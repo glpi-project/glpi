@@ -94,17 +94,7 @@ class RuleRight extends Rule {
    }
 
 
-   /**
-    * Execute the actions as defined in the rule
-    *
-    * @see Rule::executeActions()
-    *
-    * @param $output the result of the actions
-    * @param $params the parameters
-    *
-    * @return the fields modified
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
       global $CFG_GLPI;
 
       $entity       = '';
@@ -130,6 +120,14 @@ class RuleRight extends Rule {
 
                      case "is_recursive" :
                         $is_recursive = $action->fields["value"];
+                        break;
+
+                     case '_entities_id_default':
+                        $output['entities_id'] = $action->fields["value"];
+                        break;
+
+                     case '_profiles_id_default':
+                        $output['profiles_id'] = $action->fields["value"];
                         break;
 
                      case "is_active" :
@@ -325,6 +323,25 @@ class RuleRight extends Rule {
       $actions['_ignore_user_import']['type']               = 'yesonly';
       $actions['_ignore_user_import']['table']              = '';
 
+      $actions['_entities_id_default']['table']             = 'glpi_entities';
+      $actions['_entities_id_default']['field']             = 'name';
+      $actions['_entities_id_default']['name']              = __('Default entity');
+      $actions['_entities_id_default']['linkfield']         = 'entities_id';
+      $actions['_entities_id_default']['type']              = 'dropdown';
+
+      $actions['groups_id']['table']                        = 'glpi_groups';
+      $actions['groups_id']['field']                        = 'name';
+      $actions['groups_id']['name']                         = __('Default group');
+      $actions['groups_id']['linkfield']                    = 'groups_id';
+      $actions['groups_id']['type']                         = 'dropdown';
+      $actions['groups_id']['condition']                    = "`is_usergroup`='1'";
+
+      $actions['_profiles_id_default']['table']             = 'glpi_profiles';
+      $actions['_profiles_id_default']['field']             = 'name';
+      $actions['_profiles_id_default']['name']              = __('Default profile');
+      $actions['_profiles_id_default']['linkfield']         = 'profiles_id';
+      $actions['_profiles_id_default']['type']              = 'dropdown';
+
       return $actions;
    }
 
@@ -337,7 +354,7 @@ class RuleRight extends Rule {
    function addSpecificCriteriasToArray(&$criterias) {
 
       $criterias['ldap'] = __('LDAP criteria');
-      foreach (getAllDatasFromTable('glpi_rulerightparameters', '', true) as $datas) {
+      foreach (getAllDatasFromTable('glpi_rulerightparameters', [], true) as $datas) {
          $criterias[$datas["value"]]['name']      = $datas["name"];
          $criterias[$datas["value"]]['field']     = $datas["value"];
          $criterias[$datas["value"]]['linkfield'] = '';

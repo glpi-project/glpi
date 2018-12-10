@@ -64,16 +64,19 @@ class UserEmail  extends CommonDBChild {
       global $DB;
 
       // Get default one
-      foreach ($DB->request("glpi_useremails",
-                            "`users_id` = '$users_id' AND `is_default` = '1'") as $data) {
-         return $data['email'];
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'     => $users_id,
+         ],
+         'ORDER'  => 'is_default DESC',
+         'LIMIT'  => 1
+      ]);
+
+      while ($row = $iterator->next()) {
+         return $row['email'];
       }
 
-      // Get first if not default set
-      foreach ($DB->request("glpi_useremails",
-                            "`users_id` = '$users_id' AND `is_default` = '0'") as $data) {
-         return $data['email'];
-      }
       return '';
    }
 
@@ -90,9 +93,15 @@ class UserEmail  extends CommonDBChild {
 
       $emails = [];
 
-      // Get default one
-      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'") as $data) {
-         $emails[] = $data['email'];
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'     => $users_id,
+         ]
+      ]);
+
+      while ($row = $iterator->next()) {
+         $emails[] = $row['email'];
       }
 
       return $emails;
@@ -110,10 +119,19 @@ class UserEmail  extends CommonDBChild {
    static function isEmailForUser($users_id, $email) {
       global $DB;
 
-      foreach ($DB->request("glpi_useremails",
-                            "`users_id` = '$users_id' AND `email` = '$email'") as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'  => $users_id,
+            'email'     => $email
+         ],
+         'LIMIT'  => 1
+      ]);
+
+      if (count($iterator)) {
          return true;
       }
+
       return false;
    }
 
@@ -281,13 +299,17 @@ class UserEmail  extends CommonDBChild {
 
       // if default is set : set default to another one
       if ($this->fields["is_default"] == 1) {
-         //needs DB::update() to support limit to get migrated
-         $query = "UPDATE `". $this->getTable()."`
-                   SET `is_default` = '1'
-                   WHERE `id` <> '".$this->fields['id']."'
-                         AND `users_id` = '".$this->fields['users_id']."'
-                   LIMIT 1";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'is_default'   => 1
+            ], [
+               'WHERE'  => [
+                  'id'        => ['<>', $this->fields['id']],
+                  'users_id'  => $this->fields['users_id']
+               ],
+               'LIMIT'  => 1
+            ]
+         );
       }
 
       parent::post_deleteFromDB();

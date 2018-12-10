@@ -82,8 +82,8 @@ Usage : php cleanhistory.php [ --item=# ] [ --type=# ] [ --old=<regex> ] [ --new
      10 : OCS ID Changed                 24 : Unlock a link with an item
      11 : OCS Link                       25 : Unlock an sub item
      12 : Other (often from plugin)      26 : Lock an sub item
-     13 : Delete item (put in dustbin)   27 : Unlock an item
-     14 : Restore item from dustbin
+     13 : Delete item (put in trashbin)   27 : Unlock an item
+     14 : Restore item from trashbin
 
    With old an optional regex pattern on old_value
    With new an optional regex pattern on new_value

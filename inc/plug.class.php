@@ -41,4 +41,13 @@ class Plug extends CommonDropdown {
    static function getTypeName($nb = 0) {
       return _n('Plug', 'Plugs', $nb);
    }
+
+   function cleanDBonPurge() {
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Pdu_Plug::class,
+         ]
+      );
+   }
 }

@@ -58,32 +58,36 @@ class KnowbaseItem_Item extends CommonDBRelation {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      $nb = 0;
-      if ($_SESSION['glpishow_count_on_tabs']) {
-         if ($item->getType() == KnowbaseItem::getType()) {
-            $nb = countElementsInTable(
-               'glpi_knowbaseitems_items',
-               ['knowbaseitems_id' => $item->getID()]
-            );
-         } else {
-            $nb = countElementsInTable(
-               'glpi_knowbaseitems_items',
-               [
-                  'itemtype' => $item::getType(),
-                  'items_id' => $item->getId()
-               ]
-            );
+
+      if (static::canView()) {
+         $nb = 0;
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($item->getType() == KnowbaseItem::getType()) {
+               $nb = countElementsInTable(
+                  'glpi_knowbaseitems_items',
+                  ['knowbaseitems_id' => $item->getID()]
+               );
+            } else {
+               $nb = countElementsInTable(
+                  'glpi_knowbaseitems_items',
+                  [
+                     'itemtype' => $item::getType(),
+                     'items_id' => $item->getId()
+                  ]
+               );
+            }
          }
-      }
 
-      $type_name = null;
-      if ($item->getType() == KnowbaseItem::getType()) {
-         $type_name = _n('Associated element', 'Associated elements', $nb);
-      } else {
-         $type_name = __('Knowledge base');
-      }
+         $type_name = null;
+         if ($item->getType() == KnowbaseItem::getType()) {
+            $type_name = _n('Associated element', 'Associated elements', $nb);
+         } else {
+            $type_name = __('Knowledge base');
+         }
 
-      return self::createTabEntry($type_name, $nb);
+         return self::createTabEntry($type_name, $nb);
+      }
+      return '';
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
@@ -141,10 +145,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
             //TODO: pass used array to restrict visible items in list
             $rand = self::dropdownAllTypes($item, 'items_id');
          } else {
+            $visibility = KnowbaseItem::getVisibilityCriteria();
+            $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];
             $rand = KnowbaseItem::dropdown([
                'entity'    => $item->getEntityID(),
                'used'      => self::getItems($item, 0, 0, true),
-               'condition' => KnowbaseItem::addVisibilityRestrict()
+               'condition' => $condition
             ]);
          }
          echo "</td><td>";

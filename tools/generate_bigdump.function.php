@@ -480,7 +480,7 @@ function addTracking($type, $ID, $ID_entity) {
       $closetime       = 0;
       $actiontime      = 0;
 
-      $solution        = "";
+      $solution        = null;
       $solutiontype    = 0;
       $due_date        = $opendate + $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+
                          mt_rand(0, 10)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
@@ -533,9 +533,7 @@ function addTracking($type, $ID, $ID_entity) {
          'priority'                    => mt_rand(1, 5),
          'itilcategories_id'           => mt_rand(0, $MAX['tracking_category']),
          'type'                        => mt_rand(1, 2),
-         'solutiontypes_id'            => $solutiontype,
          'locations_id'                => mt_rand($FIRST['locations'], $LAST['locations']),
-         'solution'                    => $solution,
          'actiontime'                  => $actiontime,
          'time_to_resolve'             => $duedatetoadd,
          'close_delay_stat'            => $closetime,
@@ -547,12 +545,14 @@ function addTracking($type, $ID, $ID_entity) {
          '_groups_id_requester'        => mt_rand($FIRST["groups"], $LAST['groups']),
       ]));
 
+      $oldsoluce = null;
+
       // Add followups
       $i     = 0;
       $fID   = 0;
       $first = true;
       $date  = 0;
-      $tf    = new TicketFollowup();
+      $tf    = new ITILFollowup();
       while (mt_rand(0, 100)<$percent['followups']) {
          if ($first) {
             $date = $opendate+$firstactiontime;
@@ -561,8 +561,37 @@ function addTracking($type, $ID, $ID_entity) {
          } else {
             $date += mt_rand(3600, 7776000);
          }
+
+         if ($solution !== null && $faker->boolean($chanceOfGettingTrue = 5)) {
+            //a first solution, that should be refused because a followup will be added.
+            $itilsoluce = new ITILSolution();
+            $oldsoluce = $itilsoluce->add(Toolbox::addslashes_deep([
+               'itemtype'           => 'Ticket',
+               'items_id'           => $tID,
+               'content'            => $faker->realText,
+               'solutiontypes_id'   => $solutiontype,
+               'users_id'           => $faker->numberBetween($FIRST['users_normal'], $LAST['users_normal']),
+               'users_id_approval'  => $faker->numberBetween($FIRST['users_postonly'], $LAST['users_normal'])
+            ]));
+
+            //set date
+            $itilsoluce->update([
+               'id'              => $itilsoluce->fields['id'],
+               'date_creation'   => date('Y-m-d H:i:s', $date + mt_rand(10, 3600))
+            ]);
+
+            //approve solution
+            $follow = new \ITILFollowup();
+            $follow->add([
+               'itemtype'   => 'Ticket',
+               'items_id'   => $tID,
+               'add_close'  => '1'
+            ]);
+         }
+
          $tf->add(toolbox::addslashes_deep(
-                  ['tickets_id'      => $tID,
+                  ['itemtype'        => 'Ticket',
+                   'items_id'        => $tID,
                    'date'            => date("Y-m-d H:i:s", $date),
                    'users_id'        => $users[1],
                    'content'         => $faker->realText,
@@ -607,6 +636,51 @@ function addTracking($type, $ID, $ID_entity) {
          $i++;
       }
 
+      if ($solution !== null) {
+         //final solution, accepted
+         $itilsoluce = new ITILSolution();
+         if ($oldsoluce !== null) {
+            //mark old solution as refused (framework do this on Ticket::prei_upddateInDB
+            $itilsoluce->update([
+               'id'     => $oldsoluce,
+               'status' => CommonITILValidation::REFUSED
+            ]);
+         }
+         $itilsoluce->add(Toolbox::addslashes_deep([
+            'itemtype'           => 'Ticket',
+            'items_id'           => $tID,
+            'content'            => $solution,
+            'solutiontypes_id'   => $solutiontype,
+            'users_id'           => $faker->numberBetween($FIRST['users_normal'], $LAST['users_normal']),
+            'users_id_approval'  => $faker->numberBetween($FIRST['users_postonly'], $LAST['users_normal']),
+            'status'             => CommonITILValidation::ACCEPTED
+         ]));
+
+         //set date
+         $itilsoluce->update([
+            'id'              => $itilsoluce->fields['id'],
+            'date_creation'   => date('Y-m-d H:i:s', $date + mt_rand(3600, 7776000))
+         ]);
+
+         $follow = new \ITILFollowup();
+         if ($faker->boolean($chanceOfGettingTrue = 85)) {
+            //approve solution
+            $follow->add([
+               'itemtype'     => 'Ticket',
+               'items_id'     => $tID,
+               'add_close'    => '1'
+            ]);
+         } else if ($faker->boolean($chanceOfGettingTrue = 35)) {
+            //refuse solution and reopen ticket
+            $follow->add([
+               'itemtype'     => 'Ticket',
+               'items_id'     => $tID,
+               'add_reopen'   => '1',
+               'content'      => $faker->realText()
+            ]);
+         }
+      }
+
       $tc = new TicketCost();
       $params = toolbox::addslashes_deep([
          'tickets_id'        => $tID,
@@ -640,6 +714,40 @@ function addTracking($type, $ID, $ID_entity) {
 
 }
 
+/**
+ * Add disk to an itemtype
+ *
+ * @param string  $itemtype  Item type
+ * @param integer $items_id  Item ID
+ * @param integer $ID_entity Entity ID
+ * @param boolean $chance    Chance to add disks; default to 100 (will add)
+ *
+ * @return void
+ */
+function addDisks($itemtype, $items_id, $ID_entity, $chance = 100) {
+   global $MAX_DISK, $faker;
+
+   // insert disk
+   if ($faker->boolean($chanceOfGettingTrue = $chance)) {
+      $idisk   = new Item_Disk();
+      $nb_disk = $faker->numberBetween(1, $MAX_DISK);
+      for ($j=1; $j<=$nb_disk; $j++) {
+         $totalsize = $faker->numberBetween(10000, 1000000);
+
+         $idisk->add(toolbox::addslashes_deep([
+            'itemtype'        => $itemtype,
+            'entities_id'     => $ID_entity,
+            'items_id'        => $items_id,
+            'name'            => "disk '$j",
+            'device'          => "/dev/disk$j",
+            'mountpoint'      => "/mnt/disk$j",
+            'filesystems_id'  => $faker->numberBetween(1, 10),
+            'totalsize'       => $totalsize,
+            'freesize'        => $faker->numberBetween(0, $totalsize)
+         ]));
+      }
+   }
+}
 
 /** Generate bigdump : generate global dropdowns
 **/
@@ -1859,13 +1967,13 @@ function generate_entity($ID_entity) {
 
    $FIRST["solutiontypes"] = getMaxItem("glpi_solutiontypes")+1;
 
-   $items = ["d'apr??s KB"];
+   $items = ["From KB"];
    $st    = new SolutionType();
    for ($i=0; $i<$MAX['solutiontypes']; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
       } else {
-         $val = "type de solution ' $i";
+         $val = "Solution type ' $i";
       }
       $st->add(toolbox::addslashes_deep(['name'         => $val,
                                               'comment'      => "comment $val",
@@ -2366,6 +2474,9 @@ function generate_entity($ID_entity) {
                                              ? mt_rand($FIRST['state'], $LAST['state'])
                                              : 0)
       ]));
+
+      addDisks('NetworkEquipment', $netwID, $ID_entity, 50);
+
       $NET_LOC[$data['id']] = $netwID;
       addDocuments('NetworkEquipment', $netwID);
       addContracts('NetworkEquipment', $netwID);
@@ -2415,6 +2526,8 @@ function generate_entity($ID_entity) {
                                  ? mt_rand($FIRST['state'], $LAST['state'])
                                  : 0)
       ]));
+
+      addDisks('Printer', $netwID, $ID_entity, 10);
 
       addDocuments('Printer', $printID);
       addContracts('Printer', $printID);
@@ -2495,7 +2608,6 @@ function generate_entity($ID_entity) {
    $cdevcase  = new Item_DeviceCase();
    $cdevps    = new Item_DevicePowerSupply();
 
-   $idisk   = new Item_Disk();
    $np      = new Netpoint();
    $ci      = new Computer_Item();
    $phone   = new Phone();
@@ -2552,7 +2664,7 @@ function generate_entity($ID_entity) {
          'operatingsystemversions_id'     => mt_rand(1, $MAX['os_version']),
          'operatingsystemservicepacks_id' => mt_rand(1, $MAX['os_sp']),
          'license_number'                 => "os sn $i",
-         'license_id'                     => "os id $i",
+         'licenseid'                      => "os id $i",
       ]));
 
       // Add trackings
@@ -2620,24 +2732,8 @@ function generate_entity($ID_entity) {
                              ['serial' => Toolbox::getRandomString(15)]);
       }
 
-      // insert disk
-      $nb_disk = mt_rand(1, $MAX_DISK);
-      for ($j=1; $j<=$nb_disk; $j++) {
-         $totalsize = mt_rand(10000, 1000000);
-         $freesize  = mt_rand(0, $totalsize);
-
-         $idisk->add(toolbox::addslashes_deep([
-            'itemtype'        => 'Computer',
-            'entities_id'     => $ID_entity,
-            'items_id'        => $compID,
-            'name'            => "disk '$j",
-            'device'          => "/dev/disk$j",
-            'mountpoint'      => "/mnt/disk$j",
-            'filesystems_id'  => mt_rand(1, 10),
-            'totalsize'       => $totalsize,
-            'freesize'        => $freesize
-         ]));
-      }
+      // insert disks
+      addDisks('Computer', $compID, $ID_entity);
 
       // Add networking ports
       addNetworkEthernetPort('Computer', $compID, $ID_entity, $loc);

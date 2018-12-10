@@ -199,7 +199,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<th width='10'>";
-         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
       }
       echo "<th>".__('Language')."</th></tr>";
@@ -324,8 +324,11 @@ class NotificationTemplateTranslation extends CommonDBChild {
    **/
    static function getAllUsedLanguages($language_id) {
 
-      $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',
-                                             'notificationtemplates_id='.$language_id);
+      $used_languages = getAllDatasFromTable(
+         'glpi_notificationtemplatetranslations', [
+            'notificationtemplates_id' => $language_id
+         ]
+      );
       $used           = [];
 
       foreach ($used_languages as $used_language) {

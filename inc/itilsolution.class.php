@@ -38,11 +38,14 @@ if (!defined('GLPI_ROOT')) {
 /**
  * ITILSolution Class
 **/
-class ITILSolution extends CommonDBTM {
+class ITILSolution extends CommonDBChild {
 
    // From CommonDBTM
    public $dohistory                   = true;
    private $item                       = null;
+
+   static public $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
+   static public $items_id = 'items_id'; // Field name
 
    static function getTypeName($nb = 0) {
       return _n('Solution', 'Solutions', $nb);
@@ -62,9 +65,10 @@ class ITILSolution extends CommonDBTM {
       }
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      $sol = new self();
-      $sol->showSummary($item);
+   static function canView() {
+      return Session::haveRight('ticket', READ)
+             || Session::haveRight('change', READ)
+             || Session::haveRight('problem', READ);
    }
 
    public static function canUpdate() {
@@ -192,6 +196,7 @@ class ITILSolution extends CommonDBTM {
 
       echo Html::hidden('itemtype', ['value' => $item->getType()]);
       echo Html::hidden('items_id', ['value' => $item->getID()]);
+      echo html::hidden('_no_message_link', ['value' => 1]);
 
       // Settings a solution will set status to solved
       if ($canedit) {
@@ -227,6 +232,14 @@ class ITILSolution extends CommonDBTM {
          echo "<textarea id='content$rand' name='content' rows='12' cols='80'>".
                 $this->getField('content')."</textarea></div>";
 
+         // Hide file input to handle only images pasted in text editor
+         echo '<div style="display:none;">';
+         Html::file(['editor_id' => "content$rand",
+                     'filecontainer' => "filecontainer$rand",
+                     'onlyimages' => true,
+                     'showtitle' => false,
+                     'multiple' => true]);
+         echo '</div>';
       } else {
          echo Toolbox::unclean_cross_side_scripting_deep($this->getField('content'));
       }
@@ -267,8 +280,17 @@ class ITILSolution extends CommonDBTM {
          $this->item->getFromDB($input['items_id']);
       }
 
+      // check itil object is not already solved
+      if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
+         Session::addMessageAfterRedirect(__("The item is already solved, did anyone pushed a solution before you ?"),
+                                          false, ERROR);
+         return false;
+      }
+
       //default status for global solutions
       $status = CommonITILValidation::ACCEPTED;
+
+      //handle autoclose, for tickets only
       if ($input['itemtype'] == Ticket::getType()) {
          $autoclosedelay =  Entity::getUsedConfig(
             'autoclose_delay',
@@ -283,7 +305,7 @@ class ITILSolution extends CommonDBTM {
          }
       }
 
-      //Auto approval; store user and date
+      //Accepted; store user and date
       if ($status == CommonITILValidation::ACCEPTED) {
          $input['users_id_approval'] = Session::getLoginUserID();
          $input['date_approval'] = $_SESSION["glpi_currenttime"];
@@ -295,6 +317,10 @@ class ITILSolution extends CommonDBTM {
    }
 
    function post_addItem() {
+
+      // Replace inline pictures
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
+
       //adding a solution mean the ITIL object is now solved
       //and maybe closed (according to entitiy configuration)
       if ($this->item == null) {
@@ -303,8 +329,10 @@ class ITILSolution extends CommonDBTM {
       }
 
       $item = $this->item;
-      $status = $item::CLOSED;
-      if ($this->item->getType() == 'Ticket') {
+      $status = $item::SOLVED;
+
+      //handle autoclose, for tickets only
+      if ($item->getType() == Ticket::getType()) {
          $autoclosedelay =  Entity::getUsedConfig(
             'autoclose_delay',
             $this->item->getEntityID(),
@@ -313,289 +341,88 @@ class ITILSolution extends CommonDBTM {
          );
 
          // 0 = immediatly
-         if ($autoclosedelay != 0) {
-            $status = $item::SOLVED;
+         if ($autoclosedelay == 0) {
+            $status = $item::CLOSED;
          }
       }
+
       $this->item->update([
          'id'     => $this->item->getID(),
          'status' => $status
       ]);
-      if ($this->item->getType() == 'Ticket') {
+      if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
          Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
       }
+      parent::post_addItem();
    }
 
+
    /**
-    * Remove solutions for an item
-    *
-    * @param string  $itemtype Item type
-    * @param integer $items_id Item ID
-    *
-    * @return void
-    */
-   public function removeForItem($itemtype, $items_id) {
-      $this->deleteByCriteria(
-         [
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
-         ],
-         true
-      );
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
+   function prepareInputForUpdate($input) {
+
+      // Replace inline pictures
+      $input = $this->addFiles($input);
+
+      return $input;
    }
 
-   /**
-    * Show solutions for an item
-    *
-    * @param CommonITILObject $item Item instance
-    *
-    * return void
-    */
-   public function showSummary(CommonITILObject $item) {
-      global $DB, $CFG_GLPI;
 
-      if (isset($_GET["start"])) {
-         $start = intval($_GET["start"]);
-      } else {
-         $start = 0;
+   /**
+    * {@inheritDoc}
+    * @see CommonDBTM::getSpecificValueToDisplay()
+    */
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
       }
 
-      $can_edit = $item->maySolve();
-      $can_add  = !in_array($item->fields["status"],
-                     array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))
-            && $item::canUpdate() && $item->canSolve();
-      $where = [
-         'itemtype'  => $item->getType(),
-         'items_id'  => $item->getID()
+      switch ($field) {
+         case 'status':
+            $value = $values[$field];
+            $statuses = self::getStatuses();
+
+            return (isset($statuses[$value]) ? $statuses[$value] : $value);
+            break;
+      }
+
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   /**
+    * {@inheritDoc}
+    * @see CommonDBTM::getSpecificValueToSelect()
+    */
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'status':
+            $options['display'] = false;
+            $options['value'] = $values[$field];
+            return Dropdown::showFromArray($name, self::getStatuses(), $options);
+            break;
+      }
+
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+   /**
+    * Return list of statuses.
+    * Key as status values, values as labels.
+    *
+    * @return string[]
+    */
+   static function getStatuses() {
+      return [
+         CommonITILValidation::WAITING  => __('Waiting for approval'),
+         CommonITILValidation::REFUSED  => __('Refused'),
+         CommonITILValidation::ACCEPTED => __('Accepted'),
       ];
-
-      $rand   = mt_rand();
-      $number = countElementsInTable(
-         self::getTable(),
-         $where
-      );
-
-      // Not closed ticket or closed
-      if ($can_add) {
-         echo "<div id='addbutton".$item->getID() . "$rand' class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddSubitem".$item->getID()."$rand(\"Solution\");'>";
-         echo __('Add a new solution');
-         echo "</a></div>\n";
-      }
-
-      // show approbation form on top when ticket is solved
-      if ($item instanceof Ticket && $item->canApprove()) {
-         echo "<div class='approbation_form'>";
-         $followup_obj = new TicketFollowup();
-         $followup_obj->showApprobationForm($item);
-         echo "</div>";
-      }
-
-      // No solutions in database
-      if ($number < 1) {
-         $no_txt = sprintf(__('No solutions for this %1$s'), $item->getTypeName(1));
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2'><th class='b'>$no_txt</th></tr>";
-         echo "</table>";
-         echo "</div>";
-      }
-
-      // Output events
-      echo "<div class='center'>";
-
-      $solutions = $DB->request(
-         self::getTable(),
-         $where + ['ORDER' => 'id DESC']
-      );
-
-      foreach ($solutions as $solution) {
-         $options = [
-            'parent' => $item,
-            'rand'   => $rand
-         ];
-         Plugin::doHook('pre_show_item', ['item' => $this, 'options' => &$options]);
-
-         $user = new User();
-         $user->getFromDB($solution['users_id']);
-
-         echo "<div class='timeline_history standalone'>";
-         echo "<div class='h_item left'>";
-
-         echo "<div class='h_info'>";
-         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($solution['date_creation'])."</div>";
-         echo "<div class='h_user'>";
-         echo "<div class='tooltip_picture_border'>";
-         echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                  User::getThumbnailURLForPicture($user->fields['picture'])."'>";
-         echo "</div>";
-
-         echo "<span class='h_user_name'>";
-         $userdata = getUserName($solution['users_id'], 2);
-         echo $user->getLink()."&nbsp;";
-         echo Html::showToolTip($userdata["comment"],
-                                 ['link' => $userdata['link']]);
-         echo "</span>";
-         echo "</div>"; // h_user
-
-         echo "</div>"; //h_info
-
-         $domid = "viewitemSolution{$solution['id']}";
-         $domid .= $rand;
-
-         $fa = null;
-         $class = "h_content Solution";
-         switch ($solution['status']) {
-            case CommonITILValidation::WAITING:
-               $fa = 'question';
-               $class .= ' waiting';
-               break;
-            case CommonITILValidation::ACCEPTED:
-               $fa = 'thumbs-up';
-               $class .= ' accepted';
-               break;
-            case CommonITILValidation::REFUSED:
-               $fa = 'thumbs-down';
-               $class .= ' refused';
-               break;
-         }
-
-         echo "<div class='$class' id='$domid'>";
-         echo "<i class='solimg fa fa-$fa fa-5x'></i>";
-         if ($can_edit) {
-            echo "<div class='edit_item_content'></div>";
-            echo "<span class='cancel_edit_item_content'></span>";
-         }
-         echo "<div class='displayed_content'>";
-         if ($can_edit) {
-            echo "<span class='fa fa-pencil-square-o edit_item' ";
-            echo "onclick='javascript:viewEditSubitem".$item->getID()."$rand(event, \"Solution\", ".$solution['id'].", this, \"viewitemSolution".$solution['id'].$rand."\")'";
-            echo "></span>";
-         }
-
-         $content = $solution['content'];
-         $content = autolink($content, 40);
-
-         $long_text = "";
-         if ((substr_count($content, "<br") > 30) || (strlen($content) > 2000)) {
-            $long_text = "long_text";
-         }
-
-         echo "<div class='item_content $long_text'>";
-         echo "<p>";
-
-         if ($CFG_GLPI["use_rich_text"]) {
-            echo html_entity_decode($content);
-         } else {
-            echo $content;
-         }
-         echo "</p>";
-
-         if (!empty($long_text)) {
-            echo "<p class='read_more'>";
-            echo "<a class='read_more_button'>.....</a>";
-            echo "</p>";
-         }
-         echo "</div>";
-
-         echo "<div class='b_right'>";
-         if (!empty($solution['solutiontypes_id'])) {
-            echo Dropdown::getDropdownName("glpi_solutiontypes", $solution['solutiontypes_id'])."<br>";
-         }
-
-         if ($solution['users_id_editor'] > 0) {
-            echo "<div class='users_id_editor' id='users_id_editor_".$solution['users_id_editor']."'>";
-            $user->getFromDB($solution['users_id_editor']);
-            $userdata = getUserName($solution['users_id_editor'], 2);
-            echo sprintf(
-               __('Last edited on %1$s by %2$s'),
-               Html::convDateTime($solution['date_mod']),
-               $user->getLink()
-            );
-            echo Html::showToolTip($userdata["comment"],
-                                   ['link' => $userdata['link']]);
-            echo "</div>";
-         }
-         if ($solution['status'] != CommonITILValidation::WAITING && $solution['status'] != CommonITILValidation::NONE) {
-            echo "<div class='users_id_approval' id='users_id_approval_".$solution['users_id_approval']."'>";
-            $user->getFromDB($solution['users_id_approval']);
-            $userdata = getUserName($solution['users_id_editor'], 2);
-            $message = __('%1$s on %2$s by %3$s');
-            $action = $solution['status'] == CommonITILValidation::ACCEPTED ? __('Accepted') : __('Refused');
-            echo sprintf(
-               $message,
-               $action,
-               Html::convDateTime($solution['date_approval']),
-               $user->getLink()
-            );
-            echo Html::showToolTip($userdata["comment"],
-                                   ['link' => $userdata['link']]);
-            echo "</div>";
-         }
-
-         echo "</div>";
-         echo "</div>";
-         echo "</div>";
-         echo "</div>";
-
-         Plugin::doHook('post_show_item', ['item' => $this, 'options' => $options]);
-      }
-
-      $js = '';
-      if ($can_add) {
-         echo "<div class='ajax_box' id='viewitem" . $item->getID() . "$rand'></div>\n";
-         $js .= "function viewAddSubitem" . $item->getID() . "$rand(itemtype) {\n";
-         $params = [
-            'type'                        => __CLASS__,
-            'parenttype'                  => $item->getType(),
-            $item->getForeignKeyField()   => $item->getID(),
-            'id'                          => -1
-         ];
-         if (isset($_GET['load_kb_sol'])) {
-            $params['load_kb_sol'] = $_GET['load_kb_sol'];
-         }
-         $out = Ajax::updateItemJsCode(
-            "viewitem" . $item->getID() . "$rand",
-            $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
-            $params,
-            "",
-            false
-         );
-         $js .= str_replace("\"itemtype\"", "itemtype", $out);
-         $js .= "};";
-      }
-      if ($can_edit) {
-         $js .= "function viewEditSubitem" . $item->getID() . "$rand(e, itemtype, items_id, o, domid) {
-            domid = (typeof domid === 'undefined')
-                        ? 'viewitem".$item->getID().$rand."'
-                        : domid;
-            var target = e.target || window.event.srcElement;
-            if (target.nodeName == 'a') return;
-            if (target.className == 'read_more_button') return;
-            $('#'+domid).addClass('edited');
-            $('#'+domid+' .displayed_content').hide();
-            $('#'+domid+' .cancel_edit_item_content').show()
-               .click(function() {
-                  $(this).hide();
-                  $('#'+domid).removeClass('edited');
-                  $('#'+domid+' .edit_item_content').empty().hide();
-                  $('#'+domid+' .displayed_content').show();
-               });
-
-            $('#'+domid+' .edit_item_content').show()
-               .load('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
-                  {
-                     'action'    : 'viewsubitem',
-                     'type'      : itemtype,
-                     'parenttype': '{$item->getType()}',
-                     '{$item->getForeignKeyField()}': ".$item->getID().",
-                     'id'        : items_id
-                  }
-               );
-         };";
-      }
-      if ($js != '') {
-         echo Html::scriptBlock($js);
-      }
    }
 }

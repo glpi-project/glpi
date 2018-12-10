@@ -269,26 +269,14 @@ class DbUtils extends DbTestCase {
          ->then
             ->integer($this->testedInstance->countElementsInTable('glpi_configs'))->isGreaterThan(100)
             ->integer($this->testedInstance->countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100)
-            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100)
             ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'core']))->isGreaterThan(100)
-            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'core' AND name = 'version'"))->isIdenticalTo(1)
             ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->isIdenticalTo(1)
-            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'fakecontext'"))->isIdenticalTo(0)
             ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
       //keep testing old method from db.function
       //the case of using an element that is not a table is not handle in the function :
-      //testCountElementsInTable($table, $condition="")
       $this->integer(countElementsInTable('glpi_configs'))->isGreaterThan(100);
       $this->integer(countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100);
-      $this->integer(countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100);
-      $this->integer(
-         countElementsInTable(
-            'glpi_configs', "context = 'core' AND `name` = 'version'"
-         )
-      )->isIdenticalTo(1);
-      $this->integer(countElementsInTable('glpi_configs', "context = 'fakecontext'"))->isIdenticalTo(0);
-      // Using iterator
       $this->integer(countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->isIdenticalTo(1);
       $this->integer(countElementsInTable('glpi_configs', ['context' => 'core']))->isGreaterThan(100);
       $this->integer(countElementsInTable('glpi_configs', ['context' => 'fakecontext']))->isIdenticalTo(0);
@@ -304,20 +292,8 @@ class DbUtils extends DbTestCase {
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_tickets', 'entities_id'))->isIdenticalTo(2)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(12)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(15)
-            ->integer(
-               countDistinctElementsInTable(
-                  'glpi_configs',
-                  'context',
-                  "name = 'version'"
-               )
-            )->isIdenticalTo(1)
-            ->integer(
-               countDistinctElementsInTable(
-                  'glpi_configs',
-                  'id',
-                  "context ='fakecontext'"
-               )
-            )->isIdenticalTo(0);
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']))->isIdenticalTo(1)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
       //keep testing old method from db.function
       //the case of using an element that is not a table is not handle in the function :
@@ -328,31 +304,29 @@ class DbUtils extends DbTestCase {
          countDistinctElementsInTable(
             'glpi_configs',
             'context',
-            "name = 'version'"
+            ['name' => 'version']
          )
       )->isIdenticalTo(1);
       $this->integer(
          countDistinctElementsInTable(
             'glpi_configs',
             'id',
-            "context ='fakecontext'"
+            ['context' => 'fakecontext']
          )
       )->isIdenticalTo(0);
    }
 
    protected function dataCountMyEntities() {
       return [
-         ['_test_root_entity', true, 'glpi_computers', '', 8],
+         ['_test_root_entity', true, 'glpi_computers', [], 8],
          ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
          ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
-         //test old syntax, once only
-         ['_test_root_entity', true, 'glpi_computers', 'name="_test_pc11"', 1],
 
-         ['_test_root_entity', false, 'glpi_computers', '', 3],
+         ['_test_root_entity', false, 'glpi_computers', [], 3],
          ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
          ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
-         ['_test_child_1', false, 'glpi_computers', '', 3],
+         ['_test_child_1', false, 'glpi_computers', [], 3],
          ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc11'], 1],
          ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc01'], 0],
       ];
@@ -382,13 +356,11 @@ class DbUtils extends DbTestCase {
 
    protected function dataCountEntities() {
       return [
-         ['_test_root_entity', 'glpi_computers', '', 3],
+         ['_test_root_entity', 'glpi_computers', [], 3],
          ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc11'], 0],
          ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc01'], 1],
-         //test old syntax, once only
-         ['_test_root_entity', 'glpi_computers', 'name="_test_pc11"', 0],
 
-         ['_test_child_1', 'glpi_computers', '', 3],
+         ['_test_child_1', 'glpi_computers', [], 3],
          ['_test_child_1', 'glpi_computers', ['name' => '_test_pc11'], 1],
          ['_test_child_1', 'glpi_computers', ['name' => '_test_pc01'], 0],
       ];
@@ -430,9 +402,8 @@ class DbUtils extends DbTestCase {
       $this
          ->if($this->newTestedInstance)
          ->then
-            ->array($this->testedInstance->getAllDataFromTable('glpi_configs', "context = 'core' AND `name` = 'version'"))->hasSize(1)
             ->array($this->testedInstance->getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->hasSize(1)
-            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', "", false, 'name'))->isNotEmpty();
+            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', [], false, 'name'))->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {
          $this->boolean($previousArrayName <= $previousArrayName = $array['name'])->isTrue();
@@ -449,53 +420,16 @@ class DbUtils extends DbTestCase {
             ->variable['id']->isEqualTo($key);
       }
 
-      $data = getAllDatasFromTable('glpi_configs', "context = 'core' AND `name` = 'version'");
+      $data = getAllDatasFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->array($data)->hasSize(1);
 
-      $data = getAllDatasFromTable('glpi_configs', "", false, 'name');
+      $data = getAllDatasFromTable('glpi_configs', [], false, 'name');
       $this->array($data)->isNotEmpty();
       $previousArrayName = "";
       foreach ($data as $key => $array) {
          $this->boolean($previousArrayName <= $previousArrayName = $array['name'])->isTrue();
       }
    }
-
-   public function testTableExist() {
-      $this->exception(
-         function() {
-            $this->boolean(TableExists('glpi_configs'))->isTrue();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('TableExists() function is deprecated');
-
-      $this->exception(
-         function() {
-            $this->boolean(tableExists('fakeTable'))->isFalse();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('TableExists() function is deprecated');
-   }
-
-   public function testFieldExist() {
-      $this->exception(
-         function() {
-            $this->boolean(fieldExists('glpi_configs', 'id'))->isTrue();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('FieldExists() function is deprecated');
-
-      $this->exception(
-         function() {
-            $this->boolean(fieldExists('glpi_configs', 'fakeField'))->isFalse();
-         }
-      )
-         ->isInstanceOf('RuntimeException')
-         ->message->contains('FieldExists() function is deprecated');
-   }
-
 
    public function testIsIndex() {
       $this
@@ -793,17 +727,18 @@ class DbUtils extends DbTestCase {
 
       //test on multiple entities
       $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
+      $newckey = $ckey . md5("$new_id|$new_id2");
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $new_id . '|' . $new_id2))->isFalse();
+         $this->boolean(apcu_exists($newckey))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
       }
    }
 
@@ -813,7 +748,12 @@ class DbUtils extends DbTestCase {
       $DB->update('glpi_entities', ['ancestors_cache' => null], [true]);
       $this->runGetAncestorsOf();
 
-      $this->integer(countElementsInTable('glpi_entities', ['ancestors_cache' => 'NULL']))->isIdenticalTo(0);
+      $this->integer(
+         countElementsInTable(
+            'glpi_entities', [
+               'NOT' => ['ancestors_cache' => null]]
+         )
+      )->isGreaterThan(0);
       //run a second time: db cache must be set
       $this->runGetAncestorsOf();
    }
@@ -964,7 +904,13 @@ class DbUtils extends DbTestCase {
       $DB->update('glpi_entities', ['sons_cache' => null], [true]);
       $this->runGetSonsOf();
 
-      $this->integer($this->testedInstance->countElementsInTable('glpi_entities', ['sons_cache' => 'NULL']))->isIdenticalTo(0);
+      $this->integer(
+         $this->testedInstance->countElementsInTable(
+            'glpi_entities', [
+               'NOT' => ['sons_cache' => null]
+            ]
+         )
+      )->isGreaterThan(0);
       //run a second time: db cache must be set
       $this->runGetSonsOf();
    }
@@ -980,4 +926,188 @@ class DbUtils extends DbTestCase {
       $this->runGetSonsOf(true, true);
    }
 
+   /**
+    * Validates that relation mapping is based on existing tables and fields.
+    */
+   public function testRelationsValidity() {
+
+      global $DB;
+
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->array($mapping = $this->testedInstance->getDbRelations())
+         ->hasKey('_virtual_device');
+
+      $virtual_mapping = $mapping['_virtual_device'];
+      unset($mapping['_virtual_device']);
+
+      foreach ($mapping as $tablename => $relations) {
+         $this->boolean($DB->tableExists($tablename))
+            ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $tablename));
+
+         foreach ($relations as $relation_tablename => $fields) {
+            if (strpos($relation_tablename, '_') === 0) {
+               $relation_tablename = substr($relation_tablename, 1);
+            }
+
+            $this->boolean($DB->tableExists($relation_tablename))
+               ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $relation_tablename));
+
+            if (!is_array($fields)) {
+               $fields = [$fields];
+            }
+
+            foreach ($fields as $field) {
+               $this->boolean($DB->fieldExists($relation_tablename, $field))
+                  ->isTrue(sprintf('Invalid table field "%s.%s" in relation mapping.', $relation_tablename, $field));
+            }
+         }
+      }
+
+      foreach ($virtual_mapping as $tablename => $fields) {
+         $this->boolean($DB->tableExists($tablename))
+            ->isTrue(sprintf('Invalid table "%s" in _virtual_device mapping.', $tablename));
+
+         foreach ($fields as $field) {
+            $this->boolean($DB->fieldExists($tablename, $field))
+               ->isTrue(sprintf('Invalid table field "%s.%s" in _virtual_device mapping.', $tablename, $field));
+         }
+      }
+   }
+
+   /**
+    * Test getDateCriteria
+    *
+    * @return void
+    */
+   public function testGetDateCriteria() {
+      $this->newTestedInstance();
+
+      $this->array(
+         $this->testedInstance->getDateCriteria('date', null, null)
+      )->isIdenticalTo([]);
+
+      $this->array(
+         $this->testedInstance->getDateCriteria('date', '2018-11-09', null)
+      )->isIdenticalTo([
+         'AND' => [
+            ['date' => ['>=', '2018-11-09']]
+         ]
+      ]);
+
+      $result = $this->testedInstance->getDateCriteria('date', null, '2018-11-09');
+      $this->array($result['AND'])->hasSize(1);
+
+      $this->array($result['AND'][0]['date'])
+         ->hasSize(2)
+         ->string[0]->isIdenticalTo('<=')
+         ->object[1]->isInstanceOf('\QueryExpression');
+
+      $this->string(
+         $result['AND'][0]['date'][1]->getValue()
+      )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+
+      $result = $this->testedInstance->getDateCriteria('date', '2018-11-08', '2018-11-09');
+      $this->array($result['AND'])->hasSize(2);
+
+      $this->array($result['AND'][0])->isIdenticalTo(['date' => ['>=', '2018-11-08']]);
+      $this->array($result['AND'][1]['date'])
+         ->hasSize(2)
+         ->string[0]->isIdenticalTo('<=')
+         ->object[1]->isInstanceOf('\QueryExpression');
+
+      $this->string(
+         $result['AND'][1]['date'][1]->getValue()
+      )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+   }
+
+   protected function autoNameProvider() {
+      return [
+         //will return name without changes
+         [
+            //not a template
+            'name'         => 'Computer 1',
+            'field'        => 'name',
+            'is_template'  => false,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, //default
+            'expected'     => 'Computer 1'
+         ], [
+            //not a template
+            'name'         => '&lt;abc&gt;',
+            'field'        => 'name',
+            'is_template'  => false,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '&lt;abc&gt;'
+         ], [
+            //does not match pattern
+            'name'         => '&lt;abc&gt;',
+            'field'        => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '&lt;abc&gt;'
+         ], [
+            //first added
+            'name'         => '&lt;####&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '0001'
+         ], [
+            //existing
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '_test_pc23'
+         ], [
+            //not existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 0,
+            'expected'     => '_test_pc01'
+         ], [
+            //existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 1,
+            'expected'     => '_test_pc04'
+         ], [
+            //existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => '_test_pc14'
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider autoNameProvider
+    */
+   public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected) {
+      $this
+         ->if($this->newTestedInstance)
+            ->then
+            ->string(
+               $autoname = $this->testedInstance->autoName(
+                  $name,
+                  $field,
+                  $is_template,
+                  $itemtype,
+                  $entities_id
+               )
+            )->isIdenticalTo($expected);
+   }
 }

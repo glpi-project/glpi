@@ -60,7 +60,7 @@ abstract class CommonDBVisible extends CommonDBTM {
       // Groups
       if (count($this->groups)
           && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
-         foreach ($this->groups as $key => $data) {
+         foreach ($this->groups as $data) {
             foreach ($data as $group) {
                if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
                   // All the group
@@ -79,7 +79,7 @@ abstract class CommonDBVisible extends CommonDBTM {
       // Entities
       if (count($this->entities)
           && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-         foreach ($this->entities as $key => $data) {
+         foreach ($this->entities as $data) {
             foreach ($data as $entity) {
                if (Session::haveAccessToEntity($entity['entities_id'], $entity['is_recursive'])) {
                   return true;
@@ -133,7 +133,7 @@ abstract class CommonDBVisible extends CommonDBTM {
     * @return void
    **/
    public function showVisibility() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID      = $this->fields['id'];
       $canedit = $this->canEdit($ID);
@@ -144,7 +144,7 @@ abstract class CommonDBVisible extends CommonDBTM {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='{$str_type}visibility_form$rand' id='{$str_type}visibility_form$rand' ";
-         echo " method='post' action='".Toolbox::getItemTypeFormURL($this::getType())."'>";
+         echo " method='post' action='".static::getFormURL()."'>";
          echo "<input type='hidden' name='{$str_type}s_id' value='$ID'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
@@ -199,7 +199,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Users
       if (count($this->users)) {
-         foreach ($this->users as $key => $val) {
+         foreach ($this->users as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -216,7 +216,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Groups
       if (count($this->groups)) {
-         foreach ($this->groups as $key => $val) {
+         foreach ($this->groups as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -230,13 +230,13 @@ abstract class CommonDBVisible extends CommonDBTM {
                $entname = sprintf(__('%1$s %2$s'), $names["name"],
                                   Html::showToolTip($names["comment"], ['display' => false]));
                if ($data['entities_id'] >= 0) {
-                  $entname .= sprintf(__('%1$s / %2$s'), $entname,
-                                      Dropdown::getDropdownName('glpi_entities',
+                  $entname = sprintf(__('%1$s / %2$s'), $entname,
+                                     Dropdown::getDropdownName('glpi_entities',
                                                                $data['entities_id']));
                   if ($data['is_recursive']) {
                      //TRANS: R for Recursive
-                     $entname .= sprintf(__('%1$s %2$s'),
-                                         $entname, "<span class='b'>(".__('R').")</span>");
+                     $entname = sprintf(__('%1$s %2$s'),
+                                        $entname, "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo "<td>".$entname."</td>";
@@ -247,7 +247,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Entity
       if (count($this->entities)) {
-         foreach ($this->entities as $key => $val) {
+         foreach ($this->entities as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -260,8 +260,8 @@ abstract class CommonDBVisible extends CommonDBTM {
                $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['is_recursive']) {
-                  $entname .= sprintf(__('%1$s %2$s'), $entname,
-                                      "<span class='b'>(".__('R').")</span>");
+                  $entname = sprintf(__('%1$s %2$s'), $entname,
+                                     "<span class='b'>(".__('R').")</span>");
                }
                echo "<td>".$entname."</td>";
                echo "</tr>";
@@ -271,12 +271,17 @@ abstract class CommonDBVisible extends CommonDBTM {
 
       // Profiles
       if (count($this->profiles)) {
-         foreach ($this->profiles as $key => $val) {
+         foreach ($this->profiles as $val) {
             foreach ($val as $data) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  Html::showMassiveActionCheckBox('Profile_' . $this::getType(), $data["id"]);
+                  //Knowledgebase-specific case
+                  if ($this::getType() === "KnowbaseItem") {
+                     Html::showMassiveActionCheckBox($this::getType() . '_Profile', $data["id"]);
+                  } else {
+                     Html::showMassiveActionCheckBox('Profile_' . $this::getType(), $data["id"]);
+                  }
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
@@ -285,12 +290,12 @@ abstract class CommonDBVisible extends CommonDBTM {
                $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['entities_id'] >= 0) {
-                  $entname .= sprintf(__('%1$s / %2$s'), $entname,
-                                      Dropdown::getDropdownName('glpi_entities',
+                  $entname = sprintf(__('%1$s / %2$s'), $entname,
+                                     Dropdown::getDropdownName('glpi_entities',
                                                                 $data['entities_id']));
                   if ($data['is_recursive']) {
-                     $entname .= sprintf(__('%1$s %2$s'), $entname,
-                                         "<span class='b'>(".__('R').")</span>");
+                     $entname = sprintf(__('%1$s %2$s'), $entname,
+                                        "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo "<td>".$entname."</td>";

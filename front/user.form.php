@@ -121,7 +121,7 @@ if (isset($_GET['getvcard'])) {
 
 } else if (isset($_POST["deletegroup"])) {
    if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
+      foreach (array_keys($_POST["item"]) as $key) {
          if ($groupuser->can($key, DELETE)) {
             $groupuser->delete(['id' => $key]);
          }

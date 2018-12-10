@@ -39,9 +39,6 @@ class ChangeTask extends CommonITILTask {
    static $rightname = 'task';
 
 
-   /**
-    * @since 0.84
-   **/
    static function getTypeName($nb = 0) {
       return _n('Change task', 'Change tasks', $nb);
    }
@@ -73,7 +70,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to show the current task ?
+    * Does current user have right to show the current task?
     *
     * @return boolean
    **/
@@ -83,7 +80,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to create the current task ?
+    * Does current user have right to create the current task?
     *
     * @return boolean
    **/
@@ -94,7 +91,6 @@ class ChangeTask extends CommonITILTask {
       }
 
       $change = new Change();
-
       if ($change->getFromDB($this->fields['changes_id'])) {
          return (Session::haveRight('change', UPDATE)
                  || (Session::haveRight('change', Change::READMY)
@@ -109,7 +105,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to update the current task ?
+    * Does current user have right to update the current task?
     *
     * @return boolean
    **/
@@ -129,7 +125,7 @@ class ChangeTask extends CommonITILTask {
 
 
    /**
-    * Is the current user have right to purge the current task ?
+    * Does current user have right to purge the current task?
     *
     * @return boolean
    **/
@@ -157,9 +153,9 @@ class ChangeTask extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param $val array of the item to display
+    * @param array $val Array of the item to display
     *
-    * @return Already planned information
+    * @return string Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
       return parent::genericGetAlreadyPlannedInformation(__CLASS__, $val);
@@ -169,14 +165,13 @@ class ChangeTask extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param $val       array of the item to display
-    * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
-    *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
+    * @param array           $val       array of the item to display
+    * @param integer         $who       ID of the user (0 if all)
+    * @param string          $type      position of the item in the time block (in, through, begin or end)
+    * @param integer|boolean $complete  complete display (more details)
     *
-    * @return Nothing (display function)
-   **/
+    * @return string
+    */
    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }

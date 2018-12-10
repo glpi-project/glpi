@@ -63,7 +63,7 @@ class RequestType extends CommonDropdown {
                    ['name'  => 'is_ticketheader',
                          'label' => __('Request source visible for tickets'),
                          'type'  => 'bool'],
-                   ['name'  => 'is_ticketfollowup',
+                   ['name'  => 'is_itilfollowup',
                          'label' => __('Request source visible for followups'),
                          'type'  => 'bool'],
                          ];
@@ -128,7 +128,7 @@ class RequestType extends CommonDropdown {
       $tab[] = [
          'id'                 => '181',
          'table'              => $this->getTable(),
-         'field'              => 'is_ticketfollowup',
+         'field'              => 'is_itilfollowup',
          'name'               => __('Request source visible for followups'),
          'datatype'           => 'bool'
       ];
@@ -244,4 +244,44 @@ class RequestType extends CommonDropdown {
       Rule::cleanForItemCriteria($this);
    }
 
+
+   function cleanRelationData() {
+
+      parent::cleanRelationData();
+
+      if ($this->isUsedAsDefaultRequestType()) {
+         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+         Config::setConfigurationValues(
+            'core',
+            [
+               'default_requesttypes_id' => $newval,
+            ]
+         );
+      }
+   }
+
+
+   function isUsed() {
+
+      if (parent::isUsed()) {
+         return true;
+      }
+
+      return $this->isUsedAsDefaultRequestType();
+   }
+
+
+   /**
+    * Check if type is used as default for new tickets.
+    *
+    * @return boolean
+    */
+   private function isUsedAsDefaultRequestType() {
+
+      $config_values = Config::getConfigurationValues('core', ['default_requesttypes_id']);
+
+      return array_key_exists('default_requesttypes_id', $config_values)
+         && $config_values['default_requesttypes_id'] == $this->fields['id'];
+   }
 }

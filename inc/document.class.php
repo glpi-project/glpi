@@ -61,16 +61,16 @@ class Document extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @param $item  an object or a string
+    * @param string|object $item An object or a string
     *
-    * @return true if $object is an object that can have InfoCom
+    * @return boolean
    **/
    static function canApplyOn($item) {
       global $CFG_GLPI;
 
-      // All devices are subjects to infocom !
-      if (Toolbox::is_a($item, 'Item_Devices')
-          || Toolbox::is_a($item, 'CommonDevice')) {
+      // All devices can have documents!
+      if (is_a($item, 'Item_Devices', true)
+          || is_a($item, 'CommonDevice', true)) {
          return true;
       }
 
@@ -117,7 +117,7 @@ class Document extends CommonDBTM {
 
       // Have right to add document OR ticket followup
       return (Session::haveRight('document', CREATE)
-              || Session::haveRight('followup', TicketFollowup::ADDMYTICKET));
+              || Session::haveRight('followup', ITILFollowup::ADDMYTICKET));
    }
 
 
@@ -150,8 +150,11 @@ class Document extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $di = new Document_Item();
-      $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Document_Item::class,
+         ]
+      );
 
       // UNLINK DU FICHIER
       if (!empty($this->fields["filepath"])) {
@@ -404,7 +407,7 @@ class Document extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Web Link')."</td>";
+      echo "<td>".__('Web link')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "link");
       echo "</td>";
@@ -507,21 +510,24 @@ class Document extends CommonDBTM {
       $splitter = explode("/", $this->fields['filepath']);
 
       if (count($splitter)) {
-         $query = "SELECT *
-                   FROM `glpi_documenttypes`
-                   WHERE `ext` LIKE '".$splitter[0]."'
-                         AND `icon` <> ''";
+         $iterator = $DB->request([
+            'SELECT' => 'icon',
+            'FROM'   => 'glpi_documenttypes',
+            'WHERE'  => [
+               'ext'    => ['LIKE', $splitter[0]],
+               'icon'   => ['<>', '']
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               $icon = $DB->result($result, 0, 'icon');
-               if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
-                  $icon = "defaut-dist.png";
-               }
-               $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
-                               $initfileout."\" title=\"".$initfileout."\" src='".
-                               $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
+         if (count($iterator) > 0) {
+            $result = $iterator->next();
+            $icon = $result['icon'];
+            if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
+               $icon = "defaut-dist.png";
             }
+            $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
+                              $initfileout."\" title=\"".$initfileout."\" src='".
+                              $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
          }
       }
       $out .= "$open<span class='b'>$fileout</span>$close";
@@ -559,213 +565,265 @@ class Document extends CommonDBTM {
    /**
     * Check is the curent user is allowed to see the file
     *
-    * @param $options array of options (only 'tickets_id' used)
+    * @param array $options Options (only 'tickets_id' used)
     *
     * @return boolean
    **/
-   function canViewFile($options) {
-      global $DB, $CFG_GLPI;
+   function canViewFile(array $options = []) {
 
-      if (Session::getCurrentInterface() == "central") {
-
-         // My doc Check and Common doc right access
-         if ($this->can($this->fields["id"], READ)
-             || ($this->fields["users_id"] === Session::getLoginUserID())) {
-            return true;
-         }
-
-         // Reminder Case
-         $query = "SELECT *
-                   FROM `glpi_documents_items`
-                   LEFT JOIN `glpi_reminders`
-                        ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
-                            AND `glpi_documents_items`.`itemtype` = 'Reminder')
-                   ".Reminder::addVisibilityJoins()."
-                   WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                         AND ".Reminder::addVisibilityRestrict();
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            return true;
-         }
-
-         // Knowbase Case
-         if (Session::haveRight("knowbase", READ)) {
-            $query = "SELECT *
-                      FROM `glpi_documents_items`
-                      LEFT JOIN `glpi_knowbaseitems`
-                           ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
-                               AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
-                      ".KnowbaseItem::addVisibilityJoins()."
-                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND ".KnowbaseItem::addVisibilityRestrict();
-            $result = $DB->query($query);
-            if ($DB->numrows($result) > 0) {
-               return true;
-            }
-         }
-
-         if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-            $query = "SELECT *
-                      FROM `glpi_documents_items`
-                      LEFT JOIN `glpi_knowbaseitems`
-                           ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
-                               AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
-                      ".KnowbaseItem::addVisibilityJoins()."
-                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'
-                            AND ".KnowbaseItem::addVisibilityRestrict();
-            $result = $DB->query($query);
-            if ($DB->numrows($result) > 0) {
-               return true;
-            }
-         }
-
-         // Tracking Case
-         if (isset($options["tickets_id"])) {
-            $job = new Ticket();
-
-            if ($job->can($options["tickets_id"], READ)) {
-               $query = "SELECT *
-                         FROM `glpi_documents_items`
-                         WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
-                               AND `glpi_documents_items`.`itemtype` = 'Ticket'
-                               AND `documents_id`='".$this->fields["id"]."'";
-
-               $result = $DB->query($query);
-               if ($DB->numrows($result) > 0) {
-                  return true;
-               }
-            }
-         }
-
-      } else if (Session::getLoginUserID()) { // ! central
-
-         // Check if it is my doc
-         if ($this->fields["users_id"] === Session::getLoginUserID()) {
-            return true;
-         }
-
-         // Reminder Case
-         $query = "SELECT *
-                   FROM `glpi_documents_items`
-                   LEFT JOIN `glpi_reminders`
-                        ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
-                            AND `glpi_documents_items`.`itemtype` = 'Reminder')
-                   ".Reminder::addVisibilityJoins()."
-                   WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                         AND ".Reminder::addVisibilityRestrict();
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            return true;
-         }
-
-         if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-            // Check if it is a FAQ document
-            $query = "SELECT *
-                      FROM `glpi_documents_items`
-                      LEFT JOIN `glpi_knowbaseitems`
-                           ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-                      ".KnowbaseItem::addVisibilityJoins()."
-                      WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
-                            AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'
-                            AND ".KnowbaseItem::addVisibilityRestrict();
-
-            $result = $DB->query($query);
-            if ($DB->numrows($result) > 0) {
-               return true;
-            }
-         }
-
-         // Tracking Case
-         if (isset($options["tickets_id"])) {
-            $job = new Ticket();
-
-            if ($job->can($options["tickets_id"], READ)) {
-               $query = "SELECT *
-                         FROM `glpi_documents_items`
-                         WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
-                               AND `glpi_documents_items`.`itemtype` = 'Ticket'
-                               AND `documents_id` = '".$this->fields["id"]."'";
-
-               $result = $DB->query($query);
-               if ($DB->numrows($result) > 0) {
-                  return true;
-               }
-
-               // check also contents
-               $query = "SELECT *
-                         FROM glpi_tickets AS tic
-                         LEFT JOIN glpi_ticketfollowups AS fup
-                           ON fup.tickets_id = tic.id
-                         LEFT JOIN glpi_tickettasks AS task
-                           ON task.tickets_id = tic.id
-                         LEFT JOIN glpi_solutions AS sol
-                           ON sol.items_id = tic.id
-                           AND sol.itemtype = 'Ticket'
-                         WHERE tic.id = {$options["tickets_id"]}
-                         AND (
-                           tic.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
-                           OR sol.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
-                           OR fup.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
-                           OR task.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
-                         )";
-               $result = $DB->query($query);
-               if ($DB->numrows($result) > 0) {
-                  return true;
-               }
-            }
-         }
+      // Check if it is my doc
+      if (Session::getLoginUserID()
+          && ($this->can($this->fields["id"], READ)
+              || ($this->fields["users_id"] === Session::getLoginUserID()))) {
+         return true;
       }
 
-      // Public FAQ for not connected user
-      if ($CFG_GLPI["use_public_faq"]) {
-         $query = "SELECT *
-                   FROM `glpi_documents_items`
-                   LEFT JOIN `glpi_knowbaseitems`
-                        ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-                   LEFT JOIN `glpi_entities_knowbaseitems`
-                        ON (`glpi_knowbaseitems`.`id` = `glpi_entities_knowbaseitems`.`knowbaseitems_id`)
-                   WHERE (`glpi_documents_items`.`itemtype` = 'KnowbaseItem'
-                          AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                          OR `glpi_knowbaseitems`.`answer` LIKE '%document.send.php?docid=".$this->fields["id"]."%')
-                         AND `glpi_knowbaseitems`.`is_faq` = '1'
-                         AND `glpi_entities_knowbaseitems`.`entities_id` = '0'
-                         AND `glpi_entities_knowbaseitems`.`is_recursive` = '1'";
+      if ($this->canViewFileFromReminder()) {
+         return true;
+      }
 
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            return true;
-         }
+      if ($this->canViewFileFromKnowbaseItem()) {
+         return true;
+      }
 
-         //copy/pasted images do not have entries in glpi_documents_items table
-         $result = $DB->request([
-            'FROM'      => 'glpi_knowbaseitems',
-            'COUNT'     => 'cpt',
-            'LEFT JOIN' => [
-               'glpi_entities_knowbaseitems' => [
-                  'FKEY' => [
-                     'glpi_knowbaseitems'          => 'id',
-                     'glpi_entities_knowbaseitems' => 'knowbaseitems_id'
-                  ]
-               ]
-            ],
-            'WHERE'     => [
-               'glpi_knowbaseitems.answer'                  => [
-                  'LIKE',
-                  '%document.send.php?docid='.$this->fields["id"].'%'
-               ],
-               'glpi_knowbaseitems.is_faq'                  => 1,
-               'glpi_entities_knowbaseitems.entities_id'    => 0,
-               'glpi_entities_knowbaseitems.is_recursive'   => 1
-            ]
-         ])->next();
-         return $result['cpt'] > 0;
+      if (isset($options["tickets_id"])
+          && $this->canViewFileFromTicket($options["tickets_id"])) {
+         return true;
       }
 
       return false;
    }
 
+   /**
+    * Check if file of current instance can be viewed from a Reminder.
+    *
+    * @global DBmysql $DB
+    * @return boolean
+    *
+    * @TODO Use DBmysqlIterator instead of raw SQL
+    */
+   private function canViewFileFromReminder() {
+
+      global $DB;
+
+      if (!Session::getLoginUserID()) {
+         return false;
+      }
+
+      $criteria = array_merge_recursive(
+         [
+            'COUNT'     => 'cpt',
+            'FROM'      => 'glpi_documents_items',
+            'LEFT JOIN' => [
+               'glpi_reminders'  => [
+                  'ON' => [
+                     'glpi_documents_items'  => 'items_id',
+                     'glpi_reminders'        => 'id', [
+                        'AND' => [
+                           'glpi_documents_items.itemtype'  => 'Reminder'
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'glpi_documents_items.documents_id' => $this->fields['id']
+            ]
+         ],
+         Reminder::getVisibilityCriteria()
+      );
+
+      $result = $DB->request($criteria)->next();
+      if ($result['cpt'] > 0) {
+         return true;
+      }
+
+      // Inlined images do not have entries in glpi_documents_items table.
+      // Check in Reminder content
+      $criteria = array_merge_recursive(
+         [
+            'COUNT'     => 'cpt',
+            'FROM'      => 'glpi_reminders',
+            'WHERE'     => [
+               'text' => ['REGEXP', $this->getSelfUrlRegexPattern()]
+            ]
+         ],
+         Reminder::getVisibilityCriteria()
+      );
+
+      $result = $DB->request($criteria)->next();
+      return $result['cpt'] > 0;
+   }
+
+   /**
+    * Check if file of current instance can be viewed from a KnowbaseItem.
+    *
+    * @global array $CFG_GLPI
+    * @global DBmysql $DB
+    * @return boolean
+    */
+   private function canViewFileFromKnowbaseItem() {
+
+      global $CFG_GLPI, $DB;
+
+      // Knowbase items can be viewed by non connected user in case of public FAQ
+      if (!Session::getLoginUserID() && !$CFG_GLPI['use_public_faq']) {
+         return false;
+      }
+
+      if (!Session::haveRight(KnowbaseItem::$rightname, READ)
+          && !Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::READFAQ)
+          && !$CFG_GLPI['use_public_faq']) {
+         return false;
+      }
+
+      $visibilityCriteria = KnowbaseItem::getVisibilityCriteria();
+
+      $request = [
+         'FROM'      => 'glpi_documents_items',
+         'COUNT'     => 'cpt',
+         'LEFT JOIN' => [
+            'glpi_knowbaseitems' => [
+               'FKEY' => [
+                  'glpi_knowbaseitems'   => 'id',
+                  'glpi_documents_items' => 'items_id',
+                  ['AND' => ['glpi_documents_items.itemtype' => 'KnowbaseItem']]
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_documents_items.documents_id' => $this->fields['id'],
+         ]
+      ];
+
+      if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
+         $request['LEFT JOIN'] += $visibilityCriteria['LEFT JOIN'];
+      }
+      if (array_key_exists('WHERE', $visibilityCriteria) && count($visibilityCriteria['WHERE']) > 0) {
+         $request['WHERE'] += $visibilityCriteria['WHERE'];
+      }
+
+      $result = $DB->request($request)->next();
+
+      if ($result['cpt'] > 0) {
+         return true;
+      }
+
+      // Inlined images do not have entries in glpi_documents_items table.
+      // Check in KnowbaseItem content
+      $request = [
+         'FROM'      => 'glpi_knowbaseitems',
+         'COUNT'     => 'cpt',
+         'LEFT JOIN' => [
+            'glpi_entities_knowbaseitems' => [
+               'FKEY' => [
+                  'glpi_knowbaseitems'          => 'id',
+                  'glpi_entities_knowbaseitems' => 'knowbaseitems_id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_knowbaseitems.answer' => ['REGEXP', $this->getSelfUrlRegexPattern()],
+         ]
+      ];
+
+      if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
+         $request['LEFT JOIN'] += $visibilityCriteria['LEFT JOIN'];
+      }
+      if (array_key_exists('WHERE', $visibilityCriteria) && count($visibilityCriteria['WHERE']) > 0) {
+         $request['WHERE'] += $visibilityCriteria['WHERE'];
+      }
+
+      $result = $DB->request($request)->next();
+
+      return $result['cpt'] > 0;
+   }
+
+   /**
+    * Check if file of current instance can be viewed from a KnowbaseItem.
+    *
+    * @global DBmysql $DB
+    * @param integer $tickets_id
+    * @return boolean
+    */
+   private function canViewFileFromTicket($tickets_id) {
+
+      global $DB;
+
+      if (!Session::getLoginUserID()) {
+         return false;
+      }
+
+      $ticket = new Ticket();
+
+      if (!$ticket->can($tickets_id, READ)) {
+         return false;
+      }
+
+      $result = $DB->request([
+         'FROM'  => Document_Item::getTable(),
+         'COUNT' => 'cpt',
+         'WHERE' => [
+            'items_id'     => $tickets_id,
+            'itemtype'     => Ticket::class,
+            'documents_id' => $this->fields['id']
+         ]
+      ])->next();
+
+      if ($result['cpt'] > 0) {
+         return true;
+      }
+
+      // Check ticket and child items (followups, tasks, solutions) contents
+      $regexPattern = $this->getSelfUrlRegexPattern();
+      $result = $DB->request([
+         'FROM'      => 'glpi_tickets',
+         'COUNT'     => 'cpt',
+         'LEFT JOIN' => [
+            'glpi_itilfollowups' => [
+               'FKEY' => [
+                  'glpi_tickets'         => 'id',
+                  'glpi_itilfollowups' => 'items_id',
+                  ['AND' => ['glpi_itilfollowups.itemtype' => 'Ticket']]
+               ]
+            ],
+            'glpi_tickettasks'     => [
+               'FKEY' => [
+                  'glpi_tickets'     => 'id',
+                  'glpi_tickettasks' => 'tickets_id'
+               ]
+            ],
+            'glpi_itilsolutions'   => [
+               'FKEY' => [
+                  'glpi_tickets'       => 'id',
+                  'glpi_itilsolutions' => 'items_id',
+                  ['AND' => ['glpi_itilsolutions.itemtype' => 'Ticket']]
+               ]
+            ],
+         ],
+         'WHERE'     => [
+            'glpi_tickets.id' => $tickets_id,
+            'OR' => [
+               'glpi_tickets.content'         => ['REGEXP', $regexPattern],
+               'glpi_itilfollowups.content'   => ['REGEXP', $regexPattern],
+               'glpi_tickettasks.content'     => ['REGEXP', $regexPattern],
+               'glpi_itilsolutions.content'   => ['REGEXP', $regexPattern]
+            ]
+         ]
+      ])->next();
+
+      return $result['cpt'] > 0;
+   }
+
+   /**
+    * Gives URL regex pattern for current document.
+    * This pattern can be use to find link to document into rich text contents.
+    *
+    * @return string
+    */
+   private function getSelfUrlRegexPattern() {
+      return 'document\\\.send\\\.php\\\?docid=' . $this->fields['id'] . '[^\\\d]+';
+   }
 
    static function rawSearchOptionsToAdd($itemtype = null) {
       $tab = [];
@@ -790,22 +848,6 @@ class Document extends CommonDBTM {
       ];
 
       return $tab;
-   }
-
-
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
-   function getSpecificMassiveActions($checkitem = null) {
-
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
-
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-      }
-
-      return $actions;
    }
 
 
@@ -850,7 +892,7 @@ class Document extends CommonDBTM {
          'id'                 => '4',
          'table'              => $this->getTable(),
          'field'              => 'link',
-         'name'               => __('Web Link'),
+         'name'               => __('Web link'),
          'datatype'           => 'weblink'
       ];
 
@@ -862,16 +904,14 @@ class Document extends CommonDBTM {
          'datatype'           => 'string'
       ];
 
-      if ($CFG_GLPI['use_rich_text']) {
-         $tab[] = [
-            'id'                 => '6',
-            'table'              => $this->getTable(),
-            'field'              => 'tag',
-            'name'               => __('Tag'),
-            'datatype'           => 'text',
-            'massiveaction'      => false
-         ];
-      }
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'tag',
+         'name'               => __('Tag'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
       $tab[] = [
          'id'                 => '7',
@@ -986,7 +1026,7 @@ class Document extends CommonDBTM {
     *
     * @return boolean for success / $input array is updated
    **/
-   static function moveUploadedDocument(array &$input, $filename) {
+   public function moveUploadedDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
       $prefix = '';
@@ -1324,23 +1364,28 @@ class Document extends CommonDBTM {
       $splitter = explode(".", $filename);
       $ext      = end($splitter);
 
-      $query="SELECT *
-              FROM `glpi_documenttypes`
-              WHERE `ext` LIKE '$ext'
-                    AND `is_uploadable`='1'";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_documenttypes',
+         'WHERE'  => [
+            'ext'             => ['LIKE', $ext],
+            'is_uploadable'   => 1
+         ]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            return Toolbox::strtoupper($ext);
-         }
+      if (count($iterator)) {
+         return Toolbox::strtoupper($ext);
       }
-      // Not found try with regex one
-      $query = "SELECT *
-                FROM `glpi_documenttypes`
-                WHERE `ext` LIKE '/%/'
-                      AND `is_uploadable` = '1'";
 
-      foreach ($DB->request($query) as $data) {
+      // Not found try with regex one
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_documenttypes',
+         'WHERE'  => [
+            'ext'             => ['LIKE', '/%/'],
+            'is_uploadable'   => 1
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          if (preg_match(Toolbox::unclean_cross_side_scripting_deep($data['ext'])."i",
                         $ext, $results) > 0) {
             return Toolbox::strtoupper($ext);
@@ -1377,23 +1422,29 @@ class Document extends CommonDBTM {
          }
       }
 
-      $where = " WHERE `glpi_documents`.`is_deleted` = '0' ".
-                       getEntitiesRestrictRequest("AND", "glpi_documents", '', $p['entity'], true);
+      $subwhere = [
+         'glpi_documents.is_deleted'   => 0,
+      ] + getEntitiesRestrictCriteria('glpi_documents', '', $p['entity'], true);
 
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN (0, ".implode(",", $p['used']).")";
+         $subwhere['NOT'] = ['id' => array_merge([0], $p['used'])];
       }
 
-      $query = "SELECT *
-                FROM `glpi_documentcategories`
-                WHERE `id` IN (SELECT DISTINCT `documentcategories_id`
-                               FROM `glpi_documents`
-                             $where)
-                ORDER BY `name`";
-      $result = $DB->query($query);
+      $criteria = [
+         'FROM'   => 'glpi_documentcategories',
+         'WHERE'  => [
+            'id' => new QuerySubQuery([
+               'SELECT DISTINCT' => 'documentcategories_id',
+               'FROM'            => 'glpi_documents',
+               'WHERE'           => $subwhere
+            ])
+         ],
+         'ORDER'  => 'name'
+      ];
+      $iterator = $DB->request($criteria);
 
       $values = [];
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $iterator->next()) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();
@@ -1445,7 +1496,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if ((Toolbox::is_a($itemtype, __CLASS__)) && (static::canUpdate())) {
+      if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
          $actions[$action_prefix.'add_item']    = _x('button', 'Add an item');
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }

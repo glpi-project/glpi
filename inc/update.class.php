@@ -81,10 +81,6 @@ class Update extends CommonGLPI {
       // Init debug variable
       // Only show errors
       Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
-      $result = Config::displayCheckDbEngine(true);
-      if ($result > 0) {
-         die(1);
-      }
    }
 
    /**
@@ -106,23 +102,25 @@ class Update extends CommonGLPI {
       } else if (!$DB->tableExists("glpi_configs")) {
          // < 0.78
          // Get current version
-         $query = "SELECT `version`, 'language'
-                  FROM `glpi_config`";
-         $result = $DB->queryOrDie($query, "get current version");
+         $result = $DB->request([
+            'SELECT' => ['version', 'language'],
+            'FROM'   => 'glpi_config'
+         ])->next();
 
-         $currents['version']    = trim($DB->result($result, 0, 0));
+         $currents['version']    = trim($result['version']);
          $currents['dbversion']  = $currents['version'];
-         $currents['language']   = trim($DB->result($result, 0, 1));
+         $currents['language']   = trim($result['language']);
       } else if ($DB->fieldExists('glpi_configs', 'version')) {
          // < 0.85
          // Get current version and language
-         $query = "SELECT `version`, `language`
-                  FROM `glpi_configs`";
-         $result = $DB->queryOrDie($query, "get current version");
+         $result = $DB->request([
+            'SELECT' => ['version', 'language'],
+            'FROM'   => 'glpi_configs'
+         ])->next();
 
-         $currents['version']    = trim($DB->result($result, 0, 0));
+         $currents['version']    = trim($result['version']);
          $currents['dbversion']  = $currents['version'];
-         $currents['language']   = trim($DB->result($result, 0, 1));
+         $currents['language']   = trim($result['language']);
       } else {
          $currents = Config::getConfigurationValues(
             'core',
@@ -420,10 +418,21 @@ class Update extends CommonGLPI {
             update922to923();
 
          case "9.2.3":
+         case "9.2.4":
+         case "9.3-dev":
             include_once("{$updir}update_92_93.php");
             update92to93();
 
          case "9.3":
+         case "9.3.0":
+            include_once "{$updir}update_930_931.php";
+            update930to931();
+
+         case "9.3.1":
+            include_once "{$updir}update_931_932.php";
+            update931to932();
+
+         case "9.3.2":
          case GLPI_PREVER:
             include_once("{$updir}update_93_94.php");
             update93to94();
@@ -439,9 +448,11 @@ class Update extends CommonGLPI {
                $current_version
             );
             if (isCommandLine()) {
-               die("$message\n");
+               echo "$message\n";
+               die(1);
             } else {
                $this->migration->displayWarning($message, true);
+               die(1);
             }
       }
 
@@ -453,10 +464,21 @@ class Update extends CommonGLPI {
 
       if (defined('GLPI_SYSTEM_CRON')) {
          // Downstream packages may provide a good system cron
-         //needs DB::update() to support fields names to get migrated
-         $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
-         $DB->queryOrDie($query);
+         $DB->updateOrDie(
+            'glpi_crontasks', [
+               'mode'   => 2
+            ], [
+               'name'      => ['!=', 'watcher'],
+               'allowmode' => ['&', 2]
+            ]
+         );
       }
+
+      // reset telemetry
+      $crontask_telemetry = new CronTask;
+      $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
+      $crontask_telemetry->resetDate();
+      $crontask_telemetry->resetState();
    }
 
    /**

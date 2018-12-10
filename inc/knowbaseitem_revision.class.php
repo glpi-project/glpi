@@ -43,6 +43,10 @@ class KnowbaseItem_Revision extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      if (!$item->canUpdateItem()) {
+         return '';
+      }
+
       $nb = 0;
       if ($_SESSION['glpishow_count_on_tabs']) {
          $where = [];
@@ -152,7 +156,10 @@ class KnowbaseItem_Revision extends CommonDBTM {
 
       $is_checked = true;
       foreach ($revisions as $revision) {
-         $user->getFromDB($revision['users_id']);
+         // Before GLPI 9.3.1, author was not stored in revision.
+         // See https://github.com/glpi-project/glpi/issues/4377.
+         $hasRevUser = $user->getFromDB($revision['users_id']);
+
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $revision['revision']  . "</td>" .
                  "<td><input type='radio' name='oldid' value='{$revision['id']}'";
@@ -164,14 +171,14 @@ class KnowbaseItem_Revision extends CommonDBTM {
 
          echo "/> <input type='radio' name='diff' value='{$revision['id']}'/></td>";
 
-         echo "<td>" . $user->getLink() . "</td>".
+         echo "<td>" . ($hasRevUser ? $user->getLink() : __('Unknown user')) . "</td>".
              "<td class='tab_date'>". $revision['date_creation'] . "</td>";
 
          $form = null;
          if ($item->getType() == KnowbaseItem::getType()) {
             $form = KnowbaseItem::getFormURLWithID($revision['knowbaseitems_id']);
          } else {
-            $form = KnowbaseItemTranslation::getFormURL($revision['knowbaseitems_id']);
+            $form = KnowbaseItemTranslation::getFormURLWithID($revision['knowbaseitems_id']);
          }
 
          echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
@@ -182,7 +189,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
       }
 
       echo Html::script("lib/jqueryplugins/prettytextdiff/diff_match_patch.js");
-      echo Html::script("lib/jqueryplugins/prettytextdiff/jquery.pretty-text-diff.min.js");
+      echo Html::script("lib/jqueryplugins/prettytextdiff/jquery.pretty-text-diff.js");
       echo "<script type='text/javascript'>
             $(function() {
                $('.restore').on('click', function(e) {
@@ -294,8 +301,9 @@ class KnowbaseItem_Revision extends CommonDBTM {
       $this->fields['answer'] = Toolbox::clean_cross_side_scripting_deep(
          Toolbox::addslashes_deep($item->fields['answer'])
       );
-      $this->fields['date_creation'] = date('Y-m-d H:i:s');
+      $this->fields['date_creation'] = $item->fields['date_mod'];
       $this->fields['revision'] = $this->getNewRevision();
+      $this->fields['users_id'] = $item->fields['users_id'];
       $this->addToDB();
    }
 
@@ -311,9 +319,10 @@ class KnowbaseItem_Revision extends CommonDBTM {
       $this->fields['knowbaseitems_id'] = $item->fields['knowbaseitems_id'];
       $this->fields['name'] = $item->fields['name'];
       $this->fields['answer'] = $item->fields['answer'];
-      $this->fields['date_creation'] = date('Y-m-d H:i:s');
+      $this->fields['date_creation'] = $item->fields['date_mod'];
       $this->fields['language'] = $item->fields['language'];
       $this->fields['revision'] = $this->getNewRevision();
+      $this->fields['users_id'] = $item->fields['users_id'];
       $this->addToDB();
    }
 

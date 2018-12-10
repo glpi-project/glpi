@@ -57,20 +57,20 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * Check if given object can have InfoCom
+    * Check if given object can have Infocom
     *
     * @since 0.85
     *
     * @param $item  an object or a string
     *
-    * @return true if $object is an object that can have InfoCom
+    * @return true if $object is an object that can have Infocom
     *
    **/
    static function canApplyOn($item) {
       global $CFG_GLPI;
 
       // All devices are subjects to infocom !
-      if (Toolbox::is_a($item, 'Item_Devices')) {
+      if (is_a($item, 'Item_Devices', true)) {
          return true;
       }
 
@@ -173,14 +173,14 @@ class Infocom extends CommonDBChild {
    **/
    static function countForSupplier(Supplier $item) {
 
-      $restrict = "`glpi_infocoms`.`suppliers_id` = '".$item->getField('id') ."'
-                    AND `itemtype` NOT IN ('ConsumableItem', 'CartridgeItem', 'Software') ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_infocoms", '',
-                                               $_SESSION['glpiactiveentities']);
-
-      return countElementsInTable(['glpi_infocoms'], $restrict);
+      return countElementsInTable(
+         'glpi_infocoms',
+         [
+            'suppliers_id' => $item->getField('id'),
+            'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
+         ] + getEntitiesRestrictCriteria('glpi_infocoms', '', $_SESSION['glpiactiveentities'])
+      );
    }
-
 
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
@@ -695,15 +695,18 @@ class Infocom extends CommonDBChild {
          return false;
       }
 
-      $query = "SELECT COUNT(*)
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$device_id'
-                      AND `itemtype` = '$itemtype'";
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_infocoms',
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $device_id
+         ]
+      ])->next();
 
       $add    = "add";
       $text   = __('Add');
-      $result = $DB->query($query);
-      if ($DB->result($result, 0, 0) > 0) {
+      if ($result['cpt'] > 0) {
          $add  = "";
          $text = _x('button', 'Show');
       } else if (!Infocom::canUpdate()) {
@@ -1014,7 +1017,7 @@ class Infocom extends CommonDBChild {
          }
 
          if (!strpos($_SERVER['PHP_SELF'], "infocoms-show")
-             && in_array($item->getType(), ['CartridgeItem', 'ConsumableItem', 'Software'])) {
+             && in_array($item->getType(), self::getExcludedTypes())) {
             echo "<div class='firstbloc center'>".
                   __('For this type of item, the financial and administrative information are only a model for the items which you should add.').
                  "</div>";
@@ -1120,7 +1123,7 @@ class Infocom extends CommonDBChild {
             $tplmark = '';
             if ($item->isTemplate()
                 || in_array($item->getType(),
-                            ['CartridgeItem', 'ConsumableItem', 'Software'])) {
+                            self::getExcludedTypes())) {
                $tplmark = $item->getAutofillMark('immo_number', ['withtemplate' => $withtemplate], $ic->getField('immo_number'));
             }
             echo "<td>".sprintf(__('%1$s%2$s'), __('Immobilization number'), $tplmark)."</td>";
@@ -1189,8 +1192,8 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            if (!in_array($item->getType(), ['Cartridge', 'CartridgeItem', 'Consumable',
-                                                  'ConsumableItem', 'Software',
+            if (!in_array($item->getType(), self::getExcludedTypes() + [
+                                                  'Cartridge', 'Consumable',
                                                   'SoftwareLicense'])) {
                echo "<td>".__('TCO (value + tracking cost)')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
@@ -1198,8 +1201,8 @@ class Infocom extends CommonDBChild {
                 echo "<td colspan='2'>";
             }
             echo "</td>";
-            if (!in_array($item->getType(), ['Cartridge', 'CartridgeItem', 'Consumable',
-                                                  'ConsumableItem', 'Software',
+            if (!in_array($item->getType(), self::getExcludedTypes() + [
+                                                  'Cartridge', 'Consumable',
                                                   'SoftwareLicense'])) {
                echo "<td>".__('Monthly TCO')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"],
@@ -1897,13 +1900,21 @@ class Infocom extends CommonDBChild {
             $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1, 'Infocom',
                                              $input['entities_id']);
          }
-         $date_fields = ['buy_date', 'delivery_date', 'inventory_date', 'order_date',
-                              'use_date', 'warranty_date'];
+         $date_fields = [
+            'buy_date',
+            'delivery_date',
+            'inventory_date',
+            'order_date',
+            'use_date',
+            'warranty_date',
+         ];
          foreach ($date_fields as $f) {
             if (empty($input[$f])) {
                unset($input[$f]);
             }
          }
+         unset($input['date_creation']);
+         unset($input['date_mod']);
          $ic2 = new self();
          $ic2->add($input);
       }
@@ -1950,7 +1961,7 @@ class Infocom extends CommonDBChild {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
 
-      if (InfoCom::canApplyOn($itemtype)
+      if (Infocom::canApplyOn($itemtype)
           && static::canCreate()) {
          $actions[$action_name] = __('Enable the financial and administrative information');
       }
@@ -2023,4 +2034,38 @@ class Infocom extends CommonDBChild {
       return Session::haveRight(static::$rightname, CREATE);
    }
 
+   /**
+    * Get item types
+    *
+    * @since 9.3.1
+    *
+    * @param array $where Where clause
+    *
+    * @return DBMysqlIterator
+    */
+   public static function getTypes($where) {
+      global $DB;
+
+      $types_iterator = $DB->request([
+         'SELECT DISTINCT' => 'itemtype',
+         'FROM'            => 'glpi_infocoms',
+         'WHERE'           => [
+            'NOT'          => ['itemtype' => self::getExcludedTypes()]
+         ] + $where,
+         'ORDER'           => 'itemtype'
+      ]);
+      return $types_iterator;
+   }
+
+
+   /**
+    * Get excluded itemtypes
+    *
+    * @since 9.3.1
+    *
+    * @return array
+    */
+   public static function getExcludedTypes() {
+      return ['ConsumableItem', 'CartridgeItem', 'Software'];
+   }
 }

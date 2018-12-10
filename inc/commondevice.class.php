@@ -74,12 +74,17 @@ abstract class CommonDevice extends CommonDropdown {
     * This method can be override, for instance by the plugin
     *
     * @since 0.85
+    * @since 9.3 added the $devicetype parameter
+    *
+    * @param string $devicetype class name of device type, defaults to called class name
     *
     * @return array of the types of CommonDevice available
    **/
-   static function getItem_DeviceType() {
+   static function getItem_DeviceType($devicetype = null) {
 
-      $devicetype = get_called_class();
+      if (null === $devicetype) {
+         $devicetype = get_called_class();
+      }
       if ($plug = isPluginItemType($devicetype)) {
          return 'Plugin'.$plug['plugin'].'Item_'.$plug['class'];
       }
@@ -109,6 +114,13 @@ abstract class CommonDevice extends CommonDropdown {
                   $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
                   if ($tmp->canCreate()) {
                      $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
+                  }
+                  if ($itemClass = getItemForItemtype(self::getItem_DeviceType($key))) {
+                     $itemTypeName = sprintf(__('%1$s items'), $key::getTypeName(1));
+
+                     $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
+                        . '<span class="sr-only">' . $itemTypeName . '</span>';
+                     $menu['options'][$key]['links'][$listLabel] = $itemClass->getSearchURL(false);
                   }
                }
             }
@@ -150,7 +162,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since 0.85
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB;
@@ -170,13 +182,23 @@ abstract class CommonDevice extends CommonDropdown {
       $linktype  = static::getItem_DeviceType();
       $linktable = getTableForItemType($linktype);
 
-      $sql = "SELECT `itemtype`,
-                     GROUP_CONCAT(DISTINCT `items_id`) AS ids
-              FROM `$linktable`
-              WHERE `$linktable`.`".$this->getForeignKeyField()."` = '$ID'
-              GROUP BY `itemtype`";
+      $result = $DB->request(
+         [
+            'SELECT'    => [
+               'itemtype',
+               new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
+            ],
+            'FROM'      => $linktable,
+            'WHERE'     => [
+               $this->getForeignKeyField() => $ID,
+            ],
+            'GROUPBY'   => [
+               'itemtype',
+            ]
+         ]
+      );
 
-      foreach ($DB->request($sql) as $data) {
+      foreach ($result as $data) {
          if (!empty($data["itemtype"])) {
             $itemtable = getTableForItemType($data["itemtype"]);
             if ($item = getItemForItemtype($data["itemtype"])) {
@@ -295,7 +317,7 @@ abstract class CommonDevice extends CommonDropdown {
     *                            (default NULL)
     * @param $options   array    parameter such as restriction
     *
-    * @return nothing (elements added to $base)
+    * @return HTMLTableHeader
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
@@ -339,8 +361,6 @@ abstract class CommonDevice extends CommonDropdown {
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                     HTMLTableCell $father = null, array $options = []) {
-
-      global $CFG_GLPI;
 
       $this_type = $this->getType();
 
@@ -388,7 +408,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @param $input array of datas
     *
-    * @return interger ID of existing or new Device
+    * @return integer ID of existing or new Device
    **/
    function import(array $input) {
       global $DB;
@@ -403,26 +423,30 @@ abstract class CommonDevice extends CommonDropdown {
             $compare = explode(':', $compare);
             switch ($compare[0]) {
                case 'equal':
-                  $where[] = "`".$field."`='".$input[$field]."'";
+                  $where[$field] = $input[$field];
                   break;
 
                case 'delta':
-                  $where[] = "`".$field."`>'".((int) $input[$field] - (int) $compare[1])."'";
-                  $where[] = "`".$field."`<'".((int) $input[$field] + (int) $compare[1])."'";
+                  $where[] = [
+                     [$field => ['>', ((int) $input[$field] - (int) $compare[1])]],
+                     [$field => ['<', ((int) $input[$field] + (int) $compare[1])]]
+                  ];
                   break;
             }
          }
       }
 
-      $query = "SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE ".  implode(" AND ", $where);
+      $iterator = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => $this->getTable(),
+         'WHERE'  => $where
+      ]);
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         $line = $DB->fetch_assoc($result);
+      if (count($iterator) > 0) {
+         $line = $iterator->next();
          return $line['id'];
       }
+
       return $this->add($input);
    }
 

@@ -36,12 +36,16 @@ define('GLPI_ROOT', realpath('..'));
 // Do not include config.php so set root_doc
 $CFG_GLPI['root_doc'] = '..';
 
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
+include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 Session::setPath();
 Session::start();
+
+if (!isset($_SESSION['do_content_update'])) {
+   die("Sorry. You can't access this file directly");
+}
 
 // Init debug variable
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
@@ -139,10 +143,10 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
    // $histMySql, nom de la machine serveur MySQl
    // $duree=timeout pour changement de page (-1 = aucun)
 
-   $result = $DB->list_tables();
+   $result = $DB->listTables();
    $numtab = 0;
-   while ($t=$DB->fetch_row($result)) {
-      $tables[$numtab] = $t[0];
+   while ($t = $result->next()) {
+      $tables[$numtab] = $t['TABLE_NAME'];
       $numtab++;
    }
 
@@ -306,8 +310,7 @@ if (!isset($_GET["rowlimit"])) {
    $rowlimit = $_GET["rowlimit"];
 }
 
-$tab = $DB->list_tables();
-$tot = $DB->numrows($tab);
+$tot = $DB->listTables()->count();
 
 if (isset($offsettable)) {
    if ($offsettable>=0) {

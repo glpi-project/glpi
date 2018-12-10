@@ -137,13 +137,13 @@ class ProjectTask extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $pt = new ProjectTaskTeam();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $pt = new ProjectTask_Ticket();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            ProjectTask_Ticket::class,
+            ProjectTaskTeam::class,
+         ]
+      );
 
       parent::cleanDBonPurge();
    }
@@ -443,16 +443,16 @@ class ProjectTask extends CommonDBChild {
                 // set textarea comment
                $("#comment'.$rand_comment.'").val(data.comments);
 
-               // set project
-               $("#dropdown_projects_id'.$rand_project.'").select2("val", data.projects_id);
+               // set project task
+               $("#dropdown_projecttasks_id'.$rand_project.'").trigger("setValue", data.projecttasks_id);
                // set state
-               $("#dropdown_projectstates_id'.$rand_state.'").select2("val", data.projectstates_id);
+               $("#dropdown_projectstates_id'.$rand_state.'").trigger("setValue", data.projectstates_id);
                // set type
-               $("#dropdown_projecttasktypes_id'.$rand_type.'").select2("val", data.projecttasktypes_id);
+               $("#dropdown_projecttasktypes_id'.$rand_type.'").trigger("setValue", data.projecttasktypes_id);
                // set percent done
-               $("#dropdown_percent_done'.$rand_percent.'").select2("val", data.percent_done);
+               $("#dropdown_percent_done'.$rand_percent.'").trigger("setValue", data.percent_done);
                // set milestone
-               $("#dropdown_is_milestone'.$rand_milestone.'").select2("val", data.is_milestone);
+               $("#dropdown_is_milestone'.$rand_milestone.'").trigger("setValue", data.is_milestone);
 
                // set plan_start_date
                $("#showdate'.$rand_plan_start_date.'").val(data.plan_start_date);
@@ -464,9 +464,9 @@ class ProjectTask extends CommonDBChild {
                $("#showdate'.$rand_real_end_date.'").val(data.real_end_date);
 
                // set effective_duration
-               $("#dropdown_effective_duration'.$rand_effective_duration.'").select2("val", data.effective_duration);
+               $("#dropdown_effective_duration'.$rand_effective_duration.'").trigger("setValue", data.effective_duration);
                // set planned_duration
-               $("#dropdown_planned_duration'.$rand_planned_duration.'").select2("val", data.planned_duration);
+               $("#dropdown_planned_duration'.$rand_planned_duration.'").trigger("setValue", data.planned_duration);
 
             });
          }
@@ -483,12 +483,13 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('As child of')."</td>";
       echo "<td>";
-      $this->dropdown(['entity'    => $this->fields['entities_id'],
-                            'value'     => $projecttasks_id,
-                            'rand'      => $rand_project,
-                            'condition' => "`glpi_projecttasks`.`projects_id`='".
-                                             $this->fields['projects_id']."'",
-                            'used'      => [$this->fields['id']]]);
+      $this->dropdown([
+         'entity'    => $this->fields['entities_id'],
+         'value'     => $projecttasks_id,
+         'rand'      => $rand_project,
+         'condition' => ['glpi_projecttasks.projects_id' => $this->fields['projects_id']],
+         'used'      => [$this->fields['id']]
+      ]);
       echo "</td></tr>";
 
       $showuserlink = 0;
@@ -654,18 +655,29 @@ class ProjectTask extends CommonDBChild {
       if ($item->getFromDB($projecttasks_id)) {
          $time += $item->fields['effective_duration'];
       }
-      $query = "SELECT SUM(`glpi_tickets`.`actiontime`)
-                FROM `glpi_projecttasks`
-                LEFT JOIN `glpi_projecttasks_tickets`
-                   ON (`glpi_projecttasks`.`id` = `glpi_projecttasks_tickets`.`projecttasks_id`)
-                LEFT JOIN `glpi_tickets`
-                   ON (`glpi_projecttasks_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                WHERE `glpi_projecttasks`.`id` = '$projecttasks_id';";
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            $time += $DB->result($result, 0, 0);
-         }
+      $iterator = $DB->request([
+         'SELECT'    => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+         'FROM'      => self::getTable(),
+         'LEFT JOIN' => [
+            'glpi_projecttasks_tickets'   => [
+               'FKEY'   => [
+                  'glpi_projecttasks_tickets'   => 'projecttasks_id',
+                  self::getTable()              => 'id'
+               ]
+            ],
+            'glpi_tickets'                => [
+               'FKEY'   => [
+                  'glpi_projecttasks_tickets'   => 'tickets_id',
+                  'glpi_tickets'                => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [self::getTable() . '.id' => $projecttasks_id]
+      ]);
+
+      if ($row = $iterator->next()) {
+         $time += $row['duration'];
       }
       return $time;
    }
@@ -681,11 +693,13 @@ class ProjectTask extends CommonDBChild {
    static function getTotalEffectiveDurationForProject($projects_id) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_projecttasks`
-                WHERE `glpi_projecttasks`.`projects_id` = '$projects_id';";
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['projects_id' => $projects_id]
+      ]);
       $time = 0;
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $time += static::getTotalEffectiveDuration($data['id']);
       }
       return $time;
@@ -702,11 +716,14 @@ class ProjectTask extends CommonDBChild {
    static function getTotalPlannedDurationForProject($projects_id) {
       global $DB;
 
-      $query = "SELECT SUM(`planned_duration`) as SUM
-                FROM `glpi_projecttasks`
-                WHERE `glpi_projecttasks`.`projects_id` = '$projects_id';";
-      foreach ($DB->request($query) as $data) {
-         return $data['SUM'];
+      $iterator = $DB->request([
+         'SELECT' => new QueryExpression('SUM(planned_duration) AS duration'),
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['projects_id' => $projects_id]
+      ]);
+
+      while ($data = $iterator->next()) {
+         return $data['duration'];
       }
       return 0;
    }
@@ -927,15 +944,17 @@ class ProjectTask extends CommonDBChild {
          return false;
       }
 
-      $columns = ['name'             => self::getTypeName(Session::getPluralNumber()),
-                       'tname'            => __('Type'),
-                       'sname'            => __('Status'),
-                       'percent_done'     => __('Percent done'),
-                       'plan_start_date'  => __('Planned start date'),
-                       'plan_end_date'    => __('Planned end date'),
-                       'planned_duration' => __('Planned duration'),
-                       '_effect_duration' => __('Effective duration'),
-                       'fname'            => __('Father'),];
+      $columns = [
+         'name'             => self::getTypeName(Session::getPluralNumber()),
+         'tname'            => __('Type'),
+         'sname'            => __('Status'),
+         'percent_done'     => __('Percent done'),
+         'plan_start_date'  => __('Planned start date'),
+         'plan_end_date'    => __('Planned end date'),
+         'planned_duration' => __('Planned duration'),
+         '_effect_duration' => __('Effective duration'),
+         'fname'            => __('Father')
+      ];
 
       if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
@@ -1591,7 +1610,7 @@ class ProjectTask extends CommonDBChild {
       $html.= "<div class='b'>";
       $html.= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"]."%");
       $html.= "</div>";
-      $html.= "<div class='event-description'>".html_entity_decode($val["content"])."</div>";
+      $html.= "<div class='event-description rich_text_container'>".html_entity_decode($val["content"])."</div>";
       return $html;
    }
 }

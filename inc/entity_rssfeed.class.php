@@ -59,11 +59,12 @@ class Entity_RSSFeed extends CommonDBRelation {
       global $DB;
 
       $ent   = [];
-      $query = "SELECT `glpi_entities_rssfeeds`.*
-                FROM `glpi_entities_rssfeeds`
-                WHERE `rssfeeds_id` = '$rssfeeds_id'";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $ent[$data['entities_id']][] = $data;
       }
       return $ent;

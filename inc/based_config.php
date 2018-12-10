@@ -42,10 +42,10 @@ if (!empty($tz)) {
    date_default_timezone_set(@date_default_timezone_get());
 }
 
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
+
 // If this file exists, it is load
-if (!is_dir(GLPI_ROOT. '/config') && file_exists('/etc/glpi/local_define.php')) { // Relocated (Linux only)
-   require_once '/etc/glpi/local_define.php';
-} else if (file_exists(GLPI_ROOT. '/config/local_define.php')) {
+if (file_exists(GLPI_ROOT. '/config/local_define.php') && !defined('TU_USER')) {
    require_once GLPI_ROOT. '/config/local_define.php';
 }
 
@@ -164,3 +164,5 @@ if (!defined("GLPI_JQUERY_UPLOADHANDLER")) {
    define("GLPI_JQUERY_UPLOADHANDLER",
           GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
 }
+
+include_once (GLPI_ROOT . "/inc/define.php");

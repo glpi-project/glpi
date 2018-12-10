@@ -202,4 +202,25 @@ class DeviceGraphicCard extends CommonDevice {
                    'interfacetypes_id' => 'equal'];
    }
 
+   public static function rawSearchOptionsToAdd($itemtype, $main_joinparams) {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_devicegraphiccards',
+         'field'              => 'designation',
+         'name'               => __('Graphics card'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicegraphiccards',
+               'joinparams'         => $main_joinparams
+            ]
+         ]
+      ];
+
+      return $tab;
+   }
 }

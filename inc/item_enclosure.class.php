@@ -48,32 +48,13 @@ class Item_Enclosure extends CommonDBRelation {
       return _n('Item', 'Item', $nb);
    }
 
-   /**
-    * Count connection for a enclosure
-    *
-    * @param Enclosure $enclosure Enclosure object instance
-    *
-    * @return integer
-   **/
-   static function countForEnclosure(Enclosure $enclosure) {
-      return countElementsInTable(self::getTable(),
-                                  ['enclosures_id' => $enclosure->getID()]);
-   }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
-      switch ($item->getType()) {
-         default:
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable(
-                  self::getTable(),
-                  [
-                     'enclosures_id'  => $item->getID()
-                  ]);
-            }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+      if ($_SESSION['glpishow_count_on_tabs']) {
+         $nb = self::countForMainItem($item);
       }
-      return '';
+      return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
@@ -186,11 +167,9 @@ class Item_Enclosure extends CommonDBRelation {
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
-      $colspan = 4;
-
       echo "<div class='center'>";
 
-      $this->initForm($ID, $this->fields);
+      $this->initForm($ID, $options);
       $this->showFormHeader();
 
       $enclosure = new Enclosure();
@@ -202,13 +181,14 @@ class Item_Enclosure extends CommonDBRelation {
       echo "<td><label for='dropdown_itemtype$rand'>".__('Item type')."</label></td>";
       echo "<td>";
       $types = $CFG_GLPI['rackable_types'];
+      $translated_types = [];
       unset($types[array_search('Enclosure', $types)]);
-      foreach ($types as &$type) {
-         $type = $type::getTypeName(1);
+      foreach ($types as $type) {
+         $translated_types[$type] = $type::getTypeName(1);
       }
       Dropdown::showFromArray(
          'itemtype',
-         array_combine($types, $types), [
+         $translated_types, [
             'display_emptychoice'   => true,
             'value'                 => $this->fields["itemtype"],
             'rand'                  => $rand
@@ -219,6 +199,17 @@ class Item_Enclosure extends CommonDBRelation {
       $used = [];
       $iterator = $DB->request([
          'FROM'   => $this->getTable()
+      ]);
+      while ($row = $iterator->next()) {
+         $used [$row['itemtype']][] = $row['items_id'];
+      }
+
+      // get used items by racks
+      $iterator = $DB->request([
+         'FROM'  => Item_Rack::getTable(),
+         'WHERE' => [
+            'is_reserved' => 0
+         ]
       ]);
       while ($row = $iterator->next()) {
          $used [$row['itemtype']][] = $row['items_id'];
@@ -303,125 +294,24 @@ class Item_Enclosure extends CommonDBRelation {
     * @return array
     */
    private function prepareInput($input) {
-      /*$error_detected = [];
-
-      $itemtype = $this->fields['itemtype'];
-      $items_id = $this->fields['items_id'];
-      $racks_id = $this->fields['racks_id'];
-      $position = $this->fields['position'];
-      $hpos = $this->fields['hpos'];
-      $orientation = $this->fields['orientation'];
+      $error_detected = [];
 
       //check for requirements
-      if ($this->isNewItem()) {
-         if (!isset($input['itemtype'])) {
-            $error_detected[] = __('An item type is required');
-         }
-
-         if (!isset($input['items_id'])) {
-            $error_detected[] = __('An item is required');
-         }
-
-         if (!isset($input['racks_id'])) {
-            $error_detected[] = __('A rack is required');
-         }
-
-         if (!isset($input['position'])) {
-            $error_detected[] = __('A position is required');
-         }
+      if (($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
+          || (isset($input['itemtype']) && empty($input['itemtype']))) {
+         $error_detected[] = __('An item type is required');
       }
-
-      if (isset($input['itemtype'])) {
-         $itemtype = $input['itemtype'];
+      if (($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
+          || (isset($input['items_id']) && empty($input['items_id']))) {
+         $error_detected[] = __('An item is required');
       }
-      if (isset($input['items_id'])) {
-         $items_id = $input['items_id'];
+      if (($this->isNewItem() && (!isset($input['enclosures_id']) || empty($input['enclosures_id'])))
+          || (isset($input['enclosures_id']) && empty($input['enclosures_id']))) {
+         $error_detected[] = __('An enclosure is required');
       }
-      if (isset($input['racks_id'])) {
-         $racks_id = $input['racks_id'];
-      }
-      if (isset($input['position'])) {
-         $position = $input['position'];
-      }
-      if (isset($input['hpos'])) {
-         $hpos = $input['hpos'];
-      }
-      if (isset($input['orientation'])) {
-         $orientation = $input['orientation'];
-      }
-
-      if (!count($error_detected)) {
-         //check if required U are available at position
-         $rack = new Rack();
-         $rack->getFromDB($racks_id);
-
-         $filled = $rack->getFilled($itemtype, $items_id);
-
-         $item = new $itemtype;
-         $item->getFromDB($items_id);
-         $model_class = $item->getType() . 'Model';
-         $modelsfield = strtolower($item->getType()) . 'models_id';
-         $model = new $model_class;
-         if ($model->getFromDB($item->fields[$modelsfield])) {
-            $item->model = $model;
-         } else {
-            $item->model = null;
-         }
-
-         $required_units = 1;
-         $width          = 1;
-         $depth          = 1;
-         if ($item->model != null) {
-            if ($item->model->fields['required_units'] > 1) {
-               $required_units = $item->model->fields['required_units'];
-            }
-            if ($item->model->fields['is_half_rack'] == 1) {
-               if ($this->isNewItem() && !isset($input['hpos']) || $input['hpos'] == 0) {
-                  $error_detected[] = __('You must define an horizontal position for this item');
-               }
-               $width = 0.5;
-            }
-            if ($item->model->fields['depth'] != 1) {
-               if ($this->isNewItem() && !isset($input['orientation'])) {
-                  $error_detected[] = __('You must define an orientation for this item');
-               }
-               $depth = $item->model->fields['depth'];
-            }
-         }
-
-         if ($position > $rack->fields['number_units'] ||
-            $position + $required_units  > $rack->fields['number_units'] + 1
-         ) {
-            $error_detected[] = __('Item is out of rack bounds');
-         } else if (!count($error_detected)) {
-            $i = 0;
-            while ($i < $required_units) {
-               $current_position = $position + $i;
-               if (isset($filled[$current_position])) {
-                  $width_overflow = false;
-                  $depth_overflow = false;
-                  if ($filled[$current_position]['width'] + $width > 1) {
-                     if ($depth > 0.5) {
-                        $width_overflow = true;
-                     }
-                  } else if ($filled[$current_position]['width'] <= 0.5 && $hpos == $filled[$current_position]['hpos']) {
-                     $error_detected[] = __('An item already exists at this horizontal position');
-                  }
-                  if ($filled[$current_position]['depth'] + $depth > 1) {
-                     if ($width > 0.5) {
-                        $depth_overflow = true;
-                     }
-                  } else if ($filled[$current_position]['depth'] <= 0.5 && $orientation == $filled[$current_position]['orientation']) {
-                     $error_detected[] = __('An item already exists for this orientation');
-                  }
-
-                  if ($width_overflow || $depth_overflow) {
-                     $error_detected[] = __('Not enougth space available to place item');
-                  }
-               }
-               ++$i;
-            }
-         }
+      if (($this->isNewItem() && (!isset($input['position']) || empty($input['position'])))
+          || (isset($input['position']) && empty($input['position']))) {
+         $error_detected[] = __('A position is required');
       }
 
       if (count($error_detected)) {
@@ -433,7 +323,7 @@ class Item_Enclosure extends CommonDBRelation {
             );
          }
          return false;
-      }*/
+      }
 
       return $input;
    }

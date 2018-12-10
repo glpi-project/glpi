@@ -180,14 +180,14 @@ class TicketTemplate extends CommonDropdown {
                                                                          => 'requesttypes_id',
                      $ticket->getSearchOptionIDByField('field', 'completename',
                                                        'glpi_locations') => 'locations_id',
-                     $ticket->getSearchOptionIDByField('field', 'slas_tto_id',
-                                                       'glpi_slas')      => 'slas_tto_id',
-                     $ticket->getSearchOptionIDByField('field', 'slas_ttr_id',
-                                                       'glpi_slas')      => 'slas_ttr_id',
-                     $ticket->getSearchOptionIDByField('field', 'olas_tto_id',
-                                                       'glpi_olas')      => 'olas_tto_id',
-                     $ticket->getSearchOptionIDByField('field', 'olas_ttr_id',
-                                                       'glpi_olas')      => 'olas_ttr_id',
+                     $ticket->getSearchOptionIDByField('field', 'slas_id_tto',
+                                                       'glpi_slas')      => 'slas_id_tto',
+                     $ticket->getSearchOptionIDByField('field', 'slas_id_ttr',
+                                                       'glpi_slas')      => 'slas_id_ttr',
+                     $ticket->getSearchOptionIDByField('field', 'olas_id_tto',
+                                                       'glpi_olas')      => 'olas_id_tto',
+                     $ticket->getSearchOptionIDByField('field', 'olas_id_ttr',
+                                                       'glpi_olas')      => 'olas_id_ttr',
                      $ticket->getSearchOptionIDByField('field', 'time_to_resolve',
                                                        'glpi_tickets')   => 'time_to_resolve',
                      $ticket->getSearchOptionIDByField('field', 'time_to_own',
@@ -660,17 +660,23 @@ class TicketTemplate extends CommonDropdown {
       // Source fields
       $source = [];
       foreach ($to_merge as $merge) {
-         $source[$merge]
-            = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge,
-                                                              "tickettemplates_id='".$source_id."'"));
+         $source[$merge] = $this->formatFieldsToMerge(
+            getAllDatasFromTable(
+               'glpi_tickettemplate'.$merge,
+               ['tickettemplates_id' => $source_id]
+            )
+         );
       }
 
       // Target fields
       $target = [];
       foreach ($to_merge as $merge) {
-         $target[$merge]
-            = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge,
-                                                              "tickettemplates_id='".$target_id."'"));
+         $target[$merge] = $this->formatFieldsToMerge(
+            getAllDatasFromTable(
+               'glpi_tickettemplate'.$merge,
+               ['tickettemplates_id' => $target_id]
+            )
+         );
       }
 
       // Merge
@@ -706,13 +712,13 @@ class TicketTemplate extends CommonDropdown {
       // Source categories
       $source = [];
       foreach ($to_merge as $merge) {
-         $source[$merge] = getAllDatasFromTable('glpi_itilcategories', "$merge='".$source_id."'");
+         $source[$merge] = getAllDatasFromTable('glpi_itilcategories', [$merge => $source_id]);
       }
 
       // Target categories
       $target = [];
       foreach ($to_merge as $merge) {
-         $target[$merge] = getAllDatasFromTable('glpi_itilcategories', "$merge='".$target_id."'");
+         $target[$merge] = getAllDatasFromTable('glpi_itilcategories', [$merge => $target_id]);
       }
 
       // Merge

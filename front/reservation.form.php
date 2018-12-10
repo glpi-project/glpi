@@ -45,7 +45,7 @@ if (Session::getCurrentInterface() == "helpdesk") {
 }
 
 if (isset($_POST["update"])) {
-   list($begin_year,$begin_month,$begin_day) = explode("-", $_POST['resa']["begin"]);
+   list($begin_year,$begin_month) = explode("-", $_POST['resa']["begin"]);
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    if (Session::haveRight("reservation", UPDATE)
        || (Session::getLoginUserID() === $_POST["users_id"])) {
@@ -68,7 +68,7 @@ if (isset($_POST["update"])) {
                          $reservationitems_id));
    }
 
-   list($begin_year,$begin_month,$begin_day) = explode("-", $rr->fields["begin"]);
+   list($begin_year,$begin_month) = explode("-", $rr->fields["begin"]);
    Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 
@@ -80,7 +80,7 @@ if (isset($_POST["update"])) {
    }
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    $dates_to_add = [];
-   list($begin_year,$begin_month,$begin_day) = explode("-", $_POST['resa']["begin"]);
+   list($begin_year,$begin_month) = explode("-", $_POST['resa']["begin"]);
    if (isset($_POST['resa']["end"])) {
       // Compute dates to add.
       $dates_to_add[$_POST['resa']["begin"]] = $_POST['resa']["end"];
@@ -138,53 +138,6 @@ if (isset($_POST["update"])) {
       }
       Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
    }
-   //          $times  = $_POST["periodicity_times"];
-   //          $begin  = $_POST["begin"];
-   //          list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
-   //          $end    = $_POST["end"];
-   //          $to_add = 1;
-   //
-   //          if ($_POST["periodicity"] == "week") {
-   //             $to_add = 7;
-   //          }
-   //          $_POST['_target'] = $_SERVER['PHP_SELF'];
-   //
-   //          $_POST['_ok'] = true;
-   //          if ($times > 1 ) {
-   //             $_POST['group'] = $rr->getUniqueGroupFor($reservationitems_id);
-   //          }
-
-   //          for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
-   //             $_POST["begin"]  = date('Y-m-d H:i:s', strtotime($begin." +".($i*$to_add)." day"));
-   //             $_POST["end"]    = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));
-   //
-   //             if (Session::haveRight("reservation_central","w")
-   //                || (Session::getLoginUserID() === $_POST["users_id"])) {
-   //                unset($rr->fields["id"]);
-   //                $_POST['_ok'] = $rr->add($_POST);
-   //             }
-   //          }
-
-   //          if ($_POST['_ok']) {
-   //             Event::log($_POST["reservationitems_id"], "reservation", 4, "inventory",
-   //                      sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["_ok"]));
-   //          } else {
-   //             $all_ok = false;
-   //          }
-   //       }
-   //    } else {
-   //       $all_ok = false;
-   //    }
-   //    if ($all_ok) {
-   //       $toadd = "";
-   //       // Only one reservation : move to correct month
-   //       if (count($_POST['items']) == 1) {
-   //          $toadd  = "?reservationitems_id=$reservationitems_id";
-   //          $toadd .= "&mois_courant=".intval($begin_month);
-   //          $toadd .= "&annee_courante=".intval($begin_year);
-   //       }
-   //       Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
-   //    }
 
 } else if (isset($_GET["id"])) {
    if (!isset($_GET['begin'])) {

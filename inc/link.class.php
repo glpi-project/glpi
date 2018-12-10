@@ -70,10 +70,12 @@ class Link extends CommonDBTM {
       if (self::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $restrict = "`glpi_links_itemtypes`.`links_id` = `glpi_links`.`id`
-                         AND `glpi_links_itemtypes`.`itemtype` = '".$item->getType()."'".
-                          getEntitiesRestrictRequest(" AND ", "glpi_links", '', '', false);
-            $nb = countElementsInTable(['glpi_links_itemtypes','glpi_links'], $restrict);
+            $nb = countElementsInTable(
+               ['glpi_links_itemtypes','glpi_links'], [
+                  'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
+                  'glpi_links_itemtypes.itemtype'  => $item->getType()
+               ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
+            );
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -100,11 +102,10 @@ class Link extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_links_itemtypes', [
-            'links_id'  => $this->fields['id']
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Link_Itemtype::class,
          ]
       );
    }
@@ -175,22 +176,6 @@ class Link extends CommonDBTM {
       $this->showFormButtons($options);
 
       return true;
-   }
-
-
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
-   function getSpecificMassiveActions($checkitem = null) {
-
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
-
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-      }
-
-      return $actions;
    }
 
 
@@ -473,26 +458,34 @@ class Link extends CommonDBTM {
          $restrict = Profile_User::getEntitiesForUser($item->getID());
       }
 
-      $query = "SELECT `glpi_links`.`id`,
-                       `glpi_links`.`link` AS link,
-                       `glpi_links`.`name` AS name ,
-                       `glpi_links`.`data` AS data,
-                       `glpi_links`.`open_window` AS open_window
-                FROM `glpi_links`
-                INNER JOIN `glpi_links_itemtypes`
-                     ON `glpi_links`.`id` = `glpi_links_itemtypes`.`links_id`
-                WHERE `glpi_links_itemtypes`.`itemtype`='".$item->getType()."' " .
-                      getEntitiesRestrictRequest(" AND", "glpi_links", "entities_id",
-                                                 $restrict, true)."
-                ORDER BY name";
-
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'       => [
+            'glpi_links.id',
+            'glpi_links.link AS link',
+            'glpi_links.name AS name',
+            'glpi_links.data AS data',
+            'glpi_links.open_window AS open_window'
+         ],
+         'FROM'         => 'glpi_links',
+         'INNER JOIN'   => [
+            'glpi_links_itemtypes'  => [
+               'ON' => [
+                  'glpi_links_itemtypes'  => 'links_id',
+                  'glpi_links'            => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_links_itemtypes.itemtype'  => $item->getType(),
+         ] + getEntitiesRestrictCriteria('glpi_links', 'entities_id', $restrict, true),
+         'ORDERBY'      => 'name'
+      ]);
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if ($DB->numrows($result) > 0) {
+      if (count($iterator)) {
          echo "<tr><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             $links = self::getAllLinksFor($item, $data);
 
             foreach ($links as $link) {

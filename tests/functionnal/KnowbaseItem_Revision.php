@@ -101,7 +101,19 @@ class KnowbaseItem_Revision extends DbTestCase {
       $this->integer((int)$nb)->isIdenticalTo(2);
    }
 
-   public function testGetTabNameForItem() {
+   public function testGetTabNameForItemNotLogged() {
+      //we are not logged, we should not see revision tab
+      $kb_rev = new \KnowbaseItem_Revision();
+      $kb1 = $this->getNewKbItem();
+
+      $_SESSION['glpishow_count_on_tabs'] = 1;
+      $name = $kb_rev->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('');
+   }
+
+   public function testGetTabNameForItemLogged() {
+      $this->login();
+
       $kb_rev = new \KnowbaseItem_Revision();
       $kb1 = $this->getNewKbItem();
 
@@ -139,6 +151,8 @@ class KnowbaseItem_Revision extends DbTestCase {
       $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
       $toadd = $kb1->fields;
       unset($toadd['id']);
+      unset($toadd['date_creation']);
+      unset($toadd['date_mod']);
       $toadd['name'] = $this->getUniqueString();
       $this->integer((int)$kb1->add($toadd))->isGreaterThan(0);
       return $kb1;

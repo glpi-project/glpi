@@ -316,11 +316,12 @@ class NetworkName extends FQDNLabel {
 
    function cleanDBonPurge() {
 
-      $alias = new NetworkAlias();
-      $alias->cleanDBonItemDelete($this->getType(), $this->GetID());
-
-      $ipAddress = new IPAddress();
-      $ipAddress->cleanDBonItemDelete($this->getType(), $this->GetID());
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            IPAddress::class,
+            NetworkAlias::class,
+         ]
+      );
    }
 
 
@@ -407,7 +408,7 @@ class NetworkName extends FQDNLabel {
                    FROM `".$name->getTable()."`
                    WHERE `itemtype` = 'NetworkPort'
                    AND `items_id` = '$networkPortID'
-                   AND `is_deleted` = '0'";
+                   AND `is_deleted` = 0";
 
          $result = $DB->query($query);
 
@@ -559,7 +560,7 @@ class NetworkName extends FQDNLabel {
                      $JOINS = " LEFT JOIN `glpi_ipaddresses`
                                     ON (`glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`
                                         AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                                        AND `glpi_ipaddresses`.`is_deleted` = '0')";
+                                        AND `glpi_ipaddresses`.`is_deleted` = 0)";
                      $ORDER = "ISNULL (`glpi_ipaddresses`.`id`),
                                `glpi_ipaddresses`.`binary_3`, `glpi_ipaddresses`.`binary_2`,
                                `glpi_ipaddresses`.`binary_1`, `glpi_ipaddresses`.`binary_0`";
@@ -579,7 +580,7 @@ class NetworkName extends FQDNLabel {
                       FROM `glpi_networknames`
                       $JOINS
                       WHERE `glpi_networknames`.`fqdns_id` = '".$item->fields["id"]."'
-                            AND `glpi_networknames`.`is_deleted` = '0'
+                            AND `glpi_networknames`.`is_deleted` = 0
                       ORDER BY $ORDER";
             break;
 
@@ -588,7 +589,7 @@ class NetworkName extends FQDNLabel {
                       FROM `glpi_networknames`
                       WHERE `itemtype` = '".$item->getType()."'
                             AND `items_id` = '".$item->getID()."'
-                            AND `glpi_networknames`.`is_deleted` = '0'";
+                            AND `glpi_networknames`.`is_deleted` = 0";
             break;
 
          case 'NetworkEquipment' :
@@ -598,7 +599,7 @@ class NetworkName extends FQDNLabel {
                             AND `glpi_networkports`.`items_id` ='".$item->getID()."'
                             AND `glpi_networknames`.`itemtype` = 'NetworkPort'
                             AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                            AND `glpi_networknames`.`is_deleted` = '0'";
+                            AND `glpi_networknames`.`is_deleted` = 0";
             break;
 
       }
@@ -696,8 +697,10 @@ class NetworkName extends FQDNLabel {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
          echo __('Not associated');
          echo "</td><td class='left'>";
-         self::dropdown(['name'      => 'addressID',
-                              'condition' => '`items_id`=0']);
+         self::dropdown([
+            'name'      => 'addressID',
+            'condition' => ['items_id' => 0]
+         ]);
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button', 'Associate').
                 "' class='submit'>";
@@ -840,7 +843,7 @@ class NetworkName extends FQDNLabel {
                             AND `glpi_networkports`.`is_deleted` ='0'
                             AND `glpi_networknames`.`itemtype` = 'NetworkPort'
                             AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                            AND `glpi_networknames`.`is_deleted` = '0'";
+                            AND `glpi_networknames`.`is_deleted` = 0";
             $result = $DB->query($query);
             $ligne  = $DB->fetch_assoc($result);
             return $ligne['cpt'];

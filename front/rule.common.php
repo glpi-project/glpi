@@ -30,11 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var RuleCollection $rulecollection
+ */
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
-$rule = $rulecollection->getRuleClass();
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";

@@ -54,7 +54,7 @@ echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
 if (Session::haveRight('internet', UPDATE)
     // Check access to all entities
-    && Session::isViewAllEntities()) {
+    && Session::canViewAllEntities()) {
    echo "<tr class='tab_bg_1'><td class='center'>";
    Html::showSimpleForm(IPNetwork::getFormURL(), 'reinit_network',
                         __('Reinit the network topology'));

@@ -55,8 +55,6 @@ class NotificationTarget extends CommonDBChild {
    // Tags which have data in HTML : do not try to clean them
    public $html_tags                   = [];
 
-   /** @deprecated 9.2 */
-   private $datas                      = [];
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
    public $data                        = [];
@@ -119,18 +117,9 @@ class NotificationTarget extends CommonDBChild {
       $this->raiseevent = $event;
       $this->options    = $options;
 
-      if (method_exists($this, 'getNotificationTargets')) {
-         Toolbox::deprecated('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
-         $this->getNotificationTargets($this->entity);
-      } else {
-         $this->addNotificationTargets($this->entity);
-      }
+      $this->addNotificationTargets($this->entity);
 
       $this->addAdditionalTargets($event);
-      if (method_exists($this, 'getAdditionalTargets')) {
-         Toolbox::deprecated('getAdditionalTargets() method is deprecated (' . get_called_class() . ')');
-         $this->getAdditionalTargets();
-      }
 
       // add new target by plugin
       unset($this->data);
@@ -341,8 +330,11 @@ class NotificationTarget extends CommonDBChild {
             list($type,$id) = explode('_', $key);
             $values[$key]   = $this->notification_targets_labels[$type][$id];
          }
-         $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                         'notifications_id = '.$notifications_id);
+         $targets = getAllDatasFromTable(
+            self::getTable(), [
+               'notifications_id' => $notifications_id
+            ]
+         );
          $actives = [];
          if (count($targets)) {
             foreach ($targets as $data) {
@@ -384,8 +376,11 @@ class NotificationTarget extends CommonDBChild {
       if (!isset($input['notifications_id'])) {
          return;
       }
-      $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                      'notifications_id = '.$input['notifications_id']);
+      $targets = getAllDatasFromTable(
+         self::getTable(), [
+            'notifications_id' => $input['notifications_id']
+         ]
+      );
       $actives = [];
       if (count($targets)) {
          foreach ($targets as $data) {
@@ -515,6 +510,15 @@ class NotificationTarget extends CommonDBChild {
       if ($data[$target_field] !== null) {
          $param[$target_field] = $data[$target_field];
          $this->target[$data[$target_field]] = $param;
+      }
+
+      if (isset($data['users_id']) && $data['users_id']) {
+         $this->recipient_data = [
+            'itemtype' => User::class,
+            'items_id' => $data['users_id'],
+         ];
+         Plugin::doHook('add_recipient_to_target', $this);
+         unset($this->recipient_data);
       }
    }
 
@@ -682,30 +686,76 @@ class NotificationTarget extends CommonDBChild {
 
       // members/managers of the group allowed on object entity
       // filter group with 'is_assign' (attribute can be unset after notification)
-      $query = $this->getDistinctUserSql()."
-               FROM `glpi_groups_users`
-               INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
-               $this->getProfileJoinSql()."
-               INNER JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-               WHERE `glpi_groups_users`.`groups_id` = '$group_id'
-                     AND `glpi_groups`.`is_notify`";
+      $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+      $criteria['FROM'] = Group_User::getTable();
+      $criteria['INNER JOIN'] = array_merge(
+         [
+            User::getTable() => [
+               'ON' => [
+                  Group_User::getTable()  => 'users_id',
+                  User::getTable()        => 'id'
+               ]
+            ],
+            Group::getTable() => [
+               'ON' => [
+                  Group_User::getTable()  => 'groups_id',
+                  Group::getTable()       => 'id'
+               ]
+            ]
+         ],
+         $criteria['INNER JOIN']
+      );
+      $criteria['WHERE'] = array_merge(
+         $criteria['WHERE'], [
+            Group_User::getTable() . '.groups_id'  => $group_id,
+            Group::getTable() . '.is_notify'       => 1,
+         ]
+      );
 
       if ($manager == 1) {
-         $query .= " AND `glpi_groups_users`.`is_manager` ";
+         $criteria['WHERE']['glpi_groups_users.is_manager'] = 1;
       } else if ($manager == 2) {
-         $query .= " AND NOT `glpi_groups_users`.`is_manager` ";
+         $criteria['WHERE']['glpi_groups_users.is_manager'] = 0;
       }
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request($criteria);
+      while ($data = $iterator->next()) {
          $this->addToRecipientsList($data);
+      }
+
+      if ($manager != 1) {
+         // Do not consider it as a group notification if it only targets supervisor
+         $this->recipient_data = [
+            'itemtype' => Group::class,
+            'items_id' => $group_id,
+         ];
+         Plugin::doHook('add_recipient_to_target', $this);
+         unset($this->recipient_data);
       }
    }
 
 
+   /**
+    * @deprecated 9.4
+    */
    final public function getDistinctUserSql() {
-
+      Toolbox::deprecated('Use getDistinctUserCriteria');
       return  "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                `glpi_users`.`language` AS language";
+   }
+
+   /**
+    * Get request criteria to select uniques users
+    *
+    * @since 9.4
+    *
+    * @return array
+    */
+   final public function getDistinctUserCriteria() {
+      return [
+         'SELECT DISTINCT' => User::getTable() . '.id AS users_id',
+         'FIELDS'          => [User::getTable() . '.language AS language']
+      ];
    }
 
 
@@ -767,14 +817,17 @@ class NotificationTarget extends CommonDBChild {
       global $DB;
 
       // Filter groups which can be notified and have members (as notifications are sent to members)
-      $query = "SELECT `id`, `name`
-                FROM `glpi_groups`".
-                getEntitiesRestrictRequest(" WHERE", 'glpi_groups', 'entities_id', $entity, true)."
-                      AND `is_usergroup`
-                      AND `is_notify`
-                ORDER BY `name`";
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'name'],
+         'FROM'   => Group::getTable(),
+         'WHERE'  => [
+            'is_usergroup' => 1,
+            'is_notify'    => 1
+         ] + getEntitiesRestrictCriteria('glpi_groups', 'entities_id', $entity, true),
+         'ORDER'  => 'name'
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          //Add group
          $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Group'), $data["name"]),
                           Notification::GROUP_TYPE);
@@ -873,12 +926,12 @@ class NotificationTarget extends CommonDBChild {
 
       if (!empty($id)) {
          //Look for the user by his id
-         $query = $this->getDistinctUserSql()."
-                  FROM `glpi_users`".
-                  $this->getProfileJoinSql()."
-                  WHERE `glpi_users`.`id` IN ('".implode("','", $id)."')";
+         $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+         $criteria['FROM'] = User::getTable();
+         $criteria['WHERE'][User::getTable() . '.id'] = $id;
+         $iterator = $DB->request($criteria);
 
-         foreach ($DB->request($query) as $data) {
+         while ($data = $iterator->next()) {
             //Add the user email and language in the notified users list
             $this->addToRecipientsList($data);
          }
@@ -932,15 +985,22 @@ class NotificationTarget extends CommonDBChild {
    final public function addForProfile($profiles_id) {
       global $DB;
 
-      $query = $this->getDistinctUserSql().",
-               glpi_profiles_users.entities_id AS entity
-               FROM `glpi_users`".
-               $this->getProfileJoinSql()."
-               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."';";
+      $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+      $criteria['FIELDS'][] = Profile_User::getTable() . '.entities_id AS entity';
+      $criteria['FROM'] = User::getTable();
+      $criteria['WHERE'][Profile_User::getTable() . '.profiles_id'] = $profiles_id;
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request($criteria);
+      while ($data = $iterator->next()) {
          $this->addToRecipientsList($data);
       }
+
+      $this->recipient_data = [
+         'itemtype' => Profile::class,
+         'items_id' => $profiles_id,
+      ];
+      Plugin::doHook('add_recipient_to_target', $this);
+      unset($this->recipient_data);
    }
 
 
@@ -1060,12 +1120,7 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  if (method_exists($this, 'getSpecificTargets')) {
-                     Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
-                     $this->getSpecificTargets($data, $options);
-                  } else {
-                     $this->addSpecificTargets($data, $options);
-                  }
+                  $this->addSpecificTargets($data, $options);
             }
             break;
 
@@ -1086,12 +1141,7 @@ class NotificationTarget extends CommonDBChild {
 
          default :
             //Maybe a target specific to a type
-            if (method_exists($this, 'getSpecificTargets')) {
-               Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
-               $this->getSpecificTargets($data, $options);
-            } else {
-               $this->addSpecificTargets($data, $options);
-            }
+            $this->addSpecificTargets($data, $options);
       }
       // action for target from plugin
       $this->data = $data;
@@ -1129,12 +1179,45 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
+   /**
+    * Get SQL join to restrict by profile and by config to avoid send notification
+    * to a user without rights.
+    *
+    * @deprecated 9.4
+    *
+    * @return string
+    */
    public function getProfileJoinSql() {
-
+      Toolbox::deprecated('Use getProfileJoinCriteria');
       return " INNER JOIN `glpi_profiles_users`
                      ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
                          getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
                                                     $this->getEntity(), true).")";
+   }
+
+   /**
+    * Get SQL join to restrict by profile and by config to avoid send notification
+    * to a user without rights.
+    *
+    * @return string
+    */
+   public function getProfileJoinCriteria() {
+      return [
+         'INNER JOIN'   => [
+            Profile_User::getTable() => [
+               'ON' => [
+                  Profile_User::getTable()   => 'users_id',
+                  User::getTable()           => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => getEntitiesRestrictCriteria(
+            Profile_User::getTable(),
+            'entities_id',
+            $this->getEntity(),
+            true
+         )
+      ];
    }
 
 
@@ -1151,11 +1234,6 @@ class NotificationTarget extends CommonDBChild {
                                 'label' => __('URL of the application')]);
 
       $this->addDataForTemplate($event, $options);
-
-      if (method_exists($this, 'getDatasForTemplate')) {
-         Toolbox::deprecated('getDatasForTemplate() method is deprecated (' . get_called_class() . ')');
-         $this->getDatasForTemplate($event, $options);
-      }
 
       Plugin::doHook('item_get_datas', $this);
 
@@ -1253,16 +1331,26 @@ class NotificationTarget extends CommonDBChild {
    static function countForGroup(Group $group) {
       global $DB;
 
-      $sql = "SELECT COUNT(*)AS cpt
-              FROM `glpi_notificationtargets`
-              INNER JOIN `glpi_notifications`
-                    ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
-              WHERE `items_id` = '".$group->getID()."'
-                    AND (`type` = '".Notification::SUPERVISOR_GROUP_TYPE."'
-                         OR `type` = '".Notification::GROUP_TYPE."') ".
-                    getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
-      $data = $DB->request($sql)->next();
-      return $data['cpt'];
+      $count = $DB->request([
+         'COUNT'        => 'cpt',
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            Notification::getTable()   => [
+               'ON'  => [
+                  Notification::getTable()   => 'id',
+                  self::getTable()           => 'notifications_id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'type'      => [
+               Notification::SUPERVISOR_GROUP_TYPE,
+               Notification::GROUP_TYPE
+            ],
+            'items_id'  => $group->getID()
+         ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
+      ])->next();
+      return $count['cpt'];
    }
 
 
@@ -1282,19 +1370,29 @@ class NotificationTarget extends CommonDBChild {
          return false;
       }
 
-      $sql = "SELECT `glpi_notifications`.`id`
-              FROM `glpi_notificationtargets`
-              INNER JOIN `glpi_notifications`
-                    ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
-              WHERE `items_id` = '".$group->getID()."'
-                    AND (`type` = '".Notification::SUPERVISOR_GROUP_TYPE."'
-                         OR `type` = '".Notification::GROUP_TYPE."') ".
-                    getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
-      $req = $DB->request($sql);
+      $iterator = $DB->request([
+         'SELECT'       => [Notification::getTable() . '.id'],
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            Notification::getTable() => [
+               'ON' => [
+                  self::getTable()           => 'notifications_id',
+                  Notification::getTable()   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'type'      => [
+               Notification::SUPERVISOR_GROUP_TYPE,
+               Notification::GROUP_TYPE
+            ],
+            'items_id'  => $group->getID()
+         ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
+      ]);
 
       echo "<table class='tab_cadre_fixe'>";
 
-      if ($req->numrows()) {
+      if (count($iterator)) {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".Entity::getTypeName(1)."</th>";
          echo "<th>".__('Active')."</th>";
@@ -1310,7 +1408,7 @@ class NotificationTarget extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), Group::getTypeName(1),
                                                 $group->getName()));
 
-         foreach ($req as $data) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Notification', $data['id']);
 
             if ($notif->getFromDB($data['id'])) {
@@ -1372,7 +1470,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return string
     */
-   protected function getMode() {
+   public function getMode() {
       return $this->mode;
    }
 
@@ -1395,260 +1493,5 @@ class NotificationTarget extends CommonDBChild {
    public function setEvent($event) {
       $this->event = $event;
       return $this;
-   }
-
-   /**
-    * Get item's author
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemAuthor()
-    *
-    * @return void
-    */
-   function getItemAuthorAddress() {
-      Toolbox::deprecated('getItemAuthorAddress() method is deprecated');
-      $this->addItemAuthor();
-   }
-
-
-   /**
-    * Get targets for all the users of a group
-    *
-    * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
-    * @param integer $group_id id of the group
-    *
-    * @deprecated 9.2 Use NotificationTarget::addForGroup()
-    *
-    * @return void
-   **/
-   function getAddressesByGroup($manager, $group_id) {
-      Toolbox::deprecated('getAddressesByGroup() method is deprecated');
-      $this->addForGroup($manager, $group_id);
-   }
-
-   /**
-    * Get GLPI's global administrator email
-    *
-    * @deprecated 9.2 Use NotificationTarget::addAdmin()
-    *
-    * @return void
-    */
-   function getAdminAddress() {
-      Toolbox::deprecated('getAdminAddress() method is deprecated');
-      $this->addAdmin();
-   }
-
-   /**
-    * Get Group of the item
-    *
-    * @since 0.85
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemGroup()
-    *
-    * @return void
-   **/
-   function getItemGroupAddress() {
-      Toolbox::deprecated('getItemGroupAddress() method is deprecated');
-      $this->addItemGroup();
-   }
-
-   /**
-    * Get Group supervisor of the item
-    *
-    * @since 0.85
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemGroupSupervisor()
-    *
-    * @return void
-   **/
-   function getItemGroupSupervisorAddress() {
-      Toolbox::deprecated('getItemGroupSupervisorAddress() method is deprecated');
-      $this->addItemGroupSupervisor();
-   }
-
-
-   /**
-    * Get Group without supervisor of the item
-    *
-    * @since 0.85
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemGroupWithoutSupervisor()
-    *
-    * @return void
-   **/
-   function getItemGroupWithoutSupervisorAddress() {
-      Toolbox::deprecated('getItemGroupWithoutSupervisorAddress() method is deprecated');
-      $this->addItemGroupWithoutSupervisor();
-   }
-
-   /**
-    * Get Group of technicians in charge of the item
-    *
-    * @deprecated 9.2 Use NotificationTarget addItemTechnicianInCharge()
-    *
-    * @return void
-   **/
-   function getItemGroupTechInChargeAddress() {
-      Toolbox::deprecated('getItemGroupTechInChargeAddress() method is deprecated');
-      $this->addItemTechnicianInCharge();
-   }
-
-   /**
-    * Get technician in charge of the item
-    *
-    * @deprecated 9.2 Use NotificationTarget::addItemTechnicianInCharge()
-    *
-    * @return void
-   **/
-   function getItemTechnicianInChargeAddress() {
-      Toolbox::deprecated('getItemTechnicianInChargeAddress() method is deprecated');
-      $this->addItemTechnicianInCharge();
-   }
-
-   /**
-    * Get user owner of the material
-    *
-    * @deprecated 9.2 use NotificationTarget::addItemowner()
-    *
-    * @return void
-   **/
-   function getItemOwnerAddress() {
-      Toolbox::deprecated('getItemOwnerAddress() method is deprecated');
-      $this->addItemowner();
-   }
-
-   /**
-    * Get users emails by profile
-    *
-    * @param integer $profiles_id the profile ID to get users emails
-    *
-    * @deprecated 9.2 Use NotificationTarget::addForProfile()
-    *
-    * @return nothing
-   **/
-   function getUsersAddressesByProfile($profiles_id) {
-      Toolbox::deprecated('getUsersAddressesByProfile() method is deprecated');
-      $this->addForProfile($profiles_id);
-   }
-
-   /**
-    * Add user to the notified users list
-    *
-    * @param string  $field            look for user looking for this field in the object
-    *                                  which raises the event
-    * @param boolean $search_in_object search is done in the object ? if not  in target object
-    *                                  (false by default)
-    *
-    * @deprecated 9.2 Use NotificationTarget::addUserByField()
-    *
-    * @return void
-   **/
-   function getUserByField($field, $search_in_object = false) {
-      Toolbox::deprecated('getUserByField() method is deprecated');
-      $this->addUserByField($field, $search_in_object);
-   }
-
-   /**
-    * Add new recipient with lang to current recipients array
-    *
-    * @param array $data Data (users_id, lang[, field used for notification])
-    *
-    * @deprecated 9.2 Use NotificationTarget::addToRecipientsList()
-    *
-    * @return void|false
-   **/
-   function addToAddressesList(array $data) {
-      Toolbox::deprecated('addToAddressesList() method is deprecated');
-      $this->addToRecipientsList($data);
-   }
-
-
-   /**
-    * Add addresses according to type of notification
-    *
-    * @param array $data    Data
-    * @param array $options Option
-    *
-    * @deprecated 9.2 Use NotificationTarget::addForTarget
-    *
-    * @return void
-   **/
-   function getAddressesByTarget($data, $options = []) {
-      Toolbox::deprecated('getAddressesByTarget() method is deprecated');
-      $this->addForTarget($data, $options);
-   }
-
-   /**
-    * Add entity admin
-    *
-    * @deprecated 9.2 Use NotificationTarget::addEntityAdmin()
-    *
-    * @return void
-    */
-   function getEntityAdminAddress() {
-      Toolbox::deprecated('getEntityAdminAddress() method is deprecated');
-      $this->addEntityAdmin();
-   }
-
-   /**
-    * Magic call to handle deprecated and removed methods
-    *
-    * @param string $name      Method name
-    * @param array  $arguments Passed args
-    *
-    * @return mixed
-    */
-   public function __call($name, $arguments) {
-      switch ($name) {
-         /**
-         * Return all the targets for this notification
-         * Values returned by this method are the ones for the alerts
-         * Can be updated by implementing the addAdditionnalTargets() method
-         * Can be overwitten (like dbconnection)
-         *
-         * @param integer $entity the entity on which the event is raised
-         *
-         * @deprecated 9.2 Use NotificationTarget::addNotificationTargets()
-         *
-         * @return void
-         */
-         case 'getNotificationTargets':
-            Toolbox::deprecated('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
-            call_user_func_array([$this, 'addNotificationTargets'], $arguments);
-            break;
-         /**
-         * Add targets by a method not defined in NotificationTarget (specific to an itemtype)
-         *
-         * @param array $data    Data
-         * @param array $options Options
-         *
-         * @deprecated 9.2 Use NotificationTarget::addSpecificTargets()
-         *
-         * @return void
-         **/
-         case 'getSpecificTargets':
-            Toolbox::deprecated('getSpecificTargets() method is deprecated');
-            call_user_func_array([$this, 'addSpecificTargets'], $arguments);
-            break;
-         default:
-            throw new \RuntimeException('Unknown method ' . get_called_class() . '::' . $name);
-      }
-   }
-
-   public function __set($name, $value) {
-      if ($name == 'datas') {
-         Toolbox::deprecated('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
-         $this->data = $value;
-      } else {
-         $this->$name = $value;
-      }
-   }
-
-   public function &__get($name) {
-      if ($name == 'datas') {
-         Toolbox::deprecated('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
-         return $this->data;
-      } else {
-         return $this->$name;
-      }
    }
 }

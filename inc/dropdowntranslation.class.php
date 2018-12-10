@@ -364,7 +364,7 @@ class DropdownTranslation extends CommonDBChild {
          echo "<th colspan='4'>".__("List of translations")."</th></tr><tr>";
          if ($canedit) {
             echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
          }
          echo "<th>".__("Language")."</th>";
@@ -516,7 +516,7 @@ class DropdownTranslation extends CommonDBChild {
             'WHERE'  => [
                'itemtype'  => $item->getType(),
                'items_id'  => $item->getID(),
-               'language'  => ['<>', $language]
+               'language'  => $language
             ]
          ]);
          if (count($iterator) > 0) {
@@ -745,10 +745,13 @@ class DropdownTranslation extends CommonDBChild {
 
       $tab = [];
       if (self::isDropdownTranslationActive()) {
-         $query   = "SELECT DISTINCT `itemtype`, `field`
-                     FROM `".self::getTable()."`
-                     WHERE `language` = '$language'";
-         foreach ($DB->request($query) as $data) {
+         $iterator = $DB->request([
+            'SELECT DISTINCT' => 'itemtype',
+            'FIELDS'          => 'field',
+            'FROM'            => self::getTable(),
+            'WHERE'           => ['language' => $language]
+         ]);
+         while ($data = $iterator->next()) {
             $tab[$data['itemtype']][$data['field']] = $data['field'];
          }
       }

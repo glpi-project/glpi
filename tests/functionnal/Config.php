@@ -244,6 +244,29 @@ class Config extends DbTestCase {
          ->isEmpty();
    }
 
+   public function testGetLibraries() {
+      $actual = $expected = [];
+      $deps = \Config::getLibraries(true);
+      foreach ($deps as $dep) {
+         // composer names only (skip htmlLawed)
+         if (strpos($dep['name'], '/')) {
+            $actual[] =$dep['name'];
+         }
+      }
+      sort($actual);
+      $this->array($actual)->isNotEmpty();
+      $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+      foreach ($composer['require'] as $dep => $ver) {
+         // composer names only (skip php, ext-*, ...)
+         if (strpos($dep, '/')) {
+            $expected[] = $dep;
+         }
+      }
+      sort($expected);
+      $this->array($expected)->isNotEmpty();
+      $this->array($actual)->isIdenticalTo($expected);
+   }
+
    public function testGetLibraryDir() {
       $this->boolean(\Config::getLibraryDir(''))->isFalse();
       $this->boolean(\Config::getLibraryDir('abcde'))->isFalse();
@@ -466,5 +489,121 @@ class Config extends DbTestCase {
 
       $result = \Config::checkDbEngine();
       $this->array($result)->isIdenticalTo([$version => $compat]);
+   }
+
+   public function testGetLanguage() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->getLanguage('fr'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('fr_FR'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('Français'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('french'))
+               ->isIdenticalTo('fr_FR')
+            ->string($this->testedInstance->getLanguage('notalang'))
+               ->isIdenticalTo('');
+
+   }
+
+   /**
+    * Provides list of classes that can be linked to configuration.
+    *
+    * @return array
+    */
+   protected function itemtypeLinkedToConfigurationProvider() {
+      return [
+         [
+            'key'      => 'documentcategories_id_forticket',
+            'itemtype' => 'DocumentCategory',
+         ],
+         [
+            'key'      => 'default_requesttypes_id',
+            'itemtype' => 'RequestType',
+         ],
+         [
+            'key'      => 'softwarecategories_id_ondelete',
+            'itemtype' => 'SoftwareCategory',
+         ],
+         [
+            'key'      => 'ssovariables_id',
+            'itemtype' => 'SsoVariable',
+         ],
+         [
+            'key'      => 'transfers_id_auto',
+            'itemtype' => 'Transfer',
+         ],
+      ];
+   }
+
+   /**
+    * Check that relation between items and configuration are correctly cleaned.
+    *
+    * @param string $key
+    * @param string $itemtype
+    *
+    * @dataProvider itemtypeLinkedToConfigurationProvider
+    */
+   public function testCleanRelationDataOfLinkedItems($key, $itemtype) {
+
+      // Case 1: used item is cleaned without replacement
+      $item = new $itemtype();
+      $item->fields = ['id' => 15];
+
+      \Config::setConfigurationValues('core', [$key => $item->fields['id']]);
+
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isTrue();
+      }
+      $item->cleanRelationData();
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isFalse();
+      }
+      $this->array(\Config::getConfigurationValues('core', [$key]))
+         ->hasKey($key)
+         ->variable[$key]->isEqualTo(0);
+
+      // Case 2: unused item is cleaned without effect
+      $item = new $itemtype();
+      $item->fields = ['id' => 15];
+
+      $random_id = mt_rand(20, 100);
+
+      \Config::setConfigurationValues('core', [$key => $random_id]);
+
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isFalse();
+      }
+      $item->cleanRelationData();
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $this->boolean($item->isUsed())->isFalse();
+      }
+      $this->array(\Config::getConfigurationValues('core', [$key]))
+         ->hasKey($key)
+         ->variable[$key]->isEqualTo($random_id);
+
+      // Case 3: used item is cleaned with replacement (CommonDropdown only)
+      if (is_a($itemtype, 'CommonDropdown', true)) {
+         $replacement_item = new $itemtype();
+         $replacement_item->fields = ['id' => 12];
+
+         $item = new $itemtype();
+         $item->fields = ['id' => 15];
+         $item->input = ['_replace_by' => $replacement_item->fields['id']];
+
+         \Config::setConfigurationValues('core', [$key => $item->fields['id']]);
+
+         $this->boolean($item->isUsed())->isTrue();
+         $this->boolean($replacement_item->isUsed())->isFalse();
+         $item->cleanRelationData();
+         $this->boolean($item->isUsed())->isFalse();
+         $this->boolean($replacement_item->isUsed())->isTrue();
+         $this->array(\Config::getConfigurationValues('core', [$key]))
+            ->hasKey($key)
+            ->variable[$key]
+               ->isEqualTo($replacement_item->fields['id']);
+      }
    }
 }

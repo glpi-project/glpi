@@ -334,7 +334,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete reservation_central");
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'ticket'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'ticket']) == 0) {
       // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'ticket'
@@ -484,7 +484,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete update_priority right");
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'followup'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'followup']) == 0) {
       // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'followup'
@@ -492,7 +492,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 rename global_add_followups to followup");
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". TicketFollowup::ADDALLTICKET ."
+                 SET `rights` = ". ITILFollowup::ADDALLTICKET ."
                  WHERE `name` = 'followup'
                        AND `rights` = '1'";
       $DB->queryOrDie($query, "0.85 update followup with global_add_followups right");
@@ -503,7 +503,7 @@ function update084to085() {
                          "`name` = 'add_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::ADDMYTICKET  ."
+                 SET `rights` = `rights` | " . ITILFollowup::ADDMYTICKET  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
          $DB->queryOrDie($query, "0.85 update followup with add_followups right");
@@ -518,7 +518,7 @@ function update084to085() {
                          "`name` = 'group_add_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::ADDGROUPTICKET  ."
+                 SET `rights` = `rights` | " . ITILFollowup::ADDGROUPTICKET  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with group_add_followups right");
@@ -533,7 +533,7 @@ function update084to085() {
                          "`name` = 'observe_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketFollowup::SEEPUBLIC  ."
+                 SET `rights` = `rights` | " . ITILFollowup::SEEPUBLIC  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with observe_ticket right");
@@ -545,8 +545,8 @@ function update084to085() {
                          "`name` = 'show_full_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " .TicketFollowup::SEEPUBLIC ." | ".
-                                              TicketFollowup::SEEPRIVATE ."
+                 SET `rights` = `rights` | " .ITILFollowup::SEEPUBLIC ." | ".
+                                              ITILFollowup::SEEPRIVATE ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
          $DB->queryOrDie($query, "0.85 update followup with show_full_ticket right");
@@ -558,7 +558,7 @@ function update084to085() {
                          "`name` = 'update_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEALL  ."
+                 SET `rights` = `rights` | " . READ  ." | ". ITILFollowup::UPDATEALL  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with update_followups right");
@@ -573,7 +573,7 @@ function update084to085() {
                          "`name` = 'update_own_followups' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEMY  ."
+                 SET `rights` = `rights` | " . READ  ." | ". ITILFollowup::UPDATEMY  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with update_own_followups right");
@@ -599,7 +599,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete delete_followups right");
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'task'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'task']) == 0) {
       // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'task'
@@ -659,7 +659,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete show_full_ticket right");
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'ticketvalidation'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'ticketvalidation']) == 0) {
       // rename delete_validations
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'ticketvalidation'
@@ -735,7 +735,7 @@ function update084to085() {
 
    // must be done after ticket right
    // pour que la proc??dure soit r??-entrante
-   if (countElementsInTable("glpi_profilerights", "`name` = 'change'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'change']) == 0) {
       ProfileRight::addProfileRights(['change']);
 
       ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
@@ -749,7 +749,7 @@ function update084to085() {
                                                     "`name` = 'ticket' AND `rights` & ".UPDATE);
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'changevalidation'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'changevalidation']) == 0) {
       ProfileRight::addProfileRights(['changevalidation']);
 
       ProfileRight::updateProfileRightAsOtherRight('changevalidation', CREATE,
@@ -766,7 +766,7 @@ function update084to085() {
    }
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'planning'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'planning']) == 0) {
       // rename show_planning
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'planning'
@@ -807,7 +807,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete show_all_planning right");
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'problem'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'problem']) == 0) {
       // rename show_my_problem
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'problem'
@@ -906,42 +906,42 @@ function update084to085() {
    // entity_dropdown => right by object
 
    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'domain'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'domain']) == 0) {
       ProfileRight::addProfileRights(['domain']);
       ProfileRight::updateProfileRightsAsOtherRights('domain', 'entity_dropdown');
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'location'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'location']) == 0) {
       ProfileRight::addProfileRights(['location']);
       ProfileRight::updateProfileRightsAsOtherRights('location', 'entity_dropdown');
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'itilcategory'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'itilcategory']) == 0) {
       ProfileRight::addProfileRights(['itilcategory']);
       ProfileRight::updateProfileRightsAsOtherRights('itilcategory', 'entity_dropdown');
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'knowbasecategory'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'knowbasecategory']) == 0) {
       ProfileRight::addProfileRights(['knowbasecategory']);
       ProfileRight::updateProfileRightsAsOtherRights('knowbasecategory', 'entity_dropdown');
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'netpoint'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'netpoint']) == 0) {
       ProfileRight::addProfileRights(['netpoint']);
       ProfileRight::updateProfileRightsAsOtherRights('netpoint', 'entity_dropdown');
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'taskcategory'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'taskcategory']) == 0) {
       ProfileRight::addProfileRights(['taskcategory']);
       ProfileRight::updateProfileRightsAsOtherRights('taskcategory', 'entity_dropdown');
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'state'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'state']) == 0) {
       ProfileRight::addProfileRights(['state']);
       ProfileRight::updateProfileRightsAsOtherRights('state', 'entity_dropdown');
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'solutiontemplate'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'solutiontemplate']) == 0) {
       ProfileRight::addProfileRights(['solutiontemplate']);
       ProfileRight::updateProfileRightsAsOtherRights('solutiontemplate', 'entity_dropdown');
    }
@@ -1026,7 +1026,7 @@ function update084to085() {
    }
 
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='QueuedMail' AND `name`='queuedmail'")) {
+                             ['itemtype' => 'QueuedMail', 'name' => 'queuedmail'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1036,7 +1036,7 @@ function update084to085() {
    }
 
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='QueuedMail' AND `name`='queuedmailclean'")) {
+                             ['itemtype' => 'QueuedMail', 'name' => 'queuedmailclean'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1046,7 +1046,7 @@ function update084to085() {
    }
 
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='Crontask' AND `name`='temp'")) {
+                             ['itemtype' => 'Crontask', 'name' => 'temp'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1066,7 +1066,7 @@ function update084to085() {
    }
 
    // pour que la proc??dure soit r??-entrante
-   if (countElementsInTable("glpi_profilerights", "`name` = 'queuedmail'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'queuedmail']) == 0) {
       ProfileRight::addProfileRights(['queuedmail']);
 
       ProfileRight::updateProfileRightsAsOtherRights('queuedmail', 'notification');
@@ -1652,8 +1652,8 @@ function update084to085() {
    // Create notification for reply to satisfaction survey based on satisfaction notif
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',
-                            "`itemtype` = 'Ticket'
-                              AND `event` = 'replysatisfaction'")==0) {
+                            ['itemtype' => 'Ticket',
+                             'event'    => 'replysatisfaction'])==0) {
       // No notifications duplicate all
 
       $query = "SELECT *
@@ -1799,7 +1799,7 @@ function update084to085() {
    }
 
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='MailCollector' AND `name`='mailgateerror'")) {
+                             ['itemtype' => 'MailCollector', 'name' => 'mailgateerror'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1808,7 +1808,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for mailgateerror");
    }
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='Crontask' AND `name`='circularlogs'")) {
+                             ['itemtype' => 'Crontask', 'name' => 'circularlogs'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1942,7 +1942,7 @@ function update084to085() {
 
    $migration->addField("glpi_projects", 'is_deleted', "bool");
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'project'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'project']) == 0) {
       ProfileRight::addProfileRights(['project']);
 
       ProfileRight::updateProfileRightAsOtherRight('project', Project::READMY,
@@ -1956,7 +1956,7 @@ function update084to085() {
                                                     "`name` = 'change'
                                                       AND `rights` & (".CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE.')');
    }
-   if (countElementsInTable("glpi_profilerights", "`name` = 'projecttask'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'projecttask']) == 0) {
       ProfileRight::addProfileRights(['projecttask']);
 
       ProfileRight::updateProfileRightAsOtherRight('projecttask', ProjectTask::READMY,

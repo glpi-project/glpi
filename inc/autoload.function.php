@@ -34,9 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-include_once (GLPI_ROOT."/inc/based_config.php");
-include_once (GLPI_ROOT."/inc/define.php");
-
 define ('NS_GLPI', 'Glpi\\');
 define ('NS_PLUG', 'GlpiPlugin\\');
 
@@ -74,6 +71,7 @@ function isAPI() {
  */
 function isPluginItemType($classname) {
 
+   /** @var array $matches */
    if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/", $classname, $matches)) {
       $plug           = [];
       $plug['plugin'] = $matches[1];
@@ -125,7 +123,7 @@ function __($str, $domain = 'glpi') {
  * @param string $str    String to translate
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
- * @return protected string (with htmlentities)
+ * @return string
  */
 function __s($str, $domain = 'glpi') {
    return htmlentities(__($str, $domain), ENT_QUOTES, 'UTF-8');
@@ -145,24 +143,6 @@ function __s($str, $domain = 'glpi') {
  */
 function _sx($ctx, $str, $domain = 'glpi') {
    return htmlentities(_x($ctx, $str, $domain), ENT_QUOTES, 'UTF-8');
-}
-
-
-/**
- * Display (echo) a translation
- *
- * @since 0.84
- *
- * @param string $str    String to translate
- * @param string $domain domain used (default is glpi, may be plugin name)
- *
- * @deprecated 9.2 will be removed in the future.
- *
- * @return void
- */
-function _e($str, $domain = 'glpi') {
-   Toolbox::deprecated('_e() method is deprecated');
-   echo __($str, $domain);
 }
 
 
@@ -236,33 +216,6 @@ function _x($ctx, $str, $domain = 'glpi') {
 
 
 /**
- * Display (echo) a contextualized translation
- *
- * @since 0.84
- *
- * @param string $ctx    context
- * @param string $str    to translated
- * @param string $domain domain used (default is glpi, may be plugin name)
- *
- * @deprecated 9.2 will be removed in the future.
- *
- * @return string
- */
-function _ex($ctx, $str, $domain = 'glpi') {
-   Toolbox::deprecated('_ex() method is deprecated');
-   // simulate pgettext
-   $msg   = $ctx."\004".$str;
-   $trans = __($msg, $domain);
-
-   if ($trans == $msg) {
-      // No translation
-      echo $str;
-   }
-   echo $trans;
-}
-
-
-/**
  * Pluralized contextualized translation
  *
  * @since 0.84
@@ -312,14 +265,6 @@ function glpi_autoload($classname) {
       die(1);
    }
 
-   //hack for \Zend\Loader\SplAutoloader :(
-   //@since 9.2 -- WILL BE REMOVED IN FUTURE RELEASE
-   if ($classname === 'Zend\\Loader\\SplAutoloader') {
-      Toolbox::deprecated('Zend\Loader\SplAutoloader has been dropped from GLPI.');
-      require_once GLPI_ROOT . '/lib/zend-splautoloader.class.php';
-      return true;
-   }
-
    if ($classname === 'phpCAS'
        && file_exists(stream_resolve_include_path("CAS.php"))) {
       include_once('CAS.php');
@@ -327,6 +272,11 @@ function glpi_autoload($classname) {
    }
 
    $dir = GLPI_ROOT . "/inc/";
+
+   // Deprecation warn for TicketFollowup
+   if ($classname === 'TicketFollowup') {
+      Toolbox::deprecated('TicketFollowup has been replaced by ITILFollowup.');
+   }
 
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
@@ -336,13 +286,13 @@ function glpi_autoload($classname) {
       // Command line usage of GLPI : need to do a real check plugin activation
       if (isCommandLine()) {
          $plugin = new Plugin();
-         if (count($plugin->find("directory='$plugname' AND state=".Plugin::ACTIVATED)) == 0) {
+         if (count($plugin->find(['directory' => $plugname, 'state' => Plugin::ACTIVATED])) == 0) {
             // Plugin does not exists or not activated
             return false;
          }
       } else {
          // Standard use of GLPI
-         if (!isset($_SESSION['glpi_plugins']) || !in_array($plugname, $_SESSION['glpi_plugins'])) {
+         if (!Plugin::isPluginLoaded($plugname)) {
             // Plugin not activated
             return false;
          }
@@ -386,7 +336,7 @@ if ($needrun) {
    $getComposerUrl = 'https://getcomposer.org/';
    if (isCommandLine()) {
       echo 'Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
-          . 'To install composer please refer to ' . $getComposerUrl;
+          . 'To install composer please refer to ' . $getComposerUrl . PHP_EOL;
    } else {
       echo 'Run "composer install --no-dev" in the glpi tree.<br>'
           . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>';

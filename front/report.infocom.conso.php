@@ -80,9 +80,9 @@ $valeurgraphtot      = [];
 
 /** Display an infocom report for items like consumables
  *
- * @param $itemtype  item type
- * @param $begin     begin date
- * @param $end       end date
+ * @param string $itemtype  item type
+ * @param string $begin     begin date
+ * @param string $end       end date
 **/
 function display_infocoms_report($itemtype, $begin, $end) {
    global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;

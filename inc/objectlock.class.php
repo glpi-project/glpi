@@ -401,8 +401,8 @@ class ObjectLock extends CommonDBTM {
 
             // this mask is mandatory to prevent read of information
             // that are not permitted to view by active profile
-            ProfileRight::getAllPossibleRights();
-            foreach ($_SESSION['glpi_all_possible_rights'] as $key => $val) {
+            $rights = ProfileRight::getAllPossibleRights();
+            foreach ($rights as $key => $val) {
                if (isset($_SESSION['glpilocksavedprofile'][$key])) {
                   $_SESSION['glpiactiveprofile'][$key]
                      = intval($_SESSION['glpilocksavedprofile'][$key])
@@ -625,9 +625,11 @@ class ObjectLock extends CommonDBTM {
       $actionCode = 0; // by default
       $task->setVolume(0); // start with zero
 
-      $lockedItems = getAllDatasFromTable(getTableForItemType(__CLASS__),
-                                          "`date_mod` < '" . date("Y-m-d H:i:s",
-                                          time() - ($task->fields['param'] * HOUR_TIMESTAMP)) . "'");
+      $lockedItems = getAllDatasFromTable(
+         getTableForItemType(__CLASS__), [
+            'date_mod' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))]
+         ]
+      );
 
       foreach ($lockedItems as $row) {
          $ol = new self;

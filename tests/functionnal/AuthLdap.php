@@ -40,6 +40,7 @@ class AuthLDAP extends DbTestCase {
    private $ldap;
 
    public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
       $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
 
       //make sure bootstrapped ldap is active and is default
@@ -54,6 +55,16 @@ class AuthLDAP extends DbTestCase {
 
    public function afterTestMethod($method) {
       unset($_SESSION['ldap_import']);
+
+      //make sure bootstrapped ldap is not active and is default
+      $this->boolean(
+         $this->ldap->update([
+            'id'           => $this->ldap->getID(),
+            'is_active'    => 1,
+            'is_default'   => 1
+         ])
+      )->isTrue();
+
       parent::afterTestMethod($method);
    }
 
@@ -102,7 +113,7 @@ class AuthLDAP extends DbTestCase {
    public function testPost_getEmpty() {
       $ldap = new \AuthLDAP();
       $ldap->post_getEmpty();
-      $this->array($ldap->fields)->hasSize(23);
+      $this->array($ldap->fields)->hasSize(24);
    }
 
    public function testUnsetUndisclosedFields() {
@@ -243,7 +254,7 @@ class AuthLDAP extends DbTestCase {
    public function testGetSearchOptionsNew() {
       $ldap     = new \AuthLDAP();
       $options  = $ldap->rawSearchOptions();
-      $this->array($options)->hasSize(31);
+      $this->array($options)->hasSize(32);
    }
 
    public function testGetSyncFields() {

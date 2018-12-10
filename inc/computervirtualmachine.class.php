@@ -56,9 +56,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
@@ -66,7 +63,7 @@ class ComputerVirtualMachine extends CommonDBChild {
           && Computer::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable('glpi_computervirtualmachines',
+            $nb = countElementsInTable(self::getTable(),
                                       ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
          }
          return self::createTabEntry(self::getTypeName(), $nb);
@@ -75,11 +72,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::defineTabs()
-    *
-    * @since 0.85
-   **/
    function defineTabs($options = []) {
 
       $ong = [];
@@ -89,11 +81,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForVirtualMachine($item);
@@ -120,7 +107,6 @@ class ComputerVirtualMachine extends CommonDBChild {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
          return false;
@@ -245,23 +231,26 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param $comp   Computer object that represents the virtual machine
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForVirtualMachine(Computer $comp) {
-      global $DB;
 
       $ID = $comp->fields['id'];
 
       if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
-         return false;
+         return;
       }
-      $canedit = $comp->canEdit($ID);
 
       echo "<div class='center'>";
 
       if (isset($comp->fields['uuid']) && ($comp->fields['uuid'] != '')) {
-         $where = "LOWER(`uuid`)".self::getUUIDRestrictRequest($comp->fields['uuid']);
-         $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
+         $hosts = getAllDatasFromTable(
+            self::getTable(), [
+               'RAW' => [
+                  'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid'])
+               ]
+            ]
+         );
 
          if (!empty($hosts)) {
             echo "<table class='tab_cadre_fixehov'>";
@@ -314,10 +303,9 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param $comp Computer object
     *
-    * @return Nothing (call to classes members)
+    * @return void
    **/
    static function showForComputer(Computer $comp) {
-      global $DB;
 
       $ID = $comp->fields['id'];
 
@@ -328,15 +316,21 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>".
-                "<a class='vsubmit' href='".ComputerAntivirus::getFormURL()."?computers_id=$ID'>";
+                "<a class='vsubmit' href='".ComputerVirtualMachine::getFormURL()."?computers_id=$ID'>";
          echo __('Add a virtual machine');
          echo "</a></div>\n";
       }
 
       echo "<div class='center'>";
 
-      $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
-                                              "`computers_id` = '$ID' AND `is_deleted` = '0'", false, 'name');
+      $virtualmachines = getAllDatasFromTable(
+         self::getTable(), [
+            'computers_id' => $ID,
+            'is_deleted'   => 0
+         ],
+         false,
+         'name'
+      );
 
       echo "<table class='tab_cadre_fixehov'>";
 
@@ -422,12 +416,14 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Get correct uuid sql search for virtualmachines
     *
-    * @param $uuid the uuid given
+    * @since 9.3.1
     *
-    * @return the restrict which contains uuid, uuid with first block flipped,
+    * @param string $uuid the uuid given
+    *
+    * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
     * uuid with 3 first block flipped
    **/
-   static function getUUIDRestrictRequest($uuid) {
+   static function getUUIDRestrictCriteria($uuid) {
 
       //More infos about uuid, please see wikipedia :
       //http://en.wikipedia.org/wiki/Universally_unique_identifier
@@ -446,17 +442,17 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
       //On unix is flips first block of uuid and on windows flips 3 first blocks...
-      $in      = " IN ('".strtolower($uuid)."'";
-      $regexes = ["/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
-                       "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"
-                                                                    => "$4$3$2$1-$6$5-$8$7$9"];
+      $in      = [strtolower($uuid)];
+      $regexes = [
+         "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/"                                        => "$4$3$2$1$5",
+         "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"  => "$4$3$2$1-$6$5-$8$7$9"
+      ];
       foreach ($regexes as $pattern => $replace) {
          $reverse_uuid = preg_replace($pattern, $replace, $uuid);
          if ($reverse_uuid) {
-            $in .= " ,'".strtolower($reverse_uuid)."'";
+            $in[] = strtolower($reverse_uuid);
          }
       }
-      $in .= ")";
 
       return $in;
    }
@@ -467,7 +463,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @param fields array of virtualmachine fields
     *
-    * @return the ID of the computer that have this uuid or false otherwise
+    * @return integer|boolean ID of the computer that have this uuid or false otherwise
    **/
    static function findVirtualMachine($fields = []) {
       global $DB;
@@ -476,17 +472,140 @@ class ComputerVirtualMachine extends CommonDBChild {
          return false;
       }
 
-      $query = "SELECT `id`
-                FROM `glpi_computers`
-                WHERE LOWER(`uuid`) ".self::getUUIDRestrictRequest($fields['uuid']);
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => 'glpi_computers',
+         'WHERE'  => [
+            'RAW' => [
+               'LOWER(uuid)'  => self::getUUIDRestrictCriteria($fields['uuid'])
+            ]
+         ]
+      ]);
 
       //Virtual machine found, return ID
-      if ($DB->numrows($result)) {
-         return $DB->result($result, 0, 'id');
+      if (count($iterator)) {
+         $result = $iterator->next();
+         return $result['id'];
       }
 
       return false;
    }
 
+   public static function rawSearchOptionsToAdd($itemtype) {
+      $tab = [];
+
+      $name = _n('Virtual machine', 'Virtual machines', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'virtualmachine',
+         'name'               => $name
+      ];
+
+      $tab[] = [
+         'id'                 => '160',
+         'table'              => self::getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '161',
+         'table'              => 'glpi_virtualmachinestates',
+         'field'              => 'name',
+         'name'               => __('State'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '162',
+         'table'              => 'glpi_virtualmachinesystems',
+         'field'              => 'name',
+         'name'               => __('Virtualization model'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '163',
+         'table'              => 'glpi_virtualmachinetypes',
+         'field'              => 'name',
+         'name'               => __('Virtualization system'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => self::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '164',
+         'table'              => self::getTable(),
+         'field'              => 'vcpu',
+         'name'               => __('processor number'),
+         'datatype'           => 'number',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '165',
+         'table'              => self::getTable(),
+         'field'              => 'ram',
+         'name'               => __('Memory'),
+         'datatype'           => 'string',
+         'unit'               => 'Mio',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '166',
+         'table'              => self::getTable(),
+         'field'              => 'uuid',
+         'name'               => __('UUID'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      return $tab;
+   }
 }

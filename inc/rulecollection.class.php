@@ -96,21 +96,23 @@ class RuleCollection extends CommonDBTM {
    **/
    function getCollectionSize($recursive = true, $condition = 0) {
 
-      $restrict = "`sub_type` = '".$this->getRuleClassName()."'".
-                  getEntitiesRestrictRequest(" AND", "glpi_rules", "entities_id",
-                                             $this->entity, $recursive);
+      $restrict = [
+         'sub_type'  => $this->getRuleClassName()
+      ] + getEntitiesRestrictCriteria('glpi_rules', 'entities_id', $this->entity, $recursive);
 
       if ($condition > 0) {
-         $restrict .= ' AND `condition` & '. (int) $condition;
+         $restrict['condition'] = ['&', (int)$condition];
       }
       return countElementsInTable("glpi_rules", $restrict);
    }
 
 
    /**
+    * @deprecated 9.4
     * @param $options   array
    **/
    function getRuleListQuery($options = []) {
+      Toolbox::deprecated('Use getRuleListCriteria');
 
       $p['active']    = true;
       $p['start']     = 0;
@@ -124,7 +126,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       if ($p['active']) {
-         $sql_active = " `is_active` = '1'";
+         $sql_active = " `is_active` = 1";
       } else {
          $sql_active = "1";
       }
@@ -164,6 +166,81 @@ class RuleCollection extends CommonDBTM {
       return $sql;
    }
 
+   /**
+    * Get rules list criteria
+    *
+    * @param array $options Options
+    *
+    * @return array
+   **/
+   function getRuleListCriteria($options = []) {
+
+      $p['active']    = true;
+      $p['start']     = 0;
+      $p['limit']     = 0;
+      $p['inherited'] = 1;
+      $p['childrens'] = 0;
+      $p['condition'] = 0;
+
+      foreach ($options as $key => $value) {
+         $p[$key] = $value;
+      }
+
+      $criteria = [
+         'SELECT' => Rule::getTable() . '.*',
+         'FROM'   => Rule::getTable(),
+         'ORDER'  => [
+            $this->orderby . ' ASC'
+         ]
+      ];
+
+      $where = [];
+      if ($p['active']) {
+         $where['is_active'] = 1;
+      }
+
+      if ($p['condition'] > 0) {
+         $where['condition'] = ['&', (int)$p['condition']];
+      }
+
+      //Select all the rules of a different type
+      $where['sub_type'] = $this->getRuleClassName();
+      if ($this->isRuleRecursive()) {
+         $criteria['LEFT JOIN'] = [
+            Entity::getTable() => [
+               'ON' => [
+                  Entity::getTable()   => 'id',
+                  Rule::getTable()     => 'entities_id'
+               ]
+            ]
+         ];
+
+         if (!$p['childrens']) {
+            $where += getEntitiesRestrictCriteria(
+               Rule::getTable(),
+               'entities_id',
+               $this->entity,
+               $p['inherited']
+            );
+         } else {
+            $sons = getSonsOf('glpi_entities', $this->entity);
+            $where[Rule::getTable() . '.entities_id'] = $sons;
+         }
+
+         $criteria['ORDER'] = [
+            Entity::getTable() . '.level ASC',
+            $this->orderby . ' ASC'
+         ];
+      }
+
+      if ($p['limit']) {
+         $criteria['LIMIT'] = (int)$p['limit'];
+         $criteria['START'] = (int)$p['start'];
+      }
+      $criteria['WHERE'] = $where;
+
+      return $criteria;
+   }
 
    /**
     * Get Collection Part : retrieve descriptions of a range of rules
@@ -192,16 +269,14 @@ class RuleCollection extends CommonDBTM {
       $this->RuleList->list = [];
 
       //Select all the rules of a different type
-      $sql    = $this->getRuleListQuery($p);
-      $result = $DB->query($sql);
+      $criteria   = $this->getRuleListCriteria($p);
+      $iterator   = $DB->request($criteria);
 
-      if ($result) {
-         while ($data = $DB->fetch_assoc($result)) {
-            //For each rule, get a Rule object with all the criterias and actions
-            $tempRule               = $this->getRuleClass();
-            $tempRule->fields       = $data;
-            $this->RuleList->list[] = $tempRule;
-         }
+      while ($data = $iterator->next()) {
+         //For each rule, get a Rule object with all the criterias and actions
+         $tempRule               = $this->getRuleClass();
+         $tempRule->fields       = $data;
+         $this->RuleList->list[] = $tempRule;
       }
    }
 
@@ -225,13 +300,13 @@ class RuleCollection extends CommonDBTM {
       // check if load required
       if (($need & $this->RuleList->load) != $need) {
          //Select all the rules of a different type
-         $sql = $this->getRuleListQuery(['condition' => $condition]);
+         $criteria = $this->getRuleListCriteria(['condition' => $condition]);
+         $iterator = $DB->request($criteria);
 
-         $result = $DB->query($sql);
-         if ($result) {
+         if (count($iterator)) {
             $this->RuleList->list = [];
 
-            while ($rule = $DB->fetch_assoc($result)) {
+            while ($rule = $iterator->next()) {
                //For each rule, get a Rule object with all the criterias and actions
                $tempRule = $this->getRuleClass();
 
@@ -471,7 +546,7 @@ class RuleCollection extends CommonDBTM {
       echo "<tr>";
       echo "<th>";
       if ($canedit) {
-         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
       }
       echo "</th>";
       echo "<th>".__('Name')."</th>";
@@ -502,7 +577,7 @@ class RuleCollection extends CommonDBTM {
          echo "<tr>";
          echo "<th>";
          if ($canedit) {
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          }
          echo "</th>";
          echo "<th>".__('Name')."</th>";
@@ -805,8 +880,12 @@ class RuleCollection extends CommonDBTM {
       $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=import"] = _x('button', 'Import');
       $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=export"] = _x('button', 'Export');
 
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/sauvegardes.png",
-                         _n('User', 'Users', Session::getPluralNumber()), $title, $buttons);
+      echo "<div class='center'><table class='tab_glpi'><tr>";
+      echo "<td><i class='far fa-save fa-3x'></i></td>";
+      foreach ($buttons as $key => $val) {
+         echo "<td><a class='vsubmit' href='".$key."'>".$val."</a></td>";
+      }
+      echo "</tr></table></div>";
    }
 
 
@@ -847,7 +926,7 @@ class RuleCollection extends CommonDBTM {
       }
       //find and duplicate actions
       $ruleaction = new RuleAction(get_class($rule));
-      $actions    = $ruleaction->find("`rules_id` = '$ID'");
+      $actions    = $ruleaction->find(['rules_id' => $ID]);
       $actions    = toolbox::addslashes_deep($actions);
       foreach ($actions as $action) {
          $action['rules_id'] = $newID;
@@ -859,7 +938,7 @@ class RuleCollection extends CommonDBTM {
 
       //find and duplicate criterias
       $rulecritera = new RuleCriteria(get_class($rule));
-      $criteria   = $rulecritera->find("`rules_id` = '$ID'");
+      $criteria   = $rulecritera->find(['rules_id' => $ID]);
       $criteria = toolbox::addslashes_deep($criteria);
       foreach ($criteria as $criterion) {
          $criterion['rules_id'] = $newID;
@@ -918,7 +997,7 @@ class RuleCollection extends CommonDBTM {
          }
 
          //find criterias
-         $criterias = $rulecritera->find("`rules_id` = '$ID'");
+         $criterias = $rulecritera->find(['rules_id' => $ID]);
          foreach ($criterias as &$criteria) {
             unset($criteria['id']);
             unset($criteria['rules_id']);
@@ -939,7 +1018,7 @@ class RuleCollection extends CommonDBTM {
          }
 
          //find actions
-         $actions = $ruleaction->find("`rules_id` = '$ID'");
+         $actions = $ruleaction->find(['rules_id' => $ID]);
          foreach ($actions as &$action) {
             unset($action['id']);
             unset($action['rules_id']);
@@ -953,7 +1032,8 @@ class RuleCollection extends CommonDBTM {
                if ($action['field'][0] == "_") {
                   $field = substr($action['field'], 1);
                }
-               $table           = getTableNameForForeignKeyField($field);
+               $table = getTableNameForForeignKeyField($field);
+
                $action['value'] = Html::clean(Dropdown::getDropdownName($table, $action['value']));
             }
 
@@ -1066,8 +1146,7 @@ class RuleCollection extends CommonDBTM {
          $tmprule = new $rule['sub_type'];
          //check entities
          if ($tmprule->isEntityAssign()) {
-            $entities_found = $entity->find("`completename` = '".
-                                            $DB->escape($rule['entities_id'])."'");
+            $entities_found = $entity->find(['completename' => $rule['entities_id']]);
             if (empty($entities_found)) {
                $rules_refused[$k_rule]['entity'] = true;
             }
@@ -1095,13 +1174,13 @@ class RuleCollection extends CommonDBTM {
                if (self::isCriteraADropdown($available_criteria,
                                             $criteria['condition'], $crit)) {
                   //escape pattern
-                  $criteria['pattern'] = $DB->escape($criteria['pattern']);
+                  $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
                   $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
-                     $found = $item->find("`completename` = '".$criteria['pattern']."'");
+                     $found = $item->find(['completename' => $criteria['pattern']]);
                   } else {
-                     $found = $item->find("`name` = '".$criteria['pattern']."'");
+                     $found = $item->find(['name' => $criteria['pattern']]);
                   }
                   if (empty($found)) {
                      $rules_refused[$k_rule]['criterias'][] = $k_crit;
@@ -1136,13 +1215,13 @@ class RuleCollection extends CommonDBTM {
                   }
 
                   //escape value
-                  $action['value'] = $DB->escape($action['value']);
+                  $action['value'] = $DB->escape(Html::entity_decode_deep($action['value']));
                   $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
-                     $found = $item->find("`completename` = '".$action['value']."'");
+                     $found = $item->find(['completename' => $action['value']]);
                   } else {
-                     $found = $item->find("`name` = '".$action['value']."'");
+                     $found = $item->find(['name' => $action['value']]);
                   }
                   if (empty($found)) {
                      $rules_refused[$k_rule]['actions'][] = $k_action;
@@ -1335,7 +1414,7 @@ class RuleCollection extends CommonDBTM {
          $item                     = new $itemtype();
 
          //Find a rule by it's uuid
-         $found    = $item->find("`uuid`='".$current_rule['uuid']."'");
+         $found    = $item->find(['uuid' => $current_rule['uuid']]);
          $params   = Toolbox::addslashes_deep($current_rule);
          unset($params['rulecriteria']);
          unset($params['ruleaction']);
@@ -1343,7 +1422,7 @@ class RuleCollection extends CommonDBTM {
          if (!$item->isEntityAssign()) {
             $params['entities_id'] = 0;
          } else {
-            $entities_found = $entity->find("completename = '".$rule['entities_id']."'");
+            $entities_found = $entity->find(['completename' => $rule['entities_id']]);
             if (!empty($entities_found)) {
                $entity_found          = array_shift($entities_found);
                $params['entities_id'] = $entity_found['id'];
@@ -1650,7 +1729,7 @@ class RuleCollection extends CommonDBTM {
       $input = [];
       $res   = $DB->query("SELECT DISTINCT `glpi_rulecriterias`.`criteria`
                            FROM `glpi_rulecriterias`, `glpi_rules`
-                           WHERE `glpi_rules`.`is_active` = '1'
+                           WHERE `glpi_rules`.`is_active` = 1
                                  AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
                                  $limit
                                  AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
@@ -1865,7 +1944,7 @@ class RuleCollection extends CommonDBTM {
                      `glpi_rulecriterias`
                 WHERE `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'
                       AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
-                      AND `glpi_rules`.`is_active` = '1'";
+                      AND `glpi_rules`.`is_active` = 1";
 
       foreach ($DB->request($query) as $param) {
              $params[] = Toolbox::strtolower($param["criteria"]);
@@ -1955,4 +2034,119 @@ class RuleCollection extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Get list of dictionnaries
+    *
+    * @return array
+    */
+   public static function getDictionnaries() {
+      $dictionnaries =[];
+
+      $entries = [];
+
+      if (Session::haveRight("rule_dictionnary_software", READ)) {
+         $entries[] = [
+            'label'  => _n('Software', 'Software', 2),
+            'link'   => 'ruledictionnarysoftware.php'
+         ];
+      }
+
+      if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+         $entries[] = [
+            'label'  => _n('Manufacturer', 'Manufacturers', 2),
+            'link'   => 'ruledictionnarymanufacturer.php'
+         ];
+      }
+
+      if (Session::haveRight("rule_dictionnary_printer", READ)) {
+         $entries[] = [
+            'label'  => _n('Printer', 'Printers', 2),
+            'link'   => 'ruledictionnaryprinter.php'
+         ];
+      }
+
+      if (count($entries)) {
+         $dictionnaries[] = [
+            'type'      => __('Global dictionary'),
+            'entries'   => $entries
+         ];
+      }
+
+      if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+         $dictionnaries[] = [
+            'type'      => _n('Model', 'Models', 2),
+            'entries'   => [
+               [
+                  'label'  => _n('Computer model', 'Computer models', 2),
+                  'link'   => 'ruledictionnarycomputermodel.php'
+               ], [
+                  'label'  => _n('Monitor model', 'Monitor models', 2),
+                  'link'   => 'ruledictionnarymonitormodel.php'
+               ], [
+                  'label'  => _n('Printer model', 'Printer models', 2),
+                  'link'   => 'ruledictionnaryprintermodel.php'
+               ], [
+                  'label'  => _n('Device model', 'Device models', 2),
+                  'link'   => 'ruledictionnaryperipheralmodel.php'
+               ], [
+                  'label'  => _n('Network equipment model', 'Network equipment models', 2),
+                  'link'   => 'ruledictionnarynetworkequipmentmodel.php'
+               ], [
+                  'label'  => _n('Phone model', 'Phone models', 2),
+                  'link'   => 'ruledictionnaryphonemodel.php'
+               ]
+            ]
+         ];
+      }
+
+      if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+         $dictionnaries[] = [
+            'type'      => _n('Type', 'Types', 2),
+            'entries'   => [
+               [
+                  'label'  => _n('Computer type', 'Computer types', 2),
+                  'link'   => 'ruledictionnarycomputertype.php'
+               ], [
+                  'label'  => _n('Monitor type', 'Monitor types', 2),
+                  'link'   => 'ruledictionnarymonitortype.php'
+               ], [
+                  'label'  => _n('Printer type', 'Printer types', 2),
+                  'link'   => 'ruledictionnaryprintertype.php'
+               ], [
+                  'label'  => _n('Device type', 'Device types', 2),
+                  'link'   => 'ruledictionnaryperipheraltype.php'
+               ], [
+                  'label'  => _n('Network equipment type', 'Network equipment types', 2),
+                  'link'   => 'ruledictionnarynetworkequipmenttype.php'
+               ], [
+                  'label'  => _n('Phone type', 'Phone types', 2),
+                  'link'   => 'ruledictionnaryphonetype.php'
+               ]
+            ]
+         ];
+      }
+
+      if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+         $dictionnaries[] = [
+            'type'      => _n('Operating system', 'Operating systems', 2),
+            'entries'   => [
+               [
+                  'label'  => _n('Operating system', 'Operating systems', 2),
+                  'link'   => 'ruledictionnaryoperatingsystem.php'
+               ], [
+                  'label'  => _n('Service pack', 'Service packs', 2),
+                  'link'   => 'ruledictionnaryoperatingsystemservicepack.php'
+               ], [
+                  'label'  => _n('Version', 'Versions', 2),
+                  'link'   => 'ruledictionnaryoperatingsystemversion.php'
+               ], [
+                  'label'  => _n('Architecture', 'Architectures', 2),
+                  'link'   => 'ruledictionnaryoperatingsystemarchitecture.php'
+               ]
+            ]
+         ];
+      }
+
+      return $dictionnaries;
+   }
 }

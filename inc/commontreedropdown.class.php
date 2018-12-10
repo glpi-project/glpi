@@ -44,9 +44,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   /**
-    * Return Additional Fileds for this type
-   **/
    function getAdditionalFields() {
 
       return [['name'  => $this->getForeignKeyField(),
@@ -159,10 +156,16 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $this->cleanParentsSons();
       $tmp  = clone $this;
-      $crit = ['FIELDS'                    => 'id',
-                    $this->getForeignKeyField() => $this->fields["id"]];
 
-      foreach ($DB->request($this->getTable(), $crit) as $data) {
+      $result = $DB->request(
+         [
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [$this->getForeignKeyField() => $this->fields['id']]
+         ]
+      );
+
+      foreach ($result as $data) {
          $data[$this->getForeignKeyField()] = $parent;
          $tmp->update($data);
       }
@@ -185,8 +188,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $input["ancestors_cache"] = '';
             if (Toolbox::useCache()) {
                $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-               if ($GLPI_CACHE->hasItem($ckey)) {
-                  $GLPI_CACHE->removeItem($ckey);
+               if ($GLPI_CACHE->has($ckey)) {
+                  $GLPI_CACHE->delete($ckey);
                }
             }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
@@ -212,8 +215,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       //drop from sons cache when needed
       if ($changeParent && Toolbox::useCache()) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
-         if ($GLPI_CACHE->hasItem($ckey)) {
-            $GLPI_CACHE->removeItem($ckey);
+         if ($GLPI_CACHE->has($ckey)) {
+            $GLPI_CACHE->delete($ckey);
          }
       }
 
@@ -307,11 +310,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if ($cache && Toolbox::useCache()) {
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
-            if ($GLPI_CACHE->hasItem($ckey)) {
-               $sons = $GLPI_CACHE->getItem($ckey);
+            if ($GLPI_CACHE->has($ckey)) {
+               $sons = $GLPI_CACHE->get($ckey);
                if (isset($sons[$this->getID()])) {
                   unset($sons[$this->getID()]);
-                  $GLPI_CACHE->replaceItem($ckey, $sons);
+                  $GLPI_CACHE->set($ckey, $sons);
                }
             }
          }
@@ -332,41 +335,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $ancestors = getAncestorsOf($this->getTable(), $this->getID());
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
-            if ($GLPI_CACHE->hasItem($ckey)) {
-               $sons = $GLPI_CACHE->getItem($ckey);
+            if ($GLPI_CACHE->has($ckey)) {
+               $sons = $GLPI_CACHE->get($ckey);
                if (!isset($sons[$this->getID()])) {
                   $sons[$this->getID()] = (string)$this->getID();
-                  $GLPI_CACHE->replaceItem($ckey, $sons);
+                  $GLPI_CACHE->set($ckey, $sons);
                }
-            }
-         }
-      }
-   }
-
-   /**
-    * @param $ID
-    *
-    * @deprecated 9.2 @see CommonTreeDropdown::cleanParentsSons()
-   **/
-   function recursiveCleanSonsAboveID($ID) {
-      global $DB;
-
-      Toolbox::deprecated();
-
-      if ($ID > 0) {
-         $DB->update(
-            $this->getTable(), [
-               'sons_cache' => 'NULL'
-            ], [
-               'id' => $ID
-            ]
-         );
-
-         $currentNode = clone $this;
-         if ($currentNode->getFromDB($ID)) {
-            $parentID = $currentNode->getField($this->getForeignKeyField());
-            if ($ID != $parentID) {
-               $this->recursiveCleanSonsAboveID($parentID);
             }
          }
       }
@@ -380,9 +354,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $this->cleanParentsSons(null, false);
       $this->addSonInParents();
       if ($parent && $this->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = '';
-         $changes[2] = addslashes($this->getNameID());
+         $changes = [
+            0,
+            '',
+            addslashes($this->getNameID()),
+         ];
          Log::history($parent, $this->getType(), $changes, $this->getType(),
                       Log::HISTORY_ADD_SUBITEM);
       }
@@ -408,9 +384,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                if ($parent->getFromDB($oldParentID)) {
                   $oldParentNameID = $parent->getNameID();
                }
-               $changes[0] = '0';
-               $changes[1] = addslashes($this->getNameID());
-               $changes[2] = '';
+               $changes = [
+                  '0',
+                  addslashes($this->getNameID()),
+                  '',
+               ];
                Log::history($oldParentID, $this->getType(), $changes, $this->getType(),
                             Log::HISTORY_DELETE_SUBITEM);
             }
@@ -423,18 +401,22 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                if ($parent->getFromDB($newParentID)) {
                   $newParentNameID = $parent->getNameID();
                }
-               $changes[0] = '0';
-               $changes[1] = '';
-               $changes[2] = addslashes($this->getNameID());
+               $changes = [
+                  '0',
+                  '',
+                  addslashes($this->getNameID()),
+               ];
                Log::history($newParentID, $this->getType(), $changes, $this->getType(),
                             Log::HISTORY_ADD_SUBITEM);
             }
          }
 
          if ($history) {
-            $changes[0] = '0';
-            $changes[1] = $oldParentNameID;
-            $changes[2] = $newParentNameID;
+            $changes = [
+               '0',
+               $oldParentNameID,
+               $newParentNameID,
+            ];
             Log::history($ID, $this->getType(), $changes, $this->getType(),
                          Log::HISTORY_UPDATE_SUBITEM);
          }
@@ -447,9 +429,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $parent = $this->fields[$this->getForeignKeyField()];
       if ($parent && $this->dohistory) {
-         $changes[0] = '0';
-         $changes[1] = addslashes($this->getNameID());
-         $changes[2] = '';
+         $changes = [
+            '0',
+            addslashes($this->getNameID()),
+            '',
+         ];
          Log::history($parent, $this->getType(), $changes, $this->getType(),
                       Log::HISTORY_DELETE_SUBITEM);
       }
@@ -479,10 +463,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    * @return Nothing (display)
-    **/
+    * @return void
+    */
    function showChildren() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID            = $this->getID();
       $this->check($ID, READ);
@@ -537,11 +521,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo $header;
 
       $fk   = $this->getForeignKeyField();
-      $crit = [$fk     => $ID,
-                    'ORDER' => 'name'];
+
+      $result = $DB->request(
+         [
+            'FROM'  => $this->getTable(),
+            'WHERE' => [$fk => $ID],
+            'ORDER' => 'name',
+         ]
+      );
 
       $nb = 0;
-      foreach ($DB->request($this->getTable(), $crit) as $data) {
+      foreach ($result as $data) {
          $nb++;
          echo "<tr class='tab_bg_1'><td>";
          if ((($fk == 'entities_id') && in_array($data['id'], $_SESSION['glpiactiveentities']))
@@ -589,9 +579,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-   **/
    function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
@@ -606,13 +593,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
 
       switch ($ma->getAction()) {
          case 'move_under' :
@@ -620,7 +601,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             echo __('As child of');
             Dropdown::show($itemtype, ['name'     => 'parent',
                                             'comments' => 0,
-                                            'entity'   => $_SESSION['glpiactive_entity']]);
+                                            'entity'   => $_SESSION['glpiactive_entity'],
+                                            'entity_sons' => $_SESSION['glpiactive_entity_recursive']]);
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
@@ -629,11 +611,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return parent::showMassiveActionsSubForm($ma);
    }
 
-   /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
 
@@ -680,11 +658,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
    function rawSearchOptions() {
       $tab = [];
 
@@ -788,10 +761,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * Report if a dropdown have Child
-    * Used to (dis)allow delete action
-   **/
    function haveChildren() {
 
       $fk = $this->getForeignKeyField();
@@ -823,67 +792,66 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * check if a tree dropdown already exists (before import)
-    *
-    * @param &$input array of value to import (name, ...)
-    *
-    * @return the ID of the new (or -1 if not found)
-   **/
    function findID(array &$input) {
       global $DB;
 
       if (isset($input['completename'])) {
-         // Clean datas
+         // Clean data
          $input['completename'] = self::cleanTreeText($input['completename']);
       }
 
       if (isset($input['completename']) && !empty($input['completename'])) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `completename` = '".$input['completename']."'";
+         $criteria = [
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'completename' => $input['completename']
+            ]
+         ];
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                 $input['entities_id'], $this->maybeRecursive());
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+               $this->getTable(),
+               '',
+               $input['entities_id'],
+               $this->maybeRecursive()
+            );
          }
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         $iterator = $DB->request($criteria);
+         if (count($iterator)) {
+            $result = $iterator->next();
+            return $result['id'];
          }
-
       } else if (isset($input['name']) && !empty($input['name'])) {
          $fk = $this->getForeignKeyField();
 
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `name` = '".$input["name"]."'
-                         AND `$fk` = '".(isset($input[$fk]) ? $input[$fk] : 0)."'";
-
+         $criteria = [
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'name'   => $input['name'],
+               $fk      => (isset($input[$fk]) ? $input[$fk] : 0)
+            ]
+         ];
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                 $input['entities_id'], $this->maybeRecursive());
+            $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+               $this->getTable(),
+               '',
+               $input['entities_id'],
+               $this->maybeRecursive()
+            );
          }
-
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         $iterator = $DB->request($criteria);
+         if (count($iterator)) {
+            $result = $iterator->next();
+            return $result['id'];
          }
       }
       return -1;
    }
 
 
-   /**
-    * Import a dropdown - check if already exists
-    *
-    * @param $input array of value to import (name or completename, ...)
-    *
-    * @return the ID of the new or existing dropdown (0 on failure)
-   **/
    function import(array $input) {
 
       if (isset($input['name'])) {
@@ -907,8 +875,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             // Skip empty name (completename starting/endind with >, double >, ...)
             continue;
          }
-         $tmp['name'] = $name;
-         $tmp[$fk]    = $parent;
+
+         $tmp = [
+            'name' => $name,
+            $fk    => $parent,
+         ];
 
          if (isset($input['is_recursive'])) {
             $tmp['is_recursive'] = $input['is_recursive'];
@@ -930,5 +901,4 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
       return $parent;
    }
-
 }

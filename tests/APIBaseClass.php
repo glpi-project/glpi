@@ -69,7 +69,7 @@ abstract class APIBaseClass extends \atoum {
       $user->getFromDB($uid);
       $token = isset($user->fields['api_token'])?$user->fields['api_token']:"";
       if (empty($token)) {
-         $token = User::getToken($uid, 'api_token');
+         $token = $user->getAuthToken('api_token');
       }
 
       $data = $this->query('initSession',
@@ -300,7 +300,7 @@ abstract class APIBaseClass extends \atoum {
          ->array['available_searchtypes'];
 
       $this->array($data[1]['available_searchtypes'])
-         ->isIdenticalTo(['contains', 'equals', 'notequals']);
+         ->isIdenticalTo(['contains', 'notcontains', 'equals', 'notequals']);
    }
 
    /**
@@ -336,7 +336,7 @@ abstract class APIBaseClass extends \atoum {
          ->startWith('User');
 
       $this->array($data['rawdata'])
-         ->hasSize(8);
+         ->hasSize(9);
 
       $first_user = array_shift($data['data']);
       $second_user = array_shift($data['data']);
@@ -378,7 +378,7 @@ abstract class APIBaseClass extends \atoum {
          ->hasKey('rawdata');
 
       $this->array($data['rawdata'])
-         ->hasSize(8);
+         ->hasSize(9);
 
       $first_user = array_shift($data['data']);
       $second_user = array_shift($data['data']);
@@ -431,7 +431,7 @@ abstract class APIBaseClass extends \atoum {
          ->startWith('User');
 
       $this->array($data['rawdata'])
-         ->hasSize(8);
+         ->hasSize(9);
       $this->checkEmptyContentRange($data, $data['headers']);
    }
 
@@ -1147,9 +1147,8 @@ abstract class APIBaseClass extends \atoum {
          $this->string($value[$name])->isNotEmpty();
       }
 
-      $where = "'" . implode("', '", $sensitiveSettings) . "'";
       $config = new config();
-      $rows = $config->find("`context`='core' AND `name` IN ($where)");
+      $rows = $config->find(['context' => 'core', 'name' => $sensitiveSettings]);
       $this->array($rows)
          ->hasSize(count($sensitiveSettings));
 
@@ -1395,7 +1394,7 @@ abstract class APIBaseClass extends \atoum {
 
       // Test a valid email is accepted
       $res = $this->query('lostPassword',
-                          ['verb'    => 'PUT',
+                          ['verb'    => 'PATCH',
                            'json'    => [
                             'email'  => $email
                            ]
@@ -1420,7 +1419,7 @@ abstract class APIBaseClass extends \atoum {
 
       // Test reset password with the good token
       $res = $this->query('lostPassword',
-                        ['verb'    => 'PUT',
+                        ['verb'    => 'PATCH',
                          'json'    => [
                           'email'                 => $email,
                           'password_forget_token' => $token,

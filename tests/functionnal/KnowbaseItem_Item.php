@@ -49,6 +49,7 @@ class KnowbaseItem_Item extends DbTestCase {
    }
 
    public function testGetItemsFromKB() {
+      $this->login();
       $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
       $items = \KnowbaseItem_Item::getItems($kb1);
       $this->array($items)->hasSize(3);
@@ -185,6 +186,7 @@ class KnowbaseItem_Item extends DbTestCase {
    }
 
    public function testGetTabNameForItem() {
+       $this->login();
        $kb_item = new \KnowbaseItem_Item();
        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
 

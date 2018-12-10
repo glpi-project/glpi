@@ -139,7 +139,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
          if (empty($current->fields['body_html'])) {
             $mmail->isHTML(false);
-            $mmail->Body = $current->fields['body_text'];
+            $mmail->Body = GLPIMailer::normalizeBreaks($current->fields['body_text']);
          } else {
             $mmail->isHTML(true);
             $mmail->Body = '';
@@ -158,17 +158,16 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                   // Add embeded image if tag present in ticket content
                   if (preg_match_all('/'.Document::getImageTag($doc->fields['tag']).'/',
                                      $current->fields['body_html'], $matches, PREG_PATTERN_ORDER)) {
-                     $tag = Document::getImageTag($doc->fields['tag']);
                      $image_path = Document::getImage(
                         GLPI_DOC_DIR."/".$doc->fields['filepath'],
                         'mail'
                      );
                      if ($mmail->AddEmbeddedImage($image_path,
-                                                  $tag,
+                                                  $doc->fields['tag'],
                                                   $doc->fields['filename'],
                                                   'base64',
                                                   $doc->fields['mime'])) {
-                        $inline_docs[$doc_i_data['documents_id']] = $tag;
+                        $inline_docs[$doc_i_data['documents_id']] = $doc->fields['tag'];
                      }
                   } else if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
                      // Add all other attachments, according to configuration
@@ -189,14 +188,13 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
             // manage inline images (and not added as documents in object)
             $matches = [];
-            if (preg_match_all("/<img[^>]*src=(\"|').*document\.send\.php\?docid=([0-9]+)(\"|')[^<]*>/U",
+            if (preg_match_all("/<img[^>]*src=(\"|')[^\"']*document\.send\.php\?docid=([0-9]+)[^\"']*(\"|')[^<]*>/",
                                $current->fields['body_html'],
                                $matches)) {
                if (isset($matches[2])) {
                   foreach ($matches[2] as $pos=>$docID) {
                      if (!in_array($docID, $inline_docs)) {
                         $doc->getFromDB($docID);
-                        $tag = Document::getImageTag($doc->fields['tag']);
 
                         //find width
                         $width = null;
@@ -219,31 +217,32 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                            $height
                         );
                         if ($mmail->AddEmbeddedImage($image_path,
-                                                     $tag,
+                                                     $doc->fields['tag'],
                                                      $doc->fields['filename'],
                                                      'base64',
                                                      $doc->fields['mime'])) {
-                           $inline_docs[$docID] = $tag;
+                           $inline_docs[$docID] = $doc->fields['tag'];
                         }
                      }
                   }
                }
             }
 
-            // replace img[src] and a[href] by cid:tag in html content
+            // replace img[src] by cid:tag in html content
+            // replace a[href] by absolute URL
             foreach ($inline_docs as $docID => $tag) {
                $current->fields['body_html'] = preg_replace([
-                     '/src=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
-                     '/href=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
+                     '/src=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
+                     '/href=["\'][^"\']*document\.send\.php\?docid='.$docID.'[^"\']*["\']/',
                   ], [
-                     "src=\"cid:$tag\"",
-                     "href='".$CFG_GLPI['url_base']."/front/document.send.php?docid=$docID'",
+                     'src="cid:' . $tag . '"',
+                     'href="' . $CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID . '"',
                   ],
                   $current->fields['body_html']);
             }
 
-            $mmail->Body   .= $current->fields['body_html'];
-            $mmail->AltBody = $current->fields['body_text'];
+            $mmail->Body    = GLPIMailer::normalizeBreaks($current->fields['body_html']);
+            $mmail->AltBody = GLPIMailer::normalizeBreaks($current->fields['body_text']);
          }
 
          $recipient = $current->getField('recipient');
@@ -251,7 +250,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
             //add original email addess to message body
-            $text = sprintf(__('Orignal email address was %1$s'), $current->getField('recipient'));
+            $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
             $mmail->Body      .= "<br/>$text";
             $mmail->AltBody   .= $text;
          }

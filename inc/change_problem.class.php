@@ -113,34 +113,42 @@ class Change_Problem extends CommonDBRelation{
     * @param $problem Problem object
    **/
    static function showForProblem(Problem $problem) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $problem->getField('id');
       if (!$problem->can($ID, READ)) {
          return false;
       }
 
-      $canedit       = $problem->canEdit($ID);
-      $rand          = mt_rand();
-      $showentities  = Session::isMultiEntitiesMode();
+      $canedit = $problem->canEdit($ID);
+      $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
-                                `glpi_changes`.*
-                FROM `glpi_changes_problems`
-                LEFT JOIN `glpi_changes`
-                     ON (`glpi_changes_problems`.`changes_id` = `glpi_changes`.`id`)
-                WHERE `glpi_changes_problems`.`problems_id` = '$ID'
-                ORDER BY `glpi_changes`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'glpi_changes_problems.id AS linkID',
+         'FIELDS'          => 'glpi_changes.*',
+         'FROM'            => 'glpi_changes_problems',
+         'LEFT JOIN'       => [
+            'glpi_changes' => [
+               'ON' => [
+                  'glpi_changes_problems' => 'changes_id',
+                  'glpi_changes'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_changes_problems.problems_id' => $ID
+         ],
+         'ORDERBY'         => 'glpi_changes.name'
+      ]);
 
       $changes = [];
       $used    = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $changes[$data['id']] = $data;
-            $used[$data['id']]    = $data['id'];
-         }
+      $numrows = count($iterator);
+      while ($data = $iterator->next()) {
+         $changes[$data['id']] = $data;
+         $used[$data['id']]    = $data['id'];
       }
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
 
@@ -215,33 +223,40 @@ class Change_Problem extends CommonDBRelation{
     * @param $change Change object
    **/
    static function showForChange(Change $change) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID = $change->getField('id');
       if (!$change->can($ID, READ)) {
          return false;
       }
 
-      $canedit      = $change->canEdit($ID);
-      $rand         = mt_rand();
-      $showentities = Session::isMultiEntitiesMode();
+      $canedit = $change->canEdit($ID);
+      $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
-                                `glpi_problems`.*
-                FROM `glpi_changes_problems`
-                LEFT JOIN `glpi_problems`
-                     ON (`glpi_changes_problems`.`problems_id` = `glpi_problems`.`id`)
-                WHERE `glpi_changes_problems`.`changes_id` = '$ID'
-                ORDER BY `glpi_problems`.`name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'glpi_changes_problems.id AS linkID',
+         'FIELDS'          => 'glpi_problems.*',
+         'FROM'            => 'glpi_changes_problems',
+         'LEFT JOIN'       => [
+            'glpi_problems' => [
+               'ON' => [
+                  'glpi_changes_problems' => 'problems_id',
+                  'glpi_problems'         => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_changes_problems.changes_id' => $ID
+         ],
+         'ORDERBY'         => 'glpi_problems.name'
+      ]);
 
       $problems = [];
       $used     = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $problems[$data['id']] = $data;
-            $used[$data['id']]     = $data['id'];
-         }
+      $numrows = count($iterator);
+      while ($data = $iterator->next()) {
+         $problems[$data['id']] = $data;
+         $used[$data['id']]     = $data['id'];
       }
 
       if ($canedit) {

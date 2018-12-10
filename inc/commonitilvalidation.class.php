@@ -160,7 +160,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    /**
-    * @param $items_id ID of the item
+    * @param integer $items_id ID of the item
    **/
    static function canValidate($items_id) {
       global $DB;
@@ -200,10 +200,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if (!$hidetab) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $restrict = "`".static::$items_id."` = '".$item->getID()."'";
+            $restrict = [static::$items_id => $item->getID()];
             // No rights for create only count asign ones
             if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
-               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
+               $restrict['users_id_validate'] = Session::getLoginUserID();
             }
             $nb = countElementsInTable(static::getTable(), $restrict);
          }
@@ -262,8 +262,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
          // Set global validation to waiting
          if (($item->fields['global_validation'] == self::ACCEPTED)
              || ($item->fields['global_validation'] == self::NONE)) {
-            $input['id']                = $this->fields[static::$items_id];
-            $input['global_validation'] = self::WAITING;
+            $input = [
+               'id'                => $this->fields[static::$items_id],
+               'global_validation' => self::WAITING,
+            ];
 
             // to fix lastupdater
             if (isset($this->input['_auto_update'])) {
@@ -290,10 +292,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $user->getFromDB($this->fields["users_id_validate"]);
             $email   = $user->getDefaultEmail();
             if (!empty($email)) {
-               $message[] = sprintf(__('Approval request send to %s'), $user->getName());
+               Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'), $user->getName()));
             } else {
-               $error[] = sprintf(__('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
-                                  $user->getName());
+               Session::addMessageAfterRedirect(
+                  sprintf(
+                     __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
+                     $user->getName()
+                  ),
+                  false,
+                  ERROR
+               );
             }
          }
       }
@@ -328,7 +336,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       if (count($forbid_fields)) {
-         foreach ($forbid_fields as $key => $val) {
+         foreach (array_keys($forbid_fields) as $key) {
             if (isset($input[$key])) {
                unset($input[$key]);
             }
@@ -359,8 +367,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
          if (($item->fields['global_validation'] == self::WAITING)
              && in_array("status", $this->updates)) {
 
-            $input['id']                = $this->fields[static::$items_id];
-            $input['global_validation'] = self::computeValidationStatus($item);
+            $input = [
+               'id'                => $this->fields[static::$items_id],
+               'global_validation' => self::computeValidationStatus($item),
+            ];
             $item->update($input);
          }
       }
@@ -373,8 +383,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if ($item->getFromDB($this->fields[static::$items_id])) {
          if (($item->fields['global_validation'] == self::WAITING)) {
 
-            $input['id']                = $this->fields[static::$items_id];
-            $input['global_validation'] = self::NONE;
+            $input = [
+               'id'                => $this->fields[static::$items_id],
+               'global_validation' => self::NONE,
+            ];
             $item->update($input);
          }
       }
@@ -429,7 +441,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $global             boolean (true for global status, with "no validation" option)
     *                                    (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
@@ -454,21 +466,24 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Dropdown of validation status
     *
-    * @param $name          select name
-    * @param $options array of possible options:
+    * @param string $name    select name
+    * @param array  $options possible options:
     *      - value    : default value (default waiting)
     *      - all      : boolean display all (default false)
     *      - global   : for global validation (default false)
     *      - display  : boolean display or get string ? (default true)
     *
-    * @return nothing (display)
+    * @return string|integer Output string if display option is set to false,
+    *                        otherwise random part of dropdown id
    **/
    static function dropdownStatus($name, $options = []) {
 
-      $p['value']    = self::WAITING;
-      $p['global']   = false;
-      $p['all']      = false;
-      $p['display']  = true;
+      $p = [
+         'value'    => self::WAITING,
+         'global'   => false,
+         'all'      => false,
+         'display'  => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -487,7 +502,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get Ticket validation status Name
     *
-    * @param $value status ID
+    * @param integer $value status ID
    **/
    static function getStatus($value) {
 
@@ -500,7 +515,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get Ticket validation status Color
     *
-    * @param $value status ID
+    * @param integer $value status ID
    **/
    static function getStatusColor($value) {
 
@@ -551,8 +566,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the number of validations attached to an item having a specified status
     *
-    * @param $items_id   integer  item ID
-    * @param $status              status
+    * @param integer $items_id item ID
+    * @param integer $status   status
    **/
    static function getTicketStatusNumber($items_id, $status) {
       global $DB;
@@ -700,9 +715,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Print the validation list into item
     *
-    * @param $item class
+    * @param CommonDBTM $item
    **/
-   function showSummary($item) {
+   function showSummary(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(static::$rightname,
@@ -719,8 +734,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $rand   = mt_rand();
 
       if ($canadd) {
-         echo "<form method='post' name=form action='".
-                Toolbox::getItemTypeFormURL(static::$itemtype)."'>";
+         $itemtype = static::$itemtype;
+         echo "<form method='post' name=form action='".$itemtype::getFormURL()."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -785,14 +800,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
          echo "</script>\n";
       }
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `".static::$items_id."` = '".$item->getField('id')."'";
-
-      $query .= " ORDER BY submission_date DESC";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $iterator = $DB->Request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [static::$items_id => $item->getField('id')],
+         'ORDER'  => 'submission_date DESC'
+      ]);
 
       $colonnes = [_x('item', 'State'), __('Request date'), __('Approval requester'),
                      __('Request comments'), __('Approval status'),
@@ -811,7 +823,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                echo __('Send an approval request')."</a></td></tr>\n";
          }
       }
-      if ($number) {
+      if (count($iterator)) {
          $header = "<tr>";
          foreach ($colonnes as $colonne) {
             $header .= "<th>".$colonne."</th>";
@@ -824,7 +836,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->fields["name"]));
 
-         while ($row = $DB->fetch_assoc($result)) {
+         while ($row = $iterator->next()) {
             $canedit = $this->canEdit($row["id"]);
             Session::addToNavigateListItems($this->getType(), $row["id"]);
             $bgcolor = self::getStatusColor($row['status']);
@@ -877,7 +889,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $options   array    options used
     **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if ($ID > 0) {
          $this->canEdit($ID);
@@ -1278,18 +1289,20 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *  - users_id_validate       : ID of user validator
     *  - applyto
     *
-    * @return nothing (display)
+    * @return void Output is printed
    **/
    static function dropdownValidator(array $options = []) {
       global $CFG_GLPI;
 
-      $params['name']               = '';
-      $params['id']                 = 0;
-      $params['entity']             = $_SESSION['glpiactive_entity'];
-      $params['right']              = ['validate_request', 'validate_incident'];
-      $params['groups_id']          = 0;
-      $params['users_id_validate']  = [];
-      $params['applyto']            = 'show_validator_field';
+      $params = [
+        'name'              => '' ,
+        'id'                => 0,
+        'entity'            => $_SESSION['glpiactive_entity'],
+        'right'             => ['validate_request', 'validate_incident'],
+        'groups_id'         => 0,
+        'users_id_validate' => [],
+        'applyto'           => 'show_validator_field',
+      ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
@@ -1337,7 +1350,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getGroupUserHaveRights(array $options = []) {
       global $DB;
 
-      $params['entity']    = $_SESSION['glpiactive_entity'];
+      $params = [
+         'entity' => $_SESSION['glpiactive_entity'],
+      ];
       if (static::$itemtype == 'Ticket') {
          $params['right']  = ['validate_request', 'validate_incident'];
       } else {
@@ -1350,14 +1365,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       $list       = [];
-      $restrict   = "";
+      $restrict   = [];
 
-      $res = User::getSqlSearchResult (false, $params['right'], $params['entity']);
-      while ($data = $DB->fetch_assoc($res)) {
+      $res = User::getSqlSearchResult(false, $params['right'], $params['entity']);
+      while ($data = $res->next()) {
          $list[] = $data['id'];
       }
       if (count($list) > 0) {
-         $restrict = "`glpi_users`.`id` IN ('".implode("', '", $list)."') ";
+         $restrict = ['glpi_users.id' => $list];
       }
       $users = Group_user::getGroupUsers($params['groups_id'], $restrict);
 
@@ -1370,14 +1385,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $item CommonITILObject
     *
-    * @return validation status
+    * @return integer
    **/
    static function computeValidationStatus(CommonITILObject $item) {
 
       $validation_status  = self::WAITING;
-
-      $accepted           = 0;
-      $rejected           = 0;
 
       // Percent of validation
       $validation_percent = $item->fields['validation_percent'];
@@ -1385,8 +1397,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $statuses           = [self::ACCEPTED => 0,
                                   self::WAITING  => 0,
                                   self::REFUSED  => 0];
-      $restrict           = "`".static::$items_id."` = '".$item->getID()."'";
-      $validations        = getAllDatasFromTable(static::getTable(), $restrict);
+      $validations        = getAllDatasFromTable(
+         static::getTable(), [
+            static::$items_id => $item->getID()
+         ]
+      );
 
       if ($total = count($validations)) {
          foreach ($validations as $validation) {
@@ -1415,9 +1430,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the validation statistics
     *
-    * @param $tID tickets id
+    * @param integer $tID tickets id
     *
-    * @return statistics array
+    * @return string
    **/
    static function getValidationStats($tID) {
 
@@ -1426,7 +1441,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $nb  = countElementsInTable(static::getTable(), [static::$items_id => $tID]);
 
       $stats = [];
-      foreach ($tab as $status => $name) {
+      foreach (array_keys($tab) as $status) {
          $validations = countElementsInTable(static::getTable(), [static::$items_id => $tID,
                                                                  'status'          => $status]);
          if ($validations > 0) {
@@ -1464,31 +1479,35 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       switch ($type) {
          case 'status' :
-            Html::scriptStart();
-            echo "$('[name=\"status\"]').change(function() {
-                     var status_ko = 0;
-                     var input_status = $(this).val();
-                     if (input_status != undefined) {
-                        if ((";
+            $jsScript = "
+               $(document).ready(
+                  function() {
+                     $('[name=\"status\"]').change(function() {
+                        var status_ko = 0;
+                        var input_status = $(this).val();
+                        if (input_status != undefined) {
+                           if ((";
             $first = true;
             foreach ($status as $val) {
                if (!$first) {
-                  echo "||";
+                  $jsScript .= "||";
                }
-               echo "input_status == $val";
+               $jsScript .= "input_status == $val";
                $first = false;
             }
-            echo "           )
+            $jsScript .= "           )
                                  && input_status != ".$item->fields['status']."){
-                           status_ko = 1;
+                              status_ko = 1;
+                           }
                         }
-                     }
-                     if ((status_ko == 1)
-                         && ('".$item->fields['global_validation']."' == '".self::WAITING."')) {
-                        alert('".$message."');
-                     }
-                  });";
-            echo Html::scriptEnd();
+                        if ((status_ko == 1)
+                            && ('".$item->fields['global_validation']."' == '".self::WAITING."')) {
+                           alert('".$message."');
+                        }
+                     });
+                  }
+               );";
+            echo Html::scriptBlock($jsScript);
             break;
 
          case 'solution' :
@@ -1506,7 +1525,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @since 0.85
     *
-    * @return an array
+    * @return array
     **/
    static function getCanValidationStatusArray() {
       return [self::NONE, self::ACCEPTED];
@@ -1518,7 +1537,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @since 0.85
     *
-    * @return an array
+    * @return array
     **/
    static function getAllValidationStatusArray() {
       return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];

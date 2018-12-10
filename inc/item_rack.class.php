@@ -48,17 +48,6 @@ class Item_Rack extends CommonDBRelation {
       return _n('Item', 'Item', $nb);
    }
 
-   /**
-    * Count connection for an operating system
-    *
-    * @param Rack $rack Rack object instance
-    *
-    * @return integer
-   **/
-   static function countForRack(Rack $rack) {
-      return countElementsInTable(self::getTable(),
-                                  ['racks_id' => $rack->getID()]);
-   }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
@@ -113,7 +102,8 @@ class Item_Rack extends CommonDBRelation {
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'racks_id' => $rack->getID()
-         ]
+         ],
+         'ORDER' => 'position DESC'
       ]);
       $link = new self();
 
@@ -210,7 +200,9 @@ class Item_Rack extends CommonDBRelation {
          $rel  = new self;
          $rel->getFromDB($row['id']);
          $item = new $row['itemtype'];
-         $item->getFromDB($row['items_id']);
+         if (!$item->getFromDB($row['items_id'])) {
+            continue;
+         }
 
          $position = $row['position'];
 
@@ -490,7 +482,10 @@ JAVASCRIPT;
                }
             }
 
-            $power += $model->fields['power_consumption'];
+            if (array_key_exists('power_consumption', $model->fields)) { // PDU does not consume energy
+               $power += $model->fields['power_consumption'];
+            }
+
             $weight += $model->fields['weight'];
          } else {
             $units[Rack::FRONT][$row['position']] = 1;
@@ -799,7 +794,10 @@ JAVASCRIPT;
                          ? self::getIcon("Reserved")
                          : self::getIcon(get_class($item));
          $bg_color    = $gs_item['bgcolor'];
-         $fg_color    = !empty($gs_item['bgcolor'])
+         if ($item->maybeDeleted() && $item->isDeleted()) {
+            $bg_color = '#ff0000'; //red for deleted items
+         }
+         $fg_color    = !empty($bg_color)
                          ? Html::getInvertedColor($gs_item['bgcolor'])
                          : "";
          $fg_color_s  = "color: $fg_color;";
@@ -867,7 +865,7 @@ JAVASCRIPT;
                   ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>"
                   : "<span class='itemrack_name'>".$gs_item['name']."</span>")."
                <a href='{$gs_item['rel_url']}'>
-                  <i class='fa fa-pencil rel-link'
+                  <i class='fa fa-pencil-alt rel-link'
                      style='$fg_color_s'
                      title='".__("Edit rack relation")."'></i>
                </a>
@@ -889,22 +887,22 @@ JAVASCRIPT;
       $icon = "";
       switch ($itemtype) {
          case "Computer":
-            $icon = "fa-server";
+            $icon = "fa fa-server";
             break;
          case "Monitor":
-            $icon = "fa-television";
+            $icon = "fa fa-tv";
             break;
          case "NetworkEquipment":
-            $icon = "fa-sitemap";
+            $icon = "fa fa-sitemap";
             break;
          case "Peripheral":
-            $icon = "fa-usb";
+            $icon = "fab fa-usb";
             break;
          case "Enclosure":
-            $icon = "fa-th";
+            $icon = "fa fa-th";
             break;
          case "PDU":
-            $icon = "fa-plug";
+            $icon = "fa fa-plug";
             break;
          case "Reserved":
             $icon = "fa-lock";
@@ -912,7 +910,7 @@ JAVASCRIPT;
       }
 
       if (!empty($icon)) {
-         $icon = "<i class='item_rack_icon fa $icon'></i>";
+         $icon = "<i class='item_rack_icon $icon'></i>";
       }
 
       return $icon;
@@ -944,22 +942,21 @@ JAVASCRIPT;
       $orientation = $this->fields['orientation'];
 
       //check for requirements
-      if ($this->isNewItem()) {
-         if (!isset($input['itemtype'])) {
-            $error_detected[] = __('An item type is required');
-         }
-
-         if (!isset($input['items_id'])) {
-            $error_detected[] = __('An item is required');
-         }
-
-         if (!isset($input['racks_id'])) {
-            $error_detected[] = __('A rack is required');
-         }
-
-         if (!isset($input['position'])) {
-            $error_detected[] = __('A position is required');
-         }
+      if (($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
+          || (isset($input['itemtype']) && empty($input['itemtype']))) {
+         $error_detected[] = __('An item type is required');
+      }
+      if (($this->isNewItem() && (!isset($input['items_id']) || empty($input['items_id'])))
+          || (isset($input['items_id']) && empty($input['items_id']))) {
+         $error_detected[] = __('An item is required');
+      }
+      if (($this->isNewItem() && (!isset($input['racks_id']) || empty($input['racks_id'])))
+          || (isset($input['racks_id']) && empty($input['racks_id']))) {
+         $error_detected[] = __('A rack is required');
+      }
+      if (($this->isNewItem() && (!isset($input['position']) || empty($input['position'])))
+          || (isset($input['position']) && empty($input['position']))) {
+         $error_detected[] = __('A position is required');
       }
 
       if (isset($input['itemtype'])) {
@@ -986,7 +983,12 @@ JAVASCRIPT;
          $rack = new Rack();
          $rack->getFromDB($racks_id);
 
-         $filled = $rack->getFilled($itemtype, $items_id);
+         if ($this->isNewItem()) {
+            $filled = $rack->getFilled();
+         } else {
+            // If object is existing, exclude current state from used positions
+            $filled = $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']);
+         }
 
          $item = new $itemtype;
          $item->getFromDB($items_id);
@@ -1075,4 +1077,16 @@ JAVASCRIPT;
 
       return $input;
    }
+
+   function getRawName() {
+      $rack = new Rack();
+      $rack->getFromDB($this->fields['racks_id']);
+      $name = sprintf(
+         __('Item for rack "%1$s"'),
+         $rack->getName()
+      );
+
+      return $name;
+   }
+
 }

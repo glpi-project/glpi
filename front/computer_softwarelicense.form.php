@@ -39,7 +39,7 @@ $csl = new Computer_SoftwareLicense();
 
 if (isset($_POST["add"])) {
    if ($_POST['softwarelicenses_id'] > 0) {
-      if ($newID = $csl->add($_POST)) {
+      if ($csl->add($_POST)) {
          Event::log($_POST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
                     //TRANS: %s is the user login
                     sprintf(__('%s associates a computer and a license'), $_SESSION["glpiname"]));

@@ -120,7 +120,7 @@ class Profile_User extends CommonDBRelation {
 
       $strict_entities = self::getUserEntities($ID, false);
       if (!Session::haveAccessToOneOfEntities($strict_entities)
-          && !Session::isViewAllEntities()) {
+          && !Session::canViewAllEntities()) {
          $canedit = false;
       }
 
@@ -150,22 +150,8 @@ class Profile_User extends CommonDBRelation {
          echo "</div>";
       }
 
-      $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,
-                       `glpi_profiles`.`id`,
-                       `glpi_profiles`.`name`,
-                       `glpi_profiles_users`.`is_recursive`,
-                       `glpi_profiles_users`.`is_dynamic`,
-                       `glpi_entities`.`completename`,
-                       `glpi_profiles_users`.`entities_id`
-                FROM `glpi_profiles_users`
-                LEFT JOIN `glpi_profiles`
-                     ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
-                LEFT JOIN `glpi_entities`
-                     ON (`glpi_profiles_users`.`entities_id` = `glpi_entities`.`id`)
-                WHERE `glpi_profiles_users`.`users_id` = '$ID'
-                ORDER BY `glpi_profiles`.`name`, `glpi_entities`.`completename`";
-      $result = $DB->query($query);
-      $num    = $DB->numrows($result);
+      $iterator = self::getListForItem($user);
+      $num = count($iterator);
 
       echo "<div class='spaced'>";
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -194,12 +180,12 @@ class Profile_User extends CommonDBRelation {
          $header_end .= "</th></tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
                if (in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                } else {
                   echo "&nbsp;";
                }
@@ -306,16 +292,47 @@ class Profile_User extends CommonDBRelation {
          echo "</div>";
       }
 
-      $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
-                FROM `glpi_profiles_users`
-                LEFT JOIN `glpi_profiles`
-                     ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
-                WHERE `glpi_profiles_users`.`entities_id` = '$ID'
-                     AND `glpi_users`.`is_deleted` = '0'";
+      $putable = Profile_User::getTable();
+      $ptable = Profile::getTable();
+      $utable = User::getTable();
 
-      $result = $DB->query($query);
-      $nb = $DB->numrows($result);
+      $iterator = $DB->request([
+         'SELECT'       => [
+            "glpi_users.*",
+            "$putable.id AS linkID",
+            "$putable.is_recursive",
+            "$putable.is_dynamic",
+            "$ptable.id AS pid",
+            "$ptable.name AS pname"
+         ],
+         'FROM'         => $putable,
+         'INNER JOIN'   => [
+            $utable => [
+               'ON' => [
+                  $putable => 'users_id',
+                  $utable  => 'id'
+               ]
+            ],
+            $ptable  => [
+               'ON' => [
+                  $putable => 'profiles_id',
+                  $ptable  => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            "$utable.is_deleted"    => 0,
+            "$putable.entities_id"  => $ID
+         ],
+         'ORDERBY'      => [
+            "$putable.profiles_id",
+            "$utable.name",
+            "$utable.realname",
+            "$utable.firstname"
+         ]
+      ]);
+
+      $nb = count($iterator);
 
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
@@ -335,90 +352,71 @@ class Profile_User extends CommonDBRelation {
       echo "</th></tr></thead>";
 
       if ($nb) {
-         Session::initNavigateListItems('User',
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), Entity::getTypeName(1),
-                                                $entity->getName()));
+         Session::initNavigateListItems(
+            'User',
+            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+            sprintf(
+               __('%1$s = %2$s'),
+               Entity::getTypeName(1),
+               $entity->getName()
+            )
+         );
 
-         while ($data = $DB->fetch_assoc($result)) {
-            echo "<tbody><tr class='noHover'>";
-            $reduce_header = 0;
-            if ($canedit && $nb) {
-               echo "<th width='10'>";
-               echo Html::checkAllAsCheckbox("profile".$data['id']."_$rand");
-               echo "</th>";
-               $reduce_header++;
-            }
-            echo "<th colspan='".($headerspan-$reduce_header)."'>";
-            printf(__('%1$s: %2$s'), __('Profile'), $data["name"]);
-            echo "</th></tr></tbody>";
-            echo "<tbody id='profile".$data['id']."_$rand'>";
-
-            $query = "SELECT `glpi_users`.*,
-                             `glpi_profiles_users`.`id` AS linkID,
-                             `glpi_profiles_users`.`is_recursive`,
-                             `glpi_profiles_users`.`is_dynamic`
-                      FROM `glpi_profiles_users`
-                      LEFT JOIN `glpi_users`
-                           ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
-                      WHERE `glpi_profiles_users`.`entities_id` = '$ID'
-                            AND `glpi_users`.`is_deleted` = '0'
-                            AND `glpi_profiles_users`.`profiles_id` = '".$data['id']."'
-                      ORDER BY `glpi_profiles_users`.`profiles_id`,
-                               `glpi_users`.`name`,
-                               `glpi_users`.`realname`,
-                               `glpi_users`.`firstname`";
-
-            $result2 = $DB->query($query);
-            if ($DB->numrows($result2) > 0) {
+         $current_pid = null;
+         while ($data = $iterator->next()) {
+            if ($data['pid'] != $current_pid) {
+               echo "<tbody><tr class='noHover'>";
+               $reduce_header = 0;
+               if ($canedit && $nb) {
+                  echo "<th width='10'>";
+                  echo Html::getCheckAllAsCheckbox("profile".$data['pid']."_$rand");
+                  echo "</th>";
+                  $reduce_header++;
+               }
+               echo "<th colspan='".($headerspan-$reduce_header)."'>";
+               printf(__('%1$s: %2$s'), __('Profile'), $data["pname"]);
+               echo "</th></tr></tbody>";
+               echo "<tbody id='profile".$data['pid']."_$rand'>";
                $i = 0;
+            }
 
-               while ($data2 = $DB->fetch_assoc($result2)) {
-                  Session::addToNavigateListItems('User', $data2["id"]);
+            Session::addToNavigateListItems('User', $data["id"]);
 
-                  if (($i%$nb_per_line) == 0) {
-                     if ($i  !=0) {
-                        echo "</tr>";
-                     }
-                     echo "<tr class='tab_bg_1'>";
-                  }
-                  if ($canedit) {
-                     echo "<td width='10'>";
-                     Html::showMassiveActionCheckBox(__CLASS__, $data2["linkID"]);
-                     echo "</td>";
-                  }
-
-                  $username = formatUserName($data2["id"], $data2["name"], $data2["realname"],
-                                             $data2["firstname"], $canshowuser);
-
-                  if ($data2["is_dynamic"] || $data2["is_recursive"]) {
-                     $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
-                     if ($data2["is_dynamic"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, __('D'));
-                     }
-                     if ($data2["is_dynamic"] && $data2["is_recursive"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, ", ");
-                     }
-                     if ($data2["is_recursive"]) {
-                        $username = sprintf(__('%1$s%2$s'), $username, __('R'));
-                     }
-                     $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
-                  }
-                  echo "<td>".$username."</td>";
-                  $i++;
+            if (($i%$nb_per_line) == 0) {
+               if ($i  !=0) {
+                  echo "</tr>";
                }
+               echo "<tr class='tab_bg_1'>";
+            }
+            if ($canedit) {
+               echo "<td width='10'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
+               echo "</td>";
+            }
 
-               while (($i%$nb_per_line) != 0) {
-                  echo "<td>&nbsp;</td>";
-                  if ($canedit) {
-                     echo "<td>&nbsp;</td>";
-                  }
-                  $i++;
+            $username = formatUserName($data["id"], $data["name"], $data["realname"],
+                                       $data["firstname"], $canshowuser);
+
+            if ($data["is_dynamic"] || $data["is_recursive"]) {
+               $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
+               if ($data["is_dynamic"]) {
+                  $username = sprintf(__('%1$s%2$s'), $username, __('D'));
                }
+               if ($data["is_dynamic"] && $data["is_recursive"]) {
+                  $username = sprintf(__('%1$s%2$s'), $username, ", ");
+               }
+               if ($data["is_recursive"]) {
+                  $username = sprintf(__('%1$s%2$s'), $username, __('R'));
+               }
+               $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
+            }
+            echo "<td>".$username."</td>";
+            $i++;
+
+            $current_pid = $data['pid'];
+            if ($data['pid'] != $current_pid) {
                echo "</tr>";
                echo "</tbody>";
-            } else {
-               echo "<tr colspan='$headerspan'>".__('Item not found')."</tr>";
             }
          }
       }
@@ -448,24 +446,40 @@ class Profile_User extends CommonDBRelation {
          return false;
       }
 
-      $query = "SELECT `glpi_users`.*,
-                       `glpi_profiles_users`.`entities_id` AS entity,
-                       `glpi_profiles_users`.`id` AS linkID,
-                       `glpi_profiles_users`.`is_dynamic`,
-                       `glpi_profiles_users`.`is_recursive`
-                FROM `glpi_profiles_users`
-                LEFT JOIN `glpi_entities`
-                     ON (`glpi_entities`.`id`=`glpi_profiles_users`.`entities_id`)
-                LEFT JOIN `glpi_users`
-                     ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
-                WHERE `glpi_profiles_users`.`profiles_id` = '$ID'
-                      AND `glpi_users`.`is_deleted` = '0' ".
-                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", 'entities_id',
-                                                 $_SESSION['glpiactiveentities'], true)."
-                ORDER BY `glpi_entities`.`completename`";
+      $utable = User::getTable();
+      $putable = Profile_User::getTable();
+      $etable = Entity::getTable();
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => "$utable.*",
+         'FIELDS'          => [
+            "$putable.entities_id AS entity",
+            "$putable.id AS linkID",
+            "$putable.is_dynamic",
+            "$putable.is_recursive"
+         ],
+         'FROM'            => $putable,
+         'LEFT JOIN'       => [
+            $etable  => [
+               'ON' => [
+                  $putable => 'entities_id',
+                  $etable  => 'id'
+               ]
+            ],
+            $utable  => [
+               'ON' => [
+                  $putable => 'users_id',
+                  $utable  => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            "$putable.profiles_id"  => $ID,
+            "$utable.is_deleted"    => 0
+         ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
+         'ORDERBY'         => "$etable.completename"
+      ]);
 
-      $result = $DB->query($query);
-      $nb     = $DB->numrows($result);
+      $nb = count($iterator);
 
       echo "<div class='spaced'>";
 
@@ -491,7 +505,7 @@ class Profile_User extends CommonDBRelation {
       if ($nb) {
          $temp = -1;
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             if ($data["entity"] != $temp) {
 
                while (($i%$nb_per_line) != 0) {
@@ -526,7 +540,7 @@ class Profile_User extends CommonDBRelation {
 
                echo "<tr class='tab_bg_2'><td>";
                echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
-               echo Html::checkAllAsCheckbox("entity$temp$rand").__('All');
+               echo Html::getCheckAllAsCheckbox("entity$temp$rand").__('All');
 
                echo "<table class='tab_cadre_fixe'>\n";
             }
@@ -608,7 +622,8 @@ class Profile_User extends CommonDBRelation {
       global $DB;
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => ['entities_id', 'is_recursive'],
+         'SELECT DISTINCT' => 'entities_id',
+         'FIELDS'          => 'is_recursive',
          'FROM'            => 'glpi_profiles_users',
          'WHERE'           => ['users_id' => $user_ID]
       ]);
@@ -642,7 +657,7 @@ class Profile_User extends CommonDBRelation {
     * Get entities for which a user have a right
     *
     * @since 0.84
-    * @since 9.2  Add $name parameter
+    * @since 9.2  Add $rightname parameter
     *
     * @param integer $user_ID      user ID
     * @param string  $rightname    name of the rights to check (CommonDBTM::$rightname)
@@ -655,22 +670,38 @@ class Profile_User extends CommonDBRelation {
    static function getUserEntitiesForRight($user_ID, $rightname, $rights, $is_recursive = true) {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_profiles_users`.`entities_id`,
-                                `glpi_profiles_users`.`is_recursive`
-                FROM `glpi_profiles_users`
-                INNER JOIN `glpi_profiles`
-                  ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
-                INNER JOIN `glpi_profilerights`
-                  ON (`glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`)
-                WHERE `glpi_profiles_users`.`users_id` = '$user_ID'
-                  AND `glpi_profilerights`.`name` = '$rightname'
-                  AND `glpi_profilerights`.`rights` & $rights";
-      $result = $DB->query($query);
+      $putable = Profile_User::getTable();
+      $ptable = Profile::getTable();
+      $prtable = ProfileRight::getTable();
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => "$putable.entities_id",
+         'FIELDS'          => ["$putable.is_recursive"],
+         'FROM'            => $putable,
+         'INNER JOIN'      => [
+            $ptable  => [
+               'ON' => [
+                  $putable => 'profiles_id',
+                  $ptable  => 'id'
+               ]
+            ],
+            $prtable => [
+               'ON' => [
+                  $prtable => 'profiles_id',
+                  $ptable  => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            "$putable.users_id"  => $user_ID,
+            "$prtable.name"      => $rightname,
+            "$prtable.rights"    => ['&', $rights]
+         ]
+      ]);
 
-      if ($DB->numrows($result) > 0) {
+      if (count($iterator) > 0) {
          $entities = [];
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             if ($data['is_recursive'] && $is_recursive) {
                $tab      = getSonsOf('glpi_entities', $data['entities_id']);
                $entities = array_merge($tab, $entities);
@@ -701,34 +732,19 @@ class Profile_User extends CommonDBRelation {
 
       $profiles = [];
 
-      if (is_array($sqlfilter)) {
-         $where = ['users_id' => $user_ID];
-         if (count($sqlfilter) > 0) {
-            $where = $where + $sqlfilter;
-         }
+      $where = ['users_id' => $user_ID];
+      if (count($sqlfilter) > 0) {
+         $where = $where + $sqlfilter;
+      }
 
-         $iterator = $DB->request([
-            'SELECT DISTINCT' => ['profiles_id'],
-            'FROM'            => 'glpi_profiles_users',
-            'WHERE'           => $where
-         ]);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'profiles_id',
+         'FROM'            => 'glpi_profiles_users',
+         'WHERE'           => $where
+      ]);
 
-         while ($data = $iterator->next()) {
-            $profiles[$data['profiles_id']] = $data['profiles_id'];
-         }
-      } else {
-         Toolbox::deprecated('sqlfilter param for getUserProfiles must be an array');
-         $query = "SELECT DISTINCT `profiles_id`
-                  FROM `glpi_profiles_users`
-                  WHERE `users_id` = '$user_ID'
-                        $sqlfilter";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $profiles[$data['profiles_id']] = $data['profiles_id'];
-            }
-         }
+      while ($data = $iterator->next()) {
+         $profiles[$data['profiles_id']] = $data['profiles_id'];
       }
 
       return $profiles;
@@ -748,13 +764,17 @@ class Profile_User extends CommonDBRelation {
    static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false) {
       global $DB;
 
-      $query = "SELECT `entities_id`, `is_recursive`
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '$users_id'
-                      AND `profiles_id` = '$profiles_id'";
+      $iterator = $DB->request([
+         'SELECT' => ['entities_id', 'is_recursive'],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'     => $users_id,
+            'profiles_id'  => $profiles_id
+         ]
+      ]);
 
       $entities = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($child
              && $data['is_recursive']) {
             foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
@@ -814,10 +834,10 @@ class Profile_User extends CommonDBRelation {
    static function getForUser($user_ID, $only_dynamic = false) {
       global $DB;
 
-      $condition = "`users_id` = '$user_ID'";
+      $condition = ['users_id' => $user_ID];
 
       if ($only_dynamic) {
-         $condition .= " AND `is_dynamic` = 1";
+         $condition['is_dynamic'] = 1;
       }
 
       return getAllDatasFromTable('glpi_profiles_users', $condition);
@@ -831,13 +851,15 @@ class Profile_User extends CommonDBRelation {
    static function haveUniqueRight($user_ID, $profile_id) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '$user_ID'
-                      AND `profiles_id` = '$profile_id'";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 'cpt');
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'users_id'     => $user_ID,
+            'profiles_id'  => $profile_id
+         ]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -958,19 +980,27 @@ class Profile_User extends CommonDBRelation {
 
       if (!$withtemplate) {
          $nb = 0;
-         $query_nb = "SELECT COUNT(*) as cpt
-                      FROM `".$this->getTable()."`
-                      LEFT JOIN glpi_users
-                        ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
-                      WHERE `glpi_users`.`is_deleted` = '0' ";
          switch ($item->getType()) {
             case 'Entity' :
                if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $query_nb.= "AND `glpi_profiles_users`.`entities_id` = '".$item->getID()."'";
-                     $result_nb = $DB->query($query_nb);
-                     $data_nb   = $DB->fetch_assoc($result_nb);
-                     $nb        = $data_nb['cpt'];
+                     $count = $DB->request([
+                        'COUNT'     => 'cpt',
+                        'FROM'      => $this->getTable(),
+                        'LEFT JOIN' => [
+                           User::getTable() => [
+                              'FKEY' => [
+                                 $this->getTable() => 'users_id',
+                                 User::getTable()  => 'id'
+                              ]
+                           ]
+                        ],
+                        'WHERE'     => [
+                           User::getTable() . '.is_deleted'    => 0,
+                           $this->getTable() . '.entities_id'  => $item->getID()
+                        ]
+                     ])->next();
+                     $nb        = $count['cpt'];
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -979,15 +1009,7 @@ class Profile_User extends CommonDBRelation {
             case 'Profile' :
                if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $query_nb.= "AND `glpi_profiles_users`.`profiles_id` = '".$item->getID()."'".
-                                       getEntitiesRestrictRequest('AND',
-                                                                  'glpi_profiles_users',
-                                                                  'entities_id',
-                                                                  $_SESSION['glpiactiveentities'],
-                                                                  true);
-                     $result_nb = $DB->query($query_nb);
-                     $data_nb   = $DB->fetch_assoc($result_nb);
-                     $nb        = $data_nb['cpt'];
+                     $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -995,8 +1017,7 @@ class Profile_User extends CommonDBRelation {
 
             case 'User' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                             ['users_id' => $item->getID()]);
+                  $nb = self::countForItem($item);
                }
                return self::createTabEntry(_n('Authorization', 'Authorizations',
                                            Session::getPluralNumber()), $nb);
@@ -1077,4 +1098,27 @@ class Profile_User extends CommonDBRelation {
       return $result;
    }
 
+   /**
+    * Get linked items list for specified item
+    *
+    * @since 9.3.1
+    *
+    * @param CommonDBTM $item  Item instance
+    * @param boolean    $noent Flag to not compute entity informations (see Document_Item::getListForItemParams)
+    *
+    * @return array
+    */
+   protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
+      $params = parent::getListForItemParams($item, $noent);
+      $params['SELECT'][] = self::getTable() . '.entities_id';
+      $params['SELECT'][] = self::getTable() . '.is_recursive';
+      $params['SELECT'][] = 'glpi_entities.completename AS completename';
+      $params['LEFT JOIN']['glpi_entities'] = [
+         'FKEY'   => [
+            self::getTable()  => 'entities_id',
+            'glpi_entities'   => 'id'
+         ]
+      ];
+      return $params;
+   }
 }

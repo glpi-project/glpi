@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var RuleCollection $rulecollection
+ */
+
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -42,7 +47,6 @@ $rulecollection->checkGlobal(READ);
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-$rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction   = new RuleAction(get_class($rule));
 
 if (isset($_POST["add_action"])) {

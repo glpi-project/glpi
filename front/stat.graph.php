@@ -320,12 +320,6 @@ echo "</table></div>";
 Html::closeForm();
 
 
-$show_all = false;
-if (!isset($_POST['graph']) || (count($_POST['graph']) == 0)) {
-   $show_all = true;
-}
-
-
 ///////// Stats nombre intervention
 // Total des interventions
 $values['total']  = Stat::constructEntryValues($_GET['itemtype'], "inter_total", $_POST["date1"],

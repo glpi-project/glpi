@@ -89,7 +89,7 @@ class DCRoom extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_datacenters_id$rand'>".__('Datacenter')."</label></td>";
+      echo "<td><label for='dropdown_datacenters_id$rand'>".__('Data center')."</label></td>";
 
       echo "<td>";
       $datacenters = $DB->request([
@@ -255,7 +255,7 @@ class DCRoom extends CommonDBTM {
          'id'                 => '4',
          'table'              => Datacenter::getTable(),
          'field'              => 'name',
-         'name'               => __('Datacenter'),
+         'name'               => __('Data center'),
          'datatype'           => 'dropdown'
       ];
 
@@ -310,6 +310,7 @@ class DCRoom extends CommonDBTM {
 
       switch ($item->getType()) {
          case Datacenter::getType():
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb =countElementsInTable(
                   self::getTable(), [
@@ -363,6 +364,7 @@ class DCRoom extends CommonDBTM {
       echo "</div>";
 
       if ($canedit) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = [
             'num_displayed'   => min($_SESSION['glpilist_limit'], count($rooms)),
             'container'       => 'mass'.__CLASS__.$rand
@@ -469,5 +471,15 @@ class DCRoom extends CommonDBTM {
          }
       }
       return $positions;
+   }
+
+
+   function cleanDBonPurge() {
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+         ]
+      );
    }
 }

@@ -58,6 +58,7 @@ class CronTaskLog extends CommonDBTM{
 
       $secs      = $days * DAY_TIMESTAMP;
 
+      //TODO: migrate to DB::delete()
       $query_exp = "DELETE
                     FROM `glpi_crontasklogs`
                     WHERE `crontasks_id` = '$id'

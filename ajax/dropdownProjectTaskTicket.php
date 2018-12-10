@@ -41,21 +41,12 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST["projects_id"])) {
-
-   $rand = mt_rand();
-   if (isset($_POST["rand"])) {
-      $rand = $_POST["rand"];
-   }
+   $condition = ['glpi_projecttasks.projectstates_id' => ['<>', 3]];
 
    if ($_POST["projects_id"] > 0) {
-
-      $condition = "`glpi_projecttasks`.`projectstates_id` <> 3 
-                     AND `glpi_projecttasks`.`projects_id` = ".$_POST["projects_id"];
-   } else {
-      $condition = "`glpi_projecttasks`.`projectstates_id` <> 3";
+      $condition['glpi_projecttasks.projects_id'] = $_POST['projects_id'];
    }
 
-   $field_id = Html::cleanId("dropdown_".$_POST['myname'].$rand);
    $p = ['itemtype'     => ProjectTask::getType(),
          'entity_restrict' => $_POST['entity_restrict'],
          'myname'          => $_POST["myname"],

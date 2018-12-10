@@ -45,7 +45,7 @@ class Datacenter extends CommonDBTM {
 
    static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
-      return _n('Datacenter', 'Datacenters', $nb);
+      return _n('Data center', 'Data centers', $nb);
    }
 
    function defineTabs($options = []) {
@@ -82,7 +82,6 @@ class Datacenter extends CommonDBTM {
    }
 
    function rawSearchOptions() {
-      global $CFG_GLPI;
 
       $tab = [];
 
@@ -141,8 +140,6 @@ class Datacenter extends CommonDBTM {
    }
 
    static function getAdditionalMenuLinks() {
-      global $CFG_GLPI;
-
       $links = [];
       if (static::canView()) {
          $rooms = "<i class=\"fa fa-building pointer\" title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) .
@@ -157,13 +154,18 @@ class Datacenter extends CommonDBTM {
    }
 
    static function getAdditionalMenuOptions() {
-
-      return [
-         'dcroom' => [
-            'title' => DCRoom::getTypeName(Session::getPluralNumber()),
-            'page'  => DCRoom::getSearchURL(false)
-         ]
-      ];
+      if (static::canView()) {
+         return [
+            'dcroom' => [
+               'title' => DCRoom::getTypeName(Session::getPluralNumber()),
+               'page'  => DCRoom::getSearchURL(false),
+               'links' => [
+                  'add'    => '/front/dcroom.form.php',
+                  'search' => '/front/dcroom.php',
+               ]
+            ]
+         ];
+      }
    }
 
 }

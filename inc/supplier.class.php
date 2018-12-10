@@ -58,34 +58,18 @@ class Supplier extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $supplierjob = new Supplier_Ticket();
-      $supplierjob->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $ps = new Problem_Supplier();
-      $ps->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $cs = new Change_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $query1 = "DELETE
-                 FROM `glpi_projecttaskteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
-
-      $query1 = "DELETE
-                 FROM `glpi_projectteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
-
-      $cs  = new Contract_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $cs  = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Supplier::class,
+            Contact_Supplier::class,
+            Contract_Supplier::class,
+            Problem_Supplier::class,
+            ProjectTaskTeam::class,
+            ProjectTeam::class,
+            Supplier_Ticket::class,
+         ]
+      );
 
       // Ticket rules use suppliers_id_assign
       Rule::cleanForItemAction($this, 'suppliers_id%');
@@ -208,8 +192,6 @@ class Supplier extends CommonDBTM {
       if ($isadmin) {
          $actions['Contact_Supplier'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = _x('button', 'Add a contact');
-
-         MassiveAction::getAddTransferList($actions);
       }
       return $actions;
    }
@@ -462,23 +444,17 @@ class Supplier extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_infocoms`
-                WHERE `suppliers_id` = '$instID'
-                      AND `itemtype` NOT IN ('ConsumableItem', 'CartridgeItem', 'Software')
-                ORDER BY `itemtype`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = InfoCom::getTypes(['suppliers_id' => $instID]);
+      $number = count($types_iterator);
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       Html::printPagerForm();
       echo "</th><th colspan='3'>";
-      if ($DB->numrows($result) == 0) {
+      if ($number == 0) {
          echo __('No associated item');
       } else {
-         echo _n('Associated item', 'Associated items', $DB->numrows($result));
+         echo _n('Associated item', 'Associated items', $number);
       }
       echo "</th></tr>";
       echo "<tr><th>".__('Type')."</th>";
@@ -489,8 +465,8 @@ class Supplier extends CommonDBTM {
       echo "</tr>";
 
       $num = 0;
-      for ($i=0; $i < $number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($row = $types_iterator->next()) {
+         $itemtype = $row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
             continue;

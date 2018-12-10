@@ -389,7 +389,7 @@ class Html extends \GLPITestCase {
          'Notification',
          'SLM',
          'Config',
-         'Control',
+         'FieldUnicity',
          'Crontask',
          'Auth',
          'MailCollector',
@@ -751,7 +751,7 @@ class Html extends \GLPITestCase {
 
    public function testCleanSQLDisplay() {
       $sql = "SELECT * FROM mytable WHERE myfield < 10 ORDER BY id";
-      $expected = "SELECT * <br>FROM mytable <br>WHERE myfield &lt; 10 <br>ORDER BY id";
+      $expected = "SELECT * <br/>FROM mytable <br/>WHERE myfield &lt; 10 <br/>ORDER BY id";
       $this->string(\Html::cleanSQLDisplay($sql))->isIdenticalTo($expected);
    }
 
@@ -791,7 +791,7 @@ class Html extends \GLPITestCase {
       $this->string(\Html::jsEnable('myid'))->isIdenticalTo("$('#myid').removeAttr('disabled');\n");
       $this->string(\Html::jsDisable('myid'))->isIdenticalTo("$('#myid').attr('disabled', 'disabled');\n");
       $this->string(\Html::jsGetElementbyID('myid'))->isIdenticalTo("$('#myid')");
-      $this->string(\Html::jsSetDropdownValue('myid', 'myval'))->isIdenticalTo("$('#myid').val('myval').trigger('change');");
+      $this->string(\Html::jsSetDropdownValue('myid', 'myval'))->isIdenticalTo("$('#myid').trigger('setValue', 'myval');");
       $this->string(\Html::jsGetDropdownValue('myid'))->isIdenticalTo("$('#myid').val()");
    }
 

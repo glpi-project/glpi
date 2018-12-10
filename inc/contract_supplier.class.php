@@ -45,43 +45,11 @@ class Contract_Supplier extends CommonDBRelation {
    static public $items_id_2 = 'suppliers_id';
 
 
-
-   /**
-    * @since 0.84
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
-   }
-
-
-   /**
-    * @param $item   string   Supplier object
-   **/
-   static function countForSupplier(Supplier $item) {
-
-      $restrict = "`glpi_contracts_suppliers`.`suppliers_id` = '".$item->getField('id') ."'
-                    AND `glpi_contracts_suppliers`.`contracts_id` = `glpi_contracts`.`id` ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_contracts", '',
-                                               $_SESSION['glpiactiveentities']);
-
-      return countElementsInTable(['glpi_contracts_suppliers', 'glpi_contracts'], $restrict);
-   }
-
-
-   /**
-    * @param $item   string   Contract object
-   **/
-   static function countForContract(Contract $item) {
-
-      $restrict = "`glpi_contracts_suppliers`.`contracts_id` = '".$item->getField('id') ."'
-                    AND `glpi_contracts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id` ".
-                    getEntitiesRestrictRequest(" AND ", "glpi_suppliers", '',
-                                               $_SESSION['glpiactiveentities'], true);
-
-      return countElementsInTable(['glpi_contracts_suppliers', 'glpi_suppliers'], $restrict);
    }
 
 
@@ -93,7 +61,7 @@ class Contract_Supplier extends CommonDBRelation {
             case 'Supplier' :
                if (Contract::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb =  self::countForSupplier($item);
+                     $nb =  self::countForItem($item);
                   }
                   return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()),
                                               $nb);
@@ -103,7 +71,7 @@ class Contract_Supplier extends CommonDBRelation {
             case 'Contract' :
                if (Session::haveRight("contact_enterprise", READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = self::countForContract($item);
+                     $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -134,40 +102,28 @@ class Contract_Supplier extends CommonDBRelation {
     *
     * @since 0.84
     *
-    * @param $supplier   Supplier object
+    * @param Supplier $supplier
     *
-    * @return Nothing (display)
+    * @return void
    **/
    static function showForSupplier(Supplier $supplier) {
-      global $DB, $CFG_GLPI;
 
       $ID = $supplier->fields['id'];
       if (!Contract::canView()
           || !$supplier->can($ID, READ)) {
-         return false;
+         return;
       }
       $canedit = $supplier->can($ID, UPDATE);
       $rand    = mt_rand();
 
-      $query = "SELECT `glpi_contracts`.*,
-                       `glpi_contracts_suppliers`.`id` AS assocID,
-                       `glpi_entities`.`id` AS entity
-                FROM `glpi_contracts_suppliers`, `glpi_contracts`
-                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_contracts`.`entities_id`)
-                WHERE `glpi_contracts_suppliers`.`suppliers_id` = '$ID'
-                      AND `glpi_contracts_suppliers`.`contracts_id`=`glpi_contracts`.`id`".
-                      getEntitiesRestrictRequest(" AND", "glpi_contracts", '', '', true)."
-                ORDER BY `glpi_entities`.`completename`,
-                         `glpi_contracts`.`name`";
+      $iterator = self::getListForItem($supplier);
+      $number = count($iterator);
 
-      $result    = $DB->query($query);
       $contracts = [];
       $used      = [];
-      if ($number = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $contracts[$data['assocID']] = $data;
-            $used[$data['id']]           = $data['id'];
-         }
+      while ($data = $iterator->next()) {
+         $contracts[$data['linkid']]   = $data;
+         $used[$data['id']]            = $data['id'];
       }
 
       if ($canedit) {
@@ -221,16 +177,14 @@ class Contract_Supplier extends CommonDBRelation {
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      $used = [];
       foreach ($contracts as $data) {
          $cID        = $data["id"];
-         $used[$cID] = $cID;
-         $assocID    = $data["assocID"];
+         $assocID    = $data["linkid"];
 
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
          if ($canedit) {
             echo "<td>";
-            Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+            Html::showMassiveActionCheckBox(__CLASS__, $assocID);
             echo "</td>";
          }
          $name = $data["name"];
@@ -275,43 +229,27 @@ class Contract_Supplier extends CommonDBRelation {
     *
     * @param $contract Contract object
     *
-    * @return Nothing (HTML display)
+    * @return void
     **/
    static function showForContract(Contract $contract) {
-      global $DB, $CFG_GLPI;
 
       $instID = $contract->fields['id'];
 
       if (!$contract->can($instID, READ)
           || !Session::haveRight("contact_enterprise", READ)) {
-         return false;
+         return;
       }
       $canedit = $contract->can($instID, UPDATE);
       $rand    = mt_rand();
 
-      $query = "SELECT `glpi_contracts_suppliers`.`id`,
-                       `glpi_suppliers`.`id` AS entID,
-                       `glpi_suppliers`.`name` AS name,
-                       `glpi_suppliers`.`website` AS website,
-                       `glpi_suppliers`.`phonenumber` AS phone,
-                       `glpi_suppliers`.`suppliertypes_id` AS type,
-                       `glpi_entities`.`id` AS entity
-                FROM `glpi_contracts_suppliers`,
-                     `glpi_suppliers`
-                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_suppliers`.`entities_id`)
-                WHERE `glpi_contracts_suppliers`.`contracts_id` = '$instID'
-                      AND `glpi_contracts_suppliers`.`suppliers_id`=`glpi_suppliers`.`id`".
-                      getEntitiesRestrictRequest(" AND", "glpi_suppliers", '', '', true). "
-                ORDER BY `glpi_entities`.`completename`, `name`";
+      $iterator = self::getListForItem($contract);
+      $number = count($iterator);
 
-      $result    = $DB->query($query);
       $suppliers = [];
       $used      = [];
-      if ($number = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $suppliers[$data['id']] = $data;
-            $used[$data['entID']]   = $data['entID'];
-         }
+      while ($data = $iterator->next()) {
+         $suppliers[$data['linkid']]   = $data;
+         $used[$data['id']]            = $data['id'];
       }
 
       if ($canedit) {
@@ -362,9 +300,8 @@ class Contract_Supplier extends CommonDBRelation {
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      $used = [];
       foreach ($suppliers as $data) {
-         $ID      = $data['id'];
+         $assocID = $data['linkid'];
          $website = $data['website'];
          if (!empty($website)) {
             if (!preg_match("?https*://?", $website)) {
@@ -372,14 +309,13 @@ class Contract_Supplier extends CommonDBRelation {
             }
             $website = "<a target=_blank href='$website'>".$data['website']."</a>";
          }
-         $entID         = $data['entID'];
+         $entID         = $data['id'];
          $entity        = $data['entity'];
-         $used[$entID]  = $entID;
          $entname       = Dropdown::getDropdownName("glpi_suppliers", $entID);
          echo "<tr class='tab_bg_1'>";
          if ($canedit) {
             echo "<td>";
-            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            Html::showMassiveActionCheckBox(__CLASS__, $assocID);
             echo "</td>";
          }
          echo "<td class='center'>";
@@ -391,8 +327,8 @@ class Contract_Supplier extends CommonDBRelation {
          echo "</a></td>";
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $entity)."</td>";
          echo "<td class='center'>";
-         echo Dropdown::getDropdownName("glpi_suppliertypes", $data['type'])."</td>";
-         echo "<td class='center'>".$data['phone']."</td>";
+         echo Dropdown::getDropdownName("glpi_suppliertypes", $data['suppliertypes_id'])."</td>";
+         echo "<td class='center'>".$data['phonenumber']."</td>";
          echo "<td class='center'>".$website."</td>";
          echo "</tr>";
       }

@@ -136,7 +136,7 @@ class APIXmlrpc extends API {
          return $this->returnResponse($response, $code, $additionalheaders);
 
       } else if ($resource === "lostPassword") {
-         return $this->returnResponse($this->lostPassword($this->parameters));
+         return $this->returnResponse($this->lostPassword($this->parameters), 204);
 
       } else if (in_array($resource,
                           ["getItem", "getItems", "createItems", "updateItems", "deleteItems"])) {
@@ -269,7 +269,7 @@ class APIXmlrpc extends API {
       }
 
       // check boolean parameters
-      foreach ($this->parameters as $key => &$parameter) {
+      foreach ($this->parameters as &$parameter) {
          if ($parameter === "true") {
             $parameter = true;
          }

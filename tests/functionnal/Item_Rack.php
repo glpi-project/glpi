@@ -187,7 +187,8 @@ class Item_Rack extends DbTestCase {
             'name'         => 'Test rack',
             'number_units' => 10,
             'dcrooms_id'   => 0,
-            'position'     => 0
+            'position'     => 0,
+            'entities_id'  => 0,
          ])
       )->isGreaterThan(0);
 

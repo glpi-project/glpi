@@ -43,7 +43,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
       $events = [];
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => ['event'],
+         'SELECT DISTINCT' => 'event',
          'FROM'            => Notification::getTable(),
          'WHERE'           => ['itemtype' => SavedSearch_Alert::getType()]
       ]);
@@ -70,7 +70,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
    }
 
 
-   function getDatasForTemplate($event, $options = []) {
+   function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();

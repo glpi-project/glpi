@@ -61,7 +61,7 @@ class ITILCategory extends CommonTreeDropdown {
                    ['name'      => 'groups_id',
                          'label'     => __('Group in charge of the hardware'),
                          'type'      => 'dropdownValue',
-                         'condition' => '`is_assign`',
+                         'condition' => ['is_assign' => 1],
                          'list'      => true],
                    ['name'      => 'knowbaseitemcategories_id',
                          'label'     => __('Knowledge base'),
@@ -303,57 +303,61 @@ class ITILCategory extends CommonTreeDropdown {
 
       echo "<div class='center'>";
 
-      $query = "SELECT `glpi_itilcategories`.*
-                FROM `glpi_itilcategories`
-                WHERE (`tickettemplates_id_incident` = '$ID')
-                       OR (`tickettemplates_id_demand` = '$ID')
-                ORDER BY `name`";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_itilcategories',
+         'WHERE'  => [
+            'OR' => [
+               'tickettemplates_id_incident' => $ID,
+               'tickettemplates_id_demand'   => $ID
+            ]
+         ],
+         'ORDER'  => 'name'
+      ]);
 
-      if ($result=$DB->query($query)) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='3'>";
-         echo "<a href='".Toolbox::getItemTypeSearchURL($itilcategory->getType())."'>";
-         echo self::getTypeName($DB->numrows($result));
-         echo "</a>";
-         echo "</th></tr>";
-         $used_incident = [];
-         $used_demand   = [];
-         if ($DB->numrows($result)) {
-            echo "<th>".__('Name')."</th>";
-            echo "<th>".__('Incident')."</th>";
-            echo "<th>".__('Request')."</th>";
-            echo "</tr>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='3'>";
+      $itilcategory_type = $itilcategory->getType();
+      echo "<a href='".$itilcategory_type::getSearchURL()."'>";
+      echo self::getTypeName(count($iterator));
+      echo "</a>";
+      echo "</th></tr>";
+      $used_incident = [];
+      $used_demand   = [];
+      if (count($iterator)) {
+         echo "<th>".__('Name')."</th>";
+         echo "<th>".__('Incident')."</th>";
+         echo "<th>".__('Request')."</th>";
+         echo "</tr>";
 
-            while ($data = $DB->fetch_assoc($result)) {
-               echo "<tr class='tab_bg_2'>";
-               $itilcategory->getFromDB($data['id']);
-               echo "<td>".$itilcategory->getLink(['comments' => true])."</td>";
-               if ($data['tickettemplates_id_incident'] == $ID) {
-                  echo "<td class='center'>
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK').
-                         "\" width='14' height='14'>
-                        </td>";
-                  $used_incident[] = $data["id"];
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
-               if ($data['tickettemplates_id_demand'] == $ID) {
-                  echo "<td class='center'>
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK').
-                         "\" width='14' height='14'>
-                        </td>";
-                  $used_demand[] = $data["id"];
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
+         while ($data = $iterator->next()) {
+            echo "<tr class='tab_bg_2'>";
+            $itilcategory->getFromDB($data['id']);
+            echo "<td>".$itilcategory->getLink(['comments' => true])."</td>";
+            if ($data['tickettemplates_id_incident'] == $ID) {
+               echo "<td class='center'>
+                     <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK').
+                        "\" width='14' height='14'>
+                     </td>";
+               $used_incident[] = $data["id"];
+            } else {
+               echo "<td>&nbsp;</td>";
             }
-
-         } else {
-            echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
+            if ($data['tickettemplates_id_demand'] == $ID) {
+               echo "<td class='center'>
+                     <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK').
+                        "\" width='14' height='14'>
+                     </td>";
+               $used_demand[] = $data["id"];
+            } else {
+               echo "<td>&nbsp;</td>";
+            }
          }
 
-         echo "</table></div>";
+      } else {
+         echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
       }
+
+      echo "</table></div>";
    }
 
 }

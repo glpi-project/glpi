@@ -49,17 +49,6 @@ class Pdu_Plug extends CommonDBRelation {
       return _n('PDU plug', 'PDU plugs', $nb);
    }
 
-   /**
-    * Count connection for an operating system
-    *
-    * @param Rack $rack Rack object instance
-    *
-    * @return integer
-   **/
-   /*static function countForRack(Rack $rack) {
-      return countElementsInTable(self::getTable(),
-                                  ['racks_id' => $rack->getID()]);
-   }*/
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
@@ -139,7 +128,8 @@ class Pdu_Plug extends CommonDBRelation {
          echo Html::input(
             'number_plugs', [
                'id'     => 'number_plugs',
-               'type'   => 'number'
+               'type'   => 'number',
+               'min'    => 1
             ]
          );
          echo "</td><td>";
@@ -160,7 +150,7 @@ class Pdu_Plug extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
          }
 
-         echo "<table class='tab_cadre_fixehov'>";
+         echo "<table class='tab_cadre_fixehov' id='mass".__CLASS__.$rand."'>";
          $header = "<tr>";
          if ($canedit) {
             $header .= "<th width='10'>";

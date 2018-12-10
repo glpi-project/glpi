@@ -34,6 +34,11 @@
  * @since 0.85
  */
 
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var Item_Devices $item_device
+ */
+
 use Glpi\Event;
 
 if (!($item_device instanceof Item_Devices)) {
@@ -73,7 +78,7 @@ if (isset($_POST["purge"])) {
    Html::back();
 
 } else {
-   Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", get_class($item_device));
+   Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $item_device->getDeviceType());
 
    if (!isset($options)) {
       $options = [];

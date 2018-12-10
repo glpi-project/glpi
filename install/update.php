@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', realpath('..'));
 }
 
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
+include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();
@@ -124,12 +124,14 @@ function update_importDropdown ($table, $name) {
  * @return nothing (displays)
  */
 function showContentUpdateForm() {
-
+   $_SESSION['do_content_update'] = true;
+   echo "<form action='update_content.php' method='post'>";
    echo "<div class='center'>";
    echo "<h3>".__('Update successful, your database is up to date')."</h3>";
    echo "<p>".__('You must now proceed to updating your database content')."</p></div>";
    echo "<p>";
-   echo "<a class='vsubmit' href='update_content.php'>".__('Continue?')."</a>";
+   echo "<input type='submit' class='vsubmit' value='.__('Continue?').'/>";
+   echo "</form>";
 }
 
 
@@ -168,7 +170,7 @@ function display_new_locations() {
                     $SELECT_ALL
              FROM `glpi_dropdown_locations_new` AS location0
              $FROM_ALL
-             WHERE location0.`parentID` = '0'
+             WHERE location0.`parentID` = 0
              ORDER BY NAME0 $ORDER_ALL";
    $result = $DB->query($query);
 
@@ -410,14 +412,18 @@ function changeVarcharToID($table1, $table2, $chps) {
              ADD `temp` INT";
    $DB->queryOrDie($query);
 
-   //needs DB::request to support aliases to get migrated
-   $query = "SELECT `$table1`.`ID` AS row1,
-                    `$table2`.`ID` AS row2
-             FROM `$table1`, `$table2`
-             WHERE `$table2`.`name` = `$table1`.`$chps`";
-   $result = $DB->queryOrDie($query);
+   $iterator = $DB->request([
+      'SELECT' => [
+         "$table1.ID AS row1",
+         "$table2.ID AS row2",
+      ],
+      'FROM'   => [$table1, $table2],
+      'WHERE'  => [
+         "$table2.name" => new \QueryExpression(DBmysql::quoteName("$table1.$chps"))
+      ]
+   ]);
 
-   while ($line = $DB->fetch_assoc($result)) {
+   while ($line = $iterator->next()) {
       $DB->updateOrDie(
          $table1,
          ['temp' => $line['row2']],
@@ -509,7 +515,7 @@ echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
 echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
-echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
+echo Html::script("lib/jquery/js/jquery.js");
 echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
 // CSS
 echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen' >";
@@ -550,6 +556,12 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    // Step 2
    if (test_connect()) {
       echo "<h3>".__('Database connection successful')."</h3>";
+      echo "<p class='center'>";
+      $result = Config::displayCheckDbEngine(true);
+      echo "</p>";
+      if ($result > 0) {
+         die(1);
+      }
       if (!isset($_POST["update_location"])) {
          $current_version = "0.31";
          $config_table    = "glpi_config";
@@ -585,11 +597,19 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
                default:
                   echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
                   echo "<input type='hidden' name='update_end' value='1'/>";
+
+                  echo "<hr />";
+                  echo "<h2>".__('One last thing before starting')."</h2>";
+                  echo "<p>";
+                  echo GlpiNetwork::showInstallMessage();
+                  echo "</p>";
+                  echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
+                     __('Donate')."</a><br /><br />";
+
                   if (!Telemetry::isEnabled()) {
-                     echo "<hr/>";
+                     echo "<hr />";
                      echo Telemetry::showTelemetry();
                   }
-
                   echo Telemetry::showReference();
 
                   echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".

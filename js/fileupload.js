@@ -64,7 +64,13 @@ function uploadFile(file, editor, input_name) {
       },
 
       error: function (request) {
-         alert(request.responseText);
+         // If this is an error on the return
+         if ("responseText" in request && request.responseText.length > 0) {
+            alert(request.responseText);
+         } else {
+            // Error before sending request #3866
+            alert(request.statusText);
+         }
       }
    });
 
@@ -110,7 +116,7 @@ var getFileTag = function(data) {
 var fileindex = 0;
 var displayUploadedFile = function(file, tag, editor, input_name) {
    // default argument(s)
-   input_name = (typeof input_name === 'undefined') ? 'filename' : input_name;
+   input_name = (typeof input_name === 'undefined' || input_name == null) ? 'filename' : input_name;
 
    // find the nearest fileupload_info where to append file list
    var current_dom_point = $(editor.targetElm);
@@ -198,6 +204,9 @@ var insertImgFromFile = function(editor, fileImg, tag) {
    var maxWidth   = $(tinyMCE.activeEditor.getContainer()).width()  - 120;
 
    if (window.FileReader && window.File && window.FileList && window.Blob ) {
+      // indicate loading in tinymce
+      editor.setProgressState(true);
+
       var reader = new FileReader();
       reader.onload = (function(theFile) {
          var image    = new Image();
@@ -223,6 +232,9 @@ var insertImgFromFile = function(editor, fileImg, tag) {
 
             editor.execCommand('mceInsertContent', false,
                                "<img width='"+imgWidth+"' height='"+imgHeight+"'' id='"+tag.replace(regex,'')+"' src='"+imageUrl+"'>");
+
+            // loading done, remove indicator
+            editor.setProgressState(false);
          };
       });
       reader.readAsDataURL(fileImg);
@@ -256,7 +268,10 @@ var dataURItoBlob = function(dataURI) {
       ia[i] = byteString.charCodeAt(i);
    }
 
-   return new Blob([ia], {type:mimeString});
+   var file = new Blob([ia], {type:mimeString});
+   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
+
+   return file;
 };
 
 /**
@@ -280,34 +295,18 @@ var isImageBlobFromPaste = function(content) {
 };
 
 /**
-* Function to extract src tag from img tag process bu TinyMCE
+* Function to extract src tag from img tag process by TinyMCE
 *
-* @param      {string}  content  The img tag
+* @param  {string}  content  The img tag
+* @return {string}  Source of image or empty string.
 */
 var extractSrcFromImgTag = function(content) {
-   var match = content.match(/<img[^>]*?src=['"](.*)['"]/);
-   if (match !== null) {
-      return match[1];
+   var foundImage = $('<div/>').append(content).find('img');
+   if (foundImage.length > 0) {
+      return foundImage.attr('src');
    }
+
    return '';
-};
-
-/**
-* Function to extract src tag from img tag process bu TinyMCE
-*
-* @param      {string}  content  The img tag
-*/
-var extractSrcFromBlobImgTag = function(content) {
-   var match = content.match(/\<img[^>]+src="(blob:http%3A\/\/[^">]+)/);
-   if (match === null) {
-      match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
-
-      if (match === null) {
-         match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
-      }
-   }
-
-   return match[1];
 };
 
 /**
@@ -316,22 +315,11 @@ var extractSrcFromBlobImgTag = function(content) {
  * @param  {Blob}   image  The image to insert
  */
 var insertImageInTinyMCE = function(editor, image) {
-   // set a tempory tag in mce editor
-   var state_upload = '[** UPLOADING FILE == '+image.name+' **]';
-   editor.execCommand('mceInsertContent', false, state_upload);
-
    //make ajax call for upload doc
    var tag = uploadFile(image, editor);
-
-   //replace upload state by html render of image
-   replaceContent(editor, state_upload, '');
-
    if (tag !== false) {
       insertImgFromFile(editor, image, tag);
    }
-
-   //Set cursor at the end
-   setCursorAtTheEnd(editor);
 
    return tag;
 };
@@ -341,7 +329,6 @@ var insertImageInTinyMCE = function(editor, image) {
  * to check if a file upload can be proceeded
  * @param  {[Object]} editor TinyMCE editor
  */
-var uploaded = false;
 if (typeof tinymce != 'undefined') {
    tinymce.PluginManager.add('glpi_upload_doc', function(editor) {
       editor.on('drop', function(event) {
@@ -351,15 +338,14 @@ if (typeof tinymce != 'undefined') {
 
             // for each dropped files
             $.each(event.dataTransfer.files, function(index, element) {
-               uploaded = insertImageInTinyMCE(editor, element);
+               insertImageInTinyMCE(editor, element);
             });
          }
       });
 
       editor.on('PastePreProcess', function(event) {
          //Check if data is an image
-         if (uploaded === false
-             && isImageFromPaste(event.content)) {
+         if (isImageFromPaste(event.content)) {
             stopEvent(event);
 
             //extract base64 data
@@ -368,14 +354,14 @@ if (typeof tinymce != 'undefined') {
             //transform to blob and insert into editor
             if (base64.length) {
                var file = dataURItoBlob(base64);
-               uploaded = insertImageInTinyMCE(editor, file);
+
+               insertImageInTinyMCE(editor, file);
             }
 
-         } else if (uploaded === false
-                    && isImageBlobFromPaste(event.content)) {
+         } else if (isImageBlobFromPaste(event.content)) {
             stopEvent(event);
 
-            var src = extractSrcFromBlobImgTag(event.content);
+            var src = extractSrcFromImgTag(event.content);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
             xhr.responseType = 'blob';
@@ -385,9 +371,9 @@ if (typeof tinymce != 'undefined') {
                   var file  = new Blob([this.response], {type: 'image/png'});
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
 
-                  uploaded = insertImageInTinyMCE(editor, file);
+                  insertImageInTinyMCE(editor, file);
                } else {
-                  console.log("paste error");
+                  console.error("paste error");
                }
             };
             xhr.send();
@@ -445,7 +431,6 @@ $(function() {
             if (input_file.length) {
                input_name = input_file.attr('name').replace('[]', '');
             }
-            console.log(element);
             uploadFile(element,
                        {targetElm: $(event.target).find('.fileupload_info')},
                        input_name

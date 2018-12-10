@@ -50,7 +50,7 @@ $disk = new Item_Disk();
 if (isset($_POST["add"])) {
    $disk->check(-1, CREATE, $_POST);
 
-   if ($newID = $disk->add($_POST)) {
+   if ($disk->add($_POST)) {
       Event::log($_POST['items_id'], $_POST['itemtype'], 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a volume'), $_SESSION["glpiname"]));
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $itemtype = $_POST['itemtype'];
    $item = new $itemtype();
    $item->getFromDB($disk->fields['items_id']);
-   Html::redirect(Toolbox::getItemTypeFormURL($itemtype).'?id='.$disk->fields['items_id'].
+   Html::redirect($itemtype::getFormURLWithID($disk->fields['items_id']).
                   ($item->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {

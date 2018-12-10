@@ -37,11 +37,18 @@ define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
+define('GLPI_ROOT', __DIR__ . '/../');
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-   die("\nConfiguration file for tests not found\n\nrun: php scripts/cliinstall.php --tests ...\n\n");
+   die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
 }
-global $CFG_GLPI;
+global $CFG_GLPI, $GLPI_CACHE;
+
+include_once (GLPI_ROOT . "/inc/define.php");
+include __DIR__ . '/../inc/autoload.function.php';
+
+//init cache
+$GLPI_CACHE = Config::getCache('cache_db');
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
@@ -317,7 +324,6 @@ function loadDataset() {
             'is_faq'   => 0,
             'users_id' => TU_USER,
             'date'     => '2016-11-17 12:27:48',
-            'date_mod' => '2016-11-17 12:28:06'
          ],
          [
             'name'     => '_knowbaseitem02',
@@ -325,43 +331,32 @@ function loadDataset() {
             'is_faq'   => 0,
             'users_id' => TU_USER,
             'date'     => '2016-11-17 12:27:48',
-            'date_mod' => '2016-11-17 12:28:06'
          ]
       ], 'KnowbaseItem_Item' => [
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket01',
-            'date_creation'    => '2016-11-17 14:27:28',
-            'date_mod'         => '2016-11-17 14:27:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket02',
-            'date_creation'    => '2016-11-17 14:28:28',
-            'date_mod'         => '2016-11-17 14:28:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket03',
-            'date_creation'    => '2016-11-17 14:29:28',
-            'date_mod'         => '2016-11-17 14:29:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem02',
             'itemtype'         => 'Ticket',
             'items_id'         => '_ticket03',
-            'date_creation'    => '2016-11-17 14:30:28',
-            'date_mod'         => '2016-11-17 14:30:52'
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem02',
             'itemtype'         => 'Computer',
             'items_id'         => '_test_pc21',
-            'date_creation'    => '2016-11-17 14:31:28',
-            'date_mod'         => '2016-11-17 14:31:52'
          ]
       ], 'Entity_KnowbaseItem' => [
          [
@@ -475,7 +470,7 @@ function loadDataset() {
             'login_field'     => 'uid',
             'rootdn_passwd'   => 'insecure',
             'is_default'      => 1,
-            'is_active'       => 1,
+            'is_active'       => 0,
             'use_tls'         => 0,
             'email1_field'    => 'mail',
             'realname_field'  => 'cn',
@@ -580,6 +575,13 @@ function getItemByTypeName($type, $name, $onlyid = false) {
       return ($onlyid ? $item->getField('id') : $item);
    }
    return false;
+}
+
+// Cleanup log directory
+foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
+   if (file_exists($file)) {
+      unlink($file);
+   }
 }
 
 loadDataset();

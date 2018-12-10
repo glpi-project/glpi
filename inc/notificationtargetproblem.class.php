@@ -42,9 +42,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
    public $private_profiles = [];
 
-   public $html_tags        = ['##problem.solution.description##'];
-
-
    /**
     * Get events related to tickets
    **/
@@ -53,9 +50,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       $events = ['new'            => __('New problem'),
                       'update'         => __('Update of a problem'),
                       'solved'         => __('Problem solved'),
-                      'add_task'       => __('New task'),
-                      'update_task'    => __('Update of a task'),
-                      'delete_task'    => __('Deletion of a task'),
                       'closed'         => __('Closure of a problem'),
                       'delete'         => __('Deleting a problem')];
 
@@ -77,7 +71,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
       // Complex mode
       if (!$simple) {
-         $restrict = "`problems_id`='".$item->getField('id')."'";
+         $restrict = ['problems_id' => $item->getField('id')];
          $tickets  = getAllDatasFromTable('glpi_problems_tickets', $restrict);
 
          $data['tickets'] = [];
@@ -106,7 +100,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
          $data['##problem.numberoftickets##'] = count($data['tickets']);
 
-         $restrict = "`problems_id`='".$item->getField('id')."'";
          $changes  = getAllDatasFromTable('glpi_changes_problems', $restrict);
 
          $data['changes'] = [];
@@ -134,7 +127,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
          $data['##problem.numberofchanges##'] = count($data['changes']);
 
-         $restrict = "`problems_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_items_problems', $restrict);
 
          $data['items'] = [];
@@ -190,7 +182,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          }
 
          $data['##problem.numberofitems##'] = count($data['items']);
-
       }
       return $data;
    }

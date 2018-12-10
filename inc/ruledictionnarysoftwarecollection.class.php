@@ -83,7 +83,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
       echo "<td class='tab_bg_2 center'>" .
-            __('Warning! This operation can put merged software in the dustbin.<br>Sure to notify your users.').
+            __('Warning! This operation can put merged software in the trashbin.<br>Sure to notify your users.').
            "</td></tr>\n";
       echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th></tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" .
@@ -127,9 +127,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                  LEFT JOIN `glpi_manufacturers`
                      ON (`glpi_manufacturers`.`id` = `glpi_softwares`.`manufacturers_id`)";
 
-         // Do not replay on dustbin and templates
-         $sql .= "WHERE `glpi_softwares`.`is_deleted` = '0'
-                        AND `glpi_softwares`.`is_template` = '0' ";
+         // Do not replay on trashbin and templates
+         $sql .= "WHERE `glpi_softwares`.`is_deleted` = 0
+                        AND `glpi_softwares`.`is_template` = 0 ";
 
          if (isset($params['manufacturer']) && $params['manufacturer']) {
             $sql .= " AND `glpi_softwares`.`manufacturers_id` = '" . $params['manufacturer'] . "'";
@@ -236,7 +236,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                                  FROM `glpi_softwares` AS gs
                                  LEFT JOIN `glpi_manufacturers` AS gm
                                        ON (`gs`.`manufacturers_id` = `gm`.`id`)
-                                 WHERE `gs`.`is_template` = '0'
+                                 WHERE `gs`.`is_template` = 0
                                        AND `gs`.`id` = '$ID'");
 
          if ($DB->numrows($res_soft)) {
@@ -266,7 +266,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
     * @param $entity                working entity ID
     * @param $name                  softwrae name
     * @param $manufacturer          manufacturer name
-    * @param &$soft_ids       array containing replay software need to be dustbined
+    * @param &$soft_ids       array containing replay software need to be put in trashbin
    **/
    function replayDictionnaryOnOneSoftware(array &$new_softs, array $res_rule, $ID, $entity, $name,
                                            $manufacturer, array &$soft_ids) {
@@ -307,7 +307,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
          //New software not already present in this entity
          if (!isset($new_softs[$entity][$new_name])) {
-            // create new software or restore it from dustbin
+            // create new software or restore it from trashbin
             $new_software_id               = $soft->addOrRestoreFromTrash($new_name, $manufacturer,
                                                                           $entity, '', true);
             $new_softs[$entity][$new_name] = $new_software_id;
@@ -342,7 +342,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          $input["version"] = addslashes($version["name"]);
          $old_version_name = $input["version"];
 
-         if (isset($res_rule["version"]) && $res_rule["version"] != '') {
+         if (isset($res_rule['version_append']) && $res_rule['version_append'] != '') {
+             $new_version_name = $old_version_name . $res_rule['version_append'];
+         } else if (isset($res_rule["version"]) && $res_rule["version"] != '') {
             $new_version_name = $res_rule["version"];
          } else {
             $new_version_name = $version["name"];
@@ -359,7 +361,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * Delete a list of softwares
     *
-    * @param $soft_ids array containing replay software need to be dustbined
+    * @param $soft_ids array containing replay software need to be put in trashbin
    **/
    function putOldSoftsInTrash(array $soft_ids) {
       global $DB;
@@ -375,9 +377,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                           LEFT JOIN `glpi_softwareversions`
                               ON `glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`
                           WHERE `glpi_softwares`.`id` IN (".implode(",", $soft_ids).")
-                                AND `is_deleted` = '0'
+                                AND `is_deleted` = 0
                           GROUP BY `glpi_softwares`.`id`
-                          HAVING `cpt` = '0'
+                          HAVING `cpt` = 0
                           ORDER BY `cpt`");
 
          $software = new Software();

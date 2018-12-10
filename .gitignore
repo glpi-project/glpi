@@ -22,6 +22,7 @@ phpunit.xml
 /nbproject
 .composer.hash
 /css/**/*.min.css
+/css/compiled/
 !/css/tiny_mce/**/*.min.css
 /js/*.min.js
 # ignore incomplete locale, fallback to ru.js

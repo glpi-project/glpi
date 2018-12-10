@@ -85,8 +85,10 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
                 'manufacturer'     => 'My Manufacturer',
                 '_system_category' => 'dev'];
 
-      $rules = getAllDatasFromTable('glpi_rules',
-                                    "`uuid`='500717c8-2bd6e957-53a12b5fd38869.86003425'");
+      $rules = getAllDatasFromTable(
+         'glpi_rules',
+         ['uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425']
+      );
       $this->array($rules)->hasSize(1);
 
       $myrule = current($rules);
@@ -159,7 +161,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
       )->isGreaterThan(0);
 
       $this->integer(
-         (int)countElementsInTable('glpi_rules', "`sub_type`='RuleSoftwareCategory'")
+         (int)countElementsInTable('glpi_rules', ['sub_type' => 'RuleSoftwareCategory'])
       )->isIdenticalTo(2);
 
       //Test that a software category can be assigned
@@ -215,14 +217,14 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
       $this->integer(
          (int)countElementsInTable(
             'glpi_rules',
-            "`sub_type`='RuleSoftwareCategory'"
+            ['sub_type' => 'RuleSoftwareCategory']
          )
       )->isIdenticalTo(2);
 
       $this->integer(
          (int)countElementsInTable(
             'glpi_rules',
-            "`sub_type`='RuleSoftwareCategory' AND `is_active`='1'"
+            ['sub_type' => 'RuleSoftwareCategory', 'is_active' => 1]
          )
       )->isIdenticalTo(1);
 

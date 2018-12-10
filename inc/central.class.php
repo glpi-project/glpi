@@ -61,10 +61,12 @@ class Central extends CommonGLPI {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
-         $tabs[1] = __('Personal View');
-         $tabs[2] = __('Group View');
-         $tabs[3] = __('Global View');
-         $tabs[4] = _n('RSS feed', 'RSS feeds', Session::getPluralNumber());
+         $tabs = [
+            1 => __('Personal View'),
+            2 => __('Group View'),
+            3 => __('Global View'),
+            4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
+         ];
 
          return $tabs;
       }
@@ -143,7 +145,7 @@ class Central extends CommonGLPI {
     * Show the central personal view
    **/
    static function showMyView() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $showticket  = Session::haveRightsOr("ticket",
                                            [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]);
@@ -171,38 +173,19 @@ class Central extends CommonGLPI {
             $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
                                "install/install.php");
          }
-      }
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         if (!DBMysql::isMySQLStrictMode($comment)) {
-            $warnings[] = sprintf(__('SQL strict mode is not fully enabled, recommended for development: %s'), $comment);
-         }
-      }
-
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         $crashedtables = DBMysql::checkForCrashedTables();
-         if (!empty($crashedtables)) {
-            $tables = [];
-            foreach ($crashedtables as $crashedtable) {
-               $tables[] = $crashedtable['table'];
-            }
-            $message = __('The following SQL tables are marked as crashed:');
-            $message.= implode(',', $tables);
-            $warnings[] = $message;
+         $myisam_tables = $DB->getMyIsamTables();
+         if (count($myisam_tables)) {
+            $warnings[] = sprintf(
+               __('%1$s tables not migrated to InnoDB engine.'),
+               count($myisam_tables)
+            );
          }
       }
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
          $warnings[] = __('SQL replica: read only');
-      }
-
-      $myisam_tables = $DB->getMyIsamTables();
-      if (count($myisam_tables)) {
-         $warnings[] = sprintf(
-            __('%1$s tables not migrated to InnoDB engine.'),
-            count($myisam_tables)
-         );
       }
 
       if (count($warnings)) {

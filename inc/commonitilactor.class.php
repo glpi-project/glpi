@@ -72,10 +72,14 @@ abstract class CommonITILActor extends CommonDBRelation {
    **/
    function isAttach2Valid(Array &$input) {
 
-      // Anonymous user (only email) as requester or observer
+      // Anonymous user is valid if 'alternative_email' field is not empty
       if (isset($input['users_id']) && ($input['users_id'] == 0)
-          && isset($input['alternative_email']) && !empty($input['alternative_email'])
-          && isset($input['type']) && ($input['type'] != CommonITILActor::ASSIGN)) {
+          && isset($input['alternative_email']) && !empty($input['alternative_email'])) {
+         return true;
+      }
+      // Anonymous supplier is valid if 'alternative_email' field is not empty
+      if (isset($input['suppliers_id']) && ($input['suppliers_id'] == 0)
+          && isset($input['alternative_email']) && !empty($input['alternative_email'])) {
          return true;
       }
       return false;
@@ -117,7 +121,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          'START'  => 0,
          'LIMIT'  => 1
       ]);
-      if (count($iterator > 0)) {
+      if (count($iterator) > 0) {
          return true;
       }
       return false;
@@ -148,10 +152,9 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showUserNotificationForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       $this->check($ID, UPDATE);
 
@@ -197,11 +200,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          // Several emails : select in the list
          $emailtab = [];
          foreach ($emails as $new_email) {
-            if ($new_email != $default_email) {
-               $emailtab[$new_email] = $new_email;
-            } else {
-               $emailtab[''] = $new_email;
-            }
+            $emailtab[$new_email] = $new_email;
          }
          Dropdown::showFromArray("alternative_email", $emailtab,
                                  ['value'   => $this->fields['alternative_email']]);
@@ -230,10 +229,9 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showSupplierNotificationForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       $this->check($ID, UPDATE);
 
@@ -258,7 +256,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          $default_email = $supplier->fields['email'];
       }
 
-      echo "<tr class='tab_bg_2'><td>".__('User')."</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Supplier')."</td>";
       echo "<td>".$supplier->getName()."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Email Followup')."</td>";
@@ -343,6 +341,33 @@ abstract class CommonITILActor extends CommonDBRelation {
       return $input;
    }
 
+   function prepareInputForUpdate($input) {
+      if ($input['alternative_email'] == '') {
+         if (isset($input['users_id'])) {
+            $actor = new User();
+            if ($actor->getFromDB($input["users_id"])) {
+               $input['alternative_email'] = $actor->getDefaultEmail();
+            }
+         }
+         if (isset($input['suppliers_id'])) {
+            $actor = new Supplier;
+            if ($actor->getFromDB($input["suppliers_id"])) {
+               $input['alternative_email'] = $actor->fields['email'];
+            }
+         }
+      }
+      if (isset($input['alternative_email']) && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
+         Session::addMessageAfterRedirect(
+            __('Invalid email address'),
+            false,
+            ERROR
+         );
+         return false;
+      }
+
+      $input = parent::prepareInputForUpdate($input);
+      return $input;
+   }
 
    function post_addItem() {
 

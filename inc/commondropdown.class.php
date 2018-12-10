@@ -95,7 +95,6 @@ abstract class CommonDropdown extends CommonDBTM {
     *  @since 0.85
    **/
    static function getMenuContent() {
-      global $CFG_GLPI;
 
       $menu = [];
       if (get_called_class() == 'CommonDropdown') {
@@ -166,7 +165,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * Display title above search engine
     *
-    * @return nothing (HTML display if needed)
+    * @return void HTML display if needed
    **/
    function title() {
 
@@ -197,7 +196,7 @@ abstract class CommonDropdown extends CommonDBTM {
       global $DB;
 
       // if item based on location, create item in the same entity as location
-      if (isset($input['locations_id'])) {
+      if (isset($input['locations_id']) && !isset($input['_is_update'])) {
          $iterator = $DB->request([
             'SELECT' => ['entities_id'],
             'FROM'   => 'glpi_locations',
@@ -214,6 +213,9 @@ abstract class CommonDropdown extends CommonDBTM {
          // leading/ending space will break findID/import
          $input['name'] = trim($input['name']);
       }
+      if (isset($input['_is_update'])) {
+         unset($input['_is_update']);
+      }
       return $input;
    }
 
@@ -224,6 +226,8 @@ abstract class CommonDropdown extends CommonDBTM {
     * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
+      //add a "metadata to find if we're on an update or a add
+      $input['_is_update'] = true;
       return self::prepareInputForAdd($input);
    }
 
@@ -284,14 +288,14 @@ abstract class CommonDropdown extends CommonDBTM {
 
          switch ($field['type']) {
             case 'UserDropdown' :
-               $param = ['name'   => $field['name'],
-                         'value'  => $this->fields[$field['name']],
-                         'right'  => 'interface',
-                         'entity' => $this->fields["entities_id"]];
+               $params = ['name'   => $field['name'],
+                          'value'  => $this->fields[$field['name']],
+                          'right'  => 'interface',
+                          'entity' => $this->fields["entities_id"]];
                if (isset($field['right'])) {
                   $params['right'] = $field['right'];
                }
-               User::dropdown($param);
+               User::dropdown($params);
 
                break;
 
@@ -683,27 +687,36 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param &$input  array of value to import (name)
     *
-    * @return the ID of the new (or -1 if not found)
+    * @return integer the ID of the new (or -1 if not found)
    **/
    function findID(array &$input) {
       global $DB;
 
       if (!empty($input["name"])) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `name` = '".$input["name"]."'";
+         $crit = [
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'name'   => $input['name']
+            ],
+            'LIMIT'  => 1
+         ];
 
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                 $input['entities_id'], $this->maybeRecursive());
+            $crit['WHERE'] += getEntitiesRestrictCriteria(
+               $this->getTable(),
+               '',
+               $input['entities_id'],
+               $this->maybeRecursive()
+            );
          }
-         $query .= " LIMIT 1";
+
+         $iterator = $DB->request($crit);
 
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         if (count($iterator) > 0) {
+            $result = $iterator->next();
+            return $result['id'];
          }
       }
       return -1;
@@ -715,7 +728,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $input  array of value to import (name, ...)
     *
-    * @return the ID of the new or existing dropdown (-1 on failure)
+    * @return integer|boolean the ID of the new or existing dropdown (-1 or false on failure)
    **/
    function import(array $input) {
 
@@ -745,14 +758,14 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param $value           string   Value of the new dropdown (need to be addslashes)
-    * @param $entities_id     int      entity in case of specific dropdown (default -1)
-    * @param $external_params array    (manufacturer) (need to be addslashes)
-    * @param $comment                  (default '') (need to be addslashes)
-    * @param $add                      if true, add it if not found. if false,
-    *                                  just check if exists (true by default)
+    * @param string  $value           Value of the new dropdown (need to be addslashes)
+    * @param integer $entities_id     Entity in case of specific dropdown (default -1)
+    * @param array   $external_params (manufacturer) (need to be addslashes)
+    * @param string  $comment         Comment (need to be addslashes)
+    * @param boolean $add             if true, add it if not found. if false,
+    *                                 just check if exists (true by default)
     *
-    * @return integer : dropdown id.
+    * @return integer Dropdown id
    **/
    function importExternal($value, $entities_id = -1, $external_params = [], $comment = "",
                            $add = true) {
@@ -784,9 +797,11 @@ abstract class CommonDropdown extends CommonDBTM {
             break;
       }*/
 
-      $input["name"]        = $value;
-      $input["comment"]     = $comment;
-      $input["entities_id"] = $entities_id;
+      $input = [
+         'name'        => $value,
+         'comment'     => $comment,
+         'entities_id' => $entities_id,
+      ];
 
       if ($rulecollection) {
          $res_rule = $rulecollection->processAllRules(Toolbox::stripslashes_deep($ruleinput), [], []);
@@ -874,10 +889,13 @@ abstract class CommonDropdown extends CommonDBTM {
                      // Import new
                      if ($newid = $item->import($input2)) {
                         // Delete old
-                        if ($newid > 0) {
-                           // delete with purge for dropdown with dustbin (Budget)
+                        if ($newid > 0 && $key != $newid) {
+                           // delete with purge for dropdown with trashbin (Budget)
                            $item->delete(['id'          => $key,
                                                '_replace_by' => $newid], 1);
+                        } else if ($newid > 0 && $key == $newid) {
+                           $input2['id'] = $newid;
+                           $item->update($input2);
                         }
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
@@ -920,8 +938,9 @@ abstract class CommonDropdown extends CommonDBTM {
 
          $rand = mt_rand();
          $kbitem = new KnowbaseItem;
-         $found_kbitem = $kbitem->find("`knowbaseitemcategories_id` = ".
-                                       $this->fields['knowbaseitemcategories_id']);
+         $found_kbitem = $kbitem->find([
+            'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+         ]);
 
          $kbitem->getFromDB(reset($found_kbitem)['id']);
          if (count($found_kbitem)) {
@@ -950,12 +969,15 @@ abstract class CommonDropdown extends CommonDBTM {
                ");
                $ret.= "<label for='dropdown_knowbaseitems_id$rand'>".
                       KnowbaseItem::getTypeName()."</label>&nbsp;";
-               $ret.= KnowbaseItem::dropdown(['value'     => reset($found_kbitem)['id'],
-                                              'display'   => false,
-                                              'rand'      => $rand,
-                                              'condition' => "`knowbaseitemcategories_id` = ".
-                                                             $this->fields['knowbaseitemcategories_id'],
-                                              'on_change' => "getKnowbaseItemAnswer$rand()"]);
+               $ret.= KnowbaseItem::dropdown([
+                  'value'     => reset($found_kbitem)['id'],
+                  'display'   => false,
+                  'rand'      => $rand,
+                  'condition' => [
+                     'knowbaseitemcategories_id' => $this->fields['knowbaseitemcategories_id']
+                  ],
+                  'on_change' => "getKnowbaseItemAnswer$rand()"
+               ]);
                $ret.= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
                $ret.= $kbitem->showFull(['display' => false]);
                $ret.= "</div>"; // .faqadd_block_content

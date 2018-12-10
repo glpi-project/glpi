@@ -94,7 +94,7 @@ class NotificationMailing implements NotificationInterface {
          //force recipient to configured email address
          $recipient = GLPI_FORCE_MAIL;
          //add original email addess to message body
-         $text .= "\n" . sprintf(__('Orignal email address was %1$s'), $CFG_GLPI['admin_email']);
+         $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
       }
 
       $mmail->AddAddress($recipient, $CFG_GLPI["admin_email_name"]);
@@ -104,6 +104,7 @@ class NotificationMailing implements NotificationInterface {
       if (!$mmail->Send()) {
          Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false,
                                           ERROR);
+         GLPINetwork::addErrorMessageAfterRedirect();
          return false;
       } else {
          Session::addMessageAfterRedirect(__('Test email sent to administrator'));

@@ -34,6 +34,7 @@ use Glpi\Exception\PasswordTooWeakException;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
+use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -66,22 +67,15 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    *  @see CommonGLPI::getMenuContent()
-    *
-    *   @since 0.85
-   **/
    static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu = [];
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
-         $menu['page']    = '/front/config.form.php';
+         $menu['page']    = Config::getFormURL(false);
 
          $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
-         $menu['options']['apiclient']['page']            = '/front/config.form.php?forcetab=Config$8';
-         $menu['options']['apiclient']['links']['search'] = '/front/config.form.php?forcetab=Config$8';
+         $menu['options']['apiclient']['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
+         $menu['options']['apiclient']['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
          $menu['options']['apiclient']['links']['add']    = '/front/apiclient.form.php';
       }
       if (count($menu)) {
@@ -99,7 +93,7 @@ class Config extends CommonDBTM {
    function canViewItem() {
       if (isset($this->fields['context']) &&
          ($this->fields['context'] == 'core' ||
-         in_array($this->fields['context'], $_SESSION['glpi_plugins']))) {
+         Plugin::isPluginLoaded($this->fields['context']))) {
          return true;
       }
       return false;
@@ -114,16 +108,6 @@ class Config extends CommonDBTM {
       return $ong;
    }
 
-
-   /**
-    * Prepare input datas for updating the item
-    *
-    * @see CommonDBTM::prepareInputForUpdate()
-    *
-    * @param $input array of datas used to update the item
-    *
-    * @return the modified $input array
-   **/
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
       // Update only an item
@@ -269,13 +253,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for display
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormDisplay() {
       global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       $rand = mt_rand();
@@ -294,7 +278,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='text_login'>" . __('Text in the login box') . "</label></td>";
+      echo "<td><label for='text_login'>" . __('Text in the login box (HTML tags supported)') . "</label></td>";
       echo "<td colspan='3'>";
       echo "<textarea cols='70' rows='4' name='text_login' id='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
@@ -448,6 +432,13 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><label for='dropdown_display_login_source$rand'>".
+         __('Display source dropdown on login page').
+         "</label></td><td>";
+      Dropdown::showYesNo("display_login_source", $CFG_GLPI["display_login_source"], -1, ['rand' => $rand]);
+      echo "</td></tr>";
+
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
@@ -463,13 +454,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormInventory() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       $rand = mt_rand();
@@ -564,8 +555,10 @@ class Config extends CommonDBTM {
       $fields = ["contact", "user", "group", "location"];
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('When connecting or updating') . "</td>";
-      $values[0] = __('Do not copy');
-      $values[1] = __('Copy');
+      $values = [
+         __('Do not copy'),
+         __('Copy'),
+      ];
 
       foreach ($fields as $field) {
          echo "<td>";
@@ -581,8 +574,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('When disconnecting') . "</td>";
-      $values[0] = __('Do not delete');
-      $values[1] = __('Clear');
+      $values = [
+         __('Do not delete'),
+         __('Clear'),
+      ];
 
       foreach ($fields as $field) {
          echo "<td>";
@@ -611,13 +606,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for restrictions
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormAuthentication() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
-         return false;
+         return;
       }
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
@@ -655,20 +650,19 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for slave DB
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
 
       if (!Config::canUpdate()) {
-         return false;
+         return;
       }
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='_dbslave_status' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
-      $active = DBConnection::isDBSlaveActive();
 
       echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('SQL replica', 'SQL replicas', Session::getPluralNumber()) .
            "</th></tr>";
@@ -725,13 +719,13 @@ class Config extends CommonDBTM {
     * Print the config form for External API
     *
     * @since 9.1
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormAPI() {
       global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       echo "<div class='center spaced' id='tabsbody'>";
@@ -792,8 +786,9 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><td>";
       echo "<hr>";
-      $buttons["apiclient.form.php"] = __('Add API client');
-      $title = "";
+      $buttons = [
+         'apiclient.form.php' => __('Add API client'),
+      ];
       Html::displayTitle("",
                          self::getTypeName(Session::getPluralNumber()),
                          "",
@@ -807,13 +802,13 @@ class Config extends CommonDBTM {
    /**
     * Print the config form for connections
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormHelpdesk() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!self::canView()) {
-         return false;
+         return;
       }
 
       $rand = mt_rand();
@@ -854,42 +849,29 @@ class Config extends CommonDBTM {
                                      $rand);
       echo "</td>";
 
-      echo "<td><label for='dropdown_use_rich_text$rand'>" . __('Use rich text for helpdesk') . "</label></td><td>";
-      $id                 = 'alert'.mt_rand();
-      $param['on_change'] = '$("#'.$id.'").html("");
-            if ($(this).val() == 0) {
-               $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
-            }';
-      $param['rand'] = $rand;
-      Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
-      echo "<span class='red' id='".$id."'></span>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_documentcategories_id_forticket$rand'>" . __('Default heading when adding a document to a ticket') . "</label></td><td>";
       DocumentCategory::dropdown(['value' => $CFG_GLPI["documentcategories_id_forticket"],
                                   'name'  => "documentcategories_id_forticket",
                                   'rand'  => $rand]);
-      echo "</td>";
-      echo "<td><label for='dropdown_default_software_helpdesk_visible$rand'>" . __('By default, a software may be linked to a ticket') . "</label></td><td>";
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_default_software_helpdesk_visible$rand'>" . __('By default, a software may be linked to a ticket') . "</label></td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
                           $CFG_GLPI["default_software_helpdesk_visible"],
                           -1,
                           ['rand' => $rand]);
-      echo "</td></tr>";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_keep_tickets_on_delete$rand'>" . __('Keep tickets when purging hardware in the inventory') . "</label></td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"], -1, ['rand' => $rand]);
-      echo "</td><td><label for='dropdown_use_check_pref$rand'>".__('Show personnal information in new ticket form (simplified interface)');
-      echo "</label></td><td>";
+      echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_check_pref$rand'>".__('Show personnal information in new ticket form (simplified interface)');
+      echo "</label></td>";
+      echo "<td>";
       Dropdown::showYesNo('use_check_pref', $CFG_GLPI['use_check_pref'], -1, ['rand' => $rand]);
-      echo "</td></tr>";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_use_anonymous_helpdesk$rand'>" .__('Allow anonymous ticket creation (helpdesk.receiver)') . "</label></td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"], -1, ['rand' => $rand]);
-      echo "</td><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
+      echo "</td></tr><tr class='tab_bg_2'><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"], -1, ['rand' => $rand]);
       echo "</td></tr>";
 
@@ -902,6 +884,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='b right' colspan='2'>".__('Impact')."</td>";
 
+      $isimpact = [];
       for ($impact=5; $impact>=1; $impact--) {
          echo "<td class='center'>".Ticket::getImpactName($impact).'<br>';
 
@@ -925,6 +908,7 @@ class Config extends CommonDBTM {
       }
       echo "</tr>";
 
+      $isurgency = [];
       for ($urgency=5; $urgency>=1; $urgency--) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".Ticket::getUrgencyName($urgency)."&nbsp;</td>";
@@ -978,10 +962,10 @@ class Config extends CommonDBTM {
     * @param $data array containing datas
     * (CFG_GLPI for global config / glpi_users fields for user prefs)
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showFormUserPrefs($data = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $oncentral = (Session::getCurrentInterface() == "central");
       $userpref  = false;
@@ -989,6 +973,7 @@ class Config extends CommonDBTM {
       $rand      = mt_rand();
 
       $canedit = Config::canUpdate();
+      $canedituser = Session::haveRight('personalization', UPDATE);
       if (array_key_exists('last_login', $data)) {
          $userpref = true;
          if ($data["id"] === Session::getLoginUserID()) {
@@ -998,7 +983,7 @@ class Config extends CommonDBTM {
          }
       }
 
-      if ($canedit || $userpref) {
+      if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
          echo "<form name='form' action='$url' method='post'>";
       }
 
@@ -1164,22 +1149,24 @@ class Config extends CommonDBTM {
          });
          $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
       ");
-      echo "</select>";
       echo "</td>";
       echo "<td><label for='layout-selector'>" . __('Layout')."</label></td><td>";
-      $layout_options = ['lefttab' => __("Tabs on left"),
-                         'classic' => __("Classic view"),
-                         'vsplit'  => __("Vertical split")];
 
-      echo "<select name='layout' id='layout-selector'>";
-      foreach ($layout_options as $key => $name) {
-         $selected = "";
-         if ($data["layout"] == $key) {
-            $selected = "selected='selected'";
-         }
-         echo "<option value='$key' $selected>".ucfirst($name)."</option>";
+      $layout_options = [
+         'lefttab' => __("Tabs on left"),
+         'classic' => __("Classic view"),
+         'vsplit'  => __("Vertical split")
+      ];
 
-      }
+      echo Html::select(
+         'layout',
+         $layout_options,
+         [
+            'id'        => 'layout-selector',
+            'selected'  => $data['layout']
+         ]
+      );
+
       echo Html::scriptBlock("
          function formatLayout(layout) {
              if (!layout.id) {
@@ -1224,10 +1211,12 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td><label for='dropdown_task_private$rand'>" . __('Private tasks by default') . "</label></td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"], -1, ['rand' => $rand]);
          echo "</td><td><label for='dropdown_default_requesttypes_id$rand'>" . __('Request sources by default') . "</label></td><td>";
-         RequestType::dropdown(['value'      => $data["default_requesttypes_id"],
-                                'name'       => "default_requesttypes_id",
-                                'condition'  => 'is_active = 1 AND is_ticketheader = 1',
-                                'rand'       => $rand]);
+         RequestType::dropdown([
+            'value'      => $data["default_requesttypes_id"],
+            'name'       => "default_requesttypes_id",
+            'condition'  => ['is_active' => 1, 'is_ticketheader' => 1],
+            'rand'       => $rand
+         ]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td><label for='dropdown_task_state$rand'>" . __('Tasks state by default') . "</label></td><td>";
@@ -1281,58 +1270,6 @@ class Config extends CommonDBTM {
          echo "</td>";
          echo "</tr></table>";
 
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'><td><label for='dropdown_ticket_timeline$rand'>".__('Enable ticket timeline')."</label></td>";
-         echo "<td>";
-         Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline'], -1, ['rand' => $rand]);
-         echo "</td>";
-         echo "<td><label for='dropdown_ticket_timeline_keep_replaced_tabs$rand'>" . __('Keep tabs replaced by the ticket timeline')."</label></td><td>";
-         Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
-                             $data['ticket_timeline_keep_replaced_tabs'], -1, ['rand' => $rand]);
-         echo "</td></tr>";
-      }
-
-      // Only for user
-      if (array_key_exists('personal_token', $data)) {
-         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
-
-         echo "<tr class='tab_bg_1'><td>";
-         echo __("Personal token");
-         echo "</td><td colspan='2'>";
-         if (!empty($data["personal_token"])) {
-            echo "<div class='copy_to_clipboard_wrapper'>";
-            echo Html::input('_personal_token', [
-                                 'value'    => $data["personal_token"],
-                                 'style'    => 'width:90%'
-                             ]);
-            echo "</div>";
-            echo "(".sprintf(__('generated on %s'),
-                                Html::convDateTime($data["personal_token_date"])).")";
-         }
-         echo "</td><td>";
-         Html::showCheckbox(['name'  => '_reset_personal_token',
-                             'title' => __('Regenerate')]);
-         echo "&nbsp;&nbsp;".__('Regenerate');
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>";
-         echo __("API token");
-         echo "</td><td colspan='2'>";
-         if (!empty($data["api_token"])) {
-            echo "<div class='copy_to_clipboard_wrapper'>";
-            echo Html::input('_api_token', [
-                                 'value'    => $data["api_token"],
-                                 'style'    => 'width:90%'
-                             ]);
-            echo "</div>";
-            echo "(".sprintf(__('generated on %s'),
-                                Html::convDateTime($data["api_token_date"])).")";
-         }
-         echo "</td><td>";
-         Html::showCheckbox(['name'  => '_reset_api_token',
-                             'title' => __('Regenerate')]);
-         echo "&nbsp;&nbsp;".__('Regenerate');
          echo "</td></tr>";
       }
 
@@ -1388,7 +1325,7 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      if ($canedit || $userpref) {
+      if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
@@ -1491,7 +1428,7 @@ class Config extends CommonDBTM {
     * @param $password  string   password to validate
     * @param $display   boolean  display errors messages? (true by default)
     *
-    * @throws PasswordTooWeak when $display is false and the password does not matches the requirements
+    * @throws PasswordTooWeakException when $display is false and the password does not matches the requirements
     *
     * @return boolean is password valid?
    **/
@@ -1566,7 +1503,7 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      global $GLPI_CACHE;
+      $GLPI_CACHE = self::getCache('cache_db', 'core', false);
 
       if (!Config::canUpdate()) {
          return false;
@@ -1648,15 +1585,19 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
       if (Toolbox::useCache()) {
-         $ext = get_class($GLPI_CACHE);
+         $ext = strtolower(get_class($GLPI_CACHE));
          $ext = substr($ext, strrpos($ext, '\\')+1);
-         $msg = sprintf(__s('The "%s" extension is installed'), $ext);
-         echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
+         if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
+            $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
+         } else {
+            $msg = sprintf(__s('"%s" cache system is used'), $ext);
+         }
+         echo "<tr><td>" . $msg . "</td>
                <td>" . phpversion($ext) . "</td>
                <td></td>
                <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-         if ($GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
+         if ($ext != 'filesystem' && $GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
             $free = $GLPI_CACHE->getAvailableSpace();
             $max  = $GLPI_CACHE->getTotalSpace();
             $used = $max - $free;
@@ -1669,15 +1610,12 @@ class Config extends CommonDBTM {
             Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                     'forcepadding' => false]);
             $class   = 'info-circle missing';
-            $msg     = sprintf(__s('%1$ss memory usage is too low or too high'), $ext);
-            if ($rate > 5 && $rate < 50) {
+            $msg     = sprintf(__s('%1$ss memory usage is too high'), $ext);
+            if ($rate < 80) {
                $class   = 'check-circle ok';
                $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
             }
             echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-         } else {
-            echo "<tr><td>" . __('Memory') . "</td>
-               <td>" . NOT_AVAILABLE. "</td><td>" . NOT_AVAILABLE . "</td><td></td></tr>";
          }
 
          if ($GLPI_CACHE instanceof FlushableInterface) {
@@ -1717,11 +1655,14 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_event_loglevel$rand'>" . __('Log Level') . "</label></td><td>";
-      $values[1] = __('1- Critical (login error only)');
-      $values[2] = __('2- Severe (not used)');
-      $values[3] = __('3- Important (successful logins)');
-      $values[4] = __('4- Notices (add, delete, tracking)');
-      $values[5] = __('5- Complete (all)');
+
+      $values = [
+         1 => __('1- Critical (login error only)'),
+         2 => __('2- Severe (not used)'),
+         3 => __('3- Important (successful logins)'),
+         4 => __('4- Notices (add, delete, tracking)'),
+         5 => __('5- Complete (all)'),
+      ];
 
       Dropdown::showFromArray('event_loglevel', $values,
                               ['value' => $CFG_GLPI["event_loglevel"], 'rand' => $rand]);
@@ -1838,11 +1779,12 @@ class Config extends CommonDBTM {
       // No need to translate, this part always display in english (for copy/paste to forum)
 
       // Try to compute a better version for .git
-      $ver = $CFG_GLPI['version'];
+      $ver = GLPI_VERSION;
       if (is_dir(GLPI_ROOT."/.git")) {
          $dir = getcwd();
          chdir(GLPI_ROOT);
          $returnCode = 1;
+         /** @var array $output */
          $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
          $gitbranch = '';
          if (!$returnCode) {
@@ -1918,23 +1860,6 @@ class Config extends CommonDBTM {
 
 
    /**
-    * @since 0.90
-    *
-    * @return string
-   **/
-   static function getSQLMode() {
-      global $DB;
-
-      $query   = "SELECT @@GLOBAL.sql_mode;";
-      $results = $DB->query($query);
-      if ($DB->numrows($results) > 0) {
-         return $DB->results($result, 0);
-      }
-      return '';
-   }
-
-
-   /**
     * Retrieve full directory of a lib
     * @param  $libstring  object, class or function
     * @return string       the path or false
@@ -1959,6 +1884,76 @@ class Config extends CommonDBTM {
 
 
    /**
+    * get libraries list
+    *
+    * @param $all   (default false)
+    * @return array dependencies list
+    *
+    * @since 9.4
+    */
+   static function getLibraries($all = false) {
+      include_once(GLPI_HTMLAWED);
+      $pm = new PHPMailer();
+      $sp = new SimplePie();
+
+      // use same name that in composer.json
+      $deps = [[ 'name'    => 'htmLawed',
+                 'version' => hl_version() ,
+                 'check'   => 'hl_version' ],
+               [ 'name'    => 'phpmailer/phpmailer',
+                 'version' => $pm::VERSION,
+                 'check'   => 'PHPMailer\\PHPMailer\\PHPMailer' ],
+               [ 'name'    => 'simplepie/simplepie',
+                 'version' => SIMPLEPIE_VERSION,
+                 'check'   => $sp ],
+               [ 'name'    => 'tecnickcom/tcpdf',
+                 'version' => TCPDF_STATIC::getTCPDFVersion(),
+                 'check'   => 'TCPDF' ],
+               [ 'name'    => 'michelf/php-markdown',
+                 'check'   => 'Michelf\\Markdown' ],
+               [ 'name'    => 'true/punycode',
+                 'check'   => 'TrueBV\\Punycode' ],
+               [ 'name'    => 'iamcal/lib_autolink',
+                 'check'   => 'autolink' ],
+               [ 'name'    => 'sabre/vobject',
+                 'check'   => 'Sabre\\VObject\\Component' ],
+               [ 'name'    => 'zendframework/zend-cache',
+                 'check'   => 'Zend\\Cache\\Module' ],
+               [ 'name'    => 'zendframework/zend-console',
+                 'check'   => 'Zend\\Console\\Console' ],
+               [ 'name'    => 'zendframework/zend-i18n',
+                 'check'   => 'Zend\\I18n\\Module' ],
+               [ 'name'    => 'zendframework/zend-serializer',
+                 'check'   => 'Zend\\Serializer\\Module' ],
+               [ 'name'    => 'monolog/monolog',
+                 'check'   => 'Monolog\\Logger' ],
+               [ 'name'    => 'sebastian/diff',
+                 'check'   => 'SebastianBergmann\\Diff\\Diff' ],
+               [ 'name'    => 'elvanto/litemoji',
+                 'check'   => 'LitEmoji\\LitEmoji' ],
+               [ 'name'    => 'symfony/console',
+                 'check'   => 'Symfony\\Component\\Console\\Application' ],
+               [ 'name'    => 'leafo/scssphp',
+                 'check'   => 'Leafo\ScssPhp\Compiler' ],
+      ];
+      if ($all || PHP_VERSION_ID < 70000) {
+         $deps[] = [
+            'name'    => 'paragonie/random_compat',
+            'check'   => 'random_int'
+         ];
+      }
+      if (Toolbox::canUseCAS()) {
+         $deps[] = [
+            'name'    => 'phpCas',
+            'version' => phpCAS::getVersion(),
+            'check'   => 'phpCAS'
+         ];
+      }
+      return $deps;
+   }
+
+
+   /**
     * show Libraries information in system information
     *
     * @since 0.84
@@ -1970,36 +1965,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-      include_once(GLPI_HTMLAWED);
-      $pm = new PHPMailer();
-      $sp = new SimplePie();
-
-      $deps = [[ 'name'    => 'htmLawed',
-                 'version' => hl_version() ,
-                 'check'   => 'hl_version' ],
-               [ 'name'    => 'phpCas',
-                 'version' => phpCAS::getVersion() ,
-                 'check'   => 'phpCAS' ],
-               [ 'name'    => 'PHPMailer',
-                 'version' => $pm::VERSION,
-                 'check'   => 'PHPMailer' ],
-               [ 'name'    => 'SimplePie',
-                 'version' => SIMPLEPIE_VERSION,
-                 'check'   => $sp ],
-               [ 'name'    => 'TCPDF',
-                 'version' => TCPDF_STATIC::getTCPDFVersion(),
-                 'check'   => 'TCPDF' ],
-               [ 'name'    => 'michelf/php-markdown',
-                 'check'   => 'Michelf\\Markdown' ],
-               [ 'name'    => 'true/punycode',
-                 'check'   => 'TrueBV\\Punycode' ],
-               [ 'name'    => 'iacaml/autolink',
-                 'check'   => 'autolink' ],
-               [ 'name'    => 'sabre/vobject',
-                 'check'   => 'Sabre\\VObject\\Component' ],
-      ];
-
-      foreach ($deps as $dep) {
+      foreach (self::getLibraries() as $dep) {
          $path = self::getLibraryDir($dep['check']);
          if ($path) {
             echo "{$dep['name']} ";
@@ -2007,6 +1973,8 @@ class Config extends CommonDBTM {
                echo "version {$dep['version']} ";
             }
             echo "in ($path)\n";
+         } else {
+            echo "{$dep['name']} not found\n";
          }
       }
 
@@ -2017,15 +1985,17 @@ class Config extends CommonDBTM {
    /**
     * Dropdown for global management config
     *
-    * @param $name   select name
-    * @param $value  default value
-    * @param $rand   rand
+    * @param string       $name   select name
+    * @param string       $value  default value
+    * @param integer|null $rand   rand
    **/
    static function dropdownGlobalManagement($name, $value, $rand = null) {
 
-      $choices[0] = __('Yes - Restrict to unit management for manual add');
-      $choices[1] = __('Yes - Restrict to global management for manual add');
-      $choices[2] = __('No');
+      $choices = [
+         __('Yes - Restrict to unit management for manual add'),
+         __('Yes - Restrict to global management for manual add'),
+         __('No'),
+      ];
       Dropdown::showFromArray($name, $choices, ['value'=>$value, 'rand' => $rand]);
    }
 
@@ -2034,9 +2004,9 @@ class Config extends CommonDBTM {
     * Get language in GLPI associated with the value coming from LDAP
     * Value can be, for example : English, en_EN or en
     *
-    * @param $lang : the value coming from LDAP
+    * @param string $lang the value coming from LDAP
     *
-    * @return the locale's php page in GLPI or '' is no language associated with the value
+    * @return string locale's php page in GLPI or '' is no language associated with the value
    **/
    static function getLanguage($lang) {
       global $CFG_GLPI;
@@ -2104,8 +2074,10 @@ class Config extends CommonDBTM {
    **/
    function showDebug() {
 
-      $options['diff'] = 0;
-      $options['name'] = '';
+      $options = [
+         'diff' => 0,
+         'name' => '',
+      ];
       NotificationEvent::debugEvent(new DBConnection(), $options);
    }
 
@@ -2114,16 +2086,12 @@ class Config extends CommonDBTM {
     * Display field unicity criterias form
    **/
    function showFormFieldUnicity() {
-      global $CFG_GLPI;
 
       $unicity = new FieldUnicity();
       $unicity->showForm(1, -1);
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -2138,10 +2106,12 @@ class Config extends CommonDBTM {
             break;
 
          case __CLASS__ :
-            $tabs[1] = __('General setup');   // Display
-            $tabs[2] = __('Default values');   // Prefs
-            $tabs[3] = __('Assets');
-            $tabs[4] = __('Assistance');
+            $tabs = [
+               1 => __('General setup'),  // Display
+               2 => __('Default values'), // Prefs
+               3 => __('Assets'),
+               4 => __('Assistance'),
+            ];
             if (Config::canUpdate()) {
                $tabs[9] = __('Logs purge');
                $tabs[5] = __('System');
@@ -2159,11 +2129,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -2229,14 +2194,15 @@ class Config extends CommonDBTM {
     * @since 9.3
     *
     * @param boolean $fordebug display for debug (no html required) (false by default)
+    * @param string  $version  Version to check (mainly from install), defaults to null
     *
     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
     **/
-   static function displayCheckDbEngine($fordebug = false) {
+   static function displayCheckDbEngine($fordebug = false, $version = null) {
       global $CFG_GLPI;
 
       $error = 0;
-      $result = self::checkDbEngine();
+      $result = self::checkDbEngine($version);
       $version = key($result);
       $db_ver = $result[$version];
 
@@ -2251,10 +2217,11 @@ class Config extends CommonDBTM {
       $img = "<img src='".$CFG_GLPI['root_doc']."/pics/";
       $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
 
-      if ($fordebug) {
+      if (isCommandLine()) {
+         echo $message . "\n";
+      } else if ($fordebug) {
          echo $img . $message . "\n";
       } else {
-         //$html = '<tr class="tab_bg_1">';
          $html = "<td";
          if ($error > 0) {
             $html .= " class='red'";
@@ -2262,7 +2229,6 @@ class Config extends CommonDBTM {
          $html .= ">";
          $html .= $img;
          $html .= '</td>';
-         //$html .= '</tr>';
          echo $html;
       }
       return $error;
@@ -2325,15 +2291,18 @@ class Config extends CommonDBTM {
     *
     * @since 9.3
     *
+    * @param string $raw Raw version to check (mainly from install), defaults to null
+    *
     * @return boolean
    **/
-   static function checkDbEngine() {
-      global $DB;
-
+   static function checkDbEngine($raw = null) {
       // MySQL >= 5.6 || MariaDB >= 10
-      $raw = $DB->getVersion();
+      if ($raw === null) {
+         global $DB;
+         $raw = $DB->getVersion();
+      }
 
-      $db_ver = false;
+      /** @var array $found */
       preg_match('/(\d+(\.)?)+/', $raw, $found);
       $version = $found[0];
 
@@ -2375,6 +2344,9 @@ class Config extends CommonDBTM {
                'function'  => 'json_encode'
             ],
             'mbstring' => [
+               'required'  => true,
+            ],
+            'iconv'    => [
                'required'  => true,
             ],
             'zlib'     => [
@@ -2506,51 +2478,10 @@ class Config extends CommonDBTM {
     *
     * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
     *
-    * @return 2 : creation error 1 : delete error 0: OK
+    * @return integer 2 : creation error 1 : delete error 0: OK
    **/
    static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
-
-      $dir_to_check = self::getDataDirectories();
-      //log dir is tested differently below
-      unset($dir_to_check[GLPI_LOG_DIR]);
-      $error = 0;
-      foreach ($dir_to_check as $dir => $message) {
-         if (!$fordebug) {
-            echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
-         }
-         $tmperror = Toolbox::testWriteAccessToDirectory($dir);
-
-         $errors = [4 => __('The directory could not be created.'),
-                         3 => __('The directory was created but could not be removed.'),
-                         2 => __('The file could not be created.'),
-                         1 => __("The file was created but can't be deleted.")];
-
-         if ($tmperror > 0) {
-            if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'> ".
-                     sprintf(__('Check permissions to the directory: %s'), $dir).
-                     " ".$errors[$tmperror]."\n";
-            } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
-                    $errors[$tmperror]."</p> ".
-                    sprintf(__('Check permissions to the directory: %s'), $dir).
-                    "'</td></tr>";
-            }
-            $error = 2;
-         } else {
-            if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK').
-                    "\">$dir : OK\n";
-            } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                          __s('A file and a directory have be created and deleted - Perfect!')."\"
-                          title=\"".
-                          __s('A file and a directory have be created and deleted - Perfect!')."\">".
-                    "</td></tr>";
-            }
-         }
-      }
 
       // Only write test for GLPI_LOG as SElinux prevent removing log file.
       if (!$fordebug) {
@@ -2558,7 +2489,18 @@ class Config extends CommonDBTM {
                __('Checking write permissions for log files')."</td>";
       }
 
-      if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
+      $can_write_logs = false;
+
+      try {
+         global $PHPLOGGER;
+         $PHPLOGGER->addRecord(Monolog\Logger::WARNING, "Test logger");
+         $can_write_logs = true;
+      } catch (\UnexpectedValueException $e) {
+         $catched = true;
+         //empty catch
+      }
+
+      if ($can_write_logs) {
          if ($fordebug) {
             echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK')."\">".
                    GLPI_LOG_DIR." : OK\n";
@@ -2577,7 +2519,53 @@ class Config extends CommonDBTM {
                  "<p class='red'>".__('The file could not be created.')."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }
-         $error = 1;
+      }
+
+      if ($can_write_logs) {
+         $dir_to_check = self::getDataDirectories();
+         //log dir is tested differently below
+         unset($dir_to_check[GLPI_LOG_DIR]);
+         $error = 0;
+         foreach ($dir_to_check as $dir => $message) {
+            if (!$fordebug) {
+               echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
+            }
+            $tmperror = Toolbox::testWriteAccessToDirectory($dir);
+
+            $errors = [
+               4 => __('The directory could not be created.'),
+               3 => __('The directory was created but could not be removed.'),
+               2 => __('The file could not be created.'),
+               1 => __("The file was created but can't be deleted.")
+            ];
+
+            if ($tmperror > 0) {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'> ".
+                        sprintf(__('Check permissions to the directory: %s'), $dir).
+                        " ".$errors[$tmperror]."\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
+                     $errors[$tmperror]."</p> ".
+                     sprintf(__('Check permissions to the directory: %s'), $dir).
+                     "'</td></tr>";
+               }
+               $error = 2;
+            } else {
+               if ($fordebug) {
+                  echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK').
+                     "\">$dir : OK\n";
+               } else {
+                  echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                           __s('A file and a directory have be created and deleted - Perfect!')."\"
+                           title=\"".
+                           __s('A file and a directory have be created and deleted - Perfect!')."\">".
+                     "</td></tr>";
+               }
+            }
+         }
+      } else {
+         $error = 2;
       }
 
       $check_access = false;
@@ -2585,7 +2573,7 @@ class Config extends CommonDBTM {
 
       foreach ($directories as $dir) {
          if (Toolbox::startsWith($dir, GLPI_ROOT)) {
-            //only check access if on of the data directories is under GLPI document root.
+            //only check access if one of the data directories is under GLPI document root.
             $check_access = true;
             break;
          }
@@ -2668,24 +2656,30 @@ class Config extends CommonDBTM {
    static function getCurrentDBVersion() {
       global $DB;
 
+      //Default current case
+      $select  = 'value AS version';
+      $table   = 'glpi_configs';
+      $where   = [
+         'context'   => 'core',
+         'name'      => 'version'
+      ];
+
       if (!$DB->tableExists('glpi_configs')) {
-         $query = "SELECT `version`
-                   FROM `glpi_config`
-                   WHERE `id` = '1'";
+         $select  = 'version';
+         $table   = 'glpi_config';
+         $where   = ['id' => 1];
       } else if ($DB->fieldExists('glpi_configs', 'version')) {
-         $query = "SELECT `version`
-                   FROM `glpi_configs`
-                   WHERE `id` = '1'";
-      } else {
-         $query = "SELECT `value` as version
-                   FROM `glpi_configs`
-                   WHERE 'context' = 'core'
-                         AND 'name' = 'version'";
+         $select  = 'version';
+         $where   = ['id' => 1];
       }
 
-      $result = $DB->query($query);
-      $config = $DB->fetch_assoc($result);
-      return trim($config['version']);
+      $row = $DB->request([
+         'SELECT' => [$select],
+         'FROM'   => $table,
+         'WHERE'  => $where
+      ])->next();
+
+      return trim($row['version']);
    }
 
 
@@ -2719,6 +2713,117 @@ class Config extends CommonDBTM {
          $result[$line['name']] = $line['value'];
       }
       return $result;
+   }
+
+   /**
+    * Load legacy configuration into $CFG_GLPI global variable.
+    *
+    * @param boolean $older_to_latest Search on old configuration objects first
+    *
+    * @return boolean True for success, false if an error occured
+    */
+   public static function loadLegacyConfiguration($older_to_latest = true) {
+
+      global $CFG_GLPI, $DB;
+
+      $get_prior_to_078_config  = function() use ($DB) {
+         if (!$DB->tableExists('glpi_config')) {
+            return false;
+         }
+
+         $config = new Config();
+         $config->forceTable('glpi_config');
+         if ($config->getFromDB(1)) {
+            return $config->fields;
+         }
+
+         return false;
+      };
+
+      $get_078_to_084_config    = function() use ($DB) {
+         if (!$DB->tableExists('glpi_configs') || $DB->fieldExists('glpi_configs', 'context')) {
+            return false;
+         }
+
+         $config = new Config();
+         $config->forceTable('glpi_configs');
+         if ($config->getFromDB(1)) {
+            return $config->fields;
+         }
+
+         return false;
+      };
+
+      $get_085_to_latest_config = function() use ($DB) {
+         if (!$DB->tableExists('glpi_configs') || !$DB->fieldExists('glpi_configs', 'context')) {
+            return false;
+         }
+
+         $config = new Config();
+         $config->forceTable('glpi_configs');
+         if ($config->getFromDB(1)) {
+            return Config::getConfigurationValues('core');
+         }
+
+         return false;
+      };
+
+      $functions = [];
+      if ($older_to_latest) {
+         // Try with old config table first : for update process management from < 0.80 to >= 0.80.
+         $functions = [
+            $get_prior_to_078_config,
+            $get_078_to_084_config,
+            $get_085_to_latest_config,
+         ];
+      } else {
+         // Normal load process : use normal config table. If problem try old one.
+         $functions = [
+            $get_085_to_latest_config,
+            $get_078_to_084_config,
+            $get_prior_to_078_config,
+         ];
+      }
+
+      $values = [];
+
+      foreach ($functions as $function) {
+         if ($config = $function()) {
+            $values = $config;
+            break;
+         }
+      }
+
+      if (count($values) === 0) {
+         return false;
+      }
+
+      $CFG_GLPI = array_merge($CFG_GLPI, $values);
+
+      if (isset($CFG_GLPI['priority_matrix'])) {
+         $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix']);
+      }
+
+      if (isset($CFG_GLPI['lock_item_list'])) {
+          $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
+      }
+
+      if (isset($CFG_GLPI['lock_lockprofile_id'])
+          && $CFG_GLPI['lock_use_lock_item']
+          && $CFG_GLPI['lock_lockprofile_id'] > 0
+          && !isset($CFG_GLPI['lock_lockprofile']) ) {
+         $prof = new Profile();
+         $prof->getFromDB($CFG_GLPI['lock_lockprofile_id']);
+         $prof->cleanProfile();
+         $CFG_GLPI['lock_lockprofile'] = $prof->fields;
+      }
+
+      // Path for icon of document type (web mode only)
+      if (isset($CFG_GLPI['root_doc'])) {
+         $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
+      }
+
+      return true;
    }
 
 
@@ -2780,11 +2885,6 @@ class Config extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -2820,23 +2920,17 @@ class Config extends CommonDBTM {
    /**
     * Get a cache adapter from configuration
     *
-    * @param string $optname name of the configuration field
-    * @param string $context name of the configuration context (default 'core')
+    * @param string  $optname name of the configuration field
+    * @param string  $context name of the configuration context (default 'core')
+    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
-    * @return Zend\Cache\Storage\StorageInterface object or false
+    * @return Zend\Cache\Storage\StorageInterface object
     */
-   public static function getCache($optname, $context = 'core') {
-      global $DB;
-
-      if (defined('TU_USER') && !defined('CACHED_TESTS')
-         || !$DB || !$DB->tableExists(self::getTable())
-         || !$DB->fieldExists(self::getTable(), 'context')) {
-         return false;
-      }
+   public static function getCache($optname, $context = 'core', $psr16 = true) {
+      global $DB, $CFG_GLPI;
 
       /* Tested configuration values
        *
-       * - (empty = no cache)
        * - {"adapter":"apcu"}
        * - {"adapter":"redis","options":{"server":{"host":"127.0.0.1"}},"plugins":["serializer"]}
        * - {"adapter":"filesystem"}
@@ -2849,19 +2943,37 @@ class Config extends CommonDBTM {
        *
        */
       // Read configuration
-      $conf = self::getConfigurationValues($context, [$optname]);
+      $conf = [];
+      if ($DB
+         && $DB->connected
+         && $DB->tableExists(self::getTable())
+         && $DB->fieldExists(self::getTable(), 'context')
+      ) {
+         $conf = self::getConfigurationValues($context, [$optname]);
+      }
 
       // Adapter default options
       $opt = [];
       if (isset($conf[$optname])) {
-         if (empty($conf[$optname])) { // to disable cache
-            return false;
-         }
          $opt = json_decode($conf[$optname], true);
          Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
+
+      //use memory adapter when called from tests
+      if (defined('TU_USER') && !defined('CACHED_TESTS')) {
+         $opt['adapter'] = 'memory';
+      }
+      //force FS adapter for translations for tests
+      if (defined('TU_USER') && $optname == 'cache_trans') {
+         $opt['adapter'] = 'filesystem';
+      }
+
       if (!isset($opt['options']['namespace'])) {
-         $opt['options']['namespace'] = "glpi_${optname}_" . GLPI_VERSION;
+         $namespace = "glpi_${optname}_" . GLPI_VERSION;
+         if (isset($CFG_GLPI['instance_uuid'])) {
+            $namespace .= $CFG_GLPI['instance_uuid'];
+         }
+         $opt['options']['namespace'] = $namespace;
       }
       if (!isset($opt['adapter'])) {
          if (function_exists('apcu_fetch')) {
@@ -2869,7 +2981,7 @@ class Config extends CommonDBTM {
          } else if (function_exists('wincache_ucache_add')) {
             $opt['adapter'] = 'wincache';
          } else {
-            return false;
+            $opt['adapter'] = 'filesystem';
          }
       }
       // Adapter specific options
@@ -2906,18 +3018,51 @@ class Config extends CommonDBTM {
       }
 
       // Create adapter
-      $cache = false;
       try {
-         $cache = Zend\Cache\StorageFactory::factory($opt);
-         $cache_class = get_class($cache);
+         $storage = Zend\Cache\StorageFactory::factory($opt);
       } catch (Exception $e) {
-         $cache_class = 'no class';
-         if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-            Toolbox::logError($e->getMessage());
+         //fallback to another cache system
+         $fallback = false;
+         if ($opt['adapter'] != 'filesystem') {
+            $opt = [
+               'adapter'   => 'filesystem',
+               'options'   => [
+                  'cache_dir' => GLPI_CACHE_DIR . '/' . $optname
+               ],
+               'plugins'   => ['serializer']
+            ];
+
+            if (!is_dir($opt['options']['cache_dir'])) {
+               mkdir($opt['options']['cache_dir']);
+            }
+            try {
+               $storage = Zend\Cache\StorageFactory::factory($opt);
+               $fallback = true;
+            } catch (Exception $e1) {
+               Toolbox::logError($e1->getMessage());
+               if (isset($_SESSION['glpi_use_mode'])
+                   && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+                  //preivous attempt has faled as well.
+                  Toolbox::logDebug($e->getMessage());
+               }
+            }
+         }
+
+         if ($fallback === false) {
+            $opt = ['adapter' => 'memory'];
+            $storage = Zend\Cache\StorageFactory::factory($opt);
+         }
+         if (isset($_SESSION['glpi_use_mode'])
+             && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+            Toolbox::logDebug($e->getMessage());
          }
       }
-      Toolbox::logDebug("CACHE $optname", $cache_class);
-      return $cache;
+
+      if ($psr16) {
+         return new SimpleCacheDecorator($storage);
+      } else {
+         return $storage;
+      }
    }
 
    /**
@@ -2929,14 +3074,8 @@ class Config extends CommonDBTM {
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
       $themes = [];
       foreach ($themes_files as $file) {
-         if (strpos($file, ".css") !== false) {
-            $name     = substr($file, 0, -4);
-            if (strpos($name, '.min') !== false) {
-               $name     = substr($name, 0, -4);
-               if (isset($themes[$name])) {
-                  continue;
-               }
-            }
+         if (strpos($file, ".scss") !== false) {
+            $name     = substr($file, 1, -5);
             $themes[$name] = ucfirst($name);
          }
       }
@@ -2951,7 +3090,7 @@ class Config extends CommonDBTM {
     * @return void
     */
    function showFormLogs() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
          return false;
@@ -3121,8 +3260,11 @@ class Config extends CommonDBTM {
     * @return void
     */
    static function showLogsInterval($name, $value, $options = []) {
-      $values[self::DELETE_ALL] = __("Delete all");
-      $values[self::KEEP_ALL]   = __("Keep all");
+
+      $values = [
+         self::DELETE_ALL => __("Delete all"),
+         self::KEEP_ALL   => __("Keep all"),
+      ];
       for ($i = 1; $i < 121; $i++) {
          $values[$i] = sprintf(
             _n(

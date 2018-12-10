@@ -110,7 +110,7 @@ class Rack extends CommonDBTM {
       State::dropdown([
          'value'     => $this->fields["states_id"],
          'entity'    => $this->fields["entities_id"],
-         'condition' => "`is_visible_rack`",
+         'condition' => ['is_visible_rack' => 1],
          'rand'      => $rand]
       );
       echo "</td></tr>\n";
@@ -160,7 +160,7 @@ class Rack extends CommonDBTM {
          'name'      => 'groups_id_tech',
          'value'     => $this->fields['groups_id_tech'],
          'entity'    => $this->fields['entities_id'],
-         'condition' => '`is_assign`',
+         'condition' => ['is_assign' => 1],
          'rand'      => $rand
       ]);
 
@@ -304,7 +304,7 @@ class Rack extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='max_power$rand'>".__('Max. power (in watts)')."</label></td>";
       echo "<td>".Html::input("max_power", ['id' => "max_power$rand", 'value' => $this->fields["max_power"]]);
-      echo "<td><label for='mesured_power$rand'>".__('Mesured power (in watts)')."</label></td>";
+      echo "<td><label for='mesured_power$rand'>".__('Measured power (in watts)')."</label></td>";
       echo "<td>".Html::input("mesured_power", ['id' => "mesured_power$rand", 'value' => $this->fields["mesured_power"]]);
       echo "</td></tr>\n";
 
@@ -385,7 +385,7 @@ class Rack extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_rack`'
+         'condition'          => ['is_visible_rack' => 1]
       ];
 
       $tab[] = [
@@ -470,7 +470,7 @@ class Rack extends CommonDBTM {
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the hardware'),
-         'condition'          => '`is_assign`',
+         'condition'          => ['is_assign' => 1],
          'datatype'           => 'dropdown'
       ];
 
@@ -491,6 +491,7 @@ class Rack extends CommonDBTM {
 
       switch ($item->getType()) {
          case DCRoom::getType():
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = countElementsInTable(
                   self::getTable(), [
@@ -567,6 +568,7 @@ class Rack extends CommonDBTM {
          echo "</table>";
       } else {
          if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = [
                'num_displayed'   => min($_SESSION['glpilist_limit'], count($racks)),
                'container'       => 'mass'.__CLASS__.$rand
@@ -633,9 +635,12 @@ class Rack extends CommonDBTM {
             list($x, $y) = $coord;
             $item['_x'] = $x - 1;
             $item['_y'] = $y - 1;
+         } else {
+            $item['_x'] = null;
+            $item['_y'] = null;
          }
 
-         if ($x <= $cols && $y <= $rows) {
+         if ($x <= $cols && $y <= $rows && $x > 0 && $y > 0) {
             $in = true;
             $cells[] = $item;
          }
@@ -887,7 +892,16 @@ JAVASCRIPT;
    }
 
    function prepareInputForAdd($input) {
-      return $this->prepareInput($input);
+      if ($this->prepareInput($input)) {
+         if (isset($input["id"]) && ($input["id"] > 0)) {
+            $input["_oldID"] = $input["id"];
+         }
+         unset($input['id']);
+         unset($input['withtemplate']);
+
+         return $input;
+      }
+      return false;
    }
 
    function prepareInputForUpdate($input) {
@@ -906,6 +920,22 @@ JAVASCRIPT;
     * @return array
     */
    private function prepareInput($input) {
+
+      if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
+         // Position is not set if room not selected
+         return $input;
+      }
+
+      if ($input['position'] == 0) {
+         return $input;
+         Session::addMessageAfterRedirect(
+            __('Position must be set'),
+            true,
+            ERROR
+         );
+         return false;
+      }
+
       $where = [
          'dcrooms_id'   => $input['dcrooms_id'],
          'position'     => $input['position'],
@@ -951,7 +981,9 @@ JAVASCRIPT;
       $filled = [];
       while ($row = $iterator->next()) {
          $item = new $row['itemtype'];
-         $item->getFromDB($row['items_id']);
+         if (!$item->getFromDB($row['items_id'])) {
+            continue;
+         }
          $units = 1;
          $width = 1;
          $depth = 1;
@@ -1021,6 +1053,17 @@ JAVASCRIPT;
       }
       $this->fields['number_units'] = 42;
       return true;
+   }
+
+   function cleanDBonPurge() {
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Item_Rack::class,
+            PDU_Rack::class,
+         ]
+      );
    }
 
    /**

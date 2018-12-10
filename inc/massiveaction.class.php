@@ -551,7 +551,7 @@ class MassiveAction {
          if ($item->maybeDeleted()
              && !$item->useDeletedToLockIfDynamic()) {
             if ($candelete) {
-               $actions[$self_pref.'delete'] = _x('button', 'Put in dustbin');
+               $actions[$self_pref.'delete'] = _x('button', 'Put in trashbin');
             }
          } else if ($canpurge) {
             if ($item instanceof CommonDBRelation) {
@@ -1113,8 +1113,10 @@ class MassiveAction {
                                 && in_array($link_entity_type,
                                             getAncestorsOf("glpi_entities",
                                                            $item->getEntityID())))) {
-                           $input2["items_id"] = $key;
-                           $input2["itemtype"] = $item->getType();
+                           $input2 = [
+                              'items_id'  => $key,
+                              'itemtype'  => $item->getType()
+                           ];
 
                            if ($ic->can(-1, CREATE, $input2)) {
                               // Add infocom if not exists

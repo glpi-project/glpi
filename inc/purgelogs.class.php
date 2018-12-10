@@ -36,9 +36,13 @@ if (!defined('GLPI_ROOT')) {
 
 class PurgeLogs extends CommonDBTM {
 
+   static function getTypeName($nb = 0) {
+      return __('Logs purge');
+   }
+
    static function cronPurgeLogs($task) {
       $logs_before = self::getLogsCount();
-      if (self::canLaunchPurge() && $logs_before) {
+      if ($logs_before) {
          self::purgeSoftware();
          self::purgeInfocom();
          self::purgeUserInfos();
@@ -360,34 +364,11 @@ class PurgeLogs extends CommonDBTM {
     */
    static function getDateModRestriction($month) {
       if ($month > 0) {
-         return ['date_mod' => new QueryExpression("DATE_ADD(NOW(), INTERVAL -$month MONTH)")];
+         return ['date_mod' => ['<=', new QueryExpression("DATE_ADD(NOW(), INTERVAL -$month MONTH)")]];
       } else if ($month == Config::DELETE_ALL) {
          return [1 => 1];
       } else if ($month == Config::KEEP_ALL) {
          return false;
-      }
-   }
-
-   /**
-    * Check if there's no crashed tables. If there're some, skip log purge
-    *
-    * @return boolean
-    */
-   static function canLaunchPurge() {
-      if (method_exists('DBmysql', 'checkForCrashedTables')) {
-         //Check for potential crashed tables
-         $crashed_tables = DBmysql::checkForCrashedTables();
-         if (empty($crashed_tables)) {
-            //No crashed tables, good !
-            return true;
-         } else {
-            //Some crashed tables has been detected : stop cron execution
-            Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
-            return false;
-         }
-      } else {
-         //The check function is unavailable (GLPi < 0.90.2)
-         return true;
       }
    }
 

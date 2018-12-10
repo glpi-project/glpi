@@ -6,51 +6,54 @@ shared: &shared
     - run:
         name: Dependencies
         command: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-client libpng-dev libxml2-dev
-          sudo docker-php-ext-install mysqli gd xmlrpc
-          sudo pecl install apcu <<< '' || sudo pecl install apcu-4.0.11 <<< ''
-          sudo docker-php-ext-enable apcu
-          echo "apc.enable=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
-          echo "apc.enable_cli=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+          sudo -E apt-get update
+          sudo -E apt-get install -y mysql-client libpng-dev libxml2-dev
+          sudo -E docker-php-ext-install mysqli gd xmlrpc
+          sudo -E pecl install apcu <<< '' || sudo -E pecl install apcu-4.0.11 <<< ''
+          sudo -E docker-php-ext-enable apcu
+          echo "apc.enable=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+          echo "apc.enable_cli=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+          echo "memory_limit = 512M" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-memory.ini
     - run:
         name: Composer
         command: |
-          composer self-update
+          sudo -E composer self-update
           sed -e '/"php":/d' -i composer.json
           rm -f composer.lock
           composer install --optimize-autoloader
+    - run:
+        name: PHP Parallel Lint
+        command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
     - run:
         name: Update DB
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
           mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
           cp tests/circleci.config_db.php tests/config_db.php
-          php scripts/cliupdate.php --config-dir=../tests --dev
-          php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
-          php scripts/innodb_migration.php --config-dir=../tests
+          bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
+          bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+          bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
           rm tests/config_db.php
     - run:
         name: Install DB
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
-          php scripts/cliinstall.php --db=glpitest --host=127.0.0.1 --user=root --tests
-          php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
-          ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
-    - run:
-        name: Database tests
-        command: composer testdb
-    - run:
-        name: Functionnal tests
-        command: composer testfunc
+          bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-host=127.0.0.1 --db-user=root
+          bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
     - run:
         name: Unit tests
-        command: composer testunits
+        command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
+    - run:
+        name: Database tests
+        command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+    - run:
+        name: Functionnal tests
+        command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal
     - run:
         name: WEB tests
         command: |
           php -S localhost:8088 tests/router.php &>/dev/null &
-          composer testweb
+          php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
 #    - run:
 #        name: LDAP tests
 #        command: |
@@ -58,7 +61,7 @@ shared: &shared
 #          composer testldap
     - run:
         name: Coding standards
-        command: composer cs
+        command: if [[ $(php --version|grep "7\.2") ]]; then vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./; else echo "No CS for this version"; fi
     - run:
         name: sensiolabs/security-checker
         command: vendor/bin/security-checker security:check

@@ -31,7 +31,7 @@
 */
 
 // Current version of GLPI
-define('GLPI_VERSION', '9.4-dev');
+define('GLPI_VERSION', '9.4.0-dev');
 if (substr(GLPI_VERSION, -4) === '-dev') {
    //for dev version
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
@@ -59,7 +59,9 @@ define("GLPI_CSRF_MAX_TOKENS", "100");
 
 // for compatibility with mysql 5.7
 // TODO: this var need to be set to 0 after review of all sql queries)
-define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
+if (!defined('GLPI_FORCE_EMPTY_SQL_MODE')) {
+   define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
+}
 
 // rights
 define("READ", 1);
@@ -92,11 +94,13 @@ $CFG_GLPI['languages'] = [
    'es_419' => ['Español (América Latina)',  'es_419.mo',   'es',    'es', 'spanish',              2],
    'es_MX'  => ['Español (Mexico)',          'es_MX.mo',    'es',    'es', 'spanish',              2],
    'es_VE'  => ['Español (Venezuela)',       'es_VE.mo',    'es',    'es', 'spanish',              2],
-   'eu_ES'  => ['Euskara',                   'eu_ES.mo',    'eu',    'en', 'basque',               2],
+   'eu_ES'  => ['Euskara',                   'eu_ES.mo',    'eu',    'eu', 'basque',               2],
    'fr_FR'  => ['Français',                  'fr_FR.mo',    'fr',    'fr', 'french',               2],
+   'fr_CA'  => ['Français (Canada)',         'fr_CA.mo',    'fr',    'fr', 'french',               2],
    'gl_ES'  => ['Galego',                    'gl_ES.mo',    'gl',    'gl', 'galician',             2],
    'el_GR'  => ['Ελληνικά',                  'el_GR.mo',    'el',    'el', 'greek',                2], // el_EL
    'he_IL'  => ['עברית',                     'he_IL.mo',    'he',    'he', 'hebrew',               2], // he_HE
+   'hi_IN'  => ['हिन्दी',                     'hi_IN.mo',    'hi',    'hi_IN', 'hindi' ,            2],
    'hr_HR'  => ['Hrvatski',                  'hr_HR.mo',    'hr',    'hr', 'croatian',             2],
    'hu_HU'  => ['Magyar',                    'hu_HU.mo',    'hu',    'hu', 'hungarian',            2],
    'it_IT'  => ['Italiano',                  'it_IT.mo',    'it',    'it', 'italian',              2],
@@ -146,7 +150,12 @@ define("GLPIKEY", "GLPI£i'snarss'ç");
 
 //Telemetry
 if (!defined('GLPI_TELEMETRY_URI')) {
-   define('GLPI_TELEMETRY_URI', 'http://glpi-project.org/telemetry');
+   define('GLPI_TELEMETRY_URI', 'https://telemetry.glpi-project.org');
+}
+
+// GLPI Network
+if (!defined('GLPI_NETWORK_SERVICES')) {
+   define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
 }
 
 // TIMES
@@ -190,11 +199,11 @@ $LANG             = [];
 $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Supplier','User', 'Certicate'];
+                                                  'SoftwareLicense', 'Supplier','User', 'Certicate', 'Rack', 'Enclosure', 'Pdu'];
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-                                                  'Certificate'];
+                                                  'Certificate', 'Enclosure', 'Pdu'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -264,7 +273,7 @@ $CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'Monitor', 'NetworkEqui
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 
-$CFG_GLPI["linkgroup_tech_types"]         = ['Computer', 'Consumable', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["linkgroup_tech_types"]         = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 
@@ -334,8 +343,17 @@ $CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 
 
 $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 
+$CFG_GLPI['itemdevicepci_types']          = ['*'];
+
 $CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral'];
 
+$CFG_GLPI['itemdeviceprocessor_types']    = ['Computer'];
+
+$CFG_GLPI['itemdevicesoundcard_types']    = ['Computer'];
+
+$CFG_GLPI['itemdevicegraphiccard_types']  = ['Computer'];
+
+$CFG_GLPI['itemdevicemotherboard_types']  = ['Computer'];
 
 $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
                                              'Contract', 'Crontask', 'DBConnection',
@@ -356,7 +374,8 @@ $CFG_GLPI["rulecollections_types"]        = ['RuleImportEntityCollection',
                                                   'RuleMailCollectorCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
-                                                  'RuleTicketCollection'];
+                                                  'RuleTicketCollection',
+                                                  'RuleAssetCollection'];
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Reminder',
@@ -364,12 +383,12 @@ $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Remin
 $CFG_GLPI['planning_add_types']           = ['Reminder'];
 
 $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
-                                                  'Document',  'Monitor',
-                                                  'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'SoftwareLicense',
-                                                  'Ticket', 'Problem', 'Change',
-                                                  'User', 'Group', 'Project', 'Supplier',
-                                                  'Budget', 'Certificate'];
+                                             'Document',  'Monitor',
+                                             'NetworkEquipment', 'Peripheral', 'Phone',
+                                             'Printer', 'Software', 'SoftwareLicense',
+                                             'Ticket', 'Problem', 'Change',
+                                             'User', 'Group', 'Project', 'Supplier',
+                                             'Budget', 'Certificate', 'Line'];
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
@@ -395,8 +414,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
-                                     'use_flat_dropdowntree', 'layout', 'ticket_timeline',
-                                     'ticket_timeline_keep_replaced_tabs', 'palette',
+                                     'use_flat_dropdowntree', 'layout', 'palette',
                                      'highcontrast_css'];
 
 $CFG_GLPI['layout_excluded_pages'] = ["profile.form.php",
@@ -421,7 +439,7 @@ $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract'
                                            'SoftwareLicense', 'Certificate'];
 
 $CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Computer_SoftwareLicense',
-                                           'Computer_SoftwareVersion', 'ComputerDisk', 'ComputerVirtualMachine',
+                                           'Computer_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine',
                                            'NetworkPort', 'NetworkName', 'IPAddress'];
 
 $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
@@ -454,7 +472,7 @@ $CFG_GLPI['javascript'] = [
    ],
    'tools'     => [
       'project'      => ['gantt'],
-      'knowbaseitem' => ['tinymce'],
+      'knowbaseitem' => ['tinymce', 'jstree'],
       'reminder'     => ['tinymce']
    ],
    'management' => [

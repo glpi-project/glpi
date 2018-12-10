@@ -299,14 +299,14 @@ class RuleAction extends CommonDBChild {
    function getRuleActions($ID) {
       global $DB;
 
-      $sql = "SELECT *
-              FROM `".$this->getTable()."`
-              WHERE `".static::$items_id."` = '$ID'
-              ORDER BY `id`";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [static::$items_id => $ID],
+         'ORDER'  => 'id'
+      ]);
 
       $rules_actions = [];
-      while ($rule = $DB->fetch_assoc($result)) {
+      while ($rule = $iterator->next()) {
          $tmp             = new self();
          $tmp->fields     = $rule;
          $rules_actions[] = $tmp;
@@ -449,11 +449,13 @@ class RuleAction extends CommonDBChild {
          $actions_options = $rule->getAllActions();
 
          $actions = [];
-         $res     = $DB->query("SELECT `field`
-                                FROM `".$this->getTable()."`
-                                WHERE `".static::$items_id."` = '".$rules_id."'");
+         $iterator = $DB->request([
+            'SELECT' => 'field',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $rules_id],
+         ]);
 
-         while ($action = $DB->fetch_assoc($res)) {
+         while ($action = $iterator->next()) {
             if (isset($actions_options[$action["field"]])
                  && ($action["field"] != 'groups_id_validate')
                  && ($action["field"] != 'users_id_validate')
@@ -572,11 +574,13 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_users_validate" :
                      $used = [];
                      if ($item = getItemForItemtype($options["sub_type"])) {
-                        $rule_data = getAllDatasFromTable('glpi_ruleactions',
-                                                          "`action_type` = 'add_validation'
-                                                           AND `field` = 'users_id_validate'
-                                                           AND `".$item->getRuleIdField()."`
-                                                            = '".$options[$item->getRuleIdField()]."'");
+                        $rule_data = getAllDatasFromTable(
+                           self::getTable(), [
+                              'action_type'           => 'add_validation',
+                              'field'                 => 'users_id_validate',
+                              $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                           ]
+                        );
 
                         foreach ($rule_data as $data) {
                            $used[] = $data['value'];
@@ -592,22 +596,24 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_groups_validate" :
                      $used = [];
                      if ($item = getItemForItemtype($options["sub_type"])) {
-                        $rule_data = getAllDatasFromTable('glpi_ruleactions',
-                                                          "`action_type` = 'add_validation'
-                                                           AND `field` = 'groups_id_validate'
-                                                           AND `".$item->getRuleIdField()."`
-                                                            = '".$options[$item->getRuleIdField()]."'");
-
+                        $rule_data = getAllDatasFromTable(
+                           self::getTable(), [
+                              'action_type'           => 'add_validation',
+                              'field'                 => 'groups_id_validate',
+                              $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                           ]
+                        );
                         foreach ($rule_data as $data) {
                            $used[] = $data['value'];
                         }
                      }
 
-                     $condition = "(SELECT count(`users_id`)
-                                    FROM `glpi_groups_users`
-                                    WHERE `groups_id` = `glpi_groups`.`id`)";
                      $param['name']      = 'value';
-                     $param['condition'] = $condition;
+                     $param['condition'] = [new QuerySubQuery([
+                        'SELECT' => ['COUNT' => ['users_id']],
+                        'FROM'   => 'glpi_groups_users',
+                        'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+                     ])];
                      $param['right']     = ['validate_incident', 'validate_request'];
                      $param['used']      = $used;
                      Group::dropdown($param);

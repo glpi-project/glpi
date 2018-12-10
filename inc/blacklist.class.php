@@ -184,8 +184,8 @@ class Blacklist extends CommonDropdown {
    /**
     * Dropdown of blacklist types
     *
-    * @param $name            select name
-    * @param $options   array of possible options:
+    * @param string $name   select name
+    * @param array $options possible options:
     *    - value       : integer / preselected value (default 0)
     *    - toadd       : array / array of specific values to add at the begining
     *    - on_change   : string / value to transmit to "onChange"
@@ -195,10 +195,12 @@ class Blacklist extends CommonDropdown {
    **/
    static function dropdownType($name, $options = []) {
 
-      $params['value']       = 0;
-      $params['toadd']       = [];
-      $params['on_change']   = '';
-      $params['display']     = true;
+      $params = [
+         'value'     => 0,
+         'toadd'     => [],
+         'on_change' => '',
+         'display'   => true,
+      ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -224,11 +226,13 @@ class Blacklist extends CommonDropdown {
    **/
    static function getTypes() {
 
-      $options[self::IP]     = __('IP');
-      $options[self::MAC]    = __('MAC');
-      $options[self::SERIAL] = __('Serial number');
-      $options[self::UUID]   = __('UUID');
-      $options[self::EMAIL]  = _n('Email', 'Emails', 1);
+      $options = [
+         self::IP     => __('IP'),
+         self::MAC    => __('MAC'),
+         self::SERIAL => __('Serial number'),
+         self::UUID   => __('UUID'),
+         self::EMAIL  => _n('Email', 'Emails', 1),
+      ];
 
       return $options;
    }
@@ -237,13 +241,13 @@ class Blacklist extends CommonDropdown {
    /**
     * Get blacklisted items for a specific type
     *
-    * @param $type type to get (see constants)
+    * @param string $type type to get (see constants)
     *
     * @return array of blacklisted items
    **/
    static function getBlacklistedItems($type) {
 
-      $datas = getAllDatasFromTable('glpi_blacklists', "type = '$type'");
+      $datas = getAllDatasFromTable('glpi_blacklists', ['type' => $type]);
       $items = [];
       if (count($datas)) {
          foreach ($datas as $val) {

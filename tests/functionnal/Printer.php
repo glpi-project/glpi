@@ -142,8 +142,7 @@ class Printer extends DbTestCase {
       $this->boolean($obj->getFromDB($id))->isTrue();
       $this->variable($obj->getField('is_deleted'))->isEqualTo(0);;
       $this->variable($obj->isDeleted())->isEqualTo(0);
-      $nb_before = (int)countElementsInTable('glpi_logs', "itemtype = 'Printer'
-                                          AND items_id = '$id'");
+      $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
 
       // DeleteByCriteria without history
       $this->boolean($obj->deleteByCriteria(['name' => $this->method], 0, 0))->isTrue();
@@ -151,8 +150,7 @@ class Printer extends DbTestCase {
       $this->variable($obj->getField('is_deleted'))->isEqualTo(1);
       $this->variable($obj->isDeleted())->isEqualTo(1);
 
-      $nb_after = (int)countElementsInTable('glpi_logs', "itemtype = 'Printer'
-                                          AND items_id = '$id'");
+      $nb_after = (int)countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
       $this->integer($nb_after)->isidenticalTo($nb_after);
 
       // Restore
@@ -161,8 +159,7 @@ class Printer extends DbTestCase {
       $this->variable($obj->getField('is_deleted'))->isEqualTo(0);
       $this->variable($obj->isDeleted())->isEqualTo(0);
 
-      $nb_before = (int)countElementsInTable('glpi_logs', "itemtype = 'Printer'
-                                          AND items_id = '$id'");
+      $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
 
       // DeleteByCriteria with history
       $this->boolean($obj->deleteByCriteria(['name' => $this->method], 0, 1))->isTrue;
@@ -170,8 +167,7 @@ class Printer extends DbTestCase {
       $this->variable($obj->getField('is_deleted'))->isEqualTo(1);
       $this->variable($obj->isDeleted())->isEqualTo(1);
 
-      $nb_after = (int)countElementsInTable('glpi_logs', "itemtype = 'Printer'
-                                          AND items_id = '$id'");
+      $nb_after = (int)countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
       $this->integer($nb_after)->isidenticalTo($nb_before + 1);
    }
 }

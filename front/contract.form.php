@@ -45,8 +45,6 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 $contract         = new Contract();
-$contractitem     = new Contract_Item();
-$contractsupplier = new Contract_Supplier();
 
 if (isset($_POST["add"])) {
    $contract->check(-1, CREATE, $_POST);

@@ -41,8 +41,8 @@ if (isset($_GET["redirect"])) {
 // Affichage Module FAQ
 //******************
 
-$name = "";
 Session::checkFaqAccess();
+Html::requireJs('jstree');
 
 if (Session::getLoginUserID()) {
    Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);

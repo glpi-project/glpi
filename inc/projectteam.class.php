@@ -98,17 +98,6 @@ class ProjectTeam extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $item
-    *
-    * @return number
-   **/
-   static function countForProject(Project $item) {
-
-      return countElementsInTable(['glpi_projectteams'], ['glpi_projectteams.projects_id' => $item->getField('id')]);
-   }
-
-
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -129,10 +118,8 @@ class ProjectTeam extends CommonDBRelation {
    static function cloneProjectTeam ($oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_projectteams`
-                 WHERE `projects_id` = '$oldid'";
-      foreach ($DB->request($query) as $data) {
+      $team = self::getTeamFor($oldid);
+      foreach ($team as $data) {
          $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
@@ -151,11 +138,12 @@ class ProjectTeam extends CommonDBRelation {
       global $DB;
 
       $team = [];
-      $query = "SELECT `glpi_projectteams`.*
-                FROM `glpi_projectteams`
-                WHERE `projects_id` = '$projects_id'";
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['projects_id' => $projects_id]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if (!isset($team[$data['itemtype']])) {
             $team[$data['itemtype']] = [];
          }

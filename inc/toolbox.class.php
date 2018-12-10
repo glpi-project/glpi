@@ -64,18 +64,16 @@ class Toolbox {
     * Convert first caracter in upper
     *
     * @since 0.83
+    * @since 9.3 Rework
     *
     * @param $str string to change
     *
     * @return string changed
    **/
    static function ucfirst($str) {
-
-      if ($str{0} >= "\xc3") {
-         return (($str{1} >= "\xa0") ? ($str{0}.chr(ord($str{1})-32))
-                                     : ($str{0}.$str{1})).substr($str, 2);
-      }
-      return ucfirst($str);
+      $first_letter = mb_strtoupper(mb_substr ($str, 0, 1));
+      $str_end = mb_substr($str, 1, mb_strlen ($str));
+      return $first_letter . $str_end;
    }
 
 
@@ -401,7 +399,7 @@ class Toolbox {
       $msg = "";
       if (function_exists('debug_backtrace')) {
          $bt  = debug_backtrace();
-         if (count($bt) > 1) {
+         if (count($bt) > 2) {
             if (isset($bt[2]['class'])) {
                $msg .= $bt[2]['class'].'::';
             }
@@ -558,10 +556,12 @@ class Toolbox {
       try {
          self::log(null, Logger::NOTICE, [$message]);
       } finally {
-         if (isCommandLine()) {
-            echo self::backtrace(null);
-         } else {
-            self::backtrace();
+         if (defined('TU_USER')) {
+            if (isCommandLine()) {
+               echo self::backtrace(null);
+            } else {
+               self::backtrace();
+            }
          }
       }
    }
@@ -766,27 +766,19 @@ class Toolbox {
 
       // if $mime is defined, ignore mime type by extension
       if ($mime === null && preg_match('/\.(...)$/', $file, $regs)) {
-         $mimeTypeMap = [
-            'sql' => 'text/x-sql',
-            'xml' => 'text/xml',
-            'csv' => 'text/csv',
-            'svg' => 'image/svg+xml',
-            'png' => 'image/png',
-         ];
-
-         $ext = strtolower($regs[1]);
-
-         if (isset($mimeTypeMap[$ext])) {
-            $mime = $mimeTypeMap[$ext];
-         } else {
-            $mime = 'application/octet-stream';
-         }
+         $finfo = finfo_open(FILEINFO_MIME_TYPE);
+         $mime = finfo_file($finfo, $file);
+         finfo_close($finfo);
       }
 
       // don't download picture files, see them inline
       $attachment = "";
       // if not begin 'image/'
-      if (strncmp($mime, 'image/', 6) !== 0 && $mime != 'application/pdf') {
+      if (strncmp($mime, 'image/', 6) !== 0
+          && $mime != 'application/pdf'
+          // svg vector of attack, force attachment
+          // see https://github.com/glpi-project/glpi/issues/3873
+          || $mime == 'image/svg+xml') {
          $attachment = ' attachment;';
       }
 
@@ -835,7 +827,14 @@ class Toolbox {
                   ? array_map([__CLASS__, 'addslashes_deep'], $value)
                   : (is_null($value)
                        ? null : (is_resource($value)
-                                  ? $value : $DB->escape($value)));
+                       ? $value : $DB->escape(
+                          str_replace(
+                             ['&#039;', '&#39;', '&quot'],
+                             ["'", "'", "'"],
+                             $value
+                          )
+                       ))
+                    );
 
       return $value;
    }
@@ -952,10 +951,11 @@ class Toolbox {
 
    /**
     * Common Checks needed to use GLPI
+    * @param boolean $isInstall Is the check run on a install process (don't check DB as not configured yet)
     *
-    * @return 2 : creation error 1 : delete error 0: OK
-   **/
-   static function commonCheckForUseGLPI() {
+    * @return integer 2 = creation error / 1 = delete error  / 0 = OK
+    */
+   static function commonCheckForUseGLPI($isInstall = false) {
       global $CFG_GLPI;
 
       $error = 0;
@@ -1045,13 +1045,16 @@ class Toolbox {
          $error = $suberr;
       }
 
-      //database version check --is it posible?
-      echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing DB engine version')."</td>";
-      $suberr = Config::displayCheckDbEngine();
-      if ($suberr > $error) {
-         $error = $suberr;
+      // No DB version check on system check on the install (DB conf not defined when test are running)
+      if (!$isInstall) {
+         //database version check
+         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing DB engine version') . "</td>";
+         $suberr = Config::displayCheckDbEngine();
+         if ($suberr > $error) {
+            $error = $suberr;
+         }
+         echo "</tr>";
       }
-      echo "</tr>";
 
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
@@ -1118,9 +1121,21 @@ class Toolbox {
          // This is not a SELinux system
          return 0;
       }
-      $mode = exec("/usr/sbin/getenforce");
-      if (empty($mode)) {
-         $mode = "Unknown";
+      if (function_exists('selinux_getenforce')) { // Use https://pecl.php.net/package/selinux
+         $mode = selinux_getenforce();
+         // Make it human readable, with same output as the command
+         if ($mode > 0) {
+            $mode = 'Enforcing';
+         } else if ($mode < 0) {
+            $mode = 'Disabled';
+         } else {
+            $mode = 'Permissive';
+         }
+      } else {
+         $mode = exec("/usr/sbin/getenforce");
+         if (empty($mode)) {
+            $mode = "Unknown";
+         }
       }
       //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
       $msg  = sprintf(__('SELinux mode is %s'), $mode);
@@ -1143,17 +1158,19 @@ class Toolbox {
       // Enforcing mode will block some feature (notif, ...)
       // Permissive mode will write lot of stuff in audit.log
 
-      if (!file_exists('/usr/sbin/getenforce')) {
-         // should always be there
-         return 0;
-      }
       $bools = ['httpd_can_network_connect', 'httpd_can_network_connect_db',
                      'httpd_can_sendmail'];
       $msg2 = __s('Some features may require this to be on');
       foreach ($bools as $bool) {
-         $state = exec('/usr/sbin/getsebool '.$bool);
-         if (empty($state)) {
-            $state = "$bool --> unkwown";
+         if (function_exists('selinux_get_boolean_active')) {
+            $state = selinux_get_boolean_active($bool);
+            // Make it human readable, with same output as the command
+            $state = "$bool --> " . ($state ? 'on' : 'off');
+         } else {
+            $state = exec('/usr/sbin/getsebool '.$bool);
+            if (empty($state)) {
+               $state = "$bool --> unkwown";
+            }
          }
          //TRANS: %s is an option name
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
@@ -1402,10 +1419,7 @@ class Toolbox {
 
       } else {
          if (version_compare($CFG_GLPI["version"], $latest_version, '<')) {
-            $config_object                = new Config();
-            $input["id"]                  = 1;
-            $input["founded_new_version"] = $latest_version;
-            $config_object->update($input);
+            Config::setConfigurationValues('core', ['founded_new_version' => $latest_version]);
 
             if (!$auto) {
                if ($messageafterredirect) {
@@ -1752,7 +1766,7 @@ class Toolbox {
          $msgerr = __('No data available on the web site');
       }
       if (!empty($msgerr)) {
-         Toolbox::logDebug($msgerr);
+         Toolbox::logError($msgerr);
       }
       return $content;
    }
@@ -1868,17 +1882,19 @@ class Toolbox {
                                  }
                               }
                            }
-                           if ($_SESSION['glpiticket_timeline'] == 1) {
-                              // force redirect to timeline when timeline is enabled and viewing
-                              // Tasks or Followups
-                              $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
-                              $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
-                           }
+                           // force redirect to timeline when timeline is enabled and viewing
+                           // Tasks or Followups
+                           $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                           $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
+                           $forcetab = str_replace( 'ITILFollowup$1', 'Ticket$1', $forcetab);
                            Html::redirect(Ticket::getFormURLWithID($data[1])."&$forcetab");
 
                         } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
-                              Html::redirect($item->getSearchURL()."?$forcetab");
+                              $searchUrl = $item->getSearchURL();
+                              $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                              $searchUrl .= $forcetab;
+                              Html::redirect($searchUrl);
                            }
                         }
 
@@ -1925,17 +1941,19 @@ class Toolbox {
                                     }
                                  }
                               }
-                              if ($_SESSION['glpiticket_timeline'] == 1 && $item->getType() == 'Ticket') {
-                                 // force redirect to timeline when timeline is enabled
-                                 $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
-                                 $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
-                              }
+                              // force redirect to timeline when timeline is enabled
+                              $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                              $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
+                              $forcetab = str_replace( 'ITILFollowup$1', 'Ticket$1', $forcetab);
                               Html::redirect($item->getFormURLWithID($data[1])."&$forcetab");
                            }
 
                         } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
-                              Html::redirect($item->getSearchURL()."?$forcetab");
+                              $searchUrl = $item->getSearchURL();
+                              $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                              $searchUrl .= $forcetab;
+                              Html::redirect($searchUrl);
                            }
                         }
 
@@ -2174,7 +2192,9 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
-      echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+      echo "<td>";
+      echo "<input size='30' type='text' id='server_mailbox' name='server_mailbox' value=\"" . $tab['mailbox'] . "\" >";
+      echo "<i class='fa fa-list pointer get-imap-folder'></i>";
       echo "</td></tr>\n";
 
       //TRANS: for mail connection system
@@ -2374,9 +2394,15 @@ class Toolbox {
 
          if (defined('GLPI_SYSTEM_CRON')) {
             // Downstream packages may provide a good system cron
-            //needs DB::update() to support fields names to get migrated
-            $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
-            $DB->queryOrDie($query, "4203");
+            $DB->updateOrDie(
+               'glpi_crontasks', [
+                  'mode'   => 2
+               ], [
+                  'name'      => ['!=', 'watcher'],
+                  'allowmode' => ['&', 2]
+               ],
+               '4203'
+            );
          }
       }
    }
@@ -2494,35 +2520,6 @@ class Toolbox {
             Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."),
                                   true);
       }
-   }
-
-
-   /**
-    * Check if the given object is of the type $class_name. Can be identical or a subclass.
-    * This method emulates PHP 5.3.9: is_a with allow_string == true
-    *
-    * @todo: remove when prerequisite > 5.3.9 !
-    *
-    * @since 0.85
-    *
-    * @param $object        can be an object or a string contining the class name
-    * @param $class_name    the name of the class to compare
-    *
-    * @return true if $object is an instance of $class_name
-    *
-   **/
-   static function is_a($object, $class_name) {
-
-      if (is_object($object)) {
-         return is_a($object, $class_name);
-      }
-      if (is_string($object)) {
-         if ($object == $class_name) {
-            return true;
-         }
-         return is_subclass_of($object, $class_name);
-      }
-      return false;
    }
 
 
@@ -2658,7 +2655,7 @@ class Toolbox {
          preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
                         $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
-            $doc_data = $document->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
+            $doc_data = $document->find(['tag' => array_unique($matches[1])]);
          }
       }
 
@@ -2685,8 +2682,8 @@ class Toolbox {
                                                Html::entities_deep($img), $content_text);
 
                   // 2 - Replace img with tag in id attribute by the image
-                  preg_match_all("/<img.*".$image['tag'].".*>/Uim",
-                                 Html::entity_decode_deep($content_text), $matches);
+                  $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
+                  preg_match_all($regex, Html::entity_decode_deep($content_text), $matches);
                   foreach ($matches[0] as $match_img) {
                      //retrieve dimensions
                      $width = $height = null;
@@ -2694,7 +2691,7 @@ class Toolbox {
                      if (isset($attributes[1][0])) {
                         ${$attributes[1][0]} = $attributes[2][0];
                      }
-                     if (isset($attributes[1][0])) {
+                     if (isset($attributes[1][1])) {
                         ${$attributes[1][1]} = $attributes[2][1];
                      }
 
@@ -2709,9 +2706,11 @@ class Toolbox {
                      $new_image =  Html::convertTagFromRichTextToImageTag($image['tag'],
                                                                           $width, $height,
                                                                           true, $ticket_url_param);
-                     $content_text = preg_replace("/<img([^>]*?)(".$image['tag'].")([^<]*?)>/Uim",
-                                                  $new_image,
-                                                  Html::entity_decode_deep($content_text));
+                     $content_text = preg_replace(
+                        $regex,
+                        $new_image,
+                        Html::entity_decode_deep($content_text)
+                     );
                      $content_text = Html::entities_deep($content_text);
                   }
 
@@ -2780,20 +2779,11 @@ class Toolbox {
     * @return html content
    **/
    static function cleanTagOrImage($content, array $tags) {
-      global $CFG_GLPI;
-
       // RICH TEXT : delete img tag
-      if ($CFG_GLPI["use_rich_text"]) {
-         $content = Html::entity_decode_deep($content);
+      $content = Html::entity_decode_deep($content);
 
-         foreach ($tags as $tag) {
-            $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
-         }
-
-      } else { // SIMPLE TEXT : delete tag
-         foreach ($tags as $tag) {
-            $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
-         }
+      foreach ($tags as $tag) {
+         $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
       }
 
       return $content;
@@ -2866,8 +2856,9 @@ class Toolbox {
     * @return string the IP address
     */
    public static function getRemoteIpAddress() {
-      return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
-                                                      : $_SERVER["REMOTE_ADDR"]);
+      return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ?
+         self::clean_cross_side_scripting_deep($_SERVER["HTTP_X_FORWARDED_FOR"]):
+         $_SERVER["REMOTE_ADDR"]);
    }
 
    /**
@@ -2984,7 +2975,7 @@ class Toolbox {
     */
    public static function useCache() {
       global $GLPI_CACHE;
-      return $GLPI_CACHE instanceof Zend\Cache\Storage\Adapter\AbstractAdapter
+      return $GLPI_CACHE != null
          && (!defined('TU_USER') || defined('CACHED_TESTS'));
    }
 

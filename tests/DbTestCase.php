@@ -34,42 +34,40 @@
 
 class DbTestCase extends \GLPITestCase {
 
-   public function setUp() {
+   public function beforeTestMethod($method) {
       global $DB;
-
-      // Need Innodb -- $DB->begin_transaction() -- workaround:
-      $DB->objcreated = [];
-      parent::setUp();
+      $DB->beginTransaction();
+      parent::beforeTestMethod($method);
    }
 
    public function afterTestMethod($method) {
       global $DB;
-
+      $DB->rollback();
       parent::afterTestMethod($method);
-
-      // Need Innodb -- $DB->rollback()  -- workaround:
-      foreach ($DB->objcreated as $table => $ids) {
-         foreach ($ids as $id) {
-            $DB->delete($table, ['id' => $id]);
-         }
-      }
-      unset($DB->objcreated);
    }
 
 
    /**
-    * Connect using the test user
+    * Connect (using the test user per default)
+    *
+    * @param string $user_name User name (defaults to TU_USER)
+    * @param string $user_pass user password (defaults to TU_PASS)
+    *
+    * @return voidd
     */
    protected function login($user_name = TU_USER, $user_pass = TU_PASS) {
 
       $auth = new Auth();
-      if (!$auth->login($user_name, $user_pass, true)) {
-         $this->markTestSkipped('No login');
-      }
+      $this->boolean($auth->login($user_name, $user_pass, true))->isTrue();
    }
 
    /**
     * change current entity
+    *
+    * @param string $entityname Name of the entity
+    * @param boolean $subtree   Recursive load
+    *
+    * @return void
     */
    protected function setEntity($entityname, $subtree) {
       $res = Session::changeActiveEntities(getItemByTypeName('Entity', $entityname, true), $subtree);

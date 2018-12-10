@@ -139,22 +139,198 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase browse view
    **/
    static function showBrowseView() {
+      global $CFG_GLPI;
 
-      if (isset($_GET["knowbaseitemcategories_id"])) {
-         $_SESSION['kbknowbaseitemcategories_id'] = $_GET["knowbaseitemcategories_id"];
-      } else if (isset($_SESSION['kbknowbaseitemcategories_id'])) {
-         $_GET["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
+      $rand        = mt_rand();
+      $ajax_url    = $CFG_GLPI["root_doc"]."/ajax/knowbase.php";
+      $loading_txt = addslashes(__('Loading...'));
+      $start       = isset($_REQUEST['start'])
+                        ? $_REQUEST['start']
+                        : 0;
+
+      $cat_id = 'false';
+      if (array_key_exists('knowbaseitemcategories_id', $_REQUEST)) {
+         $cat_id = $_REQUEST['knowbaseitemcategories_id'];
       }
 
-      $ki = new KnowbaseItem();
-      $ki->showBrowseForm($_GET);
-      if (!isset($_GET["itemtype"])
-          || !isset($_GET["items_id"])) {
-         KnowbaseItemCategory::showFirstLevel($_GET);
-      }
-      KnowbaseItem::showList($_GET, 'browse');
+      $category_list = json_encode(self::getJstreeCategoryList());
+
+      $JS = <<<JAVASCRIPT
+         $(function() {
+            $('#tree_category$rand').jstree({
+               'plugins' : [
+                  'search',
+                  'wholerow',
+                  'state' // remember (on browser navigation) the last node open in tree
+               ],
+               'state' : {
+                  'key'    : "kb_tree_state",
+                  'filter' : function (state) {
+                     // Prevent restoring selected state if category is in URL
+                     if ($cat_id) {
+                        state.core.selected = [];
+                     }
+                     return state;
+                  }
+               },
+               'search': {
+                  'case_insensitive': true,
+                  'show_only_matches': true
+               },
+               'core': {
+                  'themes': {
+                     'name': 'glpi'
+                  },
+                  'animation': 0,
+                  'data': $category_list
+               }
+            })
+            .on('ready.jstree', function(event, instance) {
+               if ($cat_id) {
+                  // force category if id found in URL parameters
+                  $('#tree_category$rand').jstree('select_node', $cat_id);
+                  $('#tree_category$rand').jstree('open_node', $cat_id);
+               } else if (instance.instance.restore_state() === false) {
+                  // if no state stored, select root node
+                  $('#tree_category$rand').jstree('select_node', 0);
+                  $('#tree_category$rand').jstree('open_node', 0);
+               }
+            })
+            .on('select_node.jstree', function(event, data) {
+               loadNode(data.selected[0]);
+            });
+
+            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
+            $('#items_list$rand').html(loadingindicator); // loadingindicator on doc ready
+            var loadNode = function(cat_id) {
+               $('#items_list$rand').html(loadingindicator);
+               $('#items_list$rand').load('$ajax_url', {
+                  'action': 'getItemslist',
+                  'cat_id': cat_id,
+                  'start': $start
+               });
+            };
+
+            $(document).on('keyup', '#kb_tree_search$rand', function() {
+               var inputsearch = $(this);
+               typewatch(function () {
+                  if (inputsearch.val().length >= 3) {
+                     $('#tree_category$rand').jstree('search', inputsearch.val());
+                  }
+               }, 300);
+            });
+
+            $('#items_list$rand').on('click', 'a.kb-category', function(event) {
+               event.preventDefault();
+
+               var cat_id = $(event.target).data('category-id');
+               $('#tree_category$rand').jstree('select_node', cat_id);
+               $('#tree_category$rand').jstree('open_node', cat_id);
+            });
+         });
+JAVASCRIPT;
+      echo Html::scriptBlock($JS);
+      echo "<div id='kb_browse'>
+         <div class='kb_tree'>
+            <input type='text' class='kb_tree_search' id='kb_tree_search$rand'>
+            <div id='tree_category$rand'></div>
+         </div>
+         <div id='items_list$rand' class='kb_items'></div>
+      </div>";
    }
 
+   /**
+    * Get list of knowbase categories in jstree format.
+    *
+    * @since 9.4
+    *
+    * @return array
+    */
+   static function getJstreeCategoryList() {
+
+      global $DB;
+
+      $cat_table = KnowbaseItemCategory::getTable();
+      $cat_fk  = KnowbaseItemCategory::getForeignKeyField();
+
+      $kbitem_visibility_crit = KnowbaseItem::getVisibilityCriteria(true);
+
+      $items_subquery = new QuerySubQuery(
+         array_merge_recursive(
+            [
+               'COUNT' => 'cpt',
+               'FROM'  => KnowbaseItem::getTable(),
+               'WHERE' => [
+                  KnowbaseItem::getTableField($cat_fk) => new QueryExpression(
+                     DB::quoteName(KnowbaseItemCategory::getTableField('id'))
+                  ),
+               ]
+            ],
+            $kbitem_visibility_crit
+         ),
+         'items_count'
+      );
+
+      $cat_iterator = $DB->request([
+         'SELECT' => [
+            KnowbaseItemCategory::getTableField('id'),
+            KnowbaseItemCategory::getTableField('name'),
+            KnowbaseItemCategory::getTableField($cat_fk),
+            $items_subquery,
+         ],
+         'FROM' => $cat_table,
+         'ORDER' => KnowbaseItemCategory::getTableField('name')
+      ]);
+
+      // Add root category (which is not a real category)
+      $root_items_count = $DB->request(
+         array_merge_recursive(
+            [
+               'COUNT' => 'cpt',
+               'FROM'  => KnowbaseItem::getTable(),
+               'WHERE' => [
+                  KnowbaseItem::getTableField($cat_fk) => 0,
+               ]
+            ],
+            $kbitem_visibility_crit
+         )
+      )->next();
+
+      $categories = [
+         [
+            'id'          => '0',
+            'name'        => __('Root category'),
+            $cat_fk       => '#',
+            'items_count' => $root_items_count['cpt'],
+         ]
+      ];
+      foreach ($cat_iterator as $category) {
+         $categories[] = $category;
+      }
+
+      $nodes   = [];
+
+      foreach ($categories as $category) {
+         $node = [
+            'id'     => $category['id'],
+            'parent' => $category[$cat_fk],
+            'text'   => $category['name'],
+            'a_attr' => [
+               'data-id' => $category['id']
+            ],
+         ];
+
+         if ($category['items_count'] > 0) {
+            $node['text'] .= ' <strong title="' . __('This category contains articles') . '">'
+               . '(' . $category['items_count'] . ')'
+               . '</strong>';
+         }
+
+         $nodes[] = $node;
+      }
+
+      return $nodes;
+   }
 
    /**
     * Show the knowbase Manage view

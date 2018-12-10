@@ -44,7 +44,7 @@ $savedsearch = new SavedSearch();
 if (isset($_POST["add"])) {
    //Add a new saved search
    $savedsearch->check(-1, CREATE, $_POST);
-   if ($newID = $savedsearch->add($_POST)) {
+   if ($savedsearch->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($savedsearch->getLinkURL());
       }
@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    // delete a saved search
    $savedsearch->check($_POST['id'], DELETE);
-   $ok = $savedsearch->delete($_POST, 1);
+   $savedsearch->delete($_POST, 1);
    $savedsearch->redirectToList();
 } else if (isset($_POST["update"])) {
    //update a saved search

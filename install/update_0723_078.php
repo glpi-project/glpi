@@ -5550,8 +5550,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                        FROM `glpi_authldaps`";
             $result         = $DB->query($query);
             $ldapservers_id = $DB->result($result, 0, 'id');
-         } //If more than one server defined, get the most used
-         else {
+         } else {
+            //If more than one server defined, get the most used
             $query = "SELECT `auths_id`, COUNT(`auths_id`) AS cpt
                       FROM `glpi_users`
                       WHERE `authtype` = '3'

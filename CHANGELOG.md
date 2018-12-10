@@ -3,49 +3,325 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.3] Unreleased
+## [9.4] unreleased
+
+### Added
+
+- Ability to link project with problems and tickets.
+- Ability to specify creation and modification dates during CommonDBTM object add method
+- Add followups to Changes and Problems.
+- Add timeline to Changes and Problems.
+- CLI console to centralize CLI commands.
+- Search on devices from Printers and Network equipments.
+- Ability to merge and split tickets.
+- Search on devices from Printers and Network equipments.
+- Ability to specify creation and modification dates during CommonDBTM object add method.
+
+### Changed
+- `license_id` field in `glpi_items_operatingsystems` table has been renamed to `licenseid`
+- `olas_tto_id` field in `glpi_tickets` table has been renamed to `olas_id_tto`
+- `olas_ttr_id` field in `glpi_tickets` table has been renamed to `olas_id_ttr`
+- `ttr_olalevels_id` field in `glpi_tickets` table has been renamed to `olalevels_id_ttr`
+- `slas_tto_id` field in `glpi_tickets` table has been renamed to `slas_id_tto`
+- `slas_ttr_id` field in `glpi_tickets` table has been renamed to `slas_id_ttr`
+- `ttr_slalevels_id` field in `glpi_tickets` table has been renamed to `slalevels_id_ttr`
+- `scripts/add_creation_date.php` has been replaced by `glpi:migration:build_missing_timestamps` command available using `bin/console`
+- `scripts/checkdb.php` has been replaced by `glpi:database:check` command available using `bin/console`
+- `scripts/cliinstall.php` has been replaced by `glpi:database:install` command available using `bin/console`
+- `scripts/cliupdate.php` has been replaced by `glpi:database:update` command available using `bin/console`
+- `scripts/ldap_mass_sync.php` has been replaced by `glpi:ldap:synchronize_users` command available using `bin/console`
+- `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `bin/console`
+- `scripts/unlock_tasks.php` has been replaced by `glpi:task:unlock` command available using `bin/console`
+
+### API changes
+
+#### Changes
+- Plugins are now loaded in ajax files.
+- `TicketFollowup` has been replaced by `ITILFollowup`
+- `$num` parameter has been removed from several `Search` class methods:
+   - `addSelect()`,
+   - `addOrderBy()`,
+   - `addHaving()`,
+   - `giveItem()`
+- `NotificationTarget::getMode()` visibility is now `public`.
+- Added `add_recipient_to_target` hook, triggered when a recipient is added to a notification.
+
+#### Deprecated
+
+- Remove `$CFG_GLPI['use_rich_text']` parameter. Will now be `true` per default.
+- Remove `$CFG_GLPI['ticket_timeline']` parameter. Will now be `true` per default.
+- Remove `$CFG_GLPI['ticket_timeline_keep_replaced_tabs']` parameter. Will now be `false` per default.
+- Usage of `TicketFollowup` class has been deprecated.
+- Usage of string `$condition` parameter in `CommonDBTM::find()` has been deprecated
+- Usage of string in `$option['condition']` parameter in `Dropdown::show()` has been deprecated
+
+The following methods have been deprecated:
+
+- `KnowbaseItemCategory::showFirstLevel()`
+- `Ticket::getTicketActors()`
+- `Ticket::processMassiveActionsForOneItemtype()`
+- `Ticket::showFormMassiveAction()`
+- `Ticket::showMassiveActionsSubForm()`
+- `NotificationTarget::getProfileJoinSql()`
+- `NotificationTarget::getDistinctUserSql()`
+- `NotificationTargetCommonITILObject::getProfileJoinSql()`
+- `RuleCollection::getRuleListQuery()`
+- `getNextItem()`
+- `getPreviousItem()`
+- `CommonDBChild::getSQLRequestToSearchForItem()`
+- `CommonDBConnexity::getSQLRequestToSearchForItem()`
+- `CommonDBRelation::getSQLRequestToSearchForItem()`
+- `Project::addVisibility()`
+- `Project::addVisibilityJoins()`
+
+#### Removed
+
+- Drop ability to use `JOIN` in `DBmysqlIterator::buildQuery()`
+- Drop `NotificationTarget::datas` property
+- Drop support of string `$filter` parameter in `Profileuser::getUserProfiles()`
+- Drop support of string `$condition` parameter in `User::getFromDBbyEmail()`
+- Drop support of string `$condition` parameter in `Group_User::getUserGroups()`
+- Drop support of string `$condition` parameter in `Group_User::getGroupUsers()`
+- Drop support of string `$condition` parameter in `countElementsInTable` (`DbUtils::countElementsInTable()`)
+- Drop support of string `$condition` parameter in `countDistinctElementsInTable` (`DbUtils::countDistinctElementsInTable()`)
+- Drop support of string `$condition` parameter in `countElementsInTableForMyEntities` (`DbUtils::countElementsInTableForMyEntities()`)
+- Drop support of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`)
+- Drop support of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`)
+- Drop ITIL Tasks, Followups and Solutions `showSummary()` and massive actions related methods that are replaced with timeline
+
+- Drop class alias `Event` for `Glpi\Event`
+- Drop `Zend\Loader\SplAutoloader` interface
+- Drop all methods that have been deprecated in GLPI 9.2
+  - `_e()`
+  - `_ex()`
+  - `FieldExists()`
+  - `formatOutputWebLink()`
+  - `TableExists()`
+  - `CommonTreeDropodwn::recursiveCleanSonsAboveID()`
+  - `DBMysql::optimize_tables()`
+  - `NotificationTarget::addToAddressesList()`
+  - `NotificationTarget::getAdditionalTargets()`
+  - `NotificationTarget::getAddressesByGroup()`
+  - `NotificationTarget::getAddressesByTarget()`
+  - `NotificationTarget::getAdminAddress()`
+  - `NotificationTarget::getEntityAdminAddress()`
+  - `NotificationTarget::getItemAuthorAddress()`
+  - `NotificationTarget::getItemGroupAddress()`
+  - `NotificationTarget::getItemGroupSupervisorAddress()`
+  - `NotificationTarget::getItemGroupTechInChargeAddress()`
+  - `NotificationTarget::getItemGroupWithoutSupervisorAddress()`
+  - `NotificationTarget::getItemOwnerAddress()`
+  - `NotificationTarget::getItemTechnicianInChargeAddress()`
+  - `NotificationTarget::getNotificationTargets()`
+  - `NotificationTarget::getSpecificTargets()`
+  - `NotificationTarget::getUserByField()`
+  - `NotificationTarget::getUsersAddressesByProfile()`
+  - `NotificationTargetCommonITILObject::getDatasForObject()`
+  - `NotificationTargetCommonITILObject::getFollowupAuthor()`
+  - `NotificationTargetCommonITILObject::getLinkedGroupByType()`
+  - `NotificationTargetCommonITILObject::getLinkedGroupSupervisorByType()`
+  - `NotificationTargetCommonITILObject::getLinkedGroupWithoutSupervisorByType()`
+  - `NotificationTargetCommonITILObject::getLinkedUserByType()`
+  - `NotificationTargetCommonITILObject::getOldAssignTechnicianAddress()`
+  - `NotificationTargetCommonITILObject::getRecipientAddress()`
+  - `NotificationTargetCommonITILObject::getSupplierAddress()`
+  - `NotificationTargetCommonITILObject::getTaskAssignGroup()`
+  - `NotificationTargetCommonITILObject::getTaskAssignUser()`
+  - `NotificationTargetCommonITILObject::getTaskAuthor()`
+  - `NotificationTargetCommonITILObject::getValidationApproverAddress()`
+  - `NotificationTargetCommonITILObject::getValidationRequesterAddress()`
+  - `NotificationTargetProjectTask::getTeamContacts()`
+  - `NotificationTargetProjectTask::getTeamGroups()`
+  - `NotificationTargetProjectTask::getTeamSuppliers()`
+  - `NotificationTargetProjectTask::getTeamUsers()`
+  - `QueuedNotification::sendMailById()`
+  - `Ticket::convertContentForNotification()`
+  - `User::getPersonalToken()`
+  - `User::getUniquePersonalToken()`
+- Drop all methods that have been deprecated in GLPI 9.3.0
+  - `CommonDBTM::getFromDBByQuery()`
+  - `CommonDBTM::getSearchOptions()`
+  - `CommonDBTM::getSearchOptionsNew()`
+  - `CommonDBTM::getSearchOptionsToAddNew()`
+  - `CommonITILObject::getStatusIconURL()`
+  - `DBMysql::list_tables()`
+  - `Dropdown::showPrivatePublicSwitch()`
+  - `NotificationTargetProjectTask::getTeamContacts()`
+  - `NotificationTargetProjectTask::getTeamGroups()`
+  - `NotificationTargetProjectTask::getTeamSuppliers()`
+  - `NotificationTargetProjectTask::getTeamUsers()`
+  - `Search::constructDatas()`
+  - `Search::displayDatas()`
+  - `Transfer::transferComputerDisks()`
+- Drop all methods that have been deprecated in GLPI 9.3.1
+  - `ComputerVirtualMachine::getUUIDRestrictRequest()`
+  - `Config::getSQLMode()`
+  - `DBMysql::checkForCrashedTables()`
+  - `Html::checkAllAsCheckbox()`
+  - `Html::scriptEnd()`
+  - `Html::scriptStart()`
+  - `Plugin::isAllPluginsCSRFCompliant()`
+  - `Profile::getUnderActiveProfileRestrictRequest()`
+  - `Toolbox::is_a()`
+- Drop all constants that have been deprecated in GLPI 9.3.1
+  - `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
+  - `CommonDBTM::HAS_DUPLICATE`
+  - `CommonDBTM::NOTHING_TO_DO`
+  - `CommonDBTM::SUCCESS`
+  - `CommonDBTM::TYPE_MISMATCH`
+- Drop all methods that have been deprecated in GLPI 9.3.2
+ - `ITILSolution::removeForItem()`
+ - `Session::isViewAllEntities()`
+
+## [9.3.3] 2018-11-27
+
+### Changed
+
+- Fix some cache issues
+- Fix reservation tab of an item
+- Fix actors notifications massive action
+- Improve racks plugins migration script
+
+### API changes
+
+No API changes.
+
+## [9.3.2] 2018-10-26
+
+### API changes
+
+#### Changed
+
+- `Rule::executePluginsActions()` signature has changed
+- Javascript function `formatResult()` has been renamed to `templateResult()`
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `CommonITILTask::displayTabContentForItem()`
+- `CommonITILTask::showFormMassiveAction()`
+- `CommonITILTask::showSummary()`
+- `ITILSolution::displayTabContentForItem()`
+- `ITILSolution::removeForItem()`
+- `ITILSolution::showSummary()`
+- `Session::isViewAllEntities()`
+- `TicketFollowup::processMassiveActionsForOneItemtype()`
+- `TicketFollowup::showFormMassiveAction()`
+- `TicketFollowup::showMassiveActionsSubForm()`
+- `TicketFollowup::showSummary()`
+- `Plugin::removeFromSession()`
+
+## [9.3.1] 2018-09-12
+
+### Added
+- List receivers folders to choose imported/refused folders
+
+### API changes
+
+#### Deprecated
+
+- Usage of string `$condition` parameter in `Group_User::getUserGroups()` has been deprecated
+- Usage of string `$condition` parameter in `Group_User::getGroupUsers()` has been deprecated
+- Usage of string `$condition` parameter in `countElementsInTable` (`DbUtils::countElementsInTable()`) has been deprecated
+- Usage of string `$condition` parameter in `countDistinctElementsInTable` (`DbUtils::countDistinctElementsInTable()`) has been deprecated
+- Usage of string `$condition` parameter in `countElementsInTableForMyEntities` (`DbUtils::countElementsInTableForMyEntities()`) has been deprecated
+- Usage of string `$condition` parameter in `countElementsInTableForEntity` (`DbUtils::countElementsInTableForEntity()`) has been deprecated
+- Usage of string `$condition` parameter in `getAllDatasFromTable` (`DbUtils::getAllDataFromTable()`) has been deprecated
+
+The following methods have been deprecated:
+
+- `Config::getSQLMode()`
+- `DBMysql::checkForCrashedTables()`
+- `Html::checkAllAsCheckbox()`
+- `Html::scriptEnd()`
+- `Html::scriptStart()`
+- `Toolbox::is_a()`
+- `ComputerVirtualMachine::getUUIDRestrictRequest()`
+- `Plugin::isAllPluginsCSRFCompliant()`
+- `Profile::getUnderActiveProfileRestrictRequest()`
+
+The following constants have been deprecated:
+- `CommonDBTM::ERROR_FIELDSIZE_EXCEEDED`
+- `CommonDBTM::HAS_DUPLICATE`
+- `CommonDBTM::NOTHING_TO_DO`
+- `CommonDBTM::SUCCESS`
+- `CommonDBTM::TYPE_MISMATCH`
+
+## [9.3.0] 2018-06-28
+
+### Added
+- Add DCIM management
+- Add OSM view to set locations and on Search
+- Add login source selection
+- Add logs purge
+- Filter in items logs
 
 ### Changed
 - Switch MySQL engine from MyIsam to Innodb
 - Rework solutions for Tickets, Problems and Changes to support history
+- Disks can be attached to network equipments and printers
 
 ### API changes
 
 #### Changes
 - Added `DB::insert()`, `DB::update()` and `DB::delete()` to replace raw SQL queries
 - `CommonITILObject::showMassiveSolutionForm()` now takes a `CommonITILObject` as argument
-- `Profileuser::getUserProfiles` filter parameter is now an array
+- `Profileuser::getUserProfiles()` `$filter` parameter is now an array
+- `User::getFromDBbyEmail()` `$condition` parameter is now an array
+- Select2 javascript component has been upgraded to 4.0 version, see [Migrating from Select2 3.5](https://select2.org/upgrading/migrating-from-35)
+- `CommonDevice::getItem_DeviceType()` has a new optional `$devicetype` parameter
 
 #### Deprecated
 
+- Usage of string `$filter` parameter in `Profileuser::getUserProfiles()` has been deprecated
+- Usage of string `$condition` parameter in `User::getFromDBbyEmail()` has been deprecated
+
 The following methods have been deprecated:
 
-- `Search::constructDatas`
-- `Search::displayDatas`
-- `DBMysql::list_tables`
-- `Search::getSearchOptions`
-- `Search::getSearchOptionsNew`
-- `Search::getSearchOptionsToAdd`
-- `Search::getSearchOptionsToAddNew`
-- `CommonDBTM::getFromDBByQuery`
-- `User::getFromDBbyEmail()` call with a string
+- `CommonDBTM::getFromDBByQuery()`
+- `CommonDBTM::getSearchOptions()`
+- `CommonDBTM::getSearchOptionsNew()`
+- `CommonDBTM::getSearchOptionsToAddNew()`
+- `CommonITILObject::getStatusIconURL()`
+- `DBMysql::list_tables()`
+- `Dropdown::showPrivatePublicSwitch()`
+- `NotificationTargetProject::getTeamContacts()`
+- `NotificationTargetProject::getTeamGroups()`
+- `NotificationTargetProject::getTeamSuppliers()`
+- `NotificationTargetProject::getTeamUsers()`
+- `Search::constructDatas()`
+- `Search::displayDatas()`
+- `Transfer::transferComputerDisks()`
 
 #### Removed
 
 - `CommonITILValidation::isAllValidationsHaveSameStatusForTicket`
 - `CommonITILValidation::getNumberValidationForTicket`
+- PHPCas library is no longer provided (for licensing issues)
+
+## [9.2.4] 2018-06-21
+
+## [9.2.3] 2018-04-27
+
+## [9.2.2] 2018-03-01
 
 
+### Deprecated
 
-## [9.2.2]
+- `CommonITILValidation::isAllValidationsHaveSameStatusForTicket`
+- `CommonITILValidation::getNumberValidationForTicket`
+- `DBMysql::optimize_tables()`
 
-- `CommonITILValidation::isAllValidationsHaveSameStatusForTicket` has been deprecated
-- `CommonITILValidation::getNumberValidationForTicket` as been deprecated
-
-## [9.2.1]
+## [9.2.1] 2017-11-16
 
 ### Added
+
 - Search engine, added ``itemtype_item_revert`` jointype
+
+### Deprecated
+
+- `Ticket::convertContentForNotification()`
 
 ## [9.2] 2017-09-25
 
@@ -103,18 +379,55 @@ new whole window
 
 #### Deprecated
 
+- Ability to use `JOIN` in `DBmysqlIterator::buildQuery()` has been deprecated
+- Usage of `NotificationTarget::datas` property has been deprecated
+- Usage of `Zend\Loader\SplAutoloader` interface has been deprecated
+
 The following methods have been deprecated:
 
 - `_e()`
 - `_ex()`
 - `Bookmark::mark_default()`
 - `Bookmark::unmark_default()`
-- `User::getUniquePersonalToken()`
-- `User::getPersonalToken()`
-- `NotificationTarget*::get*Address()`
-- many `NotificationTarget*::get*()`
-- `QueuedMail::sendMailById()`
 - `CommonTreeDropodwn::recursiveCleanSonsAboveID()`
+- `NotificationTarget::addToAddressesList()`
+- `NotificationTarget::getAdditionalTargets()`
+- `NotificationTarget::getAddressesByGroup()`
+- `NotificationTarget::getAddressesByTarget()`
+- `NotificationTarget::getAdminAddress()`
+- `NotificationTarget::getEntityAdminAddress()`
+- `NotificationTarget::getItemAuthorAddress()`
+- `NotificationTarget::getItemGroupAddress()`
+- `NotificationTarget::getItemGroupSupervisorAddress()`
+- `NotificationTarget::getItemGroupTechInChargeAddress()`
+- `NotificationTarget::getItemGroupWithoutSupervisorAddress()`
+- `NotificationTarget::getItemOwnerAddress()`
+- `NotificationTarget::getItemTechnicianInChargeAddress()`
+- `NotificationTarget::getNotificationTargets()`
+- `NotificationTarget::getSpecificTargets()`
+- `NotificationTarget::getUserByField()`
+- `NotificationTarget::getUsersAddressesByProfile()`
+- `NotificationTargetCommonITILObject::getDatasForObject()`
+- `NotificationTargetCommonITILObject::getFollowupAuthor()`
+- `NotificationTargetCommonITILObject::getLinkedGroupByType()`
+- `NotificationTargetCommonITILObject::getLinkedGroupSupervisorByType()`
+- `NotificationTargetCommonITILObject::getLinkedGroupWithoutSupervisorByType()`
+- `NotificationTargetCommonITILObject::getLinkedUserByType()`
+- `NotificationTargetCommonITILObject::getOldAssignTechnicianAddress()`
+- `NotificationTargetCommonITILObject::getRecipientAddress()`
+- `NotificationTargetCommonITILObject::getSupplierAddress()`
+- `NotificationTargetCommonITILObject::getTaskAssignGroup()`
+- `NotificationTargetCommonITILObject::getTaskAssignUser()`
+- `NotificationTargetCommonITILObject::getTaskAuthor()`
+- `NotificationTargetCommonITILObject::getValidationApproverAddress()`
+- `NotificationTargetCommonITILObject::getValidationRequesterAddress()`
+- `NotificationTargetProjectTask::getTeamContacts()`
+- `NotificationTargetProjectTask::getTeamGroups()`
+- `NotificationTargetProjectTask::getTeamSuppliers()`
+- `NotificationTargetProjectTask::getTeamUsers()`
+- `QueuedNotification::sendMailById()`
+- `User::getPersonalToken()`
+- `User::getUniquePersonalToken()`
 - `formatOutputWebLink()`
 
 #### Removals

@@ -52,13 +52,10 @@ class RuleImportEntity extends Rule {
    **/
    function maxActionsCount() {
       // Unlimited
-      return 3;
+      return 4;
    }
 
-   /**
-    * @see Rule::executeActions()
-   **/
-   function executeActions($output, $params) {
+   function executeActions($output, $params, array $input = []) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -141,7 +138,7 @@ class RuleImportEntity extends Rule {
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 
       $crit = $this->getCriteria($ID);
-      if ($crit['field'] == '_source') {
+      if (count($crit) && $crit['field'] == '_source') {
          $name = Plugin::getInfo($pattern, 'name');
          if (empty($name)) {
             return false;
@@ -166,12 +163,15 @@ class RuleImportEntity extends Rule {
       $actions['locations_id']['type']     = 'dropdown';
       $actions['locations_id']['table']    = 'glpi_locations';
 
-      $actions['groups_id']['name']     = __('Group');
-      $actions['groups_id']['type']     = 'dropdown';
-      $actions['groups_id']['table']    = 'glpi_groups';
-
       $actions['_ignore_import']['name']   = __('To be unaware of import');
       $actions['_ignore_import']['type']   = 'yesonly';
+
+      $actions['is_recursive']['name']     = __('Child entities');
+      $actions['is_recursive']['type']     = 'yesno';
+
+      $actions['groups_id_tech']['name']     = __('Group in charge of the hardware');
+      $actions['groups_id_tech']['type']     = 'dropdown';
+      $actions['groups_id_tech']['table']    = 'glpi_groups';
 
       return $actions;
    }

@@ -157,7 +157,10 @@ class APIClient extends CommonDBTM {
 
          case 'ipv4_range_start':
          case 'ipv4_range_end':
-            return long2ip($values[$field]);
+            if (empty($values[$field])) {
+               return '';
+            }
+            return long2ip((int)$values[$field]);
       }
 
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -270,6 +273,10 @@ class APIClient extends CommonDBTM {
                $input['ipv4_range_start'] = $tmp;
             }
          }
+      }
+
+      if (isset($input['ipv6']) && empty($input['ipv6'])) {
+         $input['ipv6'] = "NULL";
       }
 
       if (isset($input['_reset_app_token'])) {

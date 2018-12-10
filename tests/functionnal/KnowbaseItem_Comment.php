@@ -116,21 +116,32 @@ class KnowbaseItem_Comment extends DbTestCase {
       $this->boolean($kbcom111 > $kbcom12)->isTrue();
    }
 
-   public function testGetTabNameForItem() {
-       $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
-       $this->addComments($kb1);
-       $kbcom = new \KnowbaseItem_Comment();
+   public function testGetTabNameForItemNotLogged() {
+      //we are not logged, we should not see comment tab
+      $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+      $kbcom = new \KnowbaseItem_Comment();
 
-       $name = $kbcom->getTabNameForItem($kb1, true);
-       $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+      $name = $kbcom->getTabNameForItem($kb1, true);
+      $this->string($name)->isIdenticalTo('');
+   }
 
-       $_SESSION['glpishow_count_on_tabs'] = 1;
-       $name = $kbcom->getTabNameForItem($kb1);
-       $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+   public function testGetTabNameForItemLogged() {
+      $this->login();
 
-       $_SESSION['glpishow_count_on_tabs'] = 0;
-       $name = $kbcom->getTabNameForItem($kb1);
-       $this->string($name)->isIdenticalTo('Comments');
+      $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+      $this->addComments($kb1);
+      $kbcom = new \KnowbaseItem_Comment();
+
+      $name = $kbcom->getTabNameForItem($kb1, true);
+      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+
+      $_SESSION['glpishow_count_on_tabs'] = 1;
+      $name = $kbcom->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
+
+      $_SESSION['glpishow_count_on_tabs'] = 0;
+      $name = $kbcom->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('Comments');
    }
 
    public function testDisplayComments() {
@@ -148,7 +159,7 @@ class KnowbaseItem_Comment extends DbTestCase {
       preg_match_all("/li class='comment subcomment'/", $html, $results);
       $this->array($results[0])->hasSize(3);
 
-      preg_match_all("/span class='edit_item'/", $html, $results);
+      preg_match_all("/span class='fa fa-pencil-square-o edit_item'/", $html, $results);
       $this->array($results[0])->hasSize(4);
 
       preg_match_all("/span class='add_answer'/", $html, $results);
@@ -170,7 +181,7 @@ class KnowbaseItem_Comment extends DbTestCase {
       preg_match_all("/li class='comment subcomment'/", $html, $results);
       $this->array($results[0])->hasSize(3);
 
-      preg_match_all("/span class='edit_item'/", $html, $results);
+      preg_match_all("/span class='fa fa-pencil-square-o edit_item'/", $html, $results);
       $this->array($results[0])->hasSize(1);
 
       preg_match_all("/span class='add_answer'/", $html, $results);

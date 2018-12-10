@@ -80,6 +80,7 @@ class Group extends CommonTreeDropdown {
    function post_getEmpty () {
 
       $this->fields['is_requester'] = 1;
+      $this->fields['is_watcher']   = 1;
       $this->fields['is_assign']    = 1;
       $this->fields['is_notify']    = 1;
       $this->fields['is_itemgroup'] = 1;
@@ -89,53 +90,26 @@ class Group extends CommonTreeDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $gu = new Group_User();
-      $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gt = new Group_Ticket();
-      $gt->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gp = new Group_Problem();
-      $gp->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $cg = new Change_Group();
-      $cg->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $query1 = "DELETE
-                 FROM `glpi_projecttaskteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
-
-      $query1 = "DELETE
-                 FROM `glpi_projectteams`
-                 WHERE `items_id` = '".$this->fields['id']."'
-                       AND `itemtype` = '".__CLASS__."'";
-      $DB->query($query1);
-
-      $gki = new Group_KnowbaseItem();
-      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gr = new Group_Reminder();
-      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Group::class,
+            Group_KnowbaseItem::class,
+            Group_Problem::class,
+            Group_Reminder::class,
+            Group_RSSFeed::class,
+            Group_Ticket::class,
+            Group_User::class,
+            ProjectTaskTeam::class,
+            ProjectTeam::class,
+         ]
+      );
 
       // Ticket rules use various _groups_id_*
       Rule::cleanForItemAction($this, '_groups_id%');
       Rule::cleanForItemCriteria($this, '_groups_id%');
       // GROUPS for RuleMailcollector
       Rule::cleanForItemCriteria($this, 'GROUPS');
-
-      // Set no group to consumables
-      $DB->update(
-         'glpi_consumables', [
-            'items_id' => 0
-         ], [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => 'Group'
-         ]
-      );
    }
 
 
@@ -268,6 +242,12 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Watcher')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_watcher', $this->fields['is_watcher']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Assigned to')."</td><td>";
       Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
@@ -356,10 +336,6 @@ class Group extends CommonTreeDropdown {
          $actions[$prefix.'remove']         = _x('button', 'Remove a user');
       }
 
-      if ($isadmin) {
-         MassiveAction::getAddTransferList($actions);
-      }
-
       return $actions;
    }
 
@@ -380,10 +356,17 @@ class Group extends CommonTreeDropdown {
                 && isset($input['check_itemtype'])) {
                if ($group = getItemForItemtype($input['check_itemtype'])) {
                   if ($group->getFromDB($input['check_items_id'])) {
-                     self::dropdown(['entity'    => $group->fields["entities_id"],
-                                          'used'      => [$group->fields["id"]],
-                                          'condition' => ($input['is_tech'] ? '`is_assign`'
-                                                                            : '`is_itemgroup`')]);
+                     $condition = [];
+                     if ($input['is_tech']) {
+                        $condition['is_assign'] = 1;
+                     } else {
+                        $condition['is_itemgroup'] = 1;
+                     }
+                     self::dropdown([
+                        'entity'    => $group->fields["entities_id"],
+                        'used'      => [$group->fields["id"]],
+                        'condition' => $condition
+                     ]);
                      echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                                     _sx('button', 'Move')."'>";
                      return true;
@@ -627,26 +610,38 @@ class Group extends CommonTreeDropdown {
 
       // include item of child groups ?
       if ($tree) {
-         $grprestrict1 = "IN (".implode(',', getSonsOf('glpi_groups', $this->getID())).")";
+         $groups_ids = getSonsOf('glpi_groups', $this->getID());
       } else {
-         $grprestrict1 = "='".$this->getID()."'";
+         $groups_ids = [$this->getID()];
       }
       // include items of members
+      $groups_criteria = [];
       if ($user) {
-         $ufield      = str_replace('groups', 'users', $field);
-         $grprestrict = "(`$field` $grprestrict1
-                          OR (`$field`=0
-                              AND `$ufield` IN (SELECT `users_id`
-                                                FROM `glpi_groups_users`
-                                                WHERE `groups_id` $grprestrict1)))";
+         $ufield = str_replace('groups', 'users', $field);
+         $groups_criteria['OR'] = [
+            $field => $groups_ids,
+            'AND'  => [
+               $field  => 0,
+               $ufield => new QuerySubQuery(
+                  [
+                     'SELECT' => 'users_id',
+                     'FROM'   => 'glpi_groups_users',
+                     'WHERE'  => [
+                        'groups_id'  => $groups_ids,
+                     ]
+                  ]
+               )
+            ]
+         ];
       } else {
-         $grprestrict = "`$field` $grprestrict1";
+         $groups_criteria[$field] = $groups_ids;
       }
+
       // Count the total of item
       $nb  = [];
       $tot = 0;
-      $join = $select = '';
       $savfield = $field;
+      $restrict = [];
       foreach ($types as $itemtype) {
          $nb[$itemtype] = 0;
          if (!($item = getItemForItemtype($itemtype))) {
@@ -663,28 +658,35 @@ class Group extends CommonTreeDropdown {
          if (!$item->isField($field)) {
             continue;
          }
-         $restrict[$itemtype] = $grprestrict;
+         $restrict[$itemtype] = $groups_criteria;
 
          if ($itemtype == 'Consumable') {
-            $restrict[$itemtype] = " $field $grprestrict1
-                                     AND `itemtype` = 'Group'
-                                     AND `consumableitems_id` IN (SELECT `id`
-                                                                  FROM `glpi_consumableitems` ".
-                                                                  getEntitiesRestrictRequest("WHERE",
-                                                                     "glpi_consumableitems", '', '', true).")";
+            $restrict[$itemtype] = [
+               $field               => $groups_ids,
+               'itemtype'           => 'Group',
+               'consumableitems_id' =>  new QuerySubQuery(
+                  [
+                     'SELECT' => 'id',
+                     'FROM'   => 'glpi_consumableitems',
+                     'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true)
+                  ]
+               ),
+            ];
          }
 
-         if ($item->isEntityAssign()) {
-            if ($itemtype != 'Consumable') {
-               $restrict[$itemtype] .= getEntitiesRestrictRequest(" AND ", $item->getTable(), '', '',
-                                                                  $item->maybeRecursive());
-            }
+         if ($item->isEntityAssign() && $itemtype != 'Consumable') {
+            $restrict[$itemtype] += getEntitiesRestrictCriteria(
+               $item->getTable(),
+               '',
+               '',
+               $item->maybeRecursive()
+            );
          }
          if ($item->maybeTemplate()) {
-            $restrict[$itemtype] .= " AND NOT `is_template`";
+            $restrict[$itemtype]['is_template'] = 0;
          }
          if ($item->maybeDeleted()) {
-            $restrict[$itemtype] .= " AND NOT `is_deleted`";
+            $restrict[$itemtype]['is_deleted'] = 0;
          }
          $tot += $nb[$itemtype] = countElementsInTable($item->getTable(), $restrict[$itemtype]);
       }
@@ -701,22 +703,29 @@ class Group extends CommonTreeDropdown {
             // No need to read
             $start -= $nb[$itemtype];
          } else {
+            $request = [
+               'SELECT' => 'id',
+               'FROM'   => $item->getTable(),
+               'WHERE'  => $restrict[$itemtype],
+               'ORDER'  => 'name',
+               'LIMIT'  => $max,
+               'START'  => $start
+            ];
+
             if ($itemtype == 'Consumable') {
-               $select = "`glpi_consumableitems`.";
-               $join   = " LEFT JOIN `glpi_consumableitems`
-                             ON `glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`";
-            } else {
-                  $select = $join = '';
+               $request['SELECT'] = 'glpi_consumableitems.id';
+               $request['LEFT JOIN'] = [
+                  'glpi_consumableitems' => [
+                     'FKEY'   => [
+                        'glpi_consumables'     => 'consumableitems_id',
+                        'glpi_consumableitems' => 'id'
+                     ]
+                  ]
+               ];
             }
 
-            $query = "SELECT $select`id`
-                      FROM `".$item->getTable()."`
-                      $join
-                      WHERE ".$restrict[$itemtype]."
-                      ORDER BY `name`
-                      LIMIT $start,$max";
-
-            foreach ($DB->request($query) as $data) {
+            $iterator = $DB->request($request);
+            while ($data = $iterator->next()) {
                $res[] = ['itemtype' => $itemtype,
                               'items_id' => $data['id']];
                $max--;
@@ -896,4 +905,60 @@ class Group extends CommonTreeDropdown {
       echo "</div>";
    }
 
+
+   function cleanRelationData() {
+
+      global $DB;
+
+      parent::cleanRelationData();
+
+      if ($this->isUsedInConsumables()) {
+         // Replace relation with Consumable
+         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+         $fields_updates = [
+            'items_id' => $newval,
+         ];
+         if (empty($newval)) {
+            $fields_updates['itemtype'] = 'NULL';
+            $fields_updates['date_out'] = 'NULL';
+         }
+
+         $DB->update(
+            'glpi_consumables',
+            $fields_updates,
+            [
+               'items_id' => $this->fields['id'],
+               'itemtype' => self::class,
+            ]
+         );
+      }
+   }
+
+
+   function isUsed() {
+
+      if (parent::isUsed()) {
+         return true;
+      }
+
+      return $this->isUsedInConsumables();
+   }
+
+
+   /**
+    * Check if group is used in consumables.
+    *
+    * @return boolean
+    */
+   private function isUsedInConsumables() {
+
+      return countElementsInTable(
+         Consumable::getTable(),
+         [
+            'items_id' => $this->fields['id'],
+            'itemtype' => self::class,
+         ]
+      ) > 0;
+   }
 }

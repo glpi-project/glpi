@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
  * @param $table string table name
  *
  * @return string field name used for a foreign key to the parameter table
- *
- * @deprecated 9.2 see DbUtils::getForeignKeyFieldForTable()
 **/
 function getForeignKeyFieldForTable($table) {
    $dbu = new DbUtils();
@@ -56,9 +54,7 @@ function getForeignKeyFieldForTable($table) {
  *
  * @param $field string field name
  *
- * @return string field name used for a foreign key to the parameter table
- *
- * @deprecated 9.2 see DbUtils::isForeignKeyField()
+ * @return boolean
 **/
 function isForeignKeyField($field) {
    $dbu = new DbUtils();
@@ -84,8 +80,6 @@ function getForeignKeyFieldForItemType($itemtype) {
  * @param $fkname   string   foreign key name
  *
  * @return string table name corresponding to a foreign key name
- *
- * @deprecated 9.2 see DbUtils::getTableNameForForeignKeyField()
 **/
 function getTableNameForForeignKeyField($fkname) {
    $dbu = new DbUtils();
@@ -99,8 +93,6 @@ function getTableNameForForeignKeyField($fkname) {
  * @param $table string table name
  *
  * @return string itemtype corresponding to a table name parameter
- *
- * @deprecated 9.2 see DbUtils::getItemTypeForTable()
 **/
 function getItemTypeForTable($table) {
    $dbu = new DbUtils();
@@ -113,8 +105,6 @@ function getItemTypeForTable($table) {
  * @param string $fkname
  *
  * @return string ItemType name for the fkname parameter
- *
- * @deprecated 9.2 see DbUtils::getItemtypeForForeignKeyField()
  */
 function getItemtypeForForeignKeyField($fkname) {
    $dbu = new DbUtils();
@@ -127,8 +117,6 @@ function getItemtypeForForeignKeyField($fkname) {
  * @param $itemtype   string   itemtype
  *
  * @return string table name corresponding to the itemtype  parameter
- *
- * @deprecated 9.2 see DbUtils::getTableForItemType()
 **/
 function getTableForItemType($itemtype) {
    $dbu = new DbUtils();
@@ -143,9 +131,7 @@ function getTableForItemType($itemtype) {
  *
  * @param $itemtype   string   itemtype
  *
- * @return itemtype object or false if class does not exists
- *
- * @deprecated 9.2 see DbUtils::getItemForItemtype()
+ * @return CommonDBTM|boolean itemtype object or false if class does not exists
 **/
 function getItemForItemtype($itemtype) {
    $dbu = new DbUtils();
@@ -159,8 +145,6 @@ function getItemForItemtype($itemtype) {
  * @param $string   string   input string
  *
  * @return string plural of the parameter string
- *
- * @deprecated 9.2 see DbUtils::getPlural()
 **/
 function getPlural($string) {
    $dbu = new DbUtils();
@@ -174,8 +158,6 @@ function getPlural($string) {
  * @param $string   string   input string
  *
  * @return string singular of the parameter string
- *
- * @deprecated 9.2 see DbUtils::getSingular()
 **/
 function getSingular($string) {
    $dbu = new DbUtils();
@@ -187,13 +169,11 @@ function getSingular($string) {
  * Count the number of elements in a table.
  *
  * @param string|array $table     table name(s)
- * @param string|array $condition condition to use (default '') or array of criteria
+ * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
- *
- * @deprecated 9.2 see DbUtils::countElementsInTable()
 **/
-function countElementsInTable($table, $condition = "") {
+function countElementsInTable($table, $condition = []) {
    $dbu = new DbUtils();
    return $dbu->countElementsInTable($table, $condition);
 }
@@ -201,15 +181,13 @@ function countElementsInTable($table, $condition = "") {
 /**
  * Count the number of elements in a table.
  *
- * @param $table        string/array   table names
- * @param $field        string         field name
- * @param $condition    string         condition to use (default '')
+ * @param string|array $table     table names
+ * @param string       $field     field name
+ * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
- *
- * @deprecated 9.2 see DbUtils::countDistinctElementsInTable()
 **/
-function countDistinctElementsInTable($table, $field, $condition = "") {
+function countDistinctElementsInTable($table, $field, $condition = []) {
    $dbu = new DbUtils();
    return $dbu->countDistinctElementsInTable($table, $field, $condition);
 }
@@ -217,14 +195,12 @@ function countDistinctElementsInTable($table, $field, $condition = "") {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table        string         table name
- * @param $condition    string/array   additional condition (default '') or criteria
+ * @param string $table     table name
+ * @param array  $condition additional criteria, defaults to []
  *
  * @return int nb of elements in table
- *
- * @deprecated 9.2 see DbUtils::countElementsInTableForMyEntities()
 **/
-function countElementsInTableForMyEntities($table, $condition = '') {
+function countElementsInTableForMyEntities($table, $condition = []) {
    $dbu = new DbUtils();
    return $dbu->countElementsInTableForMyEntities($table, $condition);
 }
@@ -235,14 +211,12 @@ function countElementsInTableForMyEntities($table, $condition = '') {
  *
  * @param string  $table     table name
  * @param integer $entity    the entity ID
- * @param string  $condition additional condition (default '')
+ * @param string  $condition additional condition (default [])
  * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
- *
- * @deprecated 9.2 see DbUtils::countElementsInTableForEntity()
 **/
-function countElementsInTableForEntity($table, $entity, $condition = '', $recursive = true) {
+function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true) {
    $dbu = new DbUtils();
    return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
 }
@@ -252,16 +226,14 @@ function countElementsInTableForEntity($table, $entity, $condition = '', $recurs
  * Get datas from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
- * @param $table        string   table name
- * @param $condition    string   condition to use (default '')
- * @param $usecache     boolean  (false by default)
- * @param $order        string   result order (default '')
+ * @param string  $table     table name
+ * @param array   $condition condition to use (default [])
+ * @param boolean $usecache  Use cache (false by default)
+ * @param string  $order     result order (default '')
  *
  * @return array containing all the datas
- *
- * @deprecated 9.2 see DbUtils::getAllDataFromTable()
 **/
-function getAllDatasFromTable($table, $condition = '', $usecache = false, $order = '') {
+function getAllDatasFromTable($table, $condition = [], $usecache = false, $order = '') {
    $dbu = new DbUtils();
    return $dbu->getAllDataFromTable($table, $condition, $usecache, $order);
 }
@@ -276,9 +248,7 @@ function getAllDatasFromTable($table, $condition = '', $usecache = false, $order
  *
  * @return string : name of the element
  *
- * @see getTreeValueCompleteName
- *
- * @deprecated 9.2 see DbUtils::getTreeLeafValueName()
+ * @see getTreeValueCompleteName()
 **/
 function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true) {
    $dbu = new DbUtils();
@@ -297,9 +267,7 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  *
  * @return string : completename of the element
  *
- * @see getTreeLeafValueName
- *
- * @deprecated 9.2 see DbUtils::getTreeValueCompleteName()
+ * @see getTreeLeafValueName()
 **/
 function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
    $dbu = new DbUtils();
@@ -317,8 +285,6 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  * @param $level        integer  current level of recursion (default 0)
  *
  * @return string name
- *
- * @deprecated 9.2 see DbUtils::getTreeValueName()
 **/
 function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
    $dbu = new DbUtils();
@@ -333,8 +299,6 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
  * @param array|string $items_id The IDs of the items
  *
  * @return array of IDs of the ancestors
- *
- * @deprecated 9.2 see DbUtils::getAncestorsOf()
 **/
 function getAncestorsOf($table, $items_id) {
    $dbu = new DbUtils();
@@ -349,8 +313,6 @@ function getAncestorsOf($table, $items_id) {
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
- *
- * @deprecated 9.2 see DbUtils::getSonsOf()
 **/
 function getSonsOf($table, $IDf) {
    $dbu = new DbUtils();
@@ -367,8 +329,6 @@ function getSonsOf($table, $IDf) {
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons and the ancestors
- *
- * @deprecated 9.2 see DbUtils::getSonsAndAncestorsOf()
 **/
 function getSonsAndAncestorsOf($table, $IDf) {
    $dbu = new DbUtils();
@@ -383,8 +343,6 @@ function getSonsAndAncestorsOf($table, $IDf) {
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
- *
- * @deprecated 9.2 see DbUtils::getTreeForItem()
 **/
 function getTreeForItem($table, $IDf) {
    $dbu = new DbUtils();
@@ -395,12 +353,10 @@ function getTreeForItem($table, $IDf) {
 /**
  * Construct a tree from a list structure
  *
- * @param $list   array    the list
- * @param $root   integer  root of the tree
+ * @param array   $list the list
+ * @param integer $root root of the tree
  *
- * @return list of items in the tree
- *
- * @deprecated 9.2 see DbUtils::constructTreeFromList()
+ * @return array list of items in the tree
 **/
 function contructTreeFromList($list, $root) {
    $dbu = new DbUtils();
@@ -411,12 +367,10 @@ function contructTreeFromList($list, $root) {
 /**
  * Construct a list from a tree structure
  *
- * @param $tree   array    the tree
- * @param $parent integer  root of the tree (default =0)
+ * @param array   $tree   the tree
+ * @param integer $parent root of the tree (default =0)
  *
- * @return list of items in the tree
- *
- * @deprecated 9.2 see DbUtils::constructListFromTree()
+ * @return array list of items in the tree
 **/
 function contructListFromTree($tree, $parent = 0) {
    $dbu = new DbUtils();
@@ -432,8 +386,6 @@ function contructListFromTree($tree, $parent = 0) {
  * @param $reallink  string   real field to link ($table.id if not set) (default ='')
  *
  * @return string the query
- *
- * @deprecated 9.2 see DbUtils::getRealQueryForTreeItem()
 **/
 function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
    $dbu = new DbUtils();
@@ -446,9 +398,7 @@ function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
  *
  * @param $table : dropdown tree table to compute
  *
- * @return nothing
- *
- * @deprecated 9.2 see DbUtils::regenerateTreeCompleteName()
+ * @return void
 **/
 function regenerateTreeCompleteName($table) {
    $dbu = new DbUtils();
@@ -459,15 +409,15 @@ function regenerateTreeCompleteName($table) {
 /**
  * Get the ID of the next Item
  *
- * @param $table           table to search next item
- * @param $ID              current ID
- * @param $condition       condition to add to the search (default ='')
- * @param $nextprev_item   field used to sort (default ='name')
+ * @deprecated 9.4
  *
- * @return the next ID, -1 if not exist
+ * @param string  $table         table to search next item
+ * @param integer $ID            current ID
+ * @param string  $condition     condition to add to the search (default ='')
+ * @param string  $nextprev_item field used to sort (default ='name')
  *
- * @deprecated 9.2 see DbUtils::getNextItem()
-**/
+ * @return integer the next ID, -1 if not exist
+ */
 function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
    $dbu = new DbUtils();
    return $dbu->getNextItem($table, $ID, $condition, $nextprev_item);
@@ -477,15 +427,15 @@ function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
 /**
  * Get the ID of the previous Item
  *
- * @param $table           table to search next item
- * @param $ID              current ID
- * @param $condition       condition to add to the search (default ='')
- * @param $nextprev_item   field used to sort (default ='name')
+ * @deprecated 9.4
  *
- * @return the previous ID, -1 if not exist
+ * @param string  $table         table to search next item
+ * @param integer $ID            current ID
+ * @param string  $condition     condition to add to the search (default ='')
+ * @param string  $nextprev_item field used to sort (default ='name')
  *
- * @deprecated 9.2 see DbUtils::getPreviousItem()
-**/
+ * @return integer the previous ID, -1 if not exist
+ */
 function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
    $dbu = new DbUtils();
    return $dbu->getPreviousItem($table, $ID, $condition, $nextprev_item);
@@ -504,8 +454,6 @@ function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") 
  *@param $force_config   boolean force order and id_visible to use common config (false by default)
  *
  *@return string : formatted username
- *
- * @deprecated 9.2 see DbUtils::formatUserName()
 **/
 function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false) {
    $dbu = new DbUtils();
@@ -521,48 +469,10 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  *                      (default =0)
  *
  *@return string : username string (realname if not empty and name if realname is empty).
- *
- * @deprecated 9.2 see DbUtils::getUserName()
 **/
 function getUserName($ID, $link = 0) {
    $dbu = new DbUtils();
    return $dbu->getUserName($ID, $link);
-}
-
-
-/**
- * Verify if a DB table exists
- *
- * @param $tablename string : Name of the table we want to verify.
- *
- * @return bool : true if exists, false elseway.
- *
- * @deprecated 9.2 Use DB::tableExists()
-**/
-function TableExists($tablename) {
-   global $DB;
-
-   Toolbox::deprecated('TableExists() function is deprecated');
-   return $DB->tableExists($tablename);
-}
-
-
-/**
- * Verify if a DB field exists
- *
- * @param $table     String   Name of the table we want to verify.
- * @param $field     String   Name of the field we want to verify.
- * @param $usecache  Boolean  if use field list cache (default true)
- *
- * @return bool : true if exists, false elseway.
- *
- * @deprecated 9.2 Use DB::fieldExists()
-**/
-function FieldExists($table, $field, $usecache = true) {
-   global $DB;
-
-   Toolbox::deprecated('FieldExists() function is deprecated');
-   return $DB->fieldExists($table, $field, $usecache);
 }
 
 
@@ -573,8 +483,6 @@ function FieldExists($table, $field, $usecache = true) {
  * @param $field  string  name of the index
  *
  * @return boolean : index exists ?
- *
- * @deprecated 9.2 Use DbUtils::isIndex()
 **/
 function isIndex($table, $field) {
    $dbu = new DbUtils();
@@ -585,16 +493,14 @@ function isIndex($table, $field) {
 /**
  * Create a new name using a autoname field defined in a template
  *
- * @param $objectName      autoname template
- * @param $field           field to autoname
- * @param $isTemplate      true if create an object from a template
- * @param $itemtype        item type
- * @param $entities_id     limit generation to an entity (default -1)
+ * @param string  $objectName  autoname template
+ * @param string  $field       field to autoname
+ * @param boolean $isTemplate  true if create an object from a template
+ * @param string  $itemtype    item type
+ * @param integer $entities_id limit generation to an entity (default -1)
  *
- * @return new auto string
- *
- * @deprecated 9.2 Use DbUtils::autoName()
-**/
+ * @return string new auto string
+ */
 function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
    $dbu = new DbUtils();
    return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
@@ -604,9 +510,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
 /**
  * Close active DB connections
  *
- *@return nothing
- *
- * @deprecated 9.2 Use DbUtils::autoName()
+ * @return void
 **/
 function closeDBConnections() {
    $dbu = new DbUtils();
@@ -615,19 +519,20 @@ function closeDBConnections() {
 
 
 /**
- * Format a web link adding http:// if missing
+ * Add dates for request
  *
- * @param $link link to format
+ * @deprecated 9.4
  *
- * @return formatted link.
+ * @param string $field table.field to request
+ * @param string $begin begin date
+ * @param string $end   end date
  *
- * @deprecated 9.2 Use Toolbox::formatOutputWebLink()
-**/
-function formatOutputWebLink($link) {
-   Toolbox::deprecated('formatOutputWebLink() function is deprecated');
-   return Toolbox::formatOutputWebLink($link);
+ * @return string SQL
+ */
+function getDateRequest($field, $begin, $end) {
+   $dbu = new DbUtils();
+   return $dbu->getDateRequest($field, $begin, $end);
 }
-
 
 /**
  * Add dates for request
@@ -637,14 +542,11 @@ function formatOutputWebLink($link) {
  * @param $end    date  end date
  *
  * @return sql
- *
- * @deprecated 9.2 Use DbUtils::getDateRequest()
 **/
-function getDateRequest($field, $begin, $end) {
+function getDateCriteria($field, $begin, $end) {
    $dbu = new DbUtils();
-   return $dbu->getDateRequest($field, $begin, $end);
+   return $dbu->getDateCriteria($field, $begin, $end);
 }
-
 
 /**
  * Export an array to be stored in a simple field in the database
@@ -652,8 +554,6 @@ function getDateRequest($field, $begin, $end) {
  * @param $TAB Array to export / encode (one level depth)
  *
  * @return string containing encoded array
- *
- * @deprecated 9.2 Use DbUtils::exportArrayToDB()
 **/
 function exportArrayToDB($TAB) {
    $dbu = new DbUtils();
@@ -664,12 +564,10 @@ function exportArrayToDB($TAB) {
 /**
  * Import an array encoded in a simple field in the database
  *
- * @param $DATA data readed in DB to import
+ * @param string $DATA data readed in DB to import
  *
  * @return array containing datas
- *
- * @deprecated 9.2 Use DbUtils::importArrayFromDB()
-**/
+ */
 function importArrayFromDB($DATA) {
    $dbu = new DbUtils();
    return $dbu->importArrayFromDB($DATA);
@@ -682,8 +580,6 @@ function importArrayFromDB($DATA) {
  * @param $time datetime: time
  *
  * @return  array
- *
- * @deprecated 9.2 Use DbUtils::getHourFromSql()
 **/
 function get_hour_from_sql($time) {
    $dbu = new DbUtils();
@@ -692,12 +588,11 @@ function get_hour_from_sql($time) {
 
 
 /**
- * Get the $RELATION array. It's defined all relations between tables in the DB.
+ * Get the $RELATION array. It defines all relations between tables in the DB;
+ * plugins may add their own stuff
  *
- * @return the $RELATION array
- *
- * @deprecated 9.2 Use DbUtils::getDbRelations()
-**/
+ * @return array the $RELATION array
+ */
 function getDbRelations() {
    $dbu = new DbUtils();
    return $dbu->getDbRelations();
@@ -707,22 +602,20 @@ function getDbRelations() {
 /**
  * Get SQL request to restrict to current entities of the user
  *
- * @param $separator          separator in the begin of the request (default AND)
- * @param $table              table where apply the limit (if needed, multiple tables queries)
- *                            (default '')
- * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
- *                            single item or array (default '')
- * @param $is_recursive       need to use recursive process to find item
- *                            (field need to be named recursive) (false by default)
- * @param $complete_request   need to use a complete request and not a simple one
- *                            when have acces to all entities (used for reminders)
- *                            (false by default)
+ * @param string  $separator        separator in the begin of the request (default AND)
+ * @param string  $table            table where apply the limit (if needed, multiple tables queries)
+ *                                  (default '')
+ * @param string  $field            field where apply the limit (id != entities_id) (default '')
+ * @param mixed   $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
+ *                                  single item or array (default '')
+ * @param boolean $is_recursive     need to use recursive process to find item
+ *                                  (field need to be named recursive) (false by default)
+ * @param boolean $complete_request need to use a complete request and not a simple one
+ *                                  when have acces to all entities (used for reminders)
+ *                                  (false by default)
  *
- * @return String : the WHERE clause to restrict
- *
- * @deprecated 9.2 see DbUtils::getEntitiesRestrictRequest()
-**/
+ * @return string the WHERE clause to restrict
+ */
 function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
                                     $is_recursive = false, $complete_request = false) {
    $dbu = new DbUtils();
@@ -736,26 +629,25 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
    );
 }
 
+
 /**
  * Get criteria to restrict to current entities of the user
  *
  * @since 9.2
  *
- * @param $table              table where apply the limit (if needed, multiple tables queries)
- *                            (default '')
- * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
- *                            single item or array (default '')
- * @param $is_recursive       need to use recursive process to find item
- *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
- * @param $complete_request   need to use a complete request and not a simple one
- *                            when have acces to all entities (used for reminders)
- *                            (false by default)
+ * @param string $table             table where apply the limit (if needed, multiple tables queries)
+ *                                  (default '')
+ * @param string $field             field where apply the limit (id != entities_id) (default '')
+ * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ *                                  single item or array (default '')
+ * @param boolean $is_recursive     need to use recursive process to find item
+ *                                  (field need to be named recursive) (false by default, set to auto to automatic detection)
+ * @param boolean $complete_request need to use a complete request and not a simple one
+ *                                  when have acces to all entities (used for reminders)
+ *                                  (false by default)
  *
  * @return array of criteria
- *
- * @deprecated 9.2 see DbUtils::getEntitiesRestrictCriteria()
- **/
+ */
 function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
                                      $is_recursive = false, $complete_request = false) {
    $dbu = new DbUtils();

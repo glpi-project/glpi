@@ -440,4 +440,54 @@ class RuleDictionnarySoftwareCollection extends DbTestCase {
                   ];
       $this->array($result)->isIdenticalTo($expected);
    }
+
+   public function testSetSoftwareVersionAppend() {
+      $rule       = new \Rule();
+      $criteria   = new \RuleCriteria();
+      $action     = new \RuleAction();
+      $collection = new \RuleDictionnarySoftwareCollection();
+
+      $rules_id = $rule->add(['name'        => 'Test append',
+                              'is_active'   => 1,
+                              'entities_id' => 0,
+                              'sub_type'    => 'RuleDictionnarySoftware',
+                              'match'       => \Rule::AND_MATCHING,
+                              'condition'   => 0,
+                              'description' => ''
+                           ]);
+      $this->integer($rules_id)->isGreaterThan(0);
+
+      $this->integer(
+         $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'name',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^Soft (something|else)/'
+         ])
+      )->isGreaterThan(0);
+
+      $this->integer(
+         $action->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'append_regex_result',
+            'field'       => 'version',
+            'value'       => '#0'
+         ])
+      )->isGreaterThan(0);
+
+      $input = ['name'             => 'Soft something'];
+      $collection->RuleList = new \stdClass();
+      $collection->RuleList->load = true;
+      $result   = $collection->processAllRules($input);
+      $expected = ['version_append' => 'something', 'version' => 'something', '_ruleid' => "$rules_id"];
+      $this->array($result)->isIdenticalTo($expected);
+
+      $input = ['name'             => 'Soft else'];
+      $collection->RuleList = new \stdClass();
+      $collection->RuleList->load = true;
+      $result   = $collection->processAllRules($input);
+      $expected = ['version_append' => 'else', 'version' => 'else', '_ruleid' => "$rules_id"];
+      $this->array($result)->isIdenticalTo($expected);
+
+   }
 }

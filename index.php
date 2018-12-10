@@ -83,12 +83,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
 
    // Appel CSS
-   echo '<link rel="stylesheet" href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" '.
-         'media="screen" />';
-   // CSS theme link
-   echo Html::css("css/palettes/".$CFG_GLPI["palette"].".css");
+   echo Html::scss('main_styles');
    // font awesome icons
-   echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
+   echo Html::css('lib/font-awesome/css/all.css');
+
+   echo Html::script('lib/jquery/js/jquery.js');
+   echo Html::script('lib/jqueryplugins/select2/js/select2.full.js');
+   echo Html::css('lib/jqueryplugins/select2/css/select2.css');
+   echo Html::script('js/common.js');
 
    echo "</head>";
 
@@ -124,8 +126,23 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 placeholder="'.__('Password').'"  />
          </p>';
 
+   if (GLPI_DEMO_MODE) {
+      //lang selector
+      echo '<p class="login_input" id="login_lang">';
+      Dropdown::showLanguages(
+         'language', [
+            'display_emptychoice'   => true,
+            'emptylabel'            => __('Default (from user profile)'),
+            'width'                 => '100%'
+         ]
+      );
+      echo '</p>';
+   }
+
    // Add dropdown for auth (local, LDAPxxx, LDAPyyy, imap...)
-   Auth::dropdownLogin();
+   if ($CFG_GLPI['display_login_source']) {
+      Auth::dropdownLogin();
+   }
 
    if ($CFG_GLPI["login_remember_time"]) {
       echo '<p class="login_input">
@@ -140,18 +157,22 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          </p>';
 
    if ($CFG_GLPI["notifications_mailing"]
-       && countElementsInTable('glpi_notifications',
-                               "`itemtype`='User'
-                                AND `event`='passwordforget'
-                                AND `is_active`=1")) {
+      && countElementsInTable(
+         'glpi_notifications', [
+            'itemtype'  => 'User',
+            'event'     => 'passwordforget',
+            'is_active' => 1
+         ])
+      ) {
       echo '<a id="forget" href="front/lostpassword.php?lostpassword=1">'.
              __('Forgotten password?').'</a>';
    }
    Html::closeForm();
 
-   echo "<script type='text/javascript' >\n";
-   echo "document.getElementById('login_name').focus();";
-   echo "</script>";
+   $js = "$(function() {
+      $('#login_name').focus();
+   });";
+   echo Html::scriptBlock($js);
 
    echo "</div>";  // end login box
 
@@ -192,11 +213,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "</div>"; // end contenu login
 
-   if (GLPI_DEMO_MODE) {
-      echo "<div class='center'>";
-      Event::getCountLogin();
-      echo "</div>";
-   }
    echo "<div id='footer-login' class='home'>" . Html::getCopyrightMessage(false) . "</div>";
 
 }

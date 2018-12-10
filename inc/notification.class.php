@@ -157,18 +157,18 @@ class Notification extends CommonDBTM {
          $menu['title']                                      = _n('Notification', 'Notifications', Session::getPluralNumber());
          $menu['page']                                       = '/front/setup.notification.php';
          $menu['options']['notification']['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
-         $menu['options']['notification']['page']            = '/front/notification.php';
+         $menu['options']['notification']['page']            = Notification::getSearchURL(false);
          $menu['options']['notification']['links']['add']    = Notification::getFormURL(false);
-         $menu['options']['notification']['links']['search'] = '/front/notification.php';
+         $menu['options']['notification']['links']['search'] = Notification::getSearchURL(false);
 
          $menu['options']['notificationtemplate']['title']
                         = _n('Notification template', 'Notification templates', Session::getPluralNumber());
          $menu['options']['notificationtemplate']['page']
-                        = '/front/notificationtemplate.php';
+                        = NotificationTemplate::getSearchURL(false);
          $menu['options']['notificationtemplate']['links']['add']
                         = NotificationTemplate::getFormURL(false);
          $menu['options']['notificationtemplate']['links']['search']
-                        = '/front/notificationtemplate.php';
+                        = NotificationTemplate::getSearchURL(false);
 
       }
       if (count($menu)) {
@@ -437,17 +437,13 @@ class Notification extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $query = "DELETE
-                FROM `glpi_notifications_notificationtemplates`
-                WHERE `notifications_id` = '".$this->fields['id']."'";
-      $DB->query($query);
-
-      $query = "DELETE
-                FROM `glpi_notificationtargets`
-                WHERE `notifications_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Notification_NotificationTemplate::class,
+            NotificationTarget::class,
+         ]
+      );
    }
 
 
@@ -492,41 +488,52 @@ class Notification extends CommonDBTM {
    static function getNotificationsByEventAndType($event, $itemtype, $entity) {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `glpi_notifications`.*,
-                  `glpi_notifications_notificationtemplates`.`mode`,
-                  `glpi_notifications_notificationtemplates`.`notificationtemplates_id`
-                FROM `glpi_notifications`
-                LEFT JOIN `glpi_entities`
-                  ON (`glpi_entities`.`id` = `glpi_notifications`.`entities_id`)
-                LEFT JOIN `glpi_notifications_notificationtemplates`
-                  ON (`glpi_notifications`.`id`=`glpi_notifications_notificationtemplates`.`notifications_id`)
-                WHERE `glpi_notifications`.`itemtype` = '$itemtype'
-                      AND `glpi_notifications`.`event` = '$event' ".
-                      getEntitiesRestrictRequest("AND", "glpi_notifications", 'entities_id',
-                                                 $entity, true) ."
-                      AND `glpi_notifications`.`is_active`='1'";
+      $criteria = [
+         'SELECT'    => [
+            Notification::getTable() . '.*',
+            Notification_NotificationTemplate::getTable() . '.mode',
+            Notification_NotificationTemplate::getTable() . '.notificationtemplates_id'
+         ],
+         'FROM'      => Notification::getTable(),
+         'LEFT JOIN' => [
+            Entity::getTable()                              => [
+               'ON' => [
+                  Entity::getTable()         => 'id',
+                  Notification::getTable()   => 'entities_id'
+               ]
+            ],
+            Notification_NotificationTemplate::getTable()   => [
+               'ON' => [
+                  Notification_NotificationTemplate::getTable()   => 'notifications_id',
+                  Notification::getTable()                        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            Notification::getTable() . '.itemtype' => $itemtype,
+            Notification::getTable() . '.event'    => $event,
+            Notification::getTable() . '.is_active' => 1,
+         ] + getEntitiesRestrictCriteria(
+            Notification::getTable(),
+            'entities_id',
+            $entity,
+            true
+         ),
+         'ORDER'     => Entity::getTable() . '.level DESC'
+      ];
 
       $modes = Notification_NotificationTemplate::getModes();
-      $restrict_modes = null;
+      $restrict_modes = [];
       foreach ($modes as $mode => $conf) {
-         $count = 0;
          if ($CFG_GLPI['notifications_' . $mode]) {
-            if ($restrict_modes === null) {
-               $restrict_modes = ' AND (';
-            } else {
-               $restrict_modes .= ' OR ';
-            }
-            $restrict_modes .= "`glpi_notifications_notificationtemplates`.`mode` = '$mode'";
+            $restrict_modes[] = $mode;
          }
       }
-      if ($restrict_modes !== null) {
-         $restrict_modes .= ')';
-         $query .= $restrict_modes;
+      if (count($restrict_modes)) {
+         $criteria['WHERE'][Notification_NotificationTemplate::getTable() . '.mode'] = $restrict_modes;
       }
 
-      $query .= " ORDER BY `glpi_entities`.`level` DESC";
-
-      return $DB->request($query);
+      return $DB->request($criteria);
    }
 
 

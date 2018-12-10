@@ -48,20 +48,27 @@ if ($_POST['items_id']
    $linktype   = $devicetype::getItem_DeviceType();
 
    if (count($linktype::getSpecificities())) {
-      $name_field = "CONCAT_WS(' - ', `".implode('`, `',
-                                                 array_keys($linktype::getSpecificities()))."`)";
+      $name_field = new QueryExpression(
+         "CONCAT_WS(' - ', `" . implode('`, `', array_keys($linktype::getSpecificities())) . "`)"
+         . "AS `name`"
+      );
    } else {
-      $name_field = "`id`";
+      $name_field = "id AS name";
    }
-   $query = "SELECT `id`, $name_field AS name
-             FROM `".$linktype::getTable()."`
-             WHERE `".$devicetype::getForeignKeyField()."` = '".$_POST['items_id']."'
-                    AND `itemtype` = ''";
-   $result = $DB->request($query);
+   $result = $DB->request(
+      [
+         'SELECT' => ['id', $name_field],
+         'FROM'   => $linktype::getTable(),
+         'WHERE'  => [
+            $devicetype::getForeignKeyField() => $_POST['items_id'],
+            'itemtype'                        => '',
+         ]
+      ]
+   );
    echo "<table width='100%'><tr><td>" . __('Choose an existing device') . "</td><td rowspan='2'>" .
         __('and/or') . "</td><td>" . __('Add new devices') . '</td></tr>';
    echo "<tr><td>";
-   if ($result->numrows() == 0) {
+   if ($result->count() == 0) {
       echo __('No unaffected device !');
    } else {
       $devices = [];

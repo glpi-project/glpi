@@ -71,7 +71,7 @@ class Certificate_Item extends CommonDBRelation {
    /**
     * @param CommonGLPI $item
     * @param int $withtemplate
-    * @return array|string|translated
+    * @return string
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
@@ -80,7 +80,7 @@ class Certificate_Item extends CommonDBRelation {
             && count(Certificate::getTypes(false))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(_n('Associated item', 'Associated items', 2),
-                                           self::countForCertificate($item));
+                                           self::countForMainItem($item));
             }
             return _n('Associated item', 'Associated items', 2);
 
@@ -114,34 +114,6 @@ class Certificate_Item extends CommonDBRelation {
       return true;
    }
 
-   /**
-    * @param Certificate $item
-    * @return int
-    */
-   static function countForCertificate(Certificate $item) {
-
-      $types = implode("','", $item->getTypes());
-      if (empty($types)) {
-         return 0;
-      }
-      return countElementsInTable('glpi_certificates_items',
-                                  ['itemtype'         => $types,
-                                   'certificates_id'  => $item->getID()]);
-   }
-
-   /**
-    * Get the number of certificates for an item
-    *
-    * @since 9.2
-    * @param CommonDBTM $item
-    * @return int the number of certificates
-    */
-   static function countForItem(CommonDBTM $item) {
-      return countElementsInTable('glpi_certificates_items',
-                                  [ 'itemtype' => $item->getType(),
-                                    'items_id' => $item->getID()
-                                  ]);
-   }
 
    /**
     * @param $certificates_id
@@ -150,13 +122,13 @@ class Certificate_Item extends CommonDBRelation {
     * @return bool
     */
    function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype) {
-      global $DB;
 
       $certificate  = new self();
-      $certificates = $certificate->find(['certificates_id' => $certificates_id,
-                                          'itemtype'        => $itemtype,
-                                          'items_id'        => $items_id
-                                         ]);
+      $certificates = $certificate->find([
+         'certificates_id' => $certificates_id,
+         'itemtype'        => $itemtype,
+         'items_id'        => $items_id
+      ]);
       if (count($certificates) != 1) {
          return false;
       }
@@ -185,9 +157,9 @@ class Certificate_Item extends CommonDBRelation {
    *
    * @since 9.2
    *
-   * @param $certificates_id the certificate ID
-   * @param $items_id the item's id
-   * @param $itemtype the itemtype
+   * @param integer $certificates_id the certificate ID
+   * @param integer $items_id the item's id
+   * @param string $itemtype the itemtype
    */
    function deleteItemByCertificatesAndItem($certificates_id, $items_id, $itemtype) {
 
@@ -204,10 +176,9 @@ class Certificate_Item extends CommonDBRelation {
     *
     * @param $certificate Certificate object
     *
-    * @return nothing (HTML display)
+    * @return void (HTML display)
     **/
    public static function showForCertificate(Certificate $certificate) {
-      global $DB;
 
       $instID = $certificate->fields['id'];
       if (!$certificate->can($instID, READ)) {
@@ -216,14 +187,8 @@ class Certificate_Item extends CommonDBRelation {
       $canedit = $certificate->can($instID, UPDATE);
       $rand    = mt_rand();
 
-      $query = "SELECT DISTINCT `itemtype`
-            FROM `glpi_certificates_items`
-            WHERE `certificates_id` = '" . $instID . "'
-            ORDER BY `itemtype`
-            LIMIT " . count(Certificate::getTypes(true));
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $types_iterator = self::getDistinctTypes($instID, ['itemtype' => Certificate::getTypes(true)]);
+      $number = count($types_iterator);
 
       if (Session::isMultiEntitiesMode()) {
          $colsup = 1;
@@ -284,67 +249,48 @@ class Certificate_Item extends CommonDBRelation {
       echo "<th>" . __('Inventory number') . "</th>";
       echo "</tr>";
 
-      for ($i = 0; $i < $number; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+      while ($type_row = $types_iterator->next()) {
+         $itemtype = $type_row['itemtype'];
 
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
 
          if ($item->canView()) {
-            $column = "name";
+            $iterator = self::getTypeItems($instID, $itemtype);
 
-            $itemTable = getTableForItemType($itemtype);
-            $query = " SELECT `" . $itemTable . "`.*,
-                              `glpi_certificates_items`.`id` AS items_id,
-                              `glpi_entities`.id AS entity "
-               . " FROM `glpi_certificates_items`, `" . $itemTable
-               . "` LEFT JOIN `glpi_entities`
-                     ON (`glpi_entities`.`id` = `" . $itemTable . "`.`entities_id`) "
-               . " WHERE `" . $itemTable . "`.`id` = `glpi_certificates_items`.`items_id`
-                     AND `glpi_certificates_items`.`itemtype` = '$itemtype'
-                     AND `glpi_certificates_items`.`certificates_id` = '$instID' "
-               . getEntitiesRestrictRequest(" AND ", $itemTable, '', '', $item->maybeRecursive());
-
-            if ($item->maybeTemplate()) {
-               $query .= " AND " . $itemTable . ".is_template='0'";
-            }
-
-            $query .= " ORDER BY `glpi_entities`.`completename`, `" . $itemTable . "`.`$column` ";
-
-            if ($result_linked = $DB->query($query)) {
-               if ($DB->numrows($result_linked)) {
-
-                  Session::initNavigateListItems($itemtype, Certificate::getTypeName(2) . " = " . $certificate->fields['name']);
-                  while ($data = $DB->fetch_assoc($result_linked)) {
-                     $item->getFromDB($data["id"]);
-                     Session::addToNavigateListItems($itemtype, $data["id"]);
-                     $ID = "";
-                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                        $ID = " (" . $data["id"] . ")";
-                     }
-
-                     $link = Toolbox::getItemTypeFormURL($itemtype);
-                     $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
-                        . $data["name"] . "$ID</a>";
-
-                     echo "<tr class='tab_bg_1'>";
-
-                     if ($canedit) {
-                        echo "<td width='10'>";
-                        Html::showMassiveActionCheckBox(__CLASS__, $data["items_id"]);
-                        echo "</td>";
-                     }
-                     echo "<td class='center'>" . $item->getTypeName(1) . "</td>";
-                     echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
-                        ">" . $name . "</td>";
-                     if (Session::isMultiEntitiesMode()) {
-                        echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
-                     }
-                     echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
-                     echo "<td class='center'>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
-                     echo "</tr>";
+            if (count($iterator)) {
+               Session::initNavigateListItems($itemtype, Certificate::getTypeName(2) . " = " . $certificate->fields['name']);
+               while ($data = $iterator->next()) {
+                  $item->getFromDB($data["id"]);
+                  Session::addToNavigateListItems($itemtype, $data["id"]);
+                  $ID = "";
+                  if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                     $ID = " (" . $data["id"] . ")";
                   }
+
+                  $link = $itemtype::getFormURLWithID($data["id"]);
+                  $name = "<a href=\"" . $link . "\">" . $data["name"] . "$ID</a>";
+
+                  echo "<tr class='tab_bg_1'>";
+
+                  if ($canedit) {
+                     echo "<td width='10'>";
+                     Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                     echo "</td>";
+                  }
+                  echo "<td class='center'>" . $item->getTypeName(1) . "</td>";
+                  echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
+                     ">" . $name . "</td>";
+                  if (Session::isMultiEntitiesMode()) {
+                     $entity = ($item->isEntityAssign() ?
+                        Dropdown::getDropdownName("glpi_entities", $data['entity']) :
+                        '-');
+                     echo "<td class='center'>" . $entity . "</td>";
+                  }
+                  echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
+                  echo "<td class='center'>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                  echo "</tr>";
                }
             }
          }
@@ -352,7 +298,9 @@ class Certificate_Item extends CommonDBRelation {
       echo "</table>";
 
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
+         $paramsma = [
+            'ontop' => false,
+         ];
          Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
@@ -371,7 +319,6 @@ class Certificate_Item extends CommonDBRelation {
     * @return bool
     */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
-      global $DB;
 
       $ID = $item->getField('id');
 
@@ -391,20 +338,7 @@ class Certificate_Item extends CommonDBRelation {
       $rand         = mt_rand();
       $is_recursive = $item->isRecursive();
 
-      $query = "SELECT `glpi_certificates_items`.`id` AS assocID,
-                       `glpi_entities`.`id` AS entity,
-                       `glpi_certificates`.`name` AS assocName,
-                       `glpi_certificates`.*
-                FROM `glpi_certificates_items`
-                LEFT JOIN `glpi_certificates`
-                 ON (`glpi_certificates_items`.`certificates_id`=`glpi_certificates`.`id`)
-                LEFT JOIN `glpi_entities` ON (`glpi_certificates`.`entities_id`=`glpi_entities`.`id`)
-                WHERE `glpi_certificates_items`.`items_id` = '$ID'
-                      AND `glpi_certificates_items`.`itemtype` = '" . $item->getType() . "' ";
-
-      $query   .= getEntitiesRestrictRequest(" AND", "glpi_certificates", '', '', true);
-      $query   .= " ORDER BY `assocName`";
-      $iterator = $DB->request($query);
+      $iterator = self::getListForItem($item);
       $number   = $iterator->numrows();
       $i        = 0;
 
@@ -412,7 +346,7 @@ class Certificate_Item extends CommonDBRelation {
       $used         = [];
 
       foreach ($iterator as $data) {
-         $certificates[$data['assocID']] = $data;
+         $certificates[$data['linkid']] = $data;
          $used[$data['id']] = $data['id'];
       }
 
@@ -519,7 +453,7 @@ class Certificate_Item extends CommonDBRelation {
             echo "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";
             if ($canedit && ($withtemplate < 2)) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                echo "</td>";
             }
             echo "<td class='center'>$link</td>";

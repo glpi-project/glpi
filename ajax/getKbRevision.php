@@ -50,7 +50,7 @@ $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($revid);
 $rev = [
    'name'   => $revision->fields['name'],
-   'answer' => Html::entity_decode($revision->fields['answer'])
+   'answer' => html_entity_decode($revision->fields['answer'])
 ];
 
 echo json_encode($rev);

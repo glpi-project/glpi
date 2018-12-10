@@ -71,18 +71,17 @@ class Link_Itemtype extends CommonDBChild {
          return false;
       }
 
-      $query = "SELECT *
-                FROM `glpi_links_itemtypes`
-                WHERE `links_id` = '$links_id'
-                ORDER BY `itemtype`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_links_itemtypes',
+         'WHERE'  => ['links_id' => $links_id],
+         'ORDER'  => 'itemtype'
+      ]);
       $types  = [];
       $used   = [];
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $types[$data['id']]      = $data;
-            $used[$data['itemtype']] = $data['itemtype'];
-         }
+      $numrows = count($iterator);
+      while ($data = $iterator->next()) {
+         $types[$data['id']]      = $data;
+         $used[$data['itemtype']] = $data['itemtype'];
       }
 
       if ($canedit) {
@@ -190,10 +189,11 @@ class Link_Itemtype extends CommonDBChild {
    static function deleteForItemtype($itemtype) {
       global $DB;
 
-      $query = "DELETE
-                FROM `".self::getTable()."`
-                WHERE `itemtype` LIKE '%Plugin$itemtype%'";
-      $DB->query($query);
+      $DB->delete(
+         self::getTable(), [
+            'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
+         ]
+      );
    }
 
 }

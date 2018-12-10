@@ -60,7 +60,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          $fields[] = [
             'name'   => 'weight',
             'type'   => 'integer',
-            'label'  => __('Weight')
+            'label'  => __('Weight'),
+            'max'    => 1000
          ];
       }
 
@@ -134,6 +135,126 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       }
 
       return $fields;
+   }
+
+   function rawSearchOptions() {
+      global $DB;
+      $options = parent::rawSearchOptions();
+      $table   = $this->getTable();
+
+      if ($DB->fieldExists($table, 'product_number')) {
+         $options[] = [
+            'id'    => '130',
+            'table' => $table,
+            'field' => 'product_number',
+            'name'  => __('Product Number'),
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'weight')) {
+         $options[] = [
+            'id'       => '131',
+            'table'    => $table,
+            'field'    => 'weight',
+            'name'     => __('Weight'),
+            'datatype' => 'decimal'
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'required_units')) {
+         $options[] = [
+            'id'       => '132',
+            'table'    => $table,
+            'field'    => 'required_units',
+            'name'     => __('Required units'),
+            'datatype' => 'number'
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'depth')) {
+         $options[] = [
+            'id'       => '133',
+            'table'    => $table,
+            'field'    => 'depth',
+            'name'     => __('Depth'),
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'power_connections')) {
+         $options[] = [
+            'id'       => '134',
+            'table'    => $table,
+            'field'    => 'power_connections',
+            'name'     => __('Power connections'),
+            'datatype' => 'number'
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'power_consumption')) {
+         $options[] = [
+            'id'       => '135',
+            'table'    => $table,
+            'field'    => 'power_consumption',
+            'name'     => __('Power consumption'),
+            'datatype' => 'decimal'
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'is_half_rack')) {
+         $options[] = [
+            'id'       => '136',
+            'table'    => $table,
+            'field'    => 'is_half_rack',
+            'name'     => __('Is half rack'),
+            'datatype' => 'bool'
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'picture_front')) {
+         $options[] = [
+            'id'            => '137',
+            'table'         => $table,
+            'field'         => 'picture_front',
+            'name'          => __('Front picture'),
+            'datatype'      => 'specific',
+            'nosearch'      => true,
+            'massiveaction' => true,
+            'nosort'        => true,
+         ];
+      }
+
+      if ($DB->fieldExists($table, 'picture_rear')) {
+         $options[] = [
+            'id'            => '138',
+            'table'         => $table,
+            'field'         => 'picture_rear',
+            'name'          => __('Rear picture'),
+            'datatype'      => 'specific',
+            'nosearch'      => true,
+            'massiveaction' => true,
+            'nosort'        => true,
+         ];
+      }
+
+      return $options;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'picture_front':
+         case 'picture_rear':
+            if (isset($options['html']) && $options['html']) {
+               return Html::image($values[$field], [
+                  'alt'   => $options['searchopt']['name'],
+                  'style' => 'height: 30px;',
+               ]);
+            }
+      }
+
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
    function prepareInputForAdd($input) {

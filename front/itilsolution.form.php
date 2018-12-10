@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
       Html::back();
    }
 
-   if ($id = $solution->add($_POST)) {
+   if ($solution->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          $redirect = $track->getLinkURL();
       }
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $solution->check($_POST['id'], UPDATE);
    $solution->update($_POST);
    $handled = true;
-   $redirect = $track->getLinkURL() . $toadd;
+   $redirect = $track->getLinkURL();
 
    Event::log($_POST["id"], "solution", 4, "tracking",
               //TRANS: %s is the user login

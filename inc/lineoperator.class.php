@@ -82,4 +82,37 @@ class LineOperator extends CommonDropdown {
       return $tab;
    }
 
+   public function prepareInputForAdd($input) {
+      global $DB;
+
+      $input = parent::prepareInputForAdd($input);
+
+      if (!isset($input['mcc'])) {
+         $input['mcc'] = 0;
+      }
+      if (!isset($input['mnc'])) {
+         $input['mnc'] = 0;
+      }
+
+      //check for mcc/mnc unicity
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'mcc' => $input['mcc'],
+            'mnc' => $input['mnc']
+         ]
+      ])->next();
+
+      if ($result['cpt'] > 0) {
+         Session::addMessageAfterRedirect(
+            __('Mobile country code and network code combination must be unique!'),
+            ERROR,
+            true
+         );
+         return false;
+      }
+
+      return $input;
+   }
 }

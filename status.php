@@ -80,13 +80,6 @@ if (DBConnection::establishDBConnection(false, true, false)) {
    $ok_master = false;
 }
 
-$crashedTables = DBMysql::checkForCrashedTables();
-if (!empty($crashedTables)) {
-   echo "GLPI_TABLES_KO\n";
-} else {
-   echo "GLPI_TABLES_OK\n";
-}
-
 // Slave and master ok;
 $ok = $ok_slave && $ok_master;
 
@@ -103,7 +96,7 @@ if (($ok_master || $ok_slave )
     && DBConnection::establishDBConnection(false, false, false)) {
 
    // Check LDAP Auth connections
-   $ldap_methods = getAllDatasFromTable('glpi_authldaps', '`is_active`=1');
+   $ldap_methods = getAllDatasFromTable('glpi_authldaps', ['is_active' => 1]);
 
    if (count($ldap_methods)) {
       echo "Check LDAP servers:";
@@ -126,7 +119,7 @@ if (($ok_master || $ok_slave )
    }
 
    // Check IMAP Auth connections
-   $imap_methods = getAllDatasFromTable('glpi_authmails', '`is_active`=1');
+   $imap_methods = getAllDatasFromTable('glpi_authmails', ['is_active' => 1]);
 
    if (count($imap_methods)) {
       echo "Check IMAP servers:";
@@ -178,7 +171,7 @@ if (($ok_master || $ok_slave )
    }
 
    /// Check mailcollectors
-   $mailcollectors = getAllDatasFromTable('glpi_mailcollectors', '`is_active`=1');
+   $mailcollectors = getAllDatasFromTable('glpi_mailcollectors', ['is_active' => 1]);
    if (count($mailcollectors)) {
       echo "Check mail collectors:";
       $mailcol = new MailCollector();
@@ -202,10 +195,21 @@ if (($ok_master || $ok_slave )
    }
 
    // Check crontask
-   $crontasks = getAllDatasFromTable('glpi_crontasks',
-                                     "`state`=".CronTask::STATE_RUNNING."
-                                      AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
-                                           OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now())))");
+   $crontasks = getAllDatasFromTable(
+      'glpi_crontasks', [
+         'state'  => CronTask::STATE_RUNNING,
+         'OR'     => [
+            new \QueryExpression(
+               '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * '.
+               DBmysql::quoteName('frequency') .' < unix_timestamp(now()))'
+            ),
+            new \QueryExpression(
+               '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * '.
+               HOUR_TIMESTAMP . ' < unix_timestamp(now()))'
+            )
+         ]
+      ]
+   );
    if (count($crontasks)) {
       echo "Check crontasks:";
       foreach ($crontasks as $ct) {

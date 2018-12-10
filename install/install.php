@@ -32,7 +32,7 @@
 
 define('GLPI_ROOT', realpath('..'));
 
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
+include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
 Config::detectRootDoc();
@@ -55,14 +55,15 @@ function header_html($etape) {
    echo "<title>Setup GLPI</title>";
 
     // LIBS
-   echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
+   echo Html::script("lib/jquery/js/jquery.js");
    echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
-   echo Html::script("../lib/jqueryplugins/select2/select2.min.js");
-   echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
-   echo Html::css("../lib/jqueryplugins/select2/select2.css");
+   echo Html::script("lib/jqueryplugins/select2/js/select2.js");
+   echo Html::script("js/common.js");
 
-   // CSS
-   echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen'>";
+    // CSS
+   echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
+   echo Html::css("lib/jqueryplugins/select2/css/select2.css");
+   echo Html::css("css/style_install.css");
    echo "</head>";
    echo "<body>";
    echo "<div id='principal'>";
@@ -151,14 +152,11 @@ function step0() {
 
 //Step 1 checking some compatibility issue and some write tests.
 function step1($update) {
-   global $CFG_GLPI;
-
-   $error = 0;
    echo "<h3>".__s('Checking of the compatibility of your environment with the execution of GLPI').
         "</h3>";
    echo "<table class='tab_check'>";
 
-   $error = Toolbox::commonCheckForUseGLPI();
+   $error = Toolbox::commonCheckForUseGLPI(true);
 
    echo "</table>";
    switch ($error) {
@@ -262,6 +260,16 @@ function step3($host, $user, $password, $update) {
                                      'user'     => $user,
                                      'password' => $password];
       echo  "<h3>".__('Database connection successful')."</h3>";
+
+      //get database raw version
+      $DB_ver = $link->query("SELECT version()");
+      $row = $DB_ver->fetch_array();
+      echo "<p class='center'>";
+      $checkdb = Config::displayCheckDbEngine(true, $row[0]);
+      echo "</p>";
+      if ($checkdb > 0) {
+         return;
+      }
 
       if ($update == "no") {
          echo "<p>".__('Please select a database:')."</p>";
@@ -457,8 +465,25 @@ function step6() {
    Html::closeForm();
 }
 
-// finish installation
 function step7() {
+   echo "<h3>".__('One last thing before starting')."</h3>";
+
+   echo "<form action='install.php' method='post'>";
+   echo "<input type='hidden' name='install' value='Etape_6'>";
+
+   echo GlpiNetwork::showInstallMessage();
+
+   echo "<p class='submit'>";
+   echo "<a href='".GLPI_NETWORK_SERVICES."' target='_blank' class='vsubmit'>".
+            __('Donate')."</a>&nbsp;";
+   echo "<input type='submit' name='submit' class='submit' value='".
+            __('Continue')."'>";
+   echo "</p>";
+   Html::closeForm();
+}
+
+// finish installation
+function step8() {
    global $CFG_GLPI;
 
    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
@@ -631,8 +656,13 @@ if (!isset($_POST["install"])) {
          break;
 
       case "Etape_5" : // finish installation
-         header_html(sprintf(__('Step %d'), 4));
+         header_html(sprintf(__('Step %d'), 5));
          step7();
+         break;
+
+      case "Etape_6" : // finish installation
+         header_html(sprintf(__('Step %d'), 6));
+         step8();
          break;
 
       case "update_1" :
