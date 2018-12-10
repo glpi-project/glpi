@@ -2555,7 +2555,7 @@ JAVASCRIPT;
 
       // Display link item (not for the first item)
       Dropdown::showFromArray(
-         "criteria[".$request["num"]."][link]",
+         "criteria{$prefix}[".$request["num"]."][link]",
          Search::getLogicalOperators(),
          [
             'value' => isset($metacriteria["link"])
@@ -2573,7 +2573,7 @@ JAVASCRIPT;
                      : "",
          'width' => '170px'
       ]);
-      echo Html::hidden("criteria[".$request["num"]."][meta]", [
+      echo Html::hidden("criteria{$prefix}[".$request["num"]."][meta]", [
          'value' => true
       ]);
       $field_id = Html::cleanId("dropdown_criteria{$prefix}[".$request["num"]."][itemtype]$rand");
