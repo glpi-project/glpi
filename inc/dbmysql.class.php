@@ -144,6 +144,8 @@ class DBmysql {
    /**
     * Execute a MySQL query
     *
+    * @deprecated 10.0.0
+    *
     * @param string $query Query to execute
     *
     * @var array   $CFG_GLPI
@@ -155,6 +157,25 @@ class DBmysql {
     * @throws GlpitestSQLError
     */
    function query($query) {
+      Toolbox::deprecated();
+      return $this->rawQuery($query);
+   }
+
+   /**
+    * Execute a RAW MySQL query
+    * Direct usage is discouraged, use specific method instead when possible.
+    *
+    * @param string $query Query to execute
+    *
+    * @var array   $CFG_GLPI
+    * @var array   $DEBUG_SQL
+    * @var integer $SQL_TOTAL_REQUEST
+    *
+    * @return mysqli_result|boolean Query result handler
+    *
+    * @throws GlpitestSQLError
+    */
+   function rawQuery($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
       $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
@@ -172,7 +193,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL query error:\n  SQL: ".$query."\n  Error: ".
                    $this->dbh->error."\n";
-         $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
+         $error .= Toolbox::backtrace(false, 'DBmysql->rawQuery()', ['Toolbox::backtrace()']);
 
          Toolbox::logSqlError($error);
 
@@ -196,6 +217,7 @@ class DBmysql {
     * (optionnaly with a message) if it fails
     *
     * @since 0.84
+    * @deprecated 10.0.0
     *
     * @param string $query   Query to execute
     * @param string $message Explanation of query (default '')
@@ -203,7 +225,23 @@ class DBmysql {
     * @return mysqli_result Query result handler
     */
    function queryOrDie($query, $message = '') {
-      $res = $this->query($query);
+      Toolbox::deprecated();
+      return $this->rawQueryOrDie($query, $message);
+   }
+
+   /**
+    * Execute a MySQL query and die
+    * (optionnaly with a message) if it fails
+    *
+    * @since 10.0.0
+    *
+    * @param string $query   Query to execute
+    * @param string $message Explanation of query (default '')
+    *
+    * @return mysqli_result Query result handler
+    */
+   function rawQueryOrDie($query, $message = '') {
+      $res = $this->rawQuery($query);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -221,6 +259,7 @@ class DBmysql {
       }
       return $res;
    }
+
 
    /**
     * Prepare a MySQL query
@@ -417,7 +456,7 @@ class DBmysql {
       if (!$this->cache_disabled && $usecache && isset($cache[$table])) {
          return $cache[$table];
       }
-      $result = $this->query("SHOW COLUMNS FROM `$table`");
+      $result = $this->rawQuery("SHOW COLUMNS FROM `$table`");
       if ($result) {
          if ($this->numrows($result) > 0) {
             $cache[$table] = [];
@@ -518,7 +557,7 @@ class DBmysql {
             $formattedQuerytorun = $formattedQuery;
 
             // Do not use the $DB->query
-            if ($this->query($formattedQuerytorun)) { //if no success continue to concatenate
+            if ($this->rawQuery($formattedQuerytorun)) { //if no success continue to concatenate
                $formattedQuery = "";
                $lastresult     = true;
             } else {
@@ -645,7 +684,7 @@ class DBmysql {
    public function getLock($name) {
       $name          = addslashes($this->dbdefault.'.'.$name);
       $query         = "SELECT GET_LOCK('$name', 0)";
-      $result        = $this->query($query);
+      $result        = $this->rawQuery($query);
       list($lock_ok) = $this->fetch_row($result);
 
       return $lock_ok;
@@ -663,7 +702,7 @@ class DBmysql {
    public function releaseLock($name) {
       $name          = addslashes($this->dbdefault.'.'.$name);
       $query         = "SELECT RELEASE_LOCK('$name')";
-      $result        = $this->query($query);
+      $result        = $this->rawQuery($query);
       list($lock_ok) = $this->fetch_row($result);
 
       return $lock_ok;
@@ -823,7 +862,7 @@ class DBmysql {
     * @return mysqli_result|boolean Query result handler
     */
    public function insert($table, $params) {
-      $result = $this->query(
+      $result = $this->rawQuery(
          $this->buildInsert($table, $params)
       );
       return $result;
@@ -843,7 +882,7 @@ class DBmysql {
     */
    function insertOrDie($table, $params, $message = '') {
       $insert = $this->buildInsert($table, $params);
-      $res = $this->query($insert);
+      $res = $this->rawQuery($insert);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -932,7 +971,7 @@ class DBmysql {
     */
    public function update($table, $params, $where) {
       $query = $this->buildUpdate($table, $params, $where);
-      $result = $this->query($query);
+      $result = $this->rawQuery($query);
       return $result;
    }
 
@@ -951,7 +990,7 @@ class DBmysql {
     */
    function updateOrDie($table, $params, $where, $message = '') {
       $update = $this->buildUpdate($table, $params, $where);
-      $res = $this->query($update);
+      $res = $this->rawQuery($update);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -1032,7 +1071,7 @@ class DBmysql {
     */
    public function delete($table, $where) {
       $query = $this->buildDelete($table, $where);
-      $result = $this->query($query);
+      $result = $this->rawQuery($query);
       return $result;
    }
 
@@ -1050,7 +1089,7 @@ class DBmysql {
     */
    function deleteOrDie($table, $where, $message = '') {
       $update = $this->buildDelete($table, $where);
-      $res = $this->query($update);
+      $res = $this->rawQuery($update);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
          $message = sprintf(
@@ -1081,7 +1120,7 @@ class DBmysql {
     */
    public function getTableSchema($table, $structure = null) {
       if ($structure === null) {
-         $structure = $this->query("SHOW CREATE TABLE `$table`")->fetch_row();
+         $structure = $this->rawQuery("SHOW CREATE TABLE `$table`")->fetch_row();
          $structure = $structure[1];
       }
 

@@ -393,7 +393,7 @@ class Migration {
                $query = "UPDATE `$table`
                         SET `$field` = ".$params['update']." ".
                         $params['condition']."";
-               $DB->queryOrDie($query, $this->version." set $field in $table");
+               $DB->rawQueryOrDie($query, $this->version." set $field in $table");
             }
             return true;
          }
@@ -481,7 +481,7 @@ class Migration {
       global $DB;
 
       if ($DB->tableExists($table)) {
-         $DB->query("DROP TABLE `$table`");
+         $DB->rawQuery("DROP TABLE `$table`");
       }
    }
 
@@ -559,7 +559,7 @@ class Migration {
 
       if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
-         $DB->queryOrDie($query, $this->version." rename $oldtable");
+         $DB->rawQueryOrDie($query, $this->version." rename $oldtable");
       } else {
          if (Toolbox::startsWith($oldtable, 'glpi_plugin_')
             || Toolbox::startsWith($newtable, 'glpi_plugin_')
@@ -597,16 +597,16 @@ class Migration {
 
          // Try to do a flush tables if RELOAD privileges available
          // $query = "FLUSH TABLES `$oldtable`, `$newtable`";
-         // $DB->query($query);
+         // $DB->rawQuery($query);
 
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
-         $DB->queryOrDie($query, $this->version." create $newtable");
+         $DB->rawQueryOrDie($query, $this->version." create $newtable");
 
          //nedds DB::insert to support subqeries to get migrated
          $query = "INSERT INTO `$newtable`
                           (SELECT *
                            FROM `$oldtable`)";
-         $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
+         $DB->rawQueryOrDie($query, $this->version." copy from $oldtable to $newtable");
       }
    }
 
@@ -654,7 +654,7 @@ class Migration {
       if (isset($this->change[$table])) {
          $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
          $this->displayMessage( sprintf(__('Change of the database layout - %s'), $table));
-         $DB->queryOrDie($query, $this->version." multiple alter in $table");
+         $DB->rawQueryOrDie($query, $this->version." multiple alter in $table");
          unset($this->change[$table]);
       }
 
@@ -662,7 +662,7 @@ class Migration {
          $this->displayMessage( sprintf(__('Adding fulltext index - %s'), $table));
          foreach ($this->fulltexts[$table] as $idx) {
             $query = "ALTER TABLE `$table` ".$idx;
-            $DB->queryOrDie($query, $this->version." $idx");
+            $DB->rawQueryOrDie($query, $this->version." $idx");
          }
          unset($this->fulltexts[$table]);
       }
@@ -679,7 +679,7 @@ class Migration {
       global $DB, $GLPI_CACHE;
 
       foreach ($this->queries[self::PRE_QUERY] as $query) {
-         $DB->queryOrDie($query['query'], $query['message']);
+         $DB->rawQueryOrDie($query['query'], $query['message']);
       }
       $this->queries[self::PRE_QUERY] = [];
 
@@ -692,7 +692,7 @@ class Migration {
       }
 
       foreach ($this->queries[self::POST_QUERY] as $query) {
-         $DB->queryOrDie($query['query'], $query['message']);
+         $DB->rawQueryOrDie($query['query'], $query['message']);
       }
       $this->queries[self::POST_QUERY] = [];
 

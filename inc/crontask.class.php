@@ -411,7 +411,8 @@ class CronTask extends CommonDBTM{
       // Core task before plugins
       $query .= "ORDER BY ISPLUGIN, unix_timestamp(`lastrun`)+`frequency`";
 
-      if ($result = $DB->query($query)) {
+      //TODO migrate to iterator
+      if ($result = $DB->rawQuery($query)) {
          if ($DB->numrows($result)>0) {
             $this->fields = $DB->fetch_assoc($result);
             return true;

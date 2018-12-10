@@ -260,7 +260,8 @@ class Calendar extends CommonDropdown {
                                        <= ".date('nd', strtotime($date))."
                               )
                           )";
-      if ($result=$DB->query($query)) {
+      //FIXME: migrate to iterator
+      if ($result=$DB->rawQuery($query)) {
          return $DB->result($result, 0, 'cpt');
       }
       return false;
