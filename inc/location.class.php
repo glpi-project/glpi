@@ -351,7 +351,7 @@ class Location extends CommonTreeDropdown {
          $criteria = [
             'SELECT' => [
                "$table.id",
-               "$crit AD type"
+               "$crit AS type"
             ],
             'FROM'   => $table,
             'WHERE'  => [

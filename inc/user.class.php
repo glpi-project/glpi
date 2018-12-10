@@ -3602,7 +3602,6 @@ class User extends CommonDBTM {
       }
 
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.*',
          'FROM'            => 'glpi_users',
          'LEFT JOIN'       => [
             'glpi_useremails'       => [
@@ -3620,7 +3619,9 @@ class User extends CommonDBTM {
          ]
       ];
       if ($count) {
-         $criteria['COUNT'] = 'CPT';
+         $crtieria['COUNT DISTINCT'] = 'glpi_users.*';
+      } else {
+         $criteria['SELECT DISTINCT'] = 'glpi_users.*';
       }
 
       if ($joinprofile) {
