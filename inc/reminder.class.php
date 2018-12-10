@@ -976,7 +976,7 @@ class Reminder extends CommonDBVisible {
                      'FROM'            => $table,
                      'WHERE'           => $WHERE,
                      'ORDER'           => 'begin'
-                  ] + $visibility_criteria ;
+                  ] + $visibility_criteria;
 
       if (countElementsInTable('glpi_remindertranslations') > 0) {
          $criteria["LEFT JOIN"]['glpi_remindertranslations'] = ['FKEY' =>
