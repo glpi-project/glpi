@@ -92,9 +92,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    function execute ($table, $crit = "", $debug = false) {
       $this->buildQuery($table, $crit, $debug);
-      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
-      $this->position = 0;
-      return $this;
+      return $this->executeRaw($this->sql);
    }
 
    /**
@@ -106,7 +104,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function executeRaw($sql) {
       $this->sql = $sql;
-      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+      $this->res = ($this->conn ? $this->conn->rawQuery($this->sql) : false);
       $this->position = 0;
       return $this;
    }

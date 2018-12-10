@@ -48,7 +48,7 @@ class Migration extends \GLPITestCase {
          $this->db = new \mock\DB();
          $queries = [];
          $this->queries = &$queries;
-         $this->calling($this->db)->query = function ($query) use (&$queries) {
+         $this->calling($this->db)->rawQuery = function ($query) use (&$queries) {
             $queries[] = $query;
             return true;
          };

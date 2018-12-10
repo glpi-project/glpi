@@ -458,7 +458,7 @@ final class DbUtils {
          return false;
       }
 
-      $result = $DB->query("SHOW INDEX FROM `$table`");
+      $result = $DB->rawQuery("SHOW INDEX FROM `$table`");
 
       if ($result && $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {

@@ -1140,29 +1140,29 @@ class Search {
 
       // Use a ReadOnly connection if available and configured to be used
       $DBread = DBConnection::getReadConnection();
-      $DBread->query("SET SESSION group_concat_max_len = 16384;");
+      $DBread->rawQuery("SET SESSION group_concat_max_len = 16384;");
 
       // directly increase group_concat_max_len to avoid double query
       if (count($data['search']['metacriteria'])) {
          foreach ($data['search']['metacriteria'] as $metacriterion) {
             if ($metacriterion['link'] == 'AND NOT'
                 || $metacriterion['link'] == 'OR NOT') {
-               $DBread->query("SET SESSION group_concat_max_len = 4194304;");
+               $DBread->rawQuery("SET SESSION group_concat_max_len = 4194304;");
                break;
             }
          }
       }
 
       $DBread->execution_time = true;
-      $result = $DBread->query($data['sql']['search']);
+      $result = $DBread->rawQuery($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
-      if ($result2 = $DBread->query('SHOW WARNINGS')) {
+      if ($result2 = $DBread->rawQuery('SHOW WARNINGS')) {
          if ($DBread->numrows($result2) > 0) {
             $res = $DBread->fetch_assoc($result2);
             if ($res['Code'] == 1260) {
-               $DBread->query("SET SESSION group_concat_max_len = 8194304;");
+               $DBread->rawQuery("SET SESSION group_concat_max_len = 8194304;");
                $DBread->execution_time = true;
-               $result = $DBread->query($data['sql']['search']);
+               $result = $DBread->rawQuery($data['sql']['search']);
             }
 
             if ($res['Code'] == 1116) { // too many tables
@@ -1195,7 +1195,7 @@ class Search {
                $data['data']['totalcount'] = $DBread->numrows($result);
             } else {
                foreach ($data['sql']['count'] as $sqlcount) {
-                  $result_num = $DBread->query($sqlcount);
+                  $result_num = $DBread->rawQuery($sqlcount);
                   $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                }
             }
