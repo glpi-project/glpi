@@ -193,6 +193,53 @@ class Search extends DbTestCase {
             ->array['data']->isNotEmpty();
    }
 
+   public function testSubMetaTicketComputer() {
+      $search_params = [
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'search'       => 'Search',
+         'criteria'     => [
+            0 => [
+               'field'      => 12,
+               'searchtype' => 'equals',
+               'value'      => 'notold'
+            ],
+            1 => [
+               'link'       => 'AND',
+               'criteria'   => [
+                  0 => [
+                     'field'      => 'view',
+                     'searchtype' => 'contains',
+                     'value'      => 'test1'
+                  ],
+                  1 => [
+                     'link'       => 'OR',
+                     'field'      => 'view',
+                     'searchtype' => 'contains',
+                     'value'      => 'test2'
+                  ],
+                  2 => [
+                     'link'       => 'OR',
+                     'meta'       => true,
+                     'itemtype'   => 'Computer',
+                     'field'      => 1,
+                     'searchtype' => 'contains',
+                     'value'      => 'test3'
+                  ],
+               ]
+            ],
+         ],
+      ];
+
+      $data = $this->doSearch('Ticket', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty();
+   }
+
    public function testFlagMetaComputerUser() {
       $search_params = [
          'reset'        => 'reset',
