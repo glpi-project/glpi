@@ -1856,98 +1856,131 @@ class Search {
       $title = "";
 
       if (count($data['search']['criteria'])) {
+         //Drop the first link as it is not needed, or convert to clean link (AND NOT -> NOT)
+         if (isset($data['search']['criteria']['0']['link'])) {
+            $notpos = strpos($data['search']['criteria']['0']['link'], 'NOT');
+            //If link was like '%NOT%' just use NOT. Otherwise remove the link
+            if ($notpos > 0) {
+               $data['search']['criteria']['0']['link'] = 'NOT';
+            } else if (!$notpos) {
+               unset($data['search']['criteria']['0']['link']);
+            }
+         }
+
          foreach ($data['search']['criteria'] as $criteria) {
-            $searchopt = &self::getOptions($data['itemtype']);
-
+            if (isset($criteria['itemtype'])) {
+               $searchopt = &self::getOptions($criteria['itemtype']);
+            } else {
+               $searchopt = &self::getOptions($data['itemtype']);
+            }
             $titlecontain = '';
-            if (strlen($criteria['value']) > 0) {
-               if (isset($criteria['link'])) {
-                  $titlecontain = " ".$criteria['link']." ";
-               }
-               $gdname    = '';
-               $valuename = '';
-               switch ($criteria['field']) {
-                  case "all" :
-                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('All'));
-                     break;
 
-                  case "view" :
-                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('Items seen'));
-                     break;
+            if (isset($criteria['criteria'])) {
+               //This is a group criteria, call computeTitle again and concat
+               $newdata = $data;
+               $oldlink = $criteria['link'];
+               $newdata['search'] = $criteria;
+               $titlecontain = sprintf(__('%1$s %2$s (%3$s)'), $titlecontain, $oldlink,
+                  Search::computeTitle($newdata));
+            } else {
+               if (strlen($criteria['value']) > 0) {
+                  if (isset($criteria['link'])) {
+                     $titlecontain = " ".$criteria['link']." ";
+                  }
+                  $gdname    = '';
+                  $valuename = '';
 
-                  default :
-                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
-                                             $searchopt[$criteria['field']]["name"]);
-                     $itemtype     = getItemTypeForTable($searchopt[$criteria['field']]["table"]);
-                     $valuename    = '';
-                     if ($item = getItemForItemtype($itemtype)) {
-                        $valuename = $item->getValueToDisplay($searchopt[$criteria['field']],
-                                                              $criteria['value']);
-                     }
+                  if (isset($criteria['meta']) && $criteria['meta']) {
+                     $searchoptname = sprintf(__('%1$s / %2$s'),
+                                    $criteria['itemtype'],
+                                    $searchopt[$criteria['field']]["name"]);
+                  } else {
+                     $searchoptname = $searchopt[$criteria['field']]["name"];
+                  }
 
-                     $gdname = Dropdown::getDropdownName($searchopt[$criteria['field']]["table"],
-                                                         $criteria['value']);
-               }
+                  switch ($criteria['field']) {
+                     case "all" :
+                        $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('All'));
+                        break;
 
-               if (empty($valuename)) {
-                  $valuename = $criteria['value'];
-               }
-               switch ($criteria['searchtype']) {
-                  case "equals" :
-                     if (in_array($searchopt[$criteria['field']]["field"],
-                                  ['name', 'completename'])) {
-                        $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $gdname);
-                     } else {
+                     case "view" :
+                        $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('Items seen'));
+                        break;
+
+                     default :
+                        $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, $searchoptname);
+                        $itemtype     = getItemTypeForTable($searchopt[$criteria['field']]["table"]);
+                        $valuename    = '';
+                        if ($item = getItemForItemtype($itemtype)) {
+                           $valuename = $item->getValueToDisplay($searchopt[$criteria['field']],
+                                                                 $criteria['value']);
+                        }
+
+                        $gdname = Dropdown::getDropdownName($searchopt[$criteria['field']]["table"],
+                                                            $criteria['value']);
+                  }
+
+                  if (empty($valuename)) {
+                     $valuename = $criteria['value'];
+                  }
+                  switch ($criteria['searchtype']) {
+                     case "equals" :
+                        if (in_array($searchopt[$criteria['field']]["field"],
+                                     ['name', 'completename'])) {
+                           $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $gdname);
+                        } else {
+                           $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $valuename);
+                        }
+                        break;
+
+                     case "notequals" :
+                        if (in_array($searchopt[$criteria['field']]["field"],
+                                       ['name', 'completename'])) {
+                           $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $gdname);
+                        } else {
+                           $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $valuename);
+                        }
+                        break;
+
+                     case "lessthan" :
+                        $titlecontain = sprintf(__('%1$s < %2$s'), $titlecontain, $valuename);
+                        break;
+
+                     case "morethan" :
+                        $titlecontain = sprintf(__('%1$s > %2$s'), $titlecontain, $valuename);
+                        break;
+
+                     case "contains" :
+                        $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
+                                                '%'.$valuename.'%');
+                        break;
+
+                     case "notcontains" :
+                        $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
+                                                '%'.$valuename.'%');
+                        break;
+
+                     case "under" :
+                        $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
+                                                sprintf(__('%1$s %2$s'), __('under'), $gdname));
+                        break;
+
+                     case "notunder" :
+                        $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
+                                                sprintf(__('%1$s %2$s'), __('not under'), $gdname));
+                        break;
+
+                     default :
                         $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $valuename);
-                     }
-                     break;
-
-                  case "notequals" :
-                     if (in_array($searchopt[$criteria['field']]["field"],
-                                    ['name', 'completename'])) {
-                        $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $gdname);
-                     } else {
-                        $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $valuename);
-                     }
-                     break;
-
-                  case "lessthan" :
-                     $titlecontain = sprintf(__('%1$s < %2$s'), $titlecontain, $valuename);
-                     break;
-
-                  case "morethan" :
-                     $titlecontain = sprintf(__('%1$s > %2$s'), $titlecontain, $valuename);
-                     break;
-
-                  case "contains" :
-                     $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                             '%'.$valuename.'%');
-                     break;
-
-                  case "notcontains" :
-                     $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
-                                             '%'.$valuename.'%');
-                     break;
-
-                  case "under" :
-                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
-                                             sprintf(__('%1$s %2$s'), __('under'), $gdname));
-                     break;
-
-                  case "notunder" :
-                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
-                                             sprintf(__('%1$s %2$s'), __('not under'), $gdname));
-                     break;
-
-                  default :
-                     $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $valuename);
-                     break;
+                        break;
+                  }
                }
             }
             $title .= $titlecontain;
          }
       }
-      if (count($data['search']['metacriteria'])) {
+      if (isset($data['search']['metacriteria']) &&
+         count($data['search']['metacriteria'])) {
          $metanames = [];
          foreach ($data['search']['metacriteria'] as $metacriteria) {
             $searchopt = &self::getOptions($metacriteria['itemtype']);
