@@ -41,12 +41,13 @@ use User;
 use Glpi\Console\AbstractCommand;
 
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class SynchronizeUsersCommand extends AbstractCommand {
 
@@ -196,6 +197,46 @@ class SynchronizeUsersCommand extends AbstractCommand {
       $ldap_filter = $input->getOption('ldap-filter');
       $begin_date  = $input->getOption('begin-date');
       $end_date    = $input->getOption('end-date');
+
+      if (!$input->getOption('no-interaction')) {
+         // Ask for confirmation (unless --no-interaction)
+
+         $servers_iterator = $this->db->request(
+            [
+               'SELECT' => ['id', 'name'],
+               'FROM'   => AuthLDAP::getTable(),
+               'WHERE'  => [
+                  'id' => $servers_id,
+               ],
+            ]
+         );
+         $servers_names = [];
+         foreach ($servers_iterator as $server) {
+            $servers_names[] = sprintf(__('%1$s (%2$s)'), $server['name'], $server['id']);
+         }
+
+         $informations = new Table($output);
+         $informations->addRow([__('LDAP servers'), implode(', ', $servers_names)]);
+         $informations->addRow([__('LDAP filter'), $ldap_filter]);
+         $informations->addRow([__('Begin date'), $begin_date]);
+         $informations->addRow([__('End date'), $end_date]);
+         $informations->render();
+
+         /** @var QuestionHelper $question_helper */
+         $question_helper = $this->getHelper('question');
+         $run = $question_helper->ask(
+            $input,
+            $output,
+            new ConfirmationQuestion(__('Do you want to continue ?') . ' [Yes/no]', true)
+         );
+         if (!$run) {
+            $output->writeln(
+               '<comment>' . __('Synchronization aborted.') . '</comment>',
+               OutputInterface::VERBOSITY_VERBOSE
+            );
+            return 0;
+         }
+      }
 
       foreach ($servers_id as $server_id) {
          $server = new AuthLDAP();
