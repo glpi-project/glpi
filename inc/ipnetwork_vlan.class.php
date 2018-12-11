@@ -208,10 +208,12 @@ class IPNetwork_Vlan extends CommonDBRelation {
       global $DB;
 
       $vlans = [];
-      $query = "SELECT `vlans_id`
-                FROM `".self::getTable()."`
-                WHERE `ipnetworks_id` = '$portID'";
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'SELECT' => 'vlans_id',
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['ipnetworks_id' => $portID]
+      ]);
+      while ($data = $iterator->next()) {
          $vlans[$data['vlans_id']] = $data['vlans_id'];
       }
 

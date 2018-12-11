@@ -212,14 +212,15 @@ class NetworkAlias extends FQDNLabel {
       $canedit              = (isset($options['canedit']) && $options['canedit']);
       $createRow            = (isset($options['createRow']) && $options['createRow']);
       $options['createRow'] = false;
-
-      $query                = "SELECT `id`
-                               FROM `glpi_networkaliases`
-                               WHERE `networknames_id` = '".$item->getID()."'";
-
       $alias                = new self();
 
-      foreach ($DB->request($query) as $line) {
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => 'glpi_networkaliases',
+         'WHERE'  => ['networknames_id' => $item->getID()]
+      ]);
+
+      while ($line = $iterator->next()) {
          if ($alias->getFromDB($line["id"])) {
 
             if ($createRow) {
@@ -254,16 +255,15 @@ class NetworkAlias extends FQDNLabel {
       $canedit = $item->canEdit($ID);
       $rand    = mt_rand();
 
-      $query = "SELECT *
-                FROM `glpi_networkaliases`
-                WHERE `networknames_id` = '$ID'";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_networkaliases',
+         'WHERE'  => ['networknames_id' => $ID]
+      ]);
+      $number = count($iterator);
 
-      $result  = $DB->query($query);
       $aliases = [];
-      if ($number = $DB->numrows($result)) {
-         while ($line = $DB->fetch_assoc($result)) {
-            $aliases[$line["id"]] = $line;
-         }
+      while ($line = $iterator->next()) {
+         $aliases[$line["id"]] = $line;
       }
 
       if ($canedit) {
@@ -408,18 +408,29 @@ class NetworkAlias extends FQDNLabel {
                                         sprintf(__('%1$s = %2$s'),
                                                 self::getTypeName(1), $item->fields['name']));
 
-         $query = "SELECT `glpi_networkaliases`.`id` AS alias_id,
-                          `glpi_networkaliases`.`name` AS alias,
-                          `glpi_networknames`.`id` AS address_id,
-                          `glpi_networkaliases`.`comment` AS comment
-                   FROM `glpi_networkaliases`, `glpi_networknames`
-                   WHERE `glpi_networkaliases`.`fqdns_id` = '".$item->getID()."'
-                         AND  `glpi_networknames`.`id` = `glpi_networkaliases`.`networknames_id`
-                   ORDER BY `$order`
-                   LIMIT ".$_SESSION['glpilist_limit']."
-                   OFFSET $start";
+         $iterator = $DB->request([
+            'SELECT'    => [
+               'glpi_networkaliases.id AS alias_id',
+               'glpi_networkaliases`.name AS alias',
+               'glpi_networknames.id AS address_id',
+               'glpi_networkaliases.comment AS comment'
+            ],
+            'FROM'      => 'glpi_networkaliases',
+            'INNER JOIN' => [
+               'glpi_networknames'  => [
+                  'ON' => [
+                     'glpi_networkaliases'   => 'networknames_id',
+                     'glpi_networknames'     => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => ['glpi_networkaliases.fqdns_id' => $item->getID()],
+            'ORDERBY'   => $order,
+            'LIMIT'     => $_SESSION['glpilist_limit'],
+            'START'     => $start
+         ]);
 
-         foreach ($DB->request($query) as $data) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
             if ($address->getFromDB($data["address_id"])) {
                echo "<tr class='tab_bg_1'>";

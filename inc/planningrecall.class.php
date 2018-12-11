@@ -363,18 +363,31 @@ class PlanningRecall extends CommonDBChild {
       }
 
       $cron_status = 0;
-      $query       = "SELECT `glpi_planningrecalls`.*
-                      FROM `glpi_planningrecalls`
-                      LEFT JOIN `glpi_alerts`
-                           ON (`glpi_planningrecalls`.`id` = `glpi_alerts`.`items_id`
-                               AND `glpi_alerts`.`itemtype` = 'PlanningRecall'
-                               AND `glpi_alerts`.`type`='".Alert::ACTION."')
-                      WHERE `glpi_planningrecalls`.`when` IS NOT NULL
-                            AND `glpi_planningrecalls`.`when` < NOW()
-                            AND `glpi_alerts`.`date` IS NULL";
+      $iterator = $DB->request([
+         'SELECT'    => 'glpi_planningrecalls.*',
+         'FROM'      => 'glpi_planningrecalls',
+         'LEFT JOIN' => [
+            'glpi_alerts'  => [
+               'ON' => [
+                  'glpi_planningrecalls'  => 'id',
+                  'glpi_alerts'           => 'items_id', [
+                     'AND' => [
+                        'glpi_alerts.itemtype'  => 'PlanningRecall',
+                        'glpi_alerts.type'      => Alert::ACTION
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'NOT'                         => ['glpi_planningrecalls.when' => null],
+            'glpi_planningrecalls.when'   => ['<', new \QueryExpression('NOW()')],
+            'glpi_alerts.date'            => null
+         ]
+      ]);
 
       $pr = new self();
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($pr->getFromDB($data['id']) && $pr->getItem()) {
             if (NotificationEvent::raiseEvent('planningrecall', $pr)) {
 

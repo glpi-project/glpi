@@ -910,16 +910,19 @@ class IPAddress extends CommonDBChild {
          return [];
       }
 
-      $query = "SELECT `gip`.`id`
-                FROM `glpi_ipaddresses` as gip
-                WHERE `gip`.`version` = '".$address->version."'\n";
+      $criteria = [
+         'SELECT' => 'gip.id',
+         'FROM'   => 'glpi_ipaddresses AS gip',
+         'WHERE'  => ['gip.version' => $address->version]
+      ];
       $startIndex = (($address->version == 4) ? 3 : 1);
       $binaryIP = $address->getBinary();
       for ($i = $startIndex; $i < 4; ++$i) {
-         $query .= "AND `gip`.`binary_$i` = '".$binaryIP[$i]."'";
+         $criteria['WHERE']["gip.binary_$i"] = $binaryIP[$i];
       }
+      $iterator = $DB->request($criteria);
       $addressesWithItems = [];
-      foreach ($DB->request($query) as $result) {
+      while ($result = $iterator->next()) {
          if ($address->getFromDB($result['id'])) {
             $addressesWithItems[] = array_merge(array_reverse($address->recursivelyGetItems()),
                                                 [clone $address]);

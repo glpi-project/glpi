@@ -171,19 +171,19 @@ class Netpoint extends CommonDropdown {
       global $DB;
 
       if (!empty($input["name"])) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `name` = '".$input["name"]."'
-                         AND `locations_id` = '".(isset($input["locations_id"])
-                                                      ?$input["locations_id"]:0)."'".
-                         getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
-                                                    $input['entities_id'], $this->maybeRecursive());
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'name'         => $input['name'],
+               'locations_id' => (isset($input["locations_id"]) ? $input["locations_id"] : 0)
+            ] + getEntitiesRestrictCriteria($this->getTable(), $input['entities_id'], $this->maybeRecursive())
+         ]);
 
          // Check twin :
-         if ($result_twin = $DB->query($query)) {
-            if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin, 0, "id");
-            }
+         if (count($iterator)) {
+            $result = $iterator->next();
+            return $result['id'];
          }
       }
       return -1;

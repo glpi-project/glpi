@@ -660,6 +660,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Get SQL WHERE statement for requesting elements that are contained inside the current network
     *
+    * @deprecated 10.0.0
+    *
     * @param $tableName          name of the table containing the element
     *                            (for instance : glpi_ipaddresses)
     * @param $binaryFieldPrefix  prefix of the binary version of IP address
@@ -669,6 +671,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @return SQL request "WHERE" element
    **/
    function getWHEREForMatchingElement($tableName, $binaryFieldPrefix, $versionField) {
+      Toolbox::deprecated('Use getCriteriaForMatchingElement');
 
       $version = $this->fields["version"];
       $start   = null;
@@ -682,6 +685,35 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $result = "`$tableName`.`version` = '$version'
                 AND (".implode(" AND ", $result).")";
+
+      return $result;
+   }
+
+   /**
+    * Get SQL WHERE criteria for requesting elements that are contained inside the current network
+    *
+    * @since 10.0.0
+    *
+    * @param string $tableName         name of the table containing the element
+    *                                  (for instance : glpi_ipaddresses)
+    * @param string $binaryFieldPrefix prefix of the binary version of IP address
+    *                                  (binary for glpi ipaddresses)
+    * @param string $versionField      the name of the field containing the version inside the database
+    *
+    * @return array
+   **/
+   function getCriteriaForMatchingElement($tableName, $binaryFieldPrefix, $versionField) {
+      $version = $this->fields["version"];
+      $start   = null;
+      $this->computeNetworkRange($start);
+
+      $result = [];
+      for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {
+         $result[] = new \QueryExpression(
+            "({$tableName}.{$binaryFieldPrefix}_{$i} & " . $this->fields["netmask_$i"] . ") = ({$start[$i]})"
+         );
+      }
+      $result["$tableName.version"] = $version;
 
       return $result;
    }

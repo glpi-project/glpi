@@ -144,12 +144,16 @@ class NotificationTargetProject extends NotificationTarget {
    function addTeamUsers() {
       global $DB;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projectteams`
-                WHERE `glpi_projectteams`.`itemtype` = 'User'
-                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projectteams',
+         'WHERE'  => [
+            'itemtype'     => 'User',
+            'projects_id'  => $this->obj->fields['id']
+         ]
+      ]);
       $user = new User;
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($user->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(['language' => $user->getField('language'),
                                             'users_id' => $user->getField('id')]);
@@ -168,11 +172,16 @@ class NotificationTargetProject extends NotificationTarget {
    function addTeamGroups($manager) {
       global $DB;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projectteams`
-                WHERE `glpi_projectteams`.`itemtype` = 'Group'
-                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projectteams',
+         'WHERE'  => [
+            'itemtype'     => 'Group',
+            'projects_id'  => $this->obj->fields['id']
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $this->addForGroup($manager, $data['items_id']);
       }
    }
@@ -186,12 +195,17 @@ class NotificationTargetProject extends NotificationTarget {
    function addTeamContacts() {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projectteams`
-                WHERE `glpi_projectteams`.`itemtype` = 'Contact'
-                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projectteams',
+         'WHERE'  => [
+            'itemtype'     => 'Contact',
+            'projects_id'  => $this->obj->fields['id']
+         ]
+      ]);
+
       $contact = new Contact();
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($contact->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $contact->fields["email"],
                                             "name"     => $contact->getName(),
@@ -210,12 +224,17 @@ class NotificationTargetProject extends NotificationTarget {
    function addTeamSuppliers() {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `items_id`
-                FROM `glpi_projectteams`
-                WHERE `glpi_projectteams`.`itemtype` = 'Supplier'
-                      AND `glpi_projectteams`.`projects_id` = '".$this->obj->fields["id"]."'";
+      $iterator = $DB->request([
+         'SELECT' => 'items_id',
+         'FROM'   => 'glpi_projectteams',
+         'WHERE'  => [
+            'itemtype'     => 'Supplier',
+            'projects_id'  => $this->obj->fields['id']
+         ]
+      ]);
+
       $supplier = new Supplier();
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($supplier->getFromDB($data['items_id'])) {
             $this->addToRecipientsList(["email"    => $supplier->fields["email"],
                                             "name"     => $supplier->getName(),

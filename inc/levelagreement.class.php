@@ -1040,11 +1040,13 @@ abstract class LevelAgreement extends CommonDBChild {
 
       if ($ticket->fields[$ticketfield] > 0) {
          $levelticket = new static::$levelticketclass();
-         $query = "SELECT *
-                   FROM `".$levelticket::getTable()."`
-                   WHERE `tickets_id` = '".$ticket->fields["id"]."'";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $levelticket::getTable(),
+            'WHERE'  => ['tickets_id' => $ticket->fields['id']]
+         ]);
 
-         foreach ($DB->request($query) as $data) {
+         while ($data = $iterator->next()) {
             $levelticket->delete(['id' => $data['id']]);
          }
       }

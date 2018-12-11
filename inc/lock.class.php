@@ -180,18 +180,36 @@ class Lock {
                          'is_deleted'    => 1,
                          'computers_id'  => $ID];
          $first  = true;
-         $query  = "SELECT `csv`.`id` AS `id`,
-                           `sv`.`name` AS `version`,
-                           `s`.`name` AS `software`
-                    FROM `glpi_computers_softwareversions` AS csv
-                    LEFT JOIN `glpi_softwareversions` AS sv
-                       ON (`csv`.`softwareversions_id` = `sv`.`id`)
-                    LEFT JOIN `glpi_softwares` AS s
-                       ON (`sv`.`softwares_id` = `s`.`id`)
-                    WHERE `csv`.`is_deleted` = 1
-                          AND `csv`.`is_dynamic` = 1
-                          AND `csv`.`computers_id` = '$ID'";
-         foreach ($DB->request($query) as $line) {
+
+         $iterator = $DB->request([
+            'SELECT'    => [
+               'csv.id AS id',
+               'sv.name AS version',
+               's.name AS software'
+            ],
+            'FROM'      => 'glpi_computers_softwareversions AS csv',
+            'LEFT JOIN' => [
+               'glpi_softwareversions AS sv' => [
+                  'ON' => [
+                     'csv' => 'softwareversions_id',
+                     'sv'  => 'id'
+                  ]
+               ],
+               'glpi_softwares AS s'         => [
+                  'ON' => [
+                     'sv'  => 'softwares_id',
+                     's'   => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'csv.is_deleted'     => 1,
+               'csv.is_dynamic'     => 1,
+               'csv.computers_id'   => $ID
+            ]
+         ]);
+
+         while ($line = $iterator->next()) {
             if ($first) {
                echo "<tr><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>\n";
                $first = false;
@@ -217,18 +235,36 @@ class Lock {
                          'is_deleted'    => 1,
                          'computers_id'  => $ID];
          $first  = true;
-         $query  = "SELECT `csv`.`id` AS `id`,
-                           `sv`.`name` AS `version`,
-                           `s`.`name` AS `software`
-                    FROM `glpi_computers_softwarelicenses` AS csv
-                    LEFT JOIN `glpi_softwarelicenses` AS sv
-                       ON (`csv`.`softwarelicenses_id` = `sv`.`id`)
-                    LEFT JOIN `glpi_softwares` AS s
-                       ON (`sv`.`softwares_id` = `s`.`id`)
-                    WHERE `csv`.`is_deleted` = 1
-                          AND `csv`.`is_dynamic` = 1
-                          AND `csv`.`computers_id` = '$ID'";
-         foreach ($DB->request($query) as $line) {
+
+         $iterator = $DB->request([
+            'SELECT'    => [
+               'csv.id AS id',
+               'sv.name AS version',
+               's.name AS software'
+            ],
+            'FROM'      => 'glpi_computers_softwarelicenses AS csv',
+            'LEFT JOIN' => [
+               'glpi_softwarelicenses AS sv' => [
+                  'ON' => [
+                     'csv' => 'softwarelicenses_id',
+                     'sv'  => 'id'
+                  ]
+               ],
+               'glpi_softwares AS s'         => [
+                  'ON' => [
+                     'sv'  => 'softwares_id',
+                     's'   => 'id'
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'csv.is_deleted'     => 1,
+               'csv.is_dynamic'     => 1,
+               'csv.computers_id'   => $ID
+            ]
+         ]);
+
+         while ($line = $iterator->next()) {
             if ($first) {
                echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th>".
                      "</tr>\n";
@@ -359,16 +395,29 @@ class Lock {
             $associated_table = getTableForItemType($associated_type);
             $fk               = getForeignKeyFieldForTable($associated_table);
 
-            $query = "SELECT `i`.`id`,
-                             `t`.`designation` AS `name`
-                      FROM `".getTableForItemType($type)."` AS i
-                      LEFT JOIN `$associated_table` AS t
-                         ON (`t`.`id` = `i`.`$fk`)
-                      WHERE `itemtype` = '$itemtype'
-                            AND `items_id` = '$ID'
-                            AND `is_dynamic` = 1
-                            AND `is_deleted` = 1";
-            foreach ($DB->request($query) as $data) {
+            $iterator = $DB->request([
+               'SELECT'    => [
+                  'i.id',
+                  't.designation AS name'
+               ],
+               'FROM'      => getTableForItemType($type) . ' AS i',
+               'LEFT JOIN' => [
+                  "$associated_table AS t"   => [
+                     'ON' => [
+                        't'   => 'id',
+                        'i'   => $fk
+                     ]
+                  ]
+               ],
+               'WHERE'     => [
+                  'itemtype'     => $itemtype,
+                  'items_id'     => $ID,
+                  'is_dynamic'   => 1,
+                  'is_deleted'   => 1
+               ]
+            ]);
+
+            while ($data = $iterator->next()) {
                echo "<tr class='tab_bg_1'>";
 
                echo "<td class='center' width='10'>";

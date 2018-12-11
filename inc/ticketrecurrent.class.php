@@ -424,14 +424,19 @@ class TicketRecurrent extends CommonDropdown {
 
       $tot = 0;
 
-      $query = "SELECT *
-                FROM `glpi_ticketrecurrents`
-                WHERE `glpi_ticketrecurrents`.`next_creation_date` < NOW()
-                      AND `glpi_ticketrecurrents`.`is_active` = 1
-                      AND (`glpi_ticketrecurrents`.`end_date` IS NULL
-                           OR `glpi_ticketrecurrents`.`end_date` > NOW())";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_ticketrecurrents',
+         'WHERE'  => [
+            'next_creation_date' => ['<', new \QueryExpression('NOW()')],
+            'is_active'          => 1,
+            'OR'                 => [
+               ['end_date' => null],
+               ['end_date' => ['>', new \QueryExpression('NOW()')]]
+            ]
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if (self::createTicket($data)) {
             $tot++;
          } else {

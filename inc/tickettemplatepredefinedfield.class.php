@@ -109,16 +109,19 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       // Try to delete itemtype -> delete items_id
       if ($this->fields['num'] == $itemtype_id) {
-         $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
-                   WHERE `".static::$items_id."` = '".$this->fields['tickettemplates_id']."'
-                         AND `num` = '$items_id_id'";
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               static::$items_id => $this->fields['tickettemplates_id'],
+               'num'             => $items_id_id
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)) {
-               $a = new self();
-               $a->delete(['id'=>$DB->result($result, 0, 0)]);
-            }
+         if (count($iterator)) {
+            $result = $iterator->next();
+            $a = new self();
+            $a->delete(['id' => $result['id']]);
          }
       }
    }
