@@ -131,15 +131,12 @@ class CartridgeItem extends CommonDBTM {
    static function getCount($id) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_cartridges`
-                WHERE `cartridgeitems_id` = '".$id."'";
-
-      if ($result = $DB->query($query)) {
-         $number = $DB->numrows($result);
-         return $number;
-      }
-      return false;
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_cartridges',
+         'WHERE'  => ['cartridgeitems_id' => $id]
+      ])->next();
+      return $result['cpt'];
    }
 
 
@@ -571,39 +568,57 @@ class CartridgeItem extends CommonDBTM {
    static function dropdownForPrinter(Printer $printer) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS cpt,
-                       `glpi_locations`.`completename` AS location,
-                       `glpi_cartridgeitems`.`ref` AS ref,
-                       `glpi_cartridgeitems`.`name` AS name,
-                       `glpi_cartridgeitems`.`id` AS tID
-                FROM `glpi_cartridgeitems`
-                INNER JOIN `glpi_cartridgeitems_printermodels`
-                     ON (`glpi_cartridgeitems`.`id`
-                         = `glpi_cartridgeitems_printermodels`.`cartridgeitems_id`)
-                INNER JOIN `glpi_cartridges`
-                     ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
-                         AND `glpi_cartridges`.`date_use` IS NULL)
-                LEFT JOIN `glpi_locations`
-                     ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
-                WHERE `glpi_cartridgeitems_printermodels`.`printermodels_id`
-                           = '".$printer->fields["printermodels_id"]."'
-                      ".getEntitiesRestrictRequest('AND', 'glpi_cartridgeitems', '',
-                                                   $printer->fields["entities_id"], true)."
-                GROUP BY tID
-                ORDER BY `name`, `ref`";
-      $datas = [];
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($data= $DB->fetch_assoc($result)) {
-               $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
-               $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
-               $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);
-               $datas[$data["tID"]] = $text;
-            }
-         }
+      $iterator = $DB->request([
+         'SELECT'       => [
+            'COUNT'  => '* AS cpt',
+            'glpi_locations.completename AS location',
+            'glpi_cartridgeitems.ref AS ref',
+            'glpi_cartridgeitems.name AS name',
+            'glpi_cartridgeitems.id AS tID'
+         ],
+         'FROM'         => self::getTable(),
+         'INNER JOIN'   => [
+            'glpi_cartridgeitems_printermodels' => [
+               'ON' => [
+                  'glpi_cartridgeitems_printermodels' => 'cartridgeitems_id',
+                  'glpi_cartridgeitems'               => 'id'
+               ]
+            ],
+            'glpi_cartridges'                   => [
+               'ON' => [
+                  'glpi_cartridgeitems'   => 'id',
+                  'glpi_cartridges'       => 'cartridgeitems_id', [
+                     'AND' => [
+                        'glpi_cartridges.date_use' => null
+                     ]
+                  ]
+               ]
+            ]
+         ],
+         'LEFT JOIN'    => [
+            'glpi_locations'                    => [
+               'ON' => [
+                  'glpi_cartridgeitems'   => 'locations_id',
+                  'glpi_locations'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_cartridgeitems_printermodels.printermodels_id'  => $printer->fields['printermodels_id']
+         ] + getEntitiesRestrictCriteria('glpi_cartridgeitems', '', $printer->fields['entities_id'], true),
+         'GROUPBY'      => 'tID',
+         'ORDERBY'      => ['name', 'ref']
+      ]);
+
+      $results = [];
+      while ($data = $iterator->next()) {
+         $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
+         $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
+         $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);
+         $results[$data["tID"]] = $text;
       }
-      if (count($datas)) {
-         return Dropdown::showFromArray('cartridgeitems_id', $datas);
+      if (count($results)) {
+         return Dropdown::showFromArray('cartridgeitems_id', $results);
       }
       return false;
    }

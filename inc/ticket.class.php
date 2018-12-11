@@ -6427,11 +6427,14 @@ class Ticket extends CommonITILObject {
       $tot = 0;
       foreach (Entity::getEntitiesToNotify('autoclose_delay') as $entity => $delay) {
          if ($delay >= 0) {
-            $query = "SELECT *
-                      FROM `glpi_tickets`
-                      WHERE `entities_id` = '".$entity."'
-                            AND `status` = '".self::SOLVED."'
-                            AND `is_deleted` = 0";
+            $criteria = [
+               'FROM'   => self::getTable(),
+               'WHERE'  => [
+                  'entities_id'  => $entity,
+                  'status'       => self::SOLVED,
+                  'is_deleted'   => 0
+               ]
+            ];
 
             if ($delay > 0) {
                $calendars_id = Entity::getUsedConfig('calendars_id', $entity);
@@ -6444,18 +6447,23 @@ class Ticket extends CommonITILObject {
                      0,
                      true
                   );
-                  $query .= " AND `solvedate` <= '$end_date'";
+                  $criteria['WHERE']['solvedate'] = ['<=', $end_date];
                } else {
                   // no calendar, remove all days
-                  $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < NOW()";
+                  $criteria['WHERE'][] = new \QueryExpression(
+                     "ADDDATE(" . $DB->quoteName('solvedate') . ", INTERVAL $delay DAY) < NOW()"
+                  );
                }
             }
 
             $nb = 0;
-            foreach ($DB->request($query) as $tick) {
-               $ticket->update(['id'           => $tick['id'],
-                                     'status'       => self::CLOSED,
-                                     '_auto_update' => true]);
+            $iterator = $DB->request($criteria);
+            while ($tick = $iterator->next()) {
+               $ticket->update([
+                  'id'           => $tick['id'],
+                  'status'       => self::CLOSED,
+                  '_auto_update' => true
+               ]);
                $nb++;
             }
 

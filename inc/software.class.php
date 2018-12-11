@@ -725,26 +725,29 @@ class Software extends CommonDBTM {
    static function dropdownLicenseToInstall($myname, $entity_restrict) {
       global $CFG_GLPI, $DB;
 
-      $rand  = mt_rand();
-      $where = getEntitiesRestrictRequest(' AND', 'glpi_softwarelicenses', 'entities_id',
-                                          $entity_restrict, true);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'glpi_softwares.id',
+         'FIELDS'          => ['glpi_softwares.name'],
+         'FROM'            => 'glpi_softwares',
+         'INNER JOIN'      => [
+            'glpi_softwarelicenses' => [
+               'ON' => [
+                  'glpi_softwarelicenses' => 'softwares_id',
+                  'glpi_softwares'        => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => [
+            'glpi_software.is_deleted'    => 0,
+            'glpi_softwares.is_template'  => 0
+         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', $entity_restrict, true),
+         'ORDERBY'         => 'glpi_softwares.name'
+      ]);
 
-      $query = "SELECT DISTINCT `glpi_softwares`.`id`,
-                              `glpi_softwares`.`name`
-                FROM `glpi_softwares`
-                INNER JOIN `glpi_softwarelicenses`
-                     ON (`glpi_softwares`.`id` = `glpi_softwarelicenses`.`softwares_id`)
-                WHERE `glpi_softwares`.`is_deleted` = 0
-                      AND `glpi_softwares`.`is_template` = 0
-                      $where
-                ORDER BY `glpi_softwares`.`name`";
-      $result = $DB->query($query);
       $values = [];
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $softwares_id          = $data["id"];
-            $values[$softwares_id] = $data["name"];
-         }
+      while ($data = $iterator->next()) {
+         $softwares_id          = $data["id"];
+         $values[$softwares_id] = $data["name"];
       }
       $rand = Dropdown::showFromArray('softwares_id', $values, ['display_emptychoice' => true]);
 
@@ -831,19 +834,22 @@ class Software extends CommonDBTM {
          $manufacturer_id = Dropdown::import('Manufacturer', ['name' => $manufacturer]);
       }
 
-      $query_search = "SELECT `glpi_softwares`.`id`, `glpi_softwares`.`is_deleted`
-                       FROM `glpi_softwares`
-                       WHERE `name` = '$name'
-                             AND `manufacturers_id` = '$manufacturer_id'
-                             AND `is_template` = 0 ".
-                             getEntitiesRestrictRequest('AND', 'glpi_softwares',
-                                                        'entities_id', $entity, true);
+      $iterator = $DB->request([
+         'SELECT' => [
+            'glpi_softwares.id',
+            'glpi_softwares.is_deleted'
+         ],
+         'FROM'   => 'glpi_softwares',
+         'WHERE'  => [
+            'name'               => $name,
+            'manufacturers_id'   => $manufacturer_id,
+            'is_template'        => 0
+         ] + getEntitiesRestrictCriteria('glpi_softwares', 'entities_id', $entity, true)
+      ]);
 
-      $result_search = $DB->query($query_search);
-
-      if ($DB->numrows($result_search) > 0) {
+      if (count($iterator)) {
          //Software already exists for this entity, get his ID
-         $data = $DB->fetch_assoc($result_search);
+         $data = $iterator->next();
          $ID   = $data["id"];
 
          // restore software
@@ -930,23 +936,37 @@ class Software extends CommonDBTM {
       $rand = mt_rand();
 
       echo "<div class='center'>";
-      $sql = "SELECT `glpi_softwares`.`id`,
-                     `glpi_softwares`.`name`,
-                     `glpi_entities`.`completename` AS entity
-              FROM `glpi_softwares`
-              LEFT JOIN `glpi_entities` ON (`glpi_softwares`.`entities_id` = `glpi_entities`.`id`)
-              WHERE (`glpi_softwares`.`id` != '$ID'
-                     AND `glpi_softwares`.`name` = '".addslashes($this->fields["name"])."'
-                     AND `glpi_softwares`.`is_deleted` = 0
-                     AND `glpi_softwares`.`is_template` = 0 " .
-                         getEntitiesRestrictRequest('AND', 'glpi_softwares', 'entities_id',
-                                                    getSonsOf("glpi_entities",
-                                                              $this->fields["entities_id"]),
-                                                              false).")
-              ORDER BY `entity`";
-      $req = $DB->request($sql);
+      $iterator = $DB->request([
+         'SELECT'    => [
+            'glpi_softwares.id',
+            'glpi_softwares.name',
+            'glpi_entities.completename AS entity'
+         ],
+         'FROM'      => 'glpi_softwares',
+         'LEFT JOIN' => [
+            'glpi_entities'   => [
+               'ON' => [
+                  'glpi_softwares'  => 'entities_id',
+                  'glpi_entities'   => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_softwares.id'           => ['!=', $ID],
+            'glpi_softwares.name'         => addslashes($this->fields['name']),
+            'glpi_softwares.is_deleted'   => 0,
+            'glpi_softwares.is_template'  => 0
+         ] + getEntitiesRestrictCriteria(
+            'glpi_softwares',
+            'entities_id',
+            getSonsOf("glpi_entities", $this->fields["entities_id"]),
+            false
+         ),
+         'ORDERBY'   => 'entity'
+      ]);
+      $nb = count($iterator);
 
-      if ($nb = $req->numrows()) {
+      if ($nb) {
          $link = Toolbox::getItemTypeFormURL('Software');
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams
@@ -967,7 +987,7 @@ class Software extends CommonDBTM {
          echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
          echo "<th>"._n('License', 'Licenses', Session::getPluralNumber())."</th></tr>";
 
-         foreach ($req as $data) {
+         while ($data = $iterator->next()) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
             echo "<td><a href='".$link."?id=".$data["id"]."'>".$data["name"]."</a></td>";
