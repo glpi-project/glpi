@@ -286,4 +286,13 @@ class TicketSatisfaction extends CommonDBTM {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+   static function getFormURLWithID($id = 0, $full = true) {
+
+      $satisfaction = new self();
+      if (!$satisfaction->getFromDB($id)) {
+         return '';
+      }
+
+      return Ticket::getFormURLWithID($satisfaction->fields['tickets_id']) . '&forcetab=Ticket$3';
+   }
 }
