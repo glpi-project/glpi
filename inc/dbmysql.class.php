@@ -534,32 +534,45 @@ class DBmysql {
     * Instanciate a Simple DBIterator
     *
     * Examples =
-    *  foreach ($DB->request("select * from glpi_states") as $data) { ... }
-    *  foreach ($DB->request("glpi_states") as $ID => $data) { ... }
-    *  foreach ($DB->request("glpi_states", "ID=1") as $ID => $data) { ... }
-    *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
-    *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
+    *  $DB->request("glpi_states")
+    *  $DB->request("glpi_states", ['ID' => 1])
     *
     * Examples =
-    *   array("id"=>NULL)
-    *   array("OR"=>array("id"=>1, "NOT"=>array("state"=>3)));
-    *   array("AND"=>array("id"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
+    *   ["id" => NULL]
+    *   ["OR" => ["id" => 1, "NOT" => ["state" => 3]]]
+    *   ["AND" => ["id" => 1, ["NOT" => ["state" => [3, 4, 5], "toto" => 2]]]]
     *
     * FIELDS name or array of field names
     * ORDER name or array of field names
     * LIMIT max of row to retrieve
     * START first row to retrieve
     *
-    * @param string|string[] $tableorsql Table name, array of names or SQL query
-    * @param string|string[] $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
-    *                                    (default '')
-    * @param boolean         $debug      To log the request (default false)
+    * @param string|string[] $table Table name or array of names
+    * @param string|string[] $crit  String or array of fields/values, ex ["id" => 1]), if empty => all rows
+    *                               (default '')
+    * @param boolean         $debug To log the request (default false)
     *
     * @return DBmysqlIterator
     */
-   public function request ($tableorsql, $crit = "", $debug = false) {
+   public function request ($table, $crit = "", $debug = false) {
       $iterator = new DBmysqlIterator($this);
-      $iterator->execute($tableorsql, $crit, $debug);
+      $iterator->execute($table, $crit, $debug);
+      return $iterator;
+   }
+
+   /**
+    * Instanciate a Simple DBIterator on RAW SQL (discouraged!)
+    *
+    * Examples =
+    *  $DB->requestRaw("select * from glpi_states")
+    *
+    * @param string $sql SQL RAW query to execute
+    *
+    * @return DBmysqlIterator
+    */
+   public function requestRaw($sql) {
+      $iterator = new DBmysqlIterator($this);
+      $iterator->executeRaw($sql);
       return $iterator;
    }
 
@@ -574,7 +587,7 @@ class DBmysql {
    public function getInfo() {
       // No translation, used in sysinfo
       $ret = [];
-      $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
+      $req = $this->requestRaw("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
       if (($data = $req->next())) {
          if ($data['stype']) {
@@ -611,7 +624,7 @@ class DBmysql {
       global $DB;
 
       $msg = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER';
-      $req = $DB->request("SELECT @@sql_mode as mode");
+      $req = $DB->requestRaw("SELECT @@sql_mode as mode");
       if (($data = $req->next())) {
          return (preg_match("/STRICT_TRANS/", $data['mode'])
                  && preg_match("/NO_ZERO_/", $data['mode'])
@@ -1156,7 +1169,7 @@ class DBmysql {
     */
    public function getVersion() {
       global $DB;
-      $req = $DB->request('SELECT version()')->next();
+      $req = $DB->requestRaw('SELECT version()')->next();
       $raw = $req['version()'];
       return $raw;
    }
