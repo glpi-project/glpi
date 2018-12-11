@@ -98,6 +98,20 @@ class DBmysqlIterator implements Iterator, Countable {
    }
 
    /**
+    * Executes a RAW SQL query (discouraged!)
+    *
+    * @param string $sql SQL query to execute
+    *
+    * @return DBmysqlIterator
+    */
+   public function executeRaw($sql) {
+      $this->sql = $sql;
+      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+      $this->position = 0;
+      return $this;
+   }
+
+   /**
     * Builds the query
     *
     * @param string|array $table       Table name (optional when $crit have FROM entry)
@@ -121,6 +135,7 @@ class DBmysqlIterator implements Iterator, Countable {
       }
 
       if ($is_legacy) {
+         Toolbox::Deprecated("Deprecated usage of SQL in DB/request (full query)");
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
          //}

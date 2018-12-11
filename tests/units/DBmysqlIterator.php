@@ -49,14 +49,12 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testQuery() {
       $req = 'SELECT Something FROM Somewhere';
-      $it = $this->it->execute($req);
+      $it = $this->it->executeRaw($req);
       $this->string($it->getSql())->isIdenticalTo($req);
-
       $req = 'SELECT @@sql_mode as mode';
-      $it = $this->it->execute($req);
+      $it = $this->it->executeRaw($req);
       $this->string($it->getSql())->isIdenticalTo($req);
    }
-
 
    public function testSqlError() {
       global $DB;
