@@ -1648,7 +1648,12 @@ class AuthLDAP extends CommonDBTM {
             ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true, $cookie);
          }
          $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
-         $sr     = @ldap_search($ds, $values['basedn'], $filter, $attrs);
+         $sr     = @ldap_search(
+            $ds,
+            ldap_escape($values['basedn'], null, LDAP_ESCAPE_DN),
+            $filter,
+            $attrs
+         );
          if ($sr) {
             if (in_array(ldap_errno($ds), [4,11])) {
                // openldap return 4 for Size limit exceeded
@@ -2142,7 +2147,12 @@ class AuthLDAP extends CommonDBTM {
     */
    static function getGroupCNByDn($ldap_connection, $group_dn) {
 
-      $sr = @ ldap_read($ldap_connection, $group_dn, "objectClass=*", ["cn"]);
+      $sr = @ldap_read(
+         $ldap_connection,
+         ldap_escape($group_dn, null, LDAP_ESCAPE_DN),
+         "objectClass=*",
+         ["cn"]
+      );
       if ($sr === false) {
          //group does not exists
          return false;
@@ -2196,8 +2206,12 @@ class AuthLDAP extends CommonDBTM {
          }
 
          $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
-         $sr     = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter,
-                                $attrs);
+         $sr     = @ldap_search(
+            $ldap_connection,
+            ldap_escape($config_ldap->fields['basedn'], null, LDAP_ESCAPE_DN),
+            $filter,
+            $attrs
+         );
 
          if ($sr) {
             if (in_array(ldap_errno($ldap_connection), [4,11])) {
@@ -2572,7 +2586,11 @@ class AuthLDAP extends CommonDBTM {
          }
          // Auth bind
          if ($login != '') {
-            $b = @ldap_bind($ds, $login, $password);
+            $b = @ldap_bind(
+               $ds,
+               ldap_escape($login, null, LDAP_ESCAPE_DN),
+               $password
+            );
          } else { // Anonymous bind
             $b = @ldap_bind($ds);
          }
@@ -2863,7 +2881,13 @@ class AuthLDAP extends CommonDBTM {
          $filter = "(& $filter ".$values['condition'].")";
       }
 
-      if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
+      $result = @ldap_search(
+         $ds,
+         ldap_escape($values['basedn'], null, LDAP_ESCAPE_DN),
+         $filter,
+         $ldap_parameters
+      );
+      if ($result) {
          //search has been done, let's check for found results
          $info = self::get_entries_clean($ds, $result);
 
@@ -2895,7 +2919,13 @@ class AuthLDAP extends CommonDBTM {
     * @return array|boolean false if failed
     */
    static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true) {
-      if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
+      $result = @ldap_read(
+         $ds,
+         ldap_escape($dn, null, LDAP_ESCAPE_DN),
+         $condition,
+         $attrs
+      );
+      if ($result) {
          if ($clean) {
             $info = self::get_entries_clean($ds, $result);
          } else {

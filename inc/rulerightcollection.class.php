@@ -218,8 +218,12 @@ class RuleRightCollection extends RuleCollection {
          $rule_fields = $this->getFieldsToLookFor();
 
          //Get all the datas we need from ldap to process the rules
-         $sz         = @ldap_read($params["connection"], $params["userdn"], "objectClass=*",
-                                  $rule_fields);
+         $sz = @ldap_read(
+            $params["connection"],
+            ldap_escape($params["userdn"], null, LDAP_ESCAPE_DN),
+            "objectClass=*",
+            $rule_fields
+         );
          $rule_input = AuthLDAP::get_entries_clean($params["connection"], $sz);
 
          if (count($rule_input)) {

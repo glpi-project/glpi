@@ -231,7 +231,7 @@ class Auth extends CommonGLPI {
                                                    'condition'         => $ldap_method['condition'],
                                                    'user_dn'           => $this->user_dn]);
          $dn = $infos['dn'];
-         if (!empty($dn) && @ldap_bind($this->ldap_connection, $dn, $password)) {
+         if (!empty($dn) && @ldap_bind($this->ldap_connection, ldap_escape($dn, null, LDAP_ESCAPE_DN), $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
             if (Plugin::doHookFunction("restrict_ldap_auth", $infos)) {

@@ -1340,7 +1340,12 @@ class User extends CommonDBTM {
          sort($group_fields);
 
          // If the groups must be retrieve from the ldap user object
-         $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+         $sr = @ldap_read(
+            $ldap_connection,
+            ldap_escape($userdn, null, LDAP_ESCAPE_DN),
+            "objectClass=*",
+            $group_fields
+         );
          $v  = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
          for ($i=0; $i < $v['count']; $i++) {
@@ -1488,7 +1493,12 @@ class User extends CommonDBTM {
          $fields  = array_filter($fields);
          $f       = self::getLdapFieldNames($fields);
 
-         $sr      = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
+         $sr      = @ldap_read(
+            $ldap_connection,
+            ldap_escape($userdn, null, LDAP_ESCAPE_DN),
+            "objectClass=*",
+            $f
+         );
          $v       = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
          if (!is_array($v)
@@ -1691,6 +1701,7 @@ class User extends CommonDBTM {
       $listgroups = [];
 
       //User dn may contain ( or ), need to espace it!
+      //TODO using ldap_escape() could be more relevant
       $user_dn = str_replace(["(", ")", "\,", "\+"], ["\(", "\)", "\\\,", "\\\+"],
                              $user_dn);
 
@@ -1706,7 +1717,12 @@ class User extends CommonDBTM {
 
       //Perform the search
       $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
-      $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
+      $sr     = ldap_search(
+         $ds,
+         ldap_escape($ldap_base_dn, null, LDAP_ESCAPE_DN),
+         $filter,
+         $attrs
+      );
 
       //Get the result of the search as an array
       $info = AuthLDAP::get_entries_clean($ds, $sr);
