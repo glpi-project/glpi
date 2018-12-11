@@ -409,8 +409,6 @@ class KnowbaseItem extends CommonDBVisible {
 
       global $DB;
 
-      Toolbox::deprecated('Use getVisibilityCriteria');
-
       //get and clean criteria
       $criteria = self::getVisibilityCriteria($forceall);
       unset($criteria['WHERE']);

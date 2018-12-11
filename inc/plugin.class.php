@@ -717,19 +717,6 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * remove plugin from session variable
-    *
-    * @deprecated 9.3.2
-    *
-    * @param $plugin plugin directory
-   **/
-   function removeFromSession($plugin) {
-      Toolbox::deprecated();
-      self::setUnloadedByName($plugin);
-   }
-
-
-   /**
     * Migrate itemtype from integer (0.72) to string (0.80)
     *
     * @param $types        array of (num=>name) of type manage by the plugin
