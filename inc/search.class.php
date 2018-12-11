@@ -1065,6 +1065,18 @@ class Search {
                                                          &$data = []) {
       $data['meta_toview'] = [];
       foreach ($criteria as $criterion) {
+         // manage sub criteria
+         if (isset($criterion['criteria'])) {
+            self::constructAdditionalSqlForMetacriteria(
+               $criterion['criteria'],
+               $SELECT,
+               $FROM,
+               $already_link_tables,
+               $data
+            );
+            continue;
+         }
+
          // parse only criterion with meta flag
          if (!isset($criterion['itemtype'])
              || empty($criterion['itemtype'])
@@ -2558,17 +2570,16 @@ JAVASCRIPT;
          return "";
       }
 
-      $p      = $request['p'];
-      $prefix = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
-
+      $p            = $request['p'];
+      $num          = (int) $request['num'];
+      $prefix       = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
+      $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
+      $itemtype     = $request["itemtype"];
       $metacriteria = [];
 
-      if (isset($_SESSION['glpisearch'][$request["itemtype"]]['criteria'][$request["num"]])
-          && is_array($_SESSION['glpisearch'][$request["itemtype"]]['criteria'][$request["num"]])) {
-         $metacriteria = $_SESSION['glpisearch'][$request["itemtype"]]['criteria'][$request["num"]];
-      } else {
+      if (!$metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num)) {
          // Set default field
-         $options  = Search::getCleanedOptions($request["itemtype"]);
+         $options  = Search::getCleanedOptions($itemtype);
 
          foreach ($options as $key => $val) {
             if (is_array($val) && isset($val['table'])) {
@@ -2577,7 +2588,8 @@ JAVASCRIPT;
             }
          }
       }
-      $linked =  Search::getMetaItemtypeAvailable($request["itemtype"]);
+
+      $linked =  Search::getMetaItemtypeAvailable($itemtype);
       $rand   = mt_rand();
 
       $rowid  = 'metasearchrow'.$request['itemtype'].$rand;
@@ -2588,7 +2600,7 @@ JAVASCRIPT;
 
       // Display link item (not for the first item)
       Dropdown::showFromArray(
-         "criteria[".$request["num"]."][link]",
+         "criteria{$prefix}[$num][link]",
          Search::getLogicalOperators(),
          [
             'value' => isset($metacriteria["link"])
@@ -2599,18 +2611,18 @@ JAVASCRIPT;
       );
 
       // Display select of the linked item type available
-      $rand = Dropdown::showItemTypes("criteria{$prefix}[".$request["num"]."][itemtype]", $linked, [
+      $rand = Dropdown::showItemTypes("criteria{$prefix}[$num][itemtype]", $linked, [
          'value' => isset($metacriteria['itemtype'])
                     && !empty($metacriteria['itemtype'])
                      ? $metacriteria['itemtype']
                      : "",
          'width' => '170px'
       ]);
-      echo Html::hidden("criteria[".$request["num"]."][meta]", [
+      echo Html::hidden("criteria{$prefix}[$num][meta]", [
          'value' => true
       ]);
-      $field_id = Html::cleanId("dropdown_criteria{$prefix}[".$request["num"]."][itemtype]$rand");
-      $spanid   = Html::cleanId("show_".$request["itemtype"]."_".$prefix.$request["num"]."_$rand");
+      $field_id = Html::cleanId("dropdown_criteria{$prefix}[$num][itemtype]$rand");
+      $spanid   = Html::cleanId("show_".$request["itemtype"]."_".$prefix.$num."_$rand");
       // Ajax script for display search met& item
       echo "<blockquote>";
 
@@ -2619,7 +2631,7 @@ JAVASCRIPT;
          'itemtype'        => '__VALUE__',
          'parent_itemtype' => $request['itemtype'],
          'from_meta'       => true,
-         'num'             => $request["num"],
+         'num'             => $num,
          'p'               => $request["p"],
       ];
       Ajax::updateItemOnSelectEvent(
