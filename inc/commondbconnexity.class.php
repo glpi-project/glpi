@@ -89,23 +89,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /// Disable auto forwarding information about entities ?
    static public $disableAutoEntityForwarding   = false;
 
-   /**
-    * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
-    * That is used by cleanDBOnItem : the only interesting field is static::getIndexName()
-    * But CommonDBRelation also use it to get more complex result
-    *
-    * @deprecated 9.4
-    *
-    * @param string  $itemtype the type of the item to look for
-    * @param integer $items_id the id of the item to look for
-    *
-    * @return string the SQL request of '' if it is not possible
-    **/
-   static function getSQLRequestToSearchForItem($itemtype, $items_id) {
-      Toolbox::deprecated('Use getSQLCriteriaToSearchForItem');
-      return '';
-   }
-
 
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]

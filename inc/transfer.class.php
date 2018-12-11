@@ -1160,25 +1160,6 @@ class Transfer extends CommonDBTM {
 
 
    /**
-    * Create IN condition for SQL requests based on a array if ID
-    *
-    * @deprecated 9.4
-    *
-    * @param $array array of ID
-    *
-    * @return string of the IN condition
-   **/
-   function createSearchConditionUsingArray($array) {
-      Toolbox::deprecated();
-
-      if (is_array($array) && count($array)) {
-         return "('".implode("','", $array)."')";
-      }
-      return "(-1)";
-   }
-
-
-   /**
     * transfer an item to another item (may be the same) in the new entity
     *
     * @param $itemtype     item type to transfer

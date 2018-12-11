@@ -273,11 +273,6 @@ function glpi_autoload($classname) {
 
    $dir = GLPI_ROOT . "/inc/";
 
-   // Deprecation warn for TicketFollowup
-   if ($classname === 'TicketFollowup') {
-      Toolbox::deprecated('TicketFollowup has been replaced by ITILFollowup.');
-   }
-
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
