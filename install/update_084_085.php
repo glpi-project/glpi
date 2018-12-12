@@ -3022,9 +3022,7 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
                'SELECT' => ["id", "notepad"],
                'FROM'   => $t,
                'WHERE'  => [
-                  new \QueryExpression(
-                     DBmysql::quoteName("notepad") . " IS NOT NULL"
-                  ),
+                  new \QueryExpression(DBmysql::quoteName("notepad") . " IS NOT NULL"),
                   ["notepad" => ["<>", ""]]
                ]
             ]);
@@ -3061,10 +3059,11 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 
    // Migrate datas
    foreach ($status as $old => $new) {
-      $query = "UPDATE `glpi_ticketvalidations`
-                SET `status` = '$new'
-                WHERE `status` = '$old'";
-      $DB->queryOrDie($query, "0.85 status in glpi_ticketvalidations $old to $new");
+      $DB->updateOrDie("glpi_ticketvalidations",
+         ['status' => $new],
+         ['status' => $old],
+         "0.85 status in glpi_ticketvalidations $old to $new"
+      );
    }
 
    $migration->changeField('glpi_ticketvalidations', 'status', 'status', 'integer',
@@ -3076,10 +3075,11 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    $tables = ['glpi_tickets', 'glpi_changes'];
    foreach ($tables as $table) {
       foreach ($status as $old => $new) {
-         $query = "UPDATE `".$table."`
-                   SET `global_validation` = '$new'
-                   WHERE `global_validation` = '$old'";
-         $DB->queryOrDie($query, "0.85 global_validation in $table $old to $new");
+         $DB->updateOrDie($table,
+            ['global_validation' => $new],
+            ['global_validation' => $old],
+            "0.85 global_validation in $table $old to $new"
+         );
       }
       $migration->changeField($table, 'global_validation', 'global_validation', 'integer',
                               ['value' => CommonITILValidation::NONE]);
@@ -3089,76 +3089,92 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
                                       'tickettemplatepredefinedfields value'));
 
    foreach ($status as $old => $new) {
-      $query = "UPDATE `glpi_tickettemplatepredefinedfields`
-                SET `value` = '$new'
-                WHERE `num` = '52'
-                      AND `value` = '$old'";
-      $DB->queryOrDie($query, "0.85 value in glpi_tickettemplatepredefinedfields $old to $new");
+      $DB->updateOrDie("glpi_tickettemplatepredefinedfields", [
+            'value' => $new
+         ], [
+            'num'    => 52,
+            'value'  => $old
+         ],
+         "0.85 value in glpi_tickettemplatepredefinedfields $old to $new"
+      );
    }
 
    // Migrate templates
-   $query = "SELECT `glpi_notificationtemplatetranslations`.*
-             FROM `glpi_notificationtemplatetranslations`
-             INNER JOIN `glpi_notificationtemplates`
-                  ON (`glpi_notificationtemplates`.`id`
-                        = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
-             WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%validation.storestatus=%'
-                   OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%validation.storestatus=%'
-                   OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%validation.storestatus=%'";
+   $templateIterator = $DB->request([
+      'SELECT'       => "glpi_notificationtemplatetranslations.*",
+      'FROM'         => "glpi_notificationtemplatetranslations",
+      'INNER JOIN'   => [
+         'glpi_notificationtemplates' => [
+            'ON' => [
+               ['glpi_notificationtemplates' => "id"],
+               ['glpi_notificationtemplatetranslations' => "notificationtemplates_id"]
+            ]
+         ]
+      ],
+      'WHERE'        => [
+         'OR' => [
+            "glpi_notificationtemplatetranslations.content_text" => [
+               "LIKE", "%validation.storestatus=%"
+            ],
+            "glpi_notificationtemplatetranslations.content_html" => [
+               "LIKE", "%validation.storestatus=%"
+            ],
+            "glpi_notificationtemplatetranslations.subject" => ["LIKE", "%validation.storestatus=%"]
+         ]
+      ]
+   ]);
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $subject = $data['subject'];
-            $text    = $data['content_text'];
-            $html    = $data['content_html'];
-            foreach ($status as $old => $new) {
-               $subject = str_replace("validation.storestatus=$old", "validation.storestatus=$new",
-                                      $subject);
-               $text    = str_replace("validation.storestatus=$old", "validation.storestatus=$new",
-                                      $text);
-               $html    = str_replace("validation.storestatus=$old", "validation.storestatus=$new",
-                                      $html);
-            }
-            $query = "UPDATE `glpi_notificationtemplatetranslations`
-                      SET `subject` = '".addslashes($subject)."',
-                         `content_text` = '".addslashes($text)."',
-                         `content_html` = '".addslashes($html)."'
-                      WHERE `id` = ".$data['id']."";
-            $DB->queryOrDie($query, "0.85 fix tags usage for storestatus");
+   if (count($templateIterator)) {
+      while ($data = $templateIteratorDB->next()) {
+         $subject = $data['subject'];
+         $text    = $data['content_text'];
+         $html    = $data['content_html'];
+         foreach ($status as $old => $new) {
+            $subject = str_replace("validation.storestatus=$old", "validation.storestatus=$new",
+                                   $subject);
+            $text    = str_replace("validation.storestatus=$old", "validation.storestatus=$new",
+                                   $text);
+            $html    = str_replace("validation.storestatus=$old", "validation.storestatus=$new",
+                                   $html);
          }
+         $DB->updateOrDie("glpi_notificationtemplatetranslations", [
+               'subject'      => addslashes($subject),
+               'content_text' => addslashes($text),
+               'content_html' => addslashes($html)
+            ], [
+               'id' => $data['id']
+            ],
+            "0.85 fix tags usage for storestatus"
+         );
       }
    }
 
    // Upgrade ticket bookmarks
-   $query = "SELECT *
-             FROM `glpi_bookmarks`";
+   $bookmarksIterator = $DB->request("glpi_bookmarks");
 
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $options = [];
-            parse_str($data["query"], $options);
-            if (isset($options['field'])) {
-               // update ticket statuses
-               if (($data['itemtype'] = 'Ticket')
-                   &&( $data['type'] == Bookmark::SEARCH)) {
-                  foreach ($options['field'] as $key => $val) {
-                     if ((($val == 55) || ($val == 52))
-                         && isset($options['contains'][$key])) {
-                        if (isset($status[$options['contains'][$key]])) {
-                           $options['contains'][$key] = $status[$options['contains'][$key]];
-                        }
+   if (count($bookmarksIterator)) {
+      while ($data = $bookmarksIterator->next()) {
+         $options = [];
+         parse_str($data["query"], $options);
+         if (isset($options['field'])) {
+            // update ticket statuses
+            if (($data['itemtype'] = 'Ticket')
+                &&( $data['type'] == Bookmark::SEARCH)) {
+               foreach ($options['field'] as $key => $val) {
+                  if ((($val == 55) || ($val == 52))
+                      && isset($options['contains'][$key])) {
+                     if (isset($status[$options['contains'][$key]])) {
+                        $options['contains'][$key] = $status[$options['contains'][$key]];
                      }
                   }
                }
             }
-            $query2 = "UPDATE `glpi_bookmarks`
-                       SET `query` = '".addslashes(Toolbox::append_params($options))."'
-                       WHERE `id` = '".$data['id']."'";
-
-            $DB->queryOrDie($query2, "0.85 update bookmarks");
          }
+         $DB->updateOrDie("glpi_bookmarks",
+            ['query' => addslashes(Toolbox::append_params($options))],
+            ['id' => $data['id']],
+            "0.85 update bookmarks"
+         );
       }
    }
 
@@ -3292,18 +3308,20 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
       $savesession = $_SESSION['glpishowallentities'];
       $_SESSION['glpishowallentities'] = 1;
 
-      $queryl = "SELECT `id`, `number`
-                 FROM `glpi_softwarelicenses`";
+      $softwarelicenseIterator = $DB->request([
+         'SELECT' => ["id", "number"],
+         'WHERE'  => ["glpi_softwarelicenses"]
+      ]);
 
-      foreach ($DB->request($queryl) AS $datal) {
+      foreach ($softwarelicenseIterator AS $datal) {
          if (($datal['number'] >= 0)
              && ($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'], -1))) {
 
-            $queryl2 = "UPDATE `glpi_softwarelicenses`
-                        SET `is_valid` = 0
-                        WHERE `id` = '".$datal['id']."'";
-
-            $DB->queryOrDie($queryl2, "0.85 update softwarelicense");
+            $BD->updateOrDie("glpi_softwarelicenses",
+               ['is_valid' => 0],
+               ['id' => $data['id']],
+               "0.85 update softwarelicense"
+            );
          }
       }
       $_SESSION['glpishowallentities'] = $savesession;
@@ -3312,18 +3330,25 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    if ($migration->addField("glpi_softwares", "is_valid", "bool", ["value" => 1])) {
       $migration->migrationOneTable("glpi_softwares");
 
-      $querys = "SELECT `glpi_softwares`.`id`
-                 FROM `glpi_softwares`
-                 LEFT JOIN `glpi_softwarelicenses`
-                     ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
-                 WHERE `glpi_softwarelicenses`.`is_valid` = 0";
+      $softwareIterator = $DB->request([
+         'SELECT'    => "glpi_softwares.id",
+         'FROM'      => "glpi_softwares",
+         'LEFT JOIN' => [
+            'glpi_softwarelicenses' => [
+               'ON' => [
+                  ['glpi_softwarelicenses.softwares_id' => "glpi_softwares.id"]
+               ]
+            ]
+         ],
+         'WHERE'     => ['glpi_softwarelicenses.is_valid' => 0]
+      ]);
 
-      foreach ($DB->request($querys) AS $datas) {
-         $querys2 = "UPDATE `glpi_softwares`
-                     SET `is_valid` = 0
-                     WHERE `id` = '".$datas['id']."'";
-
-         $DB->queryOrDie($querys2, "0.85 update software");
+      foreach ($softwareIterator AS $datas) {
+         $DB->updateOrDie("glpi_softwares",
+            ['is_valid' => 0],
+            ['id' => $datas['id']],
+            "0.85 update software"
+         );
       }
    }
 
@@ -3333,11 +3358,11 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    $migration->migrationOneTable('glpi_rules');
 
    // Update condition for RuleTicket : only on add
-   $query = "UPDATE `glpi_rules`
-             SET `condition` = 1
-             WHERE `sub_type` = 'RuleTicket'";
-
-   $DB->queryOrDie($query, "0.85 update condition for RuleTicket");
+   $DB->updateOrDie("glpi_rules",
+      ['condition' => 1],
+      ['sub_type' => "RuleTicket"],
+      "0.85 update condition for RuleTicket"
+   );
 
    // Update ticket_status for helpdeks profiles
    $newcycle =  [ 1 =>  [ 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ],
@@ -3349,9 +3374,11 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    $query = "UPDATE `glpi_profiles`
              SET `ticket_status` = '".exportArrayToDB($newcycle)."'
              WHERE `interface` = 'helpdesk'";
-
-   $DB->queryOrDie($query, "0.85 update default life cycle for helpdesk");
-
+   $DB->updateOrDie("glpi_profiles",
+      ['ticket_status' => exportArrayToDB($newcycle)],
+      ['interface' => "helpdeskhelpdesk"],
+      "0.85 update default life cycle for helpdesk"
+   );
    //Add comment field to a virtualmachine
    $migration->addField('glpi_computervirtualmachines', 'comment', 'text');
 
@@ -3362,6 +3389,7 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    $migration->migrationOneTable('glpi_ipaddresses');
    $migration->addKey('glpi_ipaddresses', ['mainitemtype', 'mainitems_id', 'is_deleted'], 'mainitem');
 
+   // TODO : can be improved when DBmysql->updateOrDie() supports join statement
    $query_doc_i = "UPDATE `glpi_ipaddresses` as `ip`
                    INNER JOIN `glpi_networknames` as `netname`
                      ON  (`ip`.`items_id` = `netname`.`id`
@@ -3374,96 +3402,95 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    $DB->queryOrDie($query_doc_i, "0.85 update mainitems fields of ipaddresses");
 
    // Upgrade ticket bookmarks
-   $query = "SELECT *
-             FROM `glpi_bookmarks`
-             WHERE `type` = '".Bookmark::SEARCH."'";
+   $bookmarksIterator = $DB->request([
+      'FROM'   => "glpi_bookmarks",
+      'WHERE'  => ['type' => Bookmark::SEARCH]
+   ]);
 
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $options = [];
-            parse_str($data["query"], $options);
+   if (count($bookmarksIterator)) {
+      while ($data = $bookmarksIterator->next()) {
+         $options = [];
+         parse_str($data["query"], $options);
 
-            // Copy itemtype if not set
-            if (!isset($options['itemtype'])) {
-               $options['itemtype'] = $data['itemtype'];
-            }
-            // Move criteria
-            if (isset($options['field']) && is_array($options['field'])) {
-               $newkey = 0;
-               foreach ($options['field'] as $key => $val) {
-                  $options['criteria'][$newkey]['field'] = $val;
-
-                  //  other field
-                  if (isset($options['link'][$key])) {
-                     $options['criteria'][$newkey]['link'] = $options['link'][$key];
-                  }
-
-                  if (isset($options['searchtype'][$key])) {
-                     $options['criteria'][$newkey]['searchtype'] = $options['searchtype'][$key];
-                  } else {
-                     $options['criteria'][$newkey]['searchtype'] = 'contains';
-                  }
-
-                  if (isset($options['contains'][$key])) {
-                     $options['criteria'][$newkey]['value'] = $options['contains'][$key];
-                  } else {
-                     $options['criteria'][$newkey]['value'] = '';
-                  }
-                  $newkey++;
-               }
-               unset($options['field']);
-               unset($options['contains']);
-               unset($options['searchtype']);
-               unset($options['link']);
-            }
-            if (isset($options['glpisearchcount'])) {
-               unset($options['glpisearchcount']);
-            }
-
-            if (isset($options['field2']) && is_array($options['field2'])) {
-               $newkey = 0;
-               foreach ($options['field2'] as $key => $val) {
-                  $options['metacriteria'][$newkey]['field'] = $val;
-
-                  //  other field
-                  if (isset($options['itemtype2'][$key])) {
-                     $options['metacriteria'][$newkey]['itemtype'] = $options['itemtype2'][$key];
-                  }
-
-                  if (isset($options['link2'][$newkey])) {
-                     $options['metacriteria'][$newkey]['link'] = $options['link2'][$key];
-                  }
-
-                  if (isset($options['searchtype2'][$key])) {
-                     $options['metacriteria'][$newkey]['searchtype'] = $options['searchtype2'][$key];
-                  } else {
-                     $options['metacriteria'][$newkey]['searchtype'] = 'contains';
-                  }
-
-                  if (isset($options['contains2'][$key])) {
-                     $options['metacriteria'][$newkey]['value'] = $options['contains2'][$key];
-                  } else {
-                     $options['metacriteria'][$newkey]['value'] = '';
-                  }
-                  $newkey++;
-               }
-               unset($options['field2']);
-               unset($options['contains2']);
-               unset($options['searchtype2']);
-               unset($options['link2']);
-               unset($options['itemtype2']);
-            }
-            if (isset($options['glpisearchcount2'])) {
-               unset($options['glpisearchcount2']);
-            }
-
-            $query2 = "UPDATE `glpi_bookmarks`
-                       SET `query` = '".addslashes(Toolbox::append_params($options))."'
-                       WHERE `id` = '".$data['id']."'";
-
-            $DB->queryOrDie($query2, "0.85 update bookmarks for reorg search");
+         // Copy itemtype if not set
+         if (!isset($options['itemtype'])) {
+            $options['itemtype'] = $data['itemtype'];
          }
+         // Move criteria
+         if (isset($options['field']) && is_array($options['field'])) {
+            $newkey = 0;
+            foreach ($options['field'] as $key => $val) {
+               $options['criteria'][$newkey]['field'] = $val;
+
+               //  other field
+               if (isset($options['link'][$key])) {
+                  $options['criteria'][$newkey]['link'] = $options['link'][$key];
+               }
+
+               if (isset($options['searchtype'][$key])) {
+                  $options['criteria'][$newkey]['searchtype'] = $options['searchtype'][$key];
+               } else {
+                  $options['criteria'][$newkey]['searchtype'] = 'contains';
+               }
+
+               if (isset($options['contains'][$key])) {
+                  $options['criteria'][$newkey]['value'] = $options['contains'][$key];
+               } else {
+                  $options['criteria'][$newkey]['value'] = '';
+               }
+               $newkey++;
+            }
+            unset($options['field']);
+            unset($options['contains']);
+            unset($options['searchtype']);
+            unset($options['link']);
+         }
+         if (isset($options['glpisearchcount'])) {
+            unset($options['glpisearchcount']);
+         }
+
+         if (isset($options['field2']) && is_array($options['field2'])) {
+            $newkey = 0;
+            foreach ($options['field2'] as $key => $val) {
+               $options['metacriteria'][$newkey]['field'] = $val;
+
+               //  other field
+               if (isset($options['itemtype2'][$key])) {
+                  $options['metacriteria'][$newkey]['itemtype'] = $options['itemtype2'][$key];
+               }
+
+               if (isset($options['link2'][$newkey])) {
+                  $options['metacriteria'][$newkey]['link'] = $options['link2'][$key];
+               }
+
+               if (isset($options['searchtype2'][$key])) {
+                  $options['metacriteria'][$newkey]['searchtype'] = $options['searchtype2'][$key];
+               } else {
+                  $options['metacriteria'][$newkey]['searchtype'] = 'contains';
+               }
+
+               if (isset($options['contains2'][$key])) {
+                  $options['metacriteria'][$newkey]['value'] = $options['contains2'][$key];
+               } else {
+                  $options['metacriteria'][$newkey]['value'] = '';
+               }
+               $newkey++;
+            }
+            unset($options['field2']);
+            unset($options['contains2']);
+            unset($options['searchtype2']);
+            unset($options['link2']);
+            unset($options['itemtype2']);
+         }
+         if (isset($options['glpisearchcount2'])) {
+            unset($options['glpisearchcount2']);
+         }
+
+         $DB->updateOrDie("glpi_bookmarks",
+            ['query' => addslashes(Toolbox::append_params($options))],
+            ['id' => $data['id']],
+            "0.85 update bookmarks for reorg search"
+         );
       }
    }
    // ************ Keep it at the end **************
@@ -3472,16 +3499,17 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 
    // Clean display prefs
    // Notepad
-   $query = "UPDATE `glpi_displaypreferences`
-             SET `num` = 90
-             WHERE `itemtype` = 'Entity'
-                   AND `num` = 28";
-   $DB->query($query);
-   $query = "UPDATE `glpi_displaypreferences`
-             SET `num` = 200
-             WHERE `num` = 90";
-   $DB->query($query);
-
+   $DB->update("glpi_displaypreferences", [
+         'num' => 90
+      ], [
+         'itemtype'  => 'Entity',
+         'num'       => 28
+      ]
+   );
+   $DB->update("glpi_displaypreferences",
+      ['num' => 200],
+      ['num' => 90]
+   );
    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
    // must always be at the end
