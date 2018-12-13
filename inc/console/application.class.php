@@ -387,6 +387,7 @@ class Application extends BaseApplication {
          }
       } catch (CommandNotFoundException $e) {
          // Command will not be found at this point if it is a plugin command
+         $command = null; // Say hello to CS checker
       }
 
       return !$input->hasParameterOption('--no-plugins', true);
