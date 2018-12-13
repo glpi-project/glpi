@@ -1572,7 +1572,7 @@ function update084to085() {
                             ['value' => -2])) {
       $migration->migrationOneTable('glpi_entities');
       // Set directly to root entity
-      $DB->upgradeOrDie("glpi_entities",
+      $DB->updateOrDie("glpi_entities",
          ['delay_send_emails' => 0],
          ['id' => 0],
          "0.85 default value for delay_send_emails for root entity"
