@@ -6684,7 +6684,7 @@ class Html {
                }
             } else {
                Toolbox::logDebug("$file is new, loading");
-               $GLPI_CACHE->set(md5($file), md5($path));
+               $GLPI_CACHE->set($fckey, md5(file_get_contents($path)));
             }
          } else {
             Toolbox::logWarning('Requested file ' . $path . ' does not exists.');
