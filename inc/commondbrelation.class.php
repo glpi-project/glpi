@@ -173,11 +173,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       $request = false;
       if (preg_match('/^itemtype/', static::$itemtype_1)) {
-         $criteria['SELECT'][] = static::$itemtype_1 . ' AS itemtype_1';
+         $fields[] = static::$itemtype_1 . ' AS itemtype_1';
          $where1[static::$itemtype_1] = $itemtype;
          $request = true;
       } else {
-         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1");
+         $fields[] = new \QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1");
          if (($itemtype ==  static::$itemtype_1)
              || is_subclass_of($itemtype, static::$itemtype_1)) {
             $request = true;
@@ -199,11 +199,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       ];
       $request = false;
       if (preg_match('/^itemtype/', static::$itemtype_2)) {
-         $criteria['SELECT'][] = static::$itemtype_2 . ' AS itemtype_2';
+         $fields[] = static::$itemtype_2 . ' AS itemtype_2';
          $where2[static::$itemtype_2] = $itemtype;
          $request = true;
       } else {
-         $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2");
+         $fields[] = new \QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2");
          if (($itemtype ==  static::$itemtype_2)
              || is_subclass_of($itemtype, static::$itemtype_2)) {
             $request = true;
