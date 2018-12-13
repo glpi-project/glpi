@@ -3310,7 +3310,7 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 
       $softwarelicenseIterator = $DB->request([
          'SELECT' => ["id", "number"],
-         'WHERE'  => "glpi_softwarelicenses"
+         'FROM'   => "glpi_softwarelicenses"
       ]);
 
       foreach ($softwarelicenseIterator AS $datal) {
