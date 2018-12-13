@@ -98,6 +98,16 @@ class CommandLoader implements CommandLoaderInterface {
    }
 
    /**
+    * Register plugin commands in command list.
+    *
+    * @return void
+    */
+   public function registerPluginsCommands() {
+
+      $this->findPluginCommands();
+   }
+
+   /**
     * Find all core commands.
     *
     * return void

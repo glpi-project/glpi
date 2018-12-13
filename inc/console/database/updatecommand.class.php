@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use CliMigration;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Session;
 use Update;
 
@@ -48,7 +49,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class UpdateCommand extends AbstractCommand {
+class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface {
 
    /**
     * Error code returned when trying to update from an unstable version.
@@ -176,5 +177,10 @@ class UpdateCommand extends AbstractCommand {
       }
 
       return 0; // Success
+   }
+
+   public function getNoPluginsOptionValue() {
+
+      return true;
    }
 }
