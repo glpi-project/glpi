@@ -44,6 +44,8 @@ use Session;
 use Toolbox;
 
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -178,6 +180,28 @@ class Application extends BaseApplication {
       if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
          // TODO Find a way to route errors to console output in a clean format.
          Toolbox::setDebugMode(Session::DEBUG_MODE, 1, 1, 1);
+      }
+   }
+
+   protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output) {
+
+      $begin_time = microtime(true);
+
+      parent::doRunCommand($command, $input, $output);
+
+      if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+         $output->writeln(
+            sprintf(
+               __('Time elapsed: %s.'),
+               Helper::formatTime(microtime(true) - $begin_time)
+            )
+         );
+         $output->writeln(
+            sprintf(
+               __('Memory usage: %s.'),
+               Helper::formatMemory(memory_get_peak_usage(true))
+            )
+         );
       }
    }
 
