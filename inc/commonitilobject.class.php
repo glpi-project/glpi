@@ -6986,7 +6986,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
-    * Number of tasks of the objec
+    * Number of tasks of the object
     *
     * @param boolean $with_private true : all followups / false : only public ones (default 1)
     *
@@ -7014,4 +7014,85 @@ abstract class CommonITILObject extends CommonDBTM {
       return (int)$row['cpt'];
    }
 
+   /**
+    * Get common request criteria
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public static function getCommonCriteria() {
+      $fk = self::getForeignKeyField();
+      $gtable = str_replace('glpi_', 'glpi_groups_', static::getTable());
+      $itable = str_replace('glpi_', 'glpi_items_', static::getTable());
+      if (self::getType() == 'Change') {
+         $gtable = 'glpi_changes_groups';
+         $itable = 'glpi_changes_items';
+      }
+      $utable = static::getTable() . '_users';
+      $stable = static::getTable() . '_suppliers';
+      if (self::getType() == 'Ticket') {
+         $stable = 'glpi_suppliers_tickets';
+      }
+
+      $table = self::getTable();
+      $criteria = [
+         'SELECT DISTINCT' => "$table.*",
+         'FIELDS'          => [
+            'glpi_itilcategories.completename AS catname'
+         ],
+         'FROM'            => $table,
+         'LEFT JOIN'       => [
+            $gtable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $gtable  => $fk
+               ]
+            ],
+            $utable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $utable  => $fk
+               ]
+            ],
+            $stable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $stable  => $fk
+               ]
+            ],
+            'glpi_itilcategories'      => [
+               'ON' => [
+                  $table                  => 'itilcategories_id',
+                  'glpi_itilcategories'   => 'id'
+               ]
+            ],
+            $itable  => [
+               'ON' => [
+                  $table   => 'id',
+                  $itable  => $fk
+               ]
+            ]
+         ],
+         'ORDERBY'            => "$table.date_mod DESC"
+      ];
+
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $criteria['LEFT JOIN']['glpi_entities'] = [
+            'ON' => [
+               'glpi_entities'   => 'id',
+               $table            => 'entities_id'
+            ]
+         ];
+
+         $criteria['FIELDS'] = array_merge(
+            $criteria['FIELDS'], [
+               'glpi_entities.completename AS entityname',
+               "$table.entities_id AS entityID"
+            ]
+         );
+      }
+
+      return $criteria;
+   }
 }

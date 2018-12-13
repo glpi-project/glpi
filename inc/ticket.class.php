@@ -5925,16 +5925,14 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE `status` = '".self::INCOMING."' ".
-                      getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                      AND `is_deleted` = 0
-                ORDER BY `glpi_tickets`.`date_mod` DESC
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $criteria = self::getCommonCriteria();
+      $criteria['WHERE'] = [
+         'status'       => self::INCOMING,
+         'is_deleted'   => 0
+      ] + getEntitiesRestrictCriteria(self::getTable());
+      $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+      $iterator = $DB->request($criteria);
+      $number = count($iterator);
 
       if ($number > 0) {
          Session::initNavigateListItems('Ticket');
@@ -5953,7 +5951,7 @@ class Ticket extends CommonITILObject {
 
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -5990,15 +5988,14 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      $restrict         = '';
-      $order            = '';
+      $criteria         = self::getCommonCriteria();
+      $restrict         = [];
       $options['reset'] = 'reset';
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict = "(`glpi_tickets_users`.`users_id` = '".$item->getID()."' ".
-                        " AND `glpi_tickets_users`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict['glpi_tickets_users.users_id'] = $item->getID();
+            $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
 
             $options['reset'] = 'reset';
 
@@ -6009,9 +6006,13 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'SLA' :
-            $restrict  = "`slas_id_tto` = '".$item->getID()."'
-                           OR `slas_id_ttr` = '".$item->getID()."'";
-            $order     = '`glpi_tickets`.`time_to_resolve` DESC';
+            $restrict[] = [
+               'OR' => [
+                  'slas_id_tto'  => $item->getID(),
+                  'slas_id_ttr'  => $item->getID()
+               ]
+            ];
+            $criteria['ORDERBY'] = 'glpi_tickets.time_to_resolve DESC';
 
             $options['criteria'][0]['field']      = 30;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -6020,9 +6021,13 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'OLA' :
-            $restrict  = "`olas_id_tto` = '".$item->getID()."'
-                           OR `olas_id_ttr` = '".$item->getID()."'";
-            $order     = '`glpi_tickets`.`internal_time_to_resolve` DESC';
+            $restrict[] = [
+               'OR' => [
+                  'olas_id_tto'  => $item->getID(),
+                  'olas_id_ttr'  => $item->getID()
+               ]
+            ];
+            $criteria['ORDERBY'] = 'glpi_tickets.internal_time_to_resolve DESC';
 
             $options['criteria'][0]['field']      = 30;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -6031,9 +6036,8 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'Supplier' :
-            $restrict = "(`glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."' ".
-                        "  AND `glpi_suppliers_tickets`.`type` = ".CommonITILActor::ASSIGN.")";
-            $order    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
+            $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
 
             $options['criteria'][0]['field']      = 6;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -6056,14 +6060,8 @@ class Ticket extends CommonITILObject {
             }
             echo "</td></tr></table>";
 
-            if ($tree) {
-               $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $item->getID())).")";
-            } else {
-               $restrict = "='".$item->getID()."'";
-            }
-            $restrict = "(`glpi_groups_tickets`.`groups_id` $restrict".
-                         " AND `glpi_groups_tickets`.`type` = ".CommonITILActor::REQUESTER.")";
-            $order    = '`glpi_tickets`.`date_mod` DESC';
+            $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+            $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
 
             $options['criteria'][0]['field']      = 71;
             $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
@@ -6072,22 +6070,25 @@ class Ticket extends CommonITILObject {
             break;
 
          default :
-            $restrict = "(`glpi_items_tickets`.`items_id` = '".$item->getID()."' ".
-                        " AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."')";
+            $restrict['glpi_items_tickets.items_id'] = $item->getID();
+            $restrict['glpi_items_tickets.itemtype'] = $item->getType();
 
             // you can only see your tickets
             if (!Session::haveRight(self::$rightname, self::READALL)) {
-               $restrict .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
-                                   OR (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
-                                       AND `glpi_tickets_users`.`users_id`
-                                            = '".Session::getLoginUserID()."')";
+               $or = [
+                  'glpi_tickets.users_id_recipient'   => Session::getLoginUserID(),
+                  [
+                     'AND' => [
+                        'glpi_tickets_users.tickets_id'  => new \QueryExpression('glpi_tickets.id'),
+                        'glpi_tickets_users.users_id'    => Session::getLoginUserID()
+                     ]
+                  ]
+               ];
                if (count($_SESSION['glpigroups'])) {
-                  $restrict .= " OR `glpi_groups_tickets`.`groups_id` IN (".implode(",", $_SESSION['glpigroups']).")";
+                  $or['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
                }
-               $restrict .= ")";
+               $restrict[] = ['OR' => $or];
             }
-
-            $order    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 12;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -6103,15 +6104,11 @@ class Ticket extends CommonITILObject {
             break;
       }
 
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE $restrict ".
-                      getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                AND glpi_tickets.is_deleted = 0
-                ORDER BY $order
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
+      $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
+      $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+      $iterator = $DB->request($criteria);
+      $number = count($iterator);
 
       $colspan = 11;
       if (count($_SESSION["glpiactiveentities"]) > 1) {
@@ -6173,7 +6170,7 @@ class Ticket extends CommonITILObject {
       if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -6188,21 +6185,18 @@ class Ticket extends CommonITILObject {
       if (count($linkeditems)) {
          foreach ($linkeditems as $ltype => $tab) {
             foreach ($tab as $lID) {
-               $restrict[] = "(`glpi_items_tickets`.`itemtype` = '$ltype' AND `glpi_items_tickets`.`items_id` = '$lID')";
+               $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
             }
          }
       }
 
       if (count($restrict)
           && Session::haveRight(self::$rightname, self::READALL)) {
-         $query = "SELECT ".self::getCommonSelect()."
-                   FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                   WHERE ".implode(' OR ', $restrict).
-                         getEntitiesRestrictRequest(' AND ', 'glpi_tickets') . "
-                   ORDER BY `glpi_tickets`.`date_mod` DESC
-                   LIMIT ".intval($_SESSION['glpilist_limit']);
-         $result = $DB->query($query);
-         $number = $DB->numrows($result);
+         $criteria = self::getCommonCriteria();
+         $criteria['WHERE'] = ['OR' => $restrict]
+             + getEntitiesRestrictCriteria(self::getTable());
+         $iterator = $DB->request($criteria);
+         $number = count($iterator);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='12'>";
@@ -6210,7 +6204,7 @@ class Ticket extends CommonITILObject {
          echo "</th></tr>";
          if ($number > 0) {
             self::commonListHeader(Search::HTML_OUTPUT);
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $iterator->next()) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }
@@ -6321,7 +6315,21 @@ class Ticket extends CommonITILObject {
    }
 
 
+   public static function getCommonCriteria() {
+      $criteria = parent::getCommonCriteria();
+
+      $criteria['LEFT JOIN']['glpi_tickettasks'] = [
+         'ON' => [
+            self::getTable()     => 'id',
+            'glpi_tickettasks'   => 'tickets_id'
+         ]
+      ];
+
+      return $criteria;
+   }
+
    static function getCommonSelect() {
+      Toolbox::deprecated('Use getCommonCriteria');
 
       $SELECT = "";
       if (count($_SESSION["glpiactiveentities"])>1) {
@@ -6336,6 +6344,7 @@ class Ticket extends CommonITILObject {
 
 
    static function getCommonLeftJoin() {
+      Toolbox::deprecated('Use getCommonCriteria');
 
       $FROM = "";
       if (count($_SESSION["glpiactiveentities"])>1) {

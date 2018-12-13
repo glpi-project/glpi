@@ -946,6 +946,7 @@ class Change extends CommonITILObject {
 
 
    static function getCommonSelect() {
+      Toolbox::deprecated('Use getCommonCriteria');
 
       $SELECT = "";
       if (count($_SESSION["glpiactiveentities"])>1) {
@@ -959,6 +960,7 @@ class Change extends CommonITILObject {
    }
 
    static function getCommonLeftJoin() {
+      Toolbox::deprecated('Use getCommonCriteria');
 
       $FROM = "";
       if (count($_SESSION["glpiactiveentities"])>1) {
@@ -997,8 +999,7 @@ class Change extends CommonITILObject {
          return false;
       }
 
-      $restrict = '';
-      $order    = '';
+      $restrict = [];
 
       $options  = [
          'reset' => 'reset',
@@ -1006,8 +1007,7 @@ class Change extends CommonITILObject {
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict   = "(`glpi_changes_users`.`users_id` = '".$item->getID()."')";
-            $order      = '`glpi_changes`.`date_mod` DESC';
+            $restrict['glpi_changes_users.users_id'] = $item->getID();
 
             $options['criteria'][0]['field']      = 4; // status
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -1027,8 +1027,7 @@ class Change extends CommonITILObject {
             break;
 
          case 'Supplier' :
-            $restrict   = "(`glpi_changes_suppliers`.`suppliers_id` = '".$item->getID()."')";
-            $order      = '`glpi_changes`.`date_mod` DESC';
+            $restrict['glpi_changes_suppliers.suppliers_id'] = $item->getID();
 
             $options['criteria'][0]['field']      = 6;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -1051,13 +1050,7 @@ class Change extends CommonITILObject {
             }
             echo "</td></tr></table>";
 
-            if ($tree) {
-               $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $item->getID())).")";
-            } else {
-               $restrict = "='".$item->getID()."'";
-            }
-            $restrict   = "(`glpi_changes_groups`.`groups_id` $restrict)";
-            $order      = '`glpi_changes`.`date_mod` DESC';
+            $restrict['glpi_changes_groups.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
 
             $options['criteria'][0]['field']      = 71;
             $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
@@ -1066,9 +1059,8 @@ class Change extends CommonITILObject {
             break;
 
          default :
-            $restrict   = "(`items_id` = '".$item->getID()."'
-                            AND `itemtype` = '".$item->getType()."')";
-            $order      = '`glpi_changes`.`date_mod` DESC';
+            $restrict['items_id'] = $item->getID();
+            $restrict['itemtype'] = $item->getType();
             break;
       }
 
@@ -1091,17 +1083,11 @@ class Change extends CommonITILObject {
          echo "</div>";
       }
 
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_changes`
-                LEFT JOIN `glpi_changes_items`
-                  ON (`glpi_changes`.`id` = `glpi_changes_items`.`changes_id`) ".
-                self::getCommonLeftJoin()."
-                WHERE $restrict ".
-                      getEntitiesRestrictRequest("AND", "glpi_changes")."
-                ORDER BY $order
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $criteria = self::getCommonCriteria();
+      $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
+      $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+      $iterator = $DB->request($criteria);
+      $number = count($iterator);
 
       // Ticket for the item
       echo "<div><table class='tab_cadre_fixe'>";
@@ -1132,7 +1118,7 @@ class Change extends CommonITILObject {
       if ($number > 0) {
          self::commonListHeader(Search::HTML_OUTPUT);
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator->next()) {
             Session::addToNavigateListItems('Problem', $data["id"]);
             self::showShort($data["id"]);
          }
@@ -1147,24 +1133,17 @@ class Change extends CommonITILObject {
       if (count($linkeditems)) {
          foreach ($linkeditems as $ltype => $tab) {
             foreach ($tab as $lID) {
-               $restrict[] = "(`itemtype` = '$ltype' AND `items_id` = '$lID')";
+               $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
             }
          }
       }
 
       if (count($restrict)) {
-
-         $query = "SELECT ".self::getCommonSelect()."
-                   FROM `glpi_changes`
-                   LEFT JOIN `glpi_changes_items`
-                        ON (`glpi_changes`.`id` = `glpi_changes_items`.`changes_id`) ".
-                   self::getCommonLeftJoin()."
-                   WHERE ".implode(' OR ', $restrict).
-                         getEntitiesRestrictRequest(' AND ', 'glpi_changes') . "
-                   ORDER BY `glpi_changes`.`date_mod` DESC
-                   LIMIT ".intval($_SESSION['glpilist_limit']);
-         $result = $DB->query($query);
-         $number = $DB->numrows($result);
+         $criteria         = self::getCommonCriteria();
+         $criteria['WHERE'] = ['OR' => $restrict]
+            + getEntitiesRestrictCriteria(self::getTable());
+         $iterator = $DB->request($criteria);
+         $number = count($iterator);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='$colspan'>";
@@ -1174,7 +1153,7 @@ class Change extends CommonITILObject {
          if ($number > 0) {
             self::commonListHeader(Search::HTML_OUTPUT);
 
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $iterator->next()) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }
