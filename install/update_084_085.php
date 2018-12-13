@@ -3106,8 +3106,8 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
       'INNER JOIN'   => [
          'glpi_notificationtemplates' => [
             'ON' => [
-               ['glpi_notificationtemplates' => "id"],
-               ['glpi_notificationtemplatetranslations' => "notificationtemplates_id"]
+               'glpi_notificationtemplates' => "id",
+               'glpi_notificationtemplatetranslations' => "notificationtemplates_id"
             ]
          ]
       ],
@@ -3336,7 +3336,8 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
          'LEFT JOIN' => [
             'glpi_softwarelicenses' => [
                'ON' => [
-                  ['glpi_softwarelicenses.softwares_id' => "glpi_softwares.id"]
+                  'glpi_softwarelicenses' => "softwares_id",
+                  'glpi_softwares'        => "id"
                ]
             ]
          ],

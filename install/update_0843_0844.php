@@ -60,14 +60,12 @@ function update0843to0844() {
 
    // Migrate templates : back for validation
    $notificationtemplatetranslationsIterator = $DB->request([
-      'SELECT'       => new \QueryExpression(
-         DBmysql::quoteName("glpi_notificationtemplatetranslations") . ".*"
-      ),
+      'SELECT'       => "glpi_notificationtemplatetranslations.*",
       'FROM'         => "glpi_notificationtemplatetranslations",
       'INNER JOIN'   => ["glpi_notificationtemplates" => [
             'ON' => [
-               'glpi_notificationtemplates.id' =>
-                  'glpi_notificationtemplatetranslations.notificationtemplates_id'
+               'glpi_notificationtemplates' => 'id',
+               'glpi_notificationtemplatetranslations' => 'notificationtemplates_id'
             ]
          ]
       ],
