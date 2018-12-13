@@ -79,10 +79,10 @@ function update085to0853() {
          ]
       ]);
 
-       if (count($ticketsIterator)) {
+      if (count($ticketsIterator)) {
          while ($data = $ticketsIterator->next()) {
             $DB->insertOrDie("glpi_items_tickets", [
-                  'id'           => NULL,
+                  'id'           => null,
                   'items_id'     => $data['items_id'],
                   'itemtype'     => $data['itemtype'],
                   'tickets_id'   => $data['id']

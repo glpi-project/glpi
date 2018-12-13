@@ -465,7 +465,7 @@ function update084to085() {
 
       $DB->updateOrDie("glpi_profilerights", [
          'rights' => (CREATE | Ticket::READMY)
-         ],[
+         ], [
             'name' => 'ticket',
             'rights' => 1
          ],
@@ -709,7 +709,7 @@ function update084to085() {
 
       $DB->updateOrDie("glpi_profilerights", [
          'rights' => ITILFollowup::ADDALLTICKET
-         ],[
+         ], [
             'name' => 'followup',
             'rights' => 1
          ],
@@ -766,7 +766,6 @@ function update084to085() {
       ['name' => "group_add_followups"],
       "0.85 delete group_add_followups right"
    );
-
 
    // delete observe_ticket for followup
    $profilerightsIterator = $DB->request([
@@ -1868,7 +1867,7 @@ function update084to085() {
 ##ENDFOREACHtasks##
 ';
 
-$contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
+         $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 &lt;div&gt;##lang.change.url## : &lt;a href=\"##change.urlapprove##\"&gt;##change.urlapprove##&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;span style=\"color: #888888;\"&gt;&lt;strong&gt;&lt;span style=\"text-decoration: underline;\"&gt;##lang.change.solvedate##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solvedate##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.type##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.type##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.description##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.description## ##ENDIFchange.storestatus##&lt;/div&gt;
 &lt;div&gt;##ELSEchange.storestatus## ##lang.change.url## : &lt;a href=\"##change.url##\"&gt;##change.url##&lt;/a&gt; ##ENDELSEchange.storestatus##&lt;/div&gt;
@@ -2814,7 +2813,6 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 
 ##ENDFOREACHtasks##';
 
-
          $contentHtml = '&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;##lang.project.description##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.project.name## : ##project.name##&lt;br /&gt;##lang.project.code## : ##project.code##&lt;br /&gt; ##lang.project.manager## : ##project.manager##&lt;br /&gt;##lang.project.managergroup## : ##project.managergroup##&lt;br /&gt; ##lang.project.creationdate## : ##project.creationdate##&lt;br /&gt;##lang.project.priority## : ##project.priority## &lt;br /&gt;##lang.project.state## : ##project.state##&lt;br /&gt;##lang.project.type## : ##project.type##&lt;br /&gt;##lang.project.description## : ##project.description##&lt;/p&gt;
@@ -2834,7 +2832,6 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
             ],
             "0.85 add project notification translation"
          );
-
 
          $notifications = ['new'         => [],
                                 'update'      => [],
@@ -2897,8 +2894,7 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
          );
          $notid = $DB->insert_id();
 
-
-        $contentText = '##lang.projecttask.url## : ##projecttask.url##
+         $contentText = '##lang.projecttask.url## : ##projecttask.url##
 
 ##lang.projecttask.description##
 
