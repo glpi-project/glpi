@@ -167,7 +167,7 @@ function update084to085() {
 
             $DB->insert("glpi_profilerights", [
                'profiles_id'  => $profiles_id,
-               'name'         => $rights,
+               'name'         => $right,
                'rights'       => $new_right
             ]);
          }
