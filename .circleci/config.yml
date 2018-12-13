@@ -61,7 +61,7 @@ shared: &shared
 #          composer testldap
     - run:
         name: Coding standards
-        command: if [[ $(php --version|grep "7\.2") ]]; then vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./; else echo "No CS for this version"; fi
+        command: if [[ $(php --version|grep "7\.3") ]]; then vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./; else echo "No CS for this version"; fi
     - run:
         name: sensiolabs/security-checker
         command: vendor/bin/security-checker security:check
@@ -86,6 +86,11 @@ jobs:
     docker:
       - image: circleci/php:7.2-fpm-node-browsers
       - image: circleci/mariadb:10.3
+  "php7.3":
+    <<: *shared
+    docker:
+      - image: circleci/php:7.3-fpm-node-browsers
+      - image: circleci/mariadb:10.3
   "phplatest":
     <<: *shared
     docker:
@@ -101,6 +106,7 @@ workflows:
       - php7.0
       - php7.1
       - php7.2
+      - php7.3
   scheduled_build:
     triggers:
       - schedule:
