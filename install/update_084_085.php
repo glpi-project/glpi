@@ -3125,7 +3125,7 @@ $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
    ]);
 
    if (count($templateIterator)) {
-      while ($data = $templateIteratorDB->next()) {
+      while ($data = $templateIterator->next()) {
          $subject = $data['subject'];
          $text    = $data['content_text'];
          $html    = $data['content_html'];
