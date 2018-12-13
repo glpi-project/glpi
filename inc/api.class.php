@@ -969,17 +969,14 @@ abstract class API extends CommonGLPI {
          if (!Ticket::canView()) {
             $fields['_tickets'] = self::arrayRightError();
          } else {
-            $query = "SELECT ".Ticket::getCommonSelect()."
-                      FROM `glpi_tickets` ".
-                      Ticket::getCommonLeftJoin()."
-                      WHERE `glpi_items_tickets`.`items_id` = '$id'
-                             AND `glpi_items_tickets`.`itemtype` = '$itemtype' ".
-                            getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                      ORDER BY `glpi_tickets`.`date_mod` DESC";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $fields['_tickets'][] = $data;
-               }
+            $criteria = Ticket::getCommonCriteria();
+            $criteria['WHERE'] = [
+               'glpi_items_tickets.items_id' => $id,
+               'glpi_items_tickets.itemtype' => $itemtype
+            ] + getEntitiesRestrictCriteria(Ticket::getTable());
+            $iterator = $DB->request($criteria);
+            while ($data = $iterator->next()) {
+               $fields['_tickets'][] = $data;
             }
          }
       }
@@ -991,19 +988,14 @@ abstract class API extends CommonGLPI {
          if (!Problem::canView()) {
             $fields['_problems'] = self::arrayRightError();
          } else {
-            $query = "SELECT ".Problem::getCommonSelect()."
-                            FROM `glpi_problems`
-                            LEFT JOIN `glpi_items_problems`
-                              ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
-                            Problem::getCommonLeftJoin()."
-                            WHERE `items_id` = '$id'
-                                  AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND", "glpi_problems")."
-                            ORDER BY `glpi_problems`.`date_mod` DESC";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $fields['_problems'][] = $data;
-               }
+            $criteria = Problem::getCommonCriteria();
+            $criteria['WHERE'] = [
+               'glpi_items_problems.items_id' => $id,
+               'glpi_items_problems.itemtype' => $itemtype
+            ] + getEntitiesRestrictCriteria(Problem::getTable());
+            $iterator = $DB->request($criteria);
+            while ($data = $iterator->next()) {
+               $fields['_problems'][] = $data;
             }
          }
       }
@@ -1015,19 +1007,14 @@ abstract class API extends CommonGLPI {
          if (!Change::canView()) {
             $fields['_changes'] = self::arrayRightError();
          } else {
-            $query = "SELECT ".Change::getCommonSelect()."
-                            FROM `glpi_changes`
-                            LEFT JOIN `glpi_changes_items`
-                              ON (`glpi_changes`.`id` = `glpi_changes_items`.`problems_id`) ".
-                            Change::getCommonLeftJoin()."
-                            WHERE `items_id` = '$id'
-                                  AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND", "glpi_changes")."
-                            ORDER BY `glpi_changes`.`date_mod` DESC";
-            if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  $fields['_changes'][] = $data;
-               }
+            $criteria = Change::getCommonCriteria();
+            $criteria['WHERE'] = [
+               'glpi_changes_items.items_id' => $id,
+               'glpi_changes_items.itemtype' => $itemtype
+            ] + getEntitiesRestrictCriteria(Change::getTable());
+            $iterator = $DB->request($criteria);
+            while ($data = $iterator->next()) {
+               $fields['_changes'][] = $data;
             }
          }
       }

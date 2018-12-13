@@ -21,6 +21,7 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 
 - Deprecate raw SQL queries in `DBmysql::request()`
+- Deprecate `getCommonSelect()` and `getCommonLeftJoin()` in `Change`, `Problem` and `Ticket` classes
 
 #### Removed
 
