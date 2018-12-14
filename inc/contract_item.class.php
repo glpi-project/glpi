@@ -192,7 +192,7 @@ class Contract_Item extends CommonDBRelation{
       $items = [];
 
       $types_iterator = self::getDistinctTypes($contract_id);
-      $number = count($iterator);
+      $number = count($types_iterator);
 
       $data    = [];
       $totalnb = 0;
