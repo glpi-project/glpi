@@ -13,7 +13,6 @@ The present file will list all changes made to the project; according to the
 
 - Drop support of PHP 5.6.
 - Deprecated `scripts/ldap_mass_sync.php` has been removed in favor of `glpi:ldap:synchronize_users` command available using `bin/console`
-- Deprecate raw SQL queries in `DBmysql::request()`
 
 ### API changes
 
@@ -21,7 +20,11 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 
+- Deprecate raw SQL queries in `DBmysql::request()`
+
 #### Removed
+
+- All methods that were marked as deprecated in 9.3.x
 
 ## [9.4] unreleased
 
