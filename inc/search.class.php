@@ -724,7 +724,6 @@ class Search {
          // Union Search :
          if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             $tmpquery = $query_num;
-            $numrows  = 0;
 
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
                $ctable = getTableForItemType($ctype);
@@ -834,7 +833,6 @@ class Search {
 
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                           $ctable, $tmpquery);
-                  $tmpquery = str_replace($data['itemtype'], $ctype, $tmpquery);
 
                } else {// Ref table case
                   $reftable = getTableForItemType($data['itemtype']);
@@ -5220,7 +5218,7 @@ JAVASCRIPT;
       }
       $so = $searchopt[$ID];
       $orig_id = $ID;
-      $ID = ($orig_itemtype !== null && $orig_itemtype != 'AllAssets' ? $orig_itemtype : $itemtype) . '_' . $ID;
+      $ID = ($orig_itemtype !== null ? $orig_itemtype : $itemtype) . '_' . $ID;
 
       if (count($addobjectparams)) {
          $so = array_merge($so, $addobjectparams);
