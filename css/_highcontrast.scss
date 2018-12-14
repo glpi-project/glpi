@@ -31,86 +31,85 @@
 /****** TABLES ******/
 
 table {
-  box-sizing: border-box;
-  border-collapse: collapse;
+   box-sizing: border-box;
+   border-collapse: collapse;
 }
 
 .tab_cadre, .tab_cadrehov, .tab_cadre_fixehov {
-  border: 1px solid #ADADAD;
+   border: 1px solid #ADADAD;
 }
 
 .tab_cadre_fixe {
-  border: 1px solid #ADADAD;
-  border-bottom: 0;
+   border: 1px solid #ADADAD;
+   border-bottom: 0;
 }
 
 .tab_glpi {
-  th, td {
-    border: 0;
-  }
+   th, td {
+      border: 0;
+   }
 }
 
 .tab_cadre {
-  th, td {
-    border-bottom: 1px solid #ADADAD;
-    border-top: 1px solid #ADADAD;
-    box-sizing: border-box;
-    border-collapse: collapse;
-  }
+   th, td {
+      border-bottom: 1px solid #ADADAD;
+      border-top: 1px solid #ADADAD;
+      box-sizing: border-box;
+      border-collapse: collapse;
+   }
 }
 
 .tab_cadre_fixe {
-  th, td {
-    border-bottom: 1px solid #ADADAD;
-    border-top: 1px solid #ADADAD;
-    box-sizing: border-box;
-    border-collapse: collapse;
-  }
+   th, td {
+      border-bottom: 1px solid #ADADAD;
+      border-top: 1px solid #ADADAD;
+      box-sizing: border-box;
+      border-collapse: collapse;
+   }
 }
 
 .tab_cadre_fixehov {
-  th, td {
-    border-bottom: 1px solid #ADADAD;
-    border-top: 1px solid #ADADAD;
-    box-sizing: border-box;
-    border-collapse: collapse;
-  }
+   th, td {
+      border-bottom: 1px solid #ADADAD;
+      border-top: 1px solid #ADADAD;
+      box-sizing: border-box;
+      border-collapse: collapse;
+   }
 }
 
 .tab_cadrehov {
-  th, td {
-    border-bottom: 1px solid #ADADAD;
-    border-top: 1px solid #ADADAD;
-    box-sizing: border-box;
-    border-collapse: collapse;
-  }
+   th, td {
+      border-bottom: 1px solid #ADADAD;
+      border-top: 1px solid #ADADAD;
+      box-sizing: border-box;
+      border-collapse: collapse;
+   }
 }
 
 .tab_cadre_postonly {
-  th, td {
-    border-bottom: 1px solid #ADADAD;
-    border-top: 1px solid #ADADAD;
-    box-sizing: border-box;
-    border-collapse: collapse;
-  }
+   th, td {
+      border-bottom: 1px solid #ADADAD;
+      border-top: 1px solid #ADADAD;
+      box-sizing: border-box;
+      border-collapse: collapse;
+   }
 }
 
 .main_form tr.headerRow th {
-  border-bottom: 1px solid #ADADAD;
-  border-top: 1px solid #ADADAD;
-  box-sizing: border-box;
-  border-collapse: collapse;
+   border-bottom: 1px solid #ADADAD;
+   border-top: 1px solid #ADADAD;
+   box-sizing: border-box;
+   border-collapse: collapse;
 }
 
 /* Removes border on tables that have no tab_cadre class but nested in table with this class. */
 /* A border was set by previous rule if nested in previous selector. */
 
 table[class^="tab_cadre"] table:not([class^="tab_cadre"]) {
-  th, td {
-    border: 0;
-  }
+   th, td {
+      border: 0;
+   }
 }
-
 
 // Tables in KB should still have border
 #kbanswer table {
@@ -120,152 +119,159 @@ table[class^="tab_cadre"] table:not([class^="tab_cadre"]) {
 }
 
 #searchcriterias {
-  .tab_cadre_fixe {
-    border: 1px solid #ADADAD;
-  }
-  th, td {
-    border: 0;
-  }
+   .tab_cadre_fixe {
+      border: 1px solid #ADADAD;
+   }
+
+   th, td {
+      border: 0;
+   }
 }
 
 .tab_bg_2 {
-  background-color: #E0E0E0;
+   background-color: #E0E0E0;
 }
 
 .tab_bg_1_2 td, .tab_bg_2_2 td {
-  border-color: #7B3E3E;
+   border-color: #7B3E3E;
 }
 
 .actor-head, .actor-content {
-  margin: 0;
-  min-height: 25px;
-  box-sizing: border-box;
-  border-collapse: collapse;
+   margin: 0;
+   min-height: 25px;
+   box-sizing: border-box;
+   border-collapse: collapse;
 }
 
 .tab_actors {
-  border-bottom: 1px solid #ADADAD;
+   border-bottom: 1px solid #ADADAD;
 }
 
 .actor-head {
-  border-right: 1px solid #ADADAD;
-  border-bottom: 1px solid #ADADAD;
+   border-right: 1px solid #ADADAD;
+   border-bottom: 1px solid #ADADAD;
 }
 
 .actor_title {
-  border-right: 1px solid #ADADAD;
+   border-right: 1px solid #ADADAD;
 }
 
 .order_DESC:before {
-  color: #000;
+   color: #000;
 }
 
 .tab_cadre_pager {
-  img {
-    &[src*=first\.png], &[src*=left\.png] {
+   img {
+      &[src*=first\.png], &[src*=left\.png] {
+         border: 1px solid #393939;
+         padding: 2px;
+         border-radius: 2px;
+      }
+   }
+
+   .fa-wrench {
       border: 1px solid #393939;
       padding: 2px;
       border-radius: 2px;
-    }
-  }
-  .fa-wrench {
-    border: 1px solid #393939;
-    padding: 2px;
-    border-radius: 2px;
-  }
-  img {
-    &[src*=right\.png], &[src*=last\.png] {
-      border: 1px solid #393939;
-      padding: 2px;
-      border-radius: 2px;
-    }
-    &:hover {
-      opacity: .5;
-    }
-  }
-  .grey_border {
-    border: 1px dotted #414141;
-    margin-left: 2px;
-  }
+   }
+
+   img {
+      &[src*=right\.png], &[src*=last\.png] {
+         border: 1px solid #393939;
+         padding: 2px;
+         border-radius: 2px;
+      }
+
+      &:hover {
+         opacity: .5;
+      }
+   }
+
+   .grey_border {
+      border: 1px dotted #414141;
+      margin-left: 2px;
+   }
 }
 
 /****** TABS ******/
 
 .ui-tabs {
-  .ui-tabs-nav, &.ui-tabs-vertical .ui-tabs-nav {
-    border-bottom: 1px solid #878787;
-    padding: 0;
-  }
-  .ui-tabs-nav li {
-    border-color: #878787;
-    border-bottom: 0;
-    box-sizing: border-box;
-    border-collapse: collapse;
-  }
-  &.ui-tabs-vertical .ui-tabs-nav li {
-    border-color: #878787;
-    border-bottom: 0;
-    box-sizing: border-box;
-    border-collapse: collapse;
-    border-right-width: 1px !important;
-    margin: 0;
-    width: 100%;
-  }
+   .ui-tabs-nav, &.ui-tabs-vertical .ui-tabs-nav {
+      border-bottom: 1px solid #878787;
+      padding: 0;
+   }
+
+   .ui-tabs-nav li {
+      border-color: #878787;
+      border-bottom: 0;
+      box-sizing: border-box;
+      border-collapse: collapse;
+   }
+
+   &.ui-tabs-vertical .ui-tabs-nav li {
+      border-color: #878787;
+      border-bottom: 0;
+      box-sizing: border-box;
+      border-collapse: collapse;
+      border-right-width: 1px !important;
+      margin: 0;
+      width: 100%;
+   }
 }
 
 .layout_classic.form .stNavMain li, .layout_vsplit.form .stNavMain li {
-  border: 1px solid #878787 !important;
+   border: 1px solid #878787 !important;
 }
 
 .ui-tabs-panel {
-  margin-top: 3px;
+   margin-top: 3px;
 }
 
 /****** CONTROLS ******/
 
 textarea {
-  border: 1px solid #5D5D5D;
+   border: 1px solid #5D5D5D;
 }
 
 input {
-  &[type=text], &[type=password], &[type=number] {
-    border: 1px solid #5D5D5D;
-  }
+   &[type=text], &[type=password], &[type=number] {
+      border: 1px solid #5D5D5D;
+   }
 }
 
 .select2-choice, .select2-container--default .select2-selection--single {
-  border: 1px solid #5D5D5D !important;
+   border: 1px solid #5D5D5D !important;
 }
 
 input.submit, span.vsubmit, a.vsubmit, #BackToTop {
-  color: #4B2F03;
-  border: 2px solid #4B2F03;
+   color: #4B2F03;
+   border: 2px solid #4B2F03;
 }
 
 /****** CHECKBOXES ******/
 
 th .form-group-checkbox {
-  padding: 2px;
+   padding: 2px;
 }
 
 .label-checkbox .box, .subheader .box, th .label-checkbox .box {
-  background-color: white;
-  border: 2px solid black;
-  margin-right: 2px;
+   background-color: white;
+   border: 2px solid black;
+   margin-right: 2px;
 }
 
 .label-checkbox .check {
-  border: 3px solid #000;
-  border-top: 0;
-  border-left: 0;
+   border: 3px solid #000;
+   border-top: 0;
+   border-left: 0;
 }
 
 /****** MISC ******/
 
 .pointer {
-  opacity: 1;
+   opacity: 1;
 }
 
 #c_ssmenu2 {
-  border-bottom: 1px solid #ADADAD;
+   border-bottom: 1px solid #ADADAD;
 }

@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Config;
 use DBConnection;
+use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Toolbox;
 
 use Symfony\Component\Console\Command\Command;
@@ -50,7 +51,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class InstallCommand extends Command {
+class InstallCommand extends Command implements ForceNoPluginsOptionCommandInterface {
 
    /**
     * Error code returned if DB connection initialization fails.
@@ -305,5 +306,10 @@ class InstallCommand extends Command {
       $output->writeln('<info>' . __('Installation done.') . '</info>');
 
       return 0; // Success
+   }
+
+   public function getNoPluginsOptionValue() {
+
+      return true;
    }
 }

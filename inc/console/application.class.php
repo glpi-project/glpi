@@ -39,16 +39,20 @@ if (!defined('GLPI_ROOT')) {
 use Config;
 use DB;
 use GLPI;
+use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Plugin;
 use Session;
 use Toolbox;
 
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -77,12 +81,16 @@ class Application extends BaseApplication {
 
       $this->computeAndLoadOutputLang();
 
+      // Load core commands only to check if called command prevent or not usage of plugins
+      // Plugin commands will be loaded later
+      $loader = new CommandLoader(false);
+      $this->setCommandLoader($loader);
+
       $use_plugins = $this->usePlugins();
       if ($use_plugins) {
          $this->loadActivePlugins();
+         $loader->registerPluginsCommands();
       }
-
-      $this->setCommandLoader(new CommandLoader($use_plugins));
    }
 
    protected function getDefaultInputDefinition() {
@@ -147,7 +155,7 @@ class Application extends BaseApplication {
                '--no-plugins',
                null,
                InputOption::VALUE_NONE,
-               __('Disable GLPI plugins')
+               __('Disable GLPI plugins (unless commands forces plugins loading)')
             ),
             new InputOption(
                '--lang',
@@ -178,6 +186,28 @@ class Application extends BaseApplication {
       if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
          // TODO Find a way to route errors to console output in a clean format.
          Toolbox::setDebugMode(Session::DEBUG_MODE, 1, 1, 1);
+      }
+   }
+
+   protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output) {
+
+      $begin_time = microtime(true);
+
+      parent::doRunCommand($command, $input, $output);
+
+      if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+         $output->writeln(
+            sprintf(
+               __('Time elapsed: %s.'),
+               Helper::formatTime(microtime(true) - $begin_time)
+            )
+         );
+         $output->writeln(
+            sprintf(
+               __('Memory usage: %s.'),
+               Helper::formatMemory(memory_get_peak_usage(true))
+            )
+         );
       }
    }
 
@@ -373,6 +403,17 @@ class Application extends BaseApplication {
    private function usePlugins() {
 
       $input = new ArgvInput();
+
+      try {
+         $command = $this->get($this->getCommandName($input));
+         if ($command instanceof ForceNoPluginsOptionCommandInterface) {
+            return !$command->getNoPluginsOptionValue();
+         }
+      } catch (CommandNotFoundException $e) {
+         // Command will not be found at this point if it is a plugin command
+         $command = null; // Say hello to CS checker
+      }
+
       return !$input->hasParameterOption('--no-plugins', true);
    }
 }

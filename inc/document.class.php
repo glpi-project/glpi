@@ -1034,7 +1034,7 @@ class Document extends CommonDBTM {
          $prefix = array_shift($input['_prefix_filename']);
       }
 
-      $fullpath = GLPI_TMP_DIR."/".$filename;
+      $fullpath = GLPI_UPLOAD_DIR."/".$filename;
       $filename = str_replace($prefix, '', $filename);
 
       if (!is_dir(GLPI_UPLOAD_DIR)) {

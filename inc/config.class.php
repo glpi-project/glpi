@@ -2924,7 +2924,7 @@ class Config extends CommonDBTM {
     * @param string  $context name of the configuration context (default 'core')
     * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
-    * @return Zend\Cache\Storage\StorageInterface object
+    * @return Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator|Zend\Cache\Storage\StorageInterface object
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB, $CFG_GLPI;

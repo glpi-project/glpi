@@ -594,8 +594,13 @@ class MailCollector  extends CommonDBTM {
                         $ticket->add($tkt);
                      } else {
                         // Followup case
-                        $fup = new TicketFollowup();
-                        $fup->add($tkt);
+                        $fup = new ITILFollowup();
+
+                        $fup_input = $tkt;
+                        $fup_input['itemtype'] = Ticket::class;
+                        $fup_input['items_id'] = $fup_input['tickets_id'];
+
+                        $fup->add($fup_input);
                      }
 
                      $folder = self::ACCEPTED_FOLDER;

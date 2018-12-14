@@ -4321,11 +4321,15 @@ class Html {
                   return data;
                }
 
+               var searched_term = getTextWithoutDiacriticalMarks(params.term.toUpperCase());
+
+               var data_text = typeof(data.text) === 'string'
+                  ? getTextWithoutDiacriticalMarks(data.text.toUpperCase())
+                  : '';
+
                // Skip if there is no 'children' property
                if (typeof data.children === 'undefined') {
-                  if (typeof data.text === 'string'
-                     && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
-                  ) {
+                  if (data_text.indexOf(searched_term) != -1) {
                      return data;
                   }
                   return null;
@@ -4334,9 +4338,13 @@ class Html {
                // `data.children` contains the actual options that we are matching against
                // also check in `data.text` (optgroup title)
                var filteredChildren = [];
+
                $.each(data.children, function (idx, child) {
-                  if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
-                     || data.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
+                  var child_text = typeof(child.text) === 'string'
+                     ? getTextWithoutDiacriticalMarks(child.text.toUpperCase())
+                     : '';
+                  if (child_text.indexOf(searched_term) != -1
+                     || data_text.indexOf(searched_term) != -1
                   ) {
                      filteredChildren.push(child);
                   }

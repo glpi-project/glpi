@@ -1651,13 +1651,17 @@ class Ticket extends CommonITILObject {
           && ($delay == 0)
           && ($rate > 0)
           && (mt_rand(1, 100) <= $rate)) {
-         $inquest->add(['tickets_id'    => $this->fields['id'],
-                             'date_begin'    => $_SESSION["glpi_currenttime"],
-                             'entities_id'   => $this->fields['entities_id'],
-                             'type'          => $type,
-                             'max_closedate' => $max_closedate]);
+         $inquest_id = $inquest->add(
+            [
+               'tickets_id'    => $this->fields['id'],
+               'date_begin'    => $_SESSION["glpi_currenttime"],
+               'entities_id'   => $this->fields['entities_id'],
+               'type'          => $type,
+               'max_closedate' => $max_closedate,
+            ]
+         );
          // Redirect to created survey
-         HTML::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$this->fields['id']."&forcetab=Ticket$3");
+         HTML::redirect(TicketSatisfaction::getFormURLWithID($inquest_id));
       }
    }
 

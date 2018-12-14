@@ -968,3 +968,24 @@ var templateSelection = function (selection) {
    // Default text
    return selection.text;
 };
+
+/**
+ * Returns given text without is diacritical marks.
+ *
+ * @param {string} text
+ *
+ * @return {string}
+ */
+var getTextWithoutDiacriticalMarks = function (text) {
+   if (typeof(text.normalize) !== 'function') {
+      return text; // normalize method is not supported by old browsers (actually only IE)
+   }
+
+   // Normalizing to NFD Unicode normal form decomposes combined graphemes
+   // into the combination of simple ones. The "è" becomes "e + ̀`".
+   text = text.normalize('NFD');
+
+   // The U+0300 -> U+036F range corresponds to diacritical chars.
+   // They are removed to keep only chars without their diacritical mark.
+   return text.replace(/[\u0300-\u036f]/g, '');
+}

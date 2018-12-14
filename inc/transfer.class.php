@@ -462,40 +462,42 @@ class Transfer extends CommonDBTM {
             $DB->delete('glpi_softwareversions', ['id' => $softwareversions]);
          }
 
-         $iterator = $DB->request([
-            'SELECT'       => [
-               'glpi_softwares.id',
-               'glpi_softwares.entities_id',
-               'glpi_softwares.is_recursive',
-               'glpi_softwareversions.id AS vID'
-            ],
-            'FROM'         => 'glpi_computers_softwareversions',
-            'INNER JOIN'   => [
-               'glpi_softwareversions' => [
-                  'ON' => [
-                     'glpi_computers_softwareversions'   => 'softwareversions_id',
-                     'glpi_softwareversions'             => 'id'
+         if (count($this->needtobe_transfer['Computer'])) {
+            $iterator = $DB->request([
+               'SELECT'       => [
+                  'glpi_softwares.id',
+                  'glpi_softwares.entities_id',
+                  'glpi_softwares.is_recursive',
+                  'glpi_softwareversions.id AS vID'
+               ],
+               'FROM'         => 'glpi_computers_softwareversions',
+               'INNER JOIN'   => [
+                  'glpi_softwareversions' => [
+                     'ON' => [
+                        'glpi_computers_softwareversions'   => 'softwareversions_id',
+                        'glpi_softwareversions'             => 'id'
+                     ]
+                  ],
+                  'glpi_softwares'        => [
+                     'ON' => [
+                        'glpi_softwareversions' => 'softwares_id',
+                        'glpi_softwares'        => 'id'
+                     ]
                   ]
                ],
-               'glpi_softwares'        => [
-                  'ON' => [
-                     'glpi_softwareversions' => 'softwares_id',
-                     'glpi_softwares'        => 'id'
-                  ]
+               'WHERE'        => [
+                  'glpi_computers_softwareversions.computers_id'  => $this->needtobe_transfer['Computer']
                ]
-            ],
-            'WHERE'        => [
-               'glpi_computers_softwareversions.computers_id'  => $this->needtobe_transfer['Computer']
-            ]
-         ]);
+            ]);
 
-         if (count($iterator)) {
-            while ($data = $iterator->next()) {
-               if ($data['is_recursive']
-                     && in_array($data['entities_id'], $to_entity_ancestors)) {
-                  $this->addNotToBeTransfer('SoftwareVersion', $data['vID']);
-               } else {
-                  $this->addToBeTransfer('SoftwareVersion', $data['vID']);
+            if (count($iterator)) {
+               while ($data = $iterator->next()) {
+                  if ($data['is_recursive']
+                        && in_array($data['entities_id'], $to_entity_ancestors)) {
+                     $this->addNotToBeTransfer('SoftwareVersion', $data['vID']);
+                  } else {
+                     $this->addToBeTransfer('SoftwareVersion', $data['vID']);
+                  }
                }
             }
          }
