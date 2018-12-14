@@ -304,6 +304,9 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
+      $it = $this->it->execute('foo', ['LEFT JOIN' => [['TABLE' => 'bar', 'FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
       $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['ON' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
@@ -335,6 +338,14 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['RIGHT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` RIGHT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['LEFT JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->hasMessage('BAD JOIN');
 
       $this->when(
          function () {
@@ -373,23 +384,42 @@ class DBmysqlIterator extends DbTestCase {
          'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` OR `field` > \'20\')'
       );
 
+      $it = $this->it->execute(
+         'foo', [
+            'LEFT JOIN' => [
+               'bar' => [
+                  'FKEY' => [
+                     'bar' => 'id',
+                     'foo' => 'fk', [
+                        'AND'  => ['field' => 42]
+                     ]
+                  ]
+               ]
+            ]
+         ]
+      );
+      $this->string($it->getSql())->isIdenticalTo(
+         'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+      );
+
       //test derived table in JOIN statement
       $it = $this->it->execute(
          'foo', [
             'LEFT JOIN' => [
-               't2' => [
-                  'FROM' => 'bar',
-                  'FKEY' => [
+               [
+                  'TABLE'  => new \QuerySubQuery(['FROM' => 'bar'], 't2'),
+                  'FKEY'   => [
                      't2'  => 'id',
                      'foo' => 'fk'
                   ]
-               ],
+               ]
             ]
          ]
       );
       $this->string($it->getSql())->isIdenticalTo(
          'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)'
       );
+
    }
 
 

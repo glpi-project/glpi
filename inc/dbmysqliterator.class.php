@@ -210,15 +210,21 @@ class DBmysqlIterator implements Iterator, Countable {
                               break;
                         }
                         foreach ($val as $jointable => $joincrit) {
-                           $joinExpressionKeys = ['FKEY' => null, 'ON' => null];
-                           $subquery = array_diff_key($joincrit, $joinExpressionKeys);
-                           if (count($subquery)) {
-                              $subquery = new QuerySubquery($subquery, $jointable);
-                              $joincrit = array_intersect_key($joincrit, $joinExpressionKeys);
-                              $join .= " $jointype JOIN " . $subquery->getQuery() . " ON (" . $this->analyseCrit($joincrit) . ")";
-                           } else {
-                              $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                           if (isset($joincrit['TABLE'])) {
+                              //not a "simple" FKEY
+                              $jointable = $joincrit['TABLE'];
+                              unset($joincrit['TABLE']);
+                           } else if (is_numeric($jointable) || $jointable == 'FKEY' || $jointable == 'ON') {
+                              throw new \RuntimeException('BAD JOIN');
                            }
+
+                           if ($jointable instanceof \QuerySubquery) {
+                              $jointable = $jointable->getQuery();
+                           } else {
+                              $jointable = DBmysql::quoteName($jointable);
+                           }
+
+                           $join .= " $jointype JOIN $jointable ON (" . $this->analyseCrit($joincrit) . ")";
                         }
                      } else {
                         trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
