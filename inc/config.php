@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Be sure to use global objects if this file is included outside normal process
-global $CFG_GLPI, $GLPI, $GLPI_CACHE;
+global $CFG_GLPI, $CONTAINER, $GLPI, $GLPI_CACHE;
 
 include_once (GLPI_ROOT."/inc/based_config.php");
 include_once (GLPI_ROOT."/inc/define.php");
@@ -239,3 +239,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    $GLPI_CACHE = Config::getCache('cache_db');
 }
+
+// Load kernel and expose container in global var
+$CONTAINER = (new Glpi\Kernel())->getContainer();

@@ -1143,7 +1143,7 @@ class Plugin extends CommonDBTM {
     *
     * @since 0.84
     *
-    * @return String or Array (when $info is NULL)
+    * @return mixed
    **/
    static function getInfo($plugin, $info = null) {
 
