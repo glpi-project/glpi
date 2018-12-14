@@ -1811,18 +1811,17 @@ function update084to085() {
       'itemtype' => "Change"
    ]);
 
-   if ($notificationtemplatesIterator->valid()) {
-      if (count($notificationtemplatesIterator) == 0) {
-         $DB->insertOrDie('glpi_notificationtemplates', [
-               'name'      => "Changes",
-               'itemtype'  => "Change",
-               'date_mod'  => new \QueryExpression("NOW()"),
-            ],
-            "0.85 add change notification"
-         );
-         $notid = $DB->insert_id();
+   if (count($notificationtemplatesIterator) == 0) {
+      $DB->insertOrDie('glpi_notificationtemplates', [
+            'name'      => "Changes",
+            'itemtype'  => "Change",
+            'date_mod'  => new \QueryExpression("NOW()"),
+         ],
+         "0.85 add change notification"
+      );
+      $notid = $DB->insert_id();
 
-         $contentText = '##IFchange.storestatus=5##
+      $contentText = '##IFchange.storestatus=5##
  ##lang.change.url## : ##change.urlapprove##
  ##lang.change.solvedate## : ##change.solvedate##
  ##lang.change.solution.type## : ##change.solution.type##
@@ -1867,7 +1866,7 @@ function update084to085() {
 ##ENDFOREACHtasks##
 ';
 
-         $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
+      $contentHtml = '&lt;p&gt;##IFchange.storestatus=5##&lt;/p&gt;
 &lt;div&gt;##lang.change.url## : &lt;a href=\"##change.urlapprove##\"&gt;##change.urlapprove##&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;span style=\"color: #888888;\"&gt;&lt;strong&gt;&lt;span style=\"text-decoration: underline;\"&gt;##lang.change.solvedate##&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt; : ##change.solvedate##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.type##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.type##&lt;br /&gt;&lt;span style=\"text-decoration: underline; color: #888888;\"&gt;&lt;strong&gt;##lang.change.solution.description##&lt;/strong&gt;&lt;/span&gt; : ##change.solution.description## ##ENDIFchange.storestatus##&lt;/div&gt;
 &lt;div&gt;##ELSEchange.storestatus## ##lang.change.url## : &lt;a href=\"##change.url##\"&gt;##change.url##&lt;/a&gt; ##ENDELSEchange.storestatus##&lt;/div&gt;
@@ -1884,68 +1883,67 @@ function update084to085() {
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;';
 
-         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+      $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+            'notificationtemplates_id' => $notid,
+            'language'     => "",
+            'subject'      => "##change.action## ##change.title##",
+            'content_text' => $contentText,
+            'content_html' => $contentHtml
+         ],
+         "0.85 add change notification translation"
+      );
+
+      $notifications = ['new'         => [],
+                             'update'      => [Notification::ASSIGN_TECH,
+                                                    Notification::OLD_TECH_IN_CHARGE],
+                             'solved'      => [],
+                             'add_task'    => [],
+                             'update_task' => [],
+                             'delete_task' => [],
+                             'closed'      => [],
+                             'delete'      => []];
+
+      $notif_names   = ['new'         => 'New Change',
+                             'update'      => 'Update Change',
+                             'solved'      => 'Resolve Change',
+                             'add_task'    => 'Add Task',
+                             'update_task' => 'Update Task',
+                             'delete_task' => 'Delete Task',
+                             'closed'      => 'Close Change',
+                             'delete'      => 'Delete Change'];
+
+      foreach ($notifications as $key => $val) {
+         $notifications[$key][] = Notification::AUTHOR;
+         $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
+         $notifications[$key][] = Notification::OBSERVER;
+      }
+
+      foreach ($notifications as $type => $targets) {
+         $DB->insertOrDie("glpi_notifications", [
+               'name'                     => $notif_names[$type],
+               'entities_id'              => 0,
+               'itemtype'                 => "Change",
+               'event'                    => $type,
+               'mode'                     => "mail",
                'notificationtemplates_id' => $notid,
-               'language'     => "",
-               'subject'      => "##change.action## ##change.title##",
-               'content_text' => $contentText,
-               'content_html' => $contentHtml
+               'comment'                  => "",
+               'is_recursive'             => 1,
+               'is_active'                => 1,
+               'date_mod'                 => new \QueryExpression("NOW()")
             ],
-            "0.85 add change notification translation"
+            "0.85 add change $type notification"
          );
+         $notifid = $DB->insert_id();
 
-         $notifications = ['new'         => [],
-                                'update'      => [Notification::ASSIGN_TECH,
-                                                       Notification::OLD_TECH_IN_CHARGE],
-                                'solved'      => [],
-                                'add_task'    => [],
-                                'update_task' => [],
-                                'delete_task' => [],
-                                'closed'      => [],
-                                'delete'      => []];
-
-         $notif_names   = ['new'         => 'New Change',
-                                'update'      => 'Update Change',
-                                'solved'      => 'Resolve Change',
-                                'add_task'    => 'Add Task',
-                                'update_task' => 'Update Task',
-                                'delete_task' => 'Delete Task',
-                                'closed'      => 'Close Change',
-                                'delete'      => 'Delete Change'];
-
-         foreach ($notifications as $key => $val) {
-            $notifications[$key][] = Notification::AUTHOR;
-            $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
-            $notifications[$key][] = Notification::OBSERVER;
-         }
-
-         foreach ($notifications as $type => $targets) {
-            $DB->insertOrDie("glpi_notifications", [
-                  'name'                     => $notif_names[$type],
-                  'entities_id'              => 0,
-                  'itemtype'                 => "Change",
-                  'event'                    => $type,
-                  'mode'                     => "mail",
-                  'notificationtemplates_id' => $notid,
-                  'comment'                  => "",
-                  'is_recursive'             => 1,
-                  'is_active'                => 1,
-                  'date_mod'                 => new \QueryExpression("NOW()")
+         foreach ($targets as $target) {
+            $DB->insertOrDie("glpi_notificationtargets", [
+                  'id'                 => null,
+                  'notifications_id'   => $notifid,
+                  'type'               => Notification::USER_TYPE,
+                  'items_id'           => $target,
                ],
-               "0.85 add change $type notification"
+               "0.85 add change $type notification target"
             );
-            $notifid = $DB->insert_id();
-
-            foreach ($targets as $target) {
-               $DB->insertOrDie("glpi_notificationtargets", [
-                     'id'                 => null,
-                     'notifications_id'   => $notifid,
-                     'type'               => Notification::USER_TYPE,
-                     'items_id'           => $target,
-                  ],
-                  "0.85 add change $type notification target"
-               );
-            }
          }
       }
    }
@@ -2319,61 +2317,59 @@ function update084to085() {
       'itemtype' => "MailCollector"
    ]);
 
-   if ($notificationtemplatesIterator->valid()) {
-      if (count($notificationtemplatesIterator) == 0) {
-         $DB->insertOrDie("glpi_notificationtemplates", [
-               'name'      => "Receiver errors",
-               'itemtype'  => "MailCollector",
-               'date_mod'  => new \QueryExpression("NOW()"),
-            ],
-            "0.85 add mail collector notification"
-         );
-         $notid = $DB->insert_id();
+   if (count($notificationtemplatesIterator) == 0) {
+      $DB->insertOrDie("glpi_notificationtemplates", [
+            'name'      => "Receiver errors",
+            'itemtype'  => "MailCollector",
+            'date_mod'  => new \QueryExpression("NOW()"),
+         ],
+         "0.85 add mail collector notification"
+      );
+      $notid = $DB->insert_id();
 
-         $contentText = '##FOREACHmailcollectors##
+      $contentText = '##FOREACHmailcollectors##
 ##lang.mailcollector.name## : ##mailcollector.name##
 ##lang.mailcollector.errors## : ##mailcollector.errors##
 ##mailcollector.url##
 ##ENDFOREACHmailcollectors##';
 
-         $contentHtml = '&lt;p&gt;##FOREACHmailcollectors##&lt;br /&gt;##lang.mailcollector.name## : ##mailcollector.name##&lt;br /&gt; ##lang.mailcollector.errors## : ##mailcollector.errors##&lt;br /&gt;&lt;a href=\"##mailcollector.url##\"&gt;##mailcollector.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHmailcollectors##&lt;/p&gt;
+      $contentHtml = '&lt;p&gt;##FOREACHmailcollectors##&lt;br /&gt;##lang.mailcollector.name## : ##mailcollector.name##&lt;br /&gt; ##lang.mailcollector.errors## : ##mailcollector.errors##&lt;br /&gt;&lt;a href=\"##mailcollector.url##\"&gt;##mailcollector.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHmailcollectors##&lt;/p&gt;
 &lt;p&gt;&lt;/p&gt;';
 
-         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
-               'notificationtemplates_id' => $notid,
-               'language' => "",
-               'subject' => '##mailcollector.action##',
-               'content_text' => $contentText,
-               'content_html' => $contentHtml,
-            ],
-            "0.85 add mail collector notification translation"
-         );
+      $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+            'notificationtemplates_id' => $notid,
+            'language' => "",
+            'subject' => '##mailcollector.action##',
+            'content_text' => $contentText,
+            'content_html' => $contentHtml,
+         ],
+         "0.85 add mail collector notification translation"
+      );
 
-         $DB->insertOrDie("glpi_notifications", [
-               'name'                     => "Receiver errors",
-               'entities_id'              => 0,
-               'itemtype'                 => "MailCollector",
-               'event'                    => "error",
-               'mode'                     => "mail",
-               'notificationtemplates_id' => $notid,
-               'comment'                  => "",
-               'is_recursive'             => 1,
-               'is_active'                => 1,
-               'date_mod'                 => new \QueryExpression("NOW()")
-            ],
-            "0.85 add mail collector notification"
-         );
-         $notifid = $DB->insert_id();
+      $DB->insertOrDie("glpi_notifications", [
+            'name'                     => "Receiver errors",
+            'entities_id'              => 0,
+            'itemtype'                 => "MailCollector",
+            'event'                    => "error",
+            'mode'                     => "mail",
+            'notificationtemplates_id' => $notid,
+            'comment'                  => "",
+            'is_recursive'             => 1,
+            'is_active'                => 1,
+            'date_mod'                 => new \QueryExpression("NOW()")
+         ],
+         "0.85 add mail collector notification"
+      );
+      $notifid = $DB->insert_id();
 
-         $DB->insertOrDie("glpi_notificationtargets", [
-               'id'                 => null,
-               'notifications_id'   => $notifid,
-               'type'               => Notification::USER_TYPE,
-               'items_id'           => Notification::GLOBAL_ADMINISTRATOR
-            ],
-            "0.85 add mail collector notification target"
-         );
-      }
+      $DB->insertOrDie("glpi_notificationtargets", [
+            'id'                 => null,
+            'notifications_id'   => $notifid,
+            'type'               => Notification::USER_TYPE,
+            'items_id'           => Notification::GLOBAL_ADMINISTRATOR
+         ],
+         "0.85 add mail collector notification target"
+      );
    }
 
    if (!countElementsInTable('glpi_crontasks',
@@ -2773,18 +2769,17 @@ function update084to085() {
       'itemtype' => "Project"
    ]);
 
-   if ($notificationtemplatesIterator->valid()) {
-      if (count($notificationtemplatesIterator) == 0) {
-         $DB->insertOrDie("glpi_notificationtemplates", [
-               'name'      => "Projects",
-               'itemtype'  => "Project",
-               'date_mod'  => new \QueryExpression("NOW()")
-            ],
-            "0.85 add project notification"
-         );
-         $notid = $DB->insert_id();
+   if (count($notificationtemplatesIterator) == 0) {
+      $DB->insertOrDie("glpi_notificationtemplates", [
+            'name'      => "Projects",
+            'itemtype'  => "Project",
+            'date_mod'  => new \QueryExpression("NOW()")
+         ],
+         "0.85 add project notification"
+      );
+      $notid = $DB->insert_id();
 
-         $contenText = '##lang.project.url## : ##project.url##
+      $contenText = '##lang.project.url## : ##project.url##
 
 ##lang.project.description##
 
@@ -2813,7 +2808,7 @@ function update084to085() {
 
 ##ENDFOREACHtasks##';
 
-         $contentHtml = '&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
+      $contentHtml = '&lt;p&gt;##lang.project.url## : &lt;a href=\"##project.url##\"&gt;##project.url##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;##lang.project.description##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.project.name## : ##project.name##&lt;br /&gt;##lang.project.code## : ##project.code##&lt;br /&gt; ##lang.project.manager## : ##project.manager##&lt;br /&gt;##lang.project.managergroup## : ##project.managergroup##&lt;br /&gt; ##lang.project.creationdate## : ##project.creationdate##&lt;br /&gt;##lang.project.priority## : ##project.priority## &lt;br /&gt;##lang.project.state## : ##project.state##&lt;br /&gt;##lang.project.type## : ##project.type##&lt;br /&gt;##lang.project.description## : ##project.description##&lt;/p&gt;
 &lt;p&gt;##lang.project.numberoftasks## : ##project.numberoftasks##&lt;/p&gt;
@@ -2823,57 +2818,56 @@ function update084to085() {
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;';
 
-         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+      $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+            'notificationtemplates_id' => $notid,
+            'language'                 => "",
+            'subject'                  => "##project.action## ##project.name## ##project.code##",
+            'content_text'             => $contentText,
+            'content_html'             => $contentHtml
+         ],
+         "0.85 add project notification translation"
+      );
+
+      $notifications = ['new'         => [],
+                             'update'      => [],
+                             'delete'      => []];
+
+      $notif_names   = ['new'         => 'New Project',
+                             'update'      => 'Update Project',
+                             'delete'      => 'Delete Project'];
+
+      foreach ($notifications as $key => $val) {
+         $notifications[$key][] = Notification::MANAGER_USER;
+         $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
+         $notifications[$key][] = Notification::MANAGER_GROUP;
+      }
+
+      foreach ($notifications as $type => $targets) {
+         $DB->insertOrDie("glpi_notifications", [
+               'name'                     => $notif_names[$type],
+               'entities_id'              => 0,
+               'itemtype'                 => "Project",
+               'event'                    => $type,
+               'mode'                     => "mail",
                'notificationtemplates_id' => $notid,
-               'language'                 => "",
-               'subject'                  => "##project.action## ##project.name## ##project.code##",
-               'content_text'             => $contentText,
-               'content_html'             => $contentHtml
+               'comment'                  => "",
+               'is_recursive'             => 1,
+               'is_active'                => 1,
+               'date_mod'                 => new \QueryExpression("NOW()"),
             ],
-            "0.85 add project notification translation"
+            "0.85 add project $type notification"
          );
+         $notifid = $DB->insert_id();
 
-         $notifications = ['new'         => [],
-                                'update'      => [],
-                                'delete'      => []];
-
-         $notif_names   = ['new'         => 'New Project',
-                                'update'      => 'Update Project',
-                                'delete'      => 'Delete Project'];
-
-         foreach ($notifications as $key => $val) {
-            $notifications[$key][] = Notification::MANAGER_USER;
-            $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
-            $notifications[$key][] = Notification::MANAGER_GROUP;
-         }
-
-         foreach ($notifications as $type => $targets) {
-            $DB->insertOrDie("glpi_notifications", [
-                  'name'                     => $notif_names[$type],
-                  'entities_id'              => 0,
-                  'itemtype'                 => "Project",
-                  'event'                    => $type,
-                  'mode'                     => "mail",
-                  'notificationtemplates_id' => $notid,
-                  'comment'                  => "",
-                  'is_recursive'             => 1,
-                  'is_active'                => 1,
-                  'date_mod'                 => new \QueryExpression("NOW()"),
+         foreach ($targets as $target) {
+            $DB->insertOrDie("glpi_notificationtargets", [
+                  'id'                 => null,
+                  'notifications_id'   => $notifid,
+                  'type'               =>  Notification::USER_TYPE,
+                  'items_id'           => $target
                ],
-               "0.85 add project $type notification"
+               "0.85 add project $type notification target"
             );
-            $notifid = $DB->insert_id();
-
-            foreach ($targets as $target) {
-               $DB->insertOrDie("glpi_notificationtargets", [
-                     'id'                 => null,
-                     'notifications_id'   => $notifid,
-                     'type'               =>  Notification::USER_TYPE,
-                     'items_id'           => $target
-                  ],
-                  "0.85 add project $type notification target"
-               );
-            }
          }
       }
    }
@@ -2883,18 +2877,17 @@ function update084to085() {
       'itemtype' => "ProjectTask"
    ]);
 
-   if ($notificationtemplatesIterator->valid()) {
-      if (count($notificationtemplatesIterator) == 0) {
-         $DB->insertOrDie("glpi_notificationtemplates", [
-               'name'      => "Project Tasks",
-               'itemtype'  => "ProjectTask",
-               'date_mod'  => new \QueryExpression("NOW()")
-            ],
-            "0.85 add project notification"
-         );
-         $notid = $DB->insert_id();
+   if (count($notificationtemplatesIterator) == 0) {
+      $DB->insertOrDie("glpi_notificationtemplates", [
+            'name'      => "Project Tasks",
+            'itemtype'  => "ProjectTask",
+            'date_mod'  => new \QueryExpression("NOW()")
+         ],
+         "0.85 add project notification"
+      );
+      $notid = $DB->insert_id();
 
-         $contentText = '##lang.projecttask.url## : ##projecttask.url##
+      $contentText = '##lang.projecttask.url## : ##projecttask.url##
 
 ##lang.projecttask.description##
 
@@ -2919,7 +2912,7 @@ function update084to085() {
 ##lang.task.description## : ##task.description##
 
 ##ENDFOREACHtasks##';
-         $contentHtml = '&lt;p&gt;##lang.projecttask.url## : &lt;a href=\"##projecttask.url##\"&gt;##projecttask.url##&lt;/a&gt;&lt;/p&gt;
+      $contentHtml = '&lt;p&gt;##lang.projecttask.url## : &lt;a href=\"##projecttask.url##\"&gt;##projecttask.url##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;##lang.projecttask.description##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.projecttask.name## : ##projecttask.name##&lt;br /&gt;##lang.projecttask.project## : &lt;a href=\"##projecttask.projecturl##\"&gt;##projecttask.project##&lt;/a&gt;&lt;br /&gt;##lang.projecttask.creationdate## : ##projecttask.creationdate##&lt;br /&gt;##lang.projecttask.state## : ##projecttask.state##&lt;br /&gt;##lang.projecttask.type## : ##projecttask.type##&lt;br /&gt;##lang.projecttask.description## : ##projecttask.description##&lt;/p&gt;
 &lt;p&gt;##lang.projecttask.numberoftasks## : ##projecttask.numberoftasks##&lt;/p&gt;
@@ -2928,57 +2921,56 @@ function update084to085() {
 &lt;div&gt;&lt;strong&gt;[##task.creationdate##] &lt;/strong&gt;&lt;br /&gt;##lang.task.name## : ##task.name##&lt;br /&gt;##lang.task.state## : ##task.state##&lt;br /&gt;##lang.task.type## : ##task.type##&lt;br /&gt;##lang.task.percent## : ##task.percent##&lt;br /&gt;##lang.task.description## : ##task.description##&lt;/div&gt;
 &lt;p&gt;##ENDFOREACHtasks##&lt;/p&gt;
 &lt;/div&gt;';
-         $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+      $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+            'notificationtemplates_id' => $notid,
+            'language'                 => "",
+            'subject'                  => "##projecttask.action## ##projecttask.name##",
+            'content_text'             => $contentText,
+            'content_html'             => $contentHtml
+         ],
+         "0.85 add project task notification translation"
+      );
+
+      $notifications = ['new'         => [],
+                             'update'      => [],
+                             'delete'      => []];
+
+      $notif_names   = ['new'         => 'New Project Task',
+                             'update'      => 'Update Project Task',
+                             'delete'      => 'Delete Project Task'];
+
+      foreach ($notifications as $key => $val) {
+         $notifications[$key][] = Notification::TEAM_USER;
+         $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
+         $notifications[$key][] = Notification::TEAM_GROUP;
+      }
+
+      foreach ($notifications as $type => $targets) {
+         $DB->insertOrDie("glpi_notifications", [
+               'name'                     => $notif_names[$type],
+               'entities_id'              => 0,
+               'itemtype'                 => "ProjectTask",
+               'event'                    => $type,
+               'mode'                     => "mail",
                'notificationtemplates_id' => $notid,
-               'language'                 => "",
-               'subject'                  => "##projecttask.action## ##projecttask.name##",
-               'content_text'             => $contentText,
-               'content_html'             => $contentHtml
+               'comment'                  => "",
+               'is_recursive'             => 1,
+               'is_active'                => 1,
+               'date_mod'                 => new \QueryExpression("NOW()")
             ],
-            "0.85 add project task notification translation"
+            "0.85 add project task  $type notification"
          );
+         $notifid = $DB->insert_id();
 
-         $notifications = ['new'         => [],
-                                'update'      => [],
-                                'delete'      => []];
-
-         $notif_names   = ['new'         => 'New Project Task',
-                                'update'      => 'Update Project Task',
-                                'delete'      => 'Delete Project Task'];
-
-         foreach ($notifications as $key => $val) {
-            $notifications[$key][] = Notification::TEAM_USER;
-            $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
-            $notifications[$key][] = Notification::TEAM_GROUP;
-         }
-
-         foreach ($notifications as $type => $targets) {
-            $DB->insertOrDie("glpi_notifications", [
-                  'name'                     => $notif_names[$type],
-                  'entities_id'              => 0,
-                  'itemtype'                 => "ProjectTask",
-                  'event'                    => $type,
-                  'mode'                     => "mail",
-                  'notificationtemplates_id' => $notid,
-                  'comment'                  => "",
-                  'is_recursive'             => 1,
-                  'is_active'                => 1,
-                  'date_mod'                 => new \QueryExpression("NOW()")
+         foreach ($targets as $target) {
+            $DB->insertOrDie("glpi_notificationtargets", [
+                  'id'                 => null,
+                  'notifications_id'   => $notifid,
+                  'type'               => Notification::USER_TYPE,
+                  'items_id'           => $target
                ],
-               "0.85 add project task  $type notification"
+               "0.85 add project task $type notification target"
             );
-            $notifid = $DB->insert_id();
-
-            foreach ($targets as $target) {
-               $DB->insertOrDie("glpi_notificationtargets", [
-                     'id'                 => null,
-                     'notifications_id'   => $notifid,
-                     'type'               => Notification::USER_TYPE,
-                     'items_id'           => $target
-                  ],
-                  "0.85 add project task $type notification target"
-               );
-            }
          }
       }
    }

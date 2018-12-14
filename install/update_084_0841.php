@@ -89,6 +89,7 @@ function update084to0841() {
    $migration->addField('glpi_profiles', 'delete_problem', 'char',
                         ['after'  => 'edit_all_problem',
                               'update' => 'edit_all_problem']);
+
    // must always be at the end
    $migration->executeMigration();
 
