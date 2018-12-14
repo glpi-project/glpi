@@ -6663,10 +6663,11 @@ class Html {
             }
             $import .= '@import "' . $file . '";';
             $fckey = md5($file);
+            $md5file = md5(file_get_contents($path));
+
             //check if files has changed
             if ($GLPI_CACHE->has($fckey)) {
                $md5 = $GLPI_CACHE->get($fckey);
-               $md5file = md5(file_get_contents($path));
 
                if ($md5file != $md5) {
                   //file has changed
@@ -6676,7 +6677,7 @@ class Html {
                }
             } else {
                Toolbox::logDebug("$file is new, loading");
-               $GLPI_CACHE->set($fckey, md5(file_get_contents($path)));
+               $GLPI_CACHE->set($fckey, $md5file);
             }
          } else {
             Toolbox::logWarning('Requested file ' . $path . ' does not exists.');
