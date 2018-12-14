@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 use Config;
 use DB;
 use GLPI;
+use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Plugin;
 use Session;
 use Toolbox;
@@ -51,6 +52,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -79,12 +81,16 @@ class Application extends BaseApplication {
 
       $this->computeAndLoadOutputLang();
 
+      // Load core commands only to check if called command prevent or not usage of plugins
+      // Plugin commands will be loaded later
+      $loader = new CommandLoader(false);
+      $this->setCommandLoader($loader);
+
       $use_plugins = $this->usePlugins();
       if ($use_plugins) {
          $this->loadActivePlugins();
+         $loader->registerPluginsCommands();
       }
-
-      $this->setCommandLoader(new CommandLoader($use_plugins));
    }
 
    protected function getDefaultInputDefinition() {
@@ -149,7 +155,7 @@ class Application extends BaseApplication {
                '--no-plugins',
                null,
                InputOption::VALUE_NONE,
-               __('Disable GLPI plugins')
+               __('Disable GLPI plugins (unless commands forces plugins loading)')
             ),
             new InputOption(
                '--lang',
@@ -397,6 +403,17 @@ class Application extends BaseApplication {
    private function usePlugins() {
 
       $input = new ArgvInput();
+
+      try {
+         $command = $this->get($this->getCommandName($input));
+         if ($command instanceof ForceNoPluginsOptionCommandInterface) {
+            return !$command->getNoPluginsOptionValue();
+         }
+      } catch (CommandNotFoundException $e) {
+         // Command will not be found at this point if it is a plugin command
+         $command = null; // Say hello to CS checker
+      }
+
       return !$input->hasParameterOption('--no-plugins', true);
    }
 }
