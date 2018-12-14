@@ -1159,14 +1159,14 @@ class Reminder extends CommonDBVisible {
          $criteria = [
             'FROM'   => 'glpi_reminders',
             'WHERE'  => array_merge([
-                                       'glpi_reminders.users_id'  => $users_id,
-                                       [
-                                          'OR'        => [
-                                             'end'          => ['>=', $today],
-                                             'is_planned'   => 0
-                                          ]
-                                       ]
-                                    ], $visibility_criteria),
+               'glpi_reminders.users_id'  => $users_id,
+               [
+                  'OR'        => [
+                     'end'          => ['>=', $today],
+                     'is_planned'   => 0
+                  ]
+               ]
+            ], $visibility_criteria),
             'ORDER'  => 'glpi_reminders.name'
          ];
 
