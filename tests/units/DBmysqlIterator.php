@@ -416,7 +416,7 @@ class DBmysqlIterator extends DbTestCase {
          ]
       );
       $this->string($it->getSql())->isIdenticalTo(
-         'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)'
+         'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) ON (`t2`.`id` = `foo`.`fk`)'
       );
 
       $it = $this->it->execute(

@@ -209,22 +209,17 @@ class DBmysqlIterator implements Iterator, Countable {
                               $jointype = 'RIGHT';
                               break;
                         }
-                        foreach ($val as $alias => $joincrit) {
+                        foreach ($val as $jointable => $joincrit) {
                            if (isset($joincrit['TABLE'])) {
                               //not a "simple" FKEY
                               $jointable = $joincrit['TABLE'];
                               unset($joincrit['TABLE']);
-                           } else if (is_numeric($alias) || $alias == 'FKEY' || $alias == 'ON') {
+                           } else if (is_numeric($jointable) || $jointable == 'FKEY' || $jointable == 'ON') {
                               throw new \RuntimeException('BAD JOIN');
-                           } else {
-                              $jointable = $alias;
                            }
 
                            if ($jointable instanceof \QuerySubquery) {
                               $jointable = $jointable->getQuery();
-                              if (!is_numeric($alias)) {
-                                 $jointable .= " AS " . DBmysql::quoteName($alias);
-                              }
                            } else {
                               $jointable = DBmysql::quoteName($jointable);
                            }
