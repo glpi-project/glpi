@@ -209,16 +209,27 @@ class DBmysqlIterator implements Iterator, Countable {
                               $jointype = 'RIGHT';
                               break;
                         }
-                        foreach ($val as $jointable => $joincrit) {
-                           $joinExpressionKeys = ['FKEY' => null, 'ON' => null];
-                           $subquery = array_diff_key($joincrit, $joinExpressionKeys);
-                           if (count($subquery)) {
-                              $subquery = new QuerySubquery($subquery, $jointable);
-                              $joincrit = array_intersect_key($joincrit, $joinExpressionKeys);
-                              $join .= " $jointype JOIN " . $subquery->getQuery() . " ON (" . $this->analyseCrit($joincrit) . ")";
+                        foreach ($val as $alias => $joincrit) {
+                           if (isset($joincrit['TABLE'])) {
+                              //not a "simple" FKEY
+                              $jointable = $joincrit['TABLE'];
+                              unset($joincrit['TABLE']);
+                           } else if (is_numeric($alias) || $alias == 'FKEY' || $alias == 'ON') {
+                              throw new \RuntimeException('BAD JOIN');
                            } else {
-                              $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                              $jointable = $alias;
                            }
+
+                           if ($jointable instanceof \QuerySubquery) {
+                              $jointable = $jointable->getQuery();
+                              if (!is_numeric($alias)) {
+                                 $jointable .= " AS " . DBmysql::quoteName($alias);
+                              }
+                           } else {
+                              $jointable = DBmysql::quoteName($jointable);
+                           }
+
+                           $join .= " $jointype JOIN $jointable ON (" . $this->analyseCrit($joincrit) . ")";
                         }
                      } else {
                         trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
