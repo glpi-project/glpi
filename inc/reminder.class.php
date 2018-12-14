@@ -103,7 +103,7 @@ class Reminder extends CommonDBVisible {
     * @since 0.85
     *
     * @see CommonDBTM::canPurgeItem()
-    **/
+   **/
    function canPurgeItem() {
 
       return ($this->fields['users_id'] == Session::getLoginUserID()
@@ -115,7 +115,7 @@ class Reminder extends CommonDBVisible {
    /**
     * @since 0.85
     * for personnal reminder
-    **/
+   **/
    static function canUpdate() {
       return (Session::getCurrentInterface() != 'helpdesk');
    }
@@ -124,7 +124,7 @@ class Reminder extends CommonDBVisible {
    /**
     * @since 0.85
     * for personnal reminder
-    **/
+   **/
    static function canPurge() {
       return (Session::getCurrentInterface() != 'helpdesk');
    }
@@ -150,7 +150,7 @@ class Reminder extends CommonDBVisible {
     * @see CommonDBTM::cleanDBonPurge()
     *
     * @since 0.83.1
-    **/
+   **/
    function cleanDBonPurge() {
 
       $this->deleteChildrenAndRelationsFromDb(
@@ -178,7 +178,7 @@ class Reminder extends CommonDBVisible {
     * @param $forceall force all joins (false by default)
     *
     * @return string joins to add
-    **/
+   **/
    static function addVisibilityJoins($forceall = false) {
       //not deprecated because used in Search
       global $DB;
@@ -203,7 +203,7 @@ class Reminder extends CommonDBVisible {
     * Return visibility SQL restriction to add
     *
     * @return string restrict to add
-    **/
+   **/
    static function addVisibilityRestrict() {
       //not deprecated because used in Search
 
@@ -538,7 +538,7 @@ class Reminder extends CommonDBVisible {
                      $nb = $item->countVisibilities();
                   }
                   return [1 => self::createTabEntry(_n('Target', 'Targets',
-                                                       Session::getPluralNumber()), $nb)];
+                                                            Session::getPluralNumber()), $nb)];
                }
          }
       }
@@ -713,9 +713,9 @@ class Reminder extends CommonDBVisible {
       if ($canedit) {
          Html::autocompletionTextField($this, "name",
                                        ['size'   => '80',
-                                        'entity' => -1,
-                                        'user'   => $this->fields["users_id"],
-                                        'option' => $onfocus]);
+                                             'entity' => -1,
+                                             'user'   => $this->fields["users_id"],
+                                             'option' => $onfocus]);
       } else {
          echo $this->fields['name'];
       }
@@ -733,15 +733,15 @@ class Reminder extends CommonDBVisible {
          echo __('Begin').'</td><td>';
          Html::showDateTimeField("begin_view_date",
                                  ['value'      => $this->fields["begin_view_date"],
-                                  'timestep'   => 1,
-                                  'maybeempty' => true,
-                                  'canedit'    => $canedit]);
+                                       'timestep'   => 1,
+                                       'maybeempty' => true,
+                                       'canedit'    => $canedit]);
          echo '</td><td>'.__('End').'</td><td>';
          Html::showDateTimeField("end_view_date",
                                  ['value'      => $this->fields["end_view_date"],
-                                  'timestep'   => 1,
-                                  'maybeempty' => true,
-                                  'canedit'    => $canedit]);
+                                       'timestep'   => 1,
+                                       'maybeempty' => true,
+                                       'canedit'    => $canedit]);
          echo '</td></tr></table>';
          echo "</td>";
          echo "</tr>";
@@ -778,28 +778,28 @@ class Reminder extends CommonDBVisible {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan$rand() {\n";
             echo Html::jsHide("plan$rand");
-            $params = ['action'   => 'add_event_classic_form',
-                       'form'     => 'remind',
-                       'users_id' => $this->fields["users_id"],
-                       'itemtype' => $this->getType(),
-                       'items_id' => $this->getID()];
+               $params = ['action'   => 'add_event_classic_form',
+                               'form'     => 'remind',
+                               'users_id' => $this->fields["users_id"],
+                               'itemtype' => $this->getType(),
+                               'items_id' => $this->getID()];
 
-            if ($ID
+               if ($ID
                 && $this->fields["is_planned"]) {
                $params['begin'] = $this->fields["begin"];
                $params['end']   = $this->fields["end"];
-            }
+               }
 
-            Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
-            echo "}";
-            echo "</script>\n";
+               Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+               echo "}";
+               echo "</script>\n";
          }
 
          if (!$ID
              || !$this->fields["is_planned"]) {
 
             if (Session::haveRightsOr("planning", [Planning::READMY, Planning::READGROUP,
-                                                   Planning::READALL])) {
+                                                        Planning::READALL])) {
 
                echo "<div id='plan$rand' onClick='showPlan$rand()'>\n";
                echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";
@@ -831,10 +831,10 @@ class Reminder extends CommonDBVisible {
             echo "<td>";
             if ($canedit) {
                PlanningRecall::dropdown(['itemtype' => 'Reminder',
-                                         'items_id' => $ID]);
+                                              'items_id' => $ID]);
             } else { // No edit right : use specific Planning Recall Form
                PlanningRecall::specificForm(['itemtype' => 'Reminder',
-                                             'items_id' => $ID]);
+                                                  'items_id' => $ID]);
             }
             echo "</td></tr></table></td>";
          }
@@ -972,11 +972,11 @@ class Reminder extends CommonDBVisible {
 
       $table = self::getTable();
       $criteria = [
-                     'SELECT DISTINCT' => "$table.*",
-                     'FROM'            => $table,
-                     'WHERE'           => $WHERE,
-                     'ORDER'           => 'begin'
-                  ] + $visibility_criteria;
+         'SELECT DISTINCT' => "$table.*",
+         'FROM'            => $table,
+         'WHERE'           => $WHERE,
+         'ORDER'           => 'begin'
+      ] + $visibility_criteria;
 
       if (countElementsInTable('glpi_remindertranslations') > 0) {
          $criteria["LEFT JOIN"]['glpi_remindertranslations'] = ['FKEY' =>
@@ -992,7 +992,7 @@ class Reminder extends CommonDBVisible {
       if (count($iterator)) {
          while ($data = $iterator->next()) {
             if ($reminder->getFromDB($data["id"])
-                && $reminder->canViewItem()) {
+                  && $reminder->canViewItem()) {
                $key                               = $data["begin"]."$$"."Reminder"."$$".$data["id"];
                $interv[$key]['color']             = $options['color'];
                $interv[$key]['event_type_color']  = $options['event_type_color'];
@@ -1031,13 +1031,13 @@ class Reminder extends CommonDBVisible {
                   $interv[$key]["url"] = Reminder::getFormURLWithID($data['id']);
                } else {
                   $interv[$key]["url"] = $CFG_GLPI["url_base"].
-                                         Reminder::getFormURLWithID($data['id'], false);
+                                          Reminder::getFormURLWithID($data['id'], false);
                }
                $interv[$key]["ajaxurl"]  = $CFG_GLPI["root_doc"]."/ajax/planning.php".
-                                           "?action=edit_event_form".
-                                           "&itemtype=Reminder".
-                                           "&id=".$data['id'].
-                                           "&url=".$interv[$key]["url"];
+                                             "?action=edit_event_form".
+                                             "&itemtype=Reminder".
+                                             "&id=".$data['id'].
+                                             "&url=".$interv[$key]["url"];
                $interv[$key]["editable"] = $reminder->canUpdateItem();
             }
          }
@@ -1060,8 +1060,8 @@ class Reminder extends CommonDBVisible {
       $beginend = sprintf(__('From %1$s to %2$s'),
                           Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
       $out      = sprintf(__('%1$s: %2$s'), $beginend,
-                          "<a href='".Reminder::getFormURLWithID($val["reminders_id"])."'>".
-                          Html::resume_text($val["name"], 80)."</a>");
+         "<a href='".Reminder::getFormURLWithID($val["reminders_id"])."'>".
+         Html::resume_text($val["name"], 80)."</a>");
       return $out;
    }
 
@@ -1115,7 +1115,7 @@ class Reminder extends CommonDBVisible {
          $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
                                    ".$val["text"].$recall,
                                    ['applyto' => "reminder_".$val["reminders_id"].$rand,
-                                    'display' => false]);
+                                         'display' => false]);
       }
       return $html;
    }
@@ -1171,7 +1171,7 @@ class Reminder extends CommonDBVisible {
          ];
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".
-                   _n('Personal reminder', 'Personal reminders', Session::getPluralNumber())."</a>";
+                    _n('Personal reminder', 'Personal reminders', Session::getPluralNumber())."</a>";
 
       } else {
          // Show public reminders / not mines : need to have access to public reminders
@@ -1196,7 +1196,7 @@ class Reminder extends CommonDBVisible {
 
          if (Session::getCurrentInterface() != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".
-                      _n('Public reminder', 'Public reminders', Session::getPluralNumber())."</a>";
+                       _n('Public reminder', 'Public reminders', Session::getPluralNumber())."</a>";
          } else {
             $titre = _n('Public reminder', 'Public reminders', Session::getPluralNumber());
          }
@@ -1214,7 +1214,7 @@ class Reminder extends CommonDBVisible {
                                                                     ]]];
 
          $criteria['SELECT'] = ['glpi_reminders.*',
-                                 'glpi_remindertranslations.name AS transname',
+                                'glpi_remindertranslations.name AS transname',
                                 'glpi_remindertranslations.text AS transtext'];
 
       }
@@ -1226,7 +1226,7 @@ class Reminder extends CommonDBVisible {
       echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
 
       if (($personal && self::canCreate())
-         || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
+        || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
          echo "<span class='floatright'>";
          echo "<a href='".Reminder::getFormURL()."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
@@ -1256,16 +1256,16 @@ class Reminder extends CommonDBVisible {
             }
             $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($text),
                                          ['applyto' => "content_reminder_".$data["id"].$rand,
-                                          'display' => false]);
+                                               'display' => false]);
             printf(__('%1$s %2$s'), $link, $tooltip);
 
             if ($data["is_planned"]) {
                $tab      = explode(" ", $data["begin"]);
                $date_url = $tab[0];
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
-                    "&amp;type=day' class='pointer floatright' title=\"".sprintf(__s('From %1$s to %2$s'),
-                                                                                 Html::convDateTime($data["begin"]),
-                                                                                 Html::convDateTime($data["end"]))."\">";
+                     "&amp;type=day' class='pointer floatright' title=\"".sprintf(__s('From %1$s to %2$s'),
+                                           Html::convDateTime($data["begin"]),
+                                           Html::convDateTime($data["end"]))."\">";
                echo "<i class='fa fa-bell'></i>";
                echo "<pan class='sr-only'>" . __s('Planning') . "</span>";
                echo "</a>";
