@@ -3,6 +3,25 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [X.X] unreleased
+
+### Added
+
+### Changed
+
+### Removed
+
+- Drop support of PHP 5.6.
+- Deprecated `scripts/ldap_mass_sync.php` has been removed in favor of `glpi:ldap:synchronize_users` command available using `bin/console`
+
+### API changes
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
 ## [9.4] unreleased
 
 ### Added
