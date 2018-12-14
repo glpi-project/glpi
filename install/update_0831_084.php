@@ -95,29 +95,34 @@ function update0831to084() {
                               'after' => 'ajax_min_textsearch_load']);
 
    // Clean display prefs
-   $query = "UPDATE `glpi_displaypreferences`
-             SET `num` = 160
-             WHERE `itemtype` = 'Software'
-                   AND `num` = 7";
-   $DB->query($query);
+   $DB->update("glpi_displaypreferences", [
+         'num' => 160
+      ], [
+         'itemtype'  => "Software",
+         'num'       => 7
+      ]
+   );
 
    // Update bookmarks from States to AllAssets
-   foreach ($DB->request("glpi_bookmarks", "`itemtype` = 'States'") as $data) {
+   foreach ($DB->request("glpi_bookmarks", ['itemtype' => "States"]) as $data) {
       $query = str_replace('itemtype=States', 'itemtype=AllAssets', $data['query']);
-      $query = "UPDATE `glpi_bookmarks`
-                SET query = '".addslashes($query)."'
-                WHERE `id` = '".$data['id']."'";
-      $DB->query($query);
+      $DB->update("glpi_bookmarks",
+         ['query' => addslashes($query)],
+         ['id'    => $data['id']]
+      );
    }
-   $query = "UPDATE `glpi_bookmarks`
-             SET `itemtype` = 'AllAssets', `path` = 'front/allassets.php'
-             WHERE `itemtype` = 'States'";
-   $DB->query($query);
+   $DB->update("glpi_bookmarks", [
+         'itemtype'  => "AllAssets",
+         'path'      => "front/allassets.php"
+      ], [
+         'itemtype' => "States"
+      ]
+   );
 
-   $query = "UPDATE `glpi_displaypreferences`
-             SET `itemtype` = 'AllAssets'
-             WHERE `itemtype` = 'States'";
-   $DB->query($query);
+   $DB->update("glpi_displaypreferences",
+      ['itemtype' => "AllAssets"],
+      ['itemtype' => "States"]
+   );
 
    if ($DB->tableExists('glpi_networkportmigrations')) {
       $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
@@ -134,15 +139,17 @@ function update0831to084() {
                            'no_NN' => 'nn_NO',
                            'ua_UA' => 'uk_UA',];
    foreach ($lang_to_update as $old => $new) {
-      $query = "UPDATE `glpi_configs`
-               SET `language` = '$new'
-               WHERE `language` = '$old';";
-      $DB->queryOrDie($query, "0.84 language in config $old to $new");
+      $DB->updateOrDie("glpi_configs",
+         ['language' => $new],
+         ['language' => $old],
+         "0.84 language in config $old to $new"
+      );
 
-      $query = "UPDATE `glpi_users`
-               SET `language` = '$new'
-               WHERE `language` = '$old';";
-      $DB->queryOrDie($query, "0.84 language in users $old to $new");
+      $DB->updateOrDie("glpi_users",
+         ['language' => $new],
+         ['language' => $old],
+         "0.84 language in users $old to $new"
+      );
    }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'tickets and problems status'));
@@ -162,46 +169,63 @@ function update0831to084() {
    foreach (['glpi_tickets', 'glpi_problems'] as $table) {
       // Migrate datas
       foreach ($status as $old => $new) {
-         $query = "UPDATE `$table`
-                   SET `status` = '$new'
-                   WHERE `status` = '$old'";
-         $DB->queryOrDie($query, "0.84 status in $table $old to $new");
+         $DB->updateOrDie($table,
+            ['status' => $new],
+            ['status' => $old],
+            "0.84 status in $table $old to $new"
+         );
       }
       $migration->changeField($table, 'status', 'status', 'integer',
                               ['value' => CommonITILObject::INCOMING]);
    }
 
    // Migrate templates
-   $query = "SELECT `glpi_notificationtemplatetranslations`.*
-             FROM `glpi_notificationtemplatetranslations`
-             INNER JOIN `glpi_notificationtemplates`
-                  ON (`glpi_notificationtemplates`.`id`
-                        = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
-             WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%storestatus=%'
-                   OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%storestatus=%'
-                   OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%storestatus=%'";
-
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $subject = $data['subject'];
-            $text    = $data['content_text'];
-            $html    = $data['content_html'];
-            foreach ($status as $old => $new) {
-               $subject = str_replace("ticket.storestatus=$old", "ticket.storestatus=$new", $subject);
-               $text    = str_replace("ticket.storestatus=$old", "ticket.storestatus=$new", $text);
-               $html    = str_replace("ticket.storestatus=$old", "ticket.storestatus=$new", $html);
-               $subject = str_replace("problem.storestatus=$old", "problem.storestatus=$new", $subject);
-               $text    = str_replace("problem.storestatus=$old", "problem.storestatus=$new", $text);
-               $html    = str_replace("problem.storestatus=$old", "problem.storestatus=$new", $html);
-            }
-            $query = "UPDATE `glpi_notificationtemplatetranslations`
-                      SET `subject` = '".addslashes($subject)."',
-                          `content_text` = '".addslashes($text)."',
-                          `content_html` = '".addslashes($html)."'
-                      WHERE `id` = ".$data['id']."";
-            $DB->queryOrDie($query, "0.84 fix tags usage for storestatus");
+   $notificationtemplatetranslationsIterator = $DB->request([
+      'SELECT'       => "glpi_notificationtemplatetranslations.*",
+      'FROM'         => "glpi_notificationtemplatetranslations",
+      'INNER JOIN'   => ["glpi_notificationtemplates" => [
+            'ON' => [
+               'glpi_notificationtemplates' => 'id',
+               'glpi_notificationtemplatetranslations' => 'notificationtemplates_id'
+            ]
+         ]
+      ],
+      'WHERE'        =>  [
+         'OR' => [
+            'glpi_notificationtemplatetranslations.content_text' => [
+               'LIKE' => "%validation.storestatus=%"
+            ],
+            'glpi_notificationtemplatetranslations.content_html' => [
+               'LIKE' => "%validation.storestatus=%"
+            ],
+            'glpi_notificationtemplatetranslations.subject' => [
+               'LIKE' => "%validation.storestatus=%"
+            ]
+         ]
+      ]
+   ]);
+   if (count($notificationtemplatetranslationsIterator)) {
+      while ($data = $notificationtemplatetranslationsIterator->next()) {
+         $subject = $data['subject'];
+         $text    = $data['content_text'];
+         $html    = $data['content_html'];
+         foreach ($status as $old => $new) {
+            $subject = str_replace("ticket.storestatus=$old", "ticket.storestatus=$new", $subject);
+            $text    = str_replace("ticket.storestatus=$old", "ticket.storestatus=$new", $text);
+            $html    = str_replace("ticket.storestatus=$old", "ticket.storestatus=$new", $html);
+            $subject = str_replace("problem.storestatus=$old", "problem.storestatus=$new", $subject);
+            $text    = str_replace("problem.storestatus=$old", "problem.storestatus=$new", $text);
+            $html    = str_replace("problem.storestatus=$old", "problem.storestatus=$new", $html);
          }
+         $DB->updateOrDie("glpi_notificationtemplatetranslations", [
+               'subject'      => addslashes($subject),
+               'content_text' => addslashes($text),
+               'content_html' => addslashes($html),
+            ], [
+               'id' => $data['id']
+            ],
+            "0.84.4 fix tags usage for storestatus"
+         );
       }
    }
 
@@ -212,25 +236,30 @@ function update0831to084() {
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    foreach ($changes as $ruletype => $field) {
       // Get rules
-      $query = "SELECT GROUP_CONCAT(`id`)
-                FROM `glpi_rules`
-                WHERE `sub_type` = '".$ruletype."'
-                GROUP BY `sub_type`";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            // Get rule string
-            $rules = $DB->result($result, 0, 0);
+      $rulesIterator = $DB->request([
+         'SELECT'    => new \QueryExpression(
+            "GROUP_CONCAT(" . DBmysql::quoteName("id") . ") AS ids"
+         ),
+         'FROM'      => "glpi_rules",
+         'WHERE'     => ['sub_type' => $ruletype],
+         'GROUPBY'   => 'sub_type'
+      ]);
 
-            // Update actions
-            foreach ($status as $old => $new) {
-               $query = "UPDATE `glpi_ruleactions`
-                         SET `value` = '$new'
-                         WHERE `field` = '$field'
-                               AND `value` = '$old'
-                               AND `rules_id` IN ($rules)";
+      if (count($rulesIterator)) {
+         // Get rule string
+         $rules = $rulesIterator->next()['ids'];
 
-               $DB->queryOrDie($query, "0.84 update datas for rules actions");
-            }
+         // Update actions
+         foreach ($status as $old => $new) {
+            $DB->updateOrDie('glpi_ruleactions', [
+                  'value' => $new
+               ], [
+                  'field'     => $fields,
+                  'value'     => $old,
+                  'rules_id'  => explode(",", $rules)
+               ],
+               "0.84 update datas for rules actions"
+            );
          }
       }
    }
@@ -248,10 +277,12 @@ function update0831to084() {
                }
             }
 
-            $query  = "UPDATE `glpi_profiles`
-                       SET `$field` = '".addslashes(exportArrayToDB($newtab))."'
-                       WHERE `id` = '".$data['id']."'";
             $DB->queryOrDie($query, "0.84 migrate $field of glpi_profiles");
+            $DB->updateOrDie("glpi_profiles",
+               [$field => addslashes(exportArrayToDB($newtab))],
+               ['id' => $data['id']],
+               "0.84 migrate $field of glpi_profiles"
+            );
          }
       }
    }
