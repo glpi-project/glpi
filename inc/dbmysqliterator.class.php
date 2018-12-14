@@ -372,27 +372,35 @@ class DBmysqlIterator implements Iterator, Countable {
    /**
     * Handle "ORDER BY" SQL clause
     *
-    * @param string|array $clause Clause parameters
+    * @param string|array|QueryExpression $clause Clause parameters
     *
     * @reutn string
     */
    public function handleOrderClause($clause) {
-      if (!is_array($clause)) {
-         $clause = [$clause];
-      }
-
       $cleanorderby = [];
-      foreach ($clause as $o) {
-         $fields = explode(',', $o);
-         foreach ($fields as $field) {
-            $new = '';
-            $tmp = explode(' ', trim($field));
-            $new .= DBmysql::quoteName($tmp[0]);
-            // ASC OR DESC added
-            if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
-               $new .= ' '.$tmp[1];
+      if ($clause instanceof \QueryExpression) {
+         $cleanorderby = [$clause->getValue()];
+      } else {
+         if (!is_array($clause)) {
+            $clause = [$clause];
+         }
+
+         foreach ($clause as $o) {
+            if ($o instanceof \QueryExpression) {
+               $cleanorderby[] = $o->getValue();
+            } else {
+               $fields = explode(',', $o);
+               foreach ($fields as $field) {
+                  $new = '';
+                  $tmp = explode(' ', trim($field));
+                  $new .= DBmysql::quoteName($tmp[0]);
+                  // ASC OR DESC added
+                  if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
+                     $new .= ' '.$tmp[1];
+                  }
+                  $cleanorderby[] = $new;
+               }
             }
-            $cleanorderby[] = $new;
          }
       }
 

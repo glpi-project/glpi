@@ -251,6 +251,12 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['ORDER' => 'bar DESC, baz ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
+
+      $it = $this->it->execute('foo', ['ORDER' => new \QueryExpression('BIT_COUNT(`netmask_3`) DESC')]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY BIT_COUNT(`netmask_3`) DESC');
+
+      $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression('BIT_COUNT(`netmask_3`) DESC'), new \QueryExpression('BIT_COUNT(`netmask_4`) DESC')]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY BIT_COUNT(`netmask_3`) DESC, BIT_COUNT(`netmask_4`) DESC');
    }
 
 
