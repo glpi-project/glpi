@@ -418,6 +418,24 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo(
          'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)'
       );
+
+      $it = $this->it->execute(
+         'foo', [
+            'LEFT JOIN' => [
+               [
+                  'TABLE'  => new \QuerySubQuery(['FROM' => 'bar'], 't2'),
+                  'FKEY'   => [
+                     't2'  => 'id',
+                     'foo' => 'fk'
+                  ]
+               ]
+            ]
+         ]
+      );
+      $this->string($it->getSql())->isIdenticalTo(
+         'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)'
+      );
+
    }
 
 
