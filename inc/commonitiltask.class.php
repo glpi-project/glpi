@@ -1532,7 +1532,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       User::dropdown($params);
 
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
-      echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
+      echo "&nbsp;<i class='far fa-calendar-alt'></i>
              title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
              class='calendrier'>";
       echo "</a>";
