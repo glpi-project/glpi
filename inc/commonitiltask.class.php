@@ -1543,7 +1543,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                     ['title'  => __('Availability')]);
 
       echo "<br />";
-      echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+      echo "<i class='fas fa-users'></i>&nbsp;";
       echo _n('Group', 'Groups', 1)."&nbsp;";
       $params     = [
          'name'      => "groups_id_tech",
