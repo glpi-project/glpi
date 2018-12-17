@@ -93,10 +93,10 @@ function update084to085() {
 
       // Update glpi_configs
       $migration->addField('glpi_configs', 'context', 'VARCHAR(150) COLLATE utf8_unicode_ci',
-                           ['update' => "'core'"]);
+                           ['update' => 'core']);
       $migration->addField('glpi_configs', 'name', 'VARCHAR(150) COLLATE utf8_unicode_ci',
-                           ['update' => "'version'"]);
-      $migration->addField('glpi_configs', 'value', 'text', ['update' => "'0.85'"]);
+                           ['update' => 'version']);
+      $migration->addField('glpi_configs', 'value', 'text', ['update' => '0.85']);
       $migration->addKey('glpi_configs', ['context', 'name'], 'unicity', 'UNIQUE');
 
       $migration->migrationOneTable('glpi_configs');

@@ -592,8 +592,8 @@ function update0831to084() {
    }
 
    $migration->addField("glpi_profiles", "ticketcost", "char",
-                        ['update'    => "'w'",
-                              'condition' => " WHERE `update_ticket` = 1"]);
+                        ['update'    => 'w',
+                              'condition' => ['update_ticket' => 1]]);
    // Set default to r as before
    $query = "UPDATE `glpi_profiles`
              SET `ticketcost` = 'r'
@@ -786,17 +786,17 @@ function update0831to084() {
                         ['value'     => -2,
                               'after'     => 'use_contracts_alert',
                               'update'    => '0', // No delay for root entity
-                              'condition' => 'WHERE `id`=0']);
+                              'condition' => ['id' => 0]]);
    $migration->addField("glpi_entities", 'send_infocoms_alert_before_delay', "integer",
                         ['value'     => -2,
                               'after'     => 'use_infocoms_alert',
                               'update'    => '0', // No delay for root entity
-                              'condition' => 'WHERE `id`=0']);
+                              'condition' => ['id' => 0]]);
    $migration->addField("glpi_entities", 'send_licenses_alert_before_delay', "integer",
                         ['value'     => -2,
                               'after'     => 'use_licenses_alert',
                               'update'    => '0', // No delay for root entity
-                              'condition' => 'WHERE `id`=0']);
+                              'condition' => ['id' => 0]]);
 
    $migration->addField("glpi_configs", "notification_to_myself", "bool", ['value' => 1]);
    $migration->addField("glpi_configs", 'duedateok_color', "string", ['value' => '#06ff00']);
@@ -2128,7 +2128,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    // Update NetworkPorts
    $migration->addField('glpi_networkports', 'instantiation_type', 'string',
                         ['after'  => 'name',
-                              'update' => "'NetworkPortEthernet'"]);
+                              'update' => 'NetworkPortEthernet']);
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), "glpi_networkports"));
 
@@ -2475,7 +2475,7 @@ function migrateComputerDevice($deviceType, $new_specif = null, $new_specif_type
 
    $migration->changeField($table, 'computers_id', 'items_id', 'integer', ['value' => 0]);
    $migration->addField($table, 'itemtype', 'string', ['after'  => 'items_id',
-                                                            'update' => "'Computer'"]);
+                                                            'update' => 'Computer']);
 
    if (!empty($new_specif) && !empty($new_specif_type)) {
       $migration->changeField($table, 'specificity', $new_specif, $new_specif_type);

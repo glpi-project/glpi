@@ -340,7 +340,7 @@ class Migration {
     * @param string $type    Field type, @see Migration::fieldFormat()
     * @param array  $options Options:
     *                         - update    : if not empty = value of $field (must be protected)
-    *                         - condition : if needed
+    *                         - condition : array of where conditions, if needed
     *                         - value     : default_value new field's default value, if a specific default value needs to be used
     *                         - nodefault : do not define default value (default false)
     *                         - comment   : comment to be added during field creation
@@ -352,8 +352,8 @@ class Migration {
    function addField($table, $field, $type, $options = []) {
       global $DB;
 
-      $params['update']    = '';
-      $params['condition'] = '';
+      $params['update']    = [];
+      $params['condition'] = [true];
       $params['value']     = null;
       $params['nodefault'] = false;
       $params['comment']   = '';
@@ -365,6 +365,11 @@ class Migration {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
+      }
+
+      if (!is_array($params['condition'])) {
+         Toolbox::deprecated('Use arrays to pass conditions');
+         $params['condition'] = [new \QueryExpression($params['condition'])];
       }
 
       $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
@@ -390,10 +395,11 @@ class Migration {
 
             if (!empty($params['update'])) {
                $this->migrationOneTable($table);
-               $query = "UPDATE `$table`
-                        SET `$field` = ".$params['update']." ".
-                        $params['condition']."";
-               $DB->rawQueryOrDie($query, $this->version." set $field in $table");
+               $DB->updateOrDie(
+                  $table, [
+                     $field   => $params['update']
+                  ], $params['condition']
+               );
             }
             return true;
          }

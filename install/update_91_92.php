@@ -1534,7 +1534,7 @@ Regards,',
                         ['value'     => -2,
                          'after'     => 'use_certificates_alert',
                          'update'    => '0', // No delay for root entity
-                         'condition' => 'WHERE `id` = 0']);
+                         'condition' => ['id' => 0]]);
    CronTask::register(
       'Certificate',
       'certificate',

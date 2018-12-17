@@ -156,7 +156,7 @@ function update93to94() {
          "varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
          [
             'after'  => 'id',
-            'update' => "'Change'",
+            'update' => 'Change',
          ]
       );
 
@@ -233,7 +233,7 @@ function update93to94() {
          "varchar(100) COLLATE utf8_unicode_ci NOT NULL",
          [
             'after'  => 'id',
-            'update' => "'Ticket'", // Defines value for all existing elements
+            'update' => 'Ticket', // Defines value for all existing elements
          ]
       );
 
