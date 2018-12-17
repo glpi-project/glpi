@@ -58,4 +58,24 @@ class Calendar extends DbTestCase {
       $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", -7 * DAY_TIMESTAMP, 0, true, true);
       $this->string($end_date)->isEqualTo("2018-11-08 20:00:00");
    }
+
+   /**
+    * Test is holiday
+    *
+    * @return void
+    */
+   public function testIsHoliday() {
+      $calendar = new \Calendar;
+
+      // get Default calendar
+      $calendar->getFromDB(1);
+
+      $this->boolean(
+         $calendar->isHoliday('2018-01-01')
+      )->isFalse();
+
+      $this->boolean(
+         $calendar->isHoliday('2019-01-01')
+      )->isTrue();
+   }
 }
