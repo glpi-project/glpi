@@ -308,7 +308,7 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("use_mail_date", $this->fields["use_mail_date"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Use Reply-To when available') . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Use Reply-To as requester when available') . "</td>";
       echo "<td>";
       Dropdown::showFromArray("requester_field", [
          self::REQUESTER_FIELD_FROM => __('No'),
