@@ -8115,6 +8115,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `allow_overquota` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -8136,7 +8137,8 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_creation` (`date_creation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `states_id` (`states_id`)
+  KEY `states_id` (`states_id`),
+  KEY `allow_overquota` (`allow_overquota`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

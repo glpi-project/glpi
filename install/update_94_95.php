@@ -503,6 +503,13 @@ function update94to95() {
       );
    }
 
+   //Add over-quota option to software licenses to allow assignment after all alloted licenses are used
+   if (!$DB->fieldExists('glpi_softwarelicenses', 'allow_overquota')) {
+      if ($migration->addField('glpi_softwarelicenses', 'allow_overquota', 'bool')) {
+         $migration->addKey('glpi_softwarelicenses', 'allow_overquota');
+      }
+   }
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
