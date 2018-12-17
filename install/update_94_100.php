@@ -29,6 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * Update from 9.4 to 10.0.0
  *
@@ -41,6 +42,7 @@ function update94to100() {
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
+   $config_to_drop = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
@@ -82,6 +84,13 @@ function update94to100() {
       }
    }
    /** /add display preferences for sub items */
+
+   //Add over-quota option to software licenses to allow assignment after all alloted licenses are used
+   if (!$DB->fieldExists('glpi_softwarelicenses', 'allow_overquota')) {
+      if ($migration->addField('glpi_softwarelicenses', 'allow_overquota', 'bool')) {
+         $migration->addKey('glpi_softwarelicenses', 'allow_overquota');
+      }
+   }
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

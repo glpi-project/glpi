@@ -440,10 +440,18 @@ class SoftwareLicense extends CommonTreeDropdown {
          echo "&nbsp;";
          if ($this->fields['is_valid']) {
             echo "<span class='green'>"._x('adjective', 'Valid').'<span>';
+         } else if (!$this->fields['is_valid'] && $this->fields['allow_overquota']) {
+            echo "<span class='green'>"._x('adjective', 'Valid (Over Quota)').'<span>';
          } else {
             echo "<span class='red'>"._x('adjective', 'Invalid').'<span>';
          }
       }
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Allow Over-Quota')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('allow_overquota', $this->fields['allow_overquota']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -585,6 +593,14 @@ class SoftwareLicense extends CommonTreeDropdown {
          'field'              => 'name',
          'name'               => __('Software'),
          'datatype'           => 'itemlink'
+      ];
+
+      $tab[] = [
+         'id'                 => '168',
+         'table'              => $this->getTable(),
+         'field'              => 'allow_overquota',
+         'name'               => __('Allow Over-Quota'),
+         'datatype'           => 'bool'
       ];
 
       $tab[] = [

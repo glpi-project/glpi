@@ -370,10 +370,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       echo "<div class='center'>";
 
-      //If the number of linked assets have reached the number defined in the license,
-      //do not allow to add more assets
+      //If the number of linked assets have reached the number defined in the license
+      //and over-quota is not allowed, do not allow to add more assets
       if ($canedit
-         && ($license->getField('number') == -1 || $number < $license->getField('number'))) {
+         && ($license->getField('number') == -1 || $number < $license->getField('number')
+         || $license->getField('allow_overquota'))) {
          echo "<form method='post' action='".Computer_SoftwareLicense::getFormURL()."'>";
          echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";
 
