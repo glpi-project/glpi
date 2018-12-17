@@ -1682,12 +1682,15 @@ class KnowbaseItem extends CommonDBVisible {
             if (isset($data['transname']) && !empty($data['transname'])) {
                $name = $data['transname'];
             }
-            echo "<tr class='tab_bg_2'><td class='left'>";
-            echo "<a ".
-                  ($data['is_faq']?" class='pubfaq' title='"
-                                   .__s("This item is part of the FAQ")."' "
-                                   :" class='knowbase' ")." href=\"".KnowbaseItem::getFormURLWithID($data["id"])."\">".
-                  Html::resume_text($name, 80)."</a></td></tr>";
+            echo "<tr class='tab_bg_2'><td class='left'><div class='kb'>";
+            if ($data['is_faq']) {
+               echo "<i class='fa fa-fw fa-question-circle faq' title='".__("This item is part of the FAQ")."'></i>";
+            }
+            echo Html::link(Html::resume_text($name, 80), KnowbaseItem::getFormURLWithID($data["id"]), [
+               'class' => $data['is_faq'] ? 'faq' : 'knowbase',
+               'title' => $data['is_faq'] ? __s("This item is part of the FAQ") : ''
+            ]);
+            echo "</div></td></tr>";
          }
          echo "</table>";
       }
