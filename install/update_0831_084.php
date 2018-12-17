@@ -296,12 +296,15 @@ function update0831to084() {
       // pour que la procedure soit re-entrante
       if (countElementsInTable("glpi_entities", ['id' => 0]) < 1) {
          // Create root entity
-         $query = "INSERT INTO `glpi_entities`
-                          (`id`, `name`, `completename`, `entities_id`, `level`)
-                   VALUES (0,'".addslashes(__('Root entity'))."',
-                           '".addslashes(__('Root entity'))."', '-1', '1');";
-
-         $DB->queryOrDie($query, '0.84 insert root entity into glpi_entities');
+         $DB->insertOrDie("glpi_entities", [
+               'id'           => 0,
+               'name'         => addslashes(__('Root entity')),
+               'completename' => addslashes(__('Root entity')),
+               'entities_id'  => -1,
+               'level'        => 1
+            ],
+            "0.84 insert root entity into glpi_entities"
+         );
       }
       //       $newID = $DB->insert_id();
       //       $query = "UPDATE `glpi_entities`
@@ -387,16 +390,17 @@ function update0831to084() {
             $update_fields = [];
             foreach ($fields as $field) {
                if (is_null($data[$field])) {
-                  $update_fields[] = "`$field` = NULL";
+                  $update_fields[$field] = null;
                } else {
-                  $update_fields[] = "`$field` = '".addslashes($data[$field])."'";
+                  $update_fields[$field] = addslashes($data[$field]);
                }
             }
 
-            $query  = "UPDATE `glpi_entities`
-                       SET ".implode(',', $update_fields)."
-                       WHERE `id` = '".$data['entities_id']."'";
-            $DB->queryOrDie($query, "0.84 transfer datas from glpi_entitydatas to glpi_entities");
+            $DB->updateOrDie("glpi_entities",
+               $update_fields,
+               ['id' => $data['entities_id']],
+               "0.84 transfer datas from glpi_entitydatas to glpi_entities"
+            );
          } else {
             $migration->displayMessage('Entity ID '.$data['entities_id'].' does not exist');
          }
@@ -412,6 +416,7 @@ function update0831to084() {
    if ($migration->addField("glpi_computers_softwareversions", "entities_id", "integer")) {
       $migration->migrationOneTable('glpi_computers_softwareversions');
 
+      // TODO : can be improved when DBmysql->update() support joins
       $query3 = "UPDATE `glpi_computers_softwareversions`
                  LEFT JOIN `glpi_computers`
                     ON `computers_id`=`glpi_computers`.`id`
@@ -441,31 +446,41 @@ function update0831to084() {
                              'event'    => 'validation_answer'])==0) {
       // No notifications duplicate all
 
-      $query = "SELECT *
-                FROM `glpi_notifications`
-                WHERE `itemtype` = 'Ticket'
-                      AND `event` = 'validation'";
-      foreach ($DB->request($query) as $notif) {
-         $query = "INSERT INTO `glpi_notifications`
-                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                          `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                          `date_mod`)
-                   VALUES ('".addslashes($notif['name'])." Answer',
-                           '".$notif['entities_id']."', 'Ticket',
-                           'validation_answer', '".$notif['mode']."',
-                           '".$notif['notificationtemplates_id']."',
-                           '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
-                           '".$notif['is_active']."', NOW());";
-         $DB->queryOrDie($query, "0.84 insert validation_answer notification");
+      $notificationsIterator = $DB->request([
+         'FROM'   => "glpi_notifications",
+         'WHERE'  => [
+            'itemtype'  => 'Ticket',
+            'event'     => 'validation'
+         ]
+      ]);
+      foreach ($notificationsIterator as $notif) {
+         $DB->insertOrDie("glpi_notifications", [
+               'name'                     => addslashes($notif['name']) . " Answer",
+               'entities_id'              => $notif['entities_id'],
+               'itemtype'                 => "Ticket",
+               'event'                    => "validation_answer",
+               'mode'                     => $notif['mode'],
+               'notificationtemplates_id' => $notif['notificationtemplates_id'],
+               'comment'                  => addslashes($notif['comment']),
+               'is_recursive'             => $notif['is_recursive'],
+               'is_active'                => $notif['is_active'],
+               'date_mod'                 => new \QueryExpression("NOW()")
+            ],
+            "0.84 insert validation_answer notification"
+         );
          $newID  = $DB->insert_id();
-         $query2 = "SELECT *
-                    FROM `glpi_notificationtargets`
-                    WHERE `notifications_id` = '".$notif['id']."'";
-         foreach ($DB->request($query2) as $target) {
-            $query = "INSERT INTO `glpi_notificationtargets`
-                             (`notifications_id`, `type`, `items_id`)
-                      VALUES ($newID, '".$target['type']."', '".$target['items_id']."')";
-            $DB->queryOrDie($query, "0.84 insert targets for validation_answer notification");
+         $targetsIterator = $DB->request([
+            'FROM'   => "glpi_notificationtargets",
+            'WHERE'  => ['notifications_id' => $notif['id']]
+         ]);
+         foreach ($targetsIterator as $target) {
+            $DB->insertOrDie("glpi_notificationtargets", [
+                  'notifications_id'   => $newID,
+                  'type'               => $target['type'],
+                  'items_id'           => $target['items_id']
+               ],
+               "0.84 insert targets for validation_answer notification"
+            );
          }
       }
    }
@@ -481,30 +496,41 @@ function update0831to084() {
                                ['itemtype' => 'Contract', 'event' => $to])==0) {
          // No notifications duplicate all
 
-         $query = "SELECT *
-                   FROM `glpi_notifications`
-                   WHERE `itemtype` = 'Contract'
-                         AND `event` = '$from'";
-         foreach ($DB->request($query) as $notif) {
-            $query = "INSERT INTO `glpi_notifications`
-                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                              `date_mod`)
-                      VALUES ('".addslashes($notif['name'])." Periodicity',
-                              '".$notif['entities_id']."', 'Contract', '$to', '".$notif['mode']."',
-                              '".$notif['notificationtemplates_id']."',
-                              '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
-                              '".$notif['is_active']."', NOW());";
-            $DB->queryOrDie($query, "0.84 insert contract ".$to." notification");
+         $notificationsIterator = $DB->request([
+            'FROM'   => "glpi_notifications",
+            'WHERE'  => [
+               'itemtype'  => 'Contract',
+               'event'     => $from
+            ]
+         ]);
+         foreach ($notificationsIterator as $notif) {
+            $DB->insertOrDie("glpi_notifications", [
+                  'name'                     => addslashes($notif['name']) . " Periodicity",
+                  'entities_id'              => $notif['entities_id'],
+                  'itemtype'                 => "Contract",
+                  'event'                    => $to,
+                  'mode'                     => $notif['mode'],
+                  'notificationtemplates_id' => $notif['notificationtemplates_id'],
+                  'comment'                  => addslashes($notif['comment']),
+                  'is_recursive'             => $notif['is_recursive'],
+                  'is_active'                => $notif['is_active'],
+                  'date_mod'                 => new \QueryExpression("NOW()")
+               ],
+               "0.84 insert contract ".$to." notification"
+            );
             $newID  = $DB->insert_id();
-            $query2 = "SELECT *
-                       FROM `glpi_notificationtargets`
-                       WHERE `notifications_id` = '".$notif['id']."'";
-            foreach ($DB->request($query2) as $target) {
-               $query = "INSERT INTO `glpi_notificationtargets`
-                                (`notifications_id`, `type`, `items_id`)
-                         VALUES ('".$newID."', '".$target['type']."', '".$target['items_id']."')";
-               $DB->queryOrDie($query, "0.84 insert targets for ??ontract ".$to." notification");
+            $targetsIterator = $DB->request([
+               'FROM'   => "glpi_notificationtargets",
+               'WHERE'  => ['notifications_id' => $notif['id']]
+            ]);
+            foreach ($targetsIterator as $target) {
+               $DB->insertOrDie("glpi_notificationtargets", [
+                     'notifications_id'   => $newID,
+                     'type'               => $target['type'],
+                     'items_id'           => $target['items_id']
+                  ],
+                  "0.84 insert targets for Contract " . $to . " notification"
+               );
             }
          }
       }
@@ -552,14 +578,17 @@ function update0831to084() {
             }
 
          }
-         $query = "INSERT INTO `glpi_contractcosts`
-                          (`contracts_id`, `name`, `begin_date`, `end_date`,
-                           `cost`,  `entities_id`,
-                           `is_recursive`)
-                   VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
-                           '".$data['cost']."', '".$data['entities_id']."',
-                           '".$data['is_recursive']."')";
-         $DB->queryOrDie($query, '0.84 move contracts costs');
+         $DB->insertOrDie("glpi_contractcosts", [
+               'contracts_id' => $data['id'],
+               'name'         => "Cost",
+               'begin_date'   => $begin_to_add,
+               'end_date'     => $end_to_add,
+               'cost'         => $data['cost'],
+               'entities_id'  => $data['entities_id'],
+               'is_recursive' => $data['is_recursive'],
+            ],
+            '0.84 move contracts costs'
+         );
       }
       $migration->dropField('glpi_contracts', 'cost');
    }
@@ -590,9 +619,17 @@ function update0831to084() {
 
       $migration->migrationOneTable('glpi_ticketcosts');
 
-      foreach ($DB->request('glpi_tickets', "`cost_time` > 0
-                            OR `cost_fixed` > 0
-                            OR `cost_material` > 0") as $data) {
+      $ticketsIterator = $DB->request([
+         'FROM'   => "glpi_tickets",
+         'WHERE'  => [
+            'OR' => [
+               'cost_time'       => [">", 0],
+               'cost_fixed'      => [">", 0],
+               'cost_material'   => [">", 0],
+            ]
+         ]
+      ]);
+      foreach ($ticketsIterator as $data) {
          $begin_to_add = "NULL";
          $end_to_add   = "NULL";
 
@@ -606,16 +643,19 @@ function update0831to084() {
             }
 
          }
-         $query = "INSERT INTO `glpi_ticketcosts`
-                          (`tickets_id`, `name`, `begin_date`, `end_date`,
-                           `cost_time`,`cost_fixed`,
-                           `cost_material`, `entities_id`,
-                           `actiontime`)
-                   VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
-                           '".$data['cost_time']."','".$data['cost_fixed']."',
-                           '".$data['cost_material']."', '".$data['entities_id']."',
-                           '".$data['actiontime']."')";
-         $DB->queryOrDie($query, '0.84 move tickets costs');
+         $DB->insertOrDie("glpi_ticketcosts", [
+               'tickets_id'      => $data['id'],
+               'name'            => "Cost",
+               'begin_date'      => $begin_to_add,
+               'end_date'        => $end_to_add,
+               'cost_time'       => $data['cost_time'],
+               'cost_fixed'      => $data['cost_fixed'],
+               'cost_material'   => $data['cost'],
+               'entities_id'     => $data['entities_id'],
+               'actiontime'      => $data['actiontime'],
+            ],
+            '0.84 move tickets costs'
+         );
       }
       $migration->dropField('glpi_tickets', 'cost_time');
       $migration->dropField('glpi_tickets', 'cost_fixed');
@@ -626,10 +666,11 @@ function update0831to084() {
                         ['update'    => 'w',
                               'condition' => ['update_ticket' => 1]]);
    // Set default to r as before
-   $query = "UPDATE `glpi_profiles`
-             SET `ticketcost` = 'r'
-             WHERE `ticketcost` IS NULL";
-   $DB->queryOrDie($query, "0.84 set ticketcost in glpi_profiles");
+   $DB->updateOrDie("glpi_profiles",
+      ['ticketcost' => 'r'],
+      ['ticketcost' => null],
+      "0.84 set ticketcost in glpi_profiles"
+   );
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'rss flows'));
 
@@ -737,61 +778,92 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_planningrecalls");
    }
 
-   $query = "SELECT *
-             FROM `glpi_notificationtemplates`
-             WHERE `itemtype` = 'PlanningRecall'";
+   $notificationtemplatesIterator = $DB->request([
+      'FROM'   => 'glpi_notificationtemplates',
+      'WHERE'  => [
+         'itemtype' => "PlanningRecall"
+      ]
+   ]);
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)==0) {
-         $query = "INSERT INTO `glpi_notificationtemplates`
-                          (`name`, `itemtype`, `date_mod`)
-                   VALUES ('Planning recall', 'PlanningRecall', NOW())";
-         $DB->queryOrDie($query, "0.84 add planning recall notification");
-         $notid = $DB->insert_id();
+   if (!count($notificationtemplatesIterator)) {
+      $DB->insertOrDie("glpi_notificationtemplates", [
+            'name'      => "Planning recall",
+            'itemtype'  => "PlanningRecall",
+            'date_mod'  => new \QueryExpression("NOW()")
+         ],
+         "0.84 add planning recall notification"
+      );
+      $notid = $DB->insert_id();
 
-         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                          (`notificationtemplates_id`, `language`, `subject`,
-                           `content_text`,
-                           `content_html`)
-                   VALUES ($notid, '', '##recall.action##: ##recall.item.name##',
-                           '##recall.action##: ##recall.item.name##
+      $contentText = "##recall.action##: ##recall.item.name##
 
 ##recall.item.content##
 
 ##lang.recall.planning.begin##: ##recall.planning.begin##
 ##lang.recall.planning.end##: ##recall.planning.end##
 ##lang.recall.planning.state##: ##recall.planning.state##
-##lang.recall.item.private##: ##recall.item.private##',
-'&lt;p&gt;##recall.action##: &lt;a href=\"##recall.item.url##\"&gt;##recall.item.name##&lt;/a&gt;&lt;/p&gt;
+##lang.recall.item.private##: ##recall.item.private##";
+
+      $contentHtml = "&lt;p&gt;##recall.action##: &lt;a href=\"##recall.item.url##\"&gt;##recall.item.name##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;##recall.item.content##&lt;/p&gt;
 &lt;p&gt;##lang.recall.planning.begin##: ##recall.planning.begin##&lt;br /&gt;##lang.recall.planning.end##: ##recall.planning.end##&lt;br /&gt;##lang.recall.planning.state##: ##recall.planning.state##&lt;br /&gt;##lang.recall.item.private##: ##recall.item.private##&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;')";
-         $DB->queryOrDie($query, "0.84 add planning recall notification translation");
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;";
 
-         $query = "INSERT INTO `glpi_notifications`
-                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                           `date_mod`)
-                   VALUES ('Planning recall', 0, 'PlanningRecall', 'planningrecall', 'mail',
-                             $notid, '', 1, 1, NOW())";
-         $DB->queryOrDie($query, "0.84 add planning recall notification");
-         $notifid = $DB->insert_id();
+      $DB->insertOrDie("glpi_notificationtemplatetranslations", [
+            'notificationtemplates_id' => $notid,
+            'language'                 => "",
+            'subject'                  => "##recall.action##: ##recall.item.name##",
+            'content_text'             => $contentText,
+            'content_html'             => $contentHtml,
+         ],
+         "0.84 add planning recall notification translation"
+      );
 
-         $query = "INSERT INTO `glpi_notificationtargets`
-                          (`id`, `notifications_id`, `type`, `items_id`)
-                   VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::AUTHOR.");";
-         $DB->queryOrDie($query, "0.84 add planning recall notification target");
-      }
+      $DB->insertOrDie("glpi_notifications", [
+            'name'                     => "Planning recall",
+            'entities_id'              => 0,
+            'itemtype'                 => "PlanningRecall",
+            'event'                    => "planningrecall",
+            'mode'                     => "mail",
+            'notificationtemplates_id' => $notid,
+            'comment'                  => "",
+            'is_recursive'             => 1,
+            'is_active'                => 1,
+            'date_mod'                 => new \QueryExpression("NOW()")
+         ],
+         "0.84 add planning recall notification"
+      );
+      $notifid = $DB->insert_id();
+
+      $DB->insertOrDie("glpi_notificationtargets", [
+            'id'                 => null,
+            'notifications_id'   => $notifid,
+            'type'               => Notification::USER_TYPE,
+            'items_id'           => Notification::AUTHOR,
+         ],
+         "0.84 add planning recall notification target"
+      );
    }
 
    if (!countElementsInTable('glpi_crontasks',
                              ['itemtype' => 'PlanningRecall', 'name' => 'planningrecall'])) {
-      $query = "INSERT INTO `glpi_crontasks`
-                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                VALUES ('PlanningRecall', 'planningrecall', 300, NULL, 1, 1, 3,
-                        0, 24, 30, NULL, NULL, NULL)";
-      $DB->queryOrDie($query, "0.84 populate glpi_crontasks for planningrecall");
+      $DB->insertOrDie("glpi_crontasks", [
+            'itemtype'        => "Planning recall",
+            'name'            => "planningrecall",
+            'frequency'       => 300,
+            'param'           => null,
+            'state'           => 1,
+            'mode'            => 1,
+            'allowmode'       => 3,
+            'hourmin'         => 0,
+            'hourmax'         => 24,
+            'logs_lifetime'   => 30,
+            'lastrun'         => null,
+            'lastcode'        => null,
+            'comment'         => null
+         ],
+         "0.84 populate glpi_crontasks for planningrecall"
+      );
    }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
@@ -804,14 +876,14 @@ function update0831to084() {
                               'update' => 'default_cartridges_alarm_threshold']);
    $migration->migrationOneTable('glpi_entities');
    // move -1 to Entity::CONFIG_NEVER
-   $query = 'UPDATE `glpi_entities`
-             SET `default_consumables_alarm_threshold` = -10
-             WHERE `default_consumables_alarm_threshold` = -1';
-   $DB->query($query);
-   $query = 'UPDATE `glpi_entities`
-             SET `default_cartridges_alarm_threshold` = -10
-             WHERE `default_cartridges_alarm_threshold` = -1';
-   $DB->query($query);
+   $DB->updateOrDie("glpi_entities",
+      ['default_consumables_alarm_threshold' => -10],
+      ['default_consumables_alarm_threshold' => -1]
+   );
+   $DB->updateOrDie("glpi_entities",
+      ['default_cartridges_alarm_threshold' => -10],
+      ['default_cartridges_alarm_threshold' => -1]
+   );
 
    $migration->addField("glpi_entities", 'send_contracts_alert_before_delay', "integer",
                         ['value'     => -2,
