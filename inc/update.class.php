@@ -162,8 +162,8 @@ class Update extends CommonGLPI {
 
       $updir = __DIR__ . "/../install/";
 
-      if (isCommandLine() && version_compare($current_version, '0.72.3', 'lt')) {
-         die('Upgrade from command line is not supported before 0.72.3!');
+      if (version_compare($current_version, '0.80', 'lt')) {
+         die('Upgrade is not supported before 0.80!');
       }
 
       // Update process desactivate all plugins
@@ -171,25 +171,6 @@ class Update extends CommonGLPI {
       $plugin->unactivateAll();
 
       switch ($current_version) {
-         case "0.72.3" :
-         case "0.72.4" :
-            include_once("{$updir}update_0723_078.php");
-            update0723to078();
-
-         case "0.78" :
-            include_once("{$updir}update_078_0781.php");
-            update078to0781();
-
-         case "0.78.1" :
-            include_once("{$updir}update_0781_0782.php");
-            update0781to0782();
-
-         case "0.78.2":
-         case "0.78.3":
-         case "0.78.4":
-         case "0.78.5":
-            include_once("{$updir}update_0782_080.php");
-            update0782to080();
          case "0.80" :
             include_once("{$updir}update_080_0801.php");
             update080to0801();
