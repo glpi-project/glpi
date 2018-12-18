@@ -73,9 +73,9 @@ function update085to0853() {
          'SELECT' => ["itemtype", "items_id", "id"],
          'FROM'   => "glpi_tickets",
          'WHERE'  => [
-            "itemtype" => new \QueryExpression("IS NOT NULL"),
-            "itemtype" => ["<>", ""],
-            "items_id" => ["!=", 0]
+            'NOT' => ['itemtype', null],
+            'itemtype' => ["<>", ""],
+            'items_id' => ["!=", 0]
          ]
       ]);
 

@@ -1086,7 +1086,7 @@ function update084to085() {
    $profilerightsIterator = $DB->request([
       'FROM'   => "glpi_profilerights",
       'WHERE'  => [
-         'name'   => "validate_request",
+         'name'   => "validate_incident",
          'rights' => 1
       ]
    ]);
@@ -2199,7 +2199,7 @@ function update084to085() {
          'event'     => "satisfaction",
       ]);
 
-      foreach ($notificationtemplatesIterator as $notif) {
+      foreach ($notificationsIterator as $notif) {
          $DB->insertOrDie("glpi_notifications", [
                'name'                     => addslashes($notif['name']). "Answer",
                'entities_id'              => $notif['entities_id'],
@@ -2439,7 +2439,7 @@ function update084to085() {
 
    $migration->migrationOneTable('glpi_documents');
    $DB->updateOrDie('glpi_documents',
-      ['tag' => "id"],
+      ['tag' => new QueryExpression(DB::quoteName("id"))],
       [true],
       "0.85 set tag to all documents"
    );
@@ -2782,7 +2782,7 @@ function update084to085() {
       );
       $notid = $DB->insert_id();
 
-      $contenText = '##lang.project.url## : ##project.url##
+      $contentText = '##lang.project.url## : ##project.url##
 
 ##lang.project.description##
 
@@ -3308,9 +3308,9 @@ function update084to085() {
          if (($datal['number'] >= 0)
              && ($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'], -1))) {
 
-            $BD->updateOrDie("glpi_softwarelicenses",
+            $DB->updateOrDie("glpi_softwarelicenses",
                ['is_valid' => 0],
-               ['id' => $data['id']],
+               ['id' => $datal['id']],
                "0.85 update softwarelicense"
             );
          }
@@ -3368,7 +3368,7 @@ function update084to085() {
              WHERE `interface` = 'helpdesk'";
    $DB->updateOrDie("glpi_profiles",
       ['ticket_status' => exportArrayToDB($newcycle)],
-      ['interface' => "helpdeskhelpdesk"],
+      ['interface' => "helpdesk"],
       "0.85 update default life cycle for helpdesk"
    );
    //Add comment field to a virtualmachine
