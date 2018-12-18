@@ -70,7 +70,7 @@ function update083to0831() {
    $migration->addField("glpi_profiles", "knowbase_admin", "char",
                         ['after'     => "knowbase",
                               'update'    => "1",
-                              'condition' => " WHERE `config` = 'w'"]);
+                              'condition' => ['config' => 'w']]);
 
    $migration->addField("glpi_configs", "display_count_on_home", "integer", ['value' => 5]);
    $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");

@@ -224,15 +224,15 @@ function update0803to083() {
 
    $migration->addField("glpi_profiles", "show_my_problem", "char",
                         ['update'    => "1",
-                              'condition' => " WHERE `own_ticket` = 1"]);
+                              'condition' => ['own_ticket' => 1]]);
 
    $migration->addField("glpi_profiles", "show_all_problem", "char",
                         ['update'    => "1",
-                              'condition' => " WHERE `show_all_ticket` = 1"]);
+                              'condition' => ['show_all_ticket' => 1]]);
 
    $migration->addField("glpi_profiles", "edit_all_problem", "char",
                         ['update'    => "1",
-                              'condition' => " WHERE `update_ticket` = 1"]);
+                              'condition' => ['update_ticket' => 1]]);
 
    $migration->changeField("glpi_profiles", 'helpdesk_status', 'ticket_status', "text",
                            ['comment' => "json encoded array of from/dest allowed status change"]);
@@ -626,7 +626,7 @@ function update0803to083() {
 
    if ($migration->addField("glpi_consumables", "itemtype", "VARCHAR(100) DEFAULT NULL",
                             ["after" => "date_out",
-                                  "update" => "'User'"])) {
+                                  "update" => 'User'])) {
 
       $migration->dropKey("glpi_consumables", 'users_id');
       $migration->changeField("glpi_consumables", 'users_id', 'items_id', 'integer');
