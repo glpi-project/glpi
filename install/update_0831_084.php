@@ -984,25 +984,38 @@ function update0831to084() {
    $migration->addField("glpi_slalevels", 'match',
                         "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
 
-   $query = "UPDATE `glpi_slalevelactions`
-             SET `action_type` = 'append'
-             WHERE `action_type` = 'assign'
-                   AND `field` IN ('_users_id_requester',  '_groups_id_requester',
-                                   '_users_id_assign',     '_groups_id_assign',
-                                   '_suppliers_id_assign', '_users_id_observer',
-                                   '_groups_id_observer');";
-   $DB->queryOrDie($query, "0.84 update data for SLA actors add");
+   $DB->updateOrDie("glpi_slalevelactions", [
+         'action_type' => "append"
+      ], [
+         'action_type' => "assign",
+         'field' => [
+            "_users_id_requester",
+            "_groups_id_requester",
+            "_users_id_assign",
+            "_groups_id_assign",
+            "_suppliers_id_assign",
+            "_users_id_observer",
+            "_groups_id_observer"
+         ]
+      ],
+      "0.84 update data for SLA actors add"
+   );
 
    // Clean observer as recipient of satisfaction survey
-   $query = "DELETE FROM `glpi_notificationtargets`
-             WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
-                   AND `glpi_notificationtargets`.`items_id` = '".Notification::OBSERVER."'
-                   AND `notifications_id` IN (SELECT `glpi_notifications`.`id`
-                                              FROM `glpi_notifications`
-                                              WHERE `glpi_notifications`.`itemtype` = 'Ticket'
-                                                    AND `glpi_notifications`.`event` = 'satisfaction')";
-
-   $DB->queryOrDie($query, "0.84 clean targets for satisfaction notification");
+   $DB->deleteOrDie("glpi_notificationtargets", [
+         "glpi_notificationtargets.type"     => Notification::USER_TYPE,
+         "glpi_notificationtargets.items_id" => Notification::OBSERVER,
+         "notifications_id"                  => new \QuerySubQuery([
+            'SELECT' => "glpi_notifications.id",
+            'FROM'   => "glpi_notifications",
+            'WHERE'  => [
+               'glpi_notifications.itemtype' => "Ticket",
+               'glpi_notifications.event'    => "satisfaction",
+            ]
+         ])
+      ],
+      "0.84 clean targets for satisfaction notification"
+   );
 
    // Clean user as recipient of item not unique
    $query = "DELETE FROM `glpi_notificationtargets`
