@@ -51,7 +51,7 @@ function update078to0781() {
    $entities[0]="Root";
 
    $query = "SELECT DISTINCT `itemtype` FROM `glpi_reservationitems`";
-   if ($result=$DB->query($query)) {
+   if ($result=$DB->rawQuery($query)) {
       if ($DB->numrows($result)>0) {
          while ($data = $DB->fetch_assoc($result)) {
             $itemtable=getTableForItemType($data['itemtype']);
@@ -72,7 +72,7 @@ function update078to0781() {
                            WHERE `itemtype`='".$data['itemtype']."'
                               AND `items_id` IN (SELECT `id` FROM `$itemtable`
                               WHERE `entities_id`=$entID AND `is_recursive`=0)";
-                  $DB->queryOrDie($query3, "0.78.1 update entities_id and is_recursive=0 in glpi_reservationitems for ".$data['itemtype']);
+                  $DB->rawQueryOrDie($query3, "0.78.1 update entities_id and is_recursive=0 in glpi_reservationitems for ".$data['itemtype']);
 
                   // Recursive ones
                   $query3="UPDATE `glpi_reservationitems`
@@ -80,14 +80,14 @@ function update078to0781() {
                            WHERE `itemtype`='".$data['itemtype']."'
                               AND `items_id` IN (SELECT `id` FROM `$itemtable`
                               WHERE `entities_id`=$entID AND `is_recursive`=1)";
-                  $DB->queryOrDie($query3, "0.78.1 update entities_id and is_recursive=1 in glpi_reservationitems for ".$data['itemtype']);
+                  $DB->rawQueryOrDie($query3, "0.78.1 update entities_id and is_recursive=1 in glpi_reservationitems for ".$data['itemtype']);
                } else {
                   $query3="UPDATE `glpi_reservationitems`
                            SET `entities_id`=$entID
                            WHERE `itemtype`='".$data['itemtype']."'
                               AND `items_id` IN (SELECT `id` FROM `$itemtable`
                               WHERE `entities_id`=$entID)";
-                  $DB->queryOrDie($query3, "0.78.1 update entities_id in glpi_reservationitems for ".$data['itemtype']);
+                  $DB->rawQueryOrDie($query3, "0.78.1 update entities_id in glpi_reservationitems for ".$data['itemtype']);
                }
             }
          }
@@ -96,28 +96,28 @@ function update078to0781() {
 
    $query = "ALTER TABLE `glpi_tickets`
              CHANGE `global_validation` `global_validation` VARCHAR(255) DEFAULT 'none'";
-   $DB->query($query) or die("0.78.1 change ticket global_validation default state");
+   $DB->rawQuery($query) or die("0.78.1 change ticket global_validation default state");
 
    $query = "UPDATE `glpi_tickets`
              SET `global_validation`='none'
              WHERE `id` NOT IN (SELECT DISTINCT `tickets_id`
                                 FROM `glpi_ticketvalidations`)";
-   $DB->query($query) or die("0.78.1 update ticket global_validation state");
+   $DB->rawQuery($query) or die("0.78.1 update ticket global_validation state");
 
    if (!$DB->fieldExists('glpi_knowbaseitemcategories', 'entities_id', false)) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                     ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
                     ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
                     ADD INDEX `entities_id` (`entities_id`),ADD INDEX `is_recursive` (`is_recursive`)";
-      $DB->queryOrDie($query, "0.78.1 add entities_id,is_recursive in glpi_knowbaseitemcategories");
+      $DB->rawQueryOrDie($query, "0.78.1 add entities_id,is_recursive in glpi_knowbaseitemcategories");
 
       // Set existing categories recursive global
       $query = "UPDATE `glpi_knowbaseitemcategories` SET `is_recursive` = '1'";
-      $DB->queryOrDie($query, "0.78.1 set value of is_recursive in glpi_knowbaseitemcategories");
+      $DB->rawQueryOrDie($query, "0.78.1 set value of is_recursive in glpi_knowbaseitemcategories");
 
       $query = "ALTER TABLE `glpi_knowbaseitemcategories` DROP INDEX `unicity` ,
                ADD UNIQUE `unicity` ( `entities_id`, `knowbaseitemcategories_id` , `name` ) ";
-      $DB->queryOrDie($query, "0.78.1 update unicity index on glpi_knowbaseitemcategories");
+      $DB->rawQueryOrDie($query, "0.78.1 update unicity index on glpi_knowbaseitemcategories");
    }
 
    // must always be at the end (only for end message)

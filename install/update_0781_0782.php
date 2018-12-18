@@ -59,12 +59,12 @@ function update0781to0782($output = 'HTML') {
       $query = "SELECT *
                 FROM `glpi_documenttypes`
                 WHERE `ext` = '$ext'";
-      if ($result=$DB->query($query)) {
+      if ($result=$DB->rawQuery($query)) {
          if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_documenttypes`
                              (`name`, `ext`, `icon`, `is_uploadable`, `date_mod`)
                       VALUES ('".$data['name']."', '$ext', '".$data['icon']."', '1', NOW())";
-            $DB->queryOrDie($query, "0.78.2 add document type $ext");
+            $DB->rawQueryOrDie($query, "0.78.2 add document type $ext");
          }
       }
    }
@@ -73,43 +73,43 @@ function update0781to0782($output = 'HTML') {
    $query = "UPDATE `glpi_configs`
              SET `language` = 'nl_NL'
              WHERE `language` = 'nl_BE';";
-   $DB->queryOrDie($query, "0.78.2 drop nl_be langage");
+   $DB->rawQueryOrDie($query, "0.78.2 drop nl_be langage");
 
    $query = "UPDATE `glpi_users`
              SET `language` = 'nl_NL'
              WHERE `language` = 'nl_BE';";
-   $DB->queryOrDie($query, "0.78.2 drop nl_be langage");
+   $DB->rawQueryOrDie($query, "0.78.2 drop nl_be langage");
 
    // CLean sl_SL
    $query = "UPDATE `glpi_configs`
              SET `language` = 'sl_SI'
              WHERE `language` = 'sl_SL';";
-   $DB->queryOrDie($query, "0.78.2 clean sl_SL langage");
+   $DB->rawQueryOrDie($query, "0.78.2 clean sl_SL langage");
 
    $query = "UPDATE `glpi_users`
              SET `language` = 'sl_SI'
              WHERE `language` = 'sl_SL';";
-   $DB->queryOrDie($query, "0.78.2 clean sl_SL langage");
+   $DB->rawQueryOrDie($query, "0.78.2 clean sl_SL langage");
 
    if (isIndex('glpi_computers_items', 'unicity')) {
       $query = "ALTER TABLE `glpi_computers_items` DROP INDEX `unicity`";
-      $DB->queryOrDie($query, "0.78.2 drop unicity index for glpi_computers_items");
+      $DB->rawQueryOrDie($query, "0.78.2 drop unicity index for glpi_computers_items");
 
       $query = "ALTER TABLE `glpi_computers_items` ADD INDEX `item` ( `itemtype` , `items_id` ) ";
-      $DB->queryOrDie($query, "0.78.2 add index for glpi_computers_items");
+      $DB->rawQueryOrDie($query, "0.78.2 add index for glpi_computers_items");
    }
 
    // For Rule::RULE_TRACKING_AUTO_ACTION
    $changes['RuleMailCollector'] = ['X-Priority' => 'x-priority'];
 
-   $DB->query("SET SESSION group_concat_max_len = 9999999;");
+   $DB->rawQuery("SET SESSION group_concat_max_len = 9999999;");
    foreach ($changes as $ruletype => $tab) {
       // Get rules
       $query = "SELECT GROUP_CONCAT(`id`)
                 FROM `glpi_rules`
                 WHERE `sub_type` = '".$ruletype."'
                 GROUP BY `sub_type`";
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->rawQuery($query)) {
          if ($DB->numrows($result)>0) {
             // Get rule string
             $rules = $DB->result($result, 0, 0);
@@ -120,7 +120,7 @@ function update0781to0782($output = 'HTML') {
                          WHERE `field` = '$old'
                                AND `rules_id` IN ($rules)";
 
-               $DB->queryOrDie($query, "0.78.2 update datas for rules actions");
+               $DB->rawQueryOrDie($query, "0.78.2 update datas for rules actions");
             }
             // Update criteria
             foreach ($tab as $old => $new) {
@@ -128,7 +128,7 @@ function update0781to0782($output = 'HTML') {
                          SET `criteria` = '$new'
                          WHERE `criteria` = '$old'
                                AND `rules_id` IN ($rules)";
-               $DB->queryOrDie($query, "0.78.2 update datas for rules criteria");
+               $DB->rawQueryOrDie($query, "0.78.2 update datas for rules criteria");
             }
          }
       }
@@ -138,13 +138,13 @@ function update0781to0782($output = 'HTML') {
    $query = "SELECT DISTINCT `sub_type`
              FROM `glpi_rules`
              WHERE ranking = '0'";
-   if ($result = $DB->query($query)) {
+   if ($result = $DB->rawQuery($query)) {
       if ($DB->numrows($result)>0) {
          while ($data = $DB->fetch_assoc($result)) {
             $query = "UPDATE `glpi_rules`
                       SET `ranking` = ranking +1
                       WHERE `sub_type` = '".$data['sub_type']."';";
-            $DB->queryOrDie($query, "0.78.2 reorder rule ranking for ".$data['sub_type']);
+            $DB->rawQueryOrDie($query, "0.78.2 reorder rule ranking for ".$data['sub_type']);
          }
       }
    }
@@ -156,7 +156,7 @@ function update0781to0782($output = 'HTML') {
       $query = "UPDATE `glpi_rules`
                 SET `ranking` = ranking +2
                 WHERE `sub_type` = 'RuleMailCollector';";
-      $DB->queryOrDie($query, "0.78.2 reorder rule ranking for RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 reorder rule ranking for RuleMailCollector");
 
       /// Insert new rule
       $query = "INSERT INTO `glpi_rules`
@@ -165,18 +165,18 @@ function update0781to0782($output = 'HTML') {
                 VALUES ('0', 'RuleMailCollector', '1', 'Auto-Reply X-Auto-Response-Suppress',
                         'Exclude Auto-Reply emails using X-Auto-Response-Suppress header', 'AND',
                         0, NOW(), 1)";
-      $DB->queryOrDie($query, "0.78.2 add new rule RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 add new rule RuleMailCollector");
       $rule_id = $DB->insert_id();
       /// Insert criteria and action
       $query = "INSERT INTO `glpi_rulecriterias`
                        (`rules_id`, `criteria`, `condition`, `pattern`)
                 VALUES ('$rule_id', 'x-auto-response-suppress', '6', '/\\\\S+/')";
-      $DB->queryOrDie($query, "0.78.2 add new criteria RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 add new criteria RuleMailCollector");
 
       $query = "INSERT INTO `glpi_ruleactions`
                        (`rules_id`, `action_type`, `field`, `value`)
                 VALUES ('$rule_id', 'assign', '_refuse_email_no_response', '1')";
-      $DB->queryOrDie($query, "0.78.2 add new action RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 add new action RuleMailCollector");
 
       /// Insert new rule
       $query = "INSERT INTO `glpi_rules`
@@ -184,23 +184,23 @@ function update0781to0782($output = 'HTML') {
                         `description`, `match`, `is_active`, `date_mod`, `is_recursive`)
                 VALUES ('0', 'RuleMailCollector', '2', 'Auto-Reply Auto-Submitted',
                         'Exclude Auto-Reply emails using Auto-Submitted header', 'AND', 0, NOW(), 1)";
-      $DB->queryOrDie($query, "0.78.2 add new rule RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 add new rule RuleMailCollector");
       $rule_id = $DB->insert_id();
       /// Insert criteria and action
       $query = "INSERT INTO `glpi_rulecriterias`
                        (`rules_id`, `criteria`, `condition`, `pattern`)
                 VALUES ('$rule_id', 'auto-submitted', '6', '/\\\\S+/')";
-      $DB->queryOrDie($query, "0.78.2 add new criteria RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 add new criteria RuleMailCollector");
 
       $query = "INSERT INTO `glpi_rulecriterias`
                        (`rules_id`, `criteria`, `condition`, `pattern`)
                 VALUES ('$rule_id', 'auto-submitted', '1', 'no')";
-      $DB->queryOrDie($query, "0.78.2 add new criteria RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 add new criteria RuleMailCollector");
 
       $query = "INSERT INTO `glpi_ruleactions`
                        (`rules_id`, `action_type`, `field`, `value`)
                 VALUES ('$rule_id', 'assign', '_refuse_email_no_response', '1')";
-      $DB->queryOrDie($query, "0.78.2 add new action RuleMailCollector");
+      $DB->rawQueryOrDie($query, "0.78.2 add new action RuleMailCollector");
 
    }
 
@@ -208,7 +208,7 @@ function update0781to0782($output = 'HTML') {
       $query = "ALTER TABLE `glpi_ocsservers`
                 ADD `ocs_db_utf8` tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`";
 
-      $DB->queryOrDie($query, "0.78.2 add ocs_db_utf8 in glpi_ocsservers");
+      $DB->rawQueryOrDie($query, "0.78.2 add ocs_db_utf8 in glpi_ocsservers");
    }
 
    // must always be at the end (only for end message)
