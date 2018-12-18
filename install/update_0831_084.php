@@ -1018,15 +1018,20 @@ function update0831to084() {
    );
 
    // Clean user as recipient of item not unique
-   $query = "DELETE FROM `glpi_notificationtargets`
-             WHERE `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
-                   AND `glpi_notificationtargets`.`items_id` = '".Notification::USER."'
-                   AND `notifications_id` IN (SELECT `glpi_notifications`.`id`
-                                              FROM `glpi_notifications`
-                                              WHERE `glpi_notifications`.`itemtype` = 'FieldUnicity'
-                                                    AND `glpi_notifications`.`event` = 'refuse')";
-
-   $DB->queryOrDie($query, "0.84 clean targets for fieldunicity notification");
+   $DB->deleteOrDie("glpi_notificationtargets", [
+         "glpi_notificationtargets.type"     => Notification::USER_TYPE,
+         "glpi_notificationtargets.items_id" => Notification::USER,
+         "notifications_id"                  => new \QuerySubQuery([
+            'SELECT' => "glpi_notifications.id",
+            'FROM'   => "glpi_notifications",
+            'WHERE'  => [
+               'glpi_notifications.itemtype' => "FieldUnicity",
+               'glpi_notifications.event'    => "refuse",
+            ]
+         ])
+      ],
+      "0.84 clean targets for fieldunicity notification"
+   );
 
    if (!$DB->tableExists('glpi_blacklists')) {
       $query = "CREATE TABLE `glpi_blacklists` (
@@ -1050,23 +1055,34 @@ function update0831to084() {
       foreach ($toinsert as $type => $datas) {
          if (count($datas)) {
             foreach ($datas as $name => $value) {
-               $query = "INSERT INTO `glpi_blacklists`
-                                (`type`,`name`,`value`)
-                         VALUES ('$type','".addslashes($name)."','".addslashes($value)."')";
-               $DB->queryOrDie($query, "0.84 insert datas to glpi_blacklists");
+               $DB->insertOrDie("glpi_blacklists", [
+                     'type'   => $type,
+                     'name'   => addslashes($name),
+                     'value'  => addslashes($value),
+                  ],
+                  "0.84 insert datas to glpi_blacklists"
+               );
             }
          }
       }
    }
 
-   $query  = "SELECT `id`
-              FROM `glpi_rulerightparameters`
-              WHERE `name` = '(LDAP) MemberOf'";
-   $result = $DB->query($query);
-   if (!$DB->numrows($result)) {
-      $query = "INSERT INTO `glpi_rulerightparameters`
-                VALUES (NULL, '(LDAP) MemberOf', 'memberof', '')";
-      $DB->queryOrDie($query, "0.84 insert (LDAP) MemberOf in glpi_rulerightparameters");
+   $rulerightparametersIterator = $DB->request([
+      'SELECT' => "id",
+      'FROM'   => "glpi_rulerightparameters",
+      'WHERE'  => [
+         'name' => "(LDAP) MemberOf"
+      ]
+   ]);
+   if (!count($rulerightparametersIterator)) {
+      $DB->insertOrDie("glpi_rulerightparameters", [
+            'id'        => null,
+            'name'      => "(LDAP) MemberOf",
+            'value'     => "memberof",
+            'comment'   => ""
+         ],
+         "0.84 insert (LDAP) MemberOf in glpi_rulerightparameters"
+      );
    }
 
    if (!$DB->tableExists('glpi_ssovariables')) {
@@ -1078,6 +1094,7 @@ function update0831to084() {
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_ssovariables");
 
+      // TODO : can be improved once DBMysql->buildInsert() support multiple insertions
       $query = "INSERT INTO `glpi_ssovariables`
                        (`id`, `name`, `comment`)
                 VALUES (1, 'HTTP_AUTH_USER', ''),
@@ -1092,22 +1109,30 @@ function update0831to084() {
    if ($migration->addField('glpi_configs', 'ssovariables_id', 'integer')) {
       $migration->migrationOneTable('glpi_configs');
       //Get configuration
-      $query = "SELECT `existing_auth_server_field`
-                FROM `glpi_configs`";
-      $result = $DB->query($query);
+      $configsIterator = $DB->request([
+         'SELECT' => "existing_auth_server_field",
+         'FROM'   => "glpi_configs"
+      ]);
 
-      $existing_auth_server_field = $DB->result($result, 0, "existing_auth_server_field");
-      if ($existing_auth_server_field) {
+      $DB->result($result, 0, "existing_auth_server_field");
+      $config = $configsIterator->next();
+
+      if ($configs['existing_auth_server_field'] ) {
          //Get dropdown value for existing_auth_server_field
-         $query = "SELECT `id`
-                   FROM `glpi_ssovariables`
-                   WHERE `name` = '$existing_auth_server_field'";
-         $result = $DB->query($query);
+         $ssovariableIterator = $DB->request([
+            'SELECT' => "id",
+            'FROM' => "glpi_ssovariables",
+            'WHERE' => [
+               'name' => $existing_auth_server_field
+            ]
+         ]);
          //Update config
-         if ($DB->numrows($result) > 0) {
-            $query = "UPDATE `glpi_configs`
-                      SET `ssovariables_id` = '".$DB->result($result, 0, "id")."'";
-            $DB->queryOrDie($query, "0.84 update glpi_configs");
+         if ($data = $ssovariableIterator->next()) {
+            $DB->updateOrDie("glpi_configs", [
+                  'ssovariables_id' => $data['id']
+               ],
+               "0.84 update glpi_configs"
+            );
          }
          //Drop old field
       }
@@ -1118,16 +1143,12 @@ function update0831to084() {
    $migration->dropField('glpi_configs', 'authldaps_id_extra');
 
    // Clean uneeded logs
-   $cleancondition                = [];
-   $cleancondition['reminder_kb'] = "`itemtype` IN ('Entity', 'User', 'Profile', 'Group')
-                                       AND `itemtype_link` IN ('Reminder', 'Knowbase')";
-
-   foreach ($cleancondition as $name => $condition) {
-      $query = "DELETE
-                FROM `glpi_logs`
-                WHERE $condition";
-      $DB->queryOrDie($query, "0.84 clean logs for $name");
-   }
+   $DB->deleteOrDie("glpi_logs", [
+         'itemtype'        => ["Entity", "User", "Profile", "Group"],
+         'itemtype_link'   => ["Reminder", "Knowbase"]
+      ],
+      "0.84 clean logs for reminder_kb"
+   );
 
    //Remove OCS tables from GLPI's core
    $migration->renameTable('glpi_ocsadmininfoslinks', 'ocs_glpi_ocsadmininfoslinks');
