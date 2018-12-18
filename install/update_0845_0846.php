@@ -45,18 +45,13 @@ function update0845to0846() {
    $migration->setVersion('0.84.6');
 
    // TODO : can be improved once DBmysql->update() supports JOIN
-   $table   = DBmysql::quoteName("glpi_documents_items") . " AS " . DBmysql::quoteName("doc_i");
-   $join    = DBmysql::quoteName("glpi_documents") . " AS " . DBmysql::quoteName("doc");
-   $on      = DBmysql::quoteName("doc.id") . " = " . DBmysql::quoteName("doc_i.documents_id");
-
    // correct entities_id in documents_items
-   $DB->updateOrDie(new \QueryExpression("$table INNER JOIN $join ON $on"), [
-         'doc_i.entities_id'  => "doc.entities_id",
-         'doc_i.is_recursive' => "doc.is_recursive"
-      ],
-      [true],
-      "0.84.6 change entities_id in documents_items"
-   );
+   $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
+                   INNER JOIN `glpi_documents` as `doc`
+                   ON  `doc`.`id` = `doc_i`.`documents_id`
+                   SET `doc_i`.`entities_id` = `doc`.`entities_id`,
+                       `doc_i`.`is_recursive` = `doc`.`is_recursive`";
+   $DB->queryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
 
    $status  = ['new'           => CommonITILObject::INCOMING,
                     'assign'        => CommonITILObject::ASSIGNED,
