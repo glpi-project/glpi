@@ -43,8 +43,8 @@ function update94to100() {
    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '10.0'));
-   $migration->setVersion('10.0');
+   $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
+   $migration->setVersion('10.0.0');
 
    //put your update rules here, and drop the line!
 
