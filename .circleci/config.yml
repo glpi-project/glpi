@@ -95,9 +95,9 @@ commands:
       - run:
           name: Update DB tests
           command: |
-            mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
-            mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
-            bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=127.0.0.1 --db-user=root
+            mysql -h 127.0.0.1 -u root -e 'create database glpitest080;'
+            mysql -h 127.0.0.1 -u root glpitest080 < tests/glpi-0.80-empty.sql
+            bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest080 --db-host=127.0.0.1 --db-user=root
             bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
             bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "Aucune migration requise." || (echo "glpi:database:update command FAILED" && exit 1)
             bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
