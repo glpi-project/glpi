@@ -368,7 +368,7 @@ function update0782to080() {
       "close_delay_stat",
       "INT( 11 ) NOT NULL DEFAULT 0", [
          'update'    => new \QueryExpression(
-            "(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))"
+            "(UNIX_TIMESTAMP(" . $DB->quoteName('glpi_tickets.closedate') . ") - UNIX_TIMESTAMP(" . $DB->quoteName('glpi_tickets.date') . "))"
          ),
          'condition' => [
             'glpi_tickets.status'   => 'closed',
@@ -376,7 +376,10 @@ function update0782to080() {
                'glpi_tickets.date'        => null,
                'glpi_tickets.closedate'   => null
             ],
-            'glpi_tickets.closedate'   => new \QueryExpression($DB->quoteName('glpi_tickets') . '.' . $DB->quoteName('date'))
+            'glpi_tickets.closedate'   => [
+               '>',
+               new \QueryExpression($DB->quoteName('glpi_tickets.date'))
+            ]
          ]
       ]
    );
@@ -386,7 +389,7 @@ function update0782to080() {
       "solve_delay_stat",
       "INT( 11 ) NOT NULL DEFAULT 0", [
          'update'    => new \QueryExpression(
-            "(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))"
+            "(UNIX_TIMESTAMP(" . $DB->quoteName('glpi_tickets.solvedate') . ") - UNIX_TIMESTAMP(" . $DB->quoteName('glpi_tickets.date') . "))"
          ),
          'condition' => [
             'glpi_tickets.status'   => ['closed', 'solved'],
@@ -394,7 +397,10 @@ function update0782to080() {
                'glpi_tickets.date'        => null,
                'glpi_tickets.solvedate'   => null,
             ],
-            'glpi_tickets.solvedate'   => new \QueryExpression($DB->quoteName('glpi_tickets') . '.' . $DB->quoteName('date'))
+            'glpi_tickets.solvedate'   => [
+               '>',
+               new \QueryExpression($DB->quoteName('glpi_tickets.date'))
+            ]
          ]
       ]
    );
