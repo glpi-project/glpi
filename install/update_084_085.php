@@ -86,10 +86,12 @@ function update084to085() {
          $migration->copyTable('glpi_configs', 'origin_glpi_configs');
       }
 
-      $query  = "SELECT *
-                 FROM `glpi_configs`
-                 WHERE `id` = '1'";
-      $result_of_configs = $DB->query($query);
+      $configIterator = $DB->request([
+         'FROM'   => "glpi_configs",
+         'WHERE'  => [
+            'id' => 1
+         ]
+      ]);
 
       // Update glpi_configs
       $migration->addField('glpi_configs', 'context', 'VARCHAR(150) COLLATE utf8_unicode_ci',
@@ -101,8 +103,8 @@ function update084to085() {
 
       $migration->migrationOneTable('glpi_configs');
 
-      if ($DB->numrows($result_of_configs) == 1) {
-         $configs = $DB->fetch_assoc($result_of_configs);
+      if (count($configIterator) === 1) {
+         $configs = $configIterator->next();
          unset($configs['id']);
          unset($configs['version']);
          // First drop fields not to have constraint on insert
@@ -112,10 +114,11 @@ function update084to085() {
          $migration->migrationOneTable('glpi_configs');
          // Then insert new values
          foreach ($configs as $name => $value) {
-            $query = "INSERT INTO `glpi_configs`
-                             (`context`, `name`, `value`)
-                      VALUES ('core', '$name', '".addslashes($value)."');";
-            $DB->query($query);
+            $DB->insert("glpi_configs", [
+               'context'   => "core",
+               'name'      => $name,
+               'value'     => addslashes($value),
+            ]);
          }
       }
       $migration->dropField('glpi_configs', 'version');
@@ -2289,7 +2292,7 @@ function update084to085() {
       ]);
       if (count($slasIterator)) {
          $a_ids = [];
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $slasIterator->next()) {
             $a_ids[] = $data['id'];
          }
          $DB->update("glpi_slas", [
