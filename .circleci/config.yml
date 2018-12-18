@@ -27,8 +27,8 @@ shared: &shared
     - run:
         name: Update DB
         command: |
-          mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
-          mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
+          mysql -h 127.0.0.1 -u root -e 'create database glpitest080;'
+          mysql -h 127.0.0.1 -u root glpitest080 < tests/glpi-0.80-empty.sql
           cp tests/circleci.config_db.php tests/config_db.php
           bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
           bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)

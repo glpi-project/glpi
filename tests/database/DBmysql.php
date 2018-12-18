@@ -39,7 +39,7 @@ class DBmysql extends \GLPITestCase {
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
       $this->olddb = new \DB();
-      $this->olddb->dbdefault = 'glpitest0723';
+      $this->olddb->dbdefault = 'glpitest080';
       $this->olddb->connect();
       $this->boolean($this->olddb->connected)->isTrue();
    }
