@@ -171,101 +171,6 @@ class Update extends CommonGLPI {
       $plugin->unactivateAll();
 
       switch ($current_version) {
-         case '0.1':
-            include_once("update_to_031.php");
-            updateDbTo031();
-         case "0.31" :
-            $ret = [];
-            include_once "{$updir}update_031_04.php";
-            update031to04();
-            if (!empty($ret) && $ret["adminchange"]) {
-               echo "<div class='center'> <h2>". __("All users having administrators rights have have been updated to 'super-admin' rights with the creation of his new user type.") ."<h2></div>";
-            }
-         case "0.4" :
-         case "0.41" :
-            include_once("{$updir}update_04_042.php");
-            update04to042();
-
-         case "0.42" :
-            showLocationUpdateForm();
-            include_once("{$updir}update_042_05.php");
-            update042to05();
-
-         case "0.5" :
-            include_once("{$updir}update_05_051.php");
-            update05to051();
-
-         case "0.51" :
-         case "0.51a" :
-            include_once("{$updir}update_051_06.php");
-            update051to06();
-
-         case "0.6" :
-            include_once("{$updir}update_06_065.php");
-            update06to065();
-
-         case "0.65" :
-            include_once("{$updir}update_065_068.php");
-            update065to068();
-
-         case "0.68" :
-            include_once("{$updir}update_068_0681.php");
-            update068to0681();
-
-         case "0.68.1" :
-         case "0.68.2" :
-         case "0.68.3" :
-            // Force update content
-            if (showLocationUpdateForm()) {
-               $DB->updateOrDie(
-                  'glpi_config',
-                  ['version' => ' 0.68.3x'],
-                  [0],
-                  '0.68.3'
-               );
-
-               showContentUpdateForm();
-               exit();
-            }
-         case "0.68.3x": // Special version for replay upgrade process from here
-            include_once("{$updir}update_0681_07.php");
-            update0681to07();
-
-         case "0.7" :
-         case "0.70.1" :
-         case "0.70.2" :
-            include_once("{$updir}update_07_071.php");
-            update07to071();
-
-         case "0.71" :
-         case "0.71.1" :
-            include_once("{$updir}update_071_0712.php");
-            update071to0712();
-
-         case "0.71.2" :
-            include_once("{$updir}update_0712_0713.php");
-            update0712to0713();
-
-         case "0.71.3" :
-         case "0.71.4" :
-         case "0.71.5" :
-         case "0.71.6" :
-            include_once("{$updir}update_0713_072.php");
-            update0713to072();
-
-         case "0.72" :
-            include_once("{$updir}update_072_0721.php");
-            update072to0721();
-
-         case "0.72.1" :
-            include_once("{$updir}update_0721_0722.php");
-            update0721to0722();
-
-         case "0.72.2" :
-         case "0.72.21" :
-            include_once("{$updir}update_0722_0723.php");
-            update0722to0723();
-
          case "0.72.3" :
          case "0.72.4" :
             include_once("{$updir}update_0723_078.php");
@@ -285,7 +190,6 @@ class Update extends CommonGLPI {
          case "0.78.5":
             include_once("{$updir}update_0782_080.php");
             update0782to080();
-
          case "0.80" :
             include_once("{$updir}update_080_0801.php");
             update080to0801();
