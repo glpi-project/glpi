@@ -596,54 +596,63 @@ class Consumable extends CommonDBChild {
          return;
       }
 
-      $query = "SELECT COUNT(*) AS count, `consumableitems_id`, `itemtype`, `items_id`
-                FROM `glpi_consumables`
-                WHERE `date_out` IS NOT NULL
-                      AND `consumableitems_id` IN (SELECT `id`
-                                                   FROM `glpi_consumableitems` ".
-                                                   getEntitiesRestrictRequest("WHERE",
-                                                                           "glpi_consumableitems").")
-                GROUP BY `itemtype`, `items_id`, `consumableitems_id`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            'COUNT'  => ['* AS count'],
+            'consumableitems_id',
+            'itemtype',
+            'items_id'
+         ],
+         'FROM'   => 'glpi_consumables',
+         'WHERE'  => [
+            'NOT'                => ['date_out' => null],
+            'consumableitems_id' => new \QuerySubQuery([
+               'SELECT' => 'id',
+               'FROM'   => 'glpi_consumableitems',
+               'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
+            ])
+         ],
+         'GROUP'  => ['itemtype', 'items_id', 'consumableitems_id']
+      ]);
       $used = [];
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
-                  = $data["count"];
-            }
-         }
+      while ($data = $iterator->next()) {
+         $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
+            = $data["count"];
       }
-      $query = "SELECT COUNT(*) AS count, `consumableitems_id`
-                FROM `glpi_consumables`
-                WHERE `date_out` IS NULL
-                      AND `consumableitems_id` IN (SELECT `id`
-                                                   FROM `glpi_consumableitems` ".
-                                                   getEntitiesRestrictRequest("WHERE",
-                                                                           "glpi_consumableitems").")
-                GROUP BY `consumableitems_id`";
+
+      $iterator = $DB->request([
+         'SELECT' => [
+            'COUNT'  => '* AS count',
+            'consumableitems_id',
+         ],
+         'FROM'   => 'glpi_consumables',
+         'WHERE'  => [
+            'date_out'           => null,
+            'consumableitems_id' => new \QuerySubQuery([
+               'SELECT' => 'id',
+               'FROM'   => 'glpi_consumableitems',
+               'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
+            ])
+         ],
+         'GROUP'  => ['consumableitems_id']
+      ]);
       $new = [];
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $new[$data["consumableitems_id"]] = $data["count"];
-            }
-         }
+      while ($data = $iterator->next()) {
+         $new[$data["consumableitems_id"]] = $data["count"];
       }
 
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_consumableitems',
+         'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
+      ]);
       $types = [];
-      $query = "SELECT *
-                FROM `glpi_consumableitems` ".
-                getEntitiesRestrictRequest("WHERE", "glpi_consumableitems");
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $types[$data["id"]] = $data["name"];
-            }
-         }
+      while ($data = $iterator->next()) {
+         $types[$data["id"]] = $data["name"];
       }
+
       asort($types);
       $total = [];
       if (count($types) > 0) {

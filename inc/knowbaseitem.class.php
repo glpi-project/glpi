@@ -1140,18 +1140,14 @@ class KnowbaseItem extends CommonDBVisible {
       $join  = self::addVisibilityJoins(true);
 
       switch ($type) {
-         case 'myunpublished' :
+         case 'myunpublished':
+         case 'allmy':
+         case 'allunpublished':
             break;
 
-         case 'allmy' :
-            break;
-
-         case 'allunpublished' :
-            break;
-
-         default :
+         default:
             // Build query
-            if (Session::getLoginUserID() && $type != 'myunpublished') {
+            if (Session::getLoginUserID()) {
                $where = self::addVisibilityRestrict();
             } else {
                // Anonymous access
