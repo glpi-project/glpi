@@ -46,8 +46,8 @@ class Problem extends DbTestCase {
          'name'           => "test add from computer \'_test_pc01\'",
          'content'        => "test add from computer \'_test_pc01\'",
          '_add_from_item' => true,
-         '_itemtype'      => 'Computer',
-         '_items_id'      => $computer->getID(),
+         '_from_itemtype' => 'Computer',
+         '_from_items_id' => $computer->getID(),
       ]);
       $this->integer($problems_id)->isGreaterThan(0);
       $this->boolean($problem->getFromDB($problems_id))->isTrue();
