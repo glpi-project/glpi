@@ -382,12 +382,12 @@ class Problem extends CommonITILObject {
          NotificationEvent::raiseEvent($type, $this);
       }
 
-      if (isset($this->input['_items_id'])
-          && isset($this->input['_itemtype'])) {
+      if (isset($this->input['_from_items_id'])
+          && isset($this->input['_from_itemtype'])) {
          $item_problem = new Item_Problem();
          $item_problem->add([
-            'items_id'      => (int)$this->input['_items_id'],
-            'itemtype'      => $this->input['_itemtype'],
+            'items_id'      => (int)$this->input['_from_items_id'],
+            'itemtype'      => $this->input['_from_itemtype'],
             'problems_id'   => $this->fields['id'],
             '_disablenotif' => true
          ]);
@@ -1113,10 +1113,10 @@ class Problem extends CommonITILObject {
       }
 
       if (isset($options['_add_fromitem'])
-          && isset($options['_items_id'])
-          && isset($options['_itemtype'])) {
-         echo Html::hidden('_items_id', ['value' => $options['_items_id']]);
-         echo Html::hidden('_itemtype', ['value' => $options['_itemtype']]);
+          && isset($options['_from_items_id'])
+          && isset($options['_from_itemtype'])) {
+         echo Html::hidden('_from_items_id', ['value' => $options['_from_items_id']]);
+         echo Html::hidden('_from_itemtype', ['value' => $options['_from_itemtype']]);
       }
 
       $date = $this->fields["date"];
@@ -1455,8 +1455,9 @@ class Problem extends CommonITILObject {
             '_add_fromitem',
             __('New problem for this item...'),
             [
-               '_itemtype' => $item->getType(),
-               '_items_id' => $item->getID()
+               '_from_itemtype' => $item->getType(),
+               '_from_items_id' => $item->getID(),
+               'entities_id'    => $item->fields['entities_id']
             ]
          );
          echo "</div>";
