@@ -945,8 +945,12 @@ class Search {
                if (strlen($sub_sql)) {
                   $sql .= "$tmplink ($sub_sql)";
                }
-            } else if ($is_having
-                  && isset($searchopt[$criterion['field']]["usehaving"])) {
+            } else if (isset($searchopt[$criterion['field']]["usehaving"])) {
+               if (!$is_having) {
+                  // the having part will be managed in a second pass
+                  continue;
+               }
+
                // Manage Link if not first item
                if (!empty($sql)) {
                   $LINK = $tmplink;
@@ -959,7 +963,12 @@ class Search {
                if ($new_having !== false) {
                   $sql .= $new_having;
                }
-            } else if (!$is_having) {
+            } else {
+               if ($is_having) {
+                  // the having part has been already managed in the first pass
+                  continue;
+               }
+
                // Manage Link if not first item
                if (!empty($sql)) {
                   $LINK = $tmplink;
