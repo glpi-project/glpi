@@ -465,22 +465,37 @@ class Infocom extends CommonDBChild {
 
       foreach (Entity::getEntitiesToNotify('use_infocoms_alert') as $entity => $value) {
          $before    = Entity::getUsedConfig('send_infocoms_alert_before_delay', $entity);
-         $query_end = "SELECT `glpi_infocoms`.*
-                       FROM `glpi_infocoms`
-                       LEFT JOIN `glpi_alerts` ON (`glpi_infocoms`.`id` = `glpi_alerts`.`items_id`
-                                                   AND `glpi_alerts`.`itemtype` = 'Infocom'
-                                                   AND `glpi_alerts`.`type`='".Alert::END."')
-                       WHERE (`glpi_infocoms`.`alert` & ".pow(2, Alert::END).") >'0'
-                             AND `glpi_infocoms`.`entities_id`='".$entity."'
-                             AND `glpi_infocoms`.`warranty_duration`>'0'
-                             AND `glpi_infocoms`.`warranty_date` IS NOT NULL
-                             AND DATEDIFF(ADDDATE(`glpi_infocoms`.`warranty_date`,
-                                                  INTERVAL (`glpi_infocoms`.`warranty_duration`)
-                                                           MONTH),
-                                          CURDATE() ) <= '$before'
-                             AND `glpi_alerts`.`date` IS NULL";
+         $table = self::getTable();
+         $iterator = $DB->request([
+            'SELECT'    => "$table.*",
+            'FROM'      => $table,
+            'LEF JOIN'  => [
+               'glpi_alerts'  => [
+                  'ON' => [
+                     'glpi_alerts'  => 'items_id',
+                     $table         => 'id', [
+                        'AND' => [
+                           'glpi_alerts.itemtype'  => self::getType(),
+                           'glpi_alerts.type'      => Alert::END
+                        ]
+                     ]
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               "$table.entities_id"       => $entity,
+               "$table.warranty_duration" => ['>', 0],
+               'NOT'                      => ["$table.warranty_date" => null],
+               new \QueryExpression(
+                  'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
+                  $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
+                  $DB->quoteValue($before)
+               ),
+               'glpi_alerts.date'         => null
+            ]
+         ]);
 
-         foreach ($DB->request($query_end) as $data) {
+         while ($data = $iterator->next()) {
             if ($item_infocom = getItemForItemtype($data["itemtype"])) {
                if ($item_infocom->getFromDB($data["items_id"])) {
                   $entity   = $data['entities_id'];

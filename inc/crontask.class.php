@@ -354,29 +354,25 @@ class CronTask extends CommonDBTM{
 
       $hour = date('H');
       // First core ones
-      $query = "SELECT *,
-                       LOCATE('Plugin',itemtype) AS ISPLUGIN
-                FROM `".$this->getTable()."`
-                WHERE (`itemtype` NOT LIKE 'Plugin%'";
+      $WHERE = ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]];
 
       // Only activated plugins
       foreach (Plugin::getPlugins() as $plug) {
-         $query .= " OR `itemtype` LIKE 'Plugin$plug%'";
+         $WHERE = ['OR' => $WHERE + ['itemtype' => ['LIKE', "Plugin$plug%"]]];
       }
-      $query .= ')';
 
       if ($name) {
-         $query .= " AND `name` = '".addslashes($name)."' ";
+         $WHERE['name'] = addslashes($name);
       }
 
       // In force mode
       if ($mode < 0) {
-         $query .= " AND `state` != '".self::STATE_RUNNING."'
-                     AND (`allowmode` & ".(-intval($mode)).") ";
+         $WHERE['state'] = ['!=', self::STATE_RUNNING];
+         $WHERE['allowmode'] = ['&', (int)$mode * -1];
       } else {
-         $query .= " AND `state` = '".self::STATE_WAITING."'";
+         $WHERE['state'] = self::STATE_WAITING;
          if ($mode > 0) {
-            $query .= " AND `mode` = '$mode' ";
+            $WHERE['mode'] = $mode;
          }
 
          // Get system lock
@@ -392,31 +388,45 @@ class CronTask extends CommonDBTM{
             }
          }
          if (count($locks)) {
-            $lock = "AND `name` NOT IN ('".implode("','", $locks)."')";
-         } else {
-            $lock = '';
+            $WHERE[] = ['NOT' => ['name' => $locks]];
          }
+
          // Build query for frequency and allowed hour
-         $query .= " AND ((`hourmin` < `hourmax`
-                           AND  '$hour' >= `hourmin`
-                           AND '$hour' < `hourmax`)
-                          OR (`hourmin` > `hourmax`
-                              AND ('$hour' >= `hourmin`
-                                   OR '$hour' < `hourmax`)))
-                     AND (`lastrun` IS NULL
-                          OR unix_timestamp(`lastrun`) + `frequency` <= unix_timestamp(now()))
-                     $lock ";
+         $WHERE[] = ['OR' => [
+            ['AND' => [
+               'hourmin'   => ['<', new \QueryExpression($DB->quoteName('hourmax'))],
+               'hourmin'   => ['<=', $hour],
+               'hourmax'   => ['>', $hour]
+            ]],
+            ['AND' => [
+               'hourmin'   => ['>', $DB->quoteName('hourmax')],
+               'hourmin'   => ['<=', $hour],
+               'hourmax'   => ['>', $hour]
+            ]]
+         ]];
+         $WHERE[] = ['OR' => [
+            'lastrun'   => null,
+            new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + ' . $DB->quoteName('frequency') . ' <= unix_timestamp(now())')
+         ]];
       }
 
-      // Core task before plugins
-      $query .= "ORDER BY ISPLUGIN, unix_timestamp(`lastrun`)+`frequency`";
+      $iterator = $DB->request([
+         'SELECT' => [
+            '*',
+            new \QueryExpression("LOCATE('Plugin', " . $DB->quoteName('itemtype') . ") AS ISPLUGIN")
+         ],
+         'FROM'   => $this->getTable(),
+         'WHERE'  => $WHERE,
+         // Core task before plugins
+         'ORDER'  => [
+            'ISPLUGIN',
+            new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ')+' . $DB->quoteName('frequency') . '')
+         ]
+      ]);
 
-      //TODO migrate to iterator
-      if ($result = $DB->rawQuery($query)) {
-         if ($DB->numrows($result)>0) {
-            $this->fields = $DB->fetch_assoc($result);
-            return true;
-         }
+      if (count($iterator)) {
+         $this->fields = $iterator->next();
+         return true;
       }
       return false;
    }

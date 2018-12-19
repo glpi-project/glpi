@@ -647,72 +647,101 @@ class Problem extends CommonITILObject {
          return false;
       }
 
-      $search_users_id = " (`glpi_problems_users`.`users_id` = '".Session::getLoginUserID()."'
-                            AND `glpi_problems_users`.`type` = '".CommonITILActor::REQUESTER."') ";
-      $search_assign   = " (`glpi_problems_users`.`users_id` = '".Session::getLoginUserID()."'
-                            AND `glpi_problems_users`.`type` = '".CommonITILActor::ASSIGN."')";
-      $is_deleted      = " `glpi_problems`.`is_deleted` = 0 ";
+      $WHERE = [
+         'is_deleted' => 0
+      ];
+      $search_users_id = [
+         'glpi_problems_users.users_id'   => Session::getLoginUserID(),
+         'glpi_problems_users.type'       => CommonITILActor::REQUESTER
+      ];
+      $search_assign = [
+         'glpi_problems_users.users_id'   => Session::getLoginUserID(),
+         'glpi_problems_users.type'       => CommonITILActor::ASSIGN
+      ];
 
       if ($showgroupproblems) {
-         $search_users_id = " 0 = 1 ";
-         $search_assign   = " 0 = 1 ";
+         $search_users_id  = [0];
+         $search_assign = [0];
 
          if (count($_SESSION['glpigroups'])) {
-            $groups          = implode("','", $_SESSION['glpigroups']);
-            $search_assign   = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
-                                  AND `glpi_groups_problems`.`type`
-                                        = '".CommonITILActor::ASSIGN."')";
-
-            $search_users_id = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
-                                  AND `glpi_groups_problems`.`type`
-                                        = '".CommonITILActor::REQUESTER."') ";
+            $search_users_id = [
+               'glpi_groups_problems.groups_id' => $_SESSION['glpigroups'],
+               'glpi_groups_problems.type'      => CommonITILActor::REQUESTER
+            ];
+            $search_assign = [
+               'glpi_groups_problems.groups_id' => $_SESSION['glpigroups'],
+               'glpi_groups_problems.type'      => CommonITILActor::ASSIGN
+            ];
          }
       }
 
-      $query = "SELECT DISTINCT `glpi_problems`.`id`
-                FROM `glpi_problems`
-                LEFT JOIN `glpi_problems_users`
-                     ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`)
-                LEFT JOIN `glpi_groups_problems`
-                     ON (`glpi_problems`.`id` = `glpi_groups_problems`.`problems_id`)";
-
       switch ($status) {
          case "waiting" : // on affiche les problemes en attente
-            $query .= "WHERE $is_deleted
-                             AND ($search_assign)
-                             AND `status` = '".self::WAITING."' ".
-                             getEntitiesRestrictRequest("AND", "glpi_problems");
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['status' => self::WAITING]
+            );
             break;
 
          case "process" : // on affiche les problemes planifi??s ou assign??s au user
-            $query .= "WHERE $is_deleted
-                             AND ($search_assign)
-                             AND (`status` IN ('".self::PLANNED."','".self::ASSIGNED."')) ".
-                             getEntitiesRestrictRequest("AND", "glpi_problems");
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               ['status' => [self::PLANNED, self::ASSIGNED]]
+            );
             break;
 
          default :
-            $query .= "WHERE $is_deleted
-                             AND ($search_users_id)
-                             AND (`status` IN ('".self::INCOMING."',
-                                               '".self::ACCEPTED."',
-                                               '".self::PLANNED."',
-                                               '".self::ASSIGNED."',
-                                               '".self::WAITING."'))
-                             AND NOT ($search_assign) ".
-                             getEntitiesRestrictRequest("AND", "glpi_problems");
+            $WHERE = array_merge(
+               $WHERE,
+               $search_users_id,
+               [
+                  'status' => [
+                     self::INCOMING,
+                     self::ACCEPTED,
+                     self::PLANNED,
+                     self::ASSIGNED,
+                     self::WAITING
+                  ]
+               ]
+            );
+            $WHERE['NOT'] = $search_assign;
       }
 
-      $query  .= " ORDER BY date_mod DESC";
-      $result  = $DB->query($query);
-      $numrows = $DB->numrows($result);
+      $criteria = [
+         'SELECT DISTINCT' => 'glpi_problems.id',
+         'FROM'            => 'glpi_problems',
+         'LEFT JOIN'       => [
+            'glpi_problems_users'   => [
+               'ON' => [
+                  'glpi_problems_users'   => 'problems_id',
+                  'glpi_problems'         => 'id'
+               ]
+            ],
+            'glpi_groups_problems'  => [
+               'ON' => [
+                  'glpi_groups_problems'  => 'problems_id',
+                  'glpi_problems'         => 'id'
+               ]
+            ]
+         ],
+         'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_problems'),
+         'ORDERBY'         => 'date_mod DESC'
+      ];
+      $iterator = $DB->request($criteria);
+
+      $numrows = count($iterator);
+      $number = 0;
 
       if ($_SESSION['glpidisplay_count_on_home'] > 0) {
-         $query  .= " LIMIT ".intval($start).','.intval($_SESSION['glpidisplay_count_on_home']);
-         $result  = $DB->query($query);
-         $number  = $DB->numrows($result);
-      } else {
-         $number = 0;
+         $citerator = $DB->request(
+            $criteria + [
+               'START' => (int)$start,
+               'LIMIT' => (int)$_SESSION['glpidisplay_count_on_home']
+            ]
+         );
+         $number = count($citerator);
       }
 
       if ($numrows > 0) {
@@ -829,9 +858,8 @@ class Problem extends CommonITILObject {
             echo "<tr><th></th>";
             echo "<th>".__('Requester')."</th>";
             echo "<th>".__('Description')."</th></tr>";
-            for ($i = 0; $i < $number; $i++) {
-               $ID = $DB->result($result, $i, "id");
-               self::showVeryShort($ID, $forcetab);
+            while ($result = $iterator->next()) {
+               self::showVeryShort($result['id'], $forcetab);
             }
          }
          echo "</table>";
@@ -858,61 +886,69 @@ class Problem extends CommonITILObject {
          $foruser = true;
       }
 
-      $query = "SELECT `status`,
-                       COUNT(*) AS COUNT
-                FROM `glpi_problems` ";
+      $table = self::getTable();
+      $criteria = [
+         'SELECT' => [
+            'status',
+            'COUNT'  => '* AS COUNT',
+            'FROM'   => $table,
+            'WHERE'  => getEntitiesRestrictCriteria($table),
+            'GROUP'  => 'status'
+         ]
+      ];
 
       if ($foruser) {
-         $query .= " LEFT JOIN `glpi_problems_users`
-                        ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`
-                            AND `glpi_problems_users`.`type` = '".CommonITILActor::REQUESTER."')";
+         $criteria['LEFT JOIN'] = [
+            'glpi_problems_users' => [
+               'ON' => [
+                  'glpi_problems_users'   => 'problems_id',
+                  $table                  => 'id', [
+                     'AND' => [
+                        'glpi_problems_users.type' => CommonITILActor::REQUESTER
+                     ]
+                  ]
+               ]
+            ]
+         ];
+         $WHERE = ['glpi_problems_users.users_id' => Session::getLoginUserID()];
 
          if (isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
-            $query .= " LEFT JOIN `glpi_groups_problems`
-                           ON (`glpi_problems`.`id` = `glpi_groups_problems`.`problems_id`
-                               AND `glpi_groups_problems`.`type` = '".CommonITILActor::REQUESTER."')";
+            $criteria['LEFT JOIN']['glpi_groups_problems'] = [
+               'ON' => [
+                  'glpi_groups_problems'  => 'problems_id',
+                  $table                  => 'id', [
+                     'AND' => [
+                        'glpi_groups_problems.type' => CommonITILActor::REQUESTER
+                     ]
+                  ]
+               ]
+            ];
+            $WHERE['glpi_groups_problems.groups_id'] = $_SESSION['glpigroups'];
          }
+         $criteria['WHERE'][] = ['OR' => $WHERE];
       }
-      $query .= getEntitiesRestrictRequest("WHERE", "glpi_problems");
 
-      if ($foruser) {
-         $query .= " AND (`glpi_problems_users`.`users_id` = '".Session::getLoginUserID()."' ";
-
-         if (isset($_SESSION["glpigroups"])
-             && count($_SESSION["glpigroups"])) {
-            $groups = implode(",", $_SESSION['glpigroups']);
-            $query .= " OR `glpi_groups_problems`.`groups_id` IN (".$groups.") ";
-         }
-         $query.= ")";
-      }
-      $query_deleted = $query;
-
-      $query         .= " AND `glpi_problems`.`is_deleted` = 0
-                         GROUP BY `status`";
-      $query_deleted .= " AND `glpi_problems`.`is_deleted` = 1
-                         GROUP BY `status`";
-
-      $result         = $DB->query($query);
-      $result_deleted = $DB->query($query_deleted);
+      $deleted_criteria = $criteria;
+      $criteria['WHERE']['glpi_problems.is_deleted'] = 0;
+      $deleted_criteria['WHERE']['glpi_problems.is_deleted'] = 1;
+      $iterator = $DB->request($criteria);
+      $deleted_iterator = $DB->request($deleted_criteria);
 
       $status = [];
       foreach (self::getAllStatusArray() as $key => $val) {
          $status[$key] = 0;
       }
 
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $status[$data["status"]] = $data["COUNT"];
-         }
+      while ($data = $iterator->next()) {
+         $status[$data["status"]] = $data["COUNT"];
       }
 
       $number_deleted = 0;
-      if ($DB->numrows($result_deleted) > 0) {
-         while ($data = $DB->fetch_assoc($result_deleted)) {
-            $number_deleted += $data["COUNT"];
-         }
+      while ($data = $deleted_iterator->next()) {
+         $number_deleted += $data["COUNT"];
       }
+
       $options['criteria'][0]['field']      = 12;
       $options['criteria'][0]['searchtype'] = 'equals';
       $options['criteria'][0]['value']      = 'process';

@@ -931,90 +931,119 @@ abstract class CommonITILTask  extends CommonDBTM {
       $end       = $options['end'];
 
       // Get items to print
-      $ASSIGN = "";
+      $WHERE = [
+         $item->getTable() . '.end'     => ['>=', $begin],
+         $item->getTable() . '.begin'   => ['<=', $end]
+      ];
+      $ADDWHERE = [];
 
       if ($who_group === "mine") {
          if (!$options['genical']
              && count($_SESSION["glpigroups"])) {
-            $groups = implode("','", $_SESSION['glpigroups']);
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech`
-                           IN (SELECT DISTINCT `users_id`
-                               FROM `glpi_groups_users`
-                               INNER JOIN `glpi_groups`
-                                  ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                               WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
-                                     AND `glpi_groups`.`is_assign`)
-                                     AND ";
+            $ADDWHERE[$item->getTable() . '.users_id_tech'] = new QuerySubQuery([
+               'SELECT DISTINCT' => 'users_id',
+               'FROM'            => 'glpi_groups_users',
+               'INNER JOIN'      => [
+                  'glpi_groups'  => [
+                     'ON' => [
+                        'glpi_groups_users'  => 'groups_id',
+                        'glpi_groups'        => 'id'
+                     ]
+                  ]
+               ],
+               'WHERE'           => [
+                  'glpi_groups_users.groups_id' => $_SESSION['glpigroups'],
+                  'glpi_groups.is_assign'       => 1
+               ]
+            ]);
          } else { // Only personal ones
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
-                       AND ";
+            $ADDWHERE[$item->getTable() . '.users_id_tech'] = $who;
          }
 
       } else {
          if ($who > 0) {
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
-                       AND ";
+            $ADDWHERE[$item->getTable() . '.users_id_tech'] = $who;
          }
          if ($who_group > 0) {
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT `users_id`
-                                                                   FROM `glpi_groups_users`
-                                                                   WHERE `groups_id` = '$who_group')
-                                                                         AND ";
+            $ADDWHERE[$item->getTable() . '.users_id_tech'] = new QuerySubQuery([
+               'SELECT DISTINCT' => 'users_id',
+               'FROM'            => 'glpi_groups_users',
+               'WHERE'           => [
+                  'groups_id' => $who_group,
+               ]
+            ]);
          }
+         //This means we can pass 2 groups here, not sure this is expected. Not documented :/
          if ($whogroup > 0) {
-            $ASSIGN = "`".$item->getTable()."`.`groups_id_tech` = '$whogroup'
-                       AND ";
+            $ADDWHERE[$item->getTable() . '.groups_id_tech'] = $whogroup;
          }
 
       }
-      if (empty($ASSIGN)) {
-         $ASSIGN = "`".$item->getTable()."`.`users_id_tech`
-                        IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
-                            FROM `glpi_profiles`
-                            LEFT JOIN `glpi_profiles_users`
-                                 ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
-                            WHERE `glpi_profiles`.`interface` = 'central' ".
-                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                             $_SESSION["glpiactive_entity"], 1).")
-                     AND ";
+
+      if (!count($ADDWHERE)) {
+         $ADDWHERE = [
+            $item->getTable() . '.users_id_tech' => new \QuerySubQuery([
+               'SELECT DISTINCT' => 'glpi_profiles_users.users_id',
+               'FROM'            => 'glpi_profiles',
+               'LEFT JOIN'       => [
+                  'glpi_profiles_users'   => [
+                     'glpi_profiles_users'   => 'profiles_id',
+                     'glpi_profiles'         => 'id'
+                  ]
+               ],
+               'WHERE'           => [
+                  'glpi_profiles.interface'  => 'central'
+               ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
+            ])
+         ];
       }
 
-      $DONE_EVENTS = '';
+      $WHERE = array_merge($WHERE, $ADDWHERE);
+
       if (!$options['display_done_events']) {
-         $DONE_EVENTS = "(`".$item->getTable()."`.`state` = ".Planning::TODO."
-                          OR (`".$item->getTable()."`.`state` = ".Planning::INFO."
-                              AND `".$item->getTable()."`.`end` > NOW()))
-                         AND ";
+         $WHERE[] = ['OR' => [
+            $item->getTable() . ".state"  => Planning::TODO,
+            [
+               'AND' => [
+                  $item->getTable() . '.state'  => Planning::INFO,
+                  $item->getTable() . '.end'    => ['>', new \QueryExpression('NOW()')]
+               ]
+            ]
+         ]];
       }
 
-      $addrestrict = '';
       if ($parentitem->maybeDeleted()) {
-         $addrestrict = 'AND `'.$parentitem->getTable().'`.`is_deleted` = 0 ';
+         $WHERE[$parentitem->getTable() . '.is_deleted'] = 0;
       }
 
       if (!$options['display_done_events']) {
-         $addrestrict .= "AND NOT `" . $parentitem->getTable() . "`.`status` IN
-                        ('" . implode("', '", array_merge($parentitem->getSolvedStatusArray(),
-                                                          $parentitem->getClosedStatusArray())) . "')";
+         $WHERE[] = ['NOT' => [
+            $parentitem->getTable() . '.status' => array_merge(
+               $parentitem->getSolvedStatusArray(),
+               $parentitem->getClosedStatusArray()
+            )
+         ]];
       }
 
-      $query = "SELECT `".$item->getTable()."`.*
-                FROM `".$item->getTable()."`
-                INNER JOIN `".$parentitem->getTable()."`
-                  ON (`".$parentitem->getTable()."`.`id` = `".$item->getTable()."`.`".$parentitem->getForeignKeyField()."`)
-                WHERE $ASSIGN
-                      $DONE_EVENTS
-                      '$begin' < `".$item->getTable()."`.`end`
-                      AND '$end' > `".$item->getTable()."`.`begin`
-                      $addrestrict
-                ORDER BY `".$item->getTable()."`.`begin`";
-
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT'       => $item->getTable() . '.*',
+         'FROM'         => $item->getTable(),
+         'INNER JOIN'   => [
+            $parentitem->getTable() => [
+               'ON' => [
+                  $parentitem->getTable() => 'id',
+                  $item->getTable()       => $parentitem->getForeignKeyField()
+               ]
+            ]
+         ],
+         'WHERE'        => $WHERE,
+         'ORDERBY'      => $item->getTable() . '.begin'
+      ]);
 
       $interv = [];
 
-      if ($DB->numrows($result) > 0) {
-         for ($i=0; $data=$DB->fetch_assoc($result); $i++) {
+      if (count($iterator)) {
+         while ($data = $iterator->next()) {
             if ($item->getFromDB($data["id"])
                 && $item->canViewItem()) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()], 0)) {

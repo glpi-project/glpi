@@ -332,11 +332,16 @@ abstract class LevelAgreementLevel extends RuleTicket {
       global $DB;
 
       $result = [];
-      $query  = "SELECT DISTINCT `execution_time`
-                 FROM `".static::getTable()."`
-                 WHERE `".static::$fkparent."` = '$las_id';";
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'execution_time',
+         'FROM'            => static::getTable(),
+         'WHERE'           => [
+            static::$fkparent => $las_id
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $result[$data['execution_time']] = $data['execution_time'];
       }
       return $result;
