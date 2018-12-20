@@ -713,57 +713,6 @@ function update0905to91() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
    $ADDTODISPLAYPREF['SoftwareLicense'] = [3, 10, 162, 5];
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $displaypreferencesIterator = $DB->request([
-         'SELECT DISTINCT' => "users_id",
-         'FROM'            => "glpi_displaypreferences",
-         'WHERE'           => ['itemtype' => $type]
-      ]);
-
-      if (count($displaypreferencesIterator)) {
-         while ($data = $displaypreferencesIterator->next()) {
-            $rank = $DB->request([
-               'SELECT DISTINCT' => ['MAX' => "rank AS max_rank"],
-               'FROM'            => "glpi_displaypreferences",
-               'WHERE'           => [
-                  'users_id' => $data['users_id'],
-                  'itemtype' => $type
-               ]
-            ])->next();
-            $rank = $rank ? $rank['max_rank']++ : 1;
-
-            foreach ($tab as $newval) {
-               $iterator = $DB->request([
-                  'FROM' => "glpi_displaypreferences",
-                  'WHERE' => [
-                     'users_id'  => $data['users_id'],
-                     'num'       => $newval,
-                     'itemtype'  => $type
-                  ],
-               ]);
-               if (count($iterator) == 0) {
-                  $DB->insert("glpi_displaypreferences", [
-                     'itemtype'  => $type,
-                     'num'       => $newval,
-                     'rank'      => $rank++,
-                     'users_id'  => $data['users_id'],
-                  ]);
-               }
-            }
-         }
-
-      } else { // Add for default user
-         $rank = 1;
-         foreach ($tab as $newval) {
-            $DB->insert("glpi_displaypreferences", [
-               'itemtype'  => $type,
-               'num'       => $newval,
-               'rank'      => $rank++,
-               'users_id'  => 0,
-            ]);
-         }
-      }
-   }
 
    /** ************ New SLA structure ************ */
    if (!$DB->tableExists('glpi_slts')) {
@@ -938,6 +887,8 @@ function update0905to91() {
    );
 
    // ************ Keep it at the end **************
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
+
    $migration->executeMigration();
 
    return $updateresult;

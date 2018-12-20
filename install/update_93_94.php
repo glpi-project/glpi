@@ -303,19 +303,6 @@ function update93to94() {
    /** Search engine on plugins */
    $ADDTODISPLAYPREF['Plugin'] = [2, 3, 4, 5, 6, 7, 8];
 
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
    /** Renaming olas / slas foreign keys that does not match naming conventions */
    $olas_slas_mapping = [
       'olas_tto_id'      => 'olas_id_tto',
@@ -387,6 +374,8 @@ function update93to94() {
    }
 
    // ************ Keep it at the end **************
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
+
    $migration->executeMigration();
 
    return $updateresult;

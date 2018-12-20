@@ -743,19 +743,6 @@ function update92to93() {
    }
    /** /Add Item_Device* display preferences */
 
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
-
    // upgrade for users multi-domains
    if (!isIndex('glpi_users', 'unicityloginauth')) {
       $migration->dropKey("glpi_users", "unicity");
@@ -859,6 +846,8 @@ function update92to93() {
    /** /Clean item rack relation on deleted items */
 
    // ************ Keep it at the end **************
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
+
    $migration->executeMigration();
 
    return $updateresult;
