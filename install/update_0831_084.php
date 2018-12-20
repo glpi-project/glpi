@@ -1557,7 +1557,7 @@ function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
 **/
 function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_itemtype,
                                    $entities_id, $IP) {
-   global $migration;
+   global $DB, $migration;
 
    // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
    //   But each gethostbyaddr() may reach several milliseconds. With very large number of
