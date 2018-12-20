@@ -556,7 +556,7 @@ class Toolbox {
       try {
          self::log(null, Logger::NOTICE, [$message]);
       } finally {
-         if (defined('TU_USER')) {
+         if (defined('TU_USER') || $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             if (isCommandLine()) {
                echo self::backtrace(null);
             } else {
