@@ -500,16 +500,15 @@ class Toolbox {
    /**
     * Generate a Backtrace
     *
-    * @param $log    String    log file name (default php-errors)
-    *                          if false, return the strung
-    * @param $hide   String    call to hide (but display script/line) (default '')
-    * @param $skip   Array     of call to not display at all
+    * @param string $log Log file name (default php-errors) if false, return the strung
+    * @param string $hide Call to hide (but display script/line) (default '')
+    * @param array  $skip Calls to not display at all
     *
     * @since 0.85
     *
     * @return string if $log is false
    **/
-   static function backtrace($log = 'php-errors', $hide = '', Array $skip = []) {
+   static function backtrace($log = 'php-errors', $hide = '', array $skip = []) {
 
       if (function_exists("debug_backtrace")) {
          $message = "  Backtrace :\n";
@@ -557,10 +556,14 @@ class Toolbox {
          self::log(null, Logger::NOTICE, [$message]);
       } finally {
          if (defined('TU_USER') || $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            $skip = [
+               'Toolbox::backtrace()',
+               'Toolbox::deprecated()',
+            ];
             if (isCommandLine()) {
-               echo self::backtrace(null);
+               echo self::backtrace(null, '', $skip);
             } else {
-               self::backtrace();
+               self::backtrace('php-errors', '', $skip);
             }
          }
       }
