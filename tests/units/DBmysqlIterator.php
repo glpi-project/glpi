@@ -1123,4 +1123,13 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute($criteria);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
    }
+
+   public function testAnalyseCrit() {
+      $crit = [new \QuerySubQuery([
+         'SELECT' => ['COUNT' => ['users_id']],
+         'FROM'   => 'glpi_groups_users',
+         'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+      ])];
+      $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)");
+   }
 }

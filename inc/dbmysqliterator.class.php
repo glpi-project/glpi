@@ -520,6 +520,8 @@ class DBmysqlIterator implements Iterator, Countable {
             // no key and direct expression
             if ($value instanceof QueryExpression) {
                $ret .= $value->getValue();
+            } else if ($value instanceof QuerySubQuery) {
+               $ret .= $value->getQuery();
             } else {
                // No Key case => recurse.
                $ret .= "(" . $this->analyseCrit($value, $bool) . ")";
