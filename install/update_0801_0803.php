@@ -36,10 +36,9 @@
  * @return bool for success (will die for most error)
 **/
 function update0801to0803() {
-   global $DB, $migration;
+   global $migration;
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.80.3'));

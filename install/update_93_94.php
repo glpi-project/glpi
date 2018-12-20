@@ -36,13 +36,11 @@
  * @return bool for success (will die for most error)
 **/
 function update93to94() {
-   global $DB, $migration, $CFG_GLPI;
-   $dbutils = new DbUtils();
+   global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
-   $config_to_drop = [];
+   $config_to_drop   = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.4'));

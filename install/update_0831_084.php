@@ -1772,7 +1772,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $ADDTODISPLAYPREF['NetworkName']          = [12, 13];
 
    $optionIndex = 10;
-   foreach (NetworkPortMigration::getMotives() as $key => $name) {
+   foreach (array_keys(NetworkPortMigration::getMotives()) as $key) {
       $ADDTODISPLAYPREF['NetworkPortMigration'][] = $optionIndex ++;
    }
 
@@ -1827,7 +1827,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $DB->queryOrDie($query, "0.84 create glpi_networkportmigrations");
 
    // And add the error motive fields
-   foreach (NetworkPortMigration::getMotives() as $key => $name) {
+   foreach (array_keys(NetworkPortMigration::getMotives()) as $key) {
       $migration->addField('glpi_networkportmigrations', $key, 'bool');
    }
    $migration->migrationOneTable('glpi_networkportmigrations');
@@ -2007,7 +2007,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                AND `netmask` = '$netmask'
                                AND `gateway` = '$gateway'
                                AND `entities_id` = '$entities_id'";
-               $result = $DB->query($query);
                foreach ($DB->request($query) as $data) {
                   addNetworkPortMigrationError($data['id'], 'invalid_gateway');
                   logNetworkPortError('network warning', $data['id'], $data['itemtype'],
@@ -2022,7 +2021,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                             AND `netmask` = '$netmask'
                             AND `gateway` = '$gateway'
                             AND `entities_id` = '$entities_id'";
-            $result = $DB->query($query);
             foreach ($DB->request($query) as $data) {
                addNetworkPortMigrationError($data['id'], 'invalid_network');
                logNetworkPortError('network error', $data['id'], $data['itemtype'],
@@ -2331,17 +2329,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                               OR `mac` = '".$equipment['mac']."')";
 
          $both = [];
-         $mac  = [];
-         $ip   = [];
          foreach ($DB->request($query) as $ports) {
-            if ($ports['ip'] == $equipment['ip']) {
-               if ($ports['mac'] == $equipment['mac']) {
-                  $both[] = $ports['id'];
-               } else {
-                  $ip[] = $ports['id'];
-               }
-            } else {
-               $mac[] = $ports['id'];
+            if ($ports['ip'] == $equipment['ip'] && $ports['mac'] == $equipment['mac']) {
+               $both[] = $ports['id'];
             }
          }
 

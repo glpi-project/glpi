@@ -38,30 +38,11 @@
 function update0845to0846() {
    global $DB, $migration;
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.6'));
    $migration->setVersion('0.84.6');
-
-   $backup_tables = false;
-   $newtables     = [];
-
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if ($DB->tableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
-   }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.",
-                                 true);
-   }
 
    // correct entities_id in documents_items
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`

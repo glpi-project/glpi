@@ -777,7 +777,9 @@ function update0803to083() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
 
-   $changes['RuleTicket'] = ['ticketcategories_id' => 'itilcategories_id'];
+   $changes = [
+      'RuleTicket' => ['ticketcategories_id' => 'itilcategories_id'],
+   ];
 
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    foreach ($changes as $ruletype => $tab) {
