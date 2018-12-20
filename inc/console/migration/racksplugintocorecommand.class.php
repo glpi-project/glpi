@@ -59,7 +59,6 @@ use State;
 use Toolbox;
 use Glpi\Console\AbstractCommand;
 
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -211,7 +210,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             ]
          );
 
-         /** @var QuestionHelper $question_helper */
+         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $run = $question_helper->ask(
             $input,
@@ -529,7 +528,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                $model_label .= ' (' . $othermodel['comment'] . ')';
             }
 
-            /** @var QuestionHelper $question_helper */
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $answer = $question_helper->ask(
                $this->input,

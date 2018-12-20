@@ -822,9 +822,9 @@ class Toolbox {
    /**
     *  Add slash for variable & array
     *
-    * @param array|string $value  value to add slashes
+    * @param string|string[] $value value to add slashes
     *
-    * @return array|string addslashes value
+    * @return string|string[]
    **/
    static function addslashes_deep($value) {
       global $DB;

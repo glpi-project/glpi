@@ -65,8 +65,6 @@ if (isset($_POST["itemtype"])
 
    $search            = $search[$_POST["id_field"]];
 
-   $FIELDNAME_PRINTED = false;
-
    echo "<table class='tab_glpi' width='100%'><tr><td>";
 
    $plugdisplay = false;
@@ -101,9 +99,7 @@ if (isset($_POST["itemtype"])
       echo $item->getValueToSelect($search, $fieldname, $values, $options);
    }
 
-   if (!$FIELDNAME_PRINTED) {
-      echo "<input type='hidden' name='field' value='$fieldname'>";
-   }
+   echo "<input type='hidden' name='field' value='$fieldname'>";
    echo "</td>";
    if ($inline) {
       echo "<td><input type='submit' name='massiveaction' class='submit' value='$submitname'></td>";

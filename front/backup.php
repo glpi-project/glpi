@@ -63,13 +63,14 @@ if ($max_time == 0) {
  * @global DB $DB
  */
 function xmlbackup() {
-   global $CFG_GLPI, $DB;
+   global $DB;
 
    //on parcoure la DB et on liste tous les noms des tables dans $table
    //on incremente $query[] de "select * from $table"  pour chaque occurence de $table
 
    $result = $DB->listTables();
    $i      = 0;
+   $query  = [];
    while ($line = $result->next()) {
       $table = $line['TABLE_NAME'];
 
@@ -149,7 +150,7 @@ function get_content($DB, $table, $from, $limit) {
       while ($row = $iterator->next()) {
          $insert = "INSERT INTO `$table` VALUES (";
 
-         foreach ($row as $field_key => $field_val) {
+         foreach ($row as $field_val) {
             if (is_null($field_val)) {
                $insert .= "NULL,";
             } else if ($field_val != "") {
@@ -168,8 +169,8 @@ function get_content($DB, $table, $from, $limit) {
 
 /**  Get structure of a table
  *
- * @param $DB     DB object
- * @param $table  table name
+ * @param DBmysql $DB     DB object
+ * @param string  $table  table name
 **/
 function get_def($DB, $table) {
 
@@ -177,8 +178,8 @@ function get_def($DB, $table) {
    $def .= "DROP TABLE IF EXISTS `$table`;\n";
 
    $query  = "SHOW CREATE TABLE `$table`";
-   $result = $DB->query($query);
-   $DB->query("SET SESSION sql_quote_show_create = 1");
+   $result = $DB->rawQuery($query);
+   $DB->rawQuery("SET SESSION sql_quote_show_create = 1");
    $row = $DB->fetch_row($result);
 
    $def .= preg_replace("/AUTO_INCREMENT=\w+/i", "", $row[1]);
@@ -189,9 +190,9 @@ function get_def($DB, $table) {
 
 /**  Restore a mysql dump
  *
- * @param $DB        DB object
- * @param $dumpFile  dump file
- * @param $duree     max delay before refresh
+ * @param DBmysql $DB        DB object
+ * @param string  $dumpFile  dump file
+ * @param integer $duree     max delay before refresh
 **/
 function restoreMySqlDump($DB, $dumpFile, $duree) {
    global $DB, $TPSCOUR, $offset, $cpt;
@@ -307,10 +308,10 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
 /**  Backup a glpi DB
  *
- * @param $DB        DB object
- * @param $dumpFile  dump file
- * @param $duree     max delay before refresh
- * @param $rowlimit  rowlimit to backup in one time
+ * @param DBmysql $DB        DB object
+ * @param string  $dumpFile  dump file
+ * @param integer $duree     max delay before refresh
+ * @param integer $rowlimit  rowlimit to backup in one time
 **/
 function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    global $TPSCOUR, $offsettable, $offsetrow, $cpt;
@@ -331,7 +332,6 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    }
 
    if ($offsettable == 0 && $offsetrow == -1) {
-      $time_file = date("Y-m-d-H-i");
       $cur_time  = date("Y-m-d H:i");
       $todump    = "#GLPI Dump database on $cur_time\n";
       gzwrite ($fileHandle, $todump);
@@ -339,6 +339,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
    $result = $DB->listTables();
    $numtab = 0;
+   $tables = [];
    while ($t = $result->next()) {
       $tables[$numtab] = $t['TABLE_NAME'];
       $numtab++;
@@ -393,8 +394,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
    if ($DB->error()) {
       echo "<hr>";
-      //TRANS: %s is the SQL query which generates the error
-      printf(__("SQL error starting from %s"), "[$formattedQuery]");
+      echo __("SQL error ");
       echo "<br>".$DB->error()."<hr>";
    }
    $offsettable = -1;
@@ -407,7 +407,6 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
 if (isset($_GET["dump"]) && $_GET["dump"] != "") {
    $time_file = date("Y-m-d-H-i");
-   $cur_time  = date("Y-m-d H:i");
    $filename  = GLPI_DUMP_DIR . "/glpi-backup-".GLPI_VERSION."-$time_file.sql.gz";
 
    if (!isset($_GET["duree"]) && is_file($filename)) {
@@ -549,8 +548,10 @@ if (isset($_GET["file"]) && ($_GET["file"] != "") && is_file(GLPI_DUMP_DIR . "/"
       } else {
          // Compatiblity for old version for utf8 complete conversion
          $cnf                = new Config();
-         $input['id']        = 1;
-         $input['utf8_conv'] = 1;
+         $input = [
+            'id'        => 1,
+            'utf8_conv' => 1,
+         ];
          $cnf->update($input);
       }
    }

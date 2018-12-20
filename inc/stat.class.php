@@ -686,28 +686,30 @@ class Stat extends CommonGLPI {
     * @param $param              (default '')
     * @param $value              (default '')
     * @param $value2             (default '')
+    *
+    * @return array
     */
    static function constructEntryValues($itemtype, $type, $begin = "", $end = "", $param = "", $value = "",
                                         $value2 = "") {
       global $DB;
 
       if (!$item = getItemForItemtype($itemtype)) {
-         return;
+         return [];
       }
       $table          = $item->getTable();
       $fkfield        = $item->getForeignKeyField();
 
       if (!($userlinkclass = getItemForItemtype($item->userlinkclass))) {
-         return;
+         return [];
       }
       $userlinktable  = $userlinkclass->getTable();
       if (!$grouplinkclass = getItemForItemtype($item->grouplinkclass)) {
-         return;
+         return [];
       }
       $grouplinktable = $grouplinkclass->getTable();
 
       if (!($supplierlinkclass = getItemForItemtype($item->supplierlinkclass))) {
-         return;
+         return [];
       }
       $supplierlinktable = $supplierlinkclass->getTable();
 
@@ -1230,7 +1232,6 @@ class Stat extends CommonGLPI {
       }
 
       $entrees = [];
-      $count   = [];
       if (!count($criteria)) {
          return [];
       }

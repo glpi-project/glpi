@@ -115,7 +115,7 @@ abstract class API extends CommonGLPI {
 
       // check if api is enabled
       if (!$CFG_GLPI['enable_api']) {
-         $this->returnError(__("API disabled"), "", "", false);
+         $this->returnError(__("API disabled"), 403, "", false);
          exit;
       }
 
@@ -616,7 +616,7 @@ abstract class API extends CommonGLPI {
           && $itemtype == "Computer") {
          $fields['_softwares'] = [];
          if (!Software::canView()) {
-            $fields['_softwares'] = self::arrayRightError();
+            $fields['_softwares'] = $this->arrayRightError();
          } else {
             $soft_iterator = $DB->request([
                'SELECT'    => [
@@ -1406,8 +1406,8 @@ abstract class API extends CommonGLPI {
     *
     * It permits to identify a searchoption with an named index instead a numeric one
     *
-    * @param CommonDBTM $itemtype current itemtype called on ressource listSearchOption
-    * @param array      $option   current option to generate an unique id
+    * @param string $itemtype current itemtype called on ressource listSearchOption
+    * @param array  $option   current option to generate an unique id
     *
     * @return string the unique id
     */
@@ -1610,12 +1610,6 @@ abstract class API extends CommonGLPI {
          $raw = $row['raw'];
          $id = $raw['id'];
 
-         // keep row itemtype for all asset
-         if ($itemtype == 'AllAssets') {
-            $current_id       = $raw['id'];
-            $current_itemtype = $raw['TYPE'];
-         }
-
          // retrive value (and manage multiple values)
          $clean_values = [];
          foreach ($rawdata['data']['cols'] as $col) {
@@ -1642,8 +1636,8 @@ abstract class API extends CommonGLPI {
 
          // if all asset, provide type in returned data
          if ($itemtype == 'AllAssets') {
-            $current_line['id']       = $current_id;
-            $current_line['itemtype'] = $current_itemtype;
+            $current_line['id']       = $raw['id'];
+            $current_line['itemtype'] = $raw['TYPE'];
          }
 
          // append to final array
@@ -1715,7 +1709,7 @@ abstract class API extends CommonGLPI {
          $failed       = 0;
          $index        = 0;
          foreach ($input as $object) {
-            $object      = self::inputObjectToArray($object);
+            $object      = $this->inputObjectToArray($object);
             $current_res = [];
 
             //check rights
@@ -1790,7 +1784,7 @@ abstract class API extends CommonGLPI {
 
       if (is_array($input)) {
          foreach ($input as &$sub_input) {
-            $sub_input = self::inputObjectToArray($sub_input);
+            $sub_input = $this->inputObjectToArray($sub_input);
          }
       }
 
@@ -1831,8 +1825,6 @@ abstract class API extends CommonGLPI {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
-                  $current_res = [$object->id => false,
-                                  'message'   => __("Item not found")];
                   continue;
                }
 
@@ -2064,9 +2056,9 @@ abstract class API extends CommonGLPI {
       }
       $this->checkAppToken();
       $this->logEndpointUsage($endpoint);
-      self::checkSessionToken();
+      $this->checkSessionToken();
       if ($unlock_session) {
-         self::unlockSessionIfPossible();
+         $this->unlockSessionIfPossible();
       }
    }
 
@@ -2260,7 +2252,7 @@ abstract class API extends CommonGLPI {
     * @return void
     */
    public function inlineDocumentation($file) {
-      self::header(true, __("API Documentation"));
+      $this->header(true, __("API Documentation"));
       echo Html::css("public/lib/prismjs/themes/prism-coy.css");
       echo Html::script("public/lib/prismjs/components/prism-core.js");
       echo Html::script("public/lib/prismjs/components/prism-apacheconf.js");

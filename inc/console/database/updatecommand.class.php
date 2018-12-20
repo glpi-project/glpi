@@ -42,7 +42,6 @@ use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Session;
 use Update;
 
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -140,7 +139,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
       if (!$no_interaction) {
          // Ask for confirmation (unless --no-interaction)
-         /** @var QuestionHelper $question_helper */
+         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $run = $question_helper->ask(
             $input,
