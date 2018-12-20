@@ -2379,7 +2379,7 @@ class Ticket extends CommonITILObject {
     * @param $items_id  integer  ID of the Item
     * @param $days      integer  day number
     *
-    * @return integer
+    * @return array
    **/
    function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days) {
       global $DB;

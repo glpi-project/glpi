@@ -3247,7 +3247,7 @@ JAVASCRIPT;
     * @param string $itemtype device type
     * @param array  $params   array of parameters
     *
-    * @return select string
+    * @return array
    **/
    static function addDefaultToView($itemtype, $params) {
       global $CFG_GLPI;
@@ -3279,9 +3279,9 @@ JAVASCRIPT;
    /**
     * Generic Function to add default select to a request
     *
-    * @param $itemtype device type
+    * @param string $itemtype device type
     *
-    * @return select string
+    * @return string Select SQL string
    **/
    static function addDefaultSelect($itemtype) {
 
@@ -3657,9 +3657,9 @@ JAVASCRIPT;
    /**
     * Generic Function to add default where to a request
     *
-    * @param $itemtype device type
+    * @param string $itemtype device type
     *
-    * @return select string
+    * @return string Where SQL string
    **/
    static function addDefaultWhere($itemtype) {
       $condition = '';
@@ -4470,11 +4470,11 @@ JAVASCRIPT;
    /**
     * Generic Function to add Default left join to a request
     *
-    * @param $itemtype                    reference ID
-    * @param $ref_table                   reference table
-    * @param &$already_link_tables  array of tables already joined
+    * @param string $itemtype              reference ID
+    * @param string $ref_table             reference table
+    * @param array  &$already_link_tables  tables already joined
     *
-    * @return Left join string
+    * @return string Left join SQL string
    **/
    static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables) {
 

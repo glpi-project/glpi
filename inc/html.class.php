@@ -3417,7 +3417,7 @@ class Html {
     * Show div with auto completion
     *
     * @param CommonDBTM $item    item object used for create dropdown
-    * @param strign     $field   field to search for autocompletion
+    * @param string     $field   field to search for autocompletion
     * @param array      $options array of possible options:
     *    - name    : string / name of the select (default is field parameter)
     *    - value   : integer / preselected value (default value of the item object)

@@ -32,6 +32,6 @@
 
 include ('../inc/includes.php');
 
-$rulecollection = new RuleImportEntityCollection(-1);
+$rulecollection = new RuleImportEntityCollection();
 
 include (GLPI_ROOT . "/front/rule.common.form.php");

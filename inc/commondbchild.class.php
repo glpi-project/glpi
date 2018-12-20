@@ -222,7 +222,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @param $getFromDB   (true by default)
     * @param $getEmpty    (true by default)
     *
-    * @return object of the concerned item or false on error
+    * @return CommonDBTM|boolean object of the concerned item or false on error
    **/
    function getItem($getFromDB = true, $getEmpty = true) {
 

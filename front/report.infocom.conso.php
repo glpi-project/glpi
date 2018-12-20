@@ -38,7 +38,7 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    $year           = date("Y")-1;
-   $_POST["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
+   $_POST["date1"] = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
    $_POST["date2"] = date("Y-m-d");
 }
 
