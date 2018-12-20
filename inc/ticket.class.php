@@ -4257,7 +4257,7 @@ class Ticket extends CommonITILObject {
                'priority'                  => self::computePriority(3, 3),
                'requesttypes_id'           => $requesttype,
                'actiontime'                => 0,
-               'date'                      => $_SESSION["glpi_currenttime"],
+               'date'                      => null,
                'entities_id'               => $entity,
                'status'                    => self::INCOMING,
                'followup'                  => [],
