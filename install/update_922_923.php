@@ -40,11 +40,9 @@
  * @return bool for success (will die for most error)
 **/
 function update922to923() {
-   global $DB, $migration, $CFG_GLPI;
+   global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+   $updateresult = true;
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.3'));

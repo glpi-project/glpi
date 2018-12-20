@@ -101,7 +101,6 @@ function update084to085() {
 
       $migration->migrationOneTable('glpi_configs');
 
-      $fields = [];
       if ($DB->numrows($result_of_configs) == 1) {
          $configs = $DB->fetch_assoc($result_of_configs);
          unset($configs['id']);
@@ -2472,8 +2471,6 @@ function update084to085() {
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
          while ($data = $DB->fetch_assoc($result)) {
-            $num     = 0;
-            $num2    = 0;
             $options = [];
             parse_str($data["query"], $options);
             if (isset($options['field'])) {
@@ -2718,8 +2715,6 @@ function update084to085() {
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
          while ($data = $DB->fetch_assoc($result)) {
-            $num     = 0;
-            $num2    = 0;
             $options = [];
             parse_str($data["query"], $options);
 

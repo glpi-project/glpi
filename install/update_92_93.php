@@ -36,8 +36,7 @@
  * @return bool for success (will die for most error)
 **/
 function update92to93() {
-   global $DB, $migration, $CFG_GLPI;
-   $dbutils = new DbUtils();
+   global $DB, $migration;
 
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
