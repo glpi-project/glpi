@@ -1103,18 +1103,6 @@ function update91to92() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
    $ADDTODISPLAYPREF['SavedSearch'] = [8, 9, 3, 10, 11];
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $rank = 1;
-      foreach ($tab as $newval) {
-         $DB->updateOrInsert("glpi_displaypreferences", [
-            'rank'      => $rank++
-         ], [
-            'users_id'  => "0",
-            'itemtype'  => $type,
-            'num'       => $newval,
-         ]);
-      }
-   }
 
    if (countElementsInTable('glpi_logs') < 2000000) {
       //add index only if this sounds... possible.
@@ -2260,6 +2248,8 @@ Regards,',
    }
 
    // ************ Keep it at the end **************
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
+
    $migration->executeMigration();
 
    return $updateresult;
