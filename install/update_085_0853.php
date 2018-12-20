@@ -65,7 +65,7 @@ function update085to0853() {
 
    // Increase cron_limit
    $current_config = Config::getConfigurationValues('core');
-   if ($current_config['cron_limit'] = 1) {
+   if ($current_config['cron_limit'] == 1) {
       Config::setConfigurationValues('core', ['cron_limit' => 5]);
    }
    Config::setConfigurationValues('core', ['task_state' => Planning::TODO]);
