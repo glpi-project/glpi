@@ -262,10 +262,8 @@ input[type=checkbox] {
    background-color:#eeeeee;
 }
 
-img[src*='add_dropdown.png'],
 img[src*='info-small.png'],
 img[src*='reset.png'],
-img[src*='delete.png'],
 img[src*='showselect.png'],
 img[src*='addme.png'],
 img[src*='calendar.png'] {
