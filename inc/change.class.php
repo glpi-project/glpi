@@ -419,6 +419,53 @@ class Change extends CommonITILObject {
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
 
+      $tab[] = [
+         'id'                 => '68',
+         'table'              => 'glpi_changes_items',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of items'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_changes_items',
+         'field'              => 'items_id',
+         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+         'datatype'           => 'specific',
+         'comments'           => true,
+         'nosort'             => true,
+         'nosearch'           => true,
+         'additionalfields'   => ['itemtype'],
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '131',
+         'table'              => 'glpi_changes_items',
+         'field'              => 'itemtype',
+         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'ticket_types',
+         'nosort'             => true,
+         'additionalfields'   => ['itemtype'],
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
+
       $tab = array_merge($tab, $this->getSearchOptionsActors());
 
       $tab[] = [
