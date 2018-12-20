@@ -4317,23 +4317,29 @@ class Html {
             quietMillis: 100,
             minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
             matcher: function(params, data) {
+               // store last search in the global var
+               query = params;
+
                // If there are no search terms, return all of the data
                if ($.trim(params.term) === '') {
                   return data;
                }
 
-               var searched_term = getTextWithoutDiacriticalMarks(params.term.toUpperCase());
-
+               var searched_term = getTextWithoutDiacriticalMarks(params.term);
                var data_text = typeof(data.text) === 'string'
-                  ? getTextWithoutDiacriticalMarks(data.text.toUpperCase())
+                  ? getTextWithoutDiacriticalMarks(data.text)
                   : '';
+               var select2_fuzzy_opts = {
+                  pre: '<span class=\"select2-rendered__match\">',
+                  post: '</span>',
+               };
 
                // Skip if there is no 'children' property
                if (typeof data.children === 'undefined') {
-                  if (data_text.indexOf(searched_term) != -1) {
-                     return data;
-                  }
-                  return null;
+                  var match  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
+                  return match !== null
+                     ? {text: data, rendered_text: match.rendered_text, score: match[1]}
+                     : false;
                }
 
                // `data.children` contains the actual options that we are matching against
@@ -4342,11 +4348,25 @@ class Html {
 
                $.each(data.children, function (idx, child) {
                   var child_text = typeof(child.text) === 'string'
-                     ? getTextWithoutDiacriticalMarks(child.text.toUpperCase())
+                     ? getTextWithoutDiacriticalMarks(child.text)
                      : '';
-                  if (child_text.indexOf(searched_term) != -1
-                     || data_text.indexOf(searched_term) != -1
+
+                  var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
+                  var match_text  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
+                  if (match_child !== null
+                     || match_text !== null
                   ) {
+                     if (match_text !== null
+                         && typeof match_text.score != 'undefined') {
+                        data.score         = match_text.score;
+                        data.rendered_text = match_text.rendered;
+                     }
+
+                     if (match_child !== null
+                         && typeof match_child.score != 'undefined') {
+                        child.score         = match_child.score;
+                        child.rendered_text = match_child.rendered;
+                     }
                      filteredChildren.push(child);
                   }
                });
@@ -4366,7 +4386,7 @@ class Html {
                return null;
             },
             templateResult: templateResult,
-            templateSelection: templateSelection
+            templateSelection: templateSelection,
          })
          .bind('setValue', function(e, value) {
             $('#$id').val(value).trigger('change');

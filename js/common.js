@@ -925,28 +925,33 @@ function markMatch (text, term) {
  * Function that renders select2 results.
  */
 var templateResult = function(result) {
-   if (!result.id) {
-      return result.text;
-   }
-
    var _elt = $('<span></span>');
    _elt.attr('title', result.title);
 
-   var markup=[result.text];
-
-   var _term = query.term || '';
-   var markup = markMatch(result.text, _term);
-
-   if (result.level) {
-      var a='';
-      var i=result.level;
-      while (i>1) {
-         a = a+'&nbsp;&nbsp;&nbsp;';
-         i=i-1;
-      }
-      _elt.html(a+'&raquo;'+markup);
+   if (typeof query.term !== 'undefined' &&
+       typeof result.rendered_text !== 'undefined') {
+      _elt.html(result.rendered_text);
    } else {
-      _elt.html(markup);
+      if (!result.id) {
+         return result.text;
+      }
+
+      var markup=[result.text];
+
+      var _term = query.term || '';
+      var markup = markMatch(result.text, _term);
+
+      if (result.level) {
+         var a='';
+         var i=result.level;
+         while (i>1) {
+            a = a+'&nbsp;&nbsp;&nbsp;';
+            i=i-1;
+         }
+         _elt.html(a+'&raquo;'+markup);
+      } else {
+         _elt.html(markup);
+      }
    }
 
    return _elt;
