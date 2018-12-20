@@ -228,19 +228,28 @@ class DeviceProcessor extends CommonDevice {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => 'glpi_deviceprocessors',
-         'field'              => 'id',
-         'name'               => __('processor number'),
+         'table'              => 'glpi_items_deviceprocessors',
+         'field'              => 'nbcores',
+         'name'               => __('processor: number of cores'),
          'forcegroupby'       => true,
          'usehaving'          => true,
+         'datatype'           => 'number',
          'massiveaction'      => false,
-         'datatype'           => 'count',
-         'joinparams'         => [
-            'beforejoin'         => [
-               'table'              => 'glpi_items_deviceprocessors',
-               'joinparams'         => $main_joinparams
-            ]
-         ]
+         'joinparams'         => $main_joinparams,
+         'computation'        => 'SUM(TABLE.`nbcores`)'
+      ];
+
+      $tab[] = [
+         'id'                 => '34',
+         'table'              => 'glpi_items_deviceprocessors',
+         'field'              => 'nbthreads',
+         'name'               => __('processor: number of threads'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'number',
+         'massiveaction'      => false,
+         'joinparams'         => $main_joinparams,
+         'computation'        => 'SUM(TABLE.`nbthreads`)'
       ];
 
       $tab[] = [

@@ -560,6 +560,13 @@ class DBmysql {
             if ($this->rawQuery($formattedQuerytorun)) { //if no success continue to concatenate
                $formattedQuery = "";
                $lastresult     = true;
+               if (!isCommandLine()) {
+                  // Flush will prevent proxy to timeout as it will receive data.
+                  // Flush requires a content to be sent, so we sent sp&aces as multiple spaces
+                  // will be shown as a single one on browser.
+                  echo ' ';
+                  flush();
+               }
             } else {
                $lastresult = false;
             }
