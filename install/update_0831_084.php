@@ -1796,13 +1796,16 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
       $position = strpos($computerName, ".");
       $name     = substr($computerName, 0, $position);
       $domain   = substr($computerName, $position + 1);
-      $query    = "SELECT `id`
-                   FROM `glpi_fqdns`
-                   WHERE `fqdn` = '$domain'";
-      $result = $DB->query($query);
+      $fqdnsIterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM' => 'glpi_fqdns',
+         'WHERE' => [
+            'fqdn' => $domain
+         ]
+      ]);
 
-      if ($DB->numrows($result) == 1) {
-         $data     = $DB->fetch_assoc($result);
+      if (count($fqdnsIterator) === 1) {
+         $data     = $fqdnsIterator->next();
          $domainID = $data['id'];
       }
 
@@ -1847,30 +1850,44 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
    global $DB, $migration;
 
-   $query = "SELECT `origin_glpi_networkports`.`name`,
-                    `origin_glpi_networkports`.`id`,
-                    `origin_glpi_networkports`.`mac`, ";
+   $query = [
+      'SELECT' => [
+         "origin_glpi_networkports.name",
+         "origin_glpi_networkports.id",
+         "origin_glpi_networkports.mac",
+      ]
+   ];
 
-   $addleftjoin         = '';
    $manage_netinterface = false;
    if ($port instanceof NetworkPortEthernet) {
-      $addleftjoin = "LEFT JOIN `glpi_networkinterfaces`
-                        ON (`origin_glpi_networkports`.`networkinterfaces_id`
-                              = `glpi_networkinterfaces` .`id`)";
-      $query .= "`glpi_networkinterfaces`.`name` AS networkinterface, ";
+      $query['SELECT'][] = "glpi_networkinterfaces.name AS networkinterface";
+      $query['LEFT JOIN'] = [
+         'glpi_networkinterfaces' => [
+            'ON' => [
+               'origin_glpi_networkports' => "networkinterfaces_id",
+               'glpi_networkinterfaces'   => "id",
+            ]
+         ]
+      ];
+
       $manage_netinterface = true;
    }
 
    foreach ($fields as $SQL_field => $field) {
-      $query .= "$SQL_field AS $field, ";
+      $query['SELECT'][] = "$SQL_field AS $field";
    }
-   $query .= "`origin_glpi_networkports`.`itemtype`, `origin_glpi_networkports`.`items_id`
-              FROM `origin_glpi_networkports`
-              $addleftjoin
-              WHERE `origin_glpi_networkports`.`id`
-                                     IN (SELECT `id`
-                                         FROM `glpi_networkports`
-                                         WHERE `instantiation_type` = '".$port->getType()."')";
+
+   $query['SELECT'][] = "origin_glpi_networkports.itemtype";
+   $query['SELECT'][] = "origin_glpi_networkports.items_id";
+   $query['FROM'] = "origin_glpi_networkports";
+   $query['WHERE'] = [
+      'origin_glpi_networkports.id' => new \QuerySubQuery([
+         'SELECT' => "id",
+         'FROM'   => "glpi_networkports",
+         'WHERE'  => ['instantiation_type' => $port->getType]
+      ])
+   ];
+
    foreach ($DB->request($query) as $portInformation) {
       $input = ['networkports_id' => $portInformation['id']];
       if ($manage_netinterface) {
@@ -1891,18 +1908,29 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
       }
 
       if (($setNetworkCard) && ($portInformation['itemtype'] == 'Computer')) {
-         $query = "SELECT link.`id` AS link_id,
-                          device.`designation` AS name
-                   FROM `glpi_devicenetworkcards` as device,
-                        `glpi_computers_devicenetworkcards` as link
-                   WHERE link.`computers_id` = ".$portInformation['items_id']."
-                         AND device.`id` = link.`devicenetworkcards_id`
-                         AND link.`specificity` = '".$portInformation['mac']."'";
-         $result = $DB->query($query);
+            $iterator = $DB->query([
+            'SELECT'       => [
+               "link.id AS link_id",
+               "device.designation AS name"
+            ],
+            'FROM'         => "glpi_devicenetworkcards AS device",
+            'INNER JOIN'   => [
+               'glpi_computers_devicenetworkcards AS link' => [
+                  'ON' => [
+                     'device' => 'id',
+                     'link'   => 'devicenetworkcards_id',
+                  ]
+               ]
+            ],
+            'WHERE' => [
+               'link.computers_id' => $portInformation['items_id'],
+               'link.`specificity' => $portInformation['mac']
+            ]
+         ]);
 
-         if ($DB->numrows($result) > 0) {
-            $set_first = ($DB->numrows($result) == 1);
-            while ($link = $DB->fetch_assoc($result)) {
+         if (count($iterator)) {
+            $set_first = (count($iterator) === 1);
+            while ($link = $iterator->next()) {
                if ($set_first || ($link['name'] == $portInformation['name'])) {
                   $input['items_devicenetworkcards_id'] = $link['link_id'];
                   break;
@@ -1923,6 +1951,7 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
    global $DB;
 
    if (countElementsInTable("glpi_networkportmigrations", ['id' => $networkports_id]) == 0) {
+      // TODO : can be improved once DMmysql->insert support values retrieved from another query
       $query = "INSERT INTO `glpi_networkportmigrations`
                        (SELECT *" . str_repeat(', 0', count(NetworkPortMigration::getMotives())) ."
                         FROM `origin_glpi_networkports`
@@ -1930,11 +1959,13 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
       $DB->queryOrDie($query, "0.84 error on copy of network port during migration");
    }
 
-   $query = "UPDATE `glpi_networkportmigrations`
-             SET `$motive` = '1'
-             WHERE `id`='$networkports_id'";
-   $DB->queryOrDie($query, "0.84 append of motive to migration of network port error");
-
+   $DB->updateOrDie("glpi_networkportmigrations", [
+         $motive => 1
+      ], [
+         'id' => $networkports_id
+      ],
+      "0.84 append of motive to migration of network port error"
+   );
 }
 
 
@@ -2036,8 +2067,13 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $fqdn = new FQDN();
 
       // Then, populate it from domains (beware that "domains" can be FQDNs and Windows workgroups)
-      $query = "SELECT DISTINCT LOWER(`name`) AS name, `comment`
-                FROM `glpi_domains`";
+      $query = [
+         'SELECT DISTINCT' => [
+            new \QueryExpression("LOWER(" . DBmysql::quoteName('name') . ") AS name"),
+            "comment"
+         ],
+         'FROM' => "glpi_domains"
+      ];
       foreach ($DB->request($query) as $domain) {
          $domainName = $domain['name'];
          // We ensure that domains have at least 1 dote to be sure it is not a Windows workgroup
@@ -2141,10 +2177,19 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_ipnetworks");
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
-      $query = "SELECT DISTINCTROW INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) AS address,
-                     `netmask`, `gateway`, `entities_id`
-                FROM `origin_glpi_networkports`
-                ORDER BY `gateway` DESC";
+      $query = [
+         'SELECT DISTINCT' => [
+            new \QueryExpression(
+               "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . "&INET_ATON(" .
+               DBmysql::quoteName("netmask") . ")) AS address"
+            ),
+            "netmask",
+            "gateway",
+            "entities_id"
+         ],
+         'FROM' => "origin_glpi_networkports",
+         'ORDER' => "gateway DESC"
+      ];
       $address = new IPAddress();
       $netmask = new IPNetmask();
       $gateway = new IPAddress();
@@ -2182,12 +2227,23 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          if (is_array($preparedInput['input'])) {
             $input = $preparedInput['input'];
             if (isset($preparedInput['error'])) {
-               $query = "SELECT id, items_id, itemtype
-                         FROM origin_glpi_networkports
-                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) = '$address'
-                               AND `netmask` = '$netmask'
-                               AND `gateway` = '$gateway'
-                               AND `entities_id` = '$entities_id'";
+               $query = [
+                  'SELECT' => [
+                     "id",
+                     "items_id",
+                     "itemtype"
+                  ],
+                  'FROM'   => "origin_glpi_networkports",
+                  'WHERE'  => [
+                     new \QueryExpression(
+                        "INET_NTOA(INET_ATON(". DBmysql::quoteName("ip") . ")&INET_ATON(".
+                        DBmysql::quoteName("netmask") . ")) = " . DBmysql::quoteValue($addess)
+                     ),
+                     'netmask'      => $netmask,
+                     'gateway'      => $gateway,
+                     'entities_id'  => $entities_id,
+                  ]
+               ];
                foreach ($DB->request($query) as $data) {
                   addNetworkPortMigrationError($data['id'], 'invalid_gateway');
                   logNetworkPortError('network warning', $data['id'], $data['itemtype'],
@@ -2196,12 +2252,24 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             }
             $migration->insertInTable($network->getTable(), $input);
          } else if (isset($preparedInput['error'])) {
-            $query = "SELECT id, items_id, itemtype
-                      FROM origin_glpi_networkports
-                      WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) = '".$entry['address']."'
-                            AND `netmask` = '$netmask'
-                            AND `gateway` = '$gateway'
-                            AND `entities_id` = '$entities_id'";
+            $query = [
+                  'SELECT' => [
+                     "id",
+                     "items_id",
+                     "itemtype"
+                  ],
+                  'FROM'   => "origin_glpi_networkports",
+                  'WHERE'  => [
+                     new \QueryExpression(
+                        "INET_NTOA(INET_ATON(". DBmysql::quoteName("ip") . ")&INET_ATON(".
+                        DBmysql::quoteName("netmask") . ")) = " .
+                        DBmysql::quoteValue($entry['address'])
+                     ),
+                     'netmask'      => $netmask,
+                     'gateway'      => $gateway,
+                     'entities_id'  => $entities_id,
+                  ]
+               ];
             foreach ($DB->request($query) as $data) {
                addNetworkPortMigrationError($data['id'], 'invalid_network');
                logNetworkPortError('network error', $data['id'], $data['itemtype'],
@@ -2251,9 +2319,17 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_networknames");
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
-      $query = "SELECT `ip`, `id`, `entities_id`, `itemtype`, `items_id`
-                FROM `origin_glpi_networkports`
-                WHERE `ip` <> ''";
+      $query = [
+         'SELECT' => [
+            "ip",
+            "id",
+            "entities_id",
+            "itemtype",
+            "items_id"
+         ],
+         'FROM' => "origin_glpi_networkports",
+         'WHERE' => ['ip' => ["<>", ""]]
+      ];
 
       foreach ($DB->request($query) as $entry) {
          if (empty($entry["ip"])) {
@@ -2312,8 +2388,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), "glpi_networkports"));
 
    // Retrieve all the networks from the current network ports and add them to the IPNetwork
-   $query = "SELECT *
-             FROM `glpi_networkinterfaces`";
+   $query = [
+      'FROM' => "glpi_networkinterfaces"
+   ];
 
    foreach ($DB->request($query) as $entry) {
       $instantiation_type = "";
@@ -2346,12 +2423,17 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       /// In case of unknown Interface Type, we should have to set instantiation_type to ''
       /// Thus we should be able to convert it later to correct type (ethernet, wifi, loopback ...)
       if (!empty($instantiation_type)) {
-         $query = "UPDATE `glpi_networkports`
-                   SET `instantiation_type` = '$instantiation_type'
-                   WHERE `id` IN (SELECT `id`
-                                  FROM `origin_glpi_networkports`
-                                  WHERE `networkinterfaces_id` = '".$entry['id']."')";
-         $DB->queryOrDie($query, "0.84 update instantiation_type field of glpi_networkports");
+         $DB->updateOrDie("glpi_networkports", [
+               'instantiation_type' => $instantiation_type
+            ], [
+               'id' => new \QuerySubQuery([
+                  'SELECT' => "id",
+                  'FROM'   => "origin_glpi_networkports",
+                  'WHERE'  => ["networkinterfaces_id" => $entry['id']]
+               ])
+            ],
+            "0.84 update instantiation_type field of glpi_networkports"
+         );
          // Clear $instantiation_type for next check inside the loop
          unset($instantiation_type);
       }
@@ -2369,18 +2451,23 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Index mac field and transform address mac to lower'));
 
-   $query = "UPDATE `glpi_networkports`
-             SET `mac` = LOWER(`mac`)";
-   $DB->queryOrDie($query, "0.84 transforme MAC to lower case");
+   $DB->updateOrDie("glpi_networkports", [
+         'mac' => new \QueryExpression("LOWER(" . DBmysql::quoteName("mac") .")")
+      ],
+      [true],
+      "0.84 transforme MAC to lower case"
+   );
 
    $migration->addKey('glpi_networkports', 'mac');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Update migration of interfaces errors'));
 
-   $query = "SELECT id
-             FROM `glpi_networkports`
-             WHERE `instantiation_type` = ''";
+   $query = [
+      'SELECT' => "id",
+      'FROM'   => "glpi_networkports",
+      'WHERE'  => ['instantiation_type' => ""]
+   ];
 
    foreach ($DB->request($query) as $networkPortID) {
       addNetworkPortMigrationError($networkPortID['id'], 'unknown_interface_type');
@@ -2408,7 +2495,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
       $port = new NetworkPortEthernet();
-      updateNetworkPortInstantiation($port, ['`netpoints_id`' => 'netpoints_id'], true);
+      updateNetworkPortInstantiation($port, ['netpoints_id' => 'netpoints_id'], true);
    }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportwifis"));
@@ -2490,10 +2577,13 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_networkportaggregates");
 
       // Transform NetworkEquipment local MAC address as a networkport that aggregates all ports
-      $query = "SELECT *
-                FROM `origin_glpi_networkequipments`
-                WHERE `mac` != ''
-                      OR `ip` != ''";
+      $query = [
+         'FROM'   => "origin_glpi_networkequipments",
+         'WHERE'  => [
+            'mac' => ["<>", ""],
+            'ip'  => ["<>", ""]
+         ]
+      ];
       $port_input = ['itemtype'           => 'NetworkEquipment',
                           'logical_number'     => '0',
                           'name'               => 'management',
@@ -2502,12 +2592,18 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
 
          $networkequipments_id       = $equipment['id'];
 
-         $query = "SELECT `id`, `ip`, `mac`
-                   FROM `origin_glpi_networkports`
-                   WHERE `itemtype` = 'NetworkEquipment'
-                         AND `items_id` = '$networkequipments_id'
-                         AND (`ip` = '".$equipment['ip']."'
-                              OR `mac` = '".$equipment['mac']."')";
+         $query = [
+            'SELECT' => ['id', 'ip', 'mac'],
+            'FROM'   => "origin_glpi_networkports",
+            'WHERE'  => [
+               'itemtype' => "NetworkEquipment",
+               'items_id' => $networkequipments_id,
+               'OR' => [
+                  'ip'  => $equipment['ip'],
+                  'mac' => $equipment['mac']
+               ]
+            ]
+         ];
 
          $both = [];
          foreach ($DB->request($query) as $ports) {
@@ -2535,16 +2631,18 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                       $equipment['ip']);
 
             foreach ($both as $aggregated_networkports_id) {
-               $query = "DELETE
-                         FROM `glpi_networknames`
-                         WHERE `itemtype` = 'NetworkPort'
-                               AND `items_id` = '$aggregated_networkports_id'";
-               $DB->query($query);
+               $DB->delete("glpi_networknames", [
+                     'itemtype' => "NetworkPort",
+                     'items_id' => $aggregated_networkports_id,
+                  ]
+               );
 
-               $query = "UPDATE `glpi_networkports`
-                         SET `mac` = ''
-                         WHERE `id` = '$aggregated_networkports_id'";
-               $DB->query($query);
+               $DB->update("glpi_networkports", [
+                     'mac' => "",
+                  ], [
+                     "id" => $aggregated_networkports_id
+                  ]
+               );
             }
          }
       }
@@ -2581,12 +2679,14 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                       'Update connections between IPAddress and IPNetwork'));
 
    // Here, we are sure that there is only IPv4 addresses. So, the SQL requests are simplified
-   $query = "SELECT `id`, `address_3`, `netmask_3`
-             FROM `glpi_ipnetworks`";
+   $query = [
+      'SELECT' => ["id", "address_3", "netmask_3"],
+      'FROM'   => "glpi_ipnetworks"
+   ];
 
    if ($network_result = $DB->query($query)) {
       unset($query);
-      while ($ipnetwork_row = $DB->fetch_assoc($network_result)) {
+      while ($ipnetwork_row = $network_result->next()) {
          $ipnetworks_id = $ipnetwork_row['id'];
          $netmask       = floatval($ipnetwork_row['netmask_3']);
          $address       = floatval($ipnetwork_row['address_3']) & $netmask;
@@ -2596,6 +2696,13 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                    WHERE (`glpi_ipaddresses`.`binary_3` & '$netmask') = $address
                          AND `glpi_ipaddresses`.`version` = '4'
                    GROUP BY `items_id`";
+         $query = [
+            'SELECT' => "id",
+            'FROM'   => 'glpi_ipaddresses',
+            'WHERE'  => [
+
+            ]
+         ];
 
          if ($ipaddress_result = $DB->query($query)) {
             unset($query);
