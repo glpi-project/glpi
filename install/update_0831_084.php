@@ -2684,35 +2684,32 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       'FROM'   => "glpi_ipnetworks"
    ];
 
-   if ($network_result = $DB->query($query)) {
+   if ($network_result = $DB->request($query)) {
       unset($query);
       while ($ipnetwork_row = $network_result->next()) {
          $ipnetworks_id = $ipnetwork_row['id'];
          $netmask       = floatval($ipnetwork_row['netmask_3']);
          $address       = floatval($ipnetwork_row['address_3']) & $netmask;
 
-         $query = "SELECT `id`
-                   FROM `glpi_ipaddresses`
-                   WHERE (`glpi_ipaddresses`.`binary_3` & '$netmask') = $address
-                         AND `glpi_ipaddresses`.`version` = '4'
-                   GROUP BY `items_id`";
-         $query = [
+         $ipaddress_result = $DB->request([
             'SELECT' => "id",
             'FROM'   => 'glpi_ipaddresses',
             'WHERE'  => [
+               new \QueryExpression(
+                  "(". DBmysql::quoteName("glpi_ipaddresses.binary_3") . "& " .
+                  DBmysql::quoteValue($netmask) . ")"
+               ),
+               'glpi_ipaddresses.version' => 4
+            ],
+            'GROUPBY' => 'items_id'
+         ]);
 
-            ]
-         ];
-
-         if ($ipaddress_result = $DB->query($query)) {
-            unset($query);
-            while ($link = $DB->fetch_assoc($ipaddress_result)) {
-               $query = "INSERT INTO `glpi_ipaddresses_ipnetworks`
-                                (`ipaddresses_id`, `ipnetworks_id`)
-                         VALUES ('".$link['id']."', '$ipnetworks_id')";
-               $DB->query($query);
-               unset($query);
-            }
+         while ($link = $ipaddress_result->next()) {
+            $DB->insert("glpi_ipaddresses_ipnetworks", [
+                  'ipaddresses_id'  => $link['id'],
+                  'ipnetworks_id'   => $ipnetworks_id
+               ]
+            );
          }
       }
    }
@@ -2760,11 +2757,13 @@ function migrateComputerDevice($deviceType, $new_specif = null, $new_specif_type
       $migration->changeField($device_table, 'specif_default', $new_specif.'_default',
                               $new_specif_type);
 
-      // Update the log ...
-      $query = "UPDATE `glpi_logs`
-                SET `itemtype_link` = 'Item_".$deviceType."#".$new_specif."'
-                WHERE `itemtype_link` = '$deviceType'";
-      $DB->queryOrDie($query, "0.84 adapt glpi_logs to new item_devices");
+      $DB->updateOrDie("glpi_logs", [
+            'itemtype_link' => "Item_$deviceType#$new_specif"
+         ], [
+            'itemtype_link' => $deviceType
+         ],
+         "0.84 adapt glpi_logs to new item_devices"
+      );
    }
 
    foreach ($other_specif as $field => $format) {
