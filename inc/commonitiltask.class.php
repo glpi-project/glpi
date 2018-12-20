@@ -1533,6 +1533,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo " <a href='#' title=\"".__s('Availability')."\" onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
       echo "&nbsp;<i class='far fa-calendar-alt'></i>";
+      echo "<span class='sr-only'>".__('Availability')."</span>";
       echo "</a>";
       Ajax::createIframeModalWindow('planningcheck'.$rand,
                                     $CFG_GLPI["root_doc"].
@@ -1541,7 +1542,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                     ['title'  => __('Availability')]);
 
       echo "<br />";
-      echo "<i class='fas fa-users'></i>&nbsp;";
+      echo "<i class='fas fa-users' aria-hidden></i>&nbsp;";
       echo _n('Group', 'Groups', 1)."&nbsp;";
       $params     = [
          'name'      => "groups_id_tech",
