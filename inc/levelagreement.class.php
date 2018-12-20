@@ -1013,7 +1013,7 @@ abstract class LevelAgreement extends CommonDBChild {
 
       if ($levels_id) {
          $toadd = [];
-         $date = $this->computeExecutionDate($ticket->fields['date_creation'], $levels_id,
+         $date = $this->computeExecutionDate($ticket->fields['date'], $levels_id,
                                              $ticket->fields[$pre.'_waiting_duration']);
          if ($date != null) {
             $toadd['date']           = $date;
