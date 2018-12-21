@@ -800,7 +800,7 @@ class Migration {
             if (count($iterator) > 0) {
                while ($data = $iterator->next()) {
                   $result = $DB->request([
-                     'SELECT' => ['MAX' => 'rank'],
+                     'SELECT' => ['MAX' => 'rank as maxrank'],
                      'FROM'   => 'glpi_displaypreferences',
                      'WHERE'  => [
                         'users_id'  => $data['users_id'],
@@ -808,7 +808,7 @@ class Migration {
                      ]
                   ])->next();
 
-                  $rank = $result['rank'];
+                  $rank = $result['maxrank'];
                   ++$rank;
 
                   foreach ($tab as $newval) {
