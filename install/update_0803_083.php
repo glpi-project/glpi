@@ -38,7 +38,6 @@
 function update0803to083() {
    global $DB, $migration;
 
-   $updateresult     = true;
    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
@@ -75,11 +74,14 @@ function update0803to083() {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Problems'));
 
    // Clean ticket validations : already done in 0.80
-   $query = "DELETE
-             FROM `glpi_ticketvalidations`
-             WHERE `glpi_ticketvalidations`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
-                                                                 FROM `glpi_tickets`)";
-   $DB->queryOrDie($query, "0.83 clean glpi_ticketvalidations");
+   $DB->deleteOrDie("glpi_ticketvalidations", [
+         'glpi_ticketvalidations.tickets_id' => new \QuerySubQuery([
+            'SELECT' => "glpi_tickets.id",
+            'FROM'   => "glpi_tickets"
+         ], "NOT IN")
+      ],
+      "0.83 clean glpi_ticketvalidations"
+   );
 
    // Problems management
    if (!$DB->tableExists('glpi_problems')) {
@@ -256,15 +258,16 @@ function update0803to083() {
       $task = new TicketTask();
       foreach ($DB->request('glpi_ticketplannings') as $data) {
          if ($task->getFromDB($data['tickettasks_id'])) {
-            $query = "UPDATE `glpi_tickettasks`
-                      SET `begin` = ".((($data['begin'] == 'NULL') || is_null($data['begin']))
-                                        ?'NULL':"'".$data['begin']."'").",
-                          `end` = ".((($data['end'] == 'NULL') || is_null($data['end']))
-                                      ?'NULL':"'".$data['end']."'").",
-                          `users_id_tech` = '".$data['users_id']."',
-                          `state` = '".$data['state']."'
-                      WHERE `id` = '".$data['tickettasks_id']."'";
-            $DB->queryOrDie($query, "0.83 migrate planning to glpi_tickettasks");
+            $DB->updateOrDie("glpi_tickettasks", [
+                  'begin'           => ($data['begin'] == 'NULL' ? null : $data['begin']),
+                  'end'             => ($data['end'] == 'NULL' ? null : $data['end']),
+                  'users_id_tech'   => $data['users_id'],
+                  'state'           => $data['state']
+               ], [
+                  'id' => $data['tickettasks_id']
+               ],
+               "0.83 migrate planning to glpi_tickettasks"
+            );
          }
       }
 
@@ -1679,5 +1682,5 @@ function update0803to083() {
 
    $migration->executeMigration();
 
-   return $updateresult;
+   return true;
 }
