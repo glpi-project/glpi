@@ -69,23 +69,29 @@ function update085to0853() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_items_tickets");
 
-      $query = "SELECT `itemtype`, `items_id`, `id`
-                FROM `glpi_tickets`
-                WHERE `itemtype` IS NOT NULL
-                    AND `itemtype` <> ''
-                AND `items_id` != 0";
+      $ticketsIterator = $DB->request([
+         'SELECT' => ["itemtype", "items_id", "id"],
+         'FROM'   => "glpi_tickets",
+         'WHERE'  => [
+            'NOT' => ['itemtype', null],
+            'itemtype' => ["<>", ""],
+            'items_id' => ["!=", 0]
+         ]
+      ]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-                $query = "INSERT INTO `glpi_items_tickets`
-                             (`id`, `items_id`, `itemtype`, `tickets_id`)
-                          VALUES (NULL, '".$data['items_id']."', '".$data['itemtype']."', '".$data['id']."')";
-                $DB->queryOrDie($query, "0.85 associated ticket sitems migration");
-            }
-
+      if (count($ticketsIterator)) {
+         while ($data = $ticketsIterator->next()) {
+            $DB->insertOrDie("glpi_items_tickets", [
+                  'id'           => null,
+                  'items_id'     => $data['items_id'],
+                  'itemtype'     => $data['itemtype'],
+                  'tickets_id'   => $data['id']
+               ],
+               "0.85 associated ticket sitems migration"
+            );
          }
       }
+
       // Delete old columns and keys
       $migration->dropField("glpi_tickets", "itemtype");
       $migration->dropField("glpi_tickets", "items_id");
@@ -94,19 +100,21 @@ function update085to0853() {
    }
 
    // correct value of status for changes
-   $query = "UPDATE `glpi_changes`
-             SET `status` = 1
-             WHERE `status` = 2";
-   $DB->queryOrDie($query, "0.85.3 correct status for change");
+   $DB->updateOrDie("glpi_changes",
+      ['status' => 1],
+      ['status' => 2],
+      "0.85.3 correct status for change"
+   );
 
    if ($migration->addField("glpi_entities", "is_notif_enable_default", "integer",
                             ['value' => -2])) {
       $migration->migrationOneTable('glpi_entities');
       // Set directly to root entity
-      $query = 'UPDATE `glpi_entities`
-                SET `is_notif_enable_default` = 1
-                WHERE `id` = 0';
-      $DB->queryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
+      $DB->updateOrDie("glpi_entities",
+         ['is_notif_enable_default' => 1],
+         ['id' => 0],
+         "0.85.3 default value for is_notif_enable_default for root entity"
+      );
    }
 
    // change type of field solution in ticket.change and problem

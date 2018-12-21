@@ -59,33 +59,50 @@ function update0843to0844() {
                     'qualification' => CommonITILObject::QUALIFICATION];
 
    // Migrate templates : back for validation
-   $query = "SELECT `glpi_notificationtemplatetranslations`.*
-               FROM `glpi_notificationtemplatetranslations`
-               INNER JOIN `glpi_notificationtemplates`
-                  ON (`glpi_notificationtemplates`.`id`
-                        = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
-               WHERE `glpi_notificationtemplatetranslations`.`content_text` LIKE '%validation.storestatus=%'
-                     OR `glpi_notificationtemplatetranslations`.`content_html` LIKE '%validation.storestatus=%'
-                     OR `glpi_notificationtemplatetranslations`.`subject` LIKE '%validation.storestatus=%'";
+   $notificationtemplatetranslationsIterator = $DB->request([
+      'SELECT'       => "glpi_notificationtemplatetranslations.*",
+      'FROM'         => "glpi_notificationtemplatetranslations",
+      'INNER JOIN'   => ["glpi_notificationtemplates" => [
+            'ON' => [
+               'glpi_notificationtemplates' => 'id',
+               'glpi_notificationtemplatetranslations' => 'notificationtemplates_id'
+            ]
+         ]
+      ],
+      'WHERE'        =>  [
+         'OR' => [
+            'glpi_notificationtemplatetranslations.content_text' => [
+               'LIKE' => "%validation.storestatus=%"
+            ],
+            'glpi_notificationtemplatetranslations.content_html' => [
+               'LIKE' => "%validation.storestatus=%"
+            ],
+            'glpi_notificationtemplatetranslations.subject' => [
+               'LIKE' => "%validation.storestatus=%"
+            ]
+         ]
+      ]
+   ]);
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $subject = $data['subject'];
-            $text = $data['content_text'];
-            $html = $data['content_html'];
-            foreach ($status as $old => $new) {
-               $subject = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $subject);
-               $text    = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $text);
-               $html    = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $html);
-            }
-            $query = "UPDATE `glpi_notificationtemplatetranslations`
-                        SET `subject` = '".addslashes($subject)."',
-                           `content_text` = '".addslashes($text)."',
-                           `content_html` = '".addslashes($html)."'
-                        WHERE `id` = ".$data['id']."";
-            $DB->queryOrDie($query, "0.84.4 fix tags usage for storestatus");
+   if (count($notificationtemplatetranslationsIterator)) {
+      while ($data = $notificationtemplatetranslationsIterator->next()) {
+         $subject = $data['subject'];
+         $text = $data['content_text'];
+         $html = $data['content_html'];
+         foreach ($status as $old => $new) {
+            $subject = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $subject);
+            $text    = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $text);
+            $html    = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $html);
          }
+         $DB->updateOrDie("glpi_notificationtemplatetranslations", [
+               'subject'      => addslashes($subject),
+               'content_text' => addslashes($text),
+               'content_html' => addslashes($html),
+            ], [
+               'id' => $data['id']
+            ],
+            "0.84.4 fix tags usage for storestatus"
+         );
       }
    }
 

@@ -57,16 +57,18 @@ function update084to0841() {
          $text  = html_entity_decode($text, ENT_NOQUOTES, 'UTF-8');
          $text  = addslashes($text);
          $text  = Toolbox::clean_cross_side_scripting_deep($text);
-         $query = "UPDATE `$table`
-                   SET `$field` = '$text'
-                   WHERE `id` = '".$data['id']."';";
-         $DB->queryOrDie($query, "0.84.1 fix encoding of html field : $table.$field");
+         $DB->updateOrDie($table,
+            [$field  => $text],
+            ['id'    => $data['id']],
+            "0.84.1 fix encoding of html field : $table.$field"
+         );
       }
    }
 
    // Add date_mod to document_item
    $migration->addField('glpi_documents_items', 'date_mod', 'datetime');
    $migration->migrationOneTable('glpi_documents_items');
+   // TODO : can be improved once DBmysql->update() supports JOIN
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
@@ -75,6 +77,7 @@ function update084to0841() {
                   "0.84.1 update date_mod in glpi_documents_items");
 
    // correct entities_id in documents_items
+   // TODO : can be improved once DBmysql->update() supports JOIN
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
