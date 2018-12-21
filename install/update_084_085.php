@@ -3363,9 +3363,6 @@ function update084to085() {
                        4 =>  [ 1 => 0, 2 => 0, 3 => 0, 5 => 0, 6 => 0, ],
                        5 =>  [ 1 => 0, 2 => 0, 3 => 0, 4 => 0, ],
                        6 =>  [ 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, ], ];
-   $query = "UPDATE `glpi_profiles`
-             SET `ticket_status` = '".exportArrayToDB($newcycle)."'
-             WHERE `interface` = 'helpdesk'";
    $DB->updateOrDie("glpi_profiles",
       ['ticket_status' => exportArrayToDB($newcycle)],
       ['interface' => "helpdesk"],
