@@ -2313,9 +2313,6 @@ function update084to085() {
    Config::setConfigurationValues('core', ['maintenance_mode' => 0]);
    Config::setConfigurationValues('core', ['maintenance_text' => '']);
 
-   $query = "SELECT *
-             FROM `glpi_notificationtemplates`
-             WHERE `itemtype` = 'MailCollector'";
    $notificationtemplatesIterator = $DB->request("glpi_notificationtemplates", [
       'itemtype' => "MailCollector"
    ]);
