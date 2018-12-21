@@ -1161,13 +1161,13 @@ class Reminder extends CommonDBVisible {
             return false;
          }
 
-         $criteria = array_merge(
+         $criteria = array_merge_recursive(
             [
                'SELECT DISTINCT' => 'glpi_reminders.*',
                'FROM'            => 'glpi_reminders',
-               'WHERE'           => [],
+               'WHERE'           => $visibility_criteria,
                'ORDERBY'         => 'name'
-            ] + $visibility_criteria,
+            ],
             self::getVisibilityCriteria()
          );
 
