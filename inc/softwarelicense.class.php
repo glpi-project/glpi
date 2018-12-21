@@ -951,9 +951,11 @@ class SoftwareLicense extends CommonTreeDropdown {
          ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
       ]);
 
-      if (count($iterator)) {
-         // At least 1 unlimited license, means unlimited
-         return -1;
+      if ($line = $iterator->next()) {
+         if ($line['cpt'] > 0) {
+            // At least 1 unlimited license, means unlimited
+            return -1;
+         }
       }
 
       $result = $DB->request([
