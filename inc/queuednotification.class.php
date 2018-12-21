@@ -589,7 +589,7 @@ class QueuedNotification extends CommonDBTM {
          $vol = $DB->delete(
             self::getTable(), [
                'is_deleted'   => 1,
-               new \QueryExpression('UNIX_TIMESTAMP('.$DB->quoteName('send_time').') < '.$DB->quoteValue($send_time).')')
+               new \QueryExpression('UNIX_TIMESTAMP('.$DB->quoteName('send_time').') < '.$DB->quoteValue($send_time))
             ]
          );
       }
