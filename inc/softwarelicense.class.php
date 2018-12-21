@@ -1061,7 +1061,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                ]
             ],
             'glpi_softwareversions AS usevers'  => [
-               'ON' == [
+               'ON' => [
                   'glpi_softwarelicenses' => 'softwareversions_id_use',
                   'usevers'               => 'id'
                ]
