@@ -2726,20 +2726,6 @@ class Config extends CommonDBTM {
 
       global $CFG_GLPI, $DB;
 
-      $get_prior_to_078_config  = function() use ($DB) {
-         if (!$DB->tableExists('glpi_config')) {
-            return false;
-         }
-
-         $config = new Config();
-         $config->forceTable('glpi_config');
-         if ($config->getFromDB(1)) {
-            return $config->fields;
-         }
-
-         return false;
-      };
-
       $get_078_to_084_config    = function() use ($DB) {
          if (!$DB->tableExists('glpi_configs') || $DB->fieldExists('glpi_configs', 'context')) {
             return false;
@@ -2772,7 +2758,6 @@ class Config extends CommonDBTM {
       if ($older_to_latest) {
          // Try with old config table first : for update process management from < 0.80 to >= 0.80.
          $functions = [
-            $get_prior_to_078_config,
             $get_078_to_084_config,
             $get_085_to_latest_config,
          ];
@@ -2781,7 +2766,6 @@ class Config extends CommonDBTM {
          $functions = [
             $get_085_to_latest_config,
             $get_078_to_084_config,
-            $get_prior_to_078_config,
          ];
       }
 

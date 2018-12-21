@@ -123,7 +123,7 @@ function update080to0801() {
       $entities    = getAllDatasFromTable('glpi_entities');
       $entities[0] = "Root";
 
-      foreach ($entities as $entID => $val) {
+      foreach (array_keys($entities) as $entID) {
          // Non recursive ones
          $query3 = "UPDATE `glpi_slalevels`
                     SET `entities_id` = $entID, `is_recursive` = 0
