@@ -38,8 +38,6 @@
 function update083to0831() {
    global $migration;
 
-   $updateresult = true;
-
    $migration->displayTitle(sprintf(__('Update to %s'), '0.83.1'));
    $migration->setVersion('0.83.1');
 
@@ -57,8 +55,11 @@ function update083to0831() {
    $migration->addField("glpi_configs", "display_count_on_home", "integer", ['value' => 5]);
    $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
 
+   // ************ Keep it at the end **************
+   $migration->displayMessage('Migration of glpi_displaypreferences');
+
    // must always be at the end
    $migration->executeMigration();
 
-   return $updateresult;
+   return true;
 }
