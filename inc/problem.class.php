@@ -891,10 +891,10 @@ class Problem extends CommonITILObject {
          'SELECT' => [
             'status',
             'COUNT'  => '* AS COUNT',
-            'FROM'   => $table,
-            'WHERE'  => getEntitiesRestrictCriteria($table),
-            'GROUP'  => 'status'
-         ]
+         ],
+         'FROM'   => $table,
+         'WHERE'  => getEntitiesRestrictCriteria($table),
+         'GROUP'  => 'status'
       ];
 
       if ($foruser) {
