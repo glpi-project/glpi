@@ -556,10 +556,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          ]
       ])->next();
 
-      if ($row['cpt']) {
-         return $row['cpt'];
-      }
-      return false;
+      return $row['cpt'];
    }
 
 
@@ -581,10 +578,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          ]
       ])->next();
 
-      if ($row['cpt']) {
-         return $row['cpt'];
-      }
-      return false;
+      return $row['cpt'];
    }
 
 
