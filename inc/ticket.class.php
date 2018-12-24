@@ -5570,9 +5570,6 @@ class Ticket extends CommonITILObject {
       }
       $iterator = $DB->request($criteria);
       $numrows = count($iterator);
-
-      $result  = $DB->query($query);
-      $numrows = $DB->numrows($result);
       $number = 0;
 
       if ($_SESSION['glpidisplay_count_on_home'] > 0) {
@@ -5884,9 +5881,9 @@ class Ticket extends CommonITILObject {
 
       $table = self::getTable();
       $criteria = [
-         'SELECT'    => 'glpi_tickets.status',
-         'FIELDS'    => [
-            'COUNT' => new \QueryExpression('DISTINCT ' . $DB->quoteName('glpi_tickets.id') . ' AS COUNT')
+         'SELECT'    => [
+            'glpi_tickets.status',
+            'COUNT DISTINCT' => ["$table.id AS COUNT"],
          ],
          'FROM'      => $table,
          'WHERE'     => getEntitiesRestrictCriteria($table),
