@@ -83,6 +83,7 @@ var libsConfig = {
                     path.resolve(__dirname, 'node_modules/codemirror'),
                     path.resolve(__dirname, 'node_modules/gridstack'),
                     path.resolve(__dirname, 'node_modules/jstree'),
+                    path.resolve(__dirname, 'node_modules/photoswipe'),
                     path.resolve(__dirname, 'node_modules/spectrum-colorpicker'),
                 ],
                 use: ['script-loader'],

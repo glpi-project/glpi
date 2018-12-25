@@ -476,9 +476,9 @@ $CFG_GLPI['javascript'] = [
    ],
    'helpdesk'  => [
       'planning'  => ['fullcalendar', 'colorpicker', 'tinymce'],
-      'ticket'    => ['rateit', 'tinymce'],
-      'problem'   => ['tinymce'],
-      'change'    => ['tinymce'],
+      'ticket'    => ['rateit', 'tinymce', 'photoswipe'],
+      'problem'   => ['tinymce', 'photoswipe'],
+      'change'    => ['tinymce', 'photoswipe'],
       'stat'      => ['charts']
    ],
    'tools'     => [
