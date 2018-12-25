@@ -3812,6 +3812,9 @@ a.copyright {
 
          .displayed_content {
             display: block;
+            figure {
+               width: max-content;
+            }
          }
       }
 
@@ -4043,7 +4046,7 @@ a.copyright {
       border-radius: 3px;
    }
 
-   a:hover .timeline_img_preview img {
+   .timeline_img_preview a:hover  img {
       border: 3px solid black;
    }
 

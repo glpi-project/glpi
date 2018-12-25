@@ -7004,7 +7004,9 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</p>";
 
             echo "<div class='rich_text_container'>";
-            echo Html::setRichTextContent('', $content, '', true);
+            $richtext = Html::setRichTextContent('', $content, '', true);
+            $richtext = Html::replaceImagesByGallery($richtext);
+            echo $richtext;
             echo "</div>";
 
             if (!empty($long_text)) {
@@ -7138,15 +7140,20 @@ abstract class CommonITILObject extends CommonDBTM {
                }
                echo "'/>&nbsp;";
 
-               echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
-                      ."&$foreignKey=".$this->getID()."' target='_blank'>$filename";
-               if (Document::isImage(GLPI_DOC_DIR . '/' . $item_i['filepath'])) {
-                  echo "<div class='timeline_img_preview'>";
-                  echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
-                        ."&$foreignKey=".$this->getID()."&context=timeline'/>";
-                  echo "</div>";
+               $docsrc = $CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
+                      ."&$foreignKey=".$this->getID();
+               echo Html::link($filename, $docsrc, ['target' => '_blank']);
+               $docpath = GLPI_DOC_DIR . '/' . $item_i['filepath'];
+               if (Document::isImage($docpath)) {
+                  $imgsize = getimagesize($docpath);
+                  echo Html::imageGallery([
+                     [
+                        'src' => $docsrc,
+                        'w'   => $imgsize[0],
+                        'h'   => $imgsize[1]
+                     ]
+                  ]);
                }
-               echo "</a>";
             }
             if ($item_i['link']) {
                echo "<a href='{$item_i['link']}' target='_blank'><i class='fa fa-external-link'></i>{$item_i['name']}</a>";
@@ -7257,7 +7264,9 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</div>";
 
       echo "<div class='rich_text_container'>";
-      echo Html::setRichTextContent('', $this->fields['content'], '', true);
+      $richtext = Html::setRichTextContent('', $this->fields['content'], '', true);
+      $richtext = Html::replaceImagesByGallery($richtext);
+      echo $richtext;
       echo "</div>";
 
       echo "</div>"; // h_content ITILContent

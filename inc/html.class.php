@@ -1286,6 +1286,11 @@ class Html {
             echo Html::css('public/lib/codemirror.css');
             Html::requireJs('codemirror');
          }
+
+         if (in_array('photoswipe', $jslibs)) {
+            echo Html::css('public/lib/photoswipe.css');
+            Html::requireJs('photoswipe');
+         }
       }
 
       if (Session::getCurrentInterface() == "helpdesk") {
@@ -4653,6 +4658,164 @@ class Html {
 
 
    /**
+    * Creates a PhotoSwipe image gallery
+    *
+    *
+    * @since 9.5.0
+    *
+    * @param array $imgs  Array of image info
+    *                      - src The public path of img
+    *                      - w   The width of img
+    *                      - h   The height of img
+    * @param array $options
+    * @return string completed gallery
+   **/
+   static function imageGallery($imgs, $options = []) {
+      $p = [
+         'controls' => [
+            'close'        => true,
+            'share'        => true,
+            'fullscreen'   => true,
+            'zoom'         => true,
+         ],
+         'rand'   => mt_rand()
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $out = "<div id='psgallery{$p['rand']}' class='pswp' tabindex='-1'
+         role='dialog' aria-hidden='true'>";
+      $out .= "<div class='pswp__bg'></div>";
+      $out .= "<div class='pswp__scroll-wrap'>";
+      $out .= "<div class='pswp__container'>";
+      $out .= "<div class='pswp__item'></div>";
+      $out .= "<div class='pswp__item'></div>";
+      $out .= "<div class='pswp__item'></div>";
+      $out .= "</div>";
+      $out .= "<div class='pswp__ui pswp__ui--hidden'>";
+      $out .= "<div class='pswp__top-bar'>";
+      $out .= "<div class='pswp__counter'></div>";
+
+      if (isset($p['controls']['close']) && $p['controls']['close']) {
+         $out .= "<button class='pswp__button pswp__button--close' title='".__('Close (Esc)')."'></button>";
+      }
+
+      if (isset($p['controls']['share']) && $p['controls']['share']) {
+         $out .= "<button class='pswp__button pswp__button--share' title='".__('Share')."'></button>";
+      }
+
+      if (isset($p['controls']['fullscreen']) && $p['controls']['fullscreen']) {
+         $out .= "<button class='pswp__button pswp__button--fs' title='".__('Toggle fullscreen')."'></button>";
+      }
+
+      if (isset($p['controls']['zoom']) && $p['controls']['zoom']) {
+         $out .= "<button class='pswp__button pswp__button--zoom' title='".__('Zoom in/out')."'></button>";
+      }
+
+      $out .= "<div class='pswp__preloader'>";
+      $out .= "<div class='pswp__preloader__icn'>";
+      $out .= "<div class='pswp__preloader__cut'>";
+      $out .= "<div class='pswp__preloader__donut'></div>";
+      $out .= "</div></div></div></div>";
+      $out .= "<div class='pswp__share-modal pswp__share-modal--hidden pswp__single-tap'>";
+      $out .= "<div class='pswp__share-tooltip'></div>";
+      $out .= "</div>";
+      $out .= "<button class='pswp__button pswp__button--arrow--left' title='".__('Previous (arrow left)')."'>";
+      $out .= "</button>";
+      $out .= "<button class='pswp__button pswp__button--arrow--right' title='".__('Next (arrow right)')."'>";
+      $out .= "</button>";
+      $out .= "<div class='pswp__caption'>";
+      $out .= "<div class='pswp__caption__center'></div>";
+      $out .= "</div></div></div></div>";
+
+      $out .= "<div class='pswp-img{$p['rand']} timeline_img_preview' itemscope itemtype='http://schema.org/ImageGallery'>";
+      foreach ($imgs as $img) {
+         $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
+         $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
+         $out .= "<img src='{$img['src']}&context=timeline' itemprop='thumbnail'>";
+         $out .= "</a>";
+         $out .= "</figure>";
+      }
+      $out .= "</div>";
+
+      $items_json = json_encode($imgs);
+      $dltext = __('Download');
+      $js = <<<JAVASCRIPT
+      (function($) {
+         var pswp = document.getElementById('psgallery{$p['rand']}');
+
+         $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
+            event.preventDefault();
+
+            var options = {
+                index: $(this).index(),
+                bgOpacity: 0.7,
+                showHideOpacity: true,
+                shareButtons: [
+                  {id:'download', label:'{$dltext}', url:'{{raw_image_url}}', download:true}
+                ]
+            }
+
+            var lightBox = new PhotoSwipe(pswp, PhotoSwipeUI_Default, {$items_json}, options);
+            lightBox.init();
+        });
+      })(jQuery);
+
+JAVASCRIPT;
+
+      $out .= Html::scriptBlock($js);
+
+      return $out;
+   }
+
+   /**
+    * Replace images by gallery component in rich text.
+    *
+    * @since 9.5.0
+    *
+    * @param string  $richtext
+    *
+    * @return string
+    */
+   static function replaceImagesByGallery($richtext) {
+
+      $image_matches = [];
+      preg_match_all(
+         '/<a[^>]*>\s*<img[^>]*src=["\']([^"\']*document\.send\.php\?docid=([0-9]+)(?:&[^"\']+)?)["\'][^>]*>\s*<\/a>/',
+         $richtext,
+         $image_matches,
+         PREG_SET_ORDER
+      );
+      foreach ($image_matches as $image_match) {
+         $img_tag = $image_match[0];
+         $docsrc  = $image_match[1];
+         $docid   = $image_match[2];
+         $document = new Document();
+         if ($document->getFromDB($docid)) {
+            $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
+            if (Document::isImage($docpath)) {
+               $imgsize = getimagesize($docpath);
+               $gallery = Html::imageGallery([
+                  [
+                     'src' => $docsrc,
+                     'w'   => $imgsize[0],
+                     'h'   => $imgsize[1]
+                  ]
+               ]);
+               $richtext = str_replace($img_tag, $gallery, $richtext);
+            }
+         }
+      }
+
+      return $richtext;
+   }
+
+
+   /**
     * Creates an HTML link.
     *
     * @since 0.85
@@ -5944,6 +6107,9 @@ class Html {
             break;
          case 'codemirror':
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/codemirror.js';
+            break;
+         case 'photoswipe':
+            $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
             break;
          default:
             $found = false;

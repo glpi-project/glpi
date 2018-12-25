@@ -33,6 +33,7 @@
         "leaflet.awesome-markers": "^2.0.5",
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.15",
+        "photoswipe": "^4.1.3",
         "prismjs": "^1.17.1",
         "qtip2": "^3.0.3",
         "select2": "^4.0.10",
