@@ -52,7 +52,7 @@ class RuleImportEntity extends Rule {
    **/
    function maxActionsCount() {
       // Unlimited
-      return 4;
+      return 2;
    }
 
    function executeActions($output, $params, array $input = []) {
@@ -159,19 +159,11 @@ class RuleImportEntity extends Rule {
       $actions['entities_id']['type']      = 'dropdown';
       $actions['entities_id']['table']     = 'glpi_entities';
 
-      $actions['locations_id']['name']     = __('Location');
-      $actions['locations_id']['type']     = 'dropdown';
-      $actions['locations_id']['table']    = 'glpi_locations';
-
       $actions['_ignore_import']['name']   = __('To be unaware of import');
       $actions['_ignore_import']['type']   = 'yesonly';
 
       $actions['is_recursive']['name']     = __('Child entities');
       $actions['is_recursive']['type']     = 'yesno';
-
-      $actions['groups_id_tech']['name']     = __('Group in charge of the hardware');
-      $actions['groups_id_tech']['type']     = 'dropdown';
-      $actions['groups_id_tech']['table']    = 'glpi_groups';
 
       return $actions;
    }
