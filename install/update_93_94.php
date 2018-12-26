@@ -388,6 +388,16 @@ function update93to94() {
       }
    }
 
+   /** Delete rule action for fields groups_id / locations_id / groups_id_tech.  */
+   $migration->addPreQuery("DELETE `glpi_ruleactions` 
+                            FROM `glpi_rules`
+                            INNER JOIN `glpi_ruleactions` 
+                            ON `glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
+                            AND `sub_type` = 'RuleImportEntity'
+                            WHERE `glpi_ruleactions`.`field` = 'groups_id'
+                            OR `glpi_ruleactions`.`field` = 'locations_id'
+                            OR `glpi_ruleactions`.`field` = 'groups_id_tech'");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
