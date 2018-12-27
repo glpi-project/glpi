@@ -75,10 +75,12 @@ function update0803to083() {
 
    // Clean ticket validations : already done in 0.80
    $DB->deleteOrDie("glpi_ticketvalidations", [
-         'glpi_ticketvalidations.tickets_id' => new \QuerySubQuery([
-            'SELECT' => "glpi_tickets.id",
-            'FROM'   => "glpi_tickets"
-         ], "NOT IN")
+         'NOT' => [
+            'glpi_ticketvalidations.tickets_id' => new \QuerySubQuery([
+               'SELECT' => "glpi_tickets.id",
+               'FROM'   => "glpi_tickets"
+            ])
+         ]
       ],
       "0.83 clean glpi_ticketvalidations"
    );
@@ -463,10 +465,12 @@ function update0803to083() {
 
    // Clean `glpi_networkports_vlans` datas (`networkports_id` whithout networkports)
    $DB->deleteOrDie("glpi_networkports_vlans", [
-         'networkports_id' => new \QuerySubQuery([
-            'SELECT' => "id",
-            'FROM'   => "glpi_networkports"
-         ], "NOT IN")
+         'NOT' => [
+            'networkports_id' => new \QuerySubQuery([
+               'SELECT' => "id",
+               'FROM'   => "glpi_networkports"
+            ])
+         ]
       ],
       "0.83 clean networkports_vlans datas"
    );
@@ -1086,24 +1090,30 @@ function update0803to083() {
 
    // Clean ticket satisfactions
    $DB->deleteOrDie("glpi_ticketsatisfactions", [
-         'glpi_ticketsatisfactions.tickets_id' => new \QuerySubQuery([
-            'SELECT' => "glpi_tickets.id",
-            'FROM'   => "glpi_tickets"
-         ], "NOT IN")
+         'NOT' => [
+            'glpi_ticketsatisfactions.tickets_id' => new \QuerySubQuery([
+               'SELECT' => "glpi_tickets.id",
+               'FROM'   => "glpi_tickets"
+            ])
+         ]
       ],
       "0.83 clean glpi_ticketsatisfactions"
    );
 
    // Clean unused slalevels
    $DB->deleteOrDie("glpi_slalevels_tickets", [
-         'glpi_slalevels_tickets.tickets_id' => new \QuerySubQuery([
-            'SELECT' => "glpi_tickets.id",
-            'FROM'   => "glpi_tickets"
-         ], "NOT IN"),
-         'glpi_slalevels_tickets.slalevels_id' => new \QuerySubQuery([
-            'SELECT' => "glpi_tickets.slalevels_id",
-            'FROM'   => "glpi_tickets"
-         ], "NOT IN"),
+         'NOT' => [
+               'glpi_slalevels_tickets.tickets_id' => new \QuerySubQuery([
+               'SELECT' => "glpi_tickets.id",
+               'FROM'   => "glpi_tickets"
+            ])
+         ],
+         'NOT' => [
+            'glpi_slalevels_tickets.slalevels_id' => new \QuerySubQuery([
+               'SELECT' => "glpi_tickets.slalevels_id",
+               'FROM'   => "glpi_tickets"
+            ]),
+         ]
       ],
       "0.83 clean glpi_slalevels_tickets"
    );
