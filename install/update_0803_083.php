@@ -1104,7 +1104,7 @@ function update0803to083() {
    // Clean unused slalevels
    $DB->deleteOrDie("glpi_slalevels_tickets", [
          'NOT' => [
-               'glpi_slalevels_tickets.tickets_id' => new \QuerySubQuery([
+            'glpi_slalevels_tickets.tickets_id' => new \QuerySubQuery([
                'SELECT' => "glpi_tickets.id",
                'FROM'   => "glpi_tickets"
             ])

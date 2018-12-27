@@ -1116,7 +1116,7 @@ function update0831to084() {
       $DB->result($result, 0, "existing_auth_server_field");
       $config = $configsIterator->next();
 
-      if ($configs['existing_auth_server_field'] ) {
+      if ($configs['existing_auth_server_field']) {
          //Get dropdown value for existing_auth_server_field
          $ssovariableIterator = $DB->request([
             'SELECT' => "id",
@@ -1449,8 +1449,14 @@ function update0831to084() {
    $migration->addField('glpi_ticketrecurrents', 'end_date', 'datetime');
 
    $migration->migrationOneTable('glpi_ticketrecurrents');
-   foreach (
-      $DB->request('glpi_ticketrecurrents', ['periodicity' => [">=", MONTH_TIMESTAMP]]) as $data) {
+
+   $query = [
+      'FROM'   => "glpi_ticketrecurrents",
+      'WHERE'  => [
+         'periodicity' => [">=", MONTH_TIMESTAMP]
+      ]
+   ];
+   foreach ($DB->request($query) as $data) {
       $periodicity = $data['periodicity'];
       if (is_numeric($periodicity)) {
          if ($periodicity >= 365*DAY_TIMESTAMP) {
@@ -1907,7 +1913,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
       }
 
       if (($setNetworkCard) && ($portInformation['itemtype'] == 'Computer')) {
-            $iterator = $DB->query([
+         $iterator = $DB->query([
             'SELECT'       => [
                "link.id AS link_id",
                "device.designation AS name"
