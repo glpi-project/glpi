@@ -45,11 +45,11 @@ function update080to0801() {
    // Clean duplicates
    $query = [
       'SELECT'    => [
-         'COUNT' => "CPT",
          "tickets_id",
          "type",
          "groups_id"
       ],
+      'COUNT'     => "CPT",
       'FROM'      => "glpi_groups_tickets",
       'GROUPBY'   => ["tickets_id", "type", "groups_id"],
       'HAVING'    => [
