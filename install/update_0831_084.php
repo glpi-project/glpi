@@ -2183,11 +2183,11 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
       $query = [
-         'SELECT DISTINCT' => [
-            new \QueryExpression(
-               "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
-               DBmysql::quoteName("netmask") . ")) AS address"
-            ),
+         'SELECT DISTINCT' => new \QueryExpression(
+            "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
+            DBmysql::quoteName("netmask") . ")) AS address"
+         ),
+         'FIELDS' => [
             "netmask",
             "gateway",
             "entities_id"
