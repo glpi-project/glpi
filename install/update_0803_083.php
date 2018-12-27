@@ -872,7 +872,7 @@ function update0803to083() {
          'WHERE' => [
             'sub_type' => $ruletype
          ],
-         'GROUP BY' => 'sub_type'
+         'GROUPBY' => 'sub_type'
       ];
       if ($data = $DB->request($query)->next()) {
          // Get rule string
@@ -1029,6 +1029,7 @@ function update0803to083() {
                'tickettemplates_id_incident' => $default_ticket_template,
                'tickettemplates_id_demand' => $default_ticket_template
             ],
+            [true],
             "0.83 update default templates used by itil categories"
          );
       }
