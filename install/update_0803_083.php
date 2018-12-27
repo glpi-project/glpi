@@ -1349,10 +1349,7 @@ function update0803to083() {
                                  ];
 
    foreach ($profiles as $profile => $data) {
-      $query  = "INSERT INTO `glpi_profiles`
-                         (`".implode("`, `", array_keys($data))."`)
-                  VALUES ('".implode("', '", $data)."')";
-      $DB->queryOrDie($query, "0.83 create new profile $profile");
+      $DB->insertOrDie("glpi_profiles", $data, "0.83 create new profile $profile");
    }
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'Reminder visibility'));
@@ -1422,26 +1419,37 @@ function update0803to083() {
 
    /// Migrate datas for is_helpdesk_visible : add all helpdesk profiles / drop field is_helpdesk_visible
    if ($DB->fieldExists("glpi_reminders", 'is_helpdesk_visible', false)) {
-      $query = "SELECT `id`
-                FROM `glpi_reminders`
-                WHERE `is_helpdesk_visible` = 1";
+      $query = [
+         'SELECT' => "id",
+         'FROM'   => "glpi_reminders",
+         'WHERE'  => [
+            'is_helpdesk_visible' => 1
+         ]
+      ];
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            // Grab helpdesk profiles
-            $helpdesk_profiles = [];
-            foreach ($DB->request("glpi_profiles",
-                                  "`interface` = 'helpdesk' AND `reminder_public` = 'r'") as $data2) {
-               $helpdesk_profiles[$data2['id']] = $data2['id'];
-            }
-            if (count($helpdesk_profiles)) {
-               while ($data = $DB->fetch_assoc($result)) {
-                  foreach ($helpdesk_profiles as $pid) {
-                     $query = "INSERT INTO `glpi_profiles_reminders`
-                                      (`reminders_id`, `profiles_id`)
-                               VALUES ('".$data['id']."', '$pid');";
-                     $DB->queryOrDie($query, "0.83 migrate data for is_helpdesk_visible drop on glpi_reminders");
-                  }
+      $result = $DB->request($query);
+      if (count($result)) {
+         // Grab helpdesk profiles
+         $helpdesk_profiles = [];
+         $query = [
+            'FROM'   => "glpi_profiles",
+            'WHERE'  => [
+               'interface'       => "helpdesk",
+               'reminder_public' => "r"
+            ]
+         ];
+         foreach ($DB->request($query) as $data2) {
+            $helpdesk_profiles[$data2['id']] = $data2['id'];
+         }
+         if (count($helpdesk_profiles)) {
+            foreach ($result as $data) {
+               foreach ($helpdesk_profiles as $pid) {
+                  $DB->insertOrDie("glpi_profiles_reminders", [
+                        'reminders_id' => $data['id'],
+                        'profiles_id'  => $pid
+                     ],
+                     "0.83 migrate data for is_helpdesk_visible drop on glpi_reminders"
+                  );
                }
             }
          }
@@ -1453,21 +1461,21 @@ function update0803to083() {
 
    // Migrate datas for entities + drop fields : is_private / entities_id / is_recursive
    if ($DB->fieldExists("glpi_reminders", 'is_private', false)) {
+      $query = [
+         'FROM'   => "glpi_reminders",
+         'WHERE'  => [
+            'is_private' => 0
+         ]
+      ];
 
-      $query = "SELECT *
-                FROM `glpi_reminders`
-                WHERE `is_private` = 0";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query = "INSERT INTO `glpi_entities_reminders`
-                                (`reminders_id`, `entities_id`, `is_recursive`)
-                         VALUES ('".$data['id']."', '".$data['entities_id']."',
-                                 '".$data['is_recursive']."');";
-               $DB->queryOrDie($query, "0.83 migrate data for public reminders");
-            }
-         }
+      foreach ($DB->request($query) as $data) {
+         $DB->insertOrDie("glpi_entities_reminders", [
+               'reminders_id' => $data['id'],
+               'entities_id'  => $data['entities_id'],
+               'is_recursive' => $data['is_recursive']
+            ],
+            "0.83 migrate data for public reminders"
+         );
       }
 
       $migration->dropField("glpi_reminders", 'is_private');
@@ -1544,19 +1552,16 @@ function update0803to083() {
 
    /// Migrate datas for entities_id / is_recursive
    if ($DB->fieldExists("glpi_knowbaseitems", 'entities_id', false)) {
-      $query = "SELECT *
-                FROM `glpi_knowbaseitems`";
+      $query = ['FROM' => "glpi_knowbaseitems"];
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query = "INSERT INTO `glpi_entities_knowbaseitems`
-                                (`knowbaseitems_id`, `entities_id`, `is_recursive`)
-                         VALUES ('".$data['id']."', '".$data['entities_id']."',
-                                 '".$data['is_recursive']."');";
-               $DB->queryOrDie($query, "0.83 migrate data for entities on glpi_entities_knowbaseitems");
-            }
-         }
+      foreach ($DB->request($query) as $data) {
+         $DB->insertOrDie("glpi_entities_knowbaseitems", [
+               'knowbaseitems_id'   => $data['id'],
+               'entities_id'        => $data['entities_id'],
+               'is_recursive'       => $data['is_recursive']
+            ],
+            "0.83 migrate data for entities on glpi_entities_knowbaseitems"
+         );
       }
 
       $migration->dropField("glpi_knowbaseitems", 'entities_id');
@@ -1571,64 +1576,89 @@ function update0803to083() {
    $restore_root_entity_value = false;
    // create root entity if not exist with old default values
    if (countElementsInTable('glpi_entitydatas', ['entities_id' => 0]) == 0) {
-      $query = "INSERT INTO `glpi_entitydatas`
-                       (`entities_id`, `entities_id_software`,
-                        `autofill_order_date`, `autofill_delivery_date`, `autofill_buy_date`,
-                        `autofill_use_date`, `autofill_warranty_date`,
-                        `inquest_config`, `inquest_rate`, `inquest_delay`,
-                        `tickettype`, `calendars_id`, `tickettemplates_id`,
-                        `autoclose_delay`, `auto_assign_mode`,
-                        `cartridges_alert_repeat`, `consumables_alert_repeat`,
-                        `use_licenses_alert`, `use_infocoms_alert`, `notclosed_delay`,
-                        `use_contracts_alert`, `use_reservations_alert`)
-                VALUES (0, -10,
-                        0, 0, 0,
-                        0, 0,
-                        1, 0, 0,
-                        1, 0, '$default_ticket_template',
-                        -1, -1,
-                        -1, -1,
-                        -1, -1, -1,
-                        -1, -1)"; // -1 to keep config value - see 1647
-      $DB->queryOrDie($query, "0.83 add entities_id 0 in glpi_entitydatas");
+      $DB->insertOrDie("glpi_entitydatas", [
+            'entities_id'              => 0,
+            'entities_id_software'     => -10,
+            'autofill_order_date'      => 0,
+            'autofill_delivery_date'   => 0,
+            'autofill_buy_date'        => 0,
+            'autofill_use_date'        => 0,
+            'autofill_warranty_date'   => 0,
+            'inquest_config'           => 1,
+            'inquest_rate'             => 0,
+            'inquest_delay'            => 0,
+            'tickettype'               => 1,
+            'calendars_id'             => 0,
+            'tickettemplates_id'       => $default_ticket_template,
+            'autoclose_delay'          => -1,
+            'auto_assign_mode'         => -1,
+            'cartridges_alert_repeat'  => -1,
+            'consumables_alert_repeat' => -1,
+            'use_licenses_alert'       => -1,
+            'use_infocoms_alert'       => -1,
+            'notclosed_delay'          => -1,
+            'use_contracts_alert'      => -1,
+            'use_reservations_alert'   => -1
+         ],
+         "0.83 add entities_id 0 in glpi_entitydatas"
+      );
+
       $restore_root_entity_value = true;
    } else {
-      $query = "UPDATE `glpi_entitydatas`
-                SET `tickettemplates_id` = '$default_ticket_template'
-                WHERE `entities_id` = 0
-                      AND `tickettemplates_id` = -2";
-      $DB->queryOrDie($query, "0.83 update tickettemplates_id for root entity in glpi_entitydatas");
+      $DB->updateOrDie("glpi_entitydatas", [
+            'tickettemplates_id' => $default_ticket_template
+         ], [
+            'entities_id'        => 0,
+            'tickettemplates_id' => -2,
+         ],
+         "0.83 update tickettemplates_id for root entity in glpi_entitydatas"
+      );
 
-      $query = "UPDATE `glpi_entitydatas`
-                SET `entities_id_software` = -10
-                WHERE `entities_id` = 0
-                      AND `entities_id_software` = -2";
-      $DB->queryOrDie($query, "0.83 update entities_id_software for root entity in glpi_entitydatas");
+      $DB->updateOrDie("glpi_entitydatas", [
+            'entities_id_software' => -10
+         ], [
+            'entities_id'           => 0,
+            'entities_id_software'  => -2,
+         ],
+         "0.83 update entities_id_software for root entity in glpi_entitydatas"
+      );
 
-            // For root entity already exists in entitydatas in 0.78
-      $query = "UPDATE `glpi_entitydatas`
-                SET `tickettype` = 1
-                WHERE `entities_id` = 0
-                      AND `tickettype` = 0";
-      $DB->queryOrDie($query, "0.83 update tickettype for root entity in glpi_entitydatas");
+      // For root entity already exists in entitydatas in 0.78
+      $DB->updateOrDie("glpi_entitydatas", [
+            'tickettype' => 1
+         ], [
+            'entities_id'  => 0,
+            'tickettype'   => 0,
+         ],
+         "0.83 update tickettype for root entity in glpi_entitydatas"
+      );
 
-      $query = "UPDATE `glpi_entitydatas`
-                SET `inquest_config` = 1
-                WHERE `entities_id` = 0
-                      AND `inquest_config` = 0";
-      $DB->queryOrDie($query, "0.83 update inquest_config for root entity in glpi_entitydatas ");
+      $DB->updateOrDie("glpi_entitydatas", [
+            'inquest_config' => 1
+         ], [
+            'entities_id'     => 0,
+            'inquest_config'  => 0,
+         ],
+         "0.83 update inquest_config for root entity in glpi_entitydatas"
+      );
 
-      $query = "UPDATE `glpi_entitydatas`
-                SET `inquest_rate` = 0
-                WHERE `entities_id` = 0
-                      AND `inquest_rate` = '-1'";
-      $DB->queryOrDie($query, "0.83 update inquest_rate for root entity in glpi_entitydatas ");
+      $DB->updateOrDie("glpi_entitydatas", [
+            'inquest_rate' => 0
+         ], [
+            'entities_id'  => 0,
+            'inquest_rate' => -1,
+         ],
+         "0.83 update inquest_rate for root entity in glpi_entitydatas"
+      );
 
-      $query = "UPDATE `glpi_entitydatas`
-                SET `inquest_delay` = 0
-                WHERE `entities_id` = 0
-                      AND `inquest_delay` = '-1'";
-      $DB->queryOrDie($query, "0.83 update inquest_delay for root entity in glpi_entitydatas ");
+      $DB->updateOrDie("glpi_entitydatas", [
+            'inquest_delay' => 0
+         ], [
+            'entities_id'     => 0,
+            'inquest_delay'   => -1,
+         ],
+         "0.83 update inquest_delay for root entity in glpi_entitydatas"
+      );
    }
 
    // migration to new values for inherit parent (0 => -2)
@@ -1636,11 +1666,14 @@ function update0803to083() {
 
    foreach ($field0 as $field_0) {
       if ($DB->fieldExists("glpi_entitydatas", $field_0, false)) {
-         $query = "UPDATE `glpi_entitydatas`
-                   SET `$field_0` = '-2'
-                   WHERE `$field_0` = '0'
-                         AND `entities_id` > 0";
-         $DB->queryOrDie($query, "0.83 new value for inherit parent 0 in glpi_entitydatas");
+         $DB->updateOrDie("glpi_entitydatas", [
+               $field_0 => -2
+            ], [
+               $field_0       => 0,
+               'entities_id'  => [">", 0]
+            ],
+            "0.83 new value for inherit parent 0 in glpi_entitydatas"
+         );
       }
    }
 
@@ -1662,10 +1695,13 @@ function update0803to083() {
 
    foreach ($fieldparent as $field_parent) {
       if ($DB->fieldExists("glpi_entitydatas", $field_parent, false)) {
-         $query = "UPDATE `glpi_entitydatas`
-                   SET `$field_parent` = '-2'
-                   WHERE `$field_parent` = '-1'";
-         $DB->queryOrDie($query, "0.83 new value for inherit parent -1 in glpi_entitydatas");
+         $DB->updateOrDie("glpi_entitydatas", [
+               $field_parent => -2
+            ], [
+               $field_parent => -1
+            ],
+            "0.83 new value for inherit parent -1 in glpi_entitydatas"
+         );
       }
    }
    // new default value
@@ -1685,70 +1721,65 @@ function update0803to083() {
                         'consumables_alert_repeat', 'notclosed_delay', 'use_contracts_alert',
                         'use_infocoms_alert', 'use_licenses_alert', 'use_reservations_alert'];
 
-   $query = "SELECT *
-             FROM `glpi_configs`";
+   $query = ['FROM' => "glpi_configs"];
 
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result) > 0) {
-         if ($data = $DB->fetch_assoc($result)) {
+   if ($data = $DB->request($query)->next()) {
+      foreach ($fieldconfig as $field_config) {
+         if ($DB->fieldExists("glpi_entitydatas", $field_config, false)
+             && $DB->fieldExists("glpi_configs", $field_config, false)) {
+            // value of general config
+            $DB->updateOrDie("glpi_entitydatas", [
+                  $field_config => $data['fieldconfig']
+               ], [
+                  $field_config => -1
+               ],
+               "0.83 migrate data from config to glpi_entitydatas"
+            );
 
-            foreach ($fieldconfig as $field_config) {
-               if ($DB->fieldExists("glpi_entitydatas", $field_config, false)
-                   && $DB->fieldExists("glpi_configs", $field_config, false)) {
-                  // value of general config
-                  $query = "UPDATE `glpi_entitydatas`
-                            SET `$field_config` = '".$data[$field_config]."'
-                            WHERE `$field_config` = -1";
-                  $DB->queryOrDie($query, "0.83 migrate data from config to glpi_entitydatas");
+            $migration->changeField("glpi_entitydatas", "$field_config", "$field_config",
+                                    "int(11) NOT NULL DEFAULT '-2'");
 
-                  $migration->changeField("glpi_entitydatas", "$field_config", "$field_config",
-                                          "int(11) NOT NULL DEFAULT '-2'");
-
-                  $migration->dropField("glpi_configs", $field_config);
-               }
-            }
-            if ($DB->fieldExists("glpi_entitydatas", "auto_assign_mode", false)) {
-               // new value for never
-               $query = "UPDATE `glpi_entitydatas`
-                         SET `auto_assign_mode` = -10
-                         WHERE `auto_assign_mode` = 0";
-               $DB->queryOrDie($query, "0.83 change value Never in glpi_entitydatas for auto_assign_mode");
-            }
+            $migration->dropField("glpi_configs", $field_config);
          }
       }
-
+      if ($DB->fieldExists("glpi_entitydatas", "auto_assign_mode", false)) {
+         // new value for never
+         $DB->updateOrDie("glpi_entitydatas", [
+               'auto_assign_mode' => 10
+            ], [
+               'auto_assign_mode' => 0
+            ],
+            "0.83 change value Never in glpi_entitydatas for auto_assign_mode"
+         );
+      }
    }
 
    // value of config in each entity
    $fieldconfig = ['default_contract_alert', 'default_infocom_alert', 'default_alarm_threshold'];
 
-   $query = "SELECT *
-             FROM `glpi_configs`";
+   if ($data = $DB->request($query)->next()) {
+      foreach ($fieldconfig as $field_config) {
+         if ($DB->fieldExists("glpi_configs", $field_config, false)
+             && !$DB->fieldExists("glpi_entitydatas", $field_config, false)) {
+            // add config fields in entitydatas
+            $migration->addField("glpi_entitydatas", $field_config, 'integer',
+                                  ['update' => $data[$field_config],
+                                        'value'  => ($field_config == "default_alarm_threshold"
+                                                      ? 10 : 0)]);
 
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result) > 0) {
-         if ($data = $DB->fetch_assoc($result)) {
-            foreach ($fieldconfig as $field_config) {
-               if ($DB->fieldExists("glpi_configs", $field_config, false)
-                   && !$DB->fieldExists("glpi_entitydatas", $field_config, false)) {
-                  // add config fields in entitydatas
-                  $migration-> addField("glpi_entitydatas", $field_config, 'integer',
-                                        ['update' => $data[$field_config],
-                                              'value'  => ($field_config == "default_alarm_threshold"
-                                                            ? 10 : 0)]);
-
-                  $migration->dropField("glpi_configs", $field_config);
-               }
-            }
+            $migration->dropField("glpi_configs", $field_config);
          }
       }
    }
 
    if ($restore_root_entity_value) {
-      $query = "UPDATE `glpi_entitydatas`
-                SET `calendars_id` = 0
-                WHERE `entities_id` = 0;";
-      $DB->queryOrDie($query, "0.83 restore root entity default value");
+      $DB->updateOrDie("glpi_entitydatas", [
+            'calendars_id' => 0
+         ], [
+            'entities_id' => 0
+         ],
+         "0.83 restore root entity default value"
+      );
    }
 
    $migration->addKey('glpi_computervirtualmachines', 'computers_id');
@@ -1773,10 +1804,13 @@ function update0803to083() {
 
    foreach ($itemtype_tables as $table => $field) {
       foreach ($renametables as $key => $val) {
-            $query = "UPDATE `$table`
-                      SET `$field` = '".$val."'
-                      WHERE `$field` = '".$key."'";
-            $DB->queryOrDie($query, "0.83 update itemtype of table $table for $val");
+         $DB->updateOrDie($table, [
+               $field => $val,
+            ], [
+               $field => $key
+            ],
+            "0.83 update itemtype of table $table for $val"
+         );
       }
    }
 
@@ -1784,11 +1818,13 @@ function update0803to083() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
    // Change is_recursive index
-   $query = ("UPDATE `glpi_displaypreferences`
-              SET `num` = '86'
-              WHERE `itemtype` = 'Group'
-                    AND `num` = '6'");
-   $DB->query($query);
+   $DB->update("glpi_displaypreferences", [
+         'num' => 86
+      ], [
+         'itemtype'  => 'Group',
+         'num'       => 6
+      ]
+   );
 
    $migration->updateDisplayPrefs($ADDTODISPLAYPREF);
 
