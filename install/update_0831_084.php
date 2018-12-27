@@ -2180,7 +2180,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $query = [
          'SELECT DISTINCT' => [
             new \QueryExpression(
-               "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . "&INET_ATON(" .
+               "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
                DBmysql::quoteName("netmask") . ")) AS address"
             ),
             "netmask",
