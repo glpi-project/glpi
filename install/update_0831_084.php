@@ -277,7 +277,6 @@ function update0831to084() {
                }
             }
 
-            $DB->queryOrDie($query, "0.84 migrate $field of glpi_profiles");
             $DB->updateOrDie("glpi_profiles",
                [$field => addslashes(exportArrayToDB($newtab))],
                ['id' => $data['id']],
