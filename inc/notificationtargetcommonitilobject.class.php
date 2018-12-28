@@ -157,8 +157,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          ]
       ]] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
       $criteria['FROM'] = $userlinktable;
-      $criteria['FIELDS'] = array_merge(
-         $criteria['FIELDS'], [
+      $criteria['SELECT DISTINCT'] = array_merge(
+         $criteria['SELECT DISTINCT'], [
             "$userlinktable.use_notification AS notif",
             "$userlinktable.alternative_email AS altemail"
          ]

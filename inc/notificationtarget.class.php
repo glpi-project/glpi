@@ -979,7 +979,7 @@ class NotificationTarget extends CommonDBChild {
       global $DB;
 
       $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
-      $criteria['FIELDS'][] = Profile_User::getTable() . '.entities_id AS entity';
+      $criteria['SELECT DISTINCT'][] = Profile_User::getTable() . '.entities_id AS entity';
       $criteria['FROM'] = User::getTable();
       $criteria['WHERE'][Profile_User::getTable() . '.profiles_id'] = $profiles_id;
 
