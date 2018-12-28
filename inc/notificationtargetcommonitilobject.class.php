@@ -393,8 +393,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $fkfield           = $this->obj->getForeignKeyField();
 
          $iterator = $DB->request([
-            'SELECT DISTINCT' => 'glpi_suppliers.email AS email',
-            'FIELDS'          => 'glpi_suppliers.name AS name',
+            'SELECT DISTINCT' => [
+            	'glpi_suppliers.email AS email',
+            	'glpi_suppliers.name AS name'
+         	],
             'FROM'            => $supplierlinktable,
             'LEFT JOIN'       => [
                'glpi_suppliers'  => [

@@ -744,8 +744,10 @@ class NotificationTarget extends CommonDBChild {
     */
    final public function getDistinctUserCriteria() {
       return [
-         'SELECT DISTINCT' => User::getTable() . '.id AS users_id',
-         'FIELDS'          => [User::getTable() . '.language AS language']
+         'SELECT DISTINCT' => [
+         	User::getTable() . '.id AS users_id',
+         	User::getTable() . '.language AS language'
+         ]
       ];
    }
 

@@ -2785,8 +2785,10 @@ class Dropdown {
 
             case KnowbaseItem::getType():
                $criteria = [
-                  'SELECT DISTINCT' => "$table.*",
-                  'FIELDS'          => $addselect,
+                  'SELECT DISTINCT' => [
+                     "$table.*",
+                     $addselect,
+                  ],
                   'FROM'            => $table
                ];
                if (count($ljoin)) {
@@ -3050,8 +3052,8 @@ class Dropdown {
       }
 
       $criteria = [
-         'SELECT DISTINCT' => "$table.id",
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            "$table.id",
             "$table.name AS name",
             "$table.serial AS serial",
             "$table.otherserial AS otherserial",

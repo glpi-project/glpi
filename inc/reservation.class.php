@@ -916,8 +916,10 @@ class Reservation extends CommonDBChild {
          $fin   = $date." 23:59:59";
 
          $iterator = $DB->request([
-            'SELECT DISTINCT' => 'glpi_reservationitems.id',
-            'FROM'            => 'glpi_reservationitems',
+            'SELECT DISTINCT' => [
+            	'glpi_reservationitems.id',
+            	'glpi_reservationitems'
+            ],
             'INNER JOIN'      => [
                'glpi_reservations'  => [
                   'ON' => [

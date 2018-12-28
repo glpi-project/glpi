@@ -895,8 +895,8 @@ class Item_Ticket extends CommonDBRelation{
             // Software
             if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                $iterator = $DB->request([
-                  'SELECT DISTINCT' => 'glpi_softwareversions.name AS version',
-                  'FIELDS'          => [
+                  'SELECT DISTINCT' => [
+                  	'glpi_softwareversions.name AS version',
                      'glpi_softwares.name AS name',
                      'glpi_softwares.id'
                   ],

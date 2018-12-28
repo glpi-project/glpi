@@ -536,8 +536,8 @@ class Transfer extends CommonDBTM {
                   $devicetable     = getTableForItemType($devicetype);
                   $fk              = getForeignKeyFieldForTable($devicetable);
                   $iterator = $DB->request([
-                     'SELECT DISTINCT' => "$itemdevicetable.$fk",
-                     'FIELDS'          => [
+                     'SELECT DISTINCT' => [
+                     	"$itemdevicetable.$fk",
                         "$devicetable.entities_id",
                         "$devicetable.is_recursive"
                      ],

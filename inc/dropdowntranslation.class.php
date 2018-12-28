@@ -746,8 +746,10 @@ class DropdownTranslation extends CommonDBChild {
       $tab = [];
       if (self::isDropdownTranslationActive()) {
          $iterator = $DB->request([
-            'SELECT DISTINCT' => 'itemtype',
-            'FIELDS'          => 'field',
+            'SELECT DISTINCT' => [
+            	'itemtype',
+            	'field'
+            ],
             'FROM'            => self::getTable(),
             'WHERE'           => ['language' => $language]
          ]);

@@ -238,8 +238,7 @@ class Change_Ticket extends CommonDBRelation{
       $rand    = mt_rand();
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkID',
-         'FIELDS'          => 'glpi_tickets.*',
+         'SELECT DISTINCT' => ['glpi_changes_tickets.id AS linkID', 'glpi_tickets.*'],
          'FROM'            => 'glpi_changes_tickets',
          'LEFT JOIN'       => [
             'glpi_tickets' => [
@@ -355,8 +354,7 @@ class Change_Ticket extends CommonDBRelation{
       $rand    = mt_rand();
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_changes_tickets.id AS linkID',
-         'FIELDS'          => 'glpi_changes.*',
+         'SELECT DISTINCT' => ['glpi_changes_tickets.id AS linkID', 'glpi_changes.*'],
          'FROM'            => 'glpi_changes_tickets',
          'LEFT JOIN'       => [
             'glpi_changes' => [

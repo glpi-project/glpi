@@ -162,7 +162,7 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
 
-      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
+      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar', 'baz']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
 
       $it = $this->it->execute('foo', ['FIELDS' => 'bar']);
@@ -200,12 +200,12 @@ class DBmysqlIterator extends DbTestCase {
 
       $this->exception(
          function() {
-            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar', 'baz']]);
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
             $this->string($it->getSql())->isIdenticalTo('SELECT `bar`, `baz` FROM `foo`');
          }
       )
          ->isInstanceOf('RuntimeException')
-         ->message->contains('DISTINCT selection can only take one field!');
+         ->message->contains('Can\'t use "SELECT DISTINCT | DISTINCT FIELDS" and "SELECT | FIELDS" in the same query');
    }
 
 
@@ -871,8 +871,10 @@ class DBmysqlIterator extends DbTestCase {
 
       $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
       $it = $this->it->execute([
-         'SELECT DISTINCT' => 'users_id',
-         'FIELDS'          => ['type'],
+         'SELECT DISTINCT' => [
+         	'users_id',
+         	'type'
+      	],
          'FROM'            => $union
       ]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);

@@ -450,8 +450,8 @@ class Profile_User extends CommonDBRelation {
       $putable = Profile_User::getTable();
       $etable = Entity::getTable();
       $iterator = $DB->request([
-         'SELECT DISTINCT' => "$utable.*",
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+         	"$utable.*",
             "$putable.entities_id AS entity",
             "$putable.id AS linkID",
             "$putable.is_dynamic",
@@ -622,8 +622,10 @@ class Profile_User extends CommonDBRelation {
       global $DB;
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'entities_id',
-         'FIELDS'          => 'is_recursive',
+         'SELECT DISTINCT' => [
+         	'entities_id',
+         	'is_recursive'
+         ],
          'FROM'            => 'glpi_profiles_users',
          'WHERE'           => ['users_id' => $user_ID]
       ]);
@@ -674,8 +676,10 @@ class Profile_User extends CommonDBRelation {
       $ptable = Profile::getTable();
       $prtable = ProfileRight::getTable();
       $iterator = $DB->request([
-         'SELECT DISTINCT' => "$putable.entities_id",
-         'FIELDS'          => ["$putable.is_recursive"],
+         'SELECT DISTINCT' => [
+         	"$putable.entities_id",
+         	"$putable.is_recursive"
+         ],
          'FROM'            => $putable,
          'INNER JOIN'      => [
             $ptable  => [

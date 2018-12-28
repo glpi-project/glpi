@@ -119,8 +119,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       if (count($items) == 0) {
          //Select all the differents software
          $criteria = [
-            'SELECT DISTINCT' => 'glpi_softwares.name',
-            'FIELDS'          => [
+            'SELECT DISTINCT' => [
+            	'glpi_softwares.name',
                'glpi_manufacturers.name AS manufacturer',
                'glpi_softwares.manufacturers_id AS manufacturers_id',
                'glpi_softwares.entities_id AS entities_id',

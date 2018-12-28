@@ -4771,8 +4771,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS users_id',
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            'glpi_users.id AS users_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
@@ -4847,8 +4847,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS user_id',
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            'glpi_users.id AS user_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
@@ -4915,8 +4915,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_groups.id',
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            'glpi_groups.id',
             'glpi_groups.completename'
          ],
          'FROM'            => $ctable,
@@ -5284,8 +5284,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS users_id',
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            'glpi_users.id AS users_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
@@ -5356,8 +5356,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS users_id',
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            'glpi_users.id AS users_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
@@ -5446,8 +5446,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_suppliers.id AS suppliers_id_assign',
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            'glpi_suppliers.id AS suppliers_id_assign',
             'glpi_suppliers.name AS name'
          ],
          'FROM'            => $ctable,
@@ -5513,8 +5513,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_groups.id',
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            'glpi_groups.id',
             'glpi_groups.completename'
          ],
          'FROM'            => $ctable,
@@ -6943,8 +6943,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'users_id',
-         'FIELDS'          => ['type'],
+         'SELECT DISTINCT' => [
+            'users_id',
+            'type'
+         ],
          'FROM'            => $union
       ]);
 
@@ -7037,8 +7039,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $table = self::getTable();
       $criteria = [
-         'SELECT DISTINCT' => "$table.*",
-         'FIELDS'          => [
+         'SELECT DISTINCT' => [
+            "$table.*",
             'glpi_itilcategories.completename AS catname'
          ],
          'FROM'            => $table,

@@ -150,7 +150,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
          // Check field, orderby, limit, start in criterias
          $field    = "";
-         $dfield    = "";
+         $distinct = false;
          $orderby  = null;
          $limit    = 0;
          $start    = 0;
@@ -162,15 +162,14 @@ class DBmysqlIterator implements Iterator, Countable {
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                switch ((string)$key) {
+                  case 'SELECT DISTINCT' :
+                  case 'DISTINCT FIELDS' :
+                     $distinct = true;
+                     $dfield = $val;
+
                   case 'SELECT' :
                   case 'FIELDS' :
                      $field = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'SELECT DISTINCT' :
-                  case 'DISTINCT FIELDS' :
-                     $dfield = $val;
                      unset($crit[$key]);
                      break;
 
@@ -257,23 +256,35 @@ class DBmysqlIterator implements Iterator, Countable {
          $this->sql = 'SELECT ';
          $first = true;
 
-         //check DISTINCT is not an array
-         if (is_array($dfield)) {
-            Toolbox::logWarning('DISTINCT selection can only take one field!');
-            if (!is_array($field)) {
-               $field = $dfield;
-            } else {
-               $field = array_merge($field, $dfield);
+         if ($distinct) {
+            // Backward compability check for SELECT + SELECT DISTINCT
+            if ($dfield != $field){
+               Toolbox::logWarning('Can\'t use "SELECT DISTINCT | DISTINCT FIELDS" and "SELECT | FIELDS" in the same query');
+
+               // Merge $field and $dfield while keeping the correct order ($dfield first)
+               if (is_array($field) && is_array($dfield)) {
+                  $field = array_merge($dfield, $field);
+               } else if (is_array($field) && !is_array($dfield)) {
+                  array_unshift($field, $dfield);
+               } else if (!is_array($field) && is_array($dfield)) {
+                  $dfield[] = $field;
+                  $field = $dfield;
+               } else { // both are strings
+                  $field = [$dfield, $field];
+               }
+
+               unset($dfield);
             }
-            $dfield = '';
          }
 
          // SELECT field list
          if ($count) {
             $this->sql .= 'COUNT(';
-            if (!empty($dfield)) {
-               $this->sql .= "DISTINCT " . DBmysql::quoteName($dfield);
-            } else if (!empty($field) && !is_array($field)) {
+            if ($distinct) {
+               $this->sql .= 'DISTINCT ';
+            }
+
+            if (!empty($field) && !is_array($field)) {
                $this->sql .= "" . DBmysql::quoteName($field);
             } else {
                $this->sql .= "*";
@@ -282,12 +293,11 @@ class DBmysqlIterator implements Iterator, Countable {
             $first = false;
          }
          if (!$count || $count && is_array($field)) {
-            if (empty($field) && empty($dfield)) {
+            if (empty($field)) {
                $this->sql .= '*';
             }
-            if (!empty($dfield)) {
-               $this->sql .= 'DISTINCT ' . DBmysql::quoteName($dfield);
-               $first = false;
+            if ($distinct) {
+               $this->sql .= ' DISTINCT ';
             }
             if (!empty($field)) {
                if (!is_array($field)) {
