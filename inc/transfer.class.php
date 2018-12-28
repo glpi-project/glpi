@@ -358,7 +358,8 @@ class Transfer extends CommonDBTM {
 
             if (count($this->needtobe_transfer['Computer'])) {
                $iterator = $DB->request([
-                  'SELECT DISTINCT' => 'items_id',
+                  'SELECT'          => 'items_id',
+                  'DISTINCT'        => true,
                   'FROM'            => 'glpi_computers_items',
                   'WHERE'           => [
                      'itemtype'     => $itemtype,
@@ -536,11 +537,12 @@ class Transfer extends CommonDBTM {
                   $devicetable     = getTableForItemType($devicetype);
                   $fk              = getForeignKeyFieldForTable($devicetable);
                   $iterator = $DB->request([
-                     'SELECT DISTINCT' => "$itemdevicetable.$fk",
-                     'FIELDS'          => [
+                     'SELECT'          => [
+                        "$itemdevicetable.$fk",
                         "$devicetable.entities_id",
                         "$devicetable.is_recursive"
                      ],
+                     'DISTINCT'        => true,
                      'FROM'            => $itemdevicetable,
                      'LEFT JOIN'       => [
                         $devicetable   => [
@@ -3243,7 +3245,8 @@ class Transfer extends CommonDBTM {
                         // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
                         $canbetransfer = true;
                         $type_iterator = $DB->request([
-                           'SELECT DISTINCT' => 'itemtype',
+                           'SELECT'          => 'itemtype',
+                           'DISTINCT'        => true,
                            'FROM'            => $itemdevicetable,
                            'WHERE'           => [$fk => $item_ID]
                         ]);

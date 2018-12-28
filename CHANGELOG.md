@@ -27,6 +27,7 @@ The present file will list all changes made to the project; according to the
 - Deprecate `getCommonSelect()` and `getCommonLeftJoin()` in `Change`, `Problem` and `Ticket` classes
 - Deprecate `DB::query()` and `DB::queryOrDie()` to disallow executing raw queries (iterator querying must be used)
 - Deprecate raw SQL condition in `Migration::addField()`
+- Deprecate 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
 
 #### Removed
 

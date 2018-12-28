@@ -726,8 +726,11 @@ class Software extends CommonDBTM {
       global $CFG_GLPI, $DB;
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_softwares.id',
-         'FIELDS'          => ['glpi_softwares.name'],
+         'SELECT'          => [
+            'glpi_softwares.id',
+            'glpi_softwares.name'
+         ],
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_softwares',
          'INNER JOIN'      => [
             'glpi_softwarelicenses' => [

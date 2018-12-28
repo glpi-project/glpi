@@ -1692,7 +1692,8 @@ class RuleCollection extends CommonDBTM {
       $input = [];
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_rulecriterias.criteria',
+         'SELECT'          => 'glpi_rulecriterias.criteria',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_rulecriterias',
          'INNER JOIN'      => [
             'glpi_rules'   => [
@@ -1915,7 +1916,8 @@ class RuleCollection extends CommonDBTM {
       $params = [];
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_rulecriterias.criteria',
+         'SELECT'          => 'glpi_rulecriterias.criteria',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_rulecriterias',
          'INNER JOIN'      => [
             'glpi_rules'   => [

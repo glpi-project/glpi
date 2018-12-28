@@ -166,7 +166,8 @@ class CronTask extends CommonDBTM{
 
       $types= [];
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_crontasks'
       ]);
       while ($data = $iterator->next()) {

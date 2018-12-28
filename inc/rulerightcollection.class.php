@@ -181,7 +181,8 @@ class RuleRightCollection extends RuleCollection {
 
       $params = [];
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'value',
+         'SELECT'          => 'value',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_rulerightparameters',
          'LEFT JOIN'       => [
             'glpi_rulecriterias' => [

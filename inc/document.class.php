@@ -1434,7 +1434,8 @@ class Document extends CommonDBTM {
          'FROM'   => 'glpi_documentcategories',
          'WHERE'  => [
             'id' => new QuerySubQuery([
-               'SELECT DISTINCT' => 'documentcategories_id',
+               'SELECT'          => 'documentcategories_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_documents',
                'WHERE'           => $subwhere
             ])
