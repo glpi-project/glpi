@@ -842,7 +842,8 @@ class Item_Ticket extends CommonDBRelation{
                      $already_add[$itemtype] = [];
                   }
                   $criteria = [
-                     'SELECT DISTINCT' => "$itemtable.*",
+                     'SELECT'          => "$itemtable.*",
+                     'DISTINCT'        => true,
                      'FROM'            => 'glpi_computers_items',
                      'LEFT JOIN'       => [
                         $itemtable  => [
@@ -894,11 +895,12 @@ class Item_Ticket extends CommonDBRelation{
             // Software
             if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                $iterator = $DB->request([
-                  'SELECT DISTINCT' => 'glpi_softwareversions.name AS version',
-                  'FIELDS'          => [
+                  'SELECT'          => [
+                     'glpi_softwareversions.name AS version',
                      'glpi_softwares.name AS name',
                      'glpi_softwares.id'
                   ],
+                  'DISTINCT'        => true,
                   'FROM'            => 'glpi_computers_softwareversions',
                   'LEFT JOIN'       => [
                      'glpi_softwareversions'  => [

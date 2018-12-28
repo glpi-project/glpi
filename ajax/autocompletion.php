@@ -72,7 +72,8 @@ if (isset($_GET['user_restrict']) && $_GET['user_restrict']>0) {
 }
 
 $iterator = $DB->request([
-   'SELECT DISTINCT' => $_GET['field'],
+   'SELECT'          => $_GET['field'],
+   'DISTINCT'        => true,
    'FROM'            => $table,
    'WHERE'           => [
       [$_GET['field'] => ['LIKE', $_GET['term'] . '%']],

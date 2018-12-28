@@ -969,7 +969,8 @@ class Reminder extends CommonDBVisible {
 
       $table = self::getTable();
       $criteria = [
-         'SELECT DISTINCT' => "$table.*",
+         'SELECT'          => "$table.*",
+         'DISTINCT'        => true,
          'FROM'            => $table,
          'WHERE'           => $WHERE,
          'ORDER'           => 'begin'
@@ -1161,7 +1162,8 @@ class Reminder extends CommonDBVisible {
 
          $criteria = array_merge_recursive(
             [
-               'SELECT DISTINCT' => 'glpi_reminders.*',
+               'SELECT'          => 'glpi_reminders.*',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_reminders',
                'WHERE'           => $visibility_criteria,
                'ORDERBY'         => 'name'

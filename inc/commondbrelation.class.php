@@ -1713,7 +1713,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     */
    protected static function getDistinctTypesParams($items_id, $extra_where = []) {
       $params = [
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => static::getTable(),
          'WHERE'           => [
             static::$items_id_1  => $items_id,

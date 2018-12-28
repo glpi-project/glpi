@@ -767,7 +767,8 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'user_name',
+         'SELECT'          => 'user_name',
+         'DISTINCT'        => true,
          'FROM'            => self::getTable(),
          'WHERE'  => [
                'items_id'  => $items_id,
@@ -975,7 +976,8 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'linked_action',
+         'SELECT'          => 'linked_action',
+         'DISTINCT'        => true,
          'FROM'            => self::getTable(),
          'WHERE'  => [
                'items_id'  => $items_id,

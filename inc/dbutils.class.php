@@ -347,7 +347,8 @@ final class DbUtils {
          }
       }
       $condition['COUNT'] = 'cpt';
-      $condition['SELECT DISTINCT'] = $field;
+      $condition['FIELDS'] = $field;
+      $condition['DISTINCT'] = true;
 
       return $this->countElementsInTable($table, $condition);
    }

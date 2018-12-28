@@ -61,7 +61,8 @@ class ProfileRight extends CommonDBChild {
           || count($GLPI_CACHE->get('all_possible_rights')) == 0) {
 
          $iterator = $DB->request([
-            'SELECT DISTINCT' => 'name',
+            'SELECT'          => 'name',
+            'DISTINCT'        => true,
             'FROM'            => self::getTable()
          ]);
          while ($right = $iterator->next()) {
