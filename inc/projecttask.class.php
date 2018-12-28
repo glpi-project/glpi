@@ -1438,7 +1438,8 @@ class ProjectTask extends CommonDBChild {
              && count($_SESSION["glpigroups"])) {
             $ADDWHERE['glpi_projecttaskteams.itemtype'] = ['Group'];
             $ADDWHERE['glpi_projecttaskteams.items_id'] = new \QuerySubQuery([
-               'SELECT DISTINCT' => 'groups_id',
+               'SELECT'          => 'groups_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_groups',
                'WHERE'           => [
                   'groups_id' => $_SESSION['glpigroups'],
@@ -1466,7 +1467,8 @@ class ProjectTask extends CommonDBChild {
          $ADDWHERE = [
             'glpi_projecttaskteams.itemtype' => 'User',
             'glpi_projecttaskteams.items_id' => new \QuerySubQuery([
-               'SELECT DISTINCT' => 'glpi_profiles_users.users_id',
+               'SELECT'          => 'glpi_profiles_users.users_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_profiles',
                'LEFT JOIN'       => [
                   'glpi_profiles_users'   => [

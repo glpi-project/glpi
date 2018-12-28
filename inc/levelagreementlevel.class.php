@@ -334,7 +334,8 @@ abstract class LevelAgreementLevel extends RuleTicket {
       $result = [];
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'execution_time',
+         'SELECT'          => 'execution_time',
+         'DISTINCT'        => true,
          'FROM'            => static::getTable(),
          'WHERE'           => [
             static::$fkparent => $las_id

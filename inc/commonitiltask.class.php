@@ -941,7 +941,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (!$options['genical']
              && count($_SESSION["glpigroups"])) {
             $ADDWHERE[$item->getTable() . '.users_id_tech'] = new QuerySubQuery([
-               'SELECT DISTINCT' => 'users_id',
+               'SELECT'          => 'users_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_groups_users',
                'INNER JOIN'      => [
                   'glpi_groups'  => [
@@ -966,7 +967,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          if ($who_group > 0) {
             $ADDWHERE[$item->getTable() . '.users_id_tech'] = new QuerySubQuery([
-               'SELECT DISTINCT' => 'users_id',
+               'SELECT'          => 'users_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_groups_users',
                'WHERE'           => [
                   'groups_id' => $who_group,
@@ -983,7 +985,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (!count($ADDWHERE)) {
          $ADDWHERE = [
             $item->getTable() . '.users_id_tech' => new \QuerySubQuery([
-               'SELECT DISTINCT' => 'glpi_profiles_users.users_id',
+               'SELECT'          => 'glpi_profiles_users.users_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_profiles',
                'LEFT JOIN'       => [
                   'glpi_profiles_users'   => [

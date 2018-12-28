@@ -4771,12 +4771,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS users_id',
-         'FIELDS'          => [
+         'SELECT'          => [
+            'glpi_users.id AS users_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
          ],
+         'DISTINCT' => true,
          'FROM'            => $ctable,
          'LEFT JOIN'       => [
             $linktable  => [
@@ -4847,12 +4848,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS user_id',
-         'FIELDS'          => [
+         'SELECT'          => [
+            'glpi_users.id AS user_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
          ],
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'LEFT JOIN'       => [
             'glpi_users'   => [
@@ -4915,10 +4917,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_groups.id',
-         'FIELDS'          => [
+         'SELECT' => [
+            'glpi_groups.id',
             'glpi_groups.completename'
          ],
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'LEFT JOIN'       => [
             $linktable  => [
@@ -4994,9 +4997,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => "glpi_users.$field",
+         'SELECT'          => "glpi_users.$field",
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
-         'INNER JOIN'       => [
+         'INNER JOIN'      => [
             $linktable  => [
                'ON' => [
                   $linktable  => $this->getForeignKeyField(),
@@ -5060,7 +5064,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'priority',
+         'SELECT'          => 'priority',
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'WHERE'           => [
             "$ctable.is_deleted" => 0
@@ -5102,7 +5107,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'urgency',
+         'SELECT'          => 'urgency',
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'WHERE'           => [
             "$ctable.is_deleted" => 0
@@ -5145,7 +5151,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'impact',
+         'SELECT'          => 'impact',
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'WHERE'           => [
             "$ctable.is_deleted" => 0
@@ -5188,7 +5195,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'requesttypes_id',
+         'SELECT'          => 'requesttypes_id',
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'WHERE'           => [
             "$ctable.is_deleted" => 0
@@ -5230,7 +5238,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'solutiontypes_id',
+         'SELECT'          => 'solutiontypes_id',
+         'DISTINCT'        => true,
          'FROM'            => ITILSolution::getTable(),
          'INNER JOIN'      => [
             $ctable   => [
@@ -5284,12 +5293,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS users_id',
-         'FIELDS'          => [
+         'SELECT'          => [
+            'glpi_users.id AS users_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
          ],
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'LEFT JOIN'       => [
             $linktable  => [
@@ -5356,12 +5366,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_users.id AS users_id',
-         'FIELDS'          => [
+         'SELECT'          => [
+            'glpi_users.id AS users_id',
             'glpi_users.name AS name',
             'glpi_users.realname AS realname',
             'glpi_users.firstname AS firstname'
          ],
+         'DISTINCT' => true,
          'FROM'            => $ctable,
          'LEFT JOIN'       => [
             $linktable  => [
@@ -5446,10 +5457,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_suppliers.id AS suppliers_id_assign',
-         'FIELDS'          => [
+         'SELECT'          => [
+            'glpi_suppliers.id AS suppliers_id_assign',
             'glpi_suppliers.name AS name'
          ],
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'LEFT JOIN'       => [
             $linktable        => [
@@ -5513,10 +5525,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $ctable = $this->getTable();
       $criteria = [
-         'SELECT DISTINCT' => 'glpi_groups.id',
-         'FIELDS'          => [
+         'SELECT' => [
+            'glpi_groups.id',
             'glpi_groups.completename'
          ],
+         'DISTINCT'        => true,
          'FROM'            => $ctable,
          'LEFT JOIN'       => [
             $linktable  => [
@@ -6943,8 +6956,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'users_id',
-         'FIELDS'          => ['type'],
+         'SELECT'          => [
+            'users_id',
+            'type'
+         ],
+         'DISTINCT'        => true,
          'FROM'            => $union
       ]);
 
@@ -7037,10 +7053,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $table = self::getTable();
       $criteria = [
-         'SELECT DISTINCT' => "$table.*",
-         'FIELDS'          => [
+         'SELECT'          => [
+            "$table.*",
             'glpi_itilcategories.completename AS catname'
          ],
+         'DISTINCT'        => true,
          'FROM'            => $table,
          'LEFT JOIN'       => [
             $gtable  => [

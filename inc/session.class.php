@@ -472,8 +472,11 @@ class Session {
       }
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_profiles.id',
-         'FIELDS'          => ['glpi_profiles.name'],
+         'SELECT'          => [
+            'glpi_profiles.id',
+            'glpi_profiles.name'
+         ],
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_profiles_users',
          'INNER JOIN'      => [
             'glpi_profiles'   => [

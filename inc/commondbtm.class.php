@@ -2203,7 +2203,8 @@ class CommonDBTM extends CommonGLPI {
                         $typefield = $rel[$tablename][1]; // itemtype...
 
                         $iterator = $DB->request([
-                           'SELECT DISTINCT' => $typefield,
+                           'SELECT'          => $typefield,
+                           'DISTINCT'        => true,
                            'FROM'            => $tablename,
                            'WHERE'           => [$field => $ID]
                         ]);

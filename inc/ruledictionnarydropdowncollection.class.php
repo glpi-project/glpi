@@ -146,13 +146,14 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
       // Need to give manufacturer from item table
       $criteria =[
-         'SELECT DISTINCT' => 'glpi_manufacturers.id AS idmanu',
-         'FIELDS'          => [
+         'SELECT'          => [
+            'glpi_manufacturers.id AS idmanu',
             'glpi_manufacturers.name AS manufacturer',
             $this->item_table . '.id',
             $this->item_table . '.name AS name',
             $this->item_table . '.comment'
          ],
+         'DISTINCT'        => true,
          'FROM'            => $this->item_table,
          'INNER JOIN'      => [
             $model_table         => [
