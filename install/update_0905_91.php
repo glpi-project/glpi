@@ -714,17 +714,19 @@ function update0905to91() {
    $ADDTODISPLAYPREF['SoftwareLicense'] = [3, 10, 162, 5];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $displaypreferencesIterator = $DB->request([
-         'SELECT DISTINCT' => "users_id",
-         'FROM'            => "glpi_displaypreferences",
-         'WHERE'           => ['itemtype' => $type]
+         'SELECT'    => "users_id",
+         'DISTINCT'  => true,
+         'FROM'      => "glpi_displaypreferences",
+         'WHERE'     => ['itemtype' => $type]
       ]);
 
       if (count($displaypreferencesIterator)) {
          while ($data = $displaypreferencesIterator->next()) {
             $rank = $DB->request([
-               'SELECT DISTINCT' => ['MAX' => "rank AS max_rank"],
-               'FROM'            => "glpi_displaypreferences",
-               'WHERE'           => [
+               'SELECT'    => ['MAX' => "rank AS max_rank"],
+               'DISTINCT'  => true,
+               'FROM'      => "glpi_displaypreferences",
+               'WHERE'     => [
                   'users_id' => $data['users_id'],
                   'itemtype' => $type
                ]

@@ -801,7 +801,8 @@ class Migration {
       if (count($toadd)) {
          foreach ($toadd as $type => $tab) {
             $iterator = $DB->request([
-               'SELECT DISTINCT' => 'users_id',
+               'SELECT'          => 'users_id',
+               'DISTINCT'        => true,
                'FROM'            => 'glpi_displaypreferences',
                'WHERE'           => ['itemtype' => $type]
             ]);

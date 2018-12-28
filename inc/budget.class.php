@@ -311,7 +311,8 @@ class Budget extends CommonDropdown{
       }
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_infocoms',
          'WHERE'           => [
             'budgets_id'   => $budgets_id,

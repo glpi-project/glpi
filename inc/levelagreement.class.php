@@ -529,7 +529,8 @@ abstract class LevelAgreement extends CommonDBChild {
       $canedit = self::canUpdate();
 
       $rules_id_list = iterator_to_array($DB->request([
-         'SELECT DISTINCT' => 'rules_id',
+         'SELECT'          => 'rules_id',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_ruleactions',
          'WHERE'           => [
             'field' => $fk,

@@ -161,10 +161,10 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testFields() {
-      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar']);
+      $it = $this->it->execute('foo', ['FIELDS' => 'bar', 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
 
-      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
+      $it = $this->it->execute('foo', ['FIELDS' => ['bar', 'baz'], 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
 
       $it = $this->it->execute('foo', ['FIELDS' => 'bar']);
@@ -200,14 +200,51 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS cpt FROM `foo`');
 
+      // Backward compability tests
       $this->exception(
          function() {
             $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar', 'baz']]);
-            $this->string($it->getSql())->isIdenticalTo('SELECT `bar`, `baz` FROM `foo`');
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
          }
       )
          ->isInstanceOf('RuntimeException')
-         ->message->contains('DISTINCT selection can only take one field!');
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar'], 'FIELDS' => ['baz']]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => ['baz']]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => ['bar'], 'FIELDS' => 'baz']);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
+
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => 'baz']);
+            $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar`, `baz` FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
    }
 
 
@@ -260,7 +297,7 @@ class DBmysqlIterator extends DbTestCase {
       $it = $this->it->execute('foo', ['COUNT' => 'cpt']);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt FROM `foo`');
 
-      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
+      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT' => 'bar', 'DISTINCT' => true]);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
 
       $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
@@ -283,6 +320,16 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = $this->it->execute('foo', ['FIELDS' => ['foo.bar', 'COUNT' => ['foo.baz', 'foo.qux']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.`bar`, COUNT(`foo`.`baz`), COUNT(`foo`.`qux`) FROM `foo`');
+
+      // Backward compability tests
+      $this->exception(
+         function() {
+            $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
+            $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('"SELECT DISTINCT" and "DISTINCT FIELDS" are depreciated.');
    }
 
    public function testCountDistinct() {
@@ -806,8 +853,9 @@ class DBmysqlIterator extends DbTestCase {
       $union = new \QueryUnion($union_crit, false, 'theunion');
       $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
       $crit = [
-         'SELECT DISTINCT' => 'theunion.field',
-         'FROM'            => $union,
+         'SELECT'    => 'theunion.field',
+         'DISTINCT'  => true,
+         'FROM'      => $union,
       ];
       $it = $this->it->execute($crit);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
@@ -816,8 +864,9 @@ class DBmysqlIterator extends DbTestCase {
       $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
       $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $crit = [
-         'SELECT DISTINCT' => 'theunion.field',
-         'FROM'            => $union,
+         'SELECT'    => 'theunion.field',
+         'DISTINCT'  => true,
+         'FROM'      => $union,
       ];
       $it = $this->it->execute($crit);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
@@ -888,8 +937,11 @@ class DBmysqlIterator extends DbTestCase {
 
       $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
       $it = $this->it->execute([
-         'SELECT DISTINCT' => 'users_id',
-         'FIELDS'          => ['type'],
+         'FIELDS'          => [
+            'users_id',
+            'type'
+         ],
+         'DISTINCT'        => true,
          'FROM'            => $union
       ]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);

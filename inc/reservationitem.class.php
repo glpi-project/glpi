@@ -449,7 +449,8 @@ class ReservationItem extends CommonDBChild {
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_reservationitems',
          'WHERE'           => [
             'is_active' => 1

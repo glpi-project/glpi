@@ -1338,7 +1338,8 @@ class User extends CommonDBTM {
 
       // Search in DB the ldap_field we need to search for in LDAP
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'ldap_field',
+         'SELECT'          => 'ldap_field',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_groups',
          'WHERE'           => ['NOT' => ['ldap_field' => '']],
          'ORDER'           => 'ldap_field'
@@ -3357,7 +3358,8 @@ class User extends CommonDBTM {
       global $DB;
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_groups_users.groups_id',
+         'SELECT'          => 'glpi_groups_users.groups_id',
+         'DISTINCT'        => true,
          'FROM'            => 'glpi_groups_users',
          'INNER JOIN'      => [
             'glpi_groups'  => [
@@ -3668,7 +3670,8 @@ class User extends CommonDBTM {
       if ($count) {
          $criteria['SELECT'] = ['COUNT DISTINCT' => 'glpi_users.id AS CPT'];
       } else {
-         $criteria['SELECT DISTINCT'] = 'glpi_users.*';
+         $criteria['SELECT'] = 'glpi_users.*';
+         $criteria['DISTINCT'] = true;
       }
 
       if ($joinprofile) {

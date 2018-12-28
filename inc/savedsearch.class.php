@@ -1102,7 +1102,8 @@ class SavedSearch extends CommonDBTM {
 
       $types= [];
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'itemtype',
+         'SELECT'          => 'itemtype',
+         'DISTINCT'        => true,
          'FROM'            => static::getTable()
       ]);
       while ($data = $iterator->next()) {

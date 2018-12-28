@@ -105,9 +105,10 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          $categories = [];
 
          $criteria = [
-            'SELECT DISTINCT' => 'glpi_knowbaseitems.knowbaseitemcategories_id',
-            'FROM'            => 'glpi_knowbaseitems',
-            'LEFT JOIN'       => [
+            'SELECT'    => 'glpi_knowbaseitems.knowbaseitemcategories_id',
+            'DISTINCT'  => true,
+            'FROM'      => 'glpi_knowbaseitems',
+            'LEFT JOIN' => [
                'glpi_knowbaseitemcategories', [
                   'ON' => [
                      'glpi_knowbaseitemcategories' => 'id',
@@ -137,13 +138,14 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          }
 
          $criteria = [
-            'SELECT DISTINCT' => 'glpi_knowbaseitemcategories.*',
-            'FROM'            => 'glpi_knowbaseitemcategories',
-            'WHERE'           => [
+            'SELECT'    => 'glpi_knowbaseitemcategories.*',
+            'DISTINCT'  => true,
+            'FROM'      => 'glpi_knowbaseitemcategories',
+            'WHERE'     => [
                'id'                          => $categories,
                'knowbaseitemcategories_id'   => $params['knowbaseitemcategories_id']
             ] + $where,
-            'ORDERBY'         => 'name ASC'
+            'ORDERBY'   => 'name ASC'
          ];
       } else {
          if (!Session::haveRight("knowbase", READ)) {

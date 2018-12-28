@@ -390,14 +390,15 @@ class Group_User extends CommonDBRelation{
 
       // All group members
       $iterator = $DB->request([
-         'SELECT DISTINCT' => 'glpi_users.id',
          'SELECT'       => [
+            'glpi_users.id',
             'glpi_groups_users.id AS linkID',
             'glpi_groups_users.groups_id',
             'glpi_groups_users.is_dynamic AS is_dynamic',
             'glpi_groups_users.is_manager AS is_manager',
             'glpi_groups_users.is_userdelegate AS is_userdelegate'
          ],
+         'DISTINCT'     => true,
          'FROM'         => self::getTable(),
          'INNER JOIN'   => [
             User::getTable()           => [

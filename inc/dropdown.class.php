@@ -610,7 +610,8 @@ class Dropdown {
       }
 
       $iterator = $DB->request([
-         'SELECT DISTINCT' => $p['field'],
+         'SELECT'          => $p['field'],
+         'DISTINCT'        => true,
          'FROM'            => getTableForItemType($itemtype_ref)
       ]);
 
@@ -2777,7 +2778,8 @@ class Dropdown {
 
             case "Profile" :
                $criteria = [
-                  'SELECT DISTINCT' => "$table.*",
+                  'SELECT'          => "$table.*",
+                  'DISTINCT'        => true,
                   'FROM'            => $table,
                   'LEFT JOIN'       => [
                      'glpi_profilerights' => [
@@ -2792,8 +2794,11 @@ class Dropdown {
 
             case KnowbaseItem::getType():
                $criteria = [
-                  'SELECT DISTINCT' => "$table.*",
-                  'FIELDS'          => $addselect,
+                  'SELECT'          => [
+                     "$table.*",
+                     $addselect
+                  ],
+                  'DISTINCT'        => true,
                   'FROM'            => $table
                ];
                if (count($ljoin)) {
@@ -3057,13 +3062,14 @@ class Dropdown {
       }
 
       $criteria = [
-         'SELECT DISTINCT' => "$table.id",
-         'FIELDS'          => [
+         'SELECT'          => [
+            "$table.id",
             "$table.name AS name",
             "$table.serial AS serial",
             "$table.otherserial AS otherserial",
             "$table.entities_id AS entities_id"
          ],
+         'DISTINCT'        => true,
          'FROM'            => $table,
          'WHERE'           => $where,
          'ORDERBY'         => ['entities_id', 'name ASC'],
