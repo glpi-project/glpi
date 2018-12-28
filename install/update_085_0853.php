@@ -74,7 +74,7 @@ function update085to0853() {
          'FROM'   => "glpi_tickets",
          'WHERE'  => [
             'NOT' => [
-            	'itemtype' => null
+               'itemtype' => null
             ],
             'itemtype' => ["<>", ""],
             'items_id' => ["!=", 0]
