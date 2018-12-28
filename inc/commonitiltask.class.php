@@ -665,6 +665,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'forcegroupby'       => true,
          'splititems'         => true,
          'massiveaction'      => false,
+         'htmltext'           => true,
          'joinparams'         => [
             'jointype'           => 'child'
          ]
