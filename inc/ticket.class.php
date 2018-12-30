@@ -4129,9 +4129,11 @@ class Ticket extends CommonITILObject {
                " . ($tt->isMandatoryField('content') ? " required='required'" : '') .">".
                 $content."</textarea></div>";
 
-         Html::file(['editor_id' => $content_id,
-                          'showtitle' => false,
-                          'multiple' => true]);
+         if (!$tt->isHiddenField('_documents_id')) {
+            Html::file(['editor_id' => $content_id,
+                             'showtitle' => false,
+                             'multiple' => true]);
+         }
 
          echo "</td></tr>";
       }
