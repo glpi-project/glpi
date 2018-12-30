@@ -1183,6 +1183,7 @@ class Html {
       echo Html::css('css/jstree-glpi.css');
       echo Html::css('lib/jqueryplugins/select2/css/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
+      echo Html::css('/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.min.css');
       echo Html::css('lib/font-awesome/css/all.css');
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
