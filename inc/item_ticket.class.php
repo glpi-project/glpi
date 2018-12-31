@@ -913,13 +913,13 @@ class Item_Ticket extends CommonDBRelation{
                            'glpi_softwareversions' => 'softwares_id',
                            'glpi_softwares'        => 'id'
                         ]
-                     ],
-                     'WHERE'        => [
-                        'glpi_computers_softwareversions.computers_id'   => $already_add['Computer'],
-                        'glpi_softwares.is_helpdesk_visible'   => 1
-                     ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                     'ORDERBY'      => 'glpi_softwares.name'
-                  ]
+                     ]
+                  ],
+                  'WHERE'        => [
+                     'glpi_computers_softwareversions.computers_id'   => $already_add['Computer'],
+                     'glpi_softwares.is_helpdesk_visible'   => 1
+                  ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
+                  'ORDERBY'      => 'glpi_softwares.name'
                ]);
 
                $devices = [];
