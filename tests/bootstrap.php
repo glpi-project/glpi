@@ -492,12 +492,8 @@ function loadDataset() {
             'begin_date'   => '2018-12-29',
             'end_date'     => '2019-01-06'
          ]
-      ], 'Calendar_Holiday'   => [
-         [
-            'calendars_id' => 'Default',
-            'holidays_id'  => 'X-Mas'
-         ]
       ]
+
    ];
 
    // To bypass various right checks

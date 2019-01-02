@@ -42,7 +42,7 @@ class Calendar extends DbTestCase {
       $calendar = new \Calendar;
 
       // get Default calendar
-      $calendar->getFromDB(1);
+      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
 
       // ## test future dates
       $end_date = $calendar->ComputeEndDate("2018-11-19 10:00:00", 7 * DAY_TIMESTAMP, 0, true);
@@ -67,8 +67,16 @@ class Calendar extends DbTestCase {
    public function testIsHoliday() {
       $calendar = new \Calendar;
 
+      $holidays = new \Calendar_Holiday();
+      $this->integer(
+         (int)$holidays->add([
+            'calendars_id' => getItemByTypeName('Calendar', 'Default', true),
+            'holidays_id'  => getItemByTypeName('Holiday', 'X-Mas', true)
+         ])
+      )->isGreaterThan(0);
+
       // get Default calendar
-      $calendar->getFromDB(1);
+      $this->boolean($calendar->getFromDB(getItemByTypeName('Calendar', 'Default', true)))->isTrue();
 
       $this->boolean(
          $calendar->isHoliday('2018-01-01')
