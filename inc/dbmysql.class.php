@@ -1116,6 +1116,52 @@ class DBmysql {
       return $res;
    }
 
+   /**
+    * Truncate table in the database
+    *
+    * @since 10.0.0
+    *
+    * @param string $table  Table name
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function truncate($table) {
+      $result = $this->rawQuery("TRUNCATE $table");
+      return $result;
+   }
+
+   /**
+    * Truncate table in the database and die
+    * (optionnaly with a message) if it fails
+    *
+    * @since 10.0.0
+    *
+    * @param string $table   Table name
+    * @param string $message Explanation of query (default '')
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   function truncateOrDie($table, $message = '') {
+      $update = $this->buildDelete($table, $where);
+      $res = $this->rawQuery("TRUNCATE $table");
+      if (!$res) {
+         //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+         $message = sprintf(
+            __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+            $message,
+            $update,
+            $this->error()
+         );
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
+         } else {
+            echo $message . "\n";
+            die(1);
+         }
+
+      }
+      return $res;
+   }
 
    /**
     * Get table schema

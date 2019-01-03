@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Changes
+- Added `DB::truncate()` to replace raw SQL queries
 
 #### Deprecated
 
