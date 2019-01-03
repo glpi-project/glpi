@@ -436,7 +436,7 @@ class Migration extends \GLPITestCase {
          ->exists();
    }
 
-      public function testAddRight() {
+   public function testAddRight() {
       global $DB;
 
       $DB->delete('glpi_profilerights', [
