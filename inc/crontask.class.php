@@ -429,6 +429,7 @@ class CronTask extends CommonDBTM{
     * @return boolean
    **/
    function showForm($ID, $options = []) {
+      global $CFG_GLPI;
 
       if (!Config::canView() || !$this->getFromDB($ID)) {
          return false;
@@ -575,7 +576,11 @@ class CronTask extends CommonDBTM{
          }
       }
 
-      if ($launch) {
+      if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
+         echo "<div class='warning'>".
+              __('Maintenance mode enabled, running tasks is disabled').
+              "</div>";
+      } else if ($launch) {
          echo "&nbsp;";
          Html::showSimpleForm(static::getFormURL(), ['execute' => $this->fields['name']],
                               __('Execute'));
@@ -780,6 +785,7 @@ class CronTask extends CommonDBTM{
 
       // No cron in maintenance mode
       if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
+         Toolbox::logInFile('cron', __('Maintenance mode enabled, running tasks is disabled')."\n");
          return false;
       }
 
