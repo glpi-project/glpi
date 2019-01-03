@@ -1005,7 +1005,7 @@ class Migration {
             $where['OR'][] = [
                'AND' => [
                   'name'   => $reqright,
-                  new QueryExpression("rights & $reqvalue = $reqvalue")
+                  new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
                ]
             ];
          }
