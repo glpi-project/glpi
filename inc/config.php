@@ -141,7 +141,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    // Check maintenance mode
-   if (isset($CFG_GLPI["maintenance_mode"]) && $CFG_GLPI["maintenance_mode"]) {
+   if (isset($CFG_GLPI["maintenance_mode"])
+       && $CFG_GLPI["maintenance_mode"]
+       && !isset($dont_check_maintenance_mode)) {
       if (isset($_GET['skipMaintenance']) && $_GET['skipMaintenance']) {
          $_SESSION["glpiskipMaintenance"] = 1;
       }

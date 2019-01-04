@@ -35,7 +35,8 @@ if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', dirname(__DIR__));
 }
 
-$_GET["donotcheckversion"] = true;
+$_GET["donotcheckversion"]   = true;
+$dont_check_maintenance_mode = true;
 
 //std cache, with DB connection
 include_once GLPI_ROOT . "/inc/db.function.php";
