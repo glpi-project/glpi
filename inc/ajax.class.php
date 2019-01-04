@@ -734,6 +734,11 @@ class Ajax {
          $out .= ",{";
          $first = true;
          foreach ($parameters as $key => $val) {
+            // prevent xss attacks
+            if (!preg_match('/^[a-zA-Z_$][0-9a-zA-Z_$]*$/', $key)) {
+               continue;
+            }
+
             if ($first) {
                $first = false;
             } else {
