@@ -2077,7 +2077,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             new \QueryExpression("LOWER(" . DBmysql::quoteName('name') . ") AS name"),
             "comment"
          ],
-         'DISTINCT'  => true
+         'DISTINCT'  => true,
          'FROM'      => "glpi_domains"
       ];
       foreach ($DB->request($query) as $domain) {
