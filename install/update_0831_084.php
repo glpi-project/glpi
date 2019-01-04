@@ -2073,11 +2073,12 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
 
       // Then, populate it from domains (beware that "domains" can be FQDNs and Windows workgroups)
       $query = [
-         'SELECT DISTINCT' => [
+         'SELECT'    => [
             new \QueryExpression("LOWER(" . DBmysql::quoteName('name') . ") AS name"),
             "comment"
          ],
-         'FROM' => "glpi_domains"
+         'DISTINCT'  => true
+         'FROM'      => "glpi_domains"
       ];
       foreach ($DB->request($query) as $domain) {
          $domainName = $domain['name'];
@@ -2183,17 +2184,18 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
       $query = [
-         'SELECT DISTINCT' => new \QueryExpression(
-            "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
-            DBmysql::quoteName("netmask") . ")) AS address"
-         ),
-         'FIELDS' => [
+         'SELECT'    => [
+            new \QueryExpression(
+               "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
+               DBmysql::quoteName("netmask") . ")) AS address"
+            ),
             "netmask",
             "gateway",
             "entities_id"
          ],
-         'FROM' => "origin_glpi_networkports",
-         'ORDER' => "gateway DESC"
+         'DISTINCT'  => true,
+         'FROM'      => "origin_glpi_networkports",
+         'ORDER'     => "gateway DESC"
       ];
       $address = new IPAddress();
       $netmask = new IPNetmask();
