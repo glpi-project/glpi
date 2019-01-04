@@ -524,7 +524,7 @@ class KnowbaseItem extends CommonDBVisible {
 
          // public faq
          if (!Session::haveRight(self::$rightname, READ)) {
-            $where['OR']['glpi_knowbaseitems.is_faq'] = 1;
+            $where['AND']['glpi_knowbaseitems.is_faq'] = 1;
          }
       } else if ($CFG_GLPI["use_public_faq"]) {
          $where = [
