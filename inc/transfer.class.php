@@ -967,7 +967,7 @@ class Transfer extends CommonDBTM {
                      'WHERE'     => [
                         'suppliers_id' => ['>', 0],
                         'itemtype'     => $itemtype,
-                        'items_id'     => $this->needtobe_transfer($itemtype)
+                        'items_id'     => $this->needtobe_transfer[$itemtype]
                      ]
                   ]);
 
@@ -2296,7 +2296,7 @@ class Transfer extends CommonDBTM {
          ]
       ];
 
-      if ($link_item->maybeRecursive()) {
+      if ($link_item->maybeRecursive() && count($this->noneedtobe_transfer[$link_type])) {
          $criteria['WHERE']['NOT'] = ['items_id' => $this->noneedtobe_transfer[$link_type]];
       }
 
