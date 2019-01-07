@@ -360,14 +360,24 @@ class ProjectTask extends CommonDBChild {
    static function getAllTicketsForProject($ID) {
       global $DB;
 
+      $iterator = $DB->request([
+         'FROM'         => 'glpi_projecttasks_tickets',
+         'INNER JOIN'   => [
+            'glpi_projecttasks'  => [
+               'ON' => [
+                  'glpi_projecttasks_tickets'   => 'projects_id',
+                  'glpi_projecttasks'           => 'id'
+               ]
+            ]
+         ],
+         'FIELDS' =>  'tickets_id',
+         'WHERE'        => [
+            'glpi_projecttasks_tickets.projects_id'   => $ID
+         ]
+      ]);
+
       $tasks = [];
-      foreach ($DB->request(['glpi_projecttasks_tickets', 'glpi_projecttasks'],
-                            ["`glpi_projecttasks`.`projects_id`"
-                                          => $ID,
-                                  "`glpi_projecttasks_tickets`.`projecttasks_id`"
-                                          => "`glpi_projecttasks`.`id`",
-                                  'FIELDS' =>  "tickets_id" ])
-                        as $data) {
+      while ($data = $iterator->next()) {
          $tasks[] = $data['tickets_id'];
       }
       return $tasks;
