@@ -254,7 +254,7 @@ function update0831to084() {
             $DB->updateOrDie('glpi_ruleactions', [
                   'value' => $new
                ], [
-                  'field'     => $fields,
+                  'field'     => $field,
                   'value'     => $old,
                   'rules_id'  => explode(",", $rules)
                ],
@@ -1113,16 +1113,15 @@ function update0831to084() {
          'FROM'   => "glpi_configs"
       ]);
 
-      $DB->result($result, 0, "existing_auth_server_field");
       $config = $configsIterator->next();
 
-      if ($configs['existing_auth_server_field']) {
+      if ($config['existing_auth_server_field']) {
          //Get dropdown value for existing_auth_server_field
          $ssovariableIterator = $DB->request([
             'SELECT' => "id",
             'FROM' => "glpi_ssovariables",
             'WHERE' => [
-               'name' => $existing_auth_server_field
+               'name' => $config['existing_auth_server_field']
             ]
          ]);
          //Update config
@@ -2244,7 +2243,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   'WHERE'  => [
                      new \QueryExpression(
                         "INET_NTOA(INET_ATON(". DBmysql::quoteName("ip") . ")&INET_ATON(".
-                        DBmysql::quoteName("netmask") . ")) = " . DBmysql::quoteValue($addess)
+                        DBmysql::quoteName("netmask") . ")) = " . DBmysql::quoteValue($address)
                      ),
                      'netmask'      => $netmask,
                      'gateway'      => $gateway,
