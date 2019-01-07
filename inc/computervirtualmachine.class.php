@@ -483,9 +483,16 @@ class ComputerVirtualMachine extends CommonDBChild {
       ]);
 
       //Virtual machine found, return ID
-      if (count($iterator)) {
+      if (count($iterator) == 1) {
          $result = $iterator->next();
          return $result['id'];
+      } else if (count($iterator) > 1) {
+         Toolbox::logWarning(
+            sprintf(
+               'findVirtualMachine expects to get one result, %1$s found!',
+               count($iterator)
+            )
+         );
       }
 
       return false;
