@@ -485,10 +485,15 @@ abstract class CommonITILCost extends CommonDBChild {
 
       echo "<div class='center'>";
 
+      $items_ids = $ID;
+      if ($forproject) {
+         $alltickets = ProjectTask::getAllTicketsForProject($ID);
+         $items_ids = (count($alltickets) ? $alltickets : 0);
+      }
       $iterator = $DB->request([
          'FROM'   => static::getTable(),
          'WHERE'  => [
-            static::$items_id   => ($forproject) ? ProjectTask::getAllTicketsForProject($ID) : $ID
+            static::$items_id   => $items_ids
          ],
          'ORDER'  => 'begin_date'
       ]);
