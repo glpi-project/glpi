@@ -436,4 +436,60 @@ class Migration extends \GLPITestCase {
          ->exists();
    }
 
+   public function testAddRight() {
+      global $DB;
+
+      $DB->delete('glpi_profilerights', [
+         'name' => [
+            'testright1', 'testright2', 'testright3', 'testright4'
+         ]
+      ]);
+      //Test adding a READ right when profile has READ and UPDATE config right (Default)
+      $this->migration->addRight('testright1', READ);
+      //Test adding a READ right when profile has UPDATE group right
+      $this->migration->addRight('testright2', READ, ['group' => UPDATE]);
+      //Test adding an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
+      $this->migration->addRight('testright3', UPDATE, [
+         'group'  => READ | UPDATE,
+         'entity' => CREATE
+      ]);
+      //Test adding a READ right when profile with no requirements
+      $this->migration->addRight('testright4', READ, []);
+
+      $right1 = $DB->request([
+         'FROM' => 'glpi_profilerights',
+         'WHERE'  => [
+            'name'   => 'testright1',
+            'rights' => READ
+         ]
+      ]);
+      $this->integer(count($right1))->isEqualTo(1);
+
+      $right1 = $DB->request([
+         'FROM' => 'glpi_profilerights',
+         'WHERE'  => [
+            'name'   => 'testright2',
+            'rights' => READ
+         ]
+      ]);
+      $this->integer(count($right1))->isEqualTo(2);
+
+      $right1 = $DB->request([
+         'FROM' => 'glpi_profilerights',
+         'WHERE'  => [
+            'name'   => 'testright3',
+            'rights' => UPDATE
+         ]
+      ]);
+      $this->integer(count($right1))->isEqualTo(1);
+
+      $right1 = $DB->request([
+         'FROM' => 'glpi_profilerights',
+         'WHERE'  => [
+            'name'   => 'testright4',
+            'rights' => READ
+         ]
+      ]);
+      $this->integer(count($right1))->isEqualTo(8);
+   }
 }

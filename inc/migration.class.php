@@ -979,42 +979,66 @@ class Migration {
    }
 
    /**
-    * Add new right
-    * Give full rights to profiles having config right
+    * Add new right to profiles that match rights requirements
+    *    Default is to give rights to profiles with READ and UPDATE rights on config
     *
     * @param string  $name   Right name
     * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
+    * @param array   $requiredrights Array of right name => value
+    *                   A profile must have these rights in order to get the new right.
+    *                   This array can be empty to add the right to every profile.
+    *                   Default is ['config' => READ | UPDATE].
     *
     * @return void
     */
-   public function addRight($name, $rights = ALLSTANDARDRIGHT) {
+   public function addRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE]) {
       global $DB;
 
       $count = countElementsInTable(
          'glpi_profilerights',
          ['name' => $name]
       );
+
       if ($count == 0) {
-         //new right for certificate
-         //give full rights to profiles having config right
-         foreach ($DB->request("glpi_profilerights", ['name' => 'config']) as $profrights) {
-            if ($profrights['rights'] && (READ + UPDATE)) {
-               $rightValue = $rights;
+         $where = [];
+         foreach ($requiredrights as $reqright => $reqvalue) {
+            $where['OR'][] = [
+               'AND' => [
+                  'name'   => $reqright,
+                  new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
+               ]
+            ];
+         }
+
+         $prof_iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_profiles'
+         ]);
+
+         while ($profile = $prof_iterator->next()) {
+            if (empty($requiredrights)) {
+               $reqmet = true;
             } else {
-               $rightValue = 0;
+               $iterator = $DB->request([
+                  'SELECT' => [
+                     'name',
+                     'rights'
+                  ],
+                  'FROM'   => 'glpi_profilerights',
+                  'WHERE'  => $where + ['profiles_id' => $profile['id']]
+               ]);
+
+               $reqmet = (count($iterator) == count($requiredrights));
             }
+
             $DB->insertOrDie(
                'glpi_profilerights', [
                   'id'           => null,
-                  'profiles_id'  => $profrights['profiles_id'],
+                  'profiles_id'  => $profile['id'],
                   'name'         => $name,
-                  'rights'       => $rightValue
+                  'rights'       => $reqmet ? $rights : 0
                ],
-               sprintf(
-                  '%1$s add right for %2$s',
-                  $this->version,
-                  $name
-               )
+               sprintf('%1$s add right for %2$s', $this->version, $name)
             );
          }
 
