@@ -440,7 +440,6 @@ class Change extends CommonITILObject {
          'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'comments'           => true,
-         'nosort'             => true,
          'nosearch'           => true,
          'additionalfields'   => ['itemtype'],
          'joinparams'         => [
