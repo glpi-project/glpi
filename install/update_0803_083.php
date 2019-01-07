@@ -282,12 +282,6 @@ function update0803to083() {
                     'task.planning.status##',];
       $to = ['task.user##', 'task.begin##', 'task.end##', 'task.status##',];
 
-      $query = "SELECT `glpi_notificationtemplatetranslations`.*
-                FROM `glpi_notificationtemplatetranslations`
-                INNER JOIN `glpi_notificationtemplates`
-                     ON (`glpi_notificationtemplates`.`id`
-                           = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
-                WHERE `glpi_notificationtemplates`.`itemtype` = 'Ticket'";
       $query = [
          'SELECT'       => "glpi_notificationtemplatetranslations.*",
          'FROM'         => "glpi_notificationtemplatetranslations",
@@ -814,7 +808,7 @@ function update0803to083() {
                   "0.83 insert manager of groups"
                );
             } else {
-               // Update user as manager if presnet in groups_users
+               // Update user as manager if present in groups_users
                $DB->updateOrDie("glpi_groups_users", [
                      'is_manager' => 1
                   ], [
@@ -866,7 +860,7 @@ function update0803to083() {
       // Get rules
       $query = [
          'SELECT' => new \QueryExpression(
-            "GROUP_CONCAT(" . DBmysql::quoteName("id") . ") AS ids"
+            "GROUP_CONCAT(" . DBmysql::quoteName("id") . ") AS " . DBmysql::quoteName("ids")
          ),
          'FROM'   => "glpi_rules",
          'WHERE' => [
@@ -1104,14 +1098,14 @@ function update0803to083() {
    // Clean unused slalevels
    $DB->deleteOrDie("glpi_slalevels_tickets", [
          'NOT' => [
-            'glpi_slalevels_tickets.tickets_id' => new \QuerySubQuery([
-               'SELECT' => "glpi_tickets.id",
-               'FROM'   => "glpi_tickets"
-            ])
-         ],
-         'NOT' => [
-            'glpi_slalevels_tickets.slalevels_id' => new \QuerySubQuery([
-               'SELECT' => "glpi_tickets.slalevels_id",
+            new \QueryExpression(
+               "(" . DBmysql::quoteName("glpi_slalevels_tickets.tickets_id") . " ," .
+               DBmysql::quoteName("glpi_slalevels_tickets.slalevels_id") . ")"
+            ) => new \QuerySubQuery([
+               'SELECT' => [
+                  "glpi_tickets.id",
+                  "glpi_tickets.slalevels_id"
+               ],
                'FROM'   => "glpi_tickets"
             ]),
          ]
@@ -1740,7 +1734,7 @@ function update0803to083() {
              && $DB->fieldExists("glpi_configs", $field_config, false)) {
             // value of general config
             $DB->updateOrDie("glpi_entitydatas", [
-                  $field_config => $data['fieldconfig']
+                  $field_config => $data[$field_config]
                ], [
                   $field_config => -1
                ],

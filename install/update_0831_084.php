@@ -649,7 +649,7 @@ function update0831to084() {
                'end_date'        => $end_to_add,
                'cost_time'       => $data['cost_time'],
                'cost_fixed'      => $data['cost_fixed'],
-               'cost_material'   => $data['cost'],
+               'cost_material'   => $data['cost_material'],
                'entities_id'     => $data['entities_id'],
                'actiontime'      => $data['actiontime'],
             ],
@@ -1170,7 +1170,7 @@ function update0831to084() {
    // Delete OCS rules
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    $rulesIterator = $DB->request([
-      'SELECT' => new \QueryExpression("GROUP_CONCAT(" . DBmysql::quoteName('id') .") AS rules_id"),
+      'SELECT' => new \QueryExpression("GROUP_CONCAT(" . DBmysql::quoteName('id') .") AS " . DBmysql::quoteName("rules_id")),
       'FROM' => "glpi_rules",
       'WHERE' => [
          'sub_type' => "RuleImportEntity"
@@ -1363,7 +1363,7 @@ function update0831to084() {
       // Get rules
       $data = $DB->request([
          'SELECT' => new \QueryExpression(
-            "GROUP_CONCAT(" . DBmysql::quoteName('id') .") AS rules_id"
+            "GROUP_CONCAT(" . DBmysql::quoteName('id') .") AS " . DBmysql::quoteName("rules_id")
          ),
          'FROM' => "glpi_rules",
          'WHERE' => [
@@ -1412,7 +1412,10 @@ function update0831to084() {
          'glpi_ruleactions' => [
             'ON' => [
                'glpi_rules'      => "id",
-               'glpi_ruleactions' => "rules_id"
+               'glpi_ruleactions' => "rules_id",
+               [
+                  'AND' => ['field' => 'Manufacturer']
+               ]
             ]
          ]
       ],
@@ -1425,8 +1428,7 @@ function update0831to084() {
          ]
       ],
       'WHERE'        => [
-         'field'     => "Manufacturer",
-         'sub_type'  => "RuleDictionnarySoftware",
+         'sub_type'  => "RuleDictionnarySoftware"
       ]
    ]);
 
@@ -2073,7 +2075,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       // Then, populate it from domains (beware that "domains" can be FQDNs and Windows workgroups)
       $query = [
          'SELECT'    => [
-            new \QueryExpression("LOWER(" . DBmysql::quoteName('name') . ") AS name"),
+            new \QueryExpression("LOWER(" . DBmysql::quoteName('name') . ") AS " . DBmysql::quoteName("name")),
             "comment"
          ],
          'DISTINCT'  => true,
@@ -2186,7 +2188,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          'SELECT'    => [
             new \QueryExpression(
                "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
-               DBmysql::quoteName("netmask") . ")) AS address"
+               DBmysql::quoteName("netmask") . ")) AS " . DBmysql::quoteName("address")
             ),
             "netmask",
             "gateway",
@@ -2461,7 +2463,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          'mac' => new \QueryExpression("LOWER(" . DBmysql::quoteName("mac") .")")
       ],
       [true],
-      "0.84 transforme MAC to lower case"
+      "0.84 transform MAC to lower case"
    );
 
    $migration->addKey('glpi_networkports', 'mac');
@@ -2586,8 +2588,10 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $query = [
          'FROM'   => "origin_glpi_networkequipments",
          'WHERE'  => [
-            'mac' => ["<>", ""],
-            'ip'  => ["<>", ""]
+            'OR' => [
+               'mac' => ["<>", ""],
+               'ip'  => ["<>", ""]
+            ]
          ]
       ];
       $port_input = ['itemtype'           => 'NetworkEquipment',
@@ -2704,7 +2708,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                new \QueryExpression(
                   "(". DBmysql::quoteName("glpi_ipaddresses.binary_3") . "& " .
                   DBmysql::quoteValue($netmask) . ")"
-               ),
+               ) => $address,
                'glpi_ipaddresses.version' => 4
             ],
             'GROUPBY' => 'items_id'
