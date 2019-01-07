@@ -1017,15 +1017,7 @@ class Migration {
 
          while ($profile = $prof_iterator->next()) {
             if (empty($requiredrights)) {
-               $DB->insertOrDie(
-                  'glpi_profilerights', [
-                     'id'           => null,
-                     'profiles_id'  => $profile['id'],
-                     'name'         => $name,
-                     'rights'       => $rights
-                  ],
-                  sprintf('%1$s add right for %2$s', $this->version, $name)
-               );
+               $reqmet = true;
             } else {
                $iterator = $DB->request([
                   'SELECT' => [
@@ -1037,17 +1029,17 @@ class Migration {
                ]);
 
                $reqmet = (count($iterator) == count($requiredrights));
-
-               $DB->insertOrDie(
-                  'glpi_profilerights', [
-                     'id'           => null,
-                     'profiles_id'  => $profile['id'],
-                     'name'         => $name,
-                     'rights'       => $reqmet ? $rights : 0
-                  ],
-                  sprintf('%1$s add right for %2$s', $this->version, $name)
-               );
             }
+
+            $DB->insertOrDie(
+               'glpi_profilerights', [
+                  'id'           => null,
+                  'profiles_id'  => $profile['id'],
+                  'name'         => $name,
+                  'rights'       => $reqmet ? $rights : 0
+               ],
+               sprintf('%1$s add right for %2$s', $this->version, $name)
+            );
          }
 
          $this->displayWarning(
