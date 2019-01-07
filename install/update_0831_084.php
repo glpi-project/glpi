@@ -238,7 +238,7 @@ function update0831to084() {
       // Get rules
       $rulesIterator = $DB->request([
          'SELECT'    => new \QueryExpression(
-            "GROUP_CONCAT(" . DBmysql::quoteName("id") . ") AS ids"
+            "GROUP_CONCAT(" . DBmysql::quoteName("id") . ") AS " . DBmysql::quoteName("ids")
          ),
          'FROM'      => "glpi_rules",
          'WHERE'     => ['sub_type' => $ruletype],
