@@ -2927,7 +2927,7 @@ class Config extends CommonDBTM {
     * @return Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator|Zend\Cache\Storage\StorageInterface object
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       /* Tested configuration values
        *
@@ -2970,8 +2970,8 @@ class Config extends CommonDBTM {
 
       if (!isset($opt['options']['namespace'])) {
          $namespace = "glpi_${optname}_" . GLPI_VERSION;
-         if (isset($CFG_GLPI['instance_uuid'])) {
-            $namespace .= $CFG_GLPI['instance_uuid'];
+         if ($DB && $DB->connected) {
+            $namespace .= Telemetry::getInstanceUuid();
          }
          $opt['options']['namespace'] = $namespace;
       }
