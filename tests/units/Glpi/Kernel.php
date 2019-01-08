@@ -211,4 +211,181 @@ PHP
       $this->object($service)->isInstanceOf('RandomPlugin\\MyService');
       $this->object($service->getDb())->isInstanceOf(\DBmysql::class);
    }
+
+   /**
+    * Test that event subscribers are automatically registered in event dispatcher.
+    */
+   public function testContainerEventSubscribersAutoregistration() {
+
+      $structure = [
+         'src' => [
+            'Glpi' => [
+               'EventSubscriber' => [
+                  'MyEventSubscriber.php' => <<<PHP
+<?php
+namespace Glpi\EventSubscriber;
+class MyEventSubscriber implements \Glpi\EventDispatcher\EventSubscriberInterface {
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            'first_event' => 'doSomething',
+            'second_event' => 'doSomethingElse'
+        ];
+    }
+
+    public function doSomething(\Symfony\Component\EventDispatcher\Event \$event)
+    {
+        return;
+    }
+
+    public function doSomethingElse(\Symfony\Component\EventDispatcher\Event \$event)
+    {
+        return;
+    }
+}
+PHP
+               ],
+            ],
+            'resources' => [
+                'services.yaml' =>  <<<YAML
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Glpi\EventDispatcher\EventDispatcher:
+        class: Glpi\EventDispatcher\EventDispatcher
+    MyEventSubscriber:
+        class: Glpi\EventSubscriber\MyEventSubscriber
+YAML
+            ],
+         ],
+         'plugins' => [
+            'random' => [
+               'di' => [
+                  'services.yaml' => <<<YAML
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    PluginSubscriber:
+        class: RandomPlugin\\PluginSubscriber
+
+YAML
+               ],
+               'src' => [
+                   'RandomPlugin' => [
+                      'PluginSubscriber.php' => <<<PHP
+<?php
+namespace RandomPlugin;
+class PluginSubscriber implements \Glpi\EventDispatcher\EventSubscriberInterface {
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            'first_event' => 'doWhateverYouWant',
+            'another_event' => 'doWhateverYouWant'
+        ];
+    }
+
+    public function doWhateverYouWant(\Symfony\Component\EventDispatcher\Event \$event)
+    {
+        return;
+    }
+}
+PHP
+                  ],
+               ],
+               'setup.php' => <<<PHP
+<?php
+function plugin_version_random() {
+   return [
+     'di-container-config' => [
+        'di/services.yaml'
+     ]
+   ];
+}
+PHP
+            ]
+         ]
+      ];
+      $directory = vfsStream::setup('glpi', null, $structure);
+      // Make a not writable dir to prevent cache on container compilation
+      $directory->addChild(vfsStream::newDirectory('nocache', 0555));
+
+      // Autoload does not work for files inside vfsStream
+      include_once(vfsStream::url('glpi/src/Glpi/EventSubscriber/MyEventSubscriber.php'));
+      include_once(vfsStream::url('glpi/plugins/random/src/RandomPlugin/PluginSubscriber.php'));
+
+      // Force active plugin list
+      global $GLPI_CACHE;
+      $GLPI_CACHE = new \Glpi\Cache\SimpleCache(
+          \Zend\Cache\StorageFactory::factory(['adapter' => 'memory'])
+      );
+      $GLPI_CACHE->set('plugins_init', true);
+      $GLPI_CACHE->set('plugins', ['random']);
+
+      $kernel = new \Glpi\Kernel(vfsStream::url('glpi'), vfsStream::url('glpi/nocache'));
+
+      $container = $kernel->getContainer();
+
+      // Check dispatcher service
+      $this->boolean($container->has(\Glpi\EventDispatcher\EventDispatcher::class))->isTrue();
+      $dispatcher = $container->get(\Glpi\EventDispatcher\EventDispatcher::class);
+      $this->object($dispatcher)->isInstanceOf(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      // Check Glpi subscriber declared in services.yaml
+      $this->boolean($container->has('MyEventSubscriber'))->isTrue();
+      $coreSubscriber = $container->get('MyEventSubscriber');
+      $this->object($coreSubscriber)->isInstanceOf('Glpi\EventSubscriber\MyEventSubscriber');
+
+      // Check Plugin subscriber
+      $this->boolean($container->has('PluginSubscriber'))->isTrue();
+      $pluginSubscriber = $container->get('PluginSubscriber');
+      $this->object($pluginSubscriber)->isInstanceOf('RandomPlugin\PluginSubscriber');
+
+      // Event with multiple subscribers
+      $this->array($dispatcher->getListeners('first_event'))
+        ->isEqualTo(
+           [
+              [
+                 $coreSubscriber,
+                 'doSomething'
+              ],
+              [
+                 $pluginSubscriber,
+                 'doWhateverYouWant'
+              ]
+           ]
+        );
+
+      // Event with subscribers only from core
+      $this->array($dispatcher->getListeners('second_event'))
+        ->isEqualTo(
+           [
+              [
+                 $coreSubscriber,
+                 'doSomethingElse'
+              ]
+           ]
+        );
+
+      // Event with subscribers only from plugin
+      $this->array($dispatcher->getListeners('another_event'))
+        ->isEqualTo(
+           [
+              [
+                 $pluginSubscriber,
+                 'doWhateverYouWant'
+              ]
+           ]
+        );
+
+      // Event with no subscribers
+      $this->array($dispatcher->getListeners('some_event'))->isEmpty();
+   }
 }

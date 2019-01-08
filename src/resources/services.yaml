@@ -39,7 +39,10 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     Glpi\:
         resource: '%kernel.project_dir%/src/Glpi/*'
-        exclude: '%kernel.project_dir%/src/Glpi/Kernel.php'
+        exclude: '%kernel.project_dir%/src/Glpi/{Event,Kernel.php}'
+
+#### Vendor services bellow
+
 
 #### Glpi services bellow
 
@@ -56,3 +59,7 @@ services:
     # and therefore will be added during container compilation process
     DBmysql:
         synthetic: true
+
+    # Following services are manually declared as they cannot be included using an include/exclude rule
+    Plugin:
+        class: 'Plugin'

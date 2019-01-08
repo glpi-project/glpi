@@ -38,7 +38,8 @@
         "leafo/scssphp": "^0.7.7",
         "symfony/dependency-injection": "^3.4",
         "symfony/yaml": "^3.4",
-        "symfony/config": "^3.4"
+        "symfony/config": "^3.4",
+        "symfony/event-dispatcher": "^3.4"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",

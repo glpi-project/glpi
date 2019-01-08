@@ -33,6 +33,8 @@
 namespace Glpi;
 
 use Glpi\Cache\SimpleCache;
+use Glpi\EventDispatcher\EventDispatcher;
+use Glpi\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -40,6 +42,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
 use Config;
 use DBmysql;
 use Plugin;
@@ -140,6 +143,17 @@ class Kernel
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
         $container->setParameter('kernel.project_dir', $this->getProjectDir());
+
+        // Auto register events listeners and subscribers into the dispatcher
+        $container->registerForAutoconfiguration(EventSubscriberInterface::class)
+            ->addTag('glpi.event_subscriber');
+        $container->addCompilerPass(
+            new RegisterListenersPass(
+                EventDispatcher::class,
+                'glpi.event_listener',
+                'glpi.event_subscriber'
+            )
+        );
 
         $loader->load('services.yaml');
 

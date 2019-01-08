@@ -1948,6 +1948,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\Config\\FileLocator' ],
                [ 'name'    => 'symfony/dependency-injection',
                  'check'   => 'Symfony\\Component\\DependencyInjection\\Container' ],
+               [ 'name'    => 'symfony/event-dispatcher',
+                 'check'   => 'Symfony\\Component\\EventDispatcher\\EventDispatcher' ],
                [ 'name'    => 'symfony/yaml',
                  'check'   => 'Symfony\\Component\\Yaml\\Yaml' ],
       ];
