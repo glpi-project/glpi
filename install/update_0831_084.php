@@ -2707,8 +2707,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             'WHERE'  => [
                new \QueryExpression(
                   "(". DBmysql::quoteName("glpi_ipaddresses.binary_3") . "& " .
-                  DBmysql::quoteValue($netmask) . ")"
-               ) => $address,
+                  DBmysql::quoteValue($netmask) . ") AS " . DBmysql::quoteName($address)
+               ),
                'glpi_ipaddresses.version' => 4
             ],
             'GROUPBY' => 'items_id'

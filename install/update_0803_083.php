@@ -1097,18 +1097,17 @@ function update0803to083() {
 
    // Clean unused slalevels
    $DB->deleteOrDie("glpi_slalevels_tickets", [
-         'NOT' => [
-            new \QueryExpression(
-               "(" . DBmysql::quoteName("glpi_slalevels_tickets.tickets_id") . " ," .
-               DBmysql::quoteName("glpi_slalevels_tickets.slalevels_id") . ")"
-            ) => new \QuerySubQuery([
-               'SELECT' => [
+         new \QueryExpression(
+            "(" . DBmysql::quoteName("glpi_slalevels_tickets.tickets_id") . " ," .
+            DBmysql::quoteName("glpi_slalevels_tickets.slalevels_id") . ") NOT IN " .
+            (new \QuerySubQuery([
+                  'SELECT' => [
                   "glpi_tickets.id",
-                  "glpi_tickets.slalevels_id"
+               "glpi_tickets.slalevels_id"
                ],
                'FROM'   => "glpi_tickets"
-            ]),
-         ]
+            ]))->getQuery()
+         )
       ],
       "0.83 clean glpi_slalevels_tickets"
    );
