@@ -7095,6 +7095,20 @@ INSERT INTO `glpi_profilerights` VALUES ('875','5','personalization','3');
 INSERT INTO `glpi_profilerights` VALUES ('876','6','personalization','3');
 INSERT INTO `glpi_profilerights` VALUES ('877','7','personalization','3');
 INSERT INTO `glpi_profilerights` VALUES ('878','8','personalization','3');
+INSERT INTO `glpi_profilerights` VALUES ('879','1','rule_asset','0');
+INSERT INTO `glpi_profilerights` VALUES ('880','2','rule_asset','0');
+INSERT INTO `glpi_profilerights` VALUES ('881','3','rule_asset','0');
+INSERT INTO `glpi_profilerights` VALUES ('882','5','rule_asset','0');
+INSERT INTO `glpi_profilerights` VALUES ('883','6','rule_asset','0');
+INSERT INTO `glpi_profilerights` VALUES ('884','7','rule_asset','0');
+INSERT INTO `glpi_profilerights` VALUES ('885','8','rule_asset','0');
+INSERT INTO `glpi_profilerights` VALUES ('886','1','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('887','2','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('888','3','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('889','4','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('890','5','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('891','6','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('892','7','global_validation','0');
 
 ### Dump table glpi_profiles
 
