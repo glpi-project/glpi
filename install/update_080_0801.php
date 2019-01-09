@@ -43,7 +43,7 @@ function update080to0801() {
    $migration->setVersion('0.80.1');
 
    // Clean duplicates
-   $query = [
+   $iterator = $DB->request([
       'SELECT'    => [
          "tickets_id",
          "type",
@@ -55,10 +55,10 @@ function update080to0801() {
       'HAVING'    => [
          'CPT' => [">", 1]
       ]
-   ];
-   foreach ($DB->request($query) as $data) {
+   ]);
+   foreach ($iterator as $data) {
       // Skip first
-      $query = [
+      $iterator2 = $DB->request([
          'SELECT' => "id",
          'FROM'   => "glpi_groups_tickets",
          'WHERE'  => [
@@ -69,8 +69,8 @@ function update080to0801() {
          'ORDER' => "id DESC",
          'START' => 1,
          'LIMIT' => 99999
-      ];
-      foreach ($DB->request($query) as $data2) {
+      ]);
+      foreach ($iterator2 as $data2) {
          $DB->deleteOrDie("glpi_groups_tickets", [
                'id' => $data2['id']
             ],
@@ -84,7 +84,7 @@ function update080to0801() {
                       "unicity", "UNIQUE");
 
    // Clean duplicates
-   $query = [
+   $iterator = $DB->request([
       'SELECT'    => [
          "tickets_id",
          "type",
@@ -97,10 +97,10 @@ function update080to0801() {
       'HAVING'    => [
          'CPT' => [">", 1]
       ]
-   ];
-   foreach ($DB->request($query) AS $data) {
+   ]);
+   foreach ($iterator as $data) {
       // Skip first
-      $query = [
+      $iterator2 = $DB->request([
          'SELECT' => "id",
          'FROM'   => "glpi_tickets_users",
          'WHERE'  => [
@@ -112,8 +112,8 @@ function update080to0801() {
          'ORDER' => "id DESC",
          'START' => 1,
          'LIMIT' => 99999
-      ];
-      foreach ($DB->request($query) as $data2) {
+      ]);
+      foreach ($iterator2 as $data2) {
          $DB->deleteOrDie("glpi_tickets_users", [
                'id' => $data2['id']
             ],

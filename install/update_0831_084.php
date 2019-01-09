@@ -104,7 +104,8 @@ function update0831to084() {
    );
 
    // Update bookmarks from States to AllAssets
-   foreach ($DB->request("glpi_bookmarks", ['itemtype' => "States"]) as $data) {
+   $iterator = $DB->request("glpi_bookmarks", ['itemtype' => "States"]);
+   foreach ($iterator as $data) {
       $query = str_replace('itemtype=States', 'itemtype=AllAssets', $data['query']);
       $DB->update("glpi_bookmarks",
          ['query' => addslashes($query)],
@@ -265,7 +266,8 @@ function update0831to084() {
    }
 
    // Update glpi_profiles : ticket_status
-   foreach ($DB->request('glpi_profiles') as $data) {
+   $iterator = $DB->request('glpi_profiles');
+   foreach ($iterator as $data) {
       $fields_to_decode = ['ticket_status','problem_status'];
       foreach ($fields_to_decode as $field) {
          $tab = importArrayFromDB($data[$field]);
@@ -384,7 +386,8 @@ function update0831to084() {
                       'tickettemplates_id', 'entities_id_software', 'default_contract_alert',
                       'default_infocom_alert', 'default_alarm_threshold'];
       $entity = new Entity();
-      foreach ($DB->request('glpi_entitydatas') as $data) {
+      $iterator = $DB->request('glpi_entitydatas');
+      foreach ($iterator as $data) {
          if ($entity->getFromDB($data['entities_id'])) {
             $update_fields = [];
             foreach ($fields as $field) {
@@ -563,7 +566,11 @@ function update0831to084() {
 
       $migration->migrationOneTable('glpi_contractcosts');
 
-      foreach ($DB->request('glpi_contracts', "`cost` > 0") as $data) {
+      $iterator = $DB->request([
+         'FROM'  => "glpi_contracts",
+         'WHERE' =>  ['cost' => [">", 0]]
+      ]);
+      foreach ($iterator as $data) {
          $begin_to_add = "NULL";
          $end_to_add   = "NULL";
 
@@ -1314,7 +1321,11 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_problems_suppliers");
 
       $migration->migrationOneTable('glpi_problems_suppliers');
-      foreach ($DB->request('glpi_problems', "`suppliers_id_assign` > 0") as $data) {
+      $iterator = $DB->request([
+         'FROM'  => "glpi_problems",
+         'WHERE' => ['suppliers_id_assign' => [">", 0]]
+      ]);
+      foreach ($iterator as $data) {
          $DB->insert("glpi_problems_suppliers", [
             'suppliers_id' => $data['suppliers_id_assign'],
             'type'         => CommonITILActor::ASSIGN,
@@ -1337,7 +1348,11 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_suppliers_tickets");
 
       $migration->migrationOneTable('glpi_suppliers_tickets');
-      foreach ($DB->request('glpi_tickets', "`suppliers_id_assign` > 0") as $data) {
+      $iterator = $DB->request([
+         'FROM'  => "glpi_tickets",
+         'WHERE' => ['suppliers_id_assign' => [">", 0]]
+      ]);
+      foreach ($iterator as $data) {
          $DB->insert("glpi_suppliers_tickets", [
             'suppliers_id' => $data['suppliers_id_assign'],
             'type'         => CommonITILActor::ASSIGN,
@@ -1451,13 +1466,13 @@ function update0831to084() {
 
    $migration->migrationOneTable('glpi_ticketrecurrents');
 
-   $query = [
+   $iterator = $DB->request([
       'FROM'   => "glpi_ticketrecurrents",
       'WHERE'  => [
          'periodicity' => [">=", MONTH_TIMESTAMP]
       ]
-   ];
-   foreach ($DB->request($query) as $data) {
+   ]);
+   foreach ($iterator as $data) {
       $periodicity = $data['periodicity'];
       if (is_numeric($periodicity)) {
          if ($periodicity >= 365*DAY_TIMESTAMP) {
@@ -1893,8 +1908,8 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
          'WHERE'  => ['instantiation_type' => $port->getType]
       ])
    ];
-
-   foreach ($DB->request($query) as $portInformation) {
+   $iterator = $DB->request($query);
+   foreach ($iterator as $portInformation) {
       $input = ['networkports_id' => $portInformation['id']];
       if ($manage_netinterface) {
          if (preg_match('/TX/i', $portInformation['networkinterface'])) {
@@ -2073,15 +2088,15 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $fqdn = new FQDN();
 
       // Then, populate it from domains (beware that "domains" can be FQDNs and Windows workgroups)
-      $query = [
+      $iterator = $DB->request([
          'SELECT'    => [
             new \QueryExpression("LOWER(" . DBmysql::quoteName('name') . ") AS " . DBmysql::quoteName("name")),
             "comment"
          ],
          'DISTINCT'  => true,
          'FROM'      => "glpi_domains"
-      ];
-      foreach ($DB->request($query) as $domain) {
+      ]);
+      foreach ($iterator as $domain) {
          $domainName = $domain['name'];
          // We ensure that domains have at least 1 dote to be sure it is not a Windows workgroup
          if ((strpos($domainName, '.') !== false) && (FQDN::checkFQDN($domainName))) {
@@ -2184,7 +2199,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_ipnetworks");
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
-      $query = [
+      $iterator = $DB->request([
          'SELECT'    => [
             new \QueryExpression(
                "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
@@ -2197,12 +2212,12 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          'DISTINCT'  => true,
          'FROM'      => "origin_glpi_networkports",
          'ORDER'     => "gateway DESC"
-      ];
+      ]);
       $address = new IPAddress();
       $netmask = new IPNetmask();
       $gateway = new IPAddress();
       $network = new IPNetwork();
-      foreach ($DB->request($query) as $entry) {
+      foreach ($iterator as $entry) {
 
          $address = $entry['address'];
          $netmask = $entry['netmask'];
@@ -2235,7 +2250,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          if (is_array($preparedInput['input'])) {
             $input = $preparedInput['input'];
             if (isset($preparedInput['error'])) {
-               $query = [
+               $iterator2 = $DB->request([
                   'SELECT' => [
                      "id",
                      "items_id",
@@ -2251,8 +2266,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                      'gateway'      => $gateway,
                      'entities_id'  => $entities_id,
                   ]
-               ];
-               foreach ($DB->request($query) as $data) {
+               ]);
+               foreach ($iterator2 as $data) {
                   addNetworkPortMigrationError($data['id'], 'invalid_gateway');
                   logNetworkPortError('network warning', $data['id'], $data['itemtype'],
                                       $data['items_id'], $preparedInput['error']);
@@ -2260,7 +2275,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             }
             $migration->insertInTable($network->getTable(), $input);
          } else if (isset($preparedInput['error'])) {
-            $query = [
+            $iterator2 = $DB->request([
                   'SELECT' => [
                      "id",
                      "items_id",
@@ -2277,8 +2292,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                      'gateway'      => $gateway,
                      'entities_id'  => $entities_id,
                   ]
-               ];
-            foreach ($DB->request($query) as $data) {
+               ]);
+            foreach ($iterator2 as $data) {
                addNetworkPortMigrationError($data['id'], 'invalid_network');
                logNetworkPortError('network error', $data['id'], $data['itemtype'],
                                    $data['items_id'], $preparedInput['error']);
@@ -2327,7 +2342,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_networknames");
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
-      $query = [
+      $iterator = $DB->request([
          'SELECT' => [
             "ip",
             "id",
@@ -2337,9 +2352,9 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          ],
          'FROM' => "origin_glpi_networkports",
          'WHERE' => ['ip' => ["<>", ""]]
-      ];
+      ]);
 
-      foreach ($DB->request($query) as $entry) {
+      foreach ($iterator as $entry) {
          if (empty($entry["ip"])) {
             continue;
          }
@@ -2396,11 +2411,11 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), "glpi_networkports"));
 
    // Retrieve all the networks from the current network ports and add them to the IPNetwork
-   $query = [
+   $iterator = $DB->request([
       'FROM' => "glpi_networkinterfaces"
-   ];
+   ]);
 
-   foreach ($DB->request($query) as $entry) {
+   foreach ($iterator as $entry) {
       $instantiation_type = "";
       switch ($entry['name']) {
          case 'Local' :
@@ -2471,13 +2486,13 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Update migration of interfaces errors'));
 
-   $query = [
+   $iterator = $DB->request([
       'SELECT' => "id",
       'FROM'   => "glpi_networkports",
       'WHERE'  => ['instantiation_type' => ""]
-   ];
+   ]);
 
-   foreach ($DB->request($query) as $networkPortID) {
+   foreach ($iterator as $networkPortID) {
       addNetworkPortMigrationError($networkPortID['id'], 'unknown_interface_type');
    }
 
@@ -2585,7 +2600,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_networkportaggregates");
 
       // Transform NetworkEquipment local MAC address as a networkport that aggregates all ports
-      $query = [
+      $iterator = $DB->request([
          'FROM'   => "origin_glpi_networkequipments",
          'WHERE'  => [
             'OR' => [
@@ -2593,16 +2608,16 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                'ip'  => ["<>", ""]
             ]
          ]
-      ];
+      ]);
       $port_input = ['itemtype'           => 'NetworkEquipment',
                           'logical_number'     => '0',
                           'name'               => 'management',
                           'instantiation_type' => 'NetworkPortAggregate'];
-      foreach ($DB->request($query) as $equipment) {
+      foreach ($iterator as $equipment) {
 
          $networkequipments_id       = $equipment['id'];
 
-         $query = [
+         $iterator2 = $DB->request([
             'SELECT' => ['id', 'ip', 'mac'],
             'FROM'   => "origin_glpi_networkports",
             'WHERE'  => [
@@ -2613,10 +2628,10 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   'mac' => $equipment['mac']
                ]
             ]
-         ];
+         ]);
 
          $both = [];
-         foreach ($DB->request($query) as $ports) {
+         foreach ($iterator2 as $ports) {
             if ($ports['ip'] == $equipment['ip'] && $ports['mac'] == $equipment['mac']) {
                $both[] = $ports['id'];
             }

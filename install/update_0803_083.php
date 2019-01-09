@@ -282,7 +282,7 @@ function update0803to083() {
                     'task.planning.status##',];
       $to = ['task.user##', 'task.begin##', 'task.end##', 'task.status##',];
 
-      $query = [
+      $iterator = $DB->request([
          'SELECT'       => "glpi_notificationtemplatetranslations.*",
          'FROM'         => "glpi_notificationtemplatetranslations",
          'INNER JOIN'   => [
@@ -296,9 +296,9 @@ function update0803to083() {
          'WHERE'        => [
             'glpi_notificationtemplates.itemtype' => "Ticket"
          ]
-      ];
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $DB->updateOrDie("glpi_notificationtemplatetranslations", [
                'subject'      => addslashes(str_replace($from, $to, $data['subject'])),
                'content_text' => addslashes(str_replace($from, $to, $data['content_text'])),
@@ -706,15 +706,15 @@ function update0803to083() {
    // Manage migration : populate is_default=1
    // and is_dynamic depending of authldap config / authtype / auths_id
    if ($DB->fieldExists("glpi_users", 'email', false)) {
-      $query = [
+      $iterator = $DB->request([
          'FROM'   => "glpi_users",
          'WHERE'  => [
             'email'  => ["<>", ""],
             'NOT'    => ['email' => null]
          ]
-      ];
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $is_dynamic = 0;
          $ldap_servers = [];
          // manage is_dynamic :
@@ -749,14 +749,14 @@ function update0803to083() {
    }
 
    // check unicity for users email : unset rule and display warning
-   $query = [
+   $iterator = $DB->request([
       'FROM'   => "glpi_fieldunicities",
       'WHERE'  => [
          'itemtype'  => "User",
          'fields'    => ["LIKE", "%email%"]
       ]
-   ];
-   foreach ($DB->request($query) as $data) {
+   ]);
+   foreach ($iterator as $data) {
       $DB->update("glpi_fieldunicities", [
             'is_active' => 0
          ], [
@@ -781,14 +781,14 @@ function update0803to083() {
    $migration->migrationOneTable('glpi_groups_users');
 
    if ($DB->fieldExists("glpi_groups", 'users_id', false)) {
-      $query = [
+      $iterator = $DB->request([
          'FROM'   => "glpi_groups",
          'WHERE'  => [
             'users_id' => [">", 0]
          ]
-      ];
+      ]);
       $user = new User();
-      foreach ($DB->request($query) as $data) {
+      foreach ($iterator as $data) {
          if ($user->getFromDB($data['users_id'])) {
             $query = [
                'SELECT' => "id",
@@ -990,7 +990,8 @@ function update0803to083() {
 
       /// Add mandatory fields to default template
       if ($default_ticket_template > 0) {
-         foreach ($DB->request('glpi_configs') as $data) {
+         $iterator = $DB->request('glpi_configs');
+         foreach ($iterator as $data) {
             if (isset($data['is_ticket_title_mandatory']) && $data['is_ticket_title_mandatory']) {
                $DB->insertOrDie("glpi_tickettemplatemandatoryfields", [
                      'tickettemplates_id' => $default_ticket_template,
@@ -1101,9 +1102,9 @@ function update0803to083() {
             "(" . DBmysql::quoteName("glpi_slalevels_tickets.tickets_id") . " ," .
             DBmysql::quoteName("glpi_slalevels_tickets.slalevels_id") . ") NOT IN " .
             (new \QuerySubQuery([
-                  'SELECT' => [
+               'SELECT' => [
                   "glpi_tickets.id",
-               "glpi_tickets.slalevels_id"
+                  "glpi_tickets.slalevels_id"
                ],
                'FROM'   => "glpi_tickets"
             ]))->getQuery()
@@ -1435,14 +1436,14 @@ function update0803to083() {
       if (count($result)) {
          // Grab helpdesk profiles
          $helpdesk_profiles = [];
-         $query = [
+         $iterator = $DB->request([
             'FROM'   => "glpi_profiles",
             'WHERE'  => [
                'interface'       => "helpdesk",
                'reminder_public' => "r"
             ]
-         ];
-         foreach ($DB->request($query) as $data2) {
+         ]);
+         foreach ($iterator as $data2) {
             $helpdesk_profiles[$data2['id']] = $data2['id'];
          }
          if (count($helpdesk_profiles)) {
@@ -1465,14 +1466,14 @@ function update0803to083() {
 
    // Migrate datas for entities + drop fields : is_private / entities_id / is_recursive
    if ($DB->fieldExists("glpi_reminders", 'is_private', false)) {
-      $query = [
+      $iterator = $DB->request([
          'FROM'   => "glpi_reminders",
          'WHERE'  => [
             'is_private' => 0
          ]
-      ];
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($iterator as $data) {
          $DB->insertOrDie("glpi_entities_reminders", [
                'reminders_id' => $data['id'],
                'entities_id'  => $data['entities_id'],
@@ -1556,9 +1557,9 @@ function update0803to083() {
 
    /// Migrate datas for entities_id / is_recursive
    if ($DB->fieldExists("glpi_knowbaseitems", 'entities_id', false)) {
-      $query = ['FROM' => "glpi_knowbaseitems"];
+      $iterator = $DB->request(['FROM' => "glpi_knowbaseitems"]);
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($iterator as $data) {
          $DB->insertOrDie("glpi_entities_knowbaseitems", [
                'knowbaseitems_id'   => $data['id'],
                'entities_id'        => $data['entities_id'],
