@@ -236,7 +236,7 @@ class DeviceProcessor extends CommonDevice {
          'datatype'           => 'number',
          'massiveaction'      => false,
          'joinparams'         => $main_joinparams,
-         'computation'        => 'SUM(TABLE.`nbcores`)'
+         'computation'        => 'SUM(TABLE.`nbcores`) * count(distinct TABLE.`id`) / count(*)'
       ];
 
       $tab[] = [
@@ -249,7 +249,7 @@ class DeviceProcessor extends CommonDevice {
          'datatype'           => 'number',
          'massiveaction'      => false,
          'joinparams'         => $main_joinparams,
-         'computation'        => 'SUM(TABLE.`nbthreads`)'
+         'computation'        => 'SUM(TABLE.`nbthreads`) * count(distinct TABLE.`id`) / count(*)'
       ];
 
       $tab[] = [

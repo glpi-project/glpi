@@ -2719,7 +2719,7 @@ class Ticket extends CommonITILObject {
             echo "</p><p>";
             echo Html::submit(_x('button', 'Merge'), [
                'name'      => 'merge',
-               'confirm'   => 'Confirm the merge? This ticket will be deleted!'
+               'confirm'   => __('Confirm the merge? This ticket will be deleted!')
             ]);
             echo "</p></div>";
             return true;

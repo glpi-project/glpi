@@ -1966,8 +1966,10 @@ class User extends CommonDBTM {
 
       $this->initForm($ID, $options);
 
+      $ismyself = $ID == Session::getLoginUserID();
+      $higherrights = $this->currentUserHaveMoreRightThan($ID);
       if ($ID) {
-         $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
+         $caneditpassword = $higherrights || ($ismyself && Session::haveRight('password_update', 1));
       } else {
          // can edit on creation form
          $caneditpassword = true;
@@ -2215,7 +2217,7 @@ class User extends CommonDBTM {
                            'entity'              => $_SESSION['glpiactiveentities']]);
          echo "</td></tr>";
       } else {
-         if ($caneditpassword) {
+         if ($higherrights || $ismyself) {
             $profilerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='dropdown_profiles_id$profilerand'>" .  __('Default profile') . "</label></td><td>";
@@ -2227,7 +2229,8 @@ class User extends CommonDBTM {
                                     ['value'               => $this->fields["profiles_id"],
                                      'rand'                => $profilerand,
                                      'display_emptychoice' => true]);
-
+         }
+         if ($higherrights) {
             $entrand = mt_rand();
             echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __('Default entity') . "</label></td><td>";
             $entities = $this->getEntities();
@@ -2260,49 +2263,50 @@ class User extends CommonDBTM {
                             'entity' => $_SESSION["glpiactive_entity"],
                             'right'  => 'all']);
             echo "</td></tr>";
-
          }
 
-         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
+         if ($this->can($ID, UPDATE)) {
+            echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td>";
-         echo __("Personal token");
-         echo "</td><td colspan='2'>";
+            echo "<tr class='tab_bg_1'><td>";
+            echo __("Personal token");
+            echo "</td><td colspan='2'>";
 
-         if (!empty($this->fields["personal_token"])) {
-            echo "<div class='copy_to_clipboard_wrapper'>";
-            echo Html::input('_personal_token', [
-                                 'value'    => $this->fields["personal_token"],
-                                 'style'    => 'width:90%'
-                             ]);
-            echo "</div>";
-            echo "(".sprintf(__('generated on %s'),
-                                Html::convDateTime($this->fields["personal_token_date"])).")";
+            if (!empty($this->fields["personal_token"])) {
+               echo "<div class='copy_to_clipboard_wrapper'>";
+               echo Html::input('_personal_token', [
+                                    'value'    => $this->fields["personal_token"],
+                                    'style'    => 'width:90%'
+                                ]);
+               echo "</div>";
+               echo "(".sprintf(__('generated on %s'),
+                                   Html::convDateTime($this->fields["personal_token_date"])).")";
+            }
+            echo "</td><td>";
+            Html::showCheckbox(['name'  => '_reset_personal_token',
+                                'title' => __('Regenerate')]);
+            echo "&nbsp;&nbsp;".__('Regenerate');
+            echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'><td>";
+            echo __("API token");
+            echo "</td><td colspan='2'>";
+            if (!empty($this->fields["api_token"])) {
+               echo "<div class='copy_to_clipboard_wrapper'>";
+               echo Html::input('_api_token', [
+                                    'value'    => $this->fields["api_token"],
+                                    'style'    => 'width:90%'
+                                ]);
+               echo "</div>";
+               echo "(".sprintf(__('generated on %s'),
+                                   Html::convDateTime($this->fields["api_token_date"])).")";
+            }
+            echo "</td><td>";
+            Html::showCheckbox(['name'  => '_reset_api_token',
+                                'title' => __('Regenerate')]);
+            echo "&nbsp;&nbsp;".__('Regenerate');
+            echo "</td></tr>";
          }
-         echo "</td><td>";
-         Html::showCheckbox(['name'  => '_reset_personal_token',
-                             'title' => __('Regenerate')]);
-         echo "&nbsp;&nbsp;".__('Regenerate');
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>";
-         echo __("API token");
-         echo "</td><td colspan='2'>";
-         if (!empty($this->fields["api_token"])) {
-            echo "<div class='copy_to_clipboard_wrapper'>";
-            echo Html::input('_api_token', [
-                                 'value'    => $this->fields["api_token"],
-                                 'style'    => 'width:90%'
-                             ]);
-            echo "</div>";
-            echo "(".sprintf(__('generated on %s'),
-                                Html::convDateTime($this->fields["api_token_date"])).")";
-         }
-         echo "</td><td>";
-         Html::showCheckbox(['name'  => '_reset_api_token',
-                             'title' => __('Regenerate')]);
-         echo "&nbsp;&nbsp;".__('Regenerate');
-         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";

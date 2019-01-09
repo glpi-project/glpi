@@ -911,6 +911,12 @@ class Search {
       $sql = "";
 
       foreach ($criteria as $criterion) {
+         if (!isset($criterion['criteria'])
+             && (!isset($criterion['value'])
+                 || strlen($criterion['value']) <= 0)) {
+            continue;
+         }
+
          $itemtype = $data['itemtype'];
          $meta = false;
          if (isset($criterion['meta'])
@@ -973,12 +979,10 @@ class Search {
                if (!empty($sql)) {
                   $LINK = $tmplink;
                }
-               if (isset($criterion['value']) && (strlen($criterion['value']) > 0)) {
-                  $new_where = self::addWhere($LINK, $NOT, $itemtype, $criterion['field'],
-                                              $criterion['searchtype'], $criterion['value'], $meta);
-                  if ($new_where !== false) {
-                     $sql .= $new_where;
-                  }
+               $new_where = self::addWhere($LINK, $NOT, $itemtype, $criterion['field'],
+                                           $criterion['searchtype'], $criterion['value'], $meta);
+               if ($new_where !== false) {
+                  $sql .= $new_where;
                }
             }
          } else if (isset($criterion['value'])
