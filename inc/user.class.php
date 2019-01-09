@@ -1965,8 +1965,10 @@ class User extends CommonDBTM {
 
       $this->initForm($ID, $options);
 
+      $ismyself = $ID == Session::getLoginUserID();
+      $higherrights = $this->currentUserHaveMoreRightThan($ID);
       if ($ID) {
-         $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
+         $caneditpassword = $higherrights || ($ismyself && Session::haveRight('password_update', 1));
       } else {
          // can edit on creation form
          $caneditpassword = true;
@@ -2214,7 +2216,7 @@ class User extends CommonDBTM {
                            'entity'              => $_SESSION['glpiactiveentities']]);
          echo "</td></tr>";
       } else {
-         if ($caneditpassword) {
+         if ($higherrights || $ismyself) {
             $profilerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='dropdown_profiles_id$profilerand'>" .  __('Default profile') . "</label></td><td>";
@@ -2226,7 +2228,8 @@ class User extends CommonDBTM {
                                     ['value'               => $this->fields["profiles_id"],
                                      'rand'                => $profilerand,
                                      'display_emptychoice' => true]);
-
+         }
+         if ($higherrights) {
             $entrand = mt_rand();
             echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __('Default entity') . "</label></td><td>";
             $entities = $this->getEntities();
@@ -2259,7 +2262,6 @@ class User extends CommonDBTM {
                             'entity' => $_SESSION["glpiactive_entity"],
                             'right'  => 'all']);
             echo "</td></tr>";
-
          }
 
          echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
