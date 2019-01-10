@@ -203,7 +203,8 @@ $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'C
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-                                                  'Certificate', 'Enclosure', 'Pdu'];
+                                                  'Certificate', 'Enclosure', 'Pdu', 'Line',
+                                                   'Rack', 'SoftwareVersion'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
