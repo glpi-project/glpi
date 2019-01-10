@@ -2794,13 +2794,11 @@ class Ticket extends CommonITILObject {
                         'tickets_id_2' => $input['_mergeticket']
                      ];
 
-                     $existinglinks = Ticket_Ticket::getLinkedTicketsTo($id);
-                     foreach ($existinglinks as $ttkey => $link) {
-                        if ($link['link'] == Ticket_Ticket::PARENT_OF) {
-                           //Remove conflicting link
-                           $tt->delete(['id' => $ttkey]);
-                        }
-                     }
+                     $tt->deleteByCriteria([
+                        'tickets_id_1' => $input['_mergeticket'],
+                        'tickets_id_2' => $id,
+                        'link' => Ticket_Ticket::SON_OF]);
+
                      if (!$tt->add($linkparams)) {
                         //Cannot link tickets. Abort/fail the merge
                         throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
