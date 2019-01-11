@@ -367,7 +367,7 @@ class Change_Ticket extends CommonDBRelation{
             ]
          ],
          'WHERE'           => [
-            'glpi_changes_tickes.tickets_id'   => $ID
+            'glpi_changes_tickets.tickets_id'   => $ID
          ],
          'ORDERBY'          => [
             'glpi_changes.name'
