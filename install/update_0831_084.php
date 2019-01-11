@@ -2213,7 +2213,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          'FROM'      => "origin_glpi_networkports",
          'ORDER'     => "gateway DESC"
       ]);
-      $address = new IPAddress();
       $netmask = new IPNetmask();
       $gateway = new IPAddress();
       $network = new IPNetwork();
