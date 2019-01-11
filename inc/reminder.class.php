@@ -191,11 +191,11 @@ class Reminder extends CommonDBVisible {
       $it = new \DBmysqlIterator(null);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
-      $sql = str_replace(
-         'SELECT * FROM '.$DB->quoteName(self::getTable()).' ',
+      $sql = trim(str_replace(
+         'SELECT * FROM '.$DB->quoteName(self::getTable()),
          '',
          $sql
-      );
+      ));
       return $sql;
    }
 

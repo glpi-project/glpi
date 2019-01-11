@@ -93,7 +93,10 @@ class Reservation extends CommonDBChild {
 
          // Processing Email
          if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-            NotificationEvent::raiseEvent("delete", $this);
+            // Only notify for non-completed reservations
+            if (strtotime($this->fields['end']) > time()) {
+               NotificationEvent::raiseEvent("delete", $this);
+            }
          }
       }
       return true;
