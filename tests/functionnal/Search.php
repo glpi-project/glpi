@@ -339,9 +339,9 @@ class Search extends DbTestCase {
                      'value'      => 'test',
                   ], [
                      'link'       => 'OR',
-                     'field'      => 'view',
+                     'field'      => 2,
                      'searchtype' => 'contains',
-                     'value'      => 'toto',
+                     'value'      => 'test2',
                   ], [
                      'link'       => 'AND',
                      'field'      => 3,
@@ -351,15 +351,14 @@ class Search extends DbTestCase {
                      'link'       => 'AND',
                      'criteria'   => [
                         [
-                           'link'       => 'AND',
-                           'field'      => 'view',
-                           'searchtype' => 'contains',
-                           'value'      => 'test3',
+                           'field'      => 70,
+                           'searchtype' => 'equals',
+                           'value'      => 2,
                         ], [
-                           'link'       => 'AND+NOT',
-                           'field'      => 'view',
-                           'searchtype' => 'contains',
-                           'value'      => 'test4',
+                           'link'       => 'OR',
+                           'field'      => 70,
+                           'searchtype' => 'equals',
+                           'value'      => 3,
                         ]
                      ]
                   ]
@@ -376,18 +375,73 @@ class Search extends DbTestCase {
             ->array['last_errors']->isIdenticalTo([])
             ->array['data']->isNotEmpty();
 
-      $expected_where = "WHERE\s*`glpi_computers`\.`is_deleted`\s*=\s*0\s*AND\s*`glpi_computers`\.`is_template`\s*=\s*0\s*AND\s*\(\s*`glpi_computers`\.`entities_id`\s*IN\s*\('1',\s*'2',\s*'3'\)\s*OR\s*\(\s*`glpi_computers`\.`is_recursive`='1'\s*AND\s*`glpi_computers`\.`entities_id`\s*IN\s*\('0'\)\s*\)\s*\)\s*AND\s*\(\s*\(\s*`glpi_computers`\.`name`\s*LIKE\s*'%test%'\s*\)\s*AND\s*\(\s*`glpi_softwares`\.`id`\s*=\s*'10784'\)\s*OR\s*\(\s*\(\s*\(\s*`glpi_computers`\.`id`\s*LIKE\s*'%test%'\s*\)\s*OR\s*\(\s*`glpi_computers`\.`name`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_entities`\.`completename`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_states`\.`completename`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_manufacturers`\.`name`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_computers`\.`serial`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_computertypes`\.`name`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_computermodels`\.`name`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_operatingsystems_.*`\.`name`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*`glpi_locations`\.`completename`\s*LIKE\s*'%toto%'\s*\)\s*OR\s*\(\s*CONVERT\(`glpi_computers`\.`date_mod`\s*USING\s*utf8\)\s*LIKE\s*'%toto%'\s*\)\)\s*AND\s*\(\s*`glpi_locations`\.`id`\s*=\s*'11'\)\s*AND\s*\(\s*\(\s*\(\s*\(\s*`glpi_computers`\.`name`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_entities`\.`completename`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_states`\.`completename`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_manufacturers`\.`name`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_computers`\.`serial`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_computertypes`\.`name`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_computermodels`\.`name`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_operatingsystems_.*`\.`name`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*`glpi_locations`\.`completename`\s*LIKE\s*'%test3%'\s*\)\s*OR\s*\(\s*CONVERT\(`glpi_computers`\.`date_mod`\s*USING\s*utf8\)\s*LIKE\s*'%test3%'\s*\)\s*\)\s*AND\s*\(\s*`glpi_computers`\.`name`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_entities`\.`completename`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_states`\.`completename`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_manufacturers`\.`name`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_computers`\.`serial`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_computertypes`\.`name`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_computermodels`\.`name`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_operatingsystems_.*`\.`name`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*`glpi_locations`\.`completename`\s*LIKE\s*'%test4%'\s*\)\s*OR\s*\(\s*CONVERT\(`glpi_computers`\.`date_mod`\s*USING\s*utf8\)\s*LIKE\s*'%test4%'\s*\)\s*\)\s*\)\s*\)\s*\)";
-
-      // Check meta criteria add correct jointures
       $this->array($data)
          ->hasKey('sql')
             ->array['sql']
-               ->hasKey('search')
-                  ->string['search']
-                     ->contains("INNER JOIN `glpi_computers_softwareversions` AS `glpi_computers_softwareversions_Software`")
-                     ->contains("INNER JOIN `glpi_softwareversions` AS `glpi_softwareversions_Software`")
-                     ->contains("INNER JOIN `glpi_softwares` ON (`glpi_softwareversions_Software`.`softwares_id` = `glpi_softwares`.`id`) ")
-                     ->matches('#'.$expected_where.'#');
+               ->hasKey('search');
+
+      $this->string($data['sql']['search'])
+         // join parts
+         ->matches('/INNER JOIN\s*`glpi_computers_softwareversions`\s*AS `glpi_computers_softwareversions_Software`/im')
+         ->matches('/INNER JOIN\s*`glpi_softwareversions`\s*AS `glpi_softwareversions_Software`/im')
+         ->matches('/INNER JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im')
+         // match where parts
+         ->contains("`glpi_computers`.`is_deleted` = 0")
+         ->contains("AND `glpi_computers`.`is_template` = 0")
+         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
+         ->contains("OR (`glpi_computers`.`is_recursive`='1'".
+                    " AND `glpi_computers`.`entities_id` IN ('0'))")
+         ->contains("`glpi_computers`.`name`  LIKE '%test%'")
+         ->contains("AND (`glpi_softwares`.`id` = '10784')")
+         ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
+         ->contains("AND (`glpi_locations`.`id` = '11')")
+         ->contains("(`glpi_users`.`id` = '2')")
+         ->contains("OR (`glpi_users`.`id` = '3')");
+   }
+
+   function testViewCriterion() {
+      $data = $this->doSearch('Computer', [
+         'reset'      => 'reset',
+         'is_deleted' => 0,
+         'start'      => 0,
+         'search'     => 'Search',
+         'criteria'   => [
+            [
+               'link'       => 'AND',
+               'field'      => 'view',
+               'searchtype' => 'contains',
+               'value'      => 'test',
+            ],
+         ]
+      ]);
+
+      // check for sql error (data key missing or empty)
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty();
+
+      // Check sql generation
+      $this->array($data)
+         ->hasKey('sql')
+            ->array['sql']
+               ->hasKey('search');
+
+      $this->string($data['sql']['search'])
+         ->contains("`glpi_computers`.`is_deleted` = 0")
+         ->contains("AND `glpi_computers`.`is_template` = 0")
+         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
+         ->contains("OR (`glpi_computers`.`is_recursive`='1'".
+                    " AND `glpi_computers`.`entities_id` IN ('0'))")
+         ->matches("/`glpi_computers`\.`name`  LIKE '%test%'/")
+         ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(`glpi_computers`\.`serial`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/")
+         ->matches("/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING utf8\)\s*LIKE '%test%'\s*\)\)/");
    }
 
    public function testUser() {

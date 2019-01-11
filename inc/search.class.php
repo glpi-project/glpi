@@ -440,24 +440,38 @@ class Search {
       }
 
       if (count($p['criteria']) > 0) {
-         foreach ($p['criteria'] as $criterion) {
-            if (isset($criterion['field']) && !in_array($criterion['field'], $data['toview'])) {
-               if ($criterion['field'] != 'all'
-                   && $criterion['field'] != 'view'
-                   && (!isset($criterion['meta'])
-                       || !$criterion['meta'])) {
-                  array_push($data['toview'], $criterion['field']);
-               } else if ($criterion['field'] == 'all') {
-                  $data['search']['all_search'] = true;
-               } else if ($criterion['field'] == 'view') {
-                  $data['search']['view_search'] = true;
+         // use a recursive clojure to push searchoption when using nested criteria
+         $parse_criteria = function($criteria) use (&$parse_criteria, &$data) {
+            foreach ($criteria as $criterion) {
+               // recursive call
+               if (isset($criterion['criteria'])) {
+                  return $parse_criteria($criterion['criteria']);
+               }
+
+               // normal behavior
+               if (isset($criterion['field'])
+                   && !in_array($criterion['field'], $data['toview'])) {
+                  if ($criterion['field'] != 'all'
+                      && $criterion['field'] != 'view'
+                      && (!isset($criterion['meta'])
+                          || !$criterion['meta'])) {
+                     array_push($data['toview'], $criterion['field']);
+                  } else if ($criterion['field'] == 'all') {
+                     $data['search']['all_search'] = true;
+                  } else if ($criterion['field'] == 'view') {
+                     $data['search']['view_search'] = true;
+                  }
+               }
+
+               if (isset($criterion['value'])
+                   && (strlen($criterion['value']) > 0)) {
+                  $data['search']['no_search'] = false;
                }
             }
+         };
 
-            if (isset($criterion['value']) && (strlen($criterion['value']) > 0)) {
-               $data['search']['no_search'] = false;
-            }
-         }
+         // call the clojure
+         $parse_criteria($p['criteria']);
       }
 
       if (count($p['metacriteria'])) {
@@ -946,10 +960,15 @@ class Search {
                $tmplink = " AND ";
             }
 
+            // Manage Link if not first item
+            if (!empty($sql)) {
+               $LINK = $tmplink;
+            }
+
             if (isset($criterion['criteria']) && count($criterion['criteria'])) {
                $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $searchopt, $is_having);
                if (strlen($sub_sql)) {
-                  $sql .= "$tmplink ($sub_sql)";
+                  $sql .= "$LINK ($sub_sql)";
                }
             } else if (isset($searchopt[$criterion['field']]["usehaving"])) {
                if (!$is_having) {
@@ -957,10 +976,6 @@ class Search {
                   continue;
                }
 
-               // Manage Link if not first item
-               if (!empty($sql)) {
-                  $LINK = $tmplink;
-               }
                // Find key
                $item_num = array_search($criterion['field'], $data['tocompute']);
                $new_having = self::addHaving($LINK, $NOT, $itemtype,
@@ -975,10 +990,6 @@ class Search {
                   continue;
                }
 
-               // Manage Link if not first item
-               if (!empty($sql)) {
-                  $LINK = $tmplink;
-               }
                $new_where = self::addWhere($LINK, $NOT, $itemtype, $criterion['field'],
                                            $criterion['searchtype'], $criterion['value'], $meta);
                if ($new_where !== false) {
