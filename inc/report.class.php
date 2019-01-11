@@ -228,7 +228,7 @@ class Report extends CommonGLPI{
          ],
          'FROM'      => 'glpi_items_operatingsystems',
          'LEFT JOIN' => [
-            'glpi_items_operatingsystems' => [
+            'glpi_operatingsystems' => [
                'ON' => [
                   'glpi_items_operatingsystems' => 'operatingsystems_id',
                   'glpi_operatingsystems'       => 'id'
