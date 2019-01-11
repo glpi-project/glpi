@@ -36,7 +36,7 @@
 **/
 class DBocs extends DBmysql {
 
-   function DBocs() {
+   function __construct() {
       global $db,$cfg_glpi;
 
       if ($cfg_glpi["ocs_mode"]) {
