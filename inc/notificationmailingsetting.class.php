@@ -186,7 +186,7 @@ class NotificationMailingSetting extends NotificationSetting {
                      'step'     => 1,
                      'display'  => false,
                  ]);
-         $out .= "</td>";
+         $out .= "</td><td colspan='2'></td>";
 
          $out .= "</table>";
 
@@ -206,7 +206,7 @@ class NotificationMailingSetting extends NotificationSetting {
             -1,
             ['display' => false, 'rand' => $certrand]
          );
-         $out .= "</td>";
+         $out .= "</td><td colspan='2'></td>";
          $out .= "</tr>";
 
          $out .= "<tr class='tab_bg_2'><td><label for='smtp_host'>" . __('SMTP host') . "</label></td>";
