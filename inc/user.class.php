@@ -2487,7 +2487,7 @@ class User extends CommonDBTM {
             }
             echo "</td></tr>";
          } else {
-            echo "<tr><td colspan='2'></td></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
          }
 
          echo "<tr class='tab_bg_1'>";
