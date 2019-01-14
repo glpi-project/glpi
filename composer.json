@@ -39,20 +39,26 @@
         "symfony/dependency-injection": "^3.4",
         "symfony/yaml": "^3.4",
         "symfony/config": "^3.4",
-        "symfony/event-dispatcher": "^3.4"
+        "symfony/event-dispatcher": "^3.4",
+        "slim/slim": "^3.9",
+        "slim/twig-view": "^2.3",
+        "doctrine/annotations": "^1.4",
+        "twig/extensions": "^1.5",
+        "kanellov/slim-twig-flash": "^0.2.0",
+        "runcmf/runtracy": "^0.2.10"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
         "glpi-project/coding-standard": "^0.7.1",
         "consolidation/robo": "^1.0",
-        "natxet/CssMin": "^3.0",
+        "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
         "atoum/atoum": "^3.3",
         "atoum/telemetry-extension": "^1.0",
         "sensiolabs/security-checker": "^4.1",
-        "fzaninotto/Faker": "^1.7",
+        "fzaninotto/faker": "^1.7",
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "mikey179/vfsStream": "^1.6"
+        "mikey179/vfsstream": "^1.6"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",

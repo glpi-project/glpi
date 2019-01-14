@@ -57,9 +57,8 @@ class Search extends DbTestCase {
       $params['reset'] = 'reset';
 
       // do search
-      $params = \Search::manageParams($itemtype, $params);
       $search = new \Search($itemtype, $params);
-      $data   = $search->getData($itemtype, $params);
+      $data   = $search->getData();
 
       // append existing errors to returned data
       $data['last_errors'] = [];

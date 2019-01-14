@@ -47,6 +47,41 @@ function update94to100() {
    $migration->setVersion('10.0.0');
 
    //put your update rules here, and drop the line!
+   /** Add main column on displaypreferences */
+   if ($migration->addField(
+         'glpi_displaypreferences',
+         'is_main',
+         'bool',
+         ['value' => 1]
+      )) {
+      $migration->addKey('glpi_displaypreferences', 'is_main');
+      $migration->dropKey('glpi_displaypreferences', 'unicity');
+      $migration->migrationOneTable('glpi_displaypreferences');
+      $migration->addKey(
+         'glpi_displaypreferences',
+         ['users_id', 'itemtype', 'num', 'is_main'],
+         'unicity',
+         'UNIQUE'
+      );
+   }
+   /** /Add main column on displaypreferences */
+
+   /** add display preferences for sub items */
+   $ADDTODISPLAYPREF['Contract'] = [3, 4, 29, 5];
+   $ADDTODISPLAYPREF['Item_Disk'] = [2, 3, 4, 5, 6, 7];
+   $ADDTODISPLAYPREF['Certificate'] = [7, 4, 8, 121, 10, 31];
+   $ADDTODISPLAYPREF['Notepad'] = [200, 201, 202, 203, 204];
+   $ADDTODISPLAYPREF['SoftwareVersion'] = [3, 31, 2, 122, 123, 124];
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $query = "REPLACE INTO `glpi_displaypreferences`
+                           (`itemtype` ,`num` ,`rank` ,`users_id`, `is_main`)
+                     VALUES ('$type', '$newval', '".$rank++."', '0', '0')";
+         $DB->query($query);
+      }
+   }
+   /** /add display preferences for sub items */
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

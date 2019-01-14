@@ -89,7 +89,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /// Disable auto forwarding information about entities ?
    static public $disableAutoEntityForwarding   = false;
 
-
    /**
     * Return the SQL request to get all the connexities corresponding to $itemtype[$items_id]
     * That is used by cleanDBOnItem : the only interesting field is static::getIndexName()

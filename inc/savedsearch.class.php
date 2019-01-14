@@ -493,7 +493,7 @@ class SavedSearch extends CommonDBTM {
       switch ($type) {
          case self::SEARCH:
          case self::ALERT:
-            // Check if all datas are valid
+            // Check if all data are valid
             $opt            = Search::getCleanedOptions($this->fields['itemtype']);
             $query_tab_save = $query_tab;
             $partial_load   = false;
@@ -589,15 +589,12 @@ class SavedSearch extends CommonDBTM {
    /**
     * Mark saved search as default view for the currect user
     *
-    * @param integer $ID ID of the saved search
-    *
     * @return void
    **/
-   function markDefault($ID) {
+   function markDefault() {
       global $DB;
 
-      if ($this->getFromDB($ID)
-          && ($this->fields['type'] != self::URI)) {
+      if ($this->fields['type'] != self::URI) {
          $dd = new SavedSearch_User();
          // Is default view for this itemtype already exists ?
          $iterator = $DB->request([
@@ -614,11 +611,11 @@ class SavedSearch extends CommonDBTM {
             $updateID = $result['id'];
             $dd->update([
                'id'                 => $updateID,
-               'savedsearches_id'   => $ID
+               'savedsearches_id'   => $this->fields['id']
             ]);
          } else {
             $dd->add([
-               'savedsearches_id'   => $ID,
+               'savedsearches_id'   => $this->fields['id'],
                'users_id'           => Session::getLoginUserID(),
                'itemtype'           => $this->fields['itemtype']
             ]);
@@ -626,19 +623,36 @@ class SavedSearch extends CommonDBTM {
       }
    }
 
+   /**
+    * Is current saved search the default for logged in user?
+    *
+    * @return boolean
+    */
+   public function isDefault() {
+      global $DB;
+
+      $result = $DB->request([
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_savedsearches_users',
+         'WHERE'  => [
+            'users_id'           => Session::getLoginUserID(),
+            'savedsearches_id'   => $this->fields['id'],
+            'itemtype'           => $this->fields['itemtype']
+         ]
+      ])->next();
+
+      return $result['cpt'] > 0;
+   }
 
    /**
     * Unmark savedsearch as default view for the current user
     *
-    * @param integer $ID ID of the saved search
-    *
     * @return void
-   **/
-   function unmarkDefault($ID) {
+    */
+   public function unmarkDefault() {
       global $DB;
 
-      if ($this->getFromDB($ID)
-          && ($this->fields['type'] != self::URI)) {
+      if ($this->fields['type'] != self::URI) {
          $dd = new SavedSearch_User();
          // Is default view for this itemtype already exists ?
          $iterator = $DB->request([
@@ -646,7 +660,7 @@ class SavedSearch extends CommonDBTM {
             'FROM'   => 'glpi_savedsearches_users',
             'WHERE'  => [
                'users_id'           => Session::getLoginUserID(),
-               'savedsearches_id'   => $ID,
+               'savedsearches_id'   => $this->fields['id'],
                'itemtype'           => $this->fields['itemtype']
             ]
          ]);
@@ -679,13 +693,12 @@ class SavedSearch extends CommonDBTM {
       }
    }
 
-
    /**
-    * Show user searches list
+    * Get user searches list
     *
-    * @return void
+    * @return array
     */
-   function displayMine() {
+   public function getMine() {
       global $DB, $CFG_GLPI;
 
       $table = $this->getTable();
@@ -780,6 +793,19 @@ class SavedSearch extends CommonDBTM {
                      $personalorderfield => exportArrayToDB($store)]);
       $searches['private'] = $ordered;
 
+      return $searches;
+   }
+   /**
+    * Show user searches list
+    *
+    * @deprecated 10.0.0
+    *
+    * @return void
+    */
+   function displayMine() {
+      global $DB, $CFG_GLPI;
+
+      $searches = $this->getMine();
       $rand    = mt_rand();
 
       echo "<div class='center' id='tabsbody' >";
@@ -787,7 +813,7 @@ class SavedSearch extends CommonDBTM {
       $colspan = 2;
       echo "<table class='tab_cadre_fixehov'>";
       echo "<thead><tr><th colspan='$colspan' class='search_header'>" .
-                  "<input type='text' id='filter_savedsearch' placeholder='".__('Filter list')."' style='width: 95%; padding: 5px'></i>" .
+                  "<input type='text' id='filter_savedsearch' placeholder='".__('Filter list')."' style='width: 95%; padding: 5px' />" .
            "</th></tr></thead>";
       echo "<thead><tr><th colspan='$colspan' class='private_header'>" .
                   sprintf(
@@ -905,12 +931,14 @@ class SavedSearch extends CommonDBTM {
    /**
     * Display saved searches from a type
     *
+    * @deprecated 10.0.0
+    *
     * @param string $searches Search type
     *
     * @return void
    **/
    private function displaySavedSearchType($searches) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $router;
 
       if ($totalcount = count($searches)) {
          $current_type      = -1;
@@ -979,8 +1007,11 @@ class SavedSearch extends CommonDBTM {
 
             $title = ($is_private ? __s('Click to load or drag and drop to reorder')
                                   : __s('Click to load'));
-            echo "<a class='savedsearchlink' href=\"".$this->getSearchURL()."?action=load&amp;id=".
-                     $this->fields["id"]."\" title='".$title."'>".
+            $href = $this->getSearchURL()."?action=load&amp;id=" . $this->fields["id"];
+            if ($router != null) {
+                $href = $router->pathFor('load-saved-search', ['id' => $this->fields['id']]);
+            }
+            echo "<a class='savedsearchlink' href=\"$href\" title='".$title."'>".
                      $text;
             if ($_SESSION['glpishow_count_on_tabs']) {
                echo "<span class='primary-bg primary-fg count'>$count</span>";
@@ -1377,7 +1408,6 @@ class SavedSearch extends CommonDBTM {
               && ($this->getField('last_execution_time') != null)
               && ($this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']))) {
 
-         $search = new Search(new self(), []);
          //Do the same as self::getParameters() but getFromDB is useless
          $query_tab = [];
          parse_str($this->getField('query'), $query_tab);
@@ -1391,8 +1421,11 @@ class SavedSearch extends CommonDBTM {
          if (!$params) {
             throw new \RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
          } else {
-            $data                   = $search->prepareDataForSearch($this->getField('itemtype'),
-                                                                    $params);
+            $search = new Search($this, []);
+            $data = $search->prepareDataForSearch(
+               $this->getField('itemtype'),
+               $params
+            );
             $data['search']['sort'] = null;
             $search->constructSQL($data);
             $search->constructData($data, true);

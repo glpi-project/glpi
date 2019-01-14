@@ -1818,4 +1818,174 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
       return $nb;
    }
+
+   /**
+    * Add default where for search
+    *
+    * @since 10.0.0
+    *
+    * @param CommonDBTM $item Item instance
+    * @param boolean    $self Condition is to add on current object itself
+    *
+    * @return array
+    */
+   public static function addSubDefaultWhere(CommonDBTM $item, $self = false) {
+      global $DB;
+
+      if ($item->getType() == static::$itemtype_1) {
+         $link_type = static::$itemtype_2;
+         $link_id   = static::$items_id_2;
+         $where_id  = static::$items_id_1;
+      } else if ($item->getType() == static::$itemtype_2) {
+         $link_type = static::$itemtype_1;
+         $link_id   = static::$items_id_1;
+         $where_id  = static::$items_id_2;
+      } else {
+         $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
+         $link_id   = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
+         $where_id  = (static::$itemtype_1 != 'itemtype' ? static::$items_id_2 : static::$items_id_1);
+      }
+
+      if (!empty($link_type) && $link_type != 'itemtype') {
+         $link = new $link_type;
+      } else {
+         $link = new static();
+      }
+
+      $link_table = getTableForItemtype($link_type);
+      $current_table = static::getTable();
+      $item_type  = $item->getType();
+
+      if (!empty($link_id) && ($link_id != getForeignKeyFieldForTable($current_table))) {
+         $current_table .= '_' . $link_id;
+      }
+      $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype') && $self === false) {
+         $condition .= ' AND ' . $current_table . '.itemtype = "' . $DB->escape($item_type) . '"';
+      }
+
+      return $condition;
+   }
+
+   /**
+    * Add default where in for itemtype union search
+    *
+    * @since 10.0.0
+    *
+    * @param CommonDBTM $item     Item instance
+    * @param string     $itemtype Item type to restrict on
+    *
+    * @return array
+    */
+   public static function addSubSelect(CommonDBTM $item, $itemtype) {
+      global $DB;
+
+      $inverse = $item->getType() == static::$itemtype_1;
+      $where_id   = static::$items_id_2;
+      $item_type  = $item->getType();
+      if ($inverse === true) {
+         $where_id   = static::$items_id_1;
+      }
+
+      $dbi = new DBMysqlIterator(null);
+      $dbi->buildQuery(
+         static::getTable(), [
+            'SELECT' => 'items_id',
+            'WHERE'  => [
+               'itemtype'  => $itemtype,
+               $where_id   => $item->fields['id']
+            ]
+         ]
+      );
+
+      return $dbi->getSql();
+   }
+
+
+   /**
+    * Add default join for search
+    *
+    * @since 10.0.0
+    *
+    * @param CommonDBTM $item     Item instance
+    * @param string     $itemtype Type for items to retrieve, defaults to null
+    *
+    * @return array
+    */
+   public static function addSubDefaultJoin(CommonDBTM $item, $itemtype = null) {
+      global $DB;
+
+      if ($item->getType() == static::$itemtype_1) {
+         $link_type = static::$itemtype_2;
+         $link_id    = static::$items_id_2;
+      } else if ($item->getType() == static::$itemtype_2) {
+         $link_type = static::$itemtype_1;
+         $link_id    = static::$items_id_1;
+      } else {
+         $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
+         $link_id = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
+      }
+
+      if (!empty($link_type) && $link_type != 'itemtype') {
+         $link = new $link_type;
+      } else {
+         $link = new static();
+      }
+
+      $link_table = getTableForItemtype($link_type);
+
+      $existing = [];
+      $join = Search::addLeftJoin(
+         $link_type,
+         $link_table,
+         $existing,
+         static::getTable(),
+         $link_id,
+         0,
+         0,
+         ['jointype' => 'child']
+      );
+
+      return $join;
+   }
+
+   /**
+    * Get hidden fields building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormHiddenFields($add = false) {
+      $fields = array_merge(
+         parent::getFormHiddenFields($add), [
+            'itemtype',
+            'items_id'
+         ]
+      );
+      return $fields;
+   }
+
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      $sub_link_item = $this;
+      if ($item->getType() == $sub_link_item::$itemtype_1) {
+         $link_type = $sub_link_item::$itemtype_2;
+      } else if ($item->getType() == $sub_link_item::$itemtype_2) {
+         $link_type = $sub_link_item::$itemtype_1;
+      } else {
+         $link_type = ($sub_link_item::$itemtype_1 != 'itemtype' ? $sub_link_item::$itemtype_1 : $sub_link_item::$itemtype_2);
+      }
+
+      $link = new $link_type;
+      $search = new \Search($link, []);
+      $search_data =  $search->getData([
+         'item'      => $item,
+         'sub_item'  => $sub_link_item
+      ]);
+
+      return $search_data['data']['totalcount'];
+   }
 }

@@ -1,0 +1,58 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% set actortypes = {
+   'requester': __('Requester'),
+   'watcher': __('Watcher'),
+   'assignee': __('Assigned to')
+} %}
+<div class="row">
+   {% for actortype, actorlabel in actortypes %}
+   <div class="col-md-4">
+      <div class="card">
+         <div class="card-header with-border">
+            <h3>{{ actorlabel }}</h3>
+         </div>
+      </div>
+      <div class="card-body">
+         {% set element = {
+            'type': 'select',
+            'name': 'users_id_' ~ actortype,
+            'itemtype': 'User',
+            'itemtype_name': call_static('User', 'getTypeName'),
+            'values': {},
+            'change_func': 'onDdActorChange',
+            'extra_end': '<div class="user_infos" style="display:none"><a target="_blank" href="URL">' ~ __('Processing') ~ ' <span class="label label-primary"></span></a></div>'
+         } %}
+         {% include "elements/select.twig" with {'element':  element, 'glpi_form': glpi_form} %}
+      </div>
+   </div>
+   {% endfor %}
+</div>

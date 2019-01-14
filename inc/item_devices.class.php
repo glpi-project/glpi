@@ -489,12 +489,14 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if ($item->canView()) {
          $nb = 0;
          if (in_array($item->getType(), self::getConcernedItems())) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                foreach (self::getItemAffinities($item->getType()) as $link_type) {
                   $nb   += countElementsInTable($link_type::getTable(),
                                                 ['items_id'   => $item->getID(),
@@ -506,7 +508,7 @@ class Item_Devices extends CommonDBRelation {
                                         $nb);
          }
          if ($item instanceof CommonDevice) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                $deviceClass     = $item->getType();
                $linkClass       = $deviceClass::getItem_DeviceType();
                $table           = $linkClass::getTable();
@@ -519,6 +521,21 @@ class Item_Devices extends CommonDBRelation {
          }
       }
       return '';
+   }
+
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      //TODO: Items tab
+      $count = 0;
+      foreach (self::getItemAffinities($item->getType()) as $link_type) {
+         $count += countElementsInTable(
+            $link_type::getTable(), [
+               'items_id'   => $item->getID(),
+               'itemtype'   => $item->getType(),
+               'is_deleted' => 0
+            ]
+         );
+      }
+      return $count;
    }
 
 
@@ -1456,5 +1473,35 @@ class Item_Devices extends CommonDBRelation {
       $link = "$dir/front/item_device.php?itemtype=$itemtype";
 
       return $link;
+   }
+
+   public static function addSubDefaultJoin(CommonDBTM $item, $itemtype = null) {
+      $sub_link_item = new $itemtype;
+      if ($item->getType() == static::$itemtype_1) {
+         $link_type = static::$itemtype_2;
+         $link_id = static::$items_id_2;
+      } else if ($item->getType() == static::$itemtype_2) {
+         $link_type = static::$itemtype_1;
+         $link_id = static::$items_id_1;
+      } else {
+         $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
+         $link_id = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
+      }
+
+      $link_table = getTableForItemtype($link_type);
+
+      $existing = [];
+      $join = Search::addLeftJoin(
+         $link_type,
+         $link_table,
+         $existing,
+         static::getTable(),
+         $link_id,
+         0,
+         0,
+         ['jointype' => 'child']
+      );
+
+      return $join;
    }
 }

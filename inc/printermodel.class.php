@@ -46,7 +46,6 @@ class PrinterModel extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-
       // Temporary solution to clean wrong updated items
       $this->deleteChildrenAndRelationsFromDb(
          [

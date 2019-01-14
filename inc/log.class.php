@@ -78,11 +78,13 @@ class Log extends CommonDBTM {
    }
 
 
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
             $nb = countElementsInTable('glpi_logs',
                                        ['itemtype' => $item->getType(),
                                         'items_id' => $item->getID()]);
@@ -1240,4 +1242,14 @@ class Log extends CommonDBTM {
       return $values;
    }
 
+   /**
+    * Get display type for sub item
+    *
+    * @since 10.0.0
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_SPEC;
+   }
 }

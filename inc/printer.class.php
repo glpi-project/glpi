@@ -228,7 +228,6 @@ class Printer  extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-
       global $DB;
 
       $DB->update(

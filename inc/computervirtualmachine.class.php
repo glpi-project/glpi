@@ -57,12 +57,13 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate
           && ($item->getType() == 'Computer')
           && Computer::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
             $nb = countElementsInTable(self::getTable(),
                                       ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
          }
@@ -615,4 +616,36 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       return $tab;
    }
+
+   public function maybeRecursive() {
+      return false;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = parent::getFormFields() + [
+         'vcpu'   => [
+            'label'     => __('Number of CPU'),
+            'htmltype'  => 'number'
+         ],
+         'ram'     => [
+            'label'     => sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio')),
+            'htmltype'  => 'number'
+         ]
+      ];
+      return $fields;
+   }
+
 }

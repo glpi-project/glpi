@@ -1950,6 +1950,18 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\EventDispatcher\\EventDispatcher' ],
                [ 'name'    => 'symfony/yaml',
                  'check'   => 'Symfony\\Component\\Yaml\\Yaml' ],
+               [ 'name'    => 'doctrine/annotations',
+                 'check'   => 'Doctrine\Common\Annotations\Annotation' ],
+               [ 'name'    => 'slim/slim',
+                 'check'   => 'Slim\Slim' ],
+               [ 'name'    => 'slim/twig-view',
+                 'check'   => 'Slim\Views\Twig' ],
+               [ 'name'    => 'twig/extensions',
+                 'check'   => 'Twig\Extensions\ArrayExtension' ],
+               [ 'name'    => 'kanellov/slim-twig-flash',
+                 'check'   => 'Knlv\Slim\Views\TwigMessages' ],
+               [ 'name'    => 'runcmf/runtracy',
+                 'check'   => 'RunTracy\Middlewares\TracyMiddleware' ],
       ];
       if ($all || PHP_VERSION_ID < 70000) {
          $deps[] = [

@@ -101,7 +101,7 @@ Session::loadLanguage();
 header("Content-Type: text/html; charset=UTF-8");
 
 echo "<!DOCTYPE html>";
-echo "<html lang='fr'>";
+echo "<html lang='fr' class='legacy'>";
 echo "<head>";
 echo "<meta charset='utf-8'>";
 echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";

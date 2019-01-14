@@ -116,10 +116,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    Toolbox::setDebugMode();
 
-   if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
-      Html::redirect($_SESSION["glpiroot"]);
-   }
-
    // Override cfg_features by session value
    foreach ($CFG_GLPI['user_pref_field'] as $field) {
       if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
@@ -128,6 +124,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    // Check maintenance mode
+   // TODO: maintenance may be a middleware, to not block command line
    if (isset($CFG_GLPI["maintenance_mode"])
        && $CFG_GLPI["maintenance_mode"]
        && !isset($dont_check_maintenance_mode)) {
@@ -158,6 +155,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
    // Check version
+   // TODO: middleware?
    if ((!isset($CFG_GLPI['dbversion']) || (trim($CFG_GLPI["dbversion"]) != GLPI_SCHEMA_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 

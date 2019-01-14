@@ -32,9 +32,13 @@
 
 namespace Glpi;
 
+use Glpi\Application\Router;
 use Glpi\Cache\SimpleCache;
+use Glpi\Controller\ControllerInterface;
+use Glpi\DependencyInjection\RegisterControllersPass;
 use Glpi\EventDispatcher\EventDispatcher;
 use Glpi\EventDispatcher\EventSubscriberInterface;
+use Slim\Http\Environment;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -43,7 +47,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
-use Config;
 use DBmysql;
 use Plugin;
 use Session;
@@ -154,6 +157,11 @@ class Kernel
             )
         );
 
+        // Register routes
+        $container->registerForAutoconfiguration(ControllerInterface::class)
+            ->addTag('glpi.controller');
+        $container->addCompilerPass(new RegisterControllersPass());
+
         $loader->load('services.yaml');
 
         $this->loadPluginsServices($container);
@@ -198,7 +206,14 @@ class Kernel
 
         global $CFG_GLPI;
         if (!isset($CFG_GLPI["root_doc"])) {
-            Config::detectRootDoc();
+            \Config::detectRootDoc();
+        }
+
+        // Force base path on router. This is required for legacy code that use router to
+        // generate routes while Slim app is not "runned".
+        $router = $this->container->get('router', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+        if ($router instanceof Router && $router->getBasePath() == '') {
+            $router->setBasePath($CFG_GLPI["root_doc"] . '/public/index.php');
         }
 
         if (session_status() === PHP_SESSION_NONE) {
@@ -209,14 +224,6 @@ class Kernel
             }
             Session::setPath();
             Session::start();
-        }
-
-        $db = $this->container->get(
-            'db',
-            ContainerInterface::NULL_ON_INVALID_REFERENCE
-        );
-        if ($db instanceof DBmysql && $db->connected) {
-            Config::loadLegacyConfiguration(false);
         }
     }
 
@@ -229,11 +236,10 @@ class Kernel
      */
     private function defineSyntheticServices(ContainerInterface $container)
     {
-        // Inject DB definition.
         $container->set(DBmysql::class, $this->getDbInstance());
-
-        // Inject cache definition
         $container->set(SimpleCache::class, $this->getCacheInstance());
+        $container->set(Config::class, $this->getConfigInstance());
+        $container->set('environment', $this->getEnvironmentInstance());
     }
 
     /**
@@ -352,8 +358,37 @@ class Kernel
     {
         global $GLPI_CACHE;
         if (!($GLPI_CACHE instanceof SimpleCache)) {
-            $GLPI_CACHE = Config::getCache('cache_db');
+            $GLPI_CACHE = \Config::getCache('cache_db');
         }
         return $GLPI_CACHE;
+    }
+
+    /**
+     * Get application config instance.
+     *
+     * Returns global variable reference to update service if variable is redefined.
+     *
+     * @return Config
+     */
+    private function getConfigInstance(): Config
+    {
+        global $CFG_GLPI;
+
+        $db = $this->getDbInstance();
+        if ($db->connected) {
+            \Config::loadLegacyConfiguration(false);
+        }
+
+        return new Config($CFG_GLPI);
+    }
+
+    /**
+     * Get application environment instance.
+     *
+     * @return Environment
+     */
+    private function getEnvironmentInstance(): Environment
+    {
+        return new Environment($_SERVER);
     }
 }

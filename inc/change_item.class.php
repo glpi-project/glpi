@@ -211,12 +211,13 @@ class Change_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Change' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = self::countForMainItem($item);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
@@ -224,14 +225,14 @@ class Change_Item extends CommonDBRelation{
             case 'User' :
             case 'Group' :
             case 'Supplier' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
+               if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                   $nb = self::countForItem($item);
                }
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
 
             default :
                if (Session::haveRight("change", Change::READALL)) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                      // Direct one
                      $nb = self::countForItem($item);
                      // Linked items

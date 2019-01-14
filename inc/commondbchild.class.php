@@ -94,6 +94,18 @@ abstract class CommonDBChild extends CommonDBConnexity {
       return null;
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      global $DB;
+
+      $criteria = self::getSQLCriteriaToSearchForItem($item->getType(), $item->fields['id']);
+      if ($criteria !== null) {
+         $criteria['COUNT'] = 'cpt';
+         $result = $DB->request($criteria)->next();
+         return (int)$result['cpt'];
+      }
+      return null;
+   }
+
 
    /**
     * @since 0.84
@@ -858,5 +870,50 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       return $this->update($input);
+   }
+
+   /**
+    * Add default where for search
+    *
+    * @since 10.0.0
+    *
+    * @param CommonDBTM $item Item instance
+    * @param boolean    $self Condition is to add on current object itself
+    *
+    * @return array
+    */
+   public static function addSubDefaultWhere(CommonDBTM $item, $self = false) {
+      global $DB;
+
+      $item_type  = $item->getType();
+      $where_id   = static::$items_id;
+
+      $current_table = static::getTable();
+      $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
+
+      if ($DB->fieldExists(static::getTable(), 'itemtype') && $self === false) {
+         $condition .= ' AND ' . $current_table . '.itemtype = "' . $DB->escape($item_type) . '"';
+      }
+
+      return $condition;
+   }
+
+   /**
+    * Get hidden fields building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormHiddenFields($add = false) {
+      $fields = array_merge(
+         parent::getFormHiddenFields($add), [
+            'itemtype',
+            'items_id'
+         ]
+      );
+      return $fields;
    }
 }

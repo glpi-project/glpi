@@ -34,7 +34,7 @@
 include ('../inc/includes.php');
 
 echo "<!DOCTYPE html>";
-echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
+echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\" class=\"legacy\">";
 ?>
 
 <head>

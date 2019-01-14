@@ -689,6 +689,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for Template
       if ($item->can($item->getField('id'), READ)) {
@@ -699,7 +700,7 @@ class Computer_Item extends CommonDBRelation{
             case 'Peripheral' :
             case 'Monitor' :
                if (Computer::canView()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                      $nb = self::countForItem($item);
                   }
                   return self::createTabEntry(_n('Connection', 'Connections', Session::getPluralNumber()),
@@ -712,7 +713,7 @@ class Computer_Item extends CommonDBRelation{
                    || Printer::canView()
                    || Peripheral::canView()
                    || Monitor::canView()) {
-                  if ($_SESSION['glpishow_count_on_tabs']) {
+                  if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                      $nb = self::countForMainItem($item);
                   }
                   return self::createTabEntry(_n('Connection', 'Connections', Session::getPluralNumber()),
@@ -724,6 +725,17 @@ class Computer_Item extends CommonDBRelation{
       return '';
    }
 
+   protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      switch ($item->getType()) {
+         case 'Phone' :
+         case 'Printer' :
+         case 'Peripheral' :
+         case 'Monitor' :
+            return self::countForItem($item);
+         case 'Computer':
+            return self::countForMainItem($item);
+      }
+   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 

@@ -92,7 +92,6 @@ class Monitor extends CommonDBTM {
       return $ong;
    }
 
-
    /**
     * @see CommonDBTM::prepareInputForAdd()
    **/

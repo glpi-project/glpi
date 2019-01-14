@@ -1,0 +1,147 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% set glpi_form = {
+   'boxed': true,
+   'form_class': ''
+}|merge(glpi_form) %}
+<form class="glpi_form{% if glpi_form.boxed %} container form-horizontal{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
+{% block form_header %}
+   {% if glpi_form.header is not defined or glpi_form.header == true %}
+   <header class="card-header with-border">
+      {% if glpi_form.header_title is defined %}
+         {{ glpi_form.header_title }}
+      {% else %}
+         {% if withtemplate is defined and withtemplate == 2 and item.isNewID() %}
+            {% include "elements/hidden.twig" with {'element': {'name': 'template_name', 'value': item.fields['template_name']}} %}
+            {{ __('Created from the template %s')|format(item.fields['template_name']) }}
+         {% elseif withtemplate is defined and withtemplate == 1 %}
+            {% include "elements/hidden.twig" with {'element': {'name': 'is_template', 'value': 1}} %}
+            {% include "elements/input.twig" with {'element': {'type': 'text', 'name': 'template_name', 'label': __('Template name'), 'required': true}, 'notag': true} %}
+               {#Html::autocompletionTextField(
+                  $this,
+                  'template_name',
+                  [
+                     'size'      => 25,
+                     'required'  => true,
+                     'rand'      => $rand
+                  ]
+               );#}
+         {% endif %}
+      {% endif %}
+
+      {% if call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign() %}
+         {% if item.fields.entities_id is defined %}
+            {# FIXME: is this oe required? isEntityAssign would be enough #}
+            {{ call_static('Dropdown', 'getDropdownName', ["glpi_entities", item.fields.entities_id]) }}
+         {% endif %}
+
+         {% if item.maybeRecursive() %}
+            {# if ($params['canedit']) { #}
+               {% if item is instanceof('CommonDBChild') %}
+                  {# CommonDBChild : entity data is get or copy from parent #}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Dropdown', 'getYesNo', [item.isRecursive()]) }}
+                  {% if item.fields.is_recursive is defined %}
+                     {% include "elements/hidden.twig" with {
+                        'element': {
+                           'name': 'is_recursive',
+                           'value': item.fields.is_recursive
+                        }
+                     } %}
+                  {% endif %}
+                  {% set comment = __("Can't change this attribute. It's inherited from its parent.") %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Html', 'showToolTip', [comment]) }}
+               {% elseif not item.can(item.id, 'recursive') %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Dropdown', 'getYesNo', [item.fields.is_recursive]) }}
+                  {% set comment = __('You are not allowed to change the visibility flag for child entities.') %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Html', 'showToolTip', [comment]) }}
+               {% elseif not item.canUnrecurs() %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Dropdown', 'getYesNo', [item.fields.is_recursive]) }}
+                  {% set comment = __('Flag change forbidden. Linked items found.') %}
+                  {# todo replace with a Twig macro #}
+                  {{ call_static('Html', 'showToolTip', [comment]) }}
+               {% else %}
+                  {% set comment = __('Change visibility in child entities') %}
+                  {% include "elements/yesno.twig" with {'element': {'name': 'is_recursive', 'elements': {'value': item.fields.is_recursive}, 'label': {'label': __('Child entities'), 'title': comment}}} %}
+               {% endif %}
+            {#% else %}
+                {{ call_static('Dropdown', 'getYesNo', [item.fields.is_recursive]) }}
+            {% endif %#}
+         {% endif %}
+      {% else %}
+         {% include "elements/hidden.twig" with {
+            'element': {
+               'name': 'is_recursive',
+               'value': 0
+            }
+         } %}
+      {% endif %}
+
+   </header>
+   {% endif %}
+
+   {% block form_content %}
+   <fieldset class="row">
+      {% for element in glpi_form.elements %}
+         {% set tpl = element.type|default('input') %}
+         {#% set tpl = 'input' %}
+         {% if element.type == 'password' %}
+            {% set tpl = 'password' %}
+         {% endif %#}
+         {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': glpi_form} %}
+      {% endfor %}
+   </fieldset>
+   {% endblock %}
+
+   {% if glpi_form.extra_header is defined  %}{{ glpi_form.extra_header|raw  }}{% endif %}
+   {% if glpi_form.extra_footer is defined  %}{{ glpi_form.extra_footer|raw  }}{% endif %}
+   {% if glpi_form.footer is not defined or glpi_form.footer == true %}
+   {% endif %}
+{% endblock %}
+   {% include "elements/hidden.twig" with {'element': {'name': '_glpi_csrf_token', 'value': call_static('Session', 'getNewCSRFToken')}} %}
+{% if glpi_form.submit is not defined or glpi_form.submit != false %}
+   <div class="{% if glpi_form.boxed %}card-footer{% endif %}">
+      {% include "elements/submit.twig" with {
+         'form_class': 'center',
+         'notag': true,
+         'element': {
+            'name': 'submit',
+            'value': glpi_form.submit_label|default(__('Post')),
+            'width': glpi_form.columns|default(null)
+         }
+      } %}
+   </div>
+{% endif %}
+</form>
