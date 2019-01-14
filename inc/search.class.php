@@ -5851,8 +5851,8 @@ JAVASCRIPT;
                if ($data[$ID][0]['is_active']) {
                   return "<a href='reservation.php?reservationitems_id=".
                                           $data["refID"]."' title=\"".__s('See planning')."\">".
-                                          "<img src=\"".$CFG_GLPI["root_doc"].
-                                          "/pics/reservation-3.png\" alt=''></a>";
+                                          "<i class='far fa-calendar-alt'></i>";
+                                          "<span class='sr-only'>".__('See planning')."</span></a>";
                } else {
                   return "&nbsp;";
                }

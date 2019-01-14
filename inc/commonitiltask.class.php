@@ -1543,7 +1543,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                     ['title'  => __('Availability')]);
 
       echo "<br />";
-      echo "<i class='fas fa-users' aria-hidden></i>&nbsp;";
+      echo "<i class='fas fa-users' aria-hidden='true'></i>&nbsp;";
       echo _n('Group', 'Groups', 1)."&nbsp;";
       $params     = [
          'name'      => "groups_id_tech",

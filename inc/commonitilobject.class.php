@@ -3542,8 +3542,9 @@ abstract class CommonITILObject extends CommonDBTM {
                   $icontitle = __s('Group in charge of the ticket');
                   break;
             }
-            return  "<img src='".$CFG_GLPI['root_doc']."/pics/group.png'
-                      alt=\"$icontitle\" title=\"$icontitle\">";
+
+            return "<i class='fas fa-users' title='$icontitle'></i>" .
+                "<span class='sr-only'>$icontitle</span>";
 
          case 'supplier' :
             $icontitle = __('Supplier');
@@ -6650,7 +6651,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
             echo "<div class='groups_id_tech'>";
             $group->getFromDB($item_i['groups_id_tech']);
-            echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+            echo "<i class='fas fa-users' aria-hidden='true'></i>&nbsp;";
             echo $group->getLink()."&nbsp;";
             echo Html::showToolTip($group->getComments(),
                                    ['link' => $group->getLinkURL()]);

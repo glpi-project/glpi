@@ -1124,7 +1124,8 @@ class Reservation extends CommonDBChild {
                   echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                         $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
                         __s('See planning')."\">";
-                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt=''>".
+                  echo "<i class='far fa-calendar-alt'></i>";
+                  echo "<span class='sr-only'>".__('See planning')."</span>";
                        "</a>";
                } else {
                   echo "&nbsp;";
@@ -1183,7 +1184,8 @@ class Reservation extends CommonDBChild {
                   echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                         $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
                         __s('See planning')."\">";
-                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt=''>";
+                  echo "<i class='far fa-calendar-alt'></i>";
+                  echo "<span class='sr-only'>".__('See planning')."</span>";
                   echo "</a>";
                } else {
                   echo "&nbsp;";
@@ -1290,9 +1292,10 @@ class Reservation extends CommonDBChild {
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;".
-                  "annee_courante=$annee' title=\"".__s('See planning')."\"><img src=\"".
-                  $CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
-            echo "</td></tr>\n";
+                  "annee_courante=$annee' title=\"".__s('See planning')."\">";
+            echo "<i class='far fa-calendar-alt'></i>";
+            echo "<span class='sr-only'>".__('See planning')."</span>";
+            echo "</a></td></tr>\n";
          }
       }
       echo "</table></div>\n";
@@ -1374,7 +1377,8 @@ class Reservation extends CommonDBChild {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
                   "title=\"".__s('See planning')."\">";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png' alt='' title=''></a>";
+            echo "<i class='far fa-calendar-alt'></i>";
+            echo "<span class='sr-only'>".__('See planning')."</span>";
             echo "</td></tr>\n";
          }
       }
