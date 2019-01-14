@@ -1532,10 +1532,9 @@ abstract class CommonITILTask  extends CommonDBTM {
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php"];
       User::dropdown($params);
 
-      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
-      echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
-             title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
-             class='calendrier'>";
+      echo " <a href='#' title=\"".__s('Availability')."\" onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
+      echo "&nbsp;<i class='far fa-calendar-alt'></i>";
+      echo "<span class='sr-only'>".__('Availability')."</span>";
       echo "</a>";
       Ajax::createIframeModalWindow('planningcheck'.$rand,
                                     $CFG_GLPI["root_doc"].
@@ -1544,7 +1543,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                     ['title'  => __('Availability')]);
 
       echo "<br />";
-      echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+      echo "<i class='fas fa-users' aria-hidden='true'></i>&nbsp;";
       echo _n('Group', 'Groups', 1)."&nbsp;";
       $params     = [
          'name'      => "groups_id_tech",
