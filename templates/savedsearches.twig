@@ -1,0 +1,295 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends (is_xhr ? 'ajax' : 'glpi_page') ~ ".twig" %}
+
+{% macro displaySavedSearchType(item, searches) %}
+    {% if searches|length %}
+        {% set current_type = -1 %}
+        {% set current_type_name = constant('NOT_AVAILABLE') %}
+
+        {% for key, fields in searches %}
+            {% if current_type != fields.itemtype %}
+                {% set current_type = fields.itemtype %}
+                {% set current_type_name = (current_type == 'AllAssets' ? __('Global') : item.getTypeName ) %}
+
+                {% if current_type == 'AllAssets' %}
+                    {% set current_type_name = __('Global') %}
+                {% else %}
+                    {% set sitem = getitem(current_type) %}
+                    {% set current_type_name = sitem.getTypeName(call_static('Session', 'getPluralNumber')) %}
+                {% endif %}
+            {% endif %}
+
+            {% set loaded = item.getFromResultSet(fields) %}
+            {% set is_private = fields.is_private == 1 %}
+            {% set is_default = fields.IS_DEFAULT is not empty %}
+            <tr
+                class="tab_bg_1{% if is_private %} private{% endif %}"
+                {% if is_private %} data-position="{{loop.index0 }}" data-id="{{ fields.id }}"{% endif %}
+            >
+                <td class='small no-wrap sort'></td>
+                <td class='small no-wrap'>
+                    <a
+                        class="default fa fa-star bookmark_{% if is_default %}default{% else %}record{% endif %}"
+                        href="{{ path_for('toggle-default-saved-search', {'id': fields.id}) }}"
+                        title="{% if is_default %}{{ __('Default search') }}{% else %}{{ __('Not default search') }}{% endif %}"
+                    >
+                        <span class="sr-only">{% if is_default %}{{ __('Default search') }}{% else %}{{ __('Not default search') }}{% endif %}</span>
+                    </a>
+                </td>
+                <td>
+                    <a
+                        class='savedsearchlink'
+                        href="{{ path_for('load-saved-search', {'id': fields.id}) }}"
+                        title="{% if is_private %}{{ __s('Click to load or drag and drop to reorder') }}{% else %}{{ __s('Click to load') }}{% endif %}"
+                    >
+                        {{ __('%1$s on %2$s')|format(fields.name, current_type_name) }}
+                        {% if glpishow_count_on_tabs %}
+                            {% set data = item.execute() %}
+                            {% if data.data.totalcount is defined %}
+                                {% set count = data.data.totalcount %}
+                            {% else %}
+                                {% set info_message = (fields.do_count == constant('SavedSearch::COUNT_NO'))
+                                    ? __s('Count for this saved search has been disabled.')
+                                    : __s('Counting this saved search would take too long, it has been skipped.')
+                                %}
+                                {% set count = '<span class="fa fa-info-circle" title="' ~ info_message ~ '"></span>' %}
+                            {% endif %}
+                            <span class="badge pull-right bg-blue primary-bg primary-fg count">{{ count|raw }}</span></a>
+                        {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr class='tab_bg_1'>
+             <td colspan='3'>
+                {{ __('You have not recorded any %1$s yet')|format(item.getTypeName(1)) }}
+            </td>
+        </tr>
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+    {% import _self as ssearch %}
+    <div class="content">
+    <div class="card no-border">
+        <div class="card-header">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-outline-secondary" id="clear_filter_savedsearch" type="button" title="{{ __('Clear filter') }}">
+                        <i class="fas fa-backspace"></i>
+                        <span class="sr-only">{{ __('Clear') }}</span>
+                    </button>
+                </span>
+                <input type="text" class="form-control" id="filter_savedsearch" placeholder="{{ __('Filter list') }}" />
+            </div><!-- /input-group -->
+        </div>
+        <div class="card-body">
+        <table class="table table-stripped">
+            <thead>
+                <tr>
+                    <th colspan='3' class='search_header'>
+                    </th>
+                </tr>
+            </thead>
+            <thead>
+                <tr>
+                    <th colspan='3' class='private_header'>
+                        {{ _n('Private %1$s', 'Private %1$s', searches.private|length)|format(item.getTypeName(searches.private|length)) }}
+                        <i class='pull-right toggle fa fa-chevron-circle-up' title="{{ __('Hide/Show elements') }}"></i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ ssearch.displaySavedSearchType(item, searches.private) }}
+            </tbody>
+    {% if item.canView() %}
+            <thead>
+                <tr>
+                    <th colspan='3'>
+                        {{ _n('Public %1$s', 'Public %1$s', searches.public|length)|format(item.getTypeName(searches.public|length)) }}
+                        <i class='pull-right toggle fa fa-chevron-circle-up' title="{{ __('Hide/Show elements') }}"></i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ ssearch.displaySavedSearchType(item, searches.public) }}
+            </tbody>
+    {% endif %}
+        </table>
+        </div>
+    </div>
+    {% if is_xhr %}
+        {{ block('javascripts') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {% if not is_xhr %}
+        {{ parent() }}
+    {% endif %}
+    <script type="text/javascript">
+    var _bookmarksLoaded = function() {
+        $('.countSearches').on('click', function(e) {
+            e.preventDefault();
+            var _this = $(this);
+            var _dest = _this.closest('tr').find('span.count');
+            $.ajax({
+                url: _this.attr('href'),
+                beforeSend: function() {
+                    var _img = '<span id="loading"><img src="' + CFG_GLPI.root_doc + '/pics/spinner.gif" alt="{{ __s('Loading...') }}"/></span>';
+                    _dest.append(_img);
+                },
+                success: function(res) {
+                    _dest.html(' (' + res.count + ')');
+                },
+                complete: function() {
+                    $('#loading').remove();
+                }
+            });
+        });
+
+        $('.slidepanel .default').on('click', function(e) {
+            e.preventDefault();
+            var _this = $(this);
+            var _currentclass = (_this.hasClass('bookmark_record') ? 'bookmark_record' : 'bookmark_default');
+            $.ajax({
+                url: _this.attr('href'),
+                beforeSend: function() {
+                    _this
+                    .removeClass(_currentclass)
+                    .addClass('fa-spinner fa-spin')
+                },
+                success: function(res) {
+                    $('.bookmark_default').removeClass('bookmark_default');
+                    if (_currentclass == 'bookmark_record') {
+                       _this.addClass('bookmark_default');
+                    }
+                },
+                error: function() {
+                    alert('{{ __s('Default bookmark has not been changed!') }}');
+                    _this.addClass(_currentclass);
+                },
+                complete: function() {
+                    _this.removeClass('fa-spin').removeClass('fa-spinner');
+                    $.ajax({
+                        url: '{{ path_for('messages') }}',
+                        method: "GET",
+                        success: function (message) {
+                              $('body').append(message);
+                              _initFlashMessage();
+                        }
+                    });
+                }
+            });
+        });
+
+        $('.slidepanel .toggle').on('click', function() {
+            var _this = $(this);
+            var _elt = _this.parents('thead').next('tbody');
+            _elt.toggle();
+            if (_elt.is(':visible')) {
+                _this.removeClass('fa-chevron-circle-down')
+                    .addClass('fa-chevron-circle-up');
+            } else {
+                _this.removeClass('fa-chevron-circle-up')
+                    .addClass('fa-chevron-circle-down');
+            }
+        });
+
+        $('#clear_filter_savedsearch').on('click', function() {
+            $('#filter_savedsearch').val('').trigger('keyup');
+        });
+
+        $('#filter_savedsearch').on('keyup', function() {
+            var _this = $(this);
+            var searchtext = _this.val() + '';
+            var searchparts = searchtext.toLowerCase().split(/\s+/);
+            var _rows = _this.parents('.box').find('tbody tr');
+            _rows.each(function() {
+                var _row = $(this);
+                var rowtext = _row.text().toLowerCase();
+
+                var show = true;
+
+                for (var i=0; i < searchparts.length; i++) {
+                    if (rowtext.indexOf(searchparts[i]) == -1) {
+                    show = false;
+                    break;
+                    }
+                }
+
+                if (show) {
+                    _row.show();
+                } else {
+                    _row.hide();
+                }
+            });
+        });
+
+        $('.slidepanel .contents table').sortable({
+            items: 'tr.private',
+            placeholder: 'ui-state-highlight',
+            create: function(event, ui) {
+                $('tr.private td:first-child').each(function() {
+                    $(this).prepend('<span class="drag"><img src="' + CFG_GLPI.root_doc + '/pics/drag.png" alt=""/></span>');
+                });
+            },
+            stop: function (event, ui) {
+                var _ids = $('tr.private').map(function(idx, ele) {
+                    return $(ele).data('id');
+                }).get();
+
+                $.ajax({
+                    url: '{{ path_for('reorder-saved-searches') }}',
+                    method: 'POST',
+                    data: {
+                        ids: _ids
+                    },
+                    beforeSend: function() {
+                        var _img = '<span id="loading"><img src="' + CFG_GLPI.root_doc + '/pics/spinner.gif" alt="{{ __s('Loading...') }}"/></span>';
+                        $('.private_header').prepend(_img);
+                    },
+                    error: function() {
+                        alert('{{ __s('Saved searches order cannot be saved!')  }}');
+                    },
+                    complete: function() {
+                        $('#loading').remove();
+                    }
+                });
+            }
+        });
+    }
+    $(function() {
+        _bookmarksLoaded();
+    });
+    </script>
+{% endblock %}

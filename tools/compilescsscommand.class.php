@@ -83,6 +83,7 @@ class CompileScssCommand extends Command {
 
       if (empty($files)) {
          $files[] = 'main_styles'; // Compile main styles if no file option is set.
+         $files[] = 'glpi-legacy'; // Compile legacy styles if no file option is set.
       }
 
       foreach ($files as $file) {

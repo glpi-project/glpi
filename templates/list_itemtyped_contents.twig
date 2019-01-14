@@ -1,0 +1,46 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+<div class="content nav-tabs-custom">
+   <ul class="nav nav-pills" role="tablist">
+{% for itemtype, itemtype_data in data %}
+      <li class="nav-item">
+         <a class="nav-link{% if loop.first %} active show{% endif %}" href="#{{ itemtype }}" data-toggle="tab">{{ call_static(itemtype, 'getTypeName') }}</a>
+      </li>
+{% endfor %}
+   </ul>
+   <div class="tab-content">
+{% for itemtype, itemtype_data in data %}
+   <div id="{{ itemtype }}" class="tab-pane{% if loop.first %} active {% endif %}">
+   {% include "list_contents.twig" with {'main_header': false, form_header: false, search_data: itemtype_data.search_data, item: itemtype_data.item} %}
+   </div>
+{% endfor %}
+   </div>
+</div>

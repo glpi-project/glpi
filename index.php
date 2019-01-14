@@ -36,6 +36,10 @@ if (version_compare(PHP_VERSION, '7.0.8') < 0) {
    die('PHP >= 7.0.8 required');
 }
 
+if (!isset($_GET['oldui'])) {
+   header('Location: public/index.php');
+   die();
+}
 
 use Glpi\Event;
 
@@ -72,7 +76,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Start the page
    echo "<!DOCTYPE html>\n";
-   echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\" class='loginpage'>";
+   echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\" class='legacy loginpage'>";
    echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
    echo '<meta charset="utf-8"/>'."\n";
    echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
@@ -83,7 +87,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
 
    // Appel CSS
-   echo Html::scss('main_styles');
+   echo Html::scss('glpi-legacy');
    // font awesome icons
    echo Html::css('public/lib/fontawesome-free/css/all.css');
 

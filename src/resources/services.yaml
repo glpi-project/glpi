@@ -28,6 +28,11 @@
 # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------------------------------------------
 #
+imports:
+    - { resource: slim.yaml }
+
+parameters:
+    cache_directory: !php/const GLPI_CACHE_DIR
 
 services:
     _defaults:
@@ -39,21 +44,45 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     Glpi\:
         resource: '%kernel.project_dir%/src/Glpi/*'
-        exclude: '%kernel.project_dir%/src/Glpi/{Event,Kernel.php}'
+        exclude: '%kernel.project_dir%/src/Glpi/{Annotation,DependencyInjection,Event,Kernel.php}'
 
-#### Vendor services bellow
+#### Glpi services below
 
-
-#### Glpi services bellow
+    Glpi\Application\View\TwigView:
+        arguments:
+            - '%kernel.project_dir%/templates'
+            - cache: '%cache_directory%/twig'
+              strict_variables: true
+              auto_reload: true
+              #should be false here and activated on debug mode
+              debug: true
+        calls:
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\GlpiDebug']
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\Locales']
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\Reflection']
+            - method: 'addExtension'
+              arguments: ['@Glpi\Application\View\TwigExtension\RouterExtension']
+            - method: 'addExtension'
+              arguments: ['@Knlv\Slim\Views\TwigMessages']
+            - method: 'addExtension'
+              arguments: ['@Twig_Extension_Debug']
+            - method: 'addExtension'
+              arguments: ['@Twig_Extensions_Extension_I18n']
+            - method: 'addExtension'
+              arguments: ['@Twig_Extension_Profiler']
 
     # Glpi\Cache\SimpleCache service is synthetic as it may be instanciate prior to container compilation
     Glpi\Cache\SimpleCache:
         synthetic: true
 
-#### Vendor services bellow
+    # Glpi\Config service is synthetic as it requires loading of data inside DB
+    Glpi\Config:
+        synthetic: true
 
-
-#### Legacy services bellow
+#### Legacy services below
 
     # DBmysql service is synthetic as it may sometime be unavailable (before install process)
     # and therefore will be added during container compilation process
@@ -63,3 +92,44 @@ services:
     # Following services are manually declared as they cannot be included using an include/exclude rule
     Plugin:
         class: 'Plugin'
+
+#### Vendor services below
+
+    Doctrine\Common\Annotations\Reader:
+        class: 'Doctrine\Common\Annotations\AnnotationReader'
+        arguments:
+            - ~
+            - '@Doctrine\Common\Annotations\AnnotationRegistry' # useless but forces calls on AnnotationRegistry service
+
+    Doctrine\Common\Annotations\AnnotationRegistry:
+        class: 'Doctrine\Common\Annotations\AnnotationRegistry'
+        calls:
+            - method: 'registerAutoloadNamespace'
+              arguments:
+                  - 'Glpi'
+                  - '%kernel.project_dir%/src/'
+
+    Knlv\Slim\Views\TwigMessages:
+        class: 'Knlv\Slim\Views\TwigMessages'
+        arguments:
+            - '@Slim\Flash\Messages'
+
+    Slim\Flash\Messages:
+        class: 'Slim\Flash\Messages'
+
+    Twig_Extension_Debug:
+        class: 'Twig_Extension_Debug'
+
+    Twig_Extensions_Extension_I18n:
+        class: 'Twig_Extensions_Extension_I18n'
+
+    Twig_Extension_Profiler:
+        class: 'Twig_Extension_Profiler'
+        arguments:
+            - '@Twig_Profiler_Profile'
+
+    Twig_Profiler_Profile:
+        class: 'Twig_Profiler_Profile'
+    # 'twig_profile' alias used by RunTracy
+    twig_profile:
+        alias: 'Twig_Profiler_Profile'

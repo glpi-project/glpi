@@ -1573,7 +1573,7 @@ abstract class API extends CommonGLPI {
 
       // call Core Search method
       $search = new \Search(new $itemtype(), $params);
-      $rawdata = $search->getData($itemtype, $params, $params['forcedisplay']);
+      $rawdata = $search->getData();
 
       // probably a sql error
       if (!isset($rawdata['data']) || count($rawdata['data']) === 0) {
@@ -2254,6 +2254,7 @@ abstract class API extends CommonGLPI {
     * @return void
     */
    public function inlineDocumentation($file) {
+        //this should be served from a slim route
       $this->header(true, __("API Documentation"));
       echo Html::css("public/lib/prismjs/themes/prism-coy.css");
       echo Html::script("public/lib/prismjs/components/prism-core.js");

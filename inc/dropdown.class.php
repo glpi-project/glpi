@@ -1212,12 +1212,28 @@ class Dropdown {
          unset($options['display_emptychoice']);
       }
 
+      $values = array_merge($values, self::getLanguages());
+      return self::showFromArray($myname, $values, $options);
+   }
+
+   /**
+    * Get available languages
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public static function getLanguages() {
+      global $CFG_GLPI;
+
+      $languages = [];
       foreach ($CFG_GLPI["languages"] as $key => $val) {
          if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {
-            $values[$key] = $val[0];
+            $languages[$key] = $val[0];
          }
       }
-      return self::showFromArray($myname, $values, $options);
+
+      return $languages;
    }
 
 
@@ -1865,7 +1881,7 @@ class Dropdown {
          $output .= implode('<br>', $to_display);
       } else {
 
-         $output  .= "<select name='$field_name' id='$field_id'";
+         $output  .= "<select name='$field_name' id='$field_id' class='forSelect2'";
 
          if ($param['tooltip']) {
             $output .= ' title="'.Html::entities_deep($param['tooltip']).'"';

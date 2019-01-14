@@ -1,0 +1,38 @@
+{% macro flash_messages() %}
+   {% import _self as glpi %}
+   {% for type in ['info', 'error', 'warning', 'success'] %}
+      {% set class = type %}
+      {% set faicon = type %}
+      {% if type == 'error' %}
+         {% set class = 'danger' %}
+         {% set alert_title = __('Error') %}
+         {% set faicon = 'ban' %}
+      {% endif %}
+      {% if type == 'info' %}
+         {% set alert_title = __('Information') %}
+      {% endif %}
+      {% if type == 'warning' %}
+         {% set alert_title = __('Warning') %}
+      {% endif %}
+      {% if type == 'success' %}
+         {% set alert_title = __('Success') %}
+         {% set faicon = 'check' %}
+      {% endif %}
+      {{ glpi.flash_message(flash(type), class, alert_title, faicon) }}
+   {% endfor %}
+{% endmacro %}
+
+{% macro flash_message(messages, class, title, faicon) %}
+   {% if messages|length > 0 %}
+   <div class="flash alert alert-{{ class }}{% if class != 'danger' %} alert-dismissible{% endif %}">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h4>
+         <i class="fa fa-{{ faicon }}"></i> {{ title }}
+      </h4>
+      {% for msg in messages %}
+      {{ msg }}<br/>
+      {% endfor %}
+   </div>
+   {% endif %}
+{% endmacro %}
+

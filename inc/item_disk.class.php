@@ -56,15 +56,14 @@ class Item_Disk extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
 
       // can exists for template
       if ($item::canView()) {
          $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
+         if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
             $nb = countElementsInTable(
                self::getTable(), [
                   'items_id'     => $item->getID(),
@@ -349,6 +348,68 @@ class Item_Disk extends CommonDBChild {
       echo "</div>";
    }
 
+   public function rawSearchOptions() {
+      $tabs = parent::rawSearchOptions();
+
+      $tabs[] = [
+         'id'     => 2,
+         'table'  => $this->getTable(),
+         'field'  => 'device',
+         'name'   => __('Partition')
+      ];
+
+      $tabs[] = [
+         'id'     => 3,
+         'table'  => $this->getTable(),
+         'field'  => 'mountpoint',
+         'name'   => __('Mount point')
+      ];
+
+      $tabs[] = [
+         'id'              => 4,
+         'table'           => FileSystem::getTable(),
+         'field'           => 'name',
+         'name'            => __('File system'),
+         'datatype'        => 'dropdown',
+         'massiveaction'   => false,
+         'joinparams'      => [
+            'table'  => 'glpi_filesystems',
+         ]
+      ];
+
+      $tabs[] =  [
+         'id'        => 5,
+         'table'     => self::getTable(),
+         'field'     => 'totalsize',
+         'name'      => __('Global size'),
+         'datatype'  => 'number',
+         'unit'      => 'auto'
+      ];
+
+      $tabs[] = [
+         'id'        => 6,
+         'table'     => self::getTable(),
+         'field'     => 'freesize',
+         'name'      => __('Free size'),
+         'datatype'  => 'number',
+         'unit'      => 'auto'
+      ];
+
+      $tabs[] = [
+         'id'                 => 7,
+         'table'              => self::getTable(),
+         'name'               => __('Free percentage'),
+         'datatype'           => 'progressbar',
+         'field'              => 'freepercent',
+         'width'              => 2,
+         'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
+         'computationgroupby' => true,
+         'unit'               => '%',
+      ];
+
+      return $tabs;
+   }
+
    public static function rawSearchOptionsToAdd($itemtype) {
       $tab = [];
 
@@ -408,7 +469,7 @@ class Item_Disk extends CommonDBChild {
          'field'              => 'freepercent',
          'name'               => __('Free percentage'),
          'forcegroupby'       => true,
-         'datatype'           => 'decimal',
+         'datatype'           => 'progressbar',
          'width'              => 2,
          'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
          'computationgroupby' => true,

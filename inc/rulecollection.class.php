@@ -2029,22 +2029,25 @@ class RuleCollection extends CommonDBTM {
 
       if (Session::haveRight("rule_dictionnary_software", READ)) {
          $entries[] = [
-            'label'  => _n('Software', 'Software', 2),
-            'link'   => 'ruledictionnarysoftware.php'
+            'label'        => _n('Software', 'Software', 2),
+            'collection'   => 'Software',
+            'link'         => 'ruledictionnarysoftware.php'
          ];
       }
 
       if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
          $entries[] = [
-            'label'  => _n('Manufacturer', 'Manufacturers', 2),
-            'link'   => 'ruledictionnarymanufacturer.php'
+            'label'        => _n('Manufacturer', 'Manufacturers', 2),
+            'collection'   => 'Manufacturer',
+            'link'         => 'ruledictionnarymanufacturer.php'
          ];
       }
 
       if (Session::haveRight("rule_dictionnary_printer", READ)) {
          $entries[] = [
-            'label'  => _n('Printer', 'Printers', 2),
-            'link'   => 'ruledictionnaryprinter.php'
+            'label'        => _n('Printer', 'Printers', 2),
+            'collection'   => 'Printer',
+            'link'         => 'ruledictionnaryprinter.php'
          ];
       }
 
@@ -2060,23 +2063,29 @@ class RuleCollection extends CommonDBTM {
             'type'      => _n('Model', 'Models', 2),
             'entries'   => [
                [
-                  'label'  => _n('Computer model', 'Computer models', 2),
-                  'link'   => 'ruledictionnarycomputermodel.php'
+                  'label'        => _n('Computer model', 'Computer models', 2),
+                  'collection'   => 'ComputerModel',
+                  'link'         => 'ruledictionnarycomputermodel.php'
                ], [
-                  'label'  => _n('Monitor model', 'Monitor models', 2),
-                  'link'   => 'ruledictionnarymonitormodel.php'
+                  'label'        => _n('Monitor model', 'Monitor models', 2),
+                  'collection'   => 'MonitorModel',
+                  'link'         => 'ruledictionnarymonitormodel.php'
                ], [
-                  'label'  => _n('Printer model', 'Printer models', 2),
-                  'link'   => 'ruledictionnaryprintermodel.php'
+                  'label'        => _n('Printer model', 'Printer models', 2),
+                  'collection'   => 'PrinterModel',
+                  'link'         => 'ruledictionnaryprintermodel.php'
                ], [
-                  'label'  => _n('Device model', 'Device models', 2),
-                  'link'   => 'ruledictionnaryperipheralmodel.php'
+                  'label'        => _n('Device model', 'Device models', 2),
+                  'collection'   => 'PeripheralModel',
+                  'link'         => 'ruledictionnaryperipheralmodel.php'
                ], [
-                  'label'  => _n('Network equipment model', 'Network equipment models', 2),
-                  'link'   => 'ruledictionnarynetworkequipmentmodel.php'
+                  'label'        => _n('Network equipment model', 'Network equipment models', 2),
+                  'collection'   => 'NetworkequimentModel',
+                  'link'         => 'ruledictionnarynetworkequipmentmodel.php'
                ], [
-                  'label'  => _n('Phone model', 'Phone models', 2),
-                  'link'   => 'ruledictionnaryphonemodel.php'
+                  'label'        => _n('Phone model', 'Phone models', 2),
+                  'collection'   => 'PhoneModel',
+                  'link'         => 'ruledictionnaryphonemodel.php'
                ]
             ]
          ];
@@ -2087,23 +2096,29 @@ class RuleCollection extends CommonDBTM {
             'type'      => _n('Type', 'Types', 2),
             'entries'   => [
                [
-                  'label'  => _n('Computer type', 'Computer types', 2),
-                  'link'   => 'ruledictionnarycomputertype.php'
+                  'label'        => _n('Computer type', 'Computer types', 2),
+                  'collection'   => 'ComputerType',
+                  'link'         => 'ruledictionnarycomputertype.php'
                ], [
-                  'label'  => _n('Monitor type', 'Monitor types', 2),
-                  'link'   => 'ruledictionnarymonitortype.php'
+                  'label'        => _n('Monitor type', 'Monitor types', 2),
+                  'collection'   => 'MonitorType',
+                  'link'         => 'ruledictionnarymonitortype.php'
                ], [
-                  'label'  => _n('Printer type', 'Printer types', 2),
-                  'link'   => 'ruledictionnaryprintertype.php'
+                  'label'        => _n('Printer type', 'Printer types', 2),
+                  'collection'   => 'PrinterType',
+                  'link'         => 'ruledictionnaryprintertype.php'
                ], [
-                  'label'  => _n('Device type', 'Device types', 2),
-                  'link'   => 'ruledictionnaryperipheraltype.php'
+                  'label'        => _n('Device type', 'Device types', 2),
+                  'collection'   => 'PeripheralType',
+                  'link'         => 'ruledictionnaryperipheraltype.php'
                ], [
-                  'label'  => _n('Network equipment type', 'Network equipment types', 2),
-                  'link'   => 'ruledictionnarynetworkequipmenttype.php'
+                  'label'        => _n('Network equipment type', 'Network equipment types', 2),
+                  'collection'   => 'NetworkequipmentType',
+                  'link'         => 'ruledictionnarynetworkequipmenttype.php'
                ], [
-                  'label'  => _n('Phone type', 'Phone types', 2),
-                  'link'   => 'ruledictionnaryphonetype.php'
+                  'label'        => _n('Phone type', 'Phone types', 2),
+                  'collection'   => 'PhoneType',
+                  'link'         => 'ruledictionnaryphonetype.php'
                ]
             ]
          ];
@@ -2114,17 +2129,21 @@ class RuleCollection extends CommonDBTM {
             'type'      => _n('Operating system', 'Operating systems', 2),
             'entries'   => [
                [
-                  'label'  => _n('Operating system', 'Operating systems', 2),
-                  'link'   => 'ruledictionnaryoperatingsystem.php'
+                  'label'        => _n('Operating system', 'Operating systems', 2),
+                  'collection'   => 'Operatingsystem',
+                  'link'         => 'ruledictionnaryoperatingsystem.php'
                ], [
-                  'label'  => _n('Service pack', 'Service packs', 2),
-                  'link'   => 'ruledictionnaryoperatingsystemservicepack.php'
+                  'label'        => _n('Service pack', 'Service packs', 2),
+                  'collection'   => 'OperatingsystemServicepack',
+                  'link'         => 'ruledictionnaryoperatingsystemservicepack.php'
                ], [
-                  'label'  => _n('Version', 'Versions', 2),
-                  'link'   => 'ruledictionnaryoperatingsystemversion.php'
+                  'label'        => _n('Version', 'Versions', 2),
+                  'collection'   => 'OperatingsystemVersion',
+                  'link'         => 'ruledictionnaryoperatingsystemversion.php'
                ], [
-                  'label'  => _n('Architecture', 'Architectures', 2),
-                  'link'   => 'ruledictionnaryoperatingsystemarchitecture.php'
+                  'label'        => _n('Architecture', 'Architectures', 2),
+                  'collection'   => 'OperatingsystemArchitecture',
+                  'link'         => 'ruledictionnaryoperatingsystemarchitecture.php'
                ]
             ]
          ];

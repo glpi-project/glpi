@@ -34,7 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-
 /**
  * CommonDevice Class
  * for Device*class
@@ -98,11 +97,18 @@ abstract class CommonDevice extends CommonDropdown {
     *  @since 0.85
    **/
    static function getMenuContent() {
+      global $router;
 
       $menu = [];
       if (self::canView()) {
+         $page = '/front/devices.php';
+         if ($router != null) {
+            $page = $router->pathFor('devices');
+         }
+
          $menu['title'] = static::getTypeName(Session::getPluralNumber());
-         $menu['page']  = '/front/devices.php';
+         $menu['itemtype']  = self::getType();
+         $menu['page']  = $page;
 
          $dps = Dropdown::getDeviceItemTypes();
 

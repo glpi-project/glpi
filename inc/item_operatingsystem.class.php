@@ -48,11 +48,14 @@ class Item_OperatingSystem extends CommonDBRelation {
    }
 
 
+   //TODO: remove with old UI
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      global $IS_TWIG;
+
       $nb = 0;
       switch ($item->getType()) {
          default:
-            if ($_SESSION['glpishow_count_on_tabs']) {
+            if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
                $nb = self::countForItem($item);
             }
             return self::createTabEntry(_n('Operating system', 'Operating systems', Session::getPluralNumber()), $nb);
@@ -665,4 +668,62 @@ class Item_OperatingSystem extends CommonDBRelation {
       $input['is_recursive'] = $item->fields['is_recursive'];
       return $input;
    }
+
+   /**
+    * Get display type for sub item
+    *
+    * @since 10.0.0
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return self::SUBITEM_SHOW_FORM;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = parent::getFormFields() +  [
+         'operatingsystems_id'         => [
+            'label'  => __('Name')
+         ],
+         'operatingsystemversions_id'    => [
+            'label'  => __('Version')
+         ],
+         'operatingsystemarchitectures_id' => [
+            'label'  => __('Architecture')
+         ],
+         'operatingsystemservicepacks_id'   => [
+            'label'  => __('Service pack')
+         ],
+         'operatingsystemkernelversions_id'  => [
+            'label'  => __('Kernel')
+         ],
+         'operatingsystemeditions_id'   => [
+            'label'  => __('Edition')
+         ],
+         'licenseid' => [
+            'label'  => __('Product ID')
+         ],
+         'license_number'   => [
+            'label'  => __('Serial number')
+         ]
+      ];
+
+      $fields = $this->getDbFormFields($fields);
+
+      return $fields;
+   }
+
 }

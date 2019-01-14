@@ -126,7 +126,7 @@ function update0831to084() {
    );
 
    if ($DB->tableExists('glpi_networkportmigrations')) {
-      $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
+      $migration->displayWarning("You should have a look at the \"migration cleaner\" tool", true);
       $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
                                  true);
    }

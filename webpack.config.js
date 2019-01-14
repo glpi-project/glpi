@@ -50,6 +50,12 @@ var config = {
 };
 
 var libs = {
+    'bootstrap': [
+        {
+            context: 'dist',
+            from: '{css/bootstrap.css,js/bootstrap.js}',
+        }
+    ],
     /*
      * Nota:
      * PHP file 'UploadHandler.php' is not fetch when installing with npm and is not available
@@ -76,6 +82,12 @@ var libs = {
         {
             context: 'dist',
             from: '{chartist-plugin-tooltip.css,chartist-plugin-tooltip.js}',
+        }
+    ],
+    '@coreui/coreui': [
+        {
+            context: 'dist',
+            from: '{css/coreui-standalone.css,js/coreui.js}',
         }
     ],
     'diff-match-patch':[
@@ -194,6 +206,18 @@ var libs = {
     'moment': [
         {
             from: '{moment.js,locale/*.js}',
+        }
+    ],
+    'perfect-scrollbar': [
+        {
+            context: 'dist',
+            from: 'perfect-scrollbar.js',
+        }
+    ],
+    'popper.js': [
+        {
+            context: 'dist/umd',
+            from: 'popper.js',
         }
     ],
     'prismjs': [

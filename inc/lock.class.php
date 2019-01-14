@@ -466,6 +466,9 @@ class Lock {
       return '';
    }
 
+   public function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      return;
+   }
 
    /**
     * @param $item            CommonGLPI object
@@ -698,4 +701,14 @@ class Lock {
       }
    }
 
+   /**
+    * Get display type for sub item
+    *
+    * @since 10.0.0
+    *
+    * @return integer
+    */
+   public function getSubItemDisplay() {
+      return CommonDBTM::SUBITEM_SHOW_SPEC;
+   }
 }

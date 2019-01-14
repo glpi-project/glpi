@@ -64,8 +64,11 @@ class Search {
 
    private $db;
    private $item;
+   private $itemtype;
    private $raw_params;
    private $qry_params = [];
+   private $current_page;
+   private $sub_item = false;
 
    /**
     * Constructor
@@ -76,7 +79,15 @@ class Search {
    public function __construct($item, array $params) {
       global $DB;
       $this->db = $DB;
-      $this->item = $item;
+      if ($item instanceof CommonDBTM) {
+         $this->item = $item;
+         $this->itemtype = $item->getType();
+      } else {
+         $this->itemtype = $item;
+         if ($item !== 'AllAssets') {
+            $this->item = new $item;
+         }
+      }
       $this->raw_params = $params;
    }
 
@@ -89,7 +100,8 @@ class Search {
    **/
    public static function show($itemtype) {
       $params = self::manageParams($itemtype, $_GET);
-      $inst = new self(new $itemtype, $params);
+      $item = $itemtype == 'AllAssets' ? $itemtype : new $itemtype;
+      $inst = new self($item, $params);
       echo "<div class='search_page'>";
       $inst->showGenericSearch($itemtype, $params);
       if ($params['as_map'] == 1) {
@@ -100,12 +112,11 @@ class Search {
       echo "</div>";
    }
 
-
    /**
     * Display result table for search engine for an type
     *
     * @param string $itemtype item type to manage
-    * @param array  $params   search params passed to prepareDataForSearch function
+    * @param array  $params   search params passed to prepareDatasForSearch function
     * @param array  $data     data if already processed
     *
     * @return void
@@ -156,6 +167,7 @@ class Search {
       }
       $this->displayData($data);
 
+      //TODO: adapt for new system
       if ($data['data']['totalcount'] > 0) {
          $target = $data['search']['target'];
          $criteria = $data['search']['criteria'];
@@ -324,45 +336,122 @@ class Search {
       }
    }
 
-
    /**
-    * Get datas based on search parameters
+    * Get data
     *
-    * @since 0.85
+    * @param array|false $sub_item Are we looking for a sub item?
     *
-    * @param $itemtype            item type to manage
-    * @param $params              search params passed to prepareDataForSearch function
-    * @param $forcedisplay  array of columns to display (default empty = empty use display pref and search criterias)
-    *
-    * @return data array
-    *
-    * @since 10.0.0 Method has been renamed and is no longer static.
-   **/
-   public function getData($itemtype, $params, array $forcedisplay = []) {
+    * @return array
+    */
+   public function getData($sub_item = false) {
+      $this->sub_item = $sub_item;
+      $itemtype = ($this->item instanceof CommonDBTM ? $this->item->getType() : 'AllAssets');
+      $params = self::manageParams($itemtype, $this->raw_params);
+      if ($params['as_map'] == 1) {
+         $params['criteria'][] = [
+            'link'         => 'AND NOT',
+            'field'        => ($itemtype == 'Location') ? 21 : 998,
+            'searchtype'   => 'contains',
+            'value'        => 'NULL'
+         ];
+         $params['criteria'][] = [
+            'link'         => 'AND NOT',
+            'field'        => ($itemtype == 'Location') ? 20 : 999,
+            'searchtype'   => 'contains',
+            'value'        => 'NULL'
+         ];
+      }
 
-      $data = $this->prepareDataForSearch($itemtype, $params, $forcedisplay);
-      $this->constructSQL($data);
+      if ($this->current_page === null) {
+         $this->current_page = 1;
+      }
+
+      $data = $this->prepareDataForSearch($itemtype, $params, $this->sub_item);
+      $this->constructSQL($data, $this->sub_item);
       $this->constructData($data);
+
+      if (!isset($data['data']['totalcount'])) {
+         Toolbox::logError('Somethng went wrong during search.');
+         return;
+      }
+
+      if ($params['as_map'] != 1) {
+         //no need for pagination with map view
+         $limit = $_SESSION['glpilist_limit'];
+         $count = $data['data']['totalcount'];
+
+         $this->pages = $count / $limit;
+         if ($count > 0) {
+            $last = ceil($count / $limit);
+            $previous = $this->current_page - 1;
+            if ($previous < 1) {
+                $previous = false;
+            }
+
+            $next = $this->current_page +1;
+            if ($next > $last) {
+                $next = $last;
+            }
+         } else {
+            $previous = $next = $first = $last = false;
+         }
+         $pagination = [
+            'start'           => $data['search']['start'],
+            'limit'           => $limit,
+            'count'           => $count,
+            'current_page'    => $this->current_page,
+            'previous_page'   => $previous,
+            'next_page'       => $next,
+            'last_page'       => $last,
+            'pages'           => []
+         ];
+
+         $idepart = $this->current_page - 2;
+         if ($idepart< 1) {
+            $idepart = 1;
+         }
+
+         $ifin = $this->current_page + 2;
+         if ($ifin > $last) {
+            $ifin = $last;
+         }
+
+         for ($i = $idepart; $i <= $ifin; $i++) {
+            $page = [
+               'value' => $i,
+               'title' => preg_replace("(%i)", $i, __("Page %i"))
+            ];
+            if ($i == $this->current_page) {
+               $page['current'] = true;
+               $page['title'] = preg_replace(
+                  "(%i)",
+                  $i,
+                  __("Current page (%i)")
+               );
+            }
+            $pagination['pages'][] = $page;
+         }
+         $data['pagination'] = $pagination;
+      }
 
       return $data;
    }
-
 
    /**
     * Prepare search criteria to be used for a search
     *
     * @since 0.85
     *
-    * @param string  $itemtype     item type
-    * @param array   $params       array of parameters
-    *                              may include sort, order, start, list_limit, deleted, criteria, metacriteria
-    * @param array   $forcedisplay array of columns to display (default empty = empty use display pref and search criterias)
+    * @param string  $itemtype item type
+    * @param array   $params   array of parameters
+    *                          may include sort, order, start, list_limit, deleted, criteria, metacriteria
+    * @param boolean $sub_item Are we looking for a sub item?
     *
     * @return array prepare to be used for a search (include criterias and others needed informations)
     *
-    * @since 10.0.0 Method has been renamed is no longer static
+    * @since 10.0.0 Method has been renamed is no longer static, $forcedisplay has been removed
    **/
-   public function prepareDataForSearch($itemtype, array $params, array $forcedisplay = []) {
+   public function prepareDataForSearch($itemtype, array $params, $sub_item = false) {
       global $CFG_GLPI;
 
       // Default values of parameters
@@ -381,6 +470,7 @@ class Search {
       $p['display_type']        = self::HTML_OUTPUT;
       $p['list_limit']          = $_SESSION['glpilist_limit'];
       $p['massiveactionparams'] = [];
+      $p['forcedisplay']        = [];
 
       foreach ($params as $key => $val) {
          switch ($key) {
@@ -420,6 +510,10 @@ class Search {
 
       $data             = [];
       $data['search']   = $p;
+      $data['real_itemtype'] = $itemtype;
+      if ($sub_item && $sub_item['sub_item'] instanceof CommonDBRelation && $sub_item['sub_item']->getType() == $itemtype) {
+         $itemtype = 'AllAssets';
+      }
       $data['itemtype'] = $itemtype;
 
       // Instanciate an object to access method
@@ -450,7 +544,7 @@ class Search {
       // Add searched items
 
       $forcetoview = false;
-      if (is_array($forcedisplay) && count($forcedisplay)) {
+      if (is_array($p['forcedisplay']) && count($p['forcedisplay'])) {
          $forcetoview = true;
       }
       $data['search']['all_search']  = false;
@@ -462,14 +556,22 @@ class Search {
       $data['meta_toview'] = [];
       if (!$forcetoview) {
          // Add items to display depending of personal prefs
-         $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
+         $pref_itemtype = $itemtype;
+         if ($sub_item && $sub_item['sub_item'] instanceof CommonDBRelation && $sub_item['sub_item']->getType() == $itemtype) {
+            $pref_itemtype = 'AllAssets';
+         }
+         $displaypref = DisplayPreference::getForTypeUser(
+            $pref_itemtype,
+            Session::getLoginUserID(),
+            ($sub_item !== false && count($sub_item))
+         );
          if (count($displaypref)) {
             foreach ($displaypref as $val) {
                array_push($data['toview'], $val);
             }
          }
       } else {
-         $data['toview'] = array_merge($data['toview'], $forcedisplay);
+         $data['toview'] = array_merge($data['toview'], $p['forcedisplay']);
       }
 
       if (count($p['criteria']) > 0) {
@@ -521,7 +623,7 @@ class Search {
          array_unshift($data['toview'], 2);
       }
 
-      $limitsearchopt   = $this->getCleanedOptions($itemtype);
+      $limitsearchopt   = $this->getCleanedOptions($this->itemtype);
       // Clean and reorder toview
       $tmpview = [];
       foreach ($data['toview'] as $val) {
@@ -545,6 +647,13 @@ class Search {
          Toolbox::logWarning(
             'No columns found to display ' . $itemtype
          );
+         global $CONTAINER;
+         $flash = $CONTAINER->get(Slim\Flash\Messages::class);
+         $flash->addMessage(
+            'error',
+            //TRANS: %1$s is an itemtype
+            sprintf('No columns found to display %1$s', $itemtype)
+         );
       }
 
       return $data;
@@ -562,13 +671,14 @@ class Search {
     *
     * @since 0.85
     *
-    * @param array $data array of search datas prepared to generate SQL
+    * @param array            $data     array of search datas prepared to generate SQL
+    * @param CommonDBTM|false $sub_item Are we calling from a sub item?
     *
     * @return void
     *
     * @since 10.0.0 Method is no longer static
    **/
-   public function constructSQL(array &$data) {
+   public function constructSQL(array &$data, $sub_item = false) {
       global $CFG_GLPI, $DB;
 
       if (!isset($data['itemtype'])) {
@@ -622,6 +732,14 @@ class Search {
 
       // Add default join
       $COMMONLEFTJOIN = $this->addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
+
+      $itemtype = $data['itemtype'];
+      $COMMONSUBLEFTJOIN = '';
+      if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultJoin') && $sub_item['sub_item']->getType() !== $itemtype) {
+         $sub = $sub_item['sub_item'];
+         $COMMONSUBLEFTJOIN = $sub::addSubDefaultJoin($sub_item['item'], $itemtype);
+      }
+
       $FROM          .= $COMMONLEFTJOIN;
 
       // Add all table for toview items
@@ -654,7 +772,16 @@ class Search {
       //// 3 - WHERE
 
       // default string
-      $COMMONWHERE = $this->addDefaultWhere($data['itemtype']);
+      $COMMONWHERE = '';
+      if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubDefaultWhere')) {
+         $sub = $sub_item['sub_item'];
+         $COMMONSUBWHERE = $sub::addSubDefaultWhere(
+            $sub_item['item'],
+            $sub_item['sub_item']->getType() == $data['real_itemtype']
+         );
+      } else {
+         $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
+      }
       $first       = empty($COMMONWHERE);
 
       // Add deleted if item have it
@@ -761,10 +888,11 @@ class Search {
             $count = "count(DISTINCT ".$this->db->quoteName("$itemtable.id").")";
          }
          // request currentuser for SQL supervision, not displayed
-         $query_num = "SELECT $count,
+         $query_num_select = "SELECT $count,
                               ". $this->db->quote($_SESSION['glpiname'])." AS currentuser
                        FROM ".$this->db->quoteName($itemtable).
                        $COMMONLEFTJOIN;
+         $query_num = '';
 
          $first     = true;
 
@@ -778,7 +906,8 @@ class Search {
          }
          // Union Search :
          if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-            $tmpquery = $query_num;
+            $tmpquery = $query_num_select . $query_num;
+            $numrows  = 0;
 
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
                $ctable = getTableForItemType($ctype);
@@ -789,6 +918,16 @@ class Search {
                      $query_num  = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
                                                $ctable, $tmpquery);
                      $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
+
+                     if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubSelect')) {
+                        $sub = $sub_item['sub_item'];
+                        $sub_select = $sub::addSubSelect(
+                           $sub_item['item'],
+                           $ctype
+                        );
+                        $query_num .= "AND $ctable.id IN ($sub_select)";
+                     }
+
                      $query_num .= " AND ".$this->db->quoteName("$ctable.id")." IS NOT NULL ";
 
                      // Add deleted if item have it
@@ -830,7 +969,12 @@ class Search {
             }
 
          } else {
-            $data['sql']['count'][] = $query_num;
+            $query_num_select .= $COMMONSUBLEFTJOIN;
+            if (!empty($COMMONSUBWHERE)) {
+               $query_num .= (!empty($query_num) ? " AND ($COMMONSUBWHERE)": " WHERE $COMMONSUBWHERE");
+            }
+
+            $data['sql']['count'][] = $query_num_select . $query_num;
          }
       }
 
@@ -846,6 +990,11 @@ class Search {
             $WHERE = ' WHERE '.$WHERE.' ';
          }
          $first = false;
+      }
+
+      $NOSUBWHERE = $WHERE;
+      if (!empty($COMMONSUBWHERE)) {
+         $WHERE .= (!empty($WHERE) ? " AND ($COMMONSUBWHERE)": " WHERE $COMMONSUBWHERE");
       }
 
       if (!empty($HAVING)) {
@@ -868,9 +1017,16 @@ class Search {
                $tmpquery = "";
                // AllAssets case
                if ($data['itemtype'] == 'AllAssets') {
-                  $tmpquery = $SELECT.", '$ctype' AS TYPE ".
-                              $FROM.
-                              $WHERE;
+                  $tmpquery = "$SELECT, '$ctype' AS TYPE $FROM $NOSUBWHERE";
+
+                  if ($sub_item !== false && method_exists($sub_item['sub_item'], 'addSubSelect')) {
+                     $sub = $sub_item['sub_item'];
+                     $sub_select = $sub::addSubSelect(
+                        $sub_item['item'],
+                        $ctype
+                     );
+                     $tmpquery .= "AND $ctable.id IN ($sub_select)";
+                  }
 
                   $tmpquery .= " AND ".$this->db->quoteName("$ctable.id")." IS NOT NULL ";
 
@@ -897,7 +1053,7 @@ class Search {
                                       ".$this->db->quoteName("$reftable.id")." AS refID, "."
                                       ".$this->db->quoteName("$ctable.entities_id")." AS ENTITY ".
                               $FROM.
-                              $WHERE;
+                              (strpos($QUERY, 'UNION') === false ? $WHERE : $NOSUBWHERE);
                   if ($data['item']->maybeDeleted()) {
                      $tmpquery = str_replace($this->db->quoteName($CFG_GLPI["union_search_type"][$data['itemtype']].".
                                                 is_deleted"),
@@ -936,6 +1092,7 @@ class Search {
       } else {
          $QUERY = $SELECT.
                   $FROM.
+                  $COMMONSUBLEFTJOIN.
                   $WHERE.
                   $GROUPBY.
                   $HAVING.
@@ -1317,16 +1474,18 @@ class Search {
          }
 
          // manage toview column for criteria with meta flag
-         foreach ($data['meta_toview'] as $m_itemtype => $toview) {
-            $searchopt = &$this->getOptions($m_itemtype);
-            foreach ($toview as $opt_id) {
-               $data['data']['cols'][] = [
-                  'itemtype'  => $m_itemtype,
-                  'id'        => $opt_id,
-                  'name'      => $searchopt[$opt_id]["name"],
-                  'meta'      => 1,
-                  'searchopt' => $searchopt[$opt_id],
-               ];
+         if (isset($data['meta_toview'])) {
+            foreach ($data['meta_toview'] as $m_itemtype => $toview) {
+               $searchopt = &$this->getOptions($m_itemtype);
+               foreach ($toview as $opt_id) {
+                  $data['data']['cols'][] = [
+                     'itemtype'  => $m_itemtype,
+                     'id'        => $opt_id,
+                     'name'      => $searchopt[$opt_id]["name"],
+                     'meta'      => 1,
+                     'searchopt' => $searchopt[$opt_id],
+                  ];
+               }
             }
          }
 
@@ -1483,11 +1642,23 @@ class Search {
                );
             }
 
+            if ($val['itemtype'] == 'AllAssets') {
+               $newrow[$val['itemtype'] . '_TYPE'] = ['displayname' => $newrow['TYPE']];
+            }
+
             $data['data']['rows'][$i] = $newrow;
             $i++;
          }
 
          $data['data']['count'] = count($data['data']['rows']);
+         if ($data['itemtype'] == 'AllAssets') {
+            $data['data']['cols'][] = [
+               'itemtype'  => 'AllAssets',
+               'id'        => 'TYPE',
+               'name'      => __('Item type'),
+               'meta'      => 0
+            ];
+         }
       } else {
          echo $DBread->error();
       }
@@ -1846,9 +2017,9 @@ class Search {
                // End Line
                echo self::showEndLine($data['display_type']);
                // Flush ONLY for an HTML display (issue #3348)
-               if ($data['display_type'] == self::HTML_OUTPUT) {
+               /*if ($data['display_type'] == self::HTML_OUTPUT) {
                   Html::glpi_flush();
-               }
+               }*/
             }
 
             // Create title
@@ -2508,7 +2679,8 @@ JAVASCRIPT;
       if (!isset($request['from_meta'])
           || !$request['from_meta']) {
          // First line display add / delete images for normal and meta search items
-         if ($num == 0
+         global $IS_TWIG;
+         if (!$IS_TWIG && $num == 0
              && isset($p['mainform'])
              && $p['mainform']) {
             // Instanciate an object to access method
@@ -5795,7 +5967,7 @@ JAVASCRIPT;
                      $so['datatype'] = 'progressbar';
                   }
 
-                  $progressbar_data = [
+                  $progressbar_pre_data = [
                      'text'         => Html::convDateTime($data[$ID][0]['name']),
                      'percent'      => $percentage,
                      'percent_text' => $percentage_text,
@@ -6257,23 +6429,49 @@ JAVASCRIPT;
                }
                return __('Default value');
             case 'progressbar':
-               if (!isset($progressbar_data)) {
-                  $bar_color = 'green';
-                  $progressbar_data = [
-                     'percent'      => $data[$ID][0]['name'],
-                     'percent_text' => $data[$ID][0]['name'],
-                     'color'        => $bar_color,
-                     'text'         => ''
-                  ];
+               $out = '';
+               for ($k=0; $k < $data[$ID]['count']; $k++) {
+                  if ($data[$ID][$k]['name'] == null) {
+                     continue;
+                  }
+                  if (isset($progressbar_pre_data)) {
+                     $progressbar_data = $progressbar_pre_data;
+                     unset($progressbar_pre_data);
+                  } else {
+                     $bar_color = 'green';
+                     if ($data[$ID][$k]['name'] >= 90) {
+                        $bar_color = 'red';
+                     } else if ($data[$ID][$k]['name'] >= 75) {
+                        $bar_color = 'yellow';
+                     }
+                     $progressbar_data = [
+                        'percent'      => $data[$ID][$k]['name'],
+                        'percent_text' => $data[$ID][$k]['name'],
+                        'color'        => $bar_color,
+                        'text'         => ''
+                     ];
+                  }
+                  global $IS_TWIG;
+                  if ($IS_TWIG) {
+                     $out .= "<div class='progress-group'>";
+                     if (!empty($progressbar_data['text'])) {
+                        $out .= "<span class='progress-text'>{$progressbar_data['text']}</span>";
+                     }
+                     $out .= "<span class='progress-number'>{$progressbar_data['percent_text']}%</span>
+
+                     <div class='progress sm'>
+                        <div class='progress-bar progress-bar-{$progressbar_data['color']}' style='width: {$progressbar_data['percent']}%'></div>
+                     </div>
+                     </div>";
+                  } else {
+                     $out .= "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
+                              border: 1px solid #9BA563; position: relative;' >";
+                     $out .= "<div style='position:absolute;'>&nbsp;{$progressbar_data['percent_text']}%</div>";
+                     $out .= "<div class='center' style='background-color: {$progressbar_data['color']};
+                              width: {$progressbar_data['percent']}%; height: 12px' ></div>";
+                     $out .= "</div>";
+                  }
                }
-
-               $out = "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
-                        border: 1px solid #9BA563; position: relative;' >";
-               $out .= "<div style='position:absolute;'>&nbsp;{$progressbar_data['percent_text']}%</div>";
-               $out .= "<div class='center' style='background-color: {$progressbar_data['color']};
-                        width: {$progressbar_data['percent']}%; height: 12px' ></div>";
-               $out .= "</div>";
-
                return $out;
                break;
          }
@@ -6556,6 +6754,25 @@ JAVASCRIPT;
       return $options;
    }
 
+   static function getTplCleanedOptions($itemtype, $action = READ, $withplugins = true) {
+      $options = self::getCleanedOptions($itemtype, $action, $withplugins);
+      $group = '';
+      $values = [];
+
+      foreach ($options as $key => $val) {
+         // print groups
+         if (!is_array($val)) {
+            $group = $val;
+         } else if (count($val) == 1) {
+            $group = $val['name'];
+         } else {
+            if (!isset($val['nosearch']) || ($val['nosearch'] == false)) {
+               $values[$group][$key] = $val["name"];
+            }
+         }
+      }
+      return $values;
+   }
 
    /**
     *
@@ -6860,11 +7077,10 @@ JAVASCRIPT;
          if (isset($actions['searchopt']['searchtype'])) {
             // Reset search option
             $actions              = [];
-            $actions['searchopt'] = $searchopt[$field_num];
-            if (!is_array($actions['searchopt']['searchtype'])) {
-               $actions['searchopt']['searchtype'] = [$actions['searchopt']['searchtype']];
+            if (!is_array($searchopt[$field_num]['searchtype'])) {
+               $searchopt[$field_num]['searchtype'] = [$searchopt[$field_num]['searchtype']];
             }
-            foreach ($actions['searchopt']['searchtype'] as $searchtype) {
+            foreach ($searchopt[$field_num]['searchtype'] as $searchtype) {
                switch ($searchtype) {
                   case "equals" :
                      $actions['equals'] = __('is');
@@ -6900,6 +7116,7 @@ JAVASCRIPT;
                      break;
                }
             }
+            $actions['searchopt'] = $searchopt[$field_num];
             return $actions;
          }
 
@@ -7318,7 +7535,7 @@ JAVASCRIPT;
             if ($fixed) {
                $out = "<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
             } else {
-               $out = "<div class='center'><table border='0' class='tab_cadrehov'>\n";
+               $out = "<div class='center'><table class='tab_cadrehov table table-hover'>\n";
             }
       }
       return $out;
@@ -7675,6 +7892,20 @@ JAVASCRIPT;
    public function addQueryParam($param) {
       $this->qry_params[] = $param;
       return $this->qry_params;
+   }
+
+   /**
+    * Set page
+    *
+    * @since 10.0.0
+    *
+    * @param integer $page Page
+    *
+    * @return Search
+    */
+   public function setPage($page) {
+      $this->current_page = $page;
+      return $this;
    }
 
    /**

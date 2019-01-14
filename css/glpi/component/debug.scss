@@ -1,0 +1,61 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+.debug {
+   .btn-hide-debug {
+      top: .1em;
+      position: absolute;
+      right: .1em;
+   }
+   .btn-show-debug {
+      bottom: .1em;
+      position: fixed;
+      right: .1em;
+      z-index: 99; /* behind debug panel */
+   }
+
+   .debug-tabs {
+      background: #fff;
+      bottom: 0;
+      color: #000;
+      left: 0;
+      margin: 0;
+      max-height: 300px;
+      overflow: auto;
+      position: fixed;
+      z-index: 1000;
+      width: 100%;
+
+      table {
+         width: 100%;
+      }
+   }
+}

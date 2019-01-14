@@ -5306,4 +5306,346 @@ class CommonDBTM extends CommonGLPI {
       $dispatcher = $CONTAINER->get(EventDispatcher::class);
       $dispatcher->dispatch($eventName, new ItemEvent($this));
    }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'name'         => [
+            'label'  => __('Name')
+         ],
+         'states_id'    => [
+            'label'  => __('Status')
+         ],
+         'locations_id' => [
+            'label'  => __('Location')
+         ],
+         'computertypes_id'   => [
+            'label'  => __('Type')
+         ],
+         'groups_id_tech'  => [
+            'label'  => __('Group in charge')
+         ],
+         'manufacturers_id'   => [
+            'label'  => __('Manufacturer')
+         ],
+         'computermodels_id' => [
+            'label'  => __('Model')
+         ],
+         'users_id_tech'   => [
+            'label'  => __('Technician in charge')
+         ],
+         'contact_num'     => [
+            'label'  => __('Alternate user number')
+         ],
+         'serial'          => [
+            'label'     => __('Serial'),
+            'autofill'  => true
+         ],
+         'contact'         => [
+            'label'     => __('Alternate username')
+         ],
+         'otherserial'     => [
+            'label'     => __('Inventory number')
+         ],
+         'users_id'        => [
+            'label'     => __('User')
+         ],
+         'groups_id'       => [
+            'label'     => __('Group')
+         ],
+         'networks_id'     => [
+            'label'     => __('Network')
+         ],
+         'comment'         => [
+            'label'     => __('Comment'),
+         ],
+         'domains_id'      => [
+            'label'     => __('Domain')
+         ],
+         'uuid'            => [
+            'label'     => __('UUID')
+         ],
+         'autoupdatesystems_id'  => [
+            'label'     => __('Update source')
+         ]
+      ];
+
+      $fields = $this->getDbFormFields($fields);
+
+      return $fields;
+   }
+
+   /**
+    * Add fields from database - if missing
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getDbFormFields($fields) {
+      global $DB;
+      if ($dbfields = $DB->list_fields($this->getTable())) {
+         foreach (array_keys($fields) as $field) {
+            if (!isset($dbfields[$field])) {
+               /*Toolbox::logWarning(
+                    sprintf('Field %1$s does not exists in table %2$s', $field, $this->getTable())
+               );*/
+               unset($fields[$field]);
+            }
+         }
+      }
+      return $fields;
+   }
+
+   /**
+    * Get hidden fields building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormHiddenFields($add = false) {
+      $fields = [
+         'is_dynamic',
+         'is_template',
+         'date_mod',
+         'date_creation'
+      ];
+      if ($add == false) {
+         $fields[] = 'id';
+         $fields[] = 'is_deleted';
+      }
+      return $fields;
+   }
+
+   /**
+    * Get field to be dropped building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormFieldsToDrop($add = false) {
+      $fields = [
+         'entities_id',
+         'is_recursive',
+         'template_name',
+         'ticket_tco' //what is this one?
+      ];
+      if ($add == true) {
+         $fields[] = 'id';
+         $fields[] = 'is_deleted';
+      }
+      return $fields;
+   }
+
+   /**
+    * Get add form
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public function getAddForm() {
+      return $this->getForm(true);
+   }
+
+   /**
+    * Get edit form
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   public function getEditForm() {
+      return $this->getForm(false);
+   }
+
+   /**
+    * Get form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or edit
+    *
+    * @return array
+    */
+   public function getForm($add = false) {
+      global $DB;
+      $columns = $DB->list_fields($this->getTable());
+
+      $this->form_elements = [];
+      $form_fields = $this->getFormFields($add);
+      foreach ($form_fields as $name => $form_field) {
+         $this->form_elements[$name] = $form_field;
+      }
+
+      foreach ($this->getFormFieldsToDrop($add) as $field) {
+         //unset($this->form_elements[$field]);
+         unset($columns[$field]);
+      }
+
+      foreach ($columns as $column) {
+         $this->form_elements[$column['Field']] = $this->buildFormElement($column, $add);
+      }
+
+      /*if ($this->$p['maybeempty'] && $p['canedit']) {
+         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
+                      "' id='resetdate".$p['rand']."'>" .
+                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
+      }
+      $output .= "</div>";*/
+
+      return [
+         'columns'      => 2,
+         'submit_label' => $add ? __('Add') : __('Update'),
+         'elements'     => $this->form_elements
+      ];
+   }
+
+   /**
+    * Builds a form element
+    *
+    * @since 10.0.0
+    *
+    * @param array $column Database column informations
+    * @param boolean $add Add or edit
+    *
+    * @return array
+    */
+   protected function buildFormElement(array $column, $add = false) {
+      $element = [
+         'type'         => null,
+         'name'         => $column['Field'],
+         'autofocus'    => count($this->form_elements) == 0,
+         'label'        => __($column['Field'])
+      ];
+
+      //$form_fields = $this->getFormFields();
+      if (isset($this->form_elements[$column['Field']])) {
+         $element = $this->form_elements[$column['Field']] + $element;
+      }
+
+      $hiddens = $this->getFormHiddenFields($add);
+      if (in_array($column['Field'], $hiddens) || Toolbox::endsWith($column['Field'], '_cache')) {
+         $element['type'] = 'hidden';
+      } else if (Toolbox::endsWith($column['Field'], '_id') || strstr($column['Field'], '_id_')) {
+         if ($column['Field'] == 'locations_id') {
+            $element['type'] = 'location';
+         } else {
+            $element['type'] = 'select';
+         }
+
+         //specific cases
+         if ($column['Field'] == 'default_requesttypes_id') {
+            $column['Field'] = 'requesttypes_id';
+         }
+         if ($column['Field'] == 'slas_ttr_id' || $column['Field'] == 'slas_tto_id') {
+            $column['Field'] = 'slas_id';
+         }
+         if ($column['Field'] == 'olas_ttr_id' || $column['Field'] == 'olas_tto_id') {
+            $column['Field'] = 'olas_id';
+         }
+         if ($column['Field'] == 'ttr_slalevels_id' || $column['Field'] == 'ttr_olalevels_id') {
+            $column['Field'] = 'slalevels_id';
+         }
+
+         $table = getTableNameForForeignKeyField($column['Field']);
+         $itemtype = getItemTypeForTable($table);
+         $element['itemtype'] = $itemtype;
+         $element['itemtype_name'] = $itemtype::getTypeName(Session::getPluralNumber());
+         $element['values'] = [];
+      } else if (strstr($column['Field'], 'date')) {
+         $element['type'] = 'date';
+      } else if ($column['Field'] == 'comment' || $column['Field'] == 'content') {
+         $element['type'] = 'textarea';
+      } else {
+         switch ($column['Type']) {
+            default:
+               $element['type'] = 'text';
+               break;
+         }
+      }
+      if (isset($this->fields[$column['Field']])) {
+         $element['value'] = $this->fields[$column['Field']];
+         if (isForeignKeyField($column['Field']) && (int)$element['value'] > 0) {
+            $element['value_txt'] = Dropdown::getDropdownName(
+               getTableNameForForeignKeyField($column['Field']),
+               $element['value']
+            );
+         }
+      }
+
+      if ($element['type'] != 'hidden' && isForeignKeyField($column['Field']) && $element['label'] == $element['name']) {
+         $itemtype = getItemTypeForTable(getTableNameForForeignKeyField($column['Field']));
+         $element['label'] = $itemtype::getTypeName(1);
+      }
+
+      return $element;
+   }
+
+   /**
+    * Count for one tab
+    *
+    * @since 10.0.0
+    *
+    * @param CommonDBTM $obj Object instance
+    * @param string     $tab Tab ID
+    * @param integer    $deleted Get deleted results. 0 only not deleted, 1 only deleted, 2 both
+    * @param integer    $template Get template results. ° only not templates, 1 only templates, 2 both
+    *
+    * @return integer|false
+    */
+   protected function genericCountForTab($item, $tab, $deleted = 0, $template = 0) {
+      //TODO: override method in classes like CommonDBRelation, CommonDBVisible, etc.
+      $where = [
+         'itemtype'  => $item->getType(),
+         'items_id'  => $item->getID()
+      ];
+
+      if ($this->maybeDeleted()) {
+         switch ($deleted) {
+            case 0:
+               $where['is_deleted'] = 0;
+               break;
+            case 1:
+               $where['is_deleted'] = 1;
+               break;
+         }
+      }
+
+      if ($this->maybeTemplate()) {
+         switch ($deleted) {
+            case 0:
+               $where['is_template'] = 0;
+               break;
+            case 1:
+               $where['is_deleted'] = 1;
+               break;
+         }
+      }
+
+      $count = countElementsInTable(
+         $this->getTable(),
+         $where
+      );
+      return $count;
+   }
+
 }

@@ -336,7 +336,7 @@ abstract class APIBaseClass extends \atoum {
          ->startWith('User');
 
       $this->array($data['rawdata'])
-         ->hasSize(9);
+         ->hasSize(11);
 
       $first_user = array_shift($data['data']);
       $second_user = array_shift($data['data']);
@@ -378,7 +378,7 @@ abstract class APIBaseClass extends \atoum {
          ->hasKey('rawdata');
 
       $this->array($data['rawdata'])
-         ->hasSize(9);
+         ->hasSize(11);
 
       $first_user = array_shift($data['data']);
       $second_user = array_shift($data['data']);
@@ -431,7 +431,7 @@ abstract class APIBaseClass extends \atoum {
          ->startWith('User');
 
       $this->array($data['rawdata'])
-         ->hasSize(9);
+         ->hasSize(11);
       $this->checkEmptyContentRange($data, $data['headers']);
    }
 

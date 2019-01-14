@@ -157,7 +157,12 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $full path or relative one (true by default)
    **/
    static function getSearchURL($full = true) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $router;
+
+      if ($router != null) {
+         $page = $router->pathFor('knowbase');
+         return $page;
+      }
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 

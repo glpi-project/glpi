@@ -57,7 +57,8 @@ if (isset($_GET["globalsearch"])) {
          //          $_SESSION["glpisearchcount"][$itemtype]  = $count+1;
          //          $_SESSION["glpisearchcount2"][$itemtype] = 0;
 
-         Search::showList($itemtype, $params);
+         $search = new \Search($itemtype, $params);
+         $search->showList($itemtype, $params);
          echo "<hr>";
       }
    }

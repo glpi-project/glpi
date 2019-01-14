@@ -5,7 +5,9 @@
     "description": "GLPI dependencies",
     "license": "GPL-2.0",
     "dependencies": {
+        "@coreui/coreui": "^2.1.6",
         "@fortawesome/fontawesome-free": "^5.6.3",
+        "bootstrap": "^4.2.1",
         "chartist": "^0.10.1",
         "chartist-plugin-legend": "^0.6.0",
         "chartist-plugin-tooltips": "^0.0.17",
@@ -29,6 +31,8 @@
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.11",
         "moment": "^2.23.0",
+        "perfect-scrollbar": "^1.4.0",
+        "popper.js": "^1.14.6",
         "prismjs": "^1.15.0",
         "qtip2": "^3.0.3",
         "select2": "^4.0.5",

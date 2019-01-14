@@ -728,7 +728,7 @@ class Toolbox {
 
       } else {
          // Recommended production settings
-         ini_set('display_errors', 'Off');
+         //ini_set('display_errors', 'Off');
          if (defined('TU_USER')) {
             //do not set error_reporting to a low level for unit tests
             error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
@@ -1550,7 +1550,16 @@ class Toolbox {
     * return string itemtype Form URL
    **/
    static function getItemTypeFormURL($itemtype, $full = true) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $router;
+
+      if ($router != null) {
+         $page = $router->pathFor(
+            'add-asset', [
+               'itemtype'  => $itemtype
+            ]
+         );
+         return $page;
+      }
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
@@ -1579,7 +1588,16 @@ class Toolbox {
     * return string itemtype search URL
    **/
    static function getItemTypeSearchURL($itemtype, $full = true) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $router;
+
+      if ($router != null) {
+         $page = $router->pathFor(
+            'list', [
+               'itemtype'  => $itemtype
+            ]
+         );
+         return $page;
+      }
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
