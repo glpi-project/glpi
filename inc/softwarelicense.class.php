@@ -341,7 +341,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'used'      => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : []),
          'condition' => ['softwares_id' => $this->fields['softwares_id']]
       ]);
-      echo "</td></tr>";
+      echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Location') . "</td><td>";

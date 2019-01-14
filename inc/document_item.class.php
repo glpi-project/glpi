@@ -780,15 +780,14 @@ class Document_Item extends CommonDBRelation{
       // Document : search links in both order using union
       $doc_criteria = [];
       if ($item->getType() == 'Document') {
-         $doc_criteria = $criteria;
-         unset($doc_criteria['WHERE']['glpi_documents_items.items_id']);
-         unset($doc_criteria['WHERE']['glpi_documents_items.itemtype']);
-
-         $doc_criteria['WHERE'] = $doc_criteria['WHERE'] + [
-            'glpi_documents_items.documents_id' => $item->getID()
-         ];
-         $criteria = [
-            'FROM'   => new \QueryUnion([$criteria, $doc_criteria])
+         $owhere = $criteria['WHERE'];
+         $o2where =  $owhere + ['glpi_documents_items.documents_id' => $item->getID()];
+         unset($o2where['glpi_documents_items.items_id']);
+         $criteria['WHERE'] = [
+            'OR' => [
+               ['AND' => $owhere],
+               ['AND' => $o2where]
+            ]
          ];
       }
 
