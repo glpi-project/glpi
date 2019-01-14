@@ -610,7 +610,11 @@ final class DbUtils {
       }
 
       if (!is_array($value) && strlen($value) == 0) {
-         $value = $_SESSION['glpiactiveentities'];
+         if (isset($_SESSION['glpiactiveentities'])) {
+            $value = $_SESSION['glpiactiveentities'];
+         } else if (isCommandLine() || Session::isCron()) {
+            $value = '0'; // If value is not set, fallback to root entity in cron / command line
+         }
       }
 
       $crit = [$field => $value];
