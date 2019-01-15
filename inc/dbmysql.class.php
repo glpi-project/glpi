@@ -137,12 +137,15 @@ class DBmysql {
    /**
     * Constructor / Connect to the MySQL Database
     *
-    * @param integer $choice host number (default NULL)
+    * @param integer $choice   host number
+    * @param boolean $connect  init connection
     *
     * @return void
     */
-   function __construct($choice = null) {
-      $this->connect($choice);
+   function __construct($choice = null, $connect = true) {
+      if ($connect) {
+         $this->connect($choice);
+      }
    }
 
    /**

@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Psr\SimpleCache\CacheInterface;
+use Zend\I18n\Translator\TranslatorInterface;
 
 class Plugin extends CommonDBTM {
 
@@ -1307,7 +1308,11 @@ class Plugin extends CommonDBTM {
          // For example, if the included files contains a $plugin variable, it will
          // replace the $plugin variable used here.
          $include_fct = function () use ($directory, $setup_file) {
-            self::loadLang($directory);
+            global $TRANSLATE;
+            if ($TRANSLATE instanceof TranslatorInterface) {
+               // Load lang only if translation component is already initialized.
+               self::loadLang($directory);
+            }
             include_once($setup_file);
          };
          $include_fct();

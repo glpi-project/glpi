@@ -1,0 +1,60 @@
+#
+# ---------------------------------------------------------------------
+# GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2015-2019 Teclib' and contributors.
+#
+# http://glpi-project.org
+#
+# based on GLPI - Gestionnaire Libre de Parc Informatique
+# Copyright (C) 2003-2014 by the INDEPNET Development Team.
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# GLPI is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# GLPI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+# ---------------------------------------------------------------------
+#
+
+services:
+  _defaults:
+    autowire: true      # Automatically injects dependencies in services.
+    autoconfigure: true # Automatically registers services based on their signature (event subscribers).
+    public: false       # Services are private by default, only thoose with "public: true" property will be accessible using "$container->get()".
+
+  # Event system services
+  Glpi\EventDispatcher\EventDispatcher:
+    class: 'Glpi\EventDispatcher\EventDispatcher'
+    public: true
+  Glpi\EventSubscriber\Item\ItemEventHookMapper:
+    class: 'Glpi\EventSubscriber\Item\ItemEventHookMapper'
+
+  # Glpi\Cache\SimpleCache service is synthetic as it may be instanciate prior to container compilation
+  Glpi\Cache\SimpleCache:
+    public: true
+    synthetic: true
+
+  # DBmysql service is synthetic as it may sometime be unavailable (before install process)
+  # and therefore will be added during container compilation process
+  DBmysql:
+    public: true
+    synthetic: true
+
+  Plugin:
+    class: 'Plugin'
+    public: true
+    calls:
+      - method: 'init'

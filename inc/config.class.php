@@ -63,6 +63,16 @@ class Config extends CommonDBTM {
    static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
    static $saferUndisclosedFields = ['admin_email', 'admin_reply'];
 
+   /**
+    * Flag to prevent reloading legacy configuration if already loaded.
+    *
+    * Nota: This has been introduce when implementing the DI container, to handle transition phase.
+    *
+    * @var boolean
+    */
+   private static $legacy_config_already_loaded = false;
+
+
    static function getTypeName($nb = 0) {
       return __('Setup');
    }
@@ -2030,6 +2040,14 @@ class Config extends CommonDBTM {
                  'check'   => 'UploadHandler' ],
                [ 'name'    => 'ramsey/uuid',
                  'check'   => 'Ramsey\\Uuid\\Uuid' ],
+               [ 'name'    => 'symfony/config',
+                 'check'   => 'Symfony\\Component\\Config\\FileLocator' ],
+               [ 'name'    => 'symfony/dependency-injection',
+                 'check'   => 'Symfony\\Component\\DependencyInjection\\Container' ],
+               [ 'name'    => 'symfony/event-dispatcher',
+                 'check'   => 'Symfony\\Component\\EventDispatcher\\EventDispatcher' ],
+               [ 'name'    => 'symfony/yaml',
+                 'check'   => 'Symfony\\Component\\Yaml\\Yaml' ],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [
@@ -2815,6 +2833,10 @@ class Config extends CommonDBTM {
     */
    public static function loadLegacyConfiguration($older_to_latest = true) {
 
+      if (self::$legacy_config_already_loaded) {
+         return true;
+      }
+
       global $CFG_GLPI, $DB;
 
       $config_tables_iterator = $DB->listTables('glpi_config%');
@@ -2921,6 +2943,8 @@ class Config extends CommonDBTM {
       if (isset($CFG_GLPI['root_doc'])) {
          $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
       }
+
+      self::$legacy_config_already_loaded = true;
 
       return true;
    }

@@ -151,9 +151,9 @@ class InstallCommand extends AbstractConfigureCommand {
          $db_user     = $input->getOption('db-user');
          $db_pass     = $input->getOption('db-password');
 
-         if ($DB instanceof DB) {
+         if ($DB instanceof \DBmysql) {
             // If global $DB is set at this point, it means that configuration file has been loaded
-            // prior to reconfiguration.
+            // prior to reconfiguration or DB has been instanciated by kernel.
             // As configuration is part of a class, it cannot be reloaded and class properties
             // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
             $DB->dbhost     = $db_hostport;
