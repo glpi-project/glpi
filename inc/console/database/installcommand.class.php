@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use DB;
+use DBmysql;
 use GLPIKey;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -260,9 +260,9 @@ class InstallCommand extends AbstractConfigureCommand {
          return self::ERROR_DB_ALREADY_CONTAINS_TABLES;
       }
 
-      if ($DB instanceof DB) {
+      if ($DB instanceof DBmysql) {
          // If global $DB is set at this point, it means that configuration file has been loaded
-         // prior to reconfiguration.
+         // prior to reconfiguration or DB has been instanciated by kernel.
          // As configuration is part of a class, it cannot be reloaded and class properties
          // have to be updated manually in order to make `Toolbox::createSchema()` work correctly.
          $DB->dbhost     = $db_hostport;
@@ -275,7 +275,7 @@ class InstallCommand extends AbstractConfigureCommand {
          $db_instance = $DB;
       } else {
          include_once (GLPI_CONFIG_DIR . "/config_db.php");
-         $db_instance = new DB();
+         $db_instance = new \DB();
       }
 
       $output->writeln(

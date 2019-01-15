@@ -139,12 +139,15 @@ class DBmysql {
    /**
     * Constructor / Connect to the MySQL Database
     *
-    * @param integer $choice host number (default NULL)
+    * @param integer $choice   host number
+    * @param boolean $connect  init connection
     *
     * @return void
     */
-   function __construct($choice = null) {
-      $this->connect($choice);
+   function __construct($choice = null, $connect = true) {
+      if ($connect) {
+         $this->connect($choice);
+      }
    }
 
    /**
@@ -295,6 +298,9 @@ class DBmysql {
          $TIMER->start();
       }
 
+      if ($this->dbh === null) {
+         throw new \Exception('DB handler has not been initialized.');
+      }
       $res = $this->dbh->query($query);
       if (!$res) {
          // no translation for error logs

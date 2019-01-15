@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
+use Laminas\I18n\Translator\TranslatorInterface;
 use Psr\SimpleCache\CacheInterface;
 
 class Plugin extends CommonDBTM {
@@ -1422,7 +1423,11 @@ class Plugin extends CommonDBTM {
             // For example, if the included files contains a $plugin variable, it will
             // replace the $plugin variable used here.
             $include_fct = function () use ($directory, $setup_file) {
-               self::loadLang($directory);
+               global $TRANSLATE;
+               if ($TRANSLATE instanceof TranslatorInterface) {
+                  // Load lang only if translation component is already initialized.
+                  self::loadLang($directory);
+               }
                include_once($setup_file);
             };
             $include_fct();

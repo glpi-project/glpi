@@ -147,7 +147,7 @@ class GLPIKey {
          return false;
       }
 
-      if ($DB instanceof DBmysql) {
+      if ($DB instanceof DBmysql && $DB->connected) {
          return $this->migrateFieldsInDb($sodium_key, $old_key)
             && $this->migrateConfigsInDb($sodium_key, $old_key);
       }

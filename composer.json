@@ -49,7 +49,11 @@
         "scssphp/scssphp": "^1.0",
         "sebastian/diff": "^3.0",
         "simplepie/simplepie": "^1.5",
+        "symfony/config": "^4.4",
         "symfony/console": "^4.4",
+        "symfony/dependency-injection": "^4.4",
+        "symfony/event-dispatcher": "^4.4",
+        "symfony/yaml": "^4.4",
         "tecnickcom/tcpdf": "^6.2",
         "true/punycode": "^2.1",
         "wapmorgan/unified-archive": "^1.0"
