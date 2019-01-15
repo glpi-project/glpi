@@ -192,10 +192,6 @@ class Project extends CommonDBTM {
          $menu['project']['title'] = Project::getTypeName(Session::getPluralNumber());
          $menu['project']['page']  = ProjectTask::getSearchURL(false);
 
-         if (count($links)) {
-            $menu['project']['links'] = $links;
-         }
-
          return $menu;
       }
       return false;
