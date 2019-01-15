@@ -1063,14 +1063,13 @@ class Software extends CommonDBTM {
                );
 
                // Move installation to existing version in destination software
-               $DB->update(
+               $found = $DB->update(
                   'glpi_computers_softwareversions', [
                      'softwareversions_id' => $dest['id']
                   ], [
                      'softwareversions_id' => $from['id']
                   ]
                );
-               $found = $DB->query($sql);
             }
 
             if ($found) {

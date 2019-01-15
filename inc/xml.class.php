@@ -125,7 +125,7 @@ class XML {
             $this->ErrorString = "Error the query can't be a null string";
             return -1;
          }
-         $result = $DB->query($strqry);
+         $result = $DB->rawQuery($strqry);
 
          if ($result == false) {
             $this->IsError     = 1;
