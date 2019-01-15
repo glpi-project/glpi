@@ -101,15 +101,14 @@ class State extends CommonTreeDropdown {
          $elements["-1"] = $lib;
       }
 
-      $queryStateList = "SELECT `id`, `name`
-                         FROM `glpi_states`
-                         ORDER BY `name`";
-      $result = $DB->query($queryStateList);
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'name'],
+         'FROM'   => 'glpi_states',
+         'ORDER'  => 'name'
+      ]);
 
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
-         }
+      while ($data = $iterator->next()) {
+         $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
       }
       Dropdown::showFromArray($name, $elements, ['value' => $value]);
    }
@@ -128,19 +127,21 @@ class State extends CommonTreeDropdown {
 
             } else {
                $table = getTableForItemType($itemtype);
-               $query = "SELECT `states_id`, COUNT(*) AS cpt
-                         FROM `$table` ".
-                         getEntitiesRestrictRequest("WHERE", $table)."
-                              AND `is_deleted` = 0
-                              AND `is_template` = 0
-                         GROUP BY `states_id`";
+               $iterator = $DB->request([
+                  'SELECT' => [
+                     'states_id',
+                     'COUNT'  => '* AS cpt'
+                  ],
+                  'FROM'   => $table,
+                  'WHERE'  => [
+                     'is_deleted'   => 0,
+                     'is_template'  => 0
+                  ] + getEntitiesRestrictCriteria($table),
+                  'GROUP'  => 'states_id'
+               ]);
 
-               if ($result = $DB->query($query)) {
-                  if ($DB->numrows($result) > 0) {
-                     while ($data = $DB->fetch_assoc($result)) {
-                        $states[$data["states_id"]][$itemtype] = $data["cpt"];
-                     }
-                  }
+               while ($data = $iterator->next()) {
+                  $states[$data["states_id"]][$itemtype] = $data["cpt"];
                }
             }
          }
@@ -164,11 +165,12 @@ class State extends CommonTreeDropdown {
 
          echo "<th>".__('Total')."</th>";
          echo "</tr>";
-         $query = "SELECT *
-                   FROM `glpi_states` ".
-                   getEntitiesRestrictRequest("WHERE", "glpi_states", '', '', true)."
-                   ORDER BY `completename`";
-         $result = $DB->query($query);
+
+         $iterator = $DB->request([
+            'FROM'   => 'glpi_states',
+            'WHERE'  => getEntitiesRestrictCriteria('glpi_states', '', '', true),
+            'ORDER'  => 'completename'
+         ]);
 
          // No state
          $tot = 0;
@@ -188,7 +190,7 @@ class State extends CommonTreeDropdown {
          }
          echo "<td class='numeric b'>$tot</td></tr>";
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $iterator>next()) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
 

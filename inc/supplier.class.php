@@ -477,45 +477,76 @@ class Supplier extends CommonDBTM {
             $linkfield = 'id';
             $itemtable = getTableForItemType($itemtype);
 
-            $query = "SELECT `glpi_infocoms`.`entities_id`, `NAME_FIELD`, `$itemtable`.*
-                      FROM `glpi_infocoms`
-                      INNER JOIN `$itemtable` ON (`$itemtable`.`id` = `glpi_infocoms`.`items_id`) ";
+            $criteria = [
+               'SELECT'       => [],
+               'FROM'         => 'glpi_infocoms',
+               'INNER JOIN'   => [
+                  $itemtable  => [
+                     'ON' => [
+                        'glpi_infocoms'   => 'items_id',
+                        $itemtable        => 'id'
+                     ]
+                  ]
+               ]
+            ];
 
             // Set $linktype for entity restriction AND link to search engine
             if ($itemtype == 'Cartridge') {
-               $query .= "INNER JOIN `glpi_cartridgeitems`
-                            ON (`glpi_cartridgeitems`.`id`=`glpi_cartridges`.`cartridgeitems_id`) ";
+               $criteria['INNER JOIN']['glpi_cartridgeitems'] = [
+                  'ON' => [
+                     'glpi_cartridgeitems'   => 'id',
+                     'glpi_cartridges'       => 'cartridgeitems_id'
+                  ]
+               ];
 
                $linktype  = 'CartridgeItem';
                $linkfield = 'cartridgeitems_id';
             }
 
             if ($itemtype == 'Consumable') {
-               $query .= "INNER JOIN `glpi_consumableitems`
-                            ON (`glpi_consumableitems`.`id`=`glpi_consumables`.`consumableitems_id`) ";
+               $criteria['INNER JOIN']['glpi_consumableitems'] = [
+                  'ON' => [
+                     'glpi_consumableitems'  => 'id',
+                     'glpi_consumables'      => 'cartridgeitems_id'
+                  ]
+               ];
 
                $linktype  = 'ConsumableItem';
                $linkfield = 'consumableitems_id';
             }
 
             if ($itemtype == 'Item_DeviceControl') {
-               $query .= "INNER JOIN `glpi_devicecontrols`
-                           ON (`glpi_items_devicecontrols`.`devicecontrols_id`=`glpi_devicecontrols`.`id`)";
+               $criteria['INNER JOIN']['glpi_devicecontrols'] = [
+                  'ON' => [
+                     'glpi_items_devicecontrols'   => 'devicecontrols_id',
+                     'glpi_devicecontrols'         => 'id'
+                  ]
+               ];
+
                $linktype = 'DeviceControl';
                $linkfield = 'devicecontrols_id';
             }
 
             $linktable = getTableForItemType($linktype);
 
-            $query = str_replace('NAME_FIELD', $linktype::getNameField(), $query);
-            $query .= "WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
-                             AND `glpi_infocoms`.`suppliers_id` = '$instID'".
-                             getEntitiesRestrictRequest(" AND", $linktable) ."
-                       ORDER BY `glpi_infocoms`.`entities_id`,
-                                `$linktable`.`" . $linktype::getNameField() . "`";
+            $criteria['SELECT'] = [
+               'glpi_infocoms.entities_id',
+               $linktype::getNameField(),
+               "$itemtable.*"
+            ];
 
-            $result_linked = $DB->query($query);
-            $nb            = $DB->numrows($result_linked);
+            $criteria['WHERE'] = [
+               'glpi_infocoms.itemtype'      => $itemtype,
+               'glpi_infocoms.suppliers_id'  => $instID,
+            ] + getEntitiesRestrictCriteria($linktable);
+
+            $criteria['ORDERBY'] = [
+               'glpi_infocoms.entities_id',
+               "$linktable." . $linktable::getNameField()
+            ];
+
+            $iterator = $DB->request($criteria);
+            $nb = count($iterator);
 
             if ($nb > $_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
@@ -542,7 +573,8 @@ class Supplier extends CommonDBTM {
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
             } else if ($nb) {
-               for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
+               $prem = true;
+               while ($data = $iterator->next()) {
                   $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
@@ -556,6 +588,7 @@ class Supplier extends CommonDBTM {
                   }
                   echo "'>";
                   if ($prem) {
+                     $prem = false;
                      $title = $item->getTypeName($nb);
                      if ($nb > 0) {
                         $title = sprintf(__('%1$s: %2$s'), $title, $nb);
