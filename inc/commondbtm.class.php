@@ -31,6 +31,8 @@
  */
 
 use Glpi\Event;
+use Glpi\Event\ItemEvent;
+use Glpi\EventDispatcher\EventDispatcher;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -569,8 +571,9 @@ class CommonDBTM extends CommonGLPI {
 
       $this->post_getEmpty();
 
-      // Call the plugin hook - $this->fields can be altered
-      Plugin::doHook("item_empty", $this);
+      // Dispatch "item.get_empty" event. $this->fields can be altered.
+      $this->dispatchItemEvent(ItemEvent::ITEM_GET_EMPTY);
+
       return true;
    }
 
@@ -1086,9 +1089,9 @@ class CommonDBTM extends CommonGLPI {
          $this->saveInput();
       }
 
-      // Call the plugin hook - $this->input can be altered
-      // This hook get the data from the form, not yet altered
-      Plugin::doHook("pre_item_add", $this);
+      // Dispatch "item.pre_add" event. $this->input can be altered.
+      // This event get the data from the form, not yet altered.
+      $this->dispatchItemEvent(ItemEvent::ITEM_PRE_ADD);
 
       if ($this->input && is_array($this->input)) {
 
@@ -1101,9 +1104,9 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->input && is_array($this->input)) {
-         // Call the plugin hook - $this->input can be altered
-         // This hook get the data altered by the object method
-         Plugin::doHook("post_prepareadd", $this);
+         // Dispatch "item.post_prepareadd" event. $this->input can be altered.
+         // This event get the data altered by the object method.
+         $this->dispatchItemEvent(ItemEvent::ITEM_POST_PREPARE_ADD);
       }
 
       if ($this->input && is_array($this->input)) {
@@ -1172,7 +1175,7 @@ class CommonDBTM extends CommonGLPI {
                   //Check if we have to automatical fill dates
                   Infocom::manageDateOnStatusChange($this);
                }
-               Plugin::doHook("item_add", $this);
+               $this->dispatchItemEvent(ItemEvent::ITEM_POST_ADD);
 
                // As add have suceed, clean the old input value
                if (isset($this->input['_add'])) {
@@ -1356,8 +1359,8 @@ class CommonDBTM extends CommonGLPI {
          $this->input['_no_history'] = !$history;
       }
 
-      // Plugin hook - $this->input can be altered
-      Plugin::doHook("pre_item_update", $this);
+      // Dispatch "item.pre_update" event. $this->input can be altered.
+      $this->dispatchItemEvent(ItemEvent::ITEM_PRE_UPDATE);
       if ($this->input && is_array($this->input)) {
          $this->input = $this->prepareInputForUpdate($this->input);
 
@@ -1445,7 +1448,7 @@ class CommonDBTM extends CommonGLPI {
                                         ($this->dohistory && $history ? $this->oldvalues
                                                                       : []))) {
                      $this->addMessageOnUpdateAction();
-                     Plugin::doHook("item_update", $this);
+                     $this->dispatchItemEvent(ItemEvent::ITEM_POST_UPDATE);
 
                      //Fill forward_entity_to array with itemtypes coming from plugins
                      if (isset(self::$plugins_forward_entity[$this->getType()])) {
@@ -1655,9 +1658,9 @@ class CommonDBTM extends CommonGLPI {
 
       // Purge
       if ($force) {
-         Plugin::doHook("pre_item_purge", $this);
+         $this->dispatchItemEvent(ItemEvent::ITEM_PRE_PURGE);
       } else {
-         Plugin::doHook("pre_item_delete", $this);
+         $this->dispatchItemEvent(ItemEvent::ITEM_PRE_DELETE);
       }
 
       if (!is_array($this->input)) {
@@ -1672,7 +1675,7 @@ class CommonDBTM extends CommonGLPI {
             if ($force) {
                $this->addMessageOnPurgeAction();
                $this->post_purgeItem();
-               Plugin::doHook("item_purge", $this);
+               $this->dispatchItemEvent(ItemEvent::ITEM_POST_PURGE);
 
             } else {
                $this->addMessageOnDeleteAction();
@@ -1694,7 +1697,7 @@ class CommonDBTM extends CommonGLPI {
                }
                $this->post_deleteItem();
 
-               Plugin::doHook("item_delete", $this);
+               $this->dispatchItemEvent(ItemEvent::ITEM_POST_DELETE);
             }
             if ($this->notificationqueueonaction) {
                QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
@@ -1835,7 +1838,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
-      Plugin::doHook("pre_item_restore", $this);
+      $this->dispatchItemEvent(ItemEvent::ITEM_PRE_RESTORE);
       if (!is_array($this->input)) {
          // $input clear by a hook to cancel retore
          return false;
@@ -1859,7 +1862,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $this->post_restoreItem();
-         Plugin::doHook("item_restore", $this);
+         $this->dispatchItemEvent(ItemEvent::ITEM_POST_RESTORE);
          if ($this->notificationqueueonaction) {
             QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
          }
@@ -5249,5 +5252,28 @@ class CommonDBTM extends CommonGLPI {
             }
          }
       }
+   }
+
+   /**
+    * Dispatch item event.
+    *
+    * @param string $eventName Event name.
+    *
+    * @return void
+    */
+   private function dispatchItemEvent(string $eventName) {
+      global $CONTAINER;
+
+      if (!isset($CONTAINER) || !$CONTAINER->has(EventDispatcher::class)) {
+         // Prevent an error to be thrown a CRUD operation is made prior to container compilation.
+         // Known case: during cache instanciation process, if UUID of instance is not yet defined,
+         // it will be generated and stored in DB. As cache instanciation is made during container
+         // compilation, the dispatcher service is not yet available.
+         return;
+      }
+
+      /** @var EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(EventDispatcher::class);
+      $dispatcher->dispatch($eventName, new ItemEvent($this));
    }
 }

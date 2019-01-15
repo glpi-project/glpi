@@ -32,7 +32,8 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use Glpi\Event\ItemEvent;
+use DbTestCase;
 
 /* Test for inc/commondbtm.class.php */
 
@@ -850,5 +851,585 @@ class CommonDBTM extends DbTestCase {
       $this->string($computer->fields['date_mod'])->isEqualTo('2000-01-01 00:00:00');
 
       $_SESSION['glpi_currenttime'] = $bkp_current;
+   }
+
+   /**
+    * Test that 'item.get_empty' event is dispatched when getting an empty item.
+    */
+   public function testGetEmptyEvent() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item  = new \Computer();
+
+      $getEmptyEventItem = null; // Will be set if listened event is dispatched
+      $getEmptyListener = function(ItemEvent $event) use (&$getEmptyEventItem) {
+         $getEmptyEventItem = $event->getItem();
+         $getEmptyEventItem->fields['comment'] = 'Comment added by listener';
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_GET_EMPTY, $getEmptyListener);
+
+      $item->getEmpty();
+
+      $this->object($getEmptyEventItem)->isEqualTo($item);
+      $this->array($getEmptyEventItem->fields)->hasKey('comment');
+      $this->string($getEmptyEventItem->fields['comment'])->isEqualTo('Comment added by listener');
+
+      $dispatcher->removeListener(ItemEvent::ITEM_GET_EMPTY, $getEmptyListener);
+   }
+
+   /**
+    * Test that 'item.pre_add', 'item.post_prepare_add' and 'item.post_add' events
+    * are dispatched in expected order when creating a new item.
+    */
+   public function testAddProcessEventsOrder() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item  = new \Computer();
+
+      $self = $this;
+
+      $preAddEventItem = null; // Will be set if listened event is dispatched
+      $preAddListener = function(ItemEvent $event) use (&$preAddEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo('');
+         $item->input['comment'] = ItemEvent::ITEM_PRE_ADD;
+
+         $preAddEventItem = $item;
+
+         // Assert that item has not been created in DB when event is dispatched
+         $self->array($item->fields)->isEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_PRE_ADD, $preAddListener);
+
+      $postPrepareAddEventItem = null; // Will be set if listened event is dispatched
+      $postPrepareAddListener = function(ItemEvent $event) use (&$postPrepareAddEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_PRE_ADD);
+         $item->input['comment'] = ItemEvent::ITEM_POST_PREPARE_ADD;
+
+         $postPrepareAddEventItem = $item;
+
+         // Assert that item has not been created in DB when event is dispatched
+         $self->array($item->fields)->isEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_POST_PREPARE_ADD, $postPrepareAddListener);
+
+      $postAddEventItem = null; // Will be set if listened event is dispatched
+      $postAddListener = function(ItemEvent $event) use (&$postAddEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_POST_PREPARE_ADD);
+         $item->input['comment'] = ItemEvent::ITEM_POST_ADD;
+
+         $postAddEventItem = $item;
+
+         // Assert that item has been created in DB when event is dispatched
+         $self->array($item->find(['id' => $item->fields['id']]))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_POST_ADD, $postAddListener);
+
+      $itemId = $item->add([
+         'name'        => 'Computer test',
+         'comment'     => '',
+         'entities_id' => 0
+      ]);
+      $this->integer($itemId)->isGreaterThan(0);
+
+      $self->array($item->input)->hasKey('comment');
+      $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_POST_ADD);
+
+      $this->object($preAddEventItem)->isEqualTo($item);
+      $this->object($postPrepareAddEventItem)->isEqualTo($item);
+      $this->object($postAddEventItem)->isEqualTo($item);
+
+      $dispatcher->removeListener(ItemEvent::ITEM_PRE_ADD, $preAddListener);
+      $dispatcher->removeListener(ItemEvent::ITEM_POST_PREPARE_ADD, $postPrepareAddListener);
+      $dispatcher->removeListener(ItemEvent::ITEM_POST_ADD, $postAddListener);
+   }
+
+   /**
+    * Test that events can be used to alter/prevent creation of items.
+    */
+   public function testAddEventsBehaviors() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $eventsNames = [
+         ItemEvent::ITEM_PRE_ADD,
+         ItemEvent::ITEM_POST_PREPARE_ADD,
+      ];
+      foreach ($eventsNames as $eventName) {
+         // Test that listener can prevent creation of item
+         $listener = function(ItemEvent $event) {
+            $item = $event->getItem();
+            $item->input = false;
+         };
+         $dispatcher->addListener($eventName, $listener);
+
+         $item  = new \Computer();
+         $result = $item->add([
+            'name'        => 'Computer01',
+            'entities_id' => 0
+         ]);
+         $this->boolean($result)->isFalse();
+
+         $dispatcher->removeListener($eventName, $listener);
+
+         // Test that listener can modify created data
+         $listener = function(ItemEvent $event) {
+            $item = $event->getItem();
+            $item->input['comment'] = 'Comment added by listener.';
+         };
+         $dispatcher->addListener($eventName, $listener);
+
+         $item   = $this->getNewItem();
+         $itemId = $item->fields['id'];
+
+         $item  = new \Computer();
+         $result = $item->getFromDB($itemId);
+         $this->boolean($result)->isTrue();
+         $this->string($item->fields['comment'])->isEqualTo('Comment added by listener.');
+
+         $dispatcher->removeListener($eventName, $listener);
+      }
+   }
+
+   /**
+    * Test that 'item.pre_update', 'item.post_update' events are dispatched
+    * in expected order when updating an item.
+    */
+   public function testUpdateProcessEventsOrder() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item  = new \Computer();
+      $itemId = $item->add([
+         'name'        => 'New computer',
+         'comment'     => 'Initial state',
+         'entities_id' => 0
+      ]);
+      $this->integer($itemId)->isGreaterThan(0);
+      $itemId = $item->fields['id'];
+
+      $self = $this;
+
+      $preUpdateEventItem = null; // Will be set if listened event is dispatched
+      $preUpdateListener = function(ItemEvent $event) use (&$preUpdateEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo('');
+         $item->input['comment'] = ItemEvent::ITEM_PRE_UPDATE;
+
+         $preUpdateEventItem = $item;
+
+         // Assert that item has not been updated in DB when event is dispatched
+         $self->array($item->find(['id' => $item->fields['id'], 'comment' => 'Initial state']))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_PRE_UPDATE, $preUpdateListener);
+
+      $postUpdateEventItem = null; // Will be set if listened event is dispatched
+      $postUpdateListener = function(ItemEvent $event) use (&$postUpdateEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_PRE_UPDATE);
+         $item->input['comment'] = ItemEvent::ITEM_POST_UPDATE;
+
+         $postUpdateEventItem = $item;
+
+         // Assert that item has been updated in DB when event is dispatched
+         $self->array($item->find(['id' => $item->fields['id'], 'comment' => ItemEvent::ITEM_PRE_UPDATE]))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_POST_UPDATE, $postUpdateListener);
+
+      $result = $item->update([
+         'id'      => $itemId,
+         'comment' => '',
+      ]);
+      $this->boolean($result)->isTrue();
+
+      $self->array($item->input)->hasKey('comment');
+      $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_POST_UPDATE);
+
+      $this->object($preUpdateEventItem)->isEqualTo($item);
+      $this->object($postUpdateEventItem)->isEqualTo($item);
+
+      $dispatcher->removeListener(ItemEvent::ITEM_PRE_UPDATE, $preUpdateListener);
+      $dispatcher->removeListener(ItemEvent::ITEM_POST_UPDATE, $postUpdateListener);
+   }
+
+   /**
+    * Test that events can be used to alter/prevent update of items.
+    */
+   public function testUpdateEventsBehaviors() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item   = $this->getNewItem();
+      $itemId = $item->fields['id'];
+
+      $eventName = ItemEvent::ITEM_PRE_UPDATE;
+
+      // Test that listener can prevent update of item
+      $listener = function(ItemEvent $event) {
+         $item = $event->getItem();
+         $item->input = false;
+      };
+      $dispatcher->addListener($eventName, $listener);
+
+      $result = $item->update([
+         'id'      => $itemId,
+         'comment' => '',
+      ]);
+      $this->boolean($result)->isFalse();
+
+      $dispatcher->removeListener($eventName, $listener);
+
+      // Test that listener can modify updated data
+      $listener = function(ItemEvent $event) {
+         $item = $event->getItem();
+         $item->input['comment'] = 'Comment added by listener.';
+      };
+      $dispatcher->addListener($eventName, $listener);
+
+      $result = $item->update([
+         'id'      => $itemId,
+         'comment' => '',
+      ]);
+      $this->boolean($result)->isTrue();
+
+      $item  = new \Computer();
+      $result = $item->getFromDB($itemId);
+      $this->boolean($result)->isTrue();
+      $this->string($item->fields['comment'])->isEqualTo('Comment added by listener.');
+
+      $dispatcher->removeListener($eventName, $listener);
+   }
+
+   /**
+    * Test that 'item.pre_delete', 'item.post_delete' events are dispatched
+    * in expected order when deleting an item.
+    */
+   public function testDeleteProcessEventsOrder() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item   = $this->getNewItem();
+      $itemId = $item->fields['id'];
+
+      $self = $this;
+
+      $preDeleteEventItem = null; // Will be set if listened event is dispatched
+      $preDeleteListener = function(ItemEvent $event) use (&$preDeleteEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo('');
+         $item->input['comment'] = ItemEvent::ITEM_PRE_DELETE;
+
+         $preDeleteEventItem = $item;
+
+         // Assert that item has not been marked as deleted in DB when event is dispatched
+         $self->array($item->find(['id' => $item->input['id'], 'is_deleted' => 0]))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_PRE_DELETE, $preDeleteListener);
+
+      $postDeleteEventItem = null; // Will be set if listened event is dispatched
+      $postDeleteListener = function(ItemEvent $event) use (&$postDeleteEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_PRE_DELETE);
+         $item->input['comment'] = ItemEvent::ITEM_POST_DELETE;
+
+         $postDeleteEventItem = $item;
+
+         // Assert that item has been marked as deleted in DB when event is dispatched
+         $self->array($item->find(['id' => $item->input['id'], 'is_deleted' => 1]))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_POST_DELETE, $postDeleteListener);
+
+      $result = $item->delete([
+         'id'      => $itemId,
+         'comment' => '',
+      ]);
+      $this->boolean($result)->isTrue();
+
+      $self->array($item->input)->hasKey('comment');
+      $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_POST_DELETE);
+
+      $this->object($preDeleteEventItem)->isEqualTo($item);
+      $this->object($postDeleteEventItem)->isEqualTo($item);
+
+      $dispatcher->removeListener(ItemEvent::ITEM_PRE_DELETE, $preDeleteListener);
+      $dispatcher->removeListener(ItemEvent::ITEM_POST_DELETE, $postDeleteListener);
+   }
+
+   /**
+    * Test that events can be used to prevent deletion of items.
+    */
+   public function testDeleteEventsBehaviors() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item   = $this->getNewItem();
+      $itemId = $item->fields['id'];
+
+      $eventName = ItemEvent::ITEM_PRE_DELETE;
+
+      // Test that listener can prevent deletion of item
+      $listener = function(ItemEvent $event) {
+         $item = $event->getItem();
+         $item->input = false;
+      };
+      $dispatcher->addListener($eventName, $listener);
+
+      $result = $item->delete([
+         'id' => $itemId,
+      ]);
+      $this->boolean($result)->isFalse();
+
+      $dispatcher->removeListener($eventName, $listener);
+   }
+
+   /**
+    * Test that 'item.pre_purge', 'item.post_purge' events are dispatched
+    * in expected order when purging an item.
+    */
+   public function testPurgeProcessEventsOrder() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item   = $this->getNewItem();
+      $itemId = $item->fields['id'];
+
+      $self = $this;
+
+      $prePurgeEventItem = null; // Will be set if listened event is dispatched
+      $prePurgeListener = function(ItemEvent $event) use (&$prePurgeEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo('');
+         $item->input['comment'] = ItemEvent::ITEM_PRE_PURGE;
+
+         $prePurgeEventItem = $item;
+
+         // Assert that item has not been deleted from DB when event is dispatched
+         $self->array($item->find(['id' => $item->fields['id']]))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_PRE_PURGE, $prePurgeListener);
+
+      $postPurgeEventItem = null; // Will be set if listened event is dispatched
+      $postPurgeListener = function(ItemEvent $event) use (&$postPurgeEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_PRE_PURGE);
+         $item->input['comment'] = ItemEvent::ITEM_POST_PURGE;
+
+         $postPurgeEventItem = $item;
+
+         // Assert that item has been deleted from DB when event is dispatched
+         $self->array($item->find(['id' => $item->fields['id']]))->isEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_POST_PURGE, $postPurgeListener);
+
+      $result = $item->delete(
+         [
+            'id'      => $itemId,
+            'comment' => '',
+         ],
+         true
+      );
+      $this->boolean($result)->isTrue();
+
+      $self->array($item->input)->hasKey('comment');
+      $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_POST_PURGE);
+
+      $this->object($prePurgeEventItem)->isEqualTo($item);
+      $this->object($postPurgeEventItem)->isEqualTo($item);
+
+      $dispatcher->removeListener(ItemEvent::ITEM_PRE_PURGE, $prePurgeListener);
+      $dispatcher->removeListener(ItemEvent::ITEM_POST_PURGE, $postPurgeListener);
+   }
+
+   /**
+    * Test that events can be used to prevent purge of items.
+    */
+   public function testPurgeEventsBehaviors() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item   = $this->getNewItem();
+      $itemId = $item->fields['id'];
+
+      $eventName = ItemEvent::ITEM_PRE_PURGE;
+
+      // Test that listener can prevent deletion of item
+      $listener = function(ItemEvent $event) {
+         $item = $event->getItem();
+         $item->input = false;
+      };
+      $dispatcher->addListener($eventName, $listener);
+
+      $result = $item->delete(
+         [
+            'id' => $itemId,
+         ],
+         true
+      );
+      $this->boolean($result)->isFalse();
+
+      $dispatcher->removeListener($eventName, $listener);
+   }
+
+   /**
+    * Test that 'item.pre_restore', 'item.post_restore' events are dispatched
+    * in expected order when restoring an item.
+    */
+   public function testRestoreProcessEventsOrder() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item   = $this->getNewItem();
+      $itemId = $item->fields['id'];
+
+      $result = $item->delete([
+         'id' => $itemId,
+      ]);
+      $this->boolean($result)->isTrue();
+
+      $self = $this;
+
+      $preRestoreEventItem = null; // Will be set if listened event is dispatched
+      $preRestoreListener = function(ItemEvent $event) use (&$preRestoreEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo('');
+         $item->input['comment'] = ItemEvent::ITEM_PRE_RESTORE;
+
+         $preRestoreEventItem = $item;
+
+         // Assert that item has not been unmarked as deleted in DB when event is dispatched
+         $self->array($item->find(['id' => $item->input['id'], 'is_deleted' => 1]))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_PRE_RESTORE, $preRestoreListener);
+
+      $postRestoreEventItem = null; // Will be set if listened event is dispatched
+      $postRestoreListener = function(ItemEvent $event) use (&$postRestoreEventItem, $self) {
+         $item = $event->getItem();
+         $self->object($item)->isInstanceOf(\CommonDBTM::class);
+         $self->array($item->input)->hasKey('comment');
+         $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_PRE_RESTORE);
+         $item->input['comment'] = ItemEvent::ITEM_POST_RESTORE;
+
+         $postRestoreEventItem = $item;
+
+         // Assert that item has been marked as deleted in DB when event is dispatched
+         $self->array($item->find(['id' => $item->input['id'], 'is_deleted' => 0]))->isNotEmpty();
+      };
+      $dispatcher->addListener(ItemEvent::ITEM_POST_RESTORE, $postRestoreListener);
+
+      $result = $item->restore([
+         'id'      => $itemId,
+         'comment' => '',
+      ]);
+      $this->boolean($result)->isTrue();
+
+      $self->array($item->input)->hasKey('comment');
+      $self->string($item->input['comment'])->isEqualTo(ItemEvent::ITEM_POST_RESTORE);
+
+      $this->object($preRestoreEventItem)->isEqualTo($item);
+      $this->object($postRestoreEventItem)->isEqualTo($item);
+
+      $dispatcher->removeListener(ItemEvent::ITEM_PRE_RESTORE, $preRestoreListener);
+      $dispatcher->removeListener(ItemEvent::ITEM_POST_RESTORE, $postRestoreListener);
+   }
+
+   /**
+    * Test that events can be used to prevent deletion of items.
+    */
+   public function testRestoreEventsBehaviors() {
+
+      global $CONTAINER;
+
+      /** @var \Glpi\EventDispatcher\EventDispatcher $dispatcher */
+      $dispatcher = $CONTAINER->get(\Glpi\EventDispatcher\EventDispatcher::class);
+
+      $item   = $this->getNewItem();
+      $itemId = $item->fields['id'];
+
+      $result = $item->delete([
+         'id' => $itemId,
+      ]);
+      $this->boolean($result)->isTrue();
+
+      $eventName = ItemEvent::ITEM_PRE_RESTORE;
+
+      // Test that listener can prevent restore of item
+      $listener = function(ItemEvent $event) {
+         $item = $event->getItem();
+         $item->input = false;
+      };
+      $dispatcher->addListener($eventName, $listener);
+
+      $result = $item->restore([
+         'id' => $itemId,
+      ]);
+      $this->boolean($result)->isFalse();
+
+      $dispatcher->removeListener($eventName, $listener);
+   }
+
+   private function getNewItem(): \CommonDBTM {
+
+      $item  = new \Computer();
+      $itemId = $item->add([
+         'name'        => 'New computer',
+         'entities_id' => 0
+      ]);
+      $this->integer($itemId)->isGreaterThan(0);
+
+      return $item;
    }
 }

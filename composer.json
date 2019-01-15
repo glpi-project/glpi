@@ -35,7 +35,11 @@
         "zendframework/zend-console": "^2.7",
         "elvanto/litemoji": "^1.4",
         "symfony/console": "^3.4",
-        "leafo/scssphp": "^0.7.7"
+        "leafo/scssphp": "^0.7.7",
+        "symfony/dependency-injection": "^3.4",
+        "symfony/yaml": "^3.4",
+        "symfony/config": "^3.4",
+        "symfony/event-dispatcher": "^3.4"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
@@ -58,6 +62,11 @@
         "optimize-autoloader": true,
         "platform": {
             "php": "7.0.8"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Glpi\\": "src/Glpi/"
         }
     },
     "scripts": {

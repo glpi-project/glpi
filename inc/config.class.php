@@ -31,10 +31,10 @@
  */
 
 use Glpi\Exception\PasswordTooWeakException;
+use Glpi\Cache\SimpleCache;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
-use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
@@ -60,6 +60,15 @@ class Config extends CommonDBTM {
    static $rightname              = 'config';
 
    static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
+
+   /**
+    * Flag to prevent reloading legacy configuration if already loaded.
+    *
+    * Nota: This has been introduce when implementing the DI container, to handle transition phase.
+    *
+    * @var boolean
+    */
+   private static $legacy_config_already_loaded = false;
 
 
    static function getTypeName($nb = 0) {
@@ -1935,6 +1944,14 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\Console\\Application' ],
                [ 'name'    => 'leafo/scssphp',
                  'check'   => 'Leafo\ScssPhp\Compiler' ],
+               [ 'name'    => 'symfony/config',
+                 'check'   => 'Symfony\\Component\\Config\\FileLocator' ],
+               [ 'name'    => 'symfony/dependency-injection',
+                 'check'   => 'Symfony\\Component\\DependencyInjection\\Container' ],
+               [ 'name'    => 'symfony/event-dispatcher',
+                 'check'   => 'Symfony\\Component\\EventDispatcher\\EventDispatcher' ],
+               [ 'name'    => 'symfony/yaml',
+                 'check'   => 'Symfony\\Component\\Yaml\\Yaml' ],
       ];
       if ($all || PHP_VERSION_ID < 70000) {
          $deps[] = [
@@ -2724,6 +2741,10 @@ class Config extends CommonDBTM {
     */
    public static function loadLegacyConfiguration($older_to_latest = true) {
 
+      if (self::$legacy_config_already_loaded) {
+         return true;
+      }
+
       global $CFG_GLPI, $DB;
 
       $get_078_to_084_config    = function() use ($DB) {
@@ -2806,6 +2827,8 @@ class Config extends CommonDBTM {
       if (isset($CFG_GLPI['root_doc'])) {
          $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
       }
+
+      self::$legacy_config_already_loaded = true;
 
       return true;
    }
@@ -2908,7 +2931,7 @@ class Config extends CommonDBTM {
     * @param string  $context name of the configuration context (default 'core')
     * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
-    * @return Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator|Zend\Cache\Storage\StorageInterface object
+    * @return Glpi\Cache\SimpleCache|Zend\Cache\Storage\StorageInterface object
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB;
@@ -2954,8 +2977,8 @@ class Config extends CommonDBTM {
 
       if (!isset($opt['options']['namespace'])) {
          $namespace = "glpi_${optname}_" . GLPI_VERSION;
-         if ($DB && $DB->connected) {
-            $namespace .= Telemetry::getInstanceUuid();
+         if ($DB) {
+            $namespace .= md5($DB->dbhost . $DB->dbdefault);
          }
          $opt['options']['namespace'] = $namespace;
       }
@@ -3043,7 +3066,7 @@ class Config extends CommonDBTM {
       }
 
       if ($psr16) {
-         return new SimpleCacheDecorator($storage);
+         return new SimpleCache($storage);
       } else {
          return $storage;
       }
