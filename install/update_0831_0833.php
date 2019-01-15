@@ -38,14 +38,13 @@
 function update0831to0833() {
    global $DB, $migration;
 
-   $updateresult = true;
-
    $migration->displayTitle(sprintf(__('Update to %s'), '0.83.3'));
    $migration->setVersion('0.83.3');
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                       'Compute entities information on document links')); // Updating schema
 
+   // TODO : can be improved once DBmysql->update() support JOIN statement
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
@@ -56,5 +55,5 @@ function update0831to0833() {
    // must always be at the end
    $migration->executeMigration();
 
-   return $updateresult;
+   return true;
 }
