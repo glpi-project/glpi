@@ -95,7 +95,7 @@ class Kernel
         $cacheFile = $this->cacheDir . '/container.php';
 
         if ((is_dir($this->cacheDir) && is_writable($this->cacheDir))
-            || (is_file($cacheFile) && is_writable($cacheFile))) {
+            || (is_file($cacheFile) && is_readable($cacheFile) && is_writable($cacheFile))) {
             // Use container caching feature when possible
 
             // Files checks is always used in order to be sure that container cache in invalidated when used resources
@@ -106,8 +106,7 @@ class Kernel
             // - any change on the "local" configuration file.
             $checkFiles = true;
 
-            $file = $this->cacheDir . '/container.php';
-            $containerConfigCache = new ConfigCache($file, $checkFiles);
+            $containerConfigCache = new ConfigCache($cacheFile, $checkFiles);
 
             if (!$containerConfigCache->isFresh()) {
                 $containerBuilder = $this->getConfiguredAndCompiledContainerBuilder();
@@ -121,7 +120,7 @@ class Kernel
             }
 
             // Load and use cached container
-            require_once $file;
+            require_once $cacheFile;
             $container = new \GlpiCachedContainer();
         } else {
             $container = $this->getConfiguredAndCompiledContainerBuilder();
