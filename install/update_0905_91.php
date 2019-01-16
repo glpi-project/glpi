@@ -95,7 +95,7 @@ function update0905to91() {
                         '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
 
       $DB->queryOrDie($query, "9.1 update profile with Unlock profile");
-      $ro_p_id = $DB->insert_id();
+      $ro_p_id = $DB->insertId();
       $DB->queryOrDie("INSERT INTO `glpi_profilerights`
                               (`profiles_id`, `name`, `rights`)
                        VALUES ($ro_p_id, 'backup',                    '1'),
@@ -178,7 +178,7 @@ function update0905to91() {
 
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(UNLOCK)
+               DBmysql::quoteName("rights") . " | " . $DB->quoteValue(UNLOCK)
             )
          ], [
             'profiles_id'  => 4,
@@ -229,7 +229,7 @@ function update0905to91() {
          ],
          "9.1 Add unlock request notification template"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText =
          '##objectlock.type## ###objectlock.id## - ##objectlock.name##
@@ -286,7 +286,7 @@ function update0905to91() {
          ],
          "9.1 add Unlock Request notification"
       );
-      $notifid = $DB->insert_id();
+      $notifid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtargets", [
             'id'                 => null,
@@ -696,7 +696,7 @@ function update0905to91() {
    foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue(Ticket::SURVEY)
+               DBmysql::quoteName("rights") . " | " . $DB->quoteValue(Ticket::SURVEY)
             )
          ], [
             'profiles_id'  => $profrights['profiles_id'],
@@ -745,11 +745,11 @@ function update0905to91() {
          while ($data = $slasIterator->next()) {
             $DB->insertOrDie("glpi_slts", [
                   'id'                 => $data['id'],
-                  'name'               => Toolbox::addslashes_deep($data['name']),
+                  'name'               => $data['name'],
                   'entities_id'        => $data['entities_id'],
                   'is_recursive'       => $data['is_recursive'],
                   'type'               => SLM::TTR,
-                  'comment'            => addslashes($data['comment']),
+                  'comment'            => $data['comment'],
                   'number_time'        => $data['resolution_time'],
                   'date_mod'           => $data['date_mod'],
                   'definition_time'    => $data['definition_time'],

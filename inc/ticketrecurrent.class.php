@@ -499,7 +499,7 @@ class TicketRecurrent extends CommonDropdown {
          $input['_auto_import'] = true;
 
          $ticket = new Ticket();
-         $input  = Toolbox::addslashes_deep($input);
+         $input  = $input;
          if ($tid = $ticket->add($input)) {
             $msg = sprintf(__('Ticket %d successfully created'), $tid);
             $result = true;
@@ -511,7 +511,7 @@ class TicketRecurrent extends CommonDropdown {
       }
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = addslashes($msg);
+      $changes[2] = $msg;
       Log::history($data['id'], __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
       // Compute next creation date

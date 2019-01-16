@@ -598,8 +598,10 @@ function update92to93() {
    if (!countElementsInTable('glpi_plugs')) {
       $plugs = ['C13', 'C15', 'C19'];
       foreach ($plugs as $plug) {
+         $params = ['name' => $plug];
          $migration->addPostQuery(
-            $DB->buildInsert('glpi_plugs', ['name' => $plug])
+            $DB->buildInsert('glpi_plugs', $params),
+            $params
          );
       }
    }
@@ -712,13 +714,15 @@ function update92to93() {
    }
    $migration->addKey('glpi_items_disks', 'itemtype');
    $migration->addKey('glpi_items_disks', ['itemtype', 'items_id'], 'item');
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_items_disks',
-         ['itemtype' => 'Computer'],
-         ['itemtype' => null]
-      )
+
+   $values = ['itemtype' => 'Computer'];
+   $where = ['itemtype' => null];
+   $update = $DB->buildUpdate(
+      'glpi_items_disks',
+      $values,
+      $where
    );
+   $migration->addPostQuery($update, $values);
    /** /Migrate computerdisks to items_disks */
 
    /** Add Item_Device* display preferences */
@@ -754,12 +758,14 @@ function update92to93() {
       );
    }
    $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
+   $set = ['glpi_users.authtype' => 1];
    $migration->addPostQuery(
       $DB->buildUpdate(
          "glpi_users",
-         ["glpi_users.authtype" => 1],
+         $set,
          ["glpi_users.authtype" => 0]
-      )
+      ),
+      $set
    );
 
    //Permit same license several times on same computer

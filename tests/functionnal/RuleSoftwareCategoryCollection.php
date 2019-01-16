@@ -71,7 +71,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
                 'manufacturer'     => 'My Manufacturer',
                 '_system_category' => 'dev'];
       $result = $categoryCollection->processAllRules(null, null, $input);
-      $this->array($result)->isIdenticalTo(["_no_rule_matches" => '1']);
+      $this->array($result)->isIdenticalTo(["_no_rule_matches" => true]);
    }
 
    public function testRuleMatchImport() {

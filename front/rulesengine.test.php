@@ -60,10 +60,6 @@ $rulecollection->checkGlobal(READ);
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
-// Need for RuleEngines
-foreach ($_POST as $key => $val) {
-   $_POST[$key] = stripslashes($val);
-}
 $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POST, $condition);
 
 if (isset($_POST["test_all_rules"])) {

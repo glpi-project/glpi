@@ -77,7 +77,7 @@ class Event extends CommonDBTM {
          $full_message = "[".$this->fields['service']."] ".
                          $message_type.
                          $this->fields['level'].": ".
-                         Toolbox::stripslashes_deep($this->fields['message'])."\n";
+                         $this->fields['message']."\n";
 
          Toolbox::logInFile("event", $full_message);
       }
@@ -100,11 +100,11 @@ class Event extends CommonDBTM {
       global $DB;
 
       $input = ['items_id' => intval($items_id),
-                     'type'     => $DB->escape($type),
+                     'type'     => $type,
                      'date'     => $_SESSION["glpi_currenttime"],
-                     'service'  => $DB->escape($service),
+                     'service'  => $service,
                      'level'    => intval($level),
-                     'message'  => $DB->escape($event)];
+                     'message'  => $event];
       $tmp = new self();
       return $tmp->add($input);
    }
@@ -122,13 +122,12 @@ class Event extends CommonDBTM {
 
       $secs = $day * DAY_TIMESTAMP;
 
-      //TODO: migrate to DB::delete()
-      $DB->delete(
+      $result = $DB->delete(
          'glpi_events', [
             new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
          ]
       );
-      return $DB->affected_rows();
+      return $result->rowCount();
    }
 
 

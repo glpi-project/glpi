@@ -65,4 +65,13 @@ abstract class AbstractQuery {
     * @return string
     */
    abstract public function getQuery();
+
+   /**
+    * Get query parameters
+    *
+    * @return array
+    *
+    * @since 10.0
+    */
+   abstract public function getParameters();
 }

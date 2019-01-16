@@ -482,7 +482,6 @@ class Item_Devices extends CommonDBRelation {
             $data['items_id']     = $newid;
             $data['_itemtype']    = $itemtype;
             $data['_no_history']  = true;
-            $data                 = Toolbox::addslashes_deep($data);
 
             $link->add($data);
          }

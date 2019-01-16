@@ -290,35 +290,35 @@ class Config extends DbTestCase {
       $expected= [
          'error'     => 0,
          'good'      => [
-            'mysqli' => 'mysqli extension is installed',
+            'pdo_mysql' => 'pdo_mysql extension is installed',
          ],
          'missing'   => [],
          'may'       => []
       ];
 
       //check extension from class name
-      $list = [
+      /*$list = [
          'mysqli' => [
             'required'  => true,
             'class'     => 'mysqli'
          ]
       ];
       $report = \Config::checkExtensions($list);
-      $this->array($report)->isIdenticalTo($expected);
+      $this->array($report)->isIdenticalTo($expected);*/
 
       //check extension from method name
-      $list = [
+      /*$list = [
          'mysqli' => [
             'required'  => true,
             'function'  => 'mysqli_commit'
          ]
       ];
       $report = \Config::checkExtensions($list);
-      $this->array($report)->isIdenticalTo($expected);
+      $this->array($report)->isIdenticalTo($expected);*/
 
       //check extension from its name
       $list = [
-         'mysqli' => [
+         'pdo_mysql' => [
             'required'  => true
          ]
       ];
@@ -333,7 +333,7 @@ class Config extends DbTestCase {
       $expected= [
          'error'     => 2,
          'good'      => [
-            'mysqli' => 'mysqli extension is installed',
+            'pdo_mysql' => 'pdo_mysql extension is installed',
          ],
          'missing'   => [
             'notantext' => 'notantext extension is missing'
@@ -349,7 +349,7 @@ class Config extends DbTestCase {
       $expected= [
          'error'     => 1,
          'good'      => [
-            'mysqli' => 'mysqli extension is installed',
+            'pdo_mysql' => 'pdo_mysql extension is installed',
          ],
          'missing'   => [],
          'may'       => [

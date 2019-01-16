@@ -198,7 +198,6 @@ class ContractCost extends CommonDBChild {
          $cd                   = new self();
          unset($data['id']);
          $data['contracts_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }

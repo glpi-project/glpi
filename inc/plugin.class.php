@@ -289,7 +289,7 @@ class Plugin extends CommonDBTM {
             include_once($setup_file);
          };
          $include_fct();
-         $informations = Toolbox::addslashes_deep(self::getInfo($directory));
+         $informations = self::getInfo($directory);
       }
 
       if (empty($informations)) {

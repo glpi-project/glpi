@@ -103,7 +103,7 @@ function update91to92() {
    $DB->updateOrDie("glpi_profilerights", [
          'rights' => new \QueryExpression($DB->quoteName("rights") . " | " . READ)
       ], [
-         new \QueryExpression(DBmysql::quoteName("rights") . " & " . DBmysql::quoteValue(UPDATE)),
+         new \QueryExpression(DBmysql::quoteName("rights") . " & " . $DB->quoteValue(UPDATE)),
          'name' => "device"
       ],
       "grant READ right on components to profiles having UPDATE right"
@@ -185,7 +185,7 @@ function update91to92() {
 
    $DB->updateOrDie("glpi_profilerights", [
          'rights' => new \QueryExpression(
-            DBmysql::quoteName("rights") . " | " . DBmysql::quoteValue( KnowbaseItem::COMMENTS)
+            DBmysql::quoteName("rights") . " | " . $DB->quoteValue( KnowbaseItem::COMMENTS)
          )
       ],
       ['name' => "knowbase"],
@@ -206,6 +206,7 @@ function update91to92() {
                                     `glpi_documents`
                              SET `glpi_documents_items`.`users_id` = `glpi_documents`.`users_id`
                              WHERE `glpi_documents_items`.`documents_id` = `glpi_documents`.`id`",
+                            [],
                             "9.2 update set users_id on glpi_documents_items");
 
    //add product number
@@ -940,18 +941,23 @@ function update91to92() {
       $migration->addKey("glpi_savedsearches", 'last_execution_date');
    }
    //ensure do_count is set to AUTO
+   $set   = ['do_count' => SavedSearch::COUNT_AUTO];
+   $where = [true];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_savedsearches",
-         ['do_count' => SavedSearch::COUNT_AUTO],
-         [true]
-      )
+         $set,
+         $where
+      ),
+      $set
    );
 
+   $set = ['entities_id' => 0];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_savedsearches",
-         ['entities_id' => "0"],
+         $set,
          ['entities_id' => "-1"]
-      )
+      ),
+      $set
    );
 
    if (!countElementsInTable('glpi_rules',
@@ -985,29 +991,40 @@ function update91to92() {
       $migration->renameTable("glpi_queuedmails", "glpi_queuednotifications");
    }
 
+   $set = ['itemtype' => "QueuedNotification"];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_crontasks",
-         ['itemtype' => "QueuedNotification"],
+         $set,
          ['itemtype' => "QueuedMail"]
-      )
+      ),
+      $set
    );
+
+   $set = ['name' => "queuednotification"];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_crontasks",
-         ['name' => "queuednotification"],
+         $set,
          ['name' => "queuedmail"]
-      )
+      ),
+      $set
    );
+
+   $set = ['name' => "queuednotificationclean"];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_crontasks",
-         ['name' => "queuednotificationclean"],
+         $set,
          ['name' => "queuedmailclean"]
-      )
+      ),
+      $set
    );
+
+   $set = ['name' => "queuednotification"];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_profilerights",
-         ['name' => "queuednotification"],
+         $set,
          ['name' => "queuedmail"]
-      )
+      ),
+      $set
    );
 
    if (isset($current_config['use_mailing']) && !isset($current_config['use_notifications'])) {
@@ -1056,19 +1073,24 @@ function update91to92() {
                         'varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT \'See Notification_NotificationTemplate::MODE_* constants\'');
    $migration->migrationOneTable("glpi_queuednotifications");
    $migration->addKey('glpi_queuednotifications', 'mode');
+
+   $set = ['mode' => Notification_NotificationTemplate::MODE_MAIL];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_queuednotifications",
-         ['mode' => Notification_NotificationTemplate::MODE_MAIL],
+         $set,
          [true]
       ),
+      $set,
       "9.2 set default mode in queue"
    );
 
+   $set = ['mode' => Notification_NotificationTemplate::MODE_MAIL];
    $migration->addPostQuery(
       $DB->buildUpdate("glpi_notifications_notificationtemplates",
-         ['mode' => Notification_NotificationTemplate::MODE_MAIL],
+         $set,
          ['mode' => "mail"]
       ),
+      $set,
       "9.2 set default mode in notifications templates"
    );
 
@@ -1176,7 +1198,7 @@ function update91to92() {
          ],
          "9.2 Add saved search alerts notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtemplates", [
             'name'            => "Saved searches alerts",
@@ -1185,7 +1207,7 @@ function update91to92() {
          ],
          "9.2 Add saved search alerts notification template"
       );
-      $nottid = $DB->insert_id();
+      $nottid = $DB->insertId();
 
       $where =  [
          'notifications_id'         => $notid,
@@ -1348,7 +1370,7 @@ Regards,',
          if (!isset($mapping[$key])) {
             $mapping[$key] = [];
          }
-         $kver->add(['version' => $DB->escape($data['os_kernel_version'])]);
+         $kver->add(['version' => $data['os_kernel_version']]);
          $mapping[$key][$data['id']] = $kver->getID();
       }
 
@@ -1547,7 +1569,7 @@ Regards,',
          ],
          "9.2 Add certificate alerts notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtemplates", [
             'name'      => "Certificates alerts",
@@ -1556,7 +1578,7 @@ Regards,',
          ],
          "9.2 Add certifcate alerts notification template"
       );
-      $nottid = $DB->insert_id();
+      $nottid = $DB->insertId();
 
       $where = [
          'notifications_id'         => $notid,
@@ -1847,11 +1869,11 @@ Regards,',
       while ($row = $iterator->next()) {
          if (!isset($firmwares[$row['firmware']])) {
             $fw = new DeviceFirmware();
-            if ($fw->getFromDBByCrit(['designation' => $DB->escape($row['firmware'])])) {
+            if ($fw->getFromDBByCrit(['designation' => $row['firmware']])) {
                $firmwares[$row['firmware']] = $fw->getID();
             } else {
                $id = $fw->add([
-                  'designation'              => $DB->escape($row['firmware']),
+                  'designation'              => $row['firmware'],
                   'devicefirmwaretypes_id'   => '3' //type "firmware"
                ]);
                $firmwares[$row['firmware']] = $id;
@@ -1877,8 +1899,8 @@ Regards,',
       while ($row = $iterator->next()) {
          $fw = new DeviceFirmware();
          $id = $fw->add([
-            'designation'              => $DB->escape($row['name']),
-            'comment'                  => $DB->escape($row['comment']),
+            'designation'              => $row['name'],
+            'comment'                  => $row['comment'],
             'devicefirmwaretypes_id'   => 3, //type "Firmware"
             'date_creation'            => $row['date_creation'],
             'date_mod'                 => $row['date_mod']
@@ -2102,7 +2124,7 @@ Regards,',
       $add = true;
       $result = $DB->query("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
       if ($result && $DB->numrows($result)) {
-         $row = $result->fetch_assoc();
+         $row = $result->fetch(\PDO::FETCH_ASSOC);
          if ($row['Non_unique'] == 1) {
             $migration->dropKey($table, 'unicity');
             $migration->migrationOneTable($table);
@@ -2185,15 +2207,15 @@ Regards,',
          $update = new \QueryExpression(
             DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_tickets_users")
          );
-         $migration->addPostQuery(
-            $DB->buildUpdate($update, [
-                  "$tl_table.timeline_position" => new \QueryExpression("IF(" .
-                     DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
-                     DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"
-                  )
-               ],
-               $where
+         $set = [
+            "$tl_table.timeline_position" => new \QueryExpression("IF(" .
+               DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
+               DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"
             )
+         ];
+         $migration->addPostQuery(
+            $DB->buildUpdate($update, $set, $where),
+            $set
          );
 
          $where = [
@@ -2226,22 +2248,24 @@ Regards,',
             DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_groups_tickets") .
             ", " . DBmysql::quoteName("glpi_groups_users")
          );
-         $migration->addPostQuery(
-            $DB->buildUpdate($update, [
-                  "$tl_table.timeline_position" => new \QueryExpression("IF(" .
-                     DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
-                     DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"
-                  )
-               ],
-               $where
+         $set = [
+            "$tl_table.timeline_position" => new \QueryExpression("IF(" .
+               DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
+               DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"
             )
+         ];
+         $migration->addPostQuery(
+            $DB->buildUpdate($update, $set, $where),
+            $set
          );
 
+         $set = ["$tl_table.timeline_position" => "1"];
          $migration->addPostQuery(
             $DB->buildUpdate($tl_table,
-               ["$tl_table.timeline_position" => "1"],
+               $set,
                ["$tl_table.timeline_position" => "0"]
-            )
+            ),
+            $set
          );
 
       }

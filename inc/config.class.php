@@ -150,7 +150,7 @@ class Config extends CommonDBTM {
          if (empty($input["smtp_passwd"])) {
             unset($input["smtp_passwd"]);
          } else {
-            $input["smtp_passwd"] = Toolbox::encrypt(stripslashes($input["smtp_passwd"]), GLPIKEY);
+            $input["smtp_passwd"] = Toolbox::encrypt($input["smtp_passwd"], GLPIKEY);
          }
       }
 
@@ -162,8 +162,7 @@ class Config extends CommonDBTM {
          if (empty($input["proxy_passwd"])) {
             unset($input["proxy_passwd"]);
          } else {
-            $input["proxy_passwd"] = Toolbox::encrypt(stripslashes($input["proxy_passwd"]),
-                                                      GLPIKEY);
+            $input["proxy_passwd"] = Toolbox::encrypt($input["proxy_passwd"], GLPIKEY);
          }
       }
 
@@ -2345,7 +2344,7 @@ class Config extends CommonDBTM {
    static function checkExtensions($list = null) {
       if ($list === null) {
          $extensions_to_check = [
-            'mysqli'   => [
+            'pdo_mysql'   => [
                'required'  => true
             ],
             'ctype'    => [
@@ -2977,7 +2976,7 @@ class Config extends CommonDBTM {
       if (!isset($opt['options']['namespace'])) {
          $namespace = "glpi_${optname}_" . GLPI_VERSION;
          if ($DB) {
-            $namespace .= md5($DB->dbhost . $DB->dbdefault);
+            $namespace .= md5($DB->getDsn(null));
          }
          $opt['options']['namespace'] = $namespace;
       }

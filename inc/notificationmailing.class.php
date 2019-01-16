@@ -61,8 +61,6 @@ class NotificationMailing implements NotificationInterface {
     * @return boolean
    **/
    static function isUserAddressValid($address, $options = ['checkdns'=>false]) {
-      //drop sanitize...
-      $address = Toolbox::stripslashes_deep($address);
       $isValid = GLPIMailer::ValidateAddress($address);
 
       $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
@@ -141,7 +139,7 @@ class NotificationMailing implements NotificationInterface {
          $data['body_html'] = $options['content_html'];
       }
 
-      $data['recipient']                            = Toolbox::stripslashes_deep($options['to']);
+      $data['recipient']                            = $options['to'];
       $data['recipientname']                        = $options['toname'];
 
       if (!empty($options['messageid'])) {
@@ -156,7 +154,7 @@ class NotificationMailing implements NotificationInterface {
 
       $queue = new QueuedNotification();
 
-      if (!$queue->add(Toolbox::addslashes_deep($data))) {
+      if (!$queue->add($data)) {
          Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
          return false;
       } else {

@@ -4515,7 +4515,7 @@ class Html {
          ";
       if (!empty($on_change)) {
          $js .= " $('#$field_id').on('change', function(e) {".
-                  stripslashes($on_change)."});";
+                  $on_change."});";
       }
 
       $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";

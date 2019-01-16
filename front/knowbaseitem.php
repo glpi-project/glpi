@@ -42,10 +42,6 @@ if (isset($_GET["id"])) {
 
 Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
 
-
-// Clean for search
-$_GET = Toolbox::stripslashes_deep($_GET);
-
 // Search a solution
 if (!isset($_GET["contains"])
     && isset($_GET["item_itemtype"])

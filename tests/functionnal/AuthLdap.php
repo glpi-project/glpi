@@ -160,7 +160,7 @@ class AuthLDAP extends DbTestCase {
       $result   = $ldap->prepareInputForUpdate($input);
 
       //Expected value to be encrypted using GLPIKEY key
-      $expected = \Toolbox::encrypt(stripslashes($password), GLPIKEY);
+      $expected = \Toolbox::encrypt($password, GLPIKEY);
       $this->string($result['rootdn_passwd'])->isIdenticalTo($expected);
 
       $password = 'tot\'o';
@@ -168,7 +168,7 @@ class AuthLDAP extends DbTestCase {
       $result   = $ldap->prepareInputForUpdate($input);
 
       //Expected value to be encrypted using GLPIKEY key
-      $expected = \Toolbox::encrypt(stripslashes($password), GLPIKEY);
+      $expected = \Toolbox::encrypt($password, GLPIKEY);
       $this->string($result['rootdn_passwd'])->isIdenticalTo($expected);
 
       $input['_blank_passwd'] = 1;

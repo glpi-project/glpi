@@ -121,8 +121,8 @@ class Certificate_Item extends DbTestCase {
 
       $list_types = iterator_to_array($this->testedInstance->getDistinctTypes($cid1));
       $expected = [
-         ['itemtype' => 'Computer'],
-         ['itemtype' => 'Printer']
+         -1 => ['itemtype' => 'Computer'],
+         0  => ['itemtype' => 'Printer']
       ];
       $this->array($list_types)->isIdenticalTo($expected);
 

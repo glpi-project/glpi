@@ -1160,7 +1160,7 @@ class Transfer extends CommonDBTM {
          // Search init item
          $location = new Location();
          if ($location->getFromDB($locID)) {
-            $data = Toolbox::addslashes_deep($location->fields);
+            $data = $location->fields;
 
             $input['entities_id']  = $this->to;
             $input['completename'] = $data['completename'];
@@ -1196,7 +1196,7 @@ class Transfer extends CommonDBTM {
          // Search init item
          $netpoint = new Netpoint();
          if ($netpoint->getFromDB($netpoints_id)) {
-            $data  = Toolbox::addslashes_deep($netpoint->fields);
+            $data  = $netpoint->fields;
             $locID = $this->transferDropdownLocation($netpoint->fields['locations_id']);
 
             // Search if the locations_id already exists in the destination entity
@@ -1205,7 +1205,7 @@ class Transfer extends CommonDBTM {
                'FROM'   => 'glpi_netpoints',
                'WHERE'  => [
                   'entities_id'  => $this->to,
-                  'name'         => Toolbox::addslashes_deep($netpoint->fields['name']),
+                  'name'         => $netpoint->fields['name'],
                   'locations_id' => $locID
                ]
             ]);
@@ -1297,7 +1297,7 @@ class Transfer extends CommonDBTM {
                            'FROM'   => 'glpi_cartridgeitems',
                            'WHERE'  => [
                               'entities_id'  => $this->to,
-                              'name'         => addslashes($carttype->fields['name'])
+                              'name'         => $carttype->fields['name']
                            ]
                         ]);
 
@@ -1313,7 +1313,7 @@ class Transfer extends CommonDBTM {
                            $input                = $carttype->fields;
                            $input['entities_id'] = $this->to;
                            unset($carttype->fields);
-                           $newcarttypeID        = $carttype->add(toolbox::addslashes_deep($input));
+                           $newcarttypeID        = $carttype->add($input);
                            // 2 - transfer as copy
                            $this->transferItem('CartridgeItem', $data['cartridgeitems_id'],
                                                 $newcarttypeID);
@@ -1402,7 +1402,7 @@ class Transfer extends CommonDBTM {
                'FROM'   => 'glpi_softwares',
                'WHERE'  => [
                   'entities_id'  => $this->to,
-                  'name'         => addslashes($soft->fields['name'])
+                  'name'         => $soft->fields['name']
                ] + $manufacturer
             ]);
 
@@ -1415,7 +1415,7 @@ class Transfer extends CommonDBTM {
                $input                = $soft->fields;
                $input['entities_id'] = $this->to;
                unset($soft->fields);
-               $newsoftID            = $soft->add(toolbox::addslashes_deep($input));
+               $newsoftID            = $soft->add($input);
             }
 
          }
@@ -1456,7 +1456,7 @@ class Transfer extends CommonDBTM {
                'FROM'   => 'glpi_softwareversions',
                'WHERE'  => [
                   'softwares_id' => $newsoftID,
-                  'name'         => addslashes($vers->fields['name'])
+                  'name'         => $vers->fields['name']
                ]
             ]);
 
@@ -1470,7 +1470,7 @@ class Transfer extends CommonDBTM {
                $vers->fields = [];
                // entities_id and is_recursive from new software are set in prepareInputForAdd
                $input['softwares_id'] = $newsoftID;
-               $newversID             = $vers->add(toolbox::addslashes_deep($input));
+               $newversID             = $vers->add($input);
             }
 
          }
@@ -1586,8 +1586,8 @@ class Transfer extends CommonDBTM {
                   'FROM'   => 'glpi_softwarelicenses',
                   'WHERE'  => [
                      'softwares_id' => $newsoftID,
-                     'name'         => addslashes($license->fields['name']),
-                     'serial'       => addslashes($license->fields['serial'])
+                     'name'         => $license->fields['name'],
+                     'serial'       => $license->fields['serial']
                   ]
                ]);
 
@@ -1617,7 +1617,7 @@ class Transfer extends CommonDBTM {
                   $input['number']       = 1;
                   $input['entities_id']  = $this->to;
                   $input['softwares_id'] = $newsoftID;
-                  $newlicID              = $license->add(toolbox::addslashes_deep($input));
+                  $newlicID              = $license->add($input);
                }
 
                if ($newlicID > 0) {
@@ -1789,7 +1789,7 @@ class Transfer extends CommonDBTM {
                      'FROM'   => 'glpi_contracts',
                      'WHERE'  => [
                         'entities_id'  => $this->to,
-                        'name'         => addslashes($contract->fields['name'])
+                        'name'         => $contract->fields['name']
                      ]
                   ]);
 
@@ -1807,7 +1807,7 @@ class Transfer extends CommonDBTM {
                      $input                = $contract->fields;
                      $input['entities_id'] = $this->to;
                      unset($contract->fields);
-                     $newcontractID        = $contract->add(toolbox::addslashes_deep($input));
+                     $newcontractID        = $contract->add($input);
                      // 2 - transfer as copy
                      $this->transferItem('Contract', $item_ID, $newcontractID);
                   }
@@ -1965,7 +1965,7 @@ class Transfer extends CommonDBTM {
                      'FROM'   => 'glpi_documents',
                      'WHERE'  => [
                         'entities_id'  => $this->to,
-                        'name'         => addslashes($document->fields['name'])
+                        'name'         => $document->fields['name']
                      ]
                   ]);
 
@@ -1983,7 +1983,7 @@ class Transfer extends CommonDBTM {
                      $input    = $document->fields;
                      // Not set new entity Do by transferItem
                      unset($document->fields);
-                     $newdocID = $document->add(toolbox::addslashes_deep($input));
+                     $newdocID = $document->add($input);
                      // 2 - transfer as copy
                      $this->transferItem('Document', $item_ID, $newdocID);
                   }
@@ -2160,7 +2160,7 @@ class Transfer extends CommonDBTM {
                            'WHERE'  => [
                               'is_global'    => 1,
                               'entities_id'  => $this->to,
-                              'name'         => addslashes($link_item->getField('name'))
+                              'name'         => $link_item->getField('name')
                            ]
                         ]);
 
@@ -2177,7 +2177,7 @@ class Transfer extends CommonDBTM {
                            $input                = $link_item->fields;
                            $input['entities_id'] = $this->to;
                            unset($link_item->fields);
-                           $newID = $link_item->add(toolbox::addslashes_deep($input));
+                           $newID = $link_item->add($input);
                            // 2 - transfer as copy
                            $this->transferItem($link_type, $item_ID, $newID);
                         }
@@ -2439,7 +2439,7 @@ class Transfer extends CommonDBTM {
                   'FROM'   => 'glpi_suppliers',
                   'WHERE'  => [
                      'entities_id'  => $this->to,
-                     'name'         => addslashes($supplier->fields['name'])
+                     'name'         => $supplier->fields['name']
                   ]
                ]);
 
@@ -2454,7 +2454,7 @@ class Transfer extends CommonDBTM {
                   $input['entities_id']  = $this->to;
                   // Not set new entity Do by transferItem
                   unset($supplier->fields);
-                  $newID                 = $supplier->add(toolbox::addslashes_deep($input));
+                  $newID                 = $supplier->add($input);
                }
 
                $input2['id']           = $data['id'];
@@ -2515,7 +2515,7 @@ class Transfer extends CommonDBTM {
 
             if ($categ->getFromDB($data['taskcategories_id'])) {
                $inputcat['entities_id']  = $this->to;
-               $inputcat['completename'] = addslashes($categ->fields['completename']);
+               $inputcat['completename'] = $categ->fields['completename'];
                $catid                    = $categ->findID($inputcat);
                if ($catid < 0) {
                   $catid = $categ->import($inputcat);
@@ -2554,7 +2554,7 @@ class Transfer extends CommonDBTM {
 
          if ($categ->getFromDB($data['itilcategories_id'])) {
             $inputcat['entities_id']  = $this->to;
-            $inputcat['completename'] = addslashes($categ->fields['completename']);
+            $inputcat['completename'] = $categ->fields['completename'];
             $catid                    = $categ->findID($inputcat);
             if ($catid < 0) {
                $catid = $categ->import($inputcat);
@@ -2607,7 +2607,6 @@ class Transfer extends CommonDBTM {
 
                while ($data = $iterator->next()) {
                   unset($data['id']);
-                  $data = Toolbox::addslashes_deep($data);
                   $data = [
                      'items_id'  => $newID,
                      'itemtype'  => $itemtype
@@ -2641,7 +2640,6 @@ class Transfer extends CommonDBTM {
             $cartitem = new CartridgeItem();
 
             while ($data = $iterator->next()) {
-               $data = Toolbox::addslashes_deep($data);
                $cartitem->addCompatibleType($newID, $data["printermodels_id"]);
             }
 
@@ -2694,7 +2692,7 @@ class Transfer extends CommonDBTM {
                   $input['suppliers_id'] = $suppliers_id;
                   unset($input['id']);
                   unset($ic->fields);
-                  $ic->add(toolbox::addslashes_deep($input));
+                  $ic->add($input);
 
                } else {
                   // Same Item : manage only enterprise move
@@ -2784,7 +2782,7 @@ class Transfer extends CommonDBTM {
                'FROM'   => 'glpi_suppliers',
                'WHERE'  => [
                   'entities_id'  => $this->to,
-                  'name'         => addslashes($ent->fields['name'])
+                  'name'         => $ent->fields['name']
                ]
             ]);
 
@@ -2801,7 +2799,7 @@ class Transfer extends CommonDBTM {
                $input                = $ent->fields;
                $input['entities_id'] = $this->to;
                unset($ent->fields);
-               $newID                = $ent->add(toolbox::addslashes_deep($input));
+               $newID                = $ent->add($input);
                // 2 - transfer as copy
                $this->transferItem('Supplier', $ID, $newID);
             }
@@ -2882,8 +2880,8 @@ class Transfer extends CommonDBTM {
                      'FROM'   => 'glpi_contacts',
                      'WHERE'  => [
                         'entities_id'  => $this->to,
-                        'name'         => addslashes($contact->fields['name']),
-                        'firstname'    => addslashes($contact->fields['firstname'])
+                        'name'         => $contact->fields['name'],
+                        'firstname'    => $contact->fields['firstname']
                      ]
                   ]);
 
@@ -2901,7 +2899,7 @@ class Transfer extends CommonDBTM {
                      $input                = $contact->fields;
                      $input['entities_id'] = $this->to;
                      unset($contact->fields);
-                     $newcontactID         = $contact->add(toolbox::addslashes_deep($input));
+                     $newcontactID         = $contact->add($input);
                      // 2 - transfer as copy
                      $this->transferItem('Contact', $item_ID, $newcontactID);
                   }
@@ -3002,7 +3000,7 @@ class Transfer extends CommonDBTM {
                   $input['items_id']  = $newID;
                   $input['is_active'] = $ri->fields['is_active'];
                   unset($ri->fields);
-                  $ri->add(toolbox::addslashes_deep($input));
+                  $ri->add($input);
                }
                // Same item -> nothing to do
                break;
@@ -3123,7 +3121,7 @@ class Transfer extends CommonDBTM {
                               'FROM'   => $devicetable,
                               'WHERE'  => [
                                  'entities_id'  => $this->to,
-                                 $field         => addslashes($device->fields[$field])
+                                 $field         => $device->fields[$field]
                               ]
                            ]);
 
@@ -3147,7 +3145,7 @@ class Transfer extends CommonDBTM {
                               }
                               $input['entities_id'] = $this->to;
                               unset($device->fields);
-                              $newdeviceID = $device->add(Toolbox::addslashes_deep($input));
+                              $newdeviceID = $device->add($input);
                               // 2 - transfer as copy
                               $this->transferItem($devicetype, $item_ID, $newdeviceID);
                            }
@@ -3236,13 +3234,12 @@ class Transfer extends CommonDBTM {
                   }
                } else { // Copy -> copy netports
                   while ($data = $iterator->next()) {
-                     $data             = Toolbox::addslashes_deep($data);
                      unset($data['id']);
                      $data['items_id'] = $newID;
                      $data['netpoints_id']
                                        = $this->transferDropdownNetpoint($data['netpoints_id']);
                      unset($np->fields);
-                     $np->add(toolbox::addslashes_deep($data));
+                     $np->add($data);
                   }
                }
                break;
@@ -3257,7 +3254,7 @@ class Transfer extends CommonDBTM {
                      $data['netpoints_id']
                                        = $this->transferDropdownNetpoint($data['netpoints_id']);
                      unset($np->fields);
-                     $np->add(toolbox::addslashes_deep($data));
+                     $np->add($data);
                   }
                } else {
                   while ($data = $iterator->next()) {

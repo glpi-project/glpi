@@ -3,13 +3,14 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [X.X] unreleased
-
-### Added
+## [10.0.0] unreleased
 
 ### Changed
 
 - Update process is now limited to GLPI 0.80 and above. See upgrade documentation for details.
+- /!\ Database queries now rely on PDO; and global sanitize has been dropped.
+- /!\ `DB` methods which uses to return a mysqli_statement now return a PDOStatement.
+- /!\ `DB` methods signatures significally changed due to usage of PDO.
 
 ### Removed
 

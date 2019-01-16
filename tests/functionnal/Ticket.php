@@ -1582,7 +1582,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
+               'content' => "This is a content\nwith a carriage return"
             ]
          ], [
             'input'     => [
@@ -1591,7 +1591,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => 'This is a content\nwith a carriage return'
+               'content' => "This is a content\r\nwith a carriage return"
             ]
          ], [
             'input'     => [
@@ -1600,7 +1600,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => '<p>This is a content\nwith a carriage return</p>',
+               'content' => "<p>This is a content\r\nwith a carriage return</p>",
             ]
          ], [
             'input'     => [
@@ -1609,7 +1609,7 @@ class Ticket extends DbTestCase {
             ],
             'expected'  => [
                'name' => 'This is a content with a carriage return',
-               'content' => '&lt;p&gt;This is a content\nwith a carriage return&lt;/p&gt;'
+               'content' => "&lt;p&gt;This is a content\r\nwith a carriage return&lt;/p&gt;"
             ]
          ], [
             'input'     => [
@@ -1617,19 +1617,10 @@ class Ticket extends DbTestCase {
                'content'   => 'Test for buggy &#039; character'
             ],
             'expected'  => [
-               'name'      => 'Test for buggy \\\' character',
-               'content'   => 'Test for buggy \\\' character',
+               'name'      => 'Test for buggy \' character',
+               'content'   => 'Test for buggy &#039; character',
             ]
-         ], [
-            'input'     => [
-               'name'      => '',
-               'content'   => 'Test for buggy &#39; character'
-            ],
-            'expected'  => [
-               'name'      => 'Test for buggy \\\' character',
-               'content'   => 'Test for buggy \\\' character',
-            ]
-         ]
+         ],
       ];
    }
 
@@ -1642,7 +1633,7 @@ class Ticket extends DbTestCase {
       $this
          ->if($this->newTestedInstance)
          ->then
-            ->array($this->testedInstance->prepareInputForAdd(\Toolbox::addslashes_deep($input)))
+            ->array($this->testedInstance->prepareInputForAdd($input))
                ->string['name']->isIdenticalTo($expected['name'])
                ->string['content']->isIdenticalTo($expected['content']);
    }
@@ -1779,42 +1770,42 @@ class Ticket extends DbTestCase {
       return [
          [
             'input'  => [
-               'urgency'   => 2,
-               'impact'    => 2
+               'urgency'   => '2',
+               'impact'    => '2'
             ],
             '2',
             '2',
-            '2'
+            2
          ], [
             'input'  => [
-               'urgency'   => 5
+               'urgency'   => '5'
             ],
             '5',
             '3',
-            '4'
+            4
          ], [
             'input'  => [
-               'impact'   => 5
+               'impact'   => '5'
             ],
             '3',
             '5',
-            '4'
+            4
          ], [
             'input'  => [
-               'urgency'   => 5,
-               'impact'    => 5
+               'urgency'   => '5',
+               'impact'    => '5'
             ],
             '5',
             '5',
-            '5'
+            5
          ], [
             'input'  => [
-               'urgency'   => 5,
-               'impact'    => 1
+               'urgency'   => '5',
+               'impact'    => '1'
             ],
             '5',
             '1',
-            '2'
+            2
          ]
       ];
    }
@@ -1830,7 +1821,7 @@ class Ticket extends DbTestCase {
       $this->array($result)
          ->string['urgency']->isIdenticalTo($urgency)
          ->string['impact']->isIdenticalTo($impact)
-         ->string['priority']->isIdenticalTo($priority);
+         ->integer['priority']->isIdenticalTo($priority);
    }
 
    public function testGetDefaultValues() {

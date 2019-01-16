@@ -166,7 +166,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
             //If manufacturer is set, then first run the manufacturer's dictionnary
             if (isset($input["manufacturer"])) {
-               $input["manufacturer"] = Manufacturer::processName(addslashes($input["manufacturer"]));
+               $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
             }
 
             //Replay software dictionnary rules
@@ -333,13 +333,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          if (isset($res_rule["name"])) {
             $new_name = $res_rule["name"];
          } else {
-            $new_name = addslashes($name);
+            $new_name = $name;
          }
 
          if (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"]) {
             $manufacturer = $res_rule["manufacturer"];
          } else {
-            $manufacturer = addslashes($manufacturer);
+            $manufacturer = $manufacturer;
          }
 
          //New software not already present in this entity
@@ -377,7 +377,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       ]);
 
       while ($version = $iterator->next()) {
-         $input["version"] = addslashes($version["name"]);
+         $input["version"] = $version["name"];
          $old_version_name = $input["version"];
 
          if (isset($res_rule['version_append']) && $res_rule['version_append'] != '') {

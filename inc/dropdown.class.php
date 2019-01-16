@@ -2095,13 +2095,12 @@ class Dropdown {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param $itemtype        string   name of the class
-    * @param $value           string   Value of the new dropdown. (need to be addslashes)
-    * @param $entities_id     integer  entity in case of specific dropdown (default -1)
-    * @param $external_params array    (need to be addslashes)
-    * @param $comment                  (default '') (need to be addslashes)
-    * @param $add                      if true, add it if not found. if false, just check if exists
-    *                                  (true by default)
+    * @param string  $itemtype         name of the class
+    * @param string  $value            Value of the new dropdown.
+    * @param integer entities_id       entity in case of specific dropdown
+    * @param array   $external_params
+    * @param string  $comment
+    * @param boolean $add              if true, add it if not found. if false, just check if exists
     *
     * @return integer : dropdown id.
    **/
@@ -2243,6 +2242,7 @@ class Dropdown {
       }
       $table = $item->getTable();
       $datas = [];
+      $search_inst = new Search($item, []);
 
       $displaywith = false;
       if (isset($post['displaywith'])) {
@@ -2330,7 +2330,7 @@ class Dropdown {
             $where["$table.id"] = $one_item;
          } else {
             if (!empty($post['searchText'])) {
-               $search = Search::makeTextSearchValue($post['searchText']);
+               $search = $search_inst->makeTextSearchValue($post['searchText']);
 
                $swhere = [
                   "$table.completename" => ['LIKE', $search],
@@ -2482,7 +2482,7 @@ class Dropdown {
             if (count($toadd)) {
                foreach ($toadd as $key => $val) {
                   array_push($datas, ['id'   => $key,
-                                    'text' => stripslashes($val)]);
+                                    'text' => $val]);
                }
             }
          }
@@ -2686,7 +2686,7 @@ class Dropdown {
          }
 
          if (!empty($post['searchText'])) {
-            $search = Search::makeTextSearchValue($post['searchText']);
+            $search = $search_inst->makeTextSearchValue($post['searchText']);
             $orwhere = ["$table.$field" => ['LIKE', $search]];
 
             if (Session::haveTranslations($post['itemtype'], $field)) {
@@ -2858,7 +2858,7 @@ class Dropdown {
             if (count($toadd)) {
                foreach ($toadd as $key => $val) {
                   array_push($datas, ['id'    => $key,
-                                    'text'  => stripslashes($val)]);
+                                    'text'  => $val]);
                }
             }
          }
@@ -2996,7 +2996,8 @@ class Dropdown {
       }
 
       if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
-         $search = Search::makeTextSearchValue($post['searchText']);
+         $search_inst = new Search($item, []);
+         $search = $search_inst->makeTextSearchValue($post['searchText']);
          $where['OR'] = [
             "$table.name"        => ['LIKE', $search],
             "$table.otherserial" => ['LIKE', $search],
@@ -3188,7 +3189,8 @@ class Dropdown {
       }
 
       if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
-         $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
+         $search_inst = new Search($item, []);
+         $search = ['LIKE', $search_inst->makeTextSearchValue($post['searchText'])];
          $orwhere =[
             'name'   => $search,
             'id'     => $post['searchText']
@@ -3343,9 +3345,11 @@ class Dropdown {
       }
 
       if (isset($post['searchText']) && strlen($post['searchText']) > 0) {
+         $search_inst = new Search(new Netpoint(), []);
+         $search = ['LIKE', $search_inst->makeTextSearchValue($post['searchText'])];
          $criteria['WHERE']['OR'] = [
-            'glpi_netpoints.name'         => ['LIKE', Search::makeTextSearchValue($post['searchText'])],
-            'glpi_locations.completename' => ['LIKE', Search::makeTextSearchValue($post['searchText'])]
+            'glpi_netpoints.name'         => ['LIKE', $search],
+            'glpi_locations.completename' => ['LIKE', $search]
          ];
       }
 
@@ -3471,7 +3475,7 @@ class Dropdown {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
                array_push($data, ['id'   => $key,
-                                 'text' => strval(stripslashes($val))]);
+                                 'text' => strval($val)]);
             }
          }
       }
@@ -3525,7 +3529,7 @@ class Dropdown {
                $txt = Dropdown::getValueWithUnit($value, $post['unit']);
             }
             array_push($data, ['id'   => $value,
-                              'text' => strval(stripslashes($txt))]);
+                              'text' => strval($txt)]);
             $count++;
          }
       }

@@ -52,17 +52,21 @@ function update921to922() {
       'smtp_retry_time' => 5,
    ]);
 
+   $set = [];
    $migration->addPostQuery(
-      $DB->buildDelete("glpi_configs", [
+      $DB->buildDelete("glpi_configs", $set, [
          'context'   => "core",
          'name'      => "default_graphtype"
-      ])
+      ]),
+      $set
    );
 
+   $set = [];
    $migration->addPostQuery(
-      $DB->buildDelete("glpi_crontasks",
+      $DB->buildDelete("glpi_crontasks", $set,
          ['name' => "optimize"]
-      )
+      ),
+      $set
    );
 
    // ************ Keep it at the end **************

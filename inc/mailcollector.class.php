@@ -145,7 +145,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]), GLPIKEY);
+            $input["passwd"] = Toolbox::encrypt($input["passwd"], GLPIKEY);
          }
       }
 
@@ -174,7 +174,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]), GLPIKEY);
+            $input["passwd"] = Toolbox::encrypt($input["passwd"], GLPIKEY);
          }
       }
 
@@ -1117,7 +1117,6 @@ class MailCollector  extends CommonDBTM {
 
       $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
 
-      $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
    }
 

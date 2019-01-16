@@ -123,7 +123,6 @@ class ProjectTeam extends CommonDBRelation {
          $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }

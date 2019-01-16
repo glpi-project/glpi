@@ -196,7 +196,7 @@ class Netpoint extends CommonDropdown {
       if ($parent) {
          $changes[0] = '0';
          $changes[1] = '';
-         $changes[2] = addslashes($this->getNameID());
+         $changes[2] = $this->getNameID();
          Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
       }
    }
@@ -207,7 +207,7 @@ class Netpoint extends CommonDropdown {
       $parent = $this->fields['locations_id'];
       if ($parent) {
          $changes[0] = '0';
-         $changes[1] = addslashes($this->getNameID());
+         $changes[1] = $this->getNameID();
          $changes[2] = '';
          Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
       }

@@ -113,7 +113,7 @@ function update0841to0843() {
          }
 
          $DB->updateOrDie("glpi_bookmarks",
-            ['query' => addslashes(Toolbox::append_params($options))],
+            ['query' => Toolbox::append_params($options)],
             ['id' => $data['id']],
             "0.84.3 update bookmarks"
          );

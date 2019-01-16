@@ -202,7 +202,7 @@ class Reminder extends CommonDBVisible {
    /**
     * Return visibility SQL restriction to add
     *
-    * @return string restrict to add
+    * @return array
    **/
    static function addVisibilityRestrict() {
       //not deprecated because used in Search
@@ -217,7 +217,7 @@ class Reminder extends CommonDBVisible {
       $sql = $it->getSql();
       $sql = preg_replace('/.*WHERE /', '', $sql);
 
-      return $sql;
+      return ['sql' => $sql, 'params' => $it->getParameters()];
    }
 
    /**

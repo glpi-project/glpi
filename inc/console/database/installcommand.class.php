@@ -36,11 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Config;
-use DBConnection;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
-use Toolbox;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
@@ -49,6 +45,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Config;
+use DBConnection;
+use PDO;
+use Toolbox;
 
 class InstallCommand extends Command implements ForceNoPluginsOptionCommandInterface {
 
@@ -93,6 +93,13 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
     * @var integer
     */
    const ERROR_SCHEMA_CREATION_FAILED = 6;
+
+   /**
+    * Error code returned when failing to select database.
+    *
+    * @var integer
+    */
+   const ERROR_DB_SELECT_FAILED = 7;
 
    protected function configure() {
       parent::configure();
@@ -234,40 +241,67 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          }
       }
 
-      $mysqli = new \mysqli();
-      @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+      $hostport = explode(":", $db_host);
+      if (count($hostport) < 2 || intval($hostport[1]) > 0) {
+         // "host" or "host:port"
+         $dsn = "mysql:host=$db_host";
+      } else {
+         // ":socket"
+         $dsn = "mysql:unix_socket={$hostport[1]}";
+      }
 
-      if (0 !== $mysqli->connect_errno) {
+      try {
+         $dbh = new PDO(
+            $dsn,
+            $db_user,
+            $db_pass
+         );
+         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+         if (GLPI_FORCE_EMPTY_SQL_MODE) {
+            $dbh->query("SET SESSION sql_mode = ''");
+         }
+      } catch (\PDOException $e) {
          $message = sprintf(
-            __('Database connection failed with message "(%s) %s".'),
-            $mysqli->connect_errno,
-            $mysqli->connect_error
+            __('Database connection failed with message "(%s)\n%s".'),
+            $e->getMessage(),
+            $e->getTraceAsString()
          );
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_DB_CONNECTION_FAILED;
+
       }
 
       ob_start();
-      $db_version_data = $mysqli->query('SELECT version()')->fetch_array();
-      $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
+      $db_version = $dbh->query('SELECT version()')->fetchColumn();
+      $checkdb = Config::displayCheckDbEngine(false, $db_version);
       $message = ob_get_clean();
       if ($checkdb > 0) {
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_DB_ENGINE_UNSUPPORTED;
       }
 
-      $db_name = $mysqli->real_escape_string($db_name);
+      $db_name = str_replace('`', '``', $db_name); // Escape backquotes
 
       $output->writeln(
          '<comment>' . __('Creating the database...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!$mysqli->query('CREATE DATABASE IF NOT EXISTS `' . $db_name .'`')
-          || !$mysqli->select_db($db_name)) {
+      if (!$dbh->query('CREATE DATABASE IF NOT EXISTS `' . $db_name .'`')) {
+         $error = $dbh->errorInfo();
          $message = sprintf(
-            __('Database creation failed with message "(%s) %s".'),
-            $mysqli->errno,
-            $mysqli->error
+            __("Database creation failed with message \"(%s)\n%s\"."),
+            $error[0],
+            $error[2]
+         );
+         $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+         return self::ERROR_DB_CREATION_FAILED;
+      }
+      if (false === $dbh->exec('USE `' . $db_name .'`')) {
+         $error = $dbh->errorInfo();
+         $message = sprintf(
+            __("Database selection failed with message \"(%s)\n%s\"."),
+            $error[0],
+            $error[2]
          );
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_DB_CREATION_FAILED;

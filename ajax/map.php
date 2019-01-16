@@ -47,9 +47,10 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
    $itemtype = $_POST['itemtype'];
    $params   = $_POST['params'];
 
-   $data = Search::prepareDatasForSearch($itemtype, $params);
-   Search::constructSQL($data);
-   Search::constructData($data);
+   $search = new Search(new $itemtype(), $params);
+   $data = $search->prepareDataForSearch($itemtype, $params);
+   $search->constructSQL($data);
+   $search->constructData($data);
 
    if ($itemtype == 'Location') {
       $lat_field = $itemtype . '_21';

@@ -429,8 +429,9 @@ class KnowbaseItem extends CommonDBVisible {
     * Return visibility SQL restriction to add
     *
     * @since 0.83
+    * @since 10.0 Return value changed from string to array
     *
-    * @return string restrict to add
+    * @return array with 'sql' and 'params'
    **/
    static function addVisibilityRestrict() {
       //not deprecated because used in self::getListRequest and self::showRecentPopular
@@ -456,7 +457,7 @@ class KnowbaseItem extends CommonDBVisible {
       if (strlen(trim($sql)) == 0) {
          $sql = "1";
       }
-      return $sql;
+      return ['sql' => $sql, 'params' => $it->getParameters()];
    }
 
    /**
@@ -1011,7 +1012,7 @@ class KnowbaseItem extends CommonDBVisible {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       echo "<input type='text' size='50' name='contains' value=\"".
-             Html::cleanInputText(stripslashes($params["contains"]))."\"></td>";
+             Html::cleanInputText($params["contains"])."\"></td>";
       echo "<td class='left'>";
       echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit'></td></tr>";
       echo "</table>";
@@ -1148,7 +1149,11 @@ class KnowbaseItem extends CommonDBVisible {
          default:
             // Build query
             if (Session::getLoginUserID()) {
-               $where = self::addVisibilityRestrict();
+               $restrict = self::addVisibilityRestrict();
+               $where = $DB->mergeStatementWithParams(
+                  $restrict['sql'],
+                  $restrict['params']
+               );
             } else {
                // Anonymous access
                if (Session::isMultiEntitiesMode()) {
@@ -1453,7 +1458,7 @@ class KnowbaseItem extends CommonDBVisible {
             // Num of the row (1=header_line)
             $row_num = 1;
             for ($i=0; $i<$numrows_limit; $i++) {
-               $data = $DB->fetch_assoc($result_limit);
+               $data = $DB->fetchAssoc($result_limit);
 
                Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
                // Column num
@@ -1624,7 +1629,11 @@ class KnowbaseItem extends CommonDBVisible {
       $join = self::addVisibilityJoins(true);
 
       if (Session::getLoginUserID()) {
-         $faq_limit .= "WHERE ".self::addVisibilityRestrict();
+         $restrict = self::addVisibilityRestrict();
+         $faq_limit .= "WHERE ".$DB->mergeStatementWithParams(
+            $restrict['sql'],
+            $restrict['params']
+         );
       } else {
          // Anonymous access
          if (Session::isMultiEntitiesMode()) {
@@ -1672,7 +1681,7 @@ class KnowbaseItem extends CommonDBVisible {
       if ($number > 0) {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th>".$title."</th></tr>";
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $name = $data['name'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {

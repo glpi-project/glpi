@@ -526,7 +526,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
          if (($prevItem !== false)
              && $prevItem->dohistory) {
             $changes[0] = '0';
-            $changes[1] = addslashes($this->getHistoryNameForItem($prevItem, 'update item previous'));
+            $changes[1] = $this->getHistoryNameForItem($prevItem, 'update item previous');
             $changes[2] = '';
             Log::history($prevItem->getID(), $prevItem->getType(), $changes, $this->getType(),
                          static::$log_history_delete);
@@ -536,7 +536,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
              && $newItem->dohistory) {
             $changes[0] = '0';
             $changes[1] = '';
-            $changes[2] = addslashes($this->getHistoryNameForItem($newItem, 'update item next'));
+            $changes[2] = $this->getHistoryNameForItem($newItem, 'update item next');
             Log::history($newItem->getID(), $newItem->getType(), $changes, $this->getType(),
                          static::$log_history_add);
          }
@@ -565,9 +565,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          if (static::$log_history_delete == Log::HISTORY_LOG_SIMPLE_MESSAGE) {
             $changes[1] = '';
-            $changes[2] = addslashes($this->getHistoryNameForItem($item, 'delete'));
+            $changes[2] = $this->getHistoryNameForItem($item, 'delete');
          } else {
-            $changes[1] = addslashes($this->getHistoryNameForItem($item, 'delete'));
+            $changes[1] = $this->getHistoryNameForItem($item, 'delete');
             $changes[2] = '';
          }
          Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
@@ -598,7 +598,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
              && $item->dohistory) {
             $changes = [
                '0',
-               addslashes($this->getHistoryNameForItem($item, 'lock')),
+               $this->getHistoryNameForItem($item, 'lock'),
                '',
             ];
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
@@ -631,7 +631,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
             $changes = [
                '0',
                '',
-               addslashes($this->getHistoryNameForItem($item, 'unlock')),
+               $this->getHistoryNameForItem($item, 'unlock'),
             ];
             Log::history($item->getID(), $item->getType(), $changes, $this->getType(),
                          static::$log_history_unlock);

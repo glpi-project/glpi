@@ -43,8 +43,8 @@ class Printer extends DbTestCase {
       parent::beforeTestMethod($method);
       //to handle GLPI barbarian replacements.
       $this->method = str_replace(
-         ['\\', 'beforeTestMethod'],
-         ['', $method],
+         ['beforeTestMethod'],
+         [$method],
          __METHOD__
       );
    }

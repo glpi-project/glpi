@@ -1108,6 +1108,7 @@ abstract class API extends CommonGLPI {
       global $DB;
 
       $this->initEndpoint();
+      $search = new \Search(new $itemtype(), $params);
 
       // default params
       $default = ['expand_dropdowns' => false,
@@ -1154,8 +1155,8 @@ abstract class API extends CommonGLPI {
 
       //specific case for restriction
       $already_linked_table = [];
-      $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-      $where = Search::addDefaultWhere($itemtype);
+      $join = $search->addDefaultJoin($itemtype, $table, $already_linked_table);
+      $where = $search->addDefaultWhere($itemtype);
       if ($where == '') {
          $where = "1=1 ";
       }
@@ -1225,8 +1226,8 @@ abstract class API extends CommonGLPI {
          // make text search
          foreach ($params['searchText']  as $filter_field => $filter_value) {
             if (!empty($filter_value)) {
-               $search = Search::makeTextSearch($filter_value);
-               $where.= " AND (`$table`.`$filter_field` $search)";
+               $search_value = $search->makeTextSearch($filter_value);
+               $where.= " AND (`$table`.`$filter_field` $search_value)";
             }
          }
       }
@@ -1257,7 +1258,7 @@ abstract class API extends CommonGLPI {
                 ORDER BY ".$params['sort']." ".$params['order']."
                 LIMIT ".$params['start'].", ".$params['list_limit'];
       if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $result->fetch(\PDO::FETCH_ASSOC)) {
             $found[] = $data;
          }
       }
@@ -1571,7 +1572,8 @@ abstract class API extends CommonGLPI {
       $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
 
       // call Core Search method
-      $rawdata = Search::getDatas($itemtype, $params, $params['forcedisplay']);
+      $search = new \Search(new $itemtype(), $params);
+      $rawdata = $search->getData($itemtype, $params, $params['forcedisplay']);
 
       // probably a sql error
       if (!isset($rawdata['data']) || count($rawdata['data']) === 0) {
@@ -1728,7 +1730,7 @@ abstract class API extends CommonGLPI {
                $object["_add"] = true;
 
                //add current item
-               $object = Toolbox::sanitize($object);
+               $object = Toolbox::clean_cross_side_scripting_deep($object);
                $new_id = $item->add($object);
                if ($new_id === false) {
                   $failed++;
@@ -1846,7 +1848,7 @@ abstract class API extends CommonGLPI {
                   }
 
                   //update item
-                  $object = Toolbox::sanitize((array)$object);
+                  $object = Toolbox::clean_cross_side_scripting_deep((array)$object);
                   $update_return = $item->update($object);
                   if ($update_return === false) {
                      $failed++;
@@ -2004,7 +2006,7 @@ abstract class API extends CommonGLPI {
 
       $user = new User();
       if (!isset($params['password_forget_token'])) {
-         $email = Toolbox::addslashes_deep($params['email']);
+         $email = $params['email'];
          try {
             $user->forgetPassword($email);
          } catch (ForgetPasswordException $e) {
@@ -2016,10 +2018,10 @@ abstract class API extends CommonGLPI {
       } else {
          $password = isset($params['password']) ? $params['password'] : '';
          $input = [
-            'email'                    => Toolbox::addslashes_deep($params['email']),
-            'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
-            'password'                 => Toolbox::addslashes_deep($password),
-            'password2'                => Toolbox::addslashes_deep($password),
+            'email'                    => $params['email'],
+            'password_forget_token'    => $params['password_forget_token'],
+            'password'                 => $password,
+            'password2'                => $password,
          ];
          try {
             $user->updateForgottenPassword($input);

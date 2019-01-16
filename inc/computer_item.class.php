@@ -101,7 +101,7 @@ class Computer_Item extends CommonDBRelation{
          if ($CFG_GLPI["is_location_autoupdate"]
              && ($comp->fields['locations_id'] != $item->getField('locations_id'))) {
 
-            $updates['locations_id'] = addslashes($comp->fields['locations_id']);
+            $updates['locations_id'] = $comp->fields['locations_id'];
             Session::addMessageAfterRedirect(
                   __('Location updated. The connected items have been moved in the same location.'),
                                              true);
@@ -126,8 +126,8 @@ class Computer_Item extends CommonDBRelation{
              && (($comp->fields['contact'] != $item->getField('contact'))
                  || ($comp->fields['contact_num'] != $item->getField('contact_num')))) {
 
-            $updates['contact']     = addslashes($comp->fields['contact']);
-            $updates['contact_num'] = addslashes($comp->fields['contact_num']);
+            $updates['contact']     = $comp->fields['contact'];
+            $updates['contact_num'] = $comp->fields['contact_num'];
             Session::addMessageAfterRedirect(
                __('Alternate username updated. The connected items have been updated using this alternate username.'),
                                              true);

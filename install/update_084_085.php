@@ -117,7 +117,7 @@ function update084to085() {
             $DB->insert("glpi_configs", [
                'context'   => "core",
                'name'      => $name,
-               'value'     => addslashes($value),
+               'value'     => $value,
             ]);
          }
       }
@@ -1822,7 +1822,7 @@ function update084to085() {
          ],
          "0.85 add change notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText = '##IFchange.storestatus=5##
  ##lang.change.url## : ##change.urlapprove##
@@ -1936,7 +1936,7 @@ function update084to085() {
             ],
             "0.85 add change $type notification"
          );
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [
@@ -2201,20 +2201,20 @@ function update084to085() {
 
       foreach ($notificationsIterator as $notif) {
          $DB->insertOrDie("glpi_notifications", [
-               'name'                     => addslashes($notif['name']). "Answer",
+               'name'                     => $notif['name']. "Answer",
                'entities_id'              => $notif['entities_id'],
                'itemtype'                 => 'Ticket',
                'event'                    => "replysatisfaction",
                'mode'                     => $notif['mode'],
                'notificationtemplates_id' => $notif['notificationtemplates_id'],
-               'comment'                  => addslashes($notif['comment']),
+               'comment'                  => $notif['comment'],
                'is_recursive'             => $notif['is_recursive'],
                'is_active'                => $notif['is_active'],
                'date_mod'                 => new \QueryExpression("NOW()")
             ],
             "0.85 insert replysatisfaction notification"
          );
-         $newID  = $DB->insert_id();
+         $newID  = $DB->insertId();
          $notificationtargetsIterator = $DB->request("glpi_notificationtargets", [
             'notifications_id' => $notif['id']
          ]);
@@ -2325,7 +2325,7 @@ function update084to085() {
          ],
          "0.85 add mail collector notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText = '##FOREACHmailcollectors##
 ##lang.mailcollector.name## : ##mailcollector.name##
@@ -2360,7 +2360,7 @@ function update084to085() {
          ],
          "0.85 add mail collector notification"
       );
-      $notifid = $DB->insert_id();
+      $notifid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtargets", [
             'id'                 => null,
@@ -2625,9 +2625,9 @@ function update084to085() {
                                      'is_finished' => 1]];
       foreach ($states as $key => $val) {
          $DB->insertOrDie("glpi_projectstates", [
-               'name'         => addslashes($val['name']),
-               'color'        => addslashes($val['color']),
-               'is_finished'  => addslashes($val['is_finished'])
+               'name'         => $val['name'],
+               'color'        => $val['color'],
+               'is_finished'  => $val['is_finished']
             ],
             "0.85 insert default project state $key"
          );
@@ -2777,7 +2777,7 @@ function update084to085() {
          ],
          "0.85 add project notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText = '##lang.project.url## : ##project.url##
 
@@ -2857,7 +2857,7 @@ function update084to085() {
             ],
             "0.85 add project $type notification"
          );
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [
@@ -2885,7 +2885,7 @@ function update084to085() {
          ],
          "0.85 add project notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText = '##lang.projecttask.url## : ##projecttask.url##
 
@@ -2960,7 +2960,7 @@ function update084to085() {
             ],
             "0.85 add project task  $type notification"
          );
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [
@@ -3018,7 +3018,7 @@ function update084to085() {
                $DB->insertOrDie("glpi_notepads", [
                      'itemtype'  => getItemTypeForTable($t),
                      'items_id'  => $data['id'],
-                     'content'   => addslashes($data['notepad']),
+                     'content'   => $data['notepad'],
                      'date'      => new \QueryExpression("NOW()"),
                      'date_mod'  => new \QueryExpression("NOW()")
                   ],
@@ -3126,9 +3126,9 @@ function update084to085() {
                                    $html);
          }
          $DB->updateOrDie("glpi_notificationtemplatetranslations", [
-               'subject'      => addslashes($subject),
-               'content_text' => addslashes($text),
-               'content_html' => addslashes($html)
+               'subject'      => $subject,
+               'content_text' => $text,
+               'content_html' => $html
             ], [
                'id' => $data['id']
             ],
@@ -3159,7 +3159,7 @@ function update084to085() {
             }
          }
          $DB->updateOrDie("glpi_bookmarks",
-            ['query' => addslashes(Toolbox::append_params($options))],
+            ['query' => Toolbox::append_params($options)],
             ['id' => $data['id']],
             "0.85 update bookmarks"
          );
@@ -3473,7 +3473,7 @@ function update084to085() {
          }
 
          $DB->updateOrDie("glpi_bookmarks",
-            ['query' => addslashes(Toolbox::append_params($options))],
+            ['query' => Toolbox::append_params($options)],
             ['id' => $data['id']],
             "0.85 update bookmarks for reorg search"
          );

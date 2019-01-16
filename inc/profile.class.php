@@ -423,6 +423,7 @@ class Profile extends CommonDBTM {
     * @return array
    **/
    static function getUnderActiveProfileRestrictCriteria() {
+      global $DB;
 
       // Not logged -> no profile to see
       if (!isset($_SESSION['glpiactiveprofile'])) {
@@ -448,7 +449,7 @@ class Profile extends CommonDBTM {
                'AND' => [
                   'glpi_profilerights.name'     => $key,
                   'RAW'                         => [
-                     '(' . DBmysql::quoteName('glpi_profilerights.rights') . ' | ' . DBmysql::quoteValue($val) . ')' => $val
+                     '(' . $DB->quoteName('glpi_profilerights.rights') . ' | ' . $DB->quote($val) . ')' => $val
                   ]
                ]
             ];
@@ -463,7 +464,12 @@ class Profile extends CommonDBTM {
             'OR'                             => $right_subqueries
          ]
       ]);
-      $criteria[] = new \QueryExpression(count($right_subqueries)." = ".$sub_query->getQuery());
+
+      $expr = $DB->mergeStatementWithParams(
+         count($right_subqueries)." = ".$sub_query->getQuery(),
+         $sub_query->getParameters()
+      );
+      $criteria[] = new \QueryExpression($expr);
 
       if (Session::getCurrentInterface() == 'central') {
          return [

@@ -119,7 +119,6 @@ class Contract extends CommonDBTM {
          $cd = new Contract_Item();
          unset($data['id']);
          $data['items_id'] = $newid;
-         $data             = Toolbox::addslashes_deep($data);
 
          $cd->add($data);
       }

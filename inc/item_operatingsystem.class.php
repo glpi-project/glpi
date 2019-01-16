@@ -376,7 +376,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       ]);
 
       while ($row = $iterator->next()) {
-         $input             = Toolbox::addslashes_deep($row);
+         $input             = $row;
          $input['items_id'] = $newid;
          if (!empty($newitemtype)) {
             $input['itemtype'] = $newitemtype;

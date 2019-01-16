@@ -43,7 +43,7 @@ if (isset($_SERVER['argv'])) {
       $it    = explode("=", $_SERVER['argv'][$i], 2);
       $it[0] = preg_replace('/^--/', '', $it[0]);
 
-      $_GET[$it[0]] = (isset($it[1]) ? $DB->escape($it[1]) : true);
+      $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
 }
 if (isset($_GET['help']) || !isset($_GET['user'])) {

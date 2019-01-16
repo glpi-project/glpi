@@ -51,7 +51,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - json
     - mbstring
     - iconv
-    - mysqli
+    - pdo_mysql
     - session
     - gd (picture generation)
     - curl (CAS authentication)

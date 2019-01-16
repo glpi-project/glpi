@@ -64,10 +64,10 @@ class DBConnection extends CommonDBTM {
    static function createMainConfig($host, $user, $password, $DBname) {
 
       $DB_str = "<?php\nclass DB extends DBmysql {\n" .
-                "   public \$dbhost     = '$host';\n" .
-                "   public \$dbuser     = '$user';\n" .
-                "   public \$dbpassword = '". rawurlencode($password) . "';\n" .
-                "   public \$dbdefault  = '$DBname';\n" .
+                "   protected \$dbhost     = '$host';\n" .
+                "   protected \$dbuser     = '$user';\n" .
+                "   protected \$dbpassword = '". rawurlencode($password) . "';\n" .
+                "   protected \$dbdefault  = '$DBname';\n" .
                 "}\n";
 
       return Toolbox::writeConfig('config_db.php', $DB_str);
@@ -86,7 +86,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
 
-      $DB_str = "<?php \n class DBSlave extends DBmysql { \n public \$slave = true; \n public \$dbhost = ";
+      $DB_str = "<?php \n class DBSlave extends DBmysql { \n protected \$slave = true; \n protected \$dbhost = ";
       $host   = trim($host);
       if (strpos($host, ' ')) {
          $hosts = explode(' ', $host);
@@ -106,8 +106,8 @@ class DBConnection extends CommonDBTM {
       } else {
          $DB_str .= "'$host';\n";
       }
-      $DB_str .= " public \$dbuser = '" . $user . "'; \n public \$dbpassword= '" .
-                  rawurlencode($password) . "'; \n public \$dbdefault = '" . $DBname . "'; \n }\n";
+      $DB_str .= " protected \$dbuser = '" . $user . "'; \n protected \$dbpassword= '" .
+                  rawurlencode($password) . "'; \n protected \$dbdefault = '" . $DBname . "'; \n }\n";
 
       return Toolbox::writeConfig('config_db_slave.php', $DB_str);
    }
