@@ -94,9 +94,9 @@ class DBmysql extends \GLPITestCase {
       $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
       $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
       $built = $DB->buildUpdate('glpi_computers', ['name' => '_join_computer1'], [
-            'glpi_locations.name' => 'test',
-            'glpi_computertypes.name' => 'laptop'
-         ], [
+         'glpi_locations.name' => 'test',
+         'glpi_computertypes.name' => 'laptop'
+      ], [
          'LEFT JOIN' => [
             'glpi_locations' => [
                'ON' => [
@@ -125,9 +125,9 @@ class DBmysql extends \GLPITestCase {
       $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
       $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
       $built = $DB->buildDelete('glpi_computers', [
-            'glpi_locations.name' => 'test',
-            'glpi_computertypes.name' => 'laptop'
-         ], [
+         'glpi_locations.name' => 'test',
+         'glpi_computertypes.name' => 'laptop'
+      ], [
          'LEFT JOIN' => [
             'glpi_locations' => [
                'ON' => [
