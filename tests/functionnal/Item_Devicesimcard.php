@@ -105,7 +105,7 @@ class Item_DeviceSimcard extends DbTestCase {
          ['rights' => 1], [
             'profiles_id'  => 4,
             'name'         => 'devicesimcard_pinpuk'
-         ], [true]
+         ]
       );
 
       // Profile changed then login
@@ -116,7 +116,7 @@ class Item_DeviceSimcard extends DbTestCase {
          ['rights' => 3], [
             'profiles_id'  => 4,
             'name'         => 'devicesimcard_pinpuk'
-         ], [true]
+         ]
       );
 
       $obj = new \Item_DeviceSimcard();
