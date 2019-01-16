@@ -77,7 +77,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
          $send              = [];
          $send["tablename"] = $this->item_table;
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   //TRANS: %1$s is a row, %2$s is total rows
@@ -89,8 +89,8 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             //Replay Type dictionnary
             $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                           addslashes($data["name"]), -1, [],
-                                           addslashes($data["comment"]));
+                                           $data["name"], -1, [],
+                                           $data["comment"]);
             if ($data['id'] != $ID) {
                $tomove[$data['id']] = $ID;
                $type                = GetItemTypeForTable($this->item_table);
@@ -197,13 +197,13 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             // Model case
             if (isset($data["manufacturer"])) {
-               $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
+               $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
             }
 
             //Replay Type dictionnary
             $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                           addslashes($data["name"]), -1, $data,
-                                           addslashes($data["comment"]));
+                                           $data["name"], -1, $data,
+                                           $data["comment"]);
 
             if ($data['id'] != $ID) {
                $tocheck[$data["id"]][] = $ID;

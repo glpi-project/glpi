@@ -230,7 +230,7 @@ class NetworkEquipment extends CommonDBTM {
 
          $res = $DB->query($sql);
          if ($res) {
-            while ($data = $DB->fetch_assoc($res)) {
+            while ($data = $DB->fetchAssoc($res)) {
                $itemtable = getTableForItemType($data["itemtype"]);
                if ($item = getItemForItemtype($data["itemtype"])) {
                   // For each itemtype which are entity dependant

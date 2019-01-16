@@ -88,7 +88,7 @@ if (isset($_GET['node'])) {
                   ORDER BY `name`";
 
       if ($result = $DB->query($query)) {
-         while ($row = $DB->fetch_assoc($result)) {
+         while ($row = $DB->fetchAssoc($result)) {
             $path = [
                'id'   => $row['id'],
                'text' => $row['name']

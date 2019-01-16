@@ -95,9 +95,9 @@ function update0843to0844() {
             $html    = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $html);
          }
          $DB->updateOrDie("glpi_notificationtemplatetranslations", [
-               'subject'      => addslashes($subject),
-               'content_text' => addslashes($text),
-               'content_html' => addslashes($html),
+               'subject'      => $subject,
+               'content_text' => $text,
+               'content_html' => $html,
             ], [
                'id' => $data['id']
             ],

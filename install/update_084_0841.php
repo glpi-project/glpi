@@ -56,7 +56,6 @@ function update084to0841() {
       foreach ($iterator as $data) {
          $text  = Toolbox::unclean_html_cross_side_scripting_deep($data[$field]);
          $text  = html_entity_decode($text, ENT_NOQUOTES, 'UTF-8');
-         $text  = addslashes($text);
          $text  = Toolbox::clean_cross_side_scripting_deep($text);
          $DB->updateOrDie($table,
             [$field  => $text],

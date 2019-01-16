@@ -57,7 +57,7 @@ if (isset($_REQUEST['action'])) {
             if (empty($input["passwd"])) {
                unset($input["passwd"]);
             } else {
-               $input["passwd"] = Toolbox::encrypt(stripslashes($input["passwd"]), GLPIKEY);
+               $input["passwd"] = Toolbox::encrypt($input["passwd"], GLPIKEY);
             }
          }
 

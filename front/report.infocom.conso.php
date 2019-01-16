@@ -135,7 +135,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
          $valeurnettegraph   = [];
          $valeurgraph        = [];
 
-         while ($line=$DB->fetch_assoc($result)) {
+         while ($line=$DB->fetchAssoc($result)) {
             if ($itemtype == 'SoftwareLicense') {
                $item->getFromDB($line["items_id"]);
 

@@ -164,7 +164,6 @@ class ProjectTask extends CommonDBChild {
          $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }
@@ -1085,7 +1084,7 @@ class ProjectTask extends CommonDBChild {
             $header .= "</tr>\n";
             echo $header;
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                Session::addToNavigateListItems('ProjectTask', $data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";

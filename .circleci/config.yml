@@ -8,7 +8,7 @@ shared: &shared
         command: |
           sudo -E apt-get update
           sudo -E apt-get install -y mysql-client libpng-dev libxml2-dev
-          sudo -E docker-php-ext-install mysqli gd xmlrpc
+          sudo -E docker-php-ext-install pdo pdo_mysql gd xmlrpc
           sudo -E pecl install apcu <<< '' || sudo -E pecl install apcu-4.0.11 <<< ''
           sudo -E docker-php-ext-enable apcu
           echo "apc.enable=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
@@ -48,6 +48,12 @@ shared: &shared
           bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
           rm tests/config_db.php
     - run:
+        name: Database tests
+        command: |
+          cp tests/circleci.config_db.php tests/config_db.php
+          php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report  --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
+          rm tests/config_db.php
+    - run:
         name: Install DB
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
@@ -56,9 +62,6 @@ shared: &shared
     - run:
         name: Unit tests
         command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
-    - run:
-        name: Database tests
-        command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
     - run:
         name: Functionnal tests
         command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/functionnal

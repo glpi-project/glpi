@@ -1208,7 +1208,7 @@ class Ticket extends CommonITILObject {
          if (array_key_exists($key, $input)
              && !array_key_exists($key, $post_added)) {
             if (!isset($this->fields[$key])
-                || ($DB->escape($this->fields[$key]) != $input[$key])) {
+                || ($this->fields[$key] != $input[$key])) {
                $changes[] = $key;
             }
          }
@@ -1249,7 +1249,6 @@ class Ticket extends CommonITILObject {
                                                 'entities_id' => $entid],
                                           ['condition'     => RuleTicket::ONUPDATE,
                                           'only_criteria' => $changes]);
-         $input = Toolbox::stripslashes_deep($input);
       }
 
       //Action for send_validation rule : do validation before clean
@@ -1875,7 +1874,6 @@ class Ticket extends CommonITILObject {
                                        $input,
                                        ['recursive' => true],
                                        ['condition' => RuleTicket::ONADD]);
-      $input = Toolbox::stripslashes_deep($input);
 
       // Recompute default values based on values computed by rules
       $input = $this->computeDefaultValuesForAdd($input);
@@ -2121,7 +2119,7 @@ class Ticket extends CommonITILObject {
          $tickettask   = new TicketTask;
          foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
             $tasktemplate->getFromDB($tasktemplates_id);
-            $tasktemplate_content = Toolbox::addslashes_deep($tasktemplate->fields["content"]);
+            $tasktemplate_content = $tasktemplate->fields["content"];
             $tickettask->add(['tasktemplates_id'  => $tasktemplates_id,
                               'content'           => $tasktemplate_content,
                               'taskcategories_id' => $tasktemplate->fields['taskcategories_id'],

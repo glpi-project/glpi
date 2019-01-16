@@ -889,7 +889,7 @@ class MassiveAction {
 
             $submitname = _sx('button', 'Post');
             if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-               $submitname= stripslashes($ma->POST['submitname']);
+               $submitname= $ma->POST['submitname'];
             }
             echo Html::submit($submitname, ['name' => 'massiveaction']);
 

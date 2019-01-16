@@ -62,27 +62,6 @@ if (isset($_SESSION['glpi_use_mode'])
    $DEBUG_AUTOLOAD       = [];
 }
 
-// Security system
-if (isset($_POST)) {
-   if (isset($_POST['_glpi_simple_form'])) {
-      $_POST = array_map('urldecode', $_POST);
-   }
-   $_POST = Toolbox::sanitize($_POST);
-}
-if (isset($_GET)) {
-   $_GET = Toolbox::sanitize($_GET);
-}
-if (isset($_REQUEST)) {
-   $_REQUEST = Toolbox::sanitize($_REQUEST);
-}
-if (isset($_FILES)) {
-   foreach ($_FILES as &$file) {
-      $file['name'] = Toolbox::addslashes_deep($file['name']);
-      $file['name'] = Toolbox::clean_cross_side_scripting_deep($file['name']);
-   }
-}
-unset($file);
-
 // Mark if Header is loaded or not :
 $HEADER_LOADED = false;
 $FOOTER_LOADED = false;

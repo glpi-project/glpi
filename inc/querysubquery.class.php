@@ -74,4 +74,8 @@ class QuerySubQuery extends AbstractQuery {
       }
       return $sql;
    }
+
+   public function getParameters() {
+      return $this->dbiterator->getParameters();
+   }
 }

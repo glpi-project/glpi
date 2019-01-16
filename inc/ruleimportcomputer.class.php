@@ -323,15 +323,15 @@ class RuleImportComputer extends Rule {
 
             case 'model' :
                // search for model, don't create it if not found
-               $options    = ['manufacturer' => addslashes($input['manufacturer'])];
-               $mid        = Dropdown::importExternal('ComputerModel', addslashes($input['model']), -1,
+               $options    = ['manufacturer' => $input['manufacturer']];
+               $mid        = Dropdown::importExternal('ComputerModel', $input['model'], -1,
                                                       $options, '', false);
                $sql_where .= " AND `glpi_computers`.`computermodels_id` = '$mid'";
                break;
 
             case 'manufacturer' :
                // search for manufacturer, don't create it if not found
-               $mid        = Dropdown::importExternal('Manufacturer', addslashes($input['manufacturer']), -1,
+               $mid        = Dropdown::importExternal('Manufacturer', $input['manufacturer'], -1,
                                                       [], '', false);
                $sql_where .= " AND `glpi_computers`.`manufacturers_id` = '$mid'";
                break;
@@ -371,7 +371,7 @@ class RuleImportComputer extends Rule {
       $result_glpi = $DB->query($sql_glpi);
 
       if ($DB->numrows($result_glpi) > 0) {
-         while ($data = $DB->fetch_assoc($result_glpi)) {
+         while ($data = $DB->fetchAssoc($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
          return true;

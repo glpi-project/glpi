@@ -300,9 +300,9 @@ function update0803to083() {
 
       while ($data = $iterator->next()) {
          $DB->updateOrDie("glpi_notificationtemplatetranslations", [
-               'subject'      => addslashes(str_replace($from, $to, $data['subject'])),
-               'content_text' => addslashes(str_replace($from, $to, $data['content_text'])),
-               'content_html' => addslashes(str_replace($from, $to, $data['content_html'])),
+               'subject'      => str_replace($from, $to, $data['subject']),
+               'content_text' => str_replace($from, $to, $data['content_text']),
+               'content_html' => str_replace($from, $to, $data['content_html']),
             ], [
                'id' => $data['id']
             ],
@@ -326,7 +326,7 @@ function update0803to083() {
          ],
          "0.83 add problem notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText = '##IFproblem.storestatus=solved##
  ##lang.problem.url## : ##problem.urlapprove##
@@ -440,7 +440,7 @@ function update0803to083() {
             "0.83 add problem $type notification"
          );
 
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [
@@ -738,7 +738,7 @@ function update0803to083() {
                'users_id'     => $data['id'],
                'is_default'   => 1,
                'is_dynamic'   => $is_dynamic,
-               'email'        => addslashes($data['email'])
+               'email'        => $data['email']
             ],
             "0.83 move emails to  glpi_useremails"
          );
@@ -921,7 +921,7 @@ function update0803to083() {
          ],
          "0.83 add default ticket template"
       );
-      $default_ticket_template = $DB->insert_id();
+      $default_ticket_template = $DB->insertId();
 
    }
 
@@ -1098,7 +1098,7 @@ function update0803to083() {
 
    // Clean unused slalevels
    $DB->deleteOrDie("glpi_slalevels_tickets", [
-         new \QueryExpression(
+         (new \QueryExpression(
             "(" . DBmysql::quoteName("glpi_slalevels_tickets.tickets_id") . " ," .
             DBmysql::quoteName("glpi_slalevels_tickets.slalevels_id") . ") NOT IN " .
             (new \QuerySubQuery([
@@ -1108,7 +1108,7 @@ function update0803to083() {
                ],
                'FROM'   => "glpi_tickets"
             ]))->getQuery()
-         )
+         ))->getValue()
       ],
       "0.83 clean glpi_slalevels_tickets"
    );
@@ -1223,9 +1223,9 @@ function update0803to083() {
                                            'password_update'           => '1',
                                            'helpdesk_hardware'         => '3',
                                            'helpdesk_item_type'
-                                                => addslashes('["Computer", "Monitor", "NetworkEquipment",' .
-                                                              '"Peripheral", "Phone", "Printer",' .
-                                                              '"Software"]'),
+                                                => '["Computer", "Monitor", "NetworkEquipment",' .
+                                                    '"Peripheral", "Phone", "Printer",' .
+                                                    '"Software"]',
                                            'create_validation'         => '1',
                                            'update_own_followups'      => '1',
                                            'create_ticket_on_login'    => '1'],
@@ -1272,9 +1272,9 @@ function update0803to083() {
                                            'statistic'                 => '1',
                                            'helpdesk_hardware'         => '3',
                                            'helpdesk_item_type'
-                                                => addslashes('["Computer", "Monitor", "NetworkEquipment",' .
-                                                               '"Peripheral", "Phone", "Printer",' .
-                                                               '"Software"]'),
+                                                => '["Computer", "Monitor", "NetworkEquipment",' .
+                                                    '"Peripheral", "Phone", "Printer",' .
+                                                    '"Software"]',
                                            'import_externalauth_users' => 'w',
                                            'create_validation'         => '1',
                                            'sla'                       => 'r',
@@ -1335,9 +1335,9 @@ function update0803to083() {
                                            'statistic'                 => '1',
                                            'helpdesk_hardware'         => '3',
                                            'helpdesk_item_type'
-                                                => addslashes('["Computer", "Monitor", "NetworkEquipment",' .
-                                                               '"Peripheral", "Phone", "Printer",' .
-                                                               '"Software"]'),
+                                                => '["Computer", "Monitor", "NetworkEquipment",' .
+                                                    '"Peripheral", "Phone", "Printer",' .
+                                                    '"Software"]',
                                            'import_externalauth_users' => 'w',
                                            'rule_mailcollector'        => 'w',
                                            'validate_ticket'           => '1',

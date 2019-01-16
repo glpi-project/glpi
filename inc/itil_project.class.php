@@ -407,7 +407,6 @@ class Itil_Project extends CommonDBRelation {
       foreach ($itil_items as $data) {
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                = Toolbox::addslashes_deep($data);
 
          $itil_project = new Itil_Project();
          $itil_project->add($data);

@@ -43,4 +43,4 @@ Session::checkLoginUser();
 
 $ra = new RuleAction();
 
-$ra->displayActionSelectPattern(Toolbox::stripslashes_deep($_POST));
+$ra->displayActionSelectPattern($_POST);

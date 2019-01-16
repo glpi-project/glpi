@@ -1359,12 +1359,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $input['name'] = Html::clean(Html::entity_decode_deep($input['content']));
          $input["name"] = preg_replace('/\\r\\n/', ' ', $input['name']);
          $input["name"] = preg_replace('/\\n/', ' ', $input['name']);
-         // For mailcollector
-         $input["name"] = preg_replace('/\\\\r\\\\n/', ' ', $input['name']);
-         $input["name"] = preg_replace('/\\\\n/', ' ', $input['name']);
-         $input['name'] = Toolbox::stripslashes_deep($input['name']);
          $input["name"] = Toolbox::substr($input['name'], 0, 70);
-         $input['name'] = Toolbox::addslashes_deep($input['name']);
       }
 
       // Set default dropdown
@@ -7034,7 +7029,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get common request criteria
     *
-    * @since 10.0.0
+    * @since 10.0
     *
     * @return array
     */

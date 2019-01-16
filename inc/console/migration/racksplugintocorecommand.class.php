@@ -583,7 +583,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             }
 
             $new_model = new $new_model_itemtype();
-            $new_model_fields = Toolbox::sanitize([
+            $new_model_fields = Toolbox::clean_cross_side_scripting_deep([
                'name'    => $othermodel['name'],
                'comment' => $othermodel['comment'],
             ]);
@@ -633,7 +633,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                foreach ($otheritems_iterator as $otheritem) {
                   $progress_bar->advance(1);
 
-                  $new_item_fields = Toolbox::sanitize([
+                  $new_item_fields = Toolbox::clean_cross_side_scripting_deep([
                      'name'        => strlen($otheritem['name'])
                                        ? $otheritem['name']
                                        : $otheritem['id'],
@@ -811,7 +811,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $rackmodel = new RackModel();
-            $rackmodel_fields = Toolbox::sanitize(
+            $rackmodel_fields = Toolbox::clean_cross_side_scripting_deep(
                [
                   'name'    => $old_model['name'],
                   'comment' => $old_model['comment'],
@@ -889,7 +889,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $racktype = new RackType();
-            $racktype_fields = Toolbox::sanitize(
+            $racktype_fields = Toolbox::clean_cross_side_scripting_deep(
                [
                   'name'         => $old_type['name'],
                   'entities_id'  => $old_type['entities_id'],
@@ -969,7 +969,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $state = new State();
-            $state_fields = Toolbox::sanitize(
+            $state_fields = Toolbox::clean_cross_side_scripting_deep(
                [
                   'name'      => $old_state['name'],
                   'states_id' => 0,
@@ -1052,7 +1052,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $room = new DCRoom();
-            $room_fields = Toolbox::sanitize(
+            $room_fields = Toolbox::clean_cross_side_scripting_deep(
                [
                   'name'           => $old_room['completename'],
                   'entities_id'    => $old_room['entities_id'],
@@ -1161,7 +1161,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             }
 
             $rack = new Rack();
-            $rack_fields = Toolbox::sanitize(
+            $rack_fields = Toolbox::clean_cross_side_scripting_deep(
                [
                   'name'             => $old_rack['name'],
                   'comment'          => "Imported from rack plugin",

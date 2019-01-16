@@ -462,7 +462,7 @@ final class DbUtils {
       $result = $DB->rawQuery("SHOW INDEX FROM `$table`");
 
       if ($result && $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $result->fetch()) {
             if ($data["Key_name"] == $field) {
                return true;
             }
@@ -1336,7 +1336,7 @@ final class DbUtils {
          list($name, $level) = $this->getTreeValueName($table, $data['id']);
          $DB->update(
             $table, [
-               'completename' => addslashes($name),
+               'completename' => $name,
                'level'        => $level
             ], [
                'id' => $data['id']

@@ -58,13 +58,13 @@ class CronTaskLog extends CommonDBTM{
 
       $secs      = $days * DAY_TIMESTAMP;
 
-      $DB->delete(
+      $result = $DB->delete(
          'glpi_crontasklogs', [
             'crontasks_id' => 'id',
             new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
          ]
       );
-      return $DB->affected_rows();
+      return $result->rowCount();
    }
 
 

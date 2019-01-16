@@ -41,6 +41,7 @@ class Migration extends \GLPITestCase {
    private $db;
    private $migration;
    private $queries;
+   private $qry_params;
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
@@ -48,11 +49,14 @@ class Migration extends \GLPITestCase {
          $this->db = new \mock\DB();
          $queries = [];
          $this->queries = &$queries;
-         $this->calling($this->db)->rawQuery = function ($query) use (&$queries) {
+         $qry_params = [];
+         $this->qry_params = &$qry_params;
+         $this->calling($this->db)->rawQuery = function ($query, $params) use (&$queries, &$qry_params) {
             $queries[] = $query;
-            return true;
+            $qry_params[] = $params;
+            return new \PDOStatement();
          };
-         $this->calling($this->db)->free_result = true;
+         $this->calling($this->db)->freeResult = true;
 
          $this->output(
             function () {
@@ -100,9 +104,8 @@ class Migration extends \GLPITestCase {
    public function testAddConfig() {
       global $DB;
       $this->calling($this->db)->numrows = 0;
-      $this->calling($this->db)->fetch_assoc = [];
-      $this->calling($this->db)->data_seek = true;
-      $this->calling($this->db)->list_fields = [
+      $this->calling($this->db)->fetchAssoc = [];
+      $this->calling($this->db)->listFields = [
          'id'        => '',
          'context'   => '',
          'name'      => '',
@@ -123,15 +126,52 @@ class Migration extends \GLPITestCase {
       )->isIdenticalTo('Configuration values added for one, two.Task completed.');
 
       $this->array($this->queries)->isIdenticalTo([
-         0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
-         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
-         3 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
-         4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
+         0 => 'SELECT * FROM `glpi_configs` WHERE `context` = ? AND `name` IN (?,?)',
+         1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = ? AND `name` = ?',
+         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (:context, :name, :value)',
+         3 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = ? AND `name` = ?',
+         4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (:context, :name, :value)'
       ]);
+
+      print_r($this->qry_params);
+      $this->array($this->qry_params)
+          ->child[0](function($child) {
+             $child->isIdenticalTo([
+               'core',
+               'one',
+               'two'
+             ]);
+          })
+          ->child[1](function($child) {
+             $child->isIdenticalTo([
+                'core',
+                'one'
+             ]);
+          })
+          ->child[2](function($child) {
+             $child->isIdenticalTo([
+                'context'  => 'core',
+                'name'     => 'one',
+                'value'    => 'key'
+             ]);
+          })
+          ->child[3](function($child) {
+             $child->isIdenticalTo([
+               'core',
+               'two'
+             ]);
+          })
+          ->child[4](function($child) {
+             $child->isIdenticalTo([
+                'context'  => 'core',
+                'name'     => 'two',
+                'value'    => 'value'
+             ]);
+          });
 
       //test with context set => new keys should be inserted in correct context
       $this->queries = [];
+      $this->qry_params = [];
       $this->migration->setContext('test-context');
 
       $this->output(
@@ -141,24 +181,71 @@ class Migration extends \GLPITestCase {
       )->isIdenticalTo('Configuration values added for one, two.Task completed.');
 
       $this->array($this->queries)->isIdenticalTo([
-         0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
-         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
-         3 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
-         4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')'
+         0 => 'SELECT * FROM `glpi_configs` WHERE `context` = ? AND `name` IN (?,?)',
+         1 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = ? AND `name` = ?',
+         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (:context, :name, :value)',
+         3 => 'SELECT `id` FROM `glpi_configs` WHERE `context` = ? AND `name` = ?',
+         4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (:context, :name, :value)'
       ]);
+
+      $this->array($this->qry_params)
+          ->child[0](function($child) {
+             $child->isIdenticalTo([
+               'test-context',
+               'one',
+               'two'
+             ]);
+          })
+          ->child[1](function($child) {
+             $child->isIdenticalTo([
+               'test-context',
+               'one'
+             ]);
+          })
+          ->child[2](function($child) {
+             $child->isIdenticalTo([
+                'context'  => 'test-context',
+                'name'     => 'one',
+                'value'    => 'key'
+             ]);
+          })
+          ->child[3](function($child) {
+             $child->isIdenticalTo([
+               'test-context',
+               'two'
+             ]);
+          })
+          ->child[4](function($child) {
+             $child->isIdenticalTo([
+                'context'  => 'test-context',
+                'name'     => 'two',
+                'value'    => 'value'
+             ]);
+          });
 
       $this->migration->setContext('core'); //reset
 
       //test with one existing value => only new key should be inserted
       $this->queries = [];
-      $dbresult = [[
+      $this->qry_params = [];
+      $it = new \mock\DBmysqlIterator($this->db);
+
+      // Mock iterator to get only first result in foreach
+      $is_valid = true;
+      $this->calling($it)->valid = function () use (&$is_valid) {
+         if ($is_valid) {
+            $is_valid = false;
+            return true;
+         }
+         return false;
+      };
+      $this->calling($it)->current = [
          'id'        => '42',
          'context'   => 'core',
          'name'      => 'one',
          'value'     => 'setted value'
-      ]];
-      $it = new \ArrayIterator($dbresult);
+      ];
+
       $this->calling($this->db)->request = $it;
 
       $DB = $this->db;
@@ -170,7 +257,10 @@ class Migration extends \GLPITestCase {
       )->isIdenticalTo('Configuration values added for two.Task completed.');
 
       $this->array($this->queries)->isIdenticalTo([
-         0 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
+         0 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (:context, :name, :value)'
+      ]);
+      $this->array($this->qry_params)->isIdenticalTo([
+          0 => ['context' => 'core', 'name' => 'two', 'value' => 'value']
       ]);
    }
 
@@ -189,12 +279,16 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT `TABLE_NAME` FROM `information_schema`.`TABLES`' .
-               ' WHERE `TABLE_SCHEMA` = \'' . $DB->dbdefault .
-               '\' AND `TABLE_TYPE` = \'BASE TABLE\' AND `TABLE_NAME` LIKE \'%table1%\'',
+               ' WHERE `TABLE_SCHEMA` = ?' .
+               ' AND `TABLE_TYPE` = ? AND `TABLE_NAME` LIKE ?',
          1 => 'SELECT `TABLE_NAME` FROM `information_schema`.`TABLES`' .
-               ' WHERE `TABLE_SCHEMA` = \'' . $DB->dbdefault  .
-               '\' AND `TABLE_TYPE` = \'BASE TABLE\' AND `TABLE_NAME` LIKE \'%table2%\''
+               ' WHERE `TABLE_SCHEMA` = ?'  .
+               ' AND `TABLE_TYPE` = ? AND `TABLE_NAME` LIKE ?'
              ]);
+      $this->array($this->qry_params)->isIdenticalTo([
+         0  => [$DB->dbdefault, 'BASE TABLE', '%table1%'],
+         1  => [$DB->dbdefault, 'BASE TABLE', '%table2%']
+      ]);
 
       //try to backup existant tables
       $this->queries = [];

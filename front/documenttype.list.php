@@ -39,6 +39,7 @@ Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 $params = Search::manageParams('DocumentType', $_GET);
 
 $params['target'] = $_SERVER['PHP_SELF'];
-Search::showList('DocumentType', $params);
+$search = new Search(new DocumentType(), $params);
+$search->showList('DocumentType', $params);
 
 Html::popFooter();

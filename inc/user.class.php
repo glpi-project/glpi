@@ -583,7 +583,7 @@ class User extends CommonDBTM {
             if ($input["password"] == $input["password2"]) {
                if (Config::validatePassword($input["password"])) {
                   $input["password"]
-                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep($input["password"]));
                } else {
                   unset($input["password"]);
                }
@@ -751,7 +751,7 @@ class User extends CommonDBTM {
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $this->isEmail($input['email'])))) {
                   $input["password"]
-                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep($input["password"]));
 
                } else {
                   unset($input["password"]);
@@ -1360,7 +1360,7 @@ class User extends CommonDBTM {
                   $group_iterator = $DB->request([
                      'SELECT' => 'id',
                      'FROM'   => 'glpi_groups',
-                     'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
+                     'WHERE'  => ['ldap_group_dn' => $v[$i]['ou']]
                   ]);
 
                   while ($group = $group_iterator->next()) {
@@ -1382,7 +1382,7 @@ class User extends CommonDBTM {
                   $lgroups = [];
                   foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
                      $lgroups[] = [
-                        new \QueryExpression($DB::quoteValue($lgroup).
+                        new \QueryExpression($DB->quoteValue($lgroup).
                                              " LIKE ".
                                              $DB::quoteName('ldap_value'))
                      ];
@@ -1446,7 +1446,7 @@ class User extends CommonDBTM {
              $iterator = $DB->request([
                'SELECT' => 'id',
                'FROM'   => 'glpi_groups',
-               'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]])]
+               'WHERE'  => ['ldap_group_dn' => $result[$ldap_method["group_member_field"]]]
              ]);
 
             while ($group = $iterator->next()) {
@@ -1499,7 +1499,7 @@ class User extends CommonDBTM {
          }
 
          //Store user's dn
-         $this->fields['user_dn']    = addslashes($userdn);
+         $this->fields['user_dn']    = $userdn;
          //Store date_sync
          $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
          // Empty array to ensure than syncDynamicEmails will be done
@@ -1530,7 +1530,6 @@ class User extends CommonDBTM {
                }
 
             } else {
-               $val = Toolbox::addslashes_deep($val);
                switch ($k) {
                   case "email1" :
                   case "email2" :
@@ -1540,7 +1539,7 @@ class User extends CommonDBTM {
                      if (!empty($v[0][$e])) {
                         foreach ($v[0][$e] as $km => $m) {
                            if (!preg_match('/count/', $km)) {
-                              $this->fields["_emails"][] = addslashes($m);
+                              $this->fields["_emails"][] = $m;
                            }
                         }
                         // Only get them once if duplicated
@@ -1610,7 +1609,7 @@ class User extends CommonDBTM {
                $groups = [];
             }
 
-            $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
+            $this->fields = $rule->processAllRules($groups, $this->fields,
                                                    ['type'        => 'LDAP',
                                                          'ldap_server' => $ldap_method["id"],
                                                          'connection'  => $ldap_connection,
@@ -1771,7 +1770,7 @@ class User extends CommonDBTM {
          } else {
             $groups = [];
          }
-         $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
+         $this->fields = $rule->processAllRules($groups, $this->fields,
                                                 ['type'        => 'MAIL',
                                                       'mail_server' => $mail_method["id"],
                                                       'login'       => $name,
@@ -1830,7 +1829,7 @@ class User extends CommonDBTM {
                case "email4" :
                   // Manage multivaluable fields
                   if (!preg_match('/count/', $_SERVER[$value])) {
-                     $this->fields["_emails"][] = addslashes($_SERVER[$value]);
+                     $this->fields["_emails"][] = $_SERVER[$value];
                   }
                   // Only get them once if duplicated
                   $this->fields["_emails"] = array_unique($this->fields["_emails"]);
@@ -1845,12 +1844,12 @@ class User extends CommonDBTM {
 
                case "title" :
                   $this->fields['usertitles_id']
-                        = Dropdown::importExternal('UserTitle', addslashes($_SERVER[$value]));
+                        = Dropdown::importExternal('UserTitle', $_SERVER[$value]);
                   break;
 
                case "category" :
                   $this->fields['usercategories_id']
-                        = Dropdown::importExternal('UserCategory', addslashes($_SERVER[$value]));
+                        = Dropdown::importExternal('UserCategory', $_SERVER[$value]);
                   break;
 
                default :
@@ -1865,7 +1864,7 @@ class User extends CommonDBTM {
          //Instanciate the affectation's rule
          $rule = new RuleRightCollection();
 
-         $this->fields = $rule->processAllRules([], Toolbox::stripslashes_deep($this->fields),
+         $this->fields = $rule->processAllRules([], $this->fields,
                                                 ['type'   => 'SSO',
                                                       'email'  => $this->fields["_emails"],
                                                       'login'  => $this->fields["name"]]);
@@ -3355,7 +3354,7 @@ class User extends CommonDBTM {
     * @param integer         $limit            limit LIMIT value (default -1 no limit)
     * @param boolean         $inactive_deleted true to retreive also inactive or deleted users
     *
-    * @return mysqli_result|boolean
+    * @return DBmysqlIterator
     */
    static function getSqlSearchResult ($count = true, $right = "all", $entity_restrict = -1, $value = 0,
                                        array $used = [], $search = '', $start = 0, $limit = -1,
@@ -3650,7 +3649,8 @@ class User extends CommonDBTM {
 
       if (!$count) {
          if ((strlen($search) > 0)) {
-            $txt_search = Search::makeTextSearchValue($search);
+            $search_inst = new Search(new User(), []);
+            $txt_search = $search_inst->makeTextSearchValue($search);
             $concat = new \QueryExpression(
                "CONCAT(
                   glpi_users.realname,
@@ -3943,12 +3943,10 @@ class User extends CommonDBTM {
                $changes = [
                   0,
                   '',
-                  addslashes(
-                     sprintf(
-                        __('%1$s: %2$s'),
-                        __('Update authentification method to'),
-                        Auth::getMethodName($authtype, $server)
-                     )
+                  sprintf(
+                     __('%1$s: %2$s'),
+                     __('Update authentification method to'),
+                     Auth::getMethodName($authtype, $server)
                   )
                ];
                Log::history($ID, __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
@@ -4235,7 +4233,7 @@ class User extends CommonDBTM {
             ]
          ],
          'WHERE'     => [
-            'glpi_useremails.email' => $DB->escape(stripslashes($email))
+            'glpi_useremails.email' => $email
          ],
          'ORDER'     => ['glpi_users.is_active DESC', 'is_deleted ASC']
       ]);
@@ -4368,7 +4366,7 @@ class User extends CommonDBTM {
       $iterator = $DB->request([
          'SELECT' => 'id',
          'FROM'   => self::getTable(),
-         'WHERE'  => [$field => addslashes($value)]
+         'WHERE'  => [$field => $value]
       ]);
 
       if (count($iterator) == 1) {

@@ -66,10 +66,7 @@ if (isset($_POST['update_end'])) {
 function test_connect() {
    global $DB;
 
-   if ($DB->error == 0) {
-      return true;
-   }
-   return false;
+   return !$DB->error();
 }
 
 //update database

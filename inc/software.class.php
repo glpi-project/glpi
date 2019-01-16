@@ -137,7 +137,7 @@ class Software extends CommonDBTM {
       //If category was not set by user (when manually adding a user)
       if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
          $softcatrule = new RuleSoftwareCategoryCollection();
-         $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+         $result      = $softcatrule->processAllRules(null, null, $input);
 
          if (!empty($result)) {
             if (isset($result['_ignore_import'])) {
@@ -771,7 +771,7 @@ class Software extends CommonDBTM {
    /**
     * Create a new software
     *
-    * @param name                          the software's name (need to be addslashes)
+    * @param name                          the software's name
     * @param manufacturer_id               id of the software's manufacturer
     * @param entity                        the entity in which the software must be added
     * @param comment                       (default '')
@@ -797,7 +797,7 @@ class Software extends CommonDBTM {
 
       //Process software's category rules
       $softcatrule = new RuleSoftwareCategoryCollection();
-      $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+      $result      = $softcatrule->processAllRules(null, null, $input);
 
       if (!empty($result)) {
          if (isset($result['_ignore_import'])) {
@@ -956,7 +956,7 @@ class Software extends CommonDBTM {
          ],
          'WHERE'     => [
             'glpi_softwares.id'           => ['!=', $ID],
-            'glpi_softwares.name'         => addslashes($this->fields['name']),
+            'glpi_softwares.name'         => $this->fields['name'],
             'glpi_softwares.is_deleted'   => 0,
             'glpi_softwares.is_template'  => 0
          ] + getEntitiesRestrictCriteria(

@@ -140,7 +140,7 @@ class Log extends CommonDBTM {
                    && ($val2['rightname'] == $item->fields['name'])) {
 
                   $id_search_option = $key2;
-                  $changes          =  [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes          =  [$id_search_option, $oldval, $values[$key]];
                }
 
             } else if (($val2['linkfield'] == $key)
@@ -150,19 +150,19 @@ class Log extends CommonDBTM {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                if ($val2['table'] == $item->getTable()) {
-                  $changes = [$id_search_option, addslashes($oldval), $values[$key]];
+                  $changes = [$id_search_option, $oldval, $values[$key]];
                } else {
                   // other cases; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = [$id_search_option,
-                                      addslashes(sprintf(__('%1$s (%2$s)'),
-                                                         Dropdown::getDropdownName($val2["table"],
-                                                                                   $oldval),
-                                                         $oldval)),
-                                      addslashes(sprintf(__('%1$s (%2$s)'),
-                                                         Dropdown::getDropdownName($val2["table"],
-                                                                                   $values[$key]),
-                                                         $values[$key]))];
+                                 sprintf(__('%1$s (%2$s)'),
+                                         Dropdown::getDropdownName($val2["table"],
+                                                                   $oldval),
+                                         $oldval),
+                                 sprintf(__('%1$s (%2$s)'),
+                                         Dropdown::getDropdownName($val2["table"],
+                                                                   $values[$key]),
+                                         $values[$key])];
                   }
                }
                break;
@@ -213,8 +213,8 @@ class Log extends CommonDBTM {
          $username = "";
       }
 
-      $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
-      $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
+      $old_value = Toolbox::substr($old_value, 0, 180);
+      $new_value = Toolbox::substr($new_value, 0, 180);
 
       // Security to be sure that values do not pass over the max length
       if (Toolbox::strlen($old_value) > 255) {
@@ -229,7 +229,7 @@ class Log extends CommonDBTM {
          'itemtype'          => $itemtype,
          'itemtype_link'     => $itemtype_link,
          'linked_action'     => $linked_action,
-         'user_name'         => addslashes($username),
+         'user_name'         => $username,
          'date_mod'          => $date_mod,
          'id_search_option'  => $id_search_option,
          'old_value'         => $old_value,
@@ -237,8 +237,8 @@ class Log extends CommonDBTM {
       ];
       $result = $DB->insert(self::getTable(), $params);
 
-      if ($result && $DB->affected_rows($result) > 0) {
-         return $_SESSION['glpi_maxhistory'] = $DB->insert_id();
+      if ($result && $result->rowCount() > 0) {
+         return $_SESSION['glpi_maxhistory'] = $DB->insertId();
       }
       return false;
    }

@@ -697,9 +697,6 @@ class CommonGLPI {
             unset($cleaned_options['content']);
          }
 
-         // prevent double sanitize, because the includes.php sanitize all data
-         $cleaned_options = Toolbox::stripslashes_deep($cleaned_options);
-
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
       }
       echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";

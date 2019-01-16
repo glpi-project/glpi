@@ -1268,8 +1268,10 @@ class SavedSearch extends CommonDBTM {
     * @param integer $meta       is a meta search (meta=2 in search.class.php) (default 0)
     *
     * @return string where clause
+    *
+    * @since 10.0 Added $qry_params parameter
     */
-   public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
+   public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, array &$qry_params, $meta = 0) {
 
       if ($ID == 11) { //search for defaults/not defaults
          if ($val == 0) {
@@ -1375,7 +1377,7 @@ class SavedSearch extends CommonDBTM {
               && ($this->getField('last_execution_time') != null)
               && ($this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']))) {
 
-         $search = new Search();
+         $search = new Search(new self(), []);
          //Do the same as self::getParameters() but getFromDB is useless
          $query_tab = [];
          parse_str($this->getField('query'), $query_tab);
@@ -1389,8 +1391,8 @@ class SavedSearch extends CommonDBTM {
          if (!$params) {
             throw new \RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
          } else {
-            $data                   = $search->prepareDatasForSearch($this->getField('itemtype'),
-                                                                     $params);
+            $data                   = $search->prepareDataForSearch($this->getField('itemtype'),
+                                                                    $params);
             $data['search']['sort'] = null;
             $search->constructSQL($data);
             $search->constructData($data, true);
@@ -1433,7 +1435,7 @@ class SavedSearch extends CommonDBTM {
       //not deprecated because used in Search
 
       if (Session::haveRight('config', UPDATE)) {
-         return '';
+         return [];
       }
 
       //get and clean criteria
@@ -1446,7 +1448,7 @@ class SavedSearch extends CommonDBTM {
       $sql = $it->getSql();
       $sql = preg_replace('/.*WHERE /', '', $sql);
 
-      return $sql;
+      return ['sql' => $sql, 'params' => $it->getParameters()];
    }
 
    /**

@@ -115,7 +115,7 @@ if (isset($_POST["add"])) {
          'documents_id' => $doc->getID()
       ]);
       foreach ($found_document_items  as $item) {
-         $document_item->delete(Toolbox::addslashes_deep($item), true);
+         $document_item->delete($item, true);
       }
    }
    Html::back();

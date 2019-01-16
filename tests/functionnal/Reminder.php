@@ -39,34 +39,44 @@ use \DbTestCase;
 class Reminder extends DbTestCase {
 
    public function testAddVisibilityRestrict() {
-      /**
-       * Remove for now tests that are known to fail (so others may run)
       //first, as a super-admin
       $this->login();
-      $expected = "(`glpi_reminders`.`users_id` = '6' OR `glpi_reminders_users`.`users_id` = '6' OR ((`glpi_profiles_reminders`.`profiles_id` = '4' AND (`glpi_profiles_reminders`.`entities_id` < '0' OR ((`glpi_profiles_reminders`.`entities_id` IN ('1', '2', '3') OR (`glpi_profiles_reminders`.`is_recursive` = '1' AND `glpi_profiles_reminders`.`entities_id` IN ('0'))))))) OR (`glpi_entities_reminders`.`entities_id` IN ('1', '2', '3') OR (`glpi_entities_reminders`.`is_recursive` = '1' AND `glpi_entities_reminders`.`entities_id` IN ('0'))))";
-      $this->string(\Reminder::addVisibilityRestrict())
+      $expected = [
+         'sql'    => "(`glpi_reminders`.`users_id` = ? OR `glpi_reminders_users`.`users_id` = ? OR ((`glpi_profiles_reminders`.`profiles_id` = ? AND (`glpi_profiles_reminders`.`entities_id` < ? OR (`glpi_profiles_reminders`.`entities_id` IN (?,?,?) OR (`glpi_profiles_reminders`.`is_recursive` = ? AND `glpi_profiles_reminders`.`entities_id` IN (?)))))) OR (`glpi_entities_reminders`.`entities_id` IN (?,?,?) OR (`glpi_entities_reminders`.`is_recursive` = ? AND `glpi_entities_reminders`.`entities_id` IN (?))))",
+         'params' => ['6', '6', '4', 0, 1, 2, 3, 1, '0', 1, 2, 3, 1, '0']
+      ];
+      $this->array(\Reminder::addVisibilityRestrict())
          ->isIdenticalTo($expected);
 
+      /**
+       * Remove for now tests that are known to fail (so others may run)
       $this->login('normal', 'normal');
-      $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
-         ->isIdenticalTo("`glpi_reminders`.`users_id` = '5'");
+      $restrict = \Reminder::addVisibilityRestrict();
+      $this->string(
+         trim(preg_replace('/\s+/', ' ', $restrict['sql']))
+      )->isIdenticalTo("`glpi_reminders`.`users_id` = ?");
+      $this->array($restrict['params'])->isIdenticalTo([5]);
 
       $this->login('tech', 'tech');
-      $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
-         ->isIdenticalTo(preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'  OR `glpi_reminders_users`.`users_id` = '4'  OR ((`glpi_profiles_reminders`.`profiles_id`
-                                 = '6'
-                            AND (`glpi_profiles_reminders`.`entities_id` < '0'
-                                  OR  (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))))"));
+      $restrict = \Reminder::addVisibilityRestrict();
+      $this->string(trim(preg_replace('/\s+/', ' ', $restrict['sql'])))
+         ->isIdenticalTo(preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = ?  OR `glpi_reminders_users`.`users_id` = ?  OR ((`glpi_profiles_reminders`.`profiles_id`
+                                 = ?
+                            AND (`glpi_profiles_reminders`.`entities_id` < ?
+                                  OR  (`glpi_entities_reminders`.`entities_id` IN (?,?,?,?)))))"));
+      $this->array($restrict['params'])->isIdenticalTo(4, 4, 6, 0, 0, 1, 2, 3);
 
       $_SESSION['glpigroups'] = [42, 1337];
-      $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
-         ->isIdenticalTo(preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'  OR `glpi_reminders_users`.`users_id` = '4'  OR (`glpi_groups_reminders`.`groups_id`
-                                 IN ('42','1337')
-                            AND (`glpi_groups_reminders`.`entities_id` < 0
+      $restrict = \Reminder::addVisibilityRestrict();
+      $this->string(trim(preg_replace('/\s+/', ' ', $restrict['sql'])))
+         ->isIdenticalTo(preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = ?  OR `glpi_reminders_users`.`users_id` = ?  OR (`glpi_groups_reminders`.`groups_id`
+                                 IN (?,?)
+                            AND (`glpi_groups_reminders`.`entities_id` < ?
                                  OR (  1 )))  OR (`glpi_profiles_reminders`.`profiles_id`
-                                 = '6'
-                            AND (`glpi_profiles_reminders`.`entities_id` < 0
-                                 OR (  1 ))) OR ( `glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))"));
+                                 = ?
+                            AND (`glpi_profiles_reminders`.`entities_id` < ?
+                                 OR (  1 ))) OR ( `glpi_entities_reminders`.`entities_id` IN (?,?,?,?)))"));
+      $this->array($restrict['params'])->isIdenticalTo([4, 4, 42, 1337, 0, 6, 0, 0, 1, 2, 3]);
       */
    }
 }

@@ -104,7 +104,6 @@ class ComputerAntivirus extends CommonDBChild {
          $antirivus            = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
          $antirivus->add($data);
       }
    }

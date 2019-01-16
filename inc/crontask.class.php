@@ -222,7 +222,7 @@ class CronTask extends CommonDBTM{
          ]
       );
 
-      if ($DB->affected_rows($result)>0) {
+      if ($result->rowCount() > 0) {
          $this->timer  = microtime(true);
          $this->volume = 0;
          $log = new CronTaskLog();
@@ -233,7 +233,7 @@ class CronTask extends CommonDBTM{
 
          $this->startlog = $log->add(['crontasks_id'    => $this->fields['id'],
                                            'date'            => $_SESSION['glpi_currenttime'],
-                                           'content'         => addslashes($txt),
+                                           'content'         => $txt,
                                            'crontasklogs_id' => 0,
                                            'state'           => CronTaskLog::STATE_START,
                                            'volume'          => 0,
@@ -287,7 +287,7 @@ class CronTask extends CommonDBTM{
          ]
       );
 
-      if ($DB->affected_rows($result) > 0) {
+      if ($result->rowCount() > 0) {
          // No gettext for log but add gettext line to be parsed for pot generation
          // order is important for insertion in english in the database
          if (is_null($retcode)) {
@@ -333,7 +333,7 @@ class CronTask extends CommonDBTM{
       $content = Toolbox::substr($content, 0, 200);
       return $log->add(['crontasks_id'    => $this->fields['id'],
                              'date'            => $_SESSION['glpi_currenttime'],
-                             'content'         => addslashes($content),
+                             'content'         => $content,
                              'crontasklogs_id' => $this->startlog,
                              'state'           => CronTaskLog::STATE_RUN,
                              'volume'          => $this->volume,
@@ -363,7 +363,7 @@ class CronTask extends CommonDBTM{
       }
 
       if ($name) {
-         $WHERE['name'] = addslashes($name);
+         $WHERE['name'] = $name;
       }
 
       // In force mode

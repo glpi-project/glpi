@@ -145,8 +145,8 @@ class Item_Ticket extends CommonDBRelation{
                      // Process Business Rules
                      $rules = new RuleTicketCollection($ticket->fields['entities_id']);
 
-                     $ticket->fields = $rules->processAllRules(Toolbox::stripslashes_deep($ticket->fields),
-                                                Toolbox::stripslashes_deep($ticket->fields),
+                     $ticket->fields = $rules->processAllRules($ticket->fields,
+                                                $ticket->fields,
                                                 ['recursive' => true]);
 
                      unset($ticket->fields['items_locations']);
@@ -1334,7 +1334,7 @@ class Item_Ticket extends CommonDBRelation{
          // Do not display quotes
          //TRANS : %s is the description of the added item
          Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully added'),
-                                                  stripslashes($display)));
+                                                  $display));
 
       }
    }

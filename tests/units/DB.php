@@ -50,21 +50,19 @@ class DB extends \GLPITestCase {
          ->then
             ->boolean($this->testedInstance->fieldExists('glpi_configs', 'id'))->isTrue()
             ->boolean($this->testedInstance->fieldExists('glpi_configs', 'ID'))->isFalse()
-            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'fakeField'))->isFalse()
-            ->when(
-               function () {
-                  $this->boolean($this->testedInstance->fieldExists('fakeTable', 'id'))->isFalse();
-               }
-            )->error
-               ->withType(E_USER_WARNING)
-               ->exists()
-            ->when(
-               function () {
-                  $this->boolean($this->testedInstance->fieldExists('fakeTable', 'fakeField'))->isFalse();
-               }
-            )->error
-               ->withType(E_USER_WARNING)
-               ->exists();
+            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'fakeField'))->isFalse();
+
+      $this->exception(
+         function() {
+            $this->boolean($this->testedInstance->fieldExists('fakeTable', 'id'))->isFalse();
+         }
+      )->hasMessage('Table fakeTable does not exists');
+
+      $this->exception(
+         function() {
+            $this->boolean($this->testedInstance->fieldExists('fakeTable', 'fakeField'))->isFalse();
+         }
+      )->hasMessage('Table fakeTable does not exists');
    }
 
    protected function dataName() {
@@ -84,7 +82,10 @@ class DB extends \GLPITestCase {
     * @dataProvider dataName
     */
    public function testQuoteName($raw, $quoted) {
-      $this->string(\DB::quoteName($raw))->isIdenticalTo($quoted);
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->quoteName($raw))->isIdenticalTo($quoted);
    }
 
    protected function dataValue() {
@@ -97,7 +98,7 @@ class DB extends \GLPITestCase {
          ['null', 'NULL'],
          ['NULL', 'NULL'],
          ['`field`', '`field`'],
-         ['`field', "'`field'"]
+         ['`field', "`field"]
       ];
    }
 
@@ -105,7 +106,10 @@ class DB extends \GLPITestCase {
     * @dataProvider dataValue
     */
    public function testQuoteValue($raw, $expected) {
-      $this->string(\DB::quoteValue($raw))->isIdenticalTo($expected);
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->string($this->testedInstance->quoteValue($raw))->isIdenticalTo($expected);
    }
 
 
@@ -116,19 +120,19 @@ class DB extends \GLPITestCase {
                'field'  => 'value',
                'other'  => 'doe'
             ],
-            'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
+            'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
          ], [
             '`table`', [
                '`field`'  => 'value',
                '`other`'  => 'doe'
             ],
-            'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
+            'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
          ], [
             'table', [
                'field'  => new \QueryParam(),
                'other'  => new \QueryParam()
             ],
-            'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
+            'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
          ], [
             'table', [
                'field'  => new \QueryParam('field'),
@@ -158,42 +162,48 @@ class DB extends \GLPITestCase {
             ], [
                'id'  => 1
             ],
-            'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\''
+            'UPDATE `table` SET `field` = ?, `other` = ? WHERE `id` = ?',
+            ['value', 'doe', 1]
          ], [
             'table', [
                'field'  => 'value'
             ], [
                'id'  => [1, 2]
             ],
-            'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
+            'UPDATE `table` SET `field` = ? WHERE `id` IN (?,?)',
+            ['value', 1, 2]
          ], [
             'table', [
                'field'  => 'value'
             ], [
                'NOT'  => ['id' => [1, 2]]
             ],
-            'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
+            'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?,?))',
+            ['value', 1, 2]
          ], [
             'table', [
                'field'  => new \QueryParam()
             ], [
                'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
             ],
-            'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
+            'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?,?))',
+            []
          ], [
             'table', [
                'field'  => new \QueryParam('field')
             ], [
                'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
-            'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
+            'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?,?))',
+            []
          ], [
             'table', [
                'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
             ], [
                'id'  => [1, 2]
             ],
-            'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+            'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (?,?)',
+            [1, 2]
          ]
       ];
    }
@@ -201,20 +211,24 @@ class DB extends \GLPITestCase {
    /**
     * @dataProvider dataUpdate
     */
-   public function testBuildUpdate($table, $values, $where, $expected) {
+   public function testBuildUpdate($table, $values, $where, $expected, $parameters) {
        $this
          ->if($this->newTestedInstance)
          ->then
-            ->string($this->testedInstance->buildUpdate($table, $values, $where))->isIdenticalTo($expected);
+            ->string($this->testedInstance->buildUpdate($table, $values, $where))->isIdenticalTo($expected)
+            ->array($values)->isIdenticalTo($parameters);
    }
 
    public function testBuildUpdateWException() {
       $this->exception(
          function() {
+            $set = ['a' => 'b'];
+            $where = [];
+
             $this
                ->if($this->newTestedInstance)
                ->then
-                  ->string($this->testedInstance->buildUpdate('table', ['a' => 'b'], []))->isIdenticalTo('');
+               ->string($this->testedInstance->buildUpdate('table', $set, $where))->isIdenticalTo('');
          }
       )->hasMessage('Cannot run an UPDATE query without WHERE clause!');
    }
@@ -225,27 +239,32 @@ class DB extends \GLPITestCase {
             'table', [
                'id'  => 1
             ],
-            'DELETE FROM `table` WHERE `id` = \'1\''
+            'DELETE FROM `table` WHERE `id` = ?',
+            [1]
          ], [
             'table', [
                'id'  => [1, 2]
             ],
-            'DELETE FROM `table` WHERE `id` IN (\'1\', \'2\')'
+            'DELETE FROM `table` WHERE `id` IN (?,?)',
+            [1, 2]
          ], [
             'table', [
                'NOT'  => ['id' => [1, 2]]
             ],
-            'DELETE FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
+            'DELETE FROM `table` WHERE  NOT (`id` IN (?,?))',
+            [1, 2]
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
             ],
-            'DELETE FROM `table` WHERE  NOT (`id` IN (?, ?))'
+            'DELETE FROM `table` WHERE  NOT (`id` IN (?,?))',
+            []
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
-            'DELETE FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
+            'DELETE FROM `table` WHERE  NOT (`id` IN (?,?))',
+            []
          ]
       ];
    }
@@ -253,20 +272,23 @@ class DB extends \GLPITestCase {
    /**
     * @dataProvider dataDelete
     */
-   public function testBuildDelete($table, $where, $expected) {
+   public function testBuildDelete($table, $where, $expected, $parameters) {
+      $params = [];
        $this
          ->if($this->newTestedInstance)
          ->then
-            ->string($this->testedInstance->buildDelete($table, $where))->isIdenticalTo($expected);
+            ->string($this->testedInstance->buildDelete($table, $params, $where))->isIdenticalTo($expected)
+            ->array($params)->isIdenticalTo($parameters);
    }
 
    public function testBuildDeleteWException() {
       $this->exception(
          function() {
+            $set = [];
             $this
                ->if($this->newTestedInstance)
                ->then
-                  ->string($this->testedInstance->buildDelete('table', []))->isIdenticalTo('');
+                  ->string($this->testedInstance->buildDelete('table', $set, []))->isIdenticalTo('');
          }
       )->hasMessage('Cannot run an DELETE query without WHERE clause!');
    }
@@ -307,14 +329,14 @@ class DB extends \GLPITestCase {
       }
    }
 
-   public function testEscape() {
+   public function testQuote() {
       $this
          ->if($this->newTestedInstance)
          ->then
-            ->string($this->testedInstance->escape('nothing to do'))->isIdenticalTo('nothing to do')
-            ->string($this->testedInstance->escape("shoul'be escaped"))->isIdenticalTo("shoul\\'be escaped")
-            ->string($this->testedInstance->escape("First\nSecond"))->isIdenticalTo("First\\nSecond")
-            ->string($this->testedInstance->escape("First\rSecond"))->isIdenticalTo("First\\rSecond")
-            ->string($this->testedInstance->escape('Hi, "you"'))->isIdenticalTo('Hi, \\"you\\"');
+            ->string($this->testedInstance->quote('nothing to do'))->isIdenticalTo("'nothing to do'")
+            ->string($this->testedInstance->quote("shoul'be escaped"))->isIdenticalTo("'shoul\\'be escaped'")
+            ->string($this->testedInstance->quote("First\nSecond"))->isIdenticalTo("'First\\nSecond'")
+            ->string($this->testedInstance->quote("First\rSecond"))->isIdenticalTo("'First\\rSecond'")
+            ->string($this->testedInstance->quote('Hi, "you"'))->isIdenticalTo("'Hi, \\\"you\\\"'");
    }
 }

@@ -261,7 +261,7 @@ class CommonDBTM extends DbTestCase {
       global $DB;
 
       //insert case
-      $res = (int)$DB->updateOrInsert(
+      $res = $DB->updateOrInsert(
          \Computer::getTable(), [
             'name'   => 'serial-to-change',
             'serial' => 'serial-one'
@@ -269,7 +269,7 @@ class CommonDBTM extends DbTestCase {
             'name'   => 'serial-to-change'
          ]
       );
-      $this->integer($res)->isGreaterThan(0);
+      $this->object($res)->isInstanceOf('PDOStatement');
 
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
@@ -287,7 +287,7 @@ class CommonDBTM extends DbTestCase {
             'name'   => 'serial-to-change'
          ]
       );
-      $this->boolean($res)->isTrue();
+      $this->object($res)->isInstanceOf('PDOStatement');
 
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
@@ -296,12 +296,12 @@ class CommonDBTM extends DbTestCase {
       $this->array($check)
          ->string['serial']->isIdenticalTo('serial-changed');
 
-      $this->integer(
-         (int)$DB->insert(
+      $this->object(
+         $DB->insert(
             \Computer::getTable(),
             ['name' => 'serial-to-change']
          )
-      )->isGreaterThan(0);
+      )->isInstanceOf('PDOStatement');
 
       //multiple update case
       $this->exception(
@@ -327,21 +327,21 @@ class CommonDBTM extends DbTestCase {
          ],
          false
       );
-      $this->boolean($res)->isTrue();
+      $this->object($res)->isInstanceOf('PDOStatement');
    }
 
    public function testupdateOrInsertMerged() {
       global $DB;
 
       //insert case
-      $res = (int)$DB->updateOrInsert(
+      $res = $DB->updateOrInsert(
          \Computer::getTable(), [
             'serial' => 'serial-one'
          ], [
             'name'   => 'serial-to-change'
          ]
       );
-      $this->integer($res)->isGreaterThan(0);
+      $this->object($res)->isInstanceOf('PDOStatement');
 
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
@@ -358,7 +358,7 @@ class CommonDBTM extends DbTestCase {
             'name'   => 'serial-to-change'
          ]
       );
-      $this->boolean($res)->isTrue();
+      $this->object($res)->isInstanceOf('PDOStatement');
 
       $check = $DB->request([
          'FROM'   => \Computer::getTable(),
@@ -367,12 +367,12 @@ class CommonDBTM extends DbTestCase {
       $this->array($check)
          ->string['serial']->isIdenticalTo('serial-changed');
 
-      $this->integer(
-         (int)$DB->insert(
+      $this->object(
+         $DB->insert(
             \Computer::getTable(),
             ['name' => 'serial-to-change']
          )
-      )->isGreaterThan(0);
+      )->isInstanceOf('PDOStatement');
 
       //multiple update case
       $this->exception(
@@ -396,7 +396,7 @@ class CommonDBTM extends DbTestCase {
          ],
          false
       );
-      $this->boolean($res)->isTrue();
+      $this->object($res)->isInstanceOf('PDOStatement');
    }
    /**
     * Check right on Recursive object

@@ -83,11 +83,20 @@ class ProfileRight extends CommonDBChild {
    }
 
    /**
-    * @param $profiles_id
-    * @param $rights         array
-   **/
+    * Get rights for a profile
+    *
+    * @param integer $profiles_id Profile ID
+    * @param array   $rights      Rihts
+    *
+    * @return array
+    */
    static function getProfileRights($profiles_id, array $rights = []) {
       global $DB;
+
+      if (!version_compare(Config::getCurrentDBVersion(), '0.84', '>=')) {
+         //table does not exists.
+         return [];
+      }
 
       $query = [
          'FROM'   => 'glpi_profilerights',
@@ -121,15 +130,21 @@ class ProfileRight extends CommonDBChild {
           'FROM'     => Profile::getTable()
       ]);
 
+      $stmt = null;
       while ($profile = $iterator->next()) {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
-            $res = $DB->insert(
-               self::getTable(), [
-                  'profiles_id'  => $profiles_id,
-                  'name'         => $name
-               ]
-            );
+            $params = [
+               'profiles_id'  => $profiles_id,
+               'name'         => $name
+            ];
+
+            if ($stmt === null) {
+               $stmt = $DB->prepare($DB->buildInsert(self::getTable(), $params));
+            }
+
+            $res = $stmt->execute($params);
+
             if (!$res) {
                $ok = false;
             }
@@ -249,23 +264,30 @@ class ProfileRight extends CommonDBChild {
          ]
       ]);
 
+      $expr = $DB->mergeStatementWithParams(
+         'NOT EXISTS ' . $subq->getQuery(),
+         $subq->getParameters()
+      );
       $iterator = $DB->request([
          'SELECT'          => 'POSSIBLE.name AS NAME',
          'DISTINCT'        => true,
          'FROM'            => 'glpi_profilerights AS POSSIBLE',
          'WHERE'           => [
-            new \QueryExpression('NOT EXISTS ' . $subq->getQuery())
+            new \QueryExpression($expr)
          ]
       ]);
-      echo $iterator->getSql();
 
+      $stmt = null;
       while ($right = $iterator->next()) {
-         $DB->insert(
-            self::getTable(), [
-               'profiles_id'  => $profiles_id,
-               'name'         => $right['NAME']
-            ]
-         );
+         $params = [
+            'profiles_id'  => $profiles_id,
+            'name'         => $right['NAME']
+         ];
+
+         if ($stmt === null) {
+            $stmt = $DB->prepare($DB->buildInsert(self::getTable(), $params));
+         }
+         $stmt->execute($params);
       }
    }
 

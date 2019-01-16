@@ -108,7 +108,7 @@ function update0831to084() {
    foreach ($iterator as $data) {
       $query = str_replace('itemtype=States', 'itemtype=AllAssets', $data['query']);
       $DB->update("glpi_bookmarks",
-         ['query' => addslashes($query)],
+         ['query' => $query],
          ['id'    => $data['id']]
       );
    }
@@ -219,9 +219,9 @@ function update0831to084() {
             $html    = str_replace("problem.storestatus=$old", "problem.storestatus=$new", $html);
          }
          $DB->updateOrDie("glpi_notificationtemplatetranslations", [
-               'subject'      => addslashes($subject),
-               'content_text' => addslashes($text),
-               'content_html' => addslashes($html),
+               'subject'      => $subject,
+               'content_text' => $text,
+               'content_html' => $html,
             ], [
                'id' => $data['id']
             ],
@@ -280,7 +280,7 @@ function update0831to084() {
             }
 
             $DB->updateOrDie("glpi_profiles",
-               [$field => addslashes(exportArrayToDB($newtab))],
+               [$field => exportArrayToDB($newtab)],
                ['id' => $data['id']],
                "0.84 migrate $field of glpi_profiles"
             );
@@ -299,15 +299,15 @@ function update0831to084() {
          // Create root entity
          $DB->insertOrDie("glpi_entities", [
                'id'           => 0,
-               'name'         => addslashes(__('Root entity')),
-               'completename' => addslashes(__('Root entity')),
+               'name'         => __('Root entity'),
+               'completename' => __('Root entity'),
                'entities_id'  => -1,
                'level'        => 1
             ],
             "0.84 insert root entity into glpi_entities"
          );
       }
-      //       $newID = $DB->insert_id();
+      //       $newID = $DB->insertId();
       //       $query = "UPDATE `glpi_entities`
       //                 SET `id` = '0'
       //                 WHERE `id` = '$newID'";
@@ -394,7 +394,7 @@ function update0831to084() {
                if (is_null($data[$field])) {
                   $update_fields[$field] = null;
                } else {
-                  $update_fields[$field] = addslashes($data[$field]);
+                  $update_fields[$field] = $data[$field];
                }
             }
 
@@ -457,20 +457,20 @@ function update0831to084() {
       ]);
       foreach ($notificationsIterator as $notif) {
          $DB->insertOrDie("glpi_notifications", [
-               'name'                     => addslashes($notif['name']) . " Answer",
+               'name'                     => $notif['name'] . " Answer",
                'entities_id'              => $notif['entities_id'],
                'itemtype'                 => "Ticket",
                'event'                    => "validation_answer",
                'mode'                     => $notif['mode'],
                'notificationtemplates_id' => $notif['notificationtemplates_id'],
-               'comment'                  => addslashes($notif['comment']),
+               'comment'                  => $notif['comment'],
                'is_recursive'             => $notif['is_recursive'],
                'is_active'                => $notif['is_active'],
                'date_mod'                 => new \QueryExpression("NOW()")
             ],
             "0.84 insert validation_answer notification"
          );
-         $newID  = $DB->insert_id();
+         $newID  = $DB->insertId();
          $targetsIterator = $DB->request([
             'FROM'   => "glpi_notificationtargets",
             'WHERE'  => ['notifications_id' => $notif['id']]
@@ -507,20 +507,20 @@ function update0831to084() {
          ]);
          foreach ($notificationsIterator as $notif) {
             $DB->insertOrDie("glpi_notifications", [
-                  'name'                     => addslashes($notif['name']) . " Periodicity",
+                  'name'                     => $notif['name'] . " Periodicity",
                   'entities_id'              => $notif['entities_id'],
                   'itemtype'                 => "Contract",
                   'event'                    => $to,
                   'mode'                     => $notif['mode'],
                   'notificationtemplates_id' => $notif['notificationtemplates_id'],
-                  'comment'                  => addslashes($notif['comment']),
+                  'comment'                  => $notif['comment'],
                   'is_recursive'             => $notif['is_recursive'],
                   'is_active'                => $notif['is_active'],
                   'date_mod'                 => new \QueryExpression("NOW()")
                ],
                "0.84 insert contract ".$to." notification"
             );
-            $newID  = $DB->insert_id();
+            $newID  = $DB->insertId();
             $targetsIterator = $DB->request([
                'FROM'   => "glpi_notificationtargets",
                'WHERE'  => ['notifications_id' => $notif['id']]
@@ -799,7 +799,7 @@ function update0831to084() {
          ],
          "0.84 add planning recall notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $contentText = "##recall.action##: ##recall.item.name##
 
@@ -839,7 +839,7 @@ function update0831to084() {
          ],
          "0.84 add planning recall notification"
       );
-      $notifid = $DB->insert_id();
+      $notifid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtargets", [
             'id'                 => null,
@@ -1063,8 +1063,8 @@ function update0831to084() {
             foreach ($datas as $name => $value) {
                $DB->insertOrDie("glpi_blacklists", [
                      'type'   => $type,
-                     'name'   => addslashes($name),
-                     'value'  => addslashes($value),
+                     'name'   => $name,
+                     'value'  => $value,
                   ],
                   "0.84 insert datas to glpi_blacklists"
                );
@@ -1291,7 +1291,7 @@ function update0831to084() {
                ],
                "0.83 add problem $type notification"
             );
-            $notifid = $DB->insert_id();
+            $notifid = $DB->insertId();
 
             foreach ($targets as $target) {
                 $DB->insertOrDie("glpi_notificationtargets", [
@@ -2257,7 +2257,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   'WHERE'  => [
                      new \QueryExpression(
                         "INET_NTOA(INET_ATON(". DBmysql::quoteName("ip") . ")&INET_ATON(".
-                        DBmysql::quoteName("netmask") . ")) = " . DBmysql::quoteValue($address)
+                        DBmysql::quoteName("netmask") . ")) = " . $DB->quoteValue($address)
                      ),
                      'netmask'      => $netmask,
                      'gateway'      => $gateway,
@@ -2283,7 +2283,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                      new \QueryExpression(
                         "INET_NTOA(INET_ATON(". DBmysql::quoteName("ip") . ")&INET_ATON(".
                         DBmysql::quoteName("netmask") . ")) = " .
-                        DBmysql::quoteValue($entry['address'])
+                        $DB->quoteValue($entry['address'])
                      ),
                      'netmask'      => $netmask,
                      'gateway'      => $gateway,
@@ -2719,7 +2719,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             'WHERE'  => [
                new \QueryExpression(
                   "(". DBmysql::quoteName("glpi_ipaddresses.binary_3") . "& " .
-                  DBmysql::quoteValue($netmask) . ") AS " . DBmysql::quoteName($address)
+                  $DB->quoteValue($netmask) . ") AS " . DBmysql::quoteName($address)
                ),
                'glpi_ipaddresses.version' => 4
             ],

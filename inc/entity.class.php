@@ -2010,7 +2010,7 @@ class Entity extends CommonTreeDropdown {
     * @since 0.84 (before in entitydata.class)
     *
     * @param $field
-    * @param $value must be addslashes
+    * @param $value
    **/
    private static function getEntityIDByField($field, $value) {
       global $DB;

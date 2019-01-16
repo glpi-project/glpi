@@ -881,7 +881,7 @@ class RuleCollection extends CommonDBTM {
       unset($rulecollection->fields['id']);
 
       //add new duplicate
-      $input = toolbox::addslashes_deep($rulecollection->fields);
+      $input = $rulecollection->fields;
       $newID = $rulecollection->add($input);
       $rule  = $rulecollection->getRuleClass();
       if (!$newID) {
@@ -890,7 +890,6 @@ class RuleCollection extends CommonDBTM {
       //find and duplicate actions
       $ruleaction = new RuleAction(get_class($rule));
       $actions    = $ruleaction->find(['rules_id' => $ID]);
-      $actions    = toolbox::addslashes_deep($actions);
       foreach ($actions as $action) {
          $action['rules_id'] = $newID;
          unset($action['id']);
@@ -901,8 +900,7 @@ class RuleCollection extends CommonDBTM {
 
       //find and duplicate criterias
       $rulecritera = new RuleCriteria(get_class($rule));
-      $criteria   = $rulecritera->find(['rules_id' => $ID]);
-      $criteria = toolbox::addslashes_deep($criteria);
+      $criteria    = $rulecritera->find(['rules_id' => $ID]);
       foreach ($criteria as $criterion) {
          $criterion['rules_id'] = $newID;
          unset($criterion['id']);
@@ -1137,7 +1135,7 @@ class RuleCollection extends CommonDBTM {
                if (self::isCriteraADropdown($available_criteria,
                                             $criteria['condition'], $crit)) {
                   //escape pattern
-                  $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
+                  $criteria['pattern'] = Html::entity_decode_deep($criteria['pattern']);
                   $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
@@ -1178,7 +1176,7 @@ class RuleCollection extends CommonDBTM {
                   }
 
                   //escape value
-                  $action['value'] = $DB->escape(Html::entity_decode_deep($action['value']));
+                  $action['value'] = Html::entity_decode_deep($action['value']);
                   $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                   $item     = new $itemtype();
                   if ($item instanceof CommonTreeDropdown) {
@@ -1378,7 +1376,7 @@ class RuleCollection extends CommonDBTM {
 
          //Find a rule by it's uuid
          $found    = $item->find(['uuid' => $current_rule['uuid']]);
-         $params   = Toolbox::addslashes_deep($current_rule);
+         $params   = $current_rule;
          unset($params['rulecriteria']);
          unset($params['ruleaction']);
 
@@ -1436,7 +1434,6 @@ class RuleCollection extends CommonDBTM {
                   if (is_array($criteria['pattern'])) {
                      $criteria['pattern'] = null;
                   }
-                  $criteria = Toolbox::addslashes_deep($criteria);
                   $ruleCriteria->add($criteria);
                }
             }
@@ -1450,7 +1447,6 @@ class RuleCollection extends CommonDBTM {
                   if (is_array($action['value'])) {
                      $action['value'] = null;
                   }
-                  $action = Toolbox::addslashes_deep($action);
                   $ruleAction->add($action);
                }
             }
@@ -1473,7 +1469,7 @@ class RuleCollection extends CommonDBTM {
     *                            - condition : specific condition to limit rule list
     *                            - only_criteria : only react on specific criteria
     *
-    * @return the output array updated by actions (addslashes datas)
+    * @return the output array updated by actions
    **/
    function processAllRules($input = [], $output = [], $params = [], $options = []) {
 
@@ -1504,7 +1500,7 @@ class RuleCollection extends CommonDBTM {
                if ($output["_rule_process"] && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);
                   $output["_ruleid"] = $rule->fields["id"];
-                  return Toolbox::addslashes_deep($output);
+                  return $output;
                }
             }
 
@@ -1515,7 +1511,7 @@ class RuleCollection extends CommonDBTM {
          }
       }
 
-      return Toolbox::addslashes_deep($output);
+      return $output;
    }
 
 
