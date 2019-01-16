@@ -83,7 +83,7 @@ class DBmysql extends \GLPITestCase {
    public function testBuildUpdate() {
       global $DB;
 
-      $expected = "UPDATE `glpi_tickets` SET `date_mod` = '2019-01-01 12:00:00', `users_id_lastupdater` = '2' WHERE `id` = '1'";
+      $expected = "UPDATE `glpi_tickets` SET `date_mod` = '2019-01-01 12:00:00', `users_id` = '2' WHERE `id` = '1'";
       $built = $DB->buildUpdate('glpi_tickets', [
          'date_mod'  => '2019-01-01 12:00:00',
          'users_id'  => 2
@@ -100,13 +100,13 @@ class DBmysql extends \GLPITestCase {
          'LEFT JOIN' => [
             'glpi_locations' => [
                'ON' => [
-               'glpi_tickets'    => 'locations_id',
-               'glpi_locations'  => 'id'
+                  'glpi_tickets'    => 'locations_id',
+                  'glpi_locations'  => 'id'
                ]
             ], 'glpi_computertypes' => [
                'ON' => [
-               'glpi_tickets'    => 'computertypes_id',
-               'glpi_computertypes'  => 'id'
+                  'glpi_tickets'    => 'computertypes_id',
+                  'glpi_computertypes'  => 'id'
                ]
             ]
          ]
@@ -126,18 +126,18 @@ class DBmysql extends \GLPITestCase {
       $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
       $built = $DB->buildDelete('glpi_computers', [
             'glpi_locations.name' => 'test',
-            'glpi_computertypes.name' => 'test2'
+            'glpi_computertypes.name' => 'laptop'
          ], [
          'LEFT JOIN' => [
             'glpi_locations' => [
                'ON' => [
-               'glpi_tickets'    => 'locations_id',
-               'glpi_locations'  => 'id'
+                  'glpi_computers'    => 'locations_id',
+                  'glpi_locations'  => 'id'
                ]
             ], 'glpi_computertypes' => [
                'ON' => [
-               'glpi_tickets'    => 'computertypes_id',
-               'glpi_computertypes'  => 'id'
+                  'glpi_computers'    => 'computertypes_id',
+                  'glpi_computertypes'  => 'id'
                ]
             ]
          ]
