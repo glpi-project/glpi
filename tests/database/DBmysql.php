@@ -100,12 +100,12 @@ class DBmysql extends \GLPITestCase {
          'LEFT JOIN' => [
             'glpi_locations' => [
                'ON' => [
-                  'glpi_tickets'    => 'locations_id',
+                  'glpi_computers'    => 'locations_id',
                   'glpi_locations'  => 'id'
                ]
             ], 'glpi_computertypes' => [
                'ON' => [
-                  'glpi_tickets'    => 'computertypes_id',
+                  'glpi_computers'    => 'computertypes_id',
                   'glpi_computertypes'  => 'id'
                ]
             ]
