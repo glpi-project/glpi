@@ -586,7 +586,7 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @return string
     */
-   public function analyzeJoins($joinarray) {
+   public function analyzeJoins(array $joinarray) {
       $query = '';
       foreach ($joinarray as $jointype => $jointables) {
          if (!in_array($jointype, ['JOIN', 'LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'])) {

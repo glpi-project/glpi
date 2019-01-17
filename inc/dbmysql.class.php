@@ -866,9 +866,10 @@ class DBmysql {
     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
     * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return string
     */
-   public function buildUpdate($table, $params, $clauses, $joins = []) {
+   public function buildUpdate($table, $params, $clauses, array $joins = []) {
       //when no explicit "WHERE", we only have a WHEre clause.
       if (!isset($clauses['WHERE'])) {
          $clauses  = ['WHERE' => $clauses];
@@ -927,9 +928,10 @@ class DBmysql {
     * @param array  $where  WHERE clause
     * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   public function update($table, $params, $where, $joins = []) {
+   public function update($table, $params, $where, array $joins = []) {
       $query = $this->buildUpdate($table, $params, $where, $joins);
       $result = $this->query($query);
       return $result;
@@ -947,9 +949,10 @@ class DBmysql {
     * @param string $message Explanation of query (default '')
     * @param array  $joins   JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   function updateOrDie($table, $params, $where, $message = '', $joins = []) {
+   function updateOrDie($table, $params, $where, $message = '', array $joins = []) {
       $update = $this->buildUpdate($table, $params, $where, $joins);
       $res = $this->query($update);
       if (!$res) {
@@ -1003,10 +1006,12 @@ class DBmysql {
     * @param string $table  Table name
     * @param array  $params Query parameters ([field name => field value)
     * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
+    * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return string
     */
-   public function buildDelete($table, $where, $joins = []) {
+   public function buildDelete($table, $where, array $joins = []) {
 
       if (!count($where)) {
          throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
@@ -1030,9 +1035,10 @@ class DBmysql {
     * @param array  $where  WHERE clause
     * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   public function delete($table, $where, $joins = []) {
+   public function delete($table, $where, array $joins = []) {
       $query = $this->buildDelete($table, $where, $joins);
       $result = $this->query($query);
       return $result;
@@ -1049,9 +1055,10 @@ class DBmysql {
     * @param string $message Explanation of query (default '')
     * @param array  $joins   JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   function deleteOrDie($table, $where, $message = '', $joins = []) {
+   function deleteOrDie($table, $where, $message = '', array $joins = []) {
       $update = $this->buildDelete($table, $where, $joins);
       $res = $this->query($update);
       if (!$res) {
