@@ -55,14 +55,14 @@ function header_html($etape) {
    echo "<title>Setup GLPI</title>";
 
     // LIBS
-   echo Html::script("lib/jquery/js/jquery.js");
-   echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
-   echo Html::script("lib/jqueryplugins/select2/js/select2.js");
+   echo Html::script("public/lib/jquery/jquery.js");
+   echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
+   echo Html::script("public/lib/select2/js/select2.full.js");
    echo Html::script("js/common.js");
 
     // CSS
-   echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
-   echo Html::css("lib/jqueryplugins/select2/css/select2.css");
+   echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
+   echo Html::css("public/lib/select2/css/select2.css");
    echo Html::css("css/style_install.css");
    echo "</head>";
    echo "<body>";
