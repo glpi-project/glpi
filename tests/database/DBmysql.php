@@ -79,4 +79,69 @@ class DBmysql extends \GLPITestCase {
          $this->array($update_diff)->isEmpty("Index missing in empty for $table: " . implode(', ', $update_diff));
       }
    }
+
+   public function testBuildUpdate() {
+      global $DB;
+
+      $expected = "UPDATE `glpi_tickets` SET `date_mod` = '2019-01-01 12:00:00', `users_id` = '2' WHERE `id` = '1'";
+      $built = $DB->buildUpdate('glpi_tickets', [
+         'date_mod'  => '2019-01-01 12:00:00',
+         'users_id'  => 2
+      ], ['id' => 1]);
+      $this->string($built)->isIdenticalTo($expected);
+
+      $expected = "UPDATE `glpi_computers` SET `name` = '_join_computer1' WHERE `glpi_locations`.`name` = 'test' AND `glpi_computertypes`.`name` = 'laptop'";
+      $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
+      $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
+      $built = $DB->buildUpdate('glpi_computers', ['name' => '_join_computer1'], [
+         'glpi_locations.name' => 'test',
+         'glpi_computertypes.name' => 'laptop'
+      ], [
+         'LEFT JOIN' => [
+            'glpi_locations' => [
+               'ON' => [
+                  'glpi_computers'    => 'locations_id',
+                  'glpi_locations'  => 'id'
+               ]
+            ], 'glpi_computertypes' => [
+               'ON' => [
+                  'glpi_computers'    => 'computertypes_id',
+                  'glpi_computertypes'  => 'id'
+               ]
+            ]
+         ]
+      ]);
+      $this->string($built)->isIdenticalTo($expected);
+   }
+
+   public function testBuildDelete() {
+      global $DB;
+
+      $expected = "DELETE FROM `glpi_tickets` WHERE `id` = '1'";
+      $built = $DB->buildDelete('glpi_tickets', ['id' => 1]);
+      $this->string($built)->isIdenticalTo($expected);
+
+      $expected = "DELETE FROM `glpi_computers` WHERE `glpi_locations`.`name` = 'test' AND `glpi_computertypes`.`name` = 'laptop'";
+      $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
+      $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
+      $built = $DB->buildDelete('glpi_computers', [
+         'glpi_locations.name' => 'test',
+         'glpi_computertypes.name' => 'laptop'
+      ], [
+         'LEFT JOIN' => [
+            'glpi_locations' => [
+               'ON' => [
+                  'glpi_computers'    => 'locations_id',
+                  'glpi_locations'  => 'id'
+               ]
+            ], 'glpi_computertypes' => [
+               'ON' => [
+                  'glpi_computers'    => 'computertypes_id',
+                  'glpi_computertypes'  => 'id'
+               ]
+            ]
+         ]
+      ]);
+      $this->string($built)->isIdenticalTo($expected);
+   }
 }

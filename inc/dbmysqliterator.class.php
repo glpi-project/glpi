@@ -157,7 +157,7 @@ class DBmysqlIterator implements Iterator, Countable {
          $start    = 0;
          $where    = '';
          $count    = '';
-         $join     = '';
+         $join     = [];
          $groupby  = '';
          $having   = '';
          if (is_array($crit) && count($crit)) {
@@ -219,43 +219,11 @@ class DBmysqlIterator implements Iterator, Countable {
                      unset($crit[$key]);
                      break;
 
+                  case 'JOIN' :
                   case 'LEFT JOIN' :
                   case 'RIGHT JOIN' :
                   case 'INNER JOIN' :
-                     if (is_array($val)) {
-                        $jointype = null;
-                        switch ($key) {
-                           case 'JOIN':
-                           case 'LEFT JOIN':
-                              $jointype = 'LEFT';
-                              break;
-                           case 'INNER JOIN':
-                              $jointype = 'INNER';
-                              break;
-                           case 'RIGHT JOIN':
-                              $jointype = 'RIGHT';
-                              break;
-                        }
-                        foreach ($val as $jointable => $joincrit) {
-                           if (isset($joincrit['TABLE'])) {
-                              //not a "simple" FKEY
-                              $jointable = $joincrit['TABLE'];
-                              unset($joincrit['TABLE']);
-                           } else if (is_numeric($jointable) || $jointable == 'FKEY' || $jointable == 'ON') {
-                              throw new \RuntimeException('BAD JOIN');
-                           }
-
-                           if ($jointable instanceof \QuerySubquery) {
-                              $jointable = $jointable->getQuery();
-                           } else {
-                              $jointable = DBmysql::quoteName($jointable);
-                           }
-
-                           $join .= " $jointype JOIN $jointable ON (" . $this->analyseCrit($joincrit) . ")";
-                        }
-                     } else {
-                        trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
-                     }
+                     $join[$key] = $val;
                      unset($crit[$key]);
                      break;
                }
@@ -349,7 +317,9 @@ class DBmysqlIterator implements Iterator, Countable {
          }
 
          // JOIN
-         $this->sql .= $join;
+         if (!empty($join)) {
+            $this->sql .= $this->analyzeJoins($join);
+         }
 
          // WHERE criteria list
          if (!empty($crit)) {
@@ -657,6 +627,52 @@ class DBmysqlIterator implements Iterator, Countable {
          $crit_value = DBmysql::quoteValue($value);
       }
       return $crit_value;
+   }
+
+   /**
+    * Analyze an array of joins criteria
+    *
+    * @since 9.4.0
+    *
+    * @param array $joinarray Array of joins to analyze
+    *       [jointype => [table => criteria]]
+    *
+    * @return string
+    */
+   public function analyzeJoins(array $joinarray) {
+      $query = '';
+      foreach ($joinarray as $jointype => $jointables) {
+         if (!in_array($jointype, ['JOIN', 'LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'])) {
+            throw new \RuntimeException('BAD JOIN');
+         }
+
+         if ($jointype == 'JOIN') {
+            $jointype = 'LEFT JOIN';
+         }
+
+         if ($jointables != null && is_array($jointables)) {
+            foreach ($jointables as $jointablekey => $jointablecrit) {
+               if (isset($jointablecrit['TABLE'])) {
+                  //not a "simple" FKEY
+                  $jointablekey = $jointablecrit['TABLE'];
+                  unset($jointablecrit['TABLE']);
+               } else if (is_numeric($jointablekey) || $jointablekey == 'FKEY' || $jointablekey == 'ON') {
+                  throw new \RuntimeException('BAD JOIN');
+               }
+
+               if ($jointablekey instanceof \QuerySubquery) {
+                  $jointablekey = $jointablekey->getQuery();
+               } else {
+                  $jointablekey = DBmysql::quoteName($jointablekey);
+               }
+
+               $query .= " $jointype $jointablekey ON (" . $this->analyseCrit($jointablecrit) . ")";
+            }
+         } else {
+            trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
+         }
+      }
+      return $query;
    }
 
    /**

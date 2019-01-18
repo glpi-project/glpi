@@ -916,10 +916,12 @@ class DBmysql {
     * @param string $table   Table name
     * @param array  $params  Query parameters ([field name => field value)
     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
+    * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return string
     */
-   public function buildUpdate($table, $params, $clauses) {
+   public function buildUpdate($table, $params, $clauses, array $joins = []) {
       //when no explicit "WHERE", we only have a WHEre clause.
       if (!isset($clauses['WHERE'])) {
          $clauses  = ['WHERE' => $clauses];
@@ -952,6 +954,9 @@ class DBmysql {
       $it = new DBmysqlIterator($this);
       $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
 
+      //JOINS
+      $query .= $it->analyzeJoins($joins);
+
       // ORDER BY
       if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
          $query .= $it->handleOrderClause($clauses['ORDER']);
@@ -973,11 +978,13 @@ class DBmysql {
     * @param string $table  Table name
     * @param array  $params Query parameters ([:field name => field value)
     * @param array  $where  WHERE clause
+    * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   public function update($table, $params, $where) {
-      $query = $this->buildUpdate($table, $params, $where);
+   public function update($table, $params, $where, array $joins = []) {
+      $query = $this->buildUpdate($table, $params, $where, $joins);
       $result = $this->rawQuery($query);
       return $result;
    }
@@ -992,11 +999,13 @@ class DBmysql {
     * @param array  $params  Query parameters ([:field name => field value)
     * @param array  $where   WHERE clause
     * @param string $message Explanation of query (default '')
+    * @param array  $joins   JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   function updateOrDie($table, $params, $where, $message = '') {
-      $update = $this->buildUpdate($table, $params, $where);
+   function updateOrDie($table, $params, $where, $message = '', array $joins = []) {
+      $update = $this->buildUpdate($table, $params, $where, $joins);
       $res = $this->rawQuery($update);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
@@ -1049,10 +1058,12 @@ class DBmysql {
     * @param string $table  Table name
     * @param array  $params Query parameters ([field name => field value)
     * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
+    * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return string
     */
-   public function buildDelete($table, $where) {
+   public function buildDelete($table, $where, array $joins = []) {
 
       if (!count($where)) {
          throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
@@ -1062,6 +1073,7 @@ class DBmysql {
 
       $it = new DBmysqlIterator($this);
       $query .= " WHERE " . $it->analyseCrit($where);
+      $query .= $it->analyzeJoins($joins);
 
       return $query;
    }
@@ -1073,11 +1085,13 @@ class DBmysql {
     *
     * @param string $table  Table name
     * @param array  $where  WHERE clause
+    * @param array  $joins  JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   public function delete($table, $where) {
-      $query = $this->buildDelete($table, $where);
+   public function delete($table, $where, array $joins = []) {
+      $query = $this->buildDelete($table, $where, $joins);
       $result = $this->rawQuery($query);
       return $result;
    }
@@ -1091,11 +1105,13 @@ class DBmysql {
     * @param string $table   Table name
     * @param array  $where   WHERE clause
     * @param string $message Explanation of query (default '')
+    * @param array  $joins   JOINS criteria array
     *
+    * @since 9.4.0 $joins parameter added
     * @return mysqli_result|boolean Query result handler
     */
-   function deleteOrDie($table, $where, $message = '') {
-      $update = $this->buildDelete($table, $where);
+   function deleteOrDie($table, $where, $message = '', array $joins = []) {
+      $update = $this->buildDelete($table, $where, $joins);
       $res = $this->rawQuery($update);
       if (!$res) {
          //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message

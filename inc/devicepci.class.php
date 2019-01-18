@@ -94,7 +94,7 @@ class DevicePci extends CommonDevice {
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_items_devicepcis',
-               'joinparams'         => $items_device_joinparams
+               'joinparams'         => $main_joinparams
             ]
          ]
       ];

@@ -1429,7 +1429,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                       'cols'              => $cols,
                       'rows'              => $rows]);
 
-      echo "</td>";
+      echo "</td><td colspan='2'>";
       echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
       echo "</td></tr>\n";
 
