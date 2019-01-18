@@ -35,6 +35,7 @@ $(function() {
 
    var showFilters = function (event) {
       event.preventDefault();
+      /* global reloadTab */
       reloadTab('filters[active]=1');
    };
 
@@ -43,23 +44,24 @@ $(function() {
       // Without this workaround, orphan dropdowns remains in page when reloading tab.
       $('.log_history_filter_row .select2-hidden-accessible').on('select2:unselecting', function(ev) {
          if (ev.params.args.originalEvent) {
-             ev.params.args.originalEvent.stopPropagation();
+            ev.params.args.originalEvent.stopPropagation();
          }
       });
 
-      $('.log_history_filter_row [name^="filters\["]').on('input', handleFilterChange);
-      $('.log_history_filter_row select[name^="filters\["]').on('change', handleFilterChange);
+      $('.log_history_filter_row [name^="filters\\["]').on('input', handleFilterChange);
+      $('.log_history_filter_row select[name^="filters\\["]').on('change', handleFilterChange);
    };
 
-   var handleFilterChange = function (event) {
+   var handleFilterChange = function () {
       // Prevent dropdown to remain in page after tab has been reload.
       $('.log_history_filter_row .select2-hidden-accessible').select2('close');
 
-      reloadTab($('[name^="filters\["]').serialize());
+      /* global reloadTab */
+      reloadTab($('[name^="filters\\["]').serialize());
    };
 
-   $('.glpi_tabs').on('tabsload', function(event) {
-       bindShowFiltersBtn();
-       bindFilterChange();
+   $('.glpi_tabs').on('tabsload', function() {
+      bindShowFiltersBtn();
+      bindFilterChange();
    });
 });

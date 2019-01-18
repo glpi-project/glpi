@@ -35,8 +35,9 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-echo Html::css("lib/prism/prism.css");
-echo Html::script("lib/prism/prism.js");
+echo Html::css("public/lib/prismjs/themes/prism-coy.css");
+echo Html::script("public/lib/prismjs/components/prism-core.js");
+echo Html::script("public/lib/prismjs/components/prism-json.js");
 
 $infos = Telemetry::getTelemetryInfos();
 echo "<p>" . __("We only collect the following data : plugins usage, performance and responsiveness statistics about user interface features, memory, and hardware configuration.") . "</p>";

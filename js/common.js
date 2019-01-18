@@ -33,7 +33,7 @@ var timeoutglobalvar;
 if (typeof(String.prototype.normalize) !== 'function') {
    $.ajax({
       type: "GET",
-      url: CFG_GLPI.root_doc + "/lib/unorm/unorm.js",
+      url: CFG_GLPI.root_doc + "/public/lib/unorm/unorm.js",
       dataType: "script",
       cache: true
    });
@@ -215,8 +215,8 @@ function checkAsCheckboxes(reference_id, container_id) {
  * Usage: $form.find('input[type="checkbox"]').shiftSelectable();
  */
 $.fn.shiftSelectable = function() {
-   var lastChecked,
-       $boxes = this;
+   var lastChecked;
+   var $boxes = this;
 
    // prevent html selection
    document.onkeydown = function(e) {
@@ -242,11 +242,11 @@ $.fn.shiftSelectable = function() {
 
       if (evt.shiftKey) {
          evt.preventDefault();
-         var start = $boxes.index(selected_checkbox),
-             end = $boxes.index(lastChecked);
+         var start = $boxes.index(selected_checkbox);
+         var end = $boxes.index(lastChecked);
          $boxes.slice(Math.min(start, end), Math.max(start, end) + 1)
-               .prop('checked', $(lastChecked).is(':checked'))
-               .trigger('change');
+            .prop('checked', $(lastChecked).is(':checked'))
+            .trigger('change');
       }
 
       lastChecked = selected_checkbox;
@@ -267,8 +267,8 @@ function showHideDiv(id, img_name, img_src_close, img_src_open) {
 
    if (img_name !== '') {
       var _awesome = img_src_close.match(/^fa-/);
-      var _deco,
-          _img;
+      var _deco;
+      var _img;
       if (!_awesome) {
          _img = $('img[name=' + img_name + ']');
          if (_elt.is(':visible')) {
@@ -383,9 +383,9 @@ function submitGetLink(target, fields) {
       myInput.setAttribute("value", fields[name]);
       myForm.appendChild(myInput);
    }
-    document.body.appendChild(myForm);
-    myForm.submit();
-    document.body.removeChild(myForm);
+   document.body.appendChild(myForm);
+   myForm.submit();
+   document.body.removeChild(myForm);
 }
 
 
@@ -434,13 +434,13 @@ function massiveUpdateCheckbox(criterion, reference) {
    if (typeof(value) == 'undefined') {
       return false;
    }
-    $(criterion).each(function() {
+   $(criterion).each(function() {
       if (typeof(reference) == 'undefined') {
          value = !$(this).prop('checked');
       }
-        $(this).prop('checked', value);
-    });
-    return true;
+      $(this).prop('checked', value);
+   });
+   return true;
 }
 
 /**
@@ -829,9 +829,11 @@ var initMap = function(parent_elt, map_id, height) {
 
    //add map, set a default arbitrary location
    parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
+   /* global L */
    var map = L.map(map_id, {fullscreenControl: true}).setView([43.6112422, 3.8767337], 6);
 
    //setup tiles and © messages
+   /* global L */
    L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors'
    }).addTo(map);
@@ -846,7 +848,7 @@ var showMapForLocation = function(elt) {
       return;
    }
 
-   _dialog = $('<div id="location_map_dialog"/>');
+   var _dialog = $('<div id="location_map_dialog"/>');
    _dialog.appendTo('body').dialog({
       close: function() {
          $(this).dialog('destroy').remove();
@@ -875,9 +877,11 @@ var showMapForLocation = function(elt) {
          });
       } else {
          var _markers = [];
-         _marker = L.marker([data.lat, data.lng]);
+         /* global L */
+         var _marker = L.marker([data.lat, data.lng]);
          _markers.push(_marker);
 
+         /* global L */
          var _group = L.featureGroup(_markers).addTo(map_elt);
          map_elt.fitBounds(
             _group.getBounds(), {
@@ -939,7 +943,7 @@ var templateResult = function(result) {
       if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
          // escape text, if it contains chevrons (can already be escaped prior to this point :/)
          text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
-      };
+      }
 
       if (!result.id) {
          // If result has no id, then it is used as an optgroup and is not used for matches
@@ -1006,4 +1010,4 @@ var getTextWithoutDiacriticalMarks = function (text) {
    // The U+0300 -> U+036F range corresponds to diacritical chars.
    // They are removed to keep only chars without their diacritical mark.
    return text.replace(/[\u0300-\u036f]/g, '');
-}
+};
