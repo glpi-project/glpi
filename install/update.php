@@ -523,11 +523,11 @@ echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
 echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
 echo "<title>Setup GLPI</title>";
 //JS
-echo Html::script("lib/jquery/js/jquery.js");
-echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
+echo Html::script("public/lib/jquery/jquery.js");
+echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
 // CSS
 echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen' >";
-echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
+echo Html::css('public/lib/jquery-ui-dist/jquery-ui.css');
 echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";

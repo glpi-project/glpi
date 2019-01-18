@@ -2272,8 +2272,13 @@ abstract class API extends CommonGLPI {
     */
    public function inlineDocumentation($file) {
       self::header(true, __("API Documentation"));
-      echo Html::css("lib/prism/prism.css");
-      echo Html::script("lib/prism/prism.js");
+      echo Html::css("public/lib/prismjs/themes/prism-coy.css");
+      echo Html::script("public/lib/prismjs/components/prism-core.js");
+      echo Html::script("public/lib/prismjs/components/prism-apacheconf.js");
+      echo Html::script("public/lib/prismjs/components/prism-bash.js");
+      echo Html::script("public/lib/prismjs/components/prism-clike.js");
+      echo Html::script("public/lib/prismjs/components/prism-json.js");
+      echo Html::script("public/lib/prismjs/components/prism-nginx.js");
 
       echo "<div class='documentation'>";
       $documentation = file_get_contents(GLPI_ROOT.'/'.$file);

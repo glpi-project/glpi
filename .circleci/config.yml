@@ -28,6 +28,25 @@ shared: &shared
         key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}-{{ epoch }}
         paths:
           - ./vendor
+    - restore_cache:
+        keys:
+          - npm-cache-{{ .Environment.CIRCLE_JOB }}
+    - restore_cache:
+        keys:
+          - npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
+          - npm-install-{{ .Environment.CIRCLE_JOB }}
+    - run:
+        name: npm install
+        command: |
+          npm install
+    - save_cache:
+        key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
+        paths:
+          - /home/circleci/.npm/_cacache/
+    - save_cache:
+        key: npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
+        paths:
+          - ./node_modules
     - run:
         name: PHP Parallel Lint
         command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
@@ -36,7 +55,9 @@ shared: &shared
         command: vendor/bin/security-checker security:check
     - run:
         name: Coding standards
-        command: if [[ $(php --version|grep "7\.3") ]]; then vendor/bin/phpcs -d memory_limit=512M -p -n vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./; else echo "No CS for this version"; fi
+        command: |
+          if [[ $(php --version|grep "7\.3") ]]; then vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/node_modules/,/plugins/,/public/index.php,/src/,/tests/config/,/vendor/ ./; else echo "No CS for this version"; fi
+          if [[ $(php --version|grep "7\.3") ]]; then node_modules/.bin/eslint ./js && node_modules/.bin/eslint --env=node --parser-options=ecmaVersion:6 --rule 'indent: ["error", 4]' ./webpack.config.js && echo "ESLint found no errors"; else echo "No CS for this version"; fi
     - run:
         name: Update DB
         command: |

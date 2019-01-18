@@ -57,12 +57,13 @@ var initRack = function() {
          $('#viewgraph').toggleClass('clear_text');
       })
       .on("click", ".cell_add", function() {
+         /* global grid_rack_units */
          var index = grid_rack_units - $(this).index();
-         var side = ($(this).parents('.rack_side').hasClass('rack_front')
-                        ? 0  // front
-                        : 1); // rear
-         var current_grid = $(this).parents('.grid-stack').data('gridstack');
+         var side = $(this).parents('.rack_side').hasClass('rack_front')
+            ? 0  // front
+            : 1; // rear
 
+         /* global grid_link_url grid_rack_id */
          $.ajax({
             url : grid_link_url,
             data: {
@@ -103,8 +104,7 @@ var initRack = function() {
    });
 
    $('.grid-stack')
-      .on('dragstart', function(event, ui) {
-         var grid    = this;
+      .on('dragstart', function(event) {
          var element = $(event.target);
          var node    = element.data('_gridstack_node');
 
@@ -115,8 +115,7 @@ var initRack = function() {
          // disable qtip
          element.qtip('hide', true);
       })
-      .on('click', function(event, ui) {
-         var grid    = this;
+      .on('click', function(event) {
          var element = $(event.target);
          var el_url  = element.find('.itemrack_name').attr('href');
 
@@ -148,8 +147,10 @@ var initRack = function() {
       $('.indexes').append('<li>' + i + '</li>');
 
       // append cells for adding new items
-      $('.racks_add')
-         .append('<div class=\"cell_add\"><span class="tipcontent">'+grid_rack_add_tip+'</span></div>');
+      /* global grid_rack_add_tip */
+      $('.racks_add').append(
+         '<div class="cell_add"><span class="tipcontent">'+grid_rack_add_tip+'</span></div>'
+      );
    }
 
    // lock all item (prevent pushing down elements)
