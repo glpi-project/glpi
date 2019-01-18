@@ -28,6 +28,26 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+   border: 1px solid #FFF;
+   background-color: #e6e6e6;
+   color: #555555;
+}
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+   border: 1px solid #FFF;
+   background-color: #ffffff;
+   color: #212121;
+}
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+   color: #212121;
+}
+
 .ui-dialog { z-index: 1000 !important ;}
 .ui-widget-overlay.glpi_modal { z-index: 2000 !important ;}
 .glpi_modal { z-index: 5000 !important ;}

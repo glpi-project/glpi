@@ -893,7 +893,7 @@ $ curl -X GET \
 
       Ex:
 
-      ```javascript
+      ```json
       ...
       "criteria":
          [
@@ -945,7 +945,7 @@ $ curl -X GET \
 
       Ex:
 
-      ```javascript
+      ```json
       ...
       "metacriteria":
          [
@@ -986,7 +986,7 @@ $ curl -X GET \
 * **Returns**:
   * 200 (OK) with all rows data with this format:
 
-     ```javascript
+     ```json
         {
             "totalcount": ":numberofresults_without_pagination",
             "range": ":start-:end",
@@ -1220,7 +1220,7 @@ Uploading a file requires use of 'multipart/data' content_type. The input data m
 
 Examples usage (CURL):
 
-```shell
+```bash
 $ curl -X POST \
 -H 'Content-Type: multipart/form-data' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
@@ -1411,7 +1411,7 @@ We provide in root .htaccess of GLPI an example to enable API URL rewriting.
 
 You need to uncomment (removing #) theses lines:
 
-```apache
+```apacheconf
 #<IfModule mod_rewrite.c>
 #   RewriteEngine On
 #   RewriteCond %{REQUEST_FILENAME} !-f

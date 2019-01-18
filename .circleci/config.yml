@@ -35,7 +35,7 @@ shared: &shared
         name: Coding standards
         command: |
           if [[ $(php --version|grep "7\.3") ]]; then vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=PSR2 ./src && vendor/bin/phpcs -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git,/config,/files,/lib,/node_modules,/plugins,/src,/tests/config,/vendor ./; else echo "No CS for this version"; fi
-          if [[ $(php --version|grep "7\.3") ]]; then node_modules/.bin/eslint ./js && echo "ESLint found no errors"; else echo "No CS for this version"; fi
+          if [[ $(php --version|grep "7\.3") ]]; then node_modules/.bin/eslint ./js && node_modules/.bin/eslint --env=node --parser-options=ecmaVersion:6 --rule 'indent: ["error", 4]' ./webpack.config.js && echo "ESLint found no errors"; else echo "No CS for this version"; fi
     - run:
         name: Update DB
         command: |
