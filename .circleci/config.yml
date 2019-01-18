@@ -25,6 +25,12 @@ shared: &shared
         name: PHP Parallel Lint
         command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
     - run:
+        name: sensiolabs/security-checker
+        command: vendor/bin/security-checker security:check
+    - run:
+        name: Coding standards
+        command: if [[ $(php --version|grep "7\.3") ]]; then vendor/bin/phpcs -d memory_limit=512M -p -n vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./; else echo "No CS for this version"; fi
+    - run:
         name: Update DB
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
@@ -59,12 +65,7 @@ shared: &shared
 #        command: |
 #          ./tests/LDAP/ldap_run.sh
 #          composer testldap
-    - run:
-        name: Coding standards
-        command: if [[ $(php --version|grep "7\.3") ]]; then vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./; else echo "No CS for this version"; fi
-    - run:
-        name: sensiolabs/security-checker
-        command: vendor/bin/security-checker security:check
+
 jobs:
   "php5.6":
     <<: *shared
