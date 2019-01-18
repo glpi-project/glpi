@@ -322,10 +322,7 @@ class Transfer extends CommonDBTM {
             $itemtable = getTableForItemType($itemtype);
 
             // Clean DB / Search unexisting links and force disconnect
-            // TODO: can be done in one query when DB::delete() supports JOINs
-            $iterator = $DB->request([
-               'SELECT'    => 'glpi_computers_items.id',
-               'FROM'      => 'glpi_computers_items',
+            $DB->delete('glpi_computers_items', ["$itemtable.id" => null], [
                'LEFT JOIN' => [
                   $itemtable  => [
                      'ON' => [
@@ -337,20 +334,8 @@ class Transfer extends CommonDBTM {
                         ]
                      ]
                   ]
-               ],
-               'WHERE'     => [
-                  "$itemtable.id" => null
                ]
             ]);
-
-            if (count($iterator)) {
-               while ($data = $iterator->next()) {
-                  $conn = new Computer_Item();
-                  $conn->delete(['id'             => $data['id'],
-                                       '_no_history'    => true,
-                                       '_no_auto_action'=> true]);
-               }
-            }
 
             if (!($item = getItemForItemtype($itemtype))) {
                continue;
@@ -382,10 +367,7 @@ class Transfer extends CommonDBTM {
       // License / Software :  keep / delete + clean unused / keep unused
       if ($this->options['keep_software']) {
          // Clean DB
-         // TODO: can be done in one query when DB::delete() supports JOINs
-         $iterator = $DB->request([
-            'SELECT'    => 'glpi_computers_softwareversions.computers_id',
-            'FROM'      => 'glpi_computers_softwareversions',
+         $DB->delete('glpi_computers_softwareversions', ['glpi_computers.id'  => null], [
             'LEFT JOIN' => [
                'glpi_computers'  => [
                   'ON' => [
@@ -393,28 +375,11 @@ class Transfer extends CommonDBTM {
                      'glpi_computers'                    => 'id'
                   ]
                ]
-            ],
-            'WHERE'     => [
-               'glpi_computers.id'  => null
             ]
          ]);
 
-         if (count($iterator)) {
-            $computers = [];
-            while ($data = $iterator->next()) {
-               $computers[] = $data['computers_id'];
-            }
-            $DB->delete(
-               'glpi_computers_softwareversions',
-               ['computers_id' => $computers]
-            );
-         }
-
          // Clean DB
-         // TODO: can be done in one query when DB::delete() supports JOINs
-         $iterator = $DB->request([
-            'SELECT'    => 'glpi_computers_softwareversions.softwareversions_id',
-            'FROM'      => 'glpi_computers_softwareversions',
+         $DB->delete('glpi_computers_softwareversions', ['glpi_softwareversions.id'  => null], [
             'LEFT JOIN' => [
                'glpi_softwareversions'  => [
                   'ON' => [
@@ -422,25 +387,11 @@ class Transfer extends CommonDBTM {
                      'glpi_softwareversions'             => 'id'
                   ]
                ]
-            ],
-            'WHERE'     => [
-               'glpi_softwareversions.id' => null
             ]
          ]);
 
-         if (count($iterator)) {
-            $softwareversions = [];
-            while ($data = $iterator->next()) {
-               $softwareversions[] = $data['softwareversions_id'];
-            }
-            $DB->delete('glpi_computers_softwareversions', ['softwareversions_id' => $softwareversions]);
-         }
-
          // Clean DB
-         // TODO: can be done in one query when DB::delete() supports JOINs
-         $iterator = $DB->request([
-            'SELECT'    => 'glpi_softwareversions.id',
-            'FROM'      => 'glpi_softwareversions',
+         $DB->delete('glpi_softwareversions', ['glpi_softwares.id'  => null], [
             'LEFT JOIN' => [
                'glpi_softwares'  => [
                   'ON' => [
@@ -448,19 +399,8 @@ class Transfer extends CommonDBTM {
                      'glpi_softwares'        => 'id'
                   ]
                ]
-            ],
-            'WHERE'     => [
-               'glpi_softwares.id' => null
             ]
          ]);
-
-         if (count($iterator)) {
-            $softwareversions = [];
-            while ($data = $iterator) {
-               $softwareversions[] = $data['id'];
-            }
-            $DB->delete('glpi_softwareversions', ['id' => $softwareversions]);
-         }
 
          if (count($this->needtobe_transfer['Computer'])) {
             $iterator = $DB->request([
@@ -619,10 +559,7 @@ class Transfer extends CommonDBTM {
                $itemtable = getTableForItemType($itemtype);
 
                // Clean DB
-               // TODO: can be done in one query when DB::delete() supports JOINs
-               $iterator = $DB->request([
-                  'SELECT'    => 'glpi_contracts_items.id',
-                  'FROM'      => 'glpi_contracts_items',
+               $DB->delete('glpi_contracts_items', ["$itemtable.id"  => null], [
                   'LEFT JOIN' => [
                      $itemtable  => [
                         'ON' => [
@@ -634,23 +571,11 @@ class Transfer extends CommonDBTM {
                            ]
                         ]
                      ]
-                  ],
-                  'WHERE'     => [
-                     "$itemtable.id"   => null
                   ]
                ]);
 
-               if (count($iterator)) {
-                  while ($data = $iterator->next()) {
-                     $contracts_items[] = $data['id'];
-                  }
-               }
-
                // Clean DB
-               // TODO: can be done in one query when DB::delete() supports JOINs
-               $iterator = $DB->request([
-                  'SELECT'    => 'glpi_contracts_items.id',
-                  'FROM'      => 'glpi_contracts_items',
+               $DB->delete('glpi_contracts_items', ['glpi_contracts.id'  => null], [
                   'LEFT JOIN' => [
                      'glpi_contracts'  => [
                         'ON' => [
@@ -658,21 +583,8 @@ class Transfer extends CommonDBTM {
                            'glpi_contracts'        => 'id'
                         ]
                      ]
-                  ],
-                  'WHERE'     => [
-                     'glpi_contracts.id' => null
                   ]
                ]);
-
-               if (count($iterator)) {
-                  while ($data = $iterator->next()) {
-                     $contracts_items[] = $data['id'];
-                  }
-               }
-
-               if (count($contracts_items)) {
-                  $DB->delete('glpi_contracts_items', ['id' => $contracts_items]);
-               }
 
                if (count($this->needtobe_transfer[$itemtype])) {
                   $iterator = $DB->request([
@@ -712,10 +624,7 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_supplier']) {
          $contracts_suppliers = [];
          // Clean DB
-         // TODO: can be done in one query when DB::delete() supports JOINs
-         $iterator = $DB->request([
-            'SELECT'    => 'glpi_contracts_suppliers.id',
-            'FROM'      => 'glpi_contracts_suppliers',
+         $DB->delete('glpi_contracts_suppliers', ['glpi_contracts.id'  => null], [
             'LEFT JOIN' => [
                'glpi_contracts'  => [
                   'ON' => [
@@ -723,23 +632,11 @@ class Transfer extends CommonDBTM {
                      'glpi_contracts'           => 'id'
                   ]
                ]
-            ],
-            'WHERE'     => [
-               'glpi_contracts.id' => null
             ]
          ]);
 
-         if (count($iterator)) {
-            while ($data = $iterator->next()) {
-               $contracts_suppliers[] = $data['id'];
-            }
-         }
-
          // Clean DB
-         // TODO: can be done in one query when DB::delete() supports JOINs
-         $iterator = $DB->request([
-            'SELECT'    => 'glpi_contracts_suppliers.id',
-            'FROM'      => 'glpi_contracts_suppliers',
+         $DB->delete('glpi_contracts_suppliers', ['glpi_suppliers.id'  => null], [
             'LEFT JOIN' => [
                'glpi_suppliers'  => [
                   'ON' => [
@@ -747,21 +644,8 @@ class Transfer extends CommonDBTM {
                      'glpi_suppliers'           => 'id'
                   ]
                ]
-            ],
-            'WHERE'     => [
-               'glpi_suppliers.id' => null
             ]
          ]);
-
-         if (count($iterator)) {
-            while ($data = $iterator->next()) {
-               $contracts_suppliers[] = $data['id'];
-            }
-         }
-
-         if (count($contracts_suppliers)) {
-            $DB->delete('glpi_contracts_suppliers', ['id' => $contracts_suppliers]);
-         }
 
          if (isset($this->needtobe_transfer['Contract']) && count($this->needtobe_transfer['Contract'])) {
             // Supplier Contract
@@ -920,10 +804,7 @@ class Transfer extends CommonDBTM {
                   $itemtable = getTableForItemType($itemtype);
 
                   // Clean DB
-                  // TODO: can be done in one query when DB::delete() supports JOINs
-                  $iterator = $DB->request([
-                     'SELECT'    => 'glpi_infocoms.id',
-                     'FROM'      => 'glpi_infocoms',
+                  $DB->delete('glpi_infocoms', ["$itemtable.id"  => null], [
                      'LEFT JOIN' => [
                         $itemtable => [
                            'ON' => [
@@ -935,19 +816,8 @@ class Transfer extends CommonDBTM {
                               ]
                            ]
                         ]
-                     ],
-                     'WHERE'     => [
-                        "$itemtable.id" => null
                      ]
                   ]);
-
-                  if (count($iterator)) {
-                     $infocoms = [];
-                     while ($data = $iterator->next()) {
-                        $infocoms[] = $data['id'];
-                     }
-                     $DB->delete('glpi_infocoms', ['id' => $infocoms]);
-                  }
 
                   $iterator = $DB->request([
                      'SELECT'    => [
@@ -989,10 +859,7 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_contact']) {
          $contact_suppliers = [];
          // Clean DB
-         // TODO: can be done in one query when DB::delete() supports JOINs
-         $iterator = $DB->request([
-            'SELECT'    => 'glpi_contacts_suppliers.id',
-            'FROM'      => 'glpi_contacts_suppliers',
+         $DB->delete('glpi_contacts_suppliers', ['glpi_contacts.id'  => null], [
             'LEFT JOIN' => [
                'glpi_contacts' => [
                   'ON' => [
@@ -1000,23 +867,11 @@ class Transfer extends CommonDBTM {
                      'glpi_contacts'            => 'id'
                   ]
                ]
-            ],
-            'WHERE'     => [
-               'glpi_contacts.id' => null
             ]
          ]);
 
-         if (count($iterator)) {
-            while ($data = $iterator->next()) {
-               $contact_suppliers[] = $data['id'];
-            }
-         }
-
          // Clean DB
-         // TODO: can be done in one query when DB::delete() supports JOINs
-         $iterator = $DB->request([
-            'SELECT'    => 'glpi_contacts_suppliers.id',
-            'FROM'      => 'glpi_contacts_suppliers',
+         $DB->delete('glpi_contacts_suppliers', ['glpi_suppliers.id'  => null], [
             'LEFT JOIN' => [
                'glpi_suppliers' => [
                   'ON' => [
@@ -1024,21 +879,8 @@ class Transfer extends CommonDBTM {
                      'glpi_suppliers'           => 'id'
                   ]
                ]
-            ],
-            'WHERE'     => [
-               'glpi_suppliers.id' => null
             ]
          ]);
-
-         if (count($iterator)) {
-            while ($data = $iterator->next()) {
-               $contact_suppliers[] = $data['id'];
-            }
-         }
-
-         if (count($contact_suppliers)) {
-            $DB->delete('glpi_contacts_suppliers', ['id' => $contact_suppliers]);
-         }
 
          if (isset($this->needtobe_transfer['Supplier']) && count($this->needtobe_transfer['Supplier'])) {
             // Supplier Contact
@@ -1079,10 +921,7 @@ class Transfer extends CommonDBTM {
             if (isset($this->needtobe_transfer[$itemtype]) && count($this->needtobe_transfer[$itemtype])) {
                $itemtable = getTableForItemType($itemtype);
                // Clean DB
-               // TODO: can be done in one query when DB::delete() supports JOINs
-               $iterator = $DB->request([
-                  'SELECT'    => 'glpi_documents_items.id',
-                  'FROM'      => 'glpi_documents_items',
+               $DB->delete('glpi_documents_items', ["$itemtable.id"  => null], [
                   'LEFT JOIN' => [
                      $itemtable => [
                         'ON' => [
@@ -1094,19 +933,8 @@ class Transfer extends CommonDBTM {
                            ]
                         ]
                      ]
-                  ],
-                  'WHERE'     => [
-                     "$itemtable.id" => null
                   ]
                ]);
-
-               if (count($iterator)) {
-                  $documents_items = [];
-                  while ($data = $iterator->next()) {
-                     $documents_items[] = $data['id'];
-                  }
-                  $DB->delete('glpi_documents_items', ['id' => $documents_items]);
-               }
 
                $iterator = $DB->request([
                   'SELECT'    => [
