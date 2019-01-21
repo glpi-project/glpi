@@ -21,6 +21,7 @@
         "ext-mysqli": "*",
         "ext-zlib": "*",
         "elvanto/litemoji": "^1.4 || ^2.0",
+        "fossar/htmlawed": "1.2.4.1",
         "iamcal/lib_autolink": "^1.7",
         "michelf/php-markdown": "^1.6",
         "monolog/monolog": "^1.23",
