@@ -1274,7 +1274,10 @@ class Entity extends CommonTreeDropdown {
             // config inherit from parent
             $entities[$entitydatas['entity']] = $entities[$entitydatas['parent']];
 
-         } else if ($entitydatas[$field] > 0) {
+         // check positive value or 0 for autoclose_delay immediately
+         } else if (($entitydatas[$field] > 0)
+                    || (($field == 'autoclose_delay')
+                        && ($entitydatas[$field] == 0))) {
 
             // config found in entity
             $entities[$entitydatas['entity']] = $entitydatas[$field];
