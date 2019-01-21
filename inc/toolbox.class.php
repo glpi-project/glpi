@@ -334,7 +334,6 @@ class Toolbox {
     * @see clean_cross_side_scripting_deep()
    **/
    static function unclean_html_cross_side_scripting_deep($value) {
-      include_once(GLPI_HTMLAWED);
 
       $in  = ['<', '>'];
       $out = ['&lt;', '&gt;'];

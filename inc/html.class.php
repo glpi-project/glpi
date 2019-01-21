@@ -81,7 +81,6 @@ class Html {
       // Neutralize not well formatted html tags
       $value = preg_replace("/(<)([^>]*<)/", "&lt;$2", $value);
 
-      include_once(GLPI_HTMLAWED);
       $value = htmLawed(
          $value,
          [

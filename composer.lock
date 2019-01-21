@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7cb3ac76ea088e6faef924ed0e9a9b53",
+    "content-hash": "31679efae291081cfa92ff370173b49e",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -196,6 +196,55 @@
                 "php-emoji"
             ],
             "time": "2018-09-28T05:23:38+00:00"
+        },
+        {
+            "name": "fossar/htmlawed",
+            "version": "1.2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fossar/HTMLawed.git",
+                "reference": "ef6373a26595e29686bb8e3f46ddc2041b97b0fa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fossar/HTMLawed/zipball/ef6373a26595e29686bb8e3f46ddc2041b97b0fa",
+                "reference": "ef6373a26595e29686bb8e3f46ddc2041b97b0fa",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">4.4.0"
+            },
+            "replace": {
+                "htmlawed/htmlawed": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "htmLawed.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+",
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Santosh Patnaik",
+                    "homepage": "http://www.bioinformatics.org/people/index.php?user_hash=558b661f92d0ff7b",
+                    "role": "Developer"
+                }
+            ],
+            "description": "htmLawed - Process text with HTML markup to make it more compliant with HTML standards and administrative policies",
+            "homepage": "http://www.bioinformatics.org/phplabware/internal_utilities/htmLawed/",
+            "keywords": [
+                "HTMLtidy",
+                "html",
+                "sanitize",
+                "strip",
+                "tags"
+            ],
+            "time": "2017-12-06T05:09:01+00:00"
         },
         {
             "name": "iamcal/lib_autolink",
