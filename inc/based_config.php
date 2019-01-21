@@ -134,13 +134,6 @@ if (!defined("GLPI_SCRIPT_DIR")) {
    define("GLPI_SCRIPT_DIR", GLPI_ROOT . "/scripts");
 }
 
-// Default patch to htmLawed
-if (!defined('GLPI_HTMLAWED')) {
-   define('GLPI_HTMLAWED', GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
-   // if htmLawed available in system, use (in config_path.php)
-   // define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
-}
-
 // Install mode for telemetry
 if (!defined('GLPI_INSTALL_MODE')) {
    if (is_dir(GLPI_ROOT . '/.git')) {
