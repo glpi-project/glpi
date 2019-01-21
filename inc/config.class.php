@@ -1980,12 +1980,11 @@ class Config extends CommonDBTM {
     * @since 9.4
     */
    static function getLibraries($all = false) {
-      include_once(GLPI_HTMLAWED);
       $pm = new PHPMailer();
       $sp = new SimplePie();
 
       // use same name that in composer.json
-      $deps = [[ 'name'    => 'htmLawed',
+      $deps = [[ 'name'    => 'fossar/htmlawed',
                  'version' => hl_version() ,
                  'check'   => 'hl_version' ],
                [ 'name'    => 'phpmailer/phpmailer',
