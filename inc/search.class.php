@@ -5575,6 +5575,22 @@ JAVASCRIPT;
                   $currenttime = 0;
                   $slaField    = 'slas_id';
 
+                  // define correct sla field
+                  switch ($table.'.'.$field) {
+                     case "glpi_tickets.time_to_resolve" :
+                        $slaField = 'slas_ttr_id';
+                        break;
+                     case "glpi_tickets.time_to_own" :
+                        $slaField = 'slas_tto_id';
+                        break;
+                     case "glpi_tickets.internal_time_to_own" :
+                        $slaField = 'olas_tto_id';
+                        break;
+                     case "glpi_tickets.internal_time_to_resolve" :
+                        $slaField = 'olas_ttr_id';
+                        break;
+                  }
+
                   switch ($table.'.'.$field) {
                      // If ticket has been taken into account : no progression display
                      case "glpi_tickets.time_to_own" :
