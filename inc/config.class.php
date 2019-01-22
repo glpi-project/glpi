@@ -2890,7 +2890,7 @@ class Config extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       if (defined('TU_USER') && !defined('CACHED_TESTS')
-         || !$DB || !$DB->tableExists(self::getTable())
+         || !$DB
          || !$DB->fieldExists(self::getTable(), 'context')) {
          return false;
       }
