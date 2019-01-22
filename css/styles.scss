@@ -41,7 +41,7 @@ $break_tablets: 1300px;
 /* ################--------------- Default style  ---------------#################### */
 
 body {
-   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif', sans-serif;
    font-size: 12px;
    margin: 0;
    padding: 0;
@@ -88,7 +88,7 @@ img {
 }
 
 small {
-   font-family: verdana;
+   font-family: Verdana, sans-serif;
    font-size: 10px;
 }
 
@@ -590,7 +590,7 @@ input {
       padding: 5px;
       cursor: pointer;
       height: auto;
-      font: bold 12px Arial, Helvetica;
+      font: bold 12px Arial, Helvetica, sans-serif;
       color: #8f5a0a;
       background-color: #FEC95C;
       border: 0;
@@ -603,7 +603,7 @@ span.vsubmit, a.vsubmit {
    padding: 5px;
    cursor: pointer;
    height: auto;
-   font: bold 12px Arial, Helvetica;
+   font: bold 12px Arial, Helvetica, sans-serif;
    color: #8f5a0a;
    background-color: #FEC95C;
    border: 0;
@@ -615,7 +615,7 @@ span.vsubmit, a.vsubmit {
    padding: 5px;
    cursor: pointer;
    height: auto;
-   font: bold 12px Arial, Helvetica;
+   font: bold 12px Arial, Helvetica, sans-serif;
    color: #5F5F5F;
    background-color: #E6E6E6;
    border: 0;
@@ -1090,8 +1090,6 @@ table {
    border: 0;
 }
 
-th, td {}
-
 .tab_glpi {
    margin: 0 auto;
 }
@@ -1123,7 +1121,6 @@ th, td {}
 }
 
 .tab_cadre_navigation {
-   margin: 0 auto;
    padding: 4px;
    margin: 1px;
    border: 1px solid #aaaaaa;
@@ -1176,11 +1173,8 @@ th, td {}
 }
 
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
-   font-size: 12px;
    font-weight: bold;
    text-align: center;
-   border-radius: 4px;
-   padding: 2px;
    border-radius: 0;
    margin: 0;
    font-size: 1.1em;
@@ -1383,7 +1377,6 @@ td {
    float: left;
    font-weight: bold;
    text-align: center;
-   padding-top: 30px;
    font-size: 1.1em;
    padding: 3px 5px;
    background-color: #F1F1F1;
@@ -1461,7 +1454,6 @@ td {
 }
 
 #searchcriteria {
-   margin-top: 10px;
    background-color: #FFF;
    width: 80%;
    margin: 0 auto;
@@ -1740,7 +1732,7 @@ img.picture_square {
 }
 
 .calendrier_jour {
-   font-family: arial,helvetica,sans-serif;
+   font-family: Arial, Helvetica, sans-serif;
    font-size: 14px;
    color: black;
 }
@@ -2400,19 +2392,11 @@ a.icon_nav_move {
 }
 
 .partialavailableend {
-   background-image: -webkit-linear-gradient(left, red 50%, green 0%);
-   background-image: -moz-linear-gradient(left, red 50%, green 0%);
-   background-image: -ms-linear-gradient(left, red 50%, green 0%);
-   background-image: -o-linear-gradient(left, red 50%, green 0%);
-   background-image: linear-gradient(left, red 50%, green 0%);
+   background-image: linear-gradient(to right, red 50%, green 0%);
 }
 
 .partialavailablebegin {
-   background-image: -webkit-linear-gradient(left, green 50%, red 0%);
-   background-image: -moz-linear-gradient(left, green 50%, red 0%);
-   background-image: -ms-linear-gradient(left, green 50%, red 0%);
-   background-image: -o-linear-gradient(left, green 50%, red 0%);
-   background-image: linear-gradient(left, green 50%, red 0%);
+   background-image: linear-gradient(to right, green 50%, red 0%);
 }
 
 /* ################--------------- Menu navigation  ---------------#################### */
@@ -2593,7 +2577,6 @@ a.icon_nav_move {
 
    .login_input {
       position: relative;
-      width: 13em;
       margin: 15px auto 5px;
       width: 240px;
    }
@@ -2648,7 +2631,7 @@ a.icon_nav_move {
    }
 
    .login_input:before {
-      font-family: 'Font Awesome\ 5 Free';
+      font-family: 'Font Awesome 5 Free';
       left: 8px;
       position: absolute;
       top: 3px;
@@ -2704,7 +2687,7 @@ a.icon_nav_move {
 }
 
 .sous_logo {
-   font-family: arial;
+   font-family: Arial, sans-serif;
    font-size: 9px;
    color: #eeeeee;
    text-decoration: none;
@@ -2843,7 +2826,7 @@ a.icon_nav_move {
          height: 22px;
          width: 150px;
          padding: 0 3px;
-         font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+         font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif', sans-serif;
          font-size: 12px;
          border-radius: 3px 0px 0px 3px;
          position: relative;
@@ -2853,7 +2836,7 @@ a.icon_nav_move {
 
 #myname {
    font-size: 11px;
-   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif', sans-serif;
    margin: 0 0 .5em .5em;
    display: inline-block;
    vertical-align: bottom;
@@ -3179,7 +3162,6 @@ ul#menu {
    font-size: 9px;
    color: #000;
    background-color: #E2E1DE;
-   padding: 6px;
    height: 18px;
    padding: 5px;
 
@@ -3210,7 +3192,7 @@ a.copyright {
       text-align: center;
       margin: 0;
       padding: 1px .5em;
-      font-family: helvetica,arial,sans-serif;
+      font-family: Helvetica,Arial,sans-serif;
       font-size: 10px;
       font-weight: bold;
       background-color: #fff;
@@ -3243,7 +3225,7 @@ a.copyright {
    text-align: center;
    margin: 0;
    padding: 1px .5em;
-   font-family: helvetica,arial,sans-serif;
+   font-family: Helvetica,Arial,sans-serif;
    font-size: 10px;
    font-weight: bold;
    background-color: #fff;
@@ -3385,7 +3367,7 @@ a.copyright {
    text-align: left;
    padding: 4px 8px;
    margin-top: -10px;
-   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif', sans-serif;
 
    .break {
       clear: both;
@@ -3555,10 +3537,8 @@ a.copyright {
 
    .h_date {
       background-repeat: no-repeat;
-      padding-left: 24px;
       padding-top: 1px;
       text-transform: capitalize;
-      text-align: center;
 
       i {
          font-size: 1.8em;
@@ -4069,7 +4049,7 @@ a.copyright {
    outline: none;
    padding: 5px;
    cursor: pointer;
-   font: bold 12px Arial, Helvetica;
+   font: bold 12px Arial, Helvetica, sans-serif;
    color: #8f5a0a;
    background-color: #FEC95C;
    border: none;
@@ -4104,7 +4084,7 @@ a.copyright {
 }
 
 .x-button-drop:after {
-   font-family: 'Font Awesome\ 5 Free';
+   font-family: 'Font Awesome 5 Free';
    font-weight: 900;
 }
 
@@ -4230,7 +4210,7 @@ a.copyright {
 
       &:before {
          color: #929292;
-         font-family: 'Font Awesome\ 5 Free';
+         font-family: 'Font Awesome 5 Free';
          padding-left: 2px;
       }
    }
@@ -4569,7 +4549,7 @@ input[type=checkbox].toggle_comments {
    }
 
    &:after {
-      font-family: 'Font Awesome\ 5 Free';
+      font-family: 'Font Awesome 5 Free';
       position: relative;
       left: -15px;
       top: 1px;
@@ -5255,7 +5235,7 @@ button.unstyled {
 .warning {
    padding: .5em;
    cursor: pointer;
-   font: bold 12px Arial, Helvetica;
+   font: bold 12px Arial, Helvetica, sans-serif;
    color: #8f5a0a;
    background-color: #FEC95C;
    border: 0;
@@ -5448,7 +5428,7 @@ div#viewgraph {
          left: 0;
          top: 0;
          font-size: 15px;
-         font-family: 'Font Awesome\ 5 Free';
+         font-family: 'Font Awesome 5 Free';
          position: absolute;
          font-weight: 900;
       }
@@ -5629,9 +5609,6 @@ ul.indexes {
          position: absolute;
          bottom: 1px;
          left: 0;
-         position: absolute;
-         bottom: 1px;
-         left: 0;
       }
    }
 
@@ -5667,7 +5644,7 @@ ul.indexes {
       font-size: 1em;
       color: grey;
       top: 5px;
-      font-family: 'Font Awesome\ 5 Free';
+      font-family: 'Font Awesome 5 Free';
       position: absolute;
       font-weight: 900;
    }

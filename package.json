@@ -46,6 +46,8 @@
         "clean-webpack-plugin": "^1.0.0",
         "copy-webpack-plugin": "^4.6.0",
         "eslint": "^5.12.1",
+        "stylelint": "^9.10.1",
+        "stylelint-config-recommended": "^2.1.0",
         "webpack": "^4.28.4",
         "webpack-cli": "^3.2.1"
     }
