@@ -28,6 +28,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 $(document).ready(function() {
    var list = [];
 
@@ -42,8 +43,6 @@ $(document).ready(function() {
 
    // when the shortcut for fuzzy is called
    $(document).bind('keyup', 'alt+ctrl+g', function() {
-      console.log('start fuzzy search');
-
       // retrieve html of fuzzy input
       $.get(CFG_GLPI.root_doc+'/ajax/fuzzysearch.php', {
          'action': 'getHtml'
@@ -83,7 +82,7 @@ $(document).ready(function() {
                   }
                   break;
             }
-         })
+         });
 
          // when a key is pressed in fuzzy input, launch match
          $("#fuzzysearch input").focus()
@@ -117,6 +116,7 @@ $(document).ready(function() {
       $("#fuzzysearch .results").empty();
 
       // launch fuzzy search on this list
+      /* global fuzzy */
       var results = fuzzy.filter(input_text, list, fuzzy_options);
 
       // append new results
