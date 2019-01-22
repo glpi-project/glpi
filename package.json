@@ -1,0 +1,12 @@
+{
+    "name": "@glpi/glpi",
+    "version": "",
+    "private": true,
+    "description": "GLPI dependencies",
+    "license": "GPL-2.0",
+    "dependencies": {},
+    "devDependencies": {
+        "acorn": "^6.0.5",
+        "eslint": "^5.12.1"
+    }
+}

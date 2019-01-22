@@ -11,7 +11,6 @@
       var _this = this;
       var _queue = $('<div />');
       var _queue_audio = $('<div />');
-      var _interval = null;
 
       this.options = $.extend({}, GLPINotificationsAjax.default, options);
 
@@ -88,7 +87,7 @@
          var ajax = $.getJSON(CFG_GLPI.root_doc + '/ajax/notifications_ajax.php');
          ajax.done(function (data) {
             if (data) {
-               for (i = 0; i < data.length; i++) {
+               for (var i = 0; i < data.length; i++) {
                   var item = data[i];
                   _this.showNotification(item.id, item.title, item.body, item.url);
                }
@@ -123,7 +122,6 @@
 
       this.startMonitoring = function() {
          this.checkConcurrence();
-         _interval = setInterval(this.checkConcurrence.bind(this), this.options.interval);
       };
 
       this.checkPermission = function () {
