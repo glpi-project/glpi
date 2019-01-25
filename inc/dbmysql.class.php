@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+
 /**
  *  Database class for Mysql
 **/
@@ -66,6 +67,9 @@ class DBmysql {
    public $execution_time          = false;
 
    private $cache_disabled = false;
+
+   // Ticket GitHub #5273, to avoid requesting DB each time.
+   private static $table_exists_arr = [];
 
    /**
     * Constructor / Connect to the MySQL Database
@@ -774,17 +778,23 @@ class DBmysql {
     * @return boolean
     **/
    public function tableExists($tablename) {
+      
+      if( isset(self::$table_exists_arr[$tablename]) ){
+         return self::$table_exists_arr[$tablename];
+      }
       // Get a list of tables contained within the database.
       $result = $this->listTables("%$tablename%");
 
       if (count($result)) {
          while ($data = $result->next()) {
             if ($data['TABLE_NAME'] === $tablename) {
+               self::$table_exists_arr[$tablename] = true;
                return true;
             }
          }
       }
 
+      self::$table_exists_arr[$tablename] = false;
       return false;
    }
 

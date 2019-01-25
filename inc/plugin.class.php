@@ -51,6 +51,9 @@ class Plugin extends CommonDBTM {
 
    static $rightname = 'config';
 
+   // to avoid requestig DB uselessly for thousands of time.
+   private static $is_activated_arr = [];
+   private static $is_installed_arr = [];
 
 
    /**
@@ -906,8 +909,15 @@ class Plugin extends CommonDBTM {
    **/
    function isActivated($plugin) {
 
+      if ( isset(self::$is_activated_arr[$this->getTable() . $plugin ]) ) {
+          return self::$is_activated_arr[$this->getTable() . $plugin ];
+      }
       if ($this->getFromDBbyDir($plugin)) {
-         return ($this->fields['state'] == self::ACTIVATED);
+          self::$is_activated_arr[$this->getTable() . $plugin ] = ($this->fields['state'] == self::ACTIVATED);
+          return self::$is_activated_arr[$this->getTable() . $plugin ];
+      } else {
+          self::$is_activated_arr[$this->getTable() . $plugin ] = false;
+          return false;
       }
    }
 
@@ -919,10 +929,20 @@ class Plugin extends CommonDBTM {
    **/
    function isInstalled($plugin) {
 
+      if ( isset(self::$is_installed_arr[$this->getTable() . $plugin ] )) {
+          return self::$is_installed_arr[$this->getTable() . $plugin ];
+      }
+
       if ($this->getFromDBbyDir($plugin)) {
-         return (($this->fields['state']    == self::ACTIVATED)
+         self::$is_installed_arr[$this->getTable() . $plugin ] = (
+                    ($this->fields['state'] == self::ACTIVATED)
                  || ($this->fields['state'] == self::TOBECONFIGURED)
                  || ($this->fields['state'] == self::NOTACTIVATED));
+                 
+         return self::$is_installed_arr[$this->getTable() . $plugin ];
+      } else {
+          self::$is_installed_arr[$this->getTable() . $plugin ] = false;
+          return false;
       }
    }
 
