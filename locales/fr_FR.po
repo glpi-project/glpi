@@ -3911,7 +3911,7 @@ msgstr ""
 
 #: inc/api.class.php:212
 msgid "parameter(s) login, password or user_token are missing"
-msgstr "le(s) paramètre(s) login, password ou user_token sont manquants"
+msgstr "le(s) paramètre(s) login, password ou jeton utilisateur sont manquants"
 
 #: inc/api.class.php:232
 msgid "usage of initSession resource with credentials is disabled"
@@ -3921,7 +3921,7 @@ msgstr ""
 
 #: inc/api.class.php:245
 msgid "parameter user_token seems invalid"
-msgstr "le paramètre user_token semble incorrect"
+msgstr "le paramètre jeton utilisateur semble incorrect"
 
 #: inc/api.class.php:1094 inc/api.class.php:1738 inc/api.class.php:1856
 #: inc/api.class.php:1975 inc/api.class.php:2514 inc/html.class.php:542
@@ -3980,11 +3980,11 @@ msgstr "Mot de passe modifié avec succès."
 
 #: inc/api.class.php:2100
 msgid "parameter app_token seems wrong"
-msgstr "le paramètre user_token semble incorrect"
+msgstr "le paramètre jeton application semble incorrect"
 
 #: inc/api.class.php:2103
 msgid "missing parameter app_token"
-msgstr "le paramètre app_token est manquant"
+msgstr "le paramètre jeton application est manquant"
 
 #: inc/api.class.php:2276
 msgid "API Documentation"
@@ -4000,11 +4000,11 @@ msgstr "Méthode non autorisée"
 
 #: inc/api.class.php:2530
 msgid "session_token seems invalid"
-msgstr "session_token semble incorrect"
+msgstr "le jeton de session semble incorrect"
 
 #: inc/api.class.php:2547
 msgid "parameter session_token is missing or empty"
-msgstr "le paramètre session_token est manquant ou vide"
+msgstr "le paramètre jeton de session est manquant ou vide"
 
 #: inc/api.class.php:2583
 #, php-format
