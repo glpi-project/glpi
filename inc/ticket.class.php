@@ -616,7 +616,8 @@ class Ticket extends CommonITILObject {
               && $this->fields['status'] != self::SOLVED
               && $this->fields['status'] != self::CLOSED
               && $this->numberOfFollowups() == 0
-              && $this->numberOfTasks() == 0;
+              && $this->numberOfTasks() == 0
+				  && Session::haveRight(self::$rightname, UPDATE);
    }
 
    /**
