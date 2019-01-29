@@ -94,7 +94,11 @@ class Plugin extends CommonDBTM {
     * @return void
    **/
    function init() {
-      global $GLPI_CACHE;
+      global $DB, $GLPI_CACHE;
+
+      if (!$DB->connected || !$DB->tableExists(self::getTable())) {
+         return;
+      }
 
       $this->checkStates();
       $plugins                  = $this->find(['state' => self::ACTIVATED]);
