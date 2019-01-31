@@ -392,11 +392,11 @@ class Search extends DbTestCase {
          ->contains("OR (`glpi_computers`.`is_recursive`='1'".
                     " AND `glpi_computers`.`entities_id` IN ('0'))")
          ->contains("`glpi_computers`.`name`  LIKE '%test%'")
-         ->contains("AND (`glpi_softwares`.`id` = 10784)")
+         ->contains("AND (`glpi_softwares`.`id` = '10784')")
          ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
-         ->contains("AND (`glpi_locations`.`id` = 11)")
-         ->contains("(`glpi_users`.`id` = 2)")
-         ->contains("OR (`glpi_users`.`id` = 3)");
+         ->contains("AND (`glpi_locations`.`id` = '11')")
+         ->contains("(`glpi_users`.`id` = '2')")
+         ->contains("OR (`glpi_users`.`id` = '3')");
    }
 
    function testViewCriterion() {
