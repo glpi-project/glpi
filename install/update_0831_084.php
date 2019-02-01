@@ -194,13 +194,13 @@ function update0831to084() {
       'WHERE'        =>  [
          'OR' => [
             'glpi_notificationtemplatetranslations.content_text' => [
-               'LIKE' => "%validation.storestatus=%"
+               'LIKE', "%validation.storestatus=%"
             ],
             'glpi_notificationtemplatetranslations.content_html' => [
-               'LIKE' => "%validation.storestatus=%"
+               'LIKE', "%validation.storestatus=%"
             ],
             'glpi_notificationtemplatetranslations.subject' => [
-               'LIKE' => "%validation.storestatus=%"
+               'LIKE', "%validation.storestatus=%"
             ]
          ]
       ]
