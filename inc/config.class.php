@@ -2953,7 +2953,6 @@ class Config extends CommonDBTM {
       $conf = [];
       if ($DB
          && $DB->connected
-         && $DB->tableExists(self::getTable())
          && $DB->fieldExists(self::getTable(), 'context')
       ) {
          $conf = self::getConfigurationValues($context, [$optname]);

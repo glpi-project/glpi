@@ -29,3 +29,7 @@ If you're just asking for something to be added without doing it yourself, pleas
 You have a question on GLPI usage, or want to know what are the capabilities.
 
 Current repository is not the right place for that. You may try to aks your question on [the forums](https://forum.glpi-project.org), on the mailing lists, on telegram channels, ...
+
+## Coding
+
+If you want to contribute to the project code, please take a time to read the [project coding guidelines](https://glpi-developer-documentation.readthedocs.io).

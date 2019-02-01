@@ -331,7 +331,7 @@ class PurgeLogs extends CommonDBTM {
       if ($month) {
          $DB->delete(
             'glpi_logs', [
-               'itemtype' => ['LIKE' => 'Plugin%']
+               'itemtype' => ['LIKE', 'Plugin%']
             ] + $month
          );
       }
