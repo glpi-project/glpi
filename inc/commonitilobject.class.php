@@ -6339,7 +6339,7 @@ abstract class CommonITILObject extends CommonDBTM {
                'timeline_position'  => self::TIMELINE_RIGHT,
                'users_id_editor'    => $solution_item['users_id_editor'],
                'date_mod'           => $solution_item['date_mod'],
-               'users_id_approval'  => $solution_item['users_id_editor'],
+               'users_id_approval'  => $solution_item['users_id_approval'],
                'date_approval'      => $solution_item['date_approval'],
                'status'             => $solution_item['status']
             ]
