@@ -29,6 +29,7 @@
         "leaflet-fullscreen": "^1.0.2",
         "leaflet-spin": "^1.1.0",
         "leaflet.awesome-markers": "^2.0.5",
+        "leaflet.heat": "^0.2.0",
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.11",
         "moment": "^2.24.0",

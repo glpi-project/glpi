@@ -400,8 +400,13 @@ class RuleAction extends CommonDBChild {
                    'do_not_compute'      => __('Do not calculate'),
                    'send'                => __('Send'),
                    'add_validation'      => __('Send'),
+                   'send_email'          => __('Send'),
                    'fromuser'            => __('Copy from user'),
-                   'fromitem'            => __('Copy from item')];
+                   'fromitem'            => __('Copy from item'),
+                   'create_ticket'       => __('Create'),
+                   'create_change'       => __('Create'),
+                   'create_problem'      => __('Create'),
+                   'assign_correlated'   => __('Assign correlated')];
    }
 
 
@@ -625,6 +630,18 @@ class RuleAction extends CommonDBChild {
                      $ticket = new Ticket();
                      echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
                      $display       = true;
+                     break;
+
+                  case "dropdown_eventsignificance" :
+                     $param['name']  = 'value';
+                     ITILEvent::dropdownSignificance($param);
+                     $display = true;
+                     break;
+
+                  case "dropdown_eventstatus" :
+                     $param['name']  = 'value';
+                     ITILEvent::dropdownStatus($param);
+                     $display = true;
                      break;
 
                   default :

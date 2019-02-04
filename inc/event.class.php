@@ -45,6 +45,10 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Event Class
+ * Internal event logging for GLPI services.
+ * 
+ * Starting in 10.0.0, any event added using this class is translated and added using ITILEvent.
+ * This class remains to enforce normalization of internal event data but the glpi_events table is not used.
 **/
 class Event extends CommonDBTM {
 
@@ -56,18 +60,16 @@ class Event extends CommonDBTM {
       return _n('Log', 'Logs', $nb);
    }
 
-
    function prepareInputForAdd($input) {
-      global $CFG_GLPI;
 
-      if (isset($input['level']) && ($input['level'] <= $CFG_GLPI["event_loglevel"])) {
-         return $input;
-      }
+      Toolbox::deprecated("Events should be logged using the log function since version 10.0.0");
+      // Deny any attempt to add an event to the legacy table
       return false;
    }
 
    function post_addItem() {
-      //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
+      //TODO For the sake of consistancy, logging alerts to a file should be dropped.
+      // Maybe add it as a rule action instead?
       if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
          $message_type = "";
          if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
@@ -87,7 +89,7 @@ class Event extends CommonDBTM {
    /**
     * Log an event.
     *
-    * Log the event $event on the glpi_event table with all the others args, if
+    * Log the event $event to the internal SIEM system as an {@link \ITILEvent} if
     * $level is above or equal to setting from configuration.
     *
     * @param $items_id
@@ -95,17 +97,33 @@ class Event extends CommonDBTM {
     * @param $level
     * @param $service
     * @param $event
+    * @param $significance int The significance of the event (0 = Information, 1 = Warning, 2 = Exception).
+    *    Default is Information.
    **/
-   static function log($items_id, $type, $level, $service, $event) {
-      global $DB;
+   static function log($items_id, $type, $level, $service, $event, int $significance = \ITILEvent::INFORMATION) {
 
-      $input = ['items_id' => intval($items_id),
-                     'type'     => $type,
-                     'date'     => $_SESSION["glpi_currenttime"],
-                     'service'  => $service,
-                     'level'    => intval($level),
-                     'message'  => $event];
-      $tmp = new self();
+      // Only log if the event's level is the smae or lower than the setting from configuration
+      if (!isset($input['level']) || !($input['level'] <= $CFG_GLPI["event_loglevel"])) {
+         return false;
+      }
+
+      $input = [
+         'name'      => $event,
+         'content'   => json_encode([
+            'type'      => $type,
+            'items_id'  => intval($items_id),
+            'service'   => $service,
+            'level'     => $level
+         ]),
+         'significance' => $significance,
+         'date'      => $_SESSION["glpi_currenttime"]
+      ];
+
+      // Drop after verifying ITILEvent logging works
+      $tmp2 = new self();
+      $tmp2->add($input);
+
+      $tmp = new \ITILEvent();
       return $tmp->add($input);
    }
 
@@ -113,9 +131,11 @@ class Event extends CommonDBTM {
    /**
     * Clean old event - Call by cron
     *
+    * @deprecated 10.0.0
     * @param $day integer
     *
     * @return integer number of events deleted
+    * @todo Integrate log cleanup system into ITILEvent
    **/
    static function cleanOld($day) {
       global $DB;
@@ -133,6 +153,7 @@ class Event extends CommonDBTM {
 
    /**
     * Return arrays for function showEvent et lastEvent
+    * @todo Convert to a translation system for ITILEvent data
    **/
    static function logArray() {
 
@@ -176,6 +197,7 @@ class Event extends CommonDBTM {
    static function displayItemLogID($type, $items_id) {
       global $CFG_GLPI;
 
+      //TODO Find uses for this function
       if (($items_id == "-1") || ($items_id == "0")) {
          echo "&nbsp;";//$item;
       } else {
@@ -229,6 +251,7 @@ class Event extends CommonDBTM {
    static function showForUser($user = "") {
       global $DB, $CFG_GLPI;
 
+      //TODO Drop for functionality offered by Item_ITILEvent
       // Show events from $result in table form
       list($logItemtype, $logService) = self::logArray();
 
@@ -317,6 +340,7 @@ class Event extends CommonDBTM {
    static function showList($target, $order = 'DESC', $sort = 'date', $start = 0) {
       global $DB, $CFG_GLPI;
 
+      //TODO Drop for functionality offered by Item_ITILEvent
       // Show events from $result in table form
       list($logItemtype, $logService) = self::logArray();
 
@@ -405,5 +429,65 @@ class Event extends CommonDBTM {
          $i++;
       }
       echo "</table></div><br>";
+   }
+
+   /**
+    * Attempt to translate event properties
+    * @since 10.0.0
+    * @param array $properties
+    * @return void
+    */
+   public static function translateEventProperties(array &$properties) {
+      static $logItemtype = [];
+      static $logService  = [];
+
+      if (count($logItemtype)) {
+         return [$logItemtype, $logService];
+      }
+
+      $logItemtype = ['system'      => __('System'),
+                           'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
+                           'planning'    => __('Planning'),
+                           'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+                           'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
+                           'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())];
+
+      $logService = ['inventory'    => __('Assets'),
+                          'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+                          'maintain'     => __('Assistance'),
+                          'planning'     => __('Planning'),
+                          'tools'        => __('Tools'),
+                          'financial'    => __('Management'),
+                          'login'        => __('Connection'),
+                          'setup'        => __('Setup'),
+                          'security'     => __('Security'),
+                          'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+                          'cron'         => _n('Automatic action', 'Automatic actions', Session::getPluralNumber()),
+                          'document'     => _n('Document', 'Documents', Session::getPluralNumber()),
+                          'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
+                          'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())];
+
+      if (array_key_exists('type', $properties)) {
+         $properties['type']['name'] = __('Source');
+         if (isset($properties['type']['value'])) {
+            if (isset($logItemtype[$properties['type']['value']])) {
+               $properties['type']['value'] = $logItemtype[$properties['type']['value']];
+            } else {
+               $type = getSingular($type);
+               if ($item = getItemForItemtype($type)) {
+                  $itemtype = $item->getTypeName(1);
+                  $properties['type']['value'] = $itemtype;
+               }
+            }
+         }
+      }
+      if (array_key_exists('service', $properties)) {
+         $properties['service']['name'] = __('Service');
+         if (isset($properties['service']['value'])) {
+            if (isset($logService[$properties['service']['value']])) {
+               $properties['service']['value'] = $logService[$properties['service']['value']];
+            }
+         }
+      }
    }
 }

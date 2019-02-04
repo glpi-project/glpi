@@ -129,6 +129,133 @@ function update95to100() {
 
    /** /Timezones */
 
+   /** Event Management */
+   if (!$DB->tableExists('glpi_itilevents')) {
+      $query = "CREATE TABLE `glpi_itilevents` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `entities_id` int(11) NOT NULL DEFAULT '0',
+         `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+         `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+         `status` tinyint(4) NOT NULL DEFAULT '0',
+         `date` datetime DEFAULT NULL,
+         `content` longtext COLLATE utf8_unicode_ci,
+         `date_creation` datetime DEFAULT NULL,
+         `itileventcategories_id` int(11),
+         `significance` tinyint(4) NOT NULL,
+         `correlation_uuid` int(11) DEFAULT NULL,
+         `date_mod` datetime DEFAULT NULL,
+         `logger` varchar(255)  COLLATE utf8_unicode_ci DEFAULT NULL COMMENT
+            'Indicates which plugin (or the core) logged this event. Used to delegate translations and other functions',
+         PRIMARY KEY (`id`),
+         KEY `entities_id` (`entities_id`),
+         KEY `name` (`name`),
+         KEY `status` (`status`),
+         KEY `date` (`date`),
+         KEY `date_creation` (`date_creation`),
+         KEY `itileventcategories_id` (`itileventcategories_id`),
+         KEY `significance` (`significance`),
+         KEY `correlation_uuid` (`correlation_uuid`),
+         KEY `logger` (`logger`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_itilevents");
+   }
+
+   if (!$DB->tableExists('glpi_items_itilevents')) {
+      $query = "CREATE TABLE `glpi_items_itilevents` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+         `items_id` int(11) NOT NULL,
+         `itilevents_id` int(11) NOT NULL,
+         `link` tinyint(4) NOT NULL DEFAULT '0',
+         PRIMARY KEY (`id`),
+         KEY `itemtype` (`itemtype`),
+         KEY `item_id` (`items_id`),
+         KEY `item` (`itemtype`,`items_id`),
+         KEY `itilevents_id` (`itilevents_id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_items_itilevents");
+   }
+
+   if (!$DB->tableExists('glpi_itils_itilevents')) {
+      $query = "CREATE TABLE `glpi_itils_itilevents` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+         `items_id` int(11) NOT NULL DEFAULT '0',
+         `itilevents_id` int(11) NOT NULL DEFAULT '0',
+         PRIMARY KEY (`id`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_itils_itilevents");
+   }
+
+   if (!$DB->tableExists('glpi_itileventcategories')) {
+      $query = "CREATE TABLE `glpi_itileventcategories` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `entities_id` int(11) NOT NULL DEFAULT '0',
+      `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+      `itileventcategories_id` int(11) NOT NULL DEFAULT '0',
+      `name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+      `completename` text COLLATE utf8_unicode_ci,
+      `comment` text COLLATE utf8_unicode_ci,
+      `level` int(11) NOT NULL,
+      `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+      `sons_cache` longtext COLLATE utf8_unicode_ci,
+      `date_mod` datetime DEFAULT NULL,
+      `date_creation` datetime DEFAULT NULL,
+      PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "10.0.0 add table glpi_itileventcategories");
+   }
+
+   $migration->addConfig([
+      'eventwarning_color'    => '#ffcc47',
+      'eventexception_color'  => '#ff3a3a'
+   ]);
+
+   if (!$DB->fieldExists('glpi_users', 'eventwarning_color')) {
+      $migration->addField('glpi_users', 'eventwarning_color', 'string', ['value' => '#ffcc47']);
+   }
+   if (!$DB->fieldExists('glpi_users', 'eventexception_color')) {
+      $migration->addField('glpi_users', 'eventexception_color', 'string', ['value' => '#ff3a3a']);
+   }
+
+   if (!$DB->fieldExists('glpi_entities', 'default_event_correlation_time')) {
+      $migration->addField('glpi_entities', 'default_event_correlation_time', 'integer', ['value' => '0']);
+   }
+
+   if (!$DB->fieldExists('glpi_entities', 'default_event_correlation_count')) {
+      $migration->addField('glpi_entities', 'default_event_correlation_count', 'integer', ['value' => '1']);
+   }
+
+   if (!$DB->fieldExists('glpi_entities', 'default_event_correlation_window')) {
+      $migration->addField('glpi_entities', 'default_event_correlation_window', 'integer', ['value' => '0']);
+   }
+
+   if (!$DB->fieldExists('glpi_entities', 'default_event_filter_action')) {
+      $migration->addField('glpi_entities', 'default_event_filter_action', 'bool', ['value' => '0']);
+   }
+
+   if (!$DB->fieldExists('glpi_requesttypes', 'is_event_default')) {
+      if ($migration->addField('glpi_requesttypes', 'is_event_default', 'bool')) {
+         $migration->addKey('glpi_requesttypes', 'is_event_default');
+         $migration->migrationOneTable('glpi_requesttypes');
+         $otherRequestType = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => 'glpi_requesttypes',
+            'WHERE' => ['name' => 'Other']
+         ]);
+         if ($otherRequestType->count()) {
+            $DB->updateOrDie('glpi_requesttypes', ['is_event_default' => '1'], [
+               'id' => $otherRequestType->next()['id']
+            ]);
+         } else {
+            $migration->displayWarning(
+               'There is no request source set for events. Please review your configuration.'
+            );
+         }
+      }
+   }
+   /** End of Event Management */
+
    // ************ Keep it at the end **************
    Config::deleteConfigurationValues('core', $config_to_drop);
 

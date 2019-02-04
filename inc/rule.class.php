@@ -199,7 +199,8 @@ class Rule extends CommonDBTM {
           || Session::haveRight("rule_import", READ)
           || Session::haveRight("rule_ticket", READ)
           || Session::haveRight("rule_softwarecategories", READ)
-          || Session::haveRight("rule_mailcollector", READ)) {
+          || Session::haveRight("rule_mailcollector", READ)
+          || Session::haveRight("rule_event", READ)) {
 
          $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['rule']['page']  = static::getSearchURL(false);
@@ -2226,6 +2227,12 @@ class Rule extends CommonDBTM {
 
                case "dropdown_tickettype" :
                   return Ticket::getTicketTypeName($pattern);
+
+               case "dropdown_eventsignificance" :
+                  return ITILEvent::getSignificanceName($pattern);
+
+               case "dropdown_eventstatus" :
+                  return ITILEvent::getStatusName($pattern);
             }
          }
       }
@@ -2346,6 +2353,22 @@ class Rule extends CommonDBTM {
                $display = true;
                break;
 
+            case 'number':
+               $display = false;
+               break;
+
+            case "dropdown_eventsignificance" :
+               $param['name']  = 'value';
+               ITILEvent::dropdownSignificance($param);
+               $display = true;
+               break;
+
+            case "dropdown_eventstatus" :
+               $param['name']  = 'value';
+               ITILEvent::dropdownStatus($param);
+               $display = true;
+               break;
+
             default:
                $tested = false;
                break;
@@ -2364,9 +2387,18 @@ class Rule extends CommonDBTM {
 
       if (!$display
           && ($rc = getItemForItemtype($this->rulecriteriaclass))) {
-         Html::autocompletionTextField($rc, "pattern", ['name'  => $name,
-                                                             'value' => $value,
-                                                             'size'  => 70]);
+         if (isset($crit['type']) && $crit['type'] == 'number') {
+            echo Html::input($name, [
+               'value'  => $value,
+               'type'   => 'number',
+               'size'   => 70
+            ]);
+         } else {
+            Html::autocompletionTextField($rc, "pattern", [
+               'name'  => $name,
+               'value' => $value,
+               'size'  => 70]);
+         }
       }
    }
 
@@ -2400,6 +2432,7 @@ class Rule extends CommonDBTM {
             case "dropdown_users_validate" :
                return getUserName($value);
 
+            case "dropdown_groups" :
             case "dropdown_groups_validate" :
                return Dropdown::getDropdownName('glpi_groups', $value);
 
@@ -2424,6 +2457,18 @@ class Rule extends CommonDBTM {
 
             case "dropdown_management" :
                return Dropdown::getGlobalSwitch($value);
+
+            case "dropdown_management" :
+               return Dropdown::getGlobalSwitch($value);
+
+            case "dropdown_management" :
+               return Dropdown::getGlobalSwitch($value);
+
+           case "dropdown_eventsignificance" :
+               return ITILEvent::getSignificanceName($value);
+
+           case "dropdown_eventstatus" :
+               return ITILEvent::getStatusName($value);
 
             default :
                return $this->displayAdditionRuleActionValue($value);

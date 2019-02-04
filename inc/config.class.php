@@ -1352,6 +1352,20 @@ class Config extends CommonDBTM {
                               ['value' => $data['duedatecritical_unit']]);
       echo "</td></tr>";
 
+      echo "<tr><th colspan='4'>".__('Events')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Warning state color')."</td>";
+      echo "<td>";
+      Html::showColorField('eventwarning_color', ['value' => $data["eventwarning_color"]]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>".
+           "<td>".__('Exception state color')."</td>";
+      echo "<td>";
+      Html::showColorField('eventexception_color', ['value' => $data["eventexception_color"]]);
+      echo "</td></tr>";
+
       if ($oncentral && $CFG_GLPI["lock_use_lock_item"]) {
          echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
 

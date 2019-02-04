@@ -103,7 +103,11 @@ class Entity extends CommonTreeDropdown {
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'tickettemplates_id']];
+                                                   'max_closedate', 'tickettemplates_id'],
+                                          'event' => ['default_event_correlation_time',
+                                                      'default_event_correlation_count',
+                                                      'default_event_correlation_window',
+                                                      'default_event_filter_action']];
 
 
    /**
@@ -344,6 +348,9 @@ class Entity extends CommonTreeDropdown {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
+               if (ITILEvent::canView()) {
+                  $ong[7] = ITILEvent::getTypeName(Session::getPluralNumber());
+               }
 
                return $ong;
          }
@@ -381,6 +388,10 @@ class Entity extends CommonTreeDropdown {
 
             case 6 :
                self::showInventoryOptions($item);
+               break;
+
+            case 7 :
+               self::showEventOptions($item);
                break;
          }
       }
@@ -2010,6 +2021,81 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "</div>";
+   }
+
+
+   /**
+    * Shows ITILEvent entity options
+    *
+    * @param $entity Entity object
+    * @return void
+    * @since 10.0.0
+   **/
+   static function showEventOptions(Entity $entity) {
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID, READ)) {
+         return false;
+      }
+
+      $canedit = $entity->can($ID, UPDATE);
+
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
+
+      echo "<tr><th colspan='2'>".__('Default event correlation settings')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Default event correlation time (minutes)')."</td>";
+      echo "<td>";
+      Dropdown::showNumber('default_event_correlation_time', [
+         'value'  => $entity->fields['default_event_correlation_time'],
+         'max'    => DAY_TIMESTAMP,
+         'display_emptychoice' => true
+      ]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Default event correlation count')."</td>";
+      echo "<td>";
+      Dropdown::showNumber('default_event_correlation_count', [
+         'value'  => $entity->fields['default_event_correlation_count'],
+      ]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Default event correlation window (minutes)')."</td>";
+      echo "<td>";
+      Dropdown::showNumber('default_event_correlation_window', [
+         'value'  => $entity->fields['default_event_correlation_window'],
+         'max'    => DAY_TIMESTAMP,
+         'display_emptychoice' => true
+      ]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Default event filter action')."</td>";
+      echo "<td>";
+      Dropdown::showFromArray('default_event_filter_action', [__('Drop'), __('Accept')], [
+         'value'  => $entity->fields['default_event_filter_action']]);
+      echo "</td></tr>";
+
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+
+      echo "</table>";
+
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo Html::hidden('id', ['value' => $entity->fields['id']]);
+         echo Html::submit(_sx('button', 'Save'), ['name' => 'update']);
+         echo "</div>";
+         Html::closeForm();
+      }
    }
 
 

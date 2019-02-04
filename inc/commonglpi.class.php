@@ -175,7 +175,9 @@ class CommonGLPI {
          'Certificate_Item'   => 'certificate_types',
          'Lock'               => 'lock_lockable_objects',
          'Reservation'        => 'reservation_types',
-         'Computer_Item'      => 'directconnect_types'
+         'Computer_Item'      => 'directconnect_types',
+         'Item_ITILEvent'     => 'event_types',
+         'Itil_ITILEvent'     => 'itil_types',
       ];
 
       foreach ($guess_relations as $class => $conf) {

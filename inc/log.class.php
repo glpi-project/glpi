@@ -261,7 +261,7 @@ class Log extends CommonDBTM {
          $start = 0;
       }
 
-      $sql_filters = self::convertFiltersValuesToSqlCriteria(isset($_GET['filters']) ? $_GET['filters'] : []);
+      $sql_filters = self::convertFiltersValuesToSqlCriteria(isset($_GET['listfilters']) ? $_GET['listfilters'] : []);
 
       // Total Number of events
       $total_number    = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ]);
@@ -278,7 +278,7 @@ class Log extends CommonDBTM {
       }
 
       // Display the pager
-      $additional_params = isset($_GET['filters']) ? http_build_query(['filters' => $_GET['filters']]) : '';
+      $additional_params = isset($_GET['listfilters']) ? http_build_query(['listfilters' => $_GET['listfilters']]) : '';
       Html::printAjaxPager(self::getTypeName(1), $start, $filtered_number, '', true, $additional_params);
 
       // Output events
@@ -296,46 +296,46 @@ class Log extends CommonDBTM {
 
       echo "<thead>";
       echo $header;
-      if (isset($_GET['filters'])) {
+      if (isset($_GET['listfilters'])) {
          echo "<tr class='log_history_filter_row'>";
          echo "<th>";
-         echo "<input type='hidden' name='filters[active]' value='1' />";
+         echo "<input type='hidden' name='listfilters[active]' value='1' />";
          echo "<input type='hidden' name='items_id' value='$items_id' />";
          echo "</th>";
-         $dateValue = isset($_GET['filters']['date']) ? Html::cleanInputText($_GET['filters']['date']) : null;
-         echo "<th><input type='date' name='filters[date]' value='$dateValue' /></th>";
+         $dateValue = isset($_GET['listfilters']['date']) ? Html::cleanInputText($_GET['listfilters']['date']) : null;
+         echo "<th><input type='date' name='listfilters[date]' value='$dateValue' /></th>";
          echo "<th>";
          Dropdown::showFromArray(
-            "filters[users_names]",
+            "listfilters[users_names]",
             Log::getDistinctUserNamesValuesInItemLog($item),
             [
                'multiple'            => true,
                'display_emptychoice' => true,
-               'values'              => isset($_GET['filters']['users_names']) ? $_GET['filters']['users_names'] : [],
+               'values'              => isset($_GET['listfilters']['users_names']) ? $_GET['listfilters']['users_names'] : [],
                'width'               => "100%",
             ]
          );
          echo "</th>";
          echo "<th>";
          Dropdown::showFromArray(
-            "filters[affected_fields]",
+            "listfilters[affected_fields]",
             Log::getDistinctAffectedFieldValuesInItemLog($item),
             [
                'multiple'            => true,
                'display_emptychoice' => true,
-               'values'              => isset($_GET['filters']['affected_fields']) ? $_GET['filters']['affected_fields'] : [],
+               'values'              => isset($_GET['listfilters']['affected_fields']) ? $_GET['listfilters']['affected_fields'] : [],
                'width'               => "100%",
             ]
          );
          echo "</th>";
          echo "<th>";
          Dropdown::showFromArray(
-            "filters[linked_actions]",
+            "listfilters[linked_actions]",
             Log::getDistinctLinkedActionValuesInItemLog($item),
             [
                'multiple'            => true,
                'display_emptychoice' => true,
-               'values'              => isset($_GET['filters']['linked_actions']) ? $_GET['filters']['linked_actions'] : [],
+               'values'              => isset($_GET['listfilters']['linked_actions']) ? $_GET['listfilters']['linked_actions'] : [],
                'width'               => "100%",
             ]
          );
@@ -344,7 +344,7 @@ class Log extends CommonDBTM {
       } else {
          echo "<tr>";
          echo "<th colspan='5'>";
-         echo "<a href='#' class='show_log_filters'>" . __('Show filters') . " <span class='fa fa-filter pointer'></span></a>";
+         echo "<a href='#' class='show_list_filters'>" . __('Show filters') . " <span class='fa fa-filter pointer'></span></a>";
          echo "</th>";
          echo "</tr>";
       }

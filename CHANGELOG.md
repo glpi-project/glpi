@@ -5,6 +5,10 @@ The present file will list all changes made to the project; according to the
 
 ## [10.0.0] unreleased
 
+### Added
+
+- Add Event Management
+
 ### Changed
 
 - Update process is now limited to GLPI 0.80 and above. See upgrade documentation for details.

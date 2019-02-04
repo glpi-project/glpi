@@ -1378,6 +1378,8 @@ INSERT INTO `glpi_configs` VALUES ('206','core','purge_all','0');
 INSERT INTO `glpi_configs` VALUES ('207','core','purge_user_auth_changes','0');
 INSERT INTO `glpi_configs` VALUES ('208','core','purge_plugins','0');
 INSERT INTO `glpi_configs` VALUES ('209','core','display_login_source','1');
+INSERT INTO `glpi_configs` VALUES ('210','core','eventwarning_color','#ffb800');
+INSERT INTO `glpi_configs` VALUES ('211','core','eventexception_color','#ff2222');
 
 ### Dump table glpi_consumableitems
 
@@ -2990,6 +2992,10 @@ CREATE TABLE `glpi_entities` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `autofill_decommission_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
+  `default_event_correlation_time` int(11) NOT NULL DEFAULT '0',
+  `default_event_correlation_count` int(11) NOT NULL DEFAULT '1',
+  `default_event_correlation_window` int(11) NOT NULL DEFAULT '0',
+  `default_event_filter_action` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `entities_id` (`entities_id`),
@@ -7147,6 +7153,22 @@ INSERT INTO `glpi_profilerights` VALUES ('889','4','global_validation','0');
 INSERT INTO `glpi_profilerights` VALUES ('890','5','global_validation','0');
 INSERT INTO `glpi_profilerights` VALUES ('891','6','global_validation','0');
 INSERT INTO `glpi_profilerights` VALUES ('892','7','global_validation','0');
+INSERT INTO `glpi_profilerights` VALUES ('893','1','event','0');
+INSERT INTO `glpi_profilerights` VALUES ('894','2','event','0');
+INSERT INTO `glpi_profilerights` VALUES ('895','3','event','0');
+INSERT INTO `glpi_profilerights` VALUES ('896','4','event','23');
+INSERT INTO `glpi_profilerights` VALUES ('897','5','event','0');
+INSERT INTO `glpi_profilerights` VALUES ('898','6','event','0');
+INSERT INTO `glpi_profilerights` VALUES ('899','7','event','0');
+INSERT INTO `glpi_profilerights` VALUES ('900','8','event','0');
+INSERT INTO `glpi_profilerights` VALUES ('901','1','rule_event','0');
+INSERT INTO `glpi_profilerights` VALUES ('902','2','rule_event','0');
+INSERT INTO `glpi_profilerights` VALUES ('903','3','rule_event','0');
+INSERT INTO `glpi_profilerights` VALUES ('904','4','rule_event','1047');
+INSERT INTO `glpi_profilerights` VALUES ('905','5','rule_event','0');
+INSERT INTO `glpi_profilerights` VALUES ('906','6','rule_event','0');
+INSERT INTO `glpi_profilerights` VALUES ('907','7','rule_event','0');
+INSERT INTO `glpi_profilerights` VALUES ('908','8','rule_event','0');
 
 ### Dump table glpi_profiles
 
@@ -7637,6 +7659,7 @@ CREATE TABLE `glpi_requesttypes` (
   `is_followup_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_mail_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_mailfollowup_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_event_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` TINYINT(1) NOT NULL DEFAULT '1',
   `is_ticketheader` TINYINT(1) NOT NULL DEFAULT '1',
   `is_itilfollowup` TINYINT(1) NOT NULL DEFAULT '1',
@@ -7649,6 +7672,7 @@ CREATE TABLE `glpi_requesttypes` (
   KEY `is_followup_default` (`is_followup_default`),
   KEY `is_mail_default` (`is_mail_default`),
   KEY `is_mailfollowup_default` (`is_mailfollowup_default`),
+  KEY `is_event_default` (`is_event_default`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `is_active` (`is_active`),
@@ -7656,12 +7680,12 @@ CREATE TABLE `glpi_requesttypes` (
   KEY `is_itilfollowup` (`is_itilfollowup`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','1','0','0','1','1','1',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','0','1','1','1','1','1',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('3','Phone','0','0','0','0','1','1','1',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('4','Direct','0','0','0','0','1','1','1',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('5','Written','0','0','0','0','1','1','1',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('6','Other','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','1','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','0','1','1','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('3','Phone','0','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('4','Direct','0','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('5','Written','0','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('6','Other','0','0','0','0','1','1','1','1',NULL,NULL,NULL);
 
 ### Dump table glpi_reservationitems
 
@@ -8980,6 +9004,9 @@ CREATE TABLE `glpi_users` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `users_id_supervisor` int(11) NOT NULL DEFAULT '0',
   `timezone` varchar(50) DEFAULT NULL,
+  `eventwarning_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `eventexception_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+>>>>>>> Rework dashboard
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`, `authtype`, `auths_id`),
   KEY `firstname` (`firstname`),
@@ -9682,3 +9709,72 @@ CREATE TABLE `glpi_itilfollowups` (
   KEY `sourceitems_id` (`sourceitems_id`),
   KEY `sourceof_items_id` (`sourceof_items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- Event Management
+DROP TABLE IF EXISTS `glpi_itilevents`;
+CREATE TABLE `glpi_itilevents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `date` datetime DEFAULT NULL,
+  `content` longtext COLLATE utf8_unicode_ci,
+  `date_creation` datetime DEFAULT NULL,
+  `itileventcategories_id` int(11),
+  `significance` tinyint(4) NOT NULL,
+  `correlation_uuid` int(11) DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  `logger` varchar(255)  COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Indicates which plugin (or the core) logged this event. Used to delegate translations and other functions',
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `name` (`name`),
+  KEY `status` (`status`),
+  KEY `date` (`date`),
+  KEY `date_creation` (`date_creation`),
+  KEY `itileventcategories_id` (`itileventcategories_id`),
+  KEY `significance` (`significance`),
+  KEY `correlation_uuid` (`correlation_uuid`),
+  KEY `logger` (`logger`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_items_itilevents`;
+CREATE TABLE `glpi_items_itilevents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL,
+  `itilevents_id` int(11) NOT NULL,
+  `link` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `item_id` (`items_id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `itilevents_id` (`itilevents_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_itils_itilevents`;
+CREATE TABLE `glpi_itils_itilevents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itilevents_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_itileventcategories`;
+CREATE TABLE `glpi_itileventcategories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `itileventcategories_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `completename` text COLLATE utf8_unicode_ci,
+  `comment` text COLLATE utf8_unicode_ci,
+  `level` int(11) NOT NULL,
+  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+  `sons_cache` longtext COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+-- /Event Management

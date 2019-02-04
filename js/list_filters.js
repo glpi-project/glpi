@@ -30,13 +30,13 @@
  */
 $(function() {
    var bindShowFiltersBtn = function () {
-      $('.show_log_filters').on('click', showFilters);
+      $('.show_list_filters').on('click', showFilters);
    };
 
    var showFilters = function (event) {
       event.preventDefault();
       /* global reloadTab */
-      reloadTab('filters[active]=1');
+      reloadTab('listfilters[active]=1');
    };
 
    var bindFilterChange = function () {
@@ -48,8 +48,8 @@ $(function() {
          }
       });
 
-      $('.log_history_filter_row [name^="filters\\["]').on('input', handleFilterChange);
-      $('.log_history_filter_row select[name^="filters\\["]').on('change', handleFilterChange);
+      $('.log_history_filter_row [name^="listfilters\\["]').on('input', handleFilterChange);
+      $('.log_history_filter_row select[name^="listfilters\\["]').on('change', handleFilterChange);
    };
 
    var handleFilterChange = function () {
@@ -57,7 +57,7 @@ $(function() {
       $('.log_history_filter_row .select2-hidden-accessible').select2('close');
 
       /* global reloadTab */
-      reloadTab($('[name^="filters\\["]').serialize());
+      reloadTab($('[name^="listfilters\\["]').serialize());
    };
 
    $('.glpi_tabs').on('tabsload', function() {

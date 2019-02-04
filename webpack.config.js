@@ -250,6 +250,12 @@ var libs = {
             from: '{leaflet.markercluster-src.js,MarkerCluster{,.Default}.css}',
         }
     ],
+    'leaflet.heat': [
+        {
+            context: 'dist',
+            from: 'leaflet-heat.js',
+        }
+    ],
     'lodash': [
         {
             from: 'lodash.js',

@@ -936,7 +936,10 @@ class Profile extends CommonDBTM {
                             'field'     => 'knowbase'],
                       ['itemtype'  => 'ReservationItem',
                             'label'     => __('Administration of reservations'),
-                            'field'     => 'reservation']];
+                            'field'     => 'reservation'],
+                      ['itemtype'  => 'ITILEvent',
+                            'label'     => ITILEvent::getTypeName(Session::getPluralNumber()),
+                            'field'     => 'event']];
       $matrix_options['title'] = __('Tools');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -1354,6 +1357,10 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'RuleAsset',
                             'label'     => __('Business rules for assets'),
                             'field'     => 'rule_asset',
+                            'row_class' => 'tab_bg_2'],
+                      ['itemtype'  => 'RuleITILEvent',
+                            'label'     => __('Business rules for events'),
+                            'field'     => 'rule_event',
                             'row_class' => 'tab_bg_2'],
                       ['itemtype'  => 'Transfer',
                             'label'     => __('Transfer'),

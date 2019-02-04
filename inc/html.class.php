@@ -1264,14 +1264,18 @@ class Html {
          Html::requireJs('rateit');
       }
 
+      if (in_array('siem', $jslibs)) {
+         Html::requireJs('siem');
+      }
+
       //file upload is required... almost everywhere.
       Html::requireJs('fileupload');
 
       // load fuzzy search everywhere
       Html::requireJs('fuzzy');
 
-      // load log filters everywhere
-      Html::requireJs('log_filters');
+      // load list filters everywhere
+      Html::requireJs('list_filters');
 
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
@@ -1363,7 +1367,7 @@ class Html {
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                                              'ReservationItem', 'Report', 'MigrationCleaner',
-                                             'SavedSearch'];
+                                             'SavedSearch', 'ITILEvent'];
 
       /*$menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
       $menu['plugins']['types']      = [];*/
@@ -5864,8 +5868,11 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js';
             $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet-fullscreen/Leaflet.fullscreen.js';
             break;
-         case 'log_filters':
-            $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
+         case 'list_filters':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/list_filters.js';
+            break;
+         case 'siem':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/siem.js';
             break;
          default:
             $found = false;

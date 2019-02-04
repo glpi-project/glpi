@@ -368,7 +368,8 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
                                              'ObjectLock', 'PlanningRecall', 'Problem',
                                              'Project', 'ProjectTask', 'Reservation',
                                              'SoftwareLicense', 'Ticket', 'User',
-                                             'SavedSearch_Alert', 'Certificate'];
+                                             'SavedSearch_Alert', 'Certificate',
+                                             'ITILEvent'];
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
                                                   'AllAssets'       => "asset_types"];
@@ -382,7 +383,9 @@ $CFG_GLPI["rulecollections_types"]        = ['RuleImportEntityCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
                                                   'RuleTicketCollection',
-                                                  'RuleAssetCollection'];
+                                                  'RuleAssetCollection',
+                                                  'RuleITILEventCollection',
+                                                  'RuleITILEventFilterCollection'];
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Reminder',
@@ -397,6 +400,10 @@ $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
                                              'User', 'Group', 'Project', 'Supplier',
                                              'Budget', 'Certificate', 'Line', 'Datacenter',
                                              'DCRoom', 'Enclosure', 'PDU', 'Rack'];
+
+$CFG_GLPI["event_types"]                  = ['Computer', 'NetworkEquipment',
+                                             'Phone', 'Printer', 'User', 'Group',
+                                             'Enclosure', 'PDU'];
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
@@ -423,7 +430,8 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
                                      'use_flat_dropdowntree', 'layout', 'palette',
-                                     'highcontrast_css'];
+                                     'highcontrast_css', 'eventwarning_color',
+                                     'eventexception_color'];
 
 $CFG_GLPI['layout_excluded_pages'] = ["profile.form.php",
                                            "knowbaseitem.php",
@@ -481,7 +489,8 @@ $CFG_GLPI['javascript'] = [
    'tools'     => [
       'project'      => ['gantt'],
       'knowbaseitem' => ['tinymce', 'jstree'],
-      'reminder'     => ['tinymce']
+      'reminder'     => ['tinymce'],
+      'itilevent'    => ['siem']
    ],
    'management' => [
       'datacenter'       => [

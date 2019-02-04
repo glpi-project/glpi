@@ -60,6 +60,9 @@ class RequestType extends CommonDropdown {
                    ['name'  => 'is_mailfollowup_default',
                          'label' => __('Default for followup mail recipients'),
                          'type'  => 'bool'],
+                   ['name'  => 'is_event_default',
+                         'label' => __('Default for events'),
+                         'type'  => 'bool'],
                    ['name'  => 'is_ticketheader',
                          'label' => __('Request source visible for tickets'),
                          'type'  => 'bool'],
@@ -105,6 +108,15 @@ class RequestType extends CommonDropdown {
          'table'              => $this->getTable(),
          'field'              => 'is_mailfollowup_default',
          'name'               => __('Default for followup mail recipients'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '183',
+         'table'              => $this->getTable(),
+         'field'              => 'is_event_default',
+         'name'               => __('Default for events'),
          'datatype'           => 'bool',
          'massiveaction'      => false
       ];
@@ -158,6 +170,10 @@ class RequestType extends CommonDropdown {
          $update['is_mailfollowup_default'] = 0;
       }
 
+      if (isset($this->input["is_event_default"]) && $this->input["is_event_default"]) {
+         $update['is_event_default'] = 0;
+      }
+
       if (count($update)) {
          $DB->update(
             $this->getTable(),
@@ -208,6 +224,14 @@ class RequestType extends CommonDropdown {
          }
       }
 
+      if (in_array('is_event_default', $this->updates)) {
+         if ($this->input["is_event_default"]) {
+            $update['is_event_default'] = 0;
+         } else {
+            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+         }
+      }
+
       if (count($update)) {
          $DB->update(
             $this->getTable(),
@@ -229,7 +253,7 @@ class RequestType extends CommonDropdown {
    static function getDefault($source) {
       global $DB;
 
-      if (!in_array($source, ['mail', 'mailfollowup', 'helpdesk', 'followup'])) {
+      if (!in_array($source, ['mail', 'mailfollowup', 'helpdesk', 'followup', 'event'])) {
          return 0;
       }
 
