@@ -70,7 +70,7 @@ class Location extends CommonTreeDropdown {
             'list'   => true
          ], [
             'name'   => 'state',
-            'label'  => __('State'),
+            'label'  => _x('location', 'State'),
             'type'   => 'text',
             'list'   => true
          ], [
@@ -160,7 +160,7 @@ class Location extends CommonTreeDropdown {
          'id'                 => '104',
          'table'              => 'glpi_locations',
          'field'              => 'state',
-         'name'               => __('State'),
+         'name'               => _x('location', 'State'),
          'massiveaction'      => true,
          'datatype'           => 'string'
       ];
