@@ -1552,8 +1552,7 @@ class Html {
 
       echo "<div id='page' >";
 
-      if ($DB->isSlave()
-          && !$DB->first_connection) {
+      if ($DB->isSlave()) {
          echo "<div id='dbslave-float'>";
          echo "<a href='#see_debug'>".__('SQL replica: read only')."</a>";
          echo "</div>";

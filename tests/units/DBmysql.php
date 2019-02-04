@@ -34,33 +34,34 @@ namespace tests\units;
 
 /* Test for inc/dbmysql.class.php */
 
-class DB extends \GLPITestCase {
+class DBmysql extends \GLPITestCase {
+   private $db;
+
+   public function beforetestMethod($method) {
+      $this->db = \Glpi\DatabaseFactory::create();
+   }
 
    public function testTableExist() {
       $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->boolean($this->testedInstance->tableExists('glpi_configs'))->isTrue()
-            ->boolean($this->testedInstance->tableExists('fakeTable'))->isFalse();
+         ->boolean($this->db->tableExists('glpi_configs'))->isTrue()
+         ->boolean($this->db->tableExists('fakeTable'))->isFalse();
    }
 
    public function testFieldExists() {
       $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'id'))->isTrue()
-            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'ID'))->isFalse()
-            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'fakeField'))->isFalse();
+        ->boolean($this->db->fieldExists('glpi_configs', 'id'))->isTrue()
+        ->boolean($this->db->fieldExists('glpi_configs', 'ID'))->isFalse()
+        ->boolean($this->db->fieldExists('glpi_configs', 'fakeField'))->isFalse();
 
       $this->exception(
          function() {
-            $this->boolean($this->testedInstance->fieldExists('fakeTable', 'id'))->isFalse();
+            $this->boolean($this->db->fieldExists('fakeTable', 'id'))->isFalse();
          }
       )->hasMessage('Table fakeTable does not exists');
 
       $this->exception(
          function() {
-            $this->boolean($this->testedInstance->fieldExists('fakeTable', 'fakeField'))->isFalse();
+            $this->boolean($this->db->fieldExists('fakeTable', 'fakeField'))->isFalse();
          }
       )->hasMessage('Table fakeTable does not exists');
    }
@@ -82,10 +83,7 @@ class DB extends \GLPITestCase {
     * @dataProvider dataName
     */
    public function testQuoteName($raw, $quoted) {
-      $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->quoteName($raw))->isIdenticalTo($quoted);
+      $this->string($this->db->quoteName($raw))->isIdenticalTo($quoted);
    }
 
    protected function dataValue() {
@@ -107,9 +105,7 @@ class DB extends \GLPITestCase {
     */
    public function testQuoteValue($raw, $expected) {
       $this
-         ->if($this->newTestedInstance)
-         ->then
-         ->string($this->testedInstance->quoteValue($raw))->isIdenticalTo($expected);
+         ->string($this->db->quoteValue($raw))->isIdenticalTo($expected);
    }
 
 
@@ -147,13 +143,12 @@ class DB extends \GLPITestCase {
     * @dataProvider dataInsert
     */
    public function testBuildInsert($table, $values, $expected) {
-      $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->buildInsert($table, $values))->isIdenticalTo($expected);
+      $this->string($this->db->buildInsert($table, $values))->isIdenticalTo($expected);
    }
 
    protected function dataUpdate() {
+       global $DB;
+
       return [
          [
             'table', [
@@ -198,7 +193,7 @@ class DB extends \GLPITestCase {
             []
          ], [
             'table', [
-               'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+               'field'  => new \QueryExpression($DB->quoteName('field') . ' + 1')
             ], [
                'id'  => [1, 2]
             ],
@@ -213,10 +208,8 @@ class DB extends \GLPITestCase {
     */
    public function testBuildUpdate($table, $values, $where, $expected, $parameters) {
        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->buildUpdate($table, $values, $where))->isIdenticalTo($expected)
-            ->array($values)->isIdenticalTo($parameters);
+          ->string($this->db->buildUpdate($table, $values, $where))->isIdenticalTo($expected)
+          ->array($values)->isIdenticalTo($parameters);
    }
 
    public function testBuildUpdateWException() {
@@ -226,9 +219,7 @@ class DB extends \GLPITestCase {
             $where = [];
 
             $this
-               ->if($this->newTestedInstance)
-               ->then
-               ->string($this->testedInstance->buildUpdate('table', $set, $where))->isIdenticalTo('');
+               ->string($this->db->buildUpdate('table', $set, $where))->isIdenticalTo('');
          }
       )->hasMessage('Cannot run an UPDATE query without WHERE clause!');
    }
@@ -275,10 +266,8 @@ class DB extends \GLPITestCase {
    public function testBuildDelete($table, $where, $expected, $parameters) {
       $params = [];
        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->buildDelete($table, $params, $where))->isIdenticalTo($expected)
-            ->array($params)->isIdenticalTo($parameters);
+          ->string($this->db->buildDelete($table, $params, $where))->isIdenticalTo($expected)
+          ->array($params)->isIdenticalTo($parameters);
    }
 
    public function testBuildDeleteWException() {
@@ -286,23 +275,19 @@ class DB extends \GLPITestCase {
          function() {
             $set = [];
             $this
-               ->if($this->newTestedInstance)
-               ->then
-                  ->string($this->testedInstance->buildDelete('table', $set, []))->isIdenticalTo('');
+                  ->string($this->db->buildDelete('table', $set, []))->isIdenticalTo('');
          }
       )->hasMessage('Cannot run an DELETE query without WHERE clause!');
    }
 
    public function testListTables() {
       $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->given($tables = $this->testedInstance->listTables())
+         ->given($tables = $this->db->listTables())
             ->object($tables)
                ->isInstanceOf(\DBMysqlIterator::class)
             ->integer(count($tables))
                ->isGreaterThan(100)
-            ->given($tables = $this->testedInstance->listTables('glpi_configs'))
+            ->given($tables = $this->db->listTables('glpi_configs'))
             ->object($tables)
                ->isInstanceOf(\DBMysqlIterator::class)
                ->hasSize(1);
@@ -311,8 +296,7 @@ class DB extends \GLPITestCase {
 
    public function testTablesHasItemtype() {
       $dbu = new \DbUtils();
-      $this->newTestedInstance();
-      $list = $this->testedInstance->listTables();
+      $list = $this->db->listTables();
       $this->object($list)->isInstanceOf(\DBmysqlIterator::class);
       $this->integer(count($list))->isGreaterThan(200);
 
@@ -331,12 +315,10 @@ class DB extends \GLPITestCase {
 
    public function testQuote() {
       $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->quote('nothing to do'))->isIdenticalTo("'nothing to do'")
-            ->string($this->testedInstance->quote("shoul'be escaped"))->isIdenticalTo("'shoul\\'be escaped'")
-            ->string($this->testedInstance->quote("First\nSecond"))->isIdenticalTo("'First\\nSecond'")
-            ->string($this->testedInstance->quote("First\rSecond"))->isIdenticalTo("'First\\rSecond'")
-            ->string($this->testedInstance->quote('Hi, "you"'))->isIdenticalTo("'Hi, \\\"you\\\"'");
+         ->string($this->db->quote('nothing to do'))->isIdenticalTo("'nothing to do'")
+         ->string($this->db->quote("shoul'be escaped"))->isIdenticalTo("'shoul\\'be escaped'")
+         ->string($this->db->quote("First\nSecond"))->isIdenticalTo("'First\\nSecond'")
+         ->string($this->db->quote("First\rSecond"))->isIdenticalTo("'First\\rSecond'")
+         ->string($this->db->quote('Hi, "you"'))->isIdenticalTo("'Hi, \\\"you\\\"'");
    }
 }

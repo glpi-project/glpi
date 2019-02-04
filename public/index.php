@@ -50,7 +50,7 @@ Debugger::enable(Debugger::DEVELOPMENT, GLPI_LOG_DIR);
 Debugger::timer();
 
 // If config_db doesn't exist -> start installation
-if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml") && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     include_once GLPI_ROOT . "/inc/autoload.function.php";
     Html::redirect("../install/install.php");
     die();

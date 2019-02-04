@@ -423,12 +423,12 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
       }
 
-      if (DBConnection::createMainConfig($host, $user, $password, $databasename)) {
+      if (DBConnection::createMainConfig('mysql', $host, $user, $password, $databasename)) {
          Toolbox::createSchema($_SESSION["glpilanguage"]);
          echo "<p>".__('OK - database was initialized')."</p>";
 
          next_form();
-      } else { // can't create config_db file
+      } else { // can't create db.yaml file
          echo "<p>".__('Impossible to write the database setup file')."</p>";
          prev_form($host, $user, $password);
       }
@@ -477,9 +477,8 @@ function step6() {
    echo "<h3>".__('Collect data')."</h3>";
 
    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
-   include_once(GLPI_CONFIG_DIR . "/config_db.php");
    try {
-      $DB = new DB();
+      $DB = \Glpi\DatabaseFactory::create();
    } catch (\Exception $e) {
       //empty catch
       $success = true; //for CS
@@ -517,9 +516,7 @@ function step7() {
 function step8() {
    global $CFG_GLPI;
 
-   include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
-   include_once(GLPI_CONFIG_DIR . "/config_db.php");
-   $DB = new DB();
+   $DB = \Glpi\DatabaseFactory::create();
 
    if (isset($_POST['send_stats'])) {
       //user has accepted to send telemetry infos; activate cronjob
@@ -570,7 +567,7 @@ function update1($DBname) {
       $from_install = true;
       include_once(GLPI_ROOT ."/install/update.php");
 
-   } else { // can't create config_db file
+   } else { // can't create db.yaml file
       echo __("Can't create the database connection file, please verify file permissions.");
       echo "<h3>".__('Do you want to continue?')."</h3>";
       echo "<form action='install.php' method='post'>";
@@ -606,7 +603,7 @@ Session::loadLanguage();
 **/
 function checkConfigFile() {
 
-   if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+   if (file_exists(GLPI_CONFIG_DIR . "/db.yaml") || file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Html::redirect($CFG_GLPI['root_doc'] ."/index.php");
       die();
    }

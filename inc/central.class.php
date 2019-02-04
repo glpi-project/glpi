@@ -183,8 +183,7 @@ class Central extends CommonGLPI {
          }
       }
 
-      if ($DB->isSlave()
-          && !$DB->first_connection) {
+      if ($DB->isSlave()) {
          $warnings[] = __('SQL replica: read only');
       }
 

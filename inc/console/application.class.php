@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Config;
-use DB;
 use GLPI;
+use Glpi\AbstractDatabase;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Plugin;
 use Session;
@@ -65,7 +65,7 @@ class Application extends BaseApplication {
    private $config;
 
    /**
-    * @var DB
+    * @var AbstractDatabase
     */
    private $db;
 
@@ -210,9 +210,9 @@ class Application extends BaseApplication {
    /**
     * Initalize GLPI.
     *
-    * @global array $CFG_GLPI
-    * @global DB    $DB
-    * @global GLPI  $GLPI
+    * @global array            $CFG_GLPI
+    * @global AbstractDatabase $DB
+    * @global GLPI             $GLPI
     *
     * @return void
     *
@@ -240,7 +240,7 @@ class Application extends BaseApplication {
       global $DB;
       $this->db = $DB;
 
-      if ($this->db->connected) {
+      if ($this->db->isConnected()) {
          ob_start();
          $checkdb = Config::displayCheckDbEngine();
          $message = ob_get_clean();
@@ -310,7 +310,7 @@ class Application extends BaseApplication {
     */
    private function loadActivePlugins() {
 
-      if (!($this->db instanceof DB) || !$this->db->connected) {
+      if (!($this->db instanceof AbstractDatabase) || !$this->db->isConnected()) {
          return;
       }
 

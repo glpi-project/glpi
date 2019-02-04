@@ -671,7 +671,7 @@ class Ticket extends CommonITILObject {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $IS_TWIG;
+      global $DB, $IS_TWIG;
 
       if (static::canView()) {
          $nb    = 0;
@@ -681,7 +681,7 @@ class Ticket extends CommonITILObject {
                case 'User' :
                   $nb = countElementsInTable(
                      ['glpi_tickets', 'glpi_tickets_users'], [
-                        'glpi_tickets_users.tickets_id'  => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_tickets_users.tickets_id'  => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                         'glpi_tickets_users.users_id'    => $item->getID(),
                         'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
                      ] + getEntitiesRestrictCriteria(self::getTable())
@@ -692,7 +692,7 @@ class Ticket extends CommonITILObject {
                case 'Supplier' :
                   $nb = countElementsInTable(
                      ['glpi_tickets', 'glpi_suppliers_tickets'], [
-                        'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                         'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
                      ] + getEntitiesRestrictCriteria(self::getTable())
                   );
@@ -722,7 +722,7 @@ class Ticket extends CommonITILObject {
                case 'Group' :
                   $nb = countElementsInTable(
                      ['glpi_tickets', 'glpi_groups_tickets'], [
-                        'glpi_groups_tickets.tickets_id' => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                        'glpi_groups_tickets.tickets_id' => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                         'glpi_groups_tickets.groups_id'  => $item->getID(),
                         'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
                      ] + getEntitiesRestrictCriteria(self::getTable())
@@ -816,13 +816,16 @@ class Ticket extends CommonITILObject {
    }
 
    protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+
+      global $DB;
+
       $nb    = 0;
       if (static::canView()) {
          switch ($item->getType()) {
             case 'User' :
                $nb = countElementsInTable(
                   ['glpi_tickets', 'glpi_tickets_users'], [
-                     'glpi_tickets_users.tickets_id'  => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                     'glpi_tickets_users.tickets_id'  => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                      'glpi_tickets_users.users_id'    => $item->getID(),
                      'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
                   ] + getEntitiesRestrictCriteria(self::getTable())
@@ -832,7 +835,7 @@ class Ticket extends CommonITILObject {
             case 'Supplier' :
                $nb = countElementsInTable(
                   ['glpi_tickets', 'glpi_suppliers_tickets'], [
-                     'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                     'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                      'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
                   ] + getEntitiesRestrictCriteria(self::getTable())
                );
@@ -862,7 +865,7 @@ class Ticket extends CommonITILObject {
             case 'Group' :
                $nb = countElementsInTable(
                   ['glpi_tickets', 'glpi_groups_tickets'], [
-                     'glpi_groups_tickets.tickets_id' => new \QueryExpression(DB::quoteName('glpi_tickets.id')),
+                     'glpi_groups_tickets.tickets_id' => new \QueryExpression($DB->quoteName('glpi_tickets.id')),
                      'glpi_groups_tickets.groups_id'  => $item->getID(),
                      'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
                   ] + getEntitiesRestrictCriteria(self::getTable())

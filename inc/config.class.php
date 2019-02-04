@@ -36,6 +36,7 @@ use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
 use PHPMailer\PHPMailer\PHPMailer;
+use Symfony\Component\Yaml\Yaml;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -180,8 +181,13 @@ class Config extends CommonDBTM {
             if (!$already_active) {
                // Activate Slave from the "system" tab
                DBConnection::createDBSlaveConfig();
-
             } else if (isset($input["_dbreplicate_dbhost"])) {
+               if (empty($input['_dbreplicate_dbpassword'])
+                   && file_exists(GLPI_CONFIG_DIR . '/db.slave.yaml')
+               ) {
+                  $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.slave.yaml');
+                  $input['_dbreplicate_dbpassword'] = $db_config['pass'];
+               }
                // Change parameter from the "replicate" tab
                DBConnection::saveDBSlaveConf($input["_dbreplicate_dbhost"],
                                              $input["_dbreplicate_dbuser"],
@@ -691,8 +697,7 @@ class Config extends CommonDBTM {
       echo "<td>" . __('SQL user') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBslave->dbuser."'></td>";
       echo "<td>" . __('SQL password') . "</td>";
-      echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
-                 rawurldecode($DBslave->dbpassword)."'>";
+      echo "<td><input type='password' name='_dbreplicate_dbpassword' value=''>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -707,7 +712,7 @@ class Config extends CommonDBTM {
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
-      if ($DBslave->connected && !$DB->isSlave()) {
+      if ($DBslave->isConnected() && !$DB->isSlave()) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
          DBConnection::showAllReplicateDelay();
          echo "</td></tr>";
@@ -2952,7 +2957,7 @@ class Config extends CommonDBTM {
       // Read configuration
       $conf = [];
       if ($DB
-         && $DB->connected
+         && $DB->isConnected()
          && $DB->fieldExists(self::getTable(), 'context')
       ) {
          $conf = self::getConfigurationValues($context, [$optname]);

@@ -50,8 +50,8 @@ include_once (GLPI_ROOT . "/inc/define.php");
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
-// If config_db doesn't exist -> start installation
-if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+// If db.yaml doesn't exist -> start installation
+if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml")) {
    include_once (GLPI_ROOT . "/inc/autoload.function.php");
    Html::redirect("install/install.php");
    die();

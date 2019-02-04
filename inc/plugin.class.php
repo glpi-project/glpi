@@ -96,7 +96,7 @@ class Plugin extends CommonDBTM {
    function init() {
       global $DB, $GLPI_CACHE;
 
-      if (!$DB->connected || !$DB->tableExists(self::getTable())) {
+      if (!$DB->isConnected() || !$DB->tableExists(self::getTable())) {
          return;
       }
 

@@ -1,7 +1,9 @@
 /config/config_db*
+/config/db.yaml
 /config/config_path.php
 /config/local_define.php
 /tests/config_db*
+/tests/db.yaml
 /plugins/
 /files/
 /.buildpath

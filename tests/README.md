@@ -32,7 +32,7 @@ Loading default schema...
 Installation done.
 ```
 
-The configuration file is saved as `tests/config_db.php`.
+The configuration file is saved as `tests/db.yaml`.
 
 The database is created using the default schema for current version.
 
@@ -43,7 +43,7 @@ If you need to recreate the database (e.g. for a new schema), you need to run
 Changing database configuration
 -------------------------------
 
-Using the same database than the web application is not recommended. Use the `tests/config_db.php` file to adjust connection settings.
+Using the same database than the web application is not recommended. Use the `tests/db.yaml` file to adjust connection settings.
 
 Running the test suite
 ----------------------

@@ -38,9 +38,9 @@ class DBmysql extends \GLPITestCase {
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
-      $this->olddb = new \DB();
+      $this->olddb = \Glpi\DatabaseFactory::create();
       $this->olddb->connect();
-      $this->boolean($this->olddb->connected)->isTrue();
+      $this->boolean($this->olddb->isConnected())->isTrue();
    }
 
    public function afterTestMethod($method) {
