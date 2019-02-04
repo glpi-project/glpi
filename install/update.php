@@ -36,7 +36,6 @@ if (!defined('GLPI_ROOT')) {
 
 include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
-include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 $GLPI_CACHE = Config::getCache('cache_db');
 $GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data
@@ -49,7 +48,7 @@ Config::detectRootDoc();
 $GLPI = new GLPI();
 $GLPI->initLogger();
 
-$DB = new DB();
+$DB = \Glpi\DatabaseFactory::create();
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
 $update = new Update($DB);
@@ -184,7 +183,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
    } else {
       echo "<h3>";
-      echo __("Connection to database failed, verify the connection parameters included in config_db.php file")."</h3>";
+      echo __("Connection to database failed, verify the connection parameters included in db.yaml file")."</h3>";
    }
 }
 

@@ -49,14 +49,61 @@ Session::start();
 
 Config::detectRootDoc();
 
-if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+$conf_exists = file_exists(GLPI_CONFIG_DIR . "/db.yaml");
+if (!$conf_exists && file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+    //convert old config file to new one
+    $oldconf = file_get_contents(GLPI_CONFIG_DIR . "/config_db.php");
+    $matches = [];
+
+    preg_match('/dbhost\s*=\s*["\'](.+)["\'];/', $oldconf, $matches);
+    $host = $matches[1];
+
+    preg_match('/dbuser\s*=\s*["\'](.+)["\'];/', $oldconf, $matches);
+    $user = $matches[1];
+
+    preg_match('/dbpassword\s*=\s*["\'](.+)["\'];/', $oldconf, $matches);
+    $password = $matches[1];
+
+    preg_match('/dbdefault\s*=\s*["\'](.+)["\'];/', $oldconf, $matches);
+    $dbname = $matches[1];
+
+    $migrated = \DBConnection::createMainConfig(
+        'mysql',
+        $host,
+        $user,
+        $password,
+        $dbname
+    );
+    if (!$migrated) {
+        if (!isCommandLine()) {
+            Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
+            echo "<div class='center'>";
+            echo "<p>Error: GLPI seems to not be configured properly.</p>";
+            echo "<p>db.yaml file is missing, and cannot be created from old configuration file.</p>";
+            echo "<p>Please check config files ACLs and reload the page.</p>";
+            echo "</div>";
+            Html::nullFooter();
+        } else {
+            echo "Error: GLPI seems to not be configured properly.\n";
+            echo "db.yaml file is missing, and cannot be created from old configuration file.\n";
+            echo "Please check config files ACLs and reload the page.\n";
+        }
+        die(1);
+    } else {
+        $conf_exists = true;
+        rename(GLPI_CONFIG_DIR . "/config_db.php", GLPI_CONFIG_DIR . "/legacy_config_db.php");
+        echo "Legacy configuration file has been converted and renamed to legacy_config_db. You may want to remove it\n";
+    }
+}
+
+if (!$conf_exists) {
    Session::loadLanguage();
    // no translation
    if (!isCommandLine()) {
       Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
       echo "<div class='center'>";
       echo "<p>Error: GLPI seems to not be configured properly.</p>";
-      echo "<p>config_db.php file is missing.</p>";
+      echo "<p>db.yaml file is missing.</p>";
       echo "<p>Please restart the install process.</p>";
       echo "<p><a class='red' href='".$CFG_GLPI['root_doc']."/install/install.php'>Click here to proceed</a></p>";
       echo "</div>";
@@ -64,13 +111,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    } else {
       echo "Error: GLPI seems to not be configured properly.\n";
-      echo "config_db.php file is missing.\n";
+      echo "db.yaml file is missing.\n";
       echo "Please connect to GLPI web interface to complete the install process.\n";
    }
    die(1);
 
 } else {
-   include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
    // Default Use mode
    if (!isset($_SESSION['glpi_use_mode'])) {

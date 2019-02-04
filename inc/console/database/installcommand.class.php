@@ -195,7 +195,7 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
       $force          = $input->getOption('force');
       $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
 
-      if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$force) {
+      if (file_exists(GLPI_CONFIG_DIR . '/db.yaml') && !$force) {
          // Prevent overriding of existing DB
          $output->writeln(
             '<error>' . __('Database configuration already exists. Use --force option to override existing database and configuration.') . '</error>'
@@ -311,10 +311,10 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
          '<comment>' . __('Saving configuration file...') . '</comment>',
          OutputInterface::VERBOSITY_VERBOSE
       );
-      if (!DBConnection::createMainConfig($db_hostport, $db_user, $db_pass, $db_name)) {
+      if (!DBConnection::createMainConfig('mysql', $db_hostport, $db_user, $db_pass, $db_name)) {
          $message = sprintf(
             __('Cannot write configuration file "%s".'),
-            GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
+            GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'db.yaml'
          );
          $output->writeln(
             '<error>' . $message . '</error>',

@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 use DBmysqlIterator;
 use GlpitestSQLError;
-use Iterator;
 use PDO;
 use PDOStatement;
 use Session;
@@ -99,20 +98,11 @@ abstract class AbstractDatabase
     protected $slave = false;
 
     /**
-     * Is it a first connection ?
-     * Indicates if the first connection attempt is successful or not
-     * if first attempt fail -> display a warning which indicates that glpi is in readonly
-     *
-     * @var boolean
-     */
-    public $first_connection = true;
-
-    /**
      * Is connected to the DB ?
      *
      * @var boolean
      */
-    public $connected = false;
+    protected $connected = false;
 
     /**
      * Is cache disabled ?
@@ -124,19 +114,55 @@ abstract class AbstractDatabase
     /**
      * Execution time (can be a boolean flag to enable computation or the computation result).
      *
-     * @var boolean|string
+     * @var string
      */
-    public $execution_time = false;
+    protected $execution_time;
+
+    /**
+     * Enable timer
+     *
+     * @var boolean
+     */
+    protected $timer_enabled = false;
 
     /**
      * Constructor / Connect to the database.
      *
+     * @param array   $params Connection parameters
      * @param integer $server host number
      *
      * @return void
      */
-    public function __construct($server = null)
+    public function __construct(array $params, $server = null)
     {
+        $requireds = [
+            'driver',
+            'host',
+            'user',
+            'pass',
+            'dbname'
+        ];
+        $missing = [];
+        foreach ($requireds as $required) {
+            if (!array_key_exists($required, $params)) {
+                $missing[] = $required;
+            }
+        }
+
+        if (count($missing)) {
+            $msg = sprintf(
+                __('Missing parameters: %1$s'),
+                implode(', ', $missing)
+            );
+            throw new \RuntimeException($msg);
+        }
+
+        $this->driver = $params['driver'];
+        $this->dbhost = $params['host'];
+        $this->dbuser = $params['user'];
+        $this->dbpassword = $params['pass'];
+        $this->dbdefault = $params['dbname'];
+
         $this->connect($server);
     }
 
@@ -208,7 +234,7 @@ abstract class AbstractDatabase
             $SQL_TOTAL_REQUEST++;
             $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
         }
-        if ($is_debug && $CFG_GLPI["debug_sql"] || $this->execution_time === true) {
+        if ($is_debug && $CFG_GLPI["debug_sql"] || $this->timer_enabled === true) {
             $TIMER = new Timer();
             $TIMER->start();
         }
@@ -218,7 +244,7 @@ abstract class AbstractDatabase
             if ($is_debug && $CFG_GLPI["debug_sql"]) {
                 $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIMER->getTime();
             }
-            if ($this->execution_time === true) {
+            if ($this->timer_enabled === true) {
                 $this->execution_time = $TIMER->getTime(0, true);
             }
             return $res;
@@ -1306,8 +1332,7 @@ abstract class AbstractDatabase
         $knowns = [
             'dbhost',
             'dbuser',
-            'dbdefault',
-            'dbpassword',
+            'dbdefault'
         ];
         if (in_array($name, $knowns)) {
             return $this->$name;
@@ -1326,5 +1351,48 @@ abstract class AbstractDatabase
     {
         $col = $result->getColumnMeta($i);
         return $col['name'];
+    }
+
+    /**
+     * Enable timer
+     *
+     * @return AbstractDatabase
+     */
+    public function enableTimer(): AbstractDatabase
+    {
+        $this->timer_enabled = true;
+        return $this;
+    }
+
+    /**
+     * Disable timer
+     *
+     * @return AbstractDatabase
+     */
+    public function disableTimer(): AbstractDatabase
+    {
+        $this->timer_enabled = false;
+        return $this;
+    }
+
+
+    /**
+     * Get execution time
+     *
+     * @return string
+     */
+    public function getExecutionTime(): string
+    {
+        return $this->execution_time;
+    }
+
+    /**
+     * Is connected to the database
+     *
+     * @retrun boolean
+     */
+    public function isConnected(): bool
+    {
+        return $this->connected;
     }
 }

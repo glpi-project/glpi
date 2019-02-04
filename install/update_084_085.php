@@ -2436,7 +2436,7 @@ function update084to085() {
 
    $migration->migrationOneTable('glpi_documents');
    $DB->updateOrDie('glpi_documents',
-      ['tag' => new QueryExpression(DB::quoteName("id"))],
+      ['tag' => new QueryExpression($DB->quoteName("id"))],
       [true],
       "0.85 set tag to all documents"
    );

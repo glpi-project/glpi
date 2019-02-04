@@ -1383,7 +1383,7 @@ class Search {
          }
       }
 
-      $DBread->execution_time = true;
+      $DBread->enableTimer();
       $result = $DBread->rawQuery($data['sql']['search'], $this->qry_params);
       /// Check group concat limit : if warning : increase limit
       //FIXME: MySQL specific
@@ -1392,7 +1392,6 @@ class Search {
             $res = $result2->fetch();
             if ($res['Code'] == 1260) {
                $DBread->rawQuery("SET SESSION group_concat_max_len = 8194304;");
-               $DBread->execution_time = true;
                $result = $DBread->rawQuery($data['sql']['search'], $this->qry_params);
             }
 
@@ -1406,11 +1405,11 @@ class Search {
          }
       }
 
-      $data['data']['execution_time'] = $DBread->execution_time;
+      $data['data']['execution_time'] = $DBread->getExecutionTime();
       if (isset($data['search']['savedsearches_id'])) {
          SavedSearch::updateExecutionTime(
             (int)$data['search']['savedsearches_id'],
-            $DBread->execution_time
+            $DBread->getExecutionTime()
          );
       }
 

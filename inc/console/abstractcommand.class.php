@@ -36,8 +36,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use DB;
 
+use Glpi\AbstractDatabase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -47,7 +47,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCommand extends Command {
 
    /**
-    * @var DB
+    * @var AbstractDatabase
     */
    protected $db;
 
@@ -77,10 +77,9 @@ abstract class AbstractCommand extends Command {
     * @return void
     */
    protected function initDbConnection() {
-
       global $DB;
 
-      if (!($DB instanceof DB) || !$DB->connected) {
+      if (!($DB instanceof AbstractDatabase) || !$DB->isConnected()) {
          throw new RuntimeException(__('Unable to connect to database.'));
       }
 

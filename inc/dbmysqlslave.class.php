@@ -29,9 +29,14 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-class DB extends DBmysql {
-   public $dbhost     = 'localhost';
-   public $dbuser     = 'root';
-   public $dbpassword = '';
-   public $dbdefault  = 'glpitest080';
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
+
+/**
+ *  Database class for Mysql
+**/
+class DBmysqlSlave extends DBmysql {
+   protected $slave = true;
 }

@@ -40,7 +40,6 @@ use CommonDBTM;
 use Computer;
 use ComputerModel;
 use Datacenter;
-use DB;
 use DCRoom;
 use Item_Rack;
 use Monitor;
@@ -408,7 +407,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
       ];
 
       foreach ($core_tables as $table) {
-         $result = $this->db->query('TRUNCATE ' . DB::quoteName($table));
+         $result = $this->db->query('TRUNCATE ' . $this->db->quoteName($table));
 
          if (!$result) {
             throw new RuntimeException(

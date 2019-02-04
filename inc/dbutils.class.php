@@ -326,7 +326,8 @@ final class DbUtils {
       }
       $condition['COUNT'] = 'cpt';
 
-      $row = $DB->request($table, $condition)->next();
+      $iterator = $DB->request($table, $condition);
+      $row = $iterator->next();
       return ($row ? (int)$row['cpt'] : 0);
    }
 

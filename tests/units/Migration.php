@@ -32,6 +32,8 @@
 
 namespace tests\units;
 
+use Symfony\Component\Yaml\Yaml;
+
 /* Test for inc/migration.class.php */
 /**
  * @engine inline
@@ -46,7 +48,10 @@ class Migration extends \GLPITestCase {
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
       if ($method !== 'testConstructor') {
-         $this->db = new \mock\DB();
+         $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml');
+         $dbclass = '\mock\DB' . $db_config['driver'];
+         $this->db = new $dbclass($db_config);
+
          $queries = [];
          $this->queries = &$queries;
          $qry_params = [];

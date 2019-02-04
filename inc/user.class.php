@@ -1384,7 +1384,7 @@ class User extends CommonDBTM {
                      $lgroups[] = [
                         new \QueryExpression($DB->quoteValue($lgroup).
                                              " LIKE ".
-                                             $DB::quoteName('ldap_value'))
+                                             $DB->quoteName('ldap_value'))
                      ];
                   }
                   $group_iterator = $DB->request([

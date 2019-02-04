@@ -39,7 +39,7 @@ define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 define('GLPI_ROOT', __DIR__ . '/../');
 
-if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+if (!file_exists(GLPI_CONFIG_DIR . '/db.yaml')) {
    die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
 }
 global $CFG_GLPI, $GLPI_CACHE, $IS_TWIG;

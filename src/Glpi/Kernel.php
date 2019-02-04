@@ -79,6 +79,12 @@ class Kernel
      */
     private $projectDir;
 
+    /**
+     * Constructor
+     *
+     * @param string $projectDir Project root dir
+     * @param string $cacheDir   Cache directory
+     */
     public function __construct(string $projectDir = GLPI_ROOT, string $cacheDir = GLPI_CACHE_DIR)
     {
         $this->cacheDir   = $cacheDir;
@@ -139,6 +145,9 @@ class Kernel
      * Configure container.
      *
      * Nota: This method was made to fits usage of Symfony\Component\HttpKernel\Kernel.
+     *
+     * @param ContainerBuilder $container DI container
+     * @param LoaderInterface  $loader    Loader
      *
      * @return void
      */
@@ -230,7 +239,7 @@ class Kernel
     /**
      * Define synthectic services.
      *
-     * @param ContainerInterface $container
+     * @param ContainerInterface $container DI container
      *
      * @return void
      */
@@ -263,14 +272,14 @@ class Kernel
     /**
     * Load plugin services.
     *
-    * @param ContainerBuilder $container
+    * @param ContainerBuilder $container DI container
     *
     * @return void
     */
     private function loadPluginsServices(ContainerBuilder $container)
     {
         $db = $this->getDbInstance();
-        if (!$db->connected) {
+        if (!$db->isConnected()) {
             return;
         }
 
@@ -332,17 +341,13 @@ class Kernel
      * Else, instanciate a non configure DB to be able to compile container.
      * Returns global variable reference that will be updated if a new connection is established.
      *
-     * @return DBmysql
+     * @return AbstractDatabase
      */
-    private function getDbInstance(): DBmysql
+    private function getDbInstance(): AbstractDatabase
     {
         global $DB;
-        if (!($DB instanceof DBmysql)) {
-            if (class_exists('DB', false)) {
-                $DB = new \DB();
-            } else {
-                $DB = new DBmysql();
-            }
+        if (!($DB instanceof AbstractDatabase)) {
+            $DB = \Glpi\DatabaseFactory::create();
         }
         return $DB;
     }
@@ -375,7 +380,7 @@ class Kernel
         global $CFG_GLPI;
 
         $db = $this->getDbInstance();
-        if ($db->connected) {
+        if ($db->isConnected()) {
             \Config::loadLegacyConfiguration(false);
         }
 

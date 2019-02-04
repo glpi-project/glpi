@@ -66,14 +66,14 @@ class Link extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      global $IS_TWIG;
+      global $DB, $IS_TWIG;
 
       if (self::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs'] && !$IS_TWIG) {
             $nb = countElementsInTable(
                ['glpi_links_itemtypes','glpi_links'], [
-                  'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
+                  'glpi_links_itemtypes.links_id'  => new \QueryExpression($DB->quoteName('glpi_links.id')),
                   'glpi_links_itemtypes.itemtype'  => $item->getType()
                ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
             );
@@ -84,10 +84,12 @@ class Link extends CommonDBTM {
    }
 
    protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      global $DB;
+
       return countElementsInTable(
          ['glpi_links_itemtypes','glpi_links'],
          [
-            'glpi_links_itemtypes.links_id'  => new \QueryExpression(DB::quoteName('glpi_links.id')),
+            'glpi_links_itemtypes.links_id'  => new \QueryExpression($DB->quoteName('glpi_links.id')),
             'glpi_links_itemtypes.itemtype'  => $item->getType()
          ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
       );
