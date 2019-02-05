@@ -728,7 +728,7 @@ class Migration {
       $rule['description'] = '';
 
       // Compute ranking
-      $sql = "SELECT MAX(`ranking`) AS rank
+      $sql = "SELECT MAX(`ranking`) AS `rank`
               FROM `glpi_rules`
               WHERE `sub_type` = '".$rule['sub_type']."'";
       $result = $DB->query($sql);

@@ -1942,7 +1942,7 @@ class Rule extends CommonDBTM {
    function getNextRanking() {
       global $DB;
 
-      $sql = "SELECT MAX(`ranking`) AS rank
+      $sql = "SELECT MAX(`ranking`) AS `rank`
               FROM `glpi_rules`
               WHERE `sub_type` = '".$this->getType()."'";
       $result = $DB->query($sql);
