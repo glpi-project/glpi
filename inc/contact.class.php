@@ -373,7 +373,7 @@ class Contact extends CommonDBTM{
          'id'                 => '85',
          'table'              => $this->getTable(),
          'field'              => 'state',
-         'name'               => __('State'),
+         'name'               => _x('location', 'State'),
          'datatype'           => 'string'
       ];
 
