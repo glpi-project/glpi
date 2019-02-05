@@ -5095,7 +5095,7 @@ class Html {
                               displayUploadedFile(file, tag[index], editor, '{$p['name']}');
 
                               $('#progress{$p['rand']} .uploadbar')
-                                 .text('".__('Upload successful')."')
+                                 .text('".__s('Upload successful')."')
                                  .css('width', '100%')
                                  .delay(2000)
                                  .fadeOut('slow');
@@ -5471,11 +5471,11 @@ class Html {
          if(typeof message == 'string') {
             message = message.replace('\\n', '<br>');
          }
-         caption = caption || '".addslashes(__("Information"))."';
+         caption = caption || '".__s("Information")."';
          $('<div/>').html(message).dialog({
             title: caption,
             buttons: {
-               ".addslashes(__('OK')).": function() {
+               ".__s('OK').": function() {
                   $(this).dialog('close');
                }
             },
@@ -5634,7 +5634,7 @@ class Html {
             modal: true,
             title: '".Toolbox::addslashes_deep( $title )."',
             buttons: {
-               '".__('OK')."': function () {
+               '".__s('OK')."': function () {
                      $(this).dialog('close');
                      ".($okCallback!==null?'('.$okCallback.')()':'')."
                   }
