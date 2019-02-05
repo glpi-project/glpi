@@ -70,7 +70,7 @@ class FQDN extends CommonDropdown {
     *
     * @return false or fields checks and update (lowercase for the fqdn field)
    **/
-   function prepareInput($input) {
+   function prepareInput(array $input, $mode = 'add') :array {
 
       if (isset($input['fqdn'])
           || $this->isNewID($this->getID())) {
@@ -96,12 +96,12 @@ class FQDN extends CommonDropdown {
 
 
    function prepareInputForAdd($input) {
-      return $this->prepareInput(parent::prepareInputForAdd($input));
+      return $this->prepareInput(parent::prepareInputForAdd($input), 'add');
    }
 
 
    function prepareInputForUpdate($input) {
-      return $this->prepareInput(parent::prepareInputForUpdate($input));
+      return $this->prepareInput(parent::prepareInputForUpdate($input), 'update');
    }
 
 

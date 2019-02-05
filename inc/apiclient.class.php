@@ -244,11 +244,7 @@ class APIClient extends CommonDBTM {
       $this->showFormButtons($options);
    }
 
-   function prepareInputForAdd($input) {
-      return $this->prepareInputForUpdate($input);
-   }
-
-   function prepareInputForUpdate($input) {
+   function prepareInput(array $input, $mode = 'add') :array {
 
       if (isset($input['ipv4_range_start'])) {
          $input['ipv4_range_start'] = ip2long($input['ipv4_range_start']);

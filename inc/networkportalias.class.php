@@ -45,8 +45,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
    }
 
 
-   function prepareInput($input) {
-
+   function prepareInput(array $input, $mode = 'add') :array {
       // Try to get mac address from the instantiation ...
 
       if (!isset($input['mac'])

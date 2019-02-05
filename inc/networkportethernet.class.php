@@ -49,8 +49,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
-   function prepareInput($input) {
-
+   function prepareInput(array $input, $mode = 'add') :array {
       if (isset($input['speed']) && ($input['speed'] == 'speed_other_value')) {
          $speed = self::transformPortSpeed($input['speed_other_value'], false);
          if ($speed === false) {

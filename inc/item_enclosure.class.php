@@ -278,22 +278,7 @@ class Item_Enclosure extends CommonDBRelation {
       $this->showFormButtons($options);
    }
 
-   function prepareInputForAdd($input) {
-      return $this->prepareInput($input);
-   }
-
-   function prepareInputForUpdate($input) {
-      return $this->prepareInput($input);
-   }
-
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
-   private function prepareInput($input) {
+   function prepareInput(array $input, $mode = 'add') :array {
       $error_detected = [];
 
       //check for requirements

@@ -916,22 +916,7 @@ JAVASCRIPT;
       return $icon;
    }
 
-   function prepareInputForAdd($input) {
-      return $this->prepareInput($input);
-   }
-
-   function prepareInputForUpdate($input) {
-      return $this->prepareInput($input);
-   }
-
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
-   private function prepareInput($input) {
+   function prepareInput(array $input, $mode = 'add') :array {
       $error_detected = [];
 
       $itemtype    = !$this->isNewItem() ? $this->fields['itemtype'] : null;

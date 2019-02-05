@@ -207,10 +207,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   /**
-    * @param $input
-   **/
-   function prepareInput($input) {
+   function prepareInput(array $input, $mode = 'add') :array {
 
       // In case of entity transfer, $input['network'] is not defined
       if (!isset($input['network']) && isset($this->fields['network'])) {

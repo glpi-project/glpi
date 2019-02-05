@@ -587,16 +587,7 @@ class CommonDBTM extends CommonGLPI {
 
       $nb_fields = count($this->fields);
       if ($nb_fields > 0) {
-         $params = [];
-         foreach ($this->fields as $key => $value) {
-            //FIXME: why is that handled here?
-            if (($this->getType() == 'ProfileRight') && ($value == '')) {
-               $value = 0;
-            }
-            $params[$key] = $value;
-         }
-
-         $result = $DB->insert($this->getTable(), $params);
+         $result = $DB->insert($this->getTable(), $this->fields);
          if ($result) {
             if (!isset($this->fields['id'])
                   || is_null($this->fields['id'])
@@ -1269,7 +1260,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Add needed information to $input (example entities_id)
     *
-    * @param array $input datas used to add the item
+    * @param array $input data used to add the item
     *
     * @since 0.84
     *
@@ -1279,16 +1270,27 @@ class CommonDBTM extends CommonGLPI {
       return $input;
    }
 
+   /**
+    * Prepare input data for adding the item
+    *
+    * @param array  $input Data used to add the item
+    * @param string $mode  Either 'add' or 'update'
+    *
+    * @return array the modified $input array
+   **/
+   function prepareInput(array $input, $mode = 'add') :array {
+      return $input;
+   }
 
    /**
-    * Prepare input datas for adding the item
+    * Prepare input data for adding the item
     *
-    * @param array $input datas used to add the item
+    * @param array $input Data used to add the item
     *
     * @return array the modified $input array
    **/
    function prepareInputForAdd($input) {
-      return $input;
+      return $this->prepareInput($input, 'add');
    }
 
 
@@ -1547,14 +1549,14 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Prepare input datas for updating the item
+    * Prepare input data for updating the item
     *
-    * @param array $input data used to update the item
+    * @param array $input Data used to update the item
     *
     * @return array the modified $input array
    **/
    function prepareInputForUpdate($input) {
-      return $input;
+      return $this->prepareInput($input, 'update');
    }
 
 
