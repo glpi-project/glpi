@@ -24,7 +24,7 @@ shared: &shared
           sudo -E composer self-update
           sed -e '/"php":/d' -i composer.json
           rm -f composer.lock
-          composer install --optimize-autoloader
+          composer install --optimize-autoloader --no-progress --prefer-dist --no-suggest
     - run:
         name: npm install
         command: |
