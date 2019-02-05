@@ -5522,11 +5522,11 @@ class Html {
             modal: true,
             title: '".Toolbox::addslashes_deep($title)."',
             buttons: {
-               '" . __('Yes') . "': function () {
+               '" . __s('Yes') . "': function () {
                      $(this).dialog('close');
                      ".($yesCallback!==null?'('.$yesCallback.')()':'')."
                   },
-               '" . __('No') . "': function () {
+               '" . __s('No') . "': function () {
                      $(this).dialog('close');
                      ".($noCallback!==null?'('.$noCallback.')()':'')."
                   }
