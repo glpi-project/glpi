@@ -201,7 +201,7 @@ final class DbUtils {
                $table = substr($table, \strlen(NS_GLPI));
             }
          }
-         $table = str_replace('\\', '_', $table);
+         $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
          if (strstr($table, '_')) {
             $split = explode('_', $table);
 
