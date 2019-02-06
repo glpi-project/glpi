@@ -1,0 +1,37 @@
+Return-Path: tech@glpi-project.org
+Received: from 192.168.1.3 (LHLO mail.glpi-project.org) (192.168.1.3)
+ by mail.glpi-project.org with LMTP; Tue, 2 Apr 2019 14:43:12 +0200
+ (CEST)
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+	by mail.glpi-project.org (Postfix) with ESMTP id 6F3457E80D1E
+	for <unittests@glpi-project.org>; Tue,  2 Apr 2019 14:43:12 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.glpi-project.org (Postfix) with ESMTP id 645C77E80D1C
+	for <unittests@glpi-project.org>; Tue,  2 Apr 2019 14:43:12 +0200 (CEST)
+Received: from mail.glpi-project.org ([127.0.0.1])
+	by localhost (mail.glpi-project.org [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id POJTfrC8TVrL for <unittests@glpi-project.org>;
+	Tue,  2 Apr 2019 14:43:12 +0200 (CEST)
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+	by mail.glpi-project.org (Postfix) with ESMTP id 55AF37E80C20
+	for <unittests@glpi-project.org>; Tue,  2 Apr 2019 14:43:12 +0200 (CEST)
+Date: Tue, 2 Apr 2019 14:43:12 +0200 (CEST)
+From: Tech Ni Cian <tech@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <2078889367.1658939.1554208992329.JavaMail.zimbra@glpi-project.org>
+Subject: PHP fatal error
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.0.9_GA_6191 (ZimbraWebClient - FF66 (Linux)/8.0.9_GA_6191)
+Thread-Topic: PHP fatal error
+Thread-Index: OOKl6v3Lu6HeDTdJe0OrUl01ERm/dw==
+
+On some cases, doing the following:
+# blahblah
+
+Will cause a PHP fatal error:
+# blahblah
+
+Best regards,
+
