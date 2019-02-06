@@ -383,7 +383,7 @@ class ProfileRight extends CommonDBChild {
       return ['Profile', $this->fields['profiles_id']];
    }
 
-   function prepareInput(array $input, $mode) :array {
+   function prepareInput(array $input, $mode = 'add') :array {
       foreach ($input as &$value) {
          if ($value == '') {
                $value = 0;

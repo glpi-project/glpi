@@ -86,25 +86,13 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
-   function prepareInput($input) {
-
+   function prepareInput(array $input, $mode = 'add') :array {
       // Try to get mac address from the instantiation ...
       if (!empty($input['mac'])) {
          $input['mac'] = strtolower($input['mac']);
       }
-      return $input;
+      return parent::prepareInput($input, $mode);
    }
-
-
-   function prepareInputForAdd($input) {
-      return parent::prepareInputForAdd($this->prepareInput($input));
-   }
-
-
-   function prepareInputForUpdate($input) {
-      return parent::prepareInputForUpdate($this->prepareInput($input));
-   }
-
 
    /**
     * Get all the instantiation specific options to display

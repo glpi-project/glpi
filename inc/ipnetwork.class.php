@@ -341,7 +341,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    function prepareInputForAdd($input) {
 
-      $preparedInput = $this->prepareInput($input);
+      $preparedInput = $this->prepareInput($input, 'add');
 
       if (isset($preparedInput['error'])) {
          Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
@@ -361,7 +361,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    function prepareInputForUpdate($input) {
 
-      $preparedInput = $this->prepareInput($input);
+      $preparedInput = $this->prepareInput($input, 'update');
 
       if (isset($preparedInput['error'])) {
          Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);

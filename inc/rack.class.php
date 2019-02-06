@@ -892,7 +892,7 @@ JAVASCRIPT;
    }
 
    function prepareInputForAdd($input) {
-      if ($this->prepareInput($input)) {
+      if ($input = $this->prepareInput($input, 'add')) {
          if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
          }
@@ -904,22 +904,11 @@ JAVASCRIPT;
       return false;
    }
 
-   function prepareInputForUpdate($input) {
-      return $this->prepareInput($input);
-   }
-
    function post_getEmpty() {
       $this->fields['bgcolor'] = '#FEC95C';
    }
 
-   /**
-    * Prepares input (for update and add)
-    *
-    * @param array $input Input data
-    *
-    * @return array
-    */
-   private function prepareInput($input) {
+   public function prepareInput(array $input, $mode = 'add') :array {
 
       if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
          // Position is not set if room not selected

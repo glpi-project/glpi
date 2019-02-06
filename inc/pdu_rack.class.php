@@ -66,22 +66,15 @@ class PDU_Rack extends CommonDBRelation {
       return $forbidden;
    }
 
-   function prepareInputForAdd($input) {
-      return $this->prepareInput($input);
-   }
-
-   function prepareInputForUpdate($input) {
-      return $this->prepareInput($input);
-   }
-
    /**
     * Prepares and check validity of input (for update and add) and
     *
-    * @param array $input Input data
+    * @param array  $input Input data
+    * @param string $mode  Either add or update
     *
     * @return array
     */
-   private function prepareInput($input) {
+   public function prepareInput(array $input, $mode = 'add') :array {
       $error_detected = [];
 
       $pdus_id  = $this->fields['pdus_id'];
