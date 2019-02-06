@@ -15,6 +15,7 @@
 # Frederik Van Helleputte <transifex.com@goorix.be>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Joren Guillaume <chaos.side@gmail.com>, 2018
+# Bram Maes <losbramos@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -23,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-11 08:17+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Joren Guillaume <chaos.side@gmail.com>, 2018\n"
+"Last-Translator: Bram Maes <losbramos@gmail.com>, 2019\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/glpi/teams/1637/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2451,7 +2452,7 @@ msgstr[1] ""
 #: inc/config.class.php:2434
 #, php-format
 msgid "%s extension is missing"
-msgstr ""
+msgstr "%s uitbreiding ontbreekt"
 
 #: front/massiveaction.php:45
 msgid "Bulk modification error"

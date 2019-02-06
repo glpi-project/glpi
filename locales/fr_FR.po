@@ -11,6 +11,7 @@
 # Pierre <plebel@teclib.com>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2018
+# Philippe P <fylip22@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-11 08:17+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Johan Cwiklinski <jcwiklinski@teclib.com>, 2018\n"
+"Last-Translator: Philippe P <fylip22@gmail.com>, 2019\n"
 "Language-Team: French (France) (https://www.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1282,7 +1283,7 @@ msgid ""
 "want to restore !!!"
 msgstr ""
 "Attention, votre base de données actuelle sera complètement écrasée par la "
-"base de données que vous voulez restaurer !!!"
+"base de données que vous voulez restaurer !"
 
 #: front/backup.php:648
 msgid "Restore"
@@ -6466,7 +6467,7 @@ msgid ""
 "Caution! You are not the author of this element. Delete targets can result "
 "in loss of access to that element."
 msgstr ""
-"Attention! Vous n'êtes pas l'auteur de cet élément. Supprimer des cibles "
+"Attention ! Vous n'êtes pas l'auteur de cet élément. Supprimer des cibles "
 "peut entraîner la perte de l'accès à cet élément."
 
 #: inc/commondbvisible.class.php:196 inc/notificationevent.class.php:196
@@ -9485,7 +9486,7 @@ msgstr "Remise à zéro"
 
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr ""
+msgstr "Le mode maintenance activé, l'exécution des tâches est désactivée"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -10928,7 +10929,7 @@ msgstr "Passer en gestion unitaire"
 
 #: inc/dropdown.class.php:2053
 msgid "Do you really want to use unitary management for this item?"
-msgstr "Confirmez vous le passage en gestion unitaire pour cet élément ?"
+msgstr "Confirmez-vous le passage en gestion unitaire pour cet élément ?"
 
 #: inc/dropdown.class.php:2054 inc/dropdown.class.php:2058
 #: inc/dropdown.class.php:2059
@@ -11486,7 +11487,7 @@ msgid ""
 " dots). For example: indepnet.net"
 msgstr ""
 "Nom de domaine complètement qualifié. Utilisez la notation classique (noms "
-"séparés par des points). Par exemple: services.glpi-network.com"
+"séparés par des points). Par exemple : services.glpi-network.com"
 
 #: inc/fqdn.class.php:80
 msgid "FQDN must not be empty"
@@ -12162,7 +12163,7 @@ msgstr "Coefficient d'amortissement"
 
 #: inc/infocom.class.php:1198
 msgid "TCO (value + tracking cost)"
-msgstr "TCO (valeur+montant des interventions)"
+msgstr "TCO (valeur + montant des interventions)"
 
 #: inc/infocom.class.php:1207
 msgid "Monthly TCO"
@@ -13501,7 +13502,7 @@ msgstr "Utiliser la date du courriel au lieu de celle de la collecte"
 
 #: inc/mailcollector.class.php:311
 msgid "Use Reply-To as requester (when available)"
-msgstr ""
+msgstr "Utiliser \"Répondre à\" en tant que demandeur (si disponible)"
 
 #: inc/mailcollector.class.php:407
 #, php-format
@@ -15346,7 +15347,7 @@ msgstr "Vous avez demandé la réinitialisation de votre mot de passe."
 
 #: inc/notificationtargetuser.class.php:124
 msgid "Just follow this link (you have one day):"
-msgstr "Il vous suffit de suivre ce lien ( vous disposez d'une journée ) :"
+msgstr "Il vous suffit de suivre ce lien (vous disposez d'une journée) :"
 
 #: inc/notificationtemplate.class.php:131
 msgid "CSS"
@@ -16380,7 +16381,7 @@ msgstr[1] "Membres"
 #: inc/project.class.php:1654
 #, php-format
 msgid "Invalid items (no start or end date): %s"
-msgstr "Éléments invalides (pas de date de début ou de fin): %s"
+msgstr "Éléments invalides (pas de date de début ou de fin) : %s"
 
 #: inc/project.class.php:1659 inc/toolbox.class.php:2276
 msgid "January"
@@ -16909,7 +16910,7 @@ msgstr "Interdire les réservations"
 
 #: inc/reservationitem.class.php:322
 msgid "Are you sure you want to return this non-reservable item?"
-msgstr "Êtes vous sûr de vouloir rendre cet élément non réservable ?"
+msgstr "Êtes-vous sûr de vouloir rendre cet élément non réservable ?"
 
 #: inc/reservationitem.class.php:323
 msgid "That will remove all the reservations in progress."
@@ -17013,7 +17014,7 @@ msgstr "Copier depuis l'élément"
 
 #: inc/ruleasset.class.php:154
 msgid "User based contact information"
-msgstr ""
+msgstr "Informations de contact basées sur l'utilisateur"
 
 #. TRANS: short for : Business rules for ticket (entity parent)
 #: inc/ruleasset.class.php:185 inc/ruleticket.class.php:697
@@ -17896,7 +17897,7 @@ msgstr "Montrer la corbeille"
 #: inc/search.class.php:1906
 #, php-format
 msgid "%1$s %2$s (%3$s)"
-msgstr ""
+msgstr "%1$s %2$s (%3$s) "
 
 #: inc/search.class.php:1962 inc/search.class.php:1964
 #: inc/search.class.php:1982 inc/search.class.php:2046
@@ -18396,7 +18397,7 @@ msgstr "Fusionner les suivis"
 
 #: inc/ticket.class.php:2722
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr ""
+msgstr "Confirmez-vous la fusion ? Ce ticket sera supprimé !"
 
 #: inc/ticket.class.php:2816
 #, php-format
@@ -18697,7 +18698,7 @@ msgstr "Ticket %d créé avec succès"
 
 #: inc/ticketrecurrent.class.php:502
 msgid "Ticket creation failed (check mandatory fields)"
-msgstr "Échec de la création du ticket ( vérifiez les champs obligatoires )"
+msgstr "Échec de la création du ticket (vérifiez les champs obligatoires)"
 
 #: inc/ticketrecurrent.class.php:505
 msgid "Ticket creation failed (no template)"

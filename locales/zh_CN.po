@@ -11,6 +11,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # liAnGjiA <liangjia@qq.com>, 2019
+# 南 孔 <KongNan@gmail.com>, 2019
 # 李赋 <fu792659@163.com>, 2019
 # 
 #, fuzzy
@@ -4783,7 +4784,7 @@ msgstr "查看更新的用户"
 #: inc/authldap.class.php:3524 inc/networkport.class.php:882
 #: inc/software.class.php:307
 msgid "from"
-msgstr "寄件人"
+msgstr "来自"
 
 #: inc/authldap.class.php:3531 inc/networkport.class.php:884
 msgid "to"
@@ -7071,11 +7072,11 @@ msgstr "验证请求的答复"
 
 #: inc/commonitilobject.class.php:6562
 msgid "Followup was already promoted"
-msgstr ""
+msgstr "追踪已被提升"
 
 #: inc/commonitilobject.class.php:6567
 msgid "Promote to Ticket"
-msgstr ""
+msgstr "提升为工单"
 
 #: inc/commonitilobject.class.php:6571 inc/knowbaseitem.class.php:200
 #: inc/knowbaseitemtranslation.class.php:91 inc/user.class.php:2385
@@ -7095,7 +7096,7 @@ msgstr "从工单%1$s 合并"
 #: inc/commonitilobject.class.php:6683
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr ""
+msgstr "已提升为工单 %1$s"
 
 #: inc/commonitilobject.class.php:6692
 #, php-format
@@ -7130,7 +7131,7 @@ msgstr "显示"
 
 #: inc/commonitilobject.class.php:6825
 msgid "Followup promotion source"
-msgstr ""
+msgstr "追踪提升源"
 
 #: inc/commonitilobject.class.php:6830
 #, php-format
@@ -9258,7 +9259,7 @@ msgstr "空白"
 
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr ""
+msgstr "维护模式已启用, 运行中的任务已禁用"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -12388,7 +12389,7 @@ msgstr "查看公共的"
 #: inc/itil_project.class.php:51
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] ""
+msgstr[0] "关联项目/ITIL"
 
 #: inc/itil_project.class.php:88
 msgid "Itil item"
@@ -12437,7 +12438,7 @@ msgstr "根类别"
 
 #: inc/knowbase.class.php:319
 msgid "This category contains articles"
-msgstr ""
+msgstr "此类别包含文章"
 
 #: inc/knowbaseitem.class.php:198 inc/knowbaseitem.class.php:819
 #: inc/reminder.class.php:540 inc/rssfeed.class.php:534
@@ -15761,7 +15762,7 @@ msgstr "工单的商业规则（实体）"
 #: inc/profile.class.php:1352 inc/ruleasset.class.php:49
 #: inc/ruleassetcollection.class.php:45
 msgid "Business rules for assets"
-msgstr ""
+msgstr "资产的商业规则"
 
 #: inc/profile.class.php:1362 inc/profile.class.php:1370
 #: inc/profile.class.php:2104
@@ -16434,7 +16435,7 @@ msgstr "查看所有可保留项目"
 
 #: inc/reservationitem.class.php:412 inc/reservationitem.class.php:423
 msgid "Find a free item in a specific period"
-msgstr "按特定时间查找免费项目"
+msgstr "按时间日期筛选项目"
 
 #: inc/reservationitem.class.php:668
 msgid "Device reservations expiring today"
@@ -16517,7 +16518,7 @@ msgstr "从项目复制"
 
 #: inc/ruleasset.class.php:154
 msgid "User based contact information"
-msgstr ""
+msgstr "基于用户的联系信息"
 
 #. TRANS: short for : Business rules for ticket (entity parent)
 #: inc/ruleasset.class.php:185 inc/ruleticket.class.php:697
@@ -17138,11 +17139,11 @@ msgstr "工单地点"
 
 #: inc/ruleticket.class.php:508
 msgid "Creation date is a working hour in calendar"
-msgstr ""
+msgstr "创建日期是日历中的工作时间"
 
 #: inc/ruleticket.class.php:646
 msgid "Responsible of the requester"
-msgstr ""
+msgstr "由请求者负责"
 
 #: inc/ruleticket.class.php:662
 msgid "Approval request to requester group manager"
@@ -17825,7 +17826,7 @@ msgstr "无效邮箱地址 %s"
 #: inc/ticket.class.php:2148
 #, php-format
 msgid "%s promotes a followup from ticket %s"
-msgstr ""
+msgstr "%s 推动工单后续追踪 %s"
 
 #: inc/ticket.class.php:2363
 #, php-format
@@ -17852,16 +17853,16 @@ msgstr ""
 
 #: inc/ticket.class.php:2714
 msgid "Merge Followups"
-msgstr ""
+msgstr "合并追踪"
 
 #: inc/ticket.class.php:2722
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr ""
+msgstr "确认合并吗? 此工单将被删除!"
 
 #: inc/ticket.class.php:2816
 #, php-format
 msgid "%s merges ticket %s into %s"
-msgstr ""
+msgstr "%s 合并工单 %s 成 %s"
 
 #: inc/ticket.class.php:2854
 msgid "Time to own + Progress"
@@ -17979,7 +17980,7 @@ msgstr "默认文档："
 
 #: inc/ticket.class.php:5318
 msgid "Confirm the promotion?"
-msgstr ""
+msgstr "确认提升吗?"
 
 #: inc/ticket.class.php:5543 inc/ticket.class.php:5715
 msgid "Your tickets to close"

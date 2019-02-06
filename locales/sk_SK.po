@@ -8128,7 +8128,7 @@ msgstr "Všeobecné"
 #: inc/config.class.php:232
 #, php-format
 msgid "Maintenance mode activated. Backdoor using: %s"
-msgstr "Aktivovaný mód údržby. Pre servisné prihlásenie použite: %s"
+msgstr "Aktivovaný režim údržby. Pre servisné prihlásenie použite: %s"
 
 #: inc/config.class.php:274 inc/config.class.php:1654
 #: inc/config.class.php:2110 inc/profile.class.php:1409
@@ -9687,7 +9687,7 @@ msgstr "Vymazať"
 
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr ""
+msgstr "Zapnutý režim údržby - spúšťanie úloh je vypnuté"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -18973,7 +18973,7 @@ msgstr "Zlúčiť reakcie"
 
 #: inc/ticket.class.php:2722
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr ""
+msgstr "Potvrdiť zlúčenie? Táto požiadavka bude zmazaná!"
 
 #: inc/ticket.class.php:2816
 #, php-format
@@ -19742,7 +19742,7 @@ msgstr "Položky na presunutie"
 
 #: inc/transfer.class.php:3716
 msgid "Transfer mode"
-msgstr "Mód presunu"
+msgstr "Režim presunu"
 
 #: inc/transfer.class.php:3782
 msgid "To empty the list of elements to be transferred"

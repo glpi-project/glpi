@@ -11,6 +11,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2018
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Daisuke Inoue, 2019
+# in dow <in_dow@hotmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-11 08:17+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Daisuke Inoue, 2019\n"
+"Last-Translator: in dow <in_dow@hotmail.com>, 2019\n"
 "Language-Team: Japanese (Japan) (https://www.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8750,17 +8751,17 @@ msgstr "すべてのログを消去する"
 
 #: inc/config.class.php:3265
 msgid "Delete all"
-msgstr ""
+msgstr "全て削除"
 
 #: inc/config.class.php:3266
 msgid "Keep all"
-msgstr ""
+msgstr "すべて保持"
 
 #: inc/config.class.php:3271
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] ""
+msgstr[0] "%sヶ月以前を削除"
 
 #: inc/config.php:154 inc/config.php:162
 msgid "Service is down for maintenance. It will be back shortly."
@@ -9207,7 +9208,7 @@ msgstr[0] "自動実行"
 
 #: inc/crontask.class.php:190 inc/crontask.class.php:290
 msgid "Action aborted"
-msgstr ""
+msgstr "中止された動作"
 
 #: inc/crontask.class.php:293
 msgid "Action completed, partially processed"
@@ -9527,11 +9528,11 @@ msgstr[0] "%d日"
 #: inc/dcroom.class.php:258
 msgid "Data center"
 msgid_plural "Data centers"
-msgstr[0] ""
+msgstr[0] "データセンター"
 
 #: inc/dbconnection.class.php:377
 msgid "Check the SQL replica"
-msgstr ""
+msgstr "SQLレプリカの確認"
 
 #: inc/dbconnection.class.php:378
 msgid "Max delay between master and slave (minutes)"
@@ -9550,7 +9551,7 @@ msgstr ""
 
 #: inc/dbconnection.class.php:448
 msgid "SQL server"
-msgstr ""
+msgstr "SQL Server"
 
 #: inc/dbconnection.class.php:451
 msgid "can't connect to the database"
@@ -9579,15 +9580,15 @@ msgstr ""
 #: inc/dcroom.class.php:50 inc/rack.class.php:200 inc/rack.class.php:411
 msgid "Server room"
 msgid_plural "Server rooms"
-msgstr[0] ""
+msgstr[0] "サーバールーム"
 
 #: inc/dcroom.class.php:124 inc/dcroom.class.php:266
 msgid "Number of columns"
-msgstr ""
+msgstr "列数"
 
 #: inc/dcroom.class.php:135 inc/dcroom.class.php:274
 msgid "Number of rows"
-msgstr ""
+msgstr "行数"
 
 #: inc/dcroom.class.php:149
 msgid "Background picture (blueprint)"
@@ -9625,7 +9626,7 @@ msgstr ""
 #: inc/devicebattery.class.php:114 inc/devicesimcard.class.php:57
 #: inc/devicesimcard.class.php:77
 msgid "Voltage"
-msgstr ""
+msgstr "電圧(V)"
 
 #: inc/devicebattery.class.php:65 inc/devicebattery.class.php:114
 msgid "mV"
@@ -9849,7 +9850,7 @@ msgstr "MACアドレス"
 #: inc/devicenetworkcardmodel.class.php:44
 msgid "Network card model"
 msgid_plural "Network card models"
-msgstr[0] ""
+msgstr[0] "ネットワークカードモデル"
 
 #: inc/devicepci.class.php:45 inc/devicepci.class.php:89
 msgid "Other component"
@@ -9879,7 +9880,7 @@ msgstr "電源"
 #: inc/devicepowersupplymodel.class.php:44 inc/dropdown.class.php:958
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] ""
+msgstr[0] "デバイス電源モデル"
 
 #: inc/deviceprocessor.class.php:43 inc/deviceprocessor.class.php:216
 msgid "Processor"
@@ -9902,11 +9903,11 @@ msgstr "スレッドの数"
 
 #: inc/deviceprocessor.class.php:233
 msgid "processor: number of cores"
-msgstr ""
+msgstr "プロセッサ: コア数"
 
 #: inc/deviceprocessor.class.php:246
 msgid "processor: number of threads"
-msgstr ""
+msgstr "プロセッサ: スレッド数"
 
 #: inc/deviceprocessor.class.php:259
 msgid "Processor frequency"
@@ -9915,7 +9916,7 @@ msgstr "CPU周波数"
 #: inc/deviceprocessormodel.class.php:44 inc/dropdown.class.php:960
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] ""
+msgstr[0] "機器のプロセッサ型番"
 
 #: inc/devicesensor.class.php:45
 msgid "Sensor"
@@ -9939,7 +9940,7 @@ msgstr[0] "SIMカード"
 
 #: inc/devicesimcard.class.php:63 inc/devicesimcard.class.php:93
 msgid "Allow VOIP"
-msgstr ""
+msgstr "VoIPを許可"
 
 #: inc/devicesimcardtype.class.php:45 inc/dropdown.class.php:911
 msgid "Simcard type"
@@ -9954,7 +9955,7 @@ msgstr[0] "サウンドカード"
 #: inc/devicesoundcardmodel.class.php:44 inc/dropdown.class.php:962
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] ""
+msgstr[0] "機器のサウンドカード型番"
 
 #: inc/displaypreference.class.php:306
 msgid "No personal criteria. Create personal parameters?"
@@ -11596,7 +11597,7 @@ msgstr ""
 
 #: inc/html.class.php:5025
 msgid "File(s)"
-msgstr ""
+msgstr "ファイル"
 
 #: inc/html.class.php:5042
 msgid "Drag and drop your file here, or"
@@ -12057,7 +12058,7 @@ msgstr ""
 
 #: inc/item_operatingsystem.class.php:396
 msgid "Operating System"
-msgstr ""
+msgstr "OS"
 
 #: inc/item_rack.class.php:124 inc/rack.class.php:558
 msgid "View as list"
@@ -14093,7 +14094,7 @@ msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:380
 msgid "Browser"
-msgstr ""
+msgstr "ブラウザ"
 
 #: inc/notificationsettingconfig.class.php:95
 msgid "Notifications configuration"

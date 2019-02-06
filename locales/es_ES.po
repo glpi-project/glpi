@@ -19,7 +19,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Dani Gamero <gargam3@gmail.com>, 2018
 # FranciscoFJ <dev-ooo@satel-sa.com>, 2018
-# Pruebas, 2018
+# Pruebas, 2019
 # 
 #, fuzzy
 msgid ""
@@ -28,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-11 08:17+0100\n"
 "PO-Revision-Date: 2018-05-29 14:21+0000\n"
-"Last-Translator: Pruebas, 2018\n"
+"Last-Translator: Pruebas, 2019\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/glpi/teams/1637/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9494,6 +9494,7 @@ msgstr "Borrar"
 #: inc/crontask.class.php:581 inc/crontask.class.php:788
 msgid "Maintenance mode enabled, running tasks is disabled"
 msgstr ""
+"Modo de mantenimiento habilitado, las tareas en ejecución están desactivadas"
 
 #: inc/crontask.class.php:688 inc/crontask.class.php:1183
 msgid "Running"
@@ -18399,7 +18400,7 @@ msgstr "Combinar seguimientos"
 
 #: inc/ticket.class.php:2722
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr ""
+msgstr "¿Confirma la fusión? ¡Esta petición será eliminada!"
 
 #: inc/ticket.class.php:2816
 #, php-format
