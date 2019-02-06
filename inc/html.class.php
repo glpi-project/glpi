@@ -2792,7 +2792,7 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output = "<div class='no-wrap'>";
+      $output = "<span class='no-wrap'>";
       $output .= "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
                    trim(self::convDateTime($p['value']))."'";
       if ($p['required'] == true) {
@@ -2805,7 +2805,7 @@ class Html {
                       "' id='resetdate".$p['rand']."'>" .
                       "<span class='sr-only'>" . __('Clear') . "</span></span>";
       }
-      $output .= "</div>";
+      $output .= "</span>";
 
       $js = "$(function(){";
       if ($p['maybeempty'] && $p['canedit']) {
