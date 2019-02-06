@@ -2955,10 +2955,10 @@ class Profile extends CommonDBTM {
          // For standard rights sort by right
          if (($a[0] < 1024) || ($b[0] < 1024)) {
             if ($a[0] > $b[0]) {
-               return true;
+                return true;
             }
             if ($a[0] < $b[0]) {
-               return false;
+                return false;
             }
             return ($a[1] > $b[1]);
             // For extra right sort by type

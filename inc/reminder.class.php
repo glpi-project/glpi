@@ -783,8 +783,8 @@ class Reminder extends CommonDBVisible {
                        'items_id' => $this->getID()];
 
             if ($ID && $this->fields["is_planned"]) {
-               $params['begin'] = $this->fields["begin"];
-               $params['end']   = $this->fields["end"];
+                  $params['begin'] = $this->fields["begin"];
+                  $params['end']   = $this->fields["end"];
             }
 
             Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);

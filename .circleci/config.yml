@@ -58,6 +58,12 @@ shared: &shared
         name: Unit tests
         command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
     - run:
+        name: IMAP tests
+        command: |
+          sudo service dovecot start
+          for f in `ls tests/emails-tests/*.eml`; do getmail_maildir ~/Maildir/ < $f; done
+          php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
+    - run:
         name: Database tests
         command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
     - run:
