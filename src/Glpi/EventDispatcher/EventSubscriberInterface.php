@@ -39,7 +39,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface as BaseEventSubsc
  *
  * This decorator aims to make transparent any future change of event management component.
  *
- * @since 10.0
+ * @since 10.0.0
  */
 interface EventSubscriberInterface extends BaseEventSubscriberInterface
 {

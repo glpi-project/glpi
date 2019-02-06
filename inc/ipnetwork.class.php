@@ -655,7 +655,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Get SQL WHERE statement for requesting elements that are contained inside the current network
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     *
     * @param $tableName          name of the table containing the element
     *                            (for instance : glpi_ipaddresses)
@@ -687,7 +687,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Get SQL WHERE criteria for requesting elements that are contained inside the current network
     *
-    * @since 10.0
+    * @since 10.0.0
     *
     * @param string $tableName         name of the table containing the element
     *                                  (for instance : glpi_ipaddresses)

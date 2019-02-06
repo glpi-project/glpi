@@ -1269,7 +1269,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return string where clause
     *
-    * @since 10.0 Added $qry_params parameter
+    * @since 10.0.0 Added $qry_params parameter
     */
    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, array &$qry_params, $meta = 0) {
 

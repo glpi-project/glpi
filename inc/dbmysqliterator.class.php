@@ -514,7 +514,7 @@ class DBmysqlIterator implements Iterator, Countable {
    /**
     * Retrieve statement parameters
     *
-    * @since 10.0
+    * @since 10.0.0
     *
     * @return array
     */

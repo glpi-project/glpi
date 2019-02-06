@@ -71,7 +71,7 @@ abstract class AbstractQuery {
     *
     * @return array
     *
-    * @since 10.0
+    * @since 10.0.0
     */
    abstract public function getParameters();
 }

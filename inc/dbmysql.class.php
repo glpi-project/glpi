@@ -71,7 +71,7 @@ class DBmysql extends AbstractDatabase {
     * taking into account the current charset of the connection
     *
     * @since 0.84
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     *
     * @param string $string String to escape
     *
@@ -86,7 +86,7 @@ class DBmysql extends AbstractDatabase {
    /**
     * Execute a MySQL query
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     *
     * @param string $query Query to execute
     *
@@ -108,7 +108,7 @@ class DBmysql extends AbstractDatabase {
     * (optionnaly with a message) if it fails
     *
     * @since 0.84
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     *
     * @param string $query   Query to execute
     * @param string $message Explanation of query (default '')
@@ -128,7 +128,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return string[]|null array results
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function fetch_array($result) {
       Toolbox::deprecated('Use AbstractDatabase::fetchArray');
@@ -142,7 +142,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return mixed|null result row
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function fetch_row($result) {
       Toolbox::deprecated('Use AbstractDatabase::fetchRow');
@@ -156,7 +156,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return string[]|null result associative array
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function fetch_assoc($result) {
       Toolbox::deprecated('Use AbstractDatabase::fetchAssoc');
@@ -170,7 +170,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return object|null
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function fetch_object($result) {
       Toolbox::deprecated('Use AbstractDatabase::fetchObject');
@@ -185,7 +185,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return boolean
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function data_seek($result, $num) {
       throw new \RuntimeException('"data_seek" is not supported by PDO MySQL driver.');
@@ -198,7 +198,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return mixed
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    public function insert_id($table = '') {
        Toolbox::deprecated('Use AbstractDatabase::insertId');
@@ -216,7 +216,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return int number of fields
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function num_fields($result) {
       Toolbox::deprecated('Use PDOStatement::columnCount()');
@@ -231,7 +231,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return string name of the field
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function field_name($result, $nb) {
       Toolbox::deprecated('Use AbstractDatabase::fieldName()');
@@ -269,7 +269,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return mixed list of fields
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    function list_fields($table, $usecache = true) {
        Toolbox::deprecated('Use AbstractDatabase::listFields');
@@ -300,7 +300,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return int number of affected rows on success, and -1 if the last query failed.
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    public function affected_rows() {
       throw new \RuntimeException('affected_rows method could not be used... Use PDOStatement::rowCount instead.');
@@ -313,7 +313,7 @@ class DBmysql extends AbstractDatabase {
     *
     * @return boolean TRUE on success or FALSE on failure.
     *
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    public function free_result($result) {
       Toolbox::deprecated('Use AbstractDatabase::freeResult');
@@ -356,7 +356,7 @@ class DBmysql extends AbstractDatabase {
     * @return boolean
     *
     * @since 0.90
-    * @deprecated 10.0
+    * @deprecated 10.0.0
     */
    static public function isMySQLStrictMode(&$msg) {
       Toolbox::deprecated();

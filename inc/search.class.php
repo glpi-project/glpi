@@ -110,8 +110,8 @@ class Search {
     *
     * @return void
     *
-    * @since 10.0 Method is no longer static
-    * @since 10.0 Added $data parameter
+    * @since 10.0.0 Method is no longer static
+    * @since 10.0.0 Added $data parameter
    **/
    public function showList($itemtype, $params, $data = []) {
       if (empty($data)) {
@@ -131,8 +131,8 @@ class Search {
     *
     * @return void
     *
-    * @since 10.0 Method is no longer static
-    * @since 10.0 Added $data parameter
+    * @since 10.0.0 Method is no longer static
+    * @since 10.0.0 Added $data parameter
    **/
    public function showMap($itemtype, $params, $data = []) {
       global $CFG_GLPI;
@@ -336,7 +336,7 @@ class Search {
     *
     * @return data array
     *
-    * @since 10.0 Method has been renamed and is no longer static.
+    * @since 10.0.0 Method has been renamed and is no longer static.
    **/
    public function getData($itemtype, $params, array $forcedisplay = []) {
 
@@ -360,7 +360,7 @@ class Search {
     *
     * @return array prepare to be used for a search (include criterias and others needed informations)
     *
-    * @since 10.0 Method has been renamed is no longer static
+    * @since 10.0.0 Method has been renamed is no longer static
    **/
    public function prepareDataForSearch($itemtype, array $params, array $forcedisplay = []) {
       global $CFG_GLPI;
@@ -566,7 +566,7 @@ class Search {
     *
     * @return void
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function constructSQL(array &$data) {
       global $CFG_GLPI, $DB;
@@ -963,7 +963,7 @@ class Search {
     *
     * @return string             the sql sub string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
     */
    public function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false) {
       $sql = "";
@@ -1124,7 +1124,7 @@ class Search {
     *
     * @return void
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
     */
    public function constructAdditionalSqlForMetacriteria($criteria = [],
                                                          &$SELECT = "",
@@ -1202,7 +1202,7 @@ class Search {
     *
     * @return nothing
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function constructData(array &$data, $onlycount = false) {
       if (!isset($data['sql']) || !isset($data['sql']['search'])) {
@@ -3076,7 +3076,7 @@ JAVASCRIPT;
     *
     * @return select string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta) {
 
@@ -3174,7 +3174,7 @@ JAVASCRIPT;
     *
     * @return select string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addOrderBy($itemtype, $ID, $order) {
       global $CFG_GLPI;
@@ -3335,7 +3335,7 @@ JAVASCRIPT;
     *
     * @return string Select SQL string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addDefaultSelect($itemtype) {
 
@@ -3383,7 +3383,7 @@ JAVASCRIPT;
     *
     * @return select string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0) {
       global $CFG_GLPI;
@@ -3717,7 +3717,7 @@ JAVASCRIPT;
     *
     * @return string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addDefaultWhere($itemtype) {
       $condition = '';
@@ -4024,7 +4024,7 @@ JAVASCRIPT;
     *
     * @return select string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
 
@@ -4580,7 +4580,7 @@ JAVASCRIPT;
     *
     * @return string Left join SQL string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables) {
 
@@ -4762,7 +4762,7 @@ JAVASCRIPT;
     *
     * @return string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
                                $linkfield, $meta = 0, $meta_type = 0, $joinparams = [], $field = '') {
@@ -5045,7 +5045,7 @@ JAVASCRIPT;
     *
     * @return Meta Left join string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
                                    $nullornott, $joinparams = []) {
@@ -5344,7 +5344,7 @@ JAVASCRIPT;
     *
     * @return string to print
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function giveItem($itemtype, $ID, array $data, $meta = 0,
                             array $addobjectparams = [], $orig_itemtype = null) {
@@ -7538,7 +7538,7 @@ JAVASCRIPT;
     *
     * @return search SQL string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function makeTextCriteria ($field, $val, $not = false, $link = 'AND') {
 
@@ -7565,7 +7565,7 @@ JAVASCRIPT;
     *
     * @return string|null
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function makeTextSearchValue($val) {
       // Unclean to permit < and > search
@@ -7598,7 +7598,7 @@ JAVASCRIPT;
     *
     * @return search string
     *
-    * @since 10.0 Method is no longer static
+    * @since 10.0.0 Method is no longer static
    **/
    public function makeTextSearch($val, $not = false) {
 
@@ -7668,7 +7668,7 @@ JAVASCRIPT;
     *
     * @return array
     *
-    * @since 10.0
+    * @since 10.0.0
     */
    public function addQueryParam($param) {
       $this->qry_params[] = $param;
@@ -7682,7 +7682,7 @@ JAVASCRIPT;
     *
     * @return array
     *
-    * @since 10.0
+    * @since 10.0.0
     */
    public function addQueryParams(array $params) {
       $this->qry_params = array_merge($this->qry_params, $params);
@@ -7694,7 +7694,7 @@ JAVASCRIPT;
     *
     * @return array
     *
-    * @since 10.0
+    * @since 10.0.0
     */
    public function getQueryParams() {
       return $this->qry_params;

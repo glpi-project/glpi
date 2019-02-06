@@ -51,7 +51,7 @@ use Toolbox;
  * @property-read string          $dbpassword  Database password.
  * @property-read string          $dbdefault   Database name.
  *
- * @since 10.0
+ * @since 10.0.0
  */
 abstract class AbstractDatabase
 {
@@ -145,7 +145,7 @@ abstract class AbstractDatabase
      *
      * @return string
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     abstract public function getDriver(): string;
 
@@ -157,7 +157,7 @@ abstract class AbstractDatabase
      *
      * @return PDOStatement
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function execute(string $query, array $params = []): PDOStatement
     {
@@ -197,7 +197,7 @@ abstract class AbstractDatabase
      *
      * @throws GlpitestSQLError
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function rawQuery(string $query, array $params = [])
     {
@@ -247,7 +247,7 @@ abstract class AbstractDatabase
      *
      * @return PDOStatement
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function rawQueryOrDie(string $query, $message = null, array $params = []): PDOStatement
     {
@@ -310,13 +310,13 @@ abstract class AbstractDatabase
     /**
      * Give result from a sql result.
      *
-     * @param PDOStatement   $result  result handler
-     * @param integer        $i       Row offset to give
-     * @param integer|string $field   Field to give
+     * @param PDOStatement   $result result handler
+     * @param integer        $i      Row offset to give
+     * @param integer|string $field  Field to give
      *
      * @return mixed Value of the Row $i and the Field $field of the $result
      *
-     * @deprecated 10.0
+     * @deprecated 10.0.0
      */
     public function result(PDOStatement $result, int $i, $field)
     {
@@ -348,7 +348,7 @@ abstract class AbstractDatabase
      *
      * @return string[]|null array results
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function fetchArray(PDOStatement $result)
     {
@@ -363,7 +363,7 @@ abstract class AbstractDatabase
      *
      * @return mixed|null result row
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function fetchRow(PDOStatement $result)
     {
@@ -377,7 +377,7 @@ abstract class AbstractDatabase
      *
      * @return string[]|null result associative array
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function fetchAssoc(PDOStatement $result)
     {
@@ -392,7 +392,7 @@ abstract class AbstractDatabase
      *
      * @return object|null
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function fetchObject(PDOStatement $result)
     {
@@ -407,7 +407,7 @@ abstract class AbstractDatabase
      *
      * @return mixed
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     abstract public function insertId(string $table = '');
 
@@ -438,7 +438,7 @@ abstract class AbstractDatabase
      *
      * @return boolean TRUE on success or FALSE on failure.
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function freeResult(PDOStatement $result): bool
     {
@@ -692,7 +692,7 @@ abstract class AbstractDatabase
      *
      * @return mixed
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function quote($value, int $type = \PDO::PARAM_STR)
     {
@@ -704,7 +704,7 @@ abstract class AbstractDatabase
      *
      * @return string
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     abstract public static function getQuoteNameChar(): string;
 
@@ -754,7 +754,7 @@ abstract class AbstractDatabase
      *
      * @return mixed
      *
-     * @since 10.0 Method is more static
+     * @since 10.0.0 Method is more static
      */
     public function quoteValue($value)
     {
@@ -964,8 +964,13 @@ abstract class AbstractDatabase
      *
      * @return PDOStatement Query result handler
      */
-    public function updateOrDie(string $table, array $params, array $where, $message = null, array $joins = []): PDOStatement
-    {
+    public function updateOrDie(
+        string $table,
+        array $params,
+        array $where,
+        $message = null,
+        array $joins = []
+    ): PDOStatement {
         $update = $this->buildUpdate($table, $params, $where, $joins);
         $res = $this->rawQuery($update, $params);
         if (!$res) {
@@ -1099,7 +1104,7 @@ abstract class AbstractDatabase
     /**
      * Truncate table in the database
      *
-     * @since 10.0
+     * @since 10.0.0
      *
      * @param string $table Table name
      *
@@ -1116,7 +1121,7 @@ abstract class AbstractDatabase
      * Truncate table in the database and die
      * (optionnaly with a message) if it fails
      *
-     * @since 10.0
+     * @since 10.0.0
      *
      * @param string      $table   Table name
      * @param string|null $message Explanation of query
@@ -1148,10 +1153,8 @@ abstract class AbstractDatabase
     /**
      * Get table schema
      *
-     * @param string $table
-     *            Table name,
-     * @param string|null $structure
-     *            Raw table structure
+     * @param string      $table     Table name
+     * @param string|null $structure Raw table structure
      *
      * @return array
      */
@@ -1209,7 +1212,7 @@ abstract class AbstractDatabase
      *
      * @return boolean
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function inTransaction(): bool
     {
@@ -1223,7 +1226,7 @@ abstract class AbstractDatabase
      *
      * @return null|string
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public function getDsn($server)
     {
@@ -1261,7 +1264,7 @@ abstract class AbstractDatabase
      *
      * @return boolean
      *
-     * @since 10.0
+     * @since 10.0.0
      */
     public static function isNameQuoted($value): bool
     {
@@ -1275,7 +1278,7 @@ abstract class AbstractDatabase
      * @param string $sql        SQL statement
      * @param array  $parameters Query parameters
      *
-     * @since 10.0
+     * @since 10.0.0
      *
      * @return string
      */
@@ -1314,8 +1317,8 @@ abstract class AbstractDatabase
     /**
      * Give name of a field/column of a Mysql result.
      *
-     * @param PDOStatement $result  Resultset
-     * @param integer      $i       Index of the field/column
+     * @param PDOStatement $result Resultset
+     * @param integer      $i      Index of the field/column
      *
      * @return string  Name of the field
      */

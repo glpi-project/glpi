@@ -39,7 +39,7 @@ use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
  *
  * This decorator aims to make transparent any future change of cache management component.
  *
- * @since 10.0
+ * @since 10.0.0
  */
 class SimpleCache extends SimpleCacheDecorator
 {

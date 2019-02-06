@@ -429,7 +429,7 @@ class KnowbaseItem extends CommonDBVisible {
     * Return visibility SQL restriction to add
     *
     * @since 0.83
-    * @since 10.0 Return value changed from string to array
+    * @since 10.0.0 Return value changed from string to array
     *
     * @return array with 'sql' and 'params'
    **/

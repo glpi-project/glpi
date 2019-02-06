@@ -7029,7 +7029,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get common request criteria
     *
-    * @since 10.0
+    * @since 10.0.0
     *
     * @return array
     */

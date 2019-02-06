@@ -874,7 +874,7 @@ class Migration {
     *
     * @return Migration
     *
-    * @since 10.0 Added $params parameter
+    * @since 10.0.0 Added $params parameter
     */
    private function addQuery($type, $query, $params, $message = null) {
       $this->queries[$type][] =  [
@@ -894,7 +894,7 @@ class Migration {
     *
     * @return Migration
     *
-    * @since 10.0 Added $params parameter
+    * @since 10.0.0 Added $params parameter
     */
    public function addPreQuery($query, $params = [], $message = null) {
       return $this->addQuery(self::PRE_QUERY, $query, $params, $message);
@@ -909,7 +909,7 @@ class Migration {
     *
     * @return Migration
     *
-    * @since 10.0 Added $params parameter
+    * @since 10.0.0 Added $params parameter
     */
    public function addPostQuery($query, $params = [], $message = null) {
       return $this->addQuery(self::POST_QUERY, $query, $params, $message);

@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 /**
- * Update from 9.4 to 10.0
+ * Update from 9.4 to 10.0.0
  *
  * @return bool for success (will die for most error)
 **/

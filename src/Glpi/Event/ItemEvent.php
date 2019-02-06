@@ -36,7 +36,7 @@ use CommonDBTM;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * @since 10.0
+ * @since 10.0.0
  */
 class ItemEvent extends Event
 {
