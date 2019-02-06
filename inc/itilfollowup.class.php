@@ -755,8 +755,7 @@ class ITILFollowup  extends CommonDBChild {
          $content_id = "content$rand";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td rowspan='3'>".__('Description')."</td>";
-         echo "<td rowspan='3' style='width:65%'>";
+         echo "<td rowspan='3'>";
 
          Html::textarea(['name'              => 'content',
                          'value'             => $this->fields["content"],
@@ -783,18 +782,33 @@ class ITILFollowup  extends CommonDBChild {
 
          echo "</td></tr>\n";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Source of followup')."</td><td>";
+         echo "<tr class='tab_bg_1'></tr>";
+         echo "<tr class='tab_bg_1' style='vertical-align: top'>";
+         echo "<td colspan='4'>";
+         echo "<div class='fa-label'>
+            <i class='fas fa-inbox fa-fw'
+               title='".__('Source of followup')."'></i>";
          RequestType::dropdown([
             'value'     => $this->fields["requesttypes_id"],
             'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
          ]);
-         echo "</td></tr>\n";
+         echo "</div>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Private')."</td><td>";
-         Dropdown::showYesNo('is_private', $this->fields["is_private"]);
-         echo "</td></tr>";
+         echo "<div class='fa-label'>
+            <i class='fas fa-lock fa-fw' title='".__('Private')."'></i>";
+         $rand = mt_rand();
+         echo "<span class='switch pager_controls'>
+            <label for='is_privateswitch$rand' title='".__('Private')."'>
+               <input type='hidden' name='is_private' value='0'>
+               <input type='checkbox' id='is_privateswitch$rand' name='is_private' value='1'".
+                     ($this->fields["is_private"]
+                        ? "checked='checked'"
+                        : "")."
+               >
+               <span class='lever'></span>
+            </label>
+         </span>";
+         echo "</div></td></tr>";
 
          $this->showFormButtons($options);
 

@@ -1380,8 +1380,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $rowspan++;
       }
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='$rowspan' style='width:100px'>".__('Description')."</td>";
-      echo "<td rowspan='$rowspan' style='width:65%' id='content$rand_text'>";
+      echo "<td colspan='3' id='content$rand_text'>";
 
       $rand_text  = mt_rand();
       $content_id = "content$rand_text";
@@ -1397,18 +1396,18 @@ abstract class CommonITILTask  extends CommonDBTM {
                       'cols'              => $cols,
                       'rows'              => $rows]);
 
-      echo "</td><td colspan='2'>";
       echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
-      echo "</td></tr>\n";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td style='width:100px'>"._n('Task template', 'Task templates', 1)."</td><td>";
+      echo "<td style='vertical-align: middle'>";
+      echo "<div class='fa-label'>
+            <i class='fas fa-reply fa-fw'
+               title='"._n('Task template', 'Task templates', 2)."'></i>";
       TaskTemplate::dropdown(['value'     => $this->fields['tasktemplates_id'],
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,
                                    'on_change' => 'tasktemplate_update(this.value)']);
-      echo "</td>";
-      echo "</tr>";
+      echo "</div>";
       echo Html::scriptBlock('
          function tasktemplate_update(value) {
             $.ajax({
@@ -1442,7 +1441,10 @@ abstract class CommonITILTask  extends CommonDBTM {
                // set action time
                $("#dropdown_actiontime'.$rand_time.'").trigger("setValue", actiontime);
                // set is_private
-               $("#dropdown_is_private'.$rand_is_private.'").trigger("setValue", data.is_private);
+               $("#is_privateswitch'.$rand_is_private.'")
+                  .prop("checked", data.is_private == "0"
+                     ? false
+                     : true);
                // set users_tech
                $("#dropdown_users_id_tech'.$rand_user.'").trigger("setValue", user_tech);
                // set group_tech
@@ -1454,48 +1456,54 @@ abstract class CommonITILTask  extends CommonDBTM {
       ');
 
       if ($ID > 0) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Date')."</td>";
-         echo "<td>";
+         echo "<div class='fa-label'>
+         <i class='far fa-calendar fa-fw'
+            title='".__('Date')."'></i>";
          Html::showDateTimeField("date", ['value'      => $this->fields["date"],
                                                'timestep'   => 1,
                                                'maybeempty' => false]);
-         echo "</tr>";
-      } else {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>&nbsp;";
-         echo "</tr>";
+         echo "</div>";
       }
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Category')."</td><td>";
+      echo "<div class='fa-label'>
+         <i class='fas fa-tag fa-fw'
+            title='".__('Category')."'></i>";
       TaskCategory::dropdown([
          'value'     => $this->fields["taskcategories_id"],
          'rand'      => $rand_type,
          'entity'    => $item->fields["entities_id"],
          'condition' => ['is_active' => 1]
       ]);
-
-      echo "</td></tr>\n";
+      echo "</div>";
 
       if (isset($this->fields["state"])) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Status')."</td><td>";
+         echo "<div class='fa-label'>
+            <i class='fas fa-tasks fa-fw'
+               title='".__('Status')."'></i>";
          Planning::dropdownState("state", $this->fields["state"], true, ['rand' => $rand_state]);
-         echo "</td></tr>\n";
+         echo "</div>";
       }
 
       if ($this->maybePrivate()) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Private')."</td>";
-         echo "<td>";
-         Dropdown::showYesNo('is_private', $this->fields["is_private"], -1, ['rand' => $rand_is_private]);
-         echo "</td>";
-         echo "</tr>";
+         echo "<div class='fa-label'>
+            <i class='fas fa-lock fa-fw' title='".__('Private')."'></i>
+            <span class='switch pager_controls'>
+               <label for='is_privateswitch$rand_is_private' title='".__('Private')."'>
+                  <input type='hidden' name='is_private' value='0'>
+                  <input type='checkbox' id='is_privateswitch$rand_is_private' name='is_private' value='1'".
+                        ($this->fields["is_private"]
+                           ? "checked='checked'"
+                           : "")."
+                  >
+                  <span class='lever'></span>
+               </label>
+            </span>
+         </div>";
       }
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>". __('Duration')."</td><td>";
+      echo "<div class='fa-label'>
+         <i class='fas fa-stopwatch fa-fw'
+            title='".__('Duration')."'></i>";
 
       $toadd = [];
       for ($i=9; $i<=100; $i++) {
@@ -1508,15 +1516,13 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                   'rand'            => $rand_time,
                                                   'addfirstminutes' => true,
                                                   'inhours'         => true,
-                                                  'toadd'           => $toadd]);
+                                                  'toadd'           => $toadd,
+                                                  'width'  => '']);
 
-      echo "</td></tr>\n";
+      echo "</div>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('By')."</td>";
-      echo "<td colspan='2'>";
-      echo "<i class='fas fa-user'></i>&nbsp;";
-      echo _n('User', 'Users', 1);
+      echo "<div class='fa-label'>";
+      echo "<i class='fas fa-user fa-fw' title='"._n('User', 'Users', 1)."'></i>";
       $params             = ['name'   => "users_id_tech",
                                   'value'  => (($ID > -1)
                                                 ?$this->fields["users_id_tech"]
@@ -1533,7 +1539,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       User::dropdown($params);
 
       echo " <a href='#' title=\"".__s('Availability')."\" onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
-      echo "&nbsp;<i class='far fa-calendar-alt'></i>";
+      echo "<i class='far fa-calendar-alt'></i>";
       echo "<span class='sr-only'>".__('Availability')."</span>";
       echo "</a>";
       Ajax::createIframeModalWindow('planningcheck'.$rand,
@@ -1541,10 +1547,10 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           "/front/planning.php?checkavailability=checkavailability".
                                           "&itemtype=".$item->getType()."&$fkfield=".$item->getID(),
                                     ['title'  => __('Availability')]);
+      echo "</div>";
 
-      echo "<br />";
-      echo "<i class='fas fa-users' aria-hidden='true'></i>&nbsp;";
-      echo _n('Group', 'Groups', 1)."&nbsp;";
+      echo "<div class='fa-label'>";
+      echo "<i class='fas fa-users fa-fw' title='"._n('Group', 'Groups', 1)."'></i>";
       $params     = [
          'name'      => "groups_id_tech",
          'value'     => (($ID > -1)
@@ -1559,11 +1565,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                   'to_update' => "group_available$rand_group",
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php"];
       Group::dropdown($params);
-      echo "</td>\n";
-      echo "<td>";
-      if ($canplan) {
-         echo __('Planning');
-      }
+      echo "</div>";
 
       if (!empty($this->fields["begin"])) {
 

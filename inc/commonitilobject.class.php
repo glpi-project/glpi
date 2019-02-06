@@ -6556,6 +6556,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if (!in_array($item['type'], ['Document_Item', 'Assign'])
              && $item_i['can_edit']) {
             echo "<div class='h_controls'>";
+            // merge/split icon
             if ($objType == 'Ticket' && $item['type'] == ITILFollowup::getType()) {
                if (isset($item_i['sourceof_items_id']) && $item_i['sourceof_items_id'] > 0) {
                   echo Html::link('', Ticket::getFormURLWithID($item_i['sourceof_items_id']), [
@@ -6569,9 +6570,17 @@ abstract class CommonITILObject extends CommonDBTM {
                   ]);
                }
             }
+            // edit item
             echo "<span class='far fa-edit control_item' title='".__('Edit')."'";
             echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$randdomid\")'";
             echo "></span>";
+
+            // show "is_private" icon
+            if (isset($item_i['is_private']) && $item_i['is_private']) {
+               echo "<span class='private'><i class='fas fa-lock control_item' title='" . __s('Private') .
+                  "'></i><span class='sr-only'>".__('Private')."</span></span>";
+            }
+
             echo "</div>";
          }
          if (isset($item_i['requesttypes_id'])
@@ -6701,12 +6710,6 @@ abstract class CommonITILObject extends CommonDBTM {
             echo Html::showToolTip($userdata["comment"],
                                    ['link' => $userdata['link']]);
             echo "</div>";
-         }
-
-         // show "is_private" icon
-         if (isset($item_i['is_private']) && $item_i['is_private']) {
-            echo "<div class='private'><i class='fas fa-lock fa-2x' title='" . __s('Private') .
-               "'></i><span class='sr-only'>".__('Private')."</span></div>";
          }
 
          echo "</div>"; // b_right

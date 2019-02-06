@@ -3641,7 +3641,7 @@ a.copyright {
    }
 
    .h_content {
-      max-width: 50%;
+      width: 50%;
       min-width: 200px;
       padding: 5px 5px 5px 8px;
       margin-bottom: 10px;
@@ -3650,6 +3650,13 @@ a.copyright {
       margin-right: 0;
       margin-left: 160px;
       word-wrap: break-word;
+      display: flex;
+
+      .displayed_content {
+         width: 100%;
+         display: flex;
+         flex-direction: column;
+      }
    }
 
    .right .h_content {
@@ -3736,18 +3743,6 @@ a.copyright {
       margin: 2px 0 0;
    }
 
-   .private {
-      padding-top: .5em;
-      color: #000000;
-      font-size: .75em;
-      white-space: nowrap;
-      text-align: right;
-   }
-
-   .right .private {
-      float: left;
-   }
-
    .left .h_content.timeline_active {
       border-right: 8px solid #3C5874;
    }
@@ -3758,7 +3753,7 @@ a.copyright {
 
    .h_content {
       &.edited {
-         max-width: inherit;
+         width: inherit;
          text-align: center;
 
          .tab_cadre_fixe {
@@ -3896,7 +3891,7 @@ a.copyright {
 
       .h_controls {
          display: block;
-         float: right;
+         align-self: flex-end;
 
          .control_item {
             margin-left: 5px;
@@ -3906,6 +3901,12 @@ a.copyright {
             &:hover {
                opacity: 1;
                cursor: pointer;
+            }
+
+            &.fa-lock {
+               cursor: inherit;
+               opacity: 1;
+               color: #D97E7E;
             }
          }
       }
@@ -3996,11 +3997,13 @@ a.copyright {
    }
 
    .b_right {
-      margin-right: 3px;
+      padding-right: 3px;
       font-style: italic;
       color: #7E7E7E;
       text-align: right;
-      bottom: 2px;
+      align-self: flex-end;
+      width: 100%;
+      background: rgba(255, 255, 255, .2);
 
       .actiontime {
          padding-left: 15px;
@@ -4045,6 +4048,31 @@ a.copyright {
 
    .item_content img {
       max-width: 100%;
+   }
+}
+
+.fa-label {
+   margin-bottom: 10px;
+   white-space: nowrap;
+
+   i.far, i.fas {
+      color: #a3a3a3;
+      margin-right: 3px;
+      vertical-align: middle;
+      font-size: 1.5em;
+   }
+
+   .fa-stack {
+      i.far, i.fas {
+         &.fa-stack-1x {
+            font-size: .8em;
+            top: .4em;
+         }
+
+         &.fa-inverse {
+            color: #FFF;
+         }
+      }
    }
 }
 
