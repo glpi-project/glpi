@@ -129,6 +129,11 @@ class ITILFollowup  extends CommonDBChild {
 
 
    function canCreateItem() {
+      if (!isset($this->fields['itemtype'])
+          || strlen($this->fields['itemtype']) == 0) {
+         return false;
+      }
+
       $itilobject = new $this->fields['itemtype'];
       if (!$itilobject->can($this->getField('items_id'), READ)
         // No validation for closed tickets
