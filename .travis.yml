@@ -22,6 +22,7 @@ before_script:
 script:
   - mysql -u root -e 'select version();'
   - composer testldap
+  - composer testimap
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
