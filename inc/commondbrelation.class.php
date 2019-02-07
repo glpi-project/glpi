@@ -404,7 +404,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
 
       try {
-         $item1 = null;
+         $item1 = NULL;
          $can1  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
                                           static::$itemtype_1, static::$items_id_1, $item1);
          if ($OneWriteIsEnough) {
@@ -422,7 +422,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       try {
-         $item2 = null;
+         $item2 = NULL;
          $can2  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
                                           static::$itemtype_2, static::$items_id_2, $item2);
          if ($OneWriteIsEnough) {
