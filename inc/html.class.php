@@ -1312,6 +1312,7 @@ class Html {
 
       // AJAX library
       echo Html::script('public/lib/jquery/jquery.js');
+      echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
       echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
 
       // PLugins jquery

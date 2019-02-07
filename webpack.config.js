@@ -124,6 +124,12 @@ var libs = {
             from: 'jquery.js',
         }
     ],
+    'jquery-migrate': [
+        {
+            context: 'dist',
+            from: 'jquery-migrate.js',
+        }
+    ],
     'jquery-mousewheel': [
         {
             from: 'jquery.mousewheel.js',
