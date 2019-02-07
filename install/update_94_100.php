@@ -53,7 +53,6 @@ function update94to100() {
    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
    $migration->setVersion('10.0.0');
 
-   //put your update rules here, and drop the line!
    /** Add main column on displaypreferences */
    if ($migration->addField(
          'glpi_displaypreferences',
@@ -96,6 +95,37 @@ function update94to100() {
          $migration->addKey('glpi_softwarelicenses', 'allow_overquota');
       }
    }
+
+   /** Encrypted FS support  */
+   if (!$DB->fieldExists("glpi_items_disks", "encryption_status")) {
+      $migration->addField("glpi_items_disks", "encryption_status", "integer", [
+            'after'  => "is_dynamic",
+            'value'  => 0
+         ]
+      );
+   }
+
+   if (!$DB->fieldExists("glpi_items_disks", "encryption_tool")) {
+      $migration->addField("glpi_items_disks", "encryption_tool", "string", [
+            'after'  => "encryption_status"
+         ]
+      );
+   }
+
+   if (!$DB->fieldExists("glpi_items_disks", "encryption_algorithm")) {
+      $migration->addField("glpi_items_disks", "encryption_algorithm", "string", [
+            'after'  => "encryption_tool"
+         ]
+      );
+   }
+
+   if (!$DB->fieldExists("glpi_items_disks", "encryption_type")) {
+      $migration->addField("glpi_items_disks", "encryption_type", "string", [
+            'after'  => "encryption_algorithm"
+         ]
+      );
+   }
+   /** /Encrypted FS support  */
 
    /** move cache configuration into local configuration file */
    try {
