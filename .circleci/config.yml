@@ -138,9 +138,7 @@ workflows:
   version: 2
   tests_all:
     jobs:
-      - php5.6:
-          requires:
-            - checkout
+      - checkout
       - php7.0:
           requires:
             - checkout
