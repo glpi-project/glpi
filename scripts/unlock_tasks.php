@@ -46,7 +46,7 @@ if (isset($_SERVER['argv'])) {
    }
 }
 if (isset($_GET['cycle'])) {
-   $cycle = $_GET['cycle'];
+   $cycle = (int)$_GET['cycle'];
 } else {
    $cycle = 25;
 }
