@@ -2,7 +2,11 @@ version: 2
 
 shared: &shared
   steps:
-    - checkout
+    - attach_workspace:
+        at: /home/circleci
+    - run:
+        name: Install codebase
+        command: cp -a /home/circleci/codebase/. ./
     - run:
         name: Dependencies
         command: |
@@ -77,6 +81,17 @@ shared: &shared
 #          composer testldap
 
 jobs:
+  checkout:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - checkout:
+          path: /home/circleci/codebase
+      - run: rm -rf /home/circleci/codebase/.git
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - codebase
   "php7.0":
     <<: *shared
     docker:
@@ -108,10 +123,19 @@ workflows:
   version: 2
   tests_all:
     jobs:
-      - php7.0
-      - php7.1
-      - php7.2
-      - php7.3
+      - checkout
+      - php7.0:
+          requires:
+            - checkout
+      - php7.1:
+          requires:
+            - checkout
+      - php7.2:
+          requires:
+            - checkout
+      - php7.3:
+          requires:
+            - checkout
   scheduled_build:
     triggers:
       - schedule:
@@ -121,4 +145,7 @@ workflows:
               only:
                 - master
     jobs:
-      - phplatest
+      - checkout
+      - phplatest:
+          requires:
+            - checkout
