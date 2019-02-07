@@ -304,12 +304,11 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td><label for='dropdown_cut$rand'>" . __('Default characters limit (summary text boxes)') . "</label></td><td>";
-      Dropdown::showNumber('cut', ['value' => $CFG_GLPI["cut"],
-                                   'min'   => 50,
-                                   'max'   => 500,
-                                   'step'  => 50,
-                                   'rand'  => $rand]);
+      echo "<td><label for='cut$rand'>" . __('Default characters limit (summary text boxes)') . "</label></td><td>";
+      echo Html::input('cut', [
+         'value' => $CFG_GLPI["cut"],
+         'id'    => "cut$rand"
+      ]);
       echo "</td><td><label for='dropdown_url_maxlength$rand'>" . __('Default url length limit') . "</td><td>";
       Dropdown::showNumber('url_maxlength', ['value' => $CFG_GLPI["url_maxlength"],
                                              'min'   => 20,
