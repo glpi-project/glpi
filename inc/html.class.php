@@ -3365,7 +3365,7 @@ class Html {
             //for compatibility. Use fontawesome instead.
             $out .= "<img id='tooltip$rand' src='".$param['img']."' class='pointer'>";
          } else {
-            $out .= "<span id='tooltip$rand' class='far {$param['awesome-class']} pointer'></span>";
+            $out .= "<span id='tooltip$rand' class='fas {$param['awesome-class']} pointer'></span>";
          }
 
          if (!empty($param['link'])) {
