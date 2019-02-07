@@ -8,7 +8,7 @@ shared: &shared
         name: Install codebase
         command: cp -a /home/circleci/codebase/. ./
     - run:
-        name: Dependencies
+        name: Install system dependencies
         command: |
           sudo -E apt-get update
           sudo -E apt-get install -y mysql-client libpng-dev libxml2-dev
@@ -18,13 +18,21 @@ shared: &shared
           echo "apc.enable=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
           echo "apc.enable_cli=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
           echo "memory_limit = 512M" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-memory.ini
+    - restore_cache:
+        keys:
+          - composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock" }}
     - run:
-        name: Composer
+        name: composer install
         command: |
-          sudo -E composer self-update
+          sudo -E composer self-update --no-interaction --no-progress
+          sudo chown -R circleci:circleci /home/circleci/.composer
           sed -e '/"php":/d' -i composer.json
-          rm -f composer.lock
-          composer install --optimize-autoloader
+          mv composer.lock composer.lock.bak
+          composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
+    - save_cache:
+        key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}
+        paths:
+          - ./vendor
     - run:
         name: PHP Parallel Lint
         command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
