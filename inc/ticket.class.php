@@ -4461,6 +4461,10 @@ class Ticket extends CommonITILObject {
          $options['name'] = str_replace($order, $replace, $options['name']);
       }
 
+      if (!isset($options['_skip_promoted_fields'])) {
+         $options['_skip_promoted_fields'] = false;
+      }
+
       if (!$ID) {
          // Override defaut values from projecttask if needed
          if (isset($options['_projecttasks_id'])) {
@@ -4471,7 +4475,7 @@ class Ticket extends CommonITILObject {
             }
          }
          // Override defaut values from followup if needed
-         if (isset($options['_promoted_fup_id'])) {
+         if (isset($options['_promoted_fup_id']) && !$options['_skip_promoted_fields']) {
             $fup = new ITILFollowup();
             if ($fup->getFromDB($options['_promoted_fup_id'])) {
                $options['content'] = $fup->getField('content');
@@ -4481,6 +4485,8 @@ class Ticket extends CommonITILObject {
                   'tickets_id_2' => $fup->fields['items_id']
                ];
             }
+            //Allow overriding the default values
+            $options['_skip_promoted_fields'] = true;
          }
       }
 
@@ -5324,6 +5330,7 @@ class Ticket extends CommonITILObject {
                       value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
             }
             echo Html::hidden('_promoted_fup_id', ['value' => $options['_promoted_fup_id']]);
+            echo Html::hidden('_skip_promoted_fields', ['value' => $options['_skip_promoted_fields']]);
             echo '</div>';
          }
       }
