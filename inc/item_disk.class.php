@@ -44,6 +44,10 @@ class Item_Disk extends CommonDBChild {
    static public $items_id = 'items_id';
    public $dohistory       = true;
 
+   // Encryption status
+   const ENCRYPTION_STATUS_NO = 0;
+   const ENCRYPTION_STATUS_YES = 1;
+   const ENCRYPTION_STATUS_PARTIALLY = 2;
 
    static function getTypeName($nb = 0) {
       return _n('Volume', 'Volumes', $nb);
@@ -225,6 +229,24 @@ class Item_Disk extends CommonDBChild {
       Html::autocompletionTextField($this, "freesize");
       echo "&nbsp;".__('Mio')."</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Encryption')."</td>";
+      echo "<td>";
+      echo self::getEncryptionStatusDropdown($this->fields['encryption_status']);
+      echo "</td><td>".__('Encryption tool')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "encryption_tool");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Encryption algorithm')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "encryption_algorithm");
+      echo "</td><td>".__('Encryption type')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "encryption_type");
+      echo "</td></tr>";
+
       $itemtype = $this->fields['itemtype'];
       $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
       $this->showFormButtons($options);
@@ -286,7 +308,7 @@ class Item_Disk extends CommonDBChild {
       ]);
 
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 7;
+      $colspan = 8;
       if (Plugin::haveImport()) {
          $colspan++;
       }
@@ -305,6 +327,7 @@ class Item_Disk extends CommonDBChild {
          $header .= "<th>".__('Global size')."</th>";
          $header .= "<th>".__('Free size')."</th>";
          $header .= "<th>".__('Free percentage')."</th>";
+         $header .= "<th>".__('Encryption')."</th>";
          $header .= "</tr>";
          echo $header;
 
@@ -337,6 +360,25 @@ class Item_Disk extends CommonDBChild {
             }
             Html::displayProgressBar('100', $percent, ['simple'       => true,
                                                             'forcepadding' => false]);
+            echo "</td>";
+            echo "<td class=\"center\">";
+
+            if ($data['encryption_status'] != self::ENCRYPTION_STATUS_NO) {
+               $encryptionTooltip = "<strong>" . __('Partial encryption') . "</strong> : " .
+                  Dropdown::getYesNo($data['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
+                  "<br/>" .
+                  "<strong>" . __('Encryption tool') . "</strong> : " . $data['encryption_tool'] .
+                  "</br>" .
+                  "<strong>" . __('Encryption algorithm') . "</strong> : " .
+                  $data['encryption_algorithm'] . "</br>" .
+                  "<strong>" . __('Encryption type') . "</strong> : " . $data['encryption_type'] .
+                  "</br>";
+
+               Html::showTooltip($encryptionTooltip, [
+                  'awesome-class' => "fas fa-lock"
+               ]);
+            }
+
             echo "</td>";
             echo "</tr>";
             Session::addToNavigateListItems(__CLASS__, $data['id']);
@@ -464,6 +506,163 @@ class Item_Disk extends CommonDBChild {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => '174',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_status',
+         'name'               => __('Encryption status'),
+         'searchtype'         => 'equals',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'searchequalsonfield' => true,
+         'datatype'           => 'specific',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '175',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_tool',
+         'name'               => __('Encryption tool'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '176',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_algorithm',
+         'name'               => __('Encryption algorithm'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '177',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_type',
+         'name'               => __('Encryption type'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
       return $tab;
+   }
+
+   /**
+    * Get all the possible value for the "encryption_status" field
+    *
+    * @return array The list of possible values
+    */
+   static function getAllEncryptionStatus() {
+      return [
+         self::ENCRYPTION_STATUS_NO          => __('Encrypted'),
+         self::ENCRYPTION_STATUS_YES         => __('Partially encrypted'),
+         self::ENCRYPTION_STATUS_PARTIALLY   => __('Not encrypted')
+      ];
+   }
+
+   /**
+    * Get the correct label for each encryption status
+    *
+    * @return string The appropriate label
+    */
+   static function getEncryptionStatus($status) {
+      $all = self::getAllEncryptionStatus();
+      if (!isset($all[$status])) {
+         Toolbox::logWarning(
+            sprintf(
+               'Encryption status %1$s does not exixts!'
+            )
+         );
+         return NOT_AVAILABLE;
+      }
+      return $all[$status];
+   }
+
+   /**
+    * Print the encryption status dropdown
+    *
+    * @param integer $value   Current value (defaut self::ENCRYPTION_STATUS_NO)
+    * @param array   $options Array of possible options:
+    *    - name : name of the dropdown (default encryption_status)
+    *
+    * @return string the string to display
+    */
+   static function getEncryptionStatusDropdown($value = self::ENCRYPTION_STATUS_NO, $options = []) {
+      $name = 'encryption_status';
+      if (isset($options['name'])) {
+         $name = $options['name'];
+      }
+      $values = self::getAllEncryptionStatus();
+
+      return Dropdown::showFromArray(
+         $name,
+         $values, [
+            'value'   => $value,
+            'display' => false
+         ]
+      );
+   }
+
+   /**
+    * List specifics value for selection
+    *
+    * @param string       $field   Name of the field
+    * @param string       $name    Name of the select (if empty use linkfield) (default '')
+    * @param string|array $values  Value(s) to select (default '')
+    * @param array        $options Array of options
+    *
+    * @return string the string to display
+    */
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'encryption_status' :
+            return self::getEncryptionStatusDropdown($values[$field], [
+               'name'  => $name,
+            ]);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+    /**
+     * Display a specific field value
+     *
+     * @param string       $field   Name of the field
+     * @param string|array $values  Value(s) to display
+     * @param array        $options Array of options
+     *
+     * @return string the string to display
+    **/
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+
+      switch ($field) {
+         case 'encryption_status':
+            return self::getEncryptionStatus($values[$field]);
+      }
+
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 }

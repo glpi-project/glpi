@@ -3,6 +3,12 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [9.5] unreleased
+
+#### Added
+
+- encrypted file systems support
+
 ## [9.4.2] unreleased
 
 ### API changes
