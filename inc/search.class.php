@@ -192,7 +192,7 @@ class Search {
             });
 
          var _loadMap = function(map_elt, itemtype) {
-            L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+            L.AwesomeMarkers.Icon.prototype.options.prefix = 'far';
             var _micon = 'circle';
 
             var stdMarker = L.AwesomeMarkers.icon({
@@ -6091,7 +6091,7 @@ JAVASCRIPT;
                         ];
                         if (Toolbox::strlen($text) > $CFG_GLPI['cut']) {
                            $popup_params += [
-                              'awesome-class'   => 'fa-comments-o',
+                              'awesome-class'   => 'fa-comments',
                               'autoclose'       => false,
                               'onclick'         => true
                            ];
@@ -7094,6 +7094,7 @@ JAVASCRIPT;
             break;
 
          default :
+            global $CFG_GLPI;
             $out = "<td $extraparam valign='top'>";
 
             if (!preg_match('/'.self::LBHR.'/', $value)) {
@@ -7104,7 +7105,8 @@ JAVASCRIPT;
                $line_delimiter = '<hr>';
             }
 
-            if (count($values) > 1) {
+            if (count($values) > 1
+                && Toolbox::strlen($value) > $CFG_GLPI['cut']) {
                $value = '';
                foreach ($values as $v) {
                   $value .= $v.$line_delimiter;
@@ -7114,7 +7116,7 @@ JAVASCRIPT;
                $value = '<div class="fup-popup">'.$value.'</div>';
                $valTip = "&nbsp;".Html::showToolTip(
                   $value, [
-                     'awesome-class'   => 'fa-comments-o',
+                     'awesome-class'   => 'fa-comments',
                      'display'         => false,
                      'autoclose'       => false,
                      'onclick'         => true
