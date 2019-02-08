@@ -37,7 +37,8 @@ if (!defined('GLPI_ROOT')) {
 include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
-$translation_cache = Config::getCache('cache_trans');
+global $CONTAINER;
+$translation_cache = $CONTAINER->get('translation_cache');
 $translation_cache->clear(); // Force cache cleaning to prevent usage of outdated cache data
 
 Config::detectRootDoc();

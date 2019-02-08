@@ -77,11 +77,11 @@ if ($nb < 100000) {
    $nb = countElementsInTable('glpi_entities');
 }
 echo "+ Entities: $nb\n";
-if ($GLPI_CACHE) {
-   echo "+ Cache: " . get_class($GLPI_CACHE) . "\n";
-} else {
-   echo "+ Cache: disabled\n";
-}
+
+global $CONTAINER;
+$cache_storage = $CONTAINER->get('application_cache_storage');
+echo "+ Cache: " . get_class($cache_storage) . "\n";
+
 echo "+ Clear sons cache\n";
 $DB->update(
    'glpi_entities',

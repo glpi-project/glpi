@@ -53,13 +53,15 @@ class ProfileRight extends CommonDBChild {
     * @return array
     */
    static function getAllPossibleRights() {
-      global $DB, $GLPI_CACHE;
+      global $DB;
+
+      $appCache = Toolbox::getAppCache();
 
       $rights = [];
 
-      if ($GLPI_CACHE->has('all_possible_rights')
-         && count($GLPI_CACHE->get('all_possible_rights')) > 0) {
-         return $GLPI_CACHE->get('all_possible_rights');
+      if ($appCache->has('all_possible_rights')
+         && count($appCache->get('all_possible_rights')) > 0) {
+         return $appCache->get('all_possible_rights');
       }
 
       $iterator = $DB->request([
@@ -71,15 +73,15 @@ class ProfileRight extends CommonDBChild {
          // By default, all rights are NULL ...
          $rights[$right['name']] = '';
       }
-      $GLPI_CACHE->set('all_possible_rights', $rights);
+      $appCache->set('all_possible_rights', $rights);
 
       return $rights;
    }
 
 
    static function cleanAllPossibleRights() {
-      global $GLPI_CACHE;
-      $GLPI_CACHE->delete('all_possible_rights');
+      $appCache = Toolbox::getAppCache();
+      $appCache->delete('all_possible_rights');
    }
 
    /**
@@ -120,10 +122,12 @@ class ProfileRight extends CommonDBChild {
     * @return boolean
    **/
    static function addProfileRights(array $rights) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
+
+      $appCache = Toolbox::getAppCache();
+      $appCache->set('all_possible_rights', []);
 
       $ok = true;
-      $GLPI_CACHE->set('all_possible_rights', []);
 
       $iterator = $DB->request([
           'SELECT'   => ['id'],
@@ -160,9 +164,11 @@ class ProfileRight extends CommonDBChild {
     * @return boolean
    **/
    static function deleteProfileRights(array $rights) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
-      $GLPI_CACHE->set('all_possible_rights', []);
+      $appCache = Toolbox::getAppCache();
+      $appCache->set('all_possible_rights', []);
+
       $ok = true;
       foreach ($rights as $name) {
          $result = $DB->delete(
@@ -382,5 +388,4 @@ class ProfileRight extends CommonDBChild {
    function getLogTypeID() {
       return ['Profile', $this->fields['profiles_id']];
    }
-
 }

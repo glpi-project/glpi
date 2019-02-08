@@ -45,7 +45,8 @@
         "twig/extensions": "^1.5",
         "kanellov/slim-twig-flash": "^0.2.0",
         "runcmf/runtracy": "^0.2.10",
-        "fossar/htmlawed": "1.2.4.1"
+        "fossar/htmlawed": "1.2.4.1",
+        "symfony/property-access": "^3.4"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",

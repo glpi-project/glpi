@@ -31,12 +31,11 @@
  */
 
 use Glpi\Exception\PasswordTooWeakException;
-use Glpi\Cache\SimpleCache;
-use Zend\Cache\Storage\AvailableSpaceCapableInterface;
-use Zend\Cache\Storage\TotalSpaceCapableInterface;
-use Zend\Cache\Storage\FlushableInterface;
 use PHPMailer\PHPMailer\PHPMailer;
 use Symfony\Component\Yaml\Yaml;
+use Zend\Cache\Storage\AvailableSpaceCapableInterface;
+use Zend\Cache\Storage\FlushableInterface;
+use Zend\Cache\Storage\TotalSpaceCapableInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1515,7 +1514,9 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      $GLPI_CACHE = self::getCache('cache_db', 'core', false);
+      global $CONTAINER;
+
+      $cache_storage = $CONTAINER->get('application_cache_storage');
 
       if (!Config::canUpdate()) {
          return false;
@@ -1596,7 +1597,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-      $ext = strtolower(get_class($GLPI_CACHE));
+      $ext = strtolower(get_class($cache_storage));
       $ext = substr($ext, strrpos($ext, '\\')+1);
       if (in_array($ext, ['apcu', 'memcache', 'memcached', 'wincache', 'redis'])) {
          $msg = sprintf(__s('The "%s" cache extension is installed'), $ext);
@@ -1608,9 +1609,9 @@ class Config extends CommonDBTM {
             <td></td>
             <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-      if ($ext != 'filesystem' && $GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
-         $free = $GLPI_CACHE->getAvailableSpace();
-         $max  = $GLPI_CACHE->getTotalSpace();
+      if ($ext != 'filesystem' && $cache_storage instanceof AvailableSpaceCapableInterface && $cache_storage instanceof TotalSpaceCapableInterface) {
+         $free = $cache_storage->getAvailableSpace();
+         $max  = $cache_storage->getTotalSpace();
          $used = $max - $free;
          $rate = round(100.0 * $used / $max);
          $max  = Toolbox::getSize($max);
@@ -1629,7 +1630,7 @@ class Config extends CommonDBTM {
          echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
       }
 
-      if ($GLPI_CACHE instanceof FlushableInterface) {
+      if ($cache_storage instanceof FlushableInterface) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
             echo "<a class='vsubmit' href='config.form.php?reset_cache=1'>";
@@ -1943,6 +1944,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Symfony\\Component\\DependencyInjection\\Container' ],
                [ 'name'    => 'symfony/event-dispatcher',
                  'check'   => 'Symfony\\Component\\EventDispatcher\\EventDispatcher' ],
+               [ 'name'    => 'symfony/property-access',
+                 'check'   => 'Symfony\Component\PropertyAccess\\PropertyAccessor' ],
                [ 'name'    => 'symfony/yaml',
                  'check'   => 'Symfony\\Component\\Yaml\\Yaml' ],
                [ 'name'    => 'doctrine/annotations',
@@ -2922,153 +2925,6 @@ class Config extends CommonDBTM {
             });
             </script>";
       return $msg;
-   }
-
-   /**
-    * Get a cache adapter from configuration
-    *
-    * @param string  $optname name of the configuration field
-    * @param string  $context name of the configuration context (default 'core')
-    * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
-    *
-    * @return Glpi\Cache\SimpleCache|Zend\Cache\Storage\StorageInterface object
-    */
-   public static function getCache($optname, $context = 'core', $psr16 = true) {
-      global $DB;
-
-      /* Tested configuration values
-       *
-       * - {"adapter":"apcu"}
-       * - {"adapter":"redis","options":{"server":{"host":"127.0.0.1"}},"plugins":["serializer"]}
-       * - {"adapter":"filesystem"}
-       * - {"adapter":"filesystem","options":{"cache_dir":"_cache_trans"},"plugins":["serializer"]}
-       * - {"adapter":"dba"}
-       * - {"adapter":"dba","options":{"pathname":"trans.db","handler":"flatfile"},"plugins":["serializer"]}
-       * - {"adapter":"memcache","options":{"servers":["127.0.0.1"]}}
-       * - {"adapter":"memcached","options":{"servers":["127.0.0.1"]}}
-       * - {"adapter":"wincache"}
-       *
-       */
-      // Read configuration
-      $conf = [];
-      if ($DB
-         && $DB->isConnected()
-         && $DB->fieldExists(self::getTable(), 'context')
-      ) {
-         $conf = self::getConfigurationValues($context, [$optname]);
-      }
-
-      // Adapter default options
-      $opt = [];
-      if (isset($conf[$optname])) {
-         $opt = json_decode($conf[$optname], true);
-         Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
-      }
-
-      //use memory adapter when called from tests
-      if (defined('TU_USER')) {
-         $opt['adapter'] = 'memory';
-      }
-      //force FS adapter for translations for tests
-      if (defined('TU_USER') && $optname == 'cache_trans') {
-         $opt['adapter'] = 'filesystem';
-      }
-
-      if (!isset($opt['options']['namespace'])) {
-         $namespace = "glpi_${optname}_" . GLPI_VERSION;
-         if ($DB) {
-            $namespace .= md5($DB->getDsn(null));
-         }
-         $opt['options']['namespace'] = $namespace;
-      }
-      if (!isset($opt['adapter'])) {
-         if (function_exists('apcu_fetch')) {
-            $opt['adapter'] = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         } else if (function_exists('wincache_ucache_add')) {
-            $opt['adapter'] = 'wincache';
-         } else {
-            $opt['adapter'] = 'filesystem';
-         }
-      }
-      // Adapter specific options
-      $ser = false;
-      switch ($opt['adapter']) {
-         case 'filesystem':
-            if (!isset($opt['options']['cache_dir'])) {
-               $opt['options']['cache_dir'] = $optname;
-            }
-            // Make configured directory relative to GLPI cache directory
-            $opt['options']['cache_dir'] = GLPI_CACHE_DIR . '/' . $opt['options']['cache_dir'];
-            if (!is_dir($opt['options']['cache_dir'])) {
-               mkdir($opt['options']['cache_dir']);
-            }
-            $ser = true;
-            break;
-
-         case 'dba':
-            if (!isset($opt['options']['pathname'])) {
-               $opt['options']['pathname'] = "$optname.data";
-            }
-            // Make configured path relative to GLPI cache directory
-            $opt['options']['pathname'] = GLPI_CACHE_DIR . '/' . $opt['options']['pathname'];
-            $ser = true;
-            break;
-
-         case 'redis':
-            $ser = true;
-            break;
-      }
-      // Some know plugins require data serialization
-      if ($ser && !isset($opt['plugins'])) {
-         $opt['plugins'] = ['serializer'];
-      }
-
-      // Create adapter
-      try {
-         $storage = Zend\Cache\StorageFactory::factory($opt);
-      } catch (Exception $e) {
-         //fallback to another cache system
-         $fallback = false;
-         if ($opt['adapter'] != 'filesystem') {
-            $opt = [
-               'adapter'   => 'filesystem',
-               'options'   => [
-                  'cache_dir' => GLPI_CACHE_DIR . '/' . $optname
-               ],
-               'plugins'   => ['serializer']
-            ];
-
-            if (!is_dir($opt['options']['cache_dir'])) {
-               mkdir($opt['options']['cache_dir']);
-            }
-            try {
-               $storage = Zend\Cache\StorageFactory::factory($opt);
-               $fallback = true;
-            } catch (Exception $e1) {
-               Toolbox::logError($e1->getMessage());
-               if (isset($_SESSION['glpi_use_mode'])
-                   && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-                  //preivous attempt has faled as well.
-                  Toolbox::logDebug($e->getMessage());
-               }
-            }
-         }
-
-         if ($fallback === false) {
-            $opt = ['adapter' => 'memory'];
-            $storage = Zend\Cache\StorageFactory::factory($opt);
-         }
-         if (isset($_SESSION['glpi_use_mode'])
-             && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-            Toolbox::logDebug($e->getMessage());
-         }
-      }
-
-      if ($psr16) {
-         return new SimpleCache($storage);
-      } else {
-         return $storage;
-      }
    }
 
    /**

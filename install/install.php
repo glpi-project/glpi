@@ -35,6 +35,10 @@ define('GLPI_ROOT', realpath('..'));
 include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
+// Load kernel and expose container in global var
+global $CONTAINER;
+$CONTAINER = (new Glpi\Kernel())->getContainer();
+
 Config::detectRootDoc();
 
 $GLPI = new GLPI();
@@ -425,6 +429,8 @@ function step4 ($databasename, $newdatabasename) {
          Toolbox::createSchema($_SESSION["glpilanguage"]);
          echo "<p>".__('OK - database was initialized')."</p>";
 
+         setCacheUniqId();
+
          next_form();
       } else { // can't create db.yaml file
          echo "<p>".__('Impossible to write the database setup file')."</p>";
@@ -457,6 +463,9 @@ function step4 ($databasename, $newdatabasename) {
 
          Toolbox::createSchema($_SESSION["glpilanguage"]);
          echo "<p>".__('OK - database was initialized')."</p>";
+
+         setCacheUniqId();
+
          next_form();
       } catch (PDOException $e) {
          echo __('Error in creating database!');
@@ -607,6 +616,15 @@ function checkConfigFile() {
       Html::redirect($CFG_GLPI['root_doc'] ."/index.php");
       die();
    }
+}
+
+function setCacheUniqId() {
+   $localConfigManager = new \Glpi\Application\LocalConfigurationManager(
+      GLPI_CONFIG_DIR,
+      new \Symfony\Component\PropertyAccess\PropertyAccessor(),
+      new \Symfony\Component\Yaml\Yaml()
+   );
+   $localConfigManager->setParameterValue('[cache_uniq_id]', uniqid());
 }
 
 if (!isset($_POST["install"])) {

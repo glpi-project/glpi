@@ -104,6 +104,7 @@ commands:
             mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
             bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-host=127.0.0.1 --db-user=root
             bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+            cp tests/circleci.parameters.yaml tests/parameters.yaml
       - run:
           name: Unit tests
           command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units

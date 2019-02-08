@@ -409,12 +409,11 @@ class Item_Devices extends CommonDBRelation {
     * @return array of Item_Device*
    **/
    static function getItemAffinities($itemtype) {
-      global $GLPI_CACHE;
-
-      if (!$GLPI_CACHE->has('item_device_affinities')) {
-         $GLPI_CACHE->set('item_device_affinities', ['' => static::getDeviceTypes()]);
+      $appCache = Toolbox::getAppCache();
+      if (!$appCache->has('item_device_affinities')) {
+         $appCache->set('item_device_affinities', ['' => static::getDeviceTypes()]);
       }
-      $items_affinities = $GLPI_CACHE->get('item_device_affinities');
+      $items_affinities = $appCache->get('item_device_affinities');
 
       if (!isset($items_affinities[$itemtype])) {
          $afffinities = [];
@@ -424,7 +423,7 @@ class Item_Devices extends CommonDBRelation {
             }
          }
          $items_affinities[$itemtype] = $afffinities;
-         $GLPI_CACHE->set('item_device_affinities', $items_affinities);
+         $appCache->set('item_device_affinities', $items_affinities);
       }
 
       return $items_affinities[$itemtype];

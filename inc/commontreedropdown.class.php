@@ -43,6 +43,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    public $can_be_translated = false;
 
+   /**
+    * @var \Psr\SimpleCache\CacheInterface
+    */
+   protected $cache;
+
+   public function __construct() {
+      global $CONTAINER;
+      $this->cache = $CONTAINER->get('application_cache');
+
+      parent::__construct();
+   }
 
    function getAdditionalFields() {
 
@@ -175,8 +186,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
-      global $GLPI_CACHE;
-
       if (isset($input[$this->getForeignKeyField()])) {
          // Can't move a parent under a child
          if (in_array($input[$this->getForeignKeyField()],
@@ -187,8 +196,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
             $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-            if ($GLPI_CACHE->has($ckey)) {
-               $GLPI_CACHE->delete($ckey);
+            if ($this->cache->has($ckey)) {
+               $this->cache->delete($ckey);
             }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
@@ -208,13 +217,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @param $changeParent
    **/
    function regenerateTreeUnderID($ID, $updateName, $changeParent) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       //drop from sons cache when needed
       if ($changeParent) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
-         if ($GLPI_CACHE->has($ckey)) {
-            $GLPI_CACHE->delete($ckey);
+         if ($this->cache->has($ckey)) {
+            $this->cache->delete($ckey);
          }
       }
 
@@ -282,7 +291,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return void
     */
    protected function cleanParentsSons($id = null, $cache = true) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       if ($id === null) {
          $id = $this->getID();
@@ -308,11 +317,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if ($cache) {
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
-            if ($GLPI_CACHE->has($ckey)) {
-               $sons = $GLPI_CACHE->get($ckey);
+            if ($this->cache->has($ckey)) {
+               $sons = $this->cache->get($ckey);
                if (isset($sons[$this->getID()])) {
                   unset($sons[$this->getID()]);
-                  $GLPI_CACHE->set($ckey, $sons);
+                  $this->cache->set($ckey, $sons);
                }
             }
          }
@@ -326,17 +335,15 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return void
     */
    protected function addSonInParents() {
-      global $GLPI_CACHE;
-
       //add sons cache when needed
       $ancestors = getAncestorsOf($this->getTable(), $this->getID());
       foreach ($ancestors as $ancestor) {
          $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
-         if ($GLPI_CACHE->has($ckey)) {
-            $sons = $GLPI_CACHE->get($ckey);
+         if ($this->cache->has($ckey)) {
+            $sons = $this->cache->get($ckey);
             if (!isset($sons[$this->getID()])) {
                $sons[$this->getID()] = (string)$this->getID();
-               $GLPI_CACHE->set($ckey, $sons);
+               $this->cache->set($ckey, $sons);
             }
          }
       }

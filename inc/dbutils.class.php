@@ -670,13 +670,14 @@ final class DbUtils {
     * @return array of IDs of the sons
     */
    public function getSonsOf($table, $IDf) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
+      $appCache = Toolbox::getAppCache();
       $ckey = $table . '_sons_cache_' . $IDf;
       $sons = false;
 
-      if ($GLPI_CACHE->has($ckey)) {
-         $sons = $GLPI_CACHE->get($ckey);
+      if ($appCache->has($ckey)) {
+         $sons = $appCache->get($ckey);
          if ($sons !== null) {
             return $sons;
          }
@@ -759,7 +760,7 @@ final class DbUtils {
          }
       }
 
-      $GLPI_CACHE->set($ckey, $sons);
+      $appCache->set($ckey, $sons);
 
       return $sons;
    }
@@ -773,8 +774,9 @@ final class DbUtils {
     * @return array of IDs of the ancestors
     */
    public function getAncestorsOf($table, $items_id) {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
+      $appCache = Toolbox::getAppCache();
       $ckey = $table . '_ancestors_cache_';
       if (is_array($items_id)) {
          $ckey .= md5(implode('|', $items_id));
@@ -783,8 +785,8 @@ final class DbUtils {
       }
       $ancestors = [];
 
-      if ($GLPI_CACHE->has($ckey)) {
-         $ancestors = $GLPI_CACHE->get($ckey);
+      if ($appCache->has($ckey)) {
+         $ancestors = $appCache->get($ckey);
          if ($ancestors !== null) {
             return $ancestors;
          }
@@ -870,7 +872,7 @@ final class DbUtils {
          }
       }
 
-      $GLPI_CACHE->set($ckey, $ancestors);
+      $appCache->set($ckey, $ancestors);
 
       return $ancestors;
    }
