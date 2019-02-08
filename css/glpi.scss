@@ -45,6 +45,39 @@
    z-index: 1051!important;
 }
 
+.sidebar {
+   background-color: rgb(34, 45, 50);
+
+   .nav-dropdown.open .nav-dropdown-items a {
+      background-color: rgb(44, 59, 65);
+      color: rgba(255, 255, 255, .8);
+
+      &:hover {
+         color: rgba(255, 255, 255, 1);
+      }
+   }
+
+   .nav-dropdown.open a, .nav-link:hover {
+      background-color: rgb(30, 40, 44);
+   }
+
+   .sidebar-form {
+      border-radius: 3px;
+      margin: .6em;
+
+      .form-control {
+         background-color: rgb(55, 72, 80);
+      }
+
+
+      .btn {
+         color: rgb(153, 153, 153);
+         background-color: rgb(55, 72, 80);
+         border-radius: 0 .25rem .25rem 0;
+      }
+   }
+}
+
 /** Language selector */
 
 #language_link form {
