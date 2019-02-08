@@ -79,32 +79,32 @@ jobs:
           root: /home/circleci
           paths:
             - codebase
-  "php5.6":
+  php_5_6_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_5.6_fpm-node
       - image: circleci/mariadb:10.1
-  "php7.0":
+  php_7_0_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.0_fpm-node
       - image: circleci/mariadb:10.2
-  "php7.1":
+  php_7_1_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.1_fpm-node
       - image: circleci/mariadb:10.3
-  "php7.2":
+  php_7_2_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.2_fpm-node
       - image: circleci/mariadb:10.3
-  "php7.3":
+  php_7_3_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mariadb:10.3
-  "phplatest":
+  php_latest_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_latest_fpm-node
@@ -116,19 +116,19 @@ workflows:
   tests_all:
     jobs:
       - checkout
-      - php5.6:
+      - php_5_6_test_suite:
           requires:
             - checkout
-      - php7.0:
+      - php_7_0_test_suite:
           requires:
             - checkout
-      - php7.1:
+      - php_7_1_test_suite:
           requires:
             - checkout
-      - php7.2:
+      - php_7_2_test_suite:
           requires:
             - checkout
-      - php7.3:
+      - php_7_3_test_suite:
           requires:
             - checkout
   scheduled_build:
@@ -141,6 +141,6 @@ workflows:
                 - master
     jobs:
       - checkout
-      - phplatest:
+      - php_latest_test_suite:
           requires:
             - checkout
