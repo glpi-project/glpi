@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Application\LocalConfigurationManager;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -45,6 +46,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Yaml\Yaml;
 use Config;
 use DBConnection;
 use PDO;
@@ -100,6 +103,13 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
     * @var integer
     */
    const ERROR_DB_SELECT_FAILED = 7;
+
+   /**
+    * Error code returned when failing to save local configuration file.
+    *
+    * @var integer
+    */
+   const ERROR_LOCAL_CONFIG_FILE_NOT_SAVED = 8;
 
    protected function configure() {
       parent::configure();
@@ -334,6 +344,23 @@ class InstallCommand extends Command implements ForceNoPluginsOptionCommandInter
       if (!empty($message)) {
          $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
          return self::ERROR_SCHEMA_CREATION_FAILED;
+      }
+
+      try {
+         $localConfigManager = new LocalConfigurationManager(
+            GLPI_CONFIG_DIR,
+            new PropertyAccessor(),
+            new Yaml()
+         );
+         $localConfigManager->setParameterValue('[cache_uniq_id]', uniqid());
+      } catch (\Exception $e) {
+         $message = sprintf(
+            __('Local configuration file saving failed with message "(%s)\n%s".'),
+            $e->getMessage(),
+            $e->getTraceAsString()
+         );
+         $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+         return self::ERROR_LOCAL_CONFIG_FILE_NOT_SAVED;
       }
 
       $output->writeln('<info>' . __('Installation done.') . '</info>');

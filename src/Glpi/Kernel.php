@@ -33,15 +33,16 @@
 namespace Glpi;
 
 use Glpi\Application\Router;
-use Glpi\Cache\SimpleCache;
 use Glpi\Controller\ControllerInterface;
 use Glpi\DependencyInjection\RegisterControllersPass;
 use Glpi\EventDispatcher\EventDispatcher;
 use Glpi\EventDispatcher\EventSubscriberInterface;
 use Slim\Http\Environment;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Config\Resource\FileExistenceResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -59,11 +60,18 @@ use Session;
 class Kernel
 {
     /**
-     * Cache directory directory.
+     * Cache directory.
      *
      * @var string
      */
     private $cacheDir;
+
+    /**
+     * Configuration directory.
+     *
+     * @var string
+     */
+    private $configDir;
 
     /**
      * Container builder.
@@ -85,9 +93,13 @@ class Kernel
      * @param string $projectDir Project root dir
      * @param string $cacheDir   Cache directory
      */
-    public function __construct(string $projectDir = GLPI_ROOT, string $cacheDir = GLPI_CACHE_DIR)
-    {
+    public function __construct(
+        string $projectDir = GLPI_ROOT,
+        string $cacheDir = GLPI_CACHE_DIR,
+        string $configDir = GLPI_CONFIG_DIR
+    ) {
         $this->cacheDir   = $cacheDir;
+        $this->configDir  = $configDir;
         $this->projectDir = $projectDir;
 
         $this->buildContainer();
@@ -177,6 +189,26 @@ class Kernel
     }
 
     /**
+     * Load local configuration.
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return void
+     */
+    protected function loadLocalConfiguration(ContainerBuilder $container)
+    {
+        try {
+            $configLoader = new YamlFileLoader($container, new FileLocator($this->configDir));
+            $configLoader->load('parameters.yaml');
+        } catch (FileLocatorFileNotFoundException $e) {
+            // Add a file existence check for cache freshness checks
+            $container->addResource(
+                new FileExistenceResource($this->configDir . '/parameters.yaml')
+            );
+        }
+    }
+
+    /**
      * Get GLPI root directory.
      *
      * Nota: This method was made to fits usage of Symfony\Component\HttpKernel\Kernel.
@@ -246,7 +278,6 @@ class Kernel
     private function defineSyntheticServices(ContainerInterface $container)
     {
         $container->set(DBmysql::class, $this->getDbInstance());
-        $container->set(SimpleCache::class, $this->getCacheInstance());
         $container->set(ConfigParams::class, $this->getConfigParamsInstance());
         $container->set('environment', $this->getEnvironmentInstance());
     }
@@ -261,8 +292,10 @@ class Kernel
         $containerBuilder = new ContainerBuilder();
 
         $resourcesDir = $this->getProjectDir() . '/src/resources';
-        $loader = new YamlFileLoader($containerBuilder, new FileLocator($resourcesDir));
-        $this->configureContainer($containerBuilder, $loader);
+        $baseLoader = new YamlFileLoader($containerBuilder, new FileLocator($resourcesDir));
+        $this->configureContainer($containerBuilder, $baseLoader);
+
+        $this->loadLocalConfiguration($containerBuilder);
 
         $containerBuilder->compile();
 
@@ -296,10 +329,6 @@ class Kernel
         if (!$db->isConnected()) {
             return;
         }
-
-        // Workaround to force instanciation of cache if not yet done.
-        // TODO Make plugin service not dependant from cache service
-        $this->getCacheInstance();
 
         $plugin = new Plugin();
         if (!$plugin->hasBeenInit()) {
@@ -364,22 +393,6 @@ class Kernel
             $DB = \Glpi\DatabaseFactory::create();
         }
         return $DB;
-    }
-
-    /**
-     * Get application cache instance.
-     *
-     * Returns global variable reference to update service if variable is redefined
-     *
-     * @return DBmysql
-     */
-    private function getCacheInstance(): SimpleCache
-    {
-        global $GLPI_CACHE;
-        if (!($GLPI_CACHE instanceof SimpleCache)) {
-            $GLPI_CACHE = \Config::getCache('cache_db');
-        }
-        return $GLPI_CACHE;
     }
 
     /**

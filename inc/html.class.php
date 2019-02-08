@@ -723,8 +723,9 @@ class Html {
     * @return void
    **/
    static function displayDebugInfos($with_session = true, $ajax = false) {
-      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
-      $GLPI_CACHE = Config::getCache('cache_db', 'core', false);
+      global $CFG_GLPI, $CONTAINER, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
+
+      $cache_storage = $CONTAINER->get('application_cache_storage');
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
@@ -751,7 +752,7 @@ class Html {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
             echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
-            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+            if ($cache_storage instanceof Zend\Cache\Storage\IterableInterface) {
                echo "<li><a href='#debugcache$rand'>CACHE VARIABLE</a></li>";
             }
          }
@@ -798,12 +799,12 @@ class Html {
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
 
-            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+            if ($cache_storage instanceof Zend\Cache\Storage\IterableInterface) {
                echo "<div id='debugcache$rand'>";
-               $cache_keys = $GLPI_CACHE->getIterator();
+               $cache_keys = $cache_storage->getIterator();
                $cache_contents = [];
                foreach ($cache_keys as $cache_key) {
-                  $cache_contents[$cache_key] = $GLPI_CACHE->getItem($cache_key);
+                  $cache_contents[$cache_key] = $cache_storage->getItem($cache_key);
                }
                self::printCleanArray($cache_contents, 0, true);
                echo "</div>";
@@ -6618,8 +6619,9 @@ class Html {
     * @return string
     */
    public static function compileScss($args) {
-      global $CFG_GLPI, $GLPI_CACHE;
+      global $CFG_GLPI;
 
+      $appCache = Toolbox::getAppCache();
       $ckey = isset($args['v']) ? $args['v'] : GLPI_SCHEMA_VERSION;
       $is_debug = $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
       $files = [];
@@ -6692,18 +6694,18 @@ class Html {
             $hashfile = self::getScssFileHash($path);
 
             //check if files has changed
-            if ($GLPI_CACHE->has($fckey)) {
-               $hash = $GLPI_CACHE->get($fckey);
+            if ($appCache->has($fckey)) {
+               $hash = $appCache->get($fckey);
 
                if ($hashfile != $hash) {
                   //file has changed
                   Toolbox::logDebug("$file has changed, reloading");
                   $args['reload'] = true;
-                  $GLPI_CACHE->set($fckey, $hashfile);
+                  $appCache->set($fckey, $hashfile);
                }
             } else {
                Toolbox::logDebug("$file is new, loading");
-               $GLPI_CACHE->set($fckey, $hashfile);
+               $appCache->set($fckey, $hashfile);
             }
          } else {
             Toolbox::logWarning('Requested file ' . $path . ' does not exists.');
@@ -6727,12 +6729,12 @@ class Html {
          }
       );
 
-      if ($GLPI_CACHE->has($ckey) && !isset($args['reload']) && !isset($args['nocache'])) {
-         $css = $GLPI_CACHE->get($ckey);
+      if ($appCache->has($ckey) && !isset($args['reload']) && !isset($args['nocache'])) {
+         $css = $appCache->get($ckey);
       } else {
          $css = $scss->compile($import);
          if (!isset($args['nocache'])) {
-            $GLPI_CACHE->set($ckey, $css);
+            $appCache->set($ckey, $css);
          }
       }
 

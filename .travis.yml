@@ -11,6 +11,7 @@ before_script:
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
+  - cp tests/travis.parameters.yaml tests/parameters.yaml
   - mysql -u root -e 'create database glpitest;'
   - bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-user=root
   - ./tests/LDAP/ldap_fixtures.sh > /dev/null

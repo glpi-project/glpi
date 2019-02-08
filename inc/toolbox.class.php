@@ -32,6 +32,7 @@
 
 use Glpi\Event;
 use Monolog\Logger;
+use Psr\SimpleCache\CacheInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -3105,5 +3106,16 @@ class Toolbox {
          }
       }
       return $conf_exists;
+   }
+
+   /**
+    * Get application cache service.
+    *
+    * @return CacheInterface
+    */
+   public static function getAppCache(): CacheInterface {
+
+      global $CONTAINER;
+      return $CONTAINER->get('application_cache');
    }
 }

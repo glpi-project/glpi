@@ -2,6 +2,7 @@
 /config/db.yaml
 /config/config_path.php
 /config/local_define.php
+/config/parameters.yaml
 /tests/config_db*
 /tests/db.yaml
 /plugins/
@@ -18,6 +19,7 @@
 /vendor/
 phpunit.xml
 /tests/code-coverage/
+/tests/files/
 /config/based_config.php
 /config/config.php
 /config/define.php

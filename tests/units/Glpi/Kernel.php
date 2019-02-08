@@ -62,8 +62,6 @@ class Kernel extends \GLPITestCase {
       // Check Glpi synthetic services
       $this->boolean($container->has(\DBmysql::class))->isTrue();
       $this->object($container->get(\DBmysql::class))->isInstanceOf(\DBmysql::class);
-      $this->boolean($container->has(\Glpi\Cache\SimpleCache::class))->isTrue();
-      $this->object($container->get(\Glpi\Cache\SimpleCache::class))->isInstanceOf(\Glpi\Cache\SimpleCache::class);
    }
 
    /**
@@ -194,13 +192,7 @@ PHP
       // Autoload does not work for files inside vfsStream
       include_once(vfsStream::url('glpi/plugins/random/src/RandomPlugin/MyService.php'));
 
-      // Force active plugin list
-      global $GLPI_CACHE;
-      $GLPI_CACHE = new \Glpi\Cache\SimpleCache(
-          \Zend\Cache\StorageFactory::factory(['adapter' => 'memory'])
-      );
-      $GLPI_CACHE->set('plugins_init', true);
-      $GLPI_CACHE->set('plugins', ['random']);
+      // FIXME Force active plugin list
 
       $kernel = new \Glpi\Kernel(vfsStream::url('glpi'), vfsStream::url('glpi/nocache'));
 

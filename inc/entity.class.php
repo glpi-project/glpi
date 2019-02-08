@@ -106,6 +106,18 @@ class Entity extends CommonTreeDropdown {
                                                    'max_closedate', 'tickettemplates_id']];
 
 
+   /**
+    * @var \Psr\SimpleCache\CacheInterface
+    */
+   protected $cache;
+
+   public function __construct() {
+      global $CONTAINER;
+      $this->cache = $CONTAINER->get('application_cache');
+
+      parent::__construct();
+   }
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -121,8 +133,6 @@ class Entity extends CommonTreeDropdown {
     * @since 0.84
    **/
    function pre_deleteItem() {
-      global $GLPI_CACHE;
-
       // Security do not delete root entity
       if ($this->input['id'] == 0) {
          return false;
@@ -131,8 +141,8 @@ class Entity extends CommonTreeDropdown {
       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
       $this->cleanParentsSons();
       $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-      if ($GLPI_CACHE->has($ckey)) {
-         $GLPI_CACHE->delete($ckey);
+      if ($this->cache->has($ckey)) {
+         $this->cache->delete($ckey);
       }
       return true;
    }

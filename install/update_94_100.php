@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\LocalConfigurationManager;
+use Glpi\ConfigParams;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Update from 9.4 to 10.0.0
  *
@@ -92,7 +97,30 @@ function update94to100() {
       }
    }
 
+   /** move cache configuration into local configuration file */
+   try {
+      $localConfigManager = new LocalConfigurationManager(
+         GLPI_CONFIG_DIR,
+         new PropertyAccessor(),
+         new Yaml()
+      );
+      $localConfigManager->setCacheValuesFromLegacyConfig(new ConfigParams($CFG_GLPI), GLPI_CACHE_DIR);
+      $localConfigManager->setParameterValue('[cache_uniq_id]', uniqid(), false);
+      $config_to_drop[] = 'cache_db';
+      $config_to_drop[] = 'cache_trans';
+   } catch (\Exception $exception) {
+      $migration->displayWarning(
+          sprintf(
+              __('Unable to write cache configuration into local configuration file. Message was: "%s".'),
+              $exception->getMessage()
+          )
+      );
+   }
+   /** /move cache configuration into local configuration file */
+
    // ************ Keep it at the end **************
+   Config::deleteConfigurationValues('core', $config_to_drop);
+
    $migration->executeMigration();
 
    return $updateresult;

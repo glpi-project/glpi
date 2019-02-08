@@ -584,7 +584,7 @@ class Session {
     * @return void
    **/
    static function loadLanguage($forcelang = '') {
-      global $LANG, $CFG_GLPI, $TRANSLATE;
+      global $LANG, $CFG_GLPI, $CONTAINER, $TRANSLATE;
 
       $file = "";
 
@@ -624,10 +624,8 @@ class Session {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
-      $cache = Config::getCache('cache_trans', 'core', false);
-      if ($cache !== false) {
-         $TRANSLATE->setCache($cache);
-      }
+      $cache_storage = $CONTAINER->get('translation_cache_storage');
+      $TRANSLATE->setCache($cache_storage);
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
       // Load plugin dicts

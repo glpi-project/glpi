@@ -33,6 +33,20 @@ imports:
 
 parameters:
     cache_directory: !php/const GLPI_CACHE_DIR
+    config_directory: !php/const GLPI_CONFIG_DIR
+
+    # "cache_uniq_id" is only mandatory on systems running multiple instances of glpi
+    # with cache adapter that shares a common space (apcu for example).
+    # It will be generated on installation.
+    cache_uniq_id: ''
+    application_cache:
+        adapter: auto
+        options:
+            namespace: app
+    translation_cache:
+        adapter: filesystem
+        options:
+            namespace: trans
 
 services:
     _defaults:
@@ -47,6 +61,9 @@ services:
         exclude: '%kernel.project_dir%/src/Glpi/{Annotation,DependencyInjection,Event,Kernel.php}'
 
 #### Glpi services below
+
+    Glpi\Application\LocalConfigurationManager:
+        $configDir: '%config_directory%'
 
     Glpi\Application\View\TwigView:
         arguments:
@@ -74,9 +91,23 @@ services:
             - method: 'addExtension'
               arguments: ['@Twig_Extension_Profiler']
 
-    # Glpi\Cache\SimpleCache service is synthetic as it may be instanciate prior to container compilation
-    Glpi\Cache\SimpleCache:
-        synthetic: true
+    Glpi\Cache\CacheStorageFactory:
+        $cacheDir: '%cache_directory%'
+        $cacheUniqId: '%cache_uniq_id%'
+    application_cache:
+        class: 'Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator'
+        arguments: ['@application_cache_storage']
+    application_cache_storage:
+        class: 'Zend\Cache\Storage\StorageInterface'
+        factory: 'Glpi\Cache\CacheStorageFactory:factory'
+        arguments: ['%application_cache%']
+    translation_cache:
+        class: 'Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator'
+        arguments: ['@translation_cache_storage']
+    translation_cache_storage:
+        class: 'Zend\Cache\Storage\StorageInterface'
+        factory: 'Glpi\Cache\CacheStorageFactory:factory'
+        arguments: ['%translation_cache%']
 
     # Glpi\ConfigParams service is synthetic as it requires loading of data inside DB
     Glpi\ConfigParams:
@@ -116,6 +147,12 @@ services:
 
     Slim\Flash\Messages:
         class: 'Slim\Flash\Messages'
+
+    Symfony\Component\PropertyAccess\PropertyAccessor:
+        class: 'Symfony\Component\PropertyAccess\PropertyAccessor'
+
+    Symfony\Component\Yaml\Yaml:
+        class: 'Symfony\Component\Yaml\Yaml'
 
     Twig_Extension_Debug:
         class: 'Twig_Extension_Debug'

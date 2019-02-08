@@ -30,15 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
-
 // Main GLPI test case. All tests should extends this class.
 
 class GLPITestCase extends atoum {
    private $int;
    private $str;
-   protected $apcu_cached_methods = [];
-   protected $nscache;
 
    public function setUp() {
       // By default, no session, not connected
@@ -49,24 +45,10 @@ class GLPITestCase extends atoum {
       ];
    }
 
-   public function beforeTestMethod($method) {
-      if (in_array($method, $this->apcu_cached_methods)) {
-         $this->nscache = 'glpitestcache' . GLPI_VERSION;
-         global $GLPI_CACHE;
-         //run with cache
-         $storage = \Zend\Cache\StorageFactory::factory([
-            'adapter'   => 'apcu',
-            'options'   => [
-               'namespace' => $this->nscache
-            ]
-         ]);
-         $GLPI_CACHE = new SimpleCacheDecorator($storage);
-      }
-   }
-
    public function afterTestMethod($method) {
-      global $GLPI_CACHE;
-      $GLPI_CACHE->clear();
+      global $CONTAINER;
+      $appCache = $CONTAINER->get('application_cache');
+      $appCache->clear();
    }
 
    /**

@@ -692,7 +692,7 @@ class Migration {
     * @return void
    **/
    function executeMigration() {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       foreach ($this->queries[self::PRE_QUERY] as $query) {
          $DB->rawQueryOrDie($query['query'], $query['message'], $query['params']);

@@ -94,7 +94,7 @@ class Plugin extends CommonDBTM {
     * @return void
    **/
    function init() {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       if (!$DB->isConnected() || !$DB->tableExists(self::getTable())) {
          return;
@@ -103,8 +103,9 @@ class Plugin extends CommonDBTM {
       $this->checkStates();
       $plugins                  = $this->find(['state' => self::ACTIVATED]);
 
-      $GLPI_CACHE->set('plugins_init', true);
-      $GLPI_CACHE->set('plugins', []);
+      $appCache = Toolbox::getAppCache();
+      $appCache->set('plugins_init', true);
+      $appCache->set('plugins', []);
 
       if (count($plugins)) {
          foreach ($plugins as $ID => $plug) {
@@ -120,8 +121,8 @@ class Plugin extends CommonDBTM {
     * @return boolean
     */
    public static function hasBeenInit() {
-      global $GLPI_CACHE;
-      return $GLPI_CACHE->has('plugins_init');
+      $appCache = Toolbox::getAppCache();
+      return $appCache->has('plugins_init');
    }
 
 
@@ -656,7 +657,7 @@ class Plugin extends CommonDBTM {
     * unactivate all activated plugins for update process
    **/
    function unactivateAll() {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       $DB->update(
          $this->getTable(), [
@@ -666,7 +667,8 @@ class Plugin extends CommonDBTM {
          ]
       );
 
-      $GLPI_CACHE->set('plugins', []);
+      $appCache = Toolbox::getAppCache();
+      $appCache->set('plugins', []);
 
       // reset menu
       if (isset($_SESSION['glpimenu'])) {
@@ -1658,9 +1660,9 @@ class Plugin extends CommonDBTM {
     * @return array
     */
    public static function getPlugins() {
-      global $GLPI_CACHE;
-      if ($GLPI_CACHE->has('plugins')) {
-         return $GLPI_CACHE->get('plugins');
+      $appCache = Toolbox::getAppCache();
+      if ($appCache->has('plugins')) {
+         return $appCache->get('plugins');
       }
       return [];
    }
@@ -1689,10 +1691,10 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setLoaded($id, $name) {
-      global $GLPI_CACHE;
-      $plugins = $GLPI_CACHE->get('plugins');
+      $appCache = Toolbox::getAppCache();
+      $plugins = $appCache->get('plugins');
       $plugins[$id] = $name;
-      $GLPI_CACHE->set('plugins', $plugins);
+      $appCache->set('plugins', $plugins);
    }
 
    /**
@@ -1705,10 +1707,10 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setUnloaded($id) {
-      global $GLPI_CACHE;
-      $plugins = $GLPI_CACHE->get('plugins');
+      $appCache = Toolbox::getAppCache();
+      $plugins = $appCache->get('plugins');
       unset($plugins[$id]);
-      $GLPI_CACHE->set('plugins', $plugins);
+      $appCache->set('plugins', $plugins);
    }
 
    /**
