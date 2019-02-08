@@ -7,17 +7,6 @@ shared: &shared
     - run:
         name: Install codebase
         command: cp -a /home/circleci/codebase/. ./
-    - run:
-        name: Install system dependencies
-        command: |
-          sudo -E apt-get update
-          sudo -E apt-get install -y mysql-client libpng-dev libxml2-dev
-          sudo -E docker-php-ext-install mysqli gd xmlrpc
-          sudo -E pecl install apcu <<< '' || sudo -E pecl install apcu-4.0.11 <<< ''
-          sudo -E docker-php-ext-enable apcu
-          echo "apc.enable=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
-          echo "apc.enable_cli=1" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
-          echo "memory_limit = 512M" | sudo -E tee --append /usr/local/etc/php/conf.d/docker-php-memory.ini
     - restore_cache:
         keys:
           - composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock" }}
@@ -93,32 +82,32 @@ jobs:
   "php5.6":
     <<: *shared
     docker:
-      - image: circleci/php:5.6-fpm-node
+      - image: glpi/circleci-env-core:php_5.6_fpm-node
       - image: circleci/mariadb:10.1
   "php7.0":
     <<: *shared
     docker:
-      - image: circleci/php:7.0-fpm-node
+      - image: glpi/circleci-env-core:php_7.0_fpm-node
       - image: circleci/mariadb:10.2
   "php7.1":
     <<: *shared
     docker:
-      - image: circleci/php:7.1-fpm-node
+      - image: glpi/circleci-env-core:php_7.1_fpm-node
       - image: circleci/mariadb:10.3
   "php7.2":
     <<: *shared
     docker:
-      - image: circleci/php:7.2-fpm-node
+      - image: glpi/circleci-env-core:php_7.2_fpm-node
       - image: circleci/mariadb:10.3
   "php7.3":
     <<: *shared
     docker:
-      - image: circleci/php:7.3-fpm-node
+      - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mariadb:10.3
   "phplatest":
     <<: *shared
     docker:
-      - image: circleci/php:latest-node
+      - image: glpi/circleci-env-core:php_latest_fpm-node
       - image: circleci/mariadb:10.3
 
 
