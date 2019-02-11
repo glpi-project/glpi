@@ -1987,12 +1987,6 @@ class Config extends CommonDBTM {
                [ 'name'    => 'leafo/scssphp',
                  'check'   => 'Leafo\ScssPhp\Compiler' ],
       ];
-      if ($all || PHP_VERSION_ID < 70000) {
-         $deps[] = [
-            'name'    => 'paragonie/random_compat',
-            'check'   => 'random_int'
-         ];
-      }
       if (Toolbox::canUseCAS()) {
          $deps[] = [
             'name'    => 'phpCas',
