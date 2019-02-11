@@ -1918,8 +1918,6 @@ class Config extends CommonDBTM {
                  'check'   => 'Sabre\\VObject\\Component' ],
                [ 'name'    => 'zendframework/zend-cache',
                  'check'   => 'Zend\\Cache\\Module' ],
-               [ 'name'    => 'zendframework/zend-console',
-                 'check'   => 'Zend\\Console\\Console' ],
                [ 'name'    => 'zendframework/zend-i18n',
                  'check'   => 'Zend\\I18n\\Module' ],
                [ 'name'    => 'zendframework/zend-serializer',
