@@ -9,15 +9,21 @@ shared: &shared
         command: cp -a /home/circleci/codebase/. ./
     - restore_cache:
         keys:
+          - composer-cache-{{ .Environment.CIRCLE_JOB }}
+    - restore_cache:
+        keys:
           - composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock" }}
+          - composer-install-{{ .Environment.CIRCLE_JOB }}
     - run:
         name: composer install
         command: |
-          sudo -E composer self-update --no-interaction --no-progress
-          sudo chown -R circleci:circleci /home/circleci/.composer
           sed -e '/"php":/d' -i composer.json
           mv composer.lock composer.lock.bak
           composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
+    - save_cache:
+        key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
+        paths:
+          - ./home/circleci/.composer/cache/
     - save_cache:
         key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}
         paths:
