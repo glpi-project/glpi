@@ -115,6 +115,54 @@ workflows:
   version: 2
   tests_all:
     jobs:
+      - checkout:
+          filters:
+            tags:
+              only: /.*/ # required as test_suites waits for this job to be done
+      - php_5_6_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+      - php_7_0_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+      - php_7_1_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
+      - php_7_2_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
+      - php_7_3_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+  scheduled_build:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+                - 9.4/bugfixes
+    jobs:
       - checkout
       - php_5_6_test_suite:
           requires:
@@ -131,16 +179,6 @@ workflows:
       - php_7_3_test_suite:
           requires:
             - checkout
-  scheduled_build:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - checkout
       - php_latest_test_suite:
           requires:
             - checkout
