@@ -29,7 +29,6 @@
         "zendframework/zend-serializer": "^2.8",
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
-        "paragonie/random_compat": "^2.0",
         "monolog/monolog": "^1.23",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
         "elvanto/litemoji": "^1.4",

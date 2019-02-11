@@ -1961,12 +1961,6 @@ class Config extends CommonDBTM {
                [ 'name'    => 'runcmf/runtracy',
                  'check'   => 'RunTracy\Middlewares\TracyMiddleware' ],
       ];
-      if ($all || PHP_VERSION_ID < 70000) {
-         $deps[] = [
-            'name'    => 'paragonie/random_compat',
-            'check'   => 'random_int'
-         ];
-      }
       if (Toolbox::canUseCAS()) {
          $deps[] = [
             'name'    => 'phpCas',
