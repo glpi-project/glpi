@@ -5,6 +5,7 @@ env:
   - DB=mysql
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - ./tests/LDAP/ldap_run.sh
   - composer self-update
   - sed -e '/"php":/d' -i composer.json
