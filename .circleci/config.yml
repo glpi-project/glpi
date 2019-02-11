@@ -2,6 +2,10 @@ version: 2
 
 shared: &shared
   steps:
+    - run:
+        name: Disable xdebug
+        command: |
+            sudo rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     - attach_workspace:
         at: /home/circleci
     - run:
