@@ -10,16 +10,10 @@ before_script:
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
-  #install 0.72.3 database
-  - if [[ "$UPDATE" == "true" ]]; then bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1); fi
-  - if [[ "$UPDATE" == "true" ]]; then bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction; fi
   - mysql -u root -e 'create database glpitest;'
   - bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-user=root
-  - bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
-  - ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
-  # LDAP stuff
   - ./tests/LDAP/ldap_fixtures.sh > /dev/null
-  - if [[ "$UPDATE" == "true" ]]; then ./vendor/bin/robo --load-from tools minify; fi
+
 script:
   - mysql -u root -e 'select version();'
   - composer testldap
@@ -40,7 +34,6 @@ matrix:
           packages:
             - ldap-utils
             - slapd
-
     - php: 7.1
       addons:
         mariadb: 10.1
@@ -48,7 +41,6 @@ matrix:
           packages:
             - ldap-utils
             - slapd
-
     - php: 7.2
       addons:
         apt:
