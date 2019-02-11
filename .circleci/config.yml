@@ -137,9 +137,6 @@ workflows:
           filters:
             tags:
               only: /.*/ # required as test_suites waits for this job to be done
-          filters:
-            tags:
-              only: /.*/ # run also on tag creation
       - php_7_0_test_suite:
           requires:
             - checkout
