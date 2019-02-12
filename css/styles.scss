@@ -3652,6 +3652,14 @@ a.copyright {
       word-wrap: break-word;
       display: flex;
 
+      &.Document_Item {
+         display: block;
+
+         .displayed_content {
+            display: block;
+         }
+      }
+
       .displayed_content {
          width: 100%;
          display: flex;
