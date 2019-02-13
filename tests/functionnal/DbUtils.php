@@ -37,7 +37,7 @@ use \DbTestCase;
 /* Test for inc/dbutils.class.php */
 
 class DbUtils extends DbTestCase {
-   protected $cached_methods = [
+   protected $apcu_cached_methods = [
       'testGetAncestorsOfCached',
       'testGetSonsOfCached'
    ];

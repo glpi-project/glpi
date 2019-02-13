@@ -57,22 +57,22 @@ class ProfileRight extends CommonDBChild {
 
       $rights = [];
 
-      if (!$GLPI_CACHE->has('all_possible_rights')
-          || count($GLPI_CACHE->get('all_possible_rights')) == 0) {
-
-         $iterator = $DB->request([
-            'SELECT'          => 'name',
-            'DISTINCT'        => true,
-            'FROM'            => self::getTable()
-         ]);
-         while ($right = $iterator->next()) {
-            // By default, all rights are NULL ...
-            $rights[$right['name']] = '';
-         }
-         $GLPI_CACHE->set('all_possible_rights', $rights);
-      } else {
-         $rights = $GLPI_CACHE->get('all_possible_rights');
+      if ($GLPI_CACHE->has('all_possible_rights')
+         && count($GLPI_CACHE->get('all_possible_rights')) > 0) {
+         return $GLPI_CACHE->get('all_possible_rights');
       }
+
+      $iterator = $DB->request([
+         'SELECT'          => 'name',
+         'DISTINCT'        => true,
+         'FROM'            => self::getTable()
+      ]);
+      while ($right = $iterator->next()) {
+         // By default, all rights are NULL ...
+         $rights[$right['name']] = '';
+      }
+      $GLPI_CACHE->set('all_possible_rights', $rights);
+
       return $rights;
    }
 

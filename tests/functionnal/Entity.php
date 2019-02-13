@@ -37,7 +37,7 @@ use \DbTestCase;
 /* Test for inc/entity.class.php */
 
 class Entity extends DbTestCase {
-   protected $cached_methods = [
+   protected $apcu_cached_methods = [
       'testChangeEntityParentCached'
    ];
 

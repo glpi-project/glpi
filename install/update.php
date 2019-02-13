@@ -37,9 +37,6 @@ if (!defined('GLPI_ROOT')) {
 include_once (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
-$GLPI_CACHE = Config::getCache('cache_db');
-$GLPI_CACHE->clear(); // Force cache cleaning to prevent usage of outdated cache data
-
 $translation_cache = Config::getCache('cache_trans');
 $translation_cache->clear(); // Force cache cleaning to prevent usage of outdated cache data
 
@@ -70,7 +67,7 @@ function test_connect() {
 
 //update database
 function doUpdateDb() {
-   global $DB, $GLPI_CACHE, $migration, $update;
+   global $DB, $migration, $update;
 
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
@@ -86,7 +83,6 @@ function doUpdateDb() {
    }
 
    $update->doUpdates($current_version);
-   $GLPI_CACHE->clear();
 }
 
 //Debut du script

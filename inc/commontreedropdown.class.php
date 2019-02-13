@@ -186,11 +186,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Parent changes => clear ancestors and update its level and completename
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
-            if (Toolbox::useCache()) {
-               $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-               if ($GLPI_CACHE->has($ckey)) {
-                  $GLPI_CACHE->delete($ckey);
-               }
+            $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
+            if ($GLPI_CACHE->has($ckey)) {
+               $GLPI_CACHE->delete($ckey);
             }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
@@ -213,7 +211,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB, $GLPI_CACHE;
 
       //drop from sons cache when needed
-      if ($changeParent && Toolbox::useCache()) {
+      if ($changeParent) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
          if ($GLPI_CACHE->has($ckey)) {
             $GLPI_CACHE->delete($ckey);
@@ -307,7 +305,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       );
 
       //drop from sons cache when needed
-      if ($cache && Toolbox::useCache()) {
+      if ($cache) {
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
             if ($GLPI_CACHE->has($ckey)) {
@@ -331,16 +329,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $GLPI_CACHE;
 
       //add sons cache when needed
-      if (Toolbox::useCache()) {
-         $ancestors = getAncestorsOf($this->getTable(), $this->getID());
-         foreach ($ancestors as $ancestor) {
-            $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
-            if ($GLPI_CACHE->has($ckey)) {
-               $sons = $GLPI_CACHE->get($ckey);
-               if (!isset($sons[$this->getID()])) {
-                  $sons[$this->getID()] = (string)$this->getID();
-                  $GLPI_CACHE->set($ckey, $sons);
-               }
+      $ancestors = getAncestorsOf($this->getTable(), $this->getID());
+      foreach ($ancestors as $ancestor) {
+         $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
+         if ($GLPI_CACHE->has($ckey)) {
+            $sons = $GLPI_CACHE->get($ckey);
+            if (!isset($sons[$this->getID()])) {
+               $sons[$this->getID()] = (string)$this->getID();
+               $GLPI_CACHE->set($ckey, $sons);
             }
          }
       }

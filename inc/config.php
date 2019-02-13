@@ -35,15 +35,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Be sure to use global objects if this file is included outside normal process
-global $CFG_GLPI, $CONTAINER, $GLPI, $GLPI_CACHE;
+global $CFG_GLPI, $CONTAINER, $GLPI;
 
 include_once (GLPI_ROOT."/inc/based_config.php");
 include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/dbconnection.class.php");
 
 //init cache
-$GLPI_CACHE = Config::getCache('cache_db');
-
 Session::setPath();
 Session::start();
 
@@ -235,8 +233,6 @@ if (!$conf_exists) {
       }
       exit();
    }
-
-   $GLPI_CACHE = Config::getCache('cache_db');
 }
 
 // Load kernel and expose container in global var
