@@ -6816,7 +6816,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</div>"; //h_info
 
          echo "<div class='h_content ITILContent'>";
-
+         echo "<div class='displayed_content'>";
          echo "<div class='b_right'>";
 
          if ($objType == 'Ticket') {
@@ -6851,6 +6851,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          echo "</div>"; // h_content ITILContent
 
+         echo "</div>"; // .displayed_content
          echo "</div>"; // h_item middle
 
          echo "<div class='break'></div>";

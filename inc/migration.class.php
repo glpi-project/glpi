@@ -43,6 +43,7 @@ class Migration {
 
    private   $change    = [];
    private   $fulltexts = [];
+   private   $uniques   = [];
    protected $version;
    private   $deb;
    private   $lastMessage;
@@ -529,6 +530,8 @@ class Migration {
 
          if ($type == 'FULLTEXT') {
             $this->fulltexts[$table][] = "ADD $type `$indexname` ($fields)";
+         } else if ($type == 'UNIQUE') {
+            $this->uniques[$table][] = "ADD $type `$indexname` ($fields)";
          } else {
             $this->change[$table][] = "ADD $type `$indexname` ($fields)";
          }
@@ -665,12 +668,20 @@ class Migration {
       }
 
       if (isset($this->fulltexts[$table])) {
-         $this->displayMessage( sprintf(__('Adding fulltext index - %s'), $table));
+         $this->displayMessage( sprintf(__('Adding fulltext indices - %s'), $table));
          foreach ($this->fulltexts[$table] as $idx) {
             $query = "ALTER TABLE " . $DB->quoteName($table) . " ".$idx;
             $DB->rawQueryOrDie($query, $this->version." $idx");
          }
          unset($this->fulltexts[$table]);
+      }
+      if (isset($this->uniques[$table])) {
+         $this->displayMessage( sprintf(__('Adding unicity indices - %s'), $table));
+         foreach ($this->uniques[$table] as $idx) {
+            $query = "ALTER TABLE `$table` ".$idx;
+            $DB->queryOrDie($query, $this->version." $idx");
+         }
+         unset($this->uniques[$table]);
       }
    }
 
@@ -690,7 +701,8 @@ class Migration {
 
       $tables = array_merge(
          array_keys($this->change),
-         array_keys($this->fulltexts)
+         array_keys($this->fulltexts),
+         array_keys($this->uniques)
       );
       foreach ($tables as $table) {
          $this->migrationOneTable($table);
