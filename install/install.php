@@ -320,7 +320,6 @@ function step3($host, $user, $password, $update) {
          echo "<input type='hidden' name='install' value='Etape_3'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                __('Continue')."'></p>";
-         $link->close();
          Html::closeForm();
 
       } else if ($update == "yes") {
@@ -341,7 +340,6 @@ function step3($host, $user, $password, $update) {
          echo "<input type='hidden' name='install' value='update_1'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                 __('Continue')."'></p>";
-         $link->close();
          Html::closeForm();
       }
 
@@ -433,8 +431,11 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
       }
    } else if (!empty($newdatabasename)) { // create new db
+
+      $TempDB = \Glpi\DatabaseFactory::create();
+
       // try to create the DB
-      if ($link->query("CREATE DATABASE IF NOT EXISTS ".AbstractDatabase::quoteName($newdatabasename))) {
+      if ($link->query("CREATE DATABASE IF NOT EXISTS ".$TempDB::quoteName($newdatabasename))) {
          echo "<p>".__('Database created')."</p>";
       } else { // can't create database
          echo __('Error in creating database!');
@@ -449,7 +450,7 @@ function step4 ($databasename, $newdatabasename) {
             $user,
             $password
          );
-         if (!DBConnection::createMainConfig($host, $user, $password, $newdatabasename)) {
+         if (!DBConnection::createMainConfig('mysql', $host, $user, $password, $newdatabasename)) {
             echo "<p>".__('Impossible to write the database setup file')."</p>";
             prev_form($host, $user, $password);
          }
@@ -468,7 +469,6 @@ function step4 ($databasename, $newdatabasename) {
       prev_form($host, $user, $password);
    }
 
-   $link->close();
 }
 
 //send telemetry informations
