@@ -6454,16 +6454,20 @@ JAVASCRIPT;
                   }
                   global $IS_TWIG;
                   if ($IS_TWIG) {
-                     $out .= "<div class='progress-group'>";
-                     if (!empty($progressbar_data['text'])) {
+                     $out .= "<div class='progress'>";
+                     /*if (!empty($progressbar_data['text'])) {
                         $out .= "<span class='progress-text'>{$progressbar_data['text']}</span>";
-                     }
-                     $out .= "<span class='progress-number'>{$progressbar_data['percent_text']}%</span>
-
-                     <div class='progress sm'>
-                        <div class='progress-bar progress-bar-{$progressbar_data['color']}' style='width: {$progressbar_data['percent']}%'></div>
-                     </div>
-                     </div>";
+                     }*/
+                     $out .= "<div
+                                 class='progress-bar bg-{$progressbar_data['color']}'
+                                 role='progressbar'
+                                 style='width: {$progressbar_data['percent']}%;'
+                                 aria-valuenow='{$progressbar_data['percent']}'
+                                 aria-valuemin='0'
+                                 aria-valuemax='100'>
+                                 {$progressbar_data['percent_text']}%
+                              </div>";
+                     $out .= "</div>";
                   } else {
                      $out .= "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
                               border: 1px solid #9BA563; position: relative;' >";

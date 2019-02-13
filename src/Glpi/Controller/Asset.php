@@ -758,23 +758,20 @@ class Asset extends AbstractController implements ControllerInterface
         if (!$item->update($post)) {
             $rand = mt_rand();
             $_SESSION["{$args['itemtype']}_edit_$rand"] = $post;
-            $redirect_uri = $this->router->pathFor('add-asset', $args) . "?item_rand=$rand";
+            $redirect_uri = $this->router->pathFor('update-asset', $args) . "?item_rand=$rand";
         } else {
            /** FIXME: should be handled in commondbtm
            Event::log($_POST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
            */
-            $redirect_uri = $this->router->pathFor('list', ['itemtype' => $args['itemtype']]);
-            if ($_SESSION['glpibackcreated']) {
-                $redirect_uri = $this->router->pathFor(
-                    'update-asset',
-                    [
-                        'itemtype'  => $args['itemtype'],
-                        'id'        => $item->fields['id']
-                    ]
-                );
-            }
+            $redirect_uri = $this->router->pathFor(
+                'update-asset',
+                [
+                    'itemtype'  => $args['itemtype'],
+                    'id'        => $item->fields['id']
+                ]
+            );
         }
 
         return $response

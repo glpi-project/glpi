@@ -71,7 +71,7 @@ class CacheStorageFactory extends StorageFactory
         if (!isset($cfg['adapter']) || 'auto' === $cfg['adapter']) {
             if (function_exists('wincache_ucache_add')) {
                 $cfg['adapter'] = 'wincache';
-            } else if (function_exists('apcu_fetch')) {
+            } elseif (function_exists('apcu_fetch')) {
                 $cfg['adapter'] = 'apcu';
             } else {
                 $cfg['adapter'] = 'filesystem';
@@ -79,7 +79,7 @@ class CacheStorageFactory extends StorageFactory
                     $cfg['plugins'] = [
                         'serializer'
                     ];
-                } else if (!in_array('serializer', $cfg['plugins'])) {
+                } elseif (!in_array('serializer', $cfg['plugins'])) {
                     $cfg['plugins'][] = 'serializer';
                 }
             }

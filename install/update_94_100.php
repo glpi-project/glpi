@@ -74,7 +74,7 @@ function update94to100() {
 
    /** add display preferences for sub items */
    $ADDTODISPLAYPREF['Contract'] = [3, 4, 29, 5];
-   $ADDTODISPLAYPREF['Item_Disk'] = [2, 3, 4, 5, 6, 7];
+   $ADDTODISPLAYPREF['Item_Disk'] = [2, 3, 4, 5, 6, 7, 8];
    $ADDTODISPLAYPREF['Certificate'] = [7, 4, 8, 121, 10, 31];
    $ADDTODISPLAYPREF['Notepad'] = [200, 201, 202, 203, 204];
    $ADDTODISPLAYPREF['SoftwareVersion'] = [3, 31, 2, 122, 123, 124];

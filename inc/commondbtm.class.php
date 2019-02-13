@@ -51,6 +51,14 @@ class CommonDBTM extends CommonGLPI {
    public $fields = [];
 
    /**
+    * Fields mapping.
+    *
+    * @var mixed[]
+    */
+   public $mapped_fields = [];
+
+
+   /**
     * Flag to determine whether or not changes must be logged into history.
     *
     * @var boolean
@@ -5441,6 +5449,27 @@ class CommonDBTM extends CommonGLPI {
 
       foreach ($columns as $column) {
          $this->form_elements[$column['Field']] = $this->buildFormElement($column, $add);
+      }
+
+      foreach ($this->mapped_fields as $field => $mapping) {
+         $mapped_elt = array_merge(
+            $this->form_elements[$field],
+            [
+               'name'         => $field,
+               'autofocus'    => count($this->form_elements) == 0,
+            ]
+         );
+
+         $values = [];
+         if (!is_array($mapping)) {
+            $mapping = [$mapping];
+         }
+         foreach ($mapping as $mfield) {
+            $values[$mfield] = $this->fields[$mfield];
+         }
+
+         $mapped_elt['value'] = $values;
+         $this->form_elements[$field] = $mapped_elt;
       }
 
       /*if ($this->$p['maybeempty'] && $p['canedit']) {
