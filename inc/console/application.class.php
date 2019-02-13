@@ -240,22 +240,19 @@ class Application extends BaseApplication {
       global $DB;
       $this->db = $DB;
 
-      if (!$this->db->connected) {
-         return;
-      }
-
-      ob_start();
-      $checkdb = Config::displayCheckDbEngine();
-      $message = ob_get_clean();
-      if ($checkdb > 0) {
-         throw new RuntimeException($message);
+      if ($this->db->connected) {
+         ob_start();
+         $checkdb = Config::displayCheckDbEngine();
+         $message = ob_get_clean();
+         if ($checkdb > 0) {
+            throw new RuntimeException($message);
+         }
       }
 
       // Default value for use mode
       $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
       // Assign config
-      global $CFG_GLPI;
       $this->config = &$CFG_GLPI;
    }
 
