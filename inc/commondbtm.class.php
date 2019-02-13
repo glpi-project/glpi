@@ -5396,7 +5396,7 @@ class CommonDBTM extends CommonGLPI {
     */
    protected function getDbFormFields($fields) {
       global $DB;
-      if ($dbfields = $DB->list_fields($this->getTable())) {
+      if ($dbfields = $DB->listFields($this->getTable())) {
          foreach (array_keys($fields) as $field) {
             if (!isset($dbfields[$field])) {
                /*Toolbox::logWarning(
@@ -5488,7 +5488,7 @@ class CommonDBTM extends CommonGLPI {
     */
    public function getForm($add = false) {
       global $DB;
-      $columns = $DB->list_fields($this->getTable());
+      $columns = $DB->listFields($this->getTable());
 
       $this->form_elements = [];
       $form_fields = $this->getFormFields($add);

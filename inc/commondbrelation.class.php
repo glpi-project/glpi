@@ -1862,7 +1862,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $condition = $current_table . '.' . $where_id . '=' . $item->fields['id'];
 
       if ($DB->fieldExists(static::getTable(), 'itemtype') && $self === false) {
-         $condition .= ' AND ' . $current_table . '.itemtype = "' . $DB->escape($item_type) . '"';
+         $condition .= ' AND ' . $DB->quoteName($current_table . '.itemtype') . ' = ' . $DB->quote($item_type);
       }
 
       return $condition;
@@ -1936,7 +1936,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $link_table = getTableForItemtype($link_type);
 
       $existing = [];
-      $join = Search::addLeftJoin(
+      $search = new Search($link_type, []);
+      $join = $search->addLeftJoin(
          $link_type,
          $link_table,
          $existing,

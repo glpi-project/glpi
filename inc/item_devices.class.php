@@ -1491,7 +1491,8 @@ class Item_Devices extends CommonDBRelation {
       $link_table = getTableForItemtype($link_type);
 
       $existing = [];
-      $join = Search::addLeftJoin(
+      $search = new \Search($link_type, []);
+      $join = $search->addLeftJoin(
          $link_type,
          $link_table,
          $existing,
