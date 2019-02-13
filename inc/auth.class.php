@@ -1169,7 +1169,7 @@ class Auth extends CommonGLPI {
             return self::EXTERNAL;
          }
       }
-      
+
       // using user token for api login
       if (!empty($_REQUEST['user_token'])) {
          return self::API;
