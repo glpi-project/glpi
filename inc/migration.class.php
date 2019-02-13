@@ -662,7 +662,7 @@ class Migration {
       }
 
       if (isset($this->fulltexts[$table])) {
-         $this->displayMessage( sprintf(__('Adding fulltext index - %s'), $table));
+         $this->displayMessage( sprintf(__('Adding fulltext indices - %s'), $table));
          foreach ($this->fulltexts[$table] as $idx) {
             $query = "ALTER TABLE `$table` ".$idx;
             $DB->queryOrDie($query, $this->version." $idx");
@@ -671,7 +671,7 @@ class Migration {
       }
 
       if (isset($this->uniques[$table])) {
-         $this->displayMessage( sprintf(__('Adding unicity index - %s'), $table));
+         $this->displayMessage( sprintf(__('Adding unicity indices - %s'), $table));
          foreach ($this->uniques[$table] as $idx) {
             $query = "ALTER TABLE `$table` ".$idx;
             $DB->queryOrDie($query, $this->version." $idx");
