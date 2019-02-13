@@ -74,10 +74,6 @@ class Application extends BaseApplication {
       parent::__construct('GLPI CLI', GLPI_VERSION);
 
       $this->initApplication();
-      $this->initDb();
-      $this->initSession();
-      $this->initCache();
-      $this->initConfig();
 
       $this->computeAndLoadOutputLang();
 
@@ -215,9 +211,12 @@ class Application extends BaseApplication {
     * Initalize GLPI.
     *
     * @global array $CFG_GLPI
+    * @global DB    $DB
     * @global GLPI  $GLPI
     *
     * @return void
+    *
+    * @throws RuntimeException
     */
    private function initApplication() {
 
@@ -236,25 +235,9 @@ class Application extends BaseApplication {
       $GLPI->initLogger();
 
       Config::detectRootDoc();
-   }
 
-   /**
-    * Initialize database connection.
-    *
-    * @global DB $DB
-    *
-    * @return void
-    *
-    * @throws RuntimeException
-    */
-   private function initDb() {
-
-      if (!class_exists('DB', false)) {
-         return;
-      }
-
+      // Assign and check DB connection
       global $DB;
-      $DB = new DB();
       $this->db = $DB;
 
       if (!$this->db->connected) {
@@ -267,61 +250,13 @@ class Application extends BaseApplication {
       if ($checkdb > 0) {
          throw new RuntimeException($message);
       }
-   }
-
-   /**
-    * Initialize GLPI session.
-    * This is mandatory to init cache and load languages.
-    *
-    * @TODO Do not use session for console.
-    *
-    * @return void
-    */
-   private function initSession() {
-
-      if (!is_writable(GLPI_SESSION_DIR)) {
-         throw new RuntimeException(
-            sprintf(__('Cannot write in "%s" directory.'), GLPI_SESSION_DIR)
-         );
-      }
-
-      Session::setPath();
-      Session::start();
 
       // Default value for use mode
       $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-   }
 
-   /**
-    * Initialize GLPI cache.
-    *
-    * @global Zend\Cache\Storage\StorageInterface $GLPI_CACHE
-    *
-    * @return void
-    */
-   private function initCache() {
-
-      global $GLPI_CACHE;
-      $GLPI_CACHE = Config::getCache('cache_db');
-   }
-
-   /**
-    * Initialize GLPI configuration.
-    *
-    * @global array $CFG_GLPI
-    *
-    * @return void
-    */
-   private function initConfig() {
-
+      // Assign config
       global $CFG_GLPI;
       $this->config = &$CFG_GLPI;
-
-      if (!($this->db instanceof DB) || !$this->db->connected) {
-         return;
-      }
-
-      Config::loadLegacyConfiguration(false);
    }
 
    /**
