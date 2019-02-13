@@ -676,6 +676,7 @@ class Change extends CommonITILObject {
                $options['priority']            = $ticket->getField('priority');
                $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
                $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
+               $options['entities_id']         = $ticket->getField('entities_id');
             }
          }
 
@@ -689,6 +690,7 @@ class Change extends CommonITILObject {
                $options['priority']            = $problem->getField('priority');
                $options['itilcategories_id']   = $problem->getField('itilcategories_id');
                $options['time_to_resolve']     = $problem->getField('time_to_resolve');
+               $options['entities_id']         = $problem->getField('entities_id');
             }
          }
       }
