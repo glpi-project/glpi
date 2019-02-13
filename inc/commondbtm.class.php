@@ -209,21 +209,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * force table value (used for config management for old versions)
-    *
-    * @param string $table name of the table to be forced
-    *
-    * @return void
-   **/
-   static function forceTable($table) {
-      global $GLPI_CACHE;
-      $glpi_tables = self::getTablesOf();
-      $glpi_tables[get_called_class()] = $table;
-      $GLPI_CACHE->set('table_of', $glpi_tables);
-   }
-
-
-   /**
     * Get known foreign keys
     *
     * @return array

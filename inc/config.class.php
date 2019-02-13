@@ -2755,7 +2755,6 @@ class Config extends CommonDBTM {
          }
 
          $config = new Config();
-         $config->forceTable('glpi_configs');
          if ($config->getFromDB(1)) {
             return $config->fields;
          }
@@ -2769,7 +2768,6 @@ class Config extends CommonDBTM {
          }
 
          $config = new Config();
-         $config->forceTable('glpi_configs');
          if ($config->getFromDB(1)) {
             return Config::getConfigurationValues('core');
          }
