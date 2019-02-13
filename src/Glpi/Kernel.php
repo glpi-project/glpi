@@ -238,7 +238,7 @@ class Kernel
     {
         $container->set(DBmysql::class, $this->getDbInstance());
         $container->set(SimpleCache::class, $this->getCacheInstance());
-        $container->set(Config::class, $this->getConfigInstance());
+        $container->set(ConfigParams::class, $this->getConfigParamsInstance());
         $container->set('environment', $this->getEnvironmentInstance());
     }
 
@@ -368,9 +368,9 @@ class Kernel
      *
      * Returns global variable reference to update service if variable is redefined.
      *
-     * @return Config
+     * @return ConfigParams
      */
-    private function getConfigInstance(): Config
+    private function getConfigParamsInstance(): ConfigParams
     {
         global $CFG_GLPI;
 
@@ -379,7 +379,7 @@ class Kernel
             \Config::loadLegacyConfiguration(false);
         }
 
-        return new Config($CFG_GLPI);
+        return new ConfigParams($CFG_GLPI);
     }
 
     /**

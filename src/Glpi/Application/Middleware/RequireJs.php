@@ -32,7 +32,7 @@
 
 namespace Glpi\Application\Middleware;
 
-use Glpi\Config;
+use Glpi\ConfigParams;
 use Glpi\Application\View\TwigView;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -45,14 +45,14 @@ class RequireJs
     protected $view;
 
     /**
-     * @var Config
+     * @var ConfigParams
      */
-    protected $config;
+    protected $configParams;
 
-    public function __construct(TwigView $view, Config $config)
+    public function __construct(TwigView $view, ConfigParams $configParams)
     {
         $this->view = $view;
-        $this->config = $config;
+        $this->configParams = $configParams;
     }
 
     /**
@@ -82,7 +82,7 @@ class RequireJs
             return $next($request, $response);
         }
 
-        $requirements = \Html::getJsRequirements($this->config['javascript'], $key);
+        $requirements = \Html::getJsRequirements($this->configParams['javascript'], $key);
 
         $css_paths = [];
         $js_paths = [];
@@ -102,7 +102,7 @@ class RequireJs
                 foreach (['fullcalendar', 'moment'] as $lib_name) {
                     foreach ([2, 3] as $loc) {
                         $filename = $lib_path . "/" . $lib_name . "/locale/"
-                            . strtolower($this->config["languages"][$_SESSION['glpilanguage']][$loc]).".js";
+                            . strtolower($this->configParams["languages"][$_SESSION['glpilanguage']][$loc]).".js";
                         if (file_exists(GLPI_ROOT . '/' . $filename)) {
                             $js_paths[] = $filename;
                             break;

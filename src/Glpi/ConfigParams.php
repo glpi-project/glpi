@@ -34,11 +34,11 @@
 namespace Glpi;
 
 /**
- * Glpi configuration variables.
+ * Glpi configuration parameters.
  *
  * @since 10.0
  */
-class Config extends \ArrayObject
+class ConfigParams extends \ArrayObject
 {
     public function __construct(array $values)
     {

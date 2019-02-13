@@ -32,7 +32,7 @@
 
 namespace Glpi\Application\Middleware;
 
-use Glpi\Config;
+use Glpi\ConfigParams;
 use Glpi\Application\Router;
 use Glpi\Application\View\TwigView;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -51,13 +51,13 @@ class TemplatesGlobals
     protected $router;
 
     /**
-     * @var Config
+     * @var ConfigParams
      */
-    protected $config;
+    protected $configParams;
 
-    public function __construct(TwigView $view, Router $router, Config $config)
+    public function __construct(TwigView $view, Router $router, ConfigParams $configParams)
     {
-        $this->config = $config;
+        $this->configParams = $configParams;
         $this->router = $router;
         $this->view = $view;
     }
@@ -82,7 +82,7 @@ class TemplatesGlobals
 
         $view->getEnvironment()->addGlobal(
             "CFG_GLPI",
-            $this->config
+            $this->configParams
         );
 
         $view->getEnvironment()->addGlobal(
@@ -97,7 +97,7 @@ class TemplatesGlobals
 
         $view->getEnvironment()->addGlobal(
             'glpi_lang',
-            $this->config["languages"][$_SESSION['glpilanguage']][3]
+            $this->configParams["languages"][$_SESSION['glpilanguage']][3]
         );
 
         $view->getEnvironment()->addGlobal(
