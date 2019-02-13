@@ -176,9 +176,6 @@ workflows:
                 - 9.4/bugfixes
     jobs:
       - checkout
-      - php_5_6_test_suite:
-          requires:
-            - checkout
       - php_7_0_test_suite:
           requires:
             - checkout
