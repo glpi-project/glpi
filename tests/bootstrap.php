@@ -42,14 +42,11 @@ define('GLPI_ROOT', __DIR__ . '/../');
 if (!file_exists(GLPI_CONFIG_DIR . '/db.yaml')) {
    die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
 }
-global $CFG_GLPI, $GLPI_CACHE, $IS_TWIG;
+global $CFG_GLPI, $IS_TWIG;
 $IS_TWIG = false;
 
 include_once (GLPI_ROOT . "/inc/define.php");
 include __DIR__ . '/../inc/autoload.function.php';
-
-//init cache
-$GLPI_CACHE = Config::getCache('cache_db');
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';

@@ -3009,11 +3009,11 @@ class Toolbox {
     * @since 9.2
     *
     * @return boolean
+    * @deprecated
     */
    public static function useCache() {
-      global $GLPI_CACHE;
-      return $GLPI_CACHE != null
-         && (!defined('TU_USER') || defined('CACHED_TESTS'));
+
+      Toolbox::deprecated('Cache system is now always enabled.');
    }
 
    /**

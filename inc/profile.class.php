@@ -539,7 +539,6 @@ class Profile extends CommonDBTM {
 
 
    function post_getEmpty() {
-      global $GLPI_CACHE;
 
       $this->fields["interface"] = "helpdesk";
       $this->fields["name"]      = __('Without name');
