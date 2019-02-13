@@ -33,7 +33,7 @@
 
 namespace Glpi\Controller;
 
-use Glpi\Config;
+use Glpi\ConfigParams;
 use Glpi\Application\Router;
 use Glpi\Application\View\TwigView;
 use Slim\Flash\Messages;
@@ -41,9 +41,9 @@ use Slim\Flash\Messages;
 abstract class AbstractController
 {
     /**
-     * @var Config
+     * @var ConfigParams
      */
-    protected $config;
+    protected $configParams;
 
     /**
      * @var Messages
@@ -60,9 +60,9 @@ abstract class AbstractController
      */
     protected $view;
 
-    public function __construct(Config $config, Messages $flashMessages, Router $router, TwigView $view)
+    public function __construct(ConfigParams $configParams, Messages $flashMessages, Router $router, TwigView $view)
     {
-        $this->config = $config;
+        $this->configParams = $configParams;
         $this->flash = $flashMessages;
         $this->router = $router;
         $this->view = $view;

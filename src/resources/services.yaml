@@ -78,8 +78,8 @@ services:
     Glpi\Cache\SimpleCache:
         synthetic: true
 
-    # Glpi\Config service is synthetic as it requires loading of data inside DB
-    Glpi\Config:
+    # Glpi\ConfigParams service is synthetic as it requires loading of data inside DB
+    Glpi\ConfigParams:
         synthetic: true
 
 #### Legacy services below
