@@ -127,7 +127,7 @@ class GlpiDebug extends Twig_Extension
                 $panel .= "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
                 $panel .= \Html::cleanSQLDisplay($query);
                 $panel .= "</td><td>";
-                $panel .= $DEBUG_SQL['times'][$num];
+                $panel .= isset($DEBUG_SQL['times'][$num]) ?$DEBUG_SQL['times'][$num] : '-';
                 $panel .= "</td><td>";
                 if (isset($DEBUG_SQL['errors'][$num])) {
                     $panel .= $DEBUG_SQL['errors'][$num];

@@ -371,7 +371,7 @@ class Search {
       $this->constructData($data);
 
       if (!isset($data['data']['totalcount'])) {
-         Toolbox::logError('Somethng went wrong during search.');
+         Toolbox::logError("Something went wrong during $itemtype search");
          return;
       }
 
