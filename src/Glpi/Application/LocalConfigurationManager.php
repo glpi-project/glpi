@@ -209,7 +209,7 @@ class LocalConfigurationManager
         if (array_key_exists('adapter', $dbConfig)) {
             if ('dba' === $dbConfig['adapter'] && isset($dbConfig['options']['pathname'])) {
                 $dbConfig['options']['pathname'] = $cacheDir . '/' . $dbConfig['options']['pathname'];
-            } else if ('filesystem' === $dbConfig['adapter'] && isset($dbConfig['options']['cache_dir'])) {
+            } elseif ('filesystem' === $dbConfig['adapter'] && isset($dbConfig['options']['cache_dir'])) {
                 $dbConfig['options']['cache_dir'] = $cacheDir . '/' . $dbConfig['options']['cache_dir'];
             }
         }

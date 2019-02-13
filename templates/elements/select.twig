@@ -74,8 +74,10 @@
    {% if element.listicon is not defined or element.listicon == true %}
       {% if element.value is defined and element.value > 0 %}
          {% set elt_path = path_for('update-asset', {'itemtype': element.itemtype, 'id': element.value}) %}
-      {% else %}
+      {% elseif element.itemtype is defined %}
          {% set elt_path = path_for('list', {'itemtype': element.itemtype}) %}
+      {% else %}
+         {% set elt_path = '#' %}
       {% endif %}
       <a
          class="btn btn-outline-secondary" href="{{ elt_path }}"

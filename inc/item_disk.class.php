@@ -44,10 +44,21 @@ class Item_Disk extends CommonDBChild {
    static public $items_id = 'items_id';
    public $dohistory       = true;
 
+   protected $twig_compat              = true;
+
    // Encryption status
    const ENCRYPTION_STATUS_NO = 0;
    const ENCRYPTION_STATUS_YES = 1;
    const ENCRYPTION_STATUS_PARTIALLY = 2;
+
+   public function __construct() {
+      $this->mapped_fields = [
+        'item' => [
+            'itemtype',
+            'items_id'
+        ]
+      ];
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Volume', 'Volumes', $nb);
@@ -449,6 +460,21 @@ class Item_Disk extends CommonDBChild {
          'unit'               => '%',
       ];
 
+      $tabs[] = [
+         'id'                 => '8',
+         'table'              => self::getTable(),
+         'field'              => 'encryption_status',
+         'name'               => __('Encryption status'),
+         'searchtype'         => 'equals',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'searchequalsonfield' => true,
+         'datatype'           => 'specific',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
+
       return $tabs;
    }
 
@@ -630,9 +656,9 @@ class Item_Disk extends CommonDBChild {
     */
    static function getAllEncryptionStatus() {
       return [
-         self::ENCRYPTION_STATUS_NO          => __('Encrypted'),
-         self::ENCRYPTION_STATUS_YES         => __('Partially encrypted'),
-         self::ENCRYPTION_STATUS_PARTIALLY   => __('Not encrypted')
+         self::ENCRYPTION_STATUS_YES         => __('Encrypted'),
+         self::ENCRYPTION_STATUS_PARTIALLY   => __('Partially encrypted'),
+         self::ENCRYPTION_STATUS_NO          => __('Not encrypted')
       ];
    }
 
@@ -720,9 +746,98 @@ class Item_Disk extends CommonDBChild {
 
       switch ($field) {
          case 'encryption_status':
-            return self::getEncryptionStatus($values[$field]);
+            if ($values[$field] != self::ENCRYPTION_STATUS_NO) {
+               return Html::showTooltip(self::getEncryptionInfos($values['id']), [
+                  'awesome-class'   => "fas fa-lock",
+                  'display'         => false
+               ]);
+            } else {
+               return "<i class='fas fa-lock-open' title='" .  self::getEncryptionStatus($values[$field]) . "'></i>";
+            }
       }
 
       return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+   /**
+    * Get encryption informations for an itemtype
+    *
+    * @param integer $id Item id
+    *
+    * @return string
+    */
+   public static function getEncryptionInfos($id) :string {
+      $item = new self();
+      $item->getFromDB($id);
+
+      $infos = "<strong>" . __('Partial encryption') . "</strong> " .
+                  Dropdown::getYesNo($item->fields['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
+                  "<br/>" .
+                  "<strong>" . __('Encryption tool') . "</strong> " . $item->fields['encryption_tool'] .
+                  "</br>" .
+                  "<strong>" . __('Encryption algorithm') . "</strong> " .
+                  $item->fields['encryption_algorithm'] . "</br>" .
+                  "<strong>" . __('Encryption type') . "</strong> " . $item->fields['encryption_type'];
+
+      return $infos;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'name'     => [
+            'label'  => __('Name')
+         ],
+         'item' => [
+            'label'  => __('Item'),
+            'type'   => 'link'
+         ],
+         'device'   => [
+            'label'  => __('Partition')
+         ],
+         'mountpoint'     => [
+            'label'  => __('Mount point')
+         ],
+         'filesystems_id' => [
+            'label'  => __('File system')
+         ],
+         'totalsize'   => [
+            'label'     => __('Global size'),
+            'htmltype'  => 'number'
+         ],
+         'freesize'   => [
+            'label'     => __('Free size'),
+            'htmltype'  => 'number'
+         ],
+         'encryption_status' => [
+             'label'    => __('Encryption status'),
+             'type'     => 'select',
+             'values'   => $this->getAllEncryptionStatus(),
+             'listicon' => false,
+             'addicon'  => false
+         ],
+         'encryption_tool' => [
+             'label'  => __('Encryption tool')
+         ],
+         'encryption_algorithm' => [
+            'label' => __('Encryption algorithm')
+         ],
+         'encryption_type' => [
+            'label' => __('Encryption type')
+         ]
+      ] + parent::getFormFields();
+      return $fields;
    }
 }
