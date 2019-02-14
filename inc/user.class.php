@@ -4392,7 +4392,7 @@ class User extends CommonDBTM {
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'password_forget_token'       => $token,
-            new \QueryExpression('NOW() < ADDDATE(password_forget_token_date, INTERVAL 1 DAY))')
+            new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
          ]
       ]);
 
