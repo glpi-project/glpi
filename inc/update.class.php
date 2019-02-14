@@ -170,6 +170,10 @@ class Update extends CommonGLPI {
       $plugin = new Plugin();
       $plugin->unactivateAll();
 
+      if (!defined('GLPI_PREVER')) {
+         define('GLPI_PREVER', false);
+      }
+
       switch ($current_version) {
          case '0.1':
             include_once("update_to_031.php");
