@@ -32,6 +32,7 @@
 
 namespace Glpi;
 
+use Toolbox;
 use Symfony\Component\Yaml\Yaml;
 
 if (!defined('GLPI_ROOT')) {
@@ -53,6 +54,7 @@ class DatabaseFactory
      */
     public static function create(array $db_config = null, bool $slave = false, $server = null): AbstractDatabase
     {
+        Toolbox::checkDbConfig();
         if ($db_config === null) {
             if (file_exists(GLPI_CONFIG_DIR . '/db.yaml')) {
                 $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml');
