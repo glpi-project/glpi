@@ -2471,6 +2471,9 @@ class Config extends CommonDBTM {
             ],
             'exif' => [
                'required'  => false
+            ],
+            'intl' => [
+               'required' => true
             ]
          ];
       } else {
