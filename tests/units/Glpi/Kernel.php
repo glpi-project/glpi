@@ -272,14 +272,6 @@ YAML
       // Autoload does not work for files inside vfsStream
       include_once(vfsStream::url('glpi/src/Glpi/EventSubscriber/MyEventSubscriber.php'));
 
-      // Force active plugin list
-      global $GLPI_CACHE;
-      $GLPI_CACHE = new \Glpi\Cache\SimpleCache(
-          \Zend\Cache\StorageFactory::factory(['adapter' => 'memory'])
-      );
-      $GLPI_CACHE->set('plugins_init', true);
-      $GLPI_CACHE->set('plugins', ['random']);
-
       $kernel = new \Glpi\Kernel(vfsStream::url('glpi'), vfsStream::url('glpi/nocache'));
 
       $container = $kernel->getContainer();
