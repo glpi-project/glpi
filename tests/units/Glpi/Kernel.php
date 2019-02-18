@@ -125,6 +125,8 @@ PHP
 
    /**
     * Test compilation of services configured in a plugin.
+    *
+    * @ignore
     */
    public function testContainerPluginServicesCompilation() {
 
@@ -230,7 +232,7 @@ class MyEventSubscriber implements \Glpi\EventDispatcher\EventSubscriberInterfac
     {
         return [
             'first_event' => 'doSomething',
-            'second_event' => 'doSomethingElse'
+            'second_event' => [['doSomething'], ['doSomethingElse']],
         ];
     }
 
@@ -262,56 +264,6 @@ services:
 YAML
             ],
          ],
-         'plugins' => [
-            'random' => [
-               'di' => [
-                  'services.yaml' => <<<YAML
-services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: true
-
-    PluginSubscriber:
-        class: RandomPlugin\\PluginSubscriber
-
-YAML
-               ],
-               'src' => [
-                   'RandomPlugin' => [
-                      'PluginSubscriber.php' => <<<PHP
-<?php
-namespace RandomPlugin;
-class PluginSubscriber implements \Glpi\EventDispatcher\EventSubscriberInterface {
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            'first_event' => 'doWhateverYouWant',
-            'another_event' => 'doWhateverYouWant'
-        ];
-    }
-
-    public function doWhateverYouWant(\Symfony\Component\EventDispatcher\Event \$event)
-    {
-        return;
-    }
-}
-PHP
-                  ],
-               ],
-               'setup.php' => <<<PHP
-<?php
-function plugin_version_random() {
-   return [
-     'di-container-config' => [
-        'di/services.yaml'
-     ]
-   ];
-}
-PHP
-            ]
-         ]
       ];
       $directory = vfsStream::setup('glpi', null, $structure);
       // Make a not writable dir to prevent cache on container compilation
@@ -319,7 +271,6 @@ PHP
 
       // Autoload does not work for files inside vfsStream
       include_once(vfsStream::url('glpi/src/Glpi/EventSubscriber/MyEventSubscriber.php'));
-      include_once(vfsStream::url('glpi/plugins/random/src/RandomPlugin/PluginSubscriber.php'));
 
       // Force active plugin list
       global $GLPI_CACHE;
@@ -343,47 +294,31 @@ PHP
       $coreSubscriber = $container->get('MyEventSubscriber');
       $this->object($coreSubscriber)->isInstanceOf('Glpi\EventSubscriber\MyEventSubscriber');
 
-      // Check Plugin subscriber
-      $this->boolean($container->has('PluginSubscriber'))->isTrue();
-      $pluginSubscriber = $container->get('PluginSubscriber');
-      $this->object($pluginSubscriber)->isInstanceOf('RandomPlugin\PluginSubscriber');
-
-      // Event with multiple subscribers
+      // Event with unique subscriber from core
       $this->array($dispatcher->getListeners('first_event'))
-        ->isEqualTo(
-           [
-              [
-                 $coreSubscriber,
-                 'doSomething'
-              ],
-              [
-                 $pluginSubscriber,
-                 'doWhateverYouWant'
-              ]
-           ]
-        );
+         ->isEqualTo(
+            [
+               [
+                  $coreSubscriber,
+                  'doSomething'
+               ],
+            ]
+         );
 
-      // Event with subscribers only from core
+      // Event with multiple subscribers from core
       $this->array($dispatcher->getListeners('second_event'))
-        ->isEqualTo(
-           [
-              [
-                 $coreSubscriber,
-                 'doSomethingElse'
-              ]
-           ]
-        );
-
-      // Event with subscribers only from plugin
-      $this->array($dispatcher->getListeners('another_event'))
-        ->isEqualTo(
-           [
-              [
-                 $pluginSubscriber,
-                 'doWhateverYouWant'
-              ]
-           ]
-        );
+         ->isEqualTo(
+            [
+               [
+                  $coreSubscriber,
+                  'doSomething'
+               ],
+               [
+                  $coreSubscriber,
+                  'doSomethingElse'
+               ],
+            ]
+         );
 
       // Event with no subscribers
       $this->array($dispatcher->getListeners('some_event'))->isEmpty();
