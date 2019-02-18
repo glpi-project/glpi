@@ -51,7 +51,7 @@ commands:
       - save_cache:
           key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
-            - ./home/circleci/.composer/cache/
+            - /home/circleci/.composer/cache/
       - save_cache:
           key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}
           paths:
@@ -70,7 +70,7 @@ commands:
       - save_cache:
           key: npm-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
           paths:
-            - ./home/circleci/.npm/_cacache/
+            - /home/circleci/.npm/_cacache/
       - save_cache:
           key: npm-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "package-lock.json" }}
           paths:
