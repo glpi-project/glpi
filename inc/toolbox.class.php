@@ -2650,6 +2650,7 @@ class Toolbox {
     * @return string
     */
    public static function slugify($string) {
+      $string = transliterator_transliterate("Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();", $string);
       $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
       $string = self::removeHtmlSpecialChars($string);
       $string = preg_replace('~[^0-9a-z]+~i', '-', $string);

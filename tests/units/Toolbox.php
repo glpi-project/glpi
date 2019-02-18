@@ -53,18 +53,24 @@ class Toolbox extends \GLPITestCase {
       $this->string($result)->isIdenticalTo($expected);
    }
 
-   public function testSlugify() {
-      $original = 'My - string èé  Ê À ß';
-      $expected = 'my-string-ee-e-a-sz';
-      $result = \Toolbox::slugify($original);
+   protected function slugifyProvider() {
+      return [
+         [
+            'string'    => 'My - string èé  Ê À ß',
+            'expcected' => 'my-string-ee-e-a-sz'
+         ], [
+            //https://github.com/glpi-project/glpi/issues/2946
+            'string'    => 'Έρευνα ικανοποίησης - Αιτήματα',
+            'expcected' => 'ereuna-ikanopoieses-aitemata'
+         ]
+      ];
+   }
 
-      $this->string($result)->isIdenticalTo($expected);
-
-      //https://github.com/glpi-project/glpi/issues/2946
-      $original = 'Έρευνα ικανοποίησης - Αιτήματα'; //el_GR
-      $result = \Toolbox::slugify($original);
-      $this->string($result)->startWith('nok_')
-         ->length->isIdenticalTo(10 + strlen('nok_'));
+   /**
+    * @dataProvider slugifyProvider
+    */
+   public function testSlugify($string, $expected) {
+      $this->string(\Toolbox::slugify($string))->isIdenticalTo($expected);
    }
 
    public function dataGetSize() {
