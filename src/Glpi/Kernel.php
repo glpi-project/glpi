@@ -278,6 +278,20 @@ class Kernel
     */
     private function loadPluginsServices(ContainerBuilder $container)
     {
+        // FIXME
+        // Following logic will not work for many reasons:
+        //
+        // 1. Active state of plugins dependes on DB informations, which are verfified by container caching logic.
+        // This mean that container cache will not be considered as outdated when a plugin state changed.
+        //
+        // 2. Plugin state check requires to have a cache and a db service up, prior to container compilation.
+        // This is risky as it chain services instanciations before container config is fully loaded.
+        //
+        // 3. Loading plugin files directly in container will give them ability to override container parameters. Not sur it is wanted.
+        // To prevent this, maybe we should use a `use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;`
+        // to load plugins.
+        return;
+
         $db = $this->getDbInstance();
         if (!$db->isConnected()) {
             return;
