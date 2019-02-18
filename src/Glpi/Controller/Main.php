@@ -139,7 +139,7 @@ class Main extends AbstractController implements ControllerInterface
             ];
         }
 
-        if ($this->config['login_remember_time']) {
+        if ($this->configParams['login_remember_time']) {
             $glpi_form['elements']['remember'] = [
                 'type'      => 'checkbox',
                 'name'      => 'login_remember',
@@ -157,7 +157,7 @@ class Main extends AbstractController implements ControllerInterface
         }
 
         $show_lostpass = false;
-        if ($this->config["notifications_mailing"]) {
+        if ($this->configParams["notifications_mailing"]) {
             $active = \countElementsInTable(
                 'glpi_notifications',
                 [
@@ -172,7 +172,7 @@ class Main extends AbstractController implements ControllerInterface
         }
 
         $show_faq = false;
-        if ($this->config["use_public_faq"]) {
+        if ($this->configParams["use_public_faq"]) {
             $show_faq = true;
         }
 
@@ -205,17 +205,18 @@ class Main extends AbstractController implements ControllerInterface
        //There is certainly a beter way to achieve that test (JS?)
        /*if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
          if (!is_writable(GLPI_SESSION_DIR)) {
-            Html::redirect($this->config['root_doc'] . "/index.php?error=2");
+            Html::redirect($this->configParams['root_doc'] . "/index.php?error=2");
          } else {
-            Html::redirect($this->config['root_doc'] . "/index.php?error=1");
+            Html::redirect($this->configParams['root_doc'] . "/index.php?error=1");
          }
        }*/
 
         $login = $post['login_name'];
         $password = $post['login_password'];
         $login_auth = $post['auth'];
-        $remember = isset($post['login_remember']) && $this->config["login_remember_time"];
+        $remember = isset($post['login_remember']) && $this->configParams["login_remember_time"];
         $noauto = isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false;
+        $redirect = isset($_SESSION['glpi_redirect']) ? $_SESSION['glpi_redirect'] : $this->router->pathFor('central');
 
         if (empty($login) || empty($password) || empty($login_auth)) {
             $this->flash->addMessage(
@@ -241,10 +242,13 @@ class Main extends AbstractController implements ControllerInterface
 
        // now we can continue with the process...
         if ($auth->login($login, $password, $noauto, $remember, $login_auth)) {
+            if (isset($_SESSION['glpi_redirect'])) {
+                unset($_SESSION['glpi_redirect']);
+            }
+
             return $response
-            ->withStatus(301)
-            ->withHeader('Location', $this->router->pathFor('central'));
-            Auth::redirectIfAuthenticated();
+                ->withStatus(301)
+                ->withHeader('Location', $redirect);
         } else {
             foreach ($auth->getErrors() as $error) {
                 $this->flash->addMessage(
@@ -253,13 +257,13 @@ class Main extends AbstractController implements ControllerInterface
                 );
             }
             return $response
-            ->withStatus(301)
-            ->withHeader('Location', $this->router->pathFor('login'));
+                ->withStatus(301)
+                ->withHeader('Location', $this->router->pathFor('login'));
            // we have done at least a good login? No, we exit.
-           /*Html::nullHeader("Login", $this->config["root_doc"] . '/index.php');
+           /*Html::nullHeader("Login", $this->configParams["root_doc"] . '/index.php');
            echo '<div class="center b">' . $auth->getErr() . '<br><br>';
            // Logout whit noAUto to manage auto_login with errors
-           echo '<a href="' . $this->config["root_doc"] . '/front/logout.php?noAUTO=1'.
+           echo '<a href="' . $this->configParams["root_doc"] . '/front/logout.php?noAUTO=1'.
                str_replace("?", "&", $REDIRECT).'">' .__('Log in again') . '</a></div>';
            Html::nullFooter();
            exit();*/
@@ -283,9 +287,9 @@ class Main extends AbstractController implements ControllerInterface
          && $_SESSION["glpiauthtype"] == Auth::CAS
          && \Toolbox::canUseCAS()) {
 
-         phpCAS::client(CAS_VERSION_2_0, $this->config["cas_host"], intval($this->config["cas_port"]),
-                        $this->config["cas_uri"], false);
-         phpCAS::setServerLogoutURL(strval($this->config["cas_logout"]));
+         phpCAS::client(CAS_VERSION_2_0, $this->configParams["cas_host"], intval($this->configParams["cas_port"]),
+                        $this->configParams["cas_uri"], false);
+         phpCAS::setServerLogoutURL(strval($this->configParams["cas_logout"]));
          phpCAS::logout();
        }*/
 
@@ -320,7 +324,7 @@ class Main extends AbstractController implements ControllerInterface
         }
 
        // Redirect to the login-page
-       //Html::redirect($this->config["root_doc"]."/index.php".$toADD);
+       //Html::redirect($this->configParams["root_doc"]."/index.php".$toADD);
         return $response
          ->withStatus(301)
          ->withHeader('Location', $this->router->pathFor('login'));
@@ -408,7 +412,7 @@ class Main extends AbstractController implements ControllerInterface
     public function lostPassword(Request $request, Response $response, array $args)
     {
         $go = true;
-        if ($this->config["notifications_mailing"]) {
+        if ($this->configParams["notifications_mailing"]) {
             $active = countElementsInTable(
                 'glpi_notifications',
                 [

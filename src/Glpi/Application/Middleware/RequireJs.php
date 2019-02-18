@@ -66,7 +66,6 @@ class RequireJs
      */
     public function __invoke(Request $request, Response $response, $next)
     {
-        $get = $request->getQueryParams();
         $route = $request->getAttribute('route');
         $arguments = [];
         if ($route) {

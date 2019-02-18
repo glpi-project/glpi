@@ -36,6 +36,7 @@ use Glpi\Application\Router;
 use Glpi\Application\View\TwigView;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Flash\Messages;
 
 class Authentication
 {
@@ -49,10 +50,11 @@ class Authentication
      */
     protected $router;
 
-    public function __construct(TwigView $view, Router $router)
+    public function __construct(TwigView $view, Router $router, Messages $flashMessages)
     {
         $this->view = $view;
         $this->router = $router;
+        $this->flash = $flashMessages;
     }
 
     /**
@@ -68,6 +70,24 @@ class Authentication
     {
         //TODO: do!
         //die('You shall not pass!')
+
+        $route = $request->getAttribute('route');
+        if (!$route || in_array($route->getName(), ['login', 'slash', 'cron', 'asset', 'do-login', 'lost-password'])) {
+            return $next($request, $response);
+        }
+
+        //redirect to login page if used is not logged in
+        if (!\Session::getLoginUserID()) {
+            $arguments = $route->getArguments();
+            $get = $request->getQueryParams();
+            $arguments = $arguments + $get;
+            //store current path for redirection
+            $_SESSION['glpi_redirect'] = $this->router->pathFor($route->getName(), $arguments);
+
+            $this->flash->addMessage('error', __('Authentication required'));
+            return $response->withRedirect($this->router->pathFor('login'), 301);
+        }
+
         return $next($request, $response);
     }
 }
