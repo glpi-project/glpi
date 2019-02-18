@@ -715,9 +715,6 @@ class Migration {
 
       $this->storeConfig();
 
-      // as some tables may have be renamed, unset session matching between tables and classes
-      $GLPI_CACHE->delete('table_of');
-
       // end of global message
       $this->displayMessage(__('Task completed.'));
    }
