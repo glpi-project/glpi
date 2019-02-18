@@ -170,10 +170,6 @@ class Update extends CommonGLPI {
       $plugin = new Plugin();
       $plugin->unactivateAll();
 
-      if (!defined('GLPI_PREVER')) {
-         define('GLPI_PREVER', false);
-      }
-
       switch ($current_version) {
          case "0.80" :
             include_once("{$updir}update_080_0801.php");
@@ -323,6 +319,7 @@ class Update extends CommonGLPI {
 
          case "9.3.2":
          case "9.3.3":
+         case "9.4.0-dev":
             include_once("{$updir}update_93_94.php");
             update93to94();
 
