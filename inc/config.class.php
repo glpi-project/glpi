@@ -2406,6 +2406,9 @@ class Config extends CommonDBTM {
             'CAS'     => [
                'required' => false,
                'class'    => 'phpCAS'
+            ],
+            'intl' => [
+               'required' => true
             ]
          ];
       } else {
