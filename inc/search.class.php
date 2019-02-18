@@ -6200,7 +6200,7 @@ JAVASCRIPT;
                      $out .= $so['emptylabel'];
                   } else {
                      // Trans field exists
-                     if (isset($data[$ID][$k]['trans']) && !empty($data[p][$k]['trans'])) {
+                     if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
                         $out .=  Dropdown::getValueWithUnit($data[$ID][$k]['trans'], $unit);
                      } else {
                         $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
