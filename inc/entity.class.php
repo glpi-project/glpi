@@ -231,58 +231,42 @@ class Entity extends CommonTreeDropdown {
       return $tmp;
    }
 
-
-   /**
-    * @since 0.84 (before in entitydata.class)
-   **/
-   function prepareInputForAdd($input) {
+   public function prepareInput(array $input, $mode = 'add') :array {
       global $DB;
 
       $input['name'] = isset($input['name']) ? trim($input['name']) : '';
       if (empty($input["name"])) {
          Session::addMessageAfterRedirect(__("You can't add an entity without name"),
                                           false, ERROR);
-         return false;
+         return [];
       }
 
-      $input = parent::prepareInputForAdd($input);
+      $input = parent::prepareInput($input, $mode);
 
-      $result = $DB->request([
-         'SELECT' => new \QueryExpression(
-            'MAX('.$DB->quoteName('id').')+1 AS newID'
-         ),
-         'FROM'   => self::getTable()
-      ])->next();
-      $input['id'] = $result['newID'];
-
-      $input['max_closedate'] = $_SESSION["glpi_currenttime"];
-
-      if (!Session::isCron()) { // Filter input for connected
-         $input = $this->checkRightDatas($input);
-      }
-      return $input;
-   }
-
-
-   /**
-    * @since 0.84 (before in entitydata.class)
-   **/
-   function prepareInputForUpdate($input) {
-
-      $input = parent::prepareInputForUpdate($input);
-
-      // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
-      // cela s'applique aux prochains tickets - Pas à l'historique
-      if ((isset($input['inquest_rate'])
-           && (($this->fields['inquest_rate'] == 0)
-               || is_null($this->fields['max_closedate']))
-           && ($input['inquest_rate'] != $this->fields['inquest_rate']))
-          || (isset($input['inquest_config'])
-              && (($this->fields['inquest_config'] == self::CONFIG_PARENT)
-                  || is_null($this->fields['max_closedate']))
-              && ($input['inquest_config'] != $this->fields['inquest_config']))) {
+      if ($mode === 'add') {
+         $result = $DB->request([
+            'SELECT' => new \QueryExpression(
+               'MAX('.$DB->quoteName('id').')+1 AS newID'
+            ),
+            'FROM'   => self::getTable()
+         ])->next();
+         $input['id'] = $result['newID'];
 
          $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+      } else {
+         // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
+         // cela s'applique aux prochains tickets - Pas à l'historique
+         if ((isset($input['inquest_rate'])
+            && (($this->fields['inquest_rate'] == 0)
+                  || is_null($this->fields['max_closedate']))
+            && ($input['inquest_rate'] != $this->fields['inquest_rate']))
+            || (isset($input['inquest_config'])
+               && (($this->fields['inquest_config'] == self::CONFIG_PARENT)
+                     || is_null($this->fields['max_closedate']))
+               && ($input['inquest_config'] != $this->fields['inquest_config']))) {
+
+            $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+         }
       }
 
       // Force entities_id = -1 for root entity
@@ -290,6 +274,7 @@ class Entity extends CommonTreeDropdown {
          $input['entities_id'] = -1;
          $input['level']       = 1;
       }
+
       if (!Session::isCron()) { // Filter input for connected
          $input = $this->checkRightDatas($input);
       }
