@@ -1079,6 +1079,10 @@ class Plugin extends CommonDBTM {
       $ret = $parm;
       if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
          foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
+            if (!Plugin::isPluginLoaded($plug)) {
+               continue;
+            }
+
             if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
                include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
             }
@@ -1105,6 +1109,11 @@ class Plugin extends CommonDBTM {
    static function doOneHook($plugname, $hook, $options = []) {
 
       $plugname=strtolower($plugname);
+
+      if (!Plugin::isPluginLoaded($plugname)) {
+         return;
+      }
+
       if (!is_array($hook)) {
          $hook = "plugin_" . $plugname . "_" . $hook;
          if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
