@@ -186,47 +186,57 @@ class AuthLDAP extends CommonDBTM {
       }
    }
 
-   function prepareInputForUpdate($input) {
+
+   function prepareInput(array $input, $mode = 'add') :array {
+      //If it's the first ldap directory then set it as the default directory
+      if (!self::getNumberOfServers()) {
+         $input['is_default'] = 1;
+      }
 
       if (isset($input["rootdn_passwd"])) {
          if (empty($input["rootdn_passwd"])) {
-            unset($input["rootdn_passwd"]);
+            if ($mode === 'update') {
+               unset($input["rootdn_passwd"]);
+            }
          } else {
             $input["rootdn_passwd"] = Toolbox::encrypt($input["rootdn_passwd"], GLPIKEY);
          }
       }
 
-      if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
-         $input['rootdn_passwd'] = '';
-      }
+      if ($mode === 'update') {
+         if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
+            $input['rootdn_passwd'] = '';
+         }
 
-      // Set attributes in lower case
-      if (count($input)) {
-         foreach ($input as $key => $val) {
-            if (preg_match('/_field$/', $key)) {
-               $input[$key] = Toolbox::strtolower($val);
+         // Set attributes in lower case
+         if (count($input)) {
+            foreach ($input as $key => $val) {
+               if (preg_match('/_field$/', $key)) {
+                  $input[$key] = Toolbox::strtolower($val);
+               }
             }
          }
-      }
 
-      //do not permit to override sync_field
-      if ($this->isSyncFieldEnabled()
-         && isset($input['sync_field'])
-         && $this->isSyncFieldUsed()
-      ) {
-         if ($input['sync_field'] == $this->fields['sync_field']) {
-            unset($input['sync_field']);
-         } else {
-            Session::addMessageAfterRedirect(
-               __('Synchronization field cannot be changed once in use.'),
-               false,
-               ERROR
-            );
-            return false;
-         };
+         //do not permit to override sync_field
+         if ($this->isSyncFieldEnabled()
+            && isset($input['sync_field'])
+            && $this->isSyncFieldUsed()
+         ) {
+            if ($input['sync_field'] == $this->fields['sync_field']) {
+               unset($input['sync_field']);
+            } else {
+               Session::addMessageAfterRedirect(
+                  __('Synchronization field cannot be changed once in use.'),
+                  false,
+                  ERROR
+               );
+               return false;
+            };
+         }
       }
       return $input;
    }
+
 
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
@@ -3420,21 +3430,6 @@ class AuthLDAP extends CommonDBTM {
          );
       }
    }
-
-   function prepareInputForAdd($input) {
-
-      //If it's the first ldap directory then set it as the default directory
-      if (!self::getNumberOfServers()) {
-         $input['is_default'] = 1;
-      }
-
-      if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
-         $input["rootdn_passwd"] = Toolbox::encrypt($input["rootdn_passwd"], GLPIKEY);
-      }
-
-      return $input;
-   }
-
 
    /**
     * Get LDAP deleted user action options.
