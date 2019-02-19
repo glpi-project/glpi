@@ -472,8 +472,6 @@ JAVASCRIPT;
          $model = new $model_class;
 
          if ($model->getFromDB($item->fields[$modelsfield])) {
-            $required_units = $model->fields['required_units'];
-
             for ($i = 0; $i < $model->fields['required_units']; $i++) {
                $units[$row['orientation']][$row['position'] + $i] = 1;
                if ($model->fields['depth'] == 1) {
@@ -533,8 +531,6 @@ JAVASCRIPT;
 
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
-
-      $colspan = 4;
 
       echo "<div class='center'>";
 
@@ -987,7 +983,6 @@ JAVASCRIPT;
          }
 
          $required_units = 1;
-         $width          = 1;
          $depth          = 1;
          if ($item->model != null) {
             if ($item->model->fields['required_units'] > 1) {
@@ -997,7 +992,6 @@ JAVASCRIPT;
                if ($this->isNewItem() && !isset($input['hpos']) || $input['hpos'] == 0) {
                   $error_detected[] = __('You must define an horizontal position for this item');
                }
-               $width = 0.5;
             }
             if ($item->model->fields['depth'] != 1) {
                if ($this->isNewItem() && !isset($input['orientation'])) {
@@ -1022,7 +1016,6 @@ JAVASCRIPT;
                      $d = 0;
                      while ($d/4 < $depth) {
                         $pos = ($orientation == Rack::REAR) ? 3 - $d : $d;
-                        $val = 1;
                         if (isset($content_filled[Rack::POS_LEFT][$pos]) && $content_filled[Rack::POS_LEFT][$pos] != 0) {
                            $error_detected[] = __('Not enough space available to place item');
                            break 2;
@@ -1035,7 +1028,6 @@ JAVASCRIPT;
                      $d = 0;
                      while ($d/4 < $depth) {
                         $pos = ($orientation == Rack::REAR) ? 3 - $d : $d;
-                        $val = 1;
                         if (isset($content_filled[Rack::POS_RIGHT][$pos]) && $content_filled[Rack::POS_RIGHT][$pos] != 0) {
                            $error_detected[] = __('Not enough space available to place item');
                            break 2;
