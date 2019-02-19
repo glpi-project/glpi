@@ -1554,6 +1554,15 @@ class Profile extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
@@ -1572,7 +1581,7 @@ class Profile extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '2',
+         'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'interface',
          'name'               => __("Profile's interface"),
