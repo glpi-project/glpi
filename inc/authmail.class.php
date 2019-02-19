@@ -45,7 +45,7 @@ class AuthMail extends CommonDBTM {
       return _n('Mail server', 'Mail servers', $nb);
    }
 
-   function prepareInputForUpdate($input) {
+   public function prepareInput(array $input, $mode = 'add') :array {
 
       if (isset($input['mail_server']) && !empty($input['mail_server'])) {
          $input["connect_string"] = Toolbox::constructMailServerConfig($input);
@@ -59,14 +59,6 @@ class AuthMail extends CommonDBTM {
 
    static function canPurge() {
       return static::canUpdate();
-   }
-
-   function prepareInputForAdd($input) {
-
-      if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-         $input["connect_string"] = Toolbox::constructMailServerConfig($input);
-      }
-      return $input;
    }
 
    function defineTabs($options = []) {

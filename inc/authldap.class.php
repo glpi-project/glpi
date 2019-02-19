@@ -187,7 +187,7 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function prepareInput(array $input, $mode = 'add') :array {
+   public function prepareInput(array $input, $mode = 'add') :array {
       //If it's the first ldap directory then set it as the default directory
       if (!self::getNumberOfServers()) {
          $input['is_default'] = 1;
@@ -230,7 +230,7 @@ class AuthLDAP extends CommonDBTM {
                   false,
                   ERROR
                );
-               return false;
+               return [];
             };
          }
       }

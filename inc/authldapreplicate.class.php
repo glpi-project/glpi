@@ -52,17 +52,11 @@ class AuthLdapReplicate extends CommonDBTM {
       return $forbidden;
    }
 
-   function prepareInputForAdd($input) {
-
+   public function prepareInput(array $input, $mode = 'add') :array {
       if (isset($input["port"]) && (intval($input["port"]) == 0)) {
          $input["port"] = 389;
       }
       return $input;
-   }
-
-   function prepareInputForUpdate($input) {
-
-      return $this->prepareInputForAdd($input);
    }
 
    /**
