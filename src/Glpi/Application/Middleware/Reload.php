@@ -85,11 +85,11 @@ class Reload
             $route_name = $route->getName();
 
             $_SESSION['glpi_switch_route'] = [
-            'name'      => $route_name,
-            'arguments' => $arguments
+                'name'      => $route_name,
+                'arguments' => $arguments
             ];
 
-            return $response->withRedirect($this->router->pathFor($switch_route), 301);
+            return $response->withRedirect($this->router->pathFor($switch_route), 302);
         }
         return $next($request, $response);
     }
