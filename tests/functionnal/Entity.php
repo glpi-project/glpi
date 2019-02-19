@@ -85,17 +85,17 @@ class Entity extends DbTestCase {
    public function testPrepareInputForAdd() {
       $entity = new \Entity();
 
-      $this->boolean(
+      $this->array(
          $entity->prepareInputForAdd([
             'name' => ''
          ])
-      )->isFalse();
+      )->isEmpty();
 
-      $this->boolean(
+      $this->array(
          $entity->prepareInputForAdd([
             'anykey' => 'anyvalue'
          ])
-      )->isFalse();
+      )->isEmpty();
 
       $this->array(
          $entity->prepareInputForAdd([

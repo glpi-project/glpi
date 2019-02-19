@@ -67,12 +67,9 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
-      $input = parent::prepareInputForAdd($input);
+      $input = parent::prepareInput($input, 'add');
 
       if (!isset($this->input['softwares_id']) || !$this->input['softwares_id']) {
             Session::addMessageAfterRedirect(__("Please select a software for this license"), true,
@@ -94,13 +91,9 @@ class SoftwareLicense extends CommonTreeDropdown {
       return $input;
    }
 
-   /**
-    * @since 0.85
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
-      $input = parent::prepareInputForUpdate($input);
+      $input = parent::prepareInput($input, 'update');
 
       // Update number : compute validity indicator
       if (isset($input['number'])) {
