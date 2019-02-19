@@ -60,7 +60,7 @@ class Main extends AbstractController implements ControllerInterface
         if (Session::getLoginUserID()) {
             $redirect_uri = $this->router->pathFor('central');
         }
-        return $response->withRedirect($redirect_uri, 301);
+        return $response->withRedirect($redirect_uri, 302);
     }
 
    /**
@@ -79,7 +79,7 @@ class Main extends AbstractController implements ControllerInterface
        //if user is logged in, redirect to /central
         if (Session::getLoginUserID()) {
             $redirect_uri = $this->router->pathFor('central');
-            return $response->withRedirect($redirect_uri, 301);
+            return $response->withRedirect($redirect_uri, 302);
         }
 
         $glpi_form = [
@@ -224,7 +224,7 @@ class Main extends AbstractController implements ControllerInterface
                 __('Missing authentication information.')
             );
             return $response
-             ->withStatus(301)
+             ->withStatus(302)
              ->withHeader('Location', $this->router->pathFor('login'));
         }
 
@@ -247,7 +247,7 @@ class Main extends AbstractController implements ControllerInterface
             }
 
             return $response
-                ->withStatus(301)
+                ->withStatus(302)
                 ->withHeader('Location', $redirect);
         } else {
             foreach ($auth->getErrors() as $error) {
@@ -257,7 +257,7 @@ class Main extends AbstractController implements ControllerInterface
                 );
             }
             return $response
-                ->withStatus(301)
+                ->withStatus(302)
                 ->withHeader('Location', $this->router->pathFor('login'));
            // we have done at least a good login? No, we exit.
            /*Html::nullHeader("Login", $this->configParams["root_doc"] . '/index.php');
@@ -326,7 +326,7 @@ class Main extends AbstractController implements ControllerInterface
        // Redirect to the login-page
        //Html::redirect($this->configParams["root_doc"]."/index.php".$toADD);
         return $response
-         ->withStatus(301)
+         ->withStatus(302)
          ->withHeader('Location', $this->router->pathFor('login'));
     }
 
@@ -394,7 +394,7 @@ class Main extends AbstractController implements ControllerInterface
                 $route['name'],
                 $route['arguments']
             ),
-            301
+            302
         );
     }
 
@@ -435,7 +435,7 @@ class Main extends AbstractController implements ControllerInterface
             );
 
             return $response
-              ->withStatus(301)
+              ->withStatus(302)
               ->withHeader('Location', $this->router->pathFor('login'));
         }
 
@@ -649,7 +649,7 @@ class Main extends AbstractController implements ControllerInterface
                 'list',
                 ['itemtype' => $args['itemtype']]
             ),
-            301
+            302
         );
     }
 
@@ -751,7 +751,7 @@ class Main extends AbstractController implements ControllerInterface
             );
             return $response->withRedirect(
                 $this->router->pathFor('dictionnaries'),
-                301
+                302
             );
         }
         $collection = new $class();
@@ -982,7 +982,7 @@ class Main extends AbstractController implements ControllerInterface
             $redirect_uri = $this->router->pathFor('list', ['itemtype' => $savedsearch->fields['itemtype']]);
             $redirect_uri .= "?". \Toolbox::append_params($params);
 
-            return $response->withRedirect($redirect_uri, 301);
+            return $response->withRedirect($redirect_uri, 302);
         }
 
         $this->flash->addMessage(__('Unable to load requested saved search!'));

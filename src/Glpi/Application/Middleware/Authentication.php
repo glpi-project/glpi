@@ -50,6 +50,11 @@ class Authentication
      */
     protected $router;
 
+    /**
+     * @var Messages
+     */
+    protected $flash;
+
     public function __construct(TwigView $view, Router $router, Messages $flashMessages)
     {
         $this->view = $view;
@@ -76,7 +81,7 @@ class Authentication
             return $next($request, $response);
         }
 
-        //redirect to login page if used is not logged in
+        //redirect to login page if user is not logged in
         if (!\Session::getLoginUserID()) {
             $arguments = $route->getArguments();
             $get = $request->getQueryParams();
@@ -85,7 +90,7 @@ class Authentication
             $_SESSION['glpi_redirect'] = $this->router->pathFor($route->getName(), $arguments);
 
             $this->flash->addMessage('error', __('Authentication required'));
-            return $response->withRedirect($this->router->pathFor('login'), 301);
+            return $response->withRedirect($this->router->pathFor('login'), 302);
         }
 
         return $next($request, $response);

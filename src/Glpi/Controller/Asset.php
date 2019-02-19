@@ -734,7 +734,7 @@ class Asset extends AbstractController implements ControllerInterface
         }
 
         return $response
-             ->withStatus(301)
+             ->withStatus(302)
              ->withHeader('Location', $redirect_uri);
     }
 
@@ -778,7 +778,7 @@ class Asset extends AbstractController implements ControllerInterface
         }
 
         return $response
-         ->withStatus(301)
+         ->withStatus(302)
          ->withHeader('Location', $redirect_uri);
     }
 
