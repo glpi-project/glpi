@@ -234,16 +234,16 @@ class Entity extends CommonTreeDropdown {
    public function prepareInput(array $input, $mode = 'add') :array {
       global $DB;
 
-      $input['name'] = isset($input['name']) ? trim($input['name']) : '';
-      if (empty($input["name"])) {
-         Session::addMessageAfterRedirect(__("You can't add an entity without name"),
-                                          false, ERROR);
-         return [];
-      }
-
       $input = parent::prepareInput($input, $mode);
 
       if ($mode === 'add') {
+         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
+         if (empty($input["name"])) {
+            Session::addMessageAfterRedirect(__("You can't add an entity without name"),
+                                             false, ERROR);
+            return [];
+         }
+
          $result = $DB->request([
             'SELECT' => new \QueryExpression(
                'MAX('.$DB->quoteName('id').')+1 AS newID'
@@ -267,12 +267,12 @@ class Entity extends CommonTreeDropdown {
 
             $input['max_closedate'] = $_SESSION["glpi_currenttime"];
          }
-      }
 
-      // Force entities_id = -1 for root entity
-      if ($input['id'] == 0) {
-         $input['entities_id'] = -1;
-         $input['level']       = 1;
+         // Force entities_id = -1 for root entity
+         if ($input['id'] == 0) {
+            $input['entities_id'] = -1;
+            $input['level']       = 1;
+         }
       }
 
       if (!Session::isCron()) { // Filter input for connected
