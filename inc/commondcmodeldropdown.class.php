@@ -257,11 +257,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   function prepareInputForAdd($input) {
-      return $this->managePictures($input);
-   }
-
-   function prepareInputForUpdate($input) {
+   function prepareInput(array $input, $mode = 'add') :array {
       return $this->managePictures($input);
    }
 

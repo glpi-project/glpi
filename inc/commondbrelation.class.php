@@ -647,39 +647,30 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @param $input
-   **/
-   function prepareInputForAdd($input) {
-
+   function prepareInput(array $input, $mode = 'add') :array {
       if (!is_array($input)) {
-         return false;
+         return [];
       }
 
-      return $this->addNeededInfoToInput($input);
-   }
-
-
-   /**
-    * @since 0.84
-   **/
-   function prepareInputForUpdate($input) {
-
-      if (!is_array($input)) {
-         return false;
+      if ($mode === 'update') {
+         // True if item changed
+         if (!parent::checkAttachedItemChangesAllowed(
+              $input, [
+                 static::$itemtype_1,
+                 static::$items_id_1,
+                 static::$itemtype_2,
+                 static::$items_id_2
+              ]
+         )) {
+            return [];
+         }
       }
 
-      // True if item changed
-      if (!parent::checkAttachedItemChangesAllowed($input, [static::$itemtype_1,
-                                                                 static::$items_id_1,
-                                                                 static::$itemtype_2,
-                                                                 static::$items_id_2])) {
-         return false;
+      if ($mode === 'add') {
+         return $this->addNeededInfoToInput($input);
+      } else {
+         return parent::addNeededInfoToInput($input);
       }
-
-      return parent::addNeededInfoToInput($input);
    }
 
 

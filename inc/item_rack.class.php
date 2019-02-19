@@ -1057,7 +1057,7 @@ JAVASCRIPT;
                ERROR
             );
          }
-         return false;
+         return [];
       }
 
       return $input;
