@@ -194,12 +194,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.83.3
-    *
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
-   function prepareInputForAdd($input) {
+   public function prepareInput(array $input, $mode = 'add') :array {
       global $DB;
 
       // if item based on location, create item in the same entity as location
@@ -227,15 +222,10 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   /**
-    * @since 0.83.3
-    *
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
       //add a "metadata to find if we're on an update or a add
       $input['_is_update'] = true;
-      return self::prepareInputForAdd($input);
+      return self::prepareInputForAdd($input, 'update');
    }
 
 

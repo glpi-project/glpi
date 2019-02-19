@@ -72,18 +72,10 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       return []; // By default, we don't have any son
    }
 
-   function prepareInputForAdd($input) {
-
+   public function prepareInput(array $input, $mode = 'add') :array {
       $input[$this->getForeignKeyField()] = $this->getNewAncestor();
       // We call the parent to manage tree
-      return parent::prepareInputForAdd($input);
-   }
-
-   function prepareInputForUpdate($input) {
-
-      $input[$this->getForeignKeyField()] = $this->getNewAncestor();
-      // We call the parent to manage tree
-      return parent::prepareInputForUpdate($input);
+      return parent::prepareInput($input, $mode);
    }
 
    function post_addItem() {

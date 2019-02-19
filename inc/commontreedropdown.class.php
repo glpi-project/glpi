@@ -139,11 +139,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   function prepareInputForAdd($input) {
-      return $this->adaptTreeFieldsFromUpdateOrAdd($input);
-   }
-
-
    function pre_deleteItem() {
       global $DB;
 
@@ -174,31 +169,35 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   function prepareInputForUpdate($input) {
+   function prepareInput(array $input, $mode = 'add') :array {
       global $GLPI_CACHE;
 
-      if (isset($input[$this->getForeignKeyField()])) {
-         // Can't move a parent under a child
-         if (in_array($input[$this->getForeignKeyField()],
-             getSonsOf($this->getTable(), $input['id']))) {
-             return false;
-         }
-         // Parent changes => clear ancestors and update its level and completename
-         if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
-            $input["ancestors_cache"] = '';
-            $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
-            if ($GLPI_CACHE->has($ckey)) {
-               $GLPI_CACHE->delete($ckey);
+      if ($mode === 'add') {
+         return $this->adaptTreeFieldsFromUpdateOrAdd($input);
+      } else {
+         if (isset($input[$this->getForeignKeyField()])) {
+            // Can't move a parent under a child
+            if (in_array($input[$this->getForeignKeyField()],
+               getSonsOf($this->getTable(), $input['id']))) {
+               return false;
             }
+            // Parent changes => clear ancestors and update its level and completename
+            if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
+               $input["ancestors_cache"] = '';
+               $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
+               if ($GLPI_CACHE->has($ckey)) {
+                  $GLPI_CACHE->delete($ckey);
+               }
+               return $this->adaptTreeFieldsFromUpdateOrAdd($input);
+            }
+         }
+
+         // Name changes => update its completename (and its level : side effect ...)
+         if ((isset($input['name'])) && ($input['name'] != $this->fields['name'])) {
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
+         return $input;
       }
-
-      // Name changes => update its completename (and its level : side effect ...)
-      if ((isset($input['name'])) && ($input['name'] != $this->fields['name'])) {
-         return $this->adaptTreeFieldsFromUpdateOrAdd($input);
-      }
-      return $input;
    }
 
 

@@ -288,18 +288,6 @@ class Change extends CommonITILObject {
    }
 
 
-   function prepareInputForUpdate($input) {
-
-      $input = parent::prepareInputForUpdate($input);
-      return $input;
-   }
-
-
-   function pre_updateInDB() {
-      parent::pre_updateInDB();
-   }
-
-
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
@@ -333,13 +321,6 @@ class Change extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
       }
-   }
-
-
-   function prepareInputForAdd($input) {
-
-      $input =  parent::prepareInputForAdd($input);
-      return $input;
    }
 
 
@@ -976,11 +957,6 @@ class Change extends CommonITILObject {
    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
    function getRights($interface = 'central') {
 
       $values = parent::getRights();
@@ -993,6 +969,9 @@ class Change extends CommonITILObject {
    }
 
 
+   /**
+    * @deprecated 10.0.0
+    */
    static function getCommonSelect() {
       Toolbox::deprecated('Use getCommonCriteria');
 
@@ -1007,6 +986,9 @@ class Change extends CommonITILObject {
                         $SELECT";
    }
 
+   /**
+    * @deprecated 10.0.0
+    */
    static function getCommonLeftJoin() {
       Toolbox::deprecated('Use getCommonCriteria');
 
