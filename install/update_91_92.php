@@ -91,7 +91,7 @@ function update91to92() {
    //First time the dropdown is changed from CommonDropdown to CommonTreeDropdown
    if ($tree) {
       $DB->updateOrDie("glpi_softwarelicensetypes", [
-            'completename' =>  new \QueryExpression(DBmysql::quoteName("name")),
+            'completename' =>  new \QueryExpression($DB->quoteName("name")),
             'is_recursive' => "1"
          ],
          [true],
@@ -103,7 +103,7 @@ function update91to92() {
    $DB->updateOrDie("glpi_profilerights", [
          'rights' => new \QueryExpression($DB->quoteName("rights") . " | " . READ)
       ], [
-         new \QueryExpression(DBmysql::quoteName("rights") . " & " . $DB->quoteValue(UPDATE)),
+         new \QueryExpression($DB->quoteName("rights") . " & " . $DB->quoteValue(UPDATE)),
          'name' => "device"
       ],
       "grant READ right on components to profiles having UPDATE right"
@@ -185,7 +185,7 @@ function update91to92() {
 
    $DB->updateOrDie("glpi_profilerights", [
          'rights' => new \QueryExpression(
-            DBmysql::quoteName("rights") . " | " . $DB->quoteValue( KnowbaseItem::COMMENTS)
+            $DB->quoteName("rights") . " | " . $DB->quoteValue( KnowbaseItem::COMMENTS)
          )
       ],
       ['name' => "knowbase"],
@@ -613,7 +613,7 @@ function update91to92() {
    $migration->migrationOneTable("glpi_softwarelicenses");
    if ($new) {
       $DB->updateOrDie("glpi_softwarelicenses", [
-            'completename' => new \QueryExpression(DBmysql::quoteName("name"))
+            'completename' => new \QueryExpression($DB->quoteName("name"))
          ],
          [true],
          "9.2 copy name to completename for software licenses"
@@ -2186,31 +2186,31 @@ Regards,',
          $migration->addField($tl_table, "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
          $where = [
             "$tl_table.tickets_id"  => new \QueryExpression(
-               DBmysql::quoteName("glpi_tickets_users.tickets_id")
+               $DB->quoteName("glpi_tickets_users.tickets_id")
             ),
             "$tl_table.users_id"    => new \QueryExpression(
-               DBmysql::quoteName("glpi_tickets_users.users_id")
+               $DB->quoteName("glpi_tickets_users.users_id")
             ),
          ];
          if (!$DB->fieldExists($tl_table, 'tickets_id')) {
             $where = [
                "$tl_table.itemtype"    => "Ticket",
                "$tl_table.items_id"    => new \QueryExpression(
-                  DBmysql::quoteName("glpi_tickets_users.tickets_id")
+                  $DB->quoteName("glpi_tickets_users.tickets_id")
                ),
                "$tl_table.users_id"    => new \QueryExpression(
-                  DBmysql::quoteName("glpi_tickets_users.users_id")
+                  $DB->quoteName("glpi_tickets_users.users_id")
                ),
             ];
          }
 
          $update = new \QueryExpression(
-            DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_tickets_users")
+            $DB->quoteName($tl_table) . ", " . $DB->quoteName("glpi_tickets_users")
          );
          $set = [
             "$tl_table.timeline_position" => new \QueryExpression("IF(" .
-               DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
-               DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"
+               $DB->quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
+               $DB->quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"
             )
          ];
          $migration->addPostQuery(
@@ -2220,38 +2220,38 @@ Regards,',
 
          $where = [
             "$tl_table.tickets_id"           => new \QueryExpression(
-               DBmysql::quoteName("glpi_groups_tickets.tickets_id")
+               $DB->quoteName("glpi_groups_tickets.tickets_id")
             ),
             "glpi_groups_users.groups_id"    => new \QueryExpression(
-               DBmysql::quoteName("glpi_groups_tickets.groups_id")
+               $DB->quoteName("glpi_groups_tickets.groups_id")
             ),
             "$tl_table.users_id"             => new \QueryExpression(
-               DBmysql::quoteName("glpi_groups_users.users_id")
+               $DB->quoteName("glpi_groups_users.users_id")
             ),
          ];
          if (!$DB->fieldExists($tl_table, 'tickets_id')) {
             $where = [
                "$tl_table.itemtype"             => "Ticket",
                "$tl_table.items_id"             => new \QueryExpression(
-                  DBmysql::quoteName("glpi_groups_tickets.tickets_id")
+                  $DB->quoteName("glpi_groups_tickets.tickets_id")
                ),
                "glpi_groups_users.groups_id"    => new \QueryExpression(
-                  DBmysql::quoteName("glpi_groups_tickets.groups_id")
+                  $DB->quoteName("glpi_groups_tickets.groups_id")
                ),
                "$tl_table.users_id"             => new \QueryExpression(
-                  DBmysql::quoteName("glpi_groups_users.users_id")
+                  $DB->quoteName("glpi_groups_users.users_id")
                ),
             ];
          }
 
          $update = new \QueryExpression(
-            DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_groups_tickets") .
-            ", " . DBmysql::quoteName("glpi_groups_users")
+            $DB->quoteName($tl_table) . ", " . $DB->quoteName("glpi_groups_tickets") .
+            ", " . $DB->quoteName("glpi_groups_users")
          );
          $set = [
             "$tl_table.timeline_position" => new \QueryExpression("IF(" .
-               DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
-               DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"
+               $DB->quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
+               $DB->quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"
             )
          ];
          $migration->addPostQuery(

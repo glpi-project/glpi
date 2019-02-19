@@ -192,7 +192,7 @@ function update084to085() {
    foreach ($profileRightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . User::IMPORTEXTAUTHUSERS
+               $DB->quoteName("rights") . " | " . User::IMPORTEXTAUTHUSERS
             ),
          ], [
             'profiles_id'  => $profrights['profiles_id'],
@@ -237,7 +237,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . RuleTicket::PARENT
+               $DB->quoteName("rights") . " | " . RuleTicket::PARENT
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -264,7 +264,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . KnowbaseItem::KNOWBASEADMIN
+               $DB->quoteName("rights") . " | " . KnowbaseItem::KNOWBASEADMIN
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -291,7 +291,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . KnowbaseItem::READFAQ
+               $DB->quoteName("rights") . " | " . KnowbaseItem::READFAQ
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -311,7 +311,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . KnowbaseItem::READFAQ . " | " .
+               $DB->quoteName("rights") . " | " . KnowbaseItem::READFAQ . " | " .
                KnowbaseItem::PUBLISHFAQ
             )
          ], [
@@ -339,7 +339,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . User::READAUTHENT
+               $DB->quoteName("rights") . " | " . User::READAUTHENT
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -359,7 +359,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . User::READAUTHENT . " | ". User::UPDATEAUTHENT
+               $DB->quoteName("rights") . " | " . User::READAUTHENT . " | ". User::UPDATEAUTHENT
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -386,7 +386,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Entity::READHELPDESK
+               $DB->quoteName("rights") . " | " . Entity::READHELPDESK
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -406,7 +406,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
          $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Entity::READHELPDESK . " | " .
+               $DB->quoteName("rights") . " | " . Entity::READHELPDESK . " | " .
                Entity::UPDATEHELPDESK
             )
          ], [
@@ -434,7 +434,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . ReservationItem::RESERVEANITEM
+               $DB->quoteName("rights") . " | " . ReservationItem::RESERVEANITEM
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -487,7 +487,7 @@ function update084to085() {
 
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
-            'rights' => new \QueryExpression(DBmysql::quoteName("rights") . " | " . UPDATE)
+            'rights' => new \QueryExpression($DB->quoteName("rights") . " | " . UPDATE)
          ], [
             'profiles_id' => $profrights['profiles_id'],
             'name' => "ticket"
@@ -512,7 +512,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . DELETE . " | " . PURGE
+               $DB->quoteName("rights") . " | " . DELETE . " | " . PURGE
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -537,7 +537,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Ticket::READALL
+               $DB->quoteName("rights") . " | " . Ticket::READALL
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -562,7 +562,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Ticket::READGROUP
+               $DB->quoteName("rights") . " | " . Ticket::READGROUP
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -587,7 +587,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Ticket::READASSIGN
+               $DB->quoteName("rights") . " | " . Ticket::READASSIGN
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -612,7 +612,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Ticket::ASSIGN
+               $DB->quoteName("rights") . " | " . Ticket::ASSIGN
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -637,7 +637,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Ticket::STEAL
+               $DB->quoteName("rights") . " | " . Ticket::STEAL
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -662,7 +662,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Ticket::OWN
+               $DB->quoteName("rights") . " | " . Ticket::OWN
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -687,7 +687,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Ticket::CHANGEPRIORITY
+               $DB->quoteName("rights") . " | " . Ticket::CHANGEPRIORITY
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -731,7 +731,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . ITILFollowup::ADDMYTICKET
+               $DB->quoteName("rights") . " | " . ITILFollowup::ADDMYTICKET
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -756,7 +756,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . ITILFollowup::ADDGROUPTICKET
+               $DB->quoteName("rights") . " | " . ITILFollowup::ADDGROUPTICKET
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -781,7 +781,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . ITILFollowup::SEEPUBLIC
+               $DB->quoteName("rights") . " | " . ITILFollowup::SEEPUBLIC
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -803,7 +803,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . ITILFollowup::SEEPUBLIC . " | " .
+               $DB->quoteName("rights") . " | " . ITILFollowup::SEEPUBLIC . " | " .
                ITILFollowup::SEEPRIVATE
             )
          ], [
@@ -826,7 +826,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . READ . " | " . ITILFollowup::UPDATEALL
+               $DB->quoteName("rights") . " | " . READ . " | " . ITILFollowup::UPDATEALL
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -851,7 +851,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . READ . " | " . ITILFollowup::UPDATEMY
+               $DB->quoteName("rights") . " | " . READ . " | " . ITILFollowup::UPDATEMY
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -876,7 +876,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . PURGE
+               $DB->quoteName("rights") . " | " . PURGE
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -920,7 +920,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . READ . " | " . TicketTask::UPDATEALL  .
+               $DB->quoteName("rights") . " | " . READ . " | " . TicketTask::UPDATEALL  .
                " | " . PURGE
             )
          ], [
@@ -946,7 +946,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . TicketTask::SEEPUBLIC
+               $DB->quoteName("rights") . " | " . TicketTask::SEEPUBLIC
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -971,7 +971,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . TicketTask::SEEPUBLIC . " | " .
+               $DB->quoteName("rights") . " | " . TicketTask::SEEPUBLIC . " | " .
                TicketTask::SEEPRIVATE
             )
          ], [
@@ -1016,7 +1016,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . TicketValidation::CREATEREQUEST . " | " .
+               $DB->quoteName("rights") . " | " . TicketValidation::CREATEREQUEST . " | " .
                PURGE
             )
          ], [
@@ -1042,7 +1042,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . TicketValidation::CREATEINCIDENT . " | " .
+               $DB->quoteName("rights") . " | " . TicketValidation::CREATEINCIDENT . " | " .
                PURGE
             )
          ], [
@@ -1068,7 +1068,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . TicketValidation::VALIDATEREQUEST
+               $DB->quoteName("rights") . " | " . TicketValidation::VALIDATEREQUEST
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1093,7 +1093,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . TicketValidation::VALIDATEINCIDENT
+               $DB->quoteName("rights") . " | " . TicketValidation::VALIDATEINCIDENT
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1168,7 +1168,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Planning::READGROUP
+               $DB->quoteName("rights") . " | " . Planning::READGROUP
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1193,7 +1193,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Planning::READALL
+               $DB->quoteName("rights") . " | " . Planning::READALL
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1230,7 +1230,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Problem::READALL
+               $DB->quoteName("rights") . " | " . Problem::READALL
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1255,7 +1255,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . CREATE . " | " . UPDATE . " | " . PURGE
+               $DB->quoteName("rights") . " | " . CREATE . " | " . UPDATE . " | " . PURGE
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1280,7 +1280,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . DELETE
+               $DB->quoteName("rights") . " | " . DELETE
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1305,7 +1305,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . DisplayPreference::PERSONAL
+               $DB->quoteName("rights") . " | " . DisplayPreference::PERSONAL
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1326,7 +1326,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . DisplayPreference::GENERAL
+               $DB->quoteName("rights") . " | " . DisplayPreference::GENERAL
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1351,7 +1351,7 @@ function update084to085() {
    foreach ($profilerightsIterator as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . Backup::CHECKUPDATE
+               $DB->quoteName("rights") . " | " . Backup::CHECKUPDATE
             )
          ], [
             'profiles_id' => $profrights['profiles_id'],
@@ -1429,7 +1429,7 @@ function update084to085() {
       foreach ($tables as $table) {
          $DB->updateOrDie("glpi_profilerights", [
                'rights' => new \QueryExpression(
-                  DBmysql::quoteName("rights") . " | " . READNOTE
+                  $DB->quoteName("rights") . " | " . READNOTE
                )
             ], [
                'profiles_id' => $profrights['profiles_id'],
@@ -1450,7 +1450,7 @@ function update084to085() {
       foreach ($tables as $table) {
          $DB->updateOrDie("glpi_profilerights", [
                'rights' => new \QueryExpression(
-                  DBmysql::quoteName("rights") . " | " . READNOTE . " | " . UPDATENOTE
+                  $DB->quoteName("rights") . " | " . READNOTE . " | " . UPDATENOTE
                )
             ], [
                'profiles_id' => $profrights['profiles_id'],
@@ -2259,7 +2259,7 @@ function update084to085() {
          $DB->update("glpi_slas", [
                'definition_time' => "minute",
                'resolution_time' => new \QueryExpression(
-                  DBmysql::quoteName("resolution_time") . "/60"
+                  $DB->quoteName("resolution_time") . "/60"
                )
             ], [
                'id' => $a_ids
@@ -2279,7 +2279,7 @@ function update084to085() {
          $DB->update("glpi_slas", [
                'definition_time' => "hour",
                'resolution_time' => new \QueryExpression(
-                  DBmysql::quoteName("resolution_time") . "/3600"
+                  $DB->quoteName("resolution_time") . "/3600"
                )
             ], [
                'id' => $a_ids
@@ -2298,7 +2298,7 @@ function update084to085() {
          $DB->update("glpi_slas", [
                'definition_time' => "day",
                'resolution_time' => new \QueryExpression(
-                  DBmysql::quoteName("resolution_time") . "/86400"
+                  $DB->quoteName("resolution_time") . "/86400"
                )
             ], [
                'id' => $a_ids
@@ -3010,7 +3010,7 @@ function update084to085() {
                'SELECT' => ["id", "notepad"],
                'FROM'   => $t,
                'WHERE'  => [
-                  new \QueryExpression(DBmysql::quoteName("notepad") . " IS NOT NULL"),
+                  new \QueryExpression($DB->quoteName("notepad") . " IS NOT NULL"),
                   ["notepad" => ["<>", ""]]
                ]
             ]);

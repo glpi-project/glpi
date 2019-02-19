@@ -141,7 +141,7 @@ class DBConnection extends CommonDBTM {
     *
     * @param integer $server host number (default NULL)
     *
-    * @return DBmysql object
+    * @return AbstractDatabase object
    **/
    static function getDBSlaveConf($server = null): AbstractDatabase {
 
@@ -209,7 +209,7 @@ class DBConnection extends CommonDBTM {
     * Get Connection to slave, if exists,
     * and if configured to be used for read only request
     *
-    * @return DBmysql object
+    * @return AbstractDatabase object
    **/
    static function getReadConnection() {
       global $DB, $CFG_GLPI;

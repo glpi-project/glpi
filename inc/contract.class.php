@@ -1211,7 +1211,7 @@ class Contract extends CommonDBTM {
             'WHERE'     => [
                [
                   'RAW' => [
-                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0]
+                     $DB->quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0]
                   ]
                ],
                'glpi_alerts.date'           => null,
@@ -1226,8 +1226,8 @@ class Contract extends CommonDBTM {
                   'RAW' => [
                      'DATEDIFF(
                          ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
-                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                            ' . $DB->quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH
                          ),
                          CURDATE()
                       )' => ['>', 0]
@@ -1237,10 +1237,10 @@ class Contract extends CommonDBTM {
                   'RAW' => [
                      'DATEDIFF(
                          ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            ' . $DB->quoteName('glpi_contracts.begin_date') . ',
                             INTERVAL (
-                               ' . DBmysql::quoteName('glpi_contracts.duration') . '
-                               - ' . DBmysql::quoteName('glpi_contracts.notice') . '
+                               ' . $DB->quoteName('glpi_contracts.duration') . '
+                               - ' . $DB->quoteName('glpi_contracts.notice') . '
                             ) MONTH
                          ),
                          CURDATE()
@@ -1272,7 +1272,7 @@ class Contract extends CommonDBTM {
             'WHERE'     => [
                [
                   'RAW' => [
-                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0]
+                     $DB->quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0]
                   ]
                ],
                'glpi_alerts.date'           => null,
@@ -1286,8 +1286,8 @@ class Contract extends CommonDBTM {
                   'RAW' => [
                      'DATEDIFF(
                          ADDDATE(
-                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
-                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                            ' . $DB->quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . $DB->quoteName('glpi_contracts.duration') . ' MONTH
                          ),
                          CURDATE()
                       )' => ['<', $before]

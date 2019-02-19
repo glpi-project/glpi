@@ -519,6 +519,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return integer
    **/
    private function countActiveObjectsFor(CommonITILActor $linkclass, $id, $role) {
+      global $DB;
 
       $itemtable = $this->getTable();
       $itemfk    = $this->getForeignKeyField();
@@ -527,7 +528,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return countElementsInTable(
          [$itemtable, $linktable], [
-            "$linktable.$itemfk"    => new \QueryExpression(DBmysql::quoteName("$itemtable.id")),
+            "$linktable.$itemfk"    => new \QueryExpression($DB->quoteName("$itemtable.id")),
             "$linktable.$field"     => $id,
             "$linktable.type"       => $role,
             "$itemtable.is_deleted" => 0,

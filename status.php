@@ -33,6 +33,8 @@
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 include ('./inc/includes.php');
 
+global $DB;
+
 // Force in normal mode
 $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
@@ -200,11 +202,11 @@ if (($ok_master || $ok_slave )
          'state'  => CronTask::STATE_RUNNING,
          'OR'     => [
             new \QueryExpression(
-               '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * '.
-               DBmysql::quoteName('frequency') .' < unix_timestamp(now()))'
+               '(unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * '.
+               $DB->quoteName('frequency') .' < unix_timestamp(now()))'
             ),
             new \QueryExpression(
-               '(unix_timestamp(' . DBmysql::quoteName('lastrun') . ') + 2 * '.
+               '(unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * '.
                HOUR_TIMESTAMP . ' < unix_timestamp(now()))'
             )
          ]

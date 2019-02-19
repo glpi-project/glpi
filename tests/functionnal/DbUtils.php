@@ -467,7 +467,8 @@ class DbUtils extends DbTestCase {
       // See all, really all
       $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
 
-      $it = new \DBmysqlIterator(null);
+      global $DB;
+      $it = new \DBmysqlIterator($DB);
 
       $it->execute('glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_computers`');

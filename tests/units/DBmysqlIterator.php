@@ -35,6 +35,7 @@ namespace tests\units;
 use DbTestCase;
 use Monolog\Logger;
 use Monolog\Handler\TestHandler;
+use Symfony\Component\Yaml\Yaml;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -44,7 +45,12 @@ class DBmysqlIterator extends DbTestCase {
 
    public function beforeTestMethod($method) {
       parent::beforeTestMethod($method);
-      $this->it = new \DBmysqlIterator(null);
+
+      $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml');
+      $dbclass = '\mock\DB' . $db_config['driver'];
+      $db = new $dbclass($db_config);
+      $this->calling($db)->rawQuery->doesNothing;
+      $this->it = new \DBmysqlIterator($db);
    }
 
    public function testQuery() {
@@ -1271,10 +1277,12 @@ class DBmysqlIterator extends DbTestCase {
    }
 
    public function testAnalyseCrit() {
+      global $DB;
+
       $crit = [new \QuerySubQuery([
          'SELECT' => ['COUNT' => ['users_id']],
          'FROM'   => 'glpi_groups_users',
-         'WHERE'  => ['groups_id' => new \QueryExpression(\DBmysql::quoteName('glpi_groups.id'))]
+         'WHERE'  => ['groups_id' => new \QueryExpression($DB->quoteName('glpi_groups.id'))]
       ])];
       $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = `glpi_groups`.`id`)");
    }

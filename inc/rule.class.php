@@ -2725,7 +2725,7 @@ class Rule extends CommonDBTM {
             $this->getTable()
          ],
          'WHERE'  => [
-            getTableForItemType($this->ruleactionclass).".".$this->rules_id_field   => new \QueryExpression(DBmysql::quoteName($this->getTable().'.id')),
+            getTableForItemType($this->ruleactionclass).".".$this->rules_id_field   => new \QueryExpression($DB->quoteName($this->getTable().'.id')),
             $this->getTable().'.sub_type'                                           => get_class($this)
 
          ]

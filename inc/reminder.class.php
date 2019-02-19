@@ -188,7 +188,7 @@ class Reminder extends CommonDBVisible {
       unset($criteria['WHERE']);
       $criteria['FROM'] = self::getTable();
 
-      $it = new \DBmysqlIterator(null);
+      $it = new \DBmysqlIterator($DB);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
       $sql = trim(str_replace(
@@ -206,13 +206,14 @@ class Reminder extends CommonDBVisible {
    **/
    static function addVisibilityRestrict() {
       //not deprecated because used in Search
+      global $DB;
 
       //get and clean criteria
       $criteria = self::getVisibilityCriteria();
       unset($criteria['LEFT JOIN']);
       $criteria['FROM'] = self::getTable();
 
-      $it = new \DBmysqlIterator(null);
+      $it = new \DBmysqlIterator($DB);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
       $sql = preg_replace('/.*WHERE /', '', $sql);

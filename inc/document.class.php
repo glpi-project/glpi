@@ -597,7 +597,7 @@ class Document extends CommonDBTM {
    /**
     * Check if file of current instance can be viewed from a Reminder.
     *
-    * @global DBmysql $DB
+    * @global \Glpi\AbstractDatabase $DB
     * @return boolean
     *
     * @TODO Use DBmysqlIterator instead of raw SQL
@@ -659,7 +659,7 @@ class Document extends CommonDBTM {
     * Check if file of current instance can be viewed from a KnowbaseItem.
     *
     * @global array $CFG_GLPI
-    * @global DBmysql $DB
+    * @global \Glpi\AbstractDatabase $DB
     * @return boolean
     */
    private function canViewFileFromKnowbaseItem() {
@@ -742,7 +742,7 @@ class Document extends CommonDBTM {
    /**
     * Check if file of current instance can be viewed from a KnowbaseItem.
     *
-    * @global DBmysql $DB
+    * @global \Glpi\AbstractDatabase $DB
     * @param integer $tickets_id
     * @return boolean
     */

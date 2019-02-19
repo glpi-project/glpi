@@ -1466,6 +1466,7 @@ class SavedSearch extends CommonDBTM {
    **/
    static function addVisibilityRestrict() {
       //not deprecated because used in Search
+      global $DB;
 
       if (Session::haveRight('config', UPDATE)) {
          return [];
@@ -1476,7 +1477,7 @@ class SavedSearch extends CommonDBTM {
       unset($criteria['LEFT JOIN']);
       $criteria['FROM'] = self::getTable();
 
-      $it = new \DBmysqlIterator(null);
+      $it = new \DBmysqlIterator($DB);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
       $sql = preg_replace('/.*WHERE /', '', $sql);

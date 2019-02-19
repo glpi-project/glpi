@@ -743,7 +743,7 @@ abstract class AbstractDatabase
      *
      * @return string
      */
-    public static function quoteName($name): string
+    public function quoteName($name): string
     {
        //handle verbatim names
         if ($name instanceof \QueryExpression) {
@@ -757,14 +757,14 @@ abstract class AbstractDatabase
             );
         }
         if (count($names) == 2) {
-            $name = self::quoteName($names[0]);
-            $name .= ' AS ' . self::quoteName($names[1]);
+            $name = $this->quoteName($names[0]);
+            $name .= ' AS ' . $this->quoteName($names[1]);
             return $name;
         } else {
             if (strpos($name, '.')) {
                 $n = explode('.', $name, 2);
-                $table = self::quoteName($n[0]);
-                $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
+                $table = $this->quoteName($n[0]);
+                $field = ($n[1] === '*') ? $n[1] : $this->quoteName($n[1]);
                 return "$table.$field";
             }
             $quote = static::getQuoteNameChar();
