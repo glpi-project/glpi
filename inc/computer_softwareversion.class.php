@@ -55,7 +55,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   public function prepareInput(array $input, $mode = 'add') {
+   public function prepareInput(array $input, $mode = 'add') :array {
       if (!isset($input['is_template_computer'])
           || !isset($input['is_deleted_computer'])) {
          // Get template and deleted information from computer
