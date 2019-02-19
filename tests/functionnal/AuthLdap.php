@@ -197,7 +197,7 @@ class AuthLDAP extends DbTestCase {
 
       $input['sync_field'] = 'another_field';
       $result = $ldap->prepareInputForUpdate($input);
-      $this->boolean($result)->isFalse();
+      $this->array($result)->isEmpty();
    }
 
    public function testgetGroupSearchTypeName() {
