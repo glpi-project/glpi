@@ -48,7 +48,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
-use DBmysql;
 use Plugin;
 use Session;
 
@@ -277,7 +276,7 @@ class Kernel
      */
     private function defineSyntheticServices(ContainerInterface $container)
     {
-        $container->set(DBmysql::class, $this->getDbInstance());
+        $container->set('database', $this->getDbInstance());
         $container->set(ConfigParams::class, $this->getConfigParamsInstance());
         $container->set('environment', $this->getEnvironmentInstance());
     }

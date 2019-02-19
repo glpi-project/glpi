@@ -460,7 +460,7 @@ class Profile extends CommonDBTM {
          'FROM'   => 'glpi_profilerights',
          'COUNT'  => 'cpt',
          'WHERE'  => [
-            'glpi_profilerights.profiles_id' => new \QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
+            'glpi_profilerights.profiles_id' => new \QueryExpression($DB->quoteName('glpi_profiles.id')),
             'OR'                             => $right_subqueries
          ]
       ]);

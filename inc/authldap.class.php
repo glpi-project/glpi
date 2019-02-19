@@ -545,7 +545,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Show config replicates form
     *
-    * @var DBmysql $DB
+    * @var \Glpi\AbstractDatabase $DB
     *
     * @return void
     */
@@ -3271,7 +3271,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get number of servers
     *
-    * @var DBmysql $DB
+    * @var \Glpi\AbstractDatabase $DB
     *
     * @return integer
     */
@@ -3384,7 +3384,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get default ldap
     *
-    * @var DBmysql $DB DB instance
+    * @var \Glpi\AbstractDatabase $DB DB instance
     *
     * @return integer
     */

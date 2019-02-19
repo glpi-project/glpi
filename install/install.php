@@ -450,7 +450,7 @@ function step4 ($databasename, $newdatabasename) {
       $TempDB = \Glpi\DatabaseFactory::create();
 
       // try to create the DB
-      if ($link->query("CREATE DATABASE IF NOT EXISTS ".$TempDB::quoteName($newdatabasename))) {
+      if ($link->query("CREATE DATABASE IF NOT EXISTS ".$TempDB->quoteName($newdatabasename))) {
          echo "<p>".__('Database created')."</p>";
       } else { // can't create database
          echo __('Error in creating database!');

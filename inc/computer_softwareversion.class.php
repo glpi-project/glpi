@@ -899,7 +899,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                         'OR' => [
                            'AND' => [
                               'glpi_softwarelicenses.softwareversions_id_use' => 0,
-                              'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
+                              'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression($DB->quoteName('glpi_softwareversions.id')),
                            ]
                         ]
                      ]

@@ -419,7 +419,7 @@ class KnowbaseItem extends CommonDBVisible {
       unset($criteria['WHERE']);
       $criteria['FROM'] = self::getTable();
 
-      $it = new \DBmysqlIterator(null);
+      $it = new \DBmysqlIterator($DB);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
       $sql = str_replace(
@@ -448,7 +448,7 @@ class KnowbaseItem extends CommonDBVisible {
       unset($criteria['LEFT JOIN']);
       $criteria['FROM'] = self::getTable();
 
-      $it = new \DBmysqlIterator(null);
+      $it = new \DBmysqlIterator($DB);
       $it->buildQuery($criteria);
       $sql = $it->getSql();
       $sql = str_replace(

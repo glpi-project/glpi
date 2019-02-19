@@ -127,7 +127,7 @@ class Auth extends CommonGLPI {
    /**
     * Check user existence in DB
     *
-    * @var DBmysql $DB
+    * @var \Glpi\AbstractDatabase $DB
     *
     * @param array $options conditions : array('name'=>'glpi')
     *                                    or array('email' => 'test at test.com')
@@ -326,7 +326,7 @@ class Auth extends CommonGLPI {
     * If not found or can't connect to DB updates the instance variable err
     * with an eventual error message
     *
-    * @var DBmysql $DB
+    * @var \Glpi\AbstractDatabase $DB
     * @param string $name     User Login
     * @param string $password User Password
     *

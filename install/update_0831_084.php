@@ -239,7 +239,7 @@ function update0831to084() {
       // Get rules
       $rulesIterator = $DB->request([
          'SELECT'    => new \QueryExpression(
-            "GROUP_CONCAT(" . DBmysql::quoteName("id") . ") AS " . DBmysql::quoteName("ids")
+            "GROUP_CONCAT(" . $DB->quoteName("id") . ") AS " . $DB->quoteName("ids")
          ),
          'FROM'      => "glpi_rules",
          'WHERE'     => ['sub_type' => $ruletype],
@@ -1177,7 +1177,7 @@ function update0831to084() {
    // Delete OCS rules
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    $rulesIterator = $DB->request([
-      'SELECT' => new \QueryExpression("GROUP_CONCAT(" . DBmysql::quoteName('id') .") AS " . DBmysql::quoteName("rules_id")),
+      'SELECT' => new \QueryExpression("GROUP_CONCAT(" . $DB->quoteName('id') .") AS " . $DB->quoteName("rules_id")),
       'FROM' => "glpi_rules",
       'WHERE' => [
          'sub_type' => "RuleImportEntity"
@@ -1238,7 +1238,7 @@ function update0831to084() {
 
    // Give history entries to plugin
    $DB->updateOrDie("glpi_logs", [
-         'linked_action' => new \QueryExpression(DBmysql::quoteName('linked_action') . " + 1000"),
+         'linked_action' => new \QueryExpression($DB->quoteName('linked_action') . " + 1000"),
          'itemtype_link' => "PluginOcsinventoryngOcslink"
       ], [
          'linked_action' => [8, 9, 10, 11]
@@ -1378,7 +1378,7 @@ function update0831to084() {
       // Get rules
       $data = $DB->request([
          'SELECT' => new \QueryExpression(
-            "GROUP_CONCAT(" . DBmysql::quoteName('id') .") AS " . DBmysql::quoteName("rules_id")
+            "GROUP_CONCAT(" . $DB->quoteName('id') .") AS " . $DB->quoteName("rules_id")
          ),
          'FROM' => "glpi_rules",
          'WHERE' => [
@@ -2090,7 +2090,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       // Then, populate it from domains (beware that "domains" can be FQDNs and Windows workgroups)
       $iterator = $DB->request([
          'SELECT'    => [
-            new \QueryExpression("LOWER(" . DBmysql::quoteName('name') . ") AS " . DBmysql::quoteName("name")),
+            new \QueryExpression("LOWER(" . $DB->quoteName('name') . ") AS " . $DB->quoteName("name")),
             "comment"
          ],
          'DISTINCT'  => true,
@@ -2202,8 +2202,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $iterator = $DB->request([
          'SELECT'    => [
             new \QueryExpression(
-               "INET_NTOA(INET_ATON(" . DBmysql::quoteName("ip") . ")&INET_ATON(" .
-               DBmysql::quoteName("netmask") . ")) AS " . DBmysql::quoteName("address")
+               "INET_NTOA(INET_ATON(" . $DB->quoteName("ip") . ")&INET_ATON(" .
+               $DB->quoteName("netmask") . ")) AS " . $DB->quoteName("address")
             ),
             "netmask",
             "gateway",
@@ -2256,8 +2256,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   'FROM'   => "origin_glpi_networkports",
                   'WHERE'  => [
                      new \QueryExpression(
-                        "INET_NTOA(INET_ATON(". DBmysql::quoteName("ip") . ")&INET_ATON(".
-                        DBmysql::quoteName("netmask") . ")) = " . $DB->quoteValue($address)
+                        "INET_NTOA(INET_ATON(". $DB->quoteName("ip") . ")&INET_ATON(".
+                        $DB->quoteName("netmask") . ")) = " . $DB->quoteValue($address)
                      ),
                      'netmask'      => $netmask,
                      'gateway'      => $gateway,
@@ -2281,8 +2281,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   'FROM'   => "origin_glpi_networkports",
                   'WHERE'  => [
                      new \QueryExpression(
-                        "INET_NTOA(INET_ATON(". DBmysql::quoteName("ip") . ")&INET_ATON(".
-                        DBmysql::quoteName("netmask") . ")) = " .
+                        "INET_NTOA(INET_ATON(". $DB->quoteName("ip") . ")&INET_ATON(".
+                        $DB->quoteName("netmask") . ")) = " .
                         $DB->quoteValue($entry['address'])
                      ),
                      'netmask'      => $netmask,
@@ -2472,7 +2472,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                       'Index mac field and transform address mac to lower'));
 
    $DB->updateOrDie("glpi_networkports", [
-         'mac' => new \QueryExpression("LOWER(" . DBmysql::quoteName("mac") .")")
+         'mac' => new \QueryExpression("LOWER(" . $DB->quoteName("mac") .")")
       ],
       [true],
       "0.84 transform MAC to lower case"
@@ -2718,8 +2718,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             'FROM'   => 'glpi_ipaddresses',
             'WHERE'  => [
                new \QueryExpression(
-                  "(". DBmysql::quoteName("glpi_ipaddresses.binary_3") . "& " .
-                  $DB->quoteValue($netmask) . ") AS " . DBmysql::quoteName($address)
+                  "(". $DB->quoteName("glpi_ipaddresses.binary_3") . "& " .
+                  $DB->quoteValue($netmask) . ") AS " . $DB->quoteName($address)
                ),
                'glpi_ipaddresses.version' => 4
             ],

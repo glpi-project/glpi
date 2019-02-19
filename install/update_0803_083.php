@@ -860,7 +860,7 @@ function update0803to083() {
       // Get rules
       $query = [
          'SELECT' => new \QueryExpression(
-            "GROUP_CONCAT(" . DBmysql::quoteName("id") . ") AS " . DBmysql::quoteName("ids")
+            "GROUP_CONCAT(" . $DB->quoteName("id") . ") AS " . $DB->quoteName("ids")
          ),
          'FROM'   => "glpi_rules",
          'WHERE' => [
@@ -1099,8 +1099,8 @@ function update0803to083() {
    // Clean unused slalevels
    $DB->deleteOrDie("glpi_slalevels_tickets", [
          (new \QueryExpression(
-            "(" . DBmysql::quoteName("glpi_slalevels_tickets.tickets_id") . " ," .
-            DBmysql::quoteName("glpi_slalevels_tickets.slalevels_id") . ") NOT IN " .
+            "(" . $DB->quoteName("glpi_slalevels_tickets.tickets_id") . " ," .
+            $DB->quoteName("glpi_slalevels_tickets.slalevels_id") . ") NOT IN " .
             (new \QuerySubQuery([
                'SELECT' => [
                   "glpi_tickets.id",

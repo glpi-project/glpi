@@ -178,7 +178,7 @@ function update0905to91() {
 
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . $DB->quoteValue(UNLOCK)
+               $DB->quoteName("rights") . " | " . $DB->quoteValue(UNLOCK)
             )
          ], [
             'profiles_id'  => 4,
@@ -696,7 +696,7 @@ function update0905to91() {
    foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
       $DB->updateOrDie("glpi_profilerights", [
             'rights' => new \QueryExpression(
-               DBmysql::quoteName("rights") . " | " . $DB->quoteValue(Ticket::SURVEY)
+               $DB->quoteName("rights") . " | " . $DB->quoteValue(Ticket::SURVEY)
             )
          ], [
             'profiles_id'  => $profrights['profiles_id'],

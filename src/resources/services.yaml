@@ -115,9 +115,9 @@ services:
 
 #### Legacy services below
 
-    # DBmysql service is synthetic as it may sometime be unavailable (before install process)
+    # database service is synthetic as it may sometime be unavailable (before install process)
     # and therefore will be added during container compilation process
-    DBmysql:
+    database:
         synthetic: true
 
     # Following services are manually declared as they cannot be included using an include/exclude rule

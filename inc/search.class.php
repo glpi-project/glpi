@@ -5063,7 +5063,7 @@ JAVASCRIPT;
          if (isset($joinparams['condition'])) {
             $condition = $joinparams['condition'];
             if (is_array($condition)) {
-               $it = new DBmysqlIterator(null);
+               $it = new DBmysqlIterator($this->db);
                $condition = $it->analyseCrit($condition);
                $this->addQueryParams($it->getParameters());
             }

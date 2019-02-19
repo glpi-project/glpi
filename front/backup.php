@@ -169,8 +169,8 @@ function get_content($DB, $table, $from, $limit) {
 
 /**  Get structure of a table
  *
- * @param DBmysql $DB     DB object
- * @param string  $table  table name
+ * @param \Glpi\AbstractDatabase $DB     DB object
+ * @param string                 $table  table name
 **/
 function get_def($DB, $table) {
 
@@ -190,9 +190,9 @@ function get_def($DB, $table) {
 
 /**  Restore a mysql dump
  *
- * @param DBmysql $DB        DB object
- * @param string  $dumpFile  dump file
- * @param integer $duree     max delay before refresh
+ * @param \Glpi\AbstractDatabase $DB        DB object
+ * @param string                 $dumpFile  dump file
+ * @param integer                $duree     max delay before refresh
 **/
 function restoreMySqlDump($DB, $dumpFile, $duree) {
    global $DB, $TPSCOUR, $offset, $cpt;
@@ -308,10 +308,10 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
 /**  Backup a glpi DB
  *
- * @param DBmysql $DB        DB object
- * @param string  $dumpFile  dump file
- * @param integer $duree     max delay before refresh
- * @param integer $rowlimit  rowlimit to backup in one time
+ * @param \Glpi\AbstractDatabase $DB        DB object
+ * @param string                 $dumpFile  dump file
+ * @param integer                $duree     max delay before refresh
+ * @param integer                $rowlimit  rowlimit to backup in one time
 **/
 function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    global $TPSCOUR, $offsettable, $offsetrow, $cpt;

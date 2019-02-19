@@ -87,7 +87,7 @@ abstract class API extends CommonGLPI {
     * Constructor
     *
     * @var array $CFG_GLPI
-    * @var DBmysql $DB
+    * @var \Glpi\AbstractDatabase $DB
     *
     * @return void
     */

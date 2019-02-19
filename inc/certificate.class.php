@@ -729,7 +729,7 @@ class Certificate extends CommonDBTM {
                   ],
                   [
                      'RAW' => [
-                        'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before]
+                        'DATEDIFF(' . $DB->quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before]
                      ]
                   ],
                   'glpi_certificates.entities_id' => $entity,

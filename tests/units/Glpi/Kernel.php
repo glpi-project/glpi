@@ -60,8 +60,8 @@ class Kernel extends \GLPITestCase {
       $this->object($container)->isInstanceOf(\Psr\Container\ContainerInterface::class);
 
       // Check Glpi synthetic services
-      $this->boolean($container->has(\DBmysql::class))->isTrue();
-      $this->object($container->get(\DBmysql::class))->isInstanceOf(\DBmysql::class);
+      $this->boolean($container->has('database'))->isTrue();
+      $this->object($container->get('database'))->isInstanceOf(\Glpi\AbstractDatabase::class);
    }
 
    /**
@@ -78,11 +78,12 @@ services:
         autowire: true
         public: true
 
-    DBmysql:
+    database:
         synthetic: true
 
     fake_service:
         class: FakeService
+        arguments: ['@database']
 YAML
             ],
             'FakeService.php' => <<<PHP
@@ -90,7 +91,7 @@ YAML
 class FakeService {
    private \$db;
 
-   public function __construct(\DBMysql \$db) {
+   public function __construct(\Glpi\AbstractDatabase \$db) {
       \$this->db = \$db;
    }
 
@@ -118,7 +119,7 @@ PHP
       $this->boolean($container->has('fake_service'))->isTrue();
       $service = $container->get('fake_service');
       $this->object($service)->isInstanceOf('FakeService');
-      $this->object($service->getDb())->isInstanceOf(\DBmysql::class);
+      $this->object($service->getDb())->isInstanceOf(\Glpi\AbstractDatabase::class);
    }
 
    /**
