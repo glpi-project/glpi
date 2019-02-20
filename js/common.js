@@ -30,6 +30,14 @@
  */
 var timeoutglobalvar;
 
+if (typeof(String.prototype.normalize) !== 'function') {
+   $.ajax({
+      type: "GET",
+      url: CFG_GLPI.root_doc + "/lib/unorm/unorm.js",
+      dataType: "script",
+      cache: true
+   });
+}
 
 /**
  * modifier la propriete display d'un element
@@ -977,10 +985,6 @@ var templateSelection = function (selection) {
  * @return {string}
  */
 var getTextWithoutDiacriticalMarks = function (text) {
-   if (typeof(text.normalize) !== 'function') {
-      return text; // normalize method is not supported by old browsers (actually only IE)
-   }
-
    // Normalizing to NFD Unicode normal form decomposes combined graphemes
    // into the combination of simple ones. The "è" becomes "e + ̀`".
    text = text.normalize('NFD');

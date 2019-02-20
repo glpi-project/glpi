@@ -42,6 +42,7 @@ $GLPI->initLogger();
 
 //Print a correct  Html header for application
 function header_html($etape) {
+   global $CFG_GLPI;
 
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
@@ -54,7 +55,15 @@ function header_html($etape) {
     echo "<meta http-equiv='Content-Style-Type' content='text/css'> ";
    echo "<title>Setup GLPI</title>";
 
-    // LIBS
+   // CFG
+   echo Html::scriptBlock("
+      var CFG_GLPI  = {
+         'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
+         'root_doc': '".$CFG_GLPI["root_doc"]."',
+      };
+   ");
+
+   // LIBS
    echo Html::script("lib/jquery/js/jquery.js");
    echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
    echo Html::script("lib/jqueryplugins/select2/js/select2.js");
