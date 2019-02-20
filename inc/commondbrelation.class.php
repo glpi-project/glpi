@@ -184,7 +184,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
       if ($request === true) {
-         $conditions[] = $where1;
+         $conditions[] = ['AND' => $where1];
          $it = new \DBMysqlIterator($DB);
          $fields[]     = new \QueryExpression(
             'IF('.$it->analyseCrit($where1).', 1, 0) AS is_1'
@@ -210,7 +210,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
       if ($request === true) {
-         $conditions[] = $where2;
+         $conditions[] = ['AND' => $where2];
          $it = new \DBMysqlIterator($DB);
          $fields[]     = new \QueryExpression(
             'IF('.$it->analyseCrit($where2).', 1, 0) AS is_2'
