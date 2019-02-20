@@ -76,6 +76,8 @@ class MailCollector  extends CommonDBTM {
    /// Body converted
    public $body_converted  = false;
 
+   protected $twig_compat = true;
+
    /**
     * Flag that tells wheter the body is in HTML format or not.
     * @var string
@@ -93,6 +95,15 @@ class MailCollector  extends CommonDBTM {
    // Values for requester_field
    const REQUESTER_FIELD_FROM = 0;
    const REQUESTER_FIELD_REPLY_TO = 1;
+
+   public function __construct() {
+      $this->mapped_fields = [
+        'server' => [
+            'host'
+        ]
+      ];
+      parent::__construct();
+   }
 
    static function getTypeName($nb = 0) {
       return _n('Receiver', 'Receivers', $nb);
@@ -2065,5 +2076,132 @@ class MailCollector  extends CommonDBTM {
          default:
             return "from";
       }
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'name'   => [
+            'label'  => __('Name (Email address)')
+         ],
+         'is_active'     => [
+            'label'  => __('Active'),
+            'type'   => 'yesno'
+         ],
+         'server'   => [
+             'label'  => __('Connection configuration'),
+             'type'   => 'text',
+             'name'   => 'server',
+             'type'   => 'mailserver_config',
+         ],
+         'login'  => [
+            'label'  => __('Login')
+         ],
+         'passwd'  => [
+            'label'  => __('Password'),
+            'type'   => 'password',
+            'clear'  => true
+         ],
+         'use_kerberos'  => [
+            'label'  => __('Use Kerberos'),
+            'type'   => 'yesno'
+         ],
+         'accepted'   => [
+            'label'  => [
+                'label' => __('Accepted folder'),
+                'title' => __('Accpetd mail archive folder, optional')
+            ],
+            'posticons' => ['list button get-imap-folder']
+         ],
+         'refused' => [
+            'label'  => [
+                'label' => __('Refused folder'),
+                'title' => __('Refused mail archive folder, optional')
+            ],
+            'posticons' => ['list button get-imap-folder']
+         ],
+         'filesize_max'  => [
+            'label'  => [
+                'label' => __('Maximum file size'),
+                'title' => __('Maximum size of each file imported by the mails receiver')
+            ],
+            'htmltype'  => 'number'
+         ],
+         'use_mail_date' => [
+            'label'  => [
+                'label' => __('Use mail date'),
+                'title' => __('Use mail date, instead of collect one')
+            ],
+            'type'   => 'yesno'
+         ],
+         'requester_field'  => [
+             'label'  => [
+                 'label'   => __('Use Reply-To as requester'),
+                 'title'   => __('Use Reply-To as requester when available')
+             ],
+            'type'   => 'yesno'
+         ]
+      ] + parent::getFormFields();
+      return $fields;
+   }
+
+   /**
+    * Get hidden fields building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormHiddenFields($add = false) {
+      $fields = array_merge(
+         parent::getFormHiddenFields($add), [
+            'host'
+         ]
+      );
+      return $fields;
+   }
+
+   /**
+    * Get form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or edit
+    *
+    * @return array
+    */
+   public function getForm($add = false) {
+      $form = parent::getForm($add);
+      $form['columns'] = 1;
+      return $form;
+   }
+
+   /**
+    * Get field to be dropped building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormFieldsToDrop($add = false) {
+       $fields = parent::getFormFieldsToDrop($add);
+       $fields[] = 'errors';
+       return $fields;
    }
 }

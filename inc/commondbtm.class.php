@@ -5536,7 +5536,7 @@ class CommonDBTM extends CommonGLPI {
          $element['itemtype'] = $itemtype;
          $element['itemtype_name'] = $itemtype::getTypeName(Session::getPluralNumber());
          $element['values'] = [];
-      } else if (strstr($column['Field'], 'date')) {
+      } else if (strstr($column['Field'], 'date') && !isset($element['type'])) {
          $element['type'] = 'date';
       } else if ($column['Field'] == 'comment' || $column['Field'] == 'content') {
          $element['type'] = 'textarea';
