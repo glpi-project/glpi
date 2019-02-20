@@ -4337,9 +4337,12 @@ class Html {
                // Skip if there is no 'children' property
                if (typeof data.children === 'undefined') {
                   var match  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
-                  return match !== null
-                     ? {text: data, rendered_text: match.rendered_text, score: match[1]}
-                     : false;
+                  if (match == null) {
+                     return false;
+                  }
+                  data.rendered_text = match.rendered_text;
+                  data.score = match.score;
+                  return data;
                }
 
                // `data.children` contains the actual options that we are matching against
@@ -4353,17 +4356,13 @@ class Html {
 
                   var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
                   var match_text  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
-                  if (match_child !== null
-                     || match_text !== null
-                  ) {
-                     if (match_text !== null
-                         && typeof match_text.score != 'undefined') {
+                  if (match_child !== null || match_text !== null) {
+                     if (match_text !== null) {
                         data.score         = match_text.score;
                         data.rendered_text = match_text.rendered;
                      }
 
-                     if (match_child !== null
-                         && typeof match_child.score != 'undefined') {
+                     if (match_child !== null) {
                         child.score         = match_child.score;
                         child.rendered_text = match_child.rendered;
                      }
