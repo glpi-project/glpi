@@ -36,8 +36,6 @@ use \atoum;
 
 use \DbTestCase;
 
-/* Test for inc/telemetry.class.php requiring the Web server*/
-
 class MailCollector extends DbTestCase {
    public function beforeTestMethod($method) {
    }

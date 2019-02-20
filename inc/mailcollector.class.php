@@ -173,9 +173,6 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       if (isset($input["passwd"])) {
@@ -207,9 +204,6 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if (isset($input["passwd"])) {
@@ -232,13 +226,13 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
     * Display the list of folder for current connections
     *
     * @since  9.3.1
     *
     * @param  string $input_id dom id where to insert folder name
-    * @return nothing (display)
+    *
+    * @return void
     */
    function displayFoldersList($input_id = "") {
       $this->connect();
@@ -279,9 +273,6 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * @param $ID
-   **/
    function showGetMessageForm($ID) {
 
       echo "<br><br><div class='center'>";
@@ -669,12 +660,13 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /** function buildTicket - Builds,and returns, the major structure of the ticket to be entered.
+   /**
+    * Builds and returns the main structure of the ticket to be created
     *
-    * @param @param $uid UID of the message
-    * @param $options   array    of possible options
+    * @param string $uid     UID of the message
+    * @param array  $options Possible options
     *
-    * @return ticket fields array
+    * @return array ticket fields
     */
    function buildTicket($uid, $options = []) {
       global $CFG_GLPI;
@@ -935,7 +927,8 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /** Clean mail content : HTML + XSS + blacklisted content
+   /**
+    * Clean mail content : HTML + XSS + blacklisted content
     *
     * @since 0.85
     *
@@ -989,9 +982,9 @@ class MailCollector  extends CommonDBTM {
    /**
     * Strip out unwanted/unprintable characters from the subject.
     *
-    * @param $text text to clean
+    * @param string $text text to clean
     *
-    * @return clean text
+    * @return string clean text
    **/
    function textCleaner($text) {
 
@@ -1096,6 +1089,7 @@ class MailCollector  extends CommonDBTM {
       if ($this->marubox) {
          // call this to avoid the mailbox is empty error message
          if (imap_num_msg($this->marubox) == 0) {
+             //FIXME: not used!
              $errors = imap_errors();
          }
 
@@ -1111,9 +1105,11 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * get the message structure if not already retrieved
+    * Get the message structure if not already retrieved
     *
-    * @param $mid : Message ID.
+    * @param string $mid Message ID.
+    *
+    * @return void
    **/
    function getStructure ($uid) {
 
@@ -1129,7 +1125,11 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * @param $uid UID of the message
+    * Get extra headers
+    *
+    * @param stringn $uid UID of the message
+    *
+    * @return array
    **/
    function getAdditionnalHeaders($uid) {
 
@@ -1162,17 +1162,17 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * Get Header info from particular mail
+    * Get full headers infos from particular mail
     *
-    * @param $uid UID of the message
+    * @param string $uid UID of the message
     *
-    * @return Return Associative array with following keys
-    * subject   => Subject of Mail
-    * to        => To Address of that mail
-    * toOth     => Other To address of mail
-    * toNameOth => To Name of Mail
-    * from      => From address of mail
-    * fromName  => Form Name of Mail
+    * @return array Associative array with following keys
+    *                subject   => Subject of Mail
+    *                to        => To Address of that mail
+    *                toOth     => Other To address of mail
+    *                toNameOth => To Name of Mail
+    *                from      => From address of mail
+    *                fromName  => Form Name of Mail
    **/
    function getHeaders($uid) {
       // Get Header info
@@ -1242,15 +1242,23 @@ class MailCollector  extends CommonDBTM {
    /**
     * Get Mime type Internal Private Use
     *
-    * @param $structure mail structure
+    * @param StdClass $structure mail structure
     *
-    * @return mime type
+    * @return string mime type
    **/
-   function get_mime_type(&$structure) {
+   private function get_mime_type($structure) {
 
       // DO NOT REORDER IT
-      $primary_mime_type = ["TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO",
-                                 "IMAGE", "VIDEO", "OTHER"];
+      $primary_mime_type = [
+         "TEXT",
+         "MULTIPART",
+         "MESSAGE",
+         "APPLICATION",
+         "AUDIO",
+         "IMAGE",
+         "VIDEO",
+         "OTHER"
+      ];
 
       if ($structure->subtype) {
          return $primary_mime_type[intval($structure->type)] . '/' . $structure->subtype;
@@ -1270,7 +1278,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return data of false if error
    **/
-   function get_part($stream, $uid, $mime_type, $structure = false, $part_number = false) {
+   private function get_part($stream, $uid, $mime_type, $structure = false, $part_number = false) {
 
       if ($structure) {
          if ($mime_type == $this->get_mime_type($structure)) {
@@ -1337,12 +1345,11 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * Used to get total unread mail from that mailbox
+    * Number of entries in the mailbox
     *
-    * @return an integer (Total Mail)
+    * @return integer
    **/
    function getTotalMails() {
-
       $headers = imap_headers($this->marubox);
       return count($headers);
    }
@@ -1387,7 +1394,7 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * Private function : Recursivly get attached documents
+    * Recursivly get attached documents
     *
     * @param $uid          message uid
     * @param $path         temporary path
@@ -1397,7 +1404,7 @@ class MailCollector  extends CommonDBTM {
     *
     * Result is stored in $this->files
    **/
-   function getRecursiveAttached($uid, $path, $maxsize, $structure, $part = "") {
+   private function getRecursiveAttached($uid, $path, $maxsize, $structure, $part = "") {
 
       if ($structure->type == TYPEMULTIPART) {
          foreach ($structure->parts as $index => $sub_structure) {
@@ -1526,7 +1533,7 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * Public function : get attached documents in a mail
+    * Get attached documents in a mail
     *
     * @param $uid       UID of the message
     * @param $path      temporary path
@@ -1534,7 +1541,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return array containing extracted filenames in file/_tmp
    **/
-   function getAttached($uid, $path, $maxsize) {
+   public function getAttached($uid, $path, $maxsize) {
 
       $this->getStructure($uid);
       $this->files     = [];
@@ -1549,7 +1556,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * Get The actual mail content from this mail
     *
-    * @param $uid : mail UID
+    * @param string $uid mail UID
    **/
    function getBody($uid) {
       // Get Message Body
@@ -1575,8 +1582,8 @@ class MailCollector  extends CommonDBTM {
    /**
     * Delete mail from that mail box
     *
-    * @param $uid       String    mail UID
-    * @param $folder    String   folder to move (delete if empty) (default '')
+    * @param string $uid    mail UID
+    * @param string $folder Folder to move (delete if empty) (default '')
     *
     * @return Boolean
    **/
@@ -1603,15 +1610,14 @@ class MailCollector  extends CommonDBTM {
 
    /**
     * Close The Mail Box
+    *
+    * @return void
    **/
    function close_mailbox() {
       imap_close($this->marubox, CL_EXPUNGE);
    }
 
 
-   /**
-    * @param $name
-   **/
    static function cronInfo($name) {
 
       switch ($name) {
@@ -1711,9 +1717,6 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * @param $width
-   **/
    function showSystemInformations($width) {
       global $CFG_GLPI, $DB;
 
@@ -1811,29 +1814,37 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   static function getNumberOfMailCollectors() {
+   /**
+    * Count collectors
+    *
+    * @param boolean $active Count active only, defaults to false
+    *
+    * @return integer
+    */
+   static function countCollectors($active = false) {
       global $DB;
 
-      $result = $DB->request([
+      $criteria = [
          'COUNT'  => 'cpt',
          'FROM'   => 'glpi_mailcollectors'
-      ])->next();
+      ];
+
+      if (true === $active) {
+         $criteria['WHERE'] = ['is_active' => 1];
+      }
+
+      $result = $DB->request($criteria)->next();
+
       return $result['cpt'];
    }
 
-
    /**
-    * @since 0.85
-   **/
-   static function getNumberOfActiveMailCollectors() {
-      global $DB;
-
-      $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => 'glpi_mailcollectors',
-         'WHERE'  => ['is_active' => 1]
-      ])->next();
-      return $result['cpt'];
+    * Count active collectors
+    *
+    * @return integer
+    */
+   static function countActiveCollectors() {
+      return self::countCollectors(true);
    }
 
 
