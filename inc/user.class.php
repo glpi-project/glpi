@@ -155,7 +155,7 @@ class User extends CommonDBTM {
 
       if (isset($this->fields['id'])) {
          foreach ($CFG_GLPI['user_pref_field'] as $f) {
-            if (is_null($this->fields[$f]) || !Session::haveRight('personalization', UPDATE)) {
+            if (is_null($this->fields[$f])) {
                $this->fields[$f] = $CFG_GLPI[$f];
             }
          }
