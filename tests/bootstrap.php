@@ -577,11 +577,4 @@ function getItemByTypeName($type, $name, $onlyid = false) {
    return false;
 }
 
-// Cleanup log directory
-foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
-   if (file_exists($file)) {
-      @unlink($file);
-   }
-}
-
 loadDataset();
