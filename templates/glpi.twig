@@ -96,6 +96,12 @@
    {{ glpi.flash_messages() }}
 
    {% block javascripts %}
+      <script type="text/javascript">
+         var CFG_GLPI  = {
+            'url_base': '{{ CFG_GLPI.url_base|default('') }}',
+            'root_doc': '{{ CFG_GLPI.root_doc }}',
+         };
+      </script>
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/popper.js/popper.js"></script>
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/perfect-scrollbar/perfect-scrollbar.js"></script>
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ lib_path }}/bootstrap/js/bootstrap.js"></script>
