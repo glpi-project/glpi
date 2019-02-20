@@ -491,5 +491,22 @@ class Migration extends \GLPITestCase {
          ]
       ]);
       $this->integer(count($right1))->isEqualTo(8);
+
+      //Test adding a READ right only on profiles where it has not been set yet
+      $DB->delete('glpi_profilerights', [
+         'profiles_id' => [1, 2, 3, 4],
+         'name' => 'testright4'
+      ]);
+
+      $this->migration->addRight('testright4', READ | UPDATE, []);
+
+      $right4 = $DB->request([
+         'FROM' => 'glpi_profilerights',
+         'WHERE'  => [
+            'name'   => 'testright4',
+            'rights' => READ | UPDATE
+         ]
+      ]);
+      $this->integer(count($right4))->isEqualTo(4);
    }
 }
