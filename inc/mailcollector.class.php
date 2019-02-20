@@ -1060,7 +1060,7 @@ class MailCollector  extends CommonDBTM {
    function connect() {
 
       if ($this->fields['use_kerberos']) {
-         $this->marubox = @imap_open(
+         $this->marubox = imap_open(
             $this->fields['host'],
             $this->fields['login'],
             Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
@@ -1073,14 +1073,14 @@ class MailCollector  extends CommonDBTM {
             ['DISABLE_AUTHENTICATOR' => 'PLAIN']
          ];
          foreach ($try_options as $option) {
-            $this->marubox = @imap_open(
+            $this->marubox = imap_open(
                $this->fields['host'],
                $this->fields['login'],
                Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                CL_EXPUNGE,
                1,
                $option
-            );
+            ) or die(imap_last_error());
             if (is_resource($this->marubox)) {
                break;
             }
