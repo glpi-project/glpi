@@ -192,7 +192,7 @@ class MailCollector extends DbTestCase {
       $this->integer(
          (int)$this->testedInstance->add([
             'name'         => 'testuser@tedivm.com',
-            'mail_server'  => '172.31.1.2',
+            'mail_server'  => '127.0.0.1',
             'passwd'       => 'applesauce'
          ])
       )->isGreaterThan(0);
