@@ -33,7 +33,7 @@ var timeoutglobalvar;
 if (typeof(String.prototype.normalize) !== 'function') {
    $.ajax({
       type: "GET",
-      url: "../lib/unorm/unorm.js",
+      url: CFG_GLPI.root_doc + "/lib/unorm/unorm.js",
       dataType: "script",
       cache: true
    });

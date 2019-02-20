@@ -5864,11 +5864,6 @@ class Html {
          }
       }
 
-      // Some Javascript-Functions which we may need later
-      echo Html::script('js/common.js');
-      self::redefineAlert();
-      self::redefineConfirm();
-
       // transfer some var of php to javascript
       // (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
       echo self::scriptBlock("
@@ -5877,6 +5872,11 @@ class Html {
             'root_doc': '".$CFG_GLPI["root_doc"]."',
          };
       ");
+
+      // Some Javascript-Functions which we may need later
+      echo Html::script('js/common.js');
+      self::redefineAlert();
+      self::redefineConfirm();
 
       if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
          $options = [
