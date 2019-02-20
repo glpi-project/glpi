@@ -978,7 +978,7 @@ var templateSelection = function (selection) {
  */
 var getTextWithoutDiacriticalMarks = function (text) {
    if (typeof(text.normalize) !== 'function') {
-      return text; // normalize method is not supported by old browsers (actually only IE)
+      return UNorm.normalize('NFD', text); // normalize method is not supported by old browsers (actually only IE)
    }
 
    // Normalizing to NFD Unicode normal form decomposes combined graphemes
