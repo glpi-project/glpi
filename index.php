@@ -88,7 +88,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo Html::css('lib/font-awesome/css/all.css');
 
    // CFG
-   error_log(print_r($CFG_GLPI, true));
    echo Html::scriptBlock("
       var CFG_GLPI  = {
          'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
