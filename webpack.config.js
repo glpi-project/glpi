@@ -264,6 +264,12 @@ var libs = {
             from: 'langs/*.js',
         }
     ],
+    'unorm': [
+        {
+            context: 'lib',
+            from: 'unorm.js',
+        }
+    ],
 };
 
 for (let packageName in libs) {
