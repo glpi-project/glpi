@@ -37,9 +37,6 @@ use \atoum;
 use \DbTestCase;
 
 class MailCollector extends DbTestCase {
-   public function beforeTestMethod($method) {
-   }
-
    public function testGetEmpty() {
       $this
          ->if($this->newTestedInstance)
@@ -66,5 +63,73 @@ class MailCollector extends DbTestCase {
                   'date_creation'   => '',
                   'requester_field' => ''
                ]);
+   }
+
+   protected function subjectProvider() {
+      return [
+         [
+            'raw'       => 'This is a subject',
+            'expected'  => 'This is a subject'
+         ], [
+            'raw'       => "With a \ncarriage return",
+            'expected'  => "With a \ncarriage return"
+         ], [
+            'raw'       => 'We have a problem, <strong>URGENT</strong>',
+            'expected'  => 'We have a problem, &lt;strong&gt;URGENT&lt;/strong&gt;'
+         ], [ //dunno why...
+            'raw'       => 'Subject with =20 character',
+            'expected'  => "Subject with \n character"
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider subjectProvider
+    */
+   public function testCleanSubject($raw, $expected) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->cleanSubject($raw))
+               ->isIdenticalTo($expected);
+   }
+
+   public function testListEncodings() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->array($this->testedInstance->listEncodings())
+               ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252'])
+         ;
+   }
+
+   public function testCounts() {
+      $this->newTestedInstance();
+
+      $this->integer($this->testedInstance->countActiveCollectors())->isIdenticalTo(0);
+      $this->integer($this->testedInstance->countCollectors(true))->isIdenticalTo(0);
+      $this->integer($this->testedInstance->countCollectors())->isIdenticalTo(0);
+
+      //Add an active collector
+      $nid = (int)$this->testedInstance->add([
+         'name'      => 'Maille name',
+         'is_active' => true
+      ]);
+      $this->integer($nid)->isGreaterThan(0);
+
+      $this->integer($this->testedInstance->countActiveCollectors())->isIdenticalTo(1);
+      $this->integer($this->testedInstance->countCollectors(true))->isIdenticalTo(1);
+      $this->integer($this->testedInstance->countCollectors())->isIdenticalTo(1);
+
+      $this->boolean(
+         $this->testedInstance->update([
+            'id'        => $this->testedInstance->fields['id'],
+            'is_active' => false
+         ])
+      )->isTrue();
+
+      $this->integer($this->testedInstance->countActiveCollectors())->isIdenticalTo(0);
+      $this->integer($this->testedInstance->countCollectors(true))->isIdenticalTo(0);
+      $this->integer($this->testedInstance->countCollectors())->isIdenticalTo(1);
    }
 }
