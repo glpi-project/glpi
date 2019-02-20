@@ -5514,10 +5514,12 @@ class CommonDBTM extends CommonGLPI {
       } else if ($column['Field'] == 'comment' || $column['Field'] == 'content') {
          $element['type'] = 'textarea';
       } else {
-         switch ($column['Type']) {
-            default:
-               $element['type'] = 'text';
-               break;
+         if (!isset($element['type']) || empty($element['type'])) {
+            switch ($column['Type']) {
+               default:
+                  $element['type'] = 'text';
+                  break;
+            }
          }
       }
       if (isset($this->fields[$column['Field']])) {
