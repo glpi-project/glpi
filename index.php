@@ -95,6 +95,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml")) {
    echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
    echo Html::script('public/lib/select2/js/select2.full.js');
    echo Html::css('public/lib/select2/css/select2.css');
+   // CFG
+   echo Html::scriptBlock("
+      var CFG_GLPI  = {
+         'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
+         'root_doc': '".$CFG_GLPI["root_doc"]."',
+      };
+   ");
+
    echo Html::script('js/common.js');
 
    echo "</head>";

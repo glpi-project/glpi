@@ -114,6 +114,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(ticket.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY ticket.`id`
                ORDER BY ticket.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Ticket solution history");
@@ -149,6 +150,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(problem.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY problem.`id`
                ORDER BY problem.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Problem solution history");
@@ -184,6 +186,7 @@ function update92to93() {
                   AND log.`id_search_option` = 24
                WHERE
                   LENGTH(changes.`solution`) > 0
+                  OR solutiontypes_id > 0
                GROUP BY changes.`id`
                ORDER BY changes.`id` ASC, log.id DESC";
       $DB->queryOrDie($query, "9.3 migrate Change solution history");
