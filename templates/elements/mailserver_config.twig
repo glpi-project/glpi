@@ -1,0 +1,223 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% set conf = call_static('Toolbox', 'parseMailServerConnectString', [element.value.host]) %}
+{% set select_conf = {'type': 'select', 'listicon': false, 'addicon': false, 'empty_value': true} %}
+
+{% include 'elements/text.twig' with {
+    'element': {
+        'label': __('Server'),
+        'name': 'mail_server',
+        'value': conf.address|default('')
+    }
+} %}
+
+<div class="form-group row col-md-12">
+    <span class="col-sm-4 col-form-label">{{ __('Connection options') }}</span>
+    <div class="col-sm-8">
+{% include 'elements/select.twig' with {
+    'notag': true,
+    'element': select_conf|merge({
+        'name': 'server_type',
+        'type': 'select',
+        'values': {
+            '/imap': __('IMAP'),
+            '/pop': __('POP')
+        },
+        'value': '/' ~ conf.type|default('')
+    })
+} %}
+
+{% include 'elements/select.twig' with {
+    'notag': true,
+    'element': select_conf|merge({
+        'name': 'server_ssl',
+        'type': 'select',
+        'values': {
+            '/ssl': __('SSL')
+        },
+        'value': conf.ssl ? '/ssl' : ''
+    })
+} %}
+
+{% if conf.tls == true %}
+    {% set tls = '/tls' %}
+{% elseif conf.tls == false %}
+    {% set tls = '/notls' %}
+{% else %}
+    {% set tls = '' %}
+{% endif %}
+
+{% include 'elements/select.twig' with {
+    'notag': true,
+    'element': select_conf|merge({
+        'name': 'server_tls',
+        'type': 'select',
+        'values': {
+            '/tls': __('TLS'),
+            '/notls': __('NO-TLS')
+        },
+        'value': tls
+    })
+} %}
+
+{% if conf['validate-cert'] == true %}
+    {% set validatecert = '/validate-cert' %}
+{% elseif conf['validate-cert'] == false %}
+    {% set validatecert = '/novalidate-cert' %}
+{% else %}
+    {% set validatecert = '' %}
+{% endif %}
+
+
+{% include 'elements/select.twig' with {
+    'notag': true,
+    'element': select_conf|merge({
+        'name': 'server_cert',
+        'type': 'select',
+        'values': {
+            '/novalidate-cert': __('NO-VALIDATE-CERT'),
+            '/validate-cert': __('VALIDATE-CERT')
+        },
+        'value': validatecert
+    })
+} %}
+
+{% include 'elements/select.twig' with {
+    'notag': true,
+    'element': select_conf|merge({
+        'name': 'server_rsh',
+        'type': 'select',
+        'values': {
+            '/norsh': __('NORSH')
+        },
+        'value': conf.norsh ? '/norsh' : ''
+    })
+} %}
+
+{% include 'elements/select.twig' with {
+    'notag': true,
+    'element': select_conf|merge({
+        'name': 'server_secure',
+        'type': 'select',
+        'values': {
+            '/secure': __('SECURE')
+        },
+        'value': conf.secure ? '/secure' : ''
+    })
+} %}
+
+{% include 'elements/select.twig' with {
+    'notag': true,
+    'element': select_conf|merge({
+        'name': 'server_debug',
+        'type': 'select',
+        'values': {
+            '/debug': __('DEBUG')
+        },
+        'value': conf.debug ? '/debug' :''
+    })
+} %}
+    </div>{# /col-sm-8 row #}
+</div>{# /form-group row col-md-12 #}
+
+{% include 'elements/text.twig' with {
+    'element': {
+        'label': {
+            'label': __('Incoming mail folder'),
+            'title': __('Incoming mail folder, optional, often INBOX')
+        },
+        'name': 'mail_server',
+        'value': conf.mailbox|default(''),
+        'posticons': ['list button get-imap-folder']
+    }
+} %}
+
+{% include 'elements/text.twig' with {
+    'element': {
+        'label': {
+            'label': __('Port'),
+            'title': __('Port, optional')
+        },
+        'name': 'server_port',
+        'value': conf.port|default(''),
+        'htmltype': 'number'
+    }
+} %}
+
+<div class="form-group row col-md-12">
+    <span class="col-sm-4 col-form-label">{{ __('Connection string') }}</span>
+    <div class="col-sm-8">
+        <strong>{{ element.value.host }}</strong>
+    </div>
+</div>
+
+{#
+    seems used in inc/authmail.class.php:
+    echo "<input type=hidden name=imap_string value='".$value."'>";
+#}
+
+<div id='imap-folder'></div>
+<script type="text/javascript">
+    $(function() {
+         $('#imap-folder')
+            .dialog(options = {
+               autoOpen: false,
+               autoResize:true,
+               width: 'auto',
+               modal: true,
+            });
+
+         $('.get-imap-folder').on('click', function() {
+            var input = $(this).prev('input');
+
+            var data = 'action=getFoldersList';
+            data += '&input_id=' + input.attr('id');
+            // Get form values without server_mailbox value to prevent filtering
+            data += '&' + $(this).closest('form').find(':not([name=\"server_mailbox\"])').serialize();
+            // Force empty value for server_mailbox
+            data += '&server_mailbox=';
+
+            $('#imap-folder')
+               .html('')
+               .load('{{ CFG_GLPI.root_doc }}/ajax/mailcollector.php', data)
+               .dialog('open');
+         });
+
+         $('.select_folder li').on('click', function() {
+            var li       = $(this);
+            var input_id = li.data('input-id');
+            var folder   = li.children('.folder-name').html();
+
+            $('#'+input_id).val(folder);
+            $('#imap-folder').dialog('close');
+         })
+    });
+</script>

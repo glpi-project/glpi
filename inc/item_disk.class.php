@@ -58,6 +58,7 @@ class Item_Disk extends CommonDBChild {
             'items_id'
         ]
       ];
+      parent::__construct();
    }
 
    static function getTypeName($nb = 0) {

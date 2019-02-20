@@ -54,7 +54,7 @@
       {% endif %}
    {% endblock %}
    {% if notag is not defined or not notag or element.label is defined %}
-   <div class="col-sm-{% if element.columns is defined %}{{ element.columns }}{% elseif element.label is defined %}8{% else %}12{% endif %}{%if element.preicons is defined %} input-group{% endif %}">
+   <div class="col-sm-{% if element.columns is defined %}{{ element.columns }}{% elseif element.label is defined %}8{% else %}12{% endif %}{%if element.preicons is defined or element.posticons is defined %} input-group{% endif %}">
    {% endif %}
    {% block pre_element %}
       {% if element.preicons is defined %}
@@ -93,7 +93,17 @@
         {% endif %}
         />
    {% endblock %}
-   {% block post_element %}{% endblock %}
+   {% block post_element %}
+      {% if element.posticons is defined %}
+         {% for posticon in element.posticons %}
+            <span class="input-group-append">
+               <span class="input-group-text">
+                  <i class="fa fa-{{ posticon }}"></i>
+               </span>
+            </span>
+         {% endfor %}
+      {% endif %}
+   {% endblock %}
    {% if element.message is defined %}
       <span class="help-block">{{ element.message }}</span>
    {% endif %}
