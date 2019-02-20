@@ -99,8 +99,7 @@ class MailCollector extends DbTestCase {
          ->if($this->newTestedInstance)
          ->then
             ->array($this->testedInstance->listEncodings())
-               ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252'])
-         ;
+               ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252']);
    }
 
    public function testPrepareInput() {
