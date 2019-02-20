@@ -185,4 +185,20 @@ class MailCollector extends DbTestCase {
       $this->integer($this->testedInstance->countCollectors(true))->isIdenticalTo(0);
       $this->integer($this->testedInstance->countCollectors())->isIdenticalTo(1);
    }
+
+   public function testConnect() {
+      $this->newTestedInstance();
+
+      $this->integer(
+         (int)$this->testedInstance->add([
+            'name'         => 'testuser@tedivm.com',
+            'mail_server'  => '172.31.1.2',
+            'passwd'       => 'applesauce'
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean($this->testedInstance->getFromDB($this->testedInstance->fields['id']))->isTrue();
+      $this->testedInstance->connect();
+      $this->integer($this->testedInstance->fields['errors'])->isIdenticalTo(0);
+   }
 }
