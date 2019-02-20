@@ -494,7 +494,7 @@ class DBmysqlIterator implements Iterator, Countable {
                $ret .= $value->getQuery();
             } else {
                // No Key case => recurse.
-               $ret .= "(" . $this->analyseCrit($value, $bool) . ")";
+               $ret .= "(" . $this->analyseCrit($value) . ")";
             }
 
          } else if (($name === "OR") || ($name === "AND")) {
