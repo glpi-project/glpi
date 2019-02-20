@@ -1006,61 +1006,75 @@ class Migration {
    public function addRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE]) {
       global $DB;
 
-      $count = countElementsInTable(
-         'glpi_profilerights',
-         ['name' => $name]
+      // Get all profiles where new rights has not been added yet
+      $prof_iterator = $DB->request(
+         [
+            'SELECT'    => 'glpi_profiles.id',
+            'FROM'      => 'glpi_profiles',
+            'LEFT JOIN' => [
+               'glpi_profilerights' => [
+                  'ON' => [
+                     'glpi_profilerights' => 'profiles_id',
+                     'glpi_profiles'      => 'id',
+                     [
+                        'AND' => ['glpi_profilerights.name' => $name]
+                     ]
+                  ]
+               ],
+            ],
+            'WHERE'     => [
+               'glpi_profilerights.id' => null,
+            ]
+         ]
       );
 
-      if ($count == 0) {
-         $where = [];
-         foreach ($requiredrights as $reqright => $reqvalue) {
-            $where['OR'][] = [
-               'AND' => [
-                  'name'   => $reqright,
-                  new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
-               ]
-            ];
-         }
+      if ($prof_iterator->count() === 0) {
+         return;
+      }
 
-         $prof_iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => 'glpi_profiles'
-         ]);
+      $where = [];
+      foreach ($requiredrights as $reqright => $reqvalue) {
+         $where['OR'][] = [
+            'AND' => [
+               'name'   => $reqright,
+               new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
+            ]
+         ];
+      }
 
-         while ($profile = $prof_iterator->next()) {
-            if (empty($requiredrights)) {
-               $reqmet = true;
-            } else {
-               $iterator = $DB->request([
-                  'SELECT' => [
-                     'name',
-                     'rights'
-                  ],
-                  'FROM'   => 'glpi_profilerights',
-                  'WHERE'  => $where + ['profiles_id' => $profile['id']]
-               ]);
-
-               $reqmet = (count($iterator) == count($requiredrights));
-            }
-
-            $DB->insertOrDie(
-               'glpi_profilerights', [
-                  'id'           => null,
-                  'profiles_id'  => $profile['id'],
-                  'name'         => $name,
-                  'rights'       => $reqmet ? $rights : 0
+      while ($profile = $prof_iterator->next()) {
+         if (empty($requiredrights)) {
+            $reqmet = true;
+         } else {
+            $iterator = $DB->request([
+               'SELECT' => [
+                  'name',
+                  'rights'
                ],
-               sprintf('%1$s add right for %2$s', $this->version, $name)
-            );
+               'FROM'   => 'glpi_profilerights',
+               'WHERE'  => $where + ['profiles_id' => $profile['id']]
+            ]);
+
+            $reqmet = (count($iterator) == count($requiredrights));
          }
 
-         $this->displayWarning(
-            sprintf(
-               'New rights has been added for %1$s, you should review ACLs after update',
-               $name
-            ),
-            true
+         $DB->insertOrDie(
+            'glpi_profilerights', [
+               'id'           => null,
+               'profiles_id'  => $profile['id'],
+               'name'         => $name,
+               'rights'       => $reqmet ? $rights : 0
+            ],
+            sprintf('%1$s add right for %2$s', $this->version, $name)
          );
       }
+
+      $this->displayWarning(
+         sprintf(
+            'New rights has been added for %1$s, you should review ACLs after update',
+            $name
+         ),
+         true
+      );
    }
 }
