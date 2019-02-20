@@ -5865,7 +5865,6 @@ class Html {
       }
 
       // Some Javascript-Functions which we may need later
-      echo Html::script('lib/unorm/unorm.js');
       echo Html::script('js/common.js');
       self::redefineAlert();
       self::redefineConfirm();
