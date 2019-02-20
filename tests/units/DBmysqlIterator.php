@@ -578,6 +578,24 @@ class DBmysqlIterator extends DbTestCase {
 
       $crit = [
          'WHERE' => [
+            'OR' => [
+               [
+                  'items_id' => 15,
+                  'itemtype' => 'Computer'
+               ],
+               [
+                  'items_id' => 3,
+                  'itemtype' => 'Document'
+               ],
+            ],
+         ],
+      ];
+      $sql = "SELECT * FROM `foo` WHERE ((`items_id` = '15' AND `itemtype` = 'Computer') OR (`items_id` = '3' AND `itemtype` = 'Document'))";
+      $it = $this->it->execute(['foo'], $crit);
+      $this->string($it->getSql())->isIdenticalTo($sql);
+
+      $crit = [
+         'WHERE' => [
             'a'  => 1,
             'OR' => [
                'b'   => 2,
