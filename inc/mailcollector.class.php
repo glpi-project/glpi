@@ -165,6 +165,10 @@ class MailCollector  extends CommonDBTM {
    }
 
    public function prepareInput(array $input, $mode = 'add') :array {
+      if ('add' === $mode && !isset($input['name']) || empty($input['name'])) {
+         Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
+      }
+
       if (isset($input["passwd"])) {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
@@ -177,7 +181,7 @@ class MailCollector  extends CommonDBTM {
          $input["host"] = Toolbox::constructMailServerConfig($input);
       }
 
-      if (($mode == 'add' || isset($input['name'])) && !NotificationMailing::isUserAddressValid($input['name'])) {
+      if (isset($input['name']) && !NotificationMailing::isUserAddressValid($input['name'])) {
          Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
       }
 

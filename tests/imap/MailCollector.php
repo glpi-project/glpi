@@ -103,6 +103,60 @@ class MailCollector extends DbTestCase {
          ;
    }
 
+   public function testPrepareInput() {
+      $this->newTestedInstance();
+
+      $oinput = [
+         'passwd'    => 'Ph34r',
+         'is_active' => true
+      ];
+
+      $this->array($this->testedInstance->prepareInput($oinput, 'add'))
+         ->isIdenticalTo([
+            'passwd'    => \Toolbox::encrypt($oinput["passwd"], GLPIKEY),
+            'is_active' => true
+         ]);
+
+      //empty password means no password.
+      $oinput = [
+         'passwd'    => '',
+         'is_active' => true
+      ];
+
+      $this->array($this->testedInstance->prepareInput($oinput, 'add'))
+         ->isIdenticalTo(['is_active' => true]);
+
+      //manage host
+      $oinput = [
+         'mail_server' => 'mail.example.com'
+      ];
+
+      $this->array($this->testedInstance->prepareInput($oinput, 'add'))
+           ->isIdenticalTo(['mail_server' => 'mail.example.com', 'host' => '{mail.example.com}']);
+
+      //manage host
+      $oinput = [
+         'mail_server'     => 'mail.example.com',
+         'server_port'     => 143,
+         'server_mailbox'  => 'bugs'
+      ];
+
+      $this->array($this->testedInstance->prepareInput($oinput, 'add'))
+           ->isIdenticalTo([
+              'mail_server'      => 'mail.example.com',
+              'server_port'      => 143,
+              'server_mailbox'   => 'bugs',
+              'host'             => '{mail.example.com:143}bugs'
+           ]);
+
+      $oinput = [
+         'passwd'          => 'Ph34r',
+         '_blank_passwd'   => true
+      ];
+      $this->array($this->testedInstance->prepareInputForUpdate($oinput))
+         ->isIdenticalTo(['passwd' => '', '_blank_passwd' => true]);
+   }
+
    public function testCounts() {
       $this->newTestedInstance();
 
