@@ -6215,6 +6215,7 @@ abstract class CommonITILObject extends CommonDBTM {
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
               ."<i class='fa fa-check'></i>".__("Solution")."</li>";
       }
+      Plugin::doHook('timeline_actions', ['item' => $this, 'rand' => $rand]);
 
       echo "</ul>"; // timeline_choices
       echo "<div class='clear'>&nbsp;</div>";
