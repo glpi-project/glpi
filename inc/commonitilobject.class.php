@@ -1270,6 +1270,10 @@ abstract class CommonITILObject extends CommonDBTM {
                'LIMIT'  => 1
             ]
          );
+
+         //Delete existing survey
+         $inquest = new TicketSatisfaction();
+         $inquest->delete(['tickets_id' => $this->getID()]);
       }
 
       if (isset($this->input['_accepted'])) {

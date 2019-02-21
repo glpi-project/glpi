@@ -1652,7 +1652,7 @@ class Ticket extends CommonITILObject {
           && ($rate > 0)
           && (mt_rand(1, 100) <= $rate)) {
 
-         $inquest_id = $inquest->add(
+         $inquest->add(
             [
                'tickets_id'    => $this->fields['id'],
                'date_begin'    => $_SESSION["glpi_currenttime"],
@@ -1661,7 +1661,6 @@ class Ticket extends CommonITILObject {
                'max_closedate' => $max_closedate,
             ]
          );
-         Html::redirect(TicketSatisfaction::getFormURLWithID($inquest_id));
       }
    }
 
