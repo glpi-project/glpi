@@ -119,12 +119,14 @@ class ProjectTeam extends CommonDBRelation {
       global $DB;
 
       $team = self::getTeamFor($oldid);
-      foreach ($team as $data) {
-         $cd                  = new self();
-         unset($data['id']);
-         $data['projects_id'] = $newid;
-         $data                = Toolbox::addslashes_deep($data);
-         $cd->add($data);
+      foreach ($team as $type) {
+         foreach ($type as $data) {
+            $cd                  = new self();
+            unset($data['id']);
+            $data['projects_id'] = $newid;
+            $data                = Toolbox::addslashes_deep($data);
+            $cd->add($data);
+         }
       }
    }
 
