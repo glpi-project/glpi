@@ -1652,24 +1652,15 @@ class Ticket extends CommonITILObject {
           && ($rate > 0)
           && (mt_rand(1, 100) <= $rate)) {
 
-         $ticket_inquests = $inquest->find(['tickets_id' => $this->getID()]);
-
-         //Do not create a new satisfaction survey if one exists
-         if (!count($ticket_inquests)) {
-            $inquest_id = $inquest->add(
-               [
-                  'tickets_id'    => $this->fields['id'],
-                  'date_begin'    => $_SESSION["glpi_currenttime"],
-                  'entities_id'   => $this->fields['entities_id'],
-                  'type'          => $type,
-                  'max_closedate' => $max_closedate,
-               ]
-            );
-         } else {
-            $inquest_id = reset($ticket_inquests)['tickets_id'];
-         }
-
-         // Redirect to created survey
+         $inquest_id = $inquest->add(
+            [
+               'tickets_id'    => $this->fields['id'],
+               'date_begin'    => $_SESSION["glpi_currenttime"],
+               'entities_id'   => $this->fields['entities_id'],
+               'type'          => $type,
+               'max_closedate' => $max_closedate,
+            ]
+         );
          Html::redirect(TicketSatisfaction::getFormURLWithID($inquest_id));
       }
    }
