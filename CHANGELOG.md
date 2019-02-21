@@ -34,7 +34,13 @@ The present file will list all changes made to the project; according to the
 
 - All methods that were marked as deprecated in 9.3.x
 
-## [9.4] unreleased
+## [9.4.1] unrelease
+
+### Added
+
+- new display hook `timeline_actions` to add new buttons to timeline forms
+
+## [9.4] 2019-02-11
 
 ### Added
 
