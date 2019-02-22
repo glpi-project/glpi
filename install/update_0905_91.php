@@ -538,8 +538,8 @@ function update0905to91() {
          'FROM'   => $table,
          'WHERE'  => [
             'OR' => [
-               'num' => $item_num,
-               'num' => $itemtype_num
+               ['num' => $item_num],
+               ['num' => $itemtype_num]
             ]
          ]
       ]);
