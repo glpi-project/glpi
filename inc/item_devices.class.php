@@ -919,15 +919,17 @@ class Item_Devices extends CommonDBRelation {
             'FROM'   => 'glpi_documents_items',
             'WHERE'  => [
                'OR' => [
-                  'AND' => [
-                     'itemtype'  => $this->getType(),
-                     'items_id'  => $link['id']
-                  ]
-               ],
-               'OR' => [
-                  'AND' => [
-                     'itemtype'  => $this->getDeviceType(),
-                     'items_id'  => $link[$this->getDeviceForeignKey()]
+                  [
+                     'AND' => [
+                        'itemtype'  => $this->getType(),
+                        'items_id'  => $link['id']
+                     ]
+                  ],
+                  [
+                     'AND' => [
+                        'itemtype'  => $this->getDeviceType(),
+                        'items_id'  => $link[$this->getDeviceForeignKey()]
+                     ]
                   ]
                ]
             ],
