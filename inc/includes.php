@@ -96,9 +96,6 @@ if (!isset($PLUGINS_INCLUDED)) {
    $PLUGINS_INCLUDED = 1;
    $LOADED_PLUGINS   = [];
    $plugin           = new Plugin();
-   if (!$plugin->hasBeenInit()) {
-      $plugin->init();
-   }
 
    $plugins_list = $plugin->getPlugins();
    if (count($plugins_list)) {
