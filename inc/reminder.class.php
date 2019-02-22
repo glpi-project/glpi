@@ -276,12 +276,12 @@ class Reminder extends CommonDBVisible {
          if (count($restrict)) {
             $or = $or + $restrict;
          }
-         $where['OR'][] = ['AND' => [
+         $where['OR'][] = [
             'glpi_groups_reminders.groups_id' => count($_SESSION["glpigroups"])
                                                       ? $_SESSION["glpigroups"]
                                                       : [-1],
             'OR' => $or
-         ]];
+         ];
       }
 
       // Profiles
@@ -300,10 +300,10 @@ class Reminder extends CommonDBVisible {
          if (count($restrict)) {
             $or = $or + $restrict;
          }
-         $where['OR'][] = ['AND' => [
+         $where['OR'][] = [
             'glpi_profiles_reminders.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
             'OR' => $or
-         ]];
+         ];
       }
 
       // Entities

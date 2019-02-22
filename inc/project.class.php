@@ -408,17 +408,17 @@ class Project extends CommonDBTM {
       $teamtable = 'glpi_projectteams';
       $where['OR'] = [
          'glpi_projects.users_id'   => Session::getLoginUserID(),
-         'AND'                      => [
+         [
             "$teamtable.itemtype"   => 'User',
             "$teamtable.items_id"   => Session::getLoginUserID()
          ]
       ];
       if (count($_SESSION['glpigroups'])) {
          $where['OR']['glpi_projects.groups_id'] = $_SESSION['glpigroups'];
-         $where['OR'][] = ['AND' => [
+         $where['OR'][] = [
             "$teamtable.itemtype"   => 'Group',
             "$teamtable.items_id"   => $_SESSION['glpigroups']
-         ]];
+         ];
       }
 
       $criteria = [

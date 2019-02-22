@@ -547,14 +547,14 @@ class KnowbaseItem extends CommonDBVisible {
 
          if (Session::getLoginUserID()) {
             $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true, true);
-            $where['OR'][] = ['AND' => [
+            $where['OR'][] = [
                'glpi_groups_knowbaseitems.groups_id' => count($_SESSION["glpigroups"])
                                                          ? $_SESSION["glpigroups"]
                                                          : [-1],
                'OR' => [
                   'glpi_groups_knowbaseitems.entities_id' => ['<', '0'],
                ] + $restrict
-            ]];
+            ];
          }
       }
 
@@ -564,13 +564,13 @@ class KnowbaseItem extends CommonDBVisible {
               && isset($_SESSION["glpiactiveprofile"]['id']))) {
 
          if (Session::getLoginUserID()) {
-            $where['OR'][] = ['AND' => [
+            $where['OR'][] = [
                'glpi_knowbaseitems_profiles.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
                'OR' => [
                   'glpi_knowbaseitems_profiles.entities_id' => ['<', '0'],
                   getEntitiesRestrictCriteria('glpi_knowbaseitems_profiles', '', '', true, true)
                ]
-            ]];
+            ];
          }
       }
 

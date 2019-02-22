@@ -75,10 +75,8 @@ $iterator = $DB->request([
    'SELECT DISTINCT' => $_GET['field'],
    'FROM'            => $table,
    'WHERE'           => [
-      $_GET['field'] => ['LIKE', $_GET['term'] . '%'],
-      'AND' => [
-         $_GET['field'] => ['<>', $_GET['term']]
-      ]
+      [$_GET['field'] => ['LIKE', $_GET['term'] . '%']],
+      [$_GET['field'] => ['<>', $_GET['term']]]
    ] + $entity,
    'ORDER'           => $_GET['field']
 ]);

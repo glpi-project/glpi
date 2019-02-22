@@ -345,7 +345,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       }
 
       if (count($where)) {
-         $options['AND'] = [$id_field => $items_id, 'AND' => $where];
+         $options['AND'] = [$id_field => $items_id, $where];
       } else {
          $options['AND'] = [$id_field => $items_id];
       }

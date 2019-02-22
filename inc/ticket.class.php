@@ -2390,13 +2390,15 @@ class Ticket extends CommonITILObject {
             'glpi_items_tickets.items_id' => $items_id,
             'glpi_items_tickets.itemtype' => $itemtype,
             'OR'                          => [
-               'NOT' => [
-                  $this->getTable() . '.status' => array_merge(
-                     $this->getClosedStatusArray(),
-                     $this->getSolvedStatusArray()
-                  )
+               [
+                  'NOT' => [
+                     $this->getTable() . '.status' => array_merge(
+                        $this->getClosedStatusArray(),
+                        $this->getSolvedStatusArray()
+                     )
+                  ]
                ],
-               'AND' => [
+               [
                   'NOT' => [$this->getTable() . '.solvedate' => null],
                   new \QueryExpression(
                      "ADDDATE(" . $DB->quoteName($this->getTable()) .

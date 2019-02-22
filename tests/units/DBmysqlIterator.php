@@ -601,7 +601,7 @@ class DBmysqlIterator extends DbTestCase {
                'b'   => 2,
                'NOT' => [
                   'c'   => [2, 3],
-                  'AND' => [
+                  [
                      'd' => 4,
                      'e' => 5,
                   ],

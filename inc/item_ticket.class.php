@@ -532,9 +532,8 @@ class Item_Ticket extends CommonDBRelation{
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      //$nb = self::countForMainItem($item);
                      $nb = countElementsInTable('glpi_items_tickets',
-                                                ['AND' => ['tickets_id' => $item->getID() ],
-                                                   ['itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]]
-                                                ]);
+                                                ['tickets_id' => $item->getID(),
+                                                 'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]]);
                   }
                   return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
                }

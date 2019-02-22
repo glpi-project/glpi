@@ -785,8 +785,8 @@ class Document_Item extends CommonDBRelation{
          unset($o2where['glpi_documents_items.items_id']);
          $criteria['WHERE'] = [
             'OR' => [
-               ['AND' => $owhere],
-               ['AND' => $o2where]
+               $owhere,
+               $o2where
             ]
          ];
       }
@@ -965,7 +965,7 @@ class Document_Item extends CommonDBRelation{
    protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = []) {
       $commonwhere = ['OR'  => [
          static::getTable() . '.' . static::$items_id_1  => $items_id,
-         'AND' => [
+         [
             static::getTable() . '.itemtype'                => static::$itemtype_1,
             static::getTable() . '.' . static::$items_id_2  => $items_id
          ]
@@ -1029,7 +1029,7 @@ class Document_Item extends CommonDBRelation{
    public static function getDistinctTypesParams($items_id, $extra_where = []) {
       $commonwhere = ['OR'  => [
          static::getTable() . '.' . static::$items_id_1  => $items_id,
-         'AND' => [
+         [
             static::getTable() . '.itemtype'                => static::$itemtype_1,
             static::getTable() . '.' . static::$items_id_2  => $items_id
          ]
@@ -1038,7 +1038,7 @@ class Document_Item extends CommonDBRelation{
       $params = parent::getDistinctTypesParams($items_id, $extra_where);
       $params['WHERE'] = $commonwhere;
       if (count($extra_where)) {
-         $params['WHERE'] += ['AND' => $extra_where];
+         $params['WHERE'][] = $extra_where;
       }
 
       return $params;

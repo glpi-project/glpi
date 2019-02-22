@@ -289,14 +289,14 @@ class RSSFeed extends CommonDBVisible {
 
       if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
          $restrict = getEntitiesRestrictCriteria('glpi_groups_rssfeeds', '', '', true);
-         $orwhere[] = ['AND' => [
+         $orwhere[] = [
             'glpi_groups_rssfeeds.groups_id' => count($_SESSION["glpigroups"])
                                                       ? $_SESSION["glpigroups"]
                                                       : [-1],
             'OR' => [
                'glpi_groups_rssfeeds.entities_id' => ['<', '0'],
             ] + $restrict
-         ]];
+         ];
       }
 
       // Profiles
@@ -322,10 +322,8 @@ class RSSFeed extends CommonDBVisible {
          ];
 
          $orwhere[] = [
-            'AND' => [
-               'glpi_profiles_rssfeeds.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
-               'OR' => $ors
-            ]
+            'glpi_profiles_rssfeeds.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
+            'OR' => $ors
          ];
       }
 
