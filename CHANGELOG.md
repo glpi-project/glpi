@@ -11,6 +11,12 @@ The present file will list all changes made to the project; according to the
 
 - new display hook `timeline_actions` to add new buttons to timeline forms
 
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Plugin::hasBeenInit()`
+
 #### Removed
 
 - Drop `CommonITILObject::showSolutions()`.
