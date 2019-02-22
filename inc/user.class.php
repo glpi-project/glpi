@@ -3472,7 +3472,7 @@ class User extends CommonDBTM {
                switch ($r) {
                   case  'own_ticket' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => 'ticket',
                            'glpi_profilerights.rights'   => ['&', Ticket::OWN]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3481,7 +3481,7 @@ class User extends CommonDBTM {
 
                   case 'create_ticket_validate' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'  => 'ticketvalidation',
                            'OR'                       => [
                               'glpi_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST],
@@ -3494,7 +3494,7 @@ class User extends CommonDBTM {
 
                   case 'validate_request' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => 'ticketvalidation',
                            'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEREQUEST]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3504,7 +3504,7 @@ class User extends CommonDBTM {
 
                   case 'validate_incident' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => 'ticketvalidation',
                            'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEINCIDENT]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3514,7 +3514,7 @@ class User extends CommonDBTM {
 
                   case 'validate' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => 'changevalidation',
                            'glpi_profilerights.rights'   => ['&', ChangeValidation::VALIDATE]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3523,7 +3523,7 @@ class User extends CommonDBTM {
 
                   case 'create_validate' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => 'changevalidation',
                            'glpi_profilerights.rights'   => ['&', ChangeValidation::CREATE]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3532,7 +3532,7 @@ class User extends CommonDBTM {
 
                   case 'see_project' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => 'project',
                            'glpi_profilerights.rights'   => ['&', Project::READMY]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3541,7 +3541,7 @@ class User extends CommonDBTM {
 
                   case 'faq' :
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => 'knowbase',
                            'glpi_profilerights.rights'   => ['&', KnowbaseItem::READFAQ]
                         ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1)
@@ -3550,7 +3550,7 @@ class User extends CommonDBTM {
                   default :
                      // Check read or active for rights
                      $ORWHERE[] = [
-                        'AND' => [
+                        [
                            'glpi_profilerights.name'     => $r,
                            'glpi_profilerights.rights'   => [
                               '&',

@@ -650,9 +650,12 @@ final class DbUtils {
                $crit = ['OR' => [$field => $value + $ancestors]];
             } else {
                $recur = (empty($table) ? 'is_recursive' : "$table.is_recursive");
-               $crit = ['OR' => [$field => $value,
-                                 'AND' => [$recur => 1,
-                                          $field => $ancestors]]];
+               $crit = [
+                  'OR' => [
+                     $field => $value,
+                     [$recur => 1, $field => $ancestors]
+                  ]
+               ];
             }
          }
       }
@@ -1919,9 +1922,6 @@ final class DbUtils {
          $criteria[] = [$field => ['<=', $end_expr]];
       }
 
-      if (count($criteria)) {
-         $criteria = ['AND' => $criteria];
-      }
       return $criteria;
    }
 

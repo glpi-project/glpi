@@ -1165,7 +1165,7 @@ class Log extends CommonDBTM {
       if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
          $affected_field_crit = [];
          foreach ($filters['affected_fields'] as $index => $affected_field) {
-            $affected_field_crit[$index] = ['AND' => []];
+            $affected_field_crit[$index] = [];
             foreach (explode(";", $affected_field) as $var) {
                if (1 === preg_match('/^(?P<key>.+):(?P<operator>.*):(?P<values>.+)$/', $var, $matches)) {
                   $key = $matches['key'];
@@ -1179,9 +1179,9 @@ class Log extends CommonDBTM {
                   }
 
                   if (!empty($operator)) {
-                     $affected_field_crit[$index]['AND'][$operator][$key] = $values;
+                     $affected_field_crit[$index][$operator][$key] = $values;
                   } else {
-                     $affected_field_crit[$index]['AND'][$key] = $values;
+                     $affected_field_crit[$index][$key] = $values;
                   }
                }
             }

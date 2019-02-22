@@ -503,7 +503,7 @@ class DBmysqlIterator implements Iterator, Countable {
 
          } else if ($name === "NOT") {
             // Uninary logicial operator
-            $ret .= " NOT (" . $this->analyseCrit($value, "AND") . ")";
+            $ret .= " NOT (" . $this->analyseCrit($value) . ")";
 
          } else if ($name === "FKEY" || $name === 'ON') {
             // Foreign Key condition

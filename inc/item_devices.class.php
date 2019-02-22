@@ -920,16 +920,12 @@ class Item_Devices extends CommonDBRelation {
             'WHERE'  => [
                'OR' => [
                   [
-                     'AND' => [
-                        'itemtype'  => $this->getType(),
-                        'items_id'  => $link['id']
-                     ]
+                     'itemtype'  => $this->getType(),
+                     'items_id'  => $link['id']
                   ],
                   [
-                     'AND' => [
-                        'itemtype'  => $this->getDeviceType(),
-                        'items_id'  => $link[$this->getDeviceForeignKey()]
-                     ]
+                     'itemtype'  => $this->getDeviceType(),
+                     'items_id'  => $link[$this->getDeviceForeignKey()]
                   ]
                ]
             ],

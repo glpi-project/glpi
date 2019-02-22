@@ -1545,8 +1545,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                      }
                      $WHERE = [
                         'OR' => [
-                           ['AND' => $WHERE],
-                           ['AND' => $ORWHERE]
+                           $WHERE,
+                           $ORWHERE
                         ]
                      ];
                   }

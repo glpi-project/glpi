@@ -896,11 +896,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      'glpi_softwareversions' => 'id',
                      'glpi_softwarelicenses' => 'softwareversions_id_use',
                      [
-                        'OR' => [
-                           'AND' => [
-                              'glpi_softwarelicenses.softwareversions_id_use' => 0,
-                              'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
-                           ]
+                        'AND' => [
+                           'glpi_softwarelicenses.softwareversions_id_use' => 0,
+                           'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
                         ]
                      ]
                   ]
@@ -1040,7 +1038,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             'glpi_computers_softwarelicenses.computers_id'  => $computers_id,
             'OR'                                            => [
                'glpi_softwarelicenses.softwareversions_id_use' => $verid,
-               'AND'                                           => [
+               [
                   'glpi_softwarelicenses.softwareversions_id_use' => 0,
                   'glpi_softwarelicenses.softwareversions_id_buy' => $verid
                ]

@@ -131,10 +131,8 @@ abstract class API extends CommonGLPI {
             'OR' => [
                'ipv4_range_start' => null,
                [
-                  'AND' => [
-                     'ipv4_range_start'   => ['<=', $this->ipnum],
-                     'ipv4_range_end'     => ['>=', $this->ipnum]
-                  ]
+                  'ipv4_range_start'   => ['<=', $this->ipnum],
+                  'ipv4_range_end'     => ['>=', $this->ipnum]
                ]
             ]
          ];
