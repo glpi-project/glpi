@@ -564,13 +564,11 @@ class Planning extends CommonGLPI {
             center: 'title',
             right:  'month,agendaWeek,agendaDay,listFull'
          }";
-         $default_date = 'null';
       } else {
          $default_view = "listFull";
          $header = "false";
          $pl_height = "'auto'";
          $rand = rand();
-         $default_date = "moment().subtract(5, 'years')";
       }
 
       echo "<div id='planning$rand'></div>";
@@ -618,7 +616,6 @@ class Planning extends CommonGLPI {
             weekNumbers: ".($fullview?'true':'false').",
             defaultView: '$default_view',
             timeFormat:  'H:mm',
-            defaultDate: $default_date,
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     '".$CFG_GLPI['planning_begin']."',
             maxTime:     '".$CFG_GLPI['planning_end']."',
