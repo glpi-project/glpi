@@ -41,6 +41,16 @@ $plugin->checkStates();
 
 Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
+$catalog_btn = '<div class="center">'
+   . '<a href="http://plugins.glpi-project.org" class="vsubmit" target="_blank">'
+   . __('See the catalog of plugins')
+   . '</a>'
+   . '</div>';
+
+echo $catalog_btn;
+
 Search::show('Plugin');
+
+echo $catalog_btn;
 
 Html::footer();
