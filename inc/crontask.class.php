@@ -1598,7 +1598,8 @@ class CronTask extends CommonDBTM{
          if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT.'/.git')) {
             continue;
          }
-         if ((filemtime($filename) + $maxlifetime) < time()) {
+         if (is_file($filename) && is_writable($filename)
+             && (filemtime($filename) + $maxlifetime) < time()) {
             if (@unlink($filename)) {
                $nb++;
             }
