@@ -829,18 +829,6 @@ class Ticket extends CommonITILObject {
                   echo "</div>";
                   break;
 
-               case 2 :
-                  if (!isset($_GET['load_kb_sol'])) {
-                     $_GET['load_kb_sol'] = 0;
-                  }
-                  $item->showSolutionForm($_GET['load_kb_sol']);
-
-                  if ($item->canApprove()) {
-                     $fup = new ITILFollowup();
-                     $fup->showApprobationForm($item);
-                  }
-                  break;
-
                case 3 :
                   $satisfaction = new TicketSatisfaction();
                   if (($item->fields['status'] == self::CLOSED)
