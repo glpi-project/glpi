@@ -89,42 +89,27 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * Init plugins list reading plugins directory
+    * Init plugins list.
     *
     * @return void
    **/
    function init() {
       global $DB;
 
+      $appCache = Toolbox::getAppCache();
+      $appCache->set('plugins', []);
+
       if (!$DB->isConnected() || !$DB->tableExists(self::getTable())) {
          return;
       }
 
       $this->checkStates();
-      $plugins                  = $this->find(['state' => self::ACTIVATED]);
+      $plugins = $this->find(['state' => self::ACTIVATED]);
 
-      $appCache = Toolbox::getAppCache();
-      $appCache->set('plugins_init', true);
-      $appCache->set('plugins', []);
-
-      if (count($plugins)) {
-         foreach ($plugins as $ID => $plug) {
-            $this->setLoaded($ID, $plug['directory']);
-         }
+      foreach ($plugins as $ID => $plug) {
+         $this->setLoaded($ID, $plug['directory']);
       }
    }
-
-
-   /**
-    * Are plugin initialized (Plugin::Init() called)
-    *
-    * @return boolean
-    */
-   public static function hasBeenInit() {
-      $appCache = Toolbox::getAppCache();
-      return $appCache->has('plugins_init');
-   }
-
 
    /**
     * Init a plugin including setup.php file
@@ -231,9 +216,11 @@ class Plugin extends CommonDBTM {
    /**
     * Check plugins states and detect new plugins.
     *
+    * @param boolean $scan_for_new_plugins
+    *
     * @return void
     */
-   public function checkStates() {
+   public function checkStates($scan_for_new_plugins = false) {
 
       $directories = [];
 
@@ -243,13 +230,15 @@ class Plugin extends CommonDBTM {
          $directories[] = $plugin['directory'];
       }
 
-      // Add found directories to the check list
-      $plugins_directory = GLPI_ROOT."/plugins";
-      $directory_handle  = opendir($plugins_directory);
-      while (false !== ($filename = readdir($directory_handle))) {
-         if (!in_array($filename, ['.svn', '.', '..'])
-             && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)) {
-             $directories[] = $filename;
+      if ($scan_for_new_plugins) {
+         // Add found directories to the check list
+         $plugins_directory = GLPI_ROOT."/plugins";
+         $directory_handle  = opendir($plugins_directory);
+         while (false !== ($filename = readdir($directory_handle))) {
+            if (!in_array($filename, ['.svn', '.', '..'])
+                && is_dir($plugins_directory . DIRECTORY_SEPARATOR . $filename)) {
+                $directories[] = $filename;
+            }
          }
       }
 
@@ -701,9 +690,8 @@ class Plugin extends CommonDBTM {
    **/
    function isActivated($plugin) {
 
-      if ($this->getFromDBbyDir($plugin)) {
-         return ($this->fields['state'] == self::ACTIVATED);
-      }
+      $activePlugins = $this->getPlugins();
+      return in_array($plugin, $activePlugins);
    }
 
 
@@ -713,6 +701,11 @@ class Plugin extends CommonDBTM {
     * @param $plugin plugin directory
    **/
    function isInstalled($plugin) {
+
+      if ($this->isActivated($plugin)) {
+         // Prevent call on DB if plugin is activated.
+         return true;
+      }
 
       if ($this->getFromDBbyDir($plugin)) {
          return (($this->fields['state']    == self::ACTIVATED)
@@ -1678,10 +1671,13 @@ class Plugin extends CommonDBTM {
     */
    public static function getPlugins() {
       $appCache = Toolbox::getAppCache();
-      if ($appCache->has('plugins')) {
-         return $appCache->get('plugins');
+
+      if (!$appCache->has('plugins')) {
+         $self = new self();
+         $self->init();
       }
-      return [];
+
+      return $appCache->get('plugins');
    }
 
    /**

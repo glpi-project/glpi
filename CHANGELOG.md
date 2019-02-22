@@ -33,6 +33,7 @@ The present file will list all changes made to the project; according to the
 #### Removed
 
 - All methods that were marked as deprecated in 9.3.x
+- Drop `Plugin::hasBeenInit()`.
 
 
 ### API changes
@@ -40,6 +41,12 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 - new display hook `timeline_actions` to add new buttons to timeline forms
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Plugin::hasBeenInit()`
 
 #### Removed
 

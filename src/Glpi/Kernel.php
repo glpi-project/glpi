@@ -341,13 +341,9 @@ class Kernel
             return;
         }
 
-        $plugin = new Plugin();
-        if (!$plugin->hasBeenInit()) {
-            $plugin->init();
-        }
-
         $projectDir = $this->getProjectDir();
 
+        $plugin = new Plugin();
         $activePlugins = $plugin->getPlugins();
         foreach ($activePlugins as $plugin) {
             $pluginDir = $projectDir . '/plugins/' . $plugin;
