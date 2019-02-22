@@ -3,13 +3,19 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.4.1] unrelease
+## [9.4.1] unreleased
 
-### Added
+### API changes
+
+#### Added
 
 - new display hook `timeline_actions` to add new buttons to timeline forms
 
-## [9.4] 2019-02-11
+#### Removed
+
+- Drop `CommonITILObject::showSolutions()`.
+
+## [9.4.0] 2019-02-11
 
 ### Added
 

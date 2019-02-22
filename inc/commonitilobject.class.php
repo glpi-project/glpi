@@ -4451,27 +4451,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
-
-   /**
-    * Form to add a solution to an ITIL object
-    *
-    * @param $knowbase_id_toload integer  load a kb article as solution (0 = no load by default)
-    *                                     (default 0)
-   **/
-   function showSolutions($knowbase_id_toload = 0) {
-
-      $solution = new ITILSolution();
-      $solution->showSummary($this);
-      if (ITILSolution::countFor($this->getType(), $this->getID()) > 0) {
-         $rand = mt_rand();
-         Html::file(['editor_id' => "solution$rand",
-                     'showtitle' => false,
-                     'multiple' => true]);
-      } else {
-         $solution->showForm(null, ['item' => $this]);
-      }
-   }
-
    /**
     * Form to add a solution to an ITIL object
     *
