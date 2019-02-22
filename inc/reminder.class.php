@@ -926,7 +926,7 @@ class Reminder extends CommonDBVisible {
          }
          if ($who_group > 0) {
             $ngrouppriv = ['glpi_reminders.groups_id' => $who];
-            if (!empty($readpriv)) {
+            if (!empty($nreadpriv)) {
                $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
             } else {
                $nreadpriv = $ngrouppriv;
