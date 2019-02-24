@@ -278,17 +278,21 @@ class NetworkPortInstantiation extends CommonDBChild {
          $virtual_header = $row->getHeaderByName('Instantiation', 'VirtualPorts');
 
          $iterator = $DB->request([
-            'FROM' => new \QueryUnion([
+            'FROM' => new \QueryUnion(
                [
-                  'SELECT' => 'networkports_id',
-                  'FROM'   => 'glpi_networkportaliases',
-                  'WHERE'  => ['networkports_id_alias' => $netport->getID()]
-               ], [
-                  'SELECT' => 'networkports_id',
-                  'FROM'   => 'glpi_networkportaggregates',
-                  'WHERE'  => ['networkports_id_list' => ['LIKE', '%"'.$netport-getID().'"%']]
-               ]
-            ])
+                  [
+                     'SELECT' => 'networkports_id',
+                     'FROM'   => 'glpi_networkportaliases',
+                     'WHERE'  => ['networkports_id_alias' => $netport->getID()]
+                  ], [
+                     'SELECT' => 'networkports_id',
+                     'FROM'   => 'glpi_networkportaggregates',
+                     'WHERE'  => ['networkports_id_list' => ['LIKE', '%"'.$netport->getID().'"%']]
+                  ]
+               ],
+               false,
+               'networkports'
+            )
          ]);
 
          if (count($iterator)) {
