@@ -372,7 +372,7 @@ class Lock {
                echo "<tr class='tab_bg_1'>";
 
                echo "<td class='center' width='10'>";
-               if ($type_item->can($line['id'], UPDATE) || $type_item->can($line['id'], PURGE)) {
+               if ($type_item->can($data['id'], UPDATE) || $type_item->can($data['id'], PURGE)) {
                   $header = true;
                   echo "<input type='checkbox' name='".$type."[" . $data['id'] . "]'>";
                }
