@@ -6659,19 +6659,27 @@ class Ticket extends CommonITILObject {
 
       // Recherche des entit??s
       $tot = 0;
-      foreach (Entity::getEntitiesToNotify('autoclose_delay') as $entity => $delay) {
+
+      $entities = $DB->request(
+         [
+            'SELECT' => 'id',
+            'FROM'   => Entity::getTable(),
+         ]
+      );
+      foreach ($entities as $entity) {
+         $delay  = Entity::getUsedConfig('autoclose_delay', $entity['id'], '', Entity::CONFIG_NEVER);
          if ($delay >= 0) {
             $criteria = [
                'FROM'   => self::getTable(),
                'WHERE'  => [
-                  'entities_id'  => $entity,
+                  'entities_id'  => $entity['id'],
                   'status'       => self::SOLVED,
                   'is_deleted'   => 0
                ]
             ];
 
             if ($delay > 0) {
-               $calendars_id = Entity::getUsedConfig('calendars_id', $entity);
+               $calendars_id = Entity::getUsedConfig('calendars_id', $entity['id']);
                if ($calendars_id > 0) {
                   $calendar = new Calendar;
                   $calendar->getFromDB($calendars_id);
@@ -6704,7 +6712,7 @@ class Ticket extends CommonITILObject {
             if ($nb) {
                $tot += $nb;
                $task->addVolume($nb);
-               $task->log(Dropdown::getDropdownName('glpi_entities', $entity)." : $nb");
+               $task->log(Dropdown::getDropdownName('glpi_entities', $entity['id'])." : $nb");
             }
          }
       }
