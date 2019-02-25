@@ -120,7 +120,7 @@ class Plugin extends CommonDBTM {
 
       if (count($plugins)) {
          foreach ($plugins as $ID => $plug) {
-            $_SESSION["glpi_plugins"][$ID] = $plug['directory'];
+            $this->setLoaded($ID, $plug['directory']);
          }
       }
    }
@@ -283,7 +283,7 @@ class Plugin extends CommonDBTM {
                   $input['state'] = self::NOTUPDATED;
                }
 
-               $this->removeFromSession($plug);
+               $this->setUnloadedByName($plug);
                // reset menu
                if (isset($_SESSION['glpimenu'])) {
                   unset($_SESSION['glpimenu']);
@@ -658,9 +658,9 @@ class Plugin extends CommonDBTM {
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
-            $_SESSION['glpi_plugins']['temp'] = $this->fields['directory']; // For autoloader
+            self::setLoaded('temp', $this->fields['directory']); // For autoloader
             $function();
-            unset($_SESSION['glpi_plugins']['temp']);
+            self::setUnloaded('temp');
          } else {
             Session::addMessageAfterRedirect(
                sprintf(__('Plugin %1$s has no uninstall function!'), $this->fields['name']),
@@ -669,10 +669,12 @@ class Plugin extends CommonDBTM {
             );
          }
 
-         $this->update(['id'      => $ID,
-                             'state'   => self::NOTINSTALLED,
-                             'version' => '']);
-         $this->removeFromSession($this->fields['directory']);
+         $this->update([
+            'id'      => $ID,
+            'state'   => self::NOTINSTALLED,
+            'version' => ''
+         ]);
+         $this->setUnloadedByName($this->fields['directory']);
 
          $type = INFO;
          $message = sprintf(__('Plugin %1$s has been uninstalled!'), $this->fields['name']);
@@ -704,7 +706,7 @@ class Plugin extends CommonDBTM {
          self::load($this->fields['directory'], true);
          $function   = 'plugin_' . $this->fields['directory'] . '_install';
          if (function_exists($function)) {
-            $_SESSION['glpi_plugins']['temp'] = $this->fields['directory'];  // For autoloader
+            $this->setLoaded('temp', $this->fields['directory']);  // For autoloader
             if ($function()) {
                $type = INFO;
                $function = 'plugin_' . $this->fields['directory'] . '_check_config';
@@ -726,7 +728,7 @@ class Plugin extends CommonDBTM {
                   }
                }
             }
-            unset($_SESSION['glpi_plugins']['temp']);
+            $this->setUnloaded('temp');
          } else {
             $type = WARNING;
             $message = sprintf(__('Plugin %1$s has no install function!'), $this->fields['name']);
@@ -767,12 +769,12 @@ class Plugin extends CommonDBTM {
             return false;
          }
          // Enable autoloader early, during activation process
-         $_SESSION['glpi_plugins'][$ID] = $this->fields['directory'];
+         $this->setLoaded($ID, $this->fields['directory']);
 
          $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
          if (function_exists($function)) {
             if (!$function()) {
-               unset($_SESSION['glpi_plugins'][$ID]);
+               $this->setUnloaded($ID);
                Session::addMessageAfterRedirect(
                   sprintf(__('Plugin %1$s has no check function!'), $this->fields['name']),
                   true,
@@ -815,7 +817,7 @@ class Plugin extends CommonDBTM {
             }
          }  // exists _check_config
          // Failure so remove it
-         unset($_SESSION['glpi_plugins'][$ID]);
+         $this->setUnloaded($ID);
       } // getFromDB
 
       Session::addMessageAfterRedirect(
@@ -837,9 +839,11 @@ class Plugin extends CommonDBTM {
    function unactivate($ID) {
 
       if ($this->getFromDB($ID)) {
-         $this->update(['id'    => $ID,
-                             'state' => self::NOTACTIVATED]);
-         $this->removeFromSession($this->fields['directory']);
+         $this->update([
+            'id'    => $ID,
+            'state' => self::NOTACTIVATED
+         ]);
+         $this->setUnloadedByName($this->fields['directory']);
          // reset menu
          if (isset($_SESSION['glpimenu'])) {
             unset($_SESSION['glpimenu']);
@@ -897,7 +901,7 @@ class Plugin extends CommonDBTM {
          CronTask::Unregister($this->fields['directory']);
 
          $this->delete(['id' => $ID]);
-         $this->removeFromSession($this->fields['directory']);
+         $this->setUnloadedByName($this->fields['directory']);
       }
    }
 
@@ -950,16 +954,13 @@ class Plugin extends CommonDBTM {
    /**
     * remove plugin from session variable
     *
+    * @deprecated 9.3.2
+    *
     * @param $plugin plugin directory
    **/
    function removeFromSession($plugin) {
-      if (!isset($_SESSION['glpi_plugins'])) {
-         return;
-      }
-      $key = array_search($plugin, $_SESSION['glpi_plugins']);
-      if ($key !== false) {
-         unset($_SESSION['glpi_plugins'][$key]);
-      }
+      Toolbox::deprecated();
+      self::setUnloadedByName($plugin);
    }
 
 
@@ -1372,12 +1373,10 @@ class Plugin extends CommonDBTM {
    static function getDropdowns() {
 
       $dps = [];
-      if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-         foreach ($_SESSION["glpi_plugins"] as  $plug) {
-            $tab = self::doOneHook($plug, 'getDropdown');
-            if (is_array($tab)) {
-               $dps      = array_merge($dps, [self::getInfo($plug, 'name') => $tab]);
-            }
+      foreach (self::getPlugins() as  $plug) {
+         $tab = self::doOneHook($plug, 'getDropdown');
+         if (is_array($tab)) {
+            $dps = array_merge($dps, [self::getInfo($plug, 'name') => $tab]);
          }
       }
       return $dps;
@@ -1421,15 +1420,13 @@ class Plugin extends CommonDBTM {
    static function getDatabaseRelations() {
 
       $dps = [];
-      if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-         foreach ($_SESSION["glpi_plugins"] as $plug) {
-            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-            }
-            $function2 = "plugin_".$plug."_getDatabaseRelations";
-            if (function_exists($function2)) {
-               $dps = array_merge_recursive($dps, $function2());
-            }
+      foreach (self::getPlugins() as $plug) {
+         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+         }
+         $function2 = "plugin_".$plug."_getDatabaseRelations";
+         if (function_exists($function2)) {
+            $dps = array_merge_recursive($dps, $function2());
          }
       }
       return $dps;
@@ -1446,17 +1443,15 @@ class Plugin extends CommonDBTM {
    static function getAddSearchOptions($itemtype) {
 
       $sopt = [];
-      if (isset($_SESSION['glpi_plugins']) && count($_SESSION['glpi_plugins'])) {
-         foreach ($_SESSION['glpi_plugins'] as $plug) {
-            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-            }
-            $function = "plugin_".$plug."_getAddSearchOptions";
-            if (function_exists($function)) {
-               $tmp = $function($itemtype);
-               if (is_array($tmp) && count($tmp)) {
-                  $sopt += $tmp;
-               }
+      foreach (self::getPlugins() as $plug) {
+         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+         }
+         $function = "plugin_".$plug."_getAddSearchOptions";
+         if (function_exists($function)) {
+            $tmp = $function($itemtype);
+            if (is_array($tmp) && count($tmp)) {
+               $sopt += $tmp;
             }
          }
       }
@@ -1478,30 +1473,28 @@ class Plugin extends CommonDBTM {
    static function getAddSearchOptionsNew($itemtype) {
       $options = [];
 
-      if (isset($_SESSION['glpi_plugins']) && count($_SESSION['glpi_plugins'])) {
-         foreach ($_SESSION['glpi_plugins'] as $plug) {
-            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-            }
-            $function = "plugin_".$plug."_getAddSearchOptionsNew";
-            if (function_exists($function)) {
-               $tmp = $function($itemtype);
-               foreach ($tmp as $opt) {
-                  if (!isset($opt['id'])) {
-                     throw new \Exception($itemtype . ': invalid search option! ' . print_r($opt, true));
-                  }
-                  $optid = $opt['id'];
-                  unset($opt['id']);
+      foreach (self::getPlugins() as $plug) {
+         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+         }
+         $function = "plugin_".$plug."_getAddSearchOptionsNew";
+         if (function_exists($function)) {
+            $tmp = $function($itemtype);
+            foreach ($tmp as $opt) {
+               if (!isset($opt['id'])) {
+                  throw new \Exception($itemtype . ': invalid search option! ' . print_r($opt, true));
+               }
+               $optid = $opt['id'];
+               unset($opt['id']);
 
-                  if (isset($options[$optid])) {
-                     $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
-                        $itemtype . " searchOptions!";
-                     Toolbox::logError($message);
-                  }
+               if (isset($options[$optid])) {
+                  $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                     $itemtype . " searchOptions!";
+                  Toolbox::logError($message);
+               }
 
-                  foreach ($opt as $k => $v) {
-                     $options[$optid][$k] = $v;
-                  }
+               foreach ($opt as $k => $v) {
+                  $options[$optid][$k] = $v;
                }
             }
          }
@@ -1899,5 +1892,81 @@ class Plugin extends CommonDBTM {
       }
 
       return __('Error / to clean');
+   }
+
+   /**
+    * Get plugins list
+    *
+    * @since 9.3.2
+    *
+    * @return array
+    */
+   public static function getPlugins() {
+      if (isset($_SESSION['glpi_plugins'])) {
+         return $_SESSION['glpi_plugins'];
+      }
+      return [];
+   }
+
+   /**
+    * Check if a plugin is loaded
+    *
+    * @since 9.3.2
+    *
+    * @param string $name Plugin name
+    *
+    * @return boolean
+    */
+   public static function isPluginLoaded($name) {
+      return in_array($name, self::getPlugins());
+   }
+
+   /**
+    * Set plugin loaded
+    *
+    * @since 9.3.2
+    *
+    * @param integer $id   Plugin id
+    * @param string  $name Plugin name
+    *
+    * @return void
+    */
+   public static function setLoaded($id, $name) {
+      $plugins = self::getPlugins();
+      $_SESSION['glpi_plugins'][$id] = $name;
+   }
+
+   /**
+    * Set plugin unloaded
+    *
+    * @since 9.3.2
+    *
+    * @param integer $id Plugin id
+    *
+    * @return void
+    */
+   public static function setUnloaded($id) {
+      $plugins = self::getPlugins();
+      if (isset($plugins[$id])) {
+         unset($_SESSION['glpi_plugins'][$id]);
+      }
+   }
+
+   /**
+    * Set plugin unloaded from its name
+    *
+    * @since 9.3.2
+    *
+    * @param integer $name Plugin name
+    *
+    * @return void
+    */
+   public static function setUnloadedByName($name) {
+      $plugins = self::getPlugins();
+      $key = array_search($name, $plugins);
+      if ($key !== false) {
+         self::setUnloaded($key);
+      }
+
    }
 }

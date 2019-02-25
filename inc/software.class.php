@@ -178,34 +178,19 @@ class Software extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      // Delete all licenses
-      $query2 = "SELECT `id`
-                 FROM `glpi_softwarelicenses`
-                 WHERE `softwares_id` = '".$this->fields['id']."'";
+      // SoftwareLicense does not extends CommonDBConnexity
+      $sl = new SoftwareLicense();
+      $sl->deleteByCriteria(['softwares_id' => $this->fields['id']]);
 
-      if ($result2 = $DB->query($query2)) {
-         if ($DB->numrows($result2)) {
-            $lic = new SoftwareLicense();
-            while ($data = $DB->fetch_assoc($result2)) {
-               $lic->delete(["id" => $data["id"]]);
-            }
-         }
-      }
-
-      $version = new SoftwareVersion();
-      $version->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Item_Problem::class,
+            Item_Project::class,
+            SoftwareVersion::class,
+         ]
+      );
    }
 
 
@@ -628,7 +613,7 @@ class Software extends CommonDBTM {
          'id'                 => '5',
          'table'              => 'glpi_softwareversions',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'displaywith'        => ['softwares_id'],
@@ -642,7 +627,7 @@ class Software extends CommonDBTM {
          'id'                 => '31',
          'table'              => 'glpi_states',
          'field'              => 'completename',
-         'name'               => $name . ' - ' . __('Status'),
+         'name'               => __('Status'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -660,7 +645,7 @@ class Software extends CommonDBTM {
          'id'                 => '170',
          'table'              => 'glpi_softwareversions',
          'field'              => 'comment',
-         'name'               => $name . ' - ' . __('Comments'),
+         'name'               => __('Comments'),
          'forcegroupby'       => true,
          'datatype'           => 'text',
          'massiveaction'      => false,
@@ -674,7 +659,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_operatingsystems',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => $name . ' - ' . __('Operating system'),
+         'name'               => __('Operating system'),
          'forcegroupby'       => true,
          'joinparams'         => [
             'beforejoin'         => [

@@ -137,13 +137,13 @@ class ProjectTask extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $pt = new ProjectTaskTeam();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $pt = new ProjectTask_Ticket();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            ProjectTask_Ticket::class,
+            ProjectTaskTeam::class,
+         ]
+      );
 
       parent::cleanDBonPurge();
    }

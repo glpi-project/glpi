@@ -120,7 +120,7 @@ class Profile_User extends CommonDBRelation {
 
       $strict_entities = self::getUserEntities($ID, false);
       if (!Session::haveAccessToOneOfEntities($strict_entities)
-          && !Session::isViewAllEntities()) {
+          && !Session::canViewAllEntities()) {
          $canedit = false;
       }
 

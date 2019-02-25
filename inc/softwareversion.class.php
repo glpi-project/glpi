@@ -53,10 +53,12 @@ class SoftwareVersion extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $csv = new Computer_SoftwareVersion();
-      $csv->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Computer_SoftwareVersion::class,
+         ]
+      );
    }
 
 

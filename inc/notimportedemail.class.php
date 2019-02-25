@@ -41,9 +41,11 @@ class NotImportedEmail extends CommonDBTM {
 
    static $rightname = 'config';
 
-   const MATCH_NO_RULE = 0;
-   const USER_UNKNOWN  = 1;
-   const FAILED_INSERT = 2;
+   const MATCH_NO_RULE     = 0;
+   const USER_UNKNOWN      = 1;
+   const FAILED_OPERATION  = 2;
+   const FAILED_INSERT     = self::FAILED_OPERATION;
+   const NOT_ENOUGH_RIGHTS = 3;
 
 
    function getForbiddenStandardMassiveAction() {
@@ -233,9 +235,12 @@ class NotImportedEmail extends CommonDBTM {
    **/
    static function getAllReasons() {
 
-      return [self::MATCH_NO_RULE => __('Unable to affect the email to an entity'),
-                   self::USER_UNKNOWN  => __('Email not found. Impossible import'),
-                   self::FAILED_INSERT => __('Failed operation')];
+      return [
+         self::MATCH_NO_RULE     => __('Unable to affect the email to an entity'),
+         self::USER_UNKNOWN      => __('Email not found. Impossible import'),
+         self::FAILED_OPERATION  => __('Failed operation'),
+         self::NOT_ENOUGH_RIGHTS => __('Not enough rights'),
+      ];
    }
 
 

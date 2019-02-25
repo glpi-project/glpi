@@ -316,11 +316,12 @@ class NetworkName extends FQDNLabel {
 
    function cleanDBonPurge() {
 
-      $alias = new NetworkAlias();
-      $alias->cleanDBonItemDelete($this->getType(), $this->GetID());
-
-      $ipAddress = new IPAddress();
-      $ipAddress->cleanDBonItemDelete($this->getType(), $this->GetID());
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            IPAddress::class,
+            NetworkAlias::class,
+         ]
+      );
    }
 
 

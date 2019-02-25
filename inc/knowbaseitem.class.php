@@ -334,20 +334,24 @@ class KnowbaseItem extends CommonDBVisible {
    **/
    function cleanDBonPurge() {
 
-      $class = new KnowbaseItem_User();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Entity_KnowbaseItem();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new Group_KnowbaseItem();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new KnowbaseItem_Profile();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new KnowbaseItem_Item();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      $class = new KnowbaseItem_Revision();
-      $class->deleteByCriteria(['knowbaseitems_id' => $this->getID()]);
-      $class = new KnowbaseItem_Comment();
-      $class->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Entity_KnowbaseItem::class,
+            Group_KnowbaseItem::class,
+            KnowbaseItem_Item::class,
+            KnowbaseItem_Profile::class,
+            KnowbaseItem_User::class,
+            KnowbaseItemTranslation::class,
+         ]
+      );
+
+      /// KnowbaseItem_Comment does not extends CommonDBConnexity
+      $kbic = new KnowbaseItem_Comment();
+      $kbic->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
+
+      /// KnowbaseItem_Revision does not extends CommonDBConnexity
+      $kbir = new KnowbaseItem_Revision();
+      $kbir->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
    }
 
    /**
@@ -1407,10 +1411,13 @@ class KnowbaseItem extends CommonDBVisible {
                                $options['item_itemtype'];
             }
 
+            $pager_url = "";
             if ($output_type == Search::HTML_OUTPUT) {
-               Html::printPager($params['start'], $numrows,
-                                Toolbox::getItemTypeSearchURL('KnowbaseItem'), $parameters,
-                                'KnowbaseItem');
+               $pager_url = Toolbox::getItemTypeSearchURL('KnowbaseItem');
+               if (!Session::getLoginUserID()) {
+                  $pager_url = $CFG_GLPI['root_doc']."/front/helpdesk.faq.php";
+               }
+               Html::printPager($params['start'], $numrows, $pager_url, $parameters, 'KnowbaseItem');
             }
 
             $nbcols = 1;
@@ -1517,8 +1524,9 @@ class KnowbaseItem extends CommonDBVisible {
                   } else {
                      $forcetab .= '$1'; //Timeline tab
                   }
-                  $content = "<a href='".Toolbox::getItemTypeFormURL($options['item_itemtype']).
-                               "?load_kb_sol=".$data['id']."&amp;id=".$options['item_items_id'].
+                  $item_itemtype = $options['item_itemtype'];
+                  $content = "<a href='".$item_itemtype::getFormURLWithID($options['item_items_id']).
+                               "&amp;load_kb_sol=".$data['id'].
                                "&amp;forcetab=".$forcetab."'>".
                                __('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
@@ -1540,9 +1548,7 @@ class KnowbaseItem extends CommonDBVisible {
             }
             echo "<br>";
             if ($output_type == Search::HTML_OUTPUT) {
-               Html::printPager($params['start'], $numrows,
-                                Toolbox::getItemTypeSearchURL('KnowbaseItem'), $parameters,
-                                'KnowbaseItem');
+               Html::printPager($params['start'], $numrows, $pager_url, $parameters, 'KnowbaseItem');
             }
 
          } else {
@@ -1865,8 +1871,8 @@ class KnowbaseItem extends CommonDBVisible {
 
       if ($this->update($values)) {
          Event::log($this->getID(), "knowbaseitem", 5, "tools",
-                    //TRANS: %s is the user login, %d the revision number
-                    sprintf(__('%s reverts item to revision %id'), $_SESSION["glpiname"], $revid));
+                    //TRANS: %1$s is the user login, %2$s the revision number
+                    sprintf(__('%1$s reverts item to revision %2$s'), $_SESSION["glpiname"], $revid));
          return true;
       } else {
          return false;

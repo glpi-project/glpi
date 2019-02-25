@@ -3,7 +3,46 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.3.1] unreleased
+## [9.3.3] 2018-11-27
+
+### Changed
+
+- Fix some cache issues
+- Fix reservation tab of an item
+- Fix actors notifications massive action
+- Improve racks plugins migration script
+
+### API changes
+
+No API changes.
+
+## [9.3.2] 2018-10-26
+
+### API changes
+
+#### Changed
+
+- `Rule::executePluginsActions()` signature has changed
+- Javascript function `formatResult()` has been renamed to `templateResult()`
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `CommonITILTask::displayTabContentForItem()`
+- `CommonITILTask::showFormMassiveAction()`
+- `CommonITILTask::showSummary()`
+- `ITILSolution::displayTabContentForItem()`
+- `ITILSolution::removeForItem()`
+- `ITILSolution::showSummary()`
+- `Session::isViewAllEntities()`
+- `TicketFollowup::processMassiveActionsForOneItemtype()`
+- `TicketFollowup::showFormMassiveAction()`
+- `TicketFollowup::showMassiveActionsSubForm()`
+- `TicketFollowup::showSummary()`
+- `Plugin::removeFromSession()`
+
+## [9.3.1] 2018-09-12
 
 ### Added
 - List receivers folders to choose imported/refused folders

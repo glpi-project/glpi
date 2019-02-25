@@ -49,7 +49,9 @@ class State extends CommonTreeDropdown {
                                       'SoftwareLicense'  => 'is_visible_softwarelicense',
                                       'Line'             => 'is_visible_line',
                                       'Certificate'      => 'is_visible_certificate',
-                                      'Rack'             => 'is_visible_rack',];
+                                      'Rack'             => 'is_visible_rack',
+                                      'Enclosure'        => 'is_visible_enclosure',
+                                      'Pdu'              => 'is_visible_pdu',];
    public $can_be_translated       = true;
 
    static $rightname               = 'state';

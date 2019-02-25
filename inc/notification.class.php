@@ -437,17 +437,11 @@ class Notification extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_notifications_notificationtemplates', [
-            'notifications_id'   => $this->fields['id']
-         ]
-      );
-
-      $DB->delete(
-         'glpi_notificationtargets', [
-            'notifications_id'   => $this->fields['id']
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Notification_NotificationTemplate::class,
+            NotificationTarget::class,
          ]
       );
    }

@@ -173,12 +173,19 @@ class Computer extends CommonDBTM {
 
          // Propagates the changes to linked items
          foreach ($CFG_GLPI['directconnect_types'] as $type) {
-            $crit = ['FIELDS'       => ['items_id'],
+            $items_result = $DB->request(
+               [
+                  'SELECT' => ['items_id'],
+                  'FROM'   => Computer_Item::getTable(),
+                  'WHERE'  => [
                      'itemtype'     => $type,
                      'computers_id' => $this->fields["id"],
-                     'is_deleted'   => 0];
+                     'is_deleted'   => 0
+                  ]
+               ]
+            );
             $item      = new $type();
-            foreach ($DB->request('glpi_computers_items', $crit) as $data) {
+            foreach ($items_result as $data) {
                $tID = $data['items_id'];
                $item->getFromDB($tID);
                if (!$item->getField('is_global')) {
@@ -200,13 +207,18 @@ class Computer extends CommonDBTM {
             // Propagates the changes to linked devices
             foreach ($CFG_GLPI['itemdevices'] as $device) {
                $item = new $device();
-               $crit = [
-                  'FIELDS'       => 'id',
-                  'itemtype'     => self::getType(),
-                  'items_id'     => $this->fields["id"],
-                  'is_deleted'   => 0
-               ];
-               foreach ($DB->request($item::getTable(), $crit) as $data) {
+               $devices_result = $DB->request(
+                  [
+                     'SELECT' => ['id'],
+                     'FROM'   => $item::getTable(),
+                     'WHERE'  => [
+                        'itemtype'     => self::getType(),
+                        'items_id'     => $this->fields["id"],
+                        'is_deleted'   => 0
+                     ]
+                  ]
+               );
+               foreach ($devices_result as $data) {
                   $tID = $data['id'];
                   $item->getFromDB($tID);
                   $changes['id'] = $item->getField('id');
@@ -303,38 +315,24 @@ class Computer extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $csv = new Computer_SoftwareVersion();
-      $csv->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $csl = new Computer_SoftwareLicense();
-      $csl->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Computer_Item();
-      $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+            Computer_Item::class,
+            Computer_SoftwareLicense::class,
+            Computer_SoftwareVersion::class,
+            ComputerAntivirus::class,
+            ComputerVirtualMachine::class,
+            Item_Disk::class,
+            Item_OperatingSystem::class,
+            Item_Problem::class,
+            Item_Project::class,
+         ]
+      );
 
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
-
-      $disk = new Item_Disk();
-      $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $vm = new ComputerVirtualMachine();
-      $vm->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $antivirus = new ComputerAntivirus();
-      $antivirus->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $ios = new Item_OperatingSystem();
-      $ios->cleanDBonItemDelete('Computer', $this->fields['id']);
    }
 
 
@@ -808,7 +806,7 @@ class Computer extends CommonDBTM {
          'id'                 => '17',
          'table'              => 'glpi_deviceprocessors',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Processor'),
+         'name'               => __('Processor'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,
@@ -825,7 +823,7 @@ class Computer extends CommonDBTM {
          'id'                 => '36',
          'table'              => 'glpi_items_deviceprocessors',
          'field'              => 'frequency',
-         'name'               => $name . ' - ' . __('Processor frequency'),
+         'name'               => __('Processor frequency'),
          'unit'               => 'MHz',
          'forcegroupby'       => true,
          'usehaving'          => true,
@@ -840,7 +838,7 @@ class Computer extends CommonDBTM {
          'id'                 => '10',
          'table'              => 'glpi_devicememories',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Memory type'),
+         'name'               => __('Memory type'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,
@@ -858,7 +856,7 @@ class Computer extends CommonDBTM {
          'table'              => 'glpi_items_devicememories',
          'field'              => 'size',
          'unit'               => 'auto',
-         'name'               => $name . ' - ' . __('Memory'),
+         'name'               => __('Memory'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'number',
@@ -873,7 +871,7 @@ class Computer extends CommonDBTM {
          'id'                 => '11',
          'table'              => 'glpi_devicenetworkcards',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Network interface'),
+         'name'               => __('Network interface'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -889,7 +887,7 @@ class Computer extends CommonDBTM {
          'id'                 => '20',
          'table'              => 'glpi_items_devicenetworkcards',
          'field'              => 'mac',
-         'name'               => $name . ' - ' . __('MAC address'),
+         'name'               => __('MAC address'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -900,7 +898,7 @@ class Computer extends CommonDBTM {
          'id'                 => '12',
          'table'              => 'glpi_devicesoundcards',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Soundcard'),
+         'name'               => __('Soundcard'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -916,7 +914,7 @@ class Computer extends CommonDBTM {
          'id'                 => '13',
          'table'              => 'glpi_devicegraphiccards',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Graphics card'),
+         'name'               => __('Graphics card'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -932,7 +930,7 @@ class Computer extends CommonDBTM {
          'id'                 => '14',
          'table'              => 'glpi_devicemotherboards',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('System board'),
+         'name'               => __('System board'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -948,7 +946,7 @@ class Computer extends CommonDBTM {
          'id'                 => '15',
          'table'              => 'glpi_deviceharddrives',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Hard drive type'),
+         'name'               => __('Hard drive type'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,
@@ -965,8 +963,8 @@ class Computer extends CommonDBTM {
          'id'                 => '34',
          'table'              => 'glpi_items_deviceharddrives',
          'field'              => 'capacity',
-         'name'               => $name . ' - ' . __('Hard drive size'),
-         'unit'               => 'Mio',
+         'name'               => __('Hard drive size'),
+         'unit'               => 'auto',
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'number',
@@ -981,7 +979,7 @@ class Computer extends CommonDBTM {
          'id'                 => '39',
          'table'              => 'glpi_devicepowersupplies',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Power supply'),
+         'name'               => __('Power supply'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,
@@ -998,7 +996,7 @@ class Computer extends CommonDBTM {
          'id'                 => '95',
          'table'              => 'glpi_devicepcis',
          'field'              => 'designation',
-         'name'               => $name . ' - ' . __('Other component'),
+         'name'               => __('Other component'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'massiveaction'      => false,
@@ -1021,7 +1019,7 @@ class Computer extends CommonDBTM {
          'id'                 => '156',
          'table'              => Item_Disk::getTable(),
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -1035,7 +1033,7 @@ class Computer extends CommonDBTM {
          'table'              => Item_Disk::getTable(),
          'field'              => 'totalsize',
          'unit'               => 'auto',
-         'name'               => $name . ' - ' . __('Global size'),
+         'name'               => __('Global size'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'number',
@@ -1051,7 +1049,7 @@ class Computer extends CommonDBTM {
          'table'              => Item_Disk::getTable(),
          'field'              => 'freesize',
          'unit'               => 'auto',
-         'name'               => $name . ' - ' . __('Free size'),
+         'name'               => __('Free size'),
          'forcegroupby'       => true,
          'datatype'           => 'number',
          'width'              => 1000,
@@ -1065,7 +1063,7 @@ class Computer extends CommonDBTM {
          'id'                 => '152',
          'table'              => Item_Disk::getTable(),
          'field'              => 'freepercent',
-         'name'               => $name . ' - ' . __('Free percentage'),
+         'name'               => __('Free percentage'),
          'forcegroupby'       => true,
          'datatype'           => 'decimal',
          'width'              => 2,
@@ -1082,7 +1080,7 @@ class Computer extends CommonDBTM {
          'id'                 => '153',
          'table'              => Item_Disk::getTable(),
          'field'              => 'mountpoint',
-         'name'               => $name . ' - ' . __('Mount point'),
+         'name'               => __('Mount point'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -1095,7 +1093,7 @@ class Computer extends CommonDBTM {
          'id'                 => '154',
          'table'              => Item_Disk::getTable(),
          'field'              => 'device',
-         'name'               => $name . ' - ' . __('Partition'),
+         'name'               => __('Partition'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -1108,7 +1106,7 @@ class Computer extends CommonDBTM {
          'id'                 => '155',
          'table'              => 'glpi_filesystems',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('File system'),
+         'name'               => __('File system'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -1132,7 +1130,7 @@ class Computer extends CommonDBTM {
          'id'                 => '160',
          'table'              => 'glpi_computervirtualmachines',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -1145,7 +1143,7 @@ class Computer extends CommonDBTM {
          'id'                 => '161',
          'table'              => 'glpi_virtualmachinestates',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('State'),
+         'name'               => __('State'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -1163,7 +1161,7 @@ class Computer extends CommonDBTM {
          'id'                 => '162',
          'table'              => 'glpi_virtualmachinesystems',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Virtualization model'),
+         'name'               => __('Virtualization model'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
@@ -1181,7 +1179,7 @@ class Computer extends CommonDBTM {
          'id'                 => '163',
          'table'              => 'glpi_virtualmachinetypes',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Virtualization system'),
+         'name'               => __('Virtualization system'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -1199,7 +1197,7 @@ class Computer extends CommonDBTM {
          'id'                 => '164',
          'table'              => 'glpi_computervirtualmachines',
          'field'              => 'vcpu',
-         'name'               => $name . ' - ' . __('processor number'),
+         'name'               => __('processor number'),
          'datatype'           => 'number',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -1212,7 +1210,7 @@ class Computer extends CommonDBTM {
          'id'                 => '165',
          'table'              => 'glpi_computervirtualmachines',
          'field'              => 'ram',
-         'name'               => $name . ' - ' . __('Memory'),
+         'name'               => __('Memory'),
          'datatype'           => 'string',
          'unit'               => 'Mio',
          'forcegroupby'       => true,
@@ -1226,7 +1224,7 @@ class Computer extends CommonDBTM {
          'id'                 => '166',
          'table'              => 'glpi_computervirtualmachines',
          'field'              => 'uuid',
-         'name'               => $name . ' - ' . __('UUID'),
+         'name'               => __('UUID'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [

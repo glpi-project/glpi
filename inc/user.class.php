@@ -81,7 +81,7 @@ class User extends CommonDBTM {
 
 
    function canViewItem() {
-      if (Session::isViewAllEntities()
+      if (Session::canViewAllEntities()
           || Session::haveAccessToOneOfEntities($this->getEntities())) {
          return true;
       }
@@ -117,7 +117,7 @@ class User extends CommonDBTM {
    function canUpdateItem() {
 
       $entities = Profile_User::getUserEntities($this->fields['id'], false);
-      if (Session::isViewAllEntities()
+      if (Session::canViewAllEntities()
           || Session::haveAccessToOneOfEntities($entities)) {
          return true;
       }
@@ -126,7 +126,7 @@ class User extends CommonDBTM {
 
 
    function canDeleteItem() {
-      if (Session::isViewAllEntities()
+      if (Session::canViewAllEntities()
           || Session::haveAccessToAllOfEntities($this->getEntities())) {
          return true;
       }
@@ -281,7 +281,7 @@ class User extends CommonDBTM {
       global $DB;
 
       $entities = $this->getEntities();
-      $view_all = Session::isViewAllEntities();
+      $view_all = Session::canViewAllEntities();
       // Have right on all entities ?
       $all      = true;
       if (!$view_all) {
@@ -311,46 +311,29 @@ class User extends CommonDBTM {
 
 
    function cleanDBonPurge() {
+
       global $DB;
 
-      $DB->delete(
-         'glpi_profiles_users', [
-            'users_id' => $this->fields['id']
-         ]
-      );
+      // ObjectLock does not extends CommonDBConnexity
+      $ol = new ObjectLock();
+      $ol->deleteByCriteria(['users_id' => $this->fields['id']]);
 
-      if ($this->fields['id'] > 0) { // Security
-         $DB->delete(
-            'glpi_displaypreferences', [
-               'users_id' => $this->fields['id']
-            ]
-         );
-
-         $DB->delete(
-            'glpi_savedsearches_users', [
-               'users_id' => $this->fields['id']
-            ]
-         );
-      }
-
-      // Delete own reminders
-      $DB->delete(
-         'glpi_reminders', [
-            'users_id' => $this->fields['id']
-         ]
-      );
+      // Reminder does not extends CommonDBConnexity
+      $r = new Reminder();
+      $r->deleteByCriteria(['users_id' => $this->fields['id']]);
 
       // Delete private bookmark
-      $DB->delete(
-         'glpi_savedsearches', [
-            'users_id'     => $this->fields['id'],
-            'is_private'   => 1
+      $ss = new SavedSearch();
+      $ss->deleteByCriteria(
+         [
+            'users_id'   => $this->fields['id'],
+            'is_private' => 1,
          ]
       );
 
       // Set no user to public bookmark
       $DB->update(
-         'glpi_savedsearches', [
+         SavedSearch::getTable(), [
             'users_id' => 0
          ], [
             'users_id' => $this->fields['id']
@@ -360,47 +343,38 @@ class User extends CommonDBTM {
       // Set no user to consumables
       $DB->update(
          'glpi_consumables', [
-            'items_id' => 0
+            'items_id' => 0,
+            'itemtype' => 'NULL',
+            'date_out' => 'NULL'
          ], [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => 'User'
+            'items_id' => $this->fields['id'],
+            'itemtype' => 'User'
          ]
       );
 
-      $gu = new Group_User();
-      $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $tu = new Ticket_User();
-      $tu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $pu = new Problem_User();
-      $pu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $cu = new Change_User();
-      $cu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $DB->delete(
-         'glpi_projecttaskteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_User::class,
+            Group_User::class,
+            KnowbaseItem_User::class,
+            Problem_User::class,
+            Profile_User::class,
+            ProjectTaskTeam::class,
+            ProjectTeam::class,
+            Reminder_User::class,
+            RSSFeed_User::class,
+            SavedSearch_User::class,
+            Ticket_User::class,
+            UserEmail::class,
          ]
       );
 
-      $DB->delete(
-         'glpi_projectteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
-         ]
-      );
-
-      $kiu = new KnowbaseItem_User();
-      $kiu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $ru = new Reminder_User();
-      $ru->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $ue = new UserEmail();
-      $ue->deleteByCriteria(['users_id' => $this->fields['id']]);
+      if ($this->fields['id'] > 0) { // Security
+         // DisplayPreference does not extends CommonDBConnexity
+         $dp = new DisplayPreference();
+         $dp->deleteByCriteria(['users_id' => $this->fields['id']]);
+      }
 
       $this->dropPictureFiles($this->fields['picture']);
 
@@ -3914,7 +3888,7 @@ class User extends CommonDBTM {
 
       $group_where = [];
       while ($data = $iterator->next()) {
-         $group_where[$field_group] = $data['groups_id'];
+         $group_where[$field_group][] = $data['groups_id'];
          $groups[$data["groups_id"]] = $data["name"];
       }
 
@@ -4026,7 +4000,7 @@ class User extends CommonDBTM {
                   $iterator_params['WHERE']['is_deleted'] = 0;
                }
 
-               $group_iterator = $DB->request([$iterator_params]);
+               $group_iterator = $DB->request($iterator_params);
 
                $type_name = $item->getTypeName();
 

@@ -34,9 +34,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-include_once (GLPI_ROOT."/inc/based_config.php");
-include_once (GLPI_ROOT."/inc/define.php");
-
 define ('NS_GLPI', 'Glpi\\');
 define ('NS_PLUG', 'GlpiPlugin\\');
 
@@ -352,7 +349,7 @@ function glpi_autoload($classname) {
          }
       } else {
          // Standard use of GLPI
-         if (!isset($_SESSION['glpi_plugins']) || !in_array($plugname, $_SESSION['glpi_plugins'])) {
+         if (!Plugin::isPluginLoaded($plugname)) {
             // Plugin not activated
             return false;
          }
@@ -396,7 +393,7 @@ if ($needrun) {
    $getComposerUrl = 'https://getcomposer.org/';
    if (isCommandLine()) {
       echo 'Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
-          . 'To install composer please refer to ' . $getComposerUrl;
+          . 'To install composer please refer to ' . $getComposerUrl . PHP_EOL;
    } else {
       echo 'Run "composer install --no-dev" in the glpi tree.<br>'
           . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>';

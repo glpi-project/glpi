@@ -544,8 +544,12 @@ class TicketFollowup  extends CommonDBTM {
 
    /**
     * Form for Followup on Massive action
-   **/
+    *
+    * @deprecated 9.3.2
+    */
    static function showFormMassiveAction() {
+
+      Toolbox::deprecated();
 
       echo "&nbsp;".__('Source of followup')."&nbsp;";
       RequestType::dropdown(['value' => RequestType::getDefault('followup'), 'condition' => 'is_active = 1 AND is_ticketfollowup = 1']);
@@ -559,11 +563,11 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
+    * @deprecated 9.3.2
+    */
    static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      Toolbox::deprecated();
 
       switch ($ma->getAction()) {
          case 'add_followup' :
@@ -576,12 +580,12 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @since 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
+    * @deprecated 9.3.2
+    */
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
+
+      Toolbox::deprecated();
 
       switch ($ma->getAction()) {
          case 'add_followup' :
@@ -827,8 +831,13 @@ class TicketFollowup  extends CommonDBTM {
     * Show the current ticketfollowup summary
     *
     * @param $ticket Ticket object
-   **/
+    *
+    * @deprecated 9.3.2
+    */
    function showSummary($ticket) {
+
+      Toolbox::deprecated();
+
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname,

@@ -121,7 +121,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          'START'  => 0,
          'LIMIT'  => 1
       ]);
-      if (count($iterator > 0)) {
+      if (count($iterator) > 0) {
          return true;
       }
       return false;
@@ -152,10 +152,9 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showUserNotificationForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       $this->check($ID, UPDATE);
 
@@ -230,10 +229,9 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @param $ID              integer ID of the item
     * @param $options   array
     *
-    * @return Nothing (display)
+    * @return void
    **/
    function showSupplierNotificationForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       $this->check($ID, UPDATE);
 
@@ -343,6 +341,33 @@ abstract class CommonITILActor extends CommonDBRelation {
       return $input;
    }
 
+   function prepareInputForUpdate($input) {
+      if ($input['alternative_email'] == '') {
+         if (isset($input['users_id'])) {
+            $actor = new User();
+            if ($actor->getFromDB($input["users_id"])) {
+               $input['alternative_email'] = $actor->getDefaultEmail();
+            }
+         }
+         if (isset($input['suppliers_id'])) {
+            $actor = new Supplier;
+            if ($actor->getFromDB($input["suppliers_id"])) {
+               $input['alternative_email'] = $actor->fields['email'];
+            }
+         }
+      }
+      if (isset($input['alternative_email']) && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
+         Session::addMessageAfterRedirect(
+            __('Invalid email address'),
+            false,
+            ERROR
+         );
+         return false;
+      }
+
+      $input = parent::prepareInputForUpdate($input);
+      return $input;
+   }
 
    function post_addItem() {
 

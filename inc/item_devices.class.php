@@ -64,6 +64,8 @@ class Item_Devices extends CommonDBRelation {
    // This var is defined by CommonDBRelation ...
    public $no_form_page                 = false;
 
+   public $dohistory = true;
+
    static protected $forward_entity_to  = ['Infocom'];
 
    static $undisclosedFields      = [];
@@ -163,15 +165,15 @@ class Item_Devices extends CommonDBRelation {
       ];
 
       foreach (static::getSpecificities() as $field => $attributs) {
-         switch ($field) {
-            case 'states_id':
-               $table = 'glpi_states';
-               break;
-            case 'locations_id':
-               $table = 'glpi_locations';
-               break;
-            default:
-               $table = $this->getTable();
+         if (isForeignKeyField($field)) {
+            $table = getTableNameForForeignKeyField($field);
+            $linked_itemtype = getItemTypeForTable($table);
+            $field = $linked_itemtype::getNameField();
+         } else {
+            $table = $this->getTable();
+         }
+         if (array_key_exists('field', $attributs)) {
+            $field = $attributs['field'];
          }
 
          $newtab = [

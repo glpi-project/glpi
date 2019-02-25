@@ -805,8 +805,12 @@ class RuleCollection extends CommonDBTM {
       $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=import"] = _x('button', 'Import');
       $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=export"] = _x('button', 'Export');
 
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/sauvegardes.png",
-                         _n('User', 'Users', Session::getPluralNumber()), $title, $buttons);
+      echo "<div class='center'><table class='tab_glpi'><tr>";
+      echo "<td><i class='fa fa-save fa-3x'></i></td>";
+      foreach ($buttons as $key => $val) {
+         echo "<td><a class='vsubmit' href='".$key."'>".$val."</a></td>";
+      }
+      echo "</tr></table></div>";
    }
 
 
@@ -884,6 +888,8 @@ class RuleCollection extends CommonDBTM {
    **/
    static function exportRulesToXML($items = []) {
 
+      global $DB;
+
       if (!count($items)) {
          return false;
       }
@@ -953,7 +959,27 @@ class RuleCollection extends CommonDBTM {
                if ($action['field'][0] == "_") {
                   $field = substr($action['field'], 1);
                }
-               $table           = getTableNameForForeignKeyField($field);
+               $table = getTableNameForForeignKeyField($field);
+
+               // Special case for foreign keys that does not respect naming convention
+               if (!$DB->tableExists($table)) {
+                  switch ($field) {
+                     case 'olas_ttr_id':
+                     case 'olas_tto_id':
+                        $table = OLA::getTable();
+                        break;
+                     case 'slas_ttr_id':
+                     case 'slas_tto_id':
+                        $table = SLA::getTable();
+                        break;
+                     default:
+                        throw new LogicException(
+                           sprintf('Unable get table corresponding to field "%s".', $field)
+                        );
+                        break;
+                  }
+               }
+
                $action['value'] = Html::clean(Dropdown::getDropdownName($table, $action['value']));
             }
 

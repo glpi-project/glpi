@@ -97,6 +97,7 @@ class PDU extends CommonDBTM {
       State::dropdown([
          'value'     => $this->fields["states_id"],
          'entity'    => $this->fields["entities_id"],
+         'condition' => "is_visible_pdu",
          'rand'      => $rand]
       );
       echo "</td></tr>\n";
@@ -223,6 +224,14 @@ class PDU extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_pdutypes',
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
          'id'                 => '5',
          'table'              => $this->getTable(),
          'field'              => 'serial',
@@ -316,10 +325,12 @@ class PDU extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $pdu_plug = new Pdu_Plug();
-      $pdu_plug->deleteByCriteria(['pdus_id' => $this->fields['id']]);
-
-      $pdu_rack = new PDU_Rack();
-      $pdu_rack->deleteByCriteria(['pdus_id' => $this->fields['id']]);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Pdu_Plug::class,
+            PDU_Rack::class,
+         ]
+      );
    }
 }

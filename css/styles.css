@@ -41,7 +41,6 @@ body {
    margin: 0;
    padding: 0;
    background:  #f8f7f3;
-   position: relative;
    height: auto;
    min-height: 100%;
 }
@@ -787,7 +786,7 @@ input.submit[type=reset] {
    }
 
    .layout_vsplit #page .glpi_tabs {
-      height: 96%;
+      height: calc(100% - 50px);
       position: relative;
       z-index:1;
    }
@@ -831,7 +830,7 @@ input.submit[type=reset] {
       overflow-y: auto;
       position: absolute;
       top: 0;
-      bottom: 50px;
+      bottom: 33px;
    }
 
    .layout_classic #tabspanel + div.ui-tabs:not(.horizontal),
@@ -1864,6 +1863,7 @@ a.icon_nav_move:hover img {
 #planning_filter ul.filters > li .actor_icon {
    padding-bottom: 2px;
    vertical-align: middle;
+   font-size: 14px;
 }
 
 #planning_filter ul.filters > li label {
@@ -3333,17 +3333,14 @@ a.copyright {
 }
 
 .timeline_history .private {
-   width: 30px;
-   float: right;
-   padding-top: 18px;
-   background: url(../pics/timeline/private.png) no-repeat center top;
-   color: #A2A2A2;
+   padding-top: .5em;
+   color: #000000;
    font-size: .75em;
-   text-align: center;
    white-space: nowrap;
+   text-align: right;
 }
 .timeline_history .right .private {
-   float: left;
+   text-align: left;
 }
 
 .timeline_history .left .h_content.timeline_active {
@@ -3580,9 +3577,12 @@ a.copyright {
    background-repeat: no-repeat;
 }
 
-
 .timeline_history .approbation_separator {
    margin-bottom: 55px;
+}
+
+.timeline_history .item_content img {
+   max-width: 100%;
 }
 
 .assign_la {
@@ -3590,11 +3590,6 @@ a.copyright {
    white-space: nowrap;
    margin-top: 4px;
 }
-
-.displayed_content a .fa {
-   font-size: 1.5em;
-}
-
 
 .x-split-button {
   position: relative;
@@ -4410,8 +4405,8 @@ td.diff del {
 /** "slide panel" component */
 
 .slidepanel {
-   z-index: 100;
-   position: absolute;
+   z-index: 1000;
+   position: fixed;
    width: 30em;
    max-width: 40%;
    background: white;

@@ -32,7 +32,8 @@
         "paragonie/random_compat": "^2.0",
         "monolog/monolog": "^1.23",
         "sebastian/diff": "^1.4 || ^2.0 || ^3.0",
-        "zendframework/zend-console": "^2.7"
+        "zendframework/zend-console": "^2.7",
+        "elvanto/litemoji": "^1.4"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
@@ -43,7 +44,8 @@
         "atoum/atoum": "^3.3",
         "atoum/telemetry-extension": "^1.0",
         "sensiolabs/security-checker": "^4.1",
-        "fzaninotto/Faker": "^1.7"
+        "fzaninotto/Faker": "^1.7",
+        "jakub-onderka/php-parallel-lint": "^1.0"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
@@ -63,6 +65,7 @@
         "testldap":  "php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP",
         "csp": "vendor/bin/phpcs --parallel=500 -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./",
         "cs":  "vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./",
+        "lint":  "vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
         "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
     }

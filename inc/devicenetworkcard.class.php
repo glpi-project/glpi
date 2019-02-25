@@ -116,7 +116,7 @@ class DeviceNetworkCard extends CommonDevice {
     *
     * @param $input array of datas
     *
-    * @return interger ID of existing or new Device
+    * @return integer ID of existing or new Device
    **/
    function import(array $input) {
       global $DB;

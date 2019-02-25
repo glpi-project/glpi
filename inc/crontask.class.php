@@ -106,13 +106,10 @@ class CronTask extends CommonDBTM{
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_crontasklogs', [
-            'crontasks_id' => $this->fields['id']
-         ]
-      );
+      // CronTaskLog does not extends CommonDBConnexity
+      $ctl = new CronTaskLog();
+      $ctl->deleteByCriteria(['crontasks_id' => $this->fields['id']]);
    }
 
 
@@ -366,11 +363,9 @@ class CronTask extends CommonDBTM{
                 FROM `".$this->getTable()."`
                 WHERE (`itemtype` NOT LIKE 'Plugin%'";
 
-      if (count($_SESSION['glpi_plugins'])) {
-         // Only activated plugins
-         foreach ($_SESSION['glpi_plugins'] as $plug) {
-            $query .= " OR `itemtype` LIKE 'Plugin$plug%'";
-         }
+      // Only activated plugins
+      foreach (Plugin::getPlugins() as $plug) {
+         $query .= " OR `itemtype` LIKE 'Plugin$plug%'";
       }
       $query .= ')';
 

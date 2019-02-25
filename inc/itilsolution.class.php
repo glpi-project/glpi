@@ -65,7 +65,14 @@ class ITILSolution extends CommonDBChild {
       }
    }
 
+
+   /**
+    * @deprecated 9.3.2
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+
+      Toolbox::deprecated();
+
       $sol = new self();
       $sol->showSummary($item);
    }
@@ -332,7 +339,7 @@ class ITILSolution extends CommonDBChild {
       }
 
       $item = $this->item;
-      $status = $item::CLOSED;
+      $status = $item::SOLVED;
       if ($this->item->getType() == 'Ticket') {
          $autoclosedelay =  Entity::getUsedConfig(
             'autoclose_delay',
@@ -342,8 +349,8 @@ class ITILSolution extends CommonDBChild {
          );
 
          // 0 = immediatly
-         if ($autoclosedelay != 0) {
-            $status = $item::SOLVED;
+         if ($autoclosedelay == 0) {
+            $status = $item::CLOSED;
          }
       }
       $this->item->update([
@@ -375,15 +382,13 @@ class ITILSolution extends CommonDBChild {
     * @param integer $items_id Item ID
     *
     * @return void
+    *
+    * @deprecated 9.3.2
     */
    public function removeForItem($itemtype, $items_id) {
-      $this->deleteByCriteria(
-         [
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id
-         ],
-         true
-      );
+      Toolbox::deprecated();
+
+      $this->cleanDBonItemDelete($itemtype, $items_id);
    }
 
    /**
@@ -391,9 +396,14 @@ class ITILSolution extends CommonDBChild {
     *
     * @param CommonITILObject $item Item instance
     *
-    * return void
+    * @return void
+    *
+    * @deprecated 9.3.2
     */
    public function showSummary(CommonITILObject $item) {
+
+      Toolbox::deprecated();
+
       global $DB, $CFG_GLPI;
 
       if (isset($_GET["start"])) {

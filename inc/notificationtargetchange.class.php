@@ -225,7 +225,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                      = Html::clean(getUserName($validation['users_id']));
 
             $tmp['##validation.status##']
-                     = TicketValidation::getStatus($validation['status']);
+                     = ChangeValidation::getStatus($validation['status']);
 
             $tmp['##validation.storestatus##']
                      = $validation['status'];

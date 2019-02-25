@@ -1046,7 +1046,7 @@ function update91to92() {
 
    // count cron task
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='SavedSearch' AND `name`='countAll'")) {
+                             ['itemtype' => 'SavedSearch', 'name' => 'countAll'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1057,7 +1057,7 @@ function update91to92() {
 
    // alerts cron task
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='SavedSearch_Alert' AND `name`='savedsearchesalerts'")) {
+                             ['itemtype' => 'SavedSearch_Alert', 'name' => 'savedsearchesalerts'])) {
        $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1067,7 +1067,7 @@ function update91to92() {
    }
 
    if (!countElementsInTable('glpi_notifications',
-                             "`itemtype`='SavedSearch_Alert'")) {
+                             ['itemtype' => 'SavedSearch_Alert'])) {
       $query = "INSERT INTO `glpi_notifications`
                 (`id`, `name`, `entities_id`, `itemtype`, `event`, `comment`,
                  `is_recursive`, `is_active`, `date_creation`, `date_mod`)
@@ -1082,9 +1082,11 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 Add saved search alerts notification template");
       $nottid = $DB->insert_id();
 
-      $where =  "`notifications_id`='$notid' AND `mode`='" .
-         Notification_NotificationTemplate::MODE_MAIL.
-         "' AND `notificationtemplates_id`='$nottid'";
+      $where =  [
+         'notifications_id'         => $notid,
+         'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+         'notificationtemplates_id' => $nottid
+      ];
       if (countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
          $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
                    VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
@@ -1372,7 +1374,7 @@ Regards,',
       $DB->queryOrDie($query, "9.2 copy add certificate type table");
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'certificate'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'certificate']) == 0) {
       //new right for certificate
       //give full rights to profiles having config right
       foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
@@ -1407,7 +1409,7 @@ Regards,',
          'mode'    => CronTask::MODE_INTERNAL
       ]
    );
-   if (!countElementsInTable('glpi_notifications', "`itemtype`='Certificate'")) {
+   if (!countElementsInTable('glpi_notifications', ['itemtype' => 'Certificate'])) {
       $query = "INSERT INTO `glpi_notifications`
                (`id`, `name`, `entities_id`, `itemtype`, `event`, `comment`,
                 `is_recursive`, `is_active`, `date_creation`, `date_mod`)
@@ -1421,9 +1423,11 @@ Regards,',
       $DB->queryOrDie($query, "9.2 Add certifcate alerts notification template");
       $nottid = $DB->insert_id();
 
-      $where =  "`notifications_id`='$notid' AND `mode`='" .
-         Notification_NotificationTemplate::MODE_MAIL.
-         "' AND `notificationtemplates_id`='$nottid'";
+      $where =  [
+         'notifications_id'         => $notid,
+         'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+         'notificationtemplates_id' => $nottid
+      ];
       if (!countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
          $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
                    VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
@@ -1536,16 +1540,16 @@ Regards,',
       $DB->queryOrDie($query, "9.2 add table glpi_devicesimcardtypes");
    }
 
-   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Full SIM'")) {
+   if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Full SIM'])) {
       $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Full SIM',NULL,NULL,NULL)");
    }
-   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Mini SIM'")) {
+   if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Mini SIM'])) {
       $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Mini SIM',NULL,NULL,NULL)");
    }
-   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Micro SIM'")) {
+   if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Micro SIM'])) {
       $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Micro SIM',NULL,NULL,NULL)");
    }
-   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Nano SIM'")) {
+   if (!countElementsInTable('glpi_devicesimcardtypes', ['name' => 'Nano SIM'])) {
       $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Nano SIM',NULL,NULL,NULL)");
    }
 
@@ -1607,7 +1611,7 @@ Regards,',
       $DB->queryOrDie($query, "9.2 add table glpi_items_devicesimcards");
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'line'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'line']) == 0) {
       //new right for line
       //give full rights to profiles having config right
       foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
@@ -1624,7 +1628,7 @@ Regards,',
       }
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'lineoperator'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'lineoperator']) == 0) {
       //new right for lineoperator
       //give full rights to profiles having config right
       foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
@@ -1641,7 +1645,7 @@ Regards,',
       }
    }
 
-   if (countElementsInTable("glpi_profilerights", "`name` = 'devicesimcard_pinpuk'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'devicesimcard_pinpuk']) == 0) {
       //new right for simcard pin and puk
       //give full rights to profiles having config right
       foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {

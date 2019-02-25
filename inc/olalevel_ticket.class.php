@@ -232,7 +232,7 @@ class OlaLevel_Ticket extends CommonDBTM {
                      }
                      // Process rules
                      if ($doit) {
-                        $input = $olalevel->executeActions($input, []);
+                        $input = $olalevel->executeActions($input, [], $ticket->fields);
                      }
                   }
 

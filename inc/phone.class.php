@@ -133,19 +133,15 @@ class Phone extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $ci = new Computer_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Computer_Item::class,
+            Item_Problem::class,
+            Change_Item::class,
+            Item_Project::class,
+         ]
+      );
 
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));

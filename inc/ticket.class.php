@@ -391,12 +391,6 @@ class Ticket extends CommonITILObject {
     */
    public function canTakeIntoAccount() {
 
-      // Ticket already taken into account
-      if (array_key_exists('takeintoaccount_delay_stat', $this->fields)
-          && $this->fields['takeintoaccount_delay_stat'] != 0) {
-         return false;
-      }
-
       // Can take into account if user is assigned user
       if ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
           || (isset($_SESSION["glpigroups"])
@@ -424,6 +418,17 @@ class Ticket extends CommonITILObject {
       // Can take into account if user has rights to add tasks or followups,
       // assuming that users that does not have those rights cannot treat the ticket.
       return $canAddTask || $canAddFollowup;
+   }
+
+   /**
+    * Check if ticket has already been taken into account.
+    *
+    * @return boolean
+    */
+   public function isAlreadyTakenIntoAccount() {
+
+      return array_key_exists('takeintoaccount_delay_stat', $this->fields)
+          && $this->fields['takeintoaccount_delay_stat'] != 0;
    }
 
    /**
@@ -723,10 +728,6 @@ class Ticket extends CommonITILObject {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      if ($item->isNewItem()) {
-         return;
-      }
-
       if (static::canView()) {
          $nb    = 0;
          $title = self::getTypeName(Session::getPluralNumber());
@@ -988,57 +989,40 @@ class Ticket extends CommonITILObject {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_tickettasks', [
-            'tickets_id'   => $this->fields['id']
-         ]
-      );
-
-      $DB->delete(
-         'glpi_ticketfollowups', [
-            'tickets_id'   => $this->fields['id']
-         ]
-      );
-
-      $ts = new TicketValidation();
-      $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $DB->delete(
-         'glpi_ticketsatisfactions', [
-            'tickets_id'   => $this->fields['id']
-         ]
-      );
-
-      $pt = new Problem_Ticket();
-      $pt->cleanDBonItemDelete('Ticket', $this->fields['id']);
-
-      $ts = new TicketCost();
-      $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $slaLevel_ticket = new SlaLevel_Ticket();
-      $slaLevel_ticket->deleteForTicket($this->getID(), SLM::TTO);
-      $slaLevel_ticket->deleteForTicket($this->getID(), SLM::TTR);
-
+      // OlaLevel_Ticket does not extends CommonDBConnexity
       $olaLevel_ticket = new OlaLevel_Ticket();
-      $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTO);
-      $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTR);
+      $olaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTO);
+      $olaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTR);
 
-      $DB->delete(
-         'glpi_tickets_tickets', [
-            'OR'  => [
-               'tickets_id_1' => $this->fields['id'],
-               'tickets_id_2' => $this->fields['id']
-            ]
+      // SlaLevel_Ticket does not extends CommonDBConnexity
+      $slaLevel_ticket = new SlaLevel_Ticket();
+      $slaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTO);
+      $slaLevel_ticket->deleteForTicket($this->fields['id'], SLM::TTR);
+
+      // TicketFollowup does not extends CommonDBConnexity
+      $tf = new TicketFollowup();
+      $tf->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+      // TicketSatisfaction does not extends CommonDBConnexity
+      $tf = new TicketSatisfaction();
+      $tf->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+      // CommonITILTask does not extends CommonDBConnexity
+      $tt = new TicketTask();
+      $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Ticket::class,
+            Item_Ticket::class,
+            Problem_Ticket::class,
+            ProjectTask_Ticket::class,
+            TicketCost::class,
+            Ticket_Ticket::class,
+            TicketValidation::class,
          ]
       );
-
-      $ct = new Change_Ticket();
-      $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Ticket();
-      $ip->cleanDBonItemDelete('Ticket', $this->fields['id']);
 
       parent::cleanDBonPurge();
 
@@ -1606,7 +1590,7 @@ class Ticket extends CommonITILObject {
 
    function pre_updateInDB() {
 
-      if ($this->canTakeIntoAccount()) {
+      if (!$this->isAlreadyTakenIntoAccount() && $this->canTakeIntoAccount()) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
@@ -2571,7 +2555,9 @@ class Ticket extends CommonITILObject {
    function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0) {
 
       if ($this->getFromDB($ID)) {
-         if (!$no_stat_computation && ($this->canTakeIntoAccount() || isCommandLine())) {
+         if (!$no_stat_computation
+             && !$this->isAlreadyTakenIntoAccount()
+             && ($this->canTakeIntoAccount() || isCommandLine())) {
             return $this->update(
                [
                   'id'                         => $ID,
@@ -2636,6 +2622,44 @@ class Ticket extends CommonITILObject {
                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
    }
 
+   /**
+    * Check if user can add followups to the ticket.
+    *
+    * @param integer $user_id
+    *
+    * @return boolean
+    */
+   public function canUserAddFollowups($user_id) {
+
+      $entity_id = $this->fields['entities_id'];
+
+      $group_user = new Group_User();
+      $user_groups = $group_user->getUserGroups($user_id, ['entities_id' => $entity_id]);
+      $user_groups_ids = [];
+      foreach ($user_groups as $user_group) {
+         $user_groups_ids[] = $user_group['id'];
+      }
+
+      $rightname = TicketFollowup::$rightname;
+
+      return (
+            Profile::haveUserRight($user_id, $rightname, TicketFollowup::ADDMYTICKET, $entity_id)
+            && ($this->isUser(CommonITILActor::REQUESTER, $user_id)
+               || (
+                  isset($this->fields['users_id_recipient'])
+                  && ($this->fields['users_id_recipient'] === $user_id)
+               )
+            )
+         )
+         || Profile::haveUserRight($user_id, $rightname, TicketFollowup::ADDALLTICKET, $entity_id)
+         || (
+            Profile::haveUserRight($user_id, $rightname, TicketFollowup::ADDGROUPTICKET, $entity_id)
+            && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
+         )
+         || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+         || $this->haveAGroup(CommonITILActor::ASSIGN, $user_groups_ids);
+   }
+
 
    /**
     * Get default values to search engine to override
@@ -2689,7 +2713,7 @@ class Ticket extends CommonITILObject {
          if (Session::haveRight(self::$rightname, UPDATE)) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
                = __('Add an actor');
-            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'enable_notif']
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'update_notif']
                = __('Set notifications for all actors');
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = _x('button', 'Link tickets');
@@ -3560,7 +3584,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $withmetaforsearch boolean (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -3588,7 +3612,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
       return [self::CLOSED];
@@ -3600,7 +3624,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
       return [self::SOLVED];
@@ -3611,7 +3635,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING];
@@ -3622,7 +3646,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
       return [self::ASSIGNED, self::PLANNED];
@@ -3633,7 +3657,7 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.90.1
     *
-    * @return an array
+    * @return array
    **/
    static function getReopenableStatusArray() {
       return [self::CLOSED, self::SOLVED, self::WAITING];
@@ -4015,7 +4039,7 @@ class Ticket extends CommonITILObject {
           && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]))) {
          if (!$tt->isHiddenField('items_id')) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
+            echo "<td>".sprintf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()),
                                 $tt->getMandatoryMark('items_id'))."</td>";
             echo "<td>";
             $options['_canupdate'] = Session::haveRight('ticket', CREATE);
@@ -5437,7 +5461,7 @@ class Ticket extends CommonITILObject {
 
          case "rejected" : // on affiche les tickets rejet??s
             $query .= " LEFT JOIN `glpi_itilsolutions`
-                           ON (`glpi_tickets`.`id` = `glpi_itilsolutions`.`items_id` AND `glpi_itilsolutions`.`itemtype` = 'Tciket')
+                           ON (`glpi_tickets`.`id` = `glpi_itilsolutions`.`items_id` AND `glpi_itilsolutions`.`itemtype` = 'Ticket')
                         WHERE $is_deleted
                              AND ($search_assign)
                              AND `glpi_tickets`.`status` <> '".self::CLOSED."'
@@ -6656,16 +6680,14 @@ class Ticket extends CommonITILObject {
     *
     * @since 0.85
     *
-    * @param $content_html         html content of input
-    * @param $files         array  of filename
-    * @param $tags          array  of image tag
+    * @param string $html  html content of input
+    * @param array  $files filenames
+    * @param array  $tags  image tags
     *
-    * @return htlm content
+    * @return string html content
    **/
-   static function convertContentForTicket($content_html, $files, $tags) {
+   static function convertContentForTicket($html, $files, $tags) {
 
-      // We inject another meta tag
-      $html = Html::entity_decode_deep($content_html);
       preg_match_all("/src\s*=\s*['|\"](.+?)['|\"]/", $html, $matches, PREG_PATTERN_ORDER);
       if (isset($matches[1]) && count($matches[1])) {
          // Get all image src
@@ -7156,7 +7178,7 @@ class Ticket extends CommonITILObject {
          if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
             echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
             $user->getFromDB($item_i['users_id_tech']);
-            echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+            echo "<i class='fa fa-user'></i>&nbsp;";
             $userdata = getUserName($item_i['users_id_tech'], 2);
             echo $user->getLink()."&nbsp;";
             echo Html::showToolTip($userdata["comment"],
@@ -7204,7 +7226,8 @@ class Ticket extends CommonITILObject {
 
          // show "is_private" icon
          if (isset($item_i['is_private']) && $item_i['is_private']) {
-            echo "<div class='private'>".__('Private')."</div>";
+            echo "<div class='private'><i class='fa fa-lock fa-2x' title='" . __s('Private') .
+               "'></i><span class='sr-only'>".__('Private')."</span></div>";
          }
 
          echo "</div>"; // b_right

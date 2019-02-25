@@ -457,10 +457,16 @@ class Ajax {
             function reloadTab(add) {
                forceReload$rand = true;
                var current_index = $('#tabs$rand').tabs('option','active');
+
+               // remove scroll event bind, select2 bind it on parent with scrollbars (the tab currently)
+               // as the select2 disapear with this tab reload, remove the event to prevent issues (infinite scroll to top)
+               $('#tabs$rand .ui-tabs-panel[aria-expanded=true]').unbind('scroll');
+
                // Save tab
                var currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
                $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref+'&'+add);
                $('#tabs$rand').tabs( 'load' , current_index);
+
                // Restore tab
                $('#tabs$rand ul>li a').eq(current_index).attr('href',currenthref);
             };";
@@ -720,6 +726,7 @@ class Ajax {
             }
 
             $out .= $key.":";
+            $regs = [];
             if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
 

@@ -413,8 +413,8 @@ class Computer_Item extends CommonDBRelation{
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
-            $link = Toolbox::getItemTypeFormURL($itemtype);
-            $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
+            $link = $itemtype::getFormURLWithID($data["id"]);
+            $name = "<a href=\"".$link."\">".$linkname."</a>";
 
             echo "<tr class='tab_bg_1'>";
 
@@ -479,11 +479,18 @@ class Computer_Item extends CommonDBRelation{
       $used    = [];
       $compids = [];
       $dynamic = [];
-      $crit    = ['FIELDS'     => ['id', 'computers_id', 'is_dynamic'],
-                       'itemtype'   => $item->getType(),
-                       'items_id'   => $ID,
-                       'is_deleted' => 0];
-      foreach ($DB->request('glpi_computers_items', $crit) as $data) {
+      $result = $DB->request(
+         [
+            'SELECT' => ['id', 'computers_id', 'is_dynamic'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'itemtype'   => $item->getType(),
+               'items_id'   => $ID,
+               'is_deleted' => 0,
+            ]
+         ]
+      );
+      foreach ($result as $data) {
          $compids[$data['id']] = $data['computers_id'];
          $dynamic[$data['id']] = $data['is_dynamic'];
          $used['Computer'][]   = $data['computers_id'];

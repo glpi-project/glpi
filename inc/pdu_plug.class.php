@@ -128,7 +128,8 @@ class Pdu_Plug extends CommonDBRelation {
          echo Html::input(
             'number_plugs', [
                'id'     => 'number_plugs',
-               'type'   => 'number'
+               'type'   => 'number',
+               'min'    => 1
             ]
          );
          echo "</td><td>";

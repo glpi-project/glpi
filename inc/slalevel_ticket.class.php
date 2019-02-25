@@ -228,7 +228,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                      }
                      // Process rules
                      if ($doit) {
-                        $input = $slalevel->executeActions($input, []);
+                        $input = $slalevel->executeActions($input, [], $ticket->fields);
                      }
                   }
 

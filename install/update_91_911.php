@@ -67,7 +67,7 @@ function update91to911() {
    }
 
    // rectify missing right in 9.1 update
-   if (countElementsInTable("glpi_profilerights", "`name` = 'license'") == 0) {
+   if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
       foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
          $query = "INSERT INTO `glpi_profilerights`
                           (`id`, `profiles_id`, `name`, `rights`)

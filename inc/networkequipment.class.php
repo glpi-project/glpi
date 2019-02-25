@@ -96,17 +96,15 @@ class NetworkEquipment extends CommonDBTM {
    **/
    function cleanDBonPurge() {
 
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ci = new Change_Item();
-      $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ios = new Item_OperatingSystem();
-      $ios->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+            Item_OperatingSystem::class,
+            Item_Project::class,
+            Item_Problem::class,
+         ]
+      );
 
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
@@ -196,7 +194,7 @@ class NetworkEquipment extends CommonDBTM {
     *
     * Overloaded from CommonDBTM
     *
-    * @return booleen
+    * @return boolean
    **/
    function canUnrecurs() {
       global $DB;

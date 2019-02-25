@@ -516,7 +516,7 @@ class DropdownTranslation extends CommonDBChild {
             'WHERE'  => [
                'itemtype'  => $item->getType(),
                'items_id'  => $item->getID(),
-               'language'  => ['<>', $language]
+               'language'  => $language
             ]
          ]);
          if (count($iterator) > 0) {

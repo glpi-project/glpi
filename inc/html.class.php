@@ -722,6 +722,7 @@ class Html {
    **/
    static function displayDebugInfos($with_session = true, $ajax = false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
+      $GLPI_CACHE = Config::getCache('cache_db', 'core', false);
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
@@ -748,6 +749,9 @@ class Html {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
             echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
+            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+               echo "<li><a href='#debugcache$rand'>CACHE VARIABLE</a></li>";
+            }
          }
          echo "</ul>";
 
@@ -792,6 +796,16 @@ class Html {
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
 
+            if ($GLPI_CACHE instanceof Zend\Cache\Storage\IterableInterface) {
+               echo "<div id='debugcache$rand'>";
+               $cache_keys = $GLPI_CACHE->getIterator();
+               $cache_contents = [];
+               foreach ($cache_keys as $cache_key) {
+                  $cache_contents[$cache_key] = $GLPI_CACHE->getItem($cache_key);
+               }
+               self::printCleanArray($cache_contents, 0, true);
+               echo "</div>";
+            }
          }
 
          echo Html::scriptBlock("
@@ -1545,7 +1559,7 @@ class Html {
    /**
     * Print footer for every page
     *
-    * @param $keepDB booleen, closeDBConnections if false (false by default)
+    * @param $keepDB boolean, closeDBConnections if false (false by default)
    **/
    static function footer($keepDB = false) {
       global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
@@ -3377,7 +3391,7 @@ class Html {
                                                      'width'   => 600,
                                                      'height'  => 300]);
       }
-      $js = "";
+      $js = "$(function(){";
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
          position: { viewport: $(window) },
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
@@ -3390,6 +3404,7 @@ class Html {
                         solo: true, // ...and hide all other tooltips...
                 }, hide: false,";
       }
+      $js .= "});";
       $js .= "});";
       $out .= Html::scriptBlock($js);
 
@@ -4296,29 +4311,62 @@ class Html {
          $placeholder = "placeholder: ".json_encode($params["placeholder"]).",";
       }
 
-      $js = "$('#$id').select2({
-         $placeholder
-         width: '$width',
-         dropdownAutoWidth: true,
-         quietMillis: 100,
-         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-         formatSelection: function(object, container) {
-            text = object.text;
-            if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
-               text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
-            }
-            return text;
-         },
-         formatResult: function (result, container) {
-            container.attr('title', result.title || result.element[0].title);
-            return result.text;
-         }
+      $js = "$(function() {
+         $('#$id').select2({
+            $placeholder
+            width: '$width',
+            dropdownAutoWidth: true,
+            quietMillis: 100,
+            minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
+            matcher: function(params, data) {
+               // If there are no search terms, return all of the data
+               if ($.trim(params.term) === '') {
+                  return data;
+               }
 
-      })
-      .bind('setValue', function(e, value) {
-         $('#$id').val(value).trigger('change');
-      })
-      $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
+               // Skip if there is no 'children' property
+               if (typeof data.children === 'undefined') {
+                  if (typeof data.text === 'string'
+                     && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
+                  ) {
+                     return data;
+                  }
+                  return null;
+               }
+
+               // `data.children` contains the actual options that we are matching against
+               // also check in `data.text` (optgroup title)
+               var filteredChildren = [];
+               $.each(data.children, function (idx, child) {
+                  if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
+                     || data.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
+                  ) {
+                     filteredChildren.push(child);
+                  }
+               });
+
+               // If we matched any of the group's children, then set the matched children on the group
+               // and return the group object
+               if (filteredChildren.length) {
+                  var modifiedData = $.extend({}, data, true);
+                  modifiedData.children = filteredChildren;
+
+                  // You can return modified objects from here
+                  // This includes matching the `children` how you want in nested data sets
+                  return modifiedData;
+               }
+
+               // Return `null` if the term should not be displayed
+               return null;
+            },
+            templateResult: templateResult,
+            templateSelection: templateSelection
+         })
+         .bind('setValue', function(e, value) {
+            $('#$id').val(value).trigger('change');
+         })
+         $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });
+      });";
       return Html::scriptBlock($js);
    }
 
@@ -4422,7 +4470,8 @@ class Html {
                   };
                }
             },
-            templateResult: formatResult
+            templateResult: templateResult,
+            templateSelection: templateSelection
          })
          .bind('setValue', function(e, value) {
             $.ajax('$url', {
@@ -6079,10 +6128,18 @@ class Html {
       echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 
+      if (Session::getCurrentInterface() == 'central') {
+         $url_help_link = (empty($CFG_GLPI["central_doc_url"])
+            ? "http://glpi-project.org/help-central"
+            : $CFG_GLPI["central_doc_url"]);
+      } else {
+         $url_help_link = (empty($CFG_GLPI["helpdesk_doc_url"])
+            ? "http://glpi-project.org/help-central"
+            : $CFG_GLPI["helpdesk_doc_url"]);
+      }
+
       echo "<li id='help_link'>".
-           "<a href='".(empty($CFG_GLPI["central_doc_url"])
-                         ? "http://glpi-project.org/help-central"
-                         : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
+           "<a href='".$url_help_link."' target='_blank' title=\"".
                             __s('Help')."\" class='fa fa-question'>".
            "<span class='sr-only'>" . __('Help') . "</span>";
       echo "</a></li>";
@@ -6130,7 +6187,7 @@ class Html {
 
       // Generate array for menu and check right
       if ($full === true) {
-         $menu    = self::generateMenuSession();
+         $menu    = self::generateMenuSession($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
          $sector  = $options['sector'];
          $item    = $options['item'];
          $option  = $options['option'];
@@ -6432,7 +6489,7 @@ class Html {
                         break;
 
                      default :
-                        echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</span>";
+                        echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val, ['class' => 'pointer'])."</span>";
                         break;
                   }
                }

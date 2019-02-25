@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', dirname(__DIR__));
 }
 
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
+include_once GLPI_ROOT . '/inc/based_config.php';
 
 // Init Timer to compute time of display
 $TIMER_DEBUG = new Timer();
@@ -105,15 +105,14 @@ if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
    $PLUGINS_INCLUDED = 1;
    $LOADED_PLUGINS   = [];
    $plugin           = new Plugin();
-   if (!isset($_SESSION["glpi_plugins"])) {
+   if ($plugin->getPlugins() === []) {
       $plugin->init();
    }
-   if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-      //Plugin::doHook("config");
-      if (count($_SESSION["glpi_plugins"])) {
-         foreach ($_SESSION["glpi_plugins"] as $name) {
-            Plugin::load($name);
-         }
+
+   $plugins_list = $plugin->getPlugins();
+   if (count($plugins_list)) {
+      foreach ($plugins_list as $name) {
+         Plugin::load($name);
       }
       // For plugins which require action after all plugin init
       Plugin::doHook("post_init");

@@ -158,11 +158,17 @@ class SoftwareLicense extends CommonTreeDropdown {
    **/
    function cleanDBonPurge() {
 
-      $csl = new Computer_SoftwareLicense();
-      $csl->cleanDBonItemDelete('SoftwareLicense', $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Certificate_Item::class,
+            Change_Item::class,
+            Computer_SoftwareLicense::class,
+         ]
+      );
 
-      $class = new Alert();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      // Alert does not extends CommonDBConnexity
+      $alert = new Alert();
+      $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
@@ -691,7 +697,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '160',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Name'),
+         'name'               => __('Name'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
@@ -703,7 +709,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'serial',
          'datatype'           => 'string',
-         'name'               => $name . ' - ' . __('Serial number'),
+         'name'               => __('Serial number'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $licjoinexpire
@@ -714,7 +720,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'otherserial',
          'datatype'           => 'string',
-         'name'               => $name . ' - ' . __('Inventory number'),
+         'name'               => __('Inventory number'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $licjoinexpire
@@ -724,7 +730,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '163',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'number',
-         'name'               => $name . ' - ' . __('Number of licenses'),
+         'name'               => __('Number of licenses'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'number',
@@ -737,7 +743,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'table'              => 'glpi_softwarelicensetypes',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => $name . ' - ' . __('Type'),
+         'name'               => __('Type'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
@@ -752,7 +758,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '165',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'comment',
-         'name'               => $name . ' - ' . __('Comments'),
+         'name'               => __('Comments'),
          'forcegroupby'       => true,
          'datatype'           => 'text',
          'massiveaction'      => false,
@@ -763,7 +769,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '166',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'expire',
-         'name'               => $name . ' - ' . __('Expiration'),
+         'name'               => __('Expiration'),
          'forcegroupby'       => true,
          'datatype'           => 'date',
          'emptylabel'         => 'Never expire',
@@ -775,7 +781,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'id'                 => '167',
          'table'              => 'glpi_softwarelicenses',
          'field'              => 'is_valid',
-         'name'               => $name . ' - ' . __('Valid'),
+         'name'               => __('Valid'),
          'forcegroupby'       => true,
          'datatype'           => 'bool',
          'massiveaction'      => false,

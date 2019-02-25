@@ -119,20 +119,19 @@ class NotificationEvent extends CommonDBTM {
          //Process more infos (for example for tickets)
          $notificationtarget->addAdditionnalInfosForTarget();
 
-         //Get template's information
-         $template           = new NotificationTemplate();
-
-         $entity             = $notificationtarget->getEntity();
          //Foreach notification
          $notifications = Notification::getNotificationsByEventAndType(
             $event,
             $item->getType(),
-            $entity
+            $notificationtarget->getEntity()
          );
 
          foreach ($notifications as $data) {
             $notificationtarget->clearAddressesList();
             $notificationtarget->setMode($data['mode']);
+
+            //Get template's information
+            $template = new NotificationTemplate();
             $template->getFromDB($data['notificationtemplates_id']);
             $template->resetComputedTemplates();
 

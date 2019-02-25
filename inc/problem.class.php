@@ -238,20 +238,22 @@ class Problem extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-      $DB->delete(
-         'glpi_problemtasks', [
-            'problems_id'  => $this->fields['id']
+      // CommonITILTask does not extends CommonDBConnexity
+      $pt = new ProblemTask();
+      $pt->deleteByCriteria(['problems_id' => $this->fields['id']]);
+
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Problem::class,
+            // Done by parent: Group_Problem::class,
+            Item_Problem::class,
+            // Done by parent: ITILSolution::class,
+            // Done by parent: Problem_Supplier::class,
+            Problem_Ticket::class,
+            // Done by parent: Problem_User::class,
+            ProblemCost::class,
          ]
       );
-
-      $pt = new Problem_Ticket();
-      $pt->cleanDBonItemDelete('Problem', $this->fields['id']);
-
-      $cp = new Change_Problem();
-      $cp->cleanDBonItemDelete('Problem', $this->fields['id']);
-
-      $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete('Problem', $this->fields['id']);
 
       parent::cleanDBonPurge();
    }
@@ -524,7 +526,7 @@ class Problem extends CommonITILObject {
     *
     * @param $withmetaforsearch  boolean  (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false) {
 
@@ -554,7 +556,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getClosedStatusArray() {
 
@@ -570,7 +572,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getSolvedStatusArray() {
 
@@ -585,7 +587,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83.8
     *
-    * @return an array
+    * @return array
    **/
    static function getNewStatusArray() {
       return [self::INCOMING, self::ACCEPTED];
@@ -596,7 +598,7 @@ class Problem extends CommonITILObject {
     *
     * @since 0.83
     *
-    * @return an array
+    * @return array
    **/
    static function getProcessStatusArray() {
 

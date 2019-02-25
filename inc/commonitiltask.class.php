@@ -196,7 +196,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
+   /**
+    * @deprecated 9.3.2
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+
+      Toolbox::deprecated();
 
       $itemtype = $item->getType().'Task';
       if ($task = getItemForItemtype($itemtype)) {
@@ -543,8 +548,11 @@ abstract class CommonITILTask  extends CommonDBTM {
    **/
    function cleanDBonPurge() {
 
-      $class = new PlanningRecall();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            PlanningRecall::class,
+         ]
+      );
    }
 
 
@@ -667,7 +675,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '26',
          'table'              => static::getTable(),
          'field'              => 'content',
-         'name'               => $name . ' - ' . __('Description'),
+         'name'               => __('Description'),
          'datatype'           => 'text',
          'forcegroupby'       => true,
          'splititems'         => true,
@@ -681,7 +689,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '28',
          'table'              => static::getTable(),
          'field'              => 'id',
-         'name'               => $name . ' - ' . _x('quantity', 'Number of tasks'),
+         'name'               => _x('quantity', 'Number of tasks'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'count',
@@ -696,7 +704,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => 'glpi_taskcategories',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => $name . ' - ' . __('Category'),
+         'name'               => __('Category'),
          'forcegroupby'       => true,
          'splititems'         => true,
          'massiveaction'      => false,
@@ -716,7 +724,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             'id'                 => '92',
             'table'              => static::getTable(),
             'field'              => 'is_private',
-            'name'               => $name . ' - ' . __('Private task'),
+            'name'               => __('Private task'),
             'datatype'           => 'bool',
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -731,7 +739,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '94',
          'table'              => 'glpi_users',
          'field'              => 'name',
-         'name'               => $name . ' - ' . __('Writer'),
+         'name'               => __('Writer'),
          'datatype'           => 'itemlink',
          'right'              => 'all',
          'forcegroupby'       => true,
@@ -751,7 +759,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_tech',
-         'name'               => $name . ' - ' . __('Technician in charge'),
+         'name'               => __('Technician in charge'),
          'datatype'           => 'itemlink',
          'right'              => 'own_ticket',
          'forcegroupby'       => true,
@@ -771,7 +779,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
-         'name'               => $name . ' - ' . __('Group in charge'),
+         'name'               => __('Group in charge'),
          'datatype'           => 'itemlink',
          'condition'          => 'is_task',
          'forcegroupby'       => true,
@@ -790,7 +798,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '96',
          'table'              => static::getTable(),
          'field'              => 'actiontime',
-         'name'               => $name . ' - ' . __('Duration'),
+         'name'               => __('Duration'),
          'datatype'           => 'timestamp',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -803,7 +811,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '97',
          'table'              => static::getTable(),
          'field'              => 'date',
-         'name'               => $name . ' - ' . __('Date'),
+         'name'               => __('Date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -816,7 +824,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '33',
          'table'              => static::getTable(),
          'field'              => 'state',
-         'name'               => $name . ' - ' . __('Status'),
+         'name'               => __('Status'),
          'datatype'           => 'specific',
          'searchtype'         => 'equals',
          'searchequalsonfield' => true,
@@ -831,7 +839,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '173',
          'table'              => static::getTable(),
          'field'              => 'begin',
-         'name'               => $name . ' - ' . __('Begin date'),
+         'name'               => __('Begin date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -844,7 +852,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'id'                 => '174',
          'table'              => static::getTable(),
          'field'              => 'end',
-         'name'               => $name . ' - ' . __('End date'),
+         'name'               => __('End date'),
          'datatype'           => 'datetime',
          'massiveaction'      => false,
          'forcegroupby'       => true,
@@ -858,7 +866,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => TaskTemplate::getTable(),
          'field'              => 'name',
          'linkfield'          => 'tasktemplates_id',
-         'name'               => $name . ' - ' . __('Task template'),
+         'name'               => __('Task template'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -893,8 +901,8 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Populate the planning with planned tasks
     *
-    * @param $itemtype  itemtype
-    * @param $options   array    of options must contains :
+    * @param string $itemtype itemtype
+    * @param array $options   options must contains :
     *    - who ID of the user (0 = undefined)
     *    - who_group ID of the group of users (0 = undefined)
     *    - begin Date
@@ -1097,13 +1105,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Display a Planning Item
     *
-    * @param $itemtype  itemtype
-    * @param $val       Array    of the item to display
+    * @param string $itemtype  itemtype
+    * @param array  $val       the item to display
     *
-    * @return Already planned information
+    * @return string Output
    **/
    static function genericGetAlreadyPlannedInformation($itemtype, array $val) {
-      global $CFG_GLPI;
 
       if ($item = getItemForItemtype($itemtype)) {
          $objectitemtype = $item->getItilObjectItemType();
@@ -1111,8 +1118,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
          $out  = sprintf(__('%1$s: from %2$s to %3$s:'), $item->getTypeName(1),
                          Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-         $out .= "<br><a href='".Toolbox::getItemTypeFormURL($objectitemtype)."?id=".
-                       $val[getForeignKeyFieldForItemType($objectitemtype)]."&amp;forcetab=".$itemtype."$1'>";
+         $out .= "<br><a href='".$objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)])
+                       ."&amp;forcetab=".$itemtype."$1'>";
          $out .= Html::resume_text($val["name"], 80).'</a>';
 
          return $out;
@@ -1123,14 +1130,13 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Display a Planning Item
     *
-    * @param $itemtype  itemtype
-    * @param $val       Array of the item to display
-    * @param $who             ID of the user (0 if all)
-    * @param $type            position of the item in the time block (in, through, begin or end)
-    *                         (default '')
-    * @param $complete        complete display (more details) (default 0)
+    * @param string          $itemtype  itemtype
+    * @param array           $val       the item to display
+    * @param integer         $who       ID of the user (0 if all)
+    * @param string          $type      position of the item in the time block (in, through, begin or end)
+    * @param integer|boolean $complete  complete display (more details) (default 0)
     *
-    * @return Nothing (display function)
+    * @return string Output
    **/
    static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
@@ -1157,7 +1163,7 @@ abstract class CommonITILTask  extends CommonDBTM {
              Html::entities_deep($parent->getTypeName(1))."\">&nbsp;&nbsp;";
       $html.= $parent->getStatusIcon($val['status']);
       $html.= "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
-                   href='".Toolbox::getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
+                   href='".$parenttype::getFormURLWithID($val[$parenttype_fk])."'
                    style='$styleText'>";
 
       if (!empty($val["device"])) {
@@ -1206,7 +1212,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $showprivate  (false by default)
    **/
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate = false) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']);
       $canview = $this->canViewItem();
@@ -1349,7 +1355,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *     -  parent Object : the object
    **/
    function showForm($ID, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $rand_template   = mt_rand();
       $rand_text       = mt_rand();
@@ -1525,7 +1531,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By')."</td>";
       echo "<td colspan='2'>";
-      echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+      echo "<i class='fa fa-user'></i>&nbsp;";
       echo _n('User', 'Users', 1);
       $params             = ['name'   => "users_id_tech",
                                   'value'  => (($ID > -1)
@@ -1666,8 +1672,13 @@ abstract class CommonITILTask  extends CommonDBTM {
     * Show the current task sumnary
     *
     * @param $item   CommonITILObject
-   **/
+    *
+    * @deprecated 9.3.2
+    */
    function showSummary(CommonITILObject $item) {
+
+      Toolbox::deprecated();
+
       global $DB, $CFG_GLPI;
 
       if (!static::canView()) {
@@ -1682,7 +1693,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tmp         = [$item->getForeignKeyField() => $tID];
       $canadd      = $this->can(-1, CREATE, $tmp);
       $canpurge    = $this->canPurgeItem();
-      $canview     = $this->canViewItem();
 
       $RESTRICT = [];
       if ($this->maybePrivate() && !$showprivate) {
@@ -1766,8 +1776,12 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    /**
     * Form for Ticket or Problem Task on Massive action
-   **/
+    *
+    * @deprecated 9.3.2
+    */
    function showFormMassiveAction() {
+
+      Toolbox::deprecated();
 
       echo "&nbsp;".__('Category')."&nbsp;";
       TaskCategory::dropdown(['condition' => "`is_active`= '1'"]);
@@ -1866,7 +1880,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @return void
     */
    static function showCentralList($start, $status = 'todo', $showgrouptickets = true) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $req = self::getTaskList($status, $showgrouptickets);
       $numrows = 0;
@@ -1886,10 +1900,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th colspan='4'>";
 
-         $forcetab = '';
-         $num      = 0;
          $itemtype = get_called_class();
-         $item = new $itemtype;
          switch ($status) {
             case "todo" :
                $options  = [
@@ -1926,10 +1937,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                ];
 
                if ($itemtype == "TicketTask") {
-                  $forcetab                 = 'Ticket$1';
                   $title = __("Ticket tasks to do");
                } else if ($itemtype == "ProblemTask") {
-                  $forcetab                 = 'ProblemTask$1';
                   $title = __("Problem tasks to do");
                }
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -1951,8 +1960,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "<th>".__('Title')." (".strtolower($type).")</th>";
             echo "<th>".__('Description')."</th>";
             echo "</tr>";
-            foreach ($req as $id => $row) {
-               self::showVeryShort($id, $itemtype);
+            foreach ($req as $row) {
+               self::showVeryShort($row['id'], $itemtype);
             }
          }
          echo "</table>";
@@ -1972,7 +1981,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @return void
     */
    static function showVeryShort($ID, $itemtype) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $job  = new $itemtype();
       $rand = mt_rand();

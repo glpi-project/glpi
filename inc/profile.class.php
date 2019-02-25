@@ -210,25 +210,21 @@ class Profile extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $gpr = new ProfileRight();
-      $gpr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gpu = new Profile_User();
-      $gpu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            KnowbaseItem_Profile::class,
+            Profile_Reminder::class,
+            Profile_RSSFeed::class,
+            Profile_User::class,
+            ProfileRight::class,
+         ]
+      );
 
       Rule::cleanForItemAction($this);
       // PROFILES and UNIQUE_PROFILE in RuleMailcollector
       Rule::cleanForItemCriteria($this, 'PROFILES');
       Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
-
-      $gki = new KnowbaseItem_Profile();
-      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $gr = new Profile_Reminder();
-      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
    }
 
 
@@ -526,37 +522,35 @@ class Profile extends CommonDBTM {
              && (Session::getCurrentInterface() == 'central'
                  || in_array($key, self::$helpdesk_rights))) {
             $right_subqueries[] = [
-               'glpi_profilerights.name'     => $key,
-               'RAW'                         => [
-                  '(' . DBmysql::quoteName('glpi_profilerights.rights') . ' | ' . DBmysql::quoteValue($val) . ')' => $val
+               'AND' => [
+                  'glpi_profilerights.name'     => $key,
+                  'RAW'                         => [
+                     '(' . DBmysql::quoteName('glpi_profilerights.rights') . ' | ' . DBmysql::quoteValue($val) . ')' => $val
+                  ]
                ]
             ];
          }
       }
 
-      $dbiterator = new DBmysqlIterator(null);
-      $dbiterator->buildQuery(
-         'glpi_profilerights', [
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-               'glpi_profilerights.profiles_id' => new \QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
-               'OR'                             => $right_subqueries
-            ]
+      $sub_query = new QuerySubQuery([
+         'FROM'   => 'glpi_profilerights',
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            'glpi_profilerights.profiles_id' => new \QueryExpression(\DBmysql::quoteName('glpi_profiles.id')),
+            'OR'                             => $right_subqueries
          ]
-      );
-      $sub_query = $dbiterator->getSql();
-      $criteria['RAW'] = [
-         $sub_query => count($right_subqueries)
-      ];
+      ]);
+      $criteria[] = new \QueryExpression(count($right_subqueries)." = (".$sub_query->getSubQuery().")");
 
       if (Session::getCurrentInterface() == 'central') {
          return [
             'OR'  => [
-               $criteria,
-               'glpi_profiles.interface' => 'helpdesk'
+               'glpi_profiles.interface' => 'helpdesk',
+               'AND' => [$criteria]
             ]
          ];
       }
+
       return $criteria;
    }
 
@@ -2781,34 +2775,53 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * function to check one right of a user
+    * Check if user has given right.
     *
     * @since 0.84
     *
-    * @param $user       integer                id of the user to check rights
-    * @param $right      string                 right to check
-    * @param $valright   integer/string/array   value of the rights searched
-    * @param $entity     integer                id of the entity
+    * @param $user_id    integer  id of the user
+    * @param $rightname  string   name of right to check
+    * @param $rightvalue integer  value of right to check
+    * @param $entity_id  integer  id of the entity
     *
     * @return boolean
     */
-   static function haveUserRight($user, $right, $valright, $entity) {
+   static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id) {
       global $DB;
 
-      $query = "SELECT $right
-                FROM `glpi_profiles`
-                INNER JOIN `glpi_profiles_users`
-                   ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
-                WHERE `glpi_profiles_users`.`users_id` = '$user'
-                      AND $right IN ('$valright') ".
-                      getEntitiesRestrictRequest(" AND ", "glpi_profiles_users", '', $entity, true);
+      $result = $DB->request(
+         [
+            'COUNT'      => 'cpt',
+            'FROM'       => 'glpi_profilerights',
+            'INNER JOIN' => [
+               'glpi_profiles' => [
+                  'FKEY' => [
+                     'glpi_profilerights' => 'profiles_id',
+                     'glpi_profiles'      => 'id',
+                  ]
+               ],
+               'glpi_profiles_users' => [
+                  'FKEY' => [
+                     'glpi_profiles_users' => 'profiles_id',
+                     'glpi_profiles'       => 'id',
+                     [
+                        'AND' => ['glpi_profiles_users.users_id' => $user_id],
+                     ],
+                  ]
+               ],
+            ],
+            'WHERE'      => [
+               'glpi_profilerights.name'   => $rightname,
+               'glpi_profilerights.rights' => ['&',  $rightvalue],
+            ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_id, true),
+         ]
+      );
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            return true;
-         }
+      if (!$data = $result->next()) {
+         return false;
       }
-      return false;
+
+      return $data['cpt'] > 0;
    }
 
 

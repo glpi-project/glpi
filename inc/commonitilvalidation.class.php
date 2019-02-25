@@ -160,7 +160,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    /**
-    * @param $items_id ID of the item
+    * @param integer $items_id ID of the item
    **/
    static function canValidate($items_id) {
       global $DB;
@@ -336,7 +336,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       if (count($forbid_fields)) {
-         foreach ($forbid_fields as $key => $val) {
+         foreach (array_keys($forbid_fields) as $key) {
             if (isset($input[$key])) {
                unset($input[$key]);
             }
@@ -441,7 +441,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $global             boolean (true for global status, with "no validation" option)
     *                                    (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
@@ -466,14 +466,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Dropdown of validation status
     *
-    * @param $name          select name
-    * @param $options array of possible options:
+    * @param string $name    select name
+    * @param array  $options possible options:
     *      - value    : default value (default waiting)
     *      - all      : boolean display all (default false)
     *      - global   : for global validation (default false)
     *      - display  : boolean display or get string ? (default true)
     *
-    * @return nothing (display)
+    * @return string|integer Output string if display option is set to false,
+    *                        otherwise random part of dropdown id
    **/
    static function dropdownStatus($name, $options = []) {
 
@@ -501,7 +502,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get Ticket validation status Name
     *
-    * @param $value status ID
+    * @param integer $value status ID
    **/
    static function getStatus($value) {
 
@@ -514,7 +515,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get Ticket validation status Color
     *
-    * @param $value status ID
+    * @param integer $value status ID
    **/
    static function getStatusColor($value) {
 
@@ -565,8 +566,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the number of validations attached to an item having a specified status
     *
-    * @param $items_id   integer  item ID
-    * @param $status              status
+    * @param integer $items_id item ID
+    * @param integer $status   status
    **/
    static function getTicketStatusNumber($items_id, $status) {
       global $DB;
@@ -714,9 +715,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Print the validation list into item
     *
-    * @param $item class
+    * @param CommonDBTM $item
    **/
-   function showSummary($item) {
+   function showSummary(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(static::$rightname,
@@ -733,8 +734,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $rand   = mt_rand();
 
       if ($canadd) {
-         echo "<form method='post' name=form action='".
-                Toolbox::getItemTypeFormURL(static::$itemtype)."'>";
+         $itemtype = static::$itemtype;
+         echo "<form method='post' name=form action='".$itemtype::getFormURL()."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -888,7 +889,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $options   array    options used
     **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
 
       if ($ID > 0) {
          $this->canEdit($ID);
@@ -1289,7 +1289,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *  - users_id_validate       : ID of user validator
     *  - applyto
     *
-    * @return nothing (display)
+    * @return void Output is printed
    **/
    static function dropdownValidator(array $options = []) {
       global $CFG_GLPI;
@@ -1385,14 +1385,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $item CommonITILObject
     *
-    * @return validation status
+    * @return integer
    **/
    static function computeValidationStatus(CommonITILObject $item) {
 
       $validation_status  = self::WAITING;
-
-      $accepted           = 0;
-      $rejected           = 0;
 
       // Percent of validation
       $validation_percent = $item->fields['validation_percent'];
@@ -1433,9 +1430,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the validation statistics
     *
-    * @param $tID tickets id
+    * @param integer $tID tickets id
     *
-    * @return statistics array
+    * @return string
    **/
    static function getValidationStats($tID) {
 
@@ -1444,7 +1441,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $nb  = countElementsInTable(static::getTable(), [static::$items_id => $tID]);
 
       $stats = [];
-      foreach ($tab as $status => $name) {
+      foreach (array_keys($tab) as $status) {
          $validations = countElementsInTable(static::getTable(), [static::$items_id => $tID,
                                                                  'status'          => $status]);
          if ($validations > 0) {
@@ -1528,7 +1525,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @since 0.85
     *
-    * @return an array
+    * @return array
     **/
    static function getCanValidationStatusArray() {
       return [self::NONE, self::ACCEPTED];
@@ -1540,7 +1537,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @since 0.85
     *
-    * @return an array
+    * @return array
     **/
    static function getAllValidationStatusArray() {
       return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];

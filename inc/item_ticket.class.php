@@ -323,7 +323,7 @@ class Item_Ticket extends CommonDBRelation{
                             'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype,
                             'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id},
                      success: function(response) {";
-      $js .= "          $(\"#itemAddForm$rand\").html(response);";
+      $js .= "          $(\"#itemAddForm$rand\").replaceWith(response);";
       $js .= "       }";
       $js .= "    });";
       $js .= " }";
@@ -473,7 +473,7 @@ class Item_Ticket extends CommonDBRelation{
                    || empty($data["name"])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                }
-               if (Session::getCurrentInterface() != 'helpdesk') {
+               if ((Session::getCurrentInterface() != 'helpdesk') && $item::canView()) {
                   $link     = $itemtype::getFormURLWithID($data['id']);
                   $namelink = "<a href=\"".$link."\">".$name."</a>";
                } else {
@@ -686,10 +686,7 @@ class Item_Ticket extends CommonDBRelation{
       $already_add = $params['used'];
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, Ticket::HELPDESK_MY_HARDWARE)) {
-         $my_devices = ['' => __('General')];
-         if ($params['tickets_id'] > 0) {
-            $my_devices = ['' => Dropdown::EMPTY_VALUE];
-         }
+         $my_devices = ['' => Dropdown::EMPTY_VALUE];
          $devices    = [];
 
          // My items
@@ -930,6 +927,7 @@ class Item_Ticket extends CommonDBRelation{
             }
          }
          echo "<div id='tracking_my_devices'>";
+         echo __('My devices')."&nbsp;";
          Dropdown::showFromArray('my_items', $my_devices, ['rand' => $rand]);
          echo "</div>";
 

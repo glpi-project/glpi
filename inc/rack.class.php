@@ -1057,11 +1057,13 @@ JAVASCRIPT;
 
    function cleanDBonPurge() {
 
-      $item_rack = new Item_Rack();
-      $item_rack->deleteByCriteria(['racks_id' => $this->fields['id']]);
-
-      $pdu_rack = new PDU_Rack();
-      $pdu_rack->deleteByCriteria(['racks_id' => $this->fields['id']]);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Item::class,
+            Item_Rack::class,
+            PDU_Rack::class,
+         ]
+      );
    }
 
    /**

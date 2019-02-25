@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
+
 // Main GLPI test case. All tests should extends this class.
 
 class GLPITestCase extends atoum {
@@ -56,20 +58,21 @@ class GLPITestCase extends atoum {
          define('CACHED_TESTS', true);
          //ZendCache does not works with PHP5 acpu...
          $adapter = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         $GLPI_CACHE = \Zend\Cache\StorageFactory::factory([
+         $storage = \Zend\Cache\StorageFactory::factory([
             'adapter'   => $adapter,
             'options'   => [
                'namespace' => $this->nscache
             ]
          ]);
+         $GLPI_CACHE = new SimpleCacheDecorator($storage);
       }
    }
 
    public function afterTestMethod($method) {
       if (in_array($method, $this->cached_methods)) {
          global $GLPI_CACHE;
-         if ($GLPI_CACHE instanceof \Zend\Cache\Storage\Adapter\AbstractAdapter) {
-            $GLPI_CACHE->flush();
+         if ($GLPI_CACHE != null) {
+            $GLPI_CACHE->clear();
          }
          $GLPI_CACHE = false;
       }

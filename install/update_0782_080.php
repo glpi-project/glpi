@@ -299,7 +299,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 create glpi_slalevels_tickets");
    }
 
-   if (!countElementsInTable('glpi_crontasks', "`itemtype`='SlaLevel_Ticket' AND `name`='slaticket'")) {
+   if (!countElementsInTable('glpi_crontasks', ['itemtype' => 'SlaLevel_Ticket', 'name' => 'slaticket'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -669,7 +669,7 @@ function update0782to080() {
    // config inquest by entity
    $migration->addField("glpi_entitydatas", "max_closedate", "DATETIME NULL");
 
-   if (!countElementsInTable('glpi_crontasks', "`itemtype`='Ticket' AND `name`='createinquest'")) {
+   if (!countElementsInTable('glpi_crontasks', ['itemtype' => 'Ticket', 'name' => 'createinquest'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1175,7 +1175,7 @@ function update0782to080() {
    }
 
    // Add watcher crontask
-   if (!countElementsInTable('glpi_crontasks', "`itemtype`='Crontask' AND `name`='watcher'")) {
+   if (!countElementsInTable('glpi_crontasks', ['itemtype' => 'Crontask', 'name' => 'watcher'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)

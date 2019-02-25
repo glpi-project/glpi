@@ -257,12 +257,16 @@ abstract class LevelAgreement extends CommonDBChild {
       if ($ticket->fields['id']) {
          if ($this->getDataForTicket($ticket->fields['id'], $type)) {
             echo "<td style='width: 105px'>";
+            echo $tt->getBeginHiddenFieldValue($dateField);
             echo Html::convDateTime($ticket->fields[$dateField]);
+            echo $tt->getEndHiddenFieldValue($dateField, $ticket);
             echo "</td>";
             echo "<td>";
+            echo $tt->getBeginHiddenFieldText($laField);
             echo "<i class='fa fa-clock-o slt'></i>";
             echo Dropdown::getDropdownName(static::getTable(),
                                            $ticket->fields[$laField])."&nbsp;";
+            echo Html::hidden($laField, ['value' => $ticket->fields[$laField]]);
             $comment = isset($this->fields['comment']) ? $this->fields['comment'] : '';
             $level      = new static::$levelclass();
             $nextaction = new static::$levelticketclass();
@@ -310,6 +314,7 @@ abstract class LevelAgreement extends CommonDBChild {
                echo "<span class='sr-only'>"._x('button', 'Delete permanently')."</span>";
                echo "</a>";
             }
+            echo $tt->getEndHiddenFieldText($laField);
             echo "</td>";
 
          } else {
@@ -572,8 +577,9 @@ abstract class LevelAgreement extends CommonDBChild {
                echo "<td width='10'>";
                Html::showMassiveActionCheckBox("RuleTicket", $rule->fields["id"]);
                echo "</td>";
-               echo "<td><a href='".Toolbox::getItemTypeFormURL(get_class($rule))."?id=" .
-                      $rule->fields["id"] . "&amp;onglet=1'>" .$rule->fields["name"] ."</a></td>";
+               $ruleclassname = get_class($rule);
+               echo "<td><a href='".$ruleclassname::getFormURLWithID($rule->fields["id"])
+                       . "&amp;onglet=1'>" .$rule->fields["name"] ."</a></td>";
 
             } else {
                echo "<td>" . $rule->fields["name"] . "</td>";
@@ -996,7 +1002,7 @@ abstract class LevelAgreement extends CommonDBChild {
 
       $pre = static::$prefix;
 
-      if (!$levels_id && isset($ticket->fields['ttr'.$pre.'levels_id'])) {
+      if (!$levels_id && isset($ticket->fields['ttr_'.$pre.'levels_id'])) {
          $levels_id = $ticket->fields["ttr_".$pre."levels_id"];
       }
 

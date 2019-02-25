@@ -8245,6 +8245,8 @@ CREATE TABLE `glpi_states` (
   `is_visible_line` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_certificate` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_rack` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_enclosure` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_pdu` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8261,6 +8263,8 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_line` (`is_visible_line`),
   KEY `is_visible_certificate` (`is_visible_certificate`),
   KEY `is_visible_rack` (`is_visible_rack`),
+  KEY `is_visible_enclosure` (`is_visible_enclosure`),
+  KEY `is_visible_pdu` (`is_visible_pdu`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

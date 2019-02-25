@@ -67,12 +67,12 @@ function update911to913() {
    }
 
    //Fix duplicated search options
-   if (countElementsInTable("glpi_displaypreferences", "`itemtype` = 'IPNetwork' AND `num` = '17'") == 0) {
+   if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '17']) == 0) {
       $query = "UPDATE `glpi_displaypreferences`
                   SET num = '17' WHERE itemtype = 'IPNetwork' AND num = '13'";
       $DB->queryOrDie($query, "9.1.3 Fix duplicate IPNetwork Gateway search option");
    }
-   if (countElementsInTable("glpi_displaypreferences", "`itemtype` = 'IPNetwork' AND `num` = '18'") == 0) {
+   if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '18']) == 0) {
       $query = "UPDATE `glpi_displaypreferences`
                   SET num = '18' WHERE itemtype = 'IPNetwork' AND num = '14'";
       $DB->queryOrDie($query, "9.1.3 Fix duplicate IPNetwork addressable network search option");

@@ -31,7 +31,7 @@
 */
 
 // Current version of GLPI
-define('GLPI_VERSION', '9.3.2');
+define('GLPI_VERSION', '9.3.3');
 if (substr(GLPI_VERSION, -4) === '-dev') {
    //for dev version
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
@@ -203,7 +203,7 @@ $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'C
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-                                                  'Certificate'];
+                                                  'Certificate', 'Enclosure', 'Pdu'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -269,7 +269,7 @@ $CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor'
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 
-$CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate'];
 

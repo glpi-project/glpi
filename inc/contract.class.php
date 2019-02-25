@@ -64,17 +64,17 @@ class Contract extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $class = new Contract_Supplier();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Contract_Item::class,
+            Contract_Supplier::class,
+            ContractCost::class,
+         ]
+      );
 
-      $class = new ContractCost();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $class = new Contract_Item();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $class = new Alert();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      // Alert does not extends CommonDBConnexity
+      $alert = new Alert();
+      $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 
@@ -106,9 +106,16 @@ class Contract extends CommonDBTM {
    static function cloneItem ($itemtype, $oldid, $newid) {
       global $DB;
 
-      foreach ($DB->request('glpi_contracts_items',
-                            ['WHERE'  => "`items_id` = '$oldid'
-                                          AND `itemtype` = '$itemtype'"]) as $data) {
+      $result = $DB->request(
+         [
+            'FROM'   => Contract_Item::getTable(),
+            'WHERE'  => [
+               'items_id' => $oldid,
+               'itemtype' => $itemtype,
+            ],
+         ]
+      );
+      foreach ($result as $data) {
          $cd = new Contract_Item();
          unset($data['id']);
          $data['items_id'] = $newid;
@@ -401,7 +408,7 @@ class Contract extends CommonDBTM {
          'id'                 => '29',
          'table'              => 'glpi_contracts',
          'field'              => 'name',
-         'name'               => self::getTypeName(1),
+         'name'               => __('Name'),
          'forcegroupby'       => true,
          'datatype'           => 'itemlink',
          'massiveaction'      => false,
@@ -412,7 +419,7 @@ class Contract extends CommonDBTM {
          'id'                 => '30',
          'table'              => 'glpi_contracts',
          'field'              => 'num',
-         'name'               => __('Contract number'),
+         'name'               => __('Number'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $joinparams,
@@ -423,7 +430,7 @@ class Contract extends CommonDBTM {
          'id'                 => '129',
          'table'              => 'glpi_contracttypes',
          'field'              => 'name',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Type')),
+         'name'               => __('Type'),
          'datatype'           => 'dropdown',
          'massiveaction'      => false,
          'joinparams'         => [
@@ -438,7 +445,7 @@ class Contract extends CommonDBTM {
          'id'                 => '130',
          'table'              => 'glpi_contracts',
          'field'              => 'duration',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Duration')),
+         'name'               => __('Duration'),
          'datatype'           => 'number',
          'max'                => '120',
          'unit'               => 'month',
@@ -452,7 +459,7 @@ class Contract extends CommonDBTM {
          'table'              => 'glpi_contracts',
          'field'              => 'periodicity',
                                  //TRANS: %1$s is Contract, %2$s is field name
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Periodicity')),
+         'name'               => __('Periodicity'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $joinparams,
@@ -474,7 +481,7 @@ class Contract extends CommonDBTM {
          'id'                 => '132',
          'table'              => 'glpi_contracts',
          'field'              => 'begin_date',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Start date')),
+         'name'               => __('Start date'),
          'forcegroupby'       => true,
          'datatype'           => 'date',
          'massiveaction'      => false,
@@ -485,7 +492,7 @@ class Contract extends CommonDBTM {
          'id'                 => '133',
          'table'              => 'glpi_contracts',
          'field'              => 'accounting_number',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Account number')),
+         'name'               => __('Account number'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
@@ -496,7 +503,7 @@ class Contract extends CommonDBTM {
          'id'                 => '134',
          'table'              => 'glpi_contracts',
          'field'              => 'end_date',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('End date')),
+         'name'               => __('End date'),
          'forcegroupby'       => true,
          'datatype'           => 'date_delay',
          'datafields'         => [
@@ -513,7 +520,7 @@ class Contract extends CommonDBTM {
          'id'                 => '135',
          'table'              => 'glpi_contracts',
          'field'              => 'notice',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Notice')),
+         'name'               => __('Notice'),
          'datatype'           => 'number',
          'max'                => '120',
          'unit'               => 'month',
@@ -526,7 +533,7 @@ class Contract extends CommonDBTM {
          'id'                 => '136',
          'table'              => 'glpi_contractcosts',
          'field'              => 'totalcost',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Cost')),
+         'name'               => __('Cost'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'decimal',
@@ -539,7 +546,7 @@ class Contract extends CommonDBTM {
          'id'                 => '137',
          'table'              => 'glpi_contracts',
          'field'              => 'billing',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Invoice period')),
+         'name'               => __('Invoice period'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $joinparams,
@@ -561,7 +568,7 @@ class Contract extends CommonDBTM {
          'id'                 => '138',
          'table'              => 'glpi_contracts',
          'field'              => 'renewal',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Renewal')),
+         'name'               => __('Renewal'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => $joinparams,
@@ -1202,48 +1209,120 @@ class Contract extends CommonDBTM {
 
       foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
          $before       = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
-         $query_notice = "SELECT `glpi_contracts`.*
-                          FROM `glpi_contracts`
-                          LEFT JOIN `glpi_alerts`
-                              ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                                  AND `glpi_alerts`.`itemtype` = 'Contract'
-                                  AND `glpi_alerts`.`type`='".Alert::NOTICE."')
-                          WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::NOTICE).") >'0'
-                                AND `glpi_contracts`.`is_deleted` = 0
-                                AND `glpi_contracts`.`begin_date` IS NOT NULL
-                                AND `glpi_contracts`.`duration` <> 0
-                                AND `glpi_contracts`.`notice` <> 0
-                                AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                     INTERVAL `glpi_contracts`.`duration` MONTH),
-                                             CURDATE()) > 0
-                                AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                     INTERVAL (`glpi_contracts`.`duration`
-                                                                -`glpi_contracts`.`notice`) MONTH),
-                                             CURDATE()) < '$before'
-                                AND `glpi_alerts`.`date` IS NULL
-                                AND `glpi_contracts`.`entities_id` = '".$entity."'";
 
-         $query_end = "SELECT `glpi_contracts`.*
-                       FROM `glpi_contracts`
-                       LEFT JOIN `glpi_alerts`
-                           ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                               AND `glpi_alerts`.`itemtype` = 'Contract'
-                               AND `glpi_alerts`.`type`='".Alert::END."')
-                       WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::END).") > '0'
-                             AND `glpi_contracts`.`is_deleted` = 0
-                             AND `glpi_contracts`.`begin_date` IS NOT NULL
-                             AND `glpi_contracts`.`duration` <> '0'
-                             AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                  INTERVAL (`glpi_contracts`.`duration`) MONTH),
-                                          CURDATE()) < '$before'
-                             AND `glpi_alerts`.`date` IS NULL
-                             AND `glpi_contracts`.`entities_id` = '".$entity."'";
+         $query_notice = [
+            'SELECT'    => [
+               'glpi_contracts.*',
+            ],
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+               'glpi_alerts' => [
+                  'FKEY' => [
+                     'glpi_alerts'    => 'items_id',
+                     'glpi_contracts' => 'id',
+                     [
+                        'AND' => [
+                           'glpi_alerts.itemtype' => 'Contract',
+                           'glpi_alerts.type'     => Alert::NOTICE,
+                        ],
+                     ],
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               [
+                  'RAW' => [
+                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0]
+                  ]
+               ],
+               'glpi_alerts.date'           => null,
+               'glpi_contracts.is_deleted'  => 0,
+               [
+                  'NOT' => ['glpi_contracts.begin_date' => null],
+               ],
+               'glpi_contracts.duration'    => ['!=', 0],
+               'glpi_contracts.notice'      => ['!=', 0],
+               'glpi_contracts.entities_id' => $entity,
+               [
+                  'RAW' => [
+                     'DATEDIFF(
+                         ADDDATE(
+                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                         ),
+                         CURDATE()
+                      )' => ['>', 0]
+                  ]
+               ],
+               [
+                  'RAW' => [
+                     'DATEDIFF(
+                         ADDDATE(
+                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL (
+                               ' . DBmysql::quoteName('glpi_contracts.duration') . '
+                               - ' . DBmysql::quoteName('glpi_contracts.notice') . '
+                            ) MONTH
+                         ),
+                         CURDATE()
+                      )' => ['<', $before]
+                  ]
+               ],
+            ],
+         ];
+
+         $query_end = [
+            'SELECT'    => [
+               'glpi_contracts.*',
+            ],
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+               'glpi_alerts' => [
+                  'FKEY' => [
+                     'glpi_alerts'    => 'items_id',
+                     'glpi_contracts' => 'id',
+                     [
+                        'AND' => [
+                           'glpi_alerts.itemtype' => 'Contract',
+                           'glpi_alerts.type'     => Alert::END,
+                        ],
+                     ],
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               [
+                  'RAW' => [
+                     DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0]
+                  ]
+               ],
+               'glpi_alerts.date'           => null,
+               'glpi_contracts.is_deleted'  => 0,
+               [
+                  'NOT' => ['glpi_contracts.begin_date' => null],
+               ],
+               'glpi_contracts.duration'    => ['!=', 0],
+               'glpi_contracts.entities_id' => $entity,
+               [
+                  'RAW' => [
+                     'DATEDIFF(
+                         ADDDATE(
+                            ' . DBmysql::quoteName('glpi_contracts.begin_date') . ',
+                            INTERVAL ' . DBmysql::quoteName('glpi_contracts.duration') . ' MONTH
+                         ),
+                         CURDATE()
+                      )' => ['<', $before]
+                  ]
+               ],
+            ],
+         ];
 
          $querys = ['notice' => $query_notice,
                          'end'    => $query_end];
 
          foreach ($querys as $type => $query) {
-            foreach ($DB->request($query) as $data) {
+            $result = $DB->request($query);
+            foreach ($result as $data) {
                $entity  = $data['entities_id'];
 
                $message = sprintf(__('%1$s: %2$s')."<br>\n", $data["name"],

@@ -406,13 +406,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    function cleanDBonPurge() {
 
-      $link = new IPNetwork_Vlan();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      $link = new IPAddress_IPNetwork();
-      $link->cleanDBonItemDelete($this->getType(), $this->getID());
-
-      return true;
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            IPAddress_IPNetwork::class,
+            IPNetwork_Vlan::class,
+         ]
+      );
    }
 
 
@@ -1024,7 +1023,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       parent::title();
 
       if (Session::haveRight('internet', UPDATE)
-          && Session::isViewAllEntities()) {
+          && Session::canViewAllEntities()) {
 
          echo "<div class='spaced' id='tabsbody'>";
          echo "<table class='tab_cadre_fixe'>";

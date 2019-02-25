@@ -150,8 +150,11 @@ class Document extends CommonDBTM {
 
    function cleanDBonPurge() {
 
-      $di = new Document_Item();
-      $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Document_Item::class,
+         ]
+      );
 
       // UNLINK DU FICHIER
       if (!empty($this->fields["filepath"])) {

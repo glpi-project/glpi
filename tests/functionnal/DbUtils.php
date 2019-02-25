@@ -764,17 +764,18 @@ class DbUtils extends DbTestCase {
 
       //test on multiple entities
       $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
+      $newckey = $ckey . md5("$new_id|$new_id2");
       if ($cache === true && $hit === false) {
-         $this->boolean(apcu_exists($ckey . $new_id . '|' . $new_id2))->isFalse();
+         $this->boolean(apcu_exists($newckey))->isFalse();
       } else if ($cache === true && $hit === true) {
-         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
       }
 
       $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
       $this->array($ancestors)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
-         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+         $this->array(apcu_fetch($newckey))->isIdenticalTo($expected);
       }
    }
 
@@ -962,4 +963,142 @@ class DbUtils extends DbTestCase {
       $this->runGetSonsOf(true, true);
    }
 
+   /**
+    * Validates that relation mapping is based on existing tables and fields.
+    */
+   public function testRelationsValidity() {
+
+      global $DB;
+
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->array($mapping = $this->testedInstance->getDbRelations())
+         ->hasKey('_virtual_device');
+
+      $virtual_mapping = $mapping['_virtual_device'];
+      unset($mapping['_virtual_device']);
+
+      foreach ($mapping as $tablename => $relations) {
+         $this->boolean($DB->tableExists($tablename))
+            ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $tablename));
+
+         foreach ($relations as $relation_tablename => $fields) {
+            if (strpos($relation_tablename, '_') === 0) {
+               $relation_tablename = substr($relation_tablename, 1);
+            }
+
+            $this->boolean($DB->tableExists($relation_tablename))
+               ->isTrue(sprintf('Invalid table "%s" in relation mapping.', $relation_tablename));
+
+            if (!is_array($fields)) {
+               $fields = [$fields];
+            }
+
+            foreach ($fields as $field) {
+               $this->boolean($DB->fieldExists($relation_tablename, $field))
+                  ->isTrue(sprintf('Invalid table field "%s.%s" in relation mapping.', $relation_tablename, $field));
+            }
+         }
+      }
+
+      foreach ($virtual_mapping as $tablename => $fields) {
+         $this->boolean($DB->tableExists($tablename))
+            ->isTrue(sprintf('Invalid table "%s" in _virtual_device mapping.', $tablename));
+
+         foreach ($fields as $field) {
+            $this->boolean($DB->fieldExists($tablename, $field))
+               ->isTrue(sprintf('Invalid table field "%s.%s" in _virtual_device mapping.', $tablename, $field));
+         }
+      }
+   }
+
+   protected function autoNameProvider() {
+      return [
+         //will return name without changes
+         [
+            //not a template
+            'name'         => 'Computer 1',
+            'field'        => 'name',
+            'is_template'  => false,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, //default
+            'expected'     => 'Computer 1'
+         ], [
+            //not a template
+            'name'         => '&lt;abc&gt;',
+            'field'        => 'name',
+            'is_template'  => false,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '&lt;abc&gt;'
+         ], [
+            //does not match pattern
+            'name'         => '&lt;abc&gt;',
+            'field'        => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '&lt;abc&gt;'
+         ], [
+            //first added
+            'name'         => '&lt;####&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '0001'
+         ], [
+            //existing
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => -1, // default
+            'expected'     => '_test_pc23'
+         ], [
+            //not existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 0,
+            'expected'     => '_test_pc01'
+         ], [
+            //existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 1,
+            'expected'     => '_test_pc04'
+         ], [
+            //existing on entity
+            'name'         => '&lt;_test_pc##&gt;',
+            'field'       => 'name',
+            'is_template'  => true,
+            'itemtype'     => 'Computer',
+            'entities_id'  => 2,
+            'expected'     => '_test_pc14'
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider autoNameProvider
+    */
+   public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected) {
+      $this
+         ->if($this->newTestedInstance)
+            ->then
+            ->string(
+               $autoname = $this->testedInstance->autoName(
+                  $name,
+                  $field,
+                  $is_template,
+                  $itemtype,
+                  $entities_id
+               )
+            )->isIdenticalTo($expected);
+   }
 }

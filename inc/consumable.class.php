@@ -80,12 +80,10 @@ class Consumable extends CommonDBChild {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $DB->delete(
-         'glpi_infocoms', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => $this->getType()
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Infocom::class,
          ]
       );
    }

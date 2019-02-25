@@ -55,22 +55,12 @@ class Contact extends CommonDBTM{
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $cs = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      $DB->delete(
-         'glpi_projecttaskteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
-         ]
-      );
-
-      $DB->delete(
-         'glpi_projectteams', [
-            'items_id'  => $this->fields['id'],
-            'itemtype'  => __CLASS__
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Contact_Supplier::class,
+            ProjectTaskTeam::class,
+            ProjectTeam::class,
          ]
       );
    }

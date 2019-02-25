@@ -167,11 +167,9 @@ class Item_Enclosure extends CommonDBRelation {
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
-      $colspan = 4;
-
       echo "<div class='center'>";
 
-      $this->initForm($ID, $this->fields);
+      $this->initForm($ID, $options);
       $this->showFormHeader();
 
       $enclosure = new Enclosure();
@@ -201,6 +199,17 @@ class Item_Enclosure extends CommonDBRelation {
       $used = [];
       $iterator = $DB->request([
          'FROM'   => $this->getTable()
+      ]);
+      while ($row = $iterator->next()) {
+         $used [$row['itemtype']][] = $row['items_id'];
+      }
+
+      // get used items by racks
+      $iterator = $DB->request([
+         'FROM'  => Item_Rack::getTable(),
+         'WHERE' => [
+            'is_reserved' => 0
+         ]
       ]);
       while ($row = $iterator->next()) {
          $used [$row['itemtype']][] = $row['items_id'];

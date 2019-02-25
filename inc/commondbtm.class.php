@@ -232,6 +232,30 @@ class CommonDBTM extends CommonGLPI {
       return $_SESSION['glpi_foreign_key_field_of'][get_called_class()];
    }
 
+   /**
+    * Return SQL path to access a field.
+    *
+    * @param string      $field     Name of the field (or SQL keyword like '*')
+    * @param string|null $classname Forced classname (to avoid late_binding on inheritance)
+    *
+    * @return string
+    *
+    * @throws InvalidArgumentException
+    * @throws LogicException
+    **/
+   static function getTableField($field, $classname = null) {
+
+      if (empty($field)) {
+         throw new InvalidArgumentException('Argument $field cannot be empty.');
+      }
+
+      $tablename = self::getTable($classname);
+      if (empty($tablename)) {
+         throw new LogicException('Invalid table name.');
+      }
+
+      return sprintf('%s.%s', $tablename, $field);
+   }
 
    /**
     * Retrieve an item from the database
@@ -338,8 +362,11 @@ class CommonDBTM extends CommonGLPI {
    public static function getFromIter(DBmysqlIterator $iter) {
       $item = new static;
 
-      foreach ($iter as $id => $row) {
-         if ($item->getFromDB($id)) {
+      foreach ($iter as $row) {
+         if (!isset($row["id"])) {
+            continue;
+         }
+         if ($item->getFromDB($row["id"])) {
             yield $item;
          }
       }
@@ -518,7 +545,7 @@ class CommonDBTM extends CommonGLPI {
       if (!empty($table) &&
           ($fields = $DB->list_fields($table))) {
 
-         foreach ($fields as $key => $val) {
+         foreach (array_keys($fields) as $key) {
             $this->fields[$key] = "";
          }
       } else {
@@ -568,11 +595,11 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function updateInDB($updates, $oldvalues = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       foreach ($updates as $field) {
          if (isset($this->fields[$field])) {
-            $result = $DB->update(
+            $DB->update(
                $this->getTable(),
                [$field => $this->fields[$field]],
                ['id' => $this->fields['id']]
@@ -639,12 +666,11 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean true if succeed else false
    **/
    function restoreInDB() {
-      global $DB,$CFG_GLPI;
+      global $DB;
 
       if ($this->maybeDeleted()) {
          $params = ['is_deleted' => 0];
          // Auto set date_mod if exsist
-         $toadd = '';
          if (isset($this->fields['date_mod'])) {
             $params['date_mod'] = $_SESSION["glpi_currenttime"];
          }
@@ -667,7 +693,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean true if succeed else false
    **/
    function deleteFromDB($force = 0) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (($force == 1)
           || !$this->maybeDeleted()
@@ -760,7 +786,13 @@ class CommonDBTM extends CommonGLPI {
                }
 
                foreach ($field as $f) {
-                  foreach ($DB->request($tablename, [$f => $this->getID()]) as $data) {
+                  $result = $DB->request(
+                     [
+                        'FROM'  => $tablename,
+                        'WHERE' => [$f => $this->getID()],
+                     ]
+                  );
+                  foreach ($result as $data) {
                      // Be carefull : we must use getIndexName because self::update rely on that !
                      if ($object = getItemForItemtype($itemtype)) {
                         $idName = $object->getIndexName();
@@ -827,6 +859,34 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function cleanDBonPurge() {
+   }
+
+
+   /**
+    * Delete children items and relation with other items from database.
+    *
+    * @param array $relations_classes List of classname on which deletion will be done
+    *                                 Classes needs to extends CommonDBConnexity.
+    *
+    * @return void
+    **/
+   protected function deleteChildrenAndRelationsFromDb(array $relations_classes) {
+
+      foreach ($relations_classes as $classname) {
+         if (!is_a($classname, CommonDBConnexity::class, true)) {
+            Toolbox::logWarning(
+               sprintf(
+                  'Unable to clean elements of class %s as it does not extends "CommonDBConnexity"',
+                  $classname
+               )
+            );
+            continue;
+         }
+
+         /** @var CommonDBConnexity $relation_item */
+         $relation_item = new $classname();
+         $relation_item->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }
    }
 
 
@@ -1046,7 +1106,7 @@ class CommonDBTM extends CommonGLPI {
          $table_fields = $DB->list_fields($this->getTable());
 
          // fill array for add
-         foreach ($this->input as $key => $val) {
+         foreach (array_keys($this->input) as $key) {
             if (($key[0] != '_')
                 && isset($table_fields[$key])) {
                $this->fields[$key] = $this->input[$key];
@@ -1107,10 +1167,6 @@ class CommonDBTM extends CommonGLPI {
                }
                if ($this->notificationqueueonaction) {
                   QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
-               }
-               // For unit test (workaround for MyIsam without transaction)
-               if (isset($DB->objcreated) && is_array($DB->objcreated)) {
-                  $DB->objcreated[$this->getTable()][] = $this->fields['id'];
                }
                return $this->fields['id'];
             }
@@ -1207,7 +1263,7 @@ class CommonDBTM extends CommonGLPI {
          if (!isset($link)) {
             return;
          }
-         if (($name = $this->getName()) == NOT_AVAILABLE) {
+         if ($this->getName() == NOT_AVAILABLE) {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
             $this->fields['name'] = sprintf(__('%1$s - ID %2$d'),
                                             $this->getTypeName(1), $this->fields['id']);
@@ -1269,7 +1325,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean true on success
    **/
    function update(array $input, $history = 1, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if ($DB->isSlave()) {
          return false;
@@ -1307,7 +1363,7 @@ class CommonDBTM extends CommonGLPI {
             $this->updates   = [];
             $this->oldvalues = [];
 
-            foreach ($this->input as $key => $val) {
+            foreach (array_keys($this->input) as $key) {
                if (array_key_exists($key, $this->fields)) {
 
                   // Prevent history for date statement (for date for example)
@@ -2076,7 +2132,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    function canUnrecurs() {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ID  = $this->fields['id'];
       if (($ID < 0)
@@ -2304,7 +2360,6 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function showFormButtons($options = []) {
-      global $CFG_GLPI;
 
       // for single object like config
       if (isset($this->fields['id'])) {
@@ -2503,7 +2558,6 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function showFormHeader($options = []) {
-      global $CFG_GLPI;
 
       $ID     = $this->fields['id'];
 
@@ -2812,7 +2866,6 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function check($ID, $right, array &$input = null) {
-      global $CFG_GLPI;
 
       // Check item exists
       if (!$this->isNewID($ID)
@@ -2865,7 +2918,6 @@ class CommonDBTM extends CommonGLPI {
     * @return void
    **/
    function checkGlobal($right) {
-      global $CFG_GLPI;
 
       if (!$this->canGlobal($right)) {
          // Gestion timeout session
@@ -3477,7 +3529,6 @@ class CommonDBTM extends CommonGLPI {
     * @return string name of the object in the current language
    **/
    function getNameID($options = []) {
-      global $CFG_GLPI;
 
       $p = [
          'forceid'  => false,
@@ -4052,7 +4103,6 @@ class CommonDBTM extends CommonGLPI {
       $message_text .= '<br>'.__('Other item exist');
 
       foreach ($doubles as $double) {
-         $doubles_text = [];
          if (in_array('CommonDBChild', class_parents($this))) {
             if ($this->getField($this->itemtype)) {
                $item = new $double['itemtype']();
@@ -4106,7 +4156,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean true if item can be written in DB, false if not
    **/
    function checkUnicity($add = false, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $p = [
          'unicity_error_message'  => true,
@@ -4598,10 +4648,6 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $options['display'] = false;
-         $unit               = '';
-         if (isset($searchoptions['unit'])) {
-            $unit = $searchoptions['unit'];
-         }
 
          if (isset($options[$searchoptions['table'].'.'.$searchoptions['field']])) {
             $options = array_merge($options,
@@ -5057,8 +5103,12 @@ class CommonDBTM extends CommonGLPI {
                $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
                $input2["tickets_id"] = $this->getID();
             }
-            // Insert image tag
-            $input2["tag"] = $input['_tag'][$key];
+
+            if (isset($input['_tag'][$key])) {
+               // Insert image tag
+               $input2["tag"] = $input['_tag'][$key];
+            }
+
             $input2["entities_id"]             = $entities_id;
             $input2["is_recursive"]            = 1;
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
@@ -5068,7 +5118,11 @@ class CommonDBTM extends CommonGLPI {
                $input2["_prefix_filename"]  = [$this->input['_prefix_filename'][$key]];
             }
             $docID = $doc->add($input2);
-            $docadded[$docID]['tag'] = $input['_tag'][$key];
+
+            if (isset($input['_tag'][$key])) {
+               // Store image tag
+               $docadded[$docID]['tag'] = $doc->fields["tag"];
+            }
          }
 
          if ($docID > 0) {

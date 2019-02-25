@@ -43,7 +43,7 @@ class Project extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
-   static protected $forward_entity_to = ['ProjectTask'];
+   static protected $forward_entity_to = ['ProjectCost', 'ProjectTask'];
    static $rightname                   = 'project';
    protected $usenotepad               = true;
 
@@ -189,15 +189,13 @@ class Project extends CommonDBTM {
       // No view to project by right on tasks add it
       if (!static::canView()
           && Session::haveRight('projecttask', ProjectTask::READMY)) {
-         $menu['project']['title']                    = Project::getTypeName(Session::getPluralNumber());
-         $menu['project']['page']                     = ProjectTask::getSearchURL(false);
+         $menu['project']['title'] = Project::getTypeName(Session::getPluralNumber());
+         $menu['project']['page']  = ProjectTask::getSearchURL(false);
 
-         $links = static::getAdditionalMenuLinks();
          if (count($links)) {
             $menu['project']['links'] = $links;
          }
-         $menu['project']['options']['task']['title'] = __('My tasks');
-         $menu['project']['options']['task']['page']  = ProjectTask::getSearchURL(false);
+
          return $menu;
       }
       return false;
@@ -205,9 +203,15 @@ class Project extends CommonDBTM {
 
 
    static function getAdditionalMenuOptions() {
-
-      return ['task' => ['title' => __('My tasks'),
-                                   'page'  => ProjectTask::getSearchURL(false)]];
+      return [
+         'task' => [
+            'title' => __('My tasks'),
+            'page'  => ProjectTask::getSearchURL(false),
+            'links' => [
+               'search' => ProjectTask::getSearchURL(false),
+            ]
+         ]
+      ];
    }
 
 
@@ -223,7 +227,7 @@ class Project extends CommonDBTM {
          $pic_validate = "<img title=\"".__s('My tasks')."\" alt=\"".__('My tasks')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
 
-         $links[$pic_validate] = '/front/projecttask.php';
+         $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
          $links['summary'] = Project::getFormURL(false).'?showglobalgantt=1';
       }
@@ -311,19 +315,16 @@ class Project extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $pt = new ProjectTask();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $cp = new Change_Project();
-      $cp->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $ip = new Item_Project();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
-      $pt = new ProjectTeam();
-      $pt->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+      $this->deleteChildrenAndRelationsFromDb(
+         [
+            Change_Project::class,
+            Item_Project::class,
+            ProjectCost::class,
+            ProjectTask::class,
+            ProjectTeam::class,
+         ]
+      );
 
       parent::cleanDBonPurge();
    }

@@ -263,7 +263,7 @@ function update0831to084() {
       $migration->changeField('glpi_entities', 'id', 'id', 'integer');
       $migration->migrationOneTable('glpi_entities');
       // pour que la procedure soit re-entrante
-      if (countElementsInTable("glpi_entities", "id=0") < 1) {
+      if (countElementsInTable("glpi_entities", ['id' => '0']) < 1) {
          // Create root entity
          $query = "INSERT INTO `glpi_entities`
                           (`id`, `name`, `completename`, `entities_id`, `level`)
@@ -406,8 +406,8 @@ function update0831to084() {
 
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',
-                            "`itemtype` = 'Ticket'
-                              AND `event` = 'validation_answer'")==0) {
+                            ['itemtype' => 'Ticket',
+                             'event'    => 'validation_answer'])==0) {
       // No notifications duplicate all
 
       $query = "SELECT *
@@ -447,7 +447,7 @@ function update0831to084() {
    foreach ($from_to as $from => $to) {
       // Check if notifications already exists
       if (countElementsInTable('glpi_notifications',
-                               "`itemtype` = 'Contract' AND `event` = '$to'")==0) {
+                               ['itemtype' => 'Contract', 'event' => $to])==0) {
          // No notifications duplicate all
 
          $query = "SELECT *
@@ -754,7 +754,7 @@ function update0831to084() {
    }
 
    if (!countElementsInTable('glpi_crontasks',
-                             "`itemtype`='PlanningRecall' AND `name`='planningrecall'")) {
+                             ['itemtype' => 'PlanningRecall', 'name' => 'planningrecall'])) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1104,7 +1104,7 @@ function update0831to084() {
 
    // Add delete ticket notification
    if (countElementsInTable("glpi_notifications",
-                            "`itemtype` = 'Ticket' AND `event` = 'delete'") == 0) {
+                            ['itemtype' => 'Ticket', 'event' => 'delete']) == 0) {
       // Get first template for tickets :
       $notid = 0;
       $query = "SELECT MIN(id) AS id

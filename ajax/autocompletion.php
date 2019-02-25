@@ -87,7 +87,7 @@ $values = [];
 
 if (count($iterator)) {
    while ($data = $iterator->next()) {
-      $values[] = $data[$_GET['field']];
+      $values[] = Html::entity_decode_deep($data[$_GET['field']]);
    }
 }
 
