@@ -721,7 +721,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          ]
       ];
 
-      $fields = $this->getDbFormFields($fields);
+      $fields = $this->cleanFormFields($fields);
 
       return $fields;
    }

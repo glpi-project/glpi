@@ -7166,7 +7166,7 @@ abstract class CommonITILObject extends CommonDBTM {
             'fieldset'  => 'sla'
          ]
       ];
-      $fields = $this->getDbFormFields($fields);
+      $fields = $this->cleanFormFields($fields);
       return $fields;
    }
 
