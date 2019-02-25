@@ -108,9 +108,12 @@ class QueryUnion extends AbstractQuery {
          $keyword .= ' ALL';
       }
       $query = '(' . implode(" $keyword ", $queries) . ')';
-      if ($this->alias !== null) {
-         $query .= ' AS ' . $DB->quoteName($this->alias);
-      }
+
+      $alias = $this->alias !== null
+         ? $this->alias
+         : 'union_' . md5($query);
+      $query .= ' AS ' . $DB->quoteName($alias);
+
       return $query;
    }
 }
