@@ -16,6 +16,7 @@
 /vendor/
 phpunit.xml
 /tests/code-coverage/
+/tests/files/
 /config/based_config.php
 /config/config.php
 /config/define.php
