@@ -5328,26 +5328,23 @@ class CommonDBTM extends CommonGLPI {
          ]
       ];
 
-      $fields = $this->getDbFormFields($fields);
+      $fields = $this->cleanFormFields($fields);
 
       return $fields;
    }
 
    /**
-    * Add fields from database - if missing
+    * Clean form fields that does not exists in current table
     *
     * @since 10.0.0
     *
     * @return array
     */
-   protected function getDbFormFields($fields) {
+   protected function cleanFormFields($fields) {
       global $DB;
       if ($dbfields = $DB->listFields($this->getTable())) {
          foreach (array_keys($fields) as $field) {
             if (!isset($dbfields[$field])) {
-               /*Toolbox::logWarning(
-                    sprintf('Field %1$s does not exists in table %2$s', $field, $this->getTable())
-               );*/
                unset($fields[$field]);
             }
          }
