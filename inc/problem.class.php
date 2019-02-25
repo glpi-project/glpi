@@ -203,13 +203,6 @@ class Problem extends CommonITILObject {
                   $item->showAnalysisForm();
                   break;
 
-               case 2 :
-                  if (!isset($_GET['load_kb_sol'])) {
-                     $_GET['load_kb_sol'] = 0;
-                  }
-                  $item->showSolutions($_GET['load_kb_sol']);
-                  break;
-
                case 4 :
                   $item->showStats();
                   break;

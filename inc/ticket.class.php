@@ -941,18 +941,6 @@ class Ticket extends CommonITILObject {
                   echo "</div>";
                   break;
 
-               case 2 :
-                  if (!isset($_GET['load_kb_sol'])) {
-                     $_GET['load_kb_sol'] = 0;
-                  }
-                  $item->showSolutionForm($_GET['load_kb_sol']);
-
-                  if ($item->canApprove()) {
-                     $fup = new ITILFollowup();
-                     $fup->showApprobationForm($item);
-                  }
-                  break;
-
                case 3 :
                   $satisfaction = new TicketSatisfaction();
                   if (($item->fields['status'] == self::CLOSED)
@@ -2500,13 +2488,15 @@ class Ticket extends CommonITILObject {
             'glpi_items_tickets.items_id' => $items_id,
             'glpi_items_tickets.itemtype' => $itemtype,
             'OR'                          => [
-               'NOT' => [
-                  $this->getTable() . '.status' => array_merge(
-                     $this->getClosedStatusArray(),
-                     $this->getSolvedStatusArray()
-                  )
+               [
+                  'NOT' => [
+                     $this->getTable() . '.status' => array_merge(
+                        $this->getClosedStatusArray(),
+                        $this->getSolvedStatusArray()
+                     )
+                  ]
                ],
-               'AND' => [
+               [
                   'NOT' => [$this->getTable() . '.solvedate' => null],
                   new \QueryExpression(
                      "ADDDATE(" . $DB->quoteName($this->getTable()) .

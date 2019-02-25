@@ -1054,10 +1054,8 @@ class Migration {
       $where = [];
       foreach ($requiredrights as $reqright => $reqvalue) {
          $where['OR'][] = [
-            'AND' => [
-               'name'   => $reqright,
-               new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
-            ]
+            'name'   => $reqright,
+            new QueryExpression("{$DB->quoteName('rights')} & $reqvalue = $reqvalue")
          ];
       }
 

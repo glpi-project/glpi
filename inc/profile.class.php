@@ -446,11 +446,9 @@ class Profile extends CommonDBTM {
              && (Session::getCurrentInterface() == 'central'
                  || in_array($key, self::$helpdesk_rights))) {
             $right_subqueries[] = [
-               'AND' => [
-                  'glpi_profilerights.name'     => $key,
-                  'RAW'                         => [
-                     '(' . $DB->quoteName('glpi_profilerights.rights') . ' | ' . $DB->quote($val) . ')' => $val
-                  ]
+               'glpi_profilerights.name'     => $key,
+               'RAW'                         => [
+                  '(' . $DB->quoteName('glpi_profilerights.rights') . ' | ' . $DB->quote($val) . ')' => $val
                ]
             ];
          }
@@ -475,7 +473,7 @@ class Profile extends CommonDBTM {
          return [
             'OR'  => [
                'glpi_profiles.interface' => 'helpdesk',
-               'AND' => [$criteria]
+               $criteria
             ]
          ];
       }

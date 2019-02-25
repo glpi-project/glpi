@@ -130,7 +130,7 @@ class Document_Item extends DbTestCase {
          'WHERE'           => [
             'OR'  => [
                'glpi_documents_items.documents_id'  => 1,
-               'AND' => [
+               [
                   'glpi_documents_items.itemtype'  => 'Document',
                   'glpi_documents_items.items_id'  => 1
                ]
@@ -148,12 +148,12 @@ class Document_Item extends DbTestCase {
          'WHERE'           => [
             'OR'  => [
                'glpi_documents_items.documents_id'  => 1,
-               'AND' => [
+               [
                   'glpi_documents_items.itemtype'  => 'Document',
                   'glpi_documents_items.items_id'  => 1
                ]
             ],
-            'AND' => [
+            [
                'date_mod'  => [
                   '>',
                   '2000-01-01'

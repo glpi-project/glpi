@@ -661,12 +661,30 @@ class DBmysqlIterator extends DbTestCase {
 
       $crit = [
          'WHERE' => [
+            'OR' => [
+               [
+                  'items_id' => 15,
+                  'itemtype' => 'Computer'
+               ],
+               [
+                  'items_id' => 3,
+                  'itemtype' => 'Document'
+               ],
+            ],
+         ],
+      ];
+      $sql = "SELECT * FROM `foo` WHERE ((`items_id` = '15' AND `itemtype` = 'Computer') OR (`items_id` = '3' AND `itemtype` = 'Document'))";
+      $it = $this->it->execute(['foo'], $crit);
+      $this->string($it->getSql())->isIdenticalTo($sql);
+
+      $crit = [
+         'WHERE' => [
             'a'  => 1,
             'OR' => [
                'b'   => 2,
                'NOT' => [
                   'c'   => [2, 3],
-                  'AND' => [
+                  [
                      'd' => 4,
                      'e' => 5,
                   ],
@@ -849,12 +867,14 @@ class DBmysqlIterator extends DbTestCase {
          ['FROM' => 'table2']
       ];
       $union = new \QueryUnion($union_crit);
-      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
+      $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, true);
-      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
@@ -874,7 +894,8 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, true);
-      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $crit = [
          'SELECT'    => 'theunion.field',
          'DISTINCT'  => true,
@@ -1064,10 +1085,8 @@ class DBmysqlIterator extends DbTestCase {
                      LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
                      WHERE `LINK`.`ipnetworks_id` = ?)";
 
-      $query = implode(' UNION ALL ', $queries);
-      $query = "SELECT * FROM (" . preg_replace('/\s+/', ' ', $query) . ")";
-
-      $raw_query = $query;
+      $union_raw_query = '(' . preg_replace('/\s+/', ' ', implode(' UNION ALL ', $queries)) . ')';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
 
       //New build way
       $queries = [];

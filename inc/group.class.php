@@ -620,7 +620,7 @@ class Group extends CommonTreeDropdown {
          $ufield = str_replace('groups', 'users', $field);
          $groups_criteria['OR'] = [
             $field => $groups_ids,
-            'AND'  => [
+            [
                $field  => 0,
                $ufield => new QuerySubQuery(
                   [

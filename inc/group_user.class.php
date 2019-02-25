@@ -200,10 +200,8 @@ class Group_User extends CommonDBRelation{
                   'OR' => [
                      ['entities_id' => $_SESSION['glpiactive_entity']],
                      [
-                        'AND' => [
-                           'entities_id' => array_merge([0], $_SESSION['glpiactiveentities']),
-                           'is_recursive' => 1
-                        ]
+                        'entities_id' => array_merge([0], $_SESSION['glpiactiveentities']),
+                        'is_recursive' => 1
                      ]
                   ]
                ]

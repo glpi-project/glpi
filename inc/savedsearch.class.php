@@ -1508,7 +1508,7 @@ class SavedSearch extends CommonDBTM {
       if (Session::haveRight(self::$rightname, READ)) {
          $restrict = [
             'OR' => [
-               'AND'                            => $restrict,
+               $restrict,
                self::getTable() . '.is_private' => 0
             ]
          ];

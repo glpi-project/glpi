@@ -3062,7 +3062,7 @@ class Dropdown {
          } else {
             $where[] = [
                'OR' => [
-                  'AND' => [
+                  [
                      'glpi_computers_items.id'  => null
                   ] + $where_used,
                   "$table.is_global"            => 1
