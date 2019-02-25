@@ -760,12 +760,14 @@ class DBmysqlIterator extends DbTestCase {
          ['FROM' => 'table2']
       ];
       $union = new \QueryUnion($union_crit);
-      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
+      $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, true);
-      $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $it = $this->it->execute(['FROM' => $union]);
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
@@ -784,7 +786,8 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo($raw_query);
 
       $union = new \QueryUnion($union_crit, true);
-      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
+      $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
       $crit = [
          'SELECT DISTINCT' => 'theunion.field',
          'FROM'            => $union,
@@ -967,10 +970,8 @@ class DBmysqlIterator extends DbTestCase {
                      LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
                      WHERE `LINK`.`ipnetworks_id` = '42')";
 
-      $query = implode(' UNION ALL ', $queries);
-      $query = "SELECT * FROM (" . preg_replace('/\s+/', ' ', $query) . ")";
-
-      $raw_query = $query;
+      $union_raw_query = '(' . preg_replace('/\s+/', ' ', implode(' UNION ALL ', $queries)) . ')';
+      $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
 
       //New build way
       $queries = [];
