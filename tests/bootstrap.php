@@ -32,12 +32,16 @@
 
 error_reporting(E_ALL);
 
+define('GLPI_CACHE_DIR', __DIR__ . '/files/_cache');
 define('GLPI_CONFIG_DIR', __DIR__);
 define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 define('GLPI_ROOT', __DIR__ . '/../');
+
+is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
+is_dir(GLPI_CACHE_DIR) or mkdir(GLPI_CACHE_DIR, 0755, true);
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: bin/console glpi:database:install --config-dir=./tests ...\n\n");
@@ -501,8 +505,6 @@ function loadDataset() {
                                            'url_base_api' => GLPI_URI . '/apirest.php']);
    $CFG_GLPI['url_base']      = GLPI_URI;
    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
-
-   is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
 
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {

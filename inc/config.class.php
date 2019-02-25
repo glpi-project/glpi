@@ -30,12 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\SimpleCache;
 use Glpi\Exception\PasswordTooWeakException;
+use PHPMailer\PHPMailer\PHPMailer;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
-use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
-use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -2925,7 +2925,7 @@ class Config extends CommonDBTM {
     * @param string  $context name of the configuration context (default 'core')
     * @param boolean $psr16   Whether to return a PSR16 compliant obkect or not (since ZendTranslator is NOT PSR16 compliant).
     *
-    * @return Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator|Zend\Cache\Storage\StorageInterface object
+    * @return Glpi\Cache\SimpleCache|Zend\Cache\Storage\StorageInterface object
     */
    public static function getCache($optname, $context = 'core', $psr16 = true) {
       global $DB;
@@ -2983,7 +2983,56 @@ class Config extends CommonDBTM {
          } else {
             $opt['adapter'] = 'filesystem';
          }
+
+         // Cannot skip integrity checks if 'adapter' was computed,
+         // as computation result may differ for a different context (CLI VS web server).
+         $skip_integrity_checks = false;
+
+         $is_computed_config = true;
+      } else {
+         // Adapter names can be written using case variations.
+         // see Zend\Cache\Storage\AdapterPluginManager::$aliases
+         $opt['adapter'] = strtolower($opt['adapter']);
+
+         switch ($opt['adapter']) {
+            // Cache adapters that can share their data accross processes
+            case 'dba':
+            case 'ext_mongo_db':
+            case 'extmongodb':
+            case 'filesystem':
+            case 'memcache':
+            case 'memcached':
+            case 'mongo_db':
+            case 'mongodb':
+            case 'redis':
+               $skip_integrity_checks = true;
+               break;
+
+            // Cache adapters that cannot share their data accross processes
+            case 'apc':
+            case 'apcu':
+            case 'memory':
+            case 'session':
+
+               // wincache activation uses different configuration variable for CLI and web server
+               // so it may not be available for all contexts
+            case 'win_cache':
+            case 'wincache':
+
+               // zend server adapters are not available for CLI context
+            case 'zend_server_disk':
+            case 'zendserverdisk':
+            case 'zend_server_shm':
+            case 'zendservershm':
+
+            default:
+               $skip_integrity_checks = false;
+               break;
+         }
+
+         $is_computed_config = false;
       }
+
       // Adapter specific options
       $ser = false;
       switch ($opt['adapter']) {
@@ -3021,9 +3070,13 @@ class Config extends CommonDBTM {
       try {
          $storage = Zend\Cache\StorageFactory::factory($opt);
       } catch (Exception $e) {
-         //fallback to another cache system
+         if (!$is_computed_config) {
+            Toolbox::logError($e->getMessage());
+         }
+
+         // fallback to filesystem cache system if adapter was not explicitely defined in config
          $fallback = false;
-         if ($opt['adapter'] != 'filesystem') {
+         if ($is_computed_config && $opt['adapter'] != 'filesystem') {
             $opt = [
                'adapter'   => 'filesystem',
                'options'   => [
@@ -3058,8 +3111,12 @@ class Config extends CommonDBTM {
          }
       }
 
+      if (defined('TU_USER')) {
+         $skip_integrity_checks = true;
+      }
+
       if ($psr16) {
-         return new SimpleCacheDecorator($storage);
+         return new SimpleCache($storage, GLPI_CACHE_DIR, !$skip_integrity_checks);
       } else {
          return $storage;
       }
