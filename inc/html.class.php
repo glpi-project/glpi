@@ -4329,6 +4329,11 @@ class Html {
                   if (typeof data.text === 'string'
                      && data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0
                   ) {
+                     if (data.text.indexOf('>') !== -1 || data.text.indexOf('<') !== -1) {
+                        // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+                        data.text = jQuery.fn.select2.defaults.defaults.escapeMarkup(data.text);
+                     }
+
                      return data;
                   }
                   return null;
@@ -4341,6 +4346,11 @@ class Html {
                   if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
                      || data.text.toUpperCase().indexOf(params.term.toUpperCase()) != -1
                   ) {
+
+                     if (child.text.indexOf('>') !== -1 || child.text.indexOf('<') !== -1) {
+                        // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+                        child.text = jQuery.fn.select2.defaults.defaults.escapeMarkup(child.text);
+                     }
                      filteredChildren.push(child);
                   }
                });

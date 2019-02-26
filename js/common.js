@@ -948,17 +948,25 @@ function markMatch (text, term) {
  * Function that renders select2 results.
  */
 var templateResult = function(result) {
-   if (!result.id) {
-      return result.text;
+   if (!result.text) {
+      return null;
    }
 
    var _elt = $('<span></span>');
    _elt.attr('title', result.title);
 
-   var markup=[result.text];
+   var text = result.text;
+   if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
+      // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+      text = jQuery.fn.select2.defaults.defaults.escapeMarkup(result.text);
+   };
+
+   if (!result.id) {
+      return text;
+   }
 
    var _term = query.term || '';
-   var markup = markMatch(result.text, _term);
+   var markup = markMatch(text, _term);
 
    if (result.level) {
       var a='';
