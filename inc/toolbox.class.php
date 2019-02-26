@@ -2660,6 +2660,11 @@ class Toolbox {
       }
 
       if (count($doc_data)) {
+         $base_path = $CFG_GLPI['root_doc'];
+         if (isCommandLine()) {
+            $base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
+         }
+
          foreach ($doc_data as $id => $image) {
             if (isset($image['tag'])) {
                // Add only image files : try to detect mime type
@@ -2676,7 +2681,7 @@ class Toolbox {
                   $itil_url_param = null !== $itil_object
                      ? "&{$itil_object->getForeignKeyField()}={$itil_object->fields['id']}"
                      : "";
-                  $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
+                  $img = "<img alt='".$image['tag']."' src='".$base_path.
                           "/front/document.send.php?docid=".$id.$itil_url_param."'/>";
 
                   // 1 - Replace direct tag (with prefix and suffix) by the image
