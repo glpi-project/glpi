@@ -5703,6 +5703,11 @@ class Html {
       $out = "";
 
       if (count($doc_data)) {
+         $base_path = $CFG_GLPI['root_doc'];
+         if (isCommandLine()) {
+            $base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
+         }
+
          foreach ($doc_data as $id => $image) {
             // Add only image files : try to detect mime type
             $ok       = false;
@@ -5714,21 +5719,17 @@ class Html {
             }
             if (isset($image['tag'])) {
                if ($ok || empty($mime)) {
-                  $glpi_root = $CFG_GLPI['root_doc'];
-                  if (isCommandLine() && isset($CFG_GLPI['url_base'])) {
-                     $glpi_root = $CFG_GLPI['url_base'];
-                  }
                   // Replace tags by image in textarea
                   if ($addLink) {
                      $out .= '<a '
-                             . 'href="' . $glpi_root . '/front/document.send.php?docid=' . $id . $more_link . '" '
+                             . 'href="' . $base_path . '/front/document.send.php?docid=' . $id . $more_link . '" '
                              . 'target="_blank" '
                              . '>';
                   }
                   $out .= '<img '
                           . 'alt="' . $image['tag'] . '" '
                           . 'width="' . $width . '" '
-                          . 'src="' . $glpi_root . '/front/document.send.php?docid=' . $id.$more_link . '" '
+                          . 'src="' . $base_path . '/front/document.send.php?docid=' . $id.$more_link . '" '
                           . '/>';
                   if ($addLink) {
                      $out .= '</a>';

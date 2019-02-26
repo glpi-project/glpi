@@ -42,15 +42,13 @@ class Toolbox extends DbTestCase {
     * Data provider for self::testConvertTagToImage().
     */
    protected function convertTagToImageProvider() {
-      global $CFG_GLPI;
-
       $data = [];
 
       foreach ([\Computer::class, \Change::class, \Problem::class, \Ticket::class] as $itemtype) {
          $item = new $itemtype();
          $item->fields['id'] = mt_rand(1, 50);
 
-         $img_url = $CFG_GLPI['url_base'] . '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
+         $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
          if ($item instanceof \CommonITILObject) {
             $img_url .= '&' . $item->getForeignKeyField() . '=' . $item->fields['id'];
          }
@@ -118,5 +116,71 @@ class Toolbox extends DbTestCase {
       $this->string(
          \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
       )->isEqualTo($expected_result);
+   }
+
+   /**
+    * Data provider for self::testBaseUrlInConvertTagToImage().
+    */
+   protected function convertTagToImageBaseUrlProvider() {
+      $item = new \Ticket();
+      $item->fields['id'] = mt_rand(1, 50);
+
+      $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
+      $img_url .= '&tickets_id=' . $item->fields['id'];
+
+      return [
+         [
+            'url_base'     => 'http://glpi.domain.org',
+            'item'         => $item,
+            'expected_url' => $img_url,
+         ],
+         [
+            'url_base'     => 'http://www.domain.org/glpi/v9.4/',
+            'item'         => $item,
+            'expected_url' => '/glpi/v9.4/' . $img_url,
+         ],
+      ];
+   }
+
+   /**
+    * Check base url handling in conversion of tags to images.
+    *
+    * @dataProvider convertTagToImageBaseUrlProvider
+    */
+   public function testBaseUrlInConvertTagToImage($url_base, $item, $expected_url) {
+
+      $img_tag = uniqid('', true);
+
+      // Create document in DB
+      $document = new \Document();
+      $doc_id = $document->add([
+         'name'     => 'basic document',
+         'filename' => 'img.png',
+         'mime'     => 'image/png',
+         'tag'      => $img_tag,
+      ]);
+      $this->integer((int)$doc_id)->isGreaterThan(0);
+
+      $content_text   = '<img id="' . $img_tag. '" width="10" height="10" />';
+      $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
+      $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag. '" width="10" src="' . $expected_url. '" /></a>';
+
+      // Processed data is expected to be escaped
+      $content_text = \Toolbox::addslashes_deep($content_text);
+      $expected_result = \Html::entities_deep($expected_result);
+
+      // Save old config
+      global $CFG_GLPI;
+      $old_url_base = $CFG_GLPI['url_base'];
+
+      // Get result
+      $CFG_GLPI['url_base'] = $url_base;
+      $result = \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]]);
+
+      // Restore config
+      $CFG_GLPI['url_base'] = $old_url_base;
+
+      // Validate result
+      $this->string($result)->isEqualTo($expected_result);
    }
 }
