@@ -67,6 +67,7 @@ function header_html($etape) {
    echo Html::script("lib/jquery/js/jquery.js");
    echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
    echo Html::script("lib/jqueryplugins/select2/js/select2.js");
+   echo Html::script("lib/fuzzy/fuzzy-min.js");
    echo Html::script("js/common.js");
 
     // CSS
