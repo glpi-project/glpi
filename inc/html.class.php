@@ -4334,6 +4334,11 @@ class Html {
                   post: '</span>',
                };
 
+               if (data_text.indexOf('>') !== -1 || data_text.indexOf('<') !== -1) {
+                  // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+                  data_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(data_text);
+               }
+
                // Skip if there is no 'children' property
                if (typeof data.children === 'undefined') {
                   var match  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
@@ -4353,6 +4358,11 @@ class Html {
                   var child_text = typeof(child.text) === 'string'
                      ? getTextWithoutDiacriticalMarks(child.text)
                      : '';
+
+                  if (child_text.indexOf('>') !== -1 || child_text.indexOf('<') !== -1) {
+                     // escape text, if it contains chevrons (can already be escaped prior to this point :/)
+                     child_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(child_text);
+                  }
 
                   var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
                   var match_text  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
