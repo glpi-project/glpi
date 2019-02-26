@@ -586,8 +586,18 @@ class Document extends CommonDBTM {
          return true;
       }
 
+      if (isset($options["changes_id"])
+          && $this->canViewFileFromItilObject('Change', $options["changes_id"])) {
+         return true;
+      }
+
+      if (isset($options["problems_id"])
+          && $this->canViewFileFromItilObject('Problem', $options["problems_id"])) {
+         return true;
+      }
+
       if (isset($options["tickets_id"])
-          && $this->canViewFileFromTicket($options["tickets_id"])) {
+          && $this->canViewFileFromItilObject('Ticket', $options["tickets_id"])) {
          return true;
       }
 
@@ -740,13 +750,14 @@ class Document extends CommonDBTM {
    }
 
    /**
-    * Check if file of current instance can be viewed from a KnowbaseItem.
+    * Check if file of current instance can be viewed from a CommonITILObject.
     *
     * @global DBmysql $DB
-    * @param integer $tickets_id
+    * @param string  $itemtype
+    * @param integer $items_id
     * @return boolean
     */
-   private function canViewFileFromTicket($tickets_id) {
+   private function canViewFileFromItilObject($itemtype, $items_id) {
 
       global $DB;
 
@@ -754,9 +765,10 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      $ticket = new Ticket();
+      /* @var CommonITILObject $itil */
+      $itil = new $itemtype();
 
-      if (!$ticket->can($tickets_id, READ)) {
+      if (!$itil->can($items_id, READ)) {
          return false;
       }
 
@@ -764,8 +776,8 @@ class Document extends CommonDBTM {
          'FROM'  => Document_Item::getTable(),
          'COUNT' => 'cpt',
          'WHERE' => [
-            'items_id'     => $tickets_id,
-            'itemtype'     => Ticket::class,
+            'items_id'     => $items_id,
+            'itemtype'     => $itemtype,
             'documents_id' => $this->fields['id']
          ]
       ])->next();
@@ -776,38 +788,43 @@ class Document extends CommonDBTM {
 
       // Check ticket and child items (followups, tasks, solutions) contents
       $regexPattern = $this->getSelfUrlRegexPattern();
+
+      $itil_table = $itil->getTable();
+      $itil_key   = $itil->getForeignKeyField();
+      $task_table = getTableForItemType($itil->getType() . 'Task');
+
       $result = $DB->request([
-         'FROM'      => 'glpi_tickets',
+         'FROM'      => $itil_table,
          'COUNT'     => 'cpt',
          'LEFT JOIN' => [
             'glpi_itilfollowups' => [
                'FKEY' => [
-                  'glpi_tickets'         => 'id',
+                  $itil_table          => 'id',
                   'glpi_itilfollowups' => 'items_id',
-                  ['AND' => ['glpi_itilfollowups.itemtype' => 'Ticket']]
+                  ['AND' => ['glpi_itilfollowups.itemtype' => $itemtype]]
                ]
             ],
-            'glpi_tickettasks'     => [
+            $task_table          => [
                'FKEY' => [
-                  'glpi_tickets'     => 'id',
-                  'glpi_tickettasks' => 'tickets_id'
+                  $itil_table => 'id',
+                  $task_table => $itil_key
                ]
             ],
-            'glpi_itilsolutions'   => [
+            'glpi_itilsolutions' => [
                'FKEY' => [
-                  'glpi_tickets'       => 'id',
+                  $itil_table          => 'id',
                   'glpi_itilsolutions' => 'items_id',
-                  ['AND' => ['glpi_itilsolutions.itemtype' => 'Ticket']]
+                  ['AND' => ['glpi_itilsolutions.itemtype' => $itemtype]]
                ]
             ],
          ],
          'WHERE'     => [
-            'glpi_tickets.id' => $tickets_id,
+            $itil_table . '.id' => $items_id,
             'OR' => [
-               'glpi_tickets.content'         => ['REGEXP', $regexPattern],
-               'glpi_itilfollowups.content'   => ['REGEXP', $regexPattern],
-               'glpi_tickettasks.content'     => ['REGEXP', $regexPattern],
-               'glpi_itilsolutions.content'   => ['REGEXP', $regexPattern]
+               $itil_table . '.content'     => ['REGEXP', $regexPattern],
+               'glpi_itilfollowups.content' => ['REGEXP', $regexPattern],
+               $task_table . '.content'     => ['REGEXP', $regexPattern],
+               'glpi_itilsolutions.content' => ['REGEXP', $regexPattern]
             ]
          ]
       ])->next();
