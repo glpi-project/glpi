@@ -42,7 +42,7 @@ class Reminder extends DbTestCase {
       //first, as a super-admin
       $this->login();
       $expected = [
-         'sql'    => "(`glpi_reminders`.`users_id` = ? OR `glpi_reminders_users`.`users_id` = ? OR ((`glpi_profiles_reminders`.`profiles_id` = ? AND (`glpi_profiles_reminders`.`entities_id` < ? OR (`glpi_profiles_reminders`.`entities_id` IN (?,?,?) OR (`glpi_profiles_reminders`.`is_recursive` = ? AND `glpi_profiles_reminders`.`entities_id` IN (?)))))) OR (`glpi_entities_reminders`.`entities_id` IN (?,?,?) OR (`glpi_entities_reminders`.`is_recursive` = ? AND `glpi_entities_reminders`.`entities_id` IN (?))))",
+         'sql'    => "(`glpi_reminders`.`users_id` = ? OR `glpi_reminders_users`.`users_id` = ? OR (`glpi_profiles_reminders`.`profiles_id` = ? AND (`glpi_profiles_reminders`.`entities_id` < ? OR (`glpi_profiles_reminders`.`entities_id` IN (?,?,?) OR (`glpi_profiles_reminders`.`is_recursive` = ? AND `glpi_profiles_reminders`.`entities_id` IN (?))))) OR (`glpi_entities_reminders`.`entities_id` IN (?,?,?) OR (`glpi_entities_reminders`.`is_recursive` = ? AND `glpi_entities_reminders`.`entities_id` IN (?))))",
          'params' => ['6', '6', '4', 0, 1, 2, 3, 1, '0', 1, 2, 3, 1, '0']
       ];
       $this->array(\Reminder::addVisibilityRestrict())
