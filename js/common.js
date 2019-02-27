@@ -977,7 +977,7 @@ var templateResult = function(result) {
       if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
          // escape text, if it contains chevrons (can already be escaped prior to this point :/)
          text = jQuery.fn.select2.defaults.defaults.escapeMarkup(result.text);
-      };
+      }
 
       if (!result.id) {
          return text;
