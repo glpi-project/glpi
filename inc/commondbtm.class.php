@@ -55,7 +55,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @var mixed[]
     */
-   public $mapped_fields = [];
+   protected $mapped_fields = [];
 
 
    /**
@@ -5436,6 +5436,7 @@ class CommonDBTM extends CommonGLPI {
       $this->form_elements = [];
       $form_fields = $this->getFormFields($add);
       foreach ($form_fields as $name => $form_field) {
+         $form_field['autofocus'] = (count($this->form_elements) === 0);
          $this->form_elements[$name] = $form_field;
       }
 
@@ -5453,7 +5454,7 @@ class CommonDBTM extends CommonGLPI {
             $this->form_elements[$field],
             [
                'name'         => $field,
-               'autofocus'    => count($this->form_elements) == 0,
+               'autofocus'    => (count($this->form_elements) == 0),
             ]
          );
 
@@ -5497,7 +5498,7 @@ class CommonDBTM extends CommonGLPI {
       $element = [
          'type'         => null,
          'name'         => $column['Field'],
-         'autofocus'    => count($this->form_elements) == 0,
+         'autofocus'    => (count($this->form_elements) == 0),
          'label'        => __($column['Field'])
       ];
 
