@@ -49,6 +49,9 @@ Config::detectRootDoc();
 $conf_exists = Toolbox::checkDbConfig();
 
 if (!$conf_exists) {
+   // Load kernel and expose container in global var
+   $CONTAINER = (new Glpi\Kernel())->getContainer();
+
    Session::loadLanguage();
    // no translation
    if (!isCommandLine()) {
@@ -120,6 +123,9 @@ if (!$conf_exists) {
          $_SESSION["glpi$field"] = $CFG_GLPI[$field];
       }
    }
+
+   // Load kernel and expose container in global var
+   $CONTAINER = (new Glpi\Kernel())->getContainer();
 
    // Check maintenance mode
    // TODO: maintenance may be a middleware, to not block command line
@@ -233,6 +239,3 @@ if (!$conf_exists) {
       exit();
    }
 }
-
-// Load kernel and expose container in global var
-$CONTAINER = (new Glpi\Kernel())->getContainer();
