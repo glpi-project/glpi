@@ -219,6 +219,12 @@ $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEqui
                                                   'DeviceBattery', 'DeviceFirmware',
                                                   'Certificate'];
 
+$CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
+                                                  'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
+                                                  'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
+                                                  'DeviceSoundCard', 'DeviceControl', 'DevicePci',
+                                                  'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
+                                                  'DeviceSimcard', 'DeviceSensor'];
 
 $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract',
@@ -227,7 +233,7 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
                                                   'Printer', 'Problem', 'Project', 'ProjectTask',
                                                   'Reminder', 'Software', 'Line',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User',
-                                                  'Certificate'];
+                                                  'Certificate', 'DeviceBattery'] + $CFG_GLPI['device_types'];
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
 
@@ -316,13 +322,6 @@ $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPort
                                                   'NetworkPortAggregate', 'NetworkPortAlias',
                                                   'NetworkPortDialup',   'NetworkPortLocal',
                                                   'NetworkPortFiberchannel'];
-
-$CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
-                                                  'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
-                                                  'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
-                                                  'DeviceSoundCard', 'DeviceControl', 'DevicePci',
-                                                  'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-                                                  'DeviceSimcard', 'DeviceSensor'];
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer', 'Enclosure'];
