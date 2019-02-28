@@ -919,8 +919,13 @@ abstract class AbstractDatabase
             throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
         }
 
-        $query  = "UPDATE ". $this->quoteName($table) ." SET ";
+        $query  = "UPDATE ". $this->quoteName($table);
 
+        $it = new DBmysqlIterator($this);
+        //JOINS
+        $query .= $it->analyzeJoins($joins);
+
+        $query .= ' SET ';
         foreach ($params as $field => $value) {
             $subq = $this->quoteName($field) . ' = ?, ';
             if ($value instanceof \QueryExpression) {
@@ -931,11 +936,7 @@ abstract class AbstractDatabase
         }
         $query = rtrim($query, ', ');
 
-        $it = new DBmysqlIterator($this);
         $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
-
-        //JOINS
-        $query .= $it->analyzeJoins($joins);
 
         foreach ($params as $key => $param) {
             if ($param instanceof \QueryExpression || $param instanceof \QueryParam) {
