@@ -892,18 +892,19 @@ class DBmysql {
          throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
       }
 
-      $query  = "UPDATE ". self::quoteName($table) ." SET ";
+      $query  = "UPDATE ". self::quoteName($table);
 
+      //JOINS
+      $it = new DBmysqlIterator($this);
+      $query .= $it->analyzeJoins($joins);
+
+      $query .= " SET ";
       foreach ($params as $field => $value) {
          $query .= self::quoteName($field) . " = ".$this->quoteValue($value).", ";
       }
       $query = rtrim($query, ', ');
 
-      $it = new DBmysqlIterator($this);
       $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
-
-      //JOINS
-      $query .= $it->analyzeJoins($joins);
 
       // ORDER BY
       if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
@@ -1020,8 +1021,8 @@ class DBmysql {
       $query  = "DELETE FROM ". self::quoteName($table);
 
       $it = new DBmysqlIterator($this);
-      $query .= " WHERE " . $it->analyseCrit($where);
       $query .= $it->analyzeJoins($joins);
+      $query .= " WHERE " . $it->analyseCrit($where);
 
       return $query;
    }
