@@ -2745,51 +2745,54 @@ class Config extends CommonDBTM {
     * @return boolean True for success, false if an error occured
     */
    public static function loadLegacyConfiguration($older_to_latest = true) {
+      global $CFG_GLPI, $DB;
 
       if (self::$legacy_config_already_loaded) {
          return true;
       }
 
-      global $CFG_GLPI, $DB;
+      $config_tables_iterator = $DB->listTables('glpi_config%');
+      $config_tables = [];
+      foreach ($config_tables_iterator as $config_table) {
+         $config_tables[] = $config_table['TABLE_NAME'];
+      }
 
-      $get_078_to_084_config    = function() use ($DB) {
-         if (!$DB->tableExists('glpi_configs') || $DB->fieldExists('glpi_configs', 'context')) {
+      $get_078_to_latest_config    = function() use ($DB, $config_tables) {
+         if (!in_array('glpi_configs', $config_tables)) {
             return false;
          }
 
-         $config = new Config();
-         if ($config->getFromDB(1)) {
-            return $config->fields;
-         }
-
-         return false;
-      };
-
-      $get_085_to_latest_config = function() use ($DB) {
-         if (!$DB->tableExists('glpi_configs') || !$DB->fieldExists('glpi_configs', 'context')) {
+         $iterator = $DB->request(['FROM' => 'glpi_configs']);
+         if ($iterator->count() === 0) {
             return false;
          }
 
-         $config = new Config();
-         if ($config->getFromDB(1)) {
-            return Config::getConfigurationValues('core');
+         if ($iterator->count() === 1) {
+            // 1 row = 0.78 to 0.84 config table schema
+            return $iterator->next();
          }
 
-         return false;
+         // multiple rows = 0.85+ config
+         $config = [];
+         while ($row = $iterator->next()) {
+            if ('core' !== $row['context']) {
+               continue;
+            }
+            $config[$row['name']] = $row['value'];
+         }
+         return $config;
       };
 
       $functions = [];
       if ($older_to_latest) {
          // Try with old config table first : for update process management from < 0.80 to >= 0.80.
          $functions = [
-            $get_078_to_084_config,
-            $get_085_to_latest_config,
+            $get_078_to_latest_config,
          ];
       } else {
          // Normal load process : use normal config table. If problem try old one.
          $functions = [
-            $get_085_to_latest_config,
-            $get_078_to_084_config,
+            $get_078_to_latest_config,
          ];
       }
 
