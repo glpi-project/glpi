@@ -5271,6 +5271,9 @@ class CommonDBTM extends CommonGLPI {
          'name'         => [
             'label'  => __('Name')
          ],
+         'completename' => [
+            'label'  => __('Complete name')
+         ],
          'states_id'    => [
             'label'  => __('Status')
          ],
