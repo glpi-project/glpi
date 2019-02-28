@@ -57,7 +57,7 @@
          {% endif %}
       {% endif %}
 
-      {% if call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign() %}
+      {% if item is defined and call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign() %}
          {% if item.fields.entities_id is defined %}
             {# FIXME: is this oe required? isEntityAssign would be enough #}
             {{ call_static('Dropdown', 'getDropdownName', ["glpi_entities", item.fields.entities_id]) }}
