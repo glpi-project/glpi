@@ -1018,7 +1018,7 @@ class DBmysql {
          throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
       }
 
-      $query  = "DELETE FROM ". self::quoteName($table);
+      $query  = "DELETE " . self::quoteName($table) . " FROM ". self::quoteName($table);
 
       $it = new DBmysqlIterator($this);
       $query .= $it->analyzeJoins($joins);
