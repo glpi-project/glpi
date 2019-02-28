@@ -234,8 +234,7 @@ class Reminder extends CommonDBVisible {
 
       if (!Session::haveRight(self::$rightname, READ)) {
          return [
-            'LEFT JOIN' => [],
-            'WHERE'     => ['glpi_reminders.users_id' => Session::getLoginUserID()],
+            'WHERE' => ['glpi_reminders.users_id' => Session::getLoginUserID()],
          ];
       }
 
