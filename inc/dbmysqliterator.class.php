@@ -688,27 +688,28 @@ class DBmysqlIterator implements Iterator, Countable {
             throw new \RuntimeException('BAD JOIN');
          }
 
-         if ($jointables != null && is_array($jointables)) {
-            foreach ($jointables as $jointablekey => $jointablecrit) {
-               if (isset($jointablecrit['TABLE'])) {
-                  //not a "simple" FKEY
-                  $jointablekey = $jointablecrit['TABLE'];
-                  unset($jointablecrit['TABLE']);
-               } else if (is_numeric($jointablekey) || $jointablekey == 'FKEY' || $jointablekey == 'ON') {
-                  throw new \RuntimeException('BAD JOIN');
-               }
-
-               if ($jointablekey instanceof \QuerySubquery) {
-                  $this->parameters = array_merge($this->parameters, $jointablekey->getParameters());
-                  $jointablekey = $jointablekey->getQuery();
-               } else {
-                  $jointablekey = $this->conn->quoteName($jointablekey);
-               }
-
-               $query .= " $jointype $jointablekey ON (" . $this->analyseCrit($jointablecrit) . ")";
-            }
-         } else {
+         if (!is_array($jointables)) {
             trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
+            continue;
+         }
+
+         foreach ($jointables as $jointablekey => $jointablecrit) {
+            if (isset($jointablecrit['TABLE'])) {
+               //not a "simple" FKEY
+               $jointablekey = $jointablecrit['TABLE'];
+               unset($jointablecrit['TABLE']);
+            } else if (is_numeric($jointablekey) || $jointablekey == 'FKEY' || $jointablekey == 'ON') {
+               throw new \RuntimeException('BAD JOIN');
+            }
+
+            if ($jointablekey instanceof \QuerySubquery) {
+                  $this->parameters = array_merge($this->parameters, $jointablekey->getParameters());
+               $jointablekey = $jointablekey->getQuery();
+            } else {
+               $jointablekey = $this->conn->quoteName($jointablekey);
+            }
+
+            $query .= " $jointype $jointablekey ON (" . $this->analyseCrit($jointablecrit) . ")";
          }
       }
       return $query;
