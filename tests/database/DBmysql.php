@@ -91,6 +91,9 @@ class DBmysql extends \GLPITestCase {
       $this->string($built)->isIdenticalTo($expected);
       $this->array($set)->isIdenticalTo(['2019-01-01 12:00:00', 2, 1]);
 
+      $set = [
+         'name' => '_join_computer1'
+      ];
       $expected = "UPDATE `glpi_computers`";
       $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
       $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
@@ -130,10 +133,11 @@ class DBmysql extends \GLPITestCase {
       $this->string($built)->isIdenticalTo($expected);
       $this->array($set)->isIdenticalTo([1]);
 
+      $set = [];
       $expected = "DELETE FROM `glpi_computers`";
       $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
       $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
-      $expected .= "  WHERE `glpi_locations`.`name` = ? AND `glpi_computertypes`.`name` = ?";
+      $expected .= " WHERE `glpi_locations`.`name` = ? AND `glpi_computertypes`.`name` = ?";
       $built = $DB->buildDelete('glpi_computers', $set, [
          'glpi_locations.name' => 'test',
          'glpi_computertypes.name' => 'laptop'

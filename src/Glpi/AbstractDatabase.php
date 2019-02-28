@@ -936,13 +936,14 @@ abstract class AbstractDatabase
         }
         $query = rtrim($query, ', ');
 
-        $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
-
         foreach ($params as $key => $param) {
             if ($param instanceof \QueryExpression || $param instanceof \QueryParam) {
                 unset($params[$key]);
             }
         }
+
+        $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
+
         $params = array_merge(array_values($params), $it->getParameters());
 
         // ORDER BY
@@ -1066,8 +1067,8 @@ abstract class AbstractDatabase
         $query  = "DELETE FROM ". $this->quoteName($table);
 
         $it = new DBmysqlIterator($this);
-        $query .= " WHERE " . $it->analyseCrit($where);
         $query .= $it->analyzeJoins($joins);
+        $query .= " WHERE " . $it->analyseCrit($where);
         $params = array_merge($params, $it->getParameters());
 
         return $query;
