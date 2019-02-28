@@ -301,6 +301,9 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testJoins() {
+      $it = $this->it->execute('foo', ['LEFT JOIN' => []]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
+
       $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
@@ -333,8 +336,14 @@ class DBmysqlIterator extends DbTestCase {
          'LEFT JOIN `baz` ON (`baz`.`id` = `foo`.`baz_id`)'
       );
 
+      $it = $this->it->execute('foo', ['INNER JOIN' => []]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
+
       $it = $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` INNER JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+      $it = $this->it->execute('foo', ['RIGHT JOIN' => []]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
       $it = $this->it->execute('foo', ['RIGHT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` RIGHT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
