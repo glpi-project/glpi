@@ -531,16 +531,23 @@ class Item_Devices extends CommonDBRelation {
    }
 
    protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
-      //TODO: Items tab
       $count = 0;
-      foreach (self::getItemAffinities($item->getType()) as $link_type) {
-         $count += countElementsInTable(
-            $link_type::getTable(), [
-               'items_id'   => $item->getID(),
-               'itemtype'   => $item->getType(),
-               'is_deleted' => 0
+      if (!Toolbox::endsWith('__main', $tab)) {
+         $count = countElementsInTable(
+            self::getTable(), [
+               $item->getForeignKeyField() => $item->fields['id']
             ]
          );
+      } else {
+         foreach (self::getItemAffinities($item->getType()) as $link_type) {
+            $count += countElementsInTable(
+               $link_type::getTable(), [
+                  'items_id'   => $item->getID(),
+                  'itemtype'   => $item->getType(),
+                  'is_deleted' => 0
+               ]
+            );
+         }
       }
       return $count;
    }

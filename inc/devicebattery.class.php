@@ -164,4 +164,37 @@ class DeviceBattery extends CommonDevice {
          'voltage'               => 'delta:10'
       ];
    }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = [
+         'designation'     => [
+            'label'  => __('Name')
+         ],
+         'manufacturers_id'      => [],
+         'devicebatterytypes_id' => [],
+         'devicebatterymodels_id'   => [],
+         'capacity'              => [
+             'label'    => __('Capacity (mWh)'),
+             'htmltype' => 'number'
+         ],
+         'voltage'               => [
+            'label'     => __('Voltage (mV)'),
+            'htmltype'  => 'number'
+         ]
+      ] + parent::getFormFields();
+      return $fields;
+   }
 }

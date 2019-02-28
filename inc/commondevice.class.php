@@ -566,4 +566,15 @@ abstract class CommonDevice extends CommonDropdown {
 
       return $link;
    }
+
+   /**
+    * Get main tabs configuration
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getMainTabs() {
+      return [static::getItem_DeviceType()];
+   }
 }
