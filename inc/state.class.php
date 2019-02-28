@@ -39,24 +39,11 @@ if (!defined('GLPI_ROOT')) {
 **/
 class State extends CommonTreeDropdown {
 
-   protected $visibility_fields    = ['Computer'         => 'is_visible_computer',
-                                      'SoftwareVersion'  => 'is_visible_softwareversion',
-                                      'Monitor'          => 'is_visible_monitor',
-                                      'Printer'          => 'is_visible_printer',
-                                      'Peripheral'       => 'is_visible_peripheral',
-                                      'Phone'            => 'is_visible_phone',
-                                      'NetworkEquipment' => 'is_visible_networkequipment',
-                                      'SoftwareLicense'  => 'is_visible_softwarelicense',
-                                      'Line'             => 'is_visible_line',
-                                      'Certificate'      => 'is_visible_certificate',
-                                      'Rack'             => 'is_visible_rack',
-                                      'Enclosure'        => 'is_visible_enclosure',
-                                      'Pdu'              => 'is_visible_pdu',];
    public $can_be_translated       = true;
 
    static $rightname               = 'state';
 
-
+   protected $twig_compat          = true;
 
    static function getTypeName($nb = 0) {
       return _n('Status of items', 'Statuses of items', $nb);
@@ -75,7 +62,7 @@ class State extends CommonTreeDropdown {
                         'name'  => 'header',
                         'list'  => false];
 
-      foreach ($this->visibility_fields as $type => $field) {
+      foreach ($this->getvisibilityFields() as $type => $field) {
          $fields[] = ['name'  => $field,
                            'label' => $type::getTypeName(Session::getPluralNumber()),
                            'type'  => 'bool',
@@ -244,7 +231,7 @@ class State extends CommonTreeDropdown {
 
       parent::getEmpty();
       //initialize is_visible_* fields at true to keep the same behavior as in older versions
-      foreach ($this->visibility_fields as $type => $field) {
+      foreach ($this->getvisibilityFields() as $type => $field) {
          $this->fields[$field] = 1;
       }
    }
@@ -278,7 +265,7 @@ class State extends CommonTreeDropdown {
       $state = new self();
       // Get visibility information from parent if not set
       if (isset($input['states_id']) && $state->getFromDB($input['states_id'])) {
-         foreach ($this->visibility_fields as $type => $field) {
+         foreach ($this->getvisibilityFields() as $type => $field) {
             if (!isset($input[$field]) && isset($state->fields[$field])) {
                $input[$field] = $state->fields[$field];
             }
@@ -454,5 +441,69 @@ class State extends CommonTreeDropdown {
       ];
       $row = $DB->request($query)->next();
       return (int)$row['cpt'] == 0;
+   }
+
+   /**
+    * Get field to be dropped building form
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $add Add or update
+    *
+    * @return array
+    */
+   protected function getFormFieldsToDrop($add = false) {
+      $fields = parent::getFormFieldsToDrop();
+      $fields[] = 'level';
+      return $fields;
+   }
+
+   /**
+    * Get visibility fields from conf
+    */
+   protected function getvisibilityFields() :array {
+      global $CFG_GLPI;
+      $fields = [];
+      foreach ($CFG_GLPI['state_types'] as $type) {
+         $fields[$type] = 'is_visible_' . strtolower($type);
+      }
+      return $fields;
+   }
+
+   /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getFormHiddenFields and/or @see getFormFieldsToDrop
+    *
+    * @since 10.0.0
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      $fields = parent::getFormFields();
+
+      foreach ($this->getvisibilityFields() as $itemtype => $fieldname) {
+         $fields[$fieldname] = [
+            'label' => $itemtype::getTypeName()
+         ];
+      }
+      return $fields;
+   }
+
+   protected function getMainTabs() {
+      return [
+         'State'
+      ];
+   }
+
+   public function countForTab($item, $tab, $deleted = 0, $template = 0) {
+      return countElementsInTable(
+         $this->getTable(),
+         [$this->getForeignKeyField() => $item->getID()]
+      );
    }
 }
