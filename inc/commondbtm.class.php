@@ -5543,6 +5543,8 @@ class CommonDBTM extends CommonGLPI {
          $element['type'] = 'date';
       } else if ($column['Field'] == 'comment' || $column['Field'] == 'content') {
          $element['type'] = 'textarea';
+      } else if (Toolbox::startsWith($column['Field'], 'is_') || strstr($column['Field'], '_is_')) {
+         $element['type'] = 'yesno';
       } else {
          if (!isset($element['type']) || empty($element['type'])) {
             switch ($column['Type']) {
