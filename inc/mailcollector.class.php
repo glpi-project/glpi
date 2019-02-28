@@ -2134,23 +2134,23 @@ class MailCollector  extends CommonDBTM {
          ],
          'filesize_max'  => [
             'label'  => [
-                'label' => __('Maximum file size'),
-                'title' => __('Maximum size of each file imported by the mails receiver')
+               'label' => __('Maximum file size'),
+               'title' => __('Maximum size of each file imported by the mails receiver')
             ],
             'htmltype'  => 'number'
          ],
          'use_mail_date' => [
             'label'  => [
-                'label' => __('Use mail date'),
-                'title' => __('Use mail date, instead of collect one')
+               'label' => __('Use mail date'),
+               'title' => __('Use mail date, instead of collect one')
             ],
             'type'   => 'yesno'
          ],
          'requester_field'  => [
-             'label'  => [
-                 'label'   => __('Use Reply-To as requester'),
-                 'title'   => __('Use Reply-To as requester when available')
-             ],
+            'label'  => [
+              'label'   => __('Use Reply-To as requester'),
+              'title'   => __('Use Reply-To as requester when available')
+            ],
             'type'   => 'yesno'
          ]
       ] + parent::getFormFields();
