@@ -2904,88 +2904,32 @@ class Config extends CommonDBTM {
    /**
     * Load legacy configuration into $CFG_GLPI global variable.
     *
-    * @param boolean $older_to_latest Search on old configuration objects first
-    *
     * @return boolean True for success, false if an error occured
+    *
+    * @since x.x.x Parameter $older_to_latest is not longer used.
     */
-   public static function loadLegacyConfiguration($older_to_latest = true) {
+   public static function loadLegacyConfiguration() {
 
       global $CFG_GLPI, $DB;
 
-      $config_tables_iterator = $DB->listTables('glpi_config%');
-      $config_tables = [];
-      foreach ($config_tables_iterator as $config_table) {
-         $config_tables[] = $config_table['TABLE_NAME'];
+      $iterator = $DB->request(['FROM' => 'glpi_configs']);
+
+      if ($iterator->count() === 0) {
+         return false;
       }
 
-      $get_prior_to_078_config  = function() use ($DB, $config_tables) {
-         if (!in_array('glpi_config', $config_tables)) {
-            return false;
-         }
-
-         $config = new Config();
-         $config->forceTable('glpi_config');
-         if ($config->getFromDB(1)) {
-            return $config->fields;
-         }
-
-         return false;
-      };
-
-      $get_078_to_latest_config    = function() use ($DB, $config_tables) {
-         if (!in_array('glpi_configs', $config_tables)) {
-            return false;
-         }
-
-         Config::forceTable('glpi_configs');
-
-         $iterator = $DB->request(['FROM' => 'glpi_configs']);
-         if ($iterator->count() === 0) {
-            return false;
-         }
-
-         if ($iterator->count() === 1) {
-            // 1 row = 0.78 to 0.84 config table schema
-            return $iterator->next();
-         }
-
+      if ($iterator->count() === 1) {
+         // 1 row = 0.78 to 0.84 config table schema
+         $values = $iterator->next();
+      } else {
          // multiple rows = 0.85+ config
-         $config = [];
+         $values = [];
          while ($row = $iterator->next()) {
             if ('core' !== $row['context']) {
                continue;
             }
-            $config[$row['name']] = $row['value'];
+            $values[$row['name']] = $row['value'];
          }
-         return $config;
-      };
-
-      $functions = [];
-      if ($older_to_latest) {
-         // Try with old config table first : for update process management from < 0.80 to >= 0.80.
-         $functions = [
-            $get_prior_to_078_config,
-            $get_078_to_latest_config,
-         ];
-      } else {
-         // Normal load process : use normal config table. If problem try old one.
-         $functions = [
-            $get_078_to_latest_config,
-            $get_prior_to_078_config,
-         ];
-      }
-
-      $values = [];
-
-      foreach ($functions as $function) {
-         if ($config = $function()) {
-            $values = $config;
-            break;
-         }
-      }
-
-      if (count($values) === 0) {
-         return false;
       }
 
       $CFG_GLPI = array_merge($CFG_GLPI, $values);
