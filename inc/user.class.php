@@ -3624,7 +3624,8 @@ class User extends CommonDBTM {
          ]
       ];
       if ($count) {
-         $criteria['COUNT DISTINCT'] = 'glpi_users.*';
+         $criteria['SELECT'] = ['COUNT' => 'glpi_users.id AS CPT'];
+         $criteria['DISTINCT'] = true;
       } else {
          $criteria['SELECT'] = 'glpi_users.*';
          $criteria['DISTINCT'] = true;
