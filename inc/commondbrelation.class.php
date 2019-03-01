@@ -1888,7 +1888,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $where_id   = static::$items_id_1;
       }
 
-      $dbi = new DBMysqlIterator(null);
+      $dbi = new DBMysqlIterator($DB);
       $dbi->buildQuery(
          static::getTable(), [
             'SELECT' => 'items_id',
@@ -1899,7 +1899,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          ]
       );
 
-      return $dbi->getSql();
+      $expr = $DB->mergeStatementWithParams(
+         $dbi->getSql(),
+         $dbi->getParameters()
+      );
+
+      return $expr;
    }
 
 
