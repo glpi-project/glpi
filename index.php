@@ -57,7 +57,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml")) {
    die();
 
 } else {
-   $TRY_OLD_CONFIG_FIRST = true;
    include (GLPI_ROOT . "/inc/includes.php");
    $_SESSION["glpicookietest"] = 'testcookie';
 

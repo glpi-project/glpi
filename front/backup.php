@@ -498,7 +498,6 @@ if (isset($_GET["xmlnow"]) && ($_GET["xmlnow"] != "")) {
 if (isset($_GET["file"]) && ($_GET["file"] != "") && is_file(GLPI_DUMP_DIR . "/" . $_GET["file"])) {
    $filepath = realpath(GLPI_DUMP_DIR . "/" . $_GET['file']);
    if (is_file($filepath) && Toolbox::startsWith($filepath, GLPI_DUMP_DIR)) {
-      $_SESSION['TRY_OLD_CONFIG_FIRST'] = true;
       init_time(); //initialise le temps
 
       //debut de fichier

@@ -55,7 +55,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml") && !file_exists(GLPI_CONFIG_DIR .
     Html::redirect("../install/install.php");
     die();
 } else {
-    $TRY_OLD_CONFIG_FIRST = true;
     include(GLPI_ROOT . "/inc/includes.php");
 
     RunTracy\Helpers\Profiler\Profiler::start('initApp');
