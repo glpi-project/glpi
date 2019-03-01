@@ -2686,11 +2686,8 @@ class Config extends CommonDBTM {
          'name'      => 'version'
       ];
 
-      if (!$DB->tableExists('glpi_configs')) {
-         $select  = 'version';
-         $table   = 'glpi_config';
-         $where   = ['id' => 1];
-      } else if ($DB->fieldExists('glpi_configs', 'version')) {
+      if ($DB->fieldExists('glpi_configs', 'version')) {
+         // 0.78 to 0.84 config table schema
          $select  = 'version';
          $where   = ['id' => 1];
       }
