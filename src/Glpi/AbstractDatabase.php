@@ -687,10 +687,6 @@ abstract class AbstractDatabase
      */
     public function fieldExists(string $table, string $field, bool $usecache = true): bool
     {
-        if (!$this->tableExists($table)) {
-            throw new \RuntimeException("Table $table does not exists");
-        }
-
         if ($fields = $this->listFields($table, $usecache)) {
             if (isset($fields[$field])) {
                 return true;

@@ -57,13 +57,12 @@ class DBmysql extends \GLPITestCase {
          function() {
             $this->boolean($this->db->fieldExists('fakeTable', 'id'))->isFalse();
          }
-      )->hasMessage('Table fakeTable does not exists');
-
+      )->message->contains("Table '{$this->db->dbdefault}.fakeTable' doesn't exist");
       $this->exception(
          function() {
             $this->boolean($this->db->fieldExists('fakeTable', 'fakeField'))->isFalse();
          }
-      )->hasMessage('Table fakeTable does not exists');
+      )->message->contains("Table '{$this->db->dbdefault}.fakeTable' doesn't exist");
    }
 
    protected function dataName() {
