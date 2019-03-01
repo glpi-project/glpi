@@ -1302,7 +1302,7 @@ class Transfer extends CommonDBTM {
                         ]);
 
                         if (count($items_iterator)) {
-                           $row =$ $items_iterator->next();
+                           $row = $items_iterator->next();
                            $newcarttypeID = $row['id'];
                         }
 

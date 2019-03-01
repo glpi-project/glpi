@@ -230,31 +230,31 @@ class DBmysql extends \GLPITestCase {
             'table', [
                'id'  => 1
             ],
-            'DELETE FROM `table` WHERE `id` = ?',
+            'DELETE `table` FROM `table` WHERE `id` = ?',
             [1]
          ], [
             'table', [
                'id'  => [1, 2]
             ],
-            'DELETE FROM `table` WHERE `id` IN (?,?)',
+            'DELETE `table` FROM `table` WHERE `id` IN (?,?)',
             [1, 2]
          ], [
             'table', [
                'NOT'  => ['id' => [1, 2]]
             ],
-            'DELETE FROM `table` WHERE  NOT (`id` IN (?,?))',
+            'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?,?))',
             [1, 2]
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
             ],
-            'DELETE FROM `table` WHERE  NOT (`id` IN (?,?))',
+            'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?,?))',
             []
          ], [
             'table', [
                'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
-            'DELETE FROM `table` WHERE  NOT (`id` IN (?,?))',
+            'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?,?))',
             []
          ]
       ];

@@ -127,14 +127,13 @@ class DBmysql extends \GLPITestCase {
    public function testBuildDelete() {
       global $DB;
 
-      $expected = "DELETE FROM `glpi_tickets` WHERE `id` = ?";
+      $expected = "DELETE `glpi_tickets` FROM `glpi_tickets` WHERE `id` = ?";
       $set = [];
       $built = $DB->buildDelete('glpi_tickets', $set, ['id' => 1]);
       $this->string($built)->isIdenticalTo($expected);
       $this->array($set)->isIdenticalTo([1]);
 
       $set = [];
-      $expected = "DELETE FROM `glpi_computers`";
       $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
       $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
       $expected .= " WHERE `glpi_locations`.`name` = ? AND `glpi_computertypes`.`name` = ?";
