@@ -366,7 +366,7 @@ class Location extends CommonTreeDropdown {
             $union->addQuery([
                'SELECT' => [
                   'id',
-                  "$type AS type"
+                  new \QueryExpression("'$type' AS type")
                ],
                'FROM'   => $table,
                'WHERE'  => [
