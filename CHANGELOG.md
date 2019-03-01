@@ -21,6 +21,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - Added `DB::truncate()` to replace raw SQL queries
+- `DB::fieldExists()` does not check table existence anymore.
 
 #### Deprecated
 
