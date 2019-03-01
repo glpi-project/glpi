@@ -532,7 +532,7 @@ class Item_Devices extends CommonDBRelation {
 
    protected function countForTab($item, $tab, $deleted = 0, $template = 0) {
       $count = 0;
-      if (!Toolbox::endsWith('__main', $tab)) {
+      if (static::class != 'Item_Devices' && !Toolbox::endsWith('__main', $tab)) {
          $count = countElementsInTable(
             self::getTable(), [
                $item->getForeignKeyField() => $item->fields['id']
@@ -1488,6 +1488,14 @@ class Item_Devices extends CommonDBRelation {
    }
 
    public static function addSubDefaultJoin(CommonDBTM $item, $itemtype = null) {
+      if ($itemtype === 'AllAssets') {
+         $joins = '';
+         foreach (static::itemAffinity() as $link_type) {
+            $joins .= static::addSubDefaultJoin($item, $link_type);
+         }
+         return $joins;
+      }
+
       $sub_link_item = new $itemtype;
       if ($item->getType() == static::$itemtype_1) {
          $link_type = static::$itemtype_2;
@@ -1498,6 +1506,10 @@ class Item_Devices extends CommonDBRelation {
       } else {
          $link_type = (static::$itemtype_1 != 'itemtype' ? static::$itemtype_1 : static::$itemtype_2);
          $link_id = (static::$itemtype_1 != 'itemtype' ? static::$items_id_1 : static::$items_id_2);
+      }
+
+      if (empty($link_type) || $link_type == 'itemtype') {
+         $link_type = $itemtype;
       }
 
       $link_table = getTableForItemtype($link_type);

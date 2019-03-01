@@ -284,11 +284,25 @@ class Asset extends AbstractController implements ControllerInterface
                     if ($sub_item instanceof \CommonDBRelation) {
                         $params = $request->getQueryParams() + $args;
 
-                        if ($sub_item instanceof \Item_Devices) {
+                        if ($sub_item instanceof \Item_Devices && $item instanceof \CommonDevice) {
+                            $types = $sub_item->itemAffinity();
+
+                            foreach ($types as $sub_type) {
+                                $sub_link_item = new $sub_type;
+                                $search = new \Search($item, $params);
+                                $data[$sub_type] = [
+                                    'search_data'  => $search->getData([
+                                        'item'      => $item,
+                                        'sub_item'  => $sub_link_item
+                                    ]),
+                                    'item'         => $sub_link_item
+                                ];
+                            }
+                        } elseif ($sub_item instanceof \Item_Devices) {
                             $types = $sub_item->getDeviceTypes();
                             $data = [];
                             foreach ($types as $sub_type) {
-                                 $sub_link_item = new $sub_type;
+                                $sub_link_item = new $sub_type;
                                 if ($item->getType() == $sub_link_item::$itemtype_1) {
                                     $link_type = $sub_link_item::$itemtype_2;
                                 } elseif ($item->getType() == $sub_link_item::$itemtype_2) {
@@ -300,15 +314,20 @@ class Asset extends AbstractController implements ControllerInterface
                                     );
                                 }
 
-                                 $link = new $link_type;
-                                 $search = new \Search($link, $params);
-                                 $data[$link_type] = [
+                                if (!empty($link_type) && $link_type != 'itemtype') {
+                                    $link = new $link_type;
+                                } else {
+                                    $link = $sub_item;
+                                }
+
+                                $search = new \Search($link, $params);
+                                $data[$link->getType()] = [
                                     'search_data'  => $search->getData([
                                         'item'      => $item,
                                         'sub_item'  => $sub_link_item
                                     ]),
                                     'item'         => $sub_link_item
-                                 ];
+                                ];
                             }
 
                             return $this->view->render(
