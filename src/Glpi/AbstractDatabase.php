@@ -1064,7 +1064,7 @@ abstract class AbstractDatabase
             throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
         }
 
-        $query  = "DELETE FROM ". $this->quoteName($table);
+        $query  = "DELETE ". $this->quoteName($table) . " FROM ". $this->quoteName($table);
 
         $it = new DBmysqlIterator($this);
         $query .= $it->analyzeJoins($joins);

@@ -134,6 +134,7 @@ class DBmysql extends \GLPITestCase {
       $this->array($set)->isIdenticalTo([1]);
 
       $set = [];
+      $expected = "DELETE `glpi_computers` FROM `glpi_computers`";
       $expected .= " LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)";
       $expected .= " LEFT JOIN `glpi_computertypes` ON (`glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`)";
       $expected .= " WHERE `glpi_locations`.`name` = ? AND `glpi_computertypes`.`name` = ?";
