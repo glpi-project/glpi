@@ -407,7 +407,7 @@ class Kernel
 
         $db = $this->getDbInstance();
         if ($db->isConnected()) {
-            \Config::loadLegacyConfiguration(false);
+            \Config::loadLegacyConfiguration();
         }
 
         return new ConfigParams($CFG_GLPI);

@@ -91,16 +91,7 @@ if (!$conf_exists) {
 
    //Options from DB, do not touch this part.
 
-   $older_to_latest = !isset($_GET['donotcheckversion']) // use normal config table on restore process
-       && (isset($TRY_OLD_CONFIG_FIRST) // index case
-       || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST'])); // backup case
-
-
-   if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
-      unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
-   }
-
-   if (!Config::loadLegacyConfiguration($older_to_latest)) {
+   if (!Config::loadLegacyConfiguration()) {
       echo "Error accessing config table";
       exit();
    }
