@@ -1352,7 +1352,7 @@ class Search {
 
             // Parse datas
             foreach ($newrow['raw'] as $key => $val) {
-               if (preg_match('/ITEM(_(\w[^\d]+))?_(\d+)(_(.+))?/', $key, $matches)) {
+               if (preg_match('/ITEM(_(\w[^_]+))?_(\d+)(_(.+))?/', $key, $matches)) {
                   $j = $matches[3];
                   if (isset($matches[2]) && !empty($matches[2])) {
                      $j = $matches[2] . '_' . $matches[3];
