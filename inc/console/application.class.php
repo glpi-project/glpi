@@ -358,7 +358,7 @@ class Application extends BaseApplication {
          return;
       }
 
-      Config::loadLegacyConfiguration(false);
+      Config::loadLegacyConfiguration();
    }
 
    /**
