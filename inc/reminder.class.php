@@ -532,7 +532,7 @@ class Reminder extends CommonDBVisible {
          $nb = 0;
          switch ($item->getType()) {
             case 'Reminder' :
-               if (Session::haveRight('reminder_public', UPDATE)) {
+               if (Session::haveRight('reminder_public', CREATE)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
                   }
