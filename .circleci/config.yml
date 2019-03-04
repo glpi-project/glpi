@@ -154,7 +154,7 @@ jobs:
       - run:
           name: PHP CS
           command: |
-            vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=PSR2 ./src ./public/index.php && vendor/bin/phpcs -d memory_limit=512M -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git,/config,/files,/lib,/node_modules,/plugins,/src,/tests/config,/vendor,/public/index.php ./
+            vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=PSR2 ./src ./public/index.php && vendor/bin/phpcs -d memory_limit=512M -p -n --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/.git/,/config/,/files/,/lib/,/node_modules/,/plugins/,/public/index.php,/src/,/tests/config/,/vendor/ ./
       - run:
           name: ESLint
           command: |

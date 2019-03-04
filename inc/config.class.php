@@ -2803,14 +2803,14 @@ class Config extends CommonDBTM {
          // 1 row = 0.78 to 0.84 config table schema
          $values = $iterator->next();
       } else {
-          // multiple rows = 0.85+ config
-          $values = [];
-          while ($row = $iterator->next()) {
-             if ('core' !== $row['context']) {
-                continue;
-             }
-             $values[$row['name']] = $row['value'];
-          }
+         // multiple rows = 0.85+ config
+         $values = [];
+         while ($row = $iterator->next()) {
+            if ('core' !== $row['context']) {
+               continue;
+            }
+            $values[$row['name']] = $row['value'];
+         }
       }
 
       $CFG_GLPI = array_merge($CFG_GLPI, $values);
