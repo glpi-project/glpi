@@ -23,7 +23,7 @@ shared: &shared
     - save_cache:
         key: composer-cache-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
         paths:
-          - ./home/circleci/.composer/cache/
+          - /home/circleci/.composer/cache/
     - save_cache:
         key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}
         paths:
