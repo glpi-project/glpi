@@ -851,4 +851,38 @@ class CommonDBTM extends DbTestCase {
 
       $_SESSION['glpi_currenttime'] = $bkp_current;
    }
+
+   public function testTimezones() {
+      global $DB;
+
+      //check if timezones are active
+      $this->boolean($DB->areTimezonesActives())->isTrue();
+      $this->array($DB->getTimezones())->size->isGreaterThan(0);
+
+      //login with default TZ
+      $this->login();
+      //add a Compuer with creation and update dates
+      $comp = new \Computer();
+      $cid = $comp->add([
+         'name'            => 'Computer with timezone',
+         'date_creation'   => '2019-03-04 10:00:00',
+         'date_mod'        => '2019-03-04 10:00:00',
+         'entities_id'     => 0
+      ]);
+      $this->integer($cid)->isGreaterThan(0);
+
+      $this->boolean($comp->getFromDB($cid));
+      $this->string($comp->fields['date_creation'])->isIdenticalTo('2019-03-04 10:00:00');
+
+      $user = getItemByTypeName('User', 'glpi');
+      $this->boolean($user->update(['id' => $user->fields['id'], 'timezone' => 'Europe/Paris']))->isTrue();
+
+      //check tz is set
+      $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
+      $this->string($user->fields['timezone'])->isIdenticalTo('Europe/Paris');
+
+      $this->login('glpi', 'glpi');
+      $this->boolean($comp->getFromDB($cid));
+      $this->string($comp->fields['date_creation'])->matches('/2019-03-04 1[12]:00:00/');
+   }
 }
