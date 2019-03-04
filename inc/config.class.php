@@ -974,7 +974,7 @@ class Config extends CommonDBTM {
     * @return void
    **/
    function showFormUserPrefs($data = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $oncentral = (Session::getCurrentInterface() == "central");
       $userpref  = false;
@@ -1199,7 +1199,17 @@ class Config extends CommonDBTM {
       echo "<td>";
       Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css'], -1, ['rand' => $rand]);
       echo "</td>";
-      echo "<td colspan='2'>";
+      echo "<td><label for='dropdown_timezone$rand'>" . __('Timezone') . "</label></td>";
+      echo "<td>";
+      $timezones = $DB->getTimezones();
+      Dropdown::showFromArray(
+         'timezone',
+         $timezones, [
+            'value'                 => $data["timezone"],
+            'display_emptychoice'   => true,
+            'emptylabel'            => __('Use server configuration')
+         ]
+      );
       echo "</td></tr>";
 
       if ($oncentral) {

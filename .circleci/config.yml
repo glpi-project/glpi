@@ -46,6 +46,7 @@ shared: &shared
           bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
           bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
           bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --no-interaction
+          bin/console glpi:migration:timestamps --config-dir=./tests --no-interaction
           rm tests/config_db.php
     - run:
         name: Install DB
