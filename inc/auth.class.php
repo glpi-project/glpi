@@ -276,14 +276,14 @@ class Auth extends CommonGLPI {
          $ok = password_verify($pass, $hash);
 
       } else if (strlen($hash)==32) {
-         $ok = md5($pass) == $hash;
+         $ok = md5($pass) === $hash;
 
       } else if (strlen($hash)==40) {
-         $ok = sha1($pass) == $hash;
+         $ok = sha1($pass) === $hash;
 
       } else {
          $salt = substr($hash, 0, 8);
-         $ok = ($salt.sha1($salt.$pass) == $hash);
+         $ok = ($salt.sha1($salt.$pass) === $hash);
       }
 
       return $ok;
