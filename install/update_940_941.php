@@ -40,6 +40,10 @@ function update940to941() {
 
    $updateresult     = true;
 
+   //TRANS: %s is the number of new version
+   $migration->displayTitle(sprintf(__('Update to %s'), '9.4.1'));
+   $migration->setVersion('9.4.1');
+
    /** Add a search option for profile id */
    $migration->addPostQuery($DB->buildUpdate(
       'glpi_displaypreferences',
