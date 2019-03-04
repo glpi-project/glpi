@@ -45,8 +45,8 @@ function update93to94() {
    $config_to_drop = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '9.4'));
-   $migration->setVersion('9.4');
+   $migration->displayTitle(sprintf(__('Update to %s'), '9.4.0'));
+   $migration->setVersion('9.4.0');
 
    /** Add otherserial field on ConsumableItem */
    if (!$DB->fieldExists('glpi_consumableitems', 'otherserial')) {
