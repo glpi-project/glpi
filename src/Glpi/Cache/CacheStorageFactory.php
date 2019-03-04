@@ -56,8 +56,8 @@ class CacheStorageFactory extends StorageFactory
     private static $cacheUniqId;
 
     /**
-     * @param string $cacheDir     Cache directory.
-     * @param string $cacheUniqId  Cache unique identifier.
+     * @param string $cacheDir      Cache directory.
+     * @param string $cacheUniqId   Cache unique identifier.
      */
     public function __construct(string $cacheDir, string $cacheUniqId)
     {
@@ -67,36 +67,19 @@ class CacheStorageFactory extends StorageFactory
 
     public static function factory($cfg)
     {
-        // Compute prefered adapter if 'auto' value or no value is used
-        if (!isset($cfg['adapter']) || 'auto' === $cfg['adapter']) {
-            if (function_exists('wincache_ucache_add')) {
-                $cfg['adapter'] = 'wincache';
-            } elseif (function_exists('apcu_fetch')) {
-                $cfg['adapter'] = 'apcu';
-            } else {
-                $cfg['adapter'] = 'filesystem';
-                if (!array_key_exists('plugins', $cfg)) {
-                    $cfg['plugins'] = [
-                        'serializer'
-                    ];
-                } elseif (!in_array('serializer', $cfg['plugins'])) {
-                    $cfg['plugins'][] = 'serializer';
-                }
-            }
-        }
-
-        // Add unique id to namespace
         if (!array_key_exists('options', $cfg) || !is_array($cfg['options'])) {
             $cfg['options'] = [];
         }
-        $baseNamespace = isset($cfg['options']['namespace']) ? $cfg['options']['namespace'] : '_default';
-        $cfg['options']['namespace'] = $baseNamespace . (empty(self::$cacheUniqId) ? '' : '_' . self::$cacheUniqId);
+
+        // Add unique id to namespace
+        $namespace = isset($cfg['options']['namespace']) ? $cfg['options']['namespace'] : '_default';
+        $namespace .= (empty(self::$cacheUniqId) ? '' : '_' . self::$cacheUniqId);
+        $cfg['options']['namespace'] = $namespace;
 
         // Handle pathname for dba adapter
         if ('dba' === $cfg['adapter']) {
             // Assign default value for pathname
             if (!isset($cfg['options']['pathname'])) {
-                $namespace = $cfg['options']['namespace'];
                 $cfg['options']['pathname'] = self::$cacheDir . '/' . $namespace . '.data';
             }
         }
@@ -105,7 +88,6 @@ class CacheStorageFactory extends StorageFactory
         if ('filesystem' === $cfg['adapter']) {
             // Assign default value for cache dir
             if (!isset($cfg['options']['cache_dir'])) {
-                $namespace = $cfg['options']['namespace'];
                 $cfg['options']['cache_dir'] = self::$cacheDir . '/' . $namespace;
             }
 
@@ -130,44 +112,6 @@ class CacheStorageFactory extends StorageFactory
             }
         }
 
-        try {
-            return parent::factory($cfg);
-        } catch (\Exception $e) {
-            if ('filesystem' !== $cfg['adapter']) {
-                // Fallback to 'filesystem' adapter
-                trigger_error(
-                    sprintf(
-                        'Cache adapter instantiation failed, fallback to "filesystem" adapter. Error was "%s".',
-                        $e->getMessage()
-                    ),
-                    E_USER_WARNING
-                );
-                return self::factory(
-                    [
-                        'adapter' => 'filesystem',
-                        'options' => [
-                            'namespace' => $baseNamespace . '_fallback'
-                        ],
-                    ]
-                );
-            } else {
-                // Fallback to 'memory' adapter
-                trigger_error(
-                    sprintf(
-                        'Cache adapter instantiation failed, fallback to "memory" adapter. Error was "%s".',
-                        $e->getMessage()
-                    ),
-                    E_USER_WARNING
-                );
-                return self::factory(
-                    [
-                        'adapter' => 'memory',
-                        'options' => [
-                            'namespace' => $baseNamespace . '_fallback'
-                        ],
-                    ]
-                );
-            }
-        }
+        return parent::factory($cfg);
     }
 }

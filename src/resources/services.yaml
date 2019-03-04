@@ -39,6 +39,7 @@ parameters:
     # with cache adapter that shares a common space (apcu for example).
     # It will be generated on installation.
     cache_uniq_id: ''
+    cache_disable_integrity_checks: false
     application_cache:
         adapter: auto
         options:
@@ -58,7 +59,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     Glpi\:
         resource: '%kernel.project_dir%/src/Glpi/*'
-        exclude: '%kernel.project_dir%/src/Glpi/{Annotation,DependencyInjection,Event,Kernel.php}'
+        exclude: '%kernel.project_dir%/src/Glpi/{Annotation,Cache,DependencyInjection,Event,Kernel.php}'
 
 #### Glpi services below
 
@@ -94,19 +95,16 @@ services:
     Glpi\Cache\CacheStorageFactory:
         $cacheDir: '%cache_directory%'
         $cacheUniqId: '%cache_uniq_id%'
+    Glpi\Cache\SimpleCacheFactory:
+        $cacheDir: '%cache_directory%'
+        $disableIntegrityChecks: '%cache_disable_integrity_checks%'
     application_cache:
-        class: 'Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator'
-        arguments: ['@application_cache_storage']
-    application_cache_storage:
-        class: 'Zend\Cache\Storage\StorageInterface'
-        factory: 'Glpi\Cache\CacheStorageFactory:factory'
+        class: 'Glpi\Cache\SimpleCache'
+        factory: 'Glpi\Cache\SimpleCacheFactory:factory'
         arguments: ['%application_cache%']
     translation_cache:
-        class: 'Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator'
-        arguments: ['@translation_cache_storage']
-    translation_cache_storage:
-        class: 'Zend\Cache\Storage\StorageInterface'
-        factory: 'Glpi\Cache\CacheStorageFactory:factory'
+        class: 'Glpi\Cache\SimpleCache'
+        factory: 'Glpi\Cache\SimpleCacheFactory:factory'
         arguments: ['%translation_cache%']
 
     # Glpi\ConfigParams service is synthetic as it requires loading of data inside DB

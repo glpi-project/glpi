@@ -616,7 +616,7 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey = 'app_tests:glpi_entities_ancestors_cache_';
+      $ckey = $this->getCacheNamespace() . ':glpi_entities_ancestors_cache_';
 
       //test on ent0
       $expected = [0 => '0'];
@@ -775,7 +775,7 @@ class DbUtils extends DbTestCase {
       //- if $cache === 1; we expect cache to be empty before call, and populated after
       //- if $hit   === 1; we expect cache to be populated
 
-      $ckey = 'app_tests:glpi_entities_sons_cache_';
+      $ckey = $this->getCacheNamespace() . ':glpi_entities_sons_cache_';
 
       //test on ent0
       $expected = [$ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];

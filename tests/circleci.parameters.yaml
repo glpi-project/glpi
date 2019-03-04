@@ -30,6 +30,7 @@
 #
 parameters:
     cache_uniq_id: tests
+    cache_disable_integrity_checks: true
     application_cache:
         adapter: apcu
         options:

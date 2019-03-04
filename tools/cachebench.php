@@ -79,7 +79,7 @@ if ($nb < 100000) {
 echo "+ Entities: $nb\n";
 
 global $CONTAINER;
-$cache_storage = $CONTAINER->get('application_cache_storage');
+$cache_storage = $CONTAINER->get('application_cache')->getStorage();
 echo "+ Cache: " . get_class($cache_storage) . "\n";
 
 echo "+ Clear sons cache\n";

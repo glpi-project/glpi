@@ -1516,7 +1516,7 @@ class Config extends CommonDBTM {
    function showPerformanceInformations() {
       global $CONTAINER;
 
-      $cache_storage = $CONTAINER->get('application_cache_storage');
+      $cache_storage = $CONTAINER->get('application_cache')->getStorage();
 
       if (!Config::canUpdate()) {
          return false;
