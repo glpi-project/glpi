@@ -35,6 +35,7 @@ namespace Glpi\Database;
 use DBmysqlIterator;
 use Pdo;
 use Toolbox;
+use Config;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
@@ -70,7 +71,42 @@ class MySql extends AbstractDatabase
         if (GLPI_FORCE_EMPTY_SQL_MODE) {
             $this->dbh->query("SET SESSION sql_mode = ''");
         }
+
         $this->connected = true;
+
+        $this->setTimezone($this->guessTimezone());
+    }
+
+   /**
+    * Guess timezone
+    *
+    * Will  check for an existing loaded timezone from user,
+    * then will check in preferences and finally will fallback to system one.
+    *
+    * @return string
+    */
+    protected function guessTimezone()
+    {
+        if (isset($_SESSION['glpi_tz'])) {
+            $zone = $_SESSION['glpi_tz'];
+        } else {
+            $conf_tz = ['value' => null];
+            if ($this->tableExists(Config::getTable())
+            && $this->fieldExists(Config::getTable(), 'value')
+            ) {
+                $conf_tz = $this->request([
+                'SELECT' => 'value',
+                'FROM'   => Config::getTable(),
+                'WHERE'  => [
+                  'context'   => 'core',
+                  'name'      => 'timezone'
+                ]
+                ])->next();
+            }
+            $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
+        }
+
+        return $zone;
     }
 
    /**
@@ -335,5 +371,75 @@ class MySql extends AbstractDatabase
         $req = $this->requestRaw('SELECT version()')->next();
         $raw = $req['version()'];
         return $raw;
+    }
+
+    public function areTimezonesActives() :bool
+    {
+       //try to query TZs
+        $criteria = [
+         'COUNT'  => 'cpt',
+         'FROM'   => 'mysql.time_zone_name',
+        ];
+        $iterator = $this->request($criteria);
+        $result = $iterator->next();
+        if (!$result) {
+            Toolbox::logWarning('Access to timezone table (mysql.time_zone_name) is not allowed.');
+            return false;
+        }
+
+        if ($result['cpt'] == 0) {
+            Toolbox::logWarning('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
+            return false;
+        }
+
+        return true;
+    }
+
+    public function setTimezone($timezone) :AbstractDatabase
+    {
+       //setup timezone
+        if ($this->areTimezonesActives()) {
+           //4dev => to drop
+            date_default_timezone_set($timezone);
+            $this->dbh->query("SET SESSION time_zone = '$timezone'");
+            $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+        }
+        return $this;
+    }
+
+    public function getTimezones() :array
+    {
+        $list = []; //default $tz is empty
+
+        $from_php = \DateTimeZone::listIdentifiers();
+        $now = new \DateTime();
+
+        $iterator = $this->request([
+         'SELECT' => 'Name',
+         'FROM'   => 'mysql.time_zone_name',
+         'WHERE'  => ['Name' => $from_php]
+        ]);
+
+        while ($from_mysql = $iterator->next()) {
+            $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
+            $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
+        }
+
+        return $list;
+    }
+
+    public function notTzMigrated() :int
+    {
+        global $DB;
+
+        $result = $DB->request([
+            'COUNT'       => 'cpt',
+            'FROM'        => 'INFORMATION_SCHEMA.COLUMNS',
+            'WHERE'       => [
+               'INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA'  => $DB->dbdefault,
+               'INFORMATION_SCHEMA.COLUMNS.COLUMN_TYPE'   => ['DATETIME']
+            ]
+        ])->next();
+        return (int)$result['cpt'];
     }
 }

@@ -117,6 +117,18 @@ function update95to100() {
    }
    /** /move cache configuration into local configuration file */
 
+   /** Timezones */
+   //User timezone
+   if (!$DB->fieldExists('glpi_users', 'timezone')) {
+      $migration->addField("glpi_users", "timezone", "varchar(50) DEFAULT NULL");
+   }
+   $migration->displayWarning("DATETIME fields must be converted to TIMESTAMP for timezones to work. Run bin/console db:migration:timestamps");
+
+   // Add a config entry for app timezone setting
+   $migration->addConfig(['timezone' => null]);
+
+   /** /Timezones */
+
    // ************ Keep it at the end **************
    Config::deleteConfigurationValues('core', $config_to_drop);
 
