@@ -435,6 +435,7 @@ class DBmysqlIterator implements Iterator, Countable {
    private function handleFields($t, $f) {
       if (is_numeric($t)) {
          if ($f instanceof \AbstractQuery) {
+            $this->parameters = array_merge($this->parameters, $f->getParameters());
             return $f->getQuery();
          } else {
             return $this->conn->quoteName($f);
@@ -663,8 +664,6 @@ class DBmysqlIterator implements Iterator, Countable {
             $value[$k] = $DB->quoteValue($v);
          }
          $crit_value = implode(', ', $value);
-      } else if ($value instanceof \AbstractQuery) {
-         $crit_value = $value->getQuery();
       } else {
          $crit_value = $value;
       }
