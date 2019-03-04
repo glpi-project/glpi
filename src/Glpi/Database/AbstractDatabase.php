@@ -1387,10 +1387,49 @@ abstract class AbstractDatabase
     /**
      * Is connected to the database
      *
-     * @retrun boolean
+     * @return boolean
      */
     public function isConnected(): bool
     {
         return $this->connected;
+    }
+
+    /**
+     * Check if timezones are active.
+     *
+     * Under MySql, a command must be run to initilize data,
+     * and some privileges may be needed to read informations.
+     *
+     * @return boolean
+     */
+    public function areTimezonesActives() :bool
+    {
+        return true;
+    }
+
+    /**
+     * Set timezone on both php and database
+     *
+     * @param sting $timezone TimeZone to set
+     *
+     * @return AbstractDatabase
+     */
+    abstract public function setTimezone($timezone) :AbstractDatabase;
+
+    /**
+     * Get available timezones
+     *
+     * @return array
+     */
+    abstract public function getTimezones() :array;
+
+    /**
+     * Count columns that has not been migrated to timestamp type
+     *
+     * @return integer
+     */
+    public function notTzMigrated() :int
+    {
+        return 0;
     }
 }
