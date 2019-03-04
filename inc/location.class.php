@@ -143,7 +143,7 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'postcode',
          'name'               => __('Postal code'),
-         'massiveaction'      => true,
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -152,7 +152,7 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'town',
          'name'               => __('Town'),
-         'massiveaction'      => true,
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -161,7 +161,7 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'state',
          'name'               => _x('location', 'State'),
-         'massiveaction'      => true,
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -170,7 +170,7 @@ class Location extends CommonTreeDropdown {
          'table'              => 'glpi_locations',
          'field'              => 'country',
          'name'               => __('Country'),
-         'massiveaction'      => true,
+         'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
@@ -366,7 +366,7 @@ class Location extends CommonTreeDropdown {
             $union->addQuery([
                'SELECT' => [
                   'id',
-                  "$type AS type"
+                  new \QueryExpression("'$type' AS type")
                ],
                'FROM'   => $table,
                'WHERE'  => [

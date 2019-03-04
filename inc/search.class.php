@@ -1239,6 +1239,7 @@ class Search {
                   $items[$val2] = $searchopt[$val2];
                }
             }
+            $view_sql = "";
             foreach ($items as $key2 => $val2) {
                if (isset($val2['nosearch']) && $val2['nosearch']) {
                   continue;
@@ -1255,13 +1256,13 @@ class Search {
                                                  $criterion['searchtype'], $criterion['value'], $meta);
                      if ($new_where !== false) {
                         $first2  = false;
-                        $sql .=  $new_where;
+                        $view_sql .=  $new_where;
                      }
                   }
                }
             }
-            if (strlen($sql)) {
-               $sql = " ($sql) ";
+            if (strlen($view_sql)) {
+               $sql.= " ($view_sql) ";
             }
          }
       }
