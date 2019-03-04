@@ -725,7 +725,7 @@ class Html {
    static function displayDebugInfos($with_session = true, $ajax = false) {
       global $CFG_GLPI, $CONTAINER, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
-      $cache_storage = $CONTAINER->get('application_cache_storage');
+      $cache_storage = $CONTAINER->get('application_cache')->getStorage();
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug

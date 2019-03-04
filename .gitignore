@@ -5,6 +5,7 @@
 /config/parameters.yaml
 /tests/config_db*
 /tests/db.yaml
+/tests/parameters.yaml
 /plugins/
 /files/
 /.buildpath

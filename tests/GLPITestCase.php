@@ -70,4 +70,13 @@ class GLPITestCase extends atoum {
       }
       return $this->int++;
    }
+
+   /**
+    * Returns cache namespace.
+    */
+   protected function getCacheNamespace(): string {
+      global $CONTAINER;
+      $cacheUniq = $CONTAINER->getParameter('cache_uniq_id');
+      return 'app' . (empty($cacheUniq) ? '' : '_' . $cacheUniq);
+   }
 }

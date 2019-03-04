@@ -44,36 +44,6 @@ class CacheStorageFactory extends \GLPITestCase {
     */
    protected function factoryProvider(): array {
       return [
-         // Case: auto adapter without options
-         [
-            'config'   => [
-                'adapter' => 'auto',
-            ],
-            'expected_adapter' => [
-               'class'   => \Zend\Cache\Storage\Adapter\Apcu::class,
-               'options' => [],
-               'plugins' => [],
-            ],
-         ],
-
-         // Case: auto adapter with options
-         [
-            'config'   => [
-                'adapter' => 'auto',
-                'options' => [
-                   'namespace' => 'app_cache',
-                ],
-            ],
-            'expected_adapter' => [
-               'class'   => \Zend\Cache\Storage\Adapter\Apcu::class,
-               'options' => [
-                  'namespace' => 'app_cache',
-               ],
-               'plugins' => [
-               ],
-            ],
-         ],
-
          // Case: dba adapter using default options
          /* Cannot test without extension loaded
          [
@@ -199,78 +169,5 @@ class CacheStorageFactory extends \GLPITestCase {
             $this->boolean($pluginFound)->isTrue();
          }
       }
-   }
-
-   /**
-    * Test that factory fallback to filesystem adapter if requested adapter not working.
-    */
-   public function testFactoryFallbackToFilesystem() {
-
-      $uniqId = uniqid();
-
-      $this->newTestedInstance(GLPI_CACHE_DIR, $uniqId);
-
-      $self = $this;
-      $adapter = null;
-
-      $this->when(
-         function() use ($self, &$adapter) {
-            $adapter = $self->testedInstance->factory(
-               [
-                  'adapter' => 'invalid'
-               ]
-            );
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withPattern('/^Cache adapter instantiation failed, fallback to "filesystem" adapter./')
-            ->exists();
-
-      $this->object($adapter)->isInstanceOf(\Zend\Cache\Storage\Adapter\Filesystem::class);
-
-      $adapterOptions = $adapter->getOptions()->toArray();
-      $this->array($adapterOptions)->hasKey('namespace');
-      $this->variable($adapterOptions['namespace'])->isEqualTo('_default_fallback_' . $uniqId);
-      $this->array($adapterOptions)->hasKey('cache_dir');
-      $this->variable($adapterOptions['cache_dir'])->isEqualTo(GLPI_CACHE_DIR . '/_default_fallback_' . $uniqId);
-   }
-
-   /**
-    * Test that factory fallback to memory adapter if filesystem adapter not working.
-    */
-   public function testFactoryFallbackToMemory() {
-
-      $uniqId = uniqid();
-
-      $this->newTestedInstance(GLPI_CACHE_DIR, $uniqId);
-
-      $self = $this;
-      $adapter = null;
-
-      $this->when(
-         function() use ($self, &$adapter) {
-            $adapter = $self->testedInstance->factory(
-               [
-                  'adapter' => 'filesystem',
-                  'options' => [
-                     'cache_dir' => '/this/directory/cannot/be/created',
-                  ],
-               ]
-            );
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage('Cannot create "/this/directory/cannot/be/created" cache directory.')
-            ->exists()
-       ->error
-         ->withType(E_USER_WARNING)
-         ->withPattern('/^Cache adapter instantiation failed, fallback to "memory" adapter./')
-            ->exists();
-
-      $this->object($adapter)->isInstanceOf(\Zend\Cache\Storage\Adapter\Memory::class);
-
-      $adapterOptions = $adapter->getOptions()->toArray();
-      $this->array($adapterOptions)->hasKey('namespace');
-      $this->variable($adapterOptions['namespace'])->isEqualTo('_default_fallback_' . $uniqId);
    }
 }
