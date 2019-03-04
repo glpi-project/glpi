@@ -25,7 +25,7 @@ shared: &shared
         paths:
           - /home/circleci/.composer/cache/
     - save_cache:
-        key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}
+        key: composer-install-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.lock.bak" }}-{{ epoch }}
         paths:
           - ./vendor
     - run:
