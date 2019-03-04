@@ -274,8 +274,31 @@ JAVASCRIPT;
             $items_subquery,
          ],
          'FROM' => $cat_table,
-         'ORDER' => KnowbaseItemCategory::getTableField('name')
+         'ORDER' => [
+            KnowbaseItemCategory::getTableField('level') . ' DESC',
+            KnowbaseItemCategory::getTableField('name'),
+         ]
       ]);
+
+      $categories = [];
+      foreach ($cat_iterator as $category) {
+         $categories[] = $category;
+      }
+
+      // Remove categories that have no items and no children
+      // Requires category list to be sorted by level DESC
+      foreach ($categories as $index => $category) {
+         $children = array_filter(
+            $categories,
+            function ($element) use ($category, $cat_fk) {
+               return $category['id'] == $element[$cat_fk];
+            }
+         );
+
+         if (empty($children) && 0 == $category['items_count']) {
+            unset($categories[$index]);
+         }
+      }
 
       // Add root category (which is not a real category)
       $root_items_count = $DB->request(
@@ -290,19 +313,14 @@ JAVASCRIPT;
             $kbitem_visibility_crit
          )
       )->next();
-
-      $categories = [
-         [
-            'id'          => '0',
-            'name'        => __('Root category'),
-            $cat_fk       => '#',
-            'items_count' => $root_items_count['cpt'],
-         ]
+      $categories[] = [
+         'id'          => '0',
+         'name'        => __('Root category'),
+         $cat_fk       => '#',
+         'items_count' => $root_items_count['cpt'],
       ];
-      foreach ($cat_iterator as $category) {
-         $categories[] = $category;
-      }
 
+      // Tranform data into jstree format
       $nodes   = [];
 
       foreach ($categories as $category) {
