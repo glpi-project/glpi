@@ -3648,12 +3648,16 @@ class User extends CommonDBTM {
       if (!$count) {
          if ((strlen($search) > 0)) {
             $txt_search = Search::makeTextSearchValue($search);
+
+            $firstname_field = $DB->quoteName(self::getTableField('firstname'));
+            $realname_field = $DB->quoteName(self::getTableField('realname'));
+            $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
+               ? [$firstname_field, $realname_field]
+               : [$realname_field, $firstname_field];
+
             $concat = new \QueryExpression(
-               "CONCAT(
-                  glpi_users.realname,
-                  glpi_users.firstname,
-                  glpi_users.firstname
-               ) LIKE '$txt_search'"
+               'CONCAT(' . implode(',' . $DB->quoteValue(' ') . ',', $fields) . ')'
+               . ' LIKE ' . $DB->quoteValue($txt_search)
             );
             $WHERE[] = [
                'OR' => [
