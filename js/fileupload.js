@@ -331,18 +331,6 @@ var insertImageInTinyMCE = function(editor, image) {
  */
 if (typeof tinymce != 'undefined') {
    tinymce.PluginManager.add('glpi_upload_doc', function(editor) {
-      editor.on('drop', function(event) {
-         if (event.dataTransfer
-             && event.dataTransfer.files.length > 0) {
-            stopEvent(event);
-
-            // for each dropped files
-            $.each(event.dataTransfer.files, function(index, element) {
-               insertImageInTinyMCE(editor, element);
-            });
-         }
-      });
-
       editor.on('PastePreProcess', function(event) {
          //Check if data is an image
          if (isImageFromPaste(event.content)) {
