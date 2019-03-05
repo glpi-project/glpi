@@ -3553,6 +3553,9 @@ class Html {
          // init editor
          tinyMCE.init({
             language_url: '$language_url',
+            invalid_elements: 'form,iframe,script,@[onclick|ondblclick|'
+               + 'onmousedown|onmouseup|onmouseover|onmousemove|onmouseout|onkeypress|'
+               + 'onkeydown|onkeyup]',
             browser_spellcheck: true,
             mode: 'exact',
             elements: '$name',
