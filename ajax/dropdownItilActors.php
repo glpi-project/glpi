@@ -117,10 +117,10 @@ if (isset($_POST["type"])
          case "group" :
             $cond = ['is_requester' => 1];
             if ($_POST["actortype"] == 'assign') {
-               $cond['is_assign'] = 1;
+               $cond = ['is_assign' => 1];
             }
             if ($_POST["actortype"] == 'observer') {
-               $cond['is_watcher'] = 1;
+               $cond = ['is_watcher' => 1];
             }
 
             $param = [
