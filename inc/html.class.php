@@ -3558,7 +3558,6 @@ class Html {
             remove_script_host: false,
             entity_encoding: 'raw',
             paste_data_images: $('.fileupload').length,
-            paste_block_drop: true,
             menubar: false,
             statusbar: false,
             skin_url: '".$CFG_GLPI['root_doc']."/css/tiny_mce/skins/light',
