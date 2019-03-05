@@ -3548,6 +3548,7 @@ class Html {
          // init editor
          tinyMCE.init({
             language: '$language',
+            invalid_elements: 'form,iframe',
             browser_spellcheck: true,
             mode: 'exact',
             elements: '$name',
