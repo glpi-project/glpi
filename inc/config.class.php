@@ -1843,6 +1843,8 @@ class Config extends CommonDBTM {
 
       self::displayCheckDbEngine(true);
 
+      self::displayCheckInnoDB(true);
+
       self::checkWriteAccessToDirs(true);
       toolbox::checkSELinux(true);
 
@@ -2215,7 +2217,7 @@ class Config extends CommonDBTM {
     * @param boolean $fordebug display for debug (no html required) (false by default)
     * @param string  $version  Version to check (mainly from install), defaults to null
     *
-    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+    * @return integer 2: wrong db version,  0: OK
     **/
    static function displayCheckDbEngine($fordebug = false, $version = null) {
       global $CFG_GLPI;
@@ -2252,6 +2254,49 @@ class Config extends CommonDBTM {
       }
       return $error;
    }
+
+   /**
+    * Display non InnoDB tables report
+    *
+    * @since 10.0.0
+    *
+    * @param boolean $fordebug display for debug (no html required) (false by default)
+    *
+    * @return integer 2: error, 0: OK
+    **/
+   static function displayCheckInnoDB($fordebug = false) {
+      global $CFG_GLPI, $DB;
+
+      $error = 0;
+
+      $myisam_tables = $DB->getMyIsamTables();
+      if (count($myisam_tables)) {
+         $error = 2;
+         $message = sprintf(__s('%1$s tables are not using InnoDB engine. Please migrate them!'), count($myisam_tables));
+      } else {
+         $message = __s('All your tables are using InnoDB engine, perfect!');
+      }
+
+      $img = "<img src='".$CFG_GLPI['root_doc']."/pics/";
+      $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
+
+      if (isCommandLine()) {
+         echo $message . "\n";
+      } else if ($fordebug) {
+         echo $img . $message . "\n";
+      } else {
+         $html = "<td";
+         if ($error > 0) {
+            $html .= " class='red'";
+         }
+         $html .= ">";
+         $html .= $img;
+         $html .= '</td>';
+         echo $html;
+      }
+      return $error;
+   }
+
 
    /**
     * Display extensions checks report
