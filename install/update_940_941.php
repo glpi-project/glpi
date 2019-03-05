@@ -45,11 +45,10 @@ function update940to941() {
    $migration->setVersion('9.4.1');
 
    /** Add a search option for profile id */
+   $set = ['num' => 5];
    $migration->addPostQuery($DB->buildUpdate(
       'glpi_displaypreferences',
-      [
-         'num' => '5'
-      ],
+      $set,
       [
          'num' => '2',
          'itemtype' => 'Profile'
