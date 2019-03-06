@@ -173,8 +173,8 @@ class MailCollector  extends CommonDBTM {
          Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
       }
 
-      if (isset($input['_docolect'])) {
-         unset($input['_docolect']);
+      if (isset($input['_docollect'])) {
+         unset($input['_docollect']);
          $this->docollect = true;
       }
 
@@ -1957,8 +1957,8 @@ class MailCollector  extends CommonDBTM {
       $form = parent::getForm($add);
       $form['columns'] = 1;
       $form['footer_elements'] = [
-         '_docolect' => [
-            'name'   => '_docolect',
+         '_docollect' => [
+            'name'   => '_docollect',
             'type'   => 'submit',
             'value'  => __('Save and collect')
          ]
