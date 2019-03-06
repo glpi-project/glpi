@@ -1548,4 +1548,15 @@ class CommonGLPI {
    public function isTwigCompat() {
       return $this->twig_compat;
    }
+
+   /**
+    * Get extra links to display in list
+    *
+    * @since 10.0.0
+    *
+    * @return false|array
+    */
+   static function getExtraLinks() {
+       return false;
+   }
 }

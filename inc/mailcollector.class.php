@@ -130,15 +130,40 @@ class MailCollector  extends CommonDBTM {
     * @since 0.85
    **/
    static function getAdditionalMenuOptions() {
+      global $router;
 
       if (static::canView()) {
-         $options['options']['notimportedemail']['links']['search']
-                                          = '/front/notimportedemail.php';
+         $page = 'front/notimportedemail.php';
+         if ($router !== null) {
+            $page = $router->pathFor('list', ['itemtype' => 'NotImportedEmail']);
+         }
+         return [
+            'notimportedemail' => [
+               'links' => [
+                  'search' => $page
+               ]
+            ]
+         ];
          return $options;
       }
       return false;
    }
 
+
+   static function getExtraLinks() {
+      $links = [];
+      if (static::canView()) {
+         $links[] = [
+             'icon'  => 'envelope',
+             'title' => NotImportedEmail::getTypeName(),
+             'uri'   => NotImportedEmail::getSearchURL(false)
+         ];
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
 
    function post_getEmpty() {
       global $CFG_GLPI;
