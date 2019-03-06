@@ -1082,22 +1082,20 @@ class Session {
                 || !isset($array[$message_type])
                 || in_array($msg, $array[$message_type]) === false) {
                array_push($array[$message_type], $msg);
-               global $IS_TWIG, $container;
-               if ($IS_TWIG) {
-                  switch ($message_type) {
-                     case ERROR:
-                        $flashtype = 'error';
-                        break;
-                     case WARNING:
-                        $flashtype = 'warniing';
-                        break;
-                     case INFO:
-                     default:
-                        $flashtype = 'info';
-                        break;
-                  }
-                  $container->get(Slim\Flash\Messages::class)->addMessage($flashtype, $msg);
+               global $CONTAINER;
+               switch ($message_type) {
+                  case ERROR:
+                     $flashtype = 'error';
+                     break;
+                  case WARNING:
+                     $flashtype = 'warning';
+                     break;
+                  case INFO:
+                  default:
+                     $flashtype = 'info';
+                     break;
                }
+               $CONTAINER->get(Slim\Flash\Messages::class)->addMessage($flashtype, $msg);
             }
          }
       }
