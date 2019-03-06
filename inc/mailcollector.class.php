@@ -618,8 +618,14 @@ class MailCollector  extends CommonDBTM {
          $this->close_mailbox();   //Close Mail Box
 
          //TRANS: %1$d, %2$d, %3$d, %4$d and %5$d are number of messages
-         $msg = sprintf(__('Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d, blacklisted=%5$d'),
-                        $tot, $this->fetch_emails, $refused, $error, $blacklisted);
+         $msg = sprintf(
+            __('Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d, blacklisted=%5$d'),
+            $tot,
+            $this->fetch_emails,
+            $refused,
+            $error,
+            $blacklisted
+         );
          if ($display) {
             Session::addMessageAfterRedirect($msg, false, ($error ? ERROR : INFO));
          } else {

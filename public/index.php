@@ -69,7 +69,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml") && !file_exists(GLPI_CONFIG_DIR .
 
     //handle redirections from old ui
     if (isset($_GET['uiredirect'])) {
-        var_dump($_GET);
         $params = [];
         $route  = null;
         foreach ($_GET as $key => $param) {

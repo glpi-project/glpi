@@ -985,7 +985,7 @@ class Main extends AbstractController implements ControllerInterface
             return $response->withRedirect($redirect_uri, 302);
         }
 
-        $this->flash->addMessage(__('Unable to load requested saved search!'));
+        $this->flash->addMessage('error', __('Unable to load requested saved search!'));
         return $response->withRedirect($this->router->getBasePath(), 500);
     }
 
