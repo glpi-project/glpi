@@ -67,6 +67,23 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml") && !file_exists(GLPI_CONFIG_DIR .
     global $router;
     $router = $CONTAINER->get('router');
 
+    //handle redirections from old ui
+    if (isset($_GET['uiredirect'])) {
+        var_dump($_GET);
+        $params = [];
+        $route  = null;
+        foreach ($_GET as $key => $param) {
+            if ($key === 'route') {
+                $route = $param;
+            } else {
+                $params[$key] = $param;
+            }
+        }
+        $new_uri = $router->pathFor($route, $params);
+        header("Location: $new_uri");
+        die();
+    }
+
     RunTracy\Helpers\Profiler\Profiler::start('runApp');
     $app->run();
     RunTracy\Helpers\Profiler\Profiler::finish('runApp');
