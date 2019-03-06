@@ -131,8 +131,9 @@
    {% endif %}
 {% endblock %}
    {% include "elements/hidden.twig" with {'element': {'name': '_glpi_csrf_token', 'value': call_static('Session', 'getNewCSRFToken')}} %}
-{% if glpi_form.submit is not defined or glpi_form.submit != false %}
+{% if glpi_form.footer_elements is defined or glpi_form.submit is not defined or glpi_form.submit != false %}
    <div class="{% if glpi_form.boxed %}card-footer{% endif %}">
+   {% if glpi_form.submit is not defined or glpi_form.submit != false %}
       {% include "elements/submit.twig" with {
          'form_class': 'center',
          'notag': true,
@@ -142,6 +143,13 @@
             'width': glpi_form.columns|default(null)
          }
       } %}
+   {% endif %}
+   {% if glpi_form.footer_elements is defined %}
+      {% for element in glpi_form.footer_elements %}
+         {% set tpl = element.type|default('input') %}
+         {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': glpi_form, notag: true} %}
+      {% endfor %}
+   {% endif %}
    </div>
 {% endif %}
 </form>

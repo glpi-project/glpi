@@ -1956,6 +1956,13 @@ class MailCollector  extends CommonDBTM {
    public function getForm($add = false) {
       $form = parent::getForm($add);
       $form['columns'] = 1;
+      $form['footer_elements'] = [
+         '_docolect' => [
+            'name'   => '_docolect',
+            'type'   => 'submit',
+            'value'  => __('Save and collect')
+         ]
+      ];
       return $form;
    }
 
