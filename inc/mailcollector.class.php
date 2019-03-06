@@ -208,182 +208,6 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * @see CommonGLPI::defineTabs()
-   **/
-   function defineTabs($options = []) {
-
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
-
-      return $ong;
-   }
-
-
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-
-      if (!$withtemplate) {
-         switch ($item->getType()) {
-            case __CLASS__ :
-               return _n('Action', 'Actions', Session::getPluralNumber());
-         }
-      }
-      return '';
-   }
-
-
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1
-    * @param $withtemplate (default 0)
-   **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      global $CFG_GLPI;
-
-      if ($item->getType() == __CLASS__) {
-         $item->showGetMessageForm($item->getID());
-      }
-      return true;
-   }
-
-
-   /**
-    * Print the mailgate form
-    *
-    * @param $ID        integer  Id of the item to print
-    * @param $options   array
-    *     - target filename : where to go when done.
-    *
-    * @return boolean item found
-   **/
-   function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
-      $this->initForm($ID, $options);
-      $options['colspan'] = 1;
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'><td>".sprintf(__('%1$s (%2$s)'), __('Name'), __('Email address')).
-           "</td><td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td></tr>";
-
-      if ($this->fields['errors']) {
-         echo "<tr class='tab_bg_1_2'><td>".__('Connection errors')."</td>";
-         echo "<td>".$this->fields['errors']."</td>";
-         echo "</tr>";
-      }
-
-      echo "<tr class='tab_bg_1'><td>".__('Active')."</td><td>";
-      Dropdown::showYesNo("is_active", $this->fields["is_active"]);
-      echo "</td></tr>";
-
-      $type = Toolbox::showMailServerConfig($this->fields["host"]);
-
-      echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
-      Html::autocompletionTextField($this, "login");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>".__('Password')."</td>";
-      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'>";
-      if ($ID > 0) {
-         echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
-      echo "</td></tr>\n";
-
-      if ($type != "pop") {
-         echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
-         echo "<td>";
-         echo "<input size='30' type='text' id='accepted_folder' name='accepted' value=\"".$this->fields['accepted']."\">";
-         echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         echo "</td></tr>\n";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
-         echo "<td>";
-         echo "<input size='30' type='text' id='refused_folder' name='refused' value=\"".$this->fields['refused']."\">";
-         echo "<i class='fa fa-list pointer get-imap-folder'></i>";
-         echo "</td></tr>\n";
-      }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td width='200px'> ". __('Maximum size of each file imported by the mails receiver').
-           "</td><td>";
-      self::showMaxFilesize('filesize_max', $this->fields["filesize_max"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . __('Use mail date, instead of collect one') . "</td>";
-      echo "<td>";
-      Dropdown::showYesNo("use_mail_date", $this->fields["use_mail_date"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>" . __('Use Reply-To as requester (when available)') . "</td>";
-      echo "<td>";
-      Dropdown::showFromArray("requester_field", [
-         self::REQUESTER_FIELD_FROM => __('No'),
-         self::REQUESTER_FIELD_REPLY_TO => __('Yes')
-      ], ["value" => $this->fields['requester_field']]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
-      echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
-
-      if ($ID > 0) {
-         echo "<br>";
-         //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
-
-      echo "<div id='imap-folder'></div>";
-      echo Html::scriptBlock("$(function() {
-         $('#imap-folder')
-            .dialog(options = {
-               autoOpen: false,
-               autoResize:true,
-               width: 'auto',
-               modal: true,
-            });
-
-         $(document).on('click', '.get-imap-folder', function() {
-            var input = $(this).prev('input');
-
-            var data = 'action=getFoldersList';
-            data += '&input_id=' + input.attr('id');
-            // Get form values without server_mailbox value to prevent filtering
-            data += '&' + $(this).closest('form').find(':not([name=\"server_mailbox\"])').serialize();
-            // Force empty value for server_mailbox
-            data += '&server_mailbox=';
-
-            $('#imap-folder')
-               .html('')
-               .load('".$CFG_GLPI['root_doc']."/ajax/mailcollector.php', data)
-               .dialog('open');
-         });
-
-         $(document).on('click', '.select_folder li', function() {
-            var li       = $(this);
-            var input_id = li.data('input-id');
-            var folder   = li.children('.folder-name').html();
-
-            $('#'+input_id).val(folder);
-            $('#imap-folder').dialog('close');
-         })
-      });");
-      return true;
-   }
-
-   /**
     * Display the list of folder for current connections
     *
     * @since  9.3.1
@@ -1126,7 +950,8 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /** function textCleaner - Strip out unwanted/unprintable characters from the subject.
+   /**
+    * Strip out unwanted/unprintable characters from the subject.
     *
     * @param $text text to clean
     *
@@ -1301,7 +1126,7 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * This function is use full to Get Header info from particular mail
+    * Get Header info from particular mail
     *
     * @param $uid UID of the message
     *
