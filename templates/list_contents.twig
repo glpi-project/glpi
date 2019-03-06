@@ -39,27 +39,38 @@
       <div class="card-header">
          {{ __('Search %1$s')|format(itemtype|lower)}}
          <div class="card-header-actions">
-            <a href="#" id="btn_as_map" class="card-header-action{% if search_data.search.as_map %} active{% endif %}" title="{{ __('Show as map') }}">
-               <i class="fa fa-globe-americas"></i>
+   {% if item is defined %}
+        {% if item.getExtraLinks() is iterable %}
+            {% for link in item.getExtraLinks() %}
+                <a href="{{ link.uri }}" title="{{ link.title }}" class="card-header-action" data-toggle="tooltip">
+                    <i class="fas fa-fw fa-{{ link.icon }}"></i><span class="sr-only">{{ link.title }}</span>
+                </a>
+            {% endfor %}
+        {% endif %}
+        {% if item.maybeLocated() %}
+            <a href="#" id="btn_as_map" class="card-header-action{% if search_data.search.as_map %} active{% endif %}" title="{{ __('Show as map') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-globe-americas"></i>
                <span class="sr-only">{{ __s('Show as map') }}</span>
             </a>
-   {% if item is defined and item.maybeDeleted() %}
-            <a href="#" id="btn_is_deleted" class="card-header-action{% if search_data.search.is_deleted %} active{% endif %}" title="{{ __s('Show items in dustbin') }}">
-               <i class="fa fa-trash"></i>
+        {% endif %}
+        {% if item.maybeDeleted() %}
+            <a href="#" id="btn_is_deleted" class="card-header-action{% if search_data.search.is_deleted %} active{% endif %}" title="{{ __s('Show items in dustbin') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-trash"></i>
                <span class="sr-only">{{ __s('Show items in dustbin') }}</span>
             </a>
+        {% endif %}
    {% endif %}
-            <a id="toggle_search_criteria" class="card-header-action active" title="{{ __s('Display/hide search panel') }}">
-               <i class="fa fa-search"></i>
+            <a href="#" id="toggle_search_criteria" class="card-header-action active" title="{{ __s('Display/hide search panel') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-search"></i>
                <span class="sr-only">{{ __s('Display/hide search panel') }}</span>
             </a>
-            <a id="default_items" class="card-header-action" title="{{ __s('Select default items to show') }}">
-               <i class="fa fa-wrench"></i>
+            <a href="#" id="default_items" class="card-header-action" title="{{ __s('Select default items to show') }}" data-toggle="tooltip">
+               <i class="fas fa-fw fa-wrench"></i>
                <span class="sr-only">{{ __s('Select default items to show') }}</span>
             </a>
             <div class="btn-group">
                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-download"></i><span class="sr-only">{{ __('Download') }}</span>
+                  <i class="fas fa-fw fa-download"></i><span class="sr-only">{{ __('Download') }}</span>
                </button>
                <div class="dropdown-menu">
                   <a class="dropdown-item" href="{#{Search::PDF_OUTPUT_LANDSCAPE}#}">{{ __('Current page in landscape PDF') }}</a>
