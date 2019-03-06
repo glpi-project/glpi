@@ -1054,6 +1054,14 @@ class Toolbox {
             $error = $suberr;
          }
          echo "</tr>";
+         //check for innodb
+         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing for InnoDB') . "</td>";
+         $suberr = Config::displayCheckInnoDB();
+         if ($suberr > $error) {
+            $error = $suberr;
+         }
+         echo "</tr>";
+
       }
 
       // memory test

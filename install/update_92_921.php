@@ -104,7 +104,7 @@ function update92to921() {
                `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevelactions");
    }
 
@@ -118,7 +118,7 @@ function update92to921() {
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`),
                KEY `condition` (`condition`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevelcriterias");
    }
 
@@ -137,7 +137,7 @@ function update92to921() {
                KEY `name` (`name`),
                KEY `is_active` (`is_active`),
                KEY `olas_id` (`olas_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels");
    }
 
@@ -151,7 +151,7 @@ function update92to921() {
                   KEY `tickets_id` (`tickets_id`),
                   KEY `olalevels_id` (`olalevels_id`),
                   KEY `unicity` (`tickets_id`,`olalevels_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
       $DB->insertOrDie("glpi_crontasks", [

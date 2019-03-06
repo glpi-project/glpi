@@ -153,6 +153,13 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          die(1);
       }
 
+      echo "<p class='center'>";
+      $result = Config::displayCheckInnoDB(true);
+      echo "</p>";
+      if ($result > 0) {
+         die(1);
+      }
+
       echo "<div class='center'>";
       doUpdateDb();
 

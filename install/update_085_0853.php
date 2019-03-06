@@ -66,7 +66,7 @@ function update085to0853() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_items_tickets");
 
       $ticketsIterator = $DB->request([

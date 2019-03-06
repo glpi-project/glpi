@@ -57,6 +57,13 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     */
    const ERROR_NO_UNSTABLE_UPDATE = 1;
 
+   /**
+    * Error code returned when some tables are not using InnoDB engine.
+    *
+    * @var integer
+    */
+   const ERROR_DB_REQUIRES_INNODB = 2;
+
    protected function configure() {
       parent::configure();
 
@@ -91,6 +98,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $allow_unstable = $input->getOption('allow-unstable');
       $force          = $input->getOption('force');
       $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
+
+      ob_start();
+      $checkinnodb = \Config::displayCheckInnoDB();
+      $message = ob_get_clean();
+      if ($checkinnodb > 0) {
+         $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+         return self::ERROR_DB_REQUIRES_INNODB;
+      }
 
       $update = new Update($this->db);
 

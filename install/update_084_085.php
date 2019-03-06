@@ -141,7 +141,7 @@ function update084to085() {
                   `rights` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`profiles_id`, `name`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_profilerights");
 
       $query = "DESCRIBE `origin_glpi_profiles`";
@@ -1502,7 +1502,7 @@ function update084to085() {
                   KEY `create_time` (`create_time`),
                   KEY `send_time` (`send_time`),
                   KEY `sent_time` (`sent_time`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add glpi_queuedmails");
       $ADDTODISPLAYPREF['QueueMail'] = [16, 7, 20, 21, 22, 15];
    }
@@ -1645,7 +1645,7 @@ function update084to085() {
                   KEY `due_date` (`due_date`),
                   KEY `global_validation` (`global_validation`),
                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_changes");
    }
 
@@ -1663,7 +1663,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
                   KEY `user` (`users_id`,`type`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changes_users");
    }
 
@@ -1676,7 +1676,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
                   KEY `group` (`groups_id`,`type`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changes_groups");
    }
 
@@ -1689,7 +1689,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`suppliers_id`),
                   KEY `group` (`suppliers_id`,`type`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changes_suppliers");
    }
 
@@ -1702,7 +1702,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changes_items");
    }
 
@@ -1714,7 +1714,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changes_tickets");
    }
 
@@ -1726,7 +1726,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
                   KEY `problems_id` (`problems_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changes_problems");
    }
 
@@ -1752,7 +1752,7 @@ function update084to085() {
                   KEY `begin` (`begin`),
                   KEY `end` (`end`),
                   KEY `taskcategories_id` (taskcategories_id)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
 
@@ -1779,7 +1779,7 @@ function update084to085() {
                KEY `entities_id` (`entities_id`),
                KEY `is_recursive` (`is_recursive`),
                KEY `budgets_id` (`budgets_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_changecosts");
    }
 
@@ -1805,7 +1805,7 @@ function update084to085() {
             KEY `submission_date` (`submission_date`),
             KEY `validation_date` (`validation_date`),
             KEY `status` (`status`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_changevalidations");
    }
 
@@ -1978,7 +1978,7 @@ function update084to085() {
                KEY `end_date` (`end_date`),
                KEY `entities_id` (`entities_id`),
                KEY `budgets_id` (`budgets_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_problemcosts");
    }
 
@@ -2024,7 +2024,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   KEY `item` (`knowbaseitems_id`, `language`),
                   FULLTEXT KEY `fulltext` (`name`,`answer`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_knowbaseitemtranslations");
    }
 
@@ -2045,7 +2045,7 @@ function update084to085() {
                   KEY `typeid` (`itemtype`,`items_id`),
                   KEY `language` (`language`),
                   KEY `field` (`field`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.85 add table glpi_dropdowntranslations");
    }
@@ -2424,7 +2424,7 @@ function update084to085() {
                   `content` text COLLATE utf8_unicode_ci,
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_blacklistedmailcontents");
    }
 
@@ -2536,7 +2536,7 @@ function update084to085() {
                   KEY `real_end_date` (`real_end_date`),
                   KEY `percent_done` (`percent_done`),
                   KEY `show_on_global_gantt` (`show_on_global_gantt`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.85 add table glpi_projects");
       $ADDTODISPLAYPREF['Project'] = [3,4,12,5,15,21];
@@ -2596,7 +2596,7 @@ function update084to085() {
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),
                   KEY `budgets_id` (`budgets_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projectcosts");
    }
 
@@ -2610,7 +2610,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `is_finished` (`is_finished`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projectstates");
 
       $ADDTODISPLAYPREF['ProjectState'] = [12,11];
@@ -2640,7 +2640,7 @@ function update084to085() {
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projecttypes");
    }
    $migration->addField("glpi_groups", 'is_manager', "bool", ['update' => "`is_assign`",
@@ -2655,7 +2655,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`changes_id`,`projects_id`),
                   KEY `projects_id` (`projects_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changes_projects");
    }
 
@@ -2668,7 +2668,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projectteams");
    }
 
@@ -2681,7 +2681,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_items_projects");
    }
 
@@ -2724,7 +2724,7 @@ function update084to085() {
                   KEY `percent_done` (`percent_done`),
                   KEY `projectstates_id` (`projectstates_id`),
                   KEY `projecttasktypes_id` (`projecttasktypes_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks");
       $ADDTODISPLAYPREF['ProjectTask'] = [2,12,14,5,7,8, 13];
@@ -2736,7 +2736,7 @@ function update084to085() {
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projecttasktypes");
    }
    if (!$DB->tableExists('glpi_projecttaskteams')) {
@@ -2748,7 +2748,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`projecttasks_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projecttaskteams");
    }
 
@@ -2760,7 +2760,7 @@ function update084to085() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`tickets_id`,`projecttasks_id`),
                   KEY `projects_id` (`projecttasks_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks_tickets");
    }
 
@@ -2993,7 +2993,7 @@ function update084to085() {
                   KEY `date` (`date`),
                   KEY `users_id_lastupdater` (`users_id_lastupdater`),
                   KEY `users_id` (`users_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_notepads");
 
       $notepad_tables = ['glpi_budgets', 'glpi_cartridgeitems', 'glpi_changes',
@@ -3224,7 +3224,7 @@ function update084to085() {
                  KEY `name` (`name`),
                  KEY `item` (`items_id`, `itemtype`),
                  KEY `device_type` (`device_type`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_registeredids");
    }
 

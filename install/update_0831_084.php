@@ -561,7 +561,7 @@ function update0831to084() {
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),
                   KEY `budgets_id` (`budgets_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_contractcosts");
 
       $migration->migrationOneTable('glpi_contractcosts');
@@ -620,7 +620,7 @@ function update0831to084() {
                   KEY `end_date` (`end_date`),
                   KEY `entities_id` (`entities_id`),
                   KEY `budgets_id` (`budgets_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_ticketcosts");
 
       $migration->migrationOneTable('glpi_ticketcosts');
@@ -698,7 +698,7 @@ function update0831to084() {
                   KEY `date_mod` (`date_mod`),
                   KEY `have_error` (`have_error`),
                   KEY `is_active` (`is_active`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_rssfeeds");
       $ADDTODISPLAYPREF['RSSFeed'] = [2,4,5,19,6,7];
    }
@@ -710,7 +710,7 @@ function update0831to084() {
                   PRIMARY KEY (`id`),
                   KEY `rssfeeds_id` (`rssfeeds_id`),
                   KEY `users_id` (`users_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 add table glpi_rssfeeds_users");
    }
@@ -728,7 +728,7 @@ function update0831to084() {
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`)
 
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 add table glpi_groups_rssfeeds");
    }
@@ -745,7 +745,7 @@ function update0831to084() {
                   KEY `profiles_id` (`profiles_id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 add table glpi_profiles_rssfeeds");
    }
@@ -760,7 +760,7 @@ function update0831to084() {
                   KEY `rssfeeds_id` (`rssfeeds_id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 add table glpi_entities_rssfeeds");
    }
@@ -780,7 +780,7 @@ function update0831to084() {
                   KEY `before_time` (`before_time`),
                   KEY `when` (`when`),
                   UNIQUE KEY `unicity` (`itemtype`,`items_id`, `users_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_planningrecalls");
    }
 
@@ -983,7 +983,7 @@ function update0831to084() {
                   PRIMARY KEY (`id`),
                   KEY `slalevels_id` (`slalevels_id`),
                   KEY `condition` (`condition`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_slalevelcriterias");
    }
 
@@ -1049,7 +1049,7 @@ function update0831to084() {
                   PRIMARY KEY (`id`),
                   KEY `type` (`type`),
                   KEY `name` (`name`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_blacklists");
 
       $ADDTODISPLAYPREF['Blacklist'] = [12,11];
@@ -1097,7 +1097,7 @@ function update0831to084() {
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci NOT NULL,
                   PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_ssovariables");
 
       // TODO : can be improved once DBMysql->buildInsert() support multiple insertions
@@ -1317,7 +1317,7 @@ function update0831to084() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`problems_id`,`type`,`suppliers_id`),
                   KEY `group` (`suppliers_id`,`type`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_problems_suppliers");
 
       $migration->migrationOneTable('glpi_problems_suppliers');
@@ -1344,7 +1344,7 @@ function update0831to084() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`tickets_id`,`type`,`suppliers_id`),
                   KEY `group` (`suppliers_id`,`type`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_suppliers_tickets");
 
       $migration->migrationOneTable('glpi_suppliers_tickets');
@@ -2081,7 +2081,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `name` (`name`),
                   KEY `fqdn` (`fqdn`),
                   KEY `is_recursive` (`is_recursive`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_fqdns");
 
@@ -2129,7 +2129,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `textual` (`name`),
                   KEY `binary` (`binary_0`, `binary_1`, `binary_2`, `binary_3`),
                   KEY `item` (`itemtype`, `items_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_ipaddresses");
    }
@@ -2151,7 +2151,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                  KEY `entities_id` (`entities_id`),
                  KEY `essid` (`essid`),
                  KEY `name` (`name`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_wifinetworks");
 
    }
@@ -2194,7 +2194,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `netmask` (`netmask_0`, `netmask_1`, `netmask_2`, `netmask_3`),
                   KEY `gateway` (`gateway_0`, `gateway_1`, `gateway_2`, `gateway_3`),
                   KEY `name` (`name`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_ipnetworks");
 
@@ -2309,7 +2309,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   `vlans_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `link` (`ipnetworks_id`, `vlans_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.84 create glpi_ipnetworks_vlans");
    }
@@ -2334,7 +2334,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `name` (`name`),
                   KEY `item` (`itemtype`, `items_id`),
                   KEY `fqdns_id` (`fqdns_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networknames");
 
@@ -2376,7 +2376,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `entities_id` (`entities_id`),
                   KEY `name` (`name`),
                   KEY `networknames_id` (`networknames_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networkaliases");
    }
@@ -2393,7 +2393,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   UNIQUE KEY `unicity` (`ipaddresses_id`,`ipnetworks_id`),
                   KEY `ipnetworks_id` (`ipnetworks_id`),
                   KEY `ipaddresses_id` (`ipaddresses_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->queryOrDie($query, "0.84 create glpi_ipaddresses_ipnetworks");
    }
@@ -2510,7 +2510,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `netpoint` (`netpoints_id`),
                   KEY `type` (`type`),
                   KEY `speed` (`speed`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
@@ -2539,7 +2539,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   KEY `essid` (`wifinetworks_id`),
                   KEY `version` (`version`),
                   KEY `mode` (`mode`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networkportwifis");
 
@@ -2556,7 +2556,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networkportlocals");
 
@@ -2573,7 +2573,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networkportdialups");
 
@@ -2592,7 +2592,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                              COMMENT 'array of associated networkports_id',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networkportaggregates");
 
@@ -2681,7 +2681,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `networkports_id_alias` (`networkports_id_alias`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_networkportaliases");
 
