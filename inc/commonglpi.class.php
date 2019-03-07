@@ -71,6 +71,14 @@ class CommonGLPI {
     * @var boolean
     */
    public $get_item_to_display_tab = false;
+
+   /**
+    * Flag to determine whether or not table name of item has a notepad.
+    *
+    * @var boolean
+    */
+   protected $usenotepad = false;
+
    static protected $othertabs     = [];
 
 
@@ -178,7 +186,9 @@ class CommonGLPI {
 
       $tabs = $tabs + $this->addExtraTabs();
 
-      $tabs += $this->addTab('Notepad');
+      if ($this->usenotepad === true) {
+        $tabs += $this->addTab('Notepad');
+      }
       $tabs += $this->addTab('Log');
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
