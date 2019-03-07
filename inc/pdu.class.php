@@ -333,4 +333,11 @@ class PDU extends CommonDBTM {
          ]
       );
    }
+
+   protected function getMainTabs() {
+      return [
+         'Pdu_Plug'
+      ];
+   }
+
 }
