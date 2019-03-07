@@ -187,7 +187,7 @@ class CommonGLPI {
       $tabs = $tabs + $this->addExtraTabs();
 
       if ($this->usenotepad === true) {
-        $tabs += $this->addTab('Notepad');
+         $tabs += $this->addTab('Notepad');
       }
       $tabs += $this->addTab('Log');
 
