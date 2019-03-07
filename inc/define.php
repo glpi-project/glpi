@@ -199,11 +199,11 @@ $LANG             = [];
 $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Supplier','User', 'Certicate', 'Rack', 'Enclosure', 'Pdu'];
+                                                  'SoftwareLicense', 'Supplier','User', 'Certicate', 'Rack', 'Enclosure', 'PDU'];
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-                                                  'Certificate', 'Enclosure', 'Pdu', 'Line',
+                                                  'Certificate', 'Enclosure', 'PDU', 'Line',
                                                    'Rack', 'SoftwareVersion'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
