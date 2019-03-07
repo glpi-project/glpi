@@ -151,13 +151,6 @@ class CommonDBTM extends CommonGLPI {
    static $rightname = '';
 
    /**
-    * Flag to determine whether or not table name of item has a notepad.
-    *
-    * @var boolean
-    */
-   protected $usenotepad = false;
-
-   /**
     * Flag to determine whether or not notification queu should be flushed immediately when an
     * action is performed on item.
     *
