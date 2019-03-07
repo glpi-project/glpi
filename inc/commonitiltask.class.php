@@ -1656,6 +1656,52 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
+    * Form for Ticket or Problem Task on Massive action
+    */
+   function showMassiveActionAddTaskForm() {
+      echo "<table class='tab_cadre_fixe'>";
+      echo '<tr><th colspan=4>'.__('Add a new task').'</th></tr>';
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Category')."</td>";
+      echo "<td>";
+      TaskCategory::dropdown(['condition' => ['is_active' => 1]]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Description')."</td>";
+      echo "<td><textarea name='content' cols='50' rows='6'></textarea></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Duration')."</td>";
+      echo "<td>";
+      $toadd = [];
+      for ($i=9; $i<=100; $i++) {
+         $toadd[] = $i*HOUR_TIMESTAMP;
+      }
+      Dropdown::showTimeStamp("actiontime", ['min'             => 0,
+                                             'max'             => 8*HOUR_TIMESTAMP,
+                                             'addfirstminutes' => true,
+                                             'inhours'         => true,
+                                             'toadd'           => $toadd]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center' colspan='2'>";
+      if ($this->maybePrivate()) {
+         echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
+      }
+      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "</table>";
+   }
+
+   /**
     * Get tasks list
     *
     * @since 9.2

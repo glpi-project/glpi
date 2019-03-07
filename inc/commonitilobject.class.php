@@ -2690,7 +2690,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $itemtype = $ma->getItemtype(true);
             $tasktype = $itemtype.'Task';
             if ($ttype = getItemForItemtype($tasktype)) {
-               $ttype->showFormMassiveAction();
+               $ttype->showMassiveActionAddTaskForm();
                return true;
             }
             return false;
