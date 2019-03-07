@@ -789,6 +789,17 @@ class Plugin extends CommonDBTM {
                           43 => "TicketFollowup",
                           44 => "Budget"];
 
+      // Filter tables that does not exists or does not contains an itemtype field.
+      // This kind of case exist when current method is called from plugins that based their
+      // logic on an old GLPI datamodel that may have changed upon time.
+      // see https://github.com/pluginsGLPI/order/issues/111
+      $glpitables = array_filter(
+         $glpitables,
+         function ($table) use ($DB) {
+            return $DB->tableExists($table) && $DB->fieldExists($table, 'itemtype');
+         }
+      );
+
       //Add plugins types
       $typetoname = self::doHookFunction("migratetypes", $typetoname);
 
