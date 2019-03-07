@@ -233,7 +233,7 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
                                                   'Printer', 'Problem', 'Project', 'ProjectTask',
                                                   'Reminder', 'Software', 'Line',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User',
-                                                  'Certificate', 'DeviceBattery'] + $CFG_GLPI['device_types'];
+                                                  'Certificate', 'DeviceBattery', 'Rack'] + $CFG_GLPI['device_types'];
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
 
