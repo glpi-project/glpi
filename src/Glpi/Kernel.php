@@ -101,6 +101,7 @@ class Kernel
         $this->configDir  = $configDir;
         $this->projectDir = $projectDir;
 
+        $this->initGlobalLogger();
         $this->buildContainer();
         $this->initGlobals();
     }
@@ -232,18 +233,29 @@ class Kernel
     }
 
     /**
-     * Initialize global variables used by legacy code.
+     * Initialize global logger.
+     *
+     * This has to be done prior to anything to be able to use the logger
+     * if services instanciation fails.
      *
      * @return void
      */
-    private function initGlobals()
+    private function initGlobalLogger()
     {
         global $GLPI;
         if (!($GLPI instanceof \GLPI)) {
             $GLPI = new \GLPI();
             $GLPI->initLogger();
         }
+    }
 
+    /**
+     * Initialize global variables used by legacy code.
+     *
+     * @return void
+     */
+    private function initGlobals()
+    {
         global $CFG_GLPI;
         if (!isset($CFG_GLPI["root_doc"])) {
             \Config::detectRootDoc();
