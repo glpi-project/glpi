@@ -1,0 +1,40 @@
+--- # devspaces.yml
+name: glpi
+description:  Development environment for GLPI project
+
+# If you want to use a different Dockerfile for your DevSpace, provide the path
+# here.
+docker-file: Dockerfile
+
+# If you need additional files when building your Dockerfile, such as some
+# application binaries that your Dockerfile references, list the glob paths to
+# include here. They are relative to this devspaces.yml file.
+docker-build-includes: |
+  **/*
+
+environment-vars:
+  - name: MYSQL_ROOT_PASSWORD
+    value: glpi
+    description: The password for the root user on MySQL
+  - name: MYSQL_USER
+    value: glpi_user
+    description: The user in MySQL that GLPI will use
+  - name: MYSQL_PASSWORD
+    value: glpi
+    description: The password for the glpi user on MySQL
+  - name: MYSQL_DATABASE
+    value: glpidb
+    description: The name of the database that GLPI will use
+    
+ports:
+  - protocol: http
+    port-number: 80
+    description: HTTP port
+
+
+sync-ignore: |
+  .git
+  .idea
+  .DS_Store
+  .data
+  node_modules
