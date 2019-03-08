@@ -1,5 +1,8 @@
 #!/bin/bash
 
+/entrypoint.sh mysqld &
+sleep 10
+
 # Check if TLS is present
 if !(grep -q "TLS_REQCERT" /etc/ldap/ldap.conf)
 then
