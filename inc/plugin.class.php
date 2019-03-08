@@ -98,7 +98,7 @@ class Plugin extends CommonDBTM {
 
       $GLPI_CACHE->set('plugins', []);
 
-      if (!$DB->connected) {
+      if (!isset($DB) || !$DB->connected) {
          // Cannot init plugins list if DB is not connected
          return;
       }
