@@ -8,7 +8,7 @@ You can download the setup file in [this link](https://www.devspaces.io/devspace
 
 ## DF DevSpaces CLI Usage
 
-After installation, you can use DevSpaces CLI by running `devspaces` command in the command line. It will show all actions that you can do with DevSpaces.
+After installation, you can use DevSpaces CLI by running `devspaces` command in the command line. It will show all the actions that you can do with DevSpaces.
 
 ### Start a new DevSpace for GLPI
 
@@ -22,9 +22,9 @@ Please, follow these steps to create a new DevSpace and build the GLPI project i
 
         devspaces create
     
-    * The notification system will shown a message when the build is finished. Then the validation process starts (it takes at least 2 minutes).
+    * The notification system will show a message when the build is finished. Then the validation process starts (it takes at least 2 minutes).
 
-1. When the validation process is finished, you can start the the DevSpace by running the following command. 
+1. When the validation process is finished, you can start the DevSpace by running the following command. 
 
         devspaces start glpi
 
@@ -42,7 +42,7 @@ Please, follow these steps to create a new DevSpace and build the GLPI project i
 
                 git clone --recursive https://github.com/trilogy-group/glpi.git
 
-    * If you want to clone the repository inside the `/data` folder you will need to firt clean it (**CAUTION: if it is bonded, the files in local environment will be deleted too**):
+    * If you want to clone the repository inside the `/data` folder you will need to first clean it (**CAUTION: if it is bonded, the files in local environment will be deleted too**):
 
                 cd /data
                 rm -rf .* *
@@ -65,12 +65,19 @@ Please, follow these steps to create a new DevSpace and build the GLPI project i
 
         /opt/config-glpi.sh
 
-1. We can get the needed dependencies using composer. To do that, just run the command below inside the root folder of the repository (`/data`):
+1. We can get the needed dependencies using Composer. To do that, just run the command below inside the root folder of the repository (`/data`):
 
         composer install
+
+1. To access the running GLPI server, you can go to the port bonded on port `80` on the current DevSpace. To get the bonded port, please, run the following command inside a local terminal:
+
+        devspaces info glpi
+
+    * The command above will show all the information about the created DevSpace. There is a URLs section. You can copy the given URL and access it in a browser.
+    * The system will ask you to update the database. Please, follow the steps to update it and then you can access the system with the `glpi` user. The password is `glpi` also.
 
 1. You can also run the tests if you want:
 
         atoum -bf tests/bootstrap.php -mcn 1 -d tests/units/
 
-* **Important Note:** GLPI is a Desktop application that uses the GUI of the operational system. DF DevSpaces doesn't support the usage of X11 Server. So, it is not possible to run the built project inside the container.
+    * The test suite needs an updated database to run. So, please, execute the previous step (to get GLPI running) before running the tests.

@@ -43,3 +43,5 @@ RUN apt-get update -y && \
     rm -rf /opt/bin
     
 WORKDIR /data
+
+ENTRYPOINT /opt/entrypoint.sh
