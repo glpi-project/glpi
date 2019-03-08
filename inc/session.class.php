@@ -603,18 +603,19 @@ class Session {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
+      $TRANSLATE->setLocale($trytoload);
+
       $cache = Config::getCache('cache_trans', 'core', false);
       if ($cache !== false) {
          $TRANSLATE->setCache($cache);
       }
+
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
       // Load plugin dicts
       foreach (Plugin::getPlugins() as $plug) {
          Plugin::loadLang($plug, $forcelang, $trytoload);
       }
-
-      $TRANSLATE->setLocale($trytoload);
 
       return $trytoload;
    }
