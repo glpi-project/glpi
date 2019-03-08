@@ -1830,7 +1830,7 @@ class Toolbox {
     * @param $where string: where to redirect ?
    **/
    static function manageRedirect($where) {
-      global $CFG_GLPI, $PLUGIN_HOOKS;
+      global $CFG_GLPI;
 
       if (!empty($where)) {
 

@@ -121,6 +121,9 @@ class RuleImportEntity extends Rule {
       if ($criteria['field'] == '_source') {
          $tab = [];
          foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
+            if (!Plugin::isPluginLoaded($plug)) {
+               continue;
+            }
             $tab[$plug] = Plugin::getInfo($plug, 'name');
          }
          Dropdown::showFromArray($name, $tab);

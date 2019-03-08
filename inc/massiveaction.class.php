@@ -574,6 +574,9 @@ class MassiveAction {
          // Plugin Specific actions
          if (isset($PLUGIN_HOOKS['use_massive_action'])) {
             foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
+               if (!Plugin::isPluginLoaded($plugin)) {
+                  continue;
+               }
                $plug_actions = Plugin::doOneHook($plugin, 'MassiveActions', $itemtype);
 
                if (is_array($plug_actions) && count($plug_actions)) {

@@ -1695,6 +1695,9 @@ class RuleCollection extends CommonDBTM {
       $input = $this->prepareInputDataForProcess($input, $params);
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($this->getRuleClassName(), $val)) {
                $results = Plugin::doOneHook($plugin, 'ruleCollectionPrepareInputDataForProcess',
                                              ['rule_itemtype' => $this->getRuleClassName(),
@@ -1863,6 +1866,9 @@ class RuleCollection extends CommonDBTM {
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['rule_itemtype'] = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "preProcessRuleCollectionPreviewResults",
                                             ['output' => $output,
