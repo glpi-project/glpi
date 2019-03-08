@@ -261,6 +261,20 @@ class User extends CommonDBTM {
       return $ong;
    }
 
+   protected function getMainTabs() {
+      return [
+         'Profile_User',
+         'Group_User',
+         //'Config' TODO,
+         //__('Used items'),
+         //__('Managed items'),
+         'Ticket',
+         'Item_Problem',
+         'Change_Item',
+         'Reservation',
+         //'Auth'
+      ];
+   }
 
    function post_getEmpty() {
       global $CFG_GLPI;
@@ -5030,5 +5044,402 @@ class User extends CommonDBTM {
          $this->entities = Profile_User::getUserEntities($this->fields['id'], true);
       }
       return $this->entities;
+   }
+
+   protected function getFormFields() {
+      global $CFG_GLPI;
+
+      $conf = new Config;
+
+      $fields = [
+         'name'            => [
+            'label'     => __('Login')
+         ],
+         'realname'        => [
+            'label'     => __('Surname')
+         ],
+         'firstname'       => [
+            'label'     => __('First name')
+         ],
+         'password'        => [
+            'label'     => __('Password'),
+            'type'      => 'password'
+         ],
+         'is_active'       => [
+            'label'     => __('Active')
+         ],
+         'begin_date'      => [
+            'label'     => __('Valid since')
+         ],
+         'end_date'        => [
+            'label'     => __('Valid until')
+         ],
+         'phone'           => [
+            'label'     => __('Phone')
+         ],
+         'authtype'        => [
+            'label'     => __('Authentication'),
+            //'type'      => 'display' TODO should only be displayed fulltext
+         ],
+         'mobile'          => [
+            'label'     => __('Mobile phone')
+         ],
+         'usercategories_id'  => [],
+         'phone2'          => [
+            'label'     => __('Phone 2')
+         ],
+         'registration_number'   => [
+            'label'     => __('Administrative number')
+         ],
+         'usertitles_id'   => [],
+         'locations_id'    => [],
+         'profiles_id'     => [
+            'label'     => __('Default profile')
+         ],
+         'entities_id'     => [
+            'label'     => __('Default entity')
+         ],
+         'groups_id'       => [
+            'label'     => __('Default group')
+         ],
+         'users_id_supervisor'   => [
+            'label'     => __('Supervisor')
+         ],
+         'personal_token'  => [
+            'label'     => __('Personal token'),
+            'fieldset'  => 'remote'
+         ],
+         'api_token'       => [
+            'label'     => __('API token'),
+            'fieldset'  => 'remote'
+         ],
+         'personal_token_date'   => [
+            'label'     => __('Date of personal token'),
+            'fieldset'  => 'remote'
+         ],
+         'api_token_date'  => [
+            'label'     => __('Date of API token'),
+            'fieldset'  => 'remote'
+         ],
+         'language'        => [
+            'label'     => __('Language'),
+            'fieldset'  => 'settings',
+            'type'      => 'select',
+            'values'    => Dropdown::getLanguages(),
+            'empty_value'  => true,
+            'listicon'  => false,
+            'addicon'   => false,
+            'empty_value'  => true
+         ],
+         'date_format'     => [
+            'label'     => __('Date format'),
+            'fieldset'  => 'settings',
+            'type'      => 'select',
+            'values'    => Toolbox::phpDateFormats(),
+            'empty_value'  => true,
+            'listicon'  => false,
+            'addicon'   => false
+         ],
+         'names_format'    => [
+            'label'     => __('Names display format'),
+            'title'     => __('Display order of surnames firstnames'),
+            'fieldset'  => 'settings',
+            'type'      => 'select',
+            'empty_value'  => true,
+            'values'    => [
+               User::REALNAME_BEFORE  => __('Surname, First name'),
+               User::FIRSTNAME_BEFORE => __('First name, Surname')
+            ],
+            'listicon'  => false,
+            'addicon'   => false
+         ],
+         'number_format'   => [
+            'label'     => __('Number format'),
+            'fieldset'  => 'settings',
+            'type'      => 'select',
+            'empty_value'  => true,
+            'values'    => [
+               0 => '1 234.56',
+               1 => '1,234.56',
+               2 => '1 234,56',
+               3 => '1234.56',
+               4 => '1234,56'
+            ],
+            'listicon'  => false,
+            'addicon'   => false
+         ],
+         'list_limit'      => [
+            'label'     => __('Results to display by page'),
+            'fieldset'  => 'settings',
+            'type'      => 'number',
+            'min_value' => 5,
+            'max_value' => $CFG_GLPI['list_limit_max'],
+            'step_value'=> 5
+         ],
+         'backcreated'     => [
+            'label'     => _('Go to created item after creation'),
+            'type'      => 'yesno',
+            'fieldset'  => 'settings',
+            'empty_value'  => true,
+            'empty_value_value' => '' //FIXME: does not work :/
+         ],
+         'use_flat_dropdowntree' => [
+            'label'     => __('Display the complete name in tree dropdowns'),
+            'type'      => 'yesno',
+            'fieldset'  => 'settings',
+            'empty_value' => true
+         ],
+         'show_count_on_tabs' => [
+            'label'     => __('Display counters'),
+            'type'      => 'yesno',
+            'fieldset'  => 'settings',
+            'empty_value'  => true
+         ],
+         'is_ids_visible'  => [
+            'label'     => __('Show GLPI ID'),
+            'type'      => 'yesno',
+            'fieldset'  => 'settings',
+            'empty_value'  => true
+         ],
+         'keep_devices_when_purging_item' => [
+            'label'     => __('Keep devices when purging an item'),
+            'type'      => 'yesno',
+            'fieldset'  => 'settings',
+            'empty_value'  => true
+         ],
+         'notification_to_myself'   => [
+            'label'     => __('Notifications for my changes'),
+            'type'      => 'yesno',
+            'fieldset'  => 'settings',
+            'empty_value'  => true
+         ],
+         'display_count_on_home' => [
+            'label'     => __('Results to display on home page'),
+            'fieldset'  => 'settings',
+            'type'      => 'number',
+            'min_value' => 0,
+            'max_value' => 30
+         ],
+         'pdffont'         => [
+            'label'     => __('PDF export font'),
+            'fieldset'  => 'settings',
+            'type'      => 'select',
+            'values'    => GLPIPDF::getFontList(),
+            'empty_value' => true,
+            'listicon'  => false,
+            'addicon'   => false
+         ],
+         'csv_delimiter'   => [
+            'label'     => __('CSV delimiter'),
+            'fieldset'  => 'settings',
+            'type'      => 'select',
+            'values'    => [
+               ';' => ';',
+               ',' => ','
+            ],
+            'empty_value' => true,
+            'listicon'  => false,
+            'addicon'   => false
+         ],
+         'palette'         => [ //FIXME: design was made from local JS...
+            'id'        => 'theme-selector',
+            'label'     => __('Color palette'),
+            'fieldset'  => 'settings',
+            'type'      => 'select',
+            'values'    => $conf->getPalettes(),
+            'empty_value' => true,
+            'listicon'  => false,
+            'addicon'   => false
+         ],
+         'layout'          => [ //FIXME: design was made from local JS...
+            'id'        => 'layout-selector',
+            'label'     => __('Layout'),
+            'type'      => 'select',
+            'values'    => [
+               'lefttab' => __("Tabs on left"),
+               'classic' => __("Classic view"),
+               'vsplit'  => __("Vertical split")
+            ],
+            'empty_value' => true,
+            'listicon'  => false,
+            'addicon'   => false
+         ],
+         'highcontrast_css'   => [
+            'label'     => _('Enable high contrast'),
+            'fieldset'  => 'settings',
+            'type'      => 'yesno',
+            'empty_value' => true
+         ],
+         'followup_private'   => [
+            'label'     => __('Private followups by default'),
+            'fieldset'  => 'assistance',
+            'type'      => 'yesno',
+            'empty_value' => true
+         ],
+         'show_jobs_at_login' => [
+            'label'     => __('Show new tickets on the home page'),
+            'fieldset'  => 'assistance',
+            'type'      => 'yesno',
+            'empty_value' => true
+         ],
+         'task_private'       => [
+            'label'     => __('Private tasks by default'),
+            'fieldset'  => 'assistance',
+            'type'      => 'yesno',
+            'empty_value' => true
+         ],
+         'default_requesttypes_id'  => [
+            'label'     => __('Request source by default'),
+            'fieldset'  => 'assistance',
+            'empty_value' => true
+         ],
+         'task_state'         => [
+            'label'     => __('Tasks state by default'),
+            'fieldset'  => 'assistance',
+            'type'      => 'yesno',
+            'empty_value' => true
+         ],
+         'refresh_ticket_list'   => [
+            'label'     => __('Refresh tickets list (minutes)'),
+            'title'     => __('Automatically refresh tickets list, in minutes'),
+            'fieldset'  => 'assistance',
+            'type'      => 'number',
+            'min_value' => 0,
+            'max_value' => 30
+         ],
+         'set_default_tech'      => [
+            'label'     => __('Pre-select me as technician'),
+            'title'     => __('Set you as a technician when creating a new ticket'),
+            'fieldset'  => 'assistance',
+            'type'      => 'yesno',
+            'empty_value' => true
+         ],
+         'set_default_requester' => [
+            'label'     => __('Pre-select me as requester'),
+            'title'     => __('Set you as a requester when creating a new ticket'),
+            'fieldset'  => 'assistance',
+            'type'      => 'yesno',
+            'empty_value' => true
+         ],
+         'priority_1'            => [
+            'label'        => __('Priority one color'),
+            'fieldset'     => 'assistance',
+            'type'         => 'colorpicker'
+         ],
+         'priority_2'            => [
+            'label'        => __('Priority two color'),
+            'fieldset'     => 'assistance',
+            'type'         => 'colorpicker'
+         ],
+         'priority_3'            => [
+            'label'        => __('Priority three color'),
+            'fieldset'     => 'assistance',
+            'type'         => 'colorpicker'
+         ],
+         'priority_4'            => [
+            'label'        => __('Priority four color'),
+            'fieldset'     => 'assistance',
+            'type'         => 'colorpicker'
+         ],
+         'priority_5'            => [
+            'label'        => __('Priority five color'),
+            'fieldset'     => 'assistance',
+            'type'         => 'colorpicker'
+         ],
+         'priority_6'            => [
+            'label'        => __('Priority six color'),
+            'fieldset'     => 'assistance',
+            'type'         => 'colorpicker'
+         ],
+         'duedatewarning_less'   => [
+            'label'        => __('Warning state threshold'),
+            'fieldset'     => 'duedate',
+            'type'         => 'number'
+         ],
+         'duedatewarning_unit'   => [
+            'label'        => __('Warning state threshold unit'),
+            'fieldset'     => 'duedate',
+            'type'         => 'select',
+            'values'       => [
+               '%'     => '%',
+               'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
+               'days'  => _n('Day', 'Days', Session::getPluralNumber())
+            ],
+            'empty_value'  => true,
+            'listicon'     => false,
+            'addicon'      => false
+         ],
+         'duedatecritical_less'   => [
+            'label'        => __('Critical state threshold'),
+            'fieldset'     => 'duedate',
+            'type'         => 'number'
+         ],
+         'duedatecritical_unit'   => [
+            'label'        => __('Critical state threshold unit'),
+            'fieldset'     => 'duedate',
+            'type'         => 'select',
+            'values'       => [
+               '%'     => '%',
+               'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
+               'days'  => _n('Day', 'Days', Session::getPluralNumber())
+            ],
+            'empty_value'  => true,
+            'listicon'     => false,
+            'addicon'      => false
+         ],
+         'duedateok_color'       => [
+            'label'        => __('OK state color'),
+            'fieldset'     => 'duedate',
+            'type'         => 'colorpicker'
+         ],
+         'duedatewarning_color'  => [
+            'label'        => __('Warning state color'),
+            'fieldset'     => 'duedate',
+            'type'         => 'colorpicker'
+         ],
+         'duedatecritical_color' => [
+            'label'        => __('Critical state color'),
+            'fieldset'     => 'duedate',
+            'type'         => 'colorpicker'
+         ]
+      ] + parent::getFormFields();
+      $fields = $this->cleanFormFields($fields);
+      return $fields;
+   }
+
+   public function getFieldsets() :array {
+      $fieldsets = [
+         'remote'       => [
+            'title'     => __('Remote access keys')
+         ],
+         'settings'     => [
+            'title'     => __('Personalization'),
+            'subtitle'  => __('leave blank to use defaults')
+         ],
+         'assistance'   => [
+            'title'     => __('Assistance')
+         ],
+         'duedate'      => [
+            'title'     => __('Due date progression')
+         ]
+      ];
+      return $fieldsets;
+   }
+
+   public function getFormFieldsToDrop($add = false) {
+      return [
+         'is_deleted_ldap',
+         'password_forget_token',
+         'password_forget_token_date',
+         'user_dn',
+         'last_login',
+         'date_sync',
+         'display_options',
+         'privatebookmarkorder',
+         'lock_autolock_mode',
+         'lock_directunlock_notification',
+         'plannings',
+         'sync_field'
+      ];
    }
 }
