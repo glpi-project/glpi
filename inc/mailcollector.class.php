@@ -923,6 +923,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       // prepare match to find ticket id in headers
+      // pattern: GLPI-{itemtype}-{items_id}
       // ex: GLPI-Ticket-26739
       $ref_match = "GLPI-[A-Z]\w+-([0-9]+)";
 
