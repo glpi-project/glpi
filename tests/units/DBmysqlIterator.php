@@ -774,6 +774,11 @@ class DBmysqlIterator extends DbTestCase {
       $key = $it->key();
       $this->string($row['id'])->isIdenticalTo($key);
 
+      $it->setItemtype(\Config::class);
+      $row = $it->current();
+      $this->object($row)->isInstanceOf(\Config::class);
+      $this->string($row['id'])->isIdenticalTo($key);
+
       $it = $DB->request('glpi_configs', ['context' => 'core']);
       $this->integer($it->numrows())->isGreaterThan(100);
       $this->integer(count($it))->isGreaterThan(100);

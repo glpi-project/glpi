@@ -189,6 +189,28 @@ class CommonDBTM extends DbTestCase {
          ->integer['entities_id']->isIdenticalTo(12);
    }
 
+   public function testRequest() {
+      $item = new \Computer();
+      $iterator = $item->request([
+         'FROM'  => \Computer::getTable(),
+         'LIMIT' => 1
+      ]);
+
+      foreach ($iterator as $computer) {
+         $this->object($computer)->isInstanceOf(\Computer::class);
+         $this->boolean(is_array($computer->fields))->isTrue();
+         $fields_keys = array_keys($computer->fields);
+         foreach ($fields_keys as $key) {
+            if (null === $computer->fields[$key]) {
+               $this->boolean($computer->offsetExists($key))->isFalse();
+            } else {
+               $this->boolean($computer->offsetExists($key))->isTrue();
+               $this->variable($computer[$key])->isEqualTo($computer->getField($key));
+            }
+         }
+      }
+   }
+
    /**
     * Provider for self::testGetTable().
     *

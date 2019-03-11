@@ -150,9 +150,10 @@ abstract class API extends CommonGLPI {
                             " (".$this->iptxt.")",
                             "", "ERROR_NOT_ALLOWED_IP", false);
       }
-      $app_tokens = array_column($found_clients, 'app_token');
-      $apiclients_id = array_column($found_clients, 'id');
-      $this->app_tokens = array_combine($apiclients_id, $app_tokens);
+      $this->app_tokens = [];
+      foreach ($found_clients as $client) {
+         $this->app_tokens[$client['id']] = $client['app_token'];
+      }
    }
 
    /**

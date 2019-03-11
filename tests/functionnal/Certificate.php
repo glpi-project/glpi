@@ -170,9 +170,8 @@ class Certificate extends DbTestCase {
       $this->array($alerts)
            ->hasSize(1);
       $alert_certificate = array_pop($alerts);
-      $this->array($alert_certificate)
-         ->string['itemtype']->isEqualTo('Certificate')
-         ->string['items_id']->isEqualTo($id);
-
+      $this->object($alert_certificate)->isInstanceOf(\Alert::class);
+      $this->string($alert_certificate['itemtype'])->isEqualTo('Certificate');
+      $this->string($alert_certificate['items_id'])->isEqualTo($id);
    }
 }

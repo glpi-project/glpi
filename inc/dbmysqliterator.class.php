@@ -75,6 +75,13 @@ class DBmysqlIterator implements Iterator, Countable {
    ];
 
    /**
+    * Itemtype to use for iterator elements casting.
+    *
+    * @var string
+    */
+   private $itemtype;
+
+   /**
     * Constructor
     *
     * @param AbstractDatabase $dbconnexion Database Connnexion (must be a CommonDBTM object)
@@ -83,6 +90,23 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    function __construct (AbstractDatabase $dbconnexion) {
       $this->conn = $dbconnexion;
+   }
+
+   /**
+    * Set itemtype ot iterator elements.
+    *
+    * @param string $elementsType
+    *
+    * @return void
+    */
+   public function setItemtype(string $itemtype) {
+      if (!is_a($itemtype, CommonDBTM::class, true)) {
+         trigger_error(
+            sprintf('Invalid itemtype "%s", must be a "%s" implementation.', $itemtype, CommonDBTM::class),
+            E_USER_ERROR
+         );
+      }
+      $this->itemtype = $itemtype;
    }
 
    /**
@@ -765,6 +789,20 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return mixed
     */
    public function current() {
+      if (false === $this->row) {
+         // No row data (fetch method returned false)
+         return false;
+      }
+
+      if (null !== $this->itemtype) {
+         // Cast row to itemtype if defined
+         $itemtype = $this->itemtype;
+         $item = new $itemtype();
+         $item->fields = $this->row;
+         return $item;
+      }
+
+      // Return raw row
       return $this->row;
    }
 

@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 /**
 *  Common DataBase Table Manager Class - Persistent Object
 **/
-class CommonDBTM extends CommonGLPI {
+class CommonDBTM extends CommonGLPI implements ArrayAccess {
 
    /**
     * Data fields of the Item.
@@ -182,6 +182,24 @@ class CommonDBTM extends CommonGLPI {
     * Constructor
    **/
    function __construct () {
+   }
+
+   public function offsetExists($offset) {
+      return isset($this->fields[$offset]);
+   }
+
+   public function offsetGet($offset) {
+      return array_key_exists($offset, $this->fields)
+         ? $this->fields[$offset]
+         : null;
+   }
+
+   public function offsetSet($offset, $value) {
+      $this->fields[$offset] = $value;
+   }
+
+   public function offsetUnset($offset) {
+      unset($this->fields[$offset]);
    }
 
    /**
@@ -465,7 +483,9 @@ class CommonDBTM extends CommonGLPI {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
                while ($line = $DB->fetchAssoc($result)) {
-                  $data[$line['id']] = $line;
+                  $item = new static();
+                  $item->fields = $line;
+                  $data[$item->fields['id']] = $item;
                }
             }
          }
@@ -493,11 +513,27 @@ class CommonDBTM extends CommonGLPI {
          $data = [];
          $iterator = $DB->request($criteria);
          while ($line = $iterator->next()) {
-            $data[$line['id']] = $line;
+            $item = new static();
+            $item->fields = $line;
+            $data[$item->fields['id']] = $item;
          }
       }
 
       return $data;
+   }
+
+   /**
+    * Call request on DB and returns an iterator that casts items to self itemtype.
+    *
+    * @param array $criteria
+    *
+    * @return DBmysqlIterator
+    */
+   public function request(array $criteria) {
+      global $DB;
+      $iterator = $DB->request($criteria);
+      $iterator->setItemtype(static::class);
+      return $iterator;
    }
 
 
