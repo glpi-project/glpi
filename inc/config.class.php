@@ -110,6 +110,10 @@ class Config extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
+
+      // Unset _no_history to not save it as a configuration value
+      unset($input['_no_history']);
+
       // Update only an item
       if (isset($input['context'])) {
          return $input;
