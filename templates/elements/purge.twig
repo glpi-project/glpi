@@ -28,24 +28,36 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-{% extends "elements/input.twig" %}
-
-{% block component %}
-   {% set element = element|merge({
-      'type':  'checkbox',
-      'class': 'checkbox',
-      'columns': element.columns|default(4)
-   }) %}
-
-   {% if element.label is defined %}
-      {% set label = element.label %}
-      {% if label is not iterable %}
-         {% set label = {'label': label} %}
-      {% endif %}
-      {% set element = element|merge({
-         'label': label|merge({'columns': 8})
-      }) %}
-
+<span>
+   {% if with_restore is not defined or with_restore is same as(true) %}
+      {% include "elements/button.twig" with {
+         'form_class': 'center',
+         'notag': true,
+         'element': {
+            'name': 'restore',
+            'value': __('Restore'),
+            'width': glpi_form.columns|default(null),
+            'class': 'btn btn-warning'
+         }
+      } %}
    {% endif %}
-   {{ parent() }}
-{% endblock %}
+
+   {% set delete_class = '' %}
+   {% if with_check is not defined or with_check is same as(true) %}
+      {% include "elements/checkbox.twig" with {
+         'notag': true,
+         'element': {'name': 'checkpurge'}
+      } %}
+      {% set delete_class = 'with_check' %}
+   {% endif %}
+   {% include "elements/delete.twig" with {
+      'form_class': 'center',
+      'notag': true,
+      'element': {
+         'name': 'purge',
+         'class': delete_class,
+         'value': __('Delete permanently'),
+         'width': glpi_form.columns|default(null)
+      }
+   } %}
+</span>
