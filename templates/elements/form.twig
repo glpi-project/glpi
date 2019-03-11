@@ -145,6 +145,29 @@
          }
       } %}
    {% endif %}
+   {% if item is defined and item.maybeDeleted() %}
+      {% if item.isDeleted() %}
+         {% include "elements/purge.twig" with {
+            'form_class': 'center',
+            'notag': true,
+            'element': {
+               'name': 'delete',
+               'value': __('Put in trashbin'),
+               'width': glpi_form.columns|default(null)
+            }
+         } %}
+      {% else %}
+         {% include "elements/delete.twig" with {
+            'form_class': 'center',
+            'notag': true,
+            'element': {
+               'name': 'delete',
+               'value': __('Put in trashbin'),
+               'width': glpi_form.columns|default(null)
+            }
+         } %}
+      {% endif %}
+   {% endif %}
    {% if glpi_form.footer_elements is defined %}
       {% for element in glpi_form.footer_elements %}
          {% set tpl = element.type|default('input') %}

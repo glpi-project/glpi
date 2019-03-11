@@ -652,6 +652,7 @@ $(function() {
    }
 
    _bind_check();
+   _bind_purge();
 });
 
 var _initDebug = function() {
@@ -1144,6 +1145,16 @@ var _bind_check = function() {
       });
       _is_checked = !_is_checked;
       return false;
+   });
+};
+
+var _bind_purge = function() {
+   $('#purge.with_check').on('click', function(ev) {
+      var _checked = $('#checkpurge:checked');
+      if (_checked.length == 0) {
+         ev.preventDefault();
+         alert('You have to confirm removal with checkbox.');
+      }
    });
 };
 

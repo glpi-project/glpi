@@ -31,21 +31,12 @@
 {% extends "elements/input.twig" %}
 
 {% block component %}
+   {#% set notag = true %#}
    {% set element = element|merge({
-      'type':  'checkbox',
-      'class': 'checkbox',
-      'columns': element.columns|default(4)
+      'type':     'submit',
+      'title':    '',
+      'class':    element.class|default('') ~ ' btn btn-danger'
    }) %}
-
-   {% if element.label is defined %}
-      {% set label = element.label %}
-      {% if label is not iterable %}
-         {% set label = {'label': label} %}
-      {% endif %}
-      {% set element = element|merge({
-         'label': label|merge({'columns': 8})
-      }) %}
-
-   {% endif %}
    {{ parent() }}
 {% endblock %}
+{%block label %}{% endblock %}
