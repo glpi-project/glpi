@@ -38,7 +38,7 @@
    {% block label %}
       {% if element.label is defined %}
          {% set label = element.label %}
-      <label for="{{ element.id|default(element.name) }}"{%if label.title is defined %} title="{{ label.title }}" data-toggle="tooltip"{% endif %} class="col-sm-{{ label.columns|default(4) }} col-form-label{% if label.class is defined %} {{ label.class }}{% endif %}">
+      <label for="{{ element.id|default(element.name) }}"{%if label.title is defined or element.title is defined %} title="{%if label.title is defined %}{{ label.title }}{% else %}{{ element.title }}{% endif %}" data-toggle="tooltip"{% endif %} class="col-sm-{{ label.columns|default(4) }} col-form-label{% if label.class is defined %} {{ label.class }}{% endif %}">
          {% if label is iterable %}
             {{ label.label }}
          {% else %}
@@ -48,7 +48,7 @@
             <span class="required" title="{{ __s('This element is required') }}">*</span>
          {%- endif -%}
          {# FIXME: find a way to identify auto-fillable fields #}
-         {% if element.autofill is defined and element.autofill == true %}
+         {% if element.autofill is defined and element.autofill == true and item is defined %}
             {{ item.getAutofillMark(element.name, {'withtemplate': withtemplate})|raw }}
          {% endif %}
       </label>
@@ -88,7 +88,7 @@
             {%if element.autofocus is defined and element.autofocus == true %} autofocus="autofocus"{% endif %}
             {%if element.title is defined %}
                 title="{{ element.title }}"
-                data-togle="tooltip"
+                data-toggle="tooltip"
             {% endif %}
             {%if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
             {%if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
@@ -100,6 +100,7 @@
                 {% endfor %}
             {% endif %}
         {% endblock %}
+        {% block extra_tags %}{% endblock %}
         />
       {% endblock %}
    {% endif %}

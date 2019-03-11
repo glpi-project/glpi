@@ -1210,7 +1210,7 @@ class CommonDBTM extends CommonGLPI {
       if (!preg_match('/title=/', $p['linkoption'])) {
          $thename = $this->getName(['complete' => true]);
          if ($thename != NOT_AVAILABLE) {
-            $title = ' title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
+            $title = ' data-toggle="tooltip" title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
          }
       }
 
@@ -5503,11 +5503,42 @@ class CommonDBTM extends CommonGLPI {
       }
       $output .= "</div>";*/
 
-      return [
+      $form = [
          'columns'      => 2,
          'submit_label' => $add ? __('Add') : __('Update'),
          'elements'     => $this->form_elements
       ];
+
+      //handle fieldsets
+      $fieldsets = $this->getFieldsets();
+      if (count($fieldsets)) {
+         $elements = &$form['elements'];
+
+         foreach ($elements as $key => $element) {
+            if (isset($element['fieldset'])) {
+               $fieldset = $element['fieldset'];
+               if (!isset($fieldsets[$fieldset])) {
+                  Toolbox::logWarning("Unknown fieldset $fieldset");
+               } else {
+                  $fieldsets[$fieldset]['elements'][] = $element;
+                  unset($elements[$key]);
+               }
+            }
+         }
+
+         $form['parts'] = $fieldsets;
+      }
+
+      return $form;
+   }
+
+   /**
+    * Get fieldsets configuration
+    *
+    * @return array
+    */
+   public function getFieldsets() :array {
+      return [];
    }
 
    /**
