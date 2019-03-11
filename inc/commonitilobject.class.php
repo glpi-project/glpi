@@ -7240,54 +7240,24 @@ abstract class CommonITILObject extends CommonDBTM {
 
    }
 
-   /**
-    * Get form
-    * Specific for itil objects, which uses several parts
-    *
-    * @since 10.0.0
-    *
-    * @param boolean $add Add or edit
-    *
-    * @return array
-    */
-   public function getForm($add = false) {
-      $form = parent::getForm($add);
-      $elements = $form['elements'];
-
-      $parts = [
+   public function getFieldsets() :array {
+      $fieldsets = [
          'head'      => [
-            'title'     => __('Informations'),
-            'show'      => true,
-            'elements'  => []
+            'title'     => __('Informations')
          ],
          'sla'       => [
-            'title'     => __('SLA/OLA'),
-            'show'      => false,
-            'elements'  => []
+            'title'     => __('SLA/OLA')
          ],
          'actors'    => [
-            'title'     => __('Actors'),
-            'show'      => false,
-            'elements'  => ['guess']
+            'title'     => __('Actors')
          ],
          'specific'  => [
-            'title'     => __('Specific'),
-            'show'      => false,
-            'elements'  => []
+            'title'     => __('Specific')
          ],
          'main'      => [
-            'title'     => __('Details'),
-            'show'      => true,
-            'elements'  => []
+            'title'     => __('Details')
          ]
       ];
-
-      foreach ($elements as $element) {
-         $fieldset = isset($element['fieldset']) ? $element['fieldset'] : 'main';
-         $parts[$fieldset]['elements'][] = $element;
-      }
-
-      $form['parts'] = $parts;
-      return $form;
+      return $fieldsets;
    }
 }

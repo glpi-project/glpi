@@ -30,20 +30,10 @@
  #}
 {% extends "elements/input.twig" %}
 
-{% set element = element|merge({name: false}) %}
-{% block element %}
-    {% set fallback_input_class = fallback_input_class|default('col-form-label') %}
-    <div class="controls">
-        <div class="input-group">
-            <div class="{% if default_input_class is defined %}{{ default_input_class }} {% endif %}{%if element.class is defined %}{{ element.class }}{% else %}{{ fallback_input_class }}{% endif %}">
-    {% if element.value is defined and element.value is iterable %}
-        {% set item = getitem(element.value.itemtype) %}
-        {% set loaded = item.getFromDB(element.value.items_id) %}
-        {{ item.getLink()|raw }}
-    {% else %}
-                {{ __('Missing data to build link') }}
-    {% endif %}
-      </div>
-   </div>
-   </div>
+{% set element = element|merge({'type': 'number'}) %}
+
+{% block extra_tags %}
+    {% if element.min_value is defined %} min="{{ element.min_value }}"{% endif %}
+    {% if element.max_value is defined %} max="{{ element.max_value }}"{% endif %}
+    {% if element.step_value is defined %} step="{{ element.step_value }}"{% endif %}
 {% endblock %}
