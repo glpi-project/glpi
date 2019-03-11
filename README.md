@@ -1,6 +1,6 @@
 ![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/master/pics/logos/logo-GLPI-250-black.png)
 
-[![CircleCI](https://img.shields.io/circleci/project/github/glpi-project/glpi/9.3/bugfixes.svg)](https://circleci.com/gh/glpi-project)
+[![CircleCI](https://img.shields.io/circleci/project/github/glpi-project/glpi/9.4/bugfixes.svg)](https://circleci.com/gh/glpi-project)
 [![Github All Releases](https://img.shields.io/github/downloads/glpi-project/glpi/total.svg)](#download)
 [![Twitter Follow](https://img.shields.io/twitter/follow/GLPI_PROJECT.svg?style=social&label=Follow)](https://twitter.com/GLPI_PROJECT)
 
