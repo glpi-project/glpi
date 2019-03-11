@@ -922,9 +922,14 @@ class MailCollector  extends CommonDBTM {
          $tkt['content'] = $body;
       }
 
+      // prepare match to find ticket id in headers
+      // pattern: GLPI-{itemtype}-{items_id}
+      // ex: GLPI-Ticket-26739
+      $ref_match = "GLPI-[A-Z]\w+-([0-9]+)";
+
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
-         if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
+         if (preg_match($ref_match, $head['in_reply_to'], $match)) {
             $tkt['tickets_id'] = intval($match[1]);
          }
       }
@@ -932,7 +937,7 @@ class MailCollector  extends CommonDBTM {
       // See in References
       if (!isset($tkt['tickets_id'])
           && isset($head['references'])) {
-         if (preg_match($glpi_message_match, $head['references'], $match)) {
+         if (preg_match($ref_match, $head['references'], $match)) {
             $tkt['tickets_id'] = intval($match[1]);
          }
       }
