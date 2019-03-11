@@ -5402,11 +5402,15 @@ class CommonDBTM extends CommonGLPI {
     */
    protected function getFormFieldsToDrop($add = false) {
       $fields = [
-         'entities_id',
          'is_recursive',
          'template_name',
          'ticket_tco' //what is this one?
       ];
+
+      if ($this->isEntityAssign()) {
+         $fields[] = 'entities_id';
+      }
+
       if ($add == true) {
          $fields[] = 'id';
          $fields[] = 'is_deleted';
