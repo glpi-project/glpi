@@ -73,6 +73,12 @@ function update931to932() {
    $migration->addKey('glpi_states', 'is_visible_enclosure');
    $migration->addKey('glpi_states', 'is_visible_pdu');
 
+   // Create a dedicated token for rememberme process
+   if (!$DB->fieldExists('glpi_users', 'cookie_token')) {
+      $migration->addField('glpi_users', 'cookie_token', 'string', ['after' => 'api_token_date']);
+      $migration->addField('glpi_users', 'cookie_token_date', 'datetime', ['after' => 'cookie_token']);
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
