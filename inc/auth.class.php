@@ -500,9 +500,10 @@ class Auth extends CommonGLPI {
                if (count($data) === 2) {
                   list ($cookie_id, $cookie_token) = $data;
 
-                  $token = User::getToken($cookie_id, 'personal_token');
+                  $token = User::getToken($cookie_id, 'cookie_token');
 
-                  if ($token !== false && Auth::checkPassword($token, $cookie_token)) {
+                  if (Auth::checkPassword($cookie_token, $token)) {
+
                      $user = new User();
                      $user->getFromDB($cookie_id); //true if $token is not false
                      $this->user->fields['name'] = $user->fields['name'];
@@ -861,11 +862,9 @@ class Auth extends CommonGLPI {
             //Cookie session path
             $cookie_path = ini_get('session.cookie_path');
 
-            $hash = Auth::getPasswordHash($token);
-
             $data = json_encode([
                 $this->user->fields['id'],
-                $hash,
+                $token,
             ]);
 
             //Send cookie to browser
