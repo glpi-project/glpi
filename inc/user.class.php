@@ -4767,24 +4767,33 @@ class User extends CommonDBTM {
     * @since 9.4
     *
     * @param string $field the field storing the token
+    * @param boolean $force_new force generation of a new token
     *
     * @return string|false token or false in case of error
     */
-   public function getAuthToken($field = 'personal_token') {
+   public function getAuthToken($field = 'personal_token', $force_new = false) {
       global $DB;
 
       if ($this->isNewItem()) {
          return false;
       }
 
-      if (!empty($this->fields[$field])) {
+      if (!empty($this->fields[$field]) && !$force_new) {
          return $this->fields[$field];
       }
       $token = self::getUniqueToken($field);
+
+      // for cookie token, we need to store it hashed
+      $hash = $token;
+      if ($field === 'cookie_token') {
+         $hash = Auth::getPasswordHash($token);
+      }
+
       $this->update(['id'             => $this->getID(),
-                     $field           => $token,
+                     $field           => $hash,
                      $field . "_date" => $_SESSION['glpi_currenttime']]);
-      return $this->fields[$field];
+
+      return $token;
    }
 
 
