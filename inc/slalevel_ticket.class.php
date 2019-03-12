@@ -188,7 +188,7 @@ class SlaLevel_Ticket extends CommonDBTM {
       }
 
       $task->setVolume($tot);
-      return ($tot > 0);
+      return ($tot > 0 ? 1 : 0);
    }
 
 
