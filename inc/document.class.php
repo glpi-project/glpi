@@ -1541,8 +1541,17 @@ class Document extends CommonDBTM {
     * @return boolean
     */
    public static function isImage($file) {
-      $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-      return (in_array($ext, ['jpg', 'jpeg', 'png', 'bmp', 'gif']));
+      if (extension_loaded('exif')) {
+         $etype = exif_imagetype($file);
+         return in_array($etype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_BMP]);
+      } else {
+         Toolbox::logWarning('For security reasons, you should consider using exif PHP extension to properly check images.');
+         $fileinfo = finfo_open(FILEINFO_MIME_TYPE);
+         return in_array(
+            finfo_file($fileinfo, $file),
+            ['image/jpeg', 'image/png','image/gif', 'image/bmp']
+         );
+      }
    }
 
    /**

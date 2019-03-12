@@ -2391,6 +2391,9 @@ class Config extends CommonDBTM {
             'CAS'     => [
                'required' => false,
                'class'    => 'phpCAS'
+            ],
+            'exif' => [
+               'required'  => false
             ]
          ];
       } else {
