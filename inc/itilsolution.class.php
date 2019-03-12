@@ -331,6 +331,11 @@ class ITILSolution extends CommonDBChild {
       $this->input["_job"] = $this->item;
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
+      // Add solution to duplicates
+      if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
+         Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
+      }
+
       $status = $item::SOLVED;
 
       //handle autoclose, for tickets only
@@ -352,9 +357,6 @@ class ITILSolution extends CommonDBChild {
          'id'     => $this->item->getID(),
          'status' => $status
       ]);
-      if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
-         Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
-      }
       parent::post_addItem();
    }
 

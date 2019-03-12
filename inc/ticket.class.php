@@ -1541,6 +1541,14 @@ class Ticket extends CommonITILObject {
    function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
+      // Put same status on duplicated tickets when solving or closing (autoclose on solve)
+      if (isset($this->input['status'])
+          && in_array('status', $this->updates)
+          && (in_array($this->input['status'], $this->getSolvedStatusArray())
+              || in_array($this->input['status'], $this->getClosedStatusArray()))) {
+         Ticket_Ticket::manageLinkedTicketsOnSolved($this->getID());
+      }
+
       $donotif = count($this->updates);
 
       if (isset($this->input['_forcenotif'])) {
