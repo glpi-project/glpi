@@ -45,20 +45,11 @@
 
 {% block element %}
     <textarea
-        name="{{ element.name }}"
-        id="{{ element.id|default(element.name) }}"
+        {% set default_input_class = 'autogrow' %}
+        {% block element_attributes %}{{ parent() }}{% endblock %}
+
         rows="{{ element.rows|default(3) }}"
-        {% if element.required is defined and element.required == true %} required="required"{% endif %}
-        {% if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
-        {% if element.title is defined %} title="{{ title }}"{% endif %}
-        {% if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
-        class="form-control autogrow{% if element.class is defined %} {{ element.class }}{% endif %}"
-        {% if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
-        {% if element.size is defined %} size="{{ element.size }}"{% endif %}
-        {%if element.placeholder is defined %}
-            {% for id, data in element.data %}
-                data-{{ id }}="{{ data }}"
-            {% endfor %}
-        {% endif %}
-        >{% if element.value is defined %}{{ element.value|raw }}{% endif %}</textarea>
+    >
+        {% if element.value is defined %}{{ element.value|raw }}{% endif %}
+    </textarea>
 {% endblock %}

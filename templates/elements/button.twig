@@ -30,30 +30,13 @@
  #}
 {% extends "elements/input.twig" %}
 
-{% block element %}<button
-      type="{{ element.htmltype|default(element.type|default('submit')) }}"
-      name="{{ element.name }}"
-      id="{{ element.id|default(element.name) }}"
-      {%if element.required is defined and element.required == true %} required="required"{% endif %}
-      {%if element.readonly is defined and element.readonly == true %} readonly="readonly"{% endif %}
-      {%if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
-      {%if element.autofocus is defined and element.autofocus == true %} autofocus="autofocus"{% endif %}
-      {%if element.title is defined %}
-         title="{{ element.title }}"
-         data-toggle="tooltip"
-      {% endif %}
-      class="{%if element.class is defined %}{{ element.class }}{% else %}form-control{% endif %}"
-      {%if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
-      {%if element.size is defined %} size="{{ element.size }}"{% endif %}
-      {%if element.data is defined %}
-         {% for id, data in element.data %}
-               data-{{ id }}="{{ data }}"
-         {% endfor %}
-      {% endif %}
-      {% block extra_tags %}{% endblock %}
-      >
-         {% if element.value is defined %}{{ element.value }}{% endif %}
-      </button>
+{% block element %}
+<button
+    type="{{ element.htmltype|default(element.type|default('submit')) }}"
+    {% block element_attributes %}{{ parent() }}{% endblock %}
+>
+    {% if element.value is defined %}{{ element.value }}{% endif %}
+</button>
 {% endblock %}
 
 {%block label %}{% endblock %}

@@ -28,6 +28,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
+
 {% block component %}
    {% if notag is not defined or not notag %}
       {% set md = 6 %}
@@ -69,28 +70,30 @@
    {% endblock %}
    {% block element %}<input
         type="{{ element.htmltype|default(element.type|default('text')) }}"
-        name="{{ element.name }}"
-        id="{{ element.id|default(element.name) }}"
         value="{% if element.value is defined %}{{ element.value }}{% endif %}"
-        {%if element.required is defined and element.required == true %} required="required"{% endif %}
-        {%if element.readonly is defined and element.readonly == true %} readonly="readonly"{% endif %}
-        {%if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
-        {%if element.autofocus is defined and element.autofocus == true %} autofocus="autofocus"{% endif %}
-        {%if element.title is defined %}
-            title="{{ element.title }}"
-            data-togle="tooltip"
-        {% endif %}
-        {%if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
-        class="{%if element.class is defined %}{{ element.class }}{% else %}form-control{% endif %}"
-        {%if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
-        {%if element.size is defined %} size="{{ element.size }}"{% endif %}
-        {%if element.checked is defined and element.checked == true %} checked="checked"{% endif %}
-        {%if element.placeholder is defined %} placeholder="{{ element.placeholder }}"{% endif %}
-        {%if element.data is defined %}
-            {% for id, data in element.data %}
-                data-{{ id }}="{{ data }}"
-            {% endfor %}
-        {% endif %}
+        {% block element_attributes %}{# standard attributes that may be used for button, select, ... #}
+            {% set fallback_input_class = fallback_input_class|default('form-control') %}
+            name="{{ element.name }}"
+            id="{{ element.id|default(element.name) }}"
+            class="{% if default_input_class is defined %}{{ default_input_class }} {% endif %}{%if element.class is defined %}{{ element.class }}{% else %}{{ fallback_input_class }}{% endif %}"
+            {%if element.required is defined and element.required == true %} required="required"{% endif %}
+            {%if element.readonly is defined and element.readonly == true %} readonly="readonly"{% endif %}
+            {%if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
+            {%if element.autofocus is defined and element.autofocus == true %} autofocus="autofocus"{% endif %}
+            {%if element.title is defined %}
+                title="{{ element.title }}"
+                data-togle="tooltip"
+            {% endif %}
+            {%if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
+            {%if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
+            {%if element.size is defined %} size="{{ element.size }}"{% endif %}
+            {%if element.placeholder is defined %} placeholder="{{ element.placeholder }}"{% endif %}
+            {%if element.data is defined %}
+                {% for id, data in element.data %}
+                    data-{{ id }}="{{ data }}"
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
         />
    {% endblock %}
    {% block post_element %}
