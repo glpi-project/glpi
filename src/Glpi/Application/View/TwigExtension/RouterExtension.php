@@ -8,11 +8,10 @@
  */
 namespace Glpi\Application\View\TwigExtension;
 
-use Twig_Extension;
 use Twig_SimpleFunction;
 use Glpi\Application\Router;
 
-class RouterExtension extends Twig_Extension
+class RouterExtension extends \Twig\Extension\AbstractExtension
 {
     /**
      * @var Router

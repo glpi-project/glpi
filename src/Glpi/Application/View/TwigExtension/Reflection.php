@@ -32,9 +32,7 @@
 
 namespace Glpi\Application\View\TwigExtension;
 
-use Twig_Extension;
-
-class Reflection extends Twig_Extension
+class Reflection extends \Twig\Extension\AbstractExtension
 {
     public function getFunctions()
     {
