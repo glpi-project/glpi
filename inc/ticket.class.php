@@ -6481,7 +6481,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      return ($tot > 0);
+      return ($tot > 0 ? 1 : 0);
    }
 
 
@@ -6530,7 +6530,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      return ($tot > 0);
+      return ($tot > 0 ? 1 : 0);
    }
 
 
@@ -6626,7 +6626,7 @@ class Ticket extends CommonITILObject {
                              'max_closedate' => $maxdate]);
       }
 
-      return ($tot > 0);
+      return ($tot > 0 ? 1 : 0);
    }
 
 

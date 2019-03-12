@@ -285,7 +285,7 @@ class Telemetry extends CommonGLPI {
 
       if ($content && property_exists($content, 'message')) {
          //all is OK!
-         return true;
+         return 1;
       } else {
          $message = 'Something went wrong sending telemetry informations';
          if ($errstr != '') {
