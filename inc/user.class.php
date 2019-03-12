@@ -4355,7 +4355,7 @@ class User extends CommonDBTM {
                }
                $input2 = [
                   'password_forget_token'      => '',
-                  'password_forget_token_date' => null,
+                  'password_forget_token_date' => 'NULL',
                   'id'                         => $this->fields['id']
                ];
                $this->update($input2);
