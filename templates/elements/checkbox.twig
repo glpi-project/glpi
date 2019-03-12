@@ -49,3 +49,8 @@
    {% endif %}
    {{ parent() }}
 {% endblock %}
+
+{% block element_attributes %}
+    {{ parent() }}
+    {%if element.checked is defined and element.checked == true %} checked="checked"{% endif %}
+{% endblock %}
