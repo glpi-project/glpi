@@ -3805,6 +3805,7 @@ a.copyright {
          .solimg {
             position: absolute;
             color: rgba(66, 91, 100, 0.1);
+            pointer-events: none;
          }
       }
 
@@ -4038,7 +4039,7 @@ a.copyright {
       margin-bottom: 55px;
    }
 
-   .item_content img {
+   .item_content img, table {
       max-width: 100%;
    }
 }

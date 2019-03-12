@@ -47,8 +47,6 @@ class RuleImportEntityCollection extends RuleCollection {
     * @see RuleCollection::canList()
    **/
    function canList() {
-      global $PLUGIN_HOOKS;
-
       if (Plugin::haveImport()) {
          return static::canView();
       }

@@ -1288,6 +1288,10 @@ class Html {
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
 
          foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
+
             $version = Plugin::getInfo($plugin, 'version');
 
             if (!is_array($files)) {
@@ -1403,6 +1407,9 @@ class Html {
          if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
 
             foreach ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
+               if (!Plugin::isPluginLoaded($plugin)) {
+                  continue;
+               }
                if (count($items)) {
                   foreach ($items as $key => $val) {
                      if (is_array($val)) {
@@ -1489,7 +1496,7 @@ class Html {
     * @param $option    option corresponding to the page displayed (default '')
    **/
    static function header($title, $url = '', $sector = "none", $item = "none", $option = "") {
-      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
+      global $CFG_GLPI, $HEADER_LOADED, $DB;
 
       // If in modal : display popHeader
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1731,7 +1738,7 @@ class Html {
     * @param $url    not used anymore (default '')
    **/
    static function helpHeader($title, $url = '') {
-      global $CFG_GLPI, $HEADER_LOADED, $PLUGIN_HOOKS;
+      global $CFG_GLPI, $HEADER_LOADED;
 
       // Print a nice HTML-head for help page
       if ($HEADER_LOADED) {
@@ -1884,7 +1891,7 @@ class Html {
     * @param $iframed indicate if page loaded in iframe - css target (default false)
    **/
    static function popHeader($title, $url = '', $iframed = false) {
-      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED;
+      global $CFG_GLPI, $HEADER_LOADED;
 
       // Print a nice HTML-head for every page
       if ($HEADER_LOADED) {
@@ -5945,6 +5952,9 @@ class Html {
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
 
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             $version = Plugin::getInfo($plugin, 'version');
             if (!is_array($files)) {
                $files = [$files];
@@ -6361,6 +6371,9 @@ class Html {
             && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
 
             foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
+               if (!Plugin::isPluginLoaded($plugin)) {
+                  continue;
+               }
                if ($active) {
                   $infos = Plugin::getInfo($plugin);
                   $link = "";

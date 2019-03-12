@@ -1704,6 +1704,9 @@ class Rule extends CommonDBTM {
       $input = $this->prepareInputDataForProcess($input, $params);
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "rulePrepareInputDataForProcess",
                                             ['input'  => $input,
@@ -1740,6 +1743,9 @@ class Rule extends CommonDBTM {
          $params['criterias_results'] = $this->criterias_results;
          $params['rule_itemtype']     = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "executeActions", ['output' => $output,
                                                                         'params' => $params,
@@ -2573,6 +2579,9 @@ class Rule extends CommonDBTM {
          $params['criterias_results'] = $this->criterias_results;
          $params['rule_itemtype']     = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "preProcessRulePreviewResults",
                                             ['output' => $output,
@@ -2676,6 +2685,9 @@ class Rule extends CommonDBTM {
       $toreturn = $params;
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (!Plugin::isPluginLoaded($plugin)) {
+               continue;
+            }
             if (is_array($val) && in_array($itemtype, $val)) {
                $results = Plugin::doOneHook($plugin, $hook, ['rule_itemtype' => $itemtype,
                                                                   'values'        => $params]);

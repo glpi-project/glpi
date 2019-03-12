@@ -150,6 +150,8 @@ class Ticket extends CommonITILObject {
          $menu['create_ticket']['title']    = __('Create ticket');
          $menu['create_ticket']['page']     = static::getFormURL(false);
          return $menu;
+      } else {
+         return self::getAdditionalMenuOptions();
       }
    }
 

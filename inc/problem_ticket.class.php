@@ -154,7 +154,7 @@ class Problem_Ticket extends CommonDBRelation{
          case 'add_task' :
             $tasktype = 'TicketTask';
             if ($ttype = getItemForItemtype($tasktype)) {
-               $ttype->showFormMassiveAction();
+               $ttype->showMassiveActionAddTaskForm();
                return true;
             }
             return false;

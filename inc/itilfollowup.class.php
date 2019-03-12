@@ -994,4 +994,81 @@ class ITILFollowup  extends CommonDBChild {
 
       return $values;
    }
+
+   static function showMassiveActionAddFollowupForm() {
+      echo "<table class='tab_cadre_fixe'>";
+      echo '<tr><th colspan=4>'.__('Add a new followup').'</th></tr>';
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Source of followup')."</td>";
+      echo "<td>";
+      RequestType::dropdown(
+         [
+            'value' => RequestType::getDefault('followup'),
+            'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
+         ]
+      );
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Description')."</td>";
+      echo "<td><textarea name='content' cols='50' rows='6'></textarea></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center' colspan='2'>";
+      echo "<input type='hidden' name='is_private' value='".$_SESSION['glpifollowup_private']."'>";
+      echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "</table>";
+   }
+
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'add_followup' :
+            static::showMassiveActionAddFollowupForm();
+            return true;
+      }
+
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      switch ($ma->getAction()) {
+         case 'add_followup' :
+            $input = $ma->getInput();
+            $fup   = new self();
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $input2 = [
+                     'items_id'        => $id,
+                     'itemtype'        => $item->getType(),
+                     'is_private'      => $input['is_private'],
+                     'requesttypes_id' => $input['requesttypes_id'],
+                     'content'         => $input['content']
+                  ];
+                  if ($fup->can(-1, CREATE, $input2)) {
+                     if ($fup->add($input2)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+               }
+            }
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
 }

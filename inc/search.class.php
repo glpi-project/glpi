@@ -1043,9 +1043,19 @@ class Search {
                   $tmpquery.= $GROUPBY.
                               $HAVING;
 
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                          $ctable, $tmpquery);
-
+                  // Replace 'asset_types' by itemtype table name
+                  $tmpquery = str_replace(
+                     $CFG_GLPI["union_search_type"][$data['itemtype']],
+                     $ctable,
+                     $tmpquery
+                  );
+                  // Replace 'AllAssets' by itemtype
+                  // Use quoted value to prevent replacement of AllAssets in column identifiers
+                  $tmpquery = str_replace(
+                     $DB->quoteValue('AllAssets'),
+                     $DB->quoteValue($ctype),
+                     $tmpquery
+                  );
                } else {// Ref table case
                   $reftable = getTableForItemType($data['itemtype']);
 

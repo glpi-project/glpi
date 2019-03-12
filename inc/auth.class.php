@@ -508,9 +508,9 @@ class Auth extends CommonGLPI {
 
                   $user = new User();
                   $user->getFromDB($cookie_id);
-                  $token = $user->getAuthToken();
+                  $hash = $user->getAuthToken('cookie_token');
 
-                  if ($token !== false && Auth::checkPassword($token, $cookie_token)) {
+                  if (Auth::checkPassword($cookie_token, $hash)) {
                      $this->user->fields['name'] = $user->fields['name'];
                      return true;
                   } else {
@@ -862,7 +862,7 @@ class Auth extends CommonGLPI {
       }
 
       if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
-         $token = $this->user->getAuthToken();
+         $token = $this->user->getAuthToken('cookie_token', true);
 
          if ($token) {
             //Cookie name (Allow multiple GLPI)
@@ -870,11 +870,9 @@ class Auth extends CommonGLPI {
             //Cookie session path
             $cookie_path = ini_get('session.cookie_path');
 
-            $hash = Auth::getPasswordHash($token);
-
             $data = json_encode([
                 $this->user->fields['id'],
-                $hash,
+                $token,
             ]);
 
             //Send cookie to browser
