@@ -215,25 +215,19 @@ class Document extends DbTestCase {
 
    protected function isImageProvider() {
       return [
-         ['PNG', true],
-         ['png', true],
-         ['JPG', true],
-         ['jpg', true],
-         ['jpeg', true],
-         ['JPEG', true],
-         ['bmp', true],
-         ['BMP', true],
-         ['gif', true],
-         ['GIF', true],
-         ['SVG', false]
+         [__FILE__, false],
+         [__DIR__ . "/../../pics/add_dropdown.png", true],
+         [__DIR__ . "/../../pics/corners.gif", true],
+         [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
+         [__DIR__ . "/../notanimage.jpg", false]
       ];
    }
 
    /**
     * @dataProvider isImageProvider
     */
-   public function testIsImage($ext, $expected) {
-      $this->variable(\Document::isImage('myfile.' . $ext))->isIdenticalTo($expected);
+   public function testIsImage($file, $expected) {
+      $this->boolean(\Document::isImage($file))->isIdenticalTo($expected);
    }
 
    /**
