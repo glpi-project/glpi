@@ -211,7 +211,8 @@ class Central extends CommonGLPI {
 
          Ticket::showCentralList(0, "survey", false);
 
-         Ticket::showCentralList(0, "rejected", false);
+         Ticket::showCentralList(0, "validation.rejected", false);
+         Ticket::showCentralList(0, "solution.rejected", false);
          Ticket::showCentralList(0, "requestbyself", false);
          Ticket::showCentralList(0, "observed", false);
 

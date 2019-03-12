@@ -5437,9 +5437,24 @@ class Ticket extends CommonITILObject {
                        getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-         case "rejected" : // on affiche les tickets rejet??s
+         case "validation.rejected" : // tickets with rejected validation (approval)
+         case "rejected" : // old ambiguous key
+            $query .= "WHERE $is_deleted
+                             AND ($search_assign)
+                             AND `status` <> '".self::CLOSED."'
+                             AND `global_validation` = '".CommonITILValidation::REFUSED."' ".
+                             getEntitiesRestrictRequest("AND", "glpi_tickets");
+            break;
+
+         case "solution.rejected" : // tickets with rejected solution
+            $last_solution_query = "SELECT `last_solution`.`id`
+                                    FROM `glpi_itilsolutions` as `last_solution`
+                                    WHERE `last_solution`.`items_id` = `glpi_tickets`.`id`
+                                    AND `last_solution`.`itemtype` = 'Ticket'
+                                    ORDER BY `last_solution`.`id` DESC
+                                    LIMIT 1";
             $query .= " LEFT JOIN `glpi_itilsolutions`
-                           ON (`glpi_tickets`.`id` = `glpi_itilsolutions`.`items_id` AND `glpi_itilsolutions`.`itemtype` = 'Ticket')
+                           ON (`glpi_itilsolutions`.`id` = ($last_solution_query))
                         WHERE $is_deleted
                              AND ($search_assign)
                              AND `glpi_tickets`.`status` <> '".self::CLOSED."'
@@ -5659,7 +5674,8 @@ class Ticket extends CommonITILObject {
 
                   break;
 
-               case "rejected" :
+               case "validation.rejected" :
+               case "rejected" : // old ambiguous key
                   $options['criteria'][0]['field']      = 52; // validation status
                   $options['criteria'][0]['searchtype'] = 'equals';
                   $options['criteria'][0]['value']      = CommonITILValidation::REFUSED;
@@ -5672,7 +5688,24 @@ class Ticket extends CommonITILObject {
 
                   echo "<a href=\"".Ticket::getSearchURL()."?".
                         Toolbox::append_params($options, '&amp;')."\">".
-                        Html::makeTitle(__('Your rejected tickets'), $number, $numrows)."</a>";
+                        Html::makeTitle(__('Your tickets having rejected approval status'), $number, $numrows)."</a>";
+
+                  break;
+
+               case "solution.rejected" :
+                  $options['criteria'][0]['field']      = 39; // last solution status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = CommonITILValidation::REFUSED;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 5; // assign user
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = Session::getLoginUserID();
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  echo "<a href=\"".Ticket::getSearchURL()."?".
+                        Toolbox::append_params($options, '&amp;')."\">".
+                        Html::makeTitle(__('Your tickets having rejected solution'), $number, $numrows)."</a>";
 
                   break;
 
