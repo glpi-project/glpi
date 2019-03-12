@@ -4772,15 +4772,29 @@ class User extends CommonDBTM {
     * @return string|false token or false in case of error
     */
    public function getAuthToken($field = 'personal_token', $force_new = false) {
-      global $DB;
+      global $CFG_GLPI;
 
       if ($this->isNewItem()) {
          return false;
       }
 
-      if (!empty($this->fields[$field]) && !$force_new) {
+      // check date validity for cookie token
+      $outdated = false;
+      if ($field === 'cookie_token') {
+         $date_create = new DateTime($this->fields[$field."_date"]);
+         $date_expir  = $date_create->add(new DateInterval('PT'.$CFG_GLPI["login_remember_time"].'S'));
+
+         if ($date_expir < new DateTime()) {
+            $outdated = true;
+         }
+      }
+
+      // token exists, is not oudated, and we may use it
+      if (!empty($this->fields[$field]) && !$force_new && !$outdated) {
          return $this->fields[$field];
       }
+
+      // else get a new token
       $token = self::getUniqueToken($field);
 
       // for cookie token, we need to store it hashed
@@ -4789,6 +4803,7 @@ class User extends CommonDBTM {
          $hash = Auth::getPasswordHash($token);
       }
 
+      // save this token in db
       $this->update(['id'             => $this->getID(),
                      $field           => $hash,
                      $field . "_date" => $_SESSION['glpi_currenttime']]);
