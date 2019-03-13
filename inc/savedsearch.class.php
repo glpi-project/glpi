@@ -1333,6 +1333,8 @@ class SavedSearch extends CommonDBTM {
    static public function croncountAll($task) {
       global $DB, $CFG_GLPI;
 
+      $cron_status = 0;
+
       if ($CFG_GLPI['show_count_on_tabs'] != -1) {
          $lastdate = new \Datetime($task->getField('lastrun'));
          $lastdate->sub(new \DateInterval('P7D'));
@@ -1382,10 +1384,14 @@ class SavedSearch extends CommonDBTM {
 
             $DB->commit();
             $stmt->close();
+
+            $cron_status = 1;
          }
       } else {
          Toolbox::logWarning('Count on tabs has been disabled; crontask is inefficient.');
       }
+
+      return $cron_status;
    }
 
 
