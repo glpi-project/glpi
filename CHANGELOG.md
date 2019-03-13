@@ -11,6 +11,8 @@ The present file will list all changes made to the project; according to the
 - /!\ Database queries now rely on PDO; and global sanitize has been dropped.
 - /!\ `DB` methods which uses to return a mysqli_statement now return a PDOStatement.
 - /!\ `DB` methods signatures significally changed due to usage of PDO.
+- Ticket merging can now include documents and tasks
+- Ticket merge was moved to a static function Ticket::merge
 
 ### Removed
 

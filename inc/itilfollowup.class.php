@@ -375,7 +375,10 @@ class ITILFollowup  extends CommonDBChild {
       $itemtype = $input['itemtype'];
       $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
 
-      $input["date"] = $_SESSION["glpi_currenttime"];
+      // Allow overriding of date. Currently used when merging tickets to preserve timeline order
+      if (!isset($input['date'])) {
+         $input["date"] = $_SESSION["glpi_currenttime"];
+      }
       return $input;
    }
 

@@ -8715,6 +8715,7 @@ CREATE TABLE `glpi_tickettasks` (
   `date_creation` datetime DEFAULT NULL,
   `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
   `timeline_position` tinyint(1) NOT NULL DEFAULT '0',
+  `sourceitems_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `date_mod` (`date_mod`),
@@ -8729,7 +8730,8 @@ CREATE TABLE `glpi_tickettasks` (
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
-  KEY `tasktemplates_id` (`tasktemplates_id`)
+  KEY `tasktemplates_id` (`tasktemplates_id`),
+  KEY `sourceitems_id` (`sourceitems_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
