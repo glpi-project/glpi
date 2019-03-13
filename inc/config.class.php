@@ -1966,6 +1966,8 @@ class Config extends CommonDBTM {
                  'check'   => 'Knlv\Slim\Views\TwigMessages' ],
                [ 'name'    => 'runcmf/runtracy',
                  'check'   => 'RunTracy\Middlewares\TracyMiddleware' ],
+               [ 'name'    => 'twig/twig',
+                 'check'   => 'Twig\Twig'],
       ];
       if (Toolbox::canUseCAS()) {
          $deps[] = [

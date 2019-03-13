@@ -153,18 +153,18 @@ services:
         class: 'Symfony\Component\Yaml\Yaml'
 
     Twig_Extension_Debug:
-        class: 'Twig_Extension_Debug'
+        class: '\Twig\Extension\DebugExtension'
 
     Twig_Extensions_Extension_I18n:
         class: 'Twig_Extensions_Extension_I18n'
 
     Twig_Extension_Profiler:
-        class: 'Twig_Extension_Profiler'
+        class: '\Twig\Extension\ProfilerExtension'
         arguments:
             - '@Twig_Profiler_Profile'
 
     Twig_Profiler_Profile:
-        class: 'Twig_Profiler_Profile'
+        class: '\Twig\Profiler\Profile'
     # 'twig_profile' alias used by RunTracy
     twig_profile:
         alias: 'Twig_Profiler_Profile'
