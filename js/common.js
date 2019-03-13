@@ -832,8 +832,8 @@ var initMap = function(parent_elt, map_id, height) {
    var map = L.map(map_id, {fullscreenControl: true}).setView([43.6112422, 3.8767337], 6);
 
    //setup tiles and © messages
-   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href=\'http://osm.org/copyright\'>OpenStreetMap</a> contributors'
+   L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors'
    }).addTo(map);
    return map;
 };
