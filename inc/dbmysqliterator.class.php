@@ -729,8 +729,14 @@ class DBmysqlIterator implements Iterator, Countable {
             $f1 = $values[$t1];
             $t2 = $keys[1];
             $f2 = $values[$t2];
-            return (is_numeric($t1) ? $this->conn->quoteName($f1) : $this->conn->quoteName($t1) . '.' . $this->conn->quoteName($f1)) . ' = ' .
-                     (is_numeric($t2) ? $this->conn->quoteName($f2) : $this->conn->quoteName($t2) . '.' . $this->conn->quoteName($f2));
+            if ($f2 instanceof QuerySubQuery) {
+               $this->parameters = array_merge($this->parameters, $f2->getParameters());
+               return (is_numeric($t1) ? $this->conn->quoteName($f1) : $this->conn->quoteName($t1) . '.' . $this->conn->quoteName($f1)) . ' = ' .
+                  $f2->getQuery();
+            } else {
+               return (is_numeric($t1) ? $this->conn->quoteName($f1) : $this->conn->quoteName($t1) . '.' . $this->conn->quoteName($f1)) . ' = ' .
+                  (is_numeric($t2) ? $this->conn->quoteName($f2) : $this->conn->quoteName($t2) . '.' . $this->conn->quoteName($f2));
+            }
          } else if (count($values) == 3) {
             $condition = array_pop($values);
             $fkey = $this->analyseFkey($values);
