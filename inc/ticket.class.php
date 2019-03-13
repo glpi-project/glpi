@@ -5515,7 +5515,7 @@ class Ticket extends CommonITILObject {
       }
 
       switch ($status) {
-         case "waiting" : // on affiche les tickets en attente
+         case "waiting" : // waiting tickets
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
@@ -5523,7 +5523,7 @@ class Ticket extends CommonITILObject {
             );
             break;
 
-         case "process" : // on affiche les tickets planifi??s ou assign??s au user
+         case "process" : // planned or assigned tickets
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
@@ -5531,7 +5531,7 @@ class Ticket extends CommonITILObject {
             );
             break;
 
-         case "toapprove" : // on affiche les tickets planifi??s ou assign??s au user
+         case "toapprove" : //tickets waiting for approval
             $ORWHERE = ['AND' => $search_users_id];
             if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
                $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
@@ -5540,7 +5540,7 @@ class Ticket extends CommonITILObject {
             $WHERE['glpi_tickets.status'] = self::SOLVED;
             break;
 
-         case "tovalidate" : // on affiche les tickets ?? valider
+         case "tovalidate" : // tickets waiting for validation
             $JOINS['LEFT JOIN'] = [
                'glpi_ticketvalidations' => [
                   'ON' => [
@@ -5585,20 +5585,36 @@ class Ticket extends CommonITILObject {
                ]
             );
             break;
-                  case "solution.rejected" : // tickets with rejected solution
-            $last_solution_query = "SELECT `last_solution`.`id`
-                                    FROM `glpi_itilsolutions` as `last_solution`
-                                    WHERE `last_solution`.`items_id` = `glpi_tickets`.`id`
-                                    AND `last_solution`.`itemtype` = 'Ticket'
-                                    ORDER BY `last_solution`.`id` DESC
-                                    LIMIT 1";
-            $query .= " LEFT JOIN `glpi_itilsolutions`
-                           ON (`glpi_itilsolutions`.`id` = ($last_solution_query))
-                        WHERE $is_deleted
-                             AND ($search_assign)
-                             AND `glpi_tickets`.`status` <> '".self::CLOSED."'
-                             AND `glpi_itilsolutions`.`status` = '".CommonITILValidation::REFUSED."' ".
-                             getEntitiesRestrictRequest("AND", "glpi_tickets");
+
+         case "solution.rejected" : // tickets with rejected solution
+            $subq = new QuerySubQuery([
+               'SELECT' => 'last_solution.id',
+               'FROM'   => 'glpi_itilsolutions AS last_solution',
+               'WHERE'  => [
+                  'last_solution.items_id'   => new QueryExpression($DB->quoteName('glpi_tickets.id')),
+                  'last_solution.itemtype'   => 'Ticket'
+               ],
+               'ORDER'  => 'last_solution.id DESC',
+               'LIMIT'  => 1
+            ]);
+
+            $JOINS['LEFT JOIN'] = [
+               'glpi_itilsolutions' => [
+                  'ON' => [
+                     'glpi_itilsolutions' => 'id',
+                     $subq
+                  ]
+               ]
+            ];
+
+            $WHERE = array_merge(
+               $WHERE,
+               $search_assign,
+               [
+                  'glpi_tickets.status'         => ['<>', self::CLOSED],
+                  'glpi_itilsolutions.status'   => CommonITILValidation::REFUSED
+               ]
+            );
             break;
          case "observed" :
             $WHERE = array_merge(
