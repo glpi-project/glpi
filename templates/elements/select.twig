@@ -68,7 +68,7 @@
    <span class="input-group-append">
    {% if element.listicon is not defined or element.listicon == true %}
       {% if element.value is defined and element.value > 0 %}
-         {% set elt_path = path_for('update-asset', {'itemtype': element.itemtype, 'id': element.value}) %}
+         {% set elt_path = path_for('update-asset', {'action': 'edit', 'itemtype': element.itemtype, 'id': element.value}) %}
       {% elseif element.itemtype is defined %}
          {% set elt_path = path_for('list', {'itemtype': element.itemtype}) %}
       {% else %}

@@ -875,6 +875,7 @@ class CommonGLPI {
       if ($router != null) {
          $page = $router->pathFor(
             'update-asset', [
+               'action'    => 'edit',
                'itemtype'  => $itemtype,
                'id'        => $id
             ]
