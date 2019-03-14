@@ -146,7 +146,7 @@
          }
       } %}
    {% endif %}
-   {% if item is defined and item.maybeDeleted() and item.canPurge() or item.canDelete() %}
+   {% if item is defined and (item.maybeDeleted() and item.canPurge() or item.canDelete()) %}
       {% if item.isDeleted() and item.canPurge() %}
          {% include "elements/purge.twig" with {
             'form_class': 'center',
