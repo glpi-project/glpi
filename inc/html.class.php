@@ -2631,7 +2631,7 @@ class Html {
                   showButtonPanel: true,
                   changeMonth: true,
                   changeYear: true,
-                  showOn: 'button',
+                  showOn: 'both',
                   showWeek: true,
                   buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
 
@@ -2838,7 +2838,7 @@ class Html {
                   showButtonPanel: true,
                   changeMonth: true,
                   changeYear: true,
-                  showOn: 'button',
+                  showOn: 'both',
                   showWeek: true,
                   controlType: 'select',
                   buttonText: '<i class=\'far fa-calendar-alt\'></i>'";
