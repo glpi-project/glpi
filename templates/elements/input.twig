@@ -69,7 +69,10 @@
       {% endif %}
    {% endblock %}
    {% if element.showonly is defined %}
-      {% block showonly %}{% if element.type != 'hidden' and element.value is defined %}{{ element.value }}{% endif %}{% endblock %}
+      {% set fallback_input_class = fallback_input_class|default('form-control-plaintext') %}
+      <div class="{{ fallback_input_class }}">
+         {% block showonly %}{% if element.type != 'hidden' and element.value is defined %}{{ element.value }}{% endif %}{% endblock %}
+      </div>
    {% else %}
       {% block element %}<input
         type="{{ element.htmltype|default(element.type|default('text')) }}"
