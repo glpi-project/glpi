@@ -47,6 +47,14 @@
    {% endif %}
 {% endmacro %}
 
+{% block showonly %}
+   {% if element.value_txt is defined %}
+      {{ element.value_txt }}
+   {% else %}
+      N/A
+   {% endif %}
+{% endblock %}
+
 {% block element %}
    <div class="controls">
    <div class="input-group">
@@ -68,7 +76,9 @@
    <span class="input-group-append">
    {% if element.listicon is not defined or element.listicon == true %}
       {% if element.value is defined and element.value > 0 %}
-         {% set elt_path = path_for('update-asset', {'action': 'edit', 'itemtype': element.itemtype, 'id': element.value}) %}
+         {#% set action = {FIXME: check user ACLs within element.itemtype ? 'edit' : 'show' %#}
+         {% set action = 'edit' %}
+         {% set elt_path = path_for('update-asset', {'action': action, 'itemtype': element.itemtype, 'id': element.value}) %}
       {% elseif element.itemtype is defined %}
          {% set elt_path = path_for('list', {'itemtype': element.itemtype}) %}
       {% else %}
