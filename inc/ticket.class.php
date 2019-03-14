@@ -5564,24 +5564,12 @@ class Ticket extends CommonITILObject {
 
          case "validation.rejected" : // tickets with rejected validation (approval)
          case "rejected": //old ambiguous key
-            $JOINS['LEFT JOIN'] = [
-               'glpi_itilsolutions' => [
-                  'ON' => [
-                     'glpi_itilsolutions' => 'items_id',
-                     'glpi_tickets'       => 'id', [
-                        'AND' => [
-                           'glpi_itilsolutions.itemtype' => 'Ticket'
-                        ]
-                     ]
-                  ]
-               ]
-            ];
             $WHERE = array_merge(
                $WHERE,
                $search_assign,
                [
-                  'glpi_tickets.status'         => ['<>', self::CLOSED],
-                  'glpi_itilsolutions.status'   => CommonITILValidation::REFUSED
+                  'glpi_tickets.status'            => ['<>', self::CLOSED],
+                  'glpi_tickets.global_validation' => CommonITILValidation::REFUSED
                ]
             );
             break;
