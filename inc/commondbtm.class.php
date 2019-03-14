@@ -5562,6 +5562,10 @@ class CommonDBTM extends CommonGLPI {
          $element['label'] = $itemtype::getTypeName(1);
       }
 
+      if (!$add && !$this->canEdit($this->fields['id'])) {
+         $element['showonly'] = true;
+      }
+
       return $element;
    }
 

@@ -32,6 +32,7 @@
    'boxed': true,
    'form_class': ''
 }|merge(glpi_form) %}
+{% set canEdit = item is defined and item.canEdit(item.fields.id) %}
 <form class="glpi_form{% if glpi_form.boxed %} container form-horizontal{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
@@ -134,7 +135,7 @@
 {% set has_dates = item is defined and item.fields.date_creation is defined or item.fields.date_mod is defined %}
 {% if has_dates or glpi_form.submit is not defined or glpi_form.submit != false or glpi_form.footer_elements is defined %}
    <div class="{% if glpi_form.boxed %}card-footer{% endif %}">
-   {% if glpi_form.submit is not defined or glpi_form.submit != false %}
+   {% if (glpi_form.submit is not defined or glpi_form.submit != false) and canEdit %}
       {% include "elements/submit.twig" with {
          'form_class': 'center',
          'notag': true,
@@ -145,8 +146,8 @@
          }
       } %}
    {% endif %}
-   {% if item is defined and item.maybeDeleted() %}
-      {% if item.isDeleted() %}
+   {% if item is defined and item.maybeDeleted() and item.canPurge() or item.canDelete() %}
+      {% if item.isDeleted() and item.canPurge() %}
          {% include "elements/purge.twig" with {
             'form_class': 'center',
             'notag': true,
@@ -156,7 +157,7 @@
                'width': glpi_form.columns|default(null)
             }
          } %}
-      {% else %}
+      {% elseif item.canDelete() %}
          {% include "elements/delete.twig" with {
             'form_class': 'center',
             'notag': true,

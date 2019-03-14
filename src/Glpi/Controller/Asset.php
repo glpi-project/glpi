@@ -640,11 +640,22 @@ class Asset extends AbstractController implements ControllerInterface
     *
     * @return void
     *
-     * @Glpi\Annotation\Route(name="update-asset", pattern="/{itemtype}/edit/{id:\d+}[/tab/{tab}]")
+     * @Glpi\Annotation\Route(name="update-asset", pattern="/{itemtype}/{action:edit|show}/{id:\d+}[/tab/{tab}]")
     */
     public function edit(Request $request, Response $response, array $args)
     {
+        $action = $args['action'];
         $item = new $args['itemtype']();
+
+        if ('edit' == $action && !$item->canEdit($args['id'])) {
+           //redirect to show.
+            $this->flash->addMessage('warning', __('You cannot edit this item.'));
+            $args['action'] = 'show';
+            return $response
+             ->withStatus(302)
+             ->withHeader('Location', $this->router->pathFor('update-asset', $args));
+        }
+
         if (!isset($args['tab'])) {
             $args['tab'] = $item->getType() . '__main';
         }
@@ -745,6 +756,7 @@ class Asset extends AbstractController implements ControllerInterface
                 $redirect_uri = $this->router->pathFor(
                     'update-asset',
                     [
+                       'action'     => 'edit',
                         'itemtype'  => $args['itemtype'],
                         'id'        => $item->fields['id']
                     ]
@@ -777,6 +789,7 @@ class Asset extends AbstractController implements ControllerInterface
         if (!$item->update($post)) {
             $rand = mt_rand();
             $_SESSION["{$args['itemtype']}_edit_$rand"] = $post;
+            $args['action'] = 'edit';
             $redirect_uri = $this->router->pathFor('update-asset', $args) . "?item_rand=$rand";
         } else {
            /** FIXME: should be handled in commondbtm
@@ -787,6 +800,7 @@ class Asset extends AbstractController implements ControllerInterface
             $redirect_uri = $this->router->pathFor(
                 'update-asset',
                 [
+                    'action'    => 'edit',
                     'itemtype'  => $args['itemtype'],
                     'id'        => $item->fields['id']
                 ]

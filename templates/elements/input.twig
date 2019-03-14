@@ -68,7 +68,10 @@
          {% endfor %}
       {% endif %}
    {% endblock %}
-   {% block element %}<input
+   {% if element.showonly is defined %}
+      {% block showonly %}{% if element.type != 'hidden' and element.value is defined %}{{ element.value }}{% endif %}{% endblock %}
+   {% else %}
+      {% block element %}<input
         type="{{ element.htmltype|default(element.type|default('text')) }}"
         value="{% if element.value is defined %}{{ element.value }}{% endif %}"
         {% block element_attributes %}{# standard attributes that may be used for button, select, ... #}
@@ -95,7 +98,8 @@
             {% endif %}
         {% endblock %}
         />
-   {% endblock %}
+      {% endblock %}
+   {% endif %}
    {% block post_element %}
       {% if element.posticons is defined %}
          {% for posticon in element.posticons %}

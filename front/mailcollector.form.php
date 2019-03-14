@@ -41,4 +41,4 @@ if (isset($_GET["id"])) {
     $id     = $_GET['id'];
 }
 
-header("Location: ../public/index.php?uiredirect=true&route=$route&itemtype=$itemtype&id=$id");
+header("Location: ../public/index.php?uiredirect=true&route=$route&itemtype=$itemtype&id=$id&action=edit");
