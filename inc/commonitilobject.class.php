@@ -6762,80 +6762,77 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<div class='break'></div>";
 
-      // recall content (not needed in classic and splitted layout)
-      if (!CommonGLPI::isLayoutWithMain()) {
+      // recall content
+      echo "<div class='h_item middle'>";
 
-         echo "<div class='h_item middle'>";
+      echo "<div class='h_info'>";
+      echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($this->fields['date'])."</div>";
+      echo "<div class='h_user'>";
 
-         echo "<div class='h_info'>";
-         echo "<div class='h_date'><i class='far fa-clock'></i>".Html::convDateTime($this->fields['date'])."</div>";
-         echo "<div class='h_user'>";
-
-         $user->getFromDB($this->fields['users_id_recipient']);
-         echo "<div class='tooltip_picture_border'>";
-         $picture = "";
-         if (isset($user->fields['picture'])) {
-            $picture = $user->fields['picture'];
-         }
-         echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-         User::getThumbnailURLForPicture($picture)."'>";
-         echo "</div>";
-
-         if (isset($user->fields['id']) && $user->fields['id']) {
-            echo $user->getLink()."&nbsp;";
-            $reqdata = getUserName($user->getID(), 2);
-            echo Html::showToolTip(
-               $reqdata["comment"],
-               ['link' => $reqdata['link']]
-            );
-         } else {
-            echo __('Requester');
-         }
-
-         echo "</div>"; // h_user
-         echo "</div>"; //h_info
-
-         echo "<div class='h_content ITILContent'>";
-         echo "<div class='displayed_content'>";
-         echo "<div class='b_right'>";
-
-         if ($objType == 'Ticket') {
-            $result = $DB->request([
-               'SELECT' => ['id', 'itemtype', 'items_id'],
-               'FROM'   => ITILFollowup::getTable(),
-               'WHERE'  => [
-                  'sourceof_items_id'  => $this->fields['id'],
-                  'itemtype'           => static::getType()
-               ]
-            ])->next();
-            if ($result) {
-               echo Html::link(
-                  '',
-                  static::getFormURLWithID($result['items_id']) . '&forcetab=Ticket$1#viewitemitilfollowup' . $result['id'], [
-                     'class' => 'fa fa-code-branch control_item disabled',
-                     'title' => __('Followup promotion source')
-                  ]
-               );
-            }
-         }
-         echo sprintf(__($objType."# %s description"), $this->getID());
-         echo "</div>";
-
-         echo "<div class='title'>";
-         echo Html::setSimpleTextContent($this->fields['name']);
-         echo "</div>";
-
-         echo "<div class='rich_text_container'>";
-         echo Html::setRichTextContent('', $this->fields['content'], '', true);
-         echo "</div>";
-
-         echo "</div>"; // h_content ITILContent
-
-         echo "</div>"; // .displayed_content
-         echo "</div>"; // h_item middle
-
-         echo "<div class='break'></div>";
+      $user->getFromDB($this->fields['users_id_recipient']);
+      echo "<div class='tooltip_picture_border'>";
+      $picture = "";
+      if (isset($user->fields['picture'])) {
+         $picture = $user->fields['picture'];
       }
+      echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+      User::getThumbnailURLForPicture($picture)."'>";
+      echo "</div>";
+
+      if (isset($user->fields['id']) && $user->fields['id']) {
+         echo $user->getLink()."&nbsp;";
+         $reqdata = getUserName($user->getID(), 2);
+         echo Html::showToolTip(
+            $reqdata["comment"],
+            ['link' => $reqdata['link']]
+         );
+      } else {
+         echo __('Requester');
+      }
+
+      echo "</div>"; // h_user
+      echo "</div>"; //h_info
+
+      echo "<div class='h_content ITILContent'>";
+      echo "<div class='displayed_content'>";
+      echo "<div class='b_right'>";
+
+      if ($objType == 'Ticket') {
+         $result = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
+            'FROM'   => ITILFollowup::getTable(),
+            'WHERE'  => [
+               'sourceof_items_id'  => $this->fields['id'],
+               'itemtype'           => static::getType()
+            ]
+         ])->next();
+         if ($result) {
+            echo Html::link(
+               '',
+               static::getFormURLWithID($result['items_id']) . '&forcetab=Ticket$1#viewitemitilfollowup' . $result['id'], [
+                  'class' => 'fa fa-code-branch control_item disabled',
+                  'title' => __('Followup promotion source')
+               ]
+            );
+         }
+      }
+      echo sprintf(__($objType."# %s description"), $this->getID());
+      echo "</div>";
+
+      echo "<div class='title'>";
+      echo Html::setSimpleTextContent($this->fields['name']);
+      echo "</div>";
+
+      echo "<div class='rich_text_container'>";
+      echo Html::setRichTextContent('', $this->fields['content'], '', true);
+      echo "</div>";
+
+      echo "</div>"; // h_content ITILContent
+
+      echo "</div>"; // .displayed_content
+      echo "</div>"; // h_item middle
+
+      echo "<div class='break'></div>";
 
       // end timeline
       echo "</div>"; // h_item $user_position
