@@ -6718,7 +6718,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
                       ."&$foreignKey=".$this->getID()."' target='_blank'>$filename";
-               if (Document::isImage($filename)) {
+               if (Document::isImage(GLPI_DOC_DIR . '/' . $item_i['filepath'])) {
                   echo "<div class='timeline_img_preview'>";
                   echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
                         ."&$foreignKey=".$this->getID()."&context=timeline'/>";
