@@ -34,24 +34,25 @@
 }|merge(glpi_form) %}
 {% set canEdit = item is defined and item.canEdit(item.fields.id) or item is not defined %}
 
-{% macro fieldset(fieldset, glpi_form) %}
-   <fieldset class="row">
-      <legend>
-         {{ fieldset.title }}
-         {% if fieldset.subtitle is defined %}
-         <small>({{ fieldset.subtitle }})</small>
-         {% endif %}
-      </legend>
+{% macro fieldset(fieldset, glpi_form, name, show) %}
+   <fieldset  class="tab-pane{% if show == true %} active{% endif %}" id="{{ name }}" role="tabpanel">
+      <div class="row">
       {% for element in fieldset.elements %}
          {% set tpl = element.type|default('input') %}
-         {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': glpi_form} %}
+         {% include "elements/" ~ tpl ~".twig" with {
+            'element':  element,
+            'glpi_form': glpi_form
+         } %}
       {% endfor %}
+      </div>
    </fieldset>
 {% endmacro %}
 
 <form class="glpi_form{% if glpi_form.boxed %} container form-horizontal{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
-   {% if glpi_form.header is not defined or glpi_form.header == true %}
+   {% set multi_entities = item is defined and call_static('Session', 'isMultiEntitiesMode') and item.isEntityAssign() %}
+   {% set header = glpi_form.header|default(glpi_form.header_title is defined or multi_entities) %}
+   {% if header %}
    <header class="card-header with-border row">
       {% if glpi_form.header_title is defined %}
          {{ glpi_form.header_title }}
@@ -125,16 +126,16 @@
                 {{ call_static('Dropdown', 'getYesNo', [item.fields.is_recursive]) }}
             {% endif %#}
          {% endif %}
-      {% else %}
+      {% endif %}
+
+   </header>
+   {% elseif multi_entities %}
          {% include "elements/hidden.twig" with {
             'element': {
                'name': 'is_recursive',
                'value': 0
             }
          } %}
-      {% endif %}
-
-   </header>
    {% endif %}
 
    {% block form_content %}
@@ -144,23 +145,51 @@
       {% if item is defined %}
           {% set title = item.getTypeName(1) %}
       {% endif %}
+
+      {% if glpi_form.elements|length and glpi_form.parts is defined and glpi_form.parts|length %}
+      <ul  class="nav nav-tabs" role="tablist">
+         {% if glpi_form.elements|length %}
+         <li class="nav-item" title="{{ __('Main form') }}" data-toggle="tooltip">
+            <a class="nav-link active show" data-toggle="tab" href="#main">{{ title }}</a>
+         </li>
+         {% endif %}
+      {# Handle other fieldsets #}
+         {% if glpi_form.parts is defined %}
+            {% for name, fieldset in glpi_form.parts %}
+               {% set lititle = fieldset.title %}
+               {% if fieldset.subtitle is defined %}
+                  {% set lititle = lititle ~ ' (' ~ fieldset.subtitle ~ ')' %}
+               {% endif %}
+         <li class="nav-item" title="{{ lititle }}" data-toggle="tooltip">
+            <a class="nav-link" data-toggle="tab" href="#{{ name }}">{{ fieldset.title }}</a>
+         </li>
+            {% endfor %}
+         {% endif %}
+      </ul>
+      {% endif %}
+      <div  class="tab-content">
       {{ _form.fieldset(
          {
             'title': title,
-            'elements': glpi_form.elements
+            'elements': glpi_form.elements,
          },
-         glpi_form
+         glpi_form,
+         'main',
+         true
       ) }}
 
       {# Handle other fieldsets #}
       {% if glpi_form.parts is defined %}
-         {% for fieldset in glpi_form.parts %}
+         {% for name, fieldset in glpi_form.parts %}
             {{ _form.fieldset(
                fieldset,
-               glpi_form
+               glpi_form,
+               name,
+               false
             ) }}
          {% endfor %}
       {% endif %}
+      </div>
    {% endblock %}
 
    {% if glpi_form.extra_header is defined  %}{{ glpi_form.extra_header|raw  }}{% endif %}
