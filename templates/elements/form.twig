@@ -32,7 +32,7 @@
    'boxed': true,
    'form_class': ''
 }|merge(glpi_form) %}
-{% set canEdit = item is defined and item.canEdit(item.fields.id) %}
+{% set canEdit = item is defined and item.canEdit(item.fields.id) or item is not defined %}
 <form class="glpi_form{% if glpi_form.boxed %} container form-horizontal{% endif %} {{ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
