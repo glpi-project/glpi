@@ -7249,7 +7249,7 @@ class Ticket extends CommonITILObject {
 
                echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
                       ."&tickets_id=".$this->getID()."' target='_blank'>$filename";
-               if (Document::isImage($filename)) {
+               if (Document::isImage(GLPI_DOC_DIR . '/' . $item_i['filepath'])) {
                   echo "<div class='timeline_img_preview'>";
                   echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
                         ."&tickets_id=".$this->getID()."&context=timeline'/>";
