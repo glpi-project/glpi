@@ -869,8 +869,8 @@ var initMap = function(parent_elt, map_id, height) {
 
    //setup tiles and © messages
    /* global L */
-   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href=\'http://osm.org/copyright\'>OpenStreetMap</a> contributors'
+   L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors'
    }).addTo(map);
    return map;
 };
