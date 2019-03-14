@@ -647,9 +647,16 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @since 0.85
    **/
    static function rawSearchOptionsToAdd($itemtype = null) {
+
       $task = new static();
       $tab = [];
       $name = _n('Task', 'Tasks', Session::getPluralNumber());
+
+      $task_condition = '';
+      if (!Session::haveRight("task", CommonITILTask::SEEPRIVATE)) {
+         $task_condition = "AND (`NEWTABLE`.`is_private` = 0
+                                 OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
+      }
 
       $tab[] = [
          'id'                 => 'task',
@@ -667,7 +674,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          'massiveaction'      => false,
          'htmltext'           => true,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'child',
+            'condition'          => $task_condition,
          ]
       ];
 
@@ -681,7 +689,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          'datatype'           => 'count',
          'massiveaction'      => false,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'child',
+            'condition'          => $task_condition,
          ]
       ];
 
@@ -698,7 +707,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             'beforejoin'         => [
                'table'              => static::getTable(),
                'joinparams'         => [
-                  'jointype'           => 'child'
+                  'jointype'           => 'child',
+                  'condition'          => $task_condition,
                ]
             ]
          ]
@@ -716,7 +726,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             'splititems'         => true,
             'massiveaction'      => false,
             'joinparams'         => [
-               'jointype'           => 'child'
+               'jointype'           => 'child',
+               'condition'          => $task_condition,
             ]
          ];
       }
@@ -734,7 +745,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             'beforejoin'         => [
                'table'              => static::getTable(),
                'joinparams'         => [
-                  'jointype'           => 'child'
+                  'jointype'           => 'child',
+                  'condition'          => $task_condition,
                ]
             ]
          ]
@@ -754,7 +766,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             'beforejoin'         => [
                'table'              => static::getTable(),
                'joinparams'         => [
-                  'jointype'           => 'child'
+                  'jointype'           => 'child',
+                  'condition'          => $task_condition,
                ]
             ]
          ]
@@ -774,7 +787,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             'beforejoin'         => [
                'table'              => static::getTable(),
                'joinparams'         => [
-                  'jointype'           => 'child'
+                  'jointype'           => 'child',
+                  'condition'          => $task_condition,
                ]
             ]
          ]
@@ -789,7 +803,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'child',
+            'condition'          => $task_condition,
          ]
       ];
 
@@ -802,7 +817,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'child',
+            'condition'          => $task_condition,
          ]
       ];
 
@@ -817,7 +833,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'child',
+            'condition'          => $task_condition,
          ]
       ];
 
@@ -830,7 +847,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'child',
+            'condition'          => $task_condition,
          ]
       ];
 
@@ -843,7 +861,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          'massiveaction'      => false,
          'forcegroupby'       => true,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'child',
+            'condition'          => $task_condition,
          ]
       ];
 
@@ -859,7 +878,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             'beforejoin'         => [
                'table'              => static::getTable(),
                'joinparams'         => [
-                  'jointype'           => 'child'
+                  'jointype'           => 'child',
+                  'condition'          => $task_condition,
                ]
             ]
          ]
