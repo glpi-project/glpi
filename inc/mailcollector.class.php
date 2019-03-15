@@ -623,7 +623,7 @@ class MailCollector  extends CommonDBTM {
             $this->fetch_emails++;
          }
          imap_expunge($this->marubox);
-            $this->closeMailbox();   //Close Mail Box
+         $this->closeMailbox();   //Close Mail Box
 
          //TRANS: %1$d, %2$d, %3$d, %4$d and %5$d are number of messages
          $msg = sprintf(
