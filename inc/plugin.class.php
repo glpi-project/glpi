@@ -233,21 +233,22 @@ class Plugin extends CommonDBTM {
    /**
     * Check plugins states and detect new plugins.
     *
-    * @param boolean $scan_for_new_plugins
+    * @param boolean $scan_inactive_and_new_plugins
     *
     * @return void
     */
-   public function checkStates($scan_for_new_plugins = false) {
+   public function checkStates($scan_inactive_and_new_plugins = false) {
 
       $directories = [];
 
       // Add known plugins to the check list
-      $known_plugins = $this->find();
+      $condition = $scan_inactive_and_new_plugins ? [] : ['state' => self::ACTIVATED];
+      $known_plugins = $this->find($condition);
       foreach ($known_plugins as $plugin) {
          $directories[] = $plugin['directory'];
       }
 
-      if ($scan_for_new_plugins) {
+      if ($scan_inactive_and_new_plugins) {
          // Add found directories to the check list
          $plugins_directory = GLPI_ROOT."/plugins";
          $directory_handle  = opendir($plugins_directory);
