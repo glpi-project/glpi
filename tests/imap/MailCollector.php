@@ -186,7 +186,7 @@ class MailCollector extends DbTestCase {
       $this->integer($this->testedInstance->countCollectors())->isIdenticalTo(1);
    }
 
-   public function testConnect() {
+   private function doConnect() {
       $this->newTestedInstance();
 
       $this->integer(
@@ -207,5 +207,12 @@ class MailCollector extends DbTestCase {
       $this->string($this->testedInstance->fields['host'])->isIdenticalTo('{127.0.0.1:993/imap/ssl/novalidate-cert}');
       $this->testedInstance->connect();
       $this->variable($this->testedInstance->fields['errors'])->isEqualTo(0);
+   }
+
+   public function testCollect() {
+      $this->doConnect();
+      $msg = $this->testedInstance->collect();
+      var_dump($msg);
+      $this->variable($msg)->isNull();
    }
 }
