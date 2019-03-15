@@ -925,7 +925,7 @@ class MailCollector  extends CommonDBTM {
       // prepare match to find ticket id in headers
       // pattern: GLPI-{itemtype}-{items_id}
       // ex: GLPI-Ticket-26739
-      $ref_match = "GLPI-[A-Z]\w+-([0-9]+)";
+      $ref_match = "/GLPI-[A-Z]\w+-([0-9]+)/";
 
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
