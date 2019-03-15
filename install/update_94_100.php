@@ -148,6 +148,17 @@ function update94to100() {
    }
    /** /move cache configuration into local configuration file */
 
+   /** Suppliers restriction */
+   if (!$DB->fieldExists('glpi_suppliers', 'is_active')) {
+      $migration->addField(
+         'glpi_suppliers',
+         'is_active',
+         'bool',
+         ['value' => 1]
+      );
+   }
+   /** /Suppliers restriction */
+
    // ************ Keep it at the end **************
    Config::deleteConfigurationValues('core', $config_to_drop);
 
