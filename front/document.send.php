@@ -69,7 +69,7 @@ if (isset($_GET['docid'])) { // docid for document
       }
 
       if ($splitter[0] == "_pictures") {
-         if (Document::isImage($_GET['file'])) {
+         if (Document::isImage(GLPI_DOC_DIR."/".$_GET['file'])) {
             $send = true;
          }
       }
