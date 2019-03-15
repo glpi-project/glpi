@@ -210,6 +210,7 @@ class MailCollector  extends CommonDBTM {
    }
 
 
+   /**
     * Display the list of folder for current connections
     *
     * @since 9.3.1
