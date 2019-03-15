@@ -50,7 +50,7 @@ Session::start();
 Config::detectRootDoc();
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   Session::loadLanguage();
+   Session::loadLanguage('', false);
    // no translation
    if (!isCommandLine()) {
       Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
@@ -149,7 +149,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
 
       if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
-         Session::loadLanguage();
+         Session::loadLanguage('', false);
          if (isCommandLine()) {
             echo __('Service is down for maintenance. It will be back shortly.');
             echo "\n";
@@ -174,7 +174,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    if ((!isset($CFG_GLPI['dbversion']) || (trim($CFG_GLPI["dbversion"]) != GLPI_SCHEMA_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 
-      Session::loadLanguage();
+      Session::loadLanguage('', false);
 
       if (isCommandLine()) {
          echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.');
