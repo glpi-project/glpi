@@ -40,10 +40,6 @@ Config::detectRootDoc();
 $GLPI = new GLPI();
 $GLPI->initLogger();
 
-// $GLPI_CACHE is indirectly used in Session::loadLanguage() to retrieve list of plugins.
-global $GLPI_CACHE;
-$GLPI_CACHE = Config::getCache('cache_db');
-
 //Print a correct  Html header for application
 function header_html($etape) {
    global $CFG_GLPI;
@@ -582,7 +578,7 @@ if (isset($_POST["language"])) {
    $_SESSION["glpilanguage"] = $_POST["language"];
 }
 
-Session::loadLanguage();
+Session::loadLanguage('', false);
 
 /**
  * @since 0.84.2

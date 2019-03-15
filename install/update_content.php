@@ -252,7 +252,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
 
 //########################### Script start ################################
 
-Session::loadLanguage();
+Session::loadLanguage('', false);
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");

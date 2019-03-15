@@ -558,11 +558,12 @@ class Session {
     * Get the default language from current user in $_SESSION["glpilanguage"].
     * And load the dict that correspond.
     *
-    * @param string $forcelang Force to load a specific lang (default '')
+    * @param string  $forcelang     Force to load a specific lang
+    * @param boolean $with_plugins  Whether to load plugin languages or not
     *
     * @return void
    **/
-   static function loadLanguage($forcelang = '') {
+   static function loadLanguage($forcelang = '', $with_plugins = true) {
       global $LANG, $CFG_GLPI, $TRANSLATE;
 
       $file = "";
@@ -613,8 +614,10 @@ class Session {
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
       // Load plugin dicts
-      foreach (Plugin::getPlugins() as $plug) {
-         Plugin::loadLang($plug, $forcelang, $trytoload);
+      if ($with_plugins) {
+         foreach (Plugin::getPlugins() as $plug) {
+            Plugin::loadLang($plug, $forcelang, $trytoload);
+         }
       }
 
       return $trytoload;
