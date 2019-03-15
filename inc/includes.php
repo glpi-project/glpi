@@ -95,16 +95,9 @@ if (!isset($PLUGINS_INCLUDED)) {
    // PLugin already included
    $PLUGINS_INCLUDED = 1;
    $LOADED_PLUGINS   = [];
-   $plugin           = new Plugin();
 
-   $plugins_list = $plugin->getPlugins();
-   if (count($plugins_list)) {
-      foreach ($plugins_list as $name) {
-         Plugin::load($name);
-      }
-      // For plugins which require action after all plugin init
-      Plugin::doHook("post_init");
-   }
+   $plugin = new Plugin();
+   $plugin->init();
 }
 
 

@@ -614,6 +614,8 @@ class Session {
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
       // Load plugin dicts
+      // This is only required when language loading is made for a language switch (in notification process).
+      // Indeed, loading of plugin languages is made by global plugin loading process.
       if ($with_plugins) {
          foreach (Plugin::getPlugins() as $plug) {
             Plugin::loadLang($plug, $forcelang, $trytoload);

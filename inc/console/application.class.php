@@ -383,14 +383,7 @@ class Application extends BaseApplication {
       }
 
       $plugin = new Plugin();
-      $plugins_list = $plugin->getPlugins();
-      if (count($plugins_list) > 0) {
-         foreach ($plugins_list as $name) {
-            Plugin::load($name);
-         }
-         // For plugins which require action after all plugin init
-         Plugin::doHook("post_init");
-      }
+      $plugin->init();
    }
 
    /**
