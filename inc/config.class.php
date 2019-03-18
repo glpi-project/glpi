@@ -137,6 +137,12 @@ class Config extends CommonDBTM {
          return false;
       }
 
+      // Trim automatically endig slash for url_base config as, for all existing occurences,
+      // this URL will be prepended to something that starts with a slash.
+      if (isset($input["url_base"]) && !empty($input["url_base"])) {
+         $input["url_base"] = rtrim($input["url_base"], '/');
+      }
+
       if (isset($input['allow_search_view']) && !$input['allow_search_view']) {
          // Global search need "view"
          $input['allow_search_global'] = 0;
