@@ -3087,7 +3087,8 @@ class Config extends CommonDBTM {
             $opt = [
                'adapter'   => 'filesystem',
                'options'   => [
-                  'cache_dir' => GLPI_CACHE_DIR . '/' . $optname
+                  'cache_dir' => GLPI_CACHE_DIR . '/' . $optname,
+                  'namespace' => $namespace,
                ],
                'plugins'   => ['serializer']
             ];
