@@ -55,11 +55,7 @@ class TaskTemplate extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return [['name'  => 'content',
-                         'label' => __('Content'),
-                         'type'  => 'textarea',
-                         'rows' => 10],
-                   ['name'  => 'taskcategories_id',
+      return [['name'  => 'taskcategories_id',
                          'label' => __('Task category'),
                          'type'  => 'dropdownValue',
                          'list'  => true],
@@ -78,6 +74,9 @@ class TaskTemplate extends CommonDropdown {
                    ['name'  => 'groups_id_tech',
                          'label' => __('Group'),
                          'type'  => 'groups_id_tech'],
+                   ['name'  => 'content',
+                         'label' => __('Content'),
+                         'type'  => 'tinymce'],
                   ];
    }
 
@@ -112,6 +111,16 @@ class TaskTemplate extends CommonDropdown {
    function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
+         case 'tinymce' :
+            // Display empty field
+            echo "&nbsp;</td></tr>";
+            // And a new line to have a complete display
+            echo "<tr class='center'><td colspan='5'>";
+            $rand = mt_rand();
+            Html::initEditorSystem($field['name'].$rand);
+            echo "<textarea id='".$field['name']."$rand' name='".$field['name']."' rows='3'>".
+                   $this->fields[$field['name']]."</textarea>";
+            break;
          case 'state' :
             Planning::dropdownState("state", $this->fields["state"]);
             break;
