@@ -212,7 +212,7 @@ class Knowbase extends CommonGLPI {
             };
 
             $(document).on('keyup', '#kb_tree_search$rand', function() {
-               $('#tree_category$rand').jstree('search', inputsearch.val());
+               $('#tree_category$rand').jstree('search', $(this).val());
             });
 
             $('#items_list$rand').on('click', 'a.kb-category', function(event) {
