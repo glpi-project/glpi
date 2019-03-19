@@ -1092,13 +1092,13 @@ class Auth extends CommonGLPI {
          return true;
       }
 
-      // Using CAS server
-      if (!empty($CFG_GLPI["cas_host"])) {
+      // Using API login with personnal token
+      if (!empty($_REQUEST['user_token'])) {
          return true;
       }
 
-      // Using API login with personnal token
-      if (!empty($_REQUEST['user_token'])) {
+      // Using CAS server
+      if (!empty($CFG_GLPI["cas_host"])) {
          return true;
       }
 
