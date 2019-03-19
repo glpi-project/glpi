@@ -776,21 +776,20 @@ class Reminder extends CommonDBVisible {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan$rand() {\n";
             echo Html::jsHide("plan$rand");
-               $params = ['action'   => 'add_event_classic_form',
-                               'form'     => 'remind',
-                               'users_id' => $this->fields["users_id"],
-                               'itemtype' => $this->getType(),
-                               'items_id' => $this->getID()];
+            $params = ['action'   => 'add_event_classic_form',
+                       'form'     => 'remind',
+                       'users_id' => $this->fields["users_id"],
+                       'itemtype' => $this->getType(),
+                       'items_id' => $this->getID()];
 
-               if ($ID
-                && $this->fields["is_planned"]) {
+            if ($ID && $this->fields["is_planned"]) {
                $params['begin'] = $this->fields["begin"];
                $params['end']   = $this->fields["end"];
-               }
+            }
 
-               Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
-               echo "}";
-               echo "</script>\n";
+            Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+            echo "}";
+            echo "</script>\n";
          }
 
          if (!$ID
