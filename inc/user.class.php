@@ -4603,18 +4603,44 @@ class User extends CommonDBTM {
     *
     * @return string|boolean User token, false if user does not exist
     */
-   static function getToken($ID, $field = 'personal_token') {
+   static function getToken($ID, $field = 'personal_token', $force_new = false) {
+      global $CFG_GLPI;
 
       $user = new self();
       if ($user->getFromDB($ID)) {
-         if (!empty($user->fields[$field])) {
+         // check date validity for cookie token
+         $outdated = false;
+         if ($field === 'cookie_token') {
+            $date_create = new DateTime($user->fields[$field."_date"]);
+            $date_expir  = $date_create->add(new DateInterval('PT'.$CFG_GLPI["login_remember_time"].'S'));
+
+            if ($date_expir < new DateTime()) {
+               $outdated = true;
+            }
+         }
+
+         // token exists, is not oudated, and we may use it
+         if (!empty($user->fields[$field]) && !$force_new && !$outdated) {
             return $user->fields[$field];
          }
+
+         // else get a new token
          $token = self::getUniqueToken($field);
-         $user->update(['id'             => $user->getID(),
-                             $field           => $token,
-                             $field . "_date" => $_SESSION['glpi_currenttime']]);
-         return $user->fields[$field];
+
+         // for cookie token, we need to store it hashed
+         $hash = $token;
+         if ($field === 'cookie_token') {
+            $hash = Auth::getPasswordHash($token);
+         }
+
+         // save this token in db
+         $user->update([
+            'id'             => $user->getID(),
+            $field           => $hash,
+            $field . "_date" => $_SESSION['glpi_currenttime']
+         ]);
+
+         return $token;
       }
 
       return false;
