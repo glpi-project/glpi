@@ -159,6 +159,14 @@ class CommonDBTM extends CommonGLPI {
    public $notificationqueueonaction = false;
 
    /**
+    * FIelds that does not exists in database but should not be celaned from
+    * form builder
+    *
+    * @var array
+    */
+   private $noclean = [];
+
+   /**
     * Constructor
    **/
    function __construct () {
@@ -5266,7 +5274,19 @@ class CommonDBTM extends CommonGLPI {
          ],
          'completename' => [
             'label'  => __('Complete name')
-         ],
+         ]
+      ];
+
+      if (method_exists($this, 'getDcBreadcrumb')) {
+         $this->noclean['dcbreadcrumb'] = 'dcbreadcrumb';
+         $fields['dcbreadcrumb'] = [
+            'type'   => 'dcbreadcrumb',
+            'label'  => __('Data center position'),
+            'name'      => 'dcbreadcrumb'
+         ];
+      }
+
+      $fields = $fields + [
          'states_id'    => [
             'label'  => __('Status')
          ],
@@ -5340,7 +5360,7 @@ class CommonDBTM extends CommonGLPI {
       global $DB;
       if ($dbfields = $DB->listFields($this->getTable())) {
          foreach (array_keys($fields) as $field) {
-            if (!isset($dbfields[$field])) {
+            if (!isset($dbfields[$field]) && !isset($this->noclean[$field])) {
                unset($fields[$field]);
             }
          }
@@ -5463,7 +5483,17 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $mapped_elt['value'] = $values;
+         $this->noclean[$field] = $field;
          $this->form_elements[$field] = $mapped_elt;
+      }
+
+      if (method_exists($this, 'getDcBreadcrumb')) {
+         $this->noclean['dcbreadcrumb'] = 'dcbreadcrumb';
+         $this->form_elements['dcbreadcrumb'] = array_merge(
+            $this->form_elements['dcbreadcrumb'], [
+               'value'     => array_reverse($this->getDcBreadcrumb())
+            ]
+         );
       }
 
       /*if ($this->$p['maybeempty'] && $p['canedit']) {
