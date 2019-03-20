@@ -61,6 +61,7 @@ class Config extends CommonDBTM {
 
    static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
 
+   public $dohistory = true;
 
    static function getTypeName($nb = 0) {
       return __('Setup');
@@ -104,6 +105,7 @@ class Config extends CommonDBTM {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -2848,6 +2850,7 @@ class Config extends CommonDBTM {
    static function setConfigurationValues($context, array $values = []) {
 
       $config = new self();
+      $config->getFromDB(1);
       foreach ($values as $name => $value) {
          if ($config->getFromDBByCrit([
             'context'   => $context,
@@ -3352,4 +3355,28 @@ class Config extends CommonDBTM {
 
       echo $out;
    }
+
+   public function rawSearchOptions() {
+      $tab = [];
+
+      $tab[] = [
+          'id'   => 'common',
+          'name' => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'            => 1,
+         'table'         => $this->getTable(),
+         'field'         => 'value',
+         'name'          => __('Value'),
+         'massiveaction' => false
+      ];
+
+      return $tab;
+   }
+
+   function getLogTypeID() {
+      return [$this->getType(), 1];
+   }
+
 }
