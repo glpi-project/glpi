@@ -2958,8 +2958,7 @@ class Profile extends CommonDBTM {
          $b = explode('_', $b);
 
          // For standard rights sort by right
-         if (($a[0] < 1024)
-             || ($b[0] < 1024)) {
+         if (($a[0] < 1024) || ($b[0] < 1024)) {
             if ($a[0] > $b[0]) {
                return true;
             }

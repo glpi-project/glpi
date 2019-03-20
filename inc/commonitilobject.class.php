@@ -6081,8 +6081,26 @@ abstract class CommonITILObject extends CommonDBTM {
       $objType = self::getType();
       $foreignKey = self::getForeignKeyField();
 
-      //check global rights
-      if (!Session::haveRight(strtolower($objType), $objType::READMY)) {
+      //check sub-items rights
+      $tmp = [$foreignKey => $this->getID()];
+      $fupClass = "ITILFollowup";
+      $fup = new $fupClass;
+      $fup->getEmpty();
+      $fup->fields['itemtype'] = $objType;
+      $fup->fields['items_id'] = $this->getID();
+
+      $taskClass = $objType."Task";
+      $task = new $taskClass;
+
+      $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+                        array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
+                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
+
+      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
          return false;
       }
 
@@ -6157,29 +6175,6 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "viewAddSubitem" . $this->fields['id'] . "$rand('ITILFollowup')";
       }
       echo "</script>\n";
-
-      //check sub-items rights
-      $tmp = [$foreignKey => $this->getID()];
-      $fupClass = "ITILFollowup";
-      $fup = new $fupClass;
-      $fup->getEmpty();
-      $fup->fields['itemtype'] = $objType;
-      $fup->fields['items_id'] = $this->getID();
-
-      $taskClass = $objType."Task";
-      $task = new $taskClass;
-
-      $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
-                        array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
-      $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
-                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
-      $canadd_document = $canadd_fup || $this->canAddItem('Document') && !in_array($this->fields["status"],
-                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
-      $canadd_solution = $objType::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $this->getSolvedStatusArray());
-
-      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
-         return false;
-      }
 
       //show choices
       echo "<div class='timeline_form'>";
@@ -6726,7 +6721,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
                       ."&$foreignKey=".$this->getID()."' target='_blank'>$filename";
-               if (Document::isImage($filename)) {
+               if (Document::isImage(GLPI_DOC_DIR . '/' . $item_i['filepath'])) {
                   echo "<div class='timeline_img_preview'>";
                   echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
                         ."&$foreignKey=".$this->getID()."&context=timeline'/>";
