@@ -5107,11 +5107,13 @@ class User extends CommonDBTM {
          ],
          'personal_token'  => [
             'label'     => __('Personal token'),
-            'fieldset'  => 'remote'
+            'fieldset'  => 'remote',
+            'type'      => 'token'
          ],
          'api_token'       => [
             'label'     => __('API token'),
-            'fieldset'  => 'remote'
+            'fieldset'  => 'remote',
+            'type'      => 'token'
          ],
          'personal_token_date'   => [
             'label'     => __('Date of personal token'),
