@@ -61,8 +61,6 @@ class Config extends CommonDBTM {
 
    static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
 
-   public $dohistory = true;
-
    static function getTypeName($nb = 0) {
       return __('Setup');
    }
@@ -2850,7 +2848,6 @@ class Config extends CommonDBTM {
    static function setConfigurationValues($context, array $values = []) {
 
       $config = new self();
-      $config->getFromDB(1);
       foreach ($values as $name => $value) {
          if ($config->getFromDBByCrit([
             'context'   => $context,
@@ -3379,4 +3376,12 @@ class Config extends CommonDBTM {
       return [$this->getType(), 1];
    }
 
+   public function post_updateItem($history = 1) {
+      if (count($this->oldvalues)) {
+         foreach ($this->oldvalues as &$value) {
+            $value = $this->fields['name'] . ' ' . $value;
+         }
+         Log::constructHistory($this, $this->oldvalues, $this->fields);
+      }
+   }
 }
