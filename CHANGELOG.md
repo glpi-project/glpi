@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 - new display hook `timeline_actions` to add new buttons to timeline forms
+- Ability to copy document links while merging tickets
 
 #### Deprecated
 
