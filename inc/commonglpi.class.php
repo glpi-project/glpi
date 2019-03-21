@@ -275,7 +275,7 @@ class CommonGLPI {
    protected function addTab($itemtype) {
       $tab = [];
 
-      if (!is_integer($itemtype)
+      if (!is_integer($itemtype) && !is_array($itemtype)
             && ($sub_item = getItemForItemtype($itemtype))) {
          $titles = $sub_item->getTabNameForItem($this);
          if (!is_array($titles)) {
@@ -379,6 +379,10 @@ class CommonGLPI {
                $tab[$tabid] = $val;
             }
          }
+      } else if (is_array($itemtype))  {
+         //a direct tab definition
+         $tabid = static::getType() . '__' . $itemtype['tabid'];
+         $tab[$tabid] = $itemtype['label'];
       }
 
       return $tab;

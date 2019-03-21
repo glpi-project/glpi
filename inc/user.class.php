@@ -53,6 +53,9 @@ class User extends CommonDBTM {
    const READAUTHENT         = 2048;
    const UPDATEAUTHENT       = 4096;
 
+   const TAB_USED_ITEMS      = 1;
+   const TAB_MANAGED_ITEMS   = 2;
+
    static $rightname = 'user';
 
    private $entities = null;
@@ -265,9 +268,14 @@ class User extends CommonDBTM {
       return [
          'Profile_User',
          'Group_User',
-         //'Config' TODO,
-         //__('Used items'),
-         //__('Managed items'),
+         self::TAB_USED_ITEMS => [
+            'tabid'  => self::TAB_USED_ITEMS,
+            'label'  => __('Used items')
+         ],
+         self::TAB_MANAGED_ITEMS => [
+            'tabid'  => self::TAB_MANAGED_ITEMS,
+            'label'  => __('Managed items')
+         ],
          'Ticket',
          'Item_Problem',
          'Change_Item',
