@@ -82,7 +82,8 @@ class Config extends DbTestCase {
          'Config$1'  => 'General setup',
          'Config$2'  => 'Default values',
          'Config$3'  => 'Assets',
-         'Config$4'  => 'Assistance'
+         'Config$4'  => 'Assistance',
+         'Log$1'     => 'Historical'
       ];
       $this
          ->given($this->newTestedInstance)
@@ -101,10 +102,12 @@ class Config extends DbTestCase {
 
       //check extra tabs from superadmin profile
       $this->login();
+      unset($expected['Log$1']);
       $expected['Config$9'] = 'Logs purge';
       $expected['Config$5'] = 'System';
       $expected['Config$7'] = 'Performance';
       $expected['Config$8'] = 'API';
+      $expected['Log$1']    = 'Historical';
       $this
          ->given($this->newTestedInstance)
             ->then
