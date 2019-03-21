@@ -268,11 +268,11 @@ class User extends CommonDBTM {
       return [
          'Profile_User',
          'Group_User',
-         self::TAB_USED_ITEMS => [
+         self::getType() . '_' . self::TAB_USED_ITEMS => [
             'tabid'  => self::TAB_USED_ITEMS,
             'label'  => __('Used items')
          ],
-         self::TAB_MANAGED_ITEMS => [
+         self::getType() . '_' . self::TAB_MANAGED_ITEMS => [
             'tabid'  => self::TAB_MANAGED_ITEMS,
             'label'  => __('Managed items')
          ],
