@@ -51,7 +51,9 @@ class SimpleCacheFactory extends \GLPITestCase {
             ],
             'expected_adapter' => [
                'class'   => \Zend\Cache\Storage\Adapter\Apcu::class,
-               'options' => [],
+               'options' => [
+                  'namespace' => '_default',
+               ],
                'plugins' => [],
             ],
          ],
@@ -123,6 +125,7 @@ class SimpleCacheFactory extends \GLPITestCase {
    public function testFactoryFallbackToFilesystem() {
 
       $uniqId = uniqid();
+      $namespace = 'app_cache';
 
       $this->newTestedInstance(
           GLPI_CACHE_DIR,
@@ -134,11 +137,14 @@ class SimpleCacheFactory extends \GLPITestCase {
       $simpleCache = null;
 
       $this->when(
-         function() use ($self, &$simpleCache) {
+         function() use ($self, &$simpleCache, $namespace) {
             $simpleCache = $self->testedInstance->factory(
                [
                   'adapter' => 'auto',
-                  'options' => ['ttl' => -15],
+                  'options' => [
+                     'ttl' => -15,
+                     'namespace' => $namespace,
+                  ],
                ]
             );
          }
@@ -155,9 +161,9 @@ class SimpleCacheFactory extends \GLPITestCase {
 
       $adapterOptions = $adapter->getOptions()->toArray();
       $this->array($adapterOptions)->hasKey('namespace');
-      $this->variable($adapterOptions['namespace'])->isEqualTo('_default_fallback_' . $uniqId);
+      $this->variable($adapterOptions['namespace'])->isEqualTo($namespace . '_' . $uniqId);
       $this->array($adapterOptions)->hasKey('cache_dir');
-      $this->variable($adapterOptions['cache_dir'])->isEqualTo(GLPI_CACHE_DIR . '/_default_fallback_' . $uniqId);
+      $this->variable($adapterOptions['cache_dir'])->isEqualTo(GLPI_CACHE_DIR . '/' . $namespace . '_' . $uniqId);
    }
 
    /**
@@ -166,6 +172,7 @@ class SimpleCacheFactory extends \GLPITestCase {
    public function testFactoryFallbackToMemory() {
 
       $uniqId = uniqid();
+      $namespace = 'app_cache';
 
       $this->newTestedInstance(
          GLPI_CACHE_DIR,
@@ -177,12 +184,13 @@ class SimpleCacheFactory extends \GLPITestCase {
       $simpleCache = null;
 
       $this->when(
-         function() use ($self, &$simpleCache) {
+         function() use ($self, &$simpleCache, $namespace) {
             $simpleCache = $self->testedInstance->factory(
                [
                   'adapter' => 'filesystem',
                   'options' => [
                      'cache_dir' => '/this/directory/cannot/be/created',
+                     'namespace' => $namespace,
                   ],
                ]
             );
@@ -204,6 +212,6 @@ class SimpleCacheFactory extends \GLPITestCase {
 
       $adapterOptions = $adapter->getOptions()->toArray();
       $this->array($adapterOptions)->hasKey('namespace');
-      $this->variable($adapterOptions['namespace'])->isEqualTo('_default_fallback_' . $uniqId);
+      $this->variable($adapterOptions['namespace'])->isEqualTo($namespace . '_' . $uniqId);
    }
 }

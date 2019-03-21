@@ -118,7 +118,7 @@ class SimpleCacheFactory
                     [
                         'adapter' => 'filesystem',
                         'options' => [
-                            'namespace' => $namespace . '_fallback'
+                            'namespace' => $namespace
                         ],
                     ]
                 );
@@ -135,7 +135,7 @@ class SimpleCacheFactory
                     [
                         'adapter' => 'memory',
                         'options' => [
-                            'namespace' => $namespace . '_fallback'
+                            'namespace' => $namespace
                         ],
                     ]
                 );
