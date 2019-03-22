@@ -39,6 +39,13 @@ body {
       }
    }
 
+   // adjust font size for form elements
+   .form-control,
+   .select2-container--bootstrap .select2-selection,
+   .input-group .btn {
+      font-size: .875rem;
+   }
+
    .breadcrumb {
       background-color: #FFF;
    }
