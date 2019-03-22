@@ -94,4 +94,15 @@ body {
          }
       }
    }
+
+   .glpi_form {
+      .nav-tabs {
+         margin-top: 5px;
+      }
+
+      .tab-content {
+         border: 0;
+         padding-top: 15px;
+      }
+   }
 }
