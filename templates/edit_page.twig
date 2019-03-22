@@ -41,30 +41,28 @@
       {{ contents|raw }}
    {% else %}
    <div class="row">
-      <!-- <div class="col-md-3"> -->
-         <ul class="nav nav-pills flex-column glpi-tabs" role="tablist" aria-orientation="vertical">
+      <ul class="nav nav-pills flex-column glpi-tabs" role="tablist" aria-orientation="vertical">
 {% for tab, entry in item.getTabs() %}
 {% if entry is not iterable %}
-   {% set label = entry %}
+{% set label = entry %}
 {% else %}
-   {% set label = entry.label %}
+{% set label = entry.label %}
 {% endif %}
-            <li class="nav-item">
-               <a href="{{ path_for('update-asset', {'action': 'edit', 'itemtype': item.getType(), 'id': item.fields.id, 'tab': tab}) }}"
-                   class="nav-link{% if current_tab == tab %} active{% endif %}"
-                   data-toggle="tab"
-                   data-target="#{{ tab }}">
-                  {{ label }}
+         <li class="nav-item">
+            <a href="{{ path_for('update-asset', {'action': 'edit', 'itemtype': item.getType(), 'id': item.fields.id, 'tab': tab}) }}"
+                class="nav-link{% if current_tab == tab %} active{% endif %}"
+                data-toggle="tab"
+                data-target="#{{ tab }}">
+               {{ label }}
 {% if entry.count is defined %}
-                  <span class="pull-right-container">
-                     <span class="badge badge-{% if entry.count == 0 %}light{% else %}info{% endif %} float-right">{{ entry.count }}</span>
-                  </span>
+               <span class="pull-right-container">
+                  <span class="badge badge-{% if entry.count == 0 %}light{% else %}info{% endif %} float-right">{{ entry.count }}</span>
+               </span>
 {% endif %}
-               </a>
-            </li>
+            </a>
+         </li>
 {% endfor %}
-         </ul>
-      <!-- </div> -->
+      </ul>
       <div class="tab-content">
    {% for tab, entry in item.getTabs() %}
          <div id="{{ tab }}" class="tab-pane{% if current_tab == tab %} active{% endif %}"{% if current_tab == tab %} data-loaded="true"{% endif %}>
