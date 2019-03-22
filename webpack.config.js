@@ -243,6 +243,12 @@ var libs = {
             from: '{css/select2.css,js/select2.full.js,js/i18n/*.js}',
         }
     ],
+    'select2-theme-bootstrap4': [
+        {
+            context: 'dist',
+            from: 'select2-bootstrap.css',
+        }
+    ],
     'spectrum-colorpicker': [
         {
             from: '{spectrum.css,spectrum.js}',
