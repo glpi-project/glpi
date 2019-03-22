@@ -85,11 +85,6 @@ jobs:
           root: /home/circleci
           paths:
             - codebase
-  php_5_6_test_suite:
-    <<: *shared
-    docker:
-      - image: glpi/circleci-env-core:php_5.6_fpm-node
-      - image: circleci/mariadb:10.1
   php_7_0_test_suite:
     <<: *shared
     docker:
@@ -125,12 +120,6 @@ workflows:
           filters:
             tags:
               only: /.*/ # required as test_suites waits for this job to be done
-      - php_5_6_test_suite:
-          requires:
-            - checkout
-          filters:
-            tags:
-              only: /.*/ # run also on tag creation
       - php_7_0_test_suite:
           requires:
             - checkout
@@ -167,12 +156,10 @@ workflows:
             branches:
               only:
                 - master
+                - 9.5/bugfixes
                 - 9.4/bugfixes
     jobs:
       - checkout
-      - php_5_6_test_suite:
-          requires:
-            - checkout
       - php_7_0_test_suite:
           requires:
             - checkout

@@ -32,8 +32,8 @@
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '5.6') < 0) {
-   die('PHP >= 5.6 required');
+if (version_compare(PHP_VERSION, '7.0.8') < 0) {
+   die('PHP >= 7.0.8 required');
 }
 
 

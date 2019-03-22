@@ -11,7 +11,7 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.0.8",
         "ext-mysqli": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
@@ -40,14 +40,14 @@
         "guzzlehttp/guzzle": "~6",
         "glpi-project/coding-standard": "^0.7.1",
         "consolidation/robo": "^1.0",
-        "natxet/CssMin": "^3.0",
+        "natxet/cssmin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
         "atoum/atoum": "^3.3",
         "atoum/telemetry-extension": "^1.0",
         "sensiolabs/security-checker": "^5.0",
-        "fzaninotto/Faker": "^1.7",
+        "fzaninotto/faker": "^1.7",
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "mikey179/vfsStream": "^1.6"
+        "mikey179/vfsstream": "^1.6"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
@@ -56,7 +56,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "5.6.0"
+            "php": "7.0.8"
         }
     },
     "scripts": {
