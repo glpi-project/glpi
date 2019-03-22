@@ -58,7 +58,6 @@
 {% block element %}
    <div class="controls">
    <div class="input-group">
-      <div class="form-control">
     <select
         {% set default_input_class = 'forSelect2' %}
         {% set fallback_input_class = '' %}
@@ -72,7 +71,6 @@
          {% import _self as glpi_select %}
          {{ glpi_select.html_options(element.values, element.value|default(''), element.value_txt|default('')) }}
     </select>
-      </div>
    <span class="input-group-append">
    {% if element.listicon is not defined or element.listicon == true %}
       {% if element.value is defined and element.value > 0 %}

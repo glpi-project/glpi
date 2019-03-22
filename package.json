@@ -37,6 +37,7 @@
         "prismjs": "^1.15.0",
         "qtip2": "^3.0.3",
         "select2": "^4.0.5",
+        "select2-theme-bootstrap4": "^0.2.0-beta.3",
         "spectrum-colorpicker": "^1.8.0",
         "spin.js": "^2.3.2",
         "tinymce": "^4.9.2",

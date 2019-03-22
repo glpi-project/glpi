@@ -36,6 +36,7 @@
    {% set css_paths = css_paths|default([])|merge([
       lib_path ~ '/jquery-ui-dist/jquery-ui.css',
       lib_path ~ '/select2/css/select2.css',
+      lib_path ~ '/select2-theme-bootstrap4/select2-bootstrap.css',
       lib_path ~ '/qtip2/jquery.qtip.css',
       lib_path ~ '/leaflet/leaflet.css',
       lib_path ~ '/leaflet.markercluster/MarkerCluster.css',
@@ -422,9 +423,6 @@
             if (_this.data('width')) {
                return _this.data('width');
             } else {
-               if (_this.parents('form.glpi_form').length > 0) {
-                  return '100%';
-               }
                return 'auto';
             }
          },
@@ -432,6 +430,8 @@
          quietMillis: 100,
          dropdownAutoWidth: true,
          templateResult: templateResult,
+         theme: 'bootstrap',
+         containerCssClass: ':all:',
          minimumResultsForSearch: {{ CFG_GLPI.ajax_limit_count }},
       };
 
