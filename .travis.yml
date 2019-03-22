@@ -22,12 +22,6 @@ script:
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
   include:
-    - php: 5.6
-      addons:
-        apt:
-          packages:
-            - ldap-utils
-            - slapd
     - php: 7.0
       addons:
         mariadb: 10.2
