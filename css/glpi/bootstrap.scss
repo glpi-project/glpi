@@ -7,3 +7,39 @@
 .btn-outline-secondary {
    border-color: #c8ced3;
 }
+
+.glpi-tabs {
+   .nav-item {
+      .nav-link {
+         border-radius: 0;
+         color: #23282c;
+         border-bottom: 1px solid #c8ced3;
+
+         &.active {
+            color: #FFF;
+            border-bottom: 0;
+         }
+
+         .badge {
+            margin-top: 4px;
+            margin-left: 20px;
+         }
+      }
+   }
+}
+
+.content {
+   .tab-content {
+      flex: 1;
+
+      > .tab-pane {
+         padding-top: 0;
+      }
+
+      header {
+         .form-group {
+            margin-bottom: 0;
+         }
+      }
+   }
+}
