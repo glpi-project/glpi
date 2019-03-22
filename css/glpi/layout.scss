@@ -31,6 +31,7 @@
 
 body {
    font-size: 0.875rem; /* 0.875rem = 14px */
+   background-color: #e4e5e6;
 
    footer.app-footer {
       .copyright {
@@ -38,8 +39,52 @@ body {
       }
    }
 
-   .app-header {
-      background: rgb(54, 127, 169);
-      color: white;
+   .breadcrumb {
+      background-color: #FFF;
+   }
+
+   .glpi-tabs {
+      border-right: 1px solid #c8ced3;
+
+      .nav-item {
+         margin-right: -1px;
+
+         .nav-link {
+            border-radius: 0;
+            color: #23282c;
+            border: 1px solid transparent;
+
+            &.active {
+               background-color: #FFF;
+               border-color: #c8ced3 #fff #c8ced3 #c8ced3;
+               border-top-left-radius: .25rem;
+               border-bottom-left-radius: .25rem;
+            }
+
+            .badge {
+               margin-top: 4px;
+               margin-left: 20px;
+            }
+         }
+      }
+   }
+
+   .content {
+      .tab-content {
+         margin-top: 0;
+         flex: 1;
+         border-left: 0;
+         padding-left: 5px;
+
+         > .tab-pane {
+            padding-top: 0;
+         }
+
+         header {
+            .form-group {
+               margin-bottom: 0;
+            }
+         }
+      }
    }
 }
