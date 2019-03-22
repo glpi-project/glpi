@@ -938,11 +938,13 @@ var templateResult = function(result) {
       var text = result.text;
       if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
          // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-         text = jQuery.fn.select2.defaults.defaults.escapeMarkup(result.text);
+         text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
       };
 
       if (!result.id) {
-         return text;
+         // If result has no id, then it is used as an optgroup and is not used for matches
+         _elt.html(text);
+         return _elt;
       }
 
       var _term = query.term || '';
