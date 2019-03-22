@@ -42,38 +42,38 @@
    {% else %}
    <div class="row">
       <ul class="nav nav-pills flex-column glpi-tabs" role="tablist" aria-orientation="vertical">
-{% for tab, entry in item.getTabs() %}
-{% if entry is not iterable %}
-{% set label = entry %}
-{% else %}
-{% set label = entry.label %}
-{% endif %}
+        {% for tab, entry in item.getTabs() %}
+            {% if entry is not iterable %}
+                {% set label = entry %}
+            {% else %}
+                {% set label = entry.label %}
+            {% endif %}
          <li class="nav-item">
             <a href="{{ path_for('update-asset', {'action': 'edit', 'itemtype': item.getType(), 'id': item.fields.id, 'tab': tab}) }}"
                 class="nav-link{% if current_tab == tab %} active{% endif %}"
                 data-toggle="tab"
                 data-target="#{{ tab }}">
                {{ label }}
-{% if entry.count is defined %}
+            {% if entry.count is defined %}
                <span class="pull-right-container">
                   <span class="badge badge-{% if entry.count == 0 %}light{% else %}info{% endif %} float-right">{{ entry.count }}</span>
                </span>
-{% endif %}
+            {% endif %}
             </a>
          </li>
-{% endfor %}
+        {% endfor %}
       </ul>
       <div class="tab-content">
-   {% for tab, entry in item.getTabs() %}
+        {% for tab, entry in item.getTabs() %}
          <div id="{{ tab }}" class="tab-pane{% if current_tab == tab %} active{% endif %}"{% if current_tab == tab %} data-loaded="true"{% endif %}>
-      {% if tab == item.getType() ~ '__main' %}
-         {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
-      {% endif %}
+            {% if tab == item.getType() ~ '__main' %}
+                {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
+            {% endif %}
          </div>
-   {% endfor %}
+        {% endfor %}
       </div>
    </div>
-   {% endif %}
+    {% endif %}
 </div>
 {% endblock %}
 
