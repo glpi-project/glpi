@@ -49,7 +49,8 @@ class Migration extends \GLPITestCase {
       parent::beforeTestMethod($method);
       if ($method !== 'testConstructor') {
          $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml');
-         $dbclass = '\mock\DB' . $db_config['driver'];
+
+         $dbclass = '\mock\\' . \Glpi\DatabaseFactory::getDbClass($db_config['driver']);
          $this->db = new $dbclass($db_config);
 
          $queries = [];

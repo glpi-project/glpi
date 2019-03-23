@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Config;
 use GLPI;
-use Glpi\AbstractDatabase;
+use Glpi\Database\AbstractDatabase;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Plugin;
 use Session;

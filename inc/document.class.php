@@ -614,7 +614,7 @@ class Document extends CommonDBTM {
    /**
     * Check if file of current instance can be viewed from a Reminder.
     *
-    * @global \Glpi\AbstractDatabase $DB
+    * @global \Glpi\Database\AbstractDatabase $DB
     * @return boolean
     *
     * @TODO Use DBmysqlIterator instead of raw SQL
@@ -676,7 +676,7 @@ class Document extends CommonDBTM {
     * Check if file of current instance can be viewed from a KnowbaseItem.
     *
     * @global array $CFG_GLPI
-    * @global \Glpi\AbstractDatabase $DB
+    * @global \Glpi\Database\AbstractDatabase $DB
     * @return boolean
     */
    private function canViewFileFromKnowbaseItem() {
@@ -759,7 +759,7 @@ class Document extends CommonDBTM {
    /**
     * Check if file of current instance can be viewed from a CommonITILObject.
     *
-    * @global \Glpi\AbstractDatabase $DB
+    * @global \Glpi\Database\AbstractDatabase $DB
     * @param string  $itemtype
     * @param integer $items_id
     * @return boolean

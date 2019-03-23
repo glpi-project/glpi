@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi;
+namespace Glpi\Database;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
@@ -133,7 +133,7 @@ abstract class AbstractDatabase
      *
      * @return void
      */
-    public function __construct(array $params, $server = null)
+    public function __construct(array $params = [], $server = null)
     {
         $requireds = [
             'driver',

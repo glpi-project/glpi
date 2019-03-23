@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\AbstractDatabase;
+use Glpi\Database\AbstractDatabase;
 use Glpi\DatabaseFactory;
 use Symfony\Component\Yaml\Yaml;
 
