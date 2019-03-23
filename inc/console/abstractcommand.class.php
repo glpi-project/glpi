@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-use Glpi\AbstractDatabase;
+use Glpi\Database\AbstractDatabase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;

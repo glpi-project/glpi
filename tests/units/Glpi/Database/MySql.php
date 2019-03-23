@@ -30,11 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace tests\units\Glpi\Database;
 
-/* Test for inc/dbmysql.class.php */
+/* Test for src/Glpi/Database/MySql.php */
 
-class DBmysql extends \GLPITestCase {
+class MySql extends \GLPITestCase {
    private $db;
 
    public function beforetestMethod($method) {

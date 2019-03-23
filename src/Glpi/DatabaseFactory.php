@@ -32,6 +32,7 @@
 
 namespace Glpi;
 
+use Glpi\Database\AbstractDatabase;
 use Toolbox;
 use Symfony\Component\Yaml\Yaml;
 
@@ -80,10 +81,7 @@ class DatabaseFactory
             }
         }
 
-        $dbclass = 'DB' . $db_config['driver'];
-        if ($slave === true) {
-            $dbclass .= 'Slave';
-        }
+        $dbclass = self::getDbClass($db_config['driver'], $slave);
         if (!class_exists($dbclass)) {
             throw new \RuntimeException(
                 sprintf(
@@ -94,5 +92,25 @@ class DatabaseFactory
         }
         $db = new $dbclass($db_config);
         return $db;
+    }
+
+    /**
+     * Get GLPI database class name for specified driver
+     *
+     * @param string  $driver Driver name (mysql, pgsql, ...)
+     * @param boolean $slave  Request a slave db
+     *
+     * @return string
+     */
+    public static function getDbClass($driver, $slave = false) :string
+    {
+        $dbclass = 'Glpi\Database\MySql';
+        if ('pgsql' === $driver) {
+            $dbclass = 'Glpi\Database\Postgres';
+        }
+        if ($slave === true) {
+            $dbclass .= 'Slave';
+        }
+        return $dbclass;
     }
 }

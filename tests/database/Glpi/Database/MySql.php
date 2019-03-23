@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace tests\units\Glpi\Database;
 
-class DBmysql extends \GLPITestCase {
+class MySql extends \GLPITestCase {
 
    private $olddb;
 

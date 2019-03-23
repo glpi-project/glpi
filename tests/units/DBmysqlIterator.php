@@ -47,7 +47,7 @@ class DBmysqlIterator extends DbTestCase {
       parent::beforeTestMethod($method);
 
       $db_config = Yaml::parseFile(GLPI_CONFIG_DIR . '/db.yaml');
-      $dbclass = '\mock\DB' . $db_config['driver'];
+      $dbclass = '\mock\\' . \Glpi\DatabaseFactory::getDbClass($db_config['driver']);
       $db = new $dbclass($db_config);
       $this->calling($db)->rawQuery->doesNothing;
       $this->it = new \DBmysqlIterator($db);

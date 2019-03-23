@@ -61,7 +61,7 @@ class Kernel extends \GLPITestCase {
 
       // Check Glpi synthetic services
       $this->boolean($container->has('database'))->isTrue();
-      $this->object($container->get('database'))->isInstanceOf(\Glpi\AbstractDatabase::class);
+      $this->object($container->get('database'))->isInstanceOf(\Glpi\Database\AbstractDatabase::class);
    }
 
    /**
@@ -91,7 +91,7 @@ YAML
 class FakeService {
    private \$db;
 
-   public function __construct(\Glpi\AbstractDatabase \$db) {
+   public function __construct(\Glpi\Database\AbstractDatabase \$db) {
       \$this->db = \$db;
    }
 
@@ -119,7 +119,7 @@ PHP
       $this->boolean($container->has('fake_service'))->isTrue();
       $service = $container->get('fake_service');
       $this->object($service)->isInstanceOf('FakeService');
-      $this->object($service->getDb())->isInstanceOf(\Glpi\AbstractDatabase::class);
+      $this->object($service->getDb())->isInstanceOf(\Glpi\Database\AbstractDatabase::class);
    }
 
    /**
@@ -204,7 +204,7 @@ PHP
       $this->boolean($container->has('random_service'))->isTrue();
       $service = $container->get('random_service');
       $this->object($service)->isInstanceOf('RandomPlugin\\MyService');
-      $this->object($service->getDb())->isInstanceOf(\DBmysql::class);
+      $this->object($service->getDb())->isInstanceOf(\Glpi\Database\MySql::class);
    }
 
    /**

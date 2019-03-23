@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use Glpi\AbstractDatabase;
+use Glpi\Database\AbstractDatabase;
 
 /**
  *  Database iterator class for Mysql
@@ -42,7 +42,7 @@ use Glpi\AbstractDatabase;
 class DBmysqlIterator implements Iterator, Countable {
    /**
     * DB object
-    * @var \Glpi\AbstractDatabase
+    * @var \Glpi\Database\AbstractDatabase
     */
    private $conn;
    // Current SQL query

@@ -32,6 +32,7 @@
 
 namespace Glpi;
 
+use Glpi\Database\AbstractDatabase;
 use Glpi\Application\Router;
 use Glpi\Controller\ControllerInterface;
 use Glpi\DependencyInjection\RegisterControllersPass;
