@@ -5,9 +5,27 @@ The present file will list all changes made to the project; according to the
 
 ## [9.5] unreleased
 
-#### Added
+### Added
 
 - encrypted file systems support
+
+
+### API changes
+
+#### Deprecated
+
+- `DBMysql::fetch_array()`
+- `DBMysql::fetch_row()`
+- `DBMysql::fetch_assoc()`
+- `DBMysql::fetch_object()`
+- `DBMysql::data_seek()`
+- `DBMysql::insert_id()`
+- `DBMysql::num_fields()`
+- `DBMysql::field_name()`
+- `DBMysql::list_fields()`
+- `DBMysql::affected_rows()`
+- `DBMysql::free_result()`
+- `DBMysql::isMySQLStrictMode()`
 
 ## [9.4.2] unreleased
 

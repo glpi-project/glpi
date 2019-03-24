@@ -112,7 +112,7 @@ class Stat extends CommonGLPI {
             $result = $DB->query($query);
             $val    = [];
             if ($DB->numrows($result) >= 1) {
-               while ($line = $DB->fetch_assoc($result)) {
+               while ($line = $DB->fetchAssoc($result)) {
                   $tmp['id']   = $line["id"];
                   $tmp['link'] = $line["name"];
                   $val[]       = $tmp;
@@ -137,7 +137,7 @@ class Stat extends CommonGLPI {
             $result = $DB->query($query);
             $val    = [];
             if ($DB->numrows($result) >= 1) {
-               while ($line = $DB->fetch_assoc($result)) {
+               while ($line = $DB->fetchAssoc($result)) {
                   $tmp['id']   = $line["id"];
                   $tmp['link'] = $line["category"];
                   $val[]       = $tmp;
@@ -162,7 +162,7 @@ class Stat extends CommonGLPI {
             $result = $DB->query($query);
             $val    = [];
             if ($DB->numrows($result) >= 1) {
-               while ($line = $DB->fetch_assoc($result)) {
+               while ($line = $DB->fetchAssoc($result)) {
                   $tmp['id']   = $line['id'];
                   $tmp['link'] = $line['location'];
                   $val[]       = $tmp;
@@ -230,7 +230,7 @@ class Stat extends CommonGLPI {
 
                if ($DB->numrows($result) >= 1) {
                   $i = 0;
-                  while ($line = $DB->fetch_assoc($result)) {
+                  while ($line = $DB->fetchAssoc($result)) {
                      $val[$i]['id']   = $line['id'];
                      $val[$i]['link'] = $line['designation'];
                      $i++;
@@ -260,7 +260,7 @@ class Stat extends CommonGLPI {
                $val    = [];
                $result = $DB->query($query);
                if ($DB->numrows($result) > 0) {
-                  while ($line = $DB->fetch_assoc($result)) {
+                  while ($line = $DB->fetchAssoc($result)) {
                      $tmp['id']   = $line["id"];
                      $tmp['link'] = $line[$field];
                      $val[]       = $tmp;
@@ -1331,7 +1331,7 @@ class Stat extends CommonGLPI {
          echo Search::showHeaderItem($output_type, __('Number of tickets'), $header_num);
          echo Search::showEndLine($output_type);
 
-         $DB->data_seek($result, $start);
+         $DB->dataSeek($result, $start);
 
          $i = $start;
          if (isset($_GET['export_all'])) {
@@ -1341,7 +1341,7 @@ class Stat extends CommonGLPI {
          for ($i=$start; ($i<$numrows) && ($i<$end_display); $i++) {
             $item_num = 1;
             // Get data and increment loop variables
-            $data = $DB->fetch_assoc($result);
+            $data = $DB->fetchAssoc($result);
             if (!($item = getItemForItemtype($data["itemtype"]))) {
                continue;
             }

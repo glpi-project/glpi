@@ -190,7 +190,7 @@ function update0681to07() {
 
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_assoc($result)) {
+               while ($data=$DB->fetchAssoc($result)) {
                   $query = "INSERT INTO `glpi_users_profiles`
                                    (`FK_users`, `FK_profiles`)
                             VALUES ('".$data['ID']."', '$IDprof') ";
@@ -329,7 +329,7 @@ function update0681to07() {
                 FROM `glpi_config`
                 WHERE `ID` = '1'";
       $result = $DB->query($query);
-      $config = $DB->fetch_array($result);
+      $config = $DB->fetchArray($result);
 
       if (!empty($config["ldap_host"])) {
          //Transfer ldap information into the new table
@@ -391,7 +391,7 @@ function update0681to07() {
 
       $query = "select * from glpi_config WHERE ID=1";
       $result = $DB->query($query);
-      $config = $DB->fetch_array($result);
+      $config = $DB->fetchArray($result);
 
       if (!empty($config["imap_host"])) {
          //Transfer ldap information into the new table
@@ -429,7 +429,7 @@ function update0681to07() {
             $result = $DB->query($query2);
 
             if ($DB->numrows($result)) {
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetchArray($result)) {
                   $query3 = "UPDATE `$table`
                              SET `state` = '". $data["state"]."'
                              WHERE `ID` = '".$data["id_device"]."'";
@@ -484,7 +484,7 @@ function update0681to07() {
          $result = $DB->queryOrDie($query, "0.7 update ticket_tco");
 
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                $query2 = "UPDATE `$table`
                           SET `ticket_tco` = '".computeTicketTco($type, $data["computer"])."'
                           WHERE `ID` = '".$data["computer"]."'";
@@ -518,7 +518,7 @@ function update0681to07() {
                 ORDER BY `ID`";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $data     = Toolbox::addslashes_deep($data);
                $comments = "";
 
@@ -626,7 +626,7 @@ function update0681to07() {
                 HAVING CPT > 1";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                // Skip first
                $query = "SELECT `ID`
                          FROM `glpi_ocs_link`
@@ -635,7 +635,7 @@ function update0681to07() {
                          LIMIT 1,99999";
                if ($result2=$DB->query($query)) {
                   if ($DB->numrows($result2)) {
-                     while ($data2=$DB->fetch_array($result2)) {
+                     while ($data2=$DB->fetchArray($result2)) {
                         $query = "DELETE
                                   FROM `glpi_ocs_link`
                                   WHERE `ID` ='".$data2['ID']."'";
@@ -959,7 +959,7 @@ function update0681to07() {
                          AND `rule_type` = '0'";
          $result = $DB->query($query);
          //Get the defaut rule's ID
-         $datas = $DB->fetch_array($result);
+         $datas = $DB->fetchArray($result);
 
          $query = "INSERT INTO `glpi_rules_criterias`
                           (`FK_rules`, `criteria`, `condition`, `pattern`)
@@ -983,7 +983,7 @@ function update0681to07() {
                          AND `rule_type` = '1'";
          $result = $DB->query($query);
          //Get the defaut rule's ID
-         $datas = $DB->fetch_array($result);
+         $datas = $DB->fetchArray($result);
 
          //Criteria
          $query = "INSERT INTO `glpi_rules_criterias`
@@ -1245,7 +1245,7 @@ function update0681to07() {
               FROM `glpi_software`";
       $result = $DB->query($sql);
       if ($DB->numrows($result)>0) {
-         while ($soft = $DB->fetch_array($result)) {
+         while ($soft = $DB->fetchArray($result)) {
             $sql = "UPDATE `glpi_licenses`
                     SET `version` = '".$soft["version"]."'
                     WHERE `sID` = ".$soft["ID"];
@@ -1269,7 +1269,7 @@ function update0681to07() {
              HAVING CPT > 1";
    $result = $DB->queryOrDie($query, "0.7 check multiple free global licenses");
    if ($DB->numrows($result)) {
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          // Get licenses AND installations
          if ($data['expire']=="") {
             $expire_search = " AND `glpi_licenses`.`expire` IS NULL";
@@ -1285,7 +1285,7 @@ function update0681to07() {
          $result2 = $DB->query($query);
          if ($DB->numrows($result2)) {
             $licIDs = [];
-            while ($data2=$DB->fetch_array($result2)) {
+            while ($data2=$DB->fetchArray($result2)) {
                $licIDs[] = $data2['ID'];
             }
             if (count($licIDs)>1) {
@@ -1320,7 +1320,7 @@ function update0681to07() {
              HAVING CPT > 1";
    $result = $DB->queryOrDie($query, "0.7 check multiple free global licenses");
    if ($DB->numrows($result)) {
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $refID = $data['ID'];
          // Get duplicates
          $query2 = "SELECT *
@@ -1330,7 +1330,7 @@ function update0681to07() {
                          AND `ID` <> '$refID'";
          $result2 = $DB->query($query2);
          if ($DB->numrows($result2)) {
-            while ($data2=$DB->fetch_array($result2)) {
+            while ($data2=$DB->fetchArray($result2)) {
                // Update r??servations
                $query = "UPDATE `glpi_reservation_resa`
                          SET `id_item` = '$refID'
@@ -1757,7 +1757,7 @@ function update0681to07() {
              FROM `glpi_history`";
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $query2 = "DELETE
                        FROM `glpi_history`
                        WHERE `glpi_history`.`device_type` = '".$data['device_type']."'
@@ -1866,7 +1866,7 @@ function computeTicketTco($item_type, $item) {
 
    $i = 0;
    if ($DB->numrows($result)) {
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $totalcost += trackingTotalCost($data["realtime"], $data["cost_time"], $data["cost_fixed"],
                                          $data["cost_material"]);
       }

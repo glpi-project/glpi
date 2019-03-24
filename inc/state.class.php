@@ -107,7 +107,7 @@ class State extends CommonTreeDropdown {
       $result = $DB->query($queryStateList);
 
       if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
          }
       }
@@ -137,7 +137,7 @@ class State extends CommonTreeDropdown {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) > 0) {
-                     while ($data = $DB->fetch_assoc($result)) {
+                     while ($data = $DB->fetchAssoc($result)) {
                         $states[$data["states_id"]][$itemtype] = $data["cpt"];
                      }
                   }
@@ -188,7 +188,7 @@ class State extends CommonTreeDropdown {
          }
          echo "<td class='numeric b'>$tot</td></tr>";
 
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
 

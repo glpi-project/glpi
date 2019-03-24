@@ -743,7 +743,7 @@ class Software extends CommonDBTM {
       $result = $DB->query($query);
       $values = [];
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $softwares_id          = $data["id"];
             $values[$softwares_id] = $data["name"];
          }
@@ -845,7 +845,7 @@ class Software extends CommonDBTM {
 
       if ($DB->numrows($result_search) > 0) {
          //Software already exists for this entity, get his ID
-         $data = $DB->fetch_assoc($result_search);
+         $data = $DB->fetchAssoc($result_search);
          $ID   = $data["id"];
 
          // restore software

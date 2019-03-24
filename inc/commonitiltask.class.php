@@ -1035,7 +1035,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $interv = [];
 
       if ($DB->numrows($result) > 0) {
-         for ($i=0; $data=$DB->fetch_assoc($result); $i++) {
+         for ($i=0; $data=$DB->fetchAssoc($result); $i++) {
             if ($item->getFromDB($data["id"])
                 && $item->canViewItem()) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()], 0)) {

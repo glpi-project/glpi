@@ -218,7 +218,7 @@ class CronTask extends CommonDBTM{
          ]
       );
 
-      if ($DB->affected_rows($result)>0) {
+      if ($DB->affectedRows($result)>0) {
          $this->timer  = microtime(true);
          $this->volume = 0;
          $log = new CronTaskLog();
@@ -283,7 +283,7 @@ class CronTask extends CommonDBTM{
          ]
       );
 
-      if ($DB->affected_rows($result) > 0) {
+      if ($DB->affectedRows($result) > 0) {
          // No gettext for log but add gettext line to be parsed for pot generation
          // order is important for insertion in english in the database
          if (is_null($retcode)) {
@@ -410,7 +410,7 @@ class CronTask extends CommonDBTM{
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            $this->fields = $DB->fetch_assoc($result);
+            $this->fields = $DB->fetchAssoc($result);
             return true;
          }
       }
@@ -934,7 +934,7 @@ class CronTask extends CommonDBTM{
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if (!$temp->delete($data)) {
                $ret = false;
             }
@@ -992,7 +992,7 @@ class CronTask extends CommonDBTM{
                          AND `state` = '".CronTaskLog::STATE_STOP."'";
          $result = $DB->query($query);
 
-         if ($data = $DB->fetch_assoc($result)) {
+         if ($data = $DB->fetchAssoc($result)) {
             echo "<tr class='tab_bg_1'><td>".__('Start date')."</td>";
             echo "<td class='right'>".Html::convDateTime($data['datemin'])."</td></tr>";
 
@@ -1089,7 +1089,7 @@ class CronTask extends CommonDBTM{
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
       if ($result = $DB->query($query)) {
-         if ($data = $DB->fetch_assoc($result)) {
+         if ($data = $DB->fetchAssoc($result)) {
             echo "<table class='tab_cadrehov'>";
             $header = "<tr>";
             $header .= "<th>".__('Date')."</th>";
@@ -1112,7 +1112,7 @@ class CronTask extends CommonDBTM{
                // Use gettext to display
                echo "<td>".__($data['content'])."</td>";
                echo "</tr>\n";
-            } while ($data = $DB->fetch_assoc($result));
+            } while ($data = $DB->fetchAssoc($result));
             echo $header;
             echo "</table>";
 
@@ -1147,7 +1147,7 @@ class CronTask extends CommonDBTM{
                 ORDER BY `id` ASC";
 
       if ($result = $DB->query($query)) {
-         if ($data = $DB->fetch_assoc($result)) {
+         if ($data = $DB->fetchAssoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".__('Date')."</th>";
             echo "<th>".__('Status')."</th>";
@@ -1194,7 +1194,7 @@ class CronTask extends CommonDBTM{
                echo "<td>".$content."</td>";
                echo "</tr>\n";
                $first = false;
-            } while ($data = $DB->fetch_assoc($result));
+            } while ($data = $DB->fetchAssoc($result));
 
             echo "</table>";
 

@@ -89,7 +89,7 @@ function update0843to0844() {
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $subject = $data['subject'];
             $text = $data['content_text'];
             $html = $data['content_html'];
@@ -119,7 +119,7 @@ function update0843to0844() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '".$data['users_id']."'

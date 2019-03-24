@@ -52,7 +52,7 @@ class Migration extends \GLPITestCase {
             $queries[] = $query;
             return true;
          };
-         $this->calling($this->db)->free_result = true;
+         $this->calling($this->db)->freeResult = true;
 
          $this->output(
             function () {
@@ -100,9 +100,9 @@ class Migration extends \GLPITestCase {
    public function testAddConfig() {
       global $DB;
       $this->calling($this->db)->numrows = 0;
-      $this->calling($this->db)->fetch_assoc = [];
-      $this->calling($this->db)->data_seek = true;
-      $this->calling($this->db)->list_fields = [
+      $this->calling($this->db)->fetchAssoc = [];
+      $this->calling($this->db)->dataSeek = true;
+      $this->calling($this->db)->listFields = [
          'id'        => '',
          'context'   => '',
          'name'      => '',

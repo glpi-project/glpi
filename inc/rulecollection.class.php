@@ -699,7 +699,7 @@ class RuleCollection extends CommonDBTM {
 
             if ($result2 = $DB->query($sql2)) {
                if ($DB->numrows($result2) == 1) {
-                  list($other_ID,$new_rank) = $DB->fetch_row($result2);
+                  list($other_ID,$new_rank) = $DB->fetchRow($result2);
                   echo $current_rank.' '.$ID.'<br>';
                   echo $new_rank.' '.$other_ID.'<br>';
 
@@ -803,7 +803,7 @@ class RuleCollection extends CommonDBTM {
                    FROM `glpi_rules`
                    WHERE `sub_type` ='".$this->getRuleClassName()."' ";
          $result = $DB->query($query);
-         $ligne  = $DB->fetch_assoc($result);
+         $ligne  = $DB->fetchAssoc($result);
          $rank   = $ligne['maxi'];
 
       } else {
@@ -1737,7 +1737,7 @@ class RuleCollection extends CommonDBTM {
                                  $limit
                                  AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
 
-      while ($data = $DB->fetch_assoc($res)) {
+      while ($data = $DB->fetchAssoc($res)) {
          $input[] = $data["criteria"];
       }
       return $input;

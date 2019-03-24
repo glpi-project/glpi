@@ -466,14 +466,14 @@ function update068to0681() {
          $result = $DB->query($query);
 
          if ($DB->numrows($result)==1) {
-            $row              = $DB->fetch_array($result);
+            $row              = $DB->fetchArray($result);
             $interfaces[$val] = $row["ID"];
          } else {
             $query = "INSERT INTO `glpi_dropdown_interface`
                              (`name`)
                       VALUES ('$val');";
             $DB->query($query);
-            $interfaces[$val] = $DB->insert_id();
+            $interfaces[$val] = $DB->insertId();
          }
       }
 
@@ -614,7 +614,7 @@ function update068to0681() {
                 FROM `glpi_ocs_link`";
       $result_glpi = $DB->query($query);
 
-      while ($data_glpi = $DB->fetch_array($result_glpi)) {
+      while ($data_glpi = $DB->fetchArray($result_glpi)) {
          // Get ocs information
          $query_ocs = "SELECT *
                        FROM `hardware`
@@ -623,7 +623,7 @@ function update068to0681() {
          $result_ocs = $DBocs->queryOrDie($query_ocs, "0.68.1 get ocs infos");
 
          if ($result_ocs && $DBocs->numrows($result_ocs)) {
-            $data_ocs = $DBocs->fetch_array($result_ocs);
+            $data_ocs = $DBocs->fetchArray($result_ocs);
 
             $query_update = "UPDATE `glpi_ocs_link`
                              SET `ocs_id` = '".$data_ocs["ID"]."',
@@ -696,7 +696,7 @@ function update068to0681() {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $query2 = "DELETE
                        FROM `glpi_state_item`
                        WHERE `device_type` = '".$data["device_type"]."'

@@ -217,7 +217,7 @@ function update06to065() {
    if ($DB->fieldExists("glpi_tracking", "status", false)) {
       $already_done = false;
       if ($result = $DB->query("show fields from glpi_tracking")) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             if ($data["Field"]=="status" && strstr($data["Type"], "done")) {
                $already_done = true;
             }
@@ -302,7 +302,7 @@ function update06to065() {
       if ($DB->numrows($result0)>0) {
          $suid = $DB->result($result0, 0, 0);
       }
-      $DB->free_result($result0);
+      $DB->freeResult($result0);
 
       $query = "SELECT *
                 FROM `glpi_tracking_planning`
@@ -311,7 +311,7 @@ function update06to065() {
 
       $used_followups = [];
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $found = -1;
             // Is a followup existing ?
             $query2 = "SELECT *
@@ -319,13 +319,13 @@ function update06to065() {
                        WHERE `tracking` = '".$data["id_tracking"]."'";
             $result2 = $DB->query($query2);
             if ($DB->numrows($result2)>0) {
-               while ($found<0 && $data2=$DB->fetch_array($result2)) {
+               while ($found<0 && $data2=$DB->fetchArray($result2)) {
                   if (!in_array($data2['ID'], $used_followups)) {
                      $found = $data2['ID'];
                   }
                }
             }
-            $DB->free_result($result2);
+            $DB->freeResult($result2);
 
             // Followup not founded
             if ($found<0) {
@@ -334,7 +334,7 @@ function update06to065() {
                           VALUES ('".$data["id_tracking"]."', '".date("Y-m-d")."', '$suid',
                                   'Automatic Added followup for compatibility problem in update')";
                $DB->query($query3);
-               $found = $DB->insert_id();
+               $found = $DB->insertId();
             }
             array_push($used_followups, $found);
 
@@ -345,7 +345,7 @@ function update06to065() {
          }
       }
       unset($used_followups);
-      $DB->free_result($result);
+      $DB->freeResult($result);
 
       $query = "ALTER TABLE `glpi_tracking_planning`
                 DROP `id_tracking` ";
@@ -421,14 +421,14 @@ function update06to065() {
          $result = $DB->query($query);
 
          if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $query = "INSERT INTO `glpi_dropdown_model_$model`
                                 (`ID`, `name`)
                          VALUES ('".$data['ID']."', '".addslashes($data['name'])."')";
                $DB->queryOrDie($query, "0.65 insert value in glpi_dropdown_model_$model");
             }
          }
-         $DB->free_result($result);
+         $DB->freeResult($result);
       }
 
       if (!$DB->fieldExists("glpi_$model", "model", false)) {
@@ -482,7 +482,7 @@ function update06to065() {
    $result = $DB->query($query);
 
    if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data=$DB->fetchAssoc($result)) {
          $query2 = "UPDATE `glpi_computer_device`
                     SET `specificity` = '".$data["SPECIF"]."'
                     WHERE `ID` = '".$data["ID"]."'";
@@ -500,7 +500,7 @@ function update06to065() {
    $result = $DB->query($query);
 
    if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data=$DB->fetchAssoc($result)) {
          $query2 = "UPDATE `glpi_computer_device`
                     SET `specificity` = '".$data["SPECIF"]."'
                     WHERE `ID` = '".$data["ID"]."'";
@@ -518,7 +518,7 @@ function update06to065() {
    $result = $DB->query($query);
 
    if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data=$DB->fetchAssoc($result)) {
          $query2 = "UPDATE `glpi_computer_device`
                     SET `specificity` = '".$data["SPECIF"]."'
                     WHERE `ID` = '".$data["ID"]."'";
@@ -536,7 +536,7 @@ function update06to065() {
    $result = $DB->query($query);
 
    if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data=$DB->fetchAssoc($result)) {
          $query2 = "UPDATE `glpi_computer_device`
                     SET `specificity` = '".$data["SPECIF"]."'
                     WHERE `ID` = '".$data["ID"]."'";

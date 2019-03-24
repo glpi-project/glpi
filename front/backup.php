@@ -179,7 +179,7 @@ function get_def($DB, $table) {
    $query  = "SHOW CREATE TABLE `$table`";
    $result = $DB->query($query);
    $DB->query("SET SESSION sql_quote_show_create = 1");
-   $row = $DB->fetch_row($result);
+   $row = $DB->fetchRow($result);
 
    $def .= preg_replace("/AUTO_INCREMENT=\w+/i", "", $row[1]);
    $def .= ";";

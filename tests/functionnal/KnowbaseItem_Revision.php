@@ -88,7 +88,7 @@ class KnowbaseItem_Revision extends DbTestCase {
 
       $rev_id = null;
       $result = $DB->query('SELECT MIN(id) as id FROM glpi_knowbaseitems_revisions');
-      $data = $DB->fetch_assoc($result);
+      $data = $DB->fetchAssoc($result);
       $rev_id = $data['id'];
 
       $kb1->getFromDB($kb1->getID());

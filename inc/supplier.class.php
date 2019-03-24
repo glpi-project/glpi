@@ -553,7 +553,7 @@ class Supplier extends CommonDBTM {
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
             } else if ($nb) {
-               for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
+               for ($prem=true; $data=$DB->fetchAssoc($result_linked); $prem=false) {
                   $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);

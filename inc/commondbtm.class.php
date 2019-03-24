@@ -495,7 +495,7 @@ class CommonDBTM extends CommonGLPI {
          $data = [];
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
-               while ($line = $DB->fetch_assoc($result)) {
+               while ($line = $DB->fetchAssoc($result)) {
                   $data[$line['id']] = $line;
                }
             }
@@ -554,7 +554,7 @@ class CommonDBTM extends CommonGLPI {
       $table = $this->getTable();
 
       if (!empty($table) &&
-          ($fields = $DB->list_fields($table))) {
+          ($fields = $DB->listFields($table))) {
 
          foreach (array_keys($fields) as $key) {
             $this->fields[$key] = "";
@@ -615,7 +615,7 @@ class CommonDBTM extends CommonGLPI {
                [$field => $this->fields[$field]],
                ['id' => $this->fields['id']]
             );
-            if ($DB->affected_rows() == 0) {
+            if ($DB->affectedRows() == 0) {
                if (isset($oldvalues[$field])) {
                   unset($oldvalues[$field]);
                }
@@ -661,7 +661,7 @@ class CommonDBTM extends CommonGLPI {
             if (!isset($this->fields['id'])
                   || is_null($this->fields['id'])
                   || ($this->fields['id'] == 0)) {
-               $this->fields['id'] = $DB->insert_id();
+               $this->fields['id'] = $DB->insertId();
             }
 
             return $this->fields['id'];
@@ -1117,7 +1117,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->input && is_array($this->input)) {
          $this->fields = [];
-         $table_fields = $DB->list_fields($this->getTable());
+         $table_fields = $DB->listFields($this->getTable());
 
          // fill array for add
          foreach (array_keys($this->input) as $key) {

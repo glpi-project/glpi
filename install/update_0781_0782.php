@@ -140,7 +140,7 @@ function update0781to0782($output = 'HTML') {
              WHERE ranking = '0'";
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $query = "UPDATE `glpi_rules`
                       SET `ranking` = ranking +1
                       WHERE `sub_type` = '".$data['sub_type']."';";
@@ -166,7 +166,7 @@ function update0781to0782($output = 'HTML') {
                         'Exclude Auto-Reply emails using X-Auto-Response-Suppress header', 'AND',
                         0, NOW(), 1)";
       $DB->queryOrDie($query, "0.78.2 add new rule RuleMailCollector");
-      $rule_id = $DB->insert_id();
+      $rule_id = $DB->insertId();
       /// Insert criteria and action
       $query = "INSERT INTO `glpi_rulecriterias`
                        (`rules_id`, `criteria`, `condition`, `pattern`)
@@ -185,7 +185,7 @@ function update0781to0782($output = 'HTML') {
                 VALUES ('0', 'RuleMailCollector', '2', 'Auto-Reply Auto-Submitted',
                         'Exclude Auto-Reply emails using Auto-Submitted header', 'AND', 0, NOW(), 1)";
       $DB->queryOrDie($query, "0.78.2 add new rule RuleMailCollector");
-      $rule_id = $DB->insert_id();
+      $rule_id = $DB->insertId();
       /// Insert criteria and action
       $query = "INSERT INTO `glpi_rulecriterias`
                        (`rules_id`, `criteria`, `condition`, `pattern`)

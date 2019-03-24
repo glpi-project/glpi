@@ -377,7 +377,7 @@ class RuleImportComputer extends Rule {
       $result_glpi = $DB->query($sql_glpi);
 
       if ($DB->numrows($result_glpi) > 0) {
-         while ($data = $DB->fetch_assoc($result_glpi)) {
+         while ($data = $DB->fetchAssoc($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
          return true;

@@ -111,7 +111,7 @@ function update0782to080() {
                        (`name`, `entities_id`, `is_recursive`, `comment`)
                 VALUES ('Default', 0, 1, 'Default calendar');";
       $DB->queryOrDie($query, "0.80 add default glpi_calendars");
-      $default_calendar_id = $DB->insert_id();
+      $default_calendar_id = $DB->insertId();
    }
 
    if (!$DB->tableExists('glpi_calendarsegments')) {
@@ -323,7 +323,7 @@ function update0782to080() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Password Forget', 'User', NOW())";
          $DB->queryOrDie($query, "0.80 add password forget notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
@@ -348,7 +348,7 @@ function update0782to080() {
                         $notid, '', 1, 1,
                         NOW())";
          $DB->queryOrDie($query, "0.80 add password forget notification");
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtargets`
                        (`id`, `notifications_id`, `type`, `items_id`)
@@ -405,7 +405,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $firstactiontime = min($data['OPEN'], $data['FIRST'], $data['FIRST2']);
                $firstactiontime = max(0, $firstactiontime);
                $query2 = "UPDATE `glpi_tickets`
@@ -433,7 +433,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $firstactiontime = min($data['FIRST'], $data['FIRST2']);
                $firstactiontime = max(0, $firstactiontime);
                $query2 = "UPDATE `glpi_tickets`
@@ -484,7 +484,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query2 = "SELECT `id`
                           FROM `glpi_computers_softwareversions`
                           WHERE `computers_id` = '".$data['computers_id']."'
@@ -526,7 +526,7 @@ function update0782to080() {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
 
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $comp = new Computer();
                if ($comp->getFromDB($data['computers_id'])) {
                   $query = "UPDATE `glpi_computers_softwareversions`
@@ -561,7 +561,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query = "INSERT INTO `glpi_computers_softwarelicenses`
                                 (`computers_id`, `softwarelicenses_id`)
                          VALUES ('".$data['computers_id']."','".$data['id']."')";
@@ -698,7 +698,7 @@ function update0782to080() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Ticket Satisfaction', 'Ticket', NOW())";
          $DB->queryOrDie($query, "0.80 add ticket satisfaction notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
@@ -723,7 +723,7 @@ function update0782to080() {
                            $notid, '', 1, 1,
                            NOW())";
          $DB->queryOrDie($query, "0.80 add ticket satisfaction notification");
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          //          $query = "INSERT INTO `glpi_notificationtargets`
          //                           (`id`, `notifications_id`, `type`, `items_id`)
@@ -795,7 +795,7 @@ function update0782to080() {
                 FROM `glpi_tickets`";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                if ($data['groups_id']>0) {
                   $query = "INSERT INTO `glpi_groups_tickets`
                                    (`tickets_id`, `groups_id`,
@@ -834,7 +834,7 @@ function update0782to080() {
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query = "UPDATE `glpi_notificationtemplatetranslations`
                          SET `subject` = '".addslashes(str_replace($from, $to, $data['subject']))."',
                              `content_text` = '".addslashes(str_replace($from, $to,
@@ -874,7 +874,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                if ($data['users_id_assign']>0) {
                   $query = "INSERT INTO `glpi_tickets_users`
                                    (`tickets_id`, `users_id`,
@@ -925,7 +925,7 @@ function update0782to080() {
 
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $query = "INSERT INTO `glpi_notificationtargets`
                                    (`items_id` ,`type` ,`notifications_id`)
                             VALUES ('$to', '1', '".$data['notifications_id']."')";
@@ -993,7 +993,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                if (!empty($data['rootdn_password'])) {
                   $query = "UPDATE `glpi_authldaps`
                             SET `rootdn_passwd` = '".addslashes(Toolbox::encrypt($data['rootdn_password'],
@@ -1058,7 +1058,7 @@ function update0782to080() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Item not unique', 'FieldUnicity', NOW())";
          $DB->queryOrDie($query, "0.80 add item not unique notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations` " .
                   "VALUES(NULL, $notid, '', '##lang.unicity.action##', " .
@@ -1084,7 +1084,7 @@ function update0782to080() {
                         $notid, '', 1, 1,
                         NOW())";
          $DB->queryOrDie($query, "0.80 add computer not unique notification");
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          //       $query = "INSERT INTO `glpi_notificationtargets`
          //                        (`notifications_id`, `type`, `items_id`)
@@ -1120,7 +1120,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                if (!empty($data['password'])) {
                   $query = "UPDATE `glpi_mailcollectors`
                             SET `passwd` = '".addslashes(Toolbox::encrypt($data['password'],
@@ -1192,7 +1192,7 @@ function update0782to080() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Crontask', 'Crontask', NOW())";
          $DB->queryOrDie($query, "0.80 add crontask watcher notification");
-         $notid = $DB->insert_id();
+         $notid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                    VALUES (NULL, $notid, '', '##crontask.action##',
@@ -1203,7 +1203,7 @@ function update0782to080() {
                 VALUES (NULL, 'Crontask Watcher', 0, 'Crontask', 'alert', 'mail', $notid, '', 1, 1,
                         NOW())";
          $DB->queryOrDie($query, "0.80 add crontask notification");
-         $notifid = $DB->insert_id();
+         $notifid = $DB->insertId();
 
          $query = "INSERT INTO `glpi_notificationtargets`
                        (`id`, `notifications_id`, `type`, `items_id`)
@@ -1222,7 +1222,7 @@ function update0782to080() {
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query = "UPDATE `glpi_ocslinks`
                          SET `entities_id` = '" . $data['entities_id'] . "'
                          WHERE `computers_id` = '" . $data['computers_id'] . "'";
@@ -1282,7 +1282,7 @@ function update0782to080() {
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query = "UPDATE `glpi_notificationtemplatetranslations`
                            SET `subject` = '".addslashes(
                                     str_replace($changes['from'], $changes['to'],
@@ -1333,7 +1333,7 @@ function update0782to080() {
                       VALUES ('0', 'RuleImportComputer', '$ranking', '".$ocs_server['name']."',
                               '', 'AND', 1, NOW(), 1)";
             $DB->queryOrDie($query, "0.80 add new rule RuleImportComputer");
-            $rule_id = $DB->insert_id();
+            $rule_id = $DB->insertId();
 
             $query = "INSERT INTO `glpi_rulecriterias`
                              (`rules_id`, `criteria`, `condition`, `pattern`)
@@ -1484,7 +1484,7 @@ function update0782to080() {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '".$data['users_id']."'

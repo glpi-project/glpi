@@ -98,7 +98,7 @@ function get_update_content($DB, $table, $from, $limit, $conv_utf8) {
                          LIMIT $from, $limit");
 
    if ($result) {
-      while ($row = $DB->fetch_assoc($result)) {
+      while ($row = $DB->fetchAssoc($result)) {
          if (isset($row["id"])) {
             $insert = "UPDATE `$table`
                        SET ";
@@ -157,7 +157,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
             $DB->query("ALTER TABLE `".$tables[$offsettable]."`
                         DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
 
-            $data = $DB->list_fields($tables[$offsettable]);
+            $data = $DB->listFields($tables[$offsettable]);
 
             foreach ($data as $key =>$val) {
                if (preg_match("/^char/i", $val["Type"])) {
@@ -338,7 +338,7 @@ if (!$DB->fieldExists($config_table, "utf8_conv", false)) {
              WHERE `id` = '1'";
 
    $result = $DB->query($query);
-   $data   = $DB->fetch_assoc($result);
+   $data   = $DB->fetchAssoc($result);
 
    if ($data["utf8_conv"]) {
       $complete_utf8 = false;

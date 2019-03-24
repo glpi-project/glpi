@@ -261,7 +261,7 @@ class NetworkAlias extends FQDNLabel {
       $result  = $DB->query($query);
       $aliases = [];
       if ($number = $DB->numrows($result)) {
-         while ($line = $DB->fetch_assoc($result)) {
+         while ($line = $DB->fetchAssoc($result)) {
             $aliases[$line["id"]] = $line;
          }
       }
