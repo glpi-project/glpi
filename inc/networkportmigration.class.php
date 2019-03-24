@@ -298,7 +298,7 @@ class NetworkPortMigration extends CommonDBChild {
                 WHERE `id`='".$this->fields['networkinterfaces_id']."'";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
-         $row = $DB->fetch_assoc($result);
+         $row = $DB->fetchAssoc($result);
          echo $row['name'];
       } else {
          echo __('Unknown interface');

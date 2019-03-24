@@ -1954,7 +1954,7 @@ class Rule extends CommonDBTM {
       $result = $DB->query($sql);
 
       if ($DB->numrows($result) > 0) {
-         $datas = $DB->fetch_assoc($result);
+         $datas = $DB->fetchAssoc($result);
          return $datas["rank"] + 1;
       }
       return 0;

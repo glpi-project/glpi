@@ -646,7 +646,7 @@ class Migration {
 
          $DB->insertOrDie($table, $values, $this->version." insert in $table");
 
-         return $DB->insert_id();
+         return $DB->insertId();
       }
    }
 
@@ -751,7 +751,7 @@ class Migration {
 
       $ranking = 1;
       if ($DB->numrows($result) > 0) {
-         $datas = $DB->fetch_assoc($result);
+         $datas = $DB->fetchAssoc($result);
          $ranking = $datas["rank"] + 1;
       }
 
@@ -761,7 +761,7 @@ class Migration {
          $values[$field] = $value;
       }
       $DB->insertOrDie('glpi_rules', $values);
-      $rid = $DB->insert_id();
+      $rid = $DB->insertId();
 
       // The rule criteria
       foreach ($criteria as $criterion) {

@@ -1193,7 +1193,7 @@ class Search {
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
          if ($DBread->numrows($result2) > 0) {
-            $res = $DBread->fetch_assoc($result2);
+            $res = $DBread->fetchAssoc($result2);
             if ($res['Code'] == 1260) {
                $DBread->query("SET SESSION group_concat_max_len = 8194304;");
                $DBread->execution_time = true;
@@ -1344,7 +1344,7 @@ class Search {
 
          // if real search seek to begin of items to display (because of complete search)
          if (!$data['search']['no_search']) {
-            $DBread->data_seek($result, $data['search']['start']);
+            $DBread->dataSeek($result, $data['search']['start']);
          }
 
          $i = $data['data']['begin'];
@@ -1357,7 +1357,7 @@ class Search {
          self::$output_type = $data['display_type'];
 
          while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
-            $row = $DBread->fetch_assoc($result);
+            $row = $DBread->fetchAssoc($result);
             $newrow        = [];
             $newrow['raw'] = $row;
 

@@ -119,7 +119,7 @@ function update_importDropdown ($table, $name) {
              (`name`)
              VALUES ('".addslashes($name)."')";
    if ($result = $DB->query($query)) {
-      return $DB->insert_id();
+      return $DB->insertId();
    }
    return 0;
 }
@@ -189,7 +189,7 @@ function display_new_locations() {
    }
    echo "</tr>";
 
-   while ($data = $DB->fetch_assoc($result)) {
+   while ($data = $DB->fetchAssoc($result)) {
       echo "<tr class=tab_bg_1>";
       for ($i=0; $i<=$MAX_LEVEL; $i++) {
 
@@ -218,7 +218,7 @@ function display_new_locations() {
       $data_old=$data;
    }
 
-   $DB->free_result($result);
+   $DB->freeResult($result);
    echo "</table>";
 }
 
@@ -231,11 +231,11 @@ function display_old_locations() {
              ORDER BY `name`";
    $result = $DB->query($query);
 
-   while ($data = $DB->fetch_assoc($result)) {
+   while ($data = $DB->fetchAssoc($result)) {
       echo "<span class='b'>".$data['name']."</span> - ";
    }
 
-   $DB->free_result($result);
+   $DB->freeResult($result);
 }
 
 
@@ -272,7 +272,7 @@ function location_create_new($split_char, $add_first) {
       $root_ID = 0;
    }
 
-   while ($data =  $DB->fetch_assoc($result)) {
+   while ($data =  $DB->fetchAssoc($result)) {
 
       if (!empty($split_char)) {
          $splitter = explode($split_char, $data['name']);
@@ -309,7 +309,7 @@ function location_create_new($split_char, $add_first) {
       $result_insert=$DB->query($query_insert);
    }
 
-   $DB->free_result($result);
+   $DB->freeResult($result);
    $query_auto_inc = "ALTER TABLE `glpi_dropdown_locations_new`
                       CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
    $result_auto_inc = $DB->query($query_auto_inc);
@@ -437,7 +437,7 @@ function changeVarcharToID($table1, $table2, $chps) {
          ['ID' => $line['row1']]
       );
    }
-   $DB->free_result($result);
+   $DB->freeResult($result);
 
    $query = "ALTER TABLE `$table1`
              DROP `$chps`";

@@ -162,7 +162,7 @@ class CartridgeItem extends CommonDBTM {
          ];
          $result = $DB->insert('glpi_cartridgeitems_printermodels', $params);
 
-         if ($result && ($DB->affected_rows() > 0)) {
+         if ($result && ($DB->affectedRows() > 0)) {
             return true;
          }
       }
@@ -594,7 +594,7 @@ class CartridgeItem extends CommonDBTM {
       $datas = [];
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data= $DB->fetch_assoc($result)) {
+            while ($data= $DB->fetchAssoc($result)) {
                $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
                $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
                $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);

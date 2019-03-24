@@ -149,7 +149,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = [];
 
-      while ($rule = $DB->fetch_assoc($result)) {
+      while ($rule = $DB->fetchAssoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
          }
@@ -207,7 +207,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
          $hiddenfields = [];
          $used         = [];
          if ($numrows = $DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $hiddenfields[$data['id']] = $data;
                $used[$data['num']]        = $data['num'];
             }

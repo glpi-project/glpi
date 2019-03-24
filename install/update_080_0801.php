@@ -52,7 +52,7 @@ function update080to0801() {
              HAVING CPT > 1";
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             // Skip first
             $query = "SELECT `id`
                       FROM `glpi_groups_tickets`
@@ -63,7 +63,7 @@ function update080to0801() {
                       LIMIT 1,99999";
             if ($result2=$DB->query($query)) {
                if ($DB->numrows($result2)) {
-                  while ($data2=$DB->fetch_array($result2)) {
+                  while ($data2=$DB->fetchArray($result2)) {
                      $query = "DELETE
                                FROM `glpi_groups_tickets`
                                WHERE `id` ='".$data2['id']."'";
@@ -86,7 +86,7 @@ function update080to0801() {
              HAVING CPT > 1";
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             // Skip first
             $query = "SELECT `id`
                       FROM `glpi_tickets_users`
@@ -98,7 +98,7 @@ function update080to0801() {
                       LIMIT 1,99999";
             if ($result2=$DB->query($query)) {
                if ($DB->numrows($result2)) {
-                  while ($data2=$DB->fetch_array($result2)) {
+                  while ($data2=$DB->fetchArray($result2)) {
                      $query = "DELETE
                                FROM `glpi_tickets_users`
                                WHERE `id` ='".$data2['id']."'";

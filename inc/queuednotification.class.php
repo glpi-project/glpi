@@ -593,7 +593,7 @@ class QueuedNotification extends CommonDBTM {
                              AND UNIX_TIMESTAMP(send_time) < '".$send_time."'";
 
          $DB->query($query_exp);
-         $vol = $DB->affected_rows();
+         $vol = $DB->affectedRows();
       }
 
       $task->setVolume($vol);

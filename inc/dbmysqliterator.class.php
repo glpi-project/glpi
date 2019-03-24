@@ -461,7 +461,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    function __destruct () {
       if ($this->res) {
-         $this->conn->free_result($this->res);
+         $this->conn->freeResult($this->res);
       }
    }
 
@@ -656,7 +656,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    public function rewind() {
       if ($this->res && $this->conn->numrows($this->res)) {
-         $this->conn->data_seek($this->res, 0);
+         $this->conn->dataSeek($this->res, 0);
       }
       $this->position = 0;
       return $this->next();
@@ -689,7 +689,7 @@ class DBmysqlIterator implements Iterator, Countable {
       if (!$this->res) {
          return false;
       }
-      $this->row = $this->conn->fetch_assoc($this->res);
+      $this->row = $this->conn->fetchAssoc($this->res);
       ++$this->position;
       return $this->row;
    }

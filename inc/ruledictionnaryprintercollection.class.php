@@ -100,7 +100,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
       $nb   = $DB->numrows($res) + $offset;
       $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor($DB->numrows($res) / 20) : 1));
 
-      while ($input = $DB->fetch_assoc($res)) {
+      while ($input = $DB->fetchAssoc($res)) {
          if (!($i % $step)) {
             if (isCommandLine()) {
                //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory

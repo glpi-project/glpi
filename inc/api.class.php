@@ -975,7 +975,7 @@ abstract class API extends CommonGLPI {
                             getEntitiesRestrictRequest("AND", "glpi_tickets")."
                       ORDER BY `glpi_tickets`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $fields['_tickets'][] = $data;
                }
             }
@@ -999,7 +999,7 @@ abstract class API extends CommonGLPI {
                                   getEntitiesRestrictRequest("AND", "glpi_problems")."
                             ORDER BY `glpi_problems`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $fields['_problems'][] = $data;
                }
             }
@@ -1023,7 +1023,7 @@ abstract class API extends CommonGLPI {
                                   getEntitiesRestrictRequest("AND", "glpi_changes")."
                             ORDER BY `glpi_changes`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $fields['_changes'][] = $data;
                }
             }
@@ -1268,7 +1268,7 @@ abstract class API extends CommonGLPI {
                 ORDER BY ".$params['sort']." ".$params['order']."
                 LIMIT ".$params['start'].", ".$params['list_limit'];
       if ($result = $DB->query($query)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $found[] = $data;
          }
       }

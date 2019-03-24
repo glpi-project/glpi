@@ -2268,7 +2268,7 @@ function update0723to078() {
                          FROM `$table`";
                if ($result=$DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data = $DB->fetch_assoc($result)) {
+                     while ($data = $DB->fetchAssoc($result)) {
                         if (empty($data[$oldname]) && isset($update['default'])) {
                            $data[$oldname] = $update['default'];
                         }
@@ -2864,7 +2864,7 @@ function update0723to078() {
                 WHERE `type` = ".Bookmark::SEARCH." ";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query2 = "UPDATE `glpi_bookmarks`
                           SET `query` = '".addslashes(preg_replace($olds, $news,
                                                       $data['query']))."'
@@ -3476,7 +3476,7 @@ function update0723to078() {
                 FROM `glpi_profiles`";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data=$DB->fetchAssoc($result)) {
                $types                    = $data['helpdesk_hardware_type'];
                $CFG_GLPI["ticket_types"] = [COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE,
                                                  MONITOR_TYPE, PERIPHERAL_TYPE, SOFTWARE_TYPE,
@@ -4070,7 +4070,7 @@ function update0723to078() {
 
       foreach ($queries as $itemtype => $query) {
          $DB->queryOrDie($query, "0.78 insert notification template for $itemtype");
-         $templates[$itemtype] = $DB->insert_id();
+         $templates[$itemtype] = $DB->insertId();
       }
 
       $ADDTODISPLAYPREF['NotificationTemplate']=[4,16];
@@ -4813,7 +4813,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                    FROM `$table`";
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
                   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                                      sprintf(__('%1$s - %2$s'), $label,
                                                              $data['itemtype'])));
@@ -5118,7 +5118,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $num     = 0;
             $num2    = 0;
             $options = [];
@@ -5435,7 +5435,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
             $DB->queryOrDie($query, "0.78 error inserting new default maigate rule");
 
-         if ($newID = $DB->insert_id()) {
+         if ($newID = $DB->insertId()) {
             $query = "INSERT INTO `glpi_rulecriterias`
                          VALUES (NULL, $newID, 'subject', 6, '/.*/')";
 
@@ -5455,7 +5455,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
             $DB->queryOrDie($query, "0.78 error inserting new maigate rule ".$collector['name']);
 
-            if ($newID = $DB->insert_id()) {
+            if ($newID = $DB->insertId()) {
                $query = "INSERT INTO `glpi_rulecriterias`
                          VALUES (NULL, $newID, 'mailcollector', 0, '".$collector['id']."')";
 
@@ -5644,7 +5644,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                 WHERE `itemtype` = '$type'";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $query = "SELECT max(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '".$data['users_id']."'

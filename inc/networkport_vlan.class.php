@@ -111,7 +111,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $vlans  = [];
       $used   = [];
       if ($number = $DB->numrows($result)) {
-         while ($line = $DB->fetch_assoc($result)) {
+         while ($line = $DB->fetchAssoc($result)) {
             $used[$line["id"]]       = $line["id"];
             $vlans[$line["assocID"]] = $line;
          }

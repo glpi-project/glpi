@@ -122,7 +122,7 @@ if (isset($_GET['run'])) {
       die("SQL request: $query\nSQL error : ".$DB->error()."\n");
    }
 
-   echo "  Deleted entries in history : ".$DB->affected_rows()."\n";
+   echo "  Deleted entries in history : ".$DB->affectedRows()."\n";
    echo "Remaining entries in history : ".countElementsInTable($table)."\n";
 
    if (isset($_GET['optimize'])) {

@@ -480,7 +480,7 @@ class Session {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];
          }
          foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
@@ -497,7 +497,7 @@ class Session {
             $result2 = $DB->query($query2);
 
             if ($DB->numrows($result2)) {
-               while ($data = $DB->fetch_assoc($result2)) {
+               while ($data = $DB->fetchAssoc($result2)) {
                   // Do not override existing entity if define as recursive
                   if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
                       || $data['is_recursive']) {

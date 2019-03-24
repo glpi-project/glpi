@@ -1188,7 +1188,7 @@ function update91to92() {
          ],
          "9.2 Add saved search alerts notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtemplates", [
             'name'            => "Saved searches alerts",
@@ -1197,7 +1197,7 @@ function update91to92() {
          ],
          "9.2 Add saved search alerts notification template"
       );
-      $nottid = $DB->insert_id();
+      $nottid = $DB->insertId();
 
       $where =  [
          'notifications_id'         => $notid,
@@ -1559,7 +1559,7 @@ Regards,',
          ],
          "9.2 Add certificate alerts notification"
       );
-      $notid = $DB->insert_id();
+      $notid = $DB->insertId();
 
       $DB->insertOrDie("glpi_notificationtemplates", [
             'name'      => "Certificates alerts",
@@ -1568,7 +1568,7 @@ Regards,',
          ],
          "9.2 Add certifcate alerts notification template"
       );
-      $nottid = $DB->insert_id();
+      $nottid = $DB->insertId();
 
       $where = [
          'notifications_id'         => $notid,
@@ -2114,7 +2114,7 @@ Regards,',
       $add = true;
       $result = $DB->query("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
       if ($result && $DB->numrows($result)) {
-         $row = $result->fetch_assoc();
+         $row = $DB->fetchAssoc($result);
          if ($row['Non_unique'] == 1) {
             $migration->dropKey($table, 'unicity');
             $migration->migrationOneTable($table);

@@ -1457,7 +1457,7 @@ class KnowbaseItem extends CommonDBVisible {
             // Num of the row (1=header_line)
             $row_num = 1;
             for ($i=0; $i<$numrows_limit; $i++) {
-               $data = $DB->fetch_assoc($result_limit);
+               $data = $DB->fetchAssoc($result_limit);
 
                Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
                // Column num
@@ -1676,7 +1676,7 @@ class KnowbaseItem extends CommonDBVisible {
       if ($number > 0) {
          echo "<table class='tab_cadrehov'>";
          echo "<tr class='noHover'><th>".$title."</th></tr>";
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $name = $data['name'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {
