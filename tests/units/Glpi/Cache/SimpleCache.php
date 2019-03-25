@@ -39,198 +39,34 @@ use org\bovigo\vfs\vfsStream;
 class SimpleCache extends \GLPITestCase {
 
    /**
-    * Test case: cache dir is empty and writable, footprint file should be created and used.
-    */
-   public function testCacheWithEmptyWritableCacheDir() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      // File has been initialized
-      $this->string(file_get_contents($footprint_file))->isEqualTo('[]');
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: footprint file exists, is writable and empty, it should be initialized and used.
-    */
-   public function testCacheWithEmptyFootprintFile() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [
-               $cache_namespace . '.json' => ''
-            ],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      // File has initialized
-      $this->string(file_get_contents($footprint_file))->isEqualTo('[]');
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: footprint file exists and is writable, it should be used.
-    */
-   public function testCacheWithExistingFootprintFile() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      $existing_footprint = '{"existing_key":"752c14ea195c460bac3c3b7896975ee9fd15eeb7"}';
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [
-               $cache_namespace . '.json' => $existing_footprint
-            ],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      // File has not been erased
-      $this->string(file_get_contents($footprint_file))->isEqualTo($existing_footprint);
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: footprint file is corrupted, it should be regenerated.
-    */
-   public function testCacheWithCorruptedFootprintFile() {
-      $self = $this;
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [
-               $cache_namespace . '.json' => 'invalid json'
-            ],
-         ]
-      );
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $this->when(
-         function() use ($self, $cache_dir, $cache_namespace) {
-            $self->newTestedInstance(
-               new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-               $cache_dir
-            );
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage('Cache footprint file "' . $footprint_file . '" contents was invalid, it has been cleaned.')
-            ->exists();
-
-      // File has been regenerated
-      $this->string(file_get_contents($footprint_file))->isEqualTo('[]');
-
-      $this->testOperationsOnCache($footprint_file);
-   }
-
-   /**
-    * Test case: cache dir is not writable, footprint file cannot be used.
-    */
-   public function testCacheWithoutFootprintFile() {
-      $cache_dir = vfsStream::url('glpi/cache');
-      $cache_namespace = uniqid(true);
-
-      $root_directory = vfsStream::setup(
-         'glpi',
-         null,
-         [
-            'cache' => [],
-         ]
-      );
-
-      // Simulate existing cache with footprint.
-      $this->newTestedInstance(
-         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-         $cache_dir
-      );
-
-      $this->boolean($this->testedInstance->set('footprinted', 'some value'))->isTrue();
-      $this->boolean($this->testedInstance->has('footprinted'))->isTrue();
-
-      $root_directory->getChild('cache/' . $cache_namespace . '.json')->chmod(0500); // Make file not writable
-
-      $footprint_file = vfsStream::url('glpi/cache/' . $cache_namespace . '.json');
-
-      $self = $this;
-      $this->when(
-         function() use ($self, $cache_dir, $cache_namespace) {
-            $self->newTestedInstance(
-               new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => $cache_namespace]),
-               $cache_dir
-            );
-         }
-      )->error()
-         ->withType(E_USER_WARNING)
-         ->withMessage('Cannot write "' . $footprint_file . '" cache footprint file. Cache performance can be lowered.')
-            ->exists();
-
-      // Previously set value is not valid anymore as footprint file is not usable and cannot be trusted.
-      $this->boolean($this->testedInstance->has('footprinted'))->isFalse();
-
-      $this->testOperationsOnCache(null);
-   }
-
-   /**
     * Test all possible cache operations.
-    *
-    * @param string|null $footprint_file
     */
-   private function testOperationsOnCache($footprint_file) {
+   public function testCacheOperations() {
+
+      $cache_dir = GLPI_CACHE_DIR . '/testCacheWithEmptyWritableCacheDir';
+      $footprint_dir = $cache_dir . '/cache_footprints';
+      if (is_dir($cache_dir)) {
+         \Toolbox::deleteDir($cache_dir);
+      }
+      mkdir($cache_dir);
+
+      $this->newTestedInstance(
+         new \mock\Zend\Cache\Storage\Adapter\Memory(['namespace' => uniqid(true)]),
+         $cache_dir
+      );
+
       // Different scalar types to test.
       $values = [
          'null'         => null,
          'string'       => 'some value',
          'true'         => true,
          'false'        => false,
-         'negative int' => -10,
-         'positive int' => 15,
+         'negative-int' => -10,
+         'positive-int' => 15,
          'zero'         => 0,
          'float'        => 15.358,
-         'simple array' => ['a', 'b', 'c'],
-         'assoc array'  => ['some' => 'value', 'from' => 'assoc', 'array' => null]
+         'simple-array' => ['a', 'b', 'c'],
+         'assoc-array'  => ['some' => 'value', 'from' => 'assoc', 'array' => null]
       ];
 
       // Test single set/get/has/delete
@@ -284,10 +120,10 @@ class SimpleCache extends \GLPITestCase {
       }
 
       // Test that footprint changes made cache stale
-      if (null !== $footprint_file) {
+      if (null !== $footprint_dir) {
          $this->boolean($this->testedInstance->set('another_key', 'another value'))->isTrue();
          $this->boolean($this->testedInstance->has('another_key'))->isTrue();
-         file_put_contents($footprint_file, '{"another_key":"752c14ea195c460bac3c3b7896975ee9fd15eeb7"}');
+         \Toolbox::deleteDir($footprint_dir);
          $this->boolean($this->testedInstance->has('another_key'))->isFalse();
       }
    }

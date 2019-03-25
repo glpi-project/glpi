@@ -75,7 +75,7 @@ class SimpleCache extends SimpleCacheDecorator {
 
       $this->check_footprints = $check_footprints;
       if ($this->check_footprints) {
-         $footprints_dir = GLPI_CACHE_DIR . '/cache_footprints';
+         $footprints_dir = $cache_dir . '/cache_footprints';
          if (!is_dir($footprints_dir) && !mkdir($footprints_dir)) {
             trigger_error(
                sprintf('Cannot write into cache footprint directory "%s".', $footprints_dir),
