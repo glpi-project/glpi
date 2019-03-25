@@ -44,11 +44,6 @@ if (!is_writable(GLPI_LOCK_DIR)) {
    exit (1);
 }
 
-if (isCommandLine()) {
-   // Force debug mode in command line mode to output errors
-   Toolbox::setDebugMode(Session::DEBUG_MODE);
-}
-
 if (!isCommandLine()) {
    //The advantage of using background-image is that cron is called in a separate
    //request and thus does not slow down output of the main page as it would if called
