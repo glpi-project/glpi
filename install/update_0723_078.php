@@ -210,9 +210,7 @@ function update0723to078() {
 
             }
             // rename original table
-            $query = "RENAME TABLE `$original_table`
-                      TO `$new_table`";
-            $DB->queryOrDie($query, "0.78 rename $original_table to $new_table");
+            $migration->renameTable($original_table, $new_table);
          }
       }
       if ($DB->fieldExists($new_table, 'ID', false)) {
