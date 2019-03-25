@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Zend\Cache\Psr\SimpleCache\SimpleCacheDecorator;
 use Zend\Cache\Storage\StorageInterface;
+use Zend\Cache\StorageFactory;
 
 class SimpleCache extends SimpleCacheDecorator {
 
@@ -47,6 +48,13 @@ class SimpleCache extends SimpleCacheDecorator {
     * @var boolean
     */
    private $check_footprints;
+
+   /**
+    * Footprint storage.
+    *
+    * @var SimpleCacheDecorator
+    */
+   private $footprint_storage;
 
    /**
     * Footprint file path, if existing.
@@ -67,8 +75,25 @@ class SimpleCache extends SimpleCacheDecorator {
 
       $this->check_footprints = $check_footprints;
       if ($this->check_footprints) {
-         $this->footprint_file = $cache_dir . '/' . $storage->getOptions()->getNamespace() . '.json';
-         $this->checkFootprintFileIntegrity();
+         $footprints_dir = GLPI_CACHE_DIR . '/cache_footprints';
+         if (!is_dir($footprints_dir) && !mkdir($footprints_dir)) {
+            trigger_error(
+               sprintf('Cannot write into cache footprint directory "%s".', $footprints_dir),
+               E_USER_WARNING
+            );
+         }
+         $this->footprint_storage = new SimpleCacheDecorator(
+            StorageFactory::factory(
+               [
+                  'adapter' => 'filesystem',
+                  'options' => [
+                     'cache_dir' => $footprints_dir,
+                     'namespace' => $storage->getOptions()->getNamespace() . '_footprints',
+                  ],
+                  'plugins'   => ['serializer']
+               ]
+            )
+         );
       }
    }
 
@@ -105,7 +130,7 @@ class SimpleCache extends SimpleCacheDecorator {
 
    public function clear() {
       if ($this->check_footprints) {
-         $this->setAllCachedFootprints([]);
+         $this->footprint_storage->clear();
       }
 
       return parent::clear();
@@ -136,8 +161,7 @@ class SimpleCache extends SimpleCacheDecorator {
 
    public function deleteMultiple($keys) {
       if ($this->check_footprints) {
-         $values = array_combine($keys, array_fill(0, count($keys), null));
-         $this->setMultipleFootprints($values);
+         $this->footprint_storage->deleteMultiple($keys);
       }
 
       return parent::deleteMultiple($keys);
@@ -175,9 +199,7 @@ class SimpleCache extends SimpleCacheDecorator {
     * @return string|null
     */
    private function getCachedFootprint($key) {
-      $footprints = $this->getAllCachedFootprints();
-
-      return array_key_exists($key, $footprints) ? $footprints[$key] : null;
+      return $this->footprint_storage->get($key);
    }
 
    /**
@@ -201,123 +223,12 @@ class SimpleCache extends SimpleCacheDecorator {
     * @return void
     */
    private function setMultipleFootprints(array $values) {
-      $footprints = $this->getAllCachedFootprints();
+      $footprints = [];
 
       foreach ($values as $key => $value) {
          $footprints[$key] = $this->computeFootprint($value);
       }
 
-      $this->setAllCachedFootprints($footprints);
-   }
-
-   /**
-    * Check footprint file integrity, to ensure that it can be used securely.
-    *
-    * @return void
-    */
-   private function checkFootprintFileIntegrity() {
-      if ((file_exists($this->footprint_file) && !is_writable($this->footprint_file))
-          || (!file_exists($this->footprint_file) && !is_writable(dirname($this->footprint_file)))) {
-         trigger_error(
-            sprintf('Cannot write "%s" cache footprint file. Cache performance can be lowered.', $this->footprint_file),
-            E_USER_WARNING
-         );
-         $this->footprint_file = null;
-         return;
-      }
-
-      if (!file_exists($this->footprint_file)) {
-         // Create empty array in file if not exists.
-         $this->setAllCachedFootprints([]);
-         return;
-      }
-
-      $file_contents = file_get_contents($this->footprint_file);
-      if (empty($file_contents)) {
-         // Create empty array in file if empty.
-         $this->setAllCachedFootprints([]);
-         return;
-      }
-
-      $footprints = json_decode($file_contents, true);
-      if (json_last_error() !== JSON_ERROR_NONE || !is_array($footprints)) {
-         // Clear footprint file if not a valid JSON.
-         trigger_error(
-            sprintf('Cache footprint file "%s" contents was invalid, it has been cleaned.', $this->footprint_file),
-            E_USER_WARNING
-         );
-         $this->setAllCachedFootprints([]);
-      }
-   }
-
-   /**
-    * Returns all cache footprints.
-    *
-    * @return array  Associative array of cached items footprints, where keys corresponds to the
-    *                cache key of the item and value is its footprint.
-    */
-   private function getAllCachedFootprints() {
-      if (null !== $this->footprint_file) {
-         $file_contents = file_get_contents($this->footprint_file);
-         $footprints = json_decode($file_contents, true);
-
-         if (json_last_error() !== JSON_ERROR_NONE || !is_array($footprints)) {
-            // Should happen only if file has been corrupted after cache instanciation,
-            // launch integrity tests again to trigger warnings and fix file contents.
-            $this->checkFootprintFileIntegrity();
-            return [];
-         }
-
-         return $footprints;
-      }
-
-      return $this->footprint_fallback_storage;
-   }
-
-   /**
-    * Save all cache footprints.
-    *
-    * @param array $footprints  Associative array of cached items footprints, where keys corresponds to the
-    *                           cache key of the item and value is its footprint.
-    *
-    * @return void
-    */
-   private function setAllCachedFootprints($footprints) {
-      if (null !== $this->footprint_file) {
-         // Remove null values to prevent storage of deleted footprints
-         array_filter(
-            $footprints,
-            function($val) {
-               return null !== $val;
-            }
-         );
-
-         $json = json_encode($footprints, JSON_PRETTY_PRINT);
-
-         $handle = fopen($this->footprint_file, 'c');
-
-         $is_locked = flock($handle, LOCK_EX); // Lock the file, if possible (depends on used FS)
-
-         $result = ftruncate($handle, 0)
-            && fwrite($handle, $json)
-            && fflush($handle);
-
-         if ($is_locked) {
-            // Unlock the file if it has been locked
-            flock($handle, LOCK_UN);
-         }
-
-         fclose($handle);
-
-         if ($result !== false) {
-            return;
-         } else {
-            // Should happen only if file is not writable anymore (rights problems or no more disk space),
-            // fallback to singleton storage.
-            $this->footprint_file = null;
-         }
-      }
-
-      $this->footprint_fallback_storage = $footprints;
+      $this->footprint_storage->setMultiple($footprints);
    }
 }
