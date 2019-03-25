@@ -1454,7 +1454,7 @@ class Html {
                }
             }
             // Define default link :
-            if (! isset($menu[$category]['default'] && isset($menu[$category]['content']) && count($menu[$category]['content'])) {
+            if (! isset($menu[$category]['default']) && isset($menu[$category]['content']) && count($menu[$category]['content'])) {
                foreach ($menu[$category]['content'] as $val) {
                   if (isset($val['page'])) {
                      $menu[$category]['default'] = $val['page'];
