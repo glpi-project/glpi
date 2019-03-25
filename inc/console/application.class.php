@@ -287,7 +287,7 @@ class Application extends BaseApplication {
 
       $_SESSION['glpilanguage'] = $lang;
 
-      Session::loadLanguage();
+      Session::loadLanguage('', $this->usePlugins());
    }
 
    /**

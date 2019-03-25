@@ -53,6 +53,13 @@ The following methods have been deprecated:
 
 - Drop `CommonITILObject::showSolutions()`.
 
+## [9.4.2] unreleased
+### API changes
+#### Deprecated
+The following methods have been deprecated:
+- `CommonDBTM::getTablesOf()`
+- `CommonDBTM::getForeignKeyFieldsOf()`
+## [9.4.1] 2019-03-15
 ## [9.4.0] 2019-02-11
 
 ### Added

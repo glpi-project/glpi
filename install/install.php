@@ -615,7 +615,7 @@ if (isset($_POST["language"])) {
    $_SESSION["glpilanguage"] = $_POST["language"];
 }
 
-Session::loadLanguage();
+Session::loadLanguage('', false);
 
 /**
  * @since 0.84.2

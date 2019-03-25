@@ -569,6 +569,13 @@ class Migration {
       if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
          $DB->rawQueryOrDie($query, $this->version." rename $oldtable");
+
+         // Clear possibly forced value of table name.
+         // Actually the only forced value in core is for config table.
+         $itemtype = getItemTypeForTable($newtable);
+         if (class_exists($itemtype)) {
+            $itemtype::forceTable($newtable);
+         }
       } else {
          if (Toolbox::startsWith($oldtable, 'glpi_plugin_')
             || Toolbox::startsWith($newtable, 'glpi_plugin_')

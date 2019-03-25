@@ -91,7 +91,7 @@ $HEADER_LOADED = true;
 
 Session::start();
 
-Session::loadLanguage();
+Session::loadLanguage('', false);
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");

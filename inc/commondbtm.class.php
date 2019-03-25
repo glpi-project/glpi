@@ -167,6 +167,18 @@ class CommonDBTM extends CommonGLPI {
    private $noclean = [];
 
    /**
+    * Computed/forced values of classes tables.
+    * @var string[]
+    */
+   protected static $tables_of = [];
+
+   /**
+    * Computed values of classes foreign keys.
+    * @var string[]
+    */
+   protected static $foreign_key_fields_of = [];
+
+   /**
     * Constructor
    **/
    function __construct () {
@@ -174,6 +186,8 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    *
+    * @deprecated 9.4.2
     * Return the table used to store this object
     *
     * @param string $classname Force class (to avoid late_binding on inheritance)
@@ -193,8 +207,8 @@ class CommonDBTM extends CommonGLPI {
    }
 
    static function getForeignKeyField() {
-
       return getForeignKeyFieldForTable(static::getTable());
+         self::$foreign_key_fields_of[$classname] = getForeignKeyFieldForTable(static::getTable());
    }
 
    /**
@@ -3569,41 +3583,45 @@ class CommonDBTM extends CommonGLPI {
     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
    **/
    public final function searchOptions() {
-      $options = [];
+      static $options;
 
-      foreach ($this->rawSearchOptions() as $opt) {
-         $missingFields = [];
-         if (!isset($opt['id'])) {
-            $missingFields[] = 'id';
-         }
-         if (!isset($opt['name'])) {
-            $missingFields[] = 'name';
-         }
-         if (count($missingFields) > 0) {
-            throw new \Exception(
-               vsprintf(
-                  'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
-                  [
-                     get_called_class(),
-                     implode('", "', $missingFields),
-                     print_r($opt, true)
-                  ]
-               )
-            );
-         }
+      if (!isset($options)) {
+         $options = [];
 
-         $optid = $opt['id'];
-         unset($opt['id']);
+         foreach ($this->rawSearchOptions() as $opt) {
+            $missingFields = [];
+            if (!isset($opt['id'])) {
+               $missingFields[] = 'id';
+            }
+            if (!isset($opt['name'])) {
+               $missingFields[] = 'name';
+            }
+            if (count($missingFields) > 0) {
+               throw new \Exception(
+                  vsprintf(
+                     'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
+                     [
+                        get_called_class(),
+                        implode('", "', $missingFields),
+                        print_r($opt, true)
+                     ]
+                  )
+               );
+            }
 
-         if (isset($options[$optid])) {
-            $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
-                get_class($this) . " searchOptions!";
+            $optid = $opt['id'];
+            unset($opt['id']);
 
-            Toolbox::logError($message);
-         }
+            if (isset($options[$optid])) {
+               $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                   get_class($this) . " searchOptions!";
 
-         foreach ($opt as $k => $v) {
-            $options[$optid][$k] = $v;
+               Toolbox::logError($message);
+            }
+
+            foreach ($opt as $k => $v) {
+               $options[$optid][$k] = $v;
+            }
          }
       }
 
