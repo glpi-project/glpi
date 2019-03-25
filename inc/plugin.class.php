@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Psr\SimpleCache\CacheInterface;
+
 class Plugin extends CommonDBTM {
 
    // Class constant : Plugin state
@@ -487,6 +489,12 @@ class Plugin extends CommonDBTM {
       $type = ERROR;
 
       if ($this->getFromDB($ID)) {
+         // Clear locale cache to prevent errors while reloading plugin locales
+         $translation_cache = Config::getCache('cache_trans', 'core', true);
+         if ($translation_cache instanceof CacheInterface) {
+            $translation_cache->clear();
+         }
+
          self::load($this->fields['directory'], true);
          $function   = 'plugin_' . $this->fields['directory'] . '_install';
          if (function_exists($function)) {
