@@ -184,10 +184,7 @@ class CommonDBTM extends CommonGLPI {
    function __construct () {
    }
 
-
    /**
-    *
-    * @deprecated 9.4.2
     * Return the table used to store this object
     *
     * @param string $classname Force class (to avoid late_binding on inheritance)
@@ -203,12 +200,22 @@ class CommonDBTM extends CommonGLPI {
          return '';
       }
 
-      return getTableForItemType($classname);
+      if (!isset(self::$tables_of[$classname]) || empty(self::$tables_of[$classname])) {
+         self::$tables_of[$classname] = getTableForItemType($classname);
+      }
+
+      return self::$tables_of[$classname];
    }
 
    static function getForeignKeyField() {
-      return getForeignKeyFieldForTable(static::getTable());
+      $classname = get_called_class();
+
+      if (!isset(self::$foreign_key_fields_of[$classname])
+         || empty(self::$foreign_key_fields_of[$classname])) {
          self::$foreign_key_fields_of[$classname] = getForeignKeyFieldForTable(static::getTable());
+      }
+
+      return self::$foreign_key_fields_of[$classname];
    }
 
    /**

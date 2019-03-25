@@ -30,12 +30,25 @@ The present file will list all changes made to the project; according to the
 - Deprecate `DB::query()` and `DB::queryOrDie()` to disallow executing raw queries (iterator querying must be used)
 - Deprecate raw SQL condition in `Migration::addField()`
 - Deprecate 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
+- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
 
 #### Removed
 
 - All methods that were marked as deprecated in 9.3.x
 - Drop `Plugin::hasBeenInit()`.
 
+## [9.4.2] unreleased
+
+### API changes
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `CommonDBTM::getTablesOf()`
+- `CommonDBTM::getForeignKeyFieldsOf()`
+
+## [9.4.1] 2019-03-15
 
 ### API changes
 
@@ -53,13 +66,6 @@ The following methods have been deprecated:
 
 - Drop `CommonITILObject::showSolutions()`.
 
-## [9.4.2] unreleased
-### API changes
-#### Deprecated
-The following methods have been deprecated:
-- `CommonDBTM::getTablesOf()`
-- `CommonDBTM::getForeignKeyFieldsOf()`
-## [9.4.1] 2019-03-15
 ## [9.4.0] 2019-02-11
 
 ### Added
@@ -89,7 +95,6 @@ The following methods have been deprecated:
 - `scripts/ldap_mass_sync.php` has been replaced by `glpi:ldap:synchronize_users` command available using `bin/console`
 - `scripts/innodb_migration.php` has been replaced by `glpi:migration:myisam_to_innodb` command available using `bin/console`
 - `scripts/unlock_tasks.php` has been replaced by `glpi:task:unlock` command available using `bin/console`
-- `scripts/migrations/racks_plugin.php` has been replaced by `glpi:migration:racks_plugin_to_core` command available using `bin/console`
 
 ### API changes
 
