@@ -563,6 +563,13 @@ class Migration {
       if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
          $DB->queryOrDie($query, $this->version." rename $oldtable");
+
+         // Clear possibly forced value of table name.
+         // Actually the only forced value in core is for config table.
+         $itemtype = getItemTypeForTable($newtable);
+         if (class_exists($itemtype)) {
+            $itemtype::forceTable($newtable);
+         }
       } else {
          if (Toolbox::startsWith($oldtable, 'glpi_plugin_')
             || Toolbox::startsWith($newtable, 'glpi_plugin_')
@@ -687,7 +694,7 @@ class Migration {
     * @return void
    **/
    function executeMigration() {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       foreach ($this->queries[self::PRE_QUERY] as $query) {
          $DB->queryOrDie($query['query'], $query['message']);
@@ -709,9 +716,6 @@ class Migration {
       $this->queries[self::POST_QUERY] = [];
 
       $this->storeConfig();
-
-      // as some tables may have be renamed, unset session matching between tables and classes
-      $GLPI_CACHE->delete('table_of');
 
       // end of global message
       $this->displayMessage(__('Task completed.'));
