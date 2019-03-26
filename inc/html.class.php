@@ -1429,6 +1429,10 @@ class Html {
                   }
                }
             }
+            // Setup menu is always last
+            $setup = $menu['config'];
+            unset($menu['config']);
+            $menu['config'] = $setup;
          }
 
          foreach ($menu as $category => $datas) {
