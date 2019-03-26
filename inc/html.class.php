@@ -1429,10 +1429,10 @@ class Html {
                   }
                }
             }
-            // Setup menu is always last
-            $setup = $menu['config'];
-            unset($menu['config']);
-            $menu['config'] = $setup;
+            // Move Setup menu ('config') to the last position in $menu (always last menu),
+            // in case some plugin inserted a new top level menu
+            $categories = array_keys($menu);
+            $menu += array_splice($menu, array_search('config', $categories, true), 1);
          }
 
          foreach ($menu as $category => $datas) {
@@ -1441,18 +1441,18 @@ class Html {
                   if ($data = $type::getMenuContent()) {
                      // Multi menu entries management
                      if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
-                        if (isset($data['title']) && $data['title']) {
-                           $menu[$category]['title'] = $data['title'];
-                        }
-                        if (isset($data['default']) && $data['default']) {
-                           $menu[$category]['default'] = $data['default'];
-                        }
                         if (!isset($menu[$category]['content'])) {
                            $menu[$category]['content'] = [];
                         }
                         $menu[$category]['content'] += $data;
                      } else {
                         $menu[$category]['content'][strtolower($type)] = $data;
+                     }
+                     if (!isset($menu[$category]['title']) && isset($data['title'])) {
+                        $menu[$category]['title'] = $data['title'];
+                     }
+                     if (!isset($menu[$category]['default']) && isset($data['default'])) {
+                        $menu[$category]['default'] = $data['default'];
                      }
                   }
                }
