@@ -1650,6 +1650,12 @@ class Ticket extends CommonITILObject {
           && ($rate > 0)
           && (mt_rand(1, 100) <= $rate)) {
 
+         // For reopened ticket
+         if ($inquest->getFromDB($this->fields['id'])) {
+            $resp = $inquest->fields;
+            $inquest->delete($resp);
+         }
+
          $inquest->add(
             [
                'tickets_id'    => $this->fields['id'],
