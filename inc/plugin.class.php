@@ -326,6 +326,13 @@ class Plugin extends CommonDBTM {
          }
 
          // Plugin is known but we are unable to load informations, it should be cleaned
+         trigger_error(
+            sprintf(
+               'Unable to load plugin "%s" informations. Its state has been changed to "To be cleaned".',
+               $directory
+            ),
+            E_USER_WARNING
+         );
          $this->update(
             [
                'id'    => $plugin->fields['id'],
@@ -358,6 +365,14 @@ class Plugin extends CommonDBTM {
           || $directory != $plugin->fields['directory']) {
          // Plugin known version differs from informations or plugin has been renamed,
          // mark it as 'updatable'
+         trigger_error(
+            sprintf(
+               'Plugin "%s" version changed. It has been deactivated as its update process has to be launched.',
+               $directory
+            ),
+            E_USER_WARNING
+         );
+
          $input              = $informations;
          $input['id']        = $plugin->fields['id'];
          $input['directory'] = $directory;
@@ -411,6 +426,13 @@ class Plugin extends CommonDBTM {
 
       if (!$usage_ok) {
          // Deactivate if not usable
+         trigger_error(
+            sprintf(
+               'Plugin "%s" prerequisites are not matched. It has been deactivated.',
+               $directory
+            ),
+            E_USER_WARNING
+         );
          $this->unactivate($plugin->fields['id']);
       }
    }

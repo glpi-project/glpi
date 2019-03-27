@@ -332,7 +332,8 @@ class Plugin extends DbTestCase {
       $this->doTestCheckPluginState(
          $initial_data,
          null,
-         $expected_data
+         $expected_data,
+         'Unable to load plugin "' . $this->test_plugin_directory . '" informations. Its state has been changed to "To be cleaned".'
       );
    }
 
@@ -388,7 +389,8 @@ class Plugin extends DbTestCase {
       $this->doTestCheckPluginState(
          $initial_data,
          $setup_informations,
-         $expected_data
+         $expected_data,
+         'Plugin "' . $this->test_plugin_directory . '" version changed. It has been deactivated as its update process has to be launched.'
       );
    }
 
@@ -420,7 +422,8 @@ class Plugin extends DbTestCase {
       $this->doTestCheckPluginState(
          $initial_data,
          $setup_informations,
-         $expected_data
+         $expected_data,
+         'Plugin "' . $this->test_plugin_directory . '" version changed. It has been deactivated as its update process has to be launched.'
       );
    }
 
@@ -481,7 +484,8 @@ class Plugin extends DbTestCase {
       $this->doTestCheckPluginState(
          $initial_data,
          $setup_informations,
-         $expected_data
+         $expected_data,
+         'Plugin "' . $this->test_plugin_directory . '" prerequisites are not matched. It has been deactivated.'
       );
    }
 
@@ -514,7 +518,8 @@ class Plugin extends DbTestCase {
       $this->doTestCheckPluginState(
          $initial_data,
          $setup_informations,
-         $expected_data
+         $expected_data,
+         'Plugin "' . $this->test_plugin_directory . '" prerequisites are not matched. It has been deactivated.'
       );
    }
 
@@ -547,7 +552,8 @@ class Plugin extends DbTestCase {
       $this->doTestCheckPluginState(
          $initial_data,
          $setup_informations,
-         $expected_data
+         $expected_data,
+         'Plugin "' . $this->test_plugin_directory . '" prerequisites are not matched. It has been deactivated.'
       );
    }
 
@@ -587,13 +593,14 @@ class Plugin extends DbTestCase {
     * the plugin directory on each time. Not doing this will prevent updating the `init` function of
     * the plugin on each test.
     *
-    * @param array|null $initial_data       Initial data in DB, null for none.
-    * @param array|null $setup_informations Informations hosted by setup file, null for none.
-    * @param array|null $expected_data      Expected data in DB, null for none.
+    * @param array|null  $initial_data       Initial data in DB, null for none.
+    * @param array|null  $setup_informations Informations hosted by setup file, null for none.
+    * @param array|null  $expected_data      Expected data in DB, null for none.
+    * @param string|null $expected_warning   Expected warning message, null for none.
     *
     * @return void
     */
-   private function doTestCheckPluginState($initial_data, $setup_informations, $expected_data) {
+   private function doTestCheckPluginState($initial_data, $setup_informations, $expected_data, $expected_warning = null) {
 
       $plugin_directory = $this->test_plugin_directory;
       $test_plugin_path = $this->getTestPluginPath();
@@ -617,7 +624,18 @@ class Plugin extends DbTestCase {
       );
 
       // Check state
-      $plugin->checkPluginState($plugin_directory);
+      if (null !== $expected_warning) {
+         $this->when(
+            function () use ($plugin, $plugin_directory) {
+               $plugin->checkPluginState($plugin_directory);
+            }
+         )->error()
+            ->withType(E_USER_WARNING)
+            ->withMessage($expected_warning)
+               ->exists();
+      } else {
+         $plugin->checkPluginState($plugin_directory);
+      }
 
       // Assert that data in DB matches expected
       if (null !== $expected_data) {
