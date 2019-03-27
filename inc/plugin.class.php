@@ -326,6 +326,11 @@ class Plugin extends CommonDBTM {
          }
 
          // Plugin is known but we are unable to load informations, it should be cleaned
+         if ($plugin->fields['state'] == self::TOBECLEANED) {
+            // unless its state is already self::TOBECLEANED
+            return;
+         }
+
          trigger_error(
             sprintf(
                'Unable to load plugin "%s" informations. Its state has been changed to "To be cleaned".',
