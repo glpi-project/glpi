@@ -2839,13 +2839,7 @@ class Ticket extends CommonITILObject {
                         throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
                      }
 
-                     //Close then delete this ticket
-                     $item_update = $item->update([
-                        'id' => $id,
-                        'status' => CommonITILObject::CLOSED
-                     ]);
-                     if (!$item_update ||
-                        !$item->delete(['id' => $id, '_disablenotif' => true])) {
+                     if (!$item->delete(['id' => $id, '_disablenotif' => true])) {
                         throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
                      }
 
