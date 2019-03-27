@@ -55,6 +55,7 @@ The following methods have been deprecated:
 #### Added
 
 - new display hook `timeline_actions` to add new buttons to timeline forms
+- Ability to copy document links while merging tickets
 
 #### Deprecated
 

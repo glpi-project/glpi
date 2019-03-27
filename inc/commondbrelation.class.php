@@ -1547,6 +1547,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    protected static function getListForItemParams(CommonDBTM $item, $noent = false) {
       global $DB;
 
+      if (Session::isCron()) {
+         $noent = true;
+      }
+
       $inverse = $item->getType() == static::$itemtype_1;
 
       $link_type  = static::$itemtype_1;

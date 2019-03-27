@@ -838,7 +838,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
                //Assign to a supplier
                case Notification::SUPPLIER :
-                  $this->addSupplier($this->options['sendprivate']);
+                  $this->addSupplier($this->isPrivate());
                   break;
 
                case Notification::REQUESTER_GROUP :

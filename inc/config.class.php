@@ -70,7 +70,6 @@ class Config extends CommonDBTM {
     */
    private static $legacy_config_already_loaded = false;
 
-
    static function getTypeName($nb = 0) {
       return __('Setup');
    }
@@ -113,6 +112,7 @@ class Config extends CommonDBTM {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -144,6 +144,12 @@ class Config extends CommonDBTM {
          }
          $this->setConfigurationValues($config_context, $input);
          return false;
+      }
+
+      // Trim automatically endig slash for url_base config as, for all existing occurences,
+      // this URL will be prepended to something that starts with a slash.
+      if (isset($input["url_base"]) && !empty($input["url_base"])) {
+         $input["url_base"] = rtrim($input["url_base"], '/');
       }
 
       if (isset($input['allow_search_view']) && !$input['allow_search_view']) {
@@ -3164,5 +3170,37 @@ class Config extends CommonDBTM {
       $out.= "</div>";
 
       echo $out;
+   }
+
+   public function rawSearchOptions() {
+      $tab = [];
+
+      $tab[] = [
+          'id'   => 'common',
+          'name' => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'            => 1,
+         'table'         => $this->getTable(),
+         'field'         => 'value',
+         'name'          => __('Value'),
+         'massiveaction' => false
+      ];
+
+      return $tab;
+   }
+
+   function getLogTypeID() {
+      return [$this->getType(), 1];
+   }
+
+   public function post_updateItem($history = 1) {
+      if (count($this->oldvalues)) {
+         foreach ($this->oldvalues as &$value) {
+            $value = $this->fields['name'] . ' ' . $value;
+         }
+         Log::constructHistory($this, $this->oldvalues, $this->fields);
+      }
    }
 }

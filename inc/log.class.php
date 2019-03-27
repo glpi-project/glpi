@@ -123,8 +123,6 @@ class Log extends CommonDBTM {
          return false;
       }
       $result = 0;
-      // type for which getValueToDisplay() could be used (fully tested)
-      $oktype = ['Entity'];
 
       foreach ($oldvalues as $key => $oldval) {
          $changes = [];
@@ -169,8 +167,6 @@ class Log extends CommonDBTM {
                }
                break;
             }
-            //
-
          }
          if (count($changes)) {
             $result = self::history($real_id, $real_type, $changes);
