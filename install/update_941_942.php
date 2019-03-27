@@ -58,7 +58,8 @@ function update941to942() {
             'context' => 'core',
             'name'    => 'url_base'
          ]
-      )
+     ),
+      $set
    );
    /* /Remove trailing slash from 'url_base' config */
 
