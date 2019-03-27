@@ -383,6 +383,8 @@ class Application extends BaseApplication {
       }
 
       $plugin = new Plugin();
+      $plugin->init();
+
       $plugins_list = $plugin->getPlugins();
       if (count($plugins_list) > 0) {
          foreach ($plugins_list as $name) {

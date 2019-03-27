@@ -98,18 +98,23 @@ class Plugin extends CommonDBTM {
    function init() {
       global $DB, $GLPI_CACHE;
 
-      $GLPI_CACHE->set('plugins', []);
-
       if (!isset($DB) || !$DB->connected) {
          // Cannot init plugins list if DB is not connected
+         $GLPI_CACHE->set('plugins_init', true);
+         $GLPI_CACHE->set('plugins', []);
          return;
       }
 
       $this->checkStates();
       $plugins = $this->find(['state' => self::ACTIVATED]);
 
-      foreach ($plugins as $ID => $plug) {
-         $this->setLoaded($ID, $plug['directory']);
+      $GLPI_CACHE->set('plugins_init', true);
+      $GLPI_CACHE->set('plugins', []);
+
+      if (count($plugins)) {
+         foreach ($plugins as $ID => $plug) {
+            $this->setLoaded($ID, $plug['directory']);
+         }
       }
    }
 
@@ -125,8 +130,7 @@ class Plugin extends CommonDBTM {
       Toolbox::deprecated();
 
       global $GLPI_CACHE;
-
-      return $GLPI_CACHE->has('plugins');
+      return $GLPI_CACHE->has('plugins_init');
    }
 
 
@@ -715,8 +719,9 @@ class Plugin extends CommonDBTM {
    **/
    function isActivated($plugin) {
 
-      $activePlugins = $this->getPlugins();
-      return in_array($plugin, $activePlugins);
+      if ($this->getFromDBbyDir($plugin)) {
+         return ($this->fields['state'] == self::ACTIVATED);
+      }
    }
 
 
@@ -726,11 +731,6 @@ class Plugin extends CommonDBTM {
     * @param $plugin plugin directory
    **/
    function isInstalled($plugin) {
-
-      if ($this->isActivated($plugin)) {
-         // Prevent call on DB if plugin is activated.
-         return true;
-      }
 
       if ($this->getFromDBbyDir($plugin)) {
          return (($this->fields['state']    == self::ACTIVATED)
@@ -1707,13 +1707,10 @@ class Plugin extends CommonDBTM {
     */
    public static function getPlugins() {
       global $GLPI_CACHE;
-
-      if (!$GLPI_CACHE->has('plugins')) {
-         $self = new self();
-         $self->init();
+      if ($GLPI_CACHE && $GLPI_CACHE->has('plugins')) {
+         return $GLPI_CACHE->get('plugins');
       }
-
-      return $GLPI_CACHE->get('plugins');
+      return [];
    }
 
    /**
