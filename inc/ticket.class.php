@@ -2752,7 +2752,7 @@ class Ticket extends CommonITILObject {
                      $input2 = [
                         'itemtype'        => 'Ticket',
                         'items_id'        => $input['_mergeticket'],
-                        'content'         => $item->fields['name']."\n\n".$item->fields['content'],
+                        'content'         => $DB->escape($item->fields['name']."\n\n".$item->fields['content']),
                         'users_id'        => $item->fields['users_id_recipient'],
                         'date_creation'   => $item->fields['date_creation'],
                         'date_mod'        => $item->fields['date_mod'],
@@ -2774,6 +2774,7 @@ class Ticket extends CommonITILObject {
                         foreach ($tomerge as $key => $fup2) {
                            $fup2['items_id'] = $input['_mergeticket'];
                            $fup2['sourceitems_id'] = $item->getID();
+                           $fup2['content'] = $DB->escape($fup2['content']);
                            unset($fup2['id']);
                            if (!$fup->add($fup2)) {
                               //Cannot add followup. Abort/fail the merge
@@ -2785,16 +2786,17 @@ class Ticket extends CommonITILObject {
                      if (isset($input['with_documents'])) {
                         // Create new links for any Documents
                         $tomerge = $document_item->find([
-                           'items_id' => $id,
-                           'itemtype' => 'Ticket'
+                           'itemtype' => 'Ticket',
+                           'items_id' => $id
                         ]);
+                        // Need to check for each item since new duplicates could be added during the merge process
+                        $existing_docs = $document_item->find([
+                           'itemtype' => 'Ticket',
+                           'items_id' => $input['_mergeticket']
+                        ]);
+                        $tomerge = array_diff($tomerge, $existing_docs);
 
                         foreach ($tomerge as $key => $document_item2) {
-                           $document_item->deleteByCriteria([
-                              'documents_id' => $document_item2['documents_id'],
-                              'items_id' => $input['_mergeticket'],
-                              'itemtype' => 'Ticket'
-                           ]);
                            $document_item2['items_id'] = $input['_mergeticket'];
                            unset($document_item2['id']);
                            if (!$document_item->add($document_item2)) {
@@ -2809,8 +2811,7 @@ class Ticket extends CommonITILObject {
                      $linkparams = [
                         'link'         => Ticket_Ticket::SON_OF,
                         'tickets_id_1' => $id,
-                        'tickets_id_2' => $input['_mergeticket'],
-                        '_disablenotif' => true
+                        'tickets_id_2' => $input['_mergeticket']
                      ];
 
                      // Remove existing links
@@ -2835,8 +2836,7 @@ class Ticket extends CommonITILObject {
                      //Close then delete this ticket
                      $item_update = $item->update([
                         'id' => $id,
-                        'status' => CommonITILObject::CLOSED,
-                        '_disablenotif' => true
+                        'status' => CommonITILObject::CLOSED
                      ]);
                      if (!$item_update ||
                         !$item->delete(['id' => $id, '_disablenotif' => true])) {
