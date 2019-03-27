@@ -45,14 +45,15 @@ function update941to942() {
    $migration->setVersion('9.4.2');
 
    /* Remove trailing slash from 'url_base' config */
+   $set = [
+      'value' => new \QueryExpression(
+         'TRIM(TRAILING ' . $DB->quoteValue('/') . ' FROM ' . $DB->quoteName('value') . ')'
+      )
+   ];
    $migration->addPostQuery(
       $DB->buildUpdate(
          'glpi_configs',
-         [
-            'value' => new \QueryExpression(
-               'TRIM(TRAILING ' . $DB->quoteValue('/') . ' FROM ' . $DB->quoteName('value') . ')'
-            )
-         ],
+         $set,
          [
             'context' => 'core',
             'name'    => 'url_base'
