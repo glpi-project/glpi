@@ -53,6 +53,19 @@ class Plugin extends CommonDBTM {
 
    static $rightname = 'config';
 
+   /**
+    * Plugin init state.
+    *
+    * @var boolean
+    */
+   private static $plugins_init = false;
+
+   /**
+    * Loaded plugin list, indexed by their ID.
+    *
+    * @var null|string[]
+    */
+   private static $loaded_plugins;
 
    static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
@@ -96,20 +109,21 @@ class Plugin extends CommonDBTM {
     * @return void
    **/
    function init() {
-      global $DB, $GLPI_CACHE;
+      global $DB;
+
+      self::$plugins_init   = false;
+      self::$loaded_plugins = [];
 
       if (!isset($DB) || !$DB->connected) {
          // Cannot init plugins list if DB is not connected
-         $GLPI_CACHE->set('plugins_init', true);
-         $GLPI_CACHE->set('plugins', []);
+         self::$plugins_init = true;
          return;
       }
 
       $this->checkStates();
       $plugins = $this->find(['state' => self::ACTIVATED]);
 
-      $GLPI_CACHE->set('plugins_init', true);
-      $GLPI_CACHE->set('plugins', []);
+      self::$plugins_init = true;
 
       if (count($plugins)) {
          foreach ($plugins as $ID => $plug) {
@@ -129,8 +143,7 @@ class Plugin extends CommonDBTM {
    public static function hasBeenInit() {
       Toolbox::deprecated();
 
-      global $GLPI_CACHE;
-      return $GLPI_CACHE->has('plugins_init');
+      return self::$plugins_init;
    }
 
 
@@ -676,7 +689,7 @@ class Plugin extends CommonDBTM {
     * unactivate all activated plugins for update process
    **/
    function unactivateAll() {
-      global $DB, $GLPI_CACHE;
+      global $DB;
 
       $DB->update(
          $this->getTable(), [
@@ -686,7 +699,7 @@ class Plugin extends CommonDBTM {
          ]
       );
 
-      $GLPI_CACHE->set('plugins', []);
+      self::$loaded_plugins = [];
 
       // reset menu
       if (isset($_SESSION['glpimenu'])) {
@@ -719,9 +732,17 @@ class Plugin extends CommonDBTM {
    **/
    function isActivated($plugin) {
 
+      if ($this->isPluginLoaded($plugin)) {
+         // If plugin is loaded, it is because it is active. No need to query DB on this case.
+         return true;
+      }
+
+      // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
       if ($this->getFromDBbyDir($plugin)) {
          return ($this->fields['state'] == self::ACTIVATED);
       }
+
+      return false;
    }
 
 
@@ -732,6 +753,12 @@ class Plugin extends CommonDBTM {
    **/
    function isInstalled($plugin) {
 
+      if ($this->isPluginLoaded($plugin)) {
+         // If plugin is loaded, it is because it is installed and active. No need to query DB on this case.
+         return true;
+      }
+
+      // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
       if ($this->getFromDBbyDir($plugin)) {
          return (($this->fields['state']    == self::ACTIVATED)
                  || ($this->fields['state'] == self::TOBECONFIGURED)
@@ -1706,11 +1733,7 @@ class Plugin extends CommonDBTM {
     * @return array
     */
    public static function getPlugins() {
-      global $GLPI_CACHE;
-      if ($GLPI_CACHE && $GLPI_CACHE->has('plugins')) {
-         return $GLPI_CACHE->get('plugins');
-      }
-      return [];
+      return null !== self::$loaded_plugins ? self::$loaded_plugins : [];
    }
 
    /**
@@ -1723,7 +1746,11 @@ class Plugin extends CommonDBTM {
     * @return boolean
     */
    public static function isPluginLoaded($name) {
-      return in_array($name, self::getPlugins());
+      // Make a lowercase comparison, as sometime this function is called based on
+      // extraction of plugin name from a classname, which does not use same naming rules than directories.
+      $loadedPlugins = self::getPlugins();
+      $loadedPlugins = array_map('strtolower', $loadedPlugins);
+      return in_array(strtolower($name), $loadedPlugins);
    }
 
    /**
@@ -1737,10 +1764,9 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setLoaded($id, $name) {
-      global $GLPI_CACHE;
-      $plugins = $GLPI_CACHE->get('plugins');
+      $plugins = self::getPlugins();
       $plugins[$id] = $name;
-      $GLPI_CACHE->set('plugins', $plugins);
+      self::$loaded_plugins = $plugins;
    }
 
    /**
@@ -1753,10 +1779,9 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setUnloaded($id) {
-      global $GLPI_CACHE;
-      $plugins = $GLPI_CACHE->get('plugins');
+      $plugins = self::getPlugins();
       unset($plugins[$id]);
-      $GLPI_CACHE->set('plugins', $plugins);
+      self::$loaded_plugins = $plugins;
    }
 
    /**
