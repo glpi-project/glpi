@@ -101,20 +101,21 @@ class Document extends DbTestCase {
 
    public function testPrepareInputForAdd() {
       $input = [
-         'filename'   => 'A name'
+         'filename'   => 'A_name.pdf'
       ];
 
       $doc = $this->newTestedInstance;
-
       $this->array($this->testedInstance->prepareInputForAdd($input))
-         ->hasSize(1)
-        ->hasKey('tag');
+         ->hasSize(3)
+         ->hasKeys(['tag', 'filename', 'name'])
+         ->variable['filename']->isEqualTo('A_name.pdf')
+         ->variable['name']->isEqualTo('A_name.pdf');
 
       $this->login();
       $uid = getItemByTypeName('User', TU_USER, true);
       $this->array($this->testedInstance->prepareInputForAdd($input))
-         ->hasSize(2)
-         ->hasKeys(['users_id', 'tag'])
+         ->hasSize(4)
+         ->hasKeys(['users_id', 'tag', 'filename', 'name'])
          ->variable['users_id']->isEqualTo($uid);
 
       $item = new \Computer();
@@ -135,8 +136,8 @@ class Document extends DbTestCase {
       $input['upload_file'] = 'filename.ext';
 
       $this->array($mdoc->prepareInputForAdd($input))
-         ->hasSize(5)
-         ->hasKeys(['users_id', 'tag', 'itemtype', 'items_id', 'name'])
+         ->hasSize(6)
+         ->hasKeys(['users_id', 'tag', 'itemtype', 'items_id', 'filename', 'name'])
          ->variable['users_id']->isEqualTo($uid)
          ->string['itemtype']->isIdenticalTo('Computer')
          ->variable['items_id']->isEqualTo($cid)
