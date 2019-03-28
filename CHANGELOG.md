@@ -37,6 +37,12 @@ The present file will list all changes made to the project; according to the
 - All methods that were marked as deprecated in 9.3.x
 - Drop `Plugin::hasBeenInit()`.
 
+## [9.5] unreleased
+
+#### Added
+
+- encrypted file systems support
+
 ## [9.4.2] unreleased
 
 ### API changes
