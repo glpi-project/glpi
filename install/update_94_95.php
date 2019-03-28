@@ -84,12 +84,14 @@ function update94to95() {
          ['value' => 0]
       );
       $migration->addKey('glpi_suppliers', 'is_active');
+      $set = ['is_active' => 1];
       $migration->addPostQuery(
          $DB->buildUpdate(
             'glpi_suppliers',
-            ['is_active' => 1],
+            $set,
             [true]
-         )
+        ),
+        $set
       );
    }
    /** /Suppliers restriction */
