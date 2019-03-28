@@ -220,11 +220,8 @@ class Problem extends CommonITILObject {
 
 
    function defineTabs($options = []) {
-
-      // show related tickets and changes
       $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->defineDefaultObjectTabs($ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('ProblemCost', $ong, $options);

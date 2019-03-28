@@ -867,10 +867,8 @@ class Ticket extends CommonITILObject {
 
 
    function defineTabs($options = []) {
-
       $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->defineDefaultObjectTabs($ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
