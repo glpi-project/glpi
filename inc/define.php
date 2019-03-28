@@ -484,7 +484,8 @@ $CFG_GLPI['javascript'] = [
    'tools'     => [
       'project'      => ['gantt'],
       'knowbaseitem' => ['tinymce', 'jstree'],
-      'reminder'     => ['tinymce']
+      'reminder'     => ['tinymce'],
+      'impact'       => ['colorpicker']
    ],
    'management' => [
       'datacenter'       => [
@@ -510,3 +511,16 @@ $CFG_GLPI['javascript'] = [
 //Maximum time, in miliseconds a saved search should not exeed
 //so we count it on display (using automatic mode).
 $CFG_GLPI['max_time_for_count'] = 200;
+
+$CFG_GLPI["impact_asset_types"]  = [
+   'Computer'         => "pics/impact/computer.png",
+   'Monitor'          => "pics/impact/monitor.png",
+   'NetworkEquipment' => "pics/impact/networkequipment.png",
+   'Peripheral'       => "pics/impact/peripheral.png",
+   'Phone'            => "pics/impact/phone.png",
+   'Printer'          => "pics/impact/printer.png",
+   'Software'         => "pics/impact/software.png",
+   'DCRoom'           => "pics/impact/dcroom.png",
+   'Rack'             => "pics/impact/rack.png",
+   'Enclosure'        => "pics/impact/enclosure.png"
+];

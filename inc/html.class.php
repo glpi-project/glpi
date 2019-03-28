@@ -1410,7 +1410,7 @@ class Html {
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                                              'ReservationItem', 'Report', 'MigrationCleaner',
-                                             'SavedSearch'];
+                                             'SavedSearch', 'Impact'];
 
       $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
       $menu['plugins']['types']      = [];
@@ -5734,6 +5734,7 @@ JAVASCRIPT;
                $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
             },
             close: function(){
+               $(this).parent().prev('.ui-widget-overlay').removeClass('glpi_modal');
                $(this).remove();
             },
             draggable: true,

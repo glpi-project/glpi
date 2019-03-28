@@ -36,9 +36,19 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+// Read parameters
+$context  = $_POST['context'] ?? '';
+$itemtype = $_POST["itemtype"] ?? '';
+
+// Check if itemtype is valid in the given context
+if ($context == "impact") {
+   $isValidItemtype = isset($CFG_GLPI['impact_asset_types'][$itemtype]);
+} else {
+   $isValidItemtype = CommonITILObject::isPossibleToAssignType($itemtype);
+}
+
 // Make a select box
-if (isset($_POST["itemtype"])
-    && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
+if (isset($_POST["itemtype"]) && $isValidItemtype) {
    $table = getTableForItemType($_POST["itemtype"]);
 
    $rand = mt_rand();
@@ -63,6 +73,11 @@ if (isset($_POST["itemtype"])
       if (isset($_POST["used"][$_POST["itemtype"]])) {
          $p["used"] = $_POST["used"][$_POST["itemtype"]];
       }
+   }
+
+   // Add context if defined
+   if (!empty($context)) {
+      $p["context"] = $context;
    }
 
    echo Html::jsAjaxDropdown($_POST['myname'], $field_id,

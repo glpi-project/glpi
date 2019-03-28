@@ -5225,4 +5225,55 @@ class CommonDBTM extends CommonGLPI {
       // No circular relations
       return false;
    }
+
+   /**
+    * Get incidents, request, changes and problem linked to this object
+    *
+    * @return array
+    */
+   public function getITILTickets(bool $count = false) {
+      $ticket = new Ticket();
+      $problem = new Problem();
+      $change = new Change();
+
+      $data = [
+         'incidents' => iterator_to_array(
+            $ticket->getActiveTicketsForItem(
+               get_class($this),
+               $this->getID(),
+               Ticket::INCIDENT_TYPE
+            ),
+            false
+         ),
+         'requests'  => iterator_to_array(
+            $ticket->getActiveTicketsForItem(
+               get_class($this),
+               $this->getID(),
+               Ticket::DEMAND_TYPE
+            ),
+            false
+         ),
+         'changes'   => iterator_to_array(
+            $change->getActiveChangesForItem(
+               get_class($this),
+               $this->getID()
+            ),
+            false
+         ),
+         'problems'  => iterator_to_array(
+            $problem->getActiveProblemsForItem(
+               get_class($this),
+               $this->getID()
+            ),
+            false
+         )
+      ];
+
+      if ($count) {
+         $data['count'] = count($data['incidents']) + count($data['requests'])
+            + count($data['changes']) + count($data['problems']);
+      }
+
+      return $data;
+   }
 }

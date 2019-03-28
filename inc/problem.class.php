@@ -1825,6 +1825,79 @@ class Problem extends CommonITILObject {
          'users_id_validate'          => [],
          '_tasktemplates_id'          => []
       ];
+   }
 
+   /**
+    * get active problems for an item
+    *
+    * @since 9.5
+    *
+    * @param string $itemtype     Item type
+    * @param integer $items_id    ID of the Item
+    *
+    * @return DBmysqlIterator
+    */
+   public function getActiveProblemsForItem($itemtype, $items_id) {
+      global $DB;
+
+      return $DB->request([
+         'SELECT'    => [
+            $this->getTable() . '.id',
+            $this->getTable() . '.name'
+         ],
+         'FROM'      => $this->getTable(),
+         'LEFT JOIN' => [
+            'glpi_items_problems' => [
+               'ON' => [
+                  'glpi_items_problems' => 'problems_id',
+                  $this->getTable()    => 'id'
+               ]
+            ]
+         ],
+         'WHERE'     => [
+            'glpi_items_problems.itemtype' => $itemtype,
+            'glpi_items_problems.items_id' => $items_id,
+            'NOT'                         => [
+               $this->getTable() . '.status' => array_merge(
+                  $this->getSolvedStatusArray(),
+                  $this->getClosedStatusArray()
+               )
+            ]
+         ]
+      ]);
+   }
+
+   /**
+    * Get assets linked to this object
+    *
+    * @since 9.5
+    *
+    * @param bool $addNames Insert asset names
+    *
+    * @return array
+    */
+   public function getLinkedItems(bool $addNames = true) {
+      global $DB;
+
+      $assets = $DB->request([
+         'SELECT' => ["id", "itemtype", "items_id"],
+         'FROM'   => "glpi_items_problems",
+         'WHERE'  => ["problems_id" => $this->getID()]
+      ]);
+
+      $assets = iterator_to_array($assets);
+
+      if ($addNames) {
+         foreach ($assets as $key => $asset) {
+            /** @var CommonDBTM $item */
+            $item = new $asset['itemtype'];
+            $item->getFromDB($asset['id']);
+
+            // Add name
+            $assets[$key]['name'] = $item->fields['name'];
+         }
+      }
+
+      return $assets;
    }
 }
