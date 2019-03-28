@@ -194,8 +194,10 @@ class Document extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $CFG_GLPI, $DB;
 
-      // security (don't accept filename from $_POST)
-      unset($input['filename']);
+      // security (don't accept filename from $_REQUEST)
+      if (array_key_exists('filename', $_REQUEST)) {
+         unset($input['filename']);
+      }
 
       if ($uid = Session::getLoginUserID()) {
          $input["users_id"] = Session::getLoginUserID();
@@ -228,6 +230,9 @@ class Document extends CommonDBTM {
       } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir
          $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
+      } else if (isset($input['filepath']) && file_exists(GLPI_DOC_DIR.'/'.$input['filepath'])) {
+         // Document is created using an existing document file
+         $upload_ok = true;
       }
 
       // Tag
@@ -320,8 +325,10 @@ class Document extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
-      // security (don't accept filename from $_POST)
-      unset($input['filename']);
+      // security (don't accept filename from $_REQUEST)
+      if (array_key_exists('filename', $_REQUEST)) {
+         unset($input['filename']);
+      }
 
       if (isset($input['current_filepath'])) {
          if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
