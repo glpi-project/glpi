@@ -258,7 +258,24 @@ class SimpleCache extends SimpleCacheDecorator {
     */
    private function getAllCachedFootprints() {
       if (null !== $this->footprint_file) {
-         $file_contents = file_get_contents($this->footprint_file);
+         $handle = fopen($this->footprint_file, 'rb');
+
+         // Lock the file, if possible (depends on used FS).
+         // Use a share lock to not make readers wait each oher.
+         $is_locked = flock($handle, LOCK_SH);
+
+         $file_contents = '';
+         while (!feof($handle)) {
+            $file_contents .= fread($handle, 8192);
+         }
+
+         if ($is_locked) {
+            // Unlock the file if it has been locked
+            flock($handle, LOCK_UN);
+         }
+
+         fclose($handle);
+
          $footprints = json_decode($file_contents, true);
 
          if (json_last_error() !== JSON_ERROR_NONE || !is_array($footprints)) {
@@ -296,7 +313,9 @@ class SimpleCache extends SimpleCacheDecorator {
 
          $handle = fopen($this->footprint_file, 'c');
 
-         $is_locked = flock($handle, LOCK_EX); // Lock the file, if possible (depends on used FS)
+         // Lock the file, if possible (depends on used FS).
+         // Use an exclusive lock as noone should open the file while it is updated.
+         $is_locked = flock($handle, LOCK_EX);
 
          $result = ftruncate($handle, 0)
             && fwrite($handle, $json)
