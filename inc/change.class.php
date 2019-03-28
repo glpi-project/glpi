@@ -240,9 +240,7 @@ class Change extends CommonITILObject {
 
    function defineTabs($options = []) {
       $ong = [];
-      // show related tickets and changes
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->defineDefaultObjectTabs($ong, $options);
       $this->addStandardTab('ChangeValidation', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
       $this->addStandardTab('Itil_Project', $ong, $options);
