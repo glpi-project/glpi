@@ -126,6 +126,7 @@ class NotificationEvent extends CommonDBTM {
             $notificationtarget->getEntity()
          );
 
+         $processed = []; // targets list
          foreach ($notifications as $data) {
             $notificationtarget->clearAddressesList();
             $notificationtarget->setMode($data['mode']);
@@ -145,6 +146,10 @@ class NotificationEvent extends CommonDBTM {
             }
 
             $options['mode'] = $data['mode'];
+            if (!isset($processed[$data['mode']])) { // targets list per mode to avoid spam
+               $processed[$data['mode']] = [];
+            }
+            $options['processed'] = &$processed[$data['mode']];
             $eventclass = Notification_NotificationTemplate::getModeClass($data['mode'], 'event');
             if (class_exists($eventclass)) {
                $eventclass::raise(
