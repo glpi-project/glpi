@@ -1424,6 +1424,10 @@ class Html {
                   }
                }
             }
+            // Move Setup menu ('config') to the last position in $menu (always last menu),
+            // in case some plugin inserted a new top level menu
+            $categories = array_keys($menu);
+            $menu += array_splice($menu, array_search('config', $categories, true), 1);
          }
 
          foreach ($menu as $category => $entry) {
@@ -1440,11 +1444,17 @@ class Html {
                      } else {
                         $menu[$category]['content'][strtolower($type)] = $data;
                      }
+                     if (!isset($menu[$category]['title']) && isset($data['title'])) {
+                        $menu[$category]['title'] = $data['title'];
+                     }
+                     if (!isset($menu[$category]['default']) && isset($data['default'])) {
+                        $menu[$category]['default'] = $data['default'];
+                     }
                   }
                }
             }
             // Define default link :
-            if (isset($menu[$category]['content']) && count($menu[$category]['content'])) {
+            if (! isset($menu[$category]['default']) && isset($menu[$category]['content']) && count($menu[$category]['content'])) {
                foreach ($menu[$category]['content'] as $val) {
                   if (isset($val['page'])) {
                      $menu[$category]['default'] = $val['page'];
