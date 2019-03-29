@@ -171,6 +171,14 @@ if (isset($_POST["itemtype"])
       $value = $criteria['field'];
    }
 
+   // sorts the dropdown list elements so they will appear in order in user screen.
+   foreach ( $values as $key => $val ){
+       if( is_array($values[$key]) && count( $values[$key] ) > 1 ){
+           asort( $values[$key], SORT_NATURAL | SORT_FLAG_CASE );
+       }
+   }
+
+   
    $rand     = Dropdown::showFromArray("criteria[".$_POST["num"]."][field]", $values,
                                        ['value' => $value]);
    $field_id = Html::cleanId("dropdown_criteria[".$_POST["num"]."][field]$rand");
