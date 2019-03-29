@@ -1555,7 +1555,6 @@ class Search {
          // maybe replace $DBread->fetchAssoc with $DBread->result in the above while loop?
          /*if (!$data['search']['no_search']) {
            $DBread->data_seek($result, $data['search']['start']);
- 
          }*/
 
          $i = $data['data']['begin'];
