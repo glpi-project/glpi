@@ -6595,7 +6595,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</p>";
 
             echo "<div class='rich_text_container'>";
-            echo html_entity_decode($content);
+            echo Html::setRichTextContent('', $content, '', true);
             echo "</div>";
 
             if (!empty($long_text)) {
