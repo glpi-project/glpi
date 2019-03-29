@@ -786,7 +786,7 @@ class DBmysqlIterator implements Iterator, Countable {
       if (!$this->res) {
          return false;
       }
-      $this->row = $this->res->fetch(PDO::FETCH_ASSOC);
+      $this->row = $this->conn->fetchAssoc($this->res);
       ++$this->position;
       return $this->row;
    }

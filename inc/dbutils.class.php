@@ -463,7 +463,7 @@ final class DbUtils {
       $result = $DB->rawQuery("SHOW INDEX FROM `$table`");
 
       if ($result && $DB->numrows($result)) {
-         while ($data = $result->fetch()) {
+         while ($data = $DB->fetchAssoc($result)) {
             if ($data["Key_name"] == $field) {
                return true;
             }

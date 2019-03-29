@@ -1400,7 +1400,7 @@ class Search {
       //FIXME: MySQL specific
       if ($result2 = $DBread->rawQuery('SHOW WARNINGS')) {
          if ($DBread->numrows($result2) > 0) {
-            $res = $result2->fetch();
+            $res = $DBread->fetchAssoc($result2);
             if ($res['Code'] == 1260) {
                $DBread->rawQuery("SET SESSION group_concat_max_len = 8194304;");
                $result = $DBread->rawQuery($data['sql']['search'], $this->qry_params);
@@ -1554,7 +1554,8 @@ class Search {
          // FIXME: does not seems possible with PDO... A data_seek is done withing the fecth*
          // maybe replace $DBread->fetchAssoc with $DBread->result in the above while loop?
          /*if (!$data['search']['no_search']) {
-            $DBread->data_seek($result, $data['search']['start']);
+           $DBread->data_seek($result, $data['search']['start']);
+ 
          }*/
 
          $i = $data['data']['begin'];
@@ -1567,7 +1568,7 @@ class Search {
          $this->output_type = $data['display_type'];
 
          while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
-            $row = $result->fetch();
+            $row = $DBread->fetchAssoc($result);
             $newrow        = [];
             $newrow['raw'] = $row;
 
