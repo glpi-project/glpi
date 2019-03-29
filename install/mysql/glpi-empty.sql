@@ -8948,7 +8948,7 @@ CREATE TABLE `glpi_users` (
   `api_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `api_token_date` timestamp NULL DEFAULT NULL,
   `cookie_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cookie_token_date` datetime DEFAULT NULL,
+  `cookie_token_date` timestamp NULL DEFAULT NULL,
   `display_count_on_home` int(11) DEFAULT NULL,
   `notification_to_myself` tinyint(1) DEFAULT NULL,
   `duedateok_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

@@ -86,6 +86,7 @@ The following methods have been deprecated:
 The following methods have been deprecated:
 
 - `Plugin::hasBeenInit()`
+- Deprecate 'SELECT DISTINCT' and 'DISTINCT FIELDS' criteria in `DBmysqlIterator::buildQuery()`
 
 #### Removed
 
