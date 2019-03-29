@@ -52,8 +52,8 @@ class Plugin extends CommonDBTM {
    static $rightname = 'config';
 
    // to avoid requestig DB uselessly for thousands of time.
-   private static $is_activated_arr = [];
-   private static $is_installed_arr = [];
+   static $is_activated_arr = [];
+   static $is_installed_arr = [];
 
 
    /**
