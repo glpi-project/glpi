@@ -42,6 +42,7 @@ shared: &shared
         name: Update DB
         command: |
           mysql -h mariadb -u root -e 'create database glpitest0723;'
+          docker ps
           ssh remote-docker docker ps
           cat tests/glpi-0.72.3-empty.sql | ssh remote-docker docker exec mariadb /usr/bin/mysql -u root glpitest0723
           cp tests/circleci.config_db.php tests/config_db.php
