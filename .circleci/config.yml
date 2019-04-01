@@ -2,6 +2,7 @@ version: 2
 
 shared: &shared
   steps:
+    - setup_remote_docker
     - attach_workspace:
         at: /home/circleci
     - run:
@@ -41,7 +42,7 @@ shared: &shared
         name: Update DB
         command: |
           mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
-          mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
+          cat tests/glpi-0.72.3-empty.sql | ssh remote-docker docker exec mariadb /usr/bin/mysql -u root glpitest0723
           cp tests/circleci.config_db.php tests/config_db.php
           bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction
           bin/console glpi:database:update --config-dir=./tests --allow-unstable --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
@@ -90,31 +91,37 @@ jobs:
     docker:
       - image: glpi/circleci-env-core:php_5.6_fpm-node
       - image: circleci/mariadb:10.1
+        name: mariadb
   php_7_0_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.0_fpm-node
       - image: circleci/mariadb:10.2
+        name: mariadb
   php_7_1_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.1_fpm-node
       - image: circleci/mariadb:10.3
+        name: mariadb
   php_7_2_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.2_fpm-node
       - image: circleci/mariadb:10.3
+        name: mariadb
   php_7_3_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
       - image: circleci/mariadb:10.3
+        name: mariadb
   php_latest_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_latest_fpm-node
       - image: circleci/mariadb:10.3
+        name: mariadb
 
 
 workflows:
