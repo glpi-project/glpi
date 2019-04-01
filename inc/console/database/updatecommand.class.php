@@ -156,11 +156,6 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
          }
       }
 
-      if (substr($current_version, -4) === '-dev') {
-         // Normalize version
-         $current_version = str_replace('-dev', '', $current_version);
-      }
-
       $update->doUpdates($current_version);
 
       if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
