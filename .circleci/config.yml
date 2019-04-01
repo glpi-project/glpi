@@ -118,6 +118,12 @@ commands:
           command: |
             php -S localhost:8088 tests/router.php &>/dev/null &
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
+      - run:
+          name: IMAP tests
+          command: |
+            for f in `ls tests/emails-tests/*.eml`; do getmail_maildir ~/Maildir/ < $f; done
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
+
 #      - run:
 #          name: LDAP tests
 #          command: |
