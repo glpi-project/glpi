@@ -1054,6 +1054,21 @@ class Toolbox {
             $error = $suberr;
          }
          echo "</tr>";
+
+         //timezone data check
+         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing DB timezone data') . "</td>";
+         global $DB;
+         $tz_warning = '';
+         $tz_available = $DB->areTimezonesAvailable($tz_warning);
+         if (!$tz_available) {
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . $tz_warning . "</td>";
+         } else {
+            echo "<td>";
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\">";
+            echo __('Timezones seems not loaded in database');
+            echo "</td>";
+         }
+         echo "</tr>";
       }
 
       // memory test
@@ -2369,7 +2384,7 @@ class Toolbox {
     * @return void
    **/
    static function createSchema($lang = 'en_GB') {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
@@ -2381,9 +2396,10 @@ class Toolbox {
          Config::setConfigurationValues(
             'core',
             [
-               'language'  => $lang,
-               'version'   => GLPI_VERSION,
-               'dbversion' => GLPI_SCHEMA_VERSION
+               'language'      => $lang,
+               'version'       => GLPI_VERSION,
+               'dbversion'     => GLPI_SCHEMA_VERSION,
+               'use_timezones' => $DB->areTimezonesAvailable()
             ]
          );
          $DB->updateOrDie(

@@ -181,9 +181,7 @@ class Central extends CommonGLPI {
                count($myisam_tables)
             );
          }
-         if (!$DB->areTimezonesActives()) {
-            $warnings[] = __('Timezone required data is not accessible or has not been initialized. Please check GLPI installation guide.');
-         } else {
+         if ($DB->areTimezonesAvailable()) {
             $not_tstamp = $DB->notTzMigrated();
             if ($not_tstamp > 0) {
                 $warnings[] = sprintf(
