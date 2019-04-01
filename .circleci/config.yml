@@ -6,9 +6,9 @@ shared: &shared
     - run:
         name: Run services containers
         command: |
-          docker run --detach --name mariadb --network host circleci/mariadb:10.1
+          docker run --detach --name mariadb circleci/mariadb:10.1
           docker ps
-          dockerize -wait tcp://:3306 -timeout 1m
+          dockerize -wait tcp://localhost:3306 -timeout 1m
     - run:
         name: Test services containers
         command: |
