@@ -220,7 +220,8 @@ class Document extends DbTestCase {
          [__DIR__ . "/../../pics/add_dropdown.png", true],
          [__DIR__ . "/../../pics/corners.gif", true],
          [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
-         [__DIR__ . "/../notanimage.jpg", false]
+         [__DIR__ . "/../notanimage.jpg", false],
+         [__DIR__ . "/../notafile.jpg", false]
       ];
    }
 
