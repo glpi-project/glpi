@@ -99,17 +99,22 @@ class Plugin extends CommonDBTM {
       global $DB;
 
       $appCache = Toolbox::getAppCache();
-      $appCache->set('plugins', []);
-
       if (!isset($DB) || !$DB->isConnected() || !$DB->tableExists(self::getTable())) {
+         $appCache->set('plugins_init', true);
+         $appCache->set('plugins', []);
          return;
       }
 
       $this->checkStates();
       $plugins = $this->find(['state' => self::ACTIVATED]);
 
-      foreach ($plugins as $ID => $plug) {
-         $this->setLoaded($ID, $plug['directory']);
+      $appCache->set('plugins_init', true);
+      $appCache->set('plugins', []);
+
+      if (count($plugins)) {
+         foreach ($plugins as $ID => $plug) {
+            $this->setLoaded($ID, $plug['directory']);
+         }
       }
    }
 
@@ -699,8 +704,9 @@ class Plugin extends CommonDBTM {
    **/
    function isActivated($plugin) {
 
-      $activePlugins = $this->getPlugins();
-      return in_array($plugin, $activePlugins);
+      if ($this->getFromDBbyDir($plugin)) {
+         return ($this->fields['state'] == self::ACTIVATED);
+      }
    }
 
 
@@ -710,11 +716,6 @@ class Plugin extends CommonDBTM {
     * @param $plugin plugin directory
    **/
    function isInstalled($plugin) {
-
-      if ($this->isActivated($plugin)) {
-         // Prevent call on DB if plugin is activated.
-         return true;
-      }
 
       if ($this->getFromDBbyDir($plugin)) {
          return (($this->fields['state']    == self::ACTIVATED)
@@ -1691,13 +1692,10 @@ class Plugin extends CommonDBTM {
     */
    public static function getPlugins() {
       $appCache = Toolbox::getAppCache();
-
-      if (!$appCache->has('plugins')) {
-         $self = new self();
-         $self->init();
+      if ($appCache->has('plugins')) {
+         return $appCache->get('plugins');
       }
-
-      return $appCache->get('plugins');
+      return [];
    }
 
    /**
