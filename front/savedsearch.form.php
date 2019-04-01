@@ -43,6 +43,12 @@ if (!isset($_GET["withtemplate"])) {
 $savedsearch = new SavedSearch();
 if (isset($_POST["add"])) {
    //Add a new saved search
+
+   // Finding the columns' list the user has chosen to view from DB to save it within this saved-search into DB.
+   // table : glpi_savedsearches, column : query
+   $pref['savedtoview'] =  DisplayPreference::getForTypeUser($_POST['itemtype'], Session::getLoginUserID());
+   $_POST['url'] .= '&' .  http_build_query($pref);
+
    $savedsearch->check(-1, CREATE, $_POST);
    if ($savedsearch->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
