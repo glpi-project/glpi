@@ -7,11 +7,12 @@ shared: &shared
         name: Run services containers
         command: |
           docker run -d --name mariadb circleci/mariadb:10.1
+          dockerize -wait tcp://mariadb:3306 -timeout 1m
     - run:
         name: Test services containers
         command: |
           docker ps
-          mysql -h mariadb -u root -e 'create database glpitest0723;'
+          docker exec mariadb /usr/bin/mysql -u root -e 'create database glpitest0723;'
           cat tests/glpi-0.72.3-empty.sql | docker exec mariadb /usr/bin/mysql -u root glpitest0723
     - attach_workspace:
         at: /home/circleci
