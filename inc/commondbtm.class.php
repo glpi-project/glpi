@@ -1506,14 +1506,17 @@ class CommonDBTM extends CommonGLPI {
                'FROM'   => $item->getTable()
             ];
 
+            $OR = [];
             if ($item->isField('itemtype')) {
-               $query['WHERE'] = [
+               $OR[] = [
                   'itemtype'  => $this->getType(),
                   'items_id'  => $this->getID()
                ];
-            } else {
-               $query['WHERE'] = [$this->getForeignKeyField() => $this->getID()];
             }
+            if ($item->isField($this->getForeignKeyField())) {
+               $OR[] = [$this->getForeignKeyField() => $this->getID()];
+            }
+            $query['WHERE'][] = ['OR' => $OR];
 
             $input = ['entities_id' => $this->getEntityID()];
             if ($this->maybeRecursive()) {

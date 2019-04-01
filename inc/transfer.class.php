@@ -322,20 +322,23 @@ class Transfer extends CommonDBTM {
             $itemtable = getTableForItemType($itemtype);
 
             // Clean DB / Search unexisting links and force disconnect
-            $DB->delete('glpi_computers_items', ["$itemtable.id" => null], [
-               'LEFT JOIN' => [
-                  $itemtable  => [
-                     'ON' => [
-                        'glpi_computers_items'  => 'items_id',
-                        $itemtable              => 'id', [
-                           'AND' => [
-                              'glpi_computers_items.itemtype' => $itemtype
-                           ]
+            $DB->delete(
+               'glpi_computers_items',
+               [
+                  "$itemtable.id" => null,
+                  'glpi_computers_items.itemtype' => $itemtype,
+               ],
+               [
+                  'LEFT JOIN' => [
+                     $itemtable  => [
+                        'ON' => [
+                           'glpi_computers_items'  => 'items_id',
+                           $itemtable              => 'id',
                         ]
                      ]
                   ]
                ]
-            ]);
+            );
 
             if (!($item = getItemForItemtype($itemtype))) {
                continue;
@@ -561,20 +564,23 @@ class Transfer extends CommonDBTM {
                $itemtable = getTableForItemType($itemtype);
 
                // Clean DB
-               $DB->delete('glpi_contracts_items', ["$itemtable.id"  => null], [
-                  'LEFT JOIN' => [
-                     $itemtable  => [
-                        'ON' => [
-                           'glpi_contracts_items'  => 'items_id',
-                           $itemtable              => 'id', [
-                              'AND' => [
-                                 'itemtype'  => $itemtype
-                              ]
+               $DB->delete(
+                  'glpi_contracts_items',
+                  [
+                     "$itemtable.id" => null,
+                     'itemtype'      => $itemtype
+                  ],
+                  [
+                     'LEFT JOIN' => [
+                        $itemtable  => [
+                           'ON' => [
+                              'glpi_contracts_items'  => 'items_id',
+                              $itemtable              => 'id',
                            ]
                         ]
                      ]
                   ]
-               ]);
+               );
 
                // Clean DB
                $DB->delete('glpi_contracts_items', ['glpi_contracts.id'  => null], [
@@ -764,7 +770,7 @@ class Transfer extends CommonDBTM {
             // Change Supplier
             $iterator = $DB->request([
                'SELECT'    => [
-                  'glpi_changess_suppliers.suppliers_id',
+                  'glpi_changes_suppliers.suppliers_id',
                   'glpi_suppliers.entities_id',
                   'glpi_suppliers.is_recursive'
                ],
@@ -806,20 +812,23 @@ class Transfer extends CommonDBTM {
                   $itemtable = getTableForItemType($itemtype);
 
                   // Clean DB
-                  $DB->delete('glpi_infocoms', ["$itemtable.id"  => null], [
-                     'LEFT JOIN' => [
-                        $itemtable => [
-                           'ON' => [
-                              'glpi_infocoms'   => 'items_id',
-                              $itemtable        => 'id', [
-                                 'AND' => [
-                                    'glpi_infocoms.itemtype' => $itemtype
-                                 ]
+                  $DB->delete(
+                     'glpi_infocoms',
+                     [
+                        "$itemtable.id"  => null,
+                        'glpi_infocoms.itemtype' => $itemtype,
+                     ],
+                     [
+                        'LEFT JOIN' => [
+                           $itemtable => [
+                              'ON' => [
+                                 'glpi_infocoms'   => 'items_id',
+                                 $itemtable        => 'id',
                               ]
                            ]
                         ]
                      ]
-                  ]);
+                  );
 
                   $iterator = $DB->request([
                      'SELECT'    => [
@@ -923,20 +932,23 @@ class Transfer extends CommonDBTM {
             if (isset($this->needtobe_transfer[$itemtype]) && count($this->needtobe_transfer[$itemtype])) {
                $itemtable = getTableForItemType($itemtype);
                // Clean DB
-               $DB->delete('glpi_documents_items', ["$itemtable.id"  => null], [
-                  'LEFT JOIN' => [
-                     $itemtable => [
-                        'ON' => [
-                           'glpi_documents_items'  => 'items_id',
-                           $itemtable              => 'id', [
-                              'AND' => [
-                                 'glpi_documents_items.itemtype'  => $itemtype
-                              ]
+               $DB->delete(
+                  'glpi_documents_items',
+                  [
+                     "$itemtable.id"  => null,
+                     'glpi_documents_items.itemtype' => $itemtype,
+                  ],
+                  [
+                     'LEFT JOIN' => [
+                        $itemtable => [
+                           'ON' => [
+                              'glpi_documents_items'  => 'items_id',
+                              $itemtable              => 'id',
                            ]
                         ]
                      ]
                   ]
-               ]);
+               );
 
                $iterator = $DB->request([
                   'SELECT'    => [
@@ -1907,20 +1919,24 @@ class Transfer extends CommonDBTM {
       global $DB;
 
       $need_clean_process = false;
-
       // if keep
-      if ($this->options['keep_document'] && isset($this->noneedtobe_transfer['Document'])
-         && count($this->noneedtobe_transfer['Document'])) {
+      if ($this->options['keep_document']) {
          $document = new Document();
-         // Get contracts for the item
-         $iterator = $DB->request([
+         // Get documents for the item
+         $documents_items_query = [
             'FROM'   => 'glpi_documents_items',
             'WHERE'  => [
                'items_id'  => $ID,
                'itemtype'  => $itemtype,
-               'NOT'       => ['documents_id' => $this->noneedtobe_transfer['Document']]
             ]
-         ]);
+         ];
+         if (isset($this->noneedtobe_transfer['Document'])
+             && count($this->noneedtobe_transfer['Document']) > 0) {
+            $documents_items_query['WHERE'][] = [
+               'NOT' => ['documents_id' => $this->noneedtobe_transfer['Document']]
+            ];
+         }
+         $iterator = $DB->request($documents_items_query);
 
          // Foreach get item
          while ($data = $iterator->next()) {
@@ -1946,7 +1962,7 @@ class Transfer extends CommonDBTM {
                   $dtype = $data_type['itemtype'];
                   if (isset($this->needtobe_transfer[$dtype])) {
                      // No items to transfer -> exists links
-                     $NOT = $this->needtobe_transfer['dtype'];
+                     $NOT = $this->needtobe_transfer[$dtype];
 
                      // contacts, contracts, and enterprises are linked as device.
                      if (isset($this->noneedtobe_transfer[$dtype])) {
