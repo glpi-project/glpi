@@ -1549,6 +1549,9 @@ class Document extends CommonDBTM {
     * @return boolean
     */
    public static function isImage($file) {
+      if (!file_exists($file)) {
+         return false;
+      }
       if (extension_loaded('exif')) {
          $etype = exif_imagetype($file);
          return in_array($etype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_BMP]);
