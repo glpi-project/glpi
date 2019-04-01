@@ -1443,7 +1443,6 @@ class Search {
       // For PDF exports to match the same displayed list of columns.
       $pref['savedtoview']   = $data['toview'];
       $savedtoview_url       =  http_build_query( $pref );
-      $savedtoview_url       .= '&ett[0]=aa&ett[1]=bb';
       $savedtoview_url       =  str_replace("%5B", "[", $savedtoview_url );
       $savedtoview_url       =  str_replace("%5D", "]", $savedtoview_url );
       $savedtoview_url       =  str_replace("&", "&amp;", $savedtoview_url );
