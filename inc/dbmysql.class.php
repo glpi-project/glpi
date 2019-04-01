@@ -136,28 +136,29 @@ class DBmysql {
     * then will check in preferences and finally will fallback to system one.
     *
     * @return string
+    *
+    * @since 9.5.0
     */
    protected function guessTimezone() {
       if (isset($_SESSION['glpi_tz'])) {
-          $zone = $_SESSION['glpi_tz'];
+         $zone = $_SESSION['glpi_tz'];
       } else {
          $conf_tz = ['value' => null];
          if ($this->tableExists(Config::getTable())
-         && $this->fieldExists(Config::getTable(), 'value')
-         ) {
-             $conf_tz = $this->request([
-             'SELECT' => 'value',
-             'FROM'   => Config::getTable(),
-             'WHERE'  => [
-               'context'   => 'core',
-               'name'      => 'timezone'
-             ]
-             ])->next();
+             && $this->fieldExists(Config::getTable(), 'value')) {
+            $conf_tz = $this->request([
+               'SELECT' => 'value',
+               'FROM'   => Config::getTable(),
+               'WHERE'  => [
+                  'context'   => 'core',
+                  'name'      => 'timezone'
+                ]
+            ])->next();
          }
          $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
       }
 
-         return $zone;
+      return $zone;
    }
 
    /**
@@ -1412,58 +1413,98 @@ class DBmysql {
       return $this->dbh->rollback();
    }
 
-   public function areTimezonesActives() {
-      //try to query TZs
-       $criteria = [
-        'COUNT'  => 'cpt',
-        'FROM'   => 'mysql.time_zone_name',
-       ];
-       $iterator = $this->request($criteria);
-       $result = $iterator->next();
-       if (!$result) {
-           Toolbox::logWarning('Access to timezone table (mysql.time_zone_name) is not allowed.');
-           return false;
-         }
+   /**
+    * Check if timezone data is accessible and available in database.
+    *
+    * @param string $msg  Variable that would contain the reason of data unavailability.
+    *
+    * @return boolean
+    *
+    * @since 9.5.0
+    */
+   public function areTimezonesAvailable(string &$msg = '') {
+      $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
+      if ($mysql_db_res->count() === 0) {
+         $msg = __('Access to timezone database (mysql) is not allowed.');
+         return false;
+      }
 
-         if ($result['cpt'] == 0) {
-            Toolbox::logWarning('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
-            return false;
-         }
+      $tz_table_res = $this->request(
+         'SHOW TABLES FROM '
+         . $this->quoteName('mysql')
+         . ' LIKE '
+         . $this->quoteValue('time_zone_name')
+      );
+      if ($tz_table_res->count() === 0) {
+         $msg = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
+         return false;
+      }
 
-         return true;
+      $criteria = [
+         'COUNT'  => 'cpt',
+         'FROM'   => 'mysql.time_zone_name',
+      ];
+      $iterator = $this->request($criteria);
+      $result = $iterator->next();
+      if ($result['cpt'] == 0) {
+         $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
+         return false;
+      }
+
+      return true;
    }
 
+   /**
+    * Defines timezone to use.
+    *
+    * @param string $timezone
+    *
+    * @return DBmysql
+    */
    public function setTimezone($timezone) {
       //setup timezone
-      if ($this->areTimezonesActives()) {
-         //4dev => to drop
-          date_default_timezone_set($timezone);
-          $this->dbh->query("SET SESSION time_zone = '$timezone'");
-          $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+      if ($this->areTimezonesAvailable()) {
+         date_default_timezone_set($timezone);
+         $this->dbh->query("SET SESSION time_zone = '$timezone'");
+         $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
       }
-         return $this;
+      return $this;
    }
 
+   /**
+    * Returns list of timezones.
+    *
+    * @return string[]
+    *
+    * @since 9.5.0
+    */
    public function getTimezones() {
-       $list = []; //default $tz is empty
+      $list = []; //default $tz is empty
 
-       $from_php = \DateTimeZone::listIdentifiers();
-       $now = new \DateTime();
+      $from_php = \DateTimeZone::listIdentifiers();
+      $now = new \DateTime();
 
-       $iterator = $this->request([
-        'SELECT' => 'Name',
-        'FROM'   => 'mysql.time_zone_name',
-        'WHERE'  => ['Name' => $from_php]
-       ]);
+      $iterator = $this->request([
+         'SELECT' => 'Name',
+         'FROM'   => 'mysql.time_zone_name',
+         'WHERE'  => ['Name' => $from_php]
+      ]);
 
       while ($from_mysql = $iterator->next()) {
-          $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
-          $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
+         $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
+         $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
       }
 
-         return $list;
+      return $list;
    }
 
+   /**
+    * Returns count of tables that were not migrated to be compatible with timezones usage.
+    *
+    * @return number
+    *
+    * @since 9.5.0
+    */
    public function notTzMigrated() {
        global $DB;
 

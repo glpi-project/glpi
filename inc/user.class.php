@@ -2098,17 +2098,27 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
-      $timezones = $DB->getTimezones();
-      Dropdown::showFromArray(
-         'timezone',
-         $timezones, [
-            'value'                 => $this->fields["timezone"],
-            'display_emptychoice'   => true
-         ]
-      );
-      echo "</td></tr>";
+      $tz_warning = '';
+      $tz_available = $DB->areTimezonesAvailable($tz_warning);
+      if ($tz_available || Session::haveRight("config", READ)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
+         if ($tz_available) {
+            $timezones = $DB->getTimezones();
+            Dropdown::showFromArray(
+               'timezone',
+               $timezones, [
+                  'value'                 => $this->fields["timezone"],
+                  'display_emptychoice'   => true
+               ]
+            );
+         } else if (Session::haveRight("config", READ)) {
+            // Display a warning but only if user is more or less an admin
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
+            echo $tz_warning;
+         }
+         echo "</td></tr>";
+      }
 
       echo "<tr class='tab_bg_1'>";
       if (!GLPI_DEMO_MODE) {
@@ -2569,17 +2579,27 @@ class User extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
          }
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
-         $timezones = $DB->getTimezones();
-         Dropdown::showFromArray(
-            'timezone',
-            $timezones, [
-               'value'                 => $this->fields["timezone"],
-               'display_emptychoice'   => true
-            ]
-         );
-         echo "</td></tr>";
+         $tz_warning = '';
+         $tz_available = $DB->areTimezonesAvailable($tz_warning);
+         if ($tz_available || Session::haveRight("config", READ)) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='timezone'>".__('Time zone')."</label></td><td>";
+            if ($tz_available) {
+               $timezones = $DB->getTimezones();
+               Dropdown::showFromArray(
+                  'timezone',
+                  $timezones, [
+                     'value'                 => $this->fields["timezone"],
+                     'display_emptychoice'   => true
+                  ]
+               );
+            } else if (Session::haveRight("config", READ)) {
+               // Display a warning but only if user is more or less an admin
+               echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
+               echo $tz_warning;
+            }
+            echo "</td></tr>";
+         }
 
          $phonerand = mt_rand();
          echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  __('Phone') . "</label></td><td>";
