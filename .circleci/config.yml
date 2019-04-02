@@ -80,6 +80,20 @@ commands:
   run_test_suite:
     steps:
       - run:
+          name: Install DB
+          command: |
+            mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
+            bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-host=127.0.0.1 --db-user=root
+            bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
+            cp tests/circleci.parameters.yaml tests/parameters.yaml
+      - run:
+          name: IMAP tests
+          command: |
+            sudo service dovecot start
+            dockerize -wait http://127.0.0.1:993 -timeout 30s
+            for f in `ls tests/emails-tests/*.eml`; do getmail_maildir ~/Maildir/ < $f; done
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap
+      - run:
           name: PHP Parallel Lint
           command: vendor/bin/parallel-lint  --exclude files --exclude plugins --exclude vendor --exclude tools/vendor .
       - run:
@@ -101,13 +115,6 @@ commands:
             php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report  --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
             rm tests/db.yaml
       - run:
-          name: Install DB
-          command: |
-            mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
-            bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-host=127.0.0.1 --db-user=root
-            bin/console glpi:database:update --config-dir=./tests --no-interaction |grep -q "No migration needed." || (echo "glpi:database:update command FAILED" && exit 1)
-            cp tests/circleci.parameters.yaml tests/parameters.yaml
-      - run:
           name: Unit tests
           command: php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage -d tests/units
       - run:
@@ -117,6 +124,7 @@ commands:
           name: WEB tests
           command: |
             php -S localhost:8088 tests/router.php &>/dev/null &
+            php vendor/bin/atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web
 #      - run:
 #          name: LDAP tests
 #          command: |
