@@ -12,7 +12,7 @@ before_script:
   - rm -f composer.lock
   - composer require --dev glpi-project/dovecottesting:dev-master
   - composer install --optimize-autoloader
-  - vendor/tedivm/dovecottesting/SetupEnvironment.sh ./tests/Maildir/
+  - vendor/glpi-project/dovecottesting/SetupEnvironment.sh ./tests/Maildir/
   - cp tests/travis.parameters.yaml tests/parameters.yaml
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
   - mysql -u root -e 'create database glpitest;'
