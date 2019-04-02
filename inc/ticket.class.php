@@ -7150,7 +7150,7 @@ class Ticket extends CommonITILObject {
     *                   id => status (0 = Success, 1 = Error, 2 = Insufficient Rights).
     * @return boolean  True if the merge was successful if "full_transaction" is true.
     *                      Otherwise, true if any ticket was successfully merged.
-    * @since 10.0.0
+    * @since 9.5.0
     */
    public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = []) {
       global $DB;
@@ -7189,7 +7189,7 @@ class Ticket extends CommonITILObject {
                $input = [
                   'itemtype'        => 'Ticket',
                   'items_id'        => $merge_target_id,
-                  'content'         => $ticket->fields['name']."\n\n".$ticket->fields['content'],
+                  'content'         => $DB->escape($ticket->fields['name']."\n\n".$ticket->fields['content']),
                   'users_id'        => $ticket->fields['users_id_recipient'],
                   'date_creation'   => $item->fields['date_creation'],
                   'date_mod'        => $item->fields['date_mod'],
@@ -7211,6 +7211,7 @@ class Ticket extends CommonITILObject {
                   foreach ($tomerge as $key => $fup2) {
                      $fup2['items_id'] = $merge_target_id;
                      $fup2['sourceitems_id'] = $id;
+                     $fup2['content'] = $DB->escape($fup2['content']);
                      unset($fup2['id']);
                      if (!$fup->add($fup2)) {
                         // Cannot add followup. Abort/fail the merge
@@ -7227,6 +7228,7 @@ class Ticket extends CommonITILObject {
                   foreach ($tomerge as $key => $task2) {
                      $task2['tickets_id'] = $merge_target_id;
                      $task2['sourceitems_id'] = $id;
+                     $task2['content'] = $DB->escape($task2['content']);
                      unset($task2['id']);
                      if (!$task->add($task2)) {
                         //Cannot add followup. Abort/fail the merge
@@ -7238,8 +7240,8 @@ class Ticket extends CommonITILObject {
                if (in_array('Document', $p['linktypes'])) {
                   // Create new links for any Documents
                   $tomerge = $document_item->find([
-                     'items_id' => $id,
-                     'itemtype' => 'Ticket'
+                     'itemtype' => 'Ticket',
+                     'items_id' => $id
                   ]);
                   foreach ($tomerge as $key => $document_item2) {
                      $document_item2['items_id'] = $merge_target_id;
@@ -7261,9 +7263,17 @@ class Ticket extends CommonITILObject {
                   ];
 
                   $tt->deleteByCriteria([
-                     'tickets_id_1' => $merge_target_id,
-                     'tickets_id_2' => $id,
-                     'link' => $p['link_type']]);
+                     'OR' => [
+                        'AND' => [
+                           'tickets_id_1' => $merge_target_id,
+                           'tickets_id_2' => $id
+                        ],
+                        'AND' => [
+                           'tickets_id_2' => $merge_target_id,
+                           'tickets_id_1' => $id
+                        ]
+                     ]
+                  ]);
 
                   if (!$tt->add($linkparams)) {
                      //Cannot link tickets. Abort/fail the merge
@@ -7286,9 +7296,8 @@ class Ticket extends CommonITILObject {
                   }
                }
 
-               //Close then delete this ticket
-               if (!$ticket->update(['id' => $id, 'status' => CommonITILObject::CLOSED]) ||
-                  !$ticket->delete(['id' => $id])) {
+               //Delete this ticket
+               if ($item->delete(['id' => $id, '_disablenotif' => true])) {
                   throw new \RuntimeException(1, sprintf(__('Failed to delete ticket %d'), $id));
                }
 
@@ -7297,8 +7306,8 @@ class Ticket extends CommonITILObject {
                }
 
                $status[$id] = 0;
-               Event::log($merge_target_id, "ticket", 4, "tracking",
-                  sprintf(__('%s merges ticket %s into %s'), $_SESSION["glpiname"],
+               Event::log($merge_target_id, 'ticket', 4, 'tracking',
+                  sprintf(__('%s merges ticket %s into %s'), $_SESSION['glpiname'],
                   $id, $merge_target_id));
             } else {
                throw new \RuntimeException(2, sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id));
