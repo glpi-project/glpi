@@ -197,14 +197,14 @@ class MailCollector extends DbTestCase {
             'passwd'       => 'applesauce',
             'mail_server'  => '127.0.0.1',
             'server_type'  => '/imap',
-            'server_port'  => 993,
-            'server_ssl'   => '/ssl',
+            'server_port'  => 143,
+            'server_ssl'   => '',
             'server_cert'  => '/novalidate-cert'
          ])
       )->isGreaterThan(0);
 
       $this->boolean($this->testedInstance->getFromDB($this->testedInstance->fields['id']))->isTrue();
-      $this->string($this->testedInstance->fields['host'])->isIdenticalTo('{127.0.0.1:993/imap/ssl/novalidate-cert}');
+      $this->string($this->testedInstance->fields['host'])->isIdenticalTo('{127.0.0.1:143/imap/novalidate-cert}');
       $this->testedInstance->connect();
       $this->variable($this->testedInstance->fields['errors'])->isEqualTo(0);
    }
