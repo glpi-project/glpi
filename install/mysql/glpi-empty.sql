@@ -9626,8 +9626,8 @@ CREATE TABLE `glpi_pdus_racks` (
 DROP TABLE IF EXISTS `glpi_itilfollowuptemplates`;
 CREATE TABLE `glpi_itilfollowuptemplates` (
    `id`              INT(11) NOT NULL AUTO_INCREMENT,
-   `date_creation`   DATETIME NULL DEFAULT NULL,
-   `date_mod`        DATETIME NULL DEFAULT NULL,
+   `date_creation`   TIMESTAMP NULL DEFAULT NULL,
+   `date_mod`        TIMESTAMP NULL DEFAULT NULL,
    `entities_id`     INT(11) NOT NULL DEFAULT '0',
    `is_recursive`    TINYINT(1) NOT NULL DEFAULT '0',
    `name`            VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
