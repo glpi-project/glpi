@@ -1454,7 +1454,7 @@ class Search {
                                           => Toolbox::stripslashes_deep($data['search']['metacriteria'])],
                                   '&amp;');
       $parameters = "sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
-                     $globallinkto;
+                     $globallinkto . '&amp;' . $savedtoview_url ;
 
       if (isset($_GET['_in_modal'])) {
          $parameters .= "&amp;_in_modal=1";
