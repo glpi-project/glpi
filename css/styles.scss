@@ -5593,7 +5593,7 @@ div#viewgraph {
 
    .grid-stack-placeholder > .placeholder-content {
       border: 1px dashed #bcbf33;
-      background-color: #e5f5698a;
+      background-color: rgba(229, 245, 105, .5);
    }
 }
 
@@ -5653,7 +5653,7 @@ ul.indexes {
 .side_pdus_float {
    .grid-stack-item {
       .grid-stack-item-content {
-         border: 0 solid #0404046b;
+         border: 0 solid rgba(4, 4, 4, .4);
          border-width: 4px 1px;
 
          .rotated_text {
@@ -5917,13 +5917,13 @@ ul.indexes {
 
 .side_pdus_nofloat .grid-stack-item .grid-stack-item-content, .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
    color: #2c3e50;
-   border: 0 solid #0404046b;
+   border: 0 solid rgba(4, 4, 4, .4);
    border-width: 1px 4px;
    box-shadow: 1px 1px 5px 0px #656565;
 }
 
 #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
-   border-color: #04040440;
+   border-color: rgba(4, 4, 4, .25);
    border-width: 0 4px;
 }
 
