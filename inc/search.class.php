@@ -438,6 +438,13 @@ class Search {
          $data['toview'] = array_merge($data['toview'], $forcedisplay);
       }
 
+      // Overrides columns' list by the one coming from the saved search (DB).
+      // this parameter $params['savedtoview'] comes from table : glpi_savedsearches, column : query.
+      if( isset($params['savedtoview']) && is_array($params['savedtoview']) ){
+          $data['toview'] = array_merge(self::addDefaultToView($itemtype, $params), $params['savedtoview']);
+      }
+
+
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
             if (isset($val['field']) && !in_array($val['field'], $data['toview'])) {
@@ -1432,6 +1439,14 @@ class Search {
          return false;
       }
       // Contruct Pager parameters
+
+      // For PDF exports to match the same displayed list of columns.
+      $pref['savedtoview']   = $data['toview'];
+      $savedtoview_url       =  http_build_query( $pref );
+      $savedtoview_url       =  str_replace("%5B", "[", $savedtoview_url );
+      $savedtoview_url       =  str_replace("%5D", "]", $savedtoview_url );
+      $savedtoview_url       =  str_replace("&", "&amp;", $savedtoview_url );
+
       $globallinkto
          = Toolbox::append_params(['criteria'
                                           => Toolbox::stripslashes_deep($data['search']['criteria']),
