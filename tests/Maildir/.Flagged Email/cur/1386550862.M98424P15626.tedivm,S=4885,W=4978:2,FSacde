@@ -1,0 +1,93 @@
+Return-Path: <tedivm@tedivm.com>
+Delivered-To: testuser@tedivm.com
+Received: from localhost (localhost [127.0.0.1])
+	by figment.tedivm.com (Postfix) with ESMTP id 8AF6E45C3D
+	for <testuser@tedivm.com>; Sun,  1 Dec 2013 21:52:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tedivm.com; h=
+	x-mailer:mime-version:to:date:date:message-id:subject:subject
+	:content-type:content-type:from:from; s=dkim; t=1385963549; x=
+	1386827549; bh=MZ43NFEHGiNkxyQ7rEcvRpAjcgeXAfHOq4rbhKaSlfQ=; b=S
+	LRduDMGqBZmST/ud1v8wTNm1VdR8gyUpVvhWbez2pYFw5hufKRv+yLf1ozaMJ/7R
+	7pQiWd0eknN1j5OnlSJ6BFzDfCTWmPRdRmu3xp6EBqDGZx8/PMGw+WnG0YZPeqFo
+	3J1UWgB70VMKCOP0v7iJCaEJXtW0z/mIA1/SCSe/qI=
+X-Virus-Scanned: Debian amavisd-new at debian
+Received: from figment.tedivm.com ([127.0.0.1])
+	by localhost (figment.tedivm.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id m8cNqH2CsW0d for <testuser@tedivm.com>;
+	Sun,  1 Dec 2013 21:52:29 -0800 (PST)
+Received: from [10.0.42.10] (c-67-180-166-128.hsd1.ca.comcast.net [67.180.166.128])
+	by figment.tedivm.com (Postfix) with ESMTPSA id E327545C3C
+	for <testuser@tedivm.com>; Sun,  1 Dec 2013 21:52:27 -0800 (PST)
+From: Robert Hafner <tedivm@tedivm.com>
+Content-Type: multipart/alternative; boundary="Apple-Mail=_9B1210FB-6A7F-40A6-BB28-A7A7B7C010C6"
+Subject: Flagged Grey
+Message-Id: <5D511CEA-CBAC-4F41-AA4A-1849D477DE94@tedivm.com>
+Date: Sun, 1 Dec 2013 21:52:27 -0800
+To: "testuser@tedivm.com" <testuser@tedivm.com>
+Mime-Version: 1.0 (Mac OS X Mail 6.6 \(1510\))
+X-Mailer: Apple Mail (2.1510)
+
+
+--Apple-Mail=_9B1210FB-6A7F-40A6-BB28-A7A7B7C010C6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+Grey Grey Grey!
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque =
+sollicitudin auctor tellus. Etiam ornare fringilla est, eget iaculis =
+tellus pellentesque id. Integer vestibulum, dui at luctus porta, magna =
+arcu faucibus turpis, eu vestibulum mauris quam vitae metus. In aliquam =
+ornare neque ut aliquam. Vivamus eu tortor feugiat, ultricies nulla at, =
+luctus enim. Nunc ultrices nulla et eleifend volutpat. Quisque aliquet =
+aliquet elit, eget convallis sapien.
+
+Nullam fringilla turpis ac tortor venenatis, sit amet rutrum odio =
+faucibus. Aenean vel mollis diam, id tincidunt libero. Aenean imperdiet =
+vestibulum blandit. Curabitur nec metus magna. Phasellus imperdiet, orci =
+ut egestas fermentum, diam lacus vehicula felis, eget feugiat velit =
+tortor quis tellus. Aliquam at massa ut purus ultrices molestie et a =
+ligula. Maecenas tempus at tellus quis malesuada.
+
+Nam sagittis rutrum tellus nec volutpat. Fusce ac leo quis dui eleifend =
+scelerisque. In adipiscing pretium sapien at ullamcorper. Sed nec porta =
+leo. Curabitur dapibus commodo rutrum. Nulla in odio elit. Sed id =
+sodales sapien, at fringilla purus. Quisque ut volutpat odio. Curabitur =
+et hendrerit dui, blandit auctor erat.
+
+
+
+--Apple-Mail=_9B1210FB-6A7F-40A6-BB28-A7A7B7C010C6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=us-ascii
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html =
+charset=3Dus-ascii"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space; ">Grey =
+Grey Grey!<div><br></div><div><p style=3D"margin: 0px 0px 14px; =
+text-align: justify; font-size: 11px; font-family: Arial; ">Lorem ipsum =
+dolor sit amet, consectetur adipiscing elit. Quisque sollicitudin auctor =
+tellus. Etiam ornare fringilla est, eget iaculis tellus pellentesque id. =
+Integer vestibulum, dui at luctus porta, magna arcu faucibus turpis, eu =
+vestibulum mauris quam vitae metus. In aliquam ornare neque ut aliquam. =
+Vivamus eu tortor feugiat, ultricies nulla at, luctus enim. Nunc =
+ultrices nulla et eleifend volutpat. Quisque aliquet aliquet elit, eget =
+convallis sapien.</p><p style=3D"margin: 0px 0px 14px; text-align: =
+justify; font-size: 11px; font-family: Arial; ">Nullam fringilla turpis =
+ac tortor venenatis, sit amet rutrum odio faucibus. Aenean vel mollis =
+diam, id tincidunt libero. Aenean imperdiet vestibulum blandit. =
+Curabitur nec metus magna. Phasellus imperdiet, orci ut egestas =
+fermentum, diam lacus vehicula felis, eget feugiat velit tortor quis =
+tellus. Aliquam at massa ut purus ultrices molestie et a ligula. =
+Maecenas tempus at tellus quis malesuada.</p><p style=3D"margin: 0px 0px =
+14px; text-align: justify; font-size: 11px; font-family: Arial; ">Nam =
+sagittis rutrum tellus nec volutpat. Fusce ac leo quis dui eleifend =
+scelerisque. In adipiscing pretium sapien at ullamcorper. Sed nec porta =
+leo. Curabitur dapibus commodo rutrum. Nulla in odio elit. Sed id =
+sodales sapien, at fringilla purus. Quisque ut volutpat odio. Curabitur =
+et hendrerit dui, blandit auctor =
+erat.</p></div><div><br></div></body></html>=
+
+--Apple-Mail=_9B1210FB-6A7F-40A6-BB28-A7A7B7C010C6--

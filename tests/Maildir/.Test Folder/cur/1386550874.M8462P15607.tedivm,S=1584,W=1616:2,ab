@@ -1,0 +1,32 @@
+Return-Path: <tedivm@tedivm.com>
+Delivered-To: testuser@tedivm.com
+Received: from localhost (localhost [127.0.0.1])
+	by figment.tedivm.com (Postfix) with ESMTP id 439E245C3D
+	for <testuser@tedivm.com>; Sun,  1 Dec 2013 22:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tedivm.com; h=
+	x-mailer:mime-version:to:date:date:message-id:subject:subject
+	:content-transfer-encoding:content-type:content-type:from:from;
+	 s=dkim; t=1385964009; x=1386828009; bh=m/dFGOLhkezPdfI8JtcU4eB/
+	iCmLrtX/CE8zBFG60fk=; b=d24EhG9Xw+4I29OLj3683n5GPFN6fyIyvkvGlEq7
+	I+LsVWGSLmXn7GjhdsC2eSgzVj2rpTKZqlME6Fwj6aYCrZ0BVu+nP1D5rwZq5xhx
+	w321thJeOoAoZ2O2DBc8cM/5p/W1DeL6vhwvGlOVPVAJhq5KA8cFB66OMOCRAOwC
+	aG4=
+X-Virus-Scanned: Debian amavisd-new at debian
+Received: from figment.tedivm.com ([127.0.0.1])
+	by localhost (figment.tedivm.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 8ojQ3QDQJ95M for <testuser@tedivm.com>;
+	Sun,  1 Dec 2013 22:00:09 -0800 (PST)
+Received: from [10.0.42.10] (c-67-180-166-128.hsd1.ca.comcast.net [67.180.166.128])
+	by figment.tedivm.com (Postfix) with ESMTPSA id 001D545C38
+	for <testuser@tedivm.com>; Sun,  1 Dec 2013 22:00:07 -0800 (PST)
+From: Robert Hafner <tedivm@tedivm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Subject: Folder Email Three
+Message-Id: <95B778EB-B825-4B30-B73B-0FBE16BEF9F4@tedivm.com>
+Date: Sun, 1 Dec 2013 22:00:07 -0800
+To: "testuser@tedivm.com" <testuser@tedivm.com>
+Mime-Version: 1.0 (Mac OS X Mail 6.6 \(1510\))
+X-Mailer: Apple Mail (2.1510)
+
+This email is *totally* in a folder.
