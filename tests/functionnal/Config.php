@@ -429,6 +429,7 @@ class Config extends DbTestCase {
          'classic'         => 'Classic',
          'clockworkorange' => 'Clockworkorange',
          'dark'            => 'Dark',
+         'darker'          => 'Darker',
          'flood'           => 'Flood',
          'greenflat'       => 'Greenflat',
          'hipster'         => 'Hipster',
