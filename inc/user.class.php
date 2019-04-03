@@ -863,7 +863,7 @@ class User extends CommonDBTM {
    function post_updateItem($history = 1) {
       //handle timezone change for current user
       if ($this->fields['id'] == Session::getLoginUserID()) {
-         if ('null' == strtolower($this->fields['timezone'])) {
+         if (null == $this->fields['timezone'] || 'null' === strtolower($this->fields['timezone'])) {
             unset($_SESSION['glpi_tz']);
          } else {
             $_SESSION['glpi_tz'] = $this->fields['timezone'];
