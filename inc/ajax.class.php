@@ -434,9 +434,14 @@ class Ajax {
                   });
                }
 
-               var newIndex = ui.tab.parent().children().index(ui.tab);
-               $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-                  { itemtype: '$type', id: '$ID', tab: newIndex });
+               var tabs = ui.tab.parent().children();
+               if (tabs.length > 1) {
+                  var newIndex = tabs.index(ui.tab);
+                  $.get(
+                     '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
+                     { itemtype: '$type', id: '$ID', tab: newIndex }
+                  );
+               }
             },
             load: function(event) {
                var _url = window.location.href;

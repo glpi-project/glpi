@@ -7010,6 +7010,31 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    /**
+    * Define manually current tabs to set specific order
+    *
+    * @param array &$tab    Tab array passed as reference
+    * @param array $options Options
+    *
+    * @return CommonITILObject
+    */
+   protected function defineDefaultObjectTabs(array &$tab, array $options) {
+      $withtemplate = 0;
+      if (isset($options['withtemplate'])) {
+         $withtemplate = $options['withtemplate'];
+      }
+      //timeline first, then main, then the rest?
+      $local_tabs = $this->getTabNameForItem($this, $withtemplate);
+      foreach ($local_tabs as $key => $val) {
+         if (!empty($val)) {
+            $tab[static::class . '$' . $key] = $val;
+         }
+         if (1 === count($tab)) {
+            $tab[$this->getType().'$main'] = $this->getTypeName(1);
+         }
+      }
+      return $this;
+   }
+   /**
     * Get common request criteria
     *
     * @since 10.0.0

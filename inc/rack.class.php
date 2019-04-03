@@ -64,8 +64,9 @@ class Rack extends CommonDBTM {
 
    function defineTabs($options = []) {
       $ong = [];
-      $this->addDefaultFormTab($ong)
+      $this
          ->addStandardTab('Item_Rack', $ong, $options)
+         ->addDefaultFormTab($ong)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
@@ -76,6 +77,7 @@ class Rack extends CommonDBTM {
       ;
       return $ong;
    }
+
 
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
