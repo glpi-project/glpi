@@ -476,7 +476,7 @@ class KnowbaseItem extends CommonDBVisible {
       $has_active_profile = isset($_SESSION["glpiactiveprofile"])
          && isset($_SESSION["glpiactiveprofile"]['id']);
       $has_active_entity = isset($_SESSION["glpiactiveentities"])
-         && isset($_SESSION["glpiactiveentities"]['id']);
+         && count($_SESSION["glpiactiveentities"]);
 
       $where = [];
       $join = [
