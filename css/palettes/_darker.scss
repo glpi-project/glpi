@@ -81,6 +81,14 @@ body a .fas,
    color: #AAAAAA !important;
 }
 
+#see_debug .fa-bug {
+   color: #0c0c0b !important;
+}
+
+#c_preference a.debugon {
+   color: #f00 !important;
+}
+
 #champRecherche .fa {
    color: #2c2b2a !important;
 }
@@ -155,7 +163,7 @@ td.subheader {
 #searchcriteria,
 #searchcriterias .tab_cadre_fixe,
 .slidepanel,
-.qtip-bootstrap,
+
 .sp-picker-container,
 .ui-datepicker,
 .actor-head,
@@ -170,6 +178,14 @@ ul#menu ul.ssmenu,
    border: 1px solid transparent !important;
    box-shadow: none;
 }
+
+.qtip-bootstrap {
+   background: #1d1c1c !important;
+   color: #AAAAAA;
+   border: 1px solid transparent !important;
+   box-shadow: none;
+}
+
 
 .main_form tr.headerRow th {
    background: #3a3938 !important;
@@ -286,6 +302,13 @@ ul#menu ul.ssmenu,
    color: #AAAAAA;
 }
 
+#planning_filter h3 {
+   background: #242323;
+}
+#planning_filter ul.filters > li:nth-child(even) {
+   background: #3a3938;
+}
+
 textarea,
 select,
 body input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]),
@@ -350,6 +373,29 @@ a {
 
 .main_form tr.headerRow th {
    color: #262626;
+}
+
+.timeline_history .h_content.ITILFollowup,
+.timeline_history .h_content.KnowbaseItemComment {
+   background-color: #686868;
+   color: rgb(209, 209, 209);
+}
+
+.timeline_history .b_right {
+   color: #FFF;
+}
+
+.timeline_history .h_content.ITILContent {
+   background-color: #506852;
+   color: #bdedba;
+}
+
+.timeline_choices li i.fa {
+   color: inherit !important;
+}
+
+.timeline_history .h_content.Solution .solimg {
+   color: rgba(66, 91, 100, 0.1) !important;
 }
 
 /* ====== HEADER ====== */
