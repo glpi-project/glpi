@@ -73,12 +73,15 @@ body,
 body a,
 body a:link,
 #c_ssmenu2 ul li a,
-.fa, .fa, .far,
+body .fa,
+body .fa,
+body .far,
 body a .fa,
 body a .far,
 body a .fas,
+body #page a.fa:link,
 #c_preference a.fa {
-   color: #AAAAAA !important;
+   color: #AAAAAA;
 }
 
 #see_debug .fa-bug {
