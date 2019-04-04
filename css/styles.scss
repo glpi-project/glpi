@@ -1532,6 +1532,20 @@ td {
    margin: 0 3px;
 }
 
+.priority_block {
+   white-space: nowrap;
+   border: 1px solid transparent;
+   padding-right: 3px;
+   border-radius: 2px;
+
+   span {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+   }
+}
+
 .reset-search {
    color: #ccc !important;
 

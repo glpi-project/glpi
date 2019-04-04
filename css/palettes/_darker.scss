@@ -257,6 +257,15 @@ ul#menu ul.ssmenu,
    border: 1px solid #515151;
 }
 
+.warning {
+   color: #e28b8b;
+   background-color: #2c0202;
+
+   .fa {
+      color: #e28b8b !important;
+   }
+}
+
 .breadcrumb_item:before,
 .breadcrumb_item:nth-of-type(1):after,
 .breadcrumb_item:nth-of-type(2):after {
