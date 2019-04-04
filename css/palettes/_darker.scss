@@ -90,12 +90,16 @@ body a .fas,
    color: #AAAAAA;
 }
 
-body .tab_bg_2_2, body .tab_bg_1_2{
+body .tab_bg_2_2, body .tab_bg_1_2 {
    color: #4e0404;
 
    a {
       color: #4e0404 !important;
    }
+}
+
+.tab_bg_4 {
+   background-color: #42403f;
 }
 
 .main_form,
