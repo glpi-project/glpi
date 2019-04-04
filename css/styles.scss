@@ -1535,8 +1535,9 @@ td {
 .priority_block {
    white-space: nowrap;
    border: 1px solid transparent;
-   padding-right: 3px;
+   padding-right: 6px;
    border-radius: 2px;
+   display: inline-block;
 
    span {
       width: 20px;

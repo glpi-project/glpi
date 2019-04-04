@@ -6333,10 +6333,14 @@ class Ticket extends CommonITILObject {
       $rand = mt_rand();
       if ($job->getFromDBwithData($ID, 0)) {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
+         $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          // $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
-                                                               $job->fields["id"])."</td>";
+         echo "<td>
+            <div class='priority_block' style='border-color: $bgcolor'>
+               <span style='background: $bgcolor'></span>&nbsp;$name
+            </div>
+         </td>";
          echo "<td class='center'>";
 
          if (isset($job->users[CommonITILActor::REQUESTER])
