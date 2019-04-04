@@ -120,7 +120,7 @@ body .tab_bg_2_2, body .tab_bg_1_2 {
 .tab_cadrehov th,
 .tab_cadrehov td,
 .tab_cadre td,
-.tab_cadre_fixehov td, {
+.tab_cadre_fixehov td {
    border-bottom: 1px solid #52504f;
 }
 
@@ -130,6 +130,7 @@ body .tab_bg_2_2, body .tab_bg_1_2 {
 .tab_cadrehov th, h2.header,
 td.subheader {
    background: #242323;
+   color: #AAA;
 }
 
 .ui-tabs,
