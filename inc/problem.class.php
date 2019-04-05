@@ -700,7 +700,7 @@ class Problem extends CommonITILObject {
       }
 
       $criteria = [
-         'SELECT'          => 'glpi_problems.id',
+         'SELECT'          => ['glpi_problems.id', 'glpi_problems.date_mod'],
          'DISTINCT'        => true,
          'FROM'            => 'glpi_problems',
          'LEFT JOIN'       => [
