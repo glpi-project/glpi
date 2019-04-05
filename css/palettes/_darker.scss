@@ -398,6 +398,28 @@ a {
    color: rgba(66, 91, 100, 0.1) !important;
 }
 
+.racks_col h2 {
+   background: #161514;
+}
+
+.grid-rack {
+   background-color: #4e4d4b;
+   border-color: #161514;
+}
+
+.rack_side_block {
+   background-color: #4e4d4b;
+   border: none;
+
+   h3, .doaction_progress_text {
+      color: #AAA;
+   }
+
+   .doaction_progress {
+      border: none;
+   }
+}
+
 /* ====== HEADER ====== */
 
 #header_top {

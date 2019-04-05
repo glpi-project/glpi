@@ -5924,7 +5924,10 @@ ul.indexes {
    }
 
    width: 217px;
-   background: repeating-linear-gradient(#FFF, #FFF 21px, #F0F0F0 21px, #F0F0F0 42px);
+   background: #FFF repeating-linear-gradient(transparent,
+                                                transparent 21px,
+                                              rgba(0, 0, 0, .1) 21px,
+                                              rgba(0, 0, 0, .1) 42px);
    z-index: 1;
    border: 1px solid #D4D4D4;
    float: left;
