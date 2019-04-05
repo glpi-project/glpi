@@ -631,7 +631,7 @@ class CommonDBTM extends CommonGLPI {
             if (!isset($this->fields['id'])
                   || is_null($this->fields['id'])
                   || ($this->fields['id'] == 0)) {
-               $this->fields['id'] = $DB->insertId();
+               $this->fields['id'] = $DB->insertId(self::getTable());
             }
 
             return $this->fields['id'];
