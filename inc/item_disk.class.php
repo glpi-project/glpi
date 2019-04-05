@@ -358,8 +358,12 @@ class Item_Disk extends CommonDBChild {
             if ($data['totalsize'] > 0) {
                $percent = round(100*$data['freesize']/$data['totalsize']);
             }
-            Html::displayProgressBar('100', $percent, ['simple'       => true,
-                                                            'forcepadding' => false]);
+            $rand = mt_rand();
+            Html::progressBar("percent$rand", [
+               'create'  => true,
+               'percent' => $percent,
+               'message' => "$percent %",
+            ]);
             echo "</td>";
             echo "<td class=\"center\">";
 

@@ -414,12 +414,8 @@ a {
    background-color: #4e4d4b;
    border: none;
 
-   h3, .doaction_progress_text {
+   h3 {
       color: #AAA;
-   }
-
-   .doaction_progress {
-      border: none;
    }
 }
 
@@ -428,6 +424,14 @@ a {
 }
 
 .grid-stack-item .item_rack_icon {
+   color: #000;
+}
+
+.doaction_progress {
+   border: none;
+}
+
+.doaction_progress_text {
    color: #000;
 }
 
