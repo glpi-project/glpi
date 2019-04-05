@@ -182,26 +182,6 @@ class MySql extends AbstractDatabase
         return $iterator;
     }
 
-    public function listFields(string $table, bool $usecache = true)
-    {
-        static $cache = [];
-        if (!$this->cache_disabled && $usecache && isset($cache[$table])) {
-            return $cache[$table];
-        }
-        $result = $this->rawQuery("SHOW COLUMNS FROM `$table`");
-        if ($result) {
-            if ($this->numrows($result) > 0) {
-                $cache[$table] = [];
-                while ($data = $this->fetchAssoc($result)) {
-                    $cache[$table][$data["Field"]] = $data;
-                }
-                return $cache[$table];
-            }
-            return [];
-        }
-        return false;
-    }
-
     /**
      * Get number of affected rows in previous MySQL operation
      *

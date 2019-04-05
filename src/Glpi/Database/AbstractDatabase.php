@@ -467,7 +467,31 @@ abstract class AbstractDatabase
      *
      * @return mixed list of fields
      */
-    abstract public function listFields(string $table, bool $usecache = true);
+    public function listFields(string $table, bool $usecache = true)
+    {
+        static $cache = [];
+        if (!$this->cache_disabled && $usecache && isset($cache[$table])) {
+            return $cache[$table];
+        }
+
+        $iterator = $this->request([
+           'SELECT' => 'column_name AS COLUMN_NAME',
+           'FROM'   => 'information_schema.columns',
+           'WHERE'  => [
+              'table_schema' => $this->dbdefault,
+              'table_name'   => $table
+           ]
+        ]);
+        if (count($iterator)) {
+            $cache[$table] = [];
+            while ($data = $iterator->next()) {
+                $cache[$table][$data["COLUMN_NAME"]] = $data;
+            }
+            return $cache[$table];
+        }
+
+        return [];
+    }
 
     /**
      * Free result memory
