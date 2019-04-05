@@ -142,6 +142,7 @@ class Postgres extends AbstractDatabase
 
     public function getLock(string $name): bool
     {
+        return true;
         $name          = addslashes($this->dbdefault.'.'.$name);
         $query         = "SELECT GET_LOCK('$name', 0)";
         $result        = $this->rawQuery($query);
@@ -152,6 +153,7 @@ class Postgres extends AbstractDatabase
 
     public function releaseLock(string $name): bool
     {
+        return true;
         $name          = addslashes($this->dbdefault.'.'.$name);
         $query         = "SELECT RELEASE_LOCK('$name')";
         $result        = $this->rawQuery($query);
