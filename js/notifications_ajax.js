@@ -122,6 +122,7 @@
 
       this.startMonitoring = function() {
          this.checkConcurrence();
+         setInterval(this.checkConcurrence.bind(this), this.options.interval);
       };
 
       this.checkPermission = function () {
