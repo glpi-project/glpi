@@ -6512,9 +6512,10 @@ class Html {
 
                      case "template" :
                         echo "<span>";
-                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
-                                       ['alt' => __('Manage templates...'),
-                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo Html::link('<i class="pointer fa fa-layer-group"></i>',
+                                        $CFG_GLPI["root_doc"].$val, [
+                                          'title' => __('Manage templates...')
+                                        ]);
                         echo "</span>";
                         break;
 
