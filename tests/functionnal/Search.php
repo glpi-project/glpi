@@ -414,7 +414,7 @@ class Search extends DbTestCase {
          ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
          ->contains("AND (`glpi_locations`.`id` = 11)")
          ->contains("(`glpi_users`.`id` = 2)")
-         ->contains("OR (`glpi_users`.`id` = '3')")
+         ->contains("OR (`glpi_users`.`id` = 3)")
          // match having
          ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
    }
