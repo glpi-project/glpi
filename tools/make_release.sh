@@ -83,6 +83,10 @@ echo "Clean PHP vendor"
 \find vendor/ -type d -name "example*" -prune -exec rm -rf {} \;
 \find vendor/ -type d -name "design" -prune -exec rm -rf {} \;
 
+echo "Retrieve and build JS/CSS dependencies"
+npm install
+npm run-script build
+
 echo "Minify stylesheets and javascripts"
 $INIT_PWD/vendor/bin/robo minify --load-from tools
 
@@ -108,6 +112,9 @@ echo "Delete various scripts and directories"
 \rm -rf PULL_REQUEST_TEMPLATE.md;
 \rm -rf .tx;
 \find pics/ -type f -name "*.eps" -exec rm -rf {} \;
+\rm -rf nodes_modules;
+\rm -rf package.json;
+\rm -rf package-lock.json;
 
 echo "Creating tarball";
 cd ..;
