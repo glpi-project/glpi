@@ -1781,6 +1781,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       $params = static::getListForItemParams($item);
       unset($params['SELECT']);
+      unset($params['ORDER']);
+      unset($params['ORDERBY']);
       $params['COUNT'] = 'cpt';
       $iterator = $DB->request($params);
 
