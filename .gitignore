@@ -27,5 +27,6 @@ phpunit.xml
 !/css/tiny_mce/**/*.min.css
 /**/*.min.js
 /node_modules/
+.package.hash
 /public/build/
 /public/lib/

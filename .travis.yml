@@ -11,6 +11,10 @@ before_script:
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
+  - nvm install stable # update node
+  - npm update -g npm # update npm
+  - npm ci
+  - npm run-script build-dev
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
   - mysql -u root -e 'create database glpitest;'
   - bin/console glpi:database:install --config-dir=./tests --no-interaction --db-name=glpitest --db-user=root
