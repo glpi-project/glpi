@@ -3420,15 +3420,15 @@ JAVASCRIPT;
                   $name1 = 'realname';
                   $name2 = 'firstname';
                }
-               return " ORDER BY ".$table.$addtable.".$name1 $order,
-                                 ".$table.$addtable.".$name2 $order,
-                                 ".$table.$addtable.".`name` $order";
+               return " ORDER BY ".$this->db->quoteName("$table$addtable.$name1")." $order,
+                                 ".$this->db->quoteName("$table$addtable.$name2")." $order,
+                                 ".$this->db->quoteName("$table$addtable.name")." $order";
             }
-            return " ORDER BY `".$table."`.`name` $order";
+            return " ORDER BY ".$this->db->quoteName("$table.name")." $order";
 
          case "glpi_networkequipments.ip" :
          case "glpi_ipaddresses.name" :
-            return " ORDER BY INET_ATON($table$addtable.$field) $order ";
+            return " ORDER BY INET_ATON(".$this->db->quoteName("$table$addtable.$field").") $order ";
       }
 
       //// Default cases
@@ -3656,36 +3656,36 @@ JAVASCRIPT;
                           "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
                                                                    ['joinparams']);
                      $addaltemail
-                        = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
-                                                        `$ticket_user_table`.`alternative_email`)
-                                                        SEPARATOR '".self::LONGSEP."') AS `".$NAME."_2`, ";
+                        = "GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("$ticket_user_table.users_id").", ' ',
+                                                        ".$this->db->quoteName("$ticket_user_table.alternative_email").")
+                                                        SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME."_2").", ";
                   }
-                  return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '".self::LONGSEP."')
-                                       AS `".$NAME."`,
+                  return " GROUP_CONCAT(DISTINCT ".$this->db->quoteName("$table$addtable.id")." SEPARATOR '".self::LONGSEP."')
+                                       AS ".$this->db->quoteName($NAME).",
                            $addaltemail
                            $ADDITONALFIELDS";
 
                }
-               return " `$table$addtable`.`$field` AS `".$NAME."`,
-                        `$table$addtable`.`realname` AS `".$NAME."_realname`,
-                        `$table$addtable`.`id`  AS `".$NAME."_id`,
-                        `$table$addtable`.`firstname` AS `".$NAME."_firstname`,
+               return " ".$this->db->quoteName("$table$addtable.$field")." AS ".$this->db->quoteName($NAME).",
+                        ".$this->db->quoteName("$table$addtable.realname")." AS ".$this->db->quoteName($NAME."_realname").",
+                        ".$this->db->quoteName("$table$addtable.id")."  AS ".$this->db->quoteName($NAME."_id").",
+                        ".$this->db->quoteName("$table$addtable.firstname")." AS ".$this->db->quoteName($NAME."_firstname").",
                         $ADDITONALFIELDS";
             }
             break;
 
          case "glpi_softwarelicenses.number" :
             if ($meta) {
-               return " FLOOR(SUM(`$table$addtable2`.`$field`)
-                              * COUNT(DISTINCT `$table$addtable2`.`id`)
-                              / COUNT(`$table$addtable2`.`id`)) AS `".$NAME."`,
-                        MIN(`$table$addtable2`.`$field`) AS `".$NAME."_min`,
+               return " FLOOR(SUM(".$this->db->quoteName("$table$addtable2.$field").")
+                              * COUNT(DISTINCT ".$this->db->quoteName("$table$addtable2.id").")
+                              / COUNT(".$this->db->quoteName("$table$addtable2.id").")) AS ".$this->db->quoteName($NAME).",
+                        MIN(".$this->db->quoteName("$table$addtable2.$field").") AS ".$this->db->quoteName($NAME."_min").",
                          $ADDITONALFIELDS";
             } else {
-               return " FLOOR(SUM(`$table$addtable`.`$field`)
-                              * COUNT(DISTINCT `$table$addtable`.`id`)
-                              / COUNT(`$table$addtable`.`id`)) AS `".$NAME."`,
-                        MIN(`$table$addtable`.`$field`) AS `".$NAME."_min`,
+               return " FLOOR(SUM(".$this->db->quoteName("$table$addtable.$field").")
+                              * COUNT(DISTINCT ".$this->db->quoteName("$table$addtable.id").")
+                              / COUNT(".$this->db->quoteName("$table$addtable.id").")) AS ".$this->db->quoteName($NAME).",
+                        MIN(".$this->db->quoteName("$table$addtable.$field").") AS".$this->db->quoteName($NAME."_min").",
                          $ADDITONALFIELDS";
             }
 
@@ -3697,13 +3697,13 @@ JAVASCRIPT;
                if ($meta) {
                   $addtable2 = "_".$meta_type;
                }
-               return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '".self::LONGSEP."') AS `".$NAME."`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."_entities_id`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."_is_dynamic`,
+               return " GROUP_CONCAT(".$this->db->quoteName("$table$addtable.$field")." SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME).",
+                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.entities_id")." SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME."_entities_id").",
+                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_recursive")." SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME."_is_recursive").",
+                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_dynamic")." SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME."_is_dynamic").",
                         $ADDITONALFIELDS";
             }
             break;
@@ -3716,67 +3716,67 @@ JAVASCRIPT;
                if ($meta) {
                   $addtable2 = "_".$meta_type;
                }
-               return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."_profiles_id`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."_is_dynamic`,
+               return " GROUP_CONCAT(".$this->db->quoteName("$table$addtable.completename")." SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME).",
+                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.profiles_id")." SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME."_profiles_id").",
+                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_recursive")." SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME."_is_recursive").",
+                        GROUP_CONCAT(".$this->db->quoteName("glpi_profiles_users$addtable2.is_dynamic")." SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME."_is_dynamic").",
                         $ADDITONALFIELDS";
             }
             break;
 
          case "glpi_auth_tables.name":
             $user_searchopt = self::getOptions('User');
-            return " `glpi_users`.`authtype` AS `".$NAME."`,
-                     `glpi_users`.`auths_id` AS `".$NAME."_auths_id`,
-                     `glpi_authldaps".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`$field`
-                              AS `".$NAME."_".$ID."_ldapname`,
-                     `glpi_authmails".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field`
-                              AS `".$NAME."_mailname`,
+            return " ".$this->db->quoteName("glpi_users.authtype")." AS ".$this->db->quoteName($NAME).",
+                     ".$this->db->quoteName("glpi_users.auths_id")." AS ".$this->db->quoteName($NAME."_auths_id").",
+                     ".$this->db->quoteName("glpi_authldaps".$addtable."_".
+                           self::computeComplexJoinID($user_searchopt[30]['joinparams']).".$field")."
+                              AS ".$this->db->quoteName($NAME."_".$ID."_ldapname").",
+                     ".$this->db->quoteName("glpi_authmails".$addtable."_".
+                           self::computeComplexJoinID($user_searchopt[31]['joinparams']).".$field")."
+                              AS ".$this->db->quoteName($NAME."_mailname").",
                      $ADDITONALFIELDS";
 
          case "glpi_softwareversions.name" :
             if ($meta) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable2`.`$field`, '".self::SHORTSEP."',
-                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."`,
+               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
+                                                     ".$this->db->quoteName("$table$addtable2.$field").", '".self::SHORTSEP."',
+                                                     ".$this->db->quoteName("$table$addtable2.id").") SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             }
             break;
 
          case "glpi_softwareversions.comment" :
             if ($meta) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable2`.`$field`,'".self::SHORTSEP."',
-                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."`,
+               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
+                                                     ".$this->db->quoteName("$table$addtable2.$field").",'".self::SHORTSEP."',
+                                                     ".$this->db->quoteName("$table$addtable2.id").") SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             }
-            return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`name`, ' - ',
-                                                  `$table$addtable`.`$field`, '".self::SHORTSEP."',
-                                                  `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
-                                 AS `".$NAME."`,
+            return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("$table$addtable.name").", ' - ',
+                                                  ".$this->db->quoteName("$table$addtable.$field").", '".self::SHORTSEP."',
+                                                  ".$this->db->quoteName("$table$addtable.id").") SEPARATOR '".self::LONGSEP."')
+                                 AS ".$this->db->quoteName($NAME).",
                      $ADDITONALFIELDS";
 
          case "glpi_states.name" :
             if ($meta && ($meta_type == 'Software')) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable2`.`$field`, '".self::SHORTSEP."',
-                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
-                                     AS `".$NAME."`,
+               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwares.name").", ' - ',
+                                                     ".$this->db->quoteName("glpi_softwareversions$addtable.name").", ' - ',
+                                                     ".$this->db->quoteName("$table$addtable2.$field").", '".self::SHORTSEP."',
+                                                     ".$this->db->quoteName("$table$addtable2.id").") SEPARATOR '".self::LONGSEP."')
+                                     AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             } else if ($itemtype == 'Software') {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'".self::SHORTSEP."',
-                                                     `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
-                                    AS `".$NAME."`,
+               return " GROUP_CONCAT(DISTINCT CONCAT(".$this->db->quoteName("glpi_softwareversions.name").", ' - ',
+                                                     ".$this->db->quoteName("$table$addtable.$field").",'".self::SHORTSEP."',
+                                                     ".$this->db->quoteName("$table$addtable.id").") SEPARATOR '".self::LONGSEP."')
+                                    AS ".$this->db->quoteName($NAME).",
                         $ADDITONALFIELDS";
             }
             break;
@@ -3802,13 +3802,13 @@ JAVASCRIPT;
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
+         $tocompute = str_replace("TABLE", $this->db->quoteName("$table$addtable"), $tocompute);
       }
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "count" :
-               return " COUNT(DISTINCT `$table$addtable`.`$field`) AS `".$NAME."`,
+               return " COUNT(DISTINCT ".$this->db->quoteName("$table$addtable.$field").") AS ".$this->db->quoteName($NAME).",
                      $ADDITONALFIELDS";
 
             case "date_delay" :
@@ -3819,21 +3819,21 @@ JAVASCRIPT;
 
                $add_minus = '';
                if (isset($searchopt[$ID]["datafields"][3])) {
-                  $add_minus = "-`$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
+                  $add_minus = "-".$this->db->quoteName("$table$addtable.".$searchopt[$ID]["datafields"][3]);
                }
                if ($meta
                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT(DISTINCT ADDDATE(`$table$addtable`.`".
-                                                            $searchopt[$ID]["datafields"][1]."`,
-                                                         INTERVAL (`$table$addtable`.`".
-                                                                    $searchopt[$ID]["datafields"][2].
-                                                                    "` $add_minus) $interval)
-                                         SEPARATOR '".self::LONGSEP."') AS `".$NAME."`,
+                  return " GROUP_CONCAT(DISTINCT ADDDATE(".$this->db->quoteName("$table$addtable.".
+                                                            $searchopt[$ID]["datafields"][1]).",
+                                                         INTERVAL (".$this->db->quoteName("$table$addtable.".
+                                                                    $searchopt[$ID]["datafields"][2]).
+                                                                    " $add_minus) $interval)
+                                         SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME).",
                            $ADDITONALFIELDS";
                }
-               return "ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
-                               INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
-                                          "` $add_minus) $interval) AS `".$NAME."`,
+               return "ADDDATE(".$this->db->quoteName("$table$addtable.".$searchopt[$ID]["datafields"][1]).",
+                               INTERVAL (".$this->db->quoteName("$table$addtable.".$searchopt[$ID]["datafields"][2]).
+                                          " $add_minus) $interval) AS ".$this->db->quoteName($NAME).",
                        $ADDITONALFIELDS";
 
             case "itemlink" :
@@ -3845,17 +3845,17 @@ JAVASCRIPT;
                       $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
                                                              '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid
                                              SEPARATOR '".self::LONGSEP."')
-                                     AS `".$NAME."_trans`, ";
+                                     AS ".$this->db->quoteName($NAME."_trans").", ";
                   }
 
                   return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
-                                                        `$table$addtable`.`id`) ORDER BY `$table$addtable`.`id`
-                                        SEPARATOR '".self::LONGSEP."') AS `".$NAME."`,
+                                                        ".$this->db->quoteName("$table$addtable.id").") ORDER BY ".$this->db->quoteName("$table$addtable.id")."
+                                        SEPARATOR '".self::LONGSEP."') AS ".$this->db->quoteName($NAME).",
                            $TRANS
                            $ADDITONALFIELDS";
                }
-               return " $tocompute AS `".$NAME."`,
-                        `$table$addtable`.`id` AS `".$NAME."_id`,
+               return " $tocompute AS ".$this->db->quoteName($NAME).",
+                        ".$this->db->quoteName("$table$addtable.id")." AS ".$this->db->quoteName($NAME."_id").",
                         $ADDITONALFIELDS";
          }
       }
@@ -3870,21 +3870,21 @@ JAVASCRIPT;
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
                                                    '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '".self::LONGSEP."')
-                                  AS `".$NAME."_trans`, ";
+                                  AS ".$this->db->quoteName($NAME."_trans").", ";
 
          }
          return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
                                                '".self::SHORTSEP."',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '".self::LONGSEP."')
-                              AS `".$NAME."`,
+                              AS ".$this->db->quoteName($NAME).",
                   $TRANS
                   $ADDITONALFIELDS";
       }
       $TRANS = '';
       if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-         $TRANS = $tocomputetrans." AS `".$NAME."_trans`, ";
+         $TRANS = $tocomputetrans." AS ".$this->db->quoteName($NAME."_trans").", ";
 
       }
-      return "$tocompute AS `".$NAME."`, $TRANS $ADDITONALFIELDS";
+      return "$tocompute AS ".$this->db->quoteName($NAME).", $TRANS $ADDITONALFIELDS";
    }
 
 
@@ -3915,7 +3915,7 @@ JAVASCRIPT;
 
          case 'Notification' :
             if (!Config::canView()) {
-               $condition = " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
+               $condition = " ".$this->db->quoteName("glpi_notifications.itemtype")." NOT IN ('Crontask', 'DBConnection') ";
             }
             break;
 
@@ -3930,12 +3930,12 @@ JAVASCRIPT;
          case 'ProjectTask' :
             $condition  = '';
             $teamtable  = 'glpi_projecttaskteams';
-            $condition .= "`glpi_projects`.`is_template` = 0";
-            $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
-                             AND `$teamtable`.`items_id` = '".Session::getLoginUserID()."')";
+            $condition .= $this->db->quoteName("glpi_projects.is_template")." = 0";
+            $condition .= " AND ((".$this->db->quoteName("$teamtable.itemtype")." = 'User'
+                             AND ".$this->db->quoteName("$teamtable.items_id")." = '".Session::getLoginUserID()."')";
             if (count($_SESSION['glpigroups'])) {
-               $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                    AND `$teamtable`.`items_id`
+               $condition .= " OR (".$this->db->quoteName("$teamtable.itemtype")." = 'Group'
+                                    AND ".$this->db->quoteName("$teamtable.items_id")."
                                        IN (".implode(",", $_SESSION['glpigroups'])."))";
             }
             $condition .= ") ";
@@ -3945,14 +3945,14 @@ JAVASCRIPT;
             $condition = '';
             if (!Session::haveRight("project", Project::READALL)) {
                $teamtable  = 'glpi_projectteams';
-               $condition .= "(`glpi_projects`.users_id = '".Session::getLoginUserID()."'
-                               OR (`$teamtable`.`itemtype` = 'User'
-                                   AND `$teamtable`.`items_id` = '".Session::getLoginUserID()."')";
+               $condition .= "(".$this->db->quoteName("glpi_projects.users_id")." = '".Session::getLoginUserID()."'
+                               OR (".$this->db->quoteName("$teamtable.itemtype")." = 'User'
+                                   AND ".$this->db->quoteName("$teamtable.items_id")." = '".Session::getLoginUserID()."')";
                if (count($_SESSION['glpigroups'])) {
-                  $condition .= " OR (`glpi_projects`.`groups_id`
+                  $condition .= " OR (".$this->db->quoteName("glpi_projects.groups_id")."
                                        IN (".implode(",", $_SESSION['glpigroups'])."))";
-                  $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                      AND `$teamtable`.`items_id`
+                  $condition .= " OR (".$this->db->quoteName("$teamtable.itemtype")." = 'Group'
+                                      AND ".$this->db->quoteName("$teamtable.items_id")."
                                           IN (".implode(",", $_SESSION['glpigroups'])."))";
                }
                $condition .= ") ";
@@ -3967,47 +3967,47 @@ JAVASCRIPT;
                $searchopt
                   = &self::getOptions($itemtype);
                $requester_table
-                  = '`glpi_tickets_users_'.
+                  = $this->db->quoteName('glpi_tickets_users_'.
                      self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
-                                                          ['joinparams']).'`';
+                                                          ['joinparams']));
                $requestergroup_table
-                  = '`glpi_groups_tickets_'.
+                  = $this->db->quoteName('glpi_groups_tickets_'.
                      self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
-                                                          ['joinparams']).'`';
+                                                          ['joinparams']));
 
                $assign_table
-                  = '`glpi_tickets_users_'.
+                  = $this->db->quoteName('glpi_tickets_users_'.
                      self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
-                                                          ['joinparams']).'`';
+                                                          ['joinparams']));
                $assigngroup_table
-                  = '`glpi_groups_tickets_'.
+                  = $this->db->quoteName('glpi_groups_tickets_'.
                      self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
-                                                          ['joinparams']).'`';
+                                                          ['joinparams']));
 
                $observer_table
-                  = '`glpi_tickets_users_'.
+                  = $this->db->quoteName('glpi_tickets_users_'.
                      self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
-                                                          ['joinparams']).'`';
+                                                          ['joinparams']));
                $observergroup_table
-                  = '`glpi_groups_tickets_'.
+                  = $this->db->quoteName('glpi_groups_tickets_'.
                      self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
-                                                          ['joinparams']).'`';
+                                                          ['joinparams']));
 
                $condition = "(";
 
                if (Session::haveRight("ticket", Ticket::READMY)) {
-                    $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
-                                    OR $observer_table.users_id = '".Session::getLoginUserID()."'
-                                    OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'";
+                    $condition .= " ".$this->db->quoteName("$requester_table.users_id")." = '".Session::getLoginUserID()."'
+                                    OR ".$this->db->quoteName("$observer_table.users_id")." = '".Session::getLoginUserID()."'
+                                    OR ".$this->db->quoteName("glpi_tickets.users_id_recipient")." = '".Session::getLoginUserID()."'";
                } else {
                     $condition .= "0=1";
                }
 
                if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR $requestergroup_table.`groups_id`
+                     $condition .= " OR ".$this->db->quoteName("$requestergroup_table.groups_id")."
                                              IN (".implode(",", $_SESSION['glpigroups']).")";
-                     $condition .= " OR $observergroup_table.`groups_id`
+                     $condition .= " OR ".$this->db->quoteName("$observergroup_table.groups_id")."
                                              IN (".implode(",", $_SESSION['glpigroups']).")";
                   }
                }
@@ -4018,20 +4018,20 @@ JAVASCRIPT;
 
                if (Session::haveRight("ticket", Ticket::READASSIGN)) { // assign to me
 
-                  $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
+                  $condition .=" OR ".$this->db->quoteName("$assign_table.users_id")." = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR $assigngroup_table.`groups_id`
+                     $condition .= " OR ".$this->db->quoteName("$assigngroup_table.groups_id")."
                                              IN (".implode(",", $_SESSION['glpigroups']).")";
                   }
                   if (Session::haveRight('ticket', Ticket::ASSIGN)) {
-                     $condition .= " OR `glpi_tickets`.`status`='".CommonITILObject::INCOMING."'";
+                     $condition .= " OR ".$this->db->quoteName("glpi_tickets.status")."='".CommonITILObject::INCOMING."'";
                   }
                }
 
                if (Session::haveRightsOr('ticketvalidation',
                                          [TicketValidation::VALIDATEINCIDENT,
                                                TicketValidation::VALIDATEREQUEST])) {
-                  $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
+                  $condition .= " OR ".$this->db->quoteName("glpi_ticketvalidations.users_id_validate")."
                                           = '".Session::getLoginUserID()."'";
                }
                $condition .= ") ";
@@ -4043,37 +4043,37 @@ JAVASCRIPT;
             if ($itemtype == 'Change') {
                $right       = 'change';
                $table       = 'changes';
-               $groupetable = "`glpi_changes_groups_";
+               $groupetable = "glpi_changes_groups_";
             } else if ($itemtype == 'Problem') {
                $right       = 'problem';
                $table       = 'problems';
-               $groupetable = "`glpi_groups_problems_";
+               $groupetable = "glpi_groups_problems_";
             }
             // Same structure in addDefaultJoin
             $condition = '';
             if (!Session::haveRight("$right", $itemtype::READALL)) {
                $searchopt       = &self::getOptions($itemtype);
                if (Session::haveRight("$right", $itemtype::READMY)) {
-                  $requester_table      = '`glpi_'.$table.'_users_'.
+                  $requester_table      = $this->db->quoteName('glpi_'.$table.'_users_'.
                                           self::computeComplexJoinID($searchopt[4]['joinparams']
-                                                                     ['beforejoin']['joinparams']).'`';
-                  $requestergroup_table = $groupetable.
+                                                                     ['beforejoin']['joinparams']));
+                  $requestergroup_table = $this->db->quoteName($groupetable.
                                           self::computeComplexJoinID($searchopt[71]['joinparams']
-                                                                     ['beforejoin']['joinparams']).'`';
+                                                                     ['beforejoin']['joinparams']));
 
-                  $observer_table       = '`glpi_'.$table.'_users_'.
+                  $observer_table       = $this->db->quoteName('glpi_'.$table.'_users_'.
                                           self::computeComplexJoinID($searchopt[66]['joinparams']
-                                                                     ['beforejoin']['joinparams']).'`';
-                  $observergroup_table  = $groupetable.
+                                                                     ['beforejoin']['joinparams']));
+                  $observergroup_table  = $this->db->quoteName($groupetable.
                                           self::computeComplexJoinID($searchopt[65]['joinparams']
-                                                                    ['beforejoin']['joinparams']).'`';
+                                                                    ['beforejoin']['joinparams']));
 
-                  $assign_table         = '`glpi_'.$table.'_users_'.
+                  $assign_table         = $this->db->quoteName('glpi_'.$table.'_users_'.
                                           self::computeComplexJoinID($searchopt[5]['joinparams']
-                                                                     ['beforejoin']['joinparams']).'`';
-                  $assigngroup_table    = $groupetable.
+                                                                     ['beforejoin']['joinparams']));
+                  $assigngroup_table    = $this->db->quoteName($groupetable.
                                           self::computeComplexJoinID($searchopt[8]['joinparams']
-                                                                     ['beforejoin']['joinparams']).'`';
+                                                                     ['beforejoin']['joinparams']));
                }
                $condition = "(";
 
@@ -4081,12 +4081,12 @@ JAVASCRIPT;
                   $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                                  OR $observer_table.users_id = '".Session::getLoginUserID()."'
                                  OR $assign_table.users_id = '".Session::getLoginUserID()."'
-                                 OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
+                                 OR ".$this->db->quoteName("glpi_".$table.".users_id_recipient")." = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $my_groups_keys = "'" . implode("','", $_SESSION['glpigroups']) . "'";
-                     $condition .= " OR $requestergroup_table.groups_id IN ($my_groups_keys)
-                                 OR $observergroup_table.groups_id IN ($my_groups_keys)
-                                 OR $assigngroup_table.groups_id IN ($my_groups_keys)";
+                     $condition .= " OR ".$this->db->quoteName("$requestergroup_table.groups_id")." IN ($my_groups_keys)
+                                 OR ".$this->db->quoteName("$observergroup_table.groups_id")." IN ($my_groups_keys)
+                                 OR ".$this->db->quoteName("$assigngroup_table.groups_id")." IN ($my_groups_keys)";
                   }
                } else {
                   $condition .= "0=1";
@@ -4099,7 +4099,7 @@ JAVASCRIPT;
          case 'Config':
             $availableContexts = ['core'] + Plugin::getPlugins();
             $availableContexts = implode("', '", $availableContexts);
-            $condition = "`context` IN ('$availableContexts')";
+            $condition = $this->db->quoteName('context') . " IN ('$availableContexts')";
             break;
 
          case 'SavedSearch':
@@ -4288,7 +4288,7 @@ JAVASCRIPT;
          case "glpi_users.name" :
             if ($itemtype == 'User') { // glpi_users case / not link table
                if (in_array($searchtype, ['equals', 'notequals'])) {
-                  return " $link `$table`.`id`".$this->getSearchFromType($searchtype, $val, $nott, $inittable);
+                  return " $link ".$this->db->quoteName("$table.id").$this->getSearchFromType($searchtype, $val, $nott, $inittable);
                }
                return $this->makeTextCriteria($this->db->quoteName("$table.$field"), $val, $nott, $link);
             }
@@ -4301,8 +4301,8 @@ JAVASCRIPT;
             }
 
             if (in_array($searchtype, ['equals', 'notequals'])) {
-               return " $link (`$table`.`id`".$this->getSearchFromType($searchtype, $val, $nott, $inittable).
-                               (($val == 0)?" OR `$table`.`id` IS".
+               return " $link (".$this->db->quoteName("$table.id").$this->getSearchFromType($searchtype, $val, $nott, $inittable).
+                               (($val == 0)?" OR ".$this->db->quoteName("$table.id")." IS".
                                    (($searchtype == "notequals")?" NOT":"")." NULL":'').') ';
             }
             $toadd   = '';
@@ -5125,7 +5125,7 @@ JAVASCRIPT;
                case 'item_item' :
                   // Item_Item join
                   $specific_leftjoin = " LEFT JOIN ".$this->db->quoteName($new_table)." $AS
-                                          ON ((`$rt`.`id`
+                                          ON ((".$this->db->quoteName("$rt.id")."
                                                 = ".$this->db->quoteName("$nt.".getForeignKeyFieldForTable($cleanrt)."_1")."
                                                OR ".$this->db->quoteName("$rt.id")."
                                                  = ".$this->db->quoteName("$nt.".getForeignKeyFieldForTable($cleanrt)."_2").")
@@ -5248,11 +5248,11 @@ JAVASCRIPT;
          case 'User' :
          case 'Group' :
             array_push($already_link_tables2, getTableForItemType($to_type));
-            return "$LINK `$to_table`
+            return "$LINK ".$this->db->quoteName("$to_table")."
                         ON (".$this->db->quoteName("$from_table.$to_fk")." = ".$this->db->quoteName("$to_table.id").") ";
          case 'Budget' :
             array_push($already_link_tables2, getTableForItemType($to_type));
-            return "$LINK `glpi_infocoms`
+            return "$LINK ".$this->db->quoteName("glpi_infocoms")."
                         ON (".$this->db->quoteName("$from_table.id")." = ".$this->db->quoteName("glpi_infocoms.items_id")."
                             AND ".$this->db->quoteName("glpi_infocoms.itemtype")." = ".$this->db->quote($from_type).")
                     $LINK ".$this->db->quoteName($to_table)."
@@ -5321,32 +5321,32 @@ JAVASCRIPT;
                case 'Phone' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = ".$this->db->quote($to_type)."
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_phones`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
+                  return " $LINK ".$this->db->quoteName("glpi_computers_items")." AS ".$this->db->quoteName("glpi_computers_items_$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.computers_id")."
+                                       = ".$this->db->quoteName("glpi_computers.id")."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.itemtype")." = ".$this->db->quote($to_type)."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.is_deleted")." = 0)
+                           $LINK ".$this->db->quoteName("glpi_phones")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.items_id")." = ".$this->db->quoteName("glpi_phones.id").") ";
 
                case 'Software' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
-                  return " $LINK `glpi_computers_softwareversions`
-                                    AS `glpi_computers_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`
-                                  AND `glpi_computers_softwareversions_$complexjoin$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
-                              ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`softwareversions_id`
-                                       = `glpi_softwareversions_$complexjoin$to_type`.`id`)
-                           $LINK `glpi_softwares`
-                              ON (`glpi_softwareversions_$complexjoin$to_type`.`softwares_id`
-                                       = `glpi_softwares`.`id`)
-                           LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$complexjoin$to_type`
-                              ON (`glpi_softwares`.`id`
-                                       = `glpi_softwarelicenses_$complexjoin$to_type`.`softwares_id`".
+                  return " $LINK ".$this->db->quoteName("glpi_computers_softwareversions")."
+                                    AS ".$this->db->quoteName("glpi_computers_softwareversions_$complexjoin$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_softwareversions_$complexjoin$to_type.computers_id")."
+                                       = ".$this->db->quoteName("glpi_computers.id")."
+                                  AND ".$this->db->quoteName("glpi_computers_softwareversions_$complexjoin$to_type.is_deleted")." = 0)
+                           $LINK ".$this->db->quoteName("glpi_softwareversions")." AS ".$this->db->quoteName("glpi_softwareversions_$complexjoin$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_softwareversions_$complexjoin$to_type.softwareversions_id")."
+                                       = ".$this->db->quoteName("glpi_softwareversions_$complexjoin$to_type.id").")
+                           $LINK ".$this->db->quoteName("glpi_softwares")."
+                              ON (".$this->db->quoteName("glpi_softwareversions_$complexjoin$to_type.softwares_id")."
+                                       = ".$this->db->quoteName("glpi_softwares.id").")
+                           LEFT JOIN ".$this->db->quoteName("glpi_softwarelicenses")." AS ".$this->db->quoteName("glpi_softwarelicenses_$complexjoin$to_type")."
+                              ON (".$this->db->quoteName("glpi_softwares.id")."
+                                       = ".$this->db->quoteName("glpi_softwarelicenses_$complexjoin$to_type.softwares_id").
                                   getEntitiesRestrictRequest(' AND',
                                                              "glpi_softwarelicenses_$complexjoin$to_type",
                                                              '', '', true).") ";
@@ -5358,13 +5358,13 @@ JAVASCRIPT;
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = ".$this->db->quote($from_type)."
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`) ";
+                  return " $LINK ".$this->db->quoteName("glpi_computers_items")." AS ".$this->db->quoteName("glpi_computers_items_$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.items_id")." = ".$this->db->quoteName("glpi_monitors.id")."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.itemtype")." = ".$this->db->quote($from_type)."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.is_deleted")." = 0)
+                           $LINK ".$this->db->quoteName("glpi_computers")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.computers_id")."
+                                       = ".$this->db->quoteName("glpi_computers.id").") ";
             }
             break;
 
@@ -5373,13 +5373,13 @@ JAVASCRIPT;
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = ".$this->db->quote($from_type)."
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id` ".
+                  return " $LINK ".$this->db->quoteName("glpi_computers_items")." AS ".$this->db->quoteName("glpi_computers_items_$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.items_id")." = ".$this->db->quoteName("glpi_printers.id")."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.itemtype")." = ".$this->db->quote($from_type)."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.is_deleted")." = 0)
+                           $LINK ".$this->db->quoteName("glpi_computers")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.computers_id")."
+                                       = ".$this->db->quoteName("glpi_computers.id")." ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
             }
             break;
@@ -5389,14 +5389,14 @@ JAVASCRIPT;
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id`
-                                       = `glpi_peripherals`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = ".$this->db->quote($from_type)."
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`) ";
+                  return " $LINK ".$this->db->quoteName("glpi_computers_items")." AS ".$this->db->quoteName("glpi_computers_items_$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.items_id")."
+                                       = ".$this->db->quoteName("glpi_peripherals.id")."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.itemtype")." = ".$this->db->quote($from_type)."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.is_deleted")." = 0)
+                           $LINK ".$this->db->quoteName("glpi_computers")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.computers_id")."
+                                       = ".$this->db->quoteName("glpi_computers.id").") ";
             }
             break;
 
@@ -5405,13 +5405,13 @@ JAVASCRIPT;
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
-                                  AND `glpi_computers_items_$to_type`.`itemtype` = ".$this->db->quote($from_type)."
-                                  AND `glpi_computers_items_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id`) ";
+                  return " $LINK ".$this->db->quoteName("glpi_computers_items")." AS ".$this->db->quoteName("glpi_computers_items_$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.items_id")." = ".$this->db->quoteName("glpi_phones.id")."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.itemtype")." = ".$this->db->quote($from_type)."
+                                  AND ".$this->db->quoteName("glpi_computers_items_$to_type.is_deleted")." = 0)
+                           $LINK ".$this->db->quoteName("glpi_computers")."
+                              ON (".$this->db->quoteName("glpi_computers_items_$to_type.computers_id")."
+                                       = ".$this->db->quoteName("glpi_computers.id").") ";
             }
             break;
 
@@ -5421,17 +5421,17 @@ JAVASCRIPT;
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   array_push($already_link_tables2, "glpi_softwareversions_$to_type");
-                  return " $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
-                              ON (`glpi_softwareversions_$to_type`.`softwares_id`
-                                       = `glpi_softwares`.`id`)
-                           $LINK `glpi_computers_softwareversions`
-                                    AS `glpi_computers_softwareversions_$to_type`
-                              ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
-                                       = `glpi_softwareversions_$to_type`.`id`
-                                  AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = 0)
-                           $LINK `glpi_computers`
-                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
-                                       = `glpi_computers`.`id` ".
+                  return " $LINK ".$this->db->quoteName("glpi_softwareversions")." AS ".$this->db->quoteName("glpi_softwareversions_$to_type")."
+                              ON (".$this->db->quoteName("glpi_softwareversions_$to_type.softwares_id")."
+                                       = ".$this->db->quoteName("glpi_softwares.id").")
+                           $LINK ".$this->db->quoteName("glpi_computers_softwareversions")."
+                                    AS ".$this->db->quoteName("glpi_computers_softwareversions_$to_type")."
+                              ON (".$this->db->quoteName("glpi_computers_softwareversions_$to_type.softwareversions_id")."
+                                       = ".$this->db->quoteName("glpi_softwareversions_$to_type.id")."
+                                  AND ".$this->db->quoteName("glpi_computers_softwareversions_$to_type.is_deleted")." = 0)
+                           $LINK ".$this->db->quoteName("glpi_computers")."
+                              ON (".$this->db->quoteName("glpi_computers_softwareversions_$to_type.computers_id")."
+                                       = ".$this->db->quoteName("glpi_computers.id")." ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
             }
             break;
@@ -6915,13 +6915,13 @@ JAVASCRIPT;
                self::$search[$itemtype][24]['field']         = 'name';
                self::$search[$itemtype][24]['linkfield']     = 'users_id_tech';
                self::$search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
-               self::$search[$itemtype][24]['condition']      = '`is_assign`';
+               self::$search[$itemtype][24]['condition']      = ['is_assign' => 1];
 
                self::$search[$itemtype][49]['table']          = 'glpi_groups';
                self::$search[$itemtype][49]['field']          = 'completename';
                self::$search[$itemtype][49]['linkfield']      = 'groups_id_tech';
                self::$search[$itemtype][49]['name']           = __('Group in charge of the hardware');
-               self::$search[$itemtype][49]['condition']      = '`is_assign`';
+               self::$search[$itemtype][49]['condition']      = ['is_assign' => 1];
                self::$search[$itemtype][49]['datatype']       = 'dropdown';
 
                self::$search[$itemtype][80]['table']         = 'glpi_entities';
