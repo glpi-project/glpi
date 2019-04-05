@@ -246,6 +246,24 @@ class Calendar extends CommonDropdown {
    function isHoliday($date) {
       global $DB;
 
+      $end_month = ('mysql' === $DB->getDriver() ?
+         'MONTH(' . $DB->quoteName('end_date') . ')' :
+         'EXTRACT(MONTH FROM ' . $DB->quoteName('end_date') . ')'
+      );
+      $begin_month = ('mysql' === $DB->getDriver() ?
+         'MONTH(' . $DB->quoteName('begin_date') . ')' :
+         'EXTRACT(MONTH FROM ' . $DB->quoteName('begin_date') . ')'
+      );
+
+      $end_day = ('mysql' === $DB->getDriver() ?
+         'DAY(' . $DB->quoteName('end_date') . ')' :
+         'EXTRACT(DAY FROM ' . $DB->quoteName('end_date') . ')'
+      );
+      $begin_day = ('mysql' === $DB->getDriver() ?
+         'DAY(' . $DB->quoteName('begin_date') . ')' :
+         'EXTRACT(DAY FROM ' . $DB->quoteName('begin_date') . ')'
+      );
+
       $result = $DB->request([
          'COUNT'        => 'cpt',
          'FROM'         => 'glpi_calendars_holidays',
@@ -269,8 +287,8 @@ class Calendar extends CommonDropdown {
                [
                   'AND' => [
                      'glpi_holidays.is_perpetual'  => 1,
-                     new \QueryExpression("MONTH(".$DB->quoteName('end_date').")*100 + DAY(".$DB->quoteName('end_date').") >= ".date('nd', strtotime($date))),
-                     new \QueryExpression("MONTH(".$DB->quoteName('begin_date').")*100 + DAY(".$DB->quoteName('begin_date').") <= ".date('nd', strtotime($date)))
+                     new \QueryExpression("$end_month * 100 + $end_day >= ".date('nd', strtotime($date))),
+                     new \QueryExpression("$begin_month * 100 + $begin_day <= ".date('nd', strtotime($date)))
                   ]
                ]
             ]

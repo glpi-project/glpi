@@ -99,14 +99,15 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
       $force          = $input->getOption('force');
       $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
 
-      ob_start();
-      $checkinnodb = \Config::displayCheckInnoDB();
-      $message = ob_get_clean();
-      if ($checkinnodb > 0) {
-         $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
-         return self::ERROR_DB_REQUIRES_INNODB;
+      if ('mysql' === $this->db->getDriver()) {
+         ob_start();
+         $checkinnodb = \Config::displayCheckInnoDB();
+         $message = ob_get_clean();
+         if ($checkinnodb > 0) {
+            $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+            return self::ERROR_DB_REQUIRES_INNODB;
+         }
       }
-
       $update = new Update($this->db);
 
       // Initialize entities

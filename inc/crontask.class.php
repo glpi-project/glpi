@@ -366,6 +366,11 @@ class CronTask extends CommonDBTM{
          $WHERE['name'] = $name;
       }
 
+      $tsamp = ('mysql' === $DB->getDriver() ?
+         'unix_timestamp(' . $DB->quoteName('lastrun') . ') + ' . $DB->quoteName('frequency') :
+         'extract(epoch FROM ' . $DB->quoteName('lastrun') . ') + ' . $DB->quoteName('frequency')
+      );
+
       // In force mode
       if ($mode < 0) {
          $WHERE['state'] = ['!=', self::STATE_RUNNING];
@@ -405,23 +410,33 @@ class CronTask extends CommonDBTM{
                'hourmax'   => ['>', $hour]
             ]]
          ]];
+
+         $tnow = ('mysql' === $DB->getDriver() ?
+            'unix_timestamp(now())' :
+            'extract(epoch FROM now())'
+         );
+
          $WHERE[] = ['OR' => [
             'lastrun'   => null,
-            new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ') + ' . $DB->quoteName('frequency') . ' <= unix_timestamp(now())')
+            new \QueryExpression($tsamp . ' <= ' . $tnow)
          ]];
       }
 
+      $expr = ('mysql' === $DB->getDriver() ?
+         "LOCATE('Plugin', " . $DB->quoteName('itemtype') . ") AS ISPLUGIN" :
+         "position('Plugin' IN " . $DB->quoteName('itemtype') . ") AS ISPLUGIN"
+      );
       $iterator = $DB->request([
          'SELECT' => [
             '*',
-            new \QueryExpression("LOCATE('Plugin', " . $DB->quoteName('itemtype') . ") AS ISPLUGIN")
+            new \QueryExpression($expr)
          ],
          'FROM'   => $this->getTable(),
          'WHERE'  => $WHERE,
          // Core task before plugins
          'ORDER'  => [
-            'ISPLUGIN',
-            new \QueryExpression('unix_timestamp(' . $DB->quoteName('lastrun') . ')+' . $DB->quoteName('frequency') . '')
+            //'ISPLUGIN', not working with PostgreSQL, column is not known :/
+            new \QueryExpression($tsamp)
          ]
       ]);
 
@@ -1700,6 +1715,18 @@ class CronTask extends CommonDBTM{
    **/
    static function cronWatcher($task) {
       global $DB;
+      $tsamp = ('mysql' === $DB->getDriver() ?
+         'unix_timestamp(' . $DB->quoteName('lastrun') . ') + 2 * ' . $DB->quoteName('frequency') :
+         'extract(epoch FROM ' . $DB->quoteName('lastrun') . ') + 2 * ' . $DB->quoteName('frequency')
+      );
+      $tsamp2 = ('mysql' === $DB->getDriver() ?
+         'unix_timestamp(' . $DB->quoteName('lastrun') . ') + ' . HOUR_TIMESTAMP :
+         'extract(epoch FROM ' . $DB->quoteName('lastrun') . ') + ' . HOUR_TIMESTAMP
+      );
+      $tnow = ('mysql' === $DB->getDriver() ?
+         'unix_timestamp(now())' :
+         'extract(epoch FROM now())'
+      );
 
       // Crontasks running for more than 1 hour or 2 frequency
       $iterator = $DB->request([
@@ -1707,8 +1734,8 @@ class CronTask extends CommonDBTM{
          'WHERE'  => [
             'state'  => self::STATE_RUNNING,
             'OR'     => [
-               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.$DB->quoteName('frequency').' < unix_timestamp(now())'),
-               new \QueryExpression('unix_timestamp('.$DB->quoteName('lastrun').') + 2 * '.HOUR_TIMESTAMP.' < unix_timestamp(now())')
+               new \QueryExpression($tsamp.' < '.$tnow),
+               new \QueryExpression($tsamp2.' < '.$tnow)
             ]
          ]
       ]);

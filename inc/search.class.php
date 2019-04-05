@@ -1383,16 +1383,18 @@ class Search {
 
       // Use a ReadOnly connection if available and configured to be used
       $DBread = DBConnection::getReadConnection();
-      //FIXME: MySQL specific
-      $DBread->rawQuery("SET SESSION group_concat_max_len = 16384;");
 
-      // directly increase group_concat_max_len to avoid double query
-      if (count($data['search']['metacriteria'])) {
-         foreach ($data['search']['metacriteria'] as $metacriterion) {
-            if ($metacriterion['link'] == 'AND NOT'
-                || $metacriterion['link'] == 'OR NOT') {
-               $DBread->rawQuery("SET SESSION group_concat_max_len = 4194304;");
-               break;
+      if ('mysql' === $DBread->getDriver()) {
+         $DBread->rawQuery("SET SESSION group_concat_max_len = 16384;");
+
+         // directly increase group_concat_max_len to avoid double query
+         if (count($data['search']['metacriteria'])) {
+            foreach ($data['search']['metacriteria'] as $metacriterion) {
+               if ($metacriterion['link'] == 'AND NOT'
+                  || $metacriterion['link'] == 'OR NOT') {
+                  $DBread->rawQuery("SET SESSION group_concat_max_len = 4194304;");
+                  break;
+               }
             }
          }
       }
@@ -1400,21 +1402,22 @@ class Search {
       $DBread->enableTimer();
       $result = $DBread->rawQuery($data['sql']['search'], $this->qry_params);
       /// Check group concat limit : if warning : increase limit
-      //FIXME: MySQL specific
-      if ($result2 = $DBread->rawQuery('SHOW WARNINGS')) {
-         if ($DBread->numrows($result2) > 0) {
-            $res = $DBread->fetchAssoc($result2);
-            if ($res['Code'] == 1260) {
-               $DBread->rawQuery("SET SESSION group_concat_max_len = 8194304;");
-               $result = $DBread->rawQuery($data['sql']['search'], $this->qry_params);
-            }
+      if ('mysql' === $DBread->getDriver()) {
+         if ($result2 = $DBread->rawQuery('SHOW WARNINGS')) {
+            if ($DBread->numrows($result2) > 0) {
+               $res = $DBread->fetchAssoc($result2);
+               if ($res['Code'] == 1260) {
+                  $DBread->rawQuery("SET SESSION group_concat_max_len = 8194304;");
+                  $result = $DBread->rawQuery($data['sql']['search'], $this->qry_params);
+               }
 
-            if ($res['Code'] == 1116) { // too many tables
-               echo $this->showError($data['search']['display_type'],
-                                    __("'All' criterion is not usable with this object list, ".
-                                       "sql query fails (too many tables). ".
-                                       "Please use 'Items seen' criterion instead"));
-               return false;
+               if ($res['Code'] == 1116) { // too many tables
+                  echo $this->showError($data['search']['display_type'],
+                                       __("'All' criterion is not usable with this object list, ".
+                                          "sql query fails (too many tables). ".
+                                          "Please use 'Items seen' criterion instead"));
+                  return false;
+               }
             }
          }
       }
