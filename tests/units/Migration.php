@@ -285,11 +285,11 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
-               ' WHERE `table_schema` = \'' . $DB->dbdefault .
-               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'%table1%\'',
+               ' WHERE `table_schema` = ?' .
+               ' AND `table_type` = ? AND `table_name` LIKE ?',
          1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
-               ' WHERE `table_schema` = \'' . $DB->dbdefault  .
-               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'%table2%\''
+               ' WHERE `table_schema` = ?'  .
+               ' AND `table_type` = ? AND `table_name` LIKE ?'
              ]);
       $this->array($this->qry_params)->isIdenticalTo([
          0  => [$DB->dbdefault, 'BASE TABLE', '%table1%'],
