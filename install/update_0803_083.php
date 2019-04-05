@@ -326,7 +326,7 @@ function update0803to083() {
          ],
          "0.83 add problem notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notificationtemplates');
 
       $contentText = '##IFproblem.storestatus=solved##
  ##lang.problem.url## : ##problem.urlapprove##
@@ -440,7 +440,7 @@ function update0803to083() {
             "0.83 add problem $type notification"
          );
 
-         $notifid = $DB->insertId();
+         $notifid = $DB->insertId('glpi_notifications');
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [
@@ -921,7 +921,7 @@ function update0803to083() {
          ],
          "0.83 add default ticket template"
       );
-      $default_ticket_template = $DB->insertId();
+      $default_ticket_template = $DB->insertId('glpi_tickettemplates');
 
    }
 

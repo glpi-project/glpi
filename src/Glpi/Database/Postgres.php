@@ -42,14 +42,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- *  Database class for Mysql
+ *  Database class for PostgreSQL
 **/
-class MySql extends AbstractDatabase
+class Postgres extends AbstractDatabase
 {
 
     public function getDriver(): string
     {
-        return 'mysql';
+        return 'pgsql';
     }
 
     public function connect($server = null)
@@ -61,28 +61,15 @@ class MySql extends AbstractDatabase
             return;
         }
 
-        $charset = isset($this->dbenc) ? $this->dbenc : "utf8";
-
         $this->dbh = new PDO(
-            "$dsn;dbname={$this->dbdefault};charset=$charset",
+            "$dsn;dbname={$this->dbdefault}",
             $this->dbuser,
-            rawurldecode($this->dbpassword),
-            $this->options
+            rawurldecode($this->dbpassword)
         );
         $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        if (GLPI_FORCE_EMPTY_SQL_MODE) {
+        /*if (GLPI_FORCE_EMPTY_SQL_MODE) {
             $this->dbh->query("SET SESSION sql_mode = ''");
-        }
-        if ($charset === "utf8") {
-            // The mysqli::set_charset function will make COLLATE to be defined to the default one for used charset.
-            //
-            // For 'utf8' charset, default one is 'utf8_general_ci',
-            // so we have to redefine it to 'utf8_unicode_ci'.
-            //
-            // If encoding used by connection is not the default one (i.e utf8), then we assume
-            // that we cannot be sure of used COLLATE and that using the default one is the best option.
-            $this->dbh->query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';");
-        }
+        }*/
 
         $this->connected = true;
 
@@ -104,7 +91,7 @@ class MySql extends AbstractDatabase
         } else {
             $conf_tz = ['value' => null];
             if ($this->tableExists(Config::getTable())
-                && $this->fieldExists(Config::getTable(), 'value')
+            && $this->fieldExists(Config::getTable(), 'value')
             ) {
                 $conf_tz = $this->request([
                 'SELECT' => 'value',
@@ -121,89 +108,9 @@ class MySql extends AbstractDatabase
         return $zone;
     }
 
-   /**
-    * Escapes special characters in a string for use in an SQL statement,
-    * taking into account the current charset of the connection
-    *
-    * @since 0.84
-    * @deprecated 10.0.0
-    *
-    * @param string $string String to escape
-    *
-    * @return string escaped string
-    */
-    public function escape($string)
-    {
-        Toolbox::deprecated('Use AbstractDatabase::quote() (and note that returned string will be quoted)');
-        $quoted = $this->quote($string);
-        return trim($quoted, "'");
-    }
-
-   /**
-    * Execute a MySQL query
-    *
-    * @deprecated 10.0.0
-    *
-    * @param string $query Query to execute
-    *
-    * @var array   $CFG_GLPI
-    * @var array   $DEBUG_SQL
-    * @var integer $SQL_TOTAL_REQUEST
-    *
-    * @return PDOStatement|boolean Query result handler
-    *
-    * @throws GlpitestSQLError
-    */
-    public function query($query)
-    {
-        Toolbox::deprecated();
-        return $this->rawQuery($query);
-    }
-
-   /**
-    * Execute a MySQL query and die
-    * (optionnaly with a message) if it fails
-    *
-    * @since 0.84
-    * @deprecated 10.0.0
-    *
-    * @param string $query   Query to execute
-    * @param string $message Explanation of query (default '')
-    *
-    * @return PDOStatement Query result handler
-    */
-    public function queryOrDie($query, $message = '')
-    {
-        Toolbox::deprecated();
-        return $this->rawQueryOrDie($query, $message);
-    }
-
     public function insertId(string $table)
     {
-        return (int)$this->dbh->lastInsertID();
-    }
-
-   /**
-    * Returns tables using "MyIsam" engine.
-    *
-    * @return DBmysqlIterator
-    */
-    public function getMyIsamTables(): DBmysqlIterator
-    {
-        $iterator = $this->listTables('glpi_%', ['engine' => 'MyIsam']);
-        return $iterator;
-    }
-
-    /**
-     * Get number of affected rows in previous MySQL operation
-     *
-     * @return int number of affected rows on success, and -1 if the last query failed.
-     *
-     * @deprecated 10.0.0
-     */
-    public function affectedRows()
-    {
-        throw new \RuntimeException('affectedRows method could not be used... Use PDOStatement::rowCount instead.');
+        return (int)$this->dbh->lastInsertID($table . '_id_seq');
     }
 
     public function getInfo(): array
@@ -255,7 +162,7 @@ class MySql extends AbstractDatabase
 
     public static function getQuoteNameChar(): string
     {
-        return '`';
+        return '"';
     }
 
     public function getTableSchema(string $table, $structure = null): array
@@ -347,46 +254,17 @@ class MySql extends AbstractDatabase
     public function getVersion(): string
     {
         $req = $this->requestRaw('SELECT version()')->next();
-        $raw = $req['version()'];
+        $raw = $req['version'];
         return $raw;
     }
 
-    public function areTimezonesAvailable(string &$msg = '') :bool
-    {
-        $mysql_db_res = $this->requestRaw('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
-        if ($mysql_db_res->count() === 0) {
-            $msg = __('Access to timezone database (mysql) is not allowed.');
-            return false;
-        }
-        $tz_table_res = $this->requestRaw(
-            'SHOW TABLES FROM '
-            . $this->quoteName('mysql')
-            . ' LIKE '
-            . $this->quoteValue('time_zone_name')
-        );
-        if ($tz_table_res->count() === 0) {
-            $msg = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
-            return false;
-        }
-        $criteria = [
-            'COUNT'  => 'cpt',
-            'FROM'   => 'mysql.time_zone_name',
-        ];
-        $iterator = $this->request($criteria);
-        $result = $iterator->next();
-        if ($result['cpt'] == 0) {
-            $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
-            return false;
-        }
-        return true;
-    }
 
     public function setTimezone($timezone) :AbstractDatabase
     {
        //setup timezone
         if ($this->areTimezonesAvailable()) {
             date_default_timezone_set($timezone);
-            $this->dbh->query("SET SESSION time_zone = '$timezone'");
+            $this->dbh->query("SET TIME ZONE ".$this->quote($timezone));
             $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
         }
         return $this;
@@ -400,14 +278,14 @@ class MySql extends AbstractDatabase
         $now = new \DateTime();
 
         $iterator = $this->request([
-         'SELECT' => 'Name',
-         'FROM'   => 'mysql.time_zone_name',
-         'WHERE'  => ['Name' => $from_php]
+         'SELECT' => 'name',
+         'FROM'   => new \QueryExpression('pg_timezone_names()'),
+         'WHERE'  => ['name' => $from_php]
         ]);
 
-        while ($from_mysql = $iterator->next()) {
-            $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
-            $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
+        while ($from_pgsql = $iterator->next()) {
+            $now->setTimezone(new \DateTimeZone($from_pgsql['name']));
+            $list[$from_pgsql['name']] = $from_pgsql['name'] . $now->format(" (T P)");
         }
 
         return $list;
@@ -415,26 +293,16 @@ class MySql extends AbstractDatabase
 
     public function notTzMigrated() :int
     {
-        global $DB;
-
-        $result = $DB->request([
-            'COUNT'       => 'cpt',
-            'FROM'        => 'INFORMATION_SCHEMA.COLUMNS',
-            'WHERE'       => [
-               'INFORMATION_SCHEMA.COLUMNS.TABLE_SCHEMA'  => $DB->dbdefault,
-               'INFORMATION_SCHEMA.COLUMNS.DATA_TYPE'     => ['DATETIME']
-            ]
-        ])->next();
-        return (int)$result['cpt'];
+        return 0;
     }
 
     public function getPrepareParameters() :array
     {
-        return [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL];
+        return [];
     }
 
     protected function getDeleteSql() :string
     {
-        return 'DELETE %delete_table FROM %from';
+        return 'DELETE FROM %from';
     }
 }

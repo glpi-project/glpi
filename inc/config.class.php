@@ -1895,7 +1895,9 @@ class Config extends CommonDBTM {
          echo __('Timezones seems not loaded in database') . "\n";
       }
 
-      self::displayCheckInnoDB(true);
+      if ('mysql' === $DB->getDriver()) {
+         self::displayCheckInnoDB(true);
+      }
 
       self::checkWriteAccessToDirs(true);
       toolbox::checkSELinux(true);

@@ -962,7 +962,7 @@ class Toolbox {
     * @return integer 2 = creation error / 1 = delete error  / 0 = OK
     */
    static function commonCheckForUseGLPI($isInstall = false) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $error = 0;
 

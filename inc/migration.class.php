@@ -677,7 +677,7 @@ class Migration {
 
          $DB->insertOrDie($table, $values, $this->version." insert in $table");
 
-         return $DB->insertId();
+         return $DB->insertId($table);
       }
    }
 
@@ -792,7 +792,7 @@ class Migration {
          $values[$field] = $value;
       }
       $DB->insertOrDie('glpi_rules', $values);
-      $rid = $DB->insertId();
+      $rid = $DB->insertId('glpi_rules');
 
       // The rule criteria
       foreach ($criteria as $criterion) {

@@ -307,11 +307,6 @@ function update0831to084() {
             "0.84 insert root entity into glpi_entities"
          );
       }
-      //       $newID = $DB->insertId();
-      //       $query = "UPDATE `glpi_entities`
-      //                 SET `id` = '0'
-      //                 WHERE `id` = '$newID'";
-      //       $DB->queryOrDie($query, '0.84 be sure that id of the root entity if 0 in glpi_entities');
 
       $migration->addField("glpi_entities", 'address', "text");
       $migration->addField("glpi_entities", 'postcode', "string");
@@ -470,7 +465,7 @@ function update0831to084() {
             ],
             "0.84 insert validation_answer notification"
          );
-         $newID  = $DB->insertId();
+         $newID  = $DB->insertId('glpi_notifications');
          $targetsIterator = $DB->request([
             'FROM'   => "glpi_notificationtargets",
             'WHERE'  => ['notifications_id' => $notif['id']]
@@ -520,7 +515,7 @@ function update0831to084() {
                ],
                "0.84 insert contract ".$to." notification"
             );
-            $newID  = $DB->insertId();
+            $newID  = $DB->insertId('glpi_notifications');
             $targetsIterator = $DB->request([
                'FROM'   => "glpi_notificationtargets",
                'WHERE'  => ['notifications_id' => $notif['id']]
@@ -799,7 +794,7 @@ function update0831to084() {
          ],
          "0.84 add planning recall notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notificationtemplates');
 
       $contentText = "##recall.action##: ##recall.item.name##
 
@@ -839,7 +834,7 @@ function update0831to084() {
          ],
          "0.84 add planning recall notification"
       );
-      $notifid = $DB->insertId();
+      $notifid = $DB->insertId('glpi_notificationtemplatetranslations');
 
       $DB->insertOrDie("glpi_notificationtargets", [
             'id'                 => null,
@@ -1291,7 +1286,7 @@ function update0831to084() {
                ],
                "0.83 add problem $type notification"
             );
-            $notifid = $DB->insertId();
+            $notifid = $DB->insertId('glpi_notifications');
 
             foreach ($targets as $target) {
                 $DB->insertOrDie("glpi_notificationtargets", [

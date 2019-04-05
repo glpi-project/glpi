@@ -183,7 +183,7 @@ class MailCollector extends DbTestCase {
       $this->boolean(
          $this->testedInstance->update([
             'id'        => $this->testedInstance->fields['id'],
-            'is_active' => false
+            'is_active' => 0
          ])
       )->isTrue();
 
@@ -293,6 +293,9 @@ class MailCollector extends DbTestCase {
          'PHP fatal error',
          'Re: [GLPI #0001155] New ticket database issue'
       ];
+      sort($names);
+      sort($expected_names);
+
       $this->array($names)->isIdenticalTo($expected_names);
 
       /* FUPs

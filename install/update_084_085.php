@@ -1822,7 +1822,7 @@ function update084to085() {
          ],
          "0.85 add change notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notificationtemplates');
 
       $contentText = '##IFchange.storestatus=5##
  ##lang.change.url## : ##change.urlapprove##
@@ -1936,7 +1936,7 @@ function update084to085() {
             ],
             "0.85 add change $type notification"
          );
-         $notifid = $DB->insertId();
+         $notifid = $DB->insertId('glpi_notifications');
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [
@@ -2214,7 +2214,7 @@ function update084to085() {
             ],
             "0.85 insert replysatisfaction notification"
          );
-         $newID  = $DB->insertId();
+         $newID  = $DB->insertId('glpi_notifications');
          $notificationtargetsIterator = $DB->request("glpi_notificationtargets", [
             'notifications_id' => $notif['id']
          ]);
@@ -2325,7 +2325,7 @@ function update084to085() {
          ],
          "0.85 add mail collector notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notificationtemplates');
 
       $contentText = '##FOREACHmailcollectors##
 ##lang.mailcollector.name## : ##mailcollector.name##
@@ -2360,7 +2360,7 @@ function update084to085() {
          ],
          "0.85 add mail collector notification"
       );
-      $notifid = $DB->insertId();
+      $notifid = $DB->insertId('glpi_notifications');
 
       $DB->insertOrDie("glpi_notificationtargets", [
             'id'                 => null,
@@ -2777,7 +2777,7 @@ function update084to085() {
          ],
          "0.85 add project notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notificationtemplates');
 
       $contentText = '##lang.project.url## : ##project.url##
 
@@ -2857,7 +2857,7 @@ function update084to085() {
             ],
             "0.85 add project $type notification"
          );
-         $notifid = $DB->insertId();
+         $notifid = $DB->insertId('glpi_notifications');
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [
@@ -2885,7 +2885,7 @@ function update084to085() {
          ],
          "0.85 add project notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notificationtemplates');
 
       $contentText = '##lang.projecttask.url## : ##projecttask.url##
 
@@ -2960,7 +2960,7 @@ function update084to085() {
             ],
             "0.85 add project task  $type notification"
          );
-         $notifid = $DB->insertId();
+         $notifid = $DB->insertId('glpi_notifications');
 
          foreach ($targets as $target) {
             $DB->insertOrDie("glpi_notificationtargets", [

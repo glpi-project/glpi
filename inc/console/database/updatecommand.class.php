@@ -126,9 +126,17 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
       $informations = new Table($output);
       $informations->setHeaders(['', __('Current'), __('Target')]);
-      $informations->addRow([__('Database host'), $this->db->dbhost, '']);
-      $informations->addRow([__('Database name'), $this->db->dbdefault, '']);
-      $informations->addRow([__('Database user'), $this->db->dbuser, '']);
+      $informations->addRow([
+         __('Database'),
+         sprintf(
+             '%1$s://%2$s@%3$s/%4$s',
+             $this->db->getDriver(),
+             $this->db->dbuser,
+             $this->db->dbhost,
+             $this->db->dbdefault
+         ),
+         ''
+      ]);
       $informations->addRow([__('GLPI version'), $current_version, GLPI_VERSION]);
       $informations->addRow([__('GLPI database version'), $current_db_version, GLPI_SCHEMA_VERSION]);
       $informations->render();

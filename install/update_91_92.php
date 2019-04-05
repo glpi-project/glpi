@@ -1198,7 +1198,7 @@ function update91to92() {
          ],
          "9.2 Add saved search alerts notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notifications');
 
       $DB->insertOrDie("glpi_notificationtemplates", [
             'name'            => "Saved searches alerts",
@@ -1207,7 +1207,7 @@ function update91to92() {
          ],
          "9.2 Add saved search alerts notification template"
       );
-      $nottid = $DB->insertId();
+      $nottid = $DB->insertId('glpi_notificationtemplates');
 
       $where =  [
          'notifications_id'         => $notid,
@@ -1569,7 +1569,7 @@ Regards,',
          ],
          "9.2 Add certificate alerts notification"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notifications');
 
       $DB->insertOrDie("glpi_notificationtemplates", [
             'name'      => "Certificates alerts",
@@ -1578,7 +1578,7 @@ Regards,',
          ],
          "9.2 Add certifcate alerts notification template"
       );
-      $nottid = $DB->insertId();
+      $nottid = $DB->insertId('glpi_notificationtemplates');
 
       $where = [
          'notifications_id'         => $notid,

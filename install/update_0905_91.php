@@ -95,7 +95,7 @@ function update0905to91() {
                         '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
 
       $DB->queryOrDie($query, "9.1 update profile with Unlock profile");
-      $ro_p_id = $DB->insertId();
+      $ro_p_id = $DB->insertId('glpi_profiles');
       $DB->queryOrDie("INSERT INTO `glpi_profilerights`
                               (`profiles_id`, `name`, `rights`)
                        VALUES ($ro_p_id, 'backup',                    '1'),
@@ -229,7 +229,7 @@ function update0905to91() {
          ],
          "9.1 Add unlock request notification template"
       );
-      $notid = $DB->insertId();
+      $notid = $DB->insertId('glpi_notificationtemplates');
 
       $contentText =
          '##objectlock.type## ###objectlock.id## - ##objectlock.name##
@@ -286,7 +286,7 @@ function update0905to91() {
          ],
          "9.1 add Unlock Request notification"
       );
-      $notifid = $DB->insertId();
+      $notifid = $DB->insertId('glpi_notifications');
 
       $DB->insertOrDie("glpi_notificationtargets", [
             'id'                 => null,

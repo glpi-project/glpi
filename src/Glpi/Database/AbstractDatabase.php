@@ -198,7 +198,7 @@ abstract class AbstractDatabase
      */
     public function execute(string $query, array $params = []): PDOStatement
     {
-        $stmt = $this->dbh->prepare($query);
+        $stmt = $this->dbh->prepare($query, $this->getPrepareParameters());
 
         foreach ($params as &$value) {
             if ('null' == strtolower($value)) {
@@ -209,6 +209,13 @@ abstract class AbstractDatabase
         $stmt->execute($params);
         return $stmt;
     }
+
+    /**
+     * Get prepare parameters
+     *
+     * @return array
+     */
+    abstract public function getPrepareParameters() :array;
 
     /**
      * Connect using current database settings.
@@ -446,7 +453,7 @@ abstract class AbstractDatabase
      *
      * @since 10.0.0
      */
-    abstract public function insertId(string $table = '');
+    abstract public function insertId(string $table);
 
     /**
      * List tables in database
@@ -1201,7 +1208,18 @@ abstract class AbstractDatabase
             throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
         }
 
-        $query  = "DELETE ". $this->quoteName($table) . " FROM ". $this->quoteName($table);
+        $qry_str = $this->getDeleteSql();
+        $query = str_replace(
+            [
+                '%from',
+                '%delete_table'
+            ],
+            [
+                $this->quoteName($table),
+                $this->quoteName($table)
+            ],
+            $qry_str
+        );
 
         $it = new DBmysqlIterator($this);
         $query .= $it->analyzeJoins($joins);
@@ -1210,6 +1228,14 @@ abstract class AbstractDatabase
 
         return $query;
     }
+
+    /**
+     * Get SQL DELETE query base form because this can
+     * differs from an engine to another
+     *
+     * @return string
+     */
+    abstract protected function getDeleteSql() :string;
 
     /**
      * Delete rows in the database

@@ -261,7 +261,7 @@ class Entity extends CommonTreeDropdown {
 
       $result = $DB->request([
          'SELECT' => new \QueryExpression(
-            'MAX('.$DB->quoteName('id').')+1 AS newID'
+            'MAX('.$DB->quoteName('id').')+1 AS ' . $DB->quoteName('newID')
          ),
          'FROM'   => self::getTable()
       ])->next();

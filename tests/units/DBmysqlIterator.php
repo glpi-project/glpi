@@ -488,12 +488,12 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` <> ?');
 
       $it = $this->it->execute('foo', ['a' => ['&', 1]]);
-      $this->array($it->getParameters())->isIdenticalTo([1]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` & ?');
+      $this->array($it->getParameters())->isIdenticalTo([1, 0]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` & ? > ?');
 
       $it = $this->it->execute('foo', ['a' => ['|', 1]]);
-      $this->array($it->getParameters())->isIdenticalTo([1]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` | ?');
+      $this->array($it->getParameters())->isIdenticalTo([1, 0]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` | ? > ?');
    }
 
 

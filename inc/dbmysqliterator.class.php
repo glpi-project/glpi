@@ -518,6 +518,11 @@ class DBmysqlIterator implements Iterator, Countable {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
          //}
+         if ($crit === true) {
+            $crit = '1 = 1';
+         } else if ($crit === false) {
+            $crit = '1 = 0';
+         }
          return $crit;
       }
       $ret = "";
@@ -589,6 +594,10 @@ class DBmysqlIterator implements Iterator, Countable {
                } else {
                   $criterion = "{$value[0]} ?";
                   $this->parameters[] = $this->analyzeCriterionValue($value[1]);
+                  if ('&' === $value[0] || '|' === $value[0]) {
+                     $criterion .= ' > ?';
+                     $this->parameters[] = 0;
+                  }
                }
             } else {
                if (!count($value)) {
@@ -786,7 +795,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function count() {
-      return ($this->res instanceof \PDOStatement ? $this->res->rowCount() : 0);
+      return $this->numrows();
    }
 
    /**
