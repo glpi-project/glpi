@@ -22,10 +22,10 @@ phpunit.xml
 /config/define.php
 /nbproject
 .composer.hash
-/css/**/*.min.css
+/**/*.min.css
 /css/compiled/
 !/css/tiny_mce/**/*.min.css
-/js/*.min.js
+/**/*.min.js
 /node_modules/
 /public/build/
 /public/lib/
