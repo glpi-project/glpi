@@ -5731,7 +5731,7 @@ class Ticket extends CommonITILObject {
       }
 
       $criteria = [
-         'SELECT'          => 'glpi_tickets.id',
+         'SELECT'          => ['glpi_tickets.id', 'glpi_tickets.date_mod'],
          'DISTINCT'        => true,
          'FROM'            => 'glpi_tickets',
          'LEFT JOIN'       => [
