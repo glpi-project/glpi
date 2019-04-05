@@ -171,20 +171,6 @@ class MySql extends AbstractDatabase
         return (int)$this->dbh->lastInsertID();
     }
 
-    public function listTables(string $table = 'glpi_%', array $where = []): DBmysqlIterator
-    {
-        $iterator = $this->request([
-         'SELECT' => 'TABLE_NAME',
-         'FROM'   => 'information_schema.TABLES',
-         'WHERE'  => [
-            'TABLE_SCHEMA' => $this->dbdefault,
-            'TABLE_TYPE'   => 'BASE TABLE',
-            'TABLE_NAME'   => ['LIKE', $table]
-         ] + $where
-        ]);
-        return $iterator;
-    }
-
    /**
     * Returns tables using "MyIsam" engine.
     *
