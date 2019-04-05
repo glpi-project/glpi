@@ -51,18 +51,9 @@ class MySql extends \GLPITestCase {
       $this
         ->boolean($this->db->fieldExists('glpi_configs', 'id'))->isTrue()
         ->boolean($this->db->fieldExists('glpi_configs', 'ID'))->isFalse()
-        ->boolean($this->db->fieldExists('glpi_configs', 'fakeField'))->isFalse();
-
-      $this->exception(
-         function() {
-            $this->boolean($this->db->fieldExists('fakeTable', 'id'))->isFalse();
-         }
-      )->message->contains("Table '{$this->db->dbdefault}.fakeTable' doesn't exist");
-      $this->exception(
-         function() {
-            $this->boolean($this->db->fieldExists('fakeTable', 'fakeField'))->isFalse();
-         }
-      )->message->contains("Table '{$this->db->dbdefault}.fakeTable' doesn't exist");
+        ->boolean($this->db->fieldExists('glpi_configs', 'fakeField'))->isFalse()
+        ->boolean($this->db->fieldExists('fakeTable', 'id'))->isFalse()
+        ->boolean($this->db->fieldExists('fakeTable', 'fakeField'))->isFalse();
    }
 
    protected function dataName() {
