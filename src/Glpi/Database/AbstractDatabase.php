@@ -187,7 +187,7 @@ abstract class AbstractDatabase
      */
     public function execute(string $query, array $params = []): PDOStatement
     {
-        $stmt = $this->dbh->prepare($query, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
+        $stmt = $this->dbh->prepare($query);
 
         foreach ($params as &$value) {
             if ('null' == strtolower($value)) {
@@ -445,7 +445,19 @@ abstract class AbstractDatabase
      *
      * @return DBmysqlIterator
      */
-    abstract public function listTables(string $table = 'glpi_%', array $where = []): DBmysqlIterator;
+    public function listTables(string $table = 'glpi_%', array $where = []): DBmysqlIterator
+    {
+        $iterator = $this->request([
+         'SELECT' => 'table_name AS TABLE_NAME',
+         'FROM'   => 'information_schema.tables',
+         'WHERE'  => [
+            'table_schema' => $this->dbdefault,
+            'table_type'   => 'BASE TABLE',
+            'table_name'   => ['LIKE', $table]
+         ] + $where
+        ]);
+        return $iterator;
+    }
 
     /**
      * List fields of a table
@@ -1379,7 +1391,7 @@ abstract class AbstractDatabase
      *
      * @return string
      */
-    public function getExecutionTime(): string
+    public function getExecutionTime()
     {
         return $this->execution_time;
     }
