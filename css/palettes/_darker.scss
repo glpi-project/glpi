@@ -166,7 +166,6 @@ td.subheader {
 #searchcriteria,
 #searchcriterias .tab_cadre_fixe,
 .slidepanel,
-
 .sp-picker-container,
 .ui-datepicker,
 .actor-head,
@@ -180,6 +179,10 @@ ul#menu ul.ssmenu,
    color: #AAAAAA;
    border: 1px solid transparent !important;
    box-shadow: none;
+}
+
+.ui-tabs .ui-state-active sup.tab_nb {
+   background: #222121 !important;
 }
 
 .qtip-bootstrap {
@@ -422,6 +425,10 @@ a {
 
 .rack_side_block .sub_action {
    color: #AAA;
+}
+
+.grid-stack-item .item_rack_icon {
+   color: #000;
 }
 
 /* ====== HEADER ====== */
