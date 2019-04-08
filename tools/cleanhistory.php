@@ -34,6 +34,11 @@
  *Purge history with some criteria
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 

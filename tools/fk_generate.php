@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 include ('../inc/includes.php');
 
 $DB->query("SET FOREIGN_KEY_CHECKS = '0';");
