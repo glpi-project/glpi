@@ -846,7 +846,7 @@ class Document extends CommonDBTM {
     * @return string
     */
    private function getSelfUrlRegexPattern() {
-      return 'document\\\.send\\\.php\\\?docid=' . $this->fields['id'] . '[^\\\d]+';
+      return 'document\\\.send\\\.php\\\?docid=' . $this->fields['id'] . '[^0-9]+';
    }
 
    static function rawSearchOptionsToAdd($itemtype = null) {
