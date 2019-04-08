@@ -58,6 +58,7 @@ use State;
 use Toolbox;
 use Glpi\Console\AbstractCommand;
 
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -209,7 +210,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             ]
          );
 
-         /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+         /** @var QuestionHelper $question_helper */
          $question_helper = $this->getHelper('question');
          $run = $question_helper->ask(
             $input,
@@ -527,7 +528,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                $model_label .= ' (' . $othermodel['comment'] . ')';
             }
 
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $answer = $question_helper->ask(
                $this->input,
@@ -582,7 +583,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             }
 
             $new_model = new $new_model_itemtype();
-            $new_model_fields = Toolbox::clean_cross_side_scripting_deep([
+            $new_model_fields = Toolbox::sanitize([
                'name'    => $othermodel['name'],
                'comment' => $othermodel['comment'],
             ]);
@@ -632,7 +633,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
                foreach ($otheritems_iterator as $otheritem) {
                   $progress_bar->advance(1);
 
-                  $new_item_fields = Toolbox::clean_cross_side_scripting_deep([
+                  $new_item_fields = Toolbox::sanitize([
                      'name'        => strlen($otheritem['name'])
                                        ? $otheritem['name']
                                        : $otheritem['id'],
@@ -810,7 +811,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $rackmodel = new RackModel();
-            $rackmodel_fields = Toolbox::clean_cross_side_scripting_deep(
+            $rackmodel_fields = Toolbox::sanitize(
                [
                   'name'    => $old_model['name'],
                   'comment' => $old_model['comment'],
@@ -888,7 +889,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $racktype = new RackType();
-            $racktype_fields = Toolbox::clean_cross_side_scripting_deep(
+            $racktype_fields = Toolbox::sanitize(
                [
                   'name'         => $old_type['name'],
                   'entities_id'  => $old_type['entities_id'],
@@ -968,7 +969,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $state = new State();
-            $state_fields = Toolbox::clean_cross_side_scripting_deep(
+            $state_fields = Toolbox::sanitize(
                [
                   'name'      => $old_state['name'],
                   'states_id' => 0,
@@ -1051,7 +1052,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             );
 
             $room = new DCRoom();
-            $room_fields = Toolbox::clean_cross_side_scripting_deep(
+            $room_fields = Toolbox::sanitize(
                [
                   'name'           => $old_room['completename'],
                   'entities_id'    => $old_room['entities_id'],
@@ -1160,7 +1161,7 @@ class RacksPluginToCoreCommand extends AbstractCommand {
             }
 
             $rack = new Rack();
-            $rack_fields = Toolbox::clean_cross_side_scripting_deep(
+            $rack_fields = Toolbox::sanitize(
                [
                   'name'             => $old_rack['name'],
                   'comment'          => "Imported from rack plugin",
