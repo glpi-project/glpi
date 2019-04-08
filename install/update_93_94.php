@@ -199,23 +199,27 @@ function update93to94() {
    $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
    /** Drop old embed ocs search options */
+   $delete = [
+      'itemtype'  => 'Computer',
+      'num'       => [
+         100,
+         101,
+         102,
+         103,
+         104,
+         105,
+         106,
+         110,
+         111
+      ]
+   ];
+
    $migration->addPostQuery(
       $DB->buildDelete(
-         'glpi_displaypreferences', [
-            'itemtype'  => 'Computer',
-            'num'       => [
-               100,
-               101,
-               102,
-               103,
-               104,
-               105,
-               106,
-               110,
-               111
-            ]
-         ]
-      )
+         'glpi_displaypreferences',
+         $delete
+      ),
+      $delete
    );
    /** /Drop old embed ocs search options */
 
