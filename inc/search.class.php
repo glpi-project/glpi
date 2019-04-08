@@ -3363,10 +3363,6 @@ JAVASCRIPT;
    public function addOrderBy($itemtype, $ID, $order) {
       global $CFG_GLPI;
 
-      if ($itemtype == 'AllAssets') {
-         return '';
-      }
-
       // Security test for order
       if ($order != "ASC") {
          $order = "DESC";
