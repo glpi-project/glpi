@@ -35,11 +35,11 @@
 */
 
 /**
- * Update from 9.3.1 to 9.3.2
+ * Update from 9.3.2 to 9.3.4
  *
  * @return bool for success (will die for most error)
 **/
-function update931to932() {
+function update932to934() {
    global $DB, $migration, $CFG_GLPI;
 
    $current_config   = Config::getConfigurationValues('core');
@@ -47,31 +47,14 @@ function update931to932() {
    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '9.3.2'));
-   $migration->setVersion('9.3.2');
+   $migration->displayTitle(sprintf(__('Update to %s'), '9.3.4'));
+   $migration->setVersion('9.3.4');
 
-   /** Clean rack/enclosure items corrupted relations */
-   $corrupted_criteria = [
-      'OR' => [
-         'itemtype' => 0,
-         'items_id' => 0,
-      ],
-   ];
-   $DB->delete(Item_Rack::getTable(), $corrupted_criteria);
-   $DB->delete(Item_Enclosure::getTable(), $corrupted_criteria);
-   /** /Clean rack/enclosure items corrupted relations */
-
-   // limit state visibility for enclosures and pdus
-   $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_rack'
-   ]);
-   $migration->addField('glpi_states', 'is_visible_pdu', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_enclosure'
-   ]);
-   $migration->addKey('glpi_states', 'is_visible_enclosure');
-   $migration->addKey('glpi_states', 'is_visible_pdu');
+   // Create a dedicated token for rememberme process
+   if (!$DB->fieldExists('glpi_users', 'cookie_token')) {
+      $migration->addField('glpi_users', 'cookie_token', 'string', ['after' => 'api_token_date']);
+      $migration->addField('glpi_users', 'cookie_token_date', 'datetime', ['after' => 'cookie_token']);
+   }
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
