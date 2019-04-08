@@ -254,7 +254,7 @@ class MailCollector extends DbTestCase {
       //$this->collector = $collector;
 
       $this->doConnect();
-      $msg = $this->collector->collect($this->mailgate_id);
+      $msg = $this->collector->collect();
       $this->variable($msg)->isIdenticalTo('Number of messages: available=5, retrieved=5, refused=1, errors=0, blacklisted=0');
       $rejecteds = iterator_to_array($DB->request(['FROM' => \NotImportedEmail::getTable()]));
 
