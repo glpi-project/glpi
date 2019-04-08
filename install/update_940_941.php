@@ -57,6 +57,11 @@ function update940to941() {
    ));
 
    /** Fix URL of images inside ITIL objects contents */
+   // There is an exact copy of this process in "update941to942()".
+   // First version of this migration was working
+   // on MariaDB but not on MySQL due to usage of "\d" in a REGEXP expression.
+   // It has been fixed here for people who had not yet updated to 9.4.1 but have been put there
+   // for people already having updated to 9.4.1.
    $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups ans solutions.')));
 
    // Search for contents that does not contains the itil object parameter after the docid parameter
@@ -64,7 +69,7 @@ function update940to941() {
    // 1st capturing group is the end of href attribute value
    // 2nd capturing group is the href attribute ending quote
    $quotes_possible_exp   = ['\'', '&apos;', '&#39;', '&#x27;', '"', '&quot', '&#34;', '&#x22;'];
-   $missing_param_pattern = '(document\.send\.php\?docid=\d+)(' . implode('|', $quotes_possible_exp) . ')';
+   $missing_param_pattern = '(document\.send\.php\?docid=[0-9]+)(' . implode('|', $quotes_possible_exp) . ')';
 
    $itil_mappings = [
       'Change' => [
