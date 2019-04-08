@@ -433,7 +433,8 @@ class Update extends CommonGLPI {
             update931to932();
 
          case "9.3.2":
-             include_once "{$updir}update_932_934";
+         case "9.3.3":
+             include_once "{$updir}update_932_934.php";
              update932to934();
              break;
 
