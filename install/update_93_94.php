@@ -200,6 +200,27 @@ function update93to94() {
    // Add a config entry for the CAS version
    $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
+   /** Drop old embed ocs search options */
+   $migration->addPostQuery(
+      $DB->buildDelete(
+         'glpi_displaypreferences', [
+            'itemtype'  => 'Computer',
+            'num'       => [
+               100,
+               101,
+               102,
+               103,
+               104,
+               105,
+               106,
+               110,
+               111
+            ]
+         ]
+      )
+   );
+   /** /Drop old embed ocs search options */
+
    /** Factorize components search options on Computers, Printers and NetworkEquipments */
    $so_maping = [
       '10'  => '110',
