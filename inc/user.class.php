@@ -4767,11 +4767,10 @@ class User extends CommonDBTM {
     * @since 9.4
     *
     * @param string $field the field storing the token
-    * @param boolean $force_new force generation of a new token
     *
     * @return string|false token or false in case of error
     */
-   public function getAuthToken($field = 'personal_token', $force_new = false) {
+   public function getAuthToken($field = 'personal_token') {
       global $CFG_GLPI;
 
       if ($this->isNewItem()) {
@@ -4790,7 +4789,7 @@ class User extends CommonDBTM {
       }
 
       // token exists, is not oudated, and we may use it
-      if (!empty($this->fields[$field]) && !$force_new && !$outdated) {
+      if (!empty($this->fields[$field]) && !$outdated) {
          return $this->fields[$field];
       }
 

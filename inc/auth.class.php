@@ -869,7 +869,7 @@ class Auth extends CommonGLPI {
       }
 
       if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
-         $token = $this->user->getAuthToken('cookie_token', true);
+         $token = $this->user->getAuthToken('cookie_token');
 
          if ($token) {
             //Cookie name (Allow multiple GLPI)
