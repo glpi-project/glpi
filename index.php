@@ -124,7 +124,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // redirect to ticket
    if (isset($_GET["redirect"])) {
       Toolbox::manageRedirect($_GET["redirect"]);
-      echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
+      echo '<input type="hidden" name="redirect" value="'.Html::entities_deep($_GET['redirect']).'"/>';
    }
    echo '<p class="login_input" id="login_input_name">
          <input type="text" name="'.$namfield.'" id="login_name" required="required"
