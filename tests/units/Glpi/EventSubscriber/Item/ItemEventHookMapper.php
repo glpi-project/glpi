@@ -100,10 +100,10 @@ class ItemEventHookMapper extends \GLPITestCase {
     * @dataProvider provideMapping
     */
    public function testMapping($event, $expectedHook) {
-      global $CONTAINER, $PLUGIN_HOOKS;
+      global $PLUGIN_HOOKS;
 
       // Force plugin 'test' to be considered as active
-      $CONTAINER->get('application_cache')->set('plugins', ['test']);
+      \Plugin::setLoaded('test', 'test');
 
       $this->newTestedInstance(new \mock\Plugin());
 
