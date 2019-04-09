@@ -7,19 +7,19 @@ executors:
   php_7_0_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.0_fpm-node
-      - image: circleci/mariadb:10.1
+      - image: circleci/mariadb:10.1-ram
   php_7_1_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.1_fpm-node
-      - image: circleci/mariadb:10.2
+      - image: circleci/mariadb:10.2-ram
   php_7_2_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.2_fpm-node
-      - image: circleci/mariadb:10.3
+      - image: circleci/mariadb:10.3-ram
   php_7_3_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
-      - image: circleci/mariadb:10.3
+      - image: circleci/mariadb:10.3-ram
   php_7_3_mysql_5_6:
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
@@ -36,7 +36,7 @@ executors:
   php_latest_mariadb:
     docker:
       - image: glpi/circleci-env-core:php_latest_fpm-node
-      - image: circleci/mariadb:10.3
+      - image: circleci/mariadb:10.3-ram
 
 commands:
   # Build command.
@@ -211,21 +211,28 @@ jobs:
     steps:
       - build
       - run_test_suite
+
+  # PHP 7.3 test suite using MySQL 5.6.
   php_7_3_mysql_5_6_test_suite:
     executor: php_7_3_mysql_5_6
     steps:
       - build
       - run_test_suite
+
+  # PHP 7.3 test suite using MySQL 5.7.
   php_7_3_mysql_5_7_test_suite:
     executor: php_7_3_mysql_5_7
     steps:
       - build
       - run_test_suite
-  mysql_8_0_test_suite:
+
+  # PHP 7.3 test suite using MySQL 8.0.
+  php_7_3_mysql_8_0_test_suite:
     executor: php_7_3_mysql_8_0
     steps:
       - build
       - run_test_suite
+
   # PHP latest version test suite.
   php_latest_test_suite:
     executor: php_latest_mariadb
@@ -276,6 +283,30 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
+      - php_7_3_mysql_5_6_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
+      - php_7_3_mysql_5_7_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
+      - php_7_3_mysql_8_0_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
 
   # Nightly run test suite on latest PHP version.
   scheduled_build:
@@ -302,6 +333,15 @@ workflows:
           requires:
             - checkout
       - php_7_3_test_suite:
+          requires:
+            - checkout
+      - php_7_3_mysql_5_6_test_suite:
+          requires:
+            - checkout
+      - php_7_3_mysql_5_7_test_suite:
+          requires:
+            - checkout
+      - php_7_3_mysql_8_0_test_suite:
           requires:
             - checkout
       - php_latest_test_suite:
