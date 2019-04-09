@@ -31,6 +31,14 @@
  * ---------------------------------------------------------------------
  */
 
+// Handle specific dependencies update command that cannot be made upon symfony console
+if (isset($_SERVER['argv']) && ['bin/console', 'dependencies', 'install'] === $_SERVER['argv']) {
+   passthru('composer install');
+   passthru('npm install');
+   passthru('npm run-script build-dev');
+   exit();
+}
+
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
 $options = [];
 if (isset($_SERVER['argv'])) {

@@ -102,7 +102,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/db.yaml")) {
       };
    ");
 
-   echo Html::script("lib/fuzzy/fuzzy-min.js");
+   echo Html::script("public/lib/fuzzy/fuzzy.js");
    echo Html::script('js/common.js');
 
    echo "</head>";

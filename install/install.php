@@ -67,12 +67,11 @@ function header_html($etape) {
       };
    ");
 
-   // LIBS
+    // LIBS
    echo Html::script("public/lib/jquery/jquery.js");
    echo Html::script('public/lib/jquery-migrate/jquery-migrate.js');
    echo Html::script('public/lib/jquery-ui-dist/jquery-ui.js');
    echo Html::script("public/lib/select2/js/select2.full.js");
-   echo Html::script("lib/fuzzy/fuzzy-min.js");
    echo Html::script("js/common.js");
 
     // CSS
