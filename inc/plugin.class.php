@@ -53,6 +53,19 @@ class Plugin extends CommonDBTM {
 
    static $rightname = 'config';
 
+   /**
+    * Plugin init state.
+    *
+    * @var boolean
+    */
+   private static $plugins_init = false;
+
+   /**
+    * Loaded plugin list, indexed by their ID.
+    *
+    * @var null|string[]
+    */
+   private static $loaded_plugins;
 
    static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
@@ -98,18 +111,19 @@ class Plugin extends CommonDBTM {
    function init() {
       global $DB;
 
+      self::$plugins_init   = false;
+      self::$loaded_plugins = [];
+
       $appCache = Toolbox::getAppCache();
       if (!isset($DB) || !$DB->isConnected() || !$DB->tableExists(self::getTable())) {
-         $appCache->set('plugins_init', true);
-         $appCache->set('plugins', []);
+         self::$plugins_init = true;
          return;
       }
 
       $this->checkStates();
       $plugins = $this->find(['state' => self::ACTIVATED]);
 
-      $appCache->set('plugins_init', true);
-      $appCache->set('plugins', []);
+      self::$plugins_init = true;
 
       if (count($plugins)) {
          foreach ($plugins as $ID => $plug) {
@@ -670,8 +684,7 @@ class Plugin extends CommonDBTM {
          ]
       );
 
-      $appCache = Toolbox::getAppCache();
-      $appCache->set('plugins', []);
+      self::$loaded_plugins = [];
 
       // reset menu
       if (isset($_SESSION['glpimenu'])) {
@@ -704,9 +717,17 @@ class Plugin extends CommonDBTM {
    **/
    function isActivated($plugin) {
 
+      if ($this->isPluginLoaded($plugin)) {
+         // If plugin is loaded, it is because it is active. No need to query DB on this case.
+         return true;
+      }
+
+      // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
       if ($this->getFromDBbyDir($plugin)) {
          return ($this->fields['state'] == self::ACTIVATED);
       }
+
+      return false;
    }
 
 
@@ -717,6 +738,12 @@ class Plugin extends CommonDBTM {
    **/
    function isInstalled($plugin) {
 
+      if ($this->isPluginLoaded($plugin)) {
+         // If plugin is loaded, it is because it is installed and active. No need to query DB on this case.
+         return true;
+      }
+
+      // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
       if ($this->getFromDBbyDir($plugin)) {
          return (($this->fields['state']    == self::ACTIVATED)
                  || ($this->fields['state'] == self::TOBECONFIGURED)
@@ -1691,11 +1718,7 @@ class Plugin extends CommonDBTM {
     * @return array
     */
    public static function getPlugins() {
-      $appCache = Toolbox::getAppCache();
-      if ($appCache->has('plugins')) {
-         return $appCache->get('plugins');
-      }
-      return [];
+      return null !== self::$loaded_plugins ? self::$loaded_plugins : [];
    }
 
    /**
@@ -1708,7 +1731,11 @@ class Plugin extends CommonDBTM {
     * @return boolean
     */
    public static function isPluginLoaded($name) {
-      return in_array($name, self::getPlugins());
+      // Make a lowercase comparison, as sometime this function is called based on
+      // extraction of plugin name from a classname, which does not use same naming rules than directories.
+      $loadedPlugins = self::getPlugins();
+      $loadedPlugins = array_map('strtolower', $loadedPlugins);
+      return in_array(strtolower($name), $loadedPlugins);
    }
 
    /**
@@ -1722,10 +1749,9 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setLoaded($id, $name) {
-      $appCache = Toolbox::getAppCache();
-      $plugins = $appCache->get('plugins');
+      $plugins = self::getPlugins();
       $plugins[$id] = $name;
-      $appCache->set('plugins', $plugins);
+      self::$loaded_plugins = $plugins;
    }
 
    /**
@@ -1738,10 +1764,9 @@ class Plugin extends CommonDBTM {
     * @return void
     */
    public static function setUnloaded($id) {
-      $appCache = Toolbox::getAppCache();
-      $plugins = $appCache->get('plugins');
+      $plugins = self::getPlugins();
       unset($plugins[$id]);
-      $appCache->set('plugins', $plugins);
+      self::$loaded_plugins = $plugins;
    }
 
    /**
