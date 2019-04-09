@@ -92,7 +92,7 @@ class MySql extends AbstractDatabase
         } else {
             $conf_tz = ['value' => null];
             if ($this->tableExists(Config::getTable())
-            && $this->fieldExists(Config::getTable(), 'value')
+                && $this->fieldExists(Config::getTable(), 'value')
             ) {
                 $conf_tz = $this->request([
                 'SELECT' => 'value',
@@ -373,32 +373,40 @@ class MySql extends AbstractDatabase
         return $raw;
     }
 
-    public function areTimezonesActives() :bool
+    public function areTimezonesAvailable(string &$msg = '') :bool
     {
-       //try to query TZs
+        $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
+        if ($mysql_db_res->count() === 0) {
+            $msg = __('Access to timezone database (mysql) is not allowed.');
+            return false;
+        }
+        $tz_table_res = $this->request(
+            'SHOW TABLES FROM '
+            . $this->quoteName('mysql')
+            . ' LIKE '
+            . $this->quoteValue('time_zone_name')
+        );
+        if ($tz_table_res->count() === 0) {
+            $msg = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
+            return false;
+        }
         $criteria = [
-         'COUNT'  => 'cpt',
-         'FROM'   => 'mysql.time_zone_name',
+            'COUNT'  => 'cpt',
+            'FROM'   => 'mysql.time_zone_name',
         ];
         $iterator = $this->request($criteria);
         $result = $iterator->next();
-        if (!$result) {
-            Toolbox::logWarning('Access to timezone table (mysql.time_zone_name) is not allowed.');
-            return false;
-        }
-
         if ($result['cpt'] == 0) {
-            Toolbox::logWarning('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
+            $msg = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
             return false;
         }
-
         return true;
     }
 
     public function setTimezone($timezone) :AbstractDatabase
     {
        //setup timezone
-        if ($this->areTimezonesActives()) {
+        if ($this->areTimezonesAvailable()) {
            //4dev => to drop
             date_default_timezone_set($timezone);
             $this->dbh->query("SET SESSION time_zone = '$timezone'");

@@ -1213,16 +1213,24 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td><label for='dropdown_timezone$rand'>" . __('Timezone') . "</label></td>";
       echo "<td>";
-      $timezones = $DB->getTimezones();
-      Dropdown::showFromArray(
-         'timezone',
-         $timezones, [
-            'value'                 => $data["timezone"],
-            'display_emptychoice'   => true,
-            'emptylabel'            => __('Use server configuration')
-         ]
-      );
-      echo "</td></tr>";
+      $tz_warning = '';
+      $tz_available = $DB->areTimezonesAvailable($tz_warning);
+      if ($tz_available) {
+         $timezones = $DB->getTimezones();
+         Dropdown::showFromArray(
+            'timezone',
+            $timezones, [
+               'value'                 => $data["timezone"],
+               'display_emptychoice'   => true,
+               'emptylabel'            => __('Use server configuration')
+            ]
+         );
+      } else {
+         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">";
+         echo $tz_warning;
+      }
+      echo "</td>";
+      echo "</tr>";
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
@@ -1862,6 +1870,15 @@ class Config extends CommonDBTM {
       self::displayCheckExtensions(true);
 
       self::displayCheckDbEngine(true);
+
+      $tz_warning = '';
+      $tz_available = $DB->areTimezonesAvailable($tz_warning);
+      if (!$tz_available) {
+         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . $tz_warning . "\n";
+      } else {
+         echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\">";
+         echo __('Timezones seems not loaded in database') . "\n";
+      }
 
       self::displayCheckInnoDB(true);
 

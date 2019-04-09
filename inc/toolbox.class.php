@@ -1054,14 +1054,21 @@ class Toolbox {
             $error = $suberr;
          }
          echo "</tr>";
-         //check for innodb
-         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing for InnoDB') . "</td>";
-         $suberr = Config::displayCheckInnoDB();
-         if ($suberr > $error) {
-            $error = $suberr;
+
+         //timezone data check
+         echo "<tr class='tab_bg_1'><td class='b left'>" . __('Testing DB timezone data') . "</td>";
+         global $DB;
+         $tz_warning = '';
+         $tz_available = $DB->areTimezonesAvailable($tz_warning);
+         if (!$tz_available) {
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . $tz_warning . "</td>";
+         } else {
+            echo "<td>";
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\">";
+            echo __('Timezones seems not loaded in database');
+            echo "</td>";
          }
          echo "</tr>";
-
       }
 
       // memory test
@@ -2425,9 +2432,10 @@ class Toolbox {
          Config::setConfigurationValues(
             'core',
             [
-               'language'  => $lang,
-               'version'   => GLPI_VERSION,
-               'dbversion' => GLPI_SCHEMA_VERSION
+               'language'      => $lang,
+               'version'       => GLPI_VERSION,
+               'dbversion'     => GLPI_SCHEMA_VERSION,
+               'use_timezones' => $DB->areTimezonesAvailable()
             ]
          );
          $DB->updateOrDie(

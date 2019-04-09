@@ -1400,9 +1400,11 @@ abstract class AbstractDatabase
      * Under MySql, a command must be run to initilize data,
      * and some privileges may be needed to read informations.
      *
+     * @param string $msg Variable that would contain the reason of data unavailability.
+     *
      * @return boolean
      */
-    public function areTimezonesActives() :bool
+    public function areTimezonesAvailable(string &$msg = '') :bool
     {
         return true;
     }
