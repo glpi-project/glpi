@@ -567,8 +567,8 @@ class Transfer extends CommonDBTM {
                $DB->delete(
                   'glpi_contracts_items',
                   [
-                     "$itemtable.id" => null,
-                     'itemtype'      => $itemtype
+                     "$itemtable.id"                 => null,
+                     "glpi_contracts_items.itemtype" => $itemtype
                   ],
                   [
                      'LEFT JOIN' => [
