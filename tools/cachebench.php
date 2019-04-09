@@ -29,6 +29,12 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 define('PER_LEVEL', 8);
 define('COUNT', 1024);
 

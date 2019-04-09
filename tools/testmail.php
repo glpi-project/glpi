@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
+   exit();
+}
+
 if (isset($_SERVER['argc'])) {
    for ($i=1; $i<$_SERVER['argc']; $i++) {
       $it           = explode("=", $_SERVER['argv'][$i], 2);

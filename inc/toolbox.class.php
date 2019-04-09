@@ -1872,7 +1872,7 @@ class Toolbox {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
             $matches = [];
-            if (preg_match('/(https?:\/\/[^\/]+)\/.+/', $decoded_where, $matches)) {
+            if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
                if ($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
                   if (Session::getCurrentInterface() === "helpdesk") {
