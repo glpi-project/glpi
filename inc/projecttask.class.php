@@ -365,14 +365,14 @@ class ProjectTask extends CommonDBChild {
          'INNER JOIN'   => [
             'glpi_projecttasks'  => [
                'ON' => [
-                  'glpi_projecttasks_tickets'   => 'projects_id',
+                  'glpi_projecttasks_tickets'   => 'projecttasks_id',
                   'glpi_projecttasks'           => 'id'
                ]
             ]
          ],
          'FIELDS' =>  'tickets_id',
          'WHERE'        => [
-            'glpi_projecttasks_tickets.projects_id'   => $ID
+            'glpi_projecttasks.projects_id'   => $ID
          ]
       ]);
 

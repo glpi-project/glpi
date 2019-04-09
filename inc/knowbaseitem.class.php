@@ -471,6 +471,13 @@ class KnowbaseItem extends CommonDBVisible {
    static public function getVisibilityCriteria($forceall = false) {
       global $CFG_GLPI;
 
+      $is_public_faq_context = !Session::getLoginUserID() && $CFG_GLPI["use_public_faq"];
+      $has_session_groups = isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]);
+      $has_active_profile = isset($_SESSION["glpiactiveprofile"])
+         && isset($_SESSION["glpiactiveprofile"]['id']);
+      $has_active_entity = isset($_SESSION["glpiactiveentities"])
+         && count($_SESSION["glpiactiveentities"]);
+
       $where = [];
       $join = [
          'glpi_knowbaseitems_users' => [
@@ -480,8 +487,7 @@ class KnowbaseItem extends CommonDBVisible {
             ]
          ]
       ];
-
-      if ($forceall || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
+      if ($forceall || $has_session_groups) {
          $join['glpi_groups_knowbaseitems'] = [
             'ON' => [
                'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
@@ -489,8 +495,7 @@ class KnowbaseItem extends CommonDBVisible {
             ]
          ];
       }
-      if ($forceall || (isset($_SESSION["glpiactiveprofile"])
-              && isset($_SESSION["glpiactiveprofile"]['id']))) {
+      if ($forceall || $has_active_profile) {
          $join['glpi_knowbaseitems_profiles'] = [
             'ON' => [
                'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
@@ -498,8 +503,7 @@ class KnowbaseItem extends CommonDBVisible {
             ]
          ];
       }
-      if ($forceall || (isset($_SESSION["glpiactiveentities"])
-              && isset($_SESSION["glpiactiveentities"]['id']))) {
+      if ($forceall || $has_active_entity || $is_public_faq_context) {
          $join['glpi_entities_knowbaseitems'] = [
             'ON' => [
                'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
@@ -526,7 +530,7 @@ class KnowbaseItem extends CommonDBVisible {
          if (!Session::haveRight(self::$rightname, READ)) {
             $where['AND']['glpi_knowbaseitems.is_faq'] = 1;
          }
-      } else if ($CFG_GLPI["use_public_faq"]) {
+      } else if ($is_public_faq_context) {
          $where = [
             "glpi_knowbaseitems.is_faq" => 1,
          ];
@@ -542,9 +546,7 @@ class KnowbaseItem extends CommonDBVisible {
          ];
       }
       // Groups
-      if ($forceall
-          || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
-
+      if ($forceall || $has_session_groups) {
          if (Session::getLoginUserID()) {
             $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true, true);
             $where['OR'][] = [
@@ -559,10 +561,7 @@ class KnowbaseItem extends CommonDBVisible {
       }
 
       // Profiles
-      if ($forceall
-          || (isset($_SESSION["glpiactiveprofile"])
-              && isset($_SESSION["glpiactiveprofile"]['id']))) {
-
+      if ($forceall || $has_active_profile) {
          if (Session::getLoginUserID()) {
             $where['OR'][] = [
                'glpi_knowbaseitems_profiles.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
@@ -575,21 +574,13 @@ class KnowbaseItem extends CommonDBVisible {
       }
 
       // Entities
-      if ($forceall
-          || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
-         $join['glpi_entities_knowbaseitems'] = [
-            'FKEY' => [
-               'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
-               'glpi_knowbaseitems'          => 'id'
-            ]
-         ];
-
+      if ($forceall || $has_active_entity) {
          if (Session::getLoginUserID()) {
             $restrict = getEntitiesRestrictCriteria('glpi_entities_knowbaseitems', '', '', true, true);
             if (count($restrict)) {
                $where['OR'] = $where['OR'] + $restrict;
             } else {
-               $where['`glpi_entities_knowbaseitems`.`entities_id`'] = null;
+               $where['glpi_entities_knowbaseitems.entities_id'] = null;
             }
          }
       }

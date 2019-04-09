@@ -96,27 +96,43 @@ jobs:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.0_fpm-node
-      - image: circleci/mariadb:10.2
+      - image: circleci/mariadb:10.2-ram
   php_7_1_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.1_fpm-node
-      - image: circleci/mariadb:10.3
+      - image: circleci/mariadb:10.3-ram
   php_7_2_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.2_fpm-node
-      - image: circleci/mariadb:10.3
+      - image: circleci/mariadb:10.3-ram
   php_7_3_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_7.3_fpm-node
-      - image: circleci/mariadb:10.3
+      - image: circleci/mariadb:10.3-ram
   php_latest_test_suite:
     <<: *shared
     docker:
       - image: glpi/circleci-env-core:php_latest_fpm-node
-      - image: circleci/mariadb:10.3
+      - image: circleci/mariadb:10.3-ram
+  mysql_5_6_test_suite:
+    <<: *shared
+    docker:
+      - image: glpi/circleci-env-core:php_7.3_fpm-node
+      - image: circleci/mysql:5.6-ram
+  mysql_5_7_test_suite:
+    <<: *shared
+    docker:
+      - image: glpi/circleci-env-core:php_7.3_fpm-node
+      - image: circleci/mysql:5.7-ram
+  mysql_8_0_test_suite:
+    <<: *shared
+    docker:
+      - image: glpi/circleci-env-core:php_7.3_fpm-node
+      - image: circleci/mysql:8.0-ram
+        command: [--default-authentication-plugin=mysql_native_password] # Fix "Authentication plugin 'caching_sha2_password' cannot be loaded"
 
 
 workflows:
@@ -155,6 +171,30 @@ workflows:
           filters:
             tags:
               only: /.*/ # run also on tag creation
+      - mysql_5_6_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
+      - mysql_5_7_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
+      - mysql_8_0_test_suite:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /.*/ # run also on tag creation
+            branches:
+              ignore: /.*/ # do not run on branch update
   scheduled_build:
     triggers:
       - schedule:
@@ -180,5 +220,14 @@ workflows:
           requires:
             - checkout
       - php_latest_test_suite:
+          requires:
+            - checkout
+      - mysql_5_6_test_suite:
+          requires:
+            - checkout
+      - mysql_5_7_test_suite:
+          requires:
+            - checkout
+      - mysql_8_0_test_suite:
           requires:
             - checkout
