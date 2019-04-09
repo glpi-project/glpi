@@ -596,6 +596,14 @@ function update94to95() {
    );
    /** /Make software linkable to other itemtypes besides Computers */
 
+   /** Add source item id to TicketTask. Used by tasks created by merging tickets */
+   if (!$DB->fieldExists('glpi_tickettasks', 'sourceitems_id')) {
+      if ($migration->addField('glpi_tickettasks', 'sourceitems_id', "int(11) NOT NULL DEFAULT '0'")) {
+         $migration->addKey('glpi_tickettasks', 'sourceitems_id');
+      }
+   }
+   /** /Add source item id to TicketTask. Used by tasks created by merging tickets */
+
    // ************ Keep it at the end **************
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;

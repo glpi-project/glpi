@@ -2384,7 +2384,7 @@ class Ticket extends CommonITILObject {
       $actions = [];
 
       if (Session::getCurrentInterface() == 'central') {
-         if (Ticket::canCreate() && Ticket::canDelete()) {
+         if (Ticket::canUpdate() && Ticket::canDelete()) {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge_as_followup']
                = "<i class='ma-icon fas fa-code-branch'></i>".
                  __('Merge as Followup');
@@ -2461,7 +2461,25 @@ class Ticket extends CommonITILObject {
                'name'    => 'with_documents',
                'checked' => false
             ]);
-            echo "</td></tr><tr><td colspan='4'>";
+            echo "</td></tr><tr><td>".__('Merge Tasks')."</td><td>";
+            Html::showCheckbox([
+               'name'    => 'with_tasks',
+               'checked' => false
+            ]);
+            echo "</td><td>".__('Merge Actors')."</td><td>";
+            Html::showCheckbox([
+               'name'    => 'with_actors',
+               'checked' => false
+            ]);
+            echo "</td></tr><tr><td>".__('Link type')."</td><td colspan='3'>";
+            Dropdown::showFromArray('link_type', [
+               0                             => __('None'),
+               Ticket_Ticket::LINK_TO        => __('Linked to'),
+               Ticket_Ticket::DUPLICATE_WITH => __('Duplicates'),
+               Ticket_Ticket::SON_OF         => __('Son of'),
+               Ticket_Ticket::PARENT_OF      => __('Parent of')
+            ], ['value' => Ticket_Ticket::SON_OF]);
+            echo "</td></tr><tr><tr><td colspan='4'>";
             echo Html::submit(_x('button', 'Merge'), [
                'name'      => 'merge',
                'confirm'   => __('Confirm the merge? This ticket will be deleted!')
@@ -2481,134 +2499,42 @@ class Ticket extends CommonITILObject {
          case 'merge_as_followup' :
             $merge_succeeded = false;
             $input = $ma->getInput();
+            $status = [];
+            $mergeparams = [
+               'linktypes' => [],
+               'link_type'  => $input['link_type']
+            ];
 
-            $in_transaction = $DB->inTransaction();
-            foreach ($ids as $id) {
-               try {
-                  if (!$in_transaction) {
-                     $DB->beginTransaction();
-                  }
-                  $fup = new ITILFollowup();
-                  $document_item = new Document_Item();
-                  $input2 = [];
-
-                  foreach ($input as $key => $val) {
-                     $input2[$key] = $val;
-                  }
-                  if ($item->can($id, CREATE) && $item->can($id, DELETE)) {
-                     if (!$item->getFromDB($id)) {
-                        //Cannot retreive ticket. Abort/fail the merge
-                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
-                     }
-
-                     //Build followup from the original ticket
-                     $input2 = [
-                        'itemtype'        => 'Ticket',
-                        'items_id'        => $input['_mergeticket'],
-                        'content'         => $DB->escape($item->fields['name']."\n\n".$item->fields['content']),
-                        'users_id'        => $item->fields['users_id_recipient'],
-                        'date_creation'   => $item->fields['date_creation'],
-                        'date_mod'        => $item->fields['date_mod'],
-                        'date'            => $item->fields['date_creation'],
-                        'sourceitems_id'  => $item->getID()
-                     ];
-
-                     if (!$fup->add($input2)) {
-                        //Cannot add followup. Abort/fail the merge
-                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
-                     }
-
-                     if (isset($input['with_followups'])) {
-                        //Migrate/clone any followups to the ticket
-                        $tomerge = $fup->find([
-                           'items_id' => $id,
-                           'itemtype' => 'Ticket'
-                        ]);
-                        foreach ($tomerge as $key => $fup2) {
-                           $fup2['items_id'] = $input['_mergeticket'];
-                           $fup2['sourceitems_id'] = $item->getID();
-                           $fup2['content'] = $DB->escape($fup2['content']);
-                           unset($fup2['id']);
-                           if (!$fup->add($fup2)) {
-                              //Cannot add followup. Abort/fail the merge
-                              throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
-                           }
-                        }
-                     }
-
-                     if (isset($input['with_documents'])) {
-                        // Create new links for any Documents
-                        $tomerge = $document_item->find([
-                           'itemtype' => 'Ticket',
-                           'items_id' => $id
-                        ]);
-                        // Need to check for each item since new duplicates could be added during the merge process
-                        $existing_docs = $document_item->find([
-                           'itemtype' => 'Ticket',
-                           'items_id' => $input['_mergeticket']
-                        ]);
-                        $tomerge = array_diff($tomerge, $existing_docs);
-
-                        foreach ($tomerge as $key => $document_item2) {
-                           $document_item2['items_id'] = $input['_mergeticket'];
-                           unset($document_item2['id']);
-                           if (!$document_item->add($document_item2)) {
-                              //Cannot add document. Abort/fail the merge
-                              throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
-                           }
-                        }
-                     }
-
-                     //Add relation (this is parent of merge target)
-                     $tt = new Ticket_Ticket();
-                     $linkparams = [
-                        'link'         => Ticket_Ticket::SON_OF,
-                        'tickets_id_1' => $id,
-                        'tickets_id_2' => $input['_mergeticket']
-                     ];
-
-                     // Remove existing links
-                     $tt->deleteByCriteria([
-                        'OR' => [
-                           'AND' => [
-                              'tickets_id_1' => $input['_mergeticket'],
-                              'tickets_id_2' => $id
-                           ],
-                           'AND' => [
-                              'tickets_id_2' => $input['_mergeticket'],
-                              'tickets_id_1' => $id
-                           ]
-                        ]
-                     ]);
-
-                     if (!$tt->add($linkparams)) {
-                        //Cannot link tickets. Abort/fail the merge
-                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
-                     }
-
-                     if (!$item->delete(['id' => $id, '_disablenotif' => true])) {
-                        throw new \RuntimeException(ERROR_ON_ACTION, MassiveAction::ACTION_KO);
-                     }
-
-                     if (!$in_transaction) {
-                        $DB->commit();
-                     }
-                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                     Event::log($input['_mergeticket'], 'ticket', 4, 'tracking',
-                        sprintf(__('%s merges ticket %s into %s'), $_SESSION['glpiname'],
-                        $id, $input['_mergeticket']));
-                  } else {
-                     throw new \RuntimeException(ERROR_RIGHT, MassiveAction::ACTION_NORIGHT);
-                  }
-               } catch (\RuntimeException $e) {
-                  if (!$in_transaction) {
-                     $DB->rollBack();
-                  }
-                  $ma->itemDone($item->getType(), $id, $e->getCode());
-                  $ma->addMessage($item->getErrorMessage($e->getMessage()));
-               }
+            if ($input['with_followups']) {
+               $mergeparams['linktypes'][] = 'ITILFollowup';
+            }
+            if ($input['with_tasks']) {
+               $mergeparams['linktypes'][] = 'TicketTask';
+            }
+            if ($input['with_documents']) {
+               $mergeparams['linktypes'][] = 'Document';
+            }
+            if ($input['with_actors']) {
+               $mergeparams['append_actors'] = [
+                  CommonITILActor::REQUESTER,
+                  CommonITILActor::OBSERVER,
+                  CommonITILActor::ASSIGN];
+            } else {
+               $mergeparams['append_actors'] = [];
             }
 
+            Ticket::merge($input['_mergeticket'], $ids, $status, $mergeparams);
+            foreach ($status as $id => $status_code) {
+               if ($status_code == 0) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               } else if ($status_code == 2) {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               }
+            }
             return;
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
@@ -6863,5 +6789,284 @@ class Ticket extends CommonITILObject {
       }
 
       return $whitelist;
+   }
+
+   /**
+    * Merge one or more tickets into another existing ticket.
+    * Optionally sub-items like followups, documents, and tasks can be copied into the merged ticket.
+    * If a ticket cannot be merged, the process continues on to the next ticket.
+    * @param int   $merge_target_id The ID of the ticket that the other tickets will be merged into
+    * @param array $ticket_ids Array of IDs of tickets to merge into the ticket with ID $merge_target_id
+    * @param array $params Array of parameters for the ticket merge.
+    *       linktypes - Array of itemtypes that will be duplicated into the ticket $merge_target_id.
+    *                By default, no sub-items are copied. Currently supported link types are ITILFollowup, Document, and TicketTask.
+    *       full_transaction - Boolean value indicating if the entire merge must complete successfully, or if partial merges are allowed.
+    *                By default, the full merge must complete. On failure, all database operations performed are rolled back.
+    *       link_type - Integer indicating the link type of the merged tickets (See types in Ticket_Ticket).
+    *                By default, this is Ticket_Ticket::SON_OF. To disable linking, use 0 or a negative value.
+    *       append_actors - Array of actor types to migrate into the ticket $merge_ticket. See types in CommonITILActor.
+    *                By default, all actors are added to the ticket.
+    * @param array $status Reference array that this function uses to store the status of each ticket attempted to be merged.
+    *                   id => status (0 = Success, 1 = Error, 2 = Insufficient Rights).
+    * @return boolean  True if the merge was successful if "full_transaction" is true.
+    *                      Otherwise, true if any ticket was successfully merged.
+    * @since 9.5.0
+    */
+   public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = []) {
+      global $DB;
+      $p = [
+         'linktypes'          => [],
+         'full_transaction'   => true,
+         'link_type'          => Ticket_Ticket::SON_OF,
+         'append_actors'      => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER, CommonITILActor::ASSIGN]
+      ];
+      $p = array_replace($p, $params);
+      $ticket = new Ticket();
+      $merge_target = new Ticket();
+      $merge_target->getFromDB($merge_target_id);
+      $fup = new ITILFollowup();
+      $document_item = new Document_Item();
+      $task = new TicketTask();
+
+      if (!$merge_target->canAddFollowups()) {
+         foreach ($ticket_ids as $id) {
+            Toolbox::logError(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id));
+            // Set status = 2 : Rights issue
+            $status[$id] = 2;
+         }
+         return false;
+      }
+      $in_transaction = $DB->inTransaction();
+
+      if ($p['full_transaction'] && !$in_transaction) {
+         $DB->beginTransaction();
+      }
+      foreach ($ticket_ids as $id) {
+         try {
+            if (!$p['full_transaction'] && !$in_transaction) {
+               $DB->beginTransaction();
+            }
+            if ($merge_target->canUpdateItem() && $ticket->can($id, DELETE)) {
+               if (!$ticket->getFromDB($id)) {
+                  //Cannot retrieve ticket. Abort/fail the merge
+                  throw new \RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
+               }
+               //Build followup from the original ticket
+               $input = [
+                  'itemtype'        => 'Ticket',
+                  'items_id'        => $merge_target_id,
+                  'content'         => $DB->escape($ticket->fields['name']."\n\n".$ticket->fields['content']),
+                  'users_id'        => $ticket->fields['users_id_recipient'],
+                  'date_creation'   => $ticket->fields['date_creation'],
+                  'date_mod'        => $ticket->fields['date_mod'],
+                  'date'            => $ticket->fields['date_creation'],
+                  'sourceitems_id'  => $ticket->getID()
+               ];
+               if (!$fup->add($input)) {
+                  //Cannot add followup. Abort/fail the merge
+                  throw new \RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
+               }
+               if (in_array('ITILFollowup', $p['linktypes'])) {
+                  // Copy any followups to the ticket
+                  $tomerge = $fup->find([
+                     'items_id' => $id,
+                     'itemtype' => 'Ticket'
+                  ]);
+                  foreach ($tomerge as $fup2) {
+                     $fup2['items_id'] = $merge_target_id;
+                     $fup2['sourceitems_id'] = $id;
+                     $fup2['content'] = $DB->escape($fup2['content']);
+                     unset($fup2['id']);
+                     if (!$fup->add($fup2)) {
+                        // Cannot add followup. Abort/fail the merge
+                        throw new \RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
+                     }
+                  }
+               }
+               if (in_array('TicketTask', $p['linktypes'])) {
+                  $merge_tmp = ['tickets_id' => $merge_target_id];
+                  if (!$task->can(-1, CREATE, $merge_tmp)) {
+                     throw new \RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
+                  }
+                  // Copy any tasks to the ticket
+                  $tomerge = $task->find([
+                     'tickets_id' => $id
+                  ]);
+                  foreach ($tomerge as $task2) {
+                     $task2['tickets_id'] = $merge_target_id;
+                     $task2['sourceitems_id'] = $id;
+                     $task2['content'] = $DB->escape($task2['content']);
+                     unset($task2['id']);
+                     if (!$task->add($task2)) {
+                        //Cannot add followup. Abort/fail the merge
+                        throw new \RuntimeException(sprintf(__('Failed to add task to ticket %d'), $merge_target_id), 1);
+                     }
+                  }
+               }
+               if (in_array('Document', $p['linktypes'])) {
+                  if (!$merge_target->canAddItem('Document')) {
+                     throw new \RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
+                  }
+                  $tomerge = $document_item->find([
+                     'itemtype' => 'Ticket',
+                     'items_id' => $id,
+                     'NOT' => [
+                        'documents_id' => new \QuerySubQuery([
+                           'SELECT' => 'documents_id',
+                           'FROM'   => $document_item->getTable(),
+                           'WHERE'  => [
+                              'itemtype' => 'Ticket',
+                              'items_id' => $merge_target_id
+                           ]
+                        ])
+                     ]
+                  ]);
+
+                  foreach ($tomerge as $document_item2) {
+                     $document_item2['items_id'] = $merge_target_id;
+                     unset($document_item2['id']);
+                     if (!$document_item->add($document_item2)) {
+                        //Cannot add document. Abort/fail the merge
+                        throw new \RuntimeException(sprintf(__('Failed to add document to ticket %d'), $merge_target_id), 1);
+                     }
+                  }
+               }
+               if ($p['link_type'] > 0 && $p['link_type'] < 5) {
+                  //Add relation (this is parent of merge target)
+                  $tt = new Ticket_Ticket();
+                  $linkparams = [
+                     'link'         => $p['link_type'],
+                     'tickets_id_1' => $id,
+                     'tickets_id_2' => $merge_target_id
+                  ];
+                  $tt->deleteByCriteria([
+                     'OR' => [
+                        'AND' => [
+                           'tickets_id_1' => $merge_target_id,
+                           'tickets_id_2' => $id
+                        ],
+                        'AND' => [
+                           'tickets_id_2' => $merge_target_id,
+                           'tickets_id_1' => $id
+                        ]
+                     ]
+                  ]);
+                  if (!$tt->add($linkparams)) {
+                     //Cannot link tickets. Abort/fail the merge
+                     throw new \RuntimeException(sprintf(__('Failed to link tickets %d and %d'), $merge_target_id, $id), 1);
+                  }
+               }
+               if (isset($p['append_actors'])) {
+                  $tu = new Ticket_User();
+                  $existing_users = $tu->find(['tickets_id' => $merge_target_id]);
+                  $gt = new Group_Ticket();
+                  $existing_groups = $gt->find(['tickets_id' => $merge_target_id]);
+                  $st = new Supplier_Ticket();
+                  $existing_suppliers = $st->find(['tickets_id' => $merge_target_id]);
+
+                  foreach ($p['append_actors'] as $actor_type) {
+                     $users = $tu->find([
+                        'tickets_id' => $id,
+                        'type' => $actor_type
+                     ]);
+                     $groups = $gt->find([
+                        'tickets_id' => $id,
+                        'type' => $actor_type
+                     ]);
+                     $suppliers = $st->find([
+                        'tickets_id' => $id,
+                        'type' => $actor_type
+                     ]);
+                     $users = array_filter($users, function($user) use ($existing_users) {
+                        foreach ($existing_users as $existing_user) {
+                           if ($existing_user['users_id'] > 0 && $user['users_id'] > 0 &&
+                              $existing_user['users_id'] === $user['users_id'] &&
+                              $existing_user['type'] === $user['type']) {
+                              // Internal users
+                              return false;
+                           } else if ($existing_user['users_id'] == 0 && $user['users_id'] == 0 &&
+                              $existing_user['alternative_email'] === $user['alternative_email'] &&
+                              $existing_user['type'] === $user['type']) {
+                              // External users
+                              return false;
+                           }
+                        }
+                        return true;
+                     });
+                     $groups = array_filter($groups, function($group) use ($existing_groups) {
+                        foreach ($existing_groups as $existing_group) {
+                           if ($existing_group['groups_id'] === $group['groups_id'] &&
+                              $existing_group['type'] === $group['type']) {
+                              return false;
+                           }
+                        }
+                        return true;
+                     });
+                     $suppliers = array_filter($suppliers, function($supplier) use ($existing_suppliers) {
+                        foreach ($existing_suppliers as $existing_supplier) {
+                           if ($existing_supplier['suppliers_id'] > 0 && $supplier['suppliers_id'] > 0 &&
+                              $existing_supplier['suppliers_id'] === $supplier['suppliers_id'] &&
+                              $existing_supplier['type'] === $supplier['type']) {
+                              // Internal suppliers
+                              return false;
+                           } else if ($existing_supplier['suppliers_id'] == 0 && $supplier['suppliers_id'] == 0 &&
+                              $existing_supplier['alternative_email'] === $supplier['alternative_email'] &&
+                              $existing_supplier['type'] === $supplier['type']) {
+                              // External suppliers
+                              return false;
+                           }
+                        }
+                        return true;
+                     });
+                     foreach ($users as $user_id => $user) {
+                        $user['tickets_id'] = $merge_target_id;
+                        unset($user['id']);
+                        $tu->add($user);
+                     }
+                     foreach ($groups as $group_id => $group) {
+                        $group['tickets_id'] = $merge_target_id;
+                        unset($group['id']);
+                        $gt->add($group);
+                     }
+                     foreach ($suppliers as $supplier_id => $supplier) {
+                        $supplier['tickets_id'] = $merge_target_id;
+                        unset($supplier['id']);
+                        $st->add($supplier);
+                     }
+                  }
+               }
+               //Delete this ticket
+               if (!$ticket->delete(['id' => $id, '_disablenotif' => true])) {
+                  throw new \RuntimeException(sprintf(__('Failed to delete ticket %d'), $id), 1);
+               }
+               if (!$p['full_transaction'] && !$in_transaction) {
+                  $DB->commit();
+               }
+               $status[$id] = 0;
+               Event::log($merge_target_id, 'ticket', 4, 'tracking',
+                  sprintf(__('%s merges ticket %s into %s'), $_SESSION['glpiname'],
+                  $id, $merge_target_id));
+            } else {
+               throw new \RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
+            }
+         } catch (\RuntimeException $e) {
+            if ($e->getCode() < 1 || $e->getCode() > 2) {
+               $status[$id] = 1;
+            } else {
+               $status[$id] = $e->getCode();
+            }
+            Toolbox::logError($e->getMessage());
+            if (!$in_transaction) {
+               $DB->rollBack();
+            }
+            if ($p['full_transaction']) {
+               return false;
+            }
+         }
+      }
+      if ($p['full_transaction'] && !$in_transaction) {
+         $DB->commit();
+      }
+      return true;
    }
 }

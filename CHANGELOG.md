@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 - Software link on Phones.
 - Add and answer approvals from timeline
 - Add lightbox with PhotoSwipe to timeline images
+- Ability to copy tasks while merging tickets
 
 ### Changed
 
