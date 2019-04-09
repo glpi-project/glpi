@@ -253,9 +253,9 @@ JAVASCRIPT;
       $items_subquery = new QuerySubQuery(
          array_merge_recursive(
             [
-               'COUNT' => 'cpt',
-               'FROM'  => KnowbaseItem::getTable(),
-               'WHERE' => [
+               'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
+               'FROM'   => KnowbaseItem::getTable(),
+               'WHERE'  => [
                   KnowbaseItem::getTableField($cat_fk) => new QueryExpression(
                      DB::quoteName(KnowbaseItemCategory::getTableField('id'))
                   ),
@@ -304,9 +304,9 @@ JAVASCRIPT;
       $root_items_count = $DB->request(
          array_merge_recursive(
             [
-               'COUNT' => 'cpt',
-               'FROM'  => KnowbaseItem::getTable(),
-               'WHERE' => [
+               'SELECT' => ['COUNT DISTINCT' => KnowbaseItem::getTableField('id') . ' as cpt'],
+               'FROM'   => KnowbaseItem::getTable(),
+               'WHERE'  => [
                   KnowbaseItem::getTableField($cat_fk) => 0,
                ]
             ],
