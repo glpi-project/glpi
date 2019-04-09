@@ -375,12 +375,12 @@ class MySql extends AbstractDatabase
 
     public function areTimezonesAvailable(string &$msg = '') :bool
     {
-        $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
+        $mysql_db_res = $this->requestRaw('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
         if ($mysql_db_res->count() === 0) {
             $msg = __('Access to timezone database (mysql) is not allowed.');
             return false;
         }
-        $tz_table_res = $this->request(
+        $tz_table_res = $this->requestRaw(
             'SHOW TABLES FROM '
             . $this->quoteName('mysql')
             . ' LIKE '
